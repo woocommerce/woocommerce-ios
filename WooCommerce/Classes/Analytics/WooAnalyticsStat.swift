@@ -234,6 +234,7 @@ public enum WooAnalyticsStat: String {
     case orderTrackingDeleteSuccess = "order_tracking_delete_success"
     case orderTrackingProvidersLoaded = "order_tracking_providers_loaded"
     case orderFeeAdd = "order_fee_add"
+    case orderShippingMethodAdd = "order_shipping_method_add"
 
     // MARK: Order List Sorting/Filtering
     //

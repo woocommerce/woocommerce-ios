@@ -177,6 +177,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     /// Configure the elements to be displayed.
     ///
     func configure(_ config: Config) {
+        _ = view // trigger loading view before configuring contents
         configuration = config
         messageLabel.attributedText = config.message
 

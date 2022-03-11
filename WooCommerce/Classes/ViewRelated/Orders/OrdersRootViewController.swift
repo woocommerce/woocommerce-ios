@@ -259,8 +259,9 @@ private extension OrdersRootViewController {
     /// If the current applied status filters does not match the existing status filters fetched from API, we reset them.
     ///
     func resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: [OrderStatus]) {
-        for orderStatus in orderStatuses {
-            if filters.orderStatus?.contains(orderStatus.status) == false {
+        guard let storedOrderFilters = filters.orderStatus else { return }
+        for storedOrderFilter in storedOrderFilters {
+            if !orderStatuses.map({$0.status}).contains(storedOrderFilter) {
                 clearFilters()
             }
         }
@@ -292,9 +293,10 @@ private extension OrdersRootViewController {
                 self?.filters = FilterOrderListViewModel.Filters(orderStatus: settings.orderStatusesFilter,
                                                                  dateRange: settings.dateRangeFilter,
                                                                  numberOfActiveFilters: settings.numberOfActiveFilters())
-            case .failure:
-                break
+            case .failure(let error):
+                assertionFailure("It was not possible to sync local orders settings: \(String(describing: error))")
             }
+            onCompletion(result)
         }
         ServiceLocator.stores.dispatch(action)
     }

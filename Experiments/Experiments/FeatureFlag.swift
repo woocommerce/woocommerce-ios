@@ -26,10 +26,6 @@ public enum FeatureFlag: Int {
     ///
     case orderCreation
 
-    /// Allows new orders to be created and synced as drafts
-    ///
-    case orderCreationRemoteSynchronizer
-
     /// Display the new tab "Menu" in the tab bar.
     ///
     case hubMenu

@@ -14,6 +14,7 @@ class RemoteOrderSynchronizerTests: XCTestCase {
     private let sampleInputID: Int64 = 345
     private let sampleShippingID: Int64 = 456
     private let sampleOrderID: Int64 = 567
+    private let sampleFeeID: Int64 = 678
     private var subscriptions = Set<AnyCancellable>()
 
     override func setUp() {
@@ -333,6 +334,21 @@ class RemoteOrderSynchronizerTests: XCTestCase {
 
         // Then
         XCTAssertTrue(orderCreationInvoked)
+    }
+
+    func test_sending_nil_fee_input_updates_local_order() throws {
+        // Given
+        let feeLine = OrderFeeLine.fake().copy(feeID: sampleFeeID)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
+
+        // When
+        synchronizer.setFee.send(feeLine)
+        synchronizer.setFee.send(nil)
+
+        // Then
+        let firstLine = try XCTUnwrap(synchronizer.order.fees.first)
+        XCTAssertNil(firstLine.name)
     }
 
     func test_states_are_properly_set_upon_success_order_creation() {
@@ -777,6 +793,84 @@ class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(updatedOrderItems.count, 1)
         XCTAssertEqual(updatedOrderItems.first?.productID, product.productID)
         XCTAssertEqual(updatedOrderItems.first?.quantity, 2)
+    }
+
+    func test_commit_changes_creates_order_if_order_has_not_been_created() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case .createOrder(_, let order, let completion):
+                completion(.success(order))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        let result: Result<Order, Error> = waitFor { promise in
+            synchronizer.commitAllChanges { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_commit_changes_relays_error() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case .createOrder(_, _, let completion):
+                let error = NSError(domain: "", code: 0, userInfo: nil)
+                completion(.failure(error))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        let result: Result<Order, Error> = waitFor { promise in
+            synchronizer.commitAllChanges { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
+
+    func test_commit_changes_updates_order_if_order_has_been_created() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case .createOrder(_, let order, let completion):
+                completion(.success(order.copy(orderID: self.sampleOrderID)))
+            case .updateOrder(_, let order, _, let completion):
+                completion(.success(order))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        let input = OrderSyncProductInput.init(product: .product(.fake()), quantity: 1)
+        createOrder(on: synchronizer, input: input)
+
+        // When
+        let result: Result<Order, Error> = waitFor { promise in
+            synchronizer.commitAllChanges { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
     }
 }
 

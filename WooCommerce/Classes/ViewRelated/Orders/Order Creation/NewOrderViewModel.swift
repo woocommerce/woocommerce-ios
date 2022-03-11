@@ -369,19 +369,6 @@ extension NewOrderViewModel {
         let shippingLineViewModel: ShippingLineDetailsViewModel
         let feeLineViewModel: FeeLineDetailsViewModel
 
-        /// Indicates whether there's any change made
-        ///
-        var hasChangesMade: Bool {
-            shouldShowShippingTotal ||
-            shippingTotal.isNotEmpty ||
-            shippingMethodTitle.isNotEmpty ||
-            shouldShowFees ||
-            feesBaseAmountForPercentage != 0 ||
-            shouldShowTaxes ||
-            taxesTotal.isNotEmpty ||
-            orderTotal.isNotEmpty
-        }
-
         init(itemsTotal: String = "",
              shouldShowShippingTotal: Bool = false,
              shippingTotal: String = "",

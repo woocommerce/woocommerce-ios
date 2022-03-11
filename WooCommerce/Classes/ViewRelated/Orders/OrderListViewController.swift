@@ -183,6 +183,14 @@ final class OrderListViewController: UIViewController {
         tableView.updateHeaderHeight()
     }
 
+    override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.willTransition(to: newCollection, with: coordinator)
+        if isSplitViewInOrdersTabEnabled, selectedIndexPath != nil {
+            // Reload table view to update selected state on the list when changing rotation
+            tableView.reloadData()
+        }
+    }
+
     /// Returns a function that creates cells for `dataSource`.
     private func makeCellProvider() -> UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID>.CellProvider {
         return { [weak self] tableView, indexPath, objectID in

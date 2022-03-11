@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 import Combine
+import Experiments
 
 /// The root tab controller for Orders, which contains the `OrderListViewController` .
 ///
@@ -56,14 +57,20 @@ final class OrdersRootViewController: UIViewController {
     ///
     private var isOrderCreationEnabled: Bool = false
 
+    private let featureFlagService: FeatureFlagService
+
     // MARK: View Lifecycle
 
     init(siteID: Int64) {
         self.siteID = siteID
+        self.featureFlagService = ServiceLocator.featureFlagService
         super.init(nibName: Self.nibName, bundle: nil)
 
         configureTitle()
-        configureTabBarItem()
+
+        if !featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            configureTabBarItem()
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -90,6 +97,13 @@ final class OrdersRootViewController: UIViewController {
         fetchExperimentalTogglesAndConfigureNavigationButtons()
 
         ServiceLocator.pushNotesManager.resetBadgeCount(type: .storeOrder)
+    }
+
+    override var shouldShowOfflineBanner: Bool {
+        if featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            return false
+        }
+        return true
     }
 
     /// Shows `SearchViewController`.
@@ -180,7 +194,7 @@ private extension OrdersRootViewController {
     func configureFiltersBar() {
         // Display the filtered orders bar
         // if the feature flag is enabled
-        let isOrderListFiltersEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderListFilters)
+        let isOrderListFiltersEnabled = featureFlagService.isFeatureFlagEnabled(.orderListFilters)
         if isOrderListFiltersEnabled {
             stackView.addArrangedSubview(filtersBar)
         }

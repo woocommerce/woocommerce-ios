@@ -460,9 +460,3 @@ private extension AuthenticationManager {
         return wooAuthError != .unknown
     }
 }
-
-private extension AuthenticationManager {
-    enum Constants {
-        static let placeholderSiteAddress = "https://wordpress.com"
-    }
-}

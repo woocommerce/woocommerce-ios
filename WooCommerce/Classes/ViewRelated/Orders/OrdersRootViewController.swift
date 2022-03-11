@@ -63,6 +63,7 @@ final class OrdersRootViewController: UIViewController {
         super.init(nibName: Self.nibName, bundle: nil)
 
         configureTitle()
+        configureTabBarItem()
     }
 
     required init?(coder: NSCoder) {
@@ -109,6 +110,17 @@ final class OrdersRootViewController: UIViewController {
         present(navigationController, animated: true, completion: nil)
     }
 
+    /// Presents the Details for the Notification with the specified Identifier.
+    ///
+    func presentDetails(for note: Note) {
+        guard let orderID = note.meta.identifier(forKey: .order), let siteID = note.meta.identifier(forKey: .site) else {
+            DDLogError("## Notification with [\(note.noteID)] lacks its OrderID!")
+            return
+        }
+        let loaderViewController = OrderLoaderViewController(note: note, orderID: Int64(orderID), siteID: Int64(siteID))
+        navigationController?.pushViewController(loaderViewController, animated: true)
+    }
+
     /// Present `FilterListViewController`
     ///
     private func filterButtonTapped() {
@@ -127,6 +139,8 @@ final class OrdersRootViewController: UIViewController {
         present(filterOrderListViewController, animated: true, completion: nil)
     }
 
+    /// This is to update the order detail in split view
+    ///
     private func handleSwitchingDetails(viewModel: OrderDetailsViewModel) {
         let orderDetailsViewController = OrderDetailsViewController(viewModel: viewModel)
         let orderDetailsNavigationController = WooNavigationController(rootViewController: orderDetailsViewController)
@@ -145,6 +159,14 @@ private extension OrdersRootViewController {
 
     func configureTitle() {
         title = Localization.defaultOrderListTitle
+    }
+
+    /// Set up properties for `self` as a root tab bar controller.
+    ///
+    func configureTabBarItem() {
+        tabBarItem.title = title
+        tabBarItem.image = .pagesImage
+        tabBarItem.accessibilityIdentifier = "tab-bar-orders-item"
     }
 
     /// Sets navigation buttons.

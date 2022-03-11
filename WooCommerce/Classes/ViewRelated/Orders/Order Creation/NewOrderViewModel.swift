@@ -572,7 +572,9 @@ private extension NewOrderViewModel {
         let hasCustomerDetails = orderSynchronizer.order.billingAddress != nil || orderSynchronizer.order.shippingAddress != nil
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreateButtonTapped(status: orderSynchronizer.order.status,
                                                                                 productCount: orderSynchronizer.order.items.count,
-                                                                                hasCustomerDetails: hasCustomerDetails))
+                                                                                hasCustomerDetails: hasCustomerDetails,
+                                                                                hasFees: orderSynchronizer.order.fees.isNotEmpty,
+                                                                                hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty))
     }
 
     /// Tracks an order creation success

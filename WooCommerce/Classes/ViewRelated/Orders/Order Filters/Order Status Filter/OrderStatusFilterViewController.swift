@@ -190,7 +190,7 @@ private extension OrderStatusFilterViewController {
             case .custom(let status):
                 return status.name ?? status.slug
             default:
-                return self.status?.description
+                return status?.description
             }
         }
 

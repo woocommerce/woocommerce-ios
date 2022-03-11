@@ -53,7 +53,7 @@ struct OrderPaymentSection: View {
 
             TitleAndValueRow(title: Localization.orderTotal, value: .content(viewModel.orderTotal), bold: true, selectionStyle: .none) {}
 
-            if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreationRemoteSynchronizer) {
+            if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreation) {
                 Text(Localization.taxesInfo)
                     .footnoteStyle()
                     .padding([.horizontal, .bottom])

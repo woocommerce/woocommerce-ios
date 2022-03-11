@@ -3,6 +3,8 @@
 8.8
 -----
 - [*] Updates the app's About screen to be consistent with Automattic's other mobile apps. [https://github.com/woocommerce/woocommerce-ios/pull/6421]
+- [*] Products displayed in Order Detail now follow the same order of the web. [https://github.com/woocommerce/woocommerce-ios/pull/6401]
+- [*] Simple Payments now shows a detailed tax break up before taking the payment. [https://github.com/woocommerce/woocommerce-ios/pull/6412]
 
 8.7
 -----
@@ -18,6 +20,7 @@
 - [*] Reviews: Fixed missing product information on first load [https://github.com/woocommerce/woocommerce-ios/pull/6367]
 - [internal] Removed the feature flag for My store tab UI updates. Please smoke test the store stats and top performers in the "My store" tab to make sure everything works as before. [https://github.com/woocommerce/woocommerce-ios/pull/6334]
 - [*] In-Person Payments: Add support for accepting payments on bookable products [https://github.com/woocommerce/woocommerce-ios/pull/6364]
+- [*] In-Person Payments: Fixed issue where payment could be stuck prompting to remove the card if the payment was declined and retried before removing the card.
 
 8.6
 -----

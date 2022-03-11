@@ -90,7 +90,7 @@ struct OrdersUpsertUseCase {
         }
 
         // Now, remove any objects that exist in storageOrder.items but not in readOnlyOrder.items
-        storageOrder.items?.forEach { storageItem in
+        storageOrder.orderItemsArray.forEach { storageItem in
             if readOnlyOrder.items.first(where: { $0.itemID == storageItem.itemID } ) == nil {
                 storageOrder.removeFromItems(storageItem)
                 storage.deleteObject(storageItem)

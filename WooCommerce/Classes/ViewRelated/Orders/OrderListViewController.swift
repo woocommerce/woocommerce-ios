@@ -174,16 +174,11 @@ final class OrderListViewController: UIViewController {
         tableView.reloadData()
 
         restartPlaceholderAnimation()
-
-        // restore highlight for selected row after table reload
-        highlightSelectedRowIfNeeded()
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.updateHeaderHeight()
-        // restore or remove highlight for selected row
-        highlightSelectedRowIfNeeded()
     }
 
     /// Returns a function that creates cells for `dataSource`.
@@ -230,8 +225,6 @@ private extension OrderListViewController {
         /// Update the `dataSource` whenever there is a new snapshot.
         viewModel.snapshot.sink { [weak self] snapshot in
             self?.dataSource.apply(snapshot)
-            // restore highlight for selected row after table reload
-            self?.highlightSelectedRowIfNeeded()
         }.store(in: &cancellables)
 
         /// Update the top banner when needed
@@ -606,6 +599,9 @@ extension OrderListViewController: UITableViewDelegate {
         }
 
         syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: itemIndex)
+        if indexPath == selectedIndexPath {
+            highlightSelectedRowIfNeeded()
+        }
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

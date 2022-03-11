@@ -42,39 +42,11 @@ extension NewOrderHostingController: UIAdaptivePresentationControllerDelegate {
         guard viewModel.hasChanges else {
             return true
         }
-        let actionSheet = UIAlertController(title: Localization.dismissAlertTitle, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = .text
-        actionSheet.addAction(UIAlertAction(title: Localization.discardButton, style: .destructive, handler: { [weak self] _ in
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
             self?.dismiss(animated: true, completion: nil)
-        }))
-        actionSheet.addAction(UIAlertAction(title: Localization.keepEditingButton, style: .cancel))
-
-        if let popoverController = actionSheet.popoverPresentationController {
-            let sourceView: UIView = navigationController?.navigationBar ?? view
-            popoverController.sourceView = sourceView
-            popoverController.sourceRect = sourceView.bounds
-        }
-
-        present(actionSheet, animated: true, completion: nil)
+        })
 
         return false
-    }
-}
-
-private extension NewOrderHostingController {
-    enum Localization {
-        static let dismissAlertTitle = NSLocalizedString(
-            "You have unsaved changes",
-            comment: "Message on the alert presented when user swipes to dismiss the Simple Payments flow"
-        )
-        static let discardButton = NSLocalizedString(
-            "Discard",
-            comment: "Discard button on the alert presented when user swipes to dismiss the Simple Payments flow"
-        )
-        static let keepEditingButton = NSLocalizedString(
-            "Keep Editing",
-            comment: "Keep Editing button on the alert presented when user swipes to dismiss the Simple Payments flow"
-        )
     }
 }
 

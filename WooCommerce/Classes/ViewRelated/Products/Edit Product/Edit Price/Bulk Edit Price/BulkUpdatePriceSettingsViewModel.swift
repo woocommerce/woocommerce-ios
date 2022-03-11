@@ -117,7 +117,7 @@ final class BulkUpdatePriceSettingsViewModel {
     /// Update the button state to enable/disable based on price value
     ///
     private func updateButtonStateBasedOnCurrentPrice() {
-        // While the keyboard is in loading state do not change the state
+        // While the action button is a loading state do not change the state
         guard saveButtonState != .loading else {
             return
         }

@@ -106,6 +106,7 @@
 		03FBDA2A263296C400ACE257 /* CouponStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FBDA29263296C400ACE257 /* CouponStoreTests.swift */; };
 		03FBDA2E2632A9B400ACE257 /* MockCouponsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FBDA2D2632A9B400ACE257 /* MockCouponsRemote.swift */; };
 		03FBDA3E2632E29600ACE257 /* Coupon+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FBDA3D2632E29600ACE257 /* Coupon+ReadOnlyConvertible.swift */; };
+		073AF84427DB10270074EDF0 /* CardPresentPaymentGatewayExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 073AF84327DB10270074EDF0 /* CardPresentPaymentGatewayExtension.swift */; };
 		077F39DE26A5A1CB00ABEADC /* SystemStatusAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39DD26A5A1CB00ABEADC /* SystemStatusAction.swift */; };
 		077F39E026A5A6F500ABEADC /* SystemStatusStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39DF26A5A6F500ABEADC /* SystemStatusStore.swift */; };
 		077F39E226A5AFCA00ABEADC /* SystemPlugin+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39E126A5AFCA00ABEADC /* SystemPlugin+ReadOnlyConvertible.swift */; };
@@ -504,6 +505,7 @@
 		03FBDA29263296C400ACE257 /* CouponStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponStoreTests.swift; sourceTree = "<group>"; };
 		03FBDA2D2632A9B400ACE257 /* MockCouponsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCouponsRemote.swift; sourceTree = "<group>"; };
 		03FBDA3D2632E29600ACE257 /* Coupon+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coupon+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
+		073AF84327DB10270074EDF0 /* CardPresentPaymentGatewayExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentGatewayExtension.swift; sourceTree = "<group>"; };
 		077F39DD26A5A1CB00ABEADC /* SystemStatusAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusAction.swift; sourceTree = "<group>"; };
 		077F39DF26A5A6F500ABEADC /* SystemStatusStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusStore.swift; sourceTree = "<group>"; };
 		077F39E126A5AFCA00ABEADC /* SystemPlugin+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemPlugin+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
@@ -814,6 +816,7 @@
 			isa = PBXGroup;
 			children = (
 				0212AC5D242C67FA00C51F6C /* ProductsSortOrder.swift */,
+				073AF84327DB10270074EDF0 /* CardPresentPaymentGatewayExtension.swift */,
 			);
 			path = Enums;
 			sourceTree = "<group>";
@@ -1934,6 +1937,7 @@
 				D831E2E6230E7149000037D0 /* ProductReview+ReadOnlyConvertible.swift in Sources */,
 				CE4FD4502350F27C00A16B31 /* OrderItemTax+ReadOnlyConvertible.swift in Sources */,
 				02FF055123D983F30058E6E7 /* MediaAssetExporter.swift in Sources */,
+				073AF84427DB10270074EDF0 /* CardPresentPaymentGatewayExtension.swift in Sources */,
 				45AB8B1724AA4B3D00B5B36E /* ProductTagStore.swift in Sources */,
 				02137903270ABDDE006430F7 /* MockAnnouncementsActionHandler.swift in Sources */,
 				247CE8342582F20100F9D9D1 /* MockAppSettingsActionHandler.swift in Sources */,

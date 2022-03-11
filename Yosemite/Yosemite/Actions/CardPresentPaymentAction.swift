@@ -8,10 +8,9 @@ public enum CardPresentPaymentAction: Action {
     ///
     case use(paymentGatewayAccount: PaymentGatewayAccount)
 
-    /// Retrieves url of the documentation for the provided payment gateway.
-    /// If no payment gateway is provided, returns url of the active payment gateway if not empty,
-    /// otherwise url of wcpay documentation.
-    case loadLearnMoreURL(preferredPaymentGateway: CardPresentPaymentsPlugins?, onCompletion: (URL) -> Void)
+    /// Retrieves the current configuration for IPP.
+    ///
+    case loadActivePaymentGatewayExtension(onCompletion: (CardPresentPaymentGatewayExtension) -> Void)
 
     /// Retrieves and stores payment gateway account(s) for the provided `siteID`
     /// We support payment gateway accounts for both the WooCommerce Payments extension AND

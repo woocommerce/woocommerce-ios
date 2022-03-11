@@ -125,6 +125,7 @@ private extension OrderTableViewCell {
         let backgroundView: UIView = {
             let view = UIView()
             view.backgroundColor = .listBackground
+            let separatorHeight: CGFloat = 0.5
 
             let topSeparatorView = UIView()
             topSeparatorView.backgroundColor = .border
@@ -134,7 +135,7 @@ private extension OrderTableViewCell {
                 view.topAnchor.constraint(equalTo: topSeparatorView.topAnchor),
                 view.leadingAnchor.constraint(equalTo: topSeparatorView.leadingAnchor),
                 view.trailingAnchor.constraint(equalTo: topSeparatorView.trailingAnchor),
-                topSeparatorView.heightAnchor.constraint(equalToConstant: 1.0)
+                topSeparatorView.heightAnchor.constraint(equalToConstant: separatorHeight)
             ])
 
             let bottomSeparatorView = UIView()
@@ -142,10 +143,10 @@ private extension OrderTableViewCell {
             bottomSeparatorView.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(bottomSeparatorView)
             NSLayoutConstraint.activate([
-                view.topAnchor.constraint(equalTo: bottomSeparatorView.topAnchor),
+                view.bottomAnchor.constraint(equalTo: bottomSeparatorView.bottomAnchor, constant: separatorHeight),
                 view.leadingAnchor.constraint(equalTo: bottomSeparatorView.leadingAnchor),
                 view.trailingAnchor.constraint(equalTo: bottomSeparatorView.trailingAnchor),
-                bottomSeparatorView.heightAnchor.constraint(equalToConstant: 1.0)
+                bottomSeparatorView.heightAnchor.constraint(equalToConstant: separatorHeight)
             ])
             return view
         }()

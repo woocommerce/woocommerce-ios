@@ -105,6 +105,18 @@ final class BulkUpdateViewModel {
         onCancelButtonTapped()
     }
 
+    /// Creates a view model for the bulk price setting.
+    ///
+    func viewModelForBulkUpdatePriceOfType(_ editingPriceType: BulkUpdatePriceSettingsViewModel.EditingPriceType,
+                                           priceUpdateDidFinish: @escaping () -> Void) -> BulkUpdatePriceSettingsViewModel {
+        return BulkUpdatePriceSettingsViewModel(siteID: siteID,
+                                                productID: productID,
+                                                bulkUpdateOptionsModel: bulkUpdateFormModel,
+                                                editingPriceType: editingPriceType,
+                                                priceUpdateDidFinish: priceUpdateDidFinish)
+
+    }
+
     /// Provides the view model with all user facing data of the option for updating the regular price
     ///
     func viewModelForDisplayingRegularPrice() -> ValueOneTableViewCell.ViewModel {

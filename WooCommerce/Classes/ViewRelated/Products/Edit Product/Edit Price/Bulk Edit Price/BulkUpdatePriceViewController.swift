@@ -40,7 +40,7 @@ final class BulkUpdatePriceViewController: UIViewController {
         keyboardFrameObserver.startObservingKeyboardFrame(sendInitialEvent: true)
     }
 
-    /// Configures the  title and appearance of the save button
+    /// Configures the title and appearance of the save button
     ///
     func configureSaveButton() {
         saveButton.applyPrimaryButtonStyle()

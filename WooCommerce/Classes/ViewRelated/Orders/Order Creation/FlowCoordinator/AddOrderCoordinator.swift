@@ -80,8 +80,13 @@ private extension AddOrderCoordinator {
         viewModel.onOrderCreated = onOrderCreated
 
         let viewController = NewOrderHostingController(viewModel: viewModel)
-        let newOrderNC = WooNavigationController(rootViewController: viewController)
-        navigationController.present(newOrderNC, animated: true)
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            let newOrderNC = WooNavigationController(rootViewController: viewController)
+            navigationController.present(newOrderNC, animated: true)
+        } else {
+            viewController.hidesBottomBarWhenPushed = true
+            navigationController.pushViewController(viewController, animated: true)
+        }
 
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderAddNew())
     }

@@ -1,5 +1,4 @@
 import UIKit
-import Lottie
 import WordPressShared
 import WordPressUI
 import WordPressKit

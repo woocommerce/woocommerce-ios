@@ -2,7 +2,11 @@ import UIKit
 import WordPressShared
 
 class LoginProloguePageViewController: UIPageViewController {
-    @objc var pages: [UIViewController] = []
+    // This property is a legacy of the previous UX iteration. It ought to be removed, but that's
+    // out of scope at the time of writing. It's now `private` to prevent using it within the
+    // library in the meantime
+    @objc private var pages: [UIViewController] = []
+
     fileprivate var pageControl: UIPageControl?
     fileprivate var bgAnimation: UIViewPropertyAnimator?
     fileprivate struct Constants {
@@ -15,21 +19,6 @@ class LoginProloguePageViewController: UIPageViewController {
         dataSource = self
         delegate = self
 
-        if WordPressAuthenticator.shared.configuration.enableUnifiedCarousel {
-            pages.append(LoginProloguePromoViewController(as: .intro))
-            pages.append(LoginProloguePromoViewController(as: .editor))
-            pages.append(LoginProloguePromoViewController(as: .comments))
-            pages.append(LoginProloguePromoViewController(as: .analytics))
-            pages.append(LoginProloguePromoViewController(as: .discover))
-        } else {
-            pages.append(LoginProloguePromoViewController(as: .post))
-            pages.append(LoginProloguePromoViewController(as: .stats))
-            pages.append(LoginProloguePromoViewController(as: .reader))
-            pages.append(LoginProloguePromoViewController(as: .notifications))
-            pages.append(LoginProloguePromoViewController(as: .jetpack))
-        }
-
-        setViewControllers([pages[0]], direction: .forward, animated: false)
         view.backgroundColor = WordPressAuthenticator.shared.style.prologueBackgroundColor
 
         addPageControl()

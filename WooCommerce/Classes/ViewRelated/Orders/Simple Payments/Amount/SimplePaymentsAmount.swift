@@ -95,23 +95,6 @@ extension SimplePaymentsAmountHostingController: UIAdaptivePresentationControlle
     }
 }
 
-private extension SimplePaymentsAmountHostingController {
-    enum Localization {
-        static let dismissTitle = NSLocalizedString(
-            "You have unsaved changes",
-            comment: "Message on the action sheet presented when user swipes to dismiss the Simple Payments flow"
-        )
-        static let discardButton = NSLocalizedString(
-            "Discard",
-            comment: "Discard button on the action sheet presented when user swipes to dismiss the Simple Payments flow"
-        )
-        static let keepEditingButton = NSLocalizedString(
-            "Keep Editing",
-            comment: "Keep Editing button on the action sheet presented when user swipes to dismiss the Simple Payments flow"
-        )
-    }
-}
-
 /// View that receives an arbitrary amount for creating a simple payments order.
 ///
 struct SimplePaymentsAmount: View {

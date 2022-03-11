@@ -9,13 +9,16 @@ final class NewOrderHostingController: UIHostingController<NewOrder> {
     ///
     private var subscriptions: Set<AnyCancellable> = []
     private let viewModel: NewOrderViewModel
+    private lazy var isOrdersSplitViewEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
 
     init(viewModel: NewOrderViewModel) {
         self.viewModel = viewModel
         let view = NewOrder(viewModel: viewModel)
         super.init(rootView: view)
-        rootView.dismissAction = { [weak self] in
-            self?.dismiss(animated: true, completion: nil)
+        if isOrdersSplitViewEnabled {
+            rootView.dismissAction = { [weak self] in
+                self?.dismiss(animated: true, completion: nil)
+            }
         }
     }
 
@@ -39,7 +42,7 @@ final class NewOrderHostingController: UIHostingController<NewOrder> {
 ///
 extension NewOrderHostingController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
-        guard viewModel.hasChanges else {
+        guard isOrdersSplitViewEnabled, viewModel.hasChanges else {
             return true
         }
         UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in

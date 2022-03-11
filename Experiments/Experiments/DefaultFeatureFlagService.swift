@@ -13,8 +13,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .orderCreation:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .orderCreationRemoteSynchronizer:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .hubMenu:
             return true
         case .systemStatusReport:
@@ -30,6 +28,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .inbox:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .bulkEditProductVariations:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .splitViewInOrdersTab:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

@@ -272,6 +272,12 @@ final class NewOrderViewModel: ObservableObject {
         orderSynchronizer.setStatus.send(newStatus)
         analytics.track(event: WooAnalyticsEvent.Orders.orderStatusChange(flow: .creation, orderID: nil, from: oldStatus, to: newStatus))
     }
+
+    /// Deletes the order if it has been synced remotely, and removes it from local storage.
+    ///
+    func discardOrder() {
+        // TODO: Implementation
+    }
 }
 
 // MARK: - Types

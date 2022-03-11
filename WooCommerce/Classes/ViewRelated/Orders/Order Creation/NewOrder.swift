@@ -53,6 +53,7 @@ extension NewOrderHostingController {
 
     private func presentDiscardChangesActionSheet() {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+            self?.viewModel.discardOrder()
             self?.navigationController?.popViewController(animated: true)
         })
     }
@@ -66,6 +67,7 @@ extension NewOrderHostingController: UIAdaptivePresentationControllerDelegate {
             return true
         }
         UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+            self?.viewModel.discardOrder()
             self?.dismiss(animated: true, completion: nil)
         })
 

@@ -451,7 +451,11 @@ private extension MainTabBarController {
     }
 
     func createOrdersViewController(siteID: Int64) -> UIViewController {
-        OrdersSplitViewWrapperController(siteID: siteID)
+        if Self.isOrdersSplitViewFeatureFlagOn {
+            return OrdersSplitViewWrapperController(siteID: siteID)
+        } else {
+            return OrdersRootViewController(siteID: siteID)
+        }
     }
 
     func createProductsViewController(siteID: Int64) -> UIViewController {

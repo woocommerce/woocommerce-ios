@@ -6,7 +6,23 @@ final class CardReaderSettingsSearchingViewModel: CardReaderSettingsPresentedVie
     private(set) var shouldShow: CardReaderSettingsTriState = .isUnknown
     var didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?
     var didUpdate: (() -> Void)?
-    var learnMoreURL: URL? = nil
+    var learnMoreURL: URL {
+        get async {
+                return await withCheckedContinuation({
+                    (continuation: CheckedContinuation<URL, Never>) in
+                    let loadLearnMoreUrlAction = CardPresentPaymentAction
+                        .loadActivePaymentGatewayExtension() { result in
+                                switch result {
+                                case .wcpay:
+                                    continuation.resume(returning: WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL())
+                                case .stripe:
+                                    continuation.resume(returning: WooConstants.URLs.inPersonPaymentsLearnMoreStripe.asURL())
+                                }
+                        }
+                    stores.dispatch(loadLearnMoreUrlAction)
+                })
+        }
+    }
     let stores: StoresManager
 
     private(set) var noConnectedReader: CardReaderSettingsTriState = .isUnknown {
@@ -41,7 +57,6 @@ final class CardReaderSettingsSearchingViewModel: CardReaderSettingsPresentedVie
 
         beginKnownReaderObservation()
         beginConnectedReaderObservation()
-        updateLearnMoreURL()
     }
 
     deinit {
@@ -96,13 +111,5 @@ final class CardReaderSettingsSearchingViewModel: CardReaderSettingsPresentedVie
         if didChange {
             didChangeShouldShow?(shouldShow)
         }
-    }
-
-    private func updateLearnMoreURL() {
-        let loadLearnMoreUrlAction = CardPresentPaymentAction
-            .loadLearnMoreURL(preferredPaymentGateway: nil) { [weak self] result in
-                self?.learnMoreURL = result
-            }
-        stores.dispatch(loadLearnMoreUrlAction)
     }
 }

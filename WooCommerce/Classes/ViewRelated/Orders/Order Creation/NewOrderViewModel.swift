@@ -130,7 +130,9 @@ final class NewOrderViewModel: ObservableObject {
     func saveShippingLine(_ shippingLine: ShippingLine?) {
         orderSynchronizer.setShipping.send(shippingLine)
 
-        analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodAdd(flow: .creation))
+        if shippingLine != nil {
+            analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodAdd(flow: .creation))
+        }
     }
 
     /// Saves a fee.
@@ -139,7 +141,9 @@ final class NewOrderViewModel: ObservableObject {
     func saveFeeLine(_ feeLine: OrderFeeLine?) {
         orderSynchronizer.setFee.send(feeLine)
 
-        analytics.track(event: WooAnalyticsEvent.Orders.orderFeeAdd(flow: .creation))
+        if feeLine != nil {
+            analytics.track(event: WooAnalyticsEvent.Orders.orderFeeAdd(flow: .creation))
+        }
     }
 
     // MARK: -

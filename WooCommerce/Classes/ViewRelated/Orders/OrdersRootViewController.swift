@@ -263,6 +263,7 @@ private extension OrdersRootViewController {
         for storedOrderFilter in storedOrderFilters {
             if !orderStatuses.map({$0.status}).contains(storedOrderFilter) {
                 clearFilters()
+                break
             }
         }
     }

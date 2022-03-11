@@ -57,13 +57,11 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v8.6-whats-new"
+msgctxt "v8.7-whats-new"
 msgid ""
-"We’ve made updates to our experimental order creation feature. Variable products now show the list of their attributes.\n"
+"You’ll notice the credit card details for an in-person payment are now shown when making a refund. This will let you tell your customers exactly where the funds will go!\n"
 "\n"
-"We also added another experimental feature – Coupon management! Head to the More tab, settings, and Experimental settings to enable it. We welcome your feedback on the app, especially the new features we’re working on and giving early access to.\n"
-"\n"
-"A special thank you goes to GitHub user chrisKns for helping contribute improvements to this release. ❤\n"
+"A few new features aren’t quite ready for the mainstream, but you can check them out early! Create orders, view coupons, and more! Head to the Menu tab, settings, and Experimental settings to enable it. We welcome your feedback on the app, especially the new features we’re working on and giving early access to.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

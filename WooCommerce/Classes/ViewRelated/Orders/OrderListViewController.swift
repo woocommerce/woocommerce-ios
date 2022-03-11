@@ -116,6 +116,8 @@ final class OrderListViewController: UIViewController {
     ///
     private var selectedIndexPath: IndexPath?
 
+    private lazy var isSplitViewInOrdersTabEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
+
     // MARK: - View Lifecycle
 
     /// Designated initializer.
@@ -572,7 +574,7 @@ private extension OrderListViewController {
 extension OrderListViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if splitViewController?.isCollapsed == true {
+        if splitViewController?.isCollapsed == true || !isSplitViewInOrdersTabEnabled {
             tableView.deselectRow(at: indexPath, animated: true)
         }
 
@@ -590,7 +592,9 @@ extension OrderListViewController: UITableViewDelegate {
         ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": order.orderID,
                                                                     "status": order.status.rawValue])
 
-        switchDetailsHandler(orderDetailsViewModel)
+        if isSplitViewInOrdersTabEnabled {
+            switchDetailsHandler(orderDetailsViewModel)
+        }
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -599,7 +603,7 @@ extension OrderListViewController: UITableViewDelegate {
         }
 
         syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: itemIndex)
-        if indexPath == selectedIndexPath {
+        if isSplitViewInOrdersTabEnabled, indexPath == selectedIndexPath {
             highlightSelectedRowIfNeeded()
         }
     }

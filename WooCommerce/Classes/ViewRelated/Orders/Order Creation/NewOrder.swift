@@ -29,11 +29,13 @@ final class NewOrderHostingController: UIHostingController<NewOrder> {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Set presentation delegate to track the user dismiss flow event
-        if let navigationController = navigationController {
-            navigationController.presentationController?.delegate = self
-        } else {
-            presentationController?.delegate = self
+        if isOrdersSplitViewEnabled {
+            // Set presentation delegate to track the user dismiss flow event
+            if let navigationController = navigationController {
+                navigationController.presentationController?.delegate = self
+            } else {
+                presentationController?.delegate = self
+            }
         }
     }
 }
@@ -42,7 +44,7 @@ final class NewOrderHostingController: UIHostingController<NewOrder> {
 ///
 extension NewOrderHostingController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
-        guard isOrdersSplitViewEnabled, viewModel.hasChanges else {
+        guard viewModel.hasChanges else {
             return true
         }
         UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in

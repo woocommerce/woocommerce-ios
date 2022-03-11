@@ -91,10 +91,6 @@ final class OrdersRootViewController: UIViewController {
         ServiceLocator.pushNotesManager.resetBadgeCount(type: .storeOrder)
     }
 
-    override var shouldShowOfflineBanner: Bool {
-        return true
-    }
-
     /// Shows `SearchViewController`.
     ///
     @objc private func displaySearchOrders() {

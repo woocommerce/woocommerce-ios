@@ -15,11 +15,7 @@ final class NewOrderViewModel: ObservableObject {
     /// Indicates whether user has made any changes
     ///
     var hasChanges: Bool {
-        productRows.isNotEmpty ||
-        selectedProductViewModel != nil ||
-        currentOrderStatus != .pending ||
-        paymentDataViewModel.hasChangesMade ||
-        customerDataViewModel.isDataAvailable
+        orderSynchronizer.order != OrderFactory.emptyNewOrder
     }
 
     /// Active navigation bar trailing item.

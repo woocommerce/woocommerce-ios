@@ -47,7 +47,7 @@ final class InPersonPaymentsViewModel: ObservableObject {
     }
 
     private func updateLearnMoreURL(state: CardPresentPaymentOnboardingState) {
-        let preferredPlugin: CardPresentPaymentsPlugins?
+        let preferredPlugin: CardPresentPaymentsPlugins
         switch state {
         case .pluginUnsupportedVersion(let plugin),
                 .pluginNotActivated(let plugin),
@@ -60,14 +60,17 @@ final class InPersonPaymentsViewModel: ObservableObject {
                 .stripeAccountRejected(let plugin):
             preferredPlugin = plugin
         default:
-            preferredPlugin = nil
+            preferredPlugin = .wcPay
         }
 
-        let loadLearnMoreUrlAction = CardPresentPaymentAction
-            .loadLearnMoreURL(preferredPaymentGateway: preferredPlugin) { [weak self] result in
-                self?.learnMoreURL = result
+        learnMoreURL = { () -> URL in
+            switch preferredPlugin {
+            case .wcPay:
+                return WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL()
+            case .stripe:
+                return WooConstants.URLs.inPersonPaymentsLearnMoreStripe.asURL()
             }
-        stores.dispatch(loadLearnMoreUrlAction)
+        }()
     }
 }
 

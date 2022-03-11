@@ -1,5 +1,5 @@
 import Foundation
-import Yosemite
+import Combine
 
 final class OrderNotesViewModel: EditCustomerNoteViewModelProtocol {
 
@@ -21,28 +21,36 @@ final class OrderNotesViewModel: EditCustomerNoteViewModelProtocol {
         $presentNotice
     }
 
-    /// Order to be edited.
-    ///
-    private let order: Order
-
-    /// Action dispatcher
-    ///
-    private let stores: StoresManager = ServiceLocator.stores
-
     /// Analytics center.
     ///
     private let analytics: Analytics = ServiceLocator.analytics
 
-    init(order: Order) {
-        self.order = order
-        self.newNote = order.customerNote ?? ""
+    /// Stores the original note content.
+    ///
+    @Published private var originalNote: String
+
+    init(originalNote: String = "") {
+        self.originalNote = originalNote
+        self.newNote = originalNote
+        bindNoteChanges()
     }
 
     func updateNote(onFinish: @escaping (Bool) -> Void) {
+        originalNote = newNote
         onFinish(true)
     }
 
     func userDidCancelFlow() {
-        DDLogDebug("Cancel clicked")
+        newNote = originalNote
+    }
+
+    /// Assigns the correct navigation trailing item as the new note content changes.
+    ///
+    private func bindNoteChanges() {
+        Publishers.CombineLatest($newNote, $originalNote)
+            .map { editedContent, originalNote -> EditCustomerNoteNavigationItem in
+                .done(enabled: editedContent != originalNote)
+            }
+            .assign(to: &$navigationTrailingItem)
     }
 }

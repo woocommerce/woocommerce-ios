@@ -7,16 +7,18 @@ struct OrderNotesSection: View {
     @State private var showEditNotesView: Bool = false
 
     var body: some View {
-        OrderNotesSectionContent(viewModel: viewModel.orderNotesDataViewModel, showEditNotesView: $showEditNotesView)
+        OrderNotesSectionContent(notes: viewModel.orderNotes, showEditNotesView: $showEditNotesView)
             .sheet(
                 isPresented: $showEditNotesView,
                 onDismiss: {
                     viewModel.noteViewModel.userDidCancelFlow()
+                    viewModel.onOrderNoteUpdate()
                 },
                 content: {
                     EditCustomerNote(
                         dismiss: {
                             showEditNotesView.toggle()
+                            viewModel.onOrderNoteUpdate()
                         },
                         viewModel: viewModel.noteViewModel
                     )
@@ -27,7 +29,7 @@ struct OrderNotesSection: View {
 
 private struct OrderNotesSectionContent: View {
     /// View model to drive the view content
-    var viewModel: NewOrderViewModel.OrderNotesDataViewModel
+    var notes: String
 
     @Binding var showEditNotesView: Bool
 
@@ -39,12 +41,12 @@ private struct OrderNotesSectionContent: View {
                 Text(Localization.notes)
                     .headlineStyle()
                 Spacer()
-                if viewModel.notes.isNotEmpty {
+                if notes.isNotEmpty {
                     createEditNotesButton
                 }
             }.padding([.leading, .top, .trailing])
 
-            if viewModel.notes.isEmpty {
+            if notes.isEmpty {
                 createOrderNotesView
             } else {
                 createNoteDataView
@@ -78,7 +80,7 @@ private struct OrderNotesSectionContent: View {
     }
 
     private var createNoteDataView: some View {
-        Text(viewModel.notes)
+        Text(notes)
             .padding([.leading, .bottom, .trailing])
     }
 }
@@ -107,12 +109,9 @@ private extension OrderNotesSectionContent {
 
 struct CustomerNotesSection_Previews: PreviewProvider {
     static var previews: some View {
-        let emptyViewModel = NewOrderViewModel.OrderNotesDataViewModel(notes: "")
-        let notesViewModel = NewOrderViewModel.OrderNotesDataViewModel(notes: "Some notes")
-
         ScrollView {
-            OrderNotesSectionContent(viewModel: emptyViewModel, showEditNotesView: .constant(false))
-            OrderNotesSectionContent(viewModel: notesViewModel, showEditNotesView: .constant(false))
+            OrderNotesSectionContent(notes: "", showEditNotesView: .constant(false))
+            OrderNotesSectionContent(notes: "Some notes", showEditNotesView: .constant(false))
         }
     }
 }

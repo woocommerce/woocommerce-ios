@@ -233,9 +233,13 @@ final class NewOrderViewModel: ObservableObject {
 
     // MARK: Order notes data properties
 
-    @Published private(set) var orderNotesDataViewModel: OrderNotesDataViewModel = .init(notes: "")
+    lazy private(set) var orderNotes = { orderSynchronizer.order.customerNote ?? "" }()
 
-    lazy private(set) var noteViewModel = { OrderNotesViewModel(order: orderSynchronizer.order) }()
+    lazy private(set) var noteViewModel = { OrderNotesViewModel(originalNote: orderSynchronizer.order.customerNote ?? "") }()
+
+    func onOrderNoteUpdate() {
+        orderSynchronizer.setNotes.send(noteViewModel.newNote)
+    }
 
     // MARK: - API Requests
     /// Creates an order remotely using the provided order details.
@@ -401,14 +405,6 @@ extension NewOrderViewModel {
                                                             baseAmountForPercentage: feesBaseAmountForPercentage,
                                                             feesTotal: self.feesTotal,
                                                             didSelectSave: saveFeeLineClosure)
-        }
-    }
-
-    struct OrderNotesDataViewModel {
-        let notes: String
-
-        init(notes: String = "") {
-            self.notes = notes
         }
     }
 }

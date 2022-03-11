@@ -123,9 +123,21 @@ final class AggregateDataHelper {
             )
         }
 
-        let filtered = unsortedResult.filter { $0.quantity > 0 }
+        var filtered = unsortedResult.filter { $0.quantity > 0 }
 
-        let sorted = filtered.sorted(by: { $0.hashValue > $1.hashValue })
+        // Sort elements following the previous order of the items.
+        var sorted: [AggregateOrderItem] = []
+        for item in allItems {
+            if let find = filtered.first(where: {
+                $0.hashValue == item.hashValue
+            }) {
+                sorted.append(find)
+            }
+
+            filtered.removeAll {
+                $0.hashValue == item.hashValue
+            }
+        }
 
         return sorted
     }

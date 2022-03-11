@@ -26,10 +26,6 @@ public enum FeatureFlag: Int {
     ///
     case orderCreation
 
-    /// Allows new orders to be created and synced as drafts
-    ///
-    case orderCreationRemoteSynchronizer
-
     /// Display the new tab "Menu" in the tab bar.
     ///
     case hubMenu
@@ -61,4 +57,8 @@ public enum FeatureFlag: Int {
     /// Displays the bulk update option in product variations
     ///
     case bulkEditProductVariations
+
+    /// Displays the Orders tab in a split view
+    ///
+    case splitViewInOrdersTab
 }

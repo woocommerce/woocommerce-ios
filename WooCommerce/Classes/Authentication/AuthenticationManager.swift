@@ -263,6 +263,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     ///
     func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, onDismiss: @escaping () -> Void) {
         let matcher = ULAccountMatcher()
+        matcher.refreshStoredSites()
 
         guard let siteURL = credentials.wpcom?.siteURL, matcher.match(originalURL: siteURL) else {
             DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: credentials.wpcom?.siteURL))")
@@ -274,7 +275,12 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
         storePickerCoordinator?.onDismiss = onDismiss
-        storePickerCoordinator?.start()
+
+        if let site = matcher.matchedSite(originalURL: siteURL) {
+            storePickerCoordinator?.didSelectStore(with: site.siteID, onCompletion: onDismiss)
+        } else {
+            storePickerCoordinator?.start()
+        }
     }
 
     /// Presents the Signup Epilogue, in the specified NavigationController.
@@ -452,5 +458,11 @@ private extension AuthenticationManager {
     func isSupportedError(_ error: Error) -> Bool {
         let wooAuthError = AuthenticationError.make(with: error)
         return wooAuthError != .unknown
+    }
+}
+
+private extension AuthenticationManager {
+    enum Constants {
+        static let placeholderSiteAddress = "https://wordpress.com"
     }
 }

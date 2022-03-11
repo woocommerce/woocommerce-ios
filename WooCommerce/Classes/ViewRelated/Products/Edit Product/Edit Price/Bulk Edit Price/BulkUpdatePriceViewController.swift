@@ -44,6 +44,9 @@ final class BulkUpdatePriceViewController: UIViewController {
     ///
     func configureSaveButton() {
         saveButton.applyPrimaryButtonStyle()
+        // The transparency of the disable state makes content of the tableview appear to overlap with the button
+        // So we give it a solid background color to match the tableView
+        saveButton.backgroundColor = .listBackground
         saveButton.setTitle(Localization.saveButtonTitle, for: .normal)
         saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
     }
@@ -155,6 +158,8 @@ extension BulkUpdatePriceViewController {
         let bottomInset = keyboardHeight > 0 ? keyboardHeight - view.safeAreaInsets.bottom : keyboardHeight
 
         saveButtonToBottom?.constant = bottomInset + Constants.saveButtonToBottomInset
+        tableView.contentInset.bottom = bottomInset
+        tableView.verticalScrollIndicatorInsets.bottom = bottomInset
     }
 }
 

@@ -575,6 +575,9 @@ extension OrderListViewController: UITableViewDelegate {
 
         if isSplitViewInOrdersTabEnabled {
             switchDetailsHandler(orderDetailsViewModel)
+        } else {
+            let viewController = OrderDetailsViewController(viewModel: orderDetailsViewModel)
+            navigationController?.pushViewController(viewController, animated: true)
         }
     }
 

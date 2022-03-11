@@ -110,6 +110,9 @@ final class MainTabBarController: UITabBarController {
 
     private let isHubMenuFeatureFlagOn = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.hubMenu)
 
+    // This needs to be static to be accessed from static methods too
+    private static let isOrdersSplitViewFeatureFlagOn = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
+
     deinit {
         cancellableSiteID?.cancel()
     }
@@ -338,11 +341,11 @@ extension MainTabBarController {
         switch note.kind {
         case .storeOrder:
             switchToOrdersTab {
-                guard let ordersVC: OrdersSplitViewWrapperController = childViewController() else {
-                    return
+                if isOrdersSplitViewFeatureFlagOn {
+                    (childViewController() as? OrdersSplitViewWrapperController)?.presentDetails(for: note)
+                } else {
+                    (childViewController() as? OrdersRootViewController)?.presentDetails(for: note)
                 }
-
-                ordersVC.presentDetails(for: note)
             }
         default:
             break

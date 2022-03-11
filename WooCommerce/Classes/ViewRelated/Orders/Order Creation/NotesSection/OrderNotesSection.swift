@@ -8,6 +8,11 @@ struct OrderNotesSection: View {
 
     var body: some View {
         OrderNotesSectionContent(viewModel: viewModel.orderNotesDataViewModel, showEditNotesView: $showEditNotesView)
+            .sheet(isPresented: $showEditNotesView) {
+                NavigationView {
+                    EditCustomerNote(viewModel: viewModel.createEditOrderNotesViewModel())
+                }
+            }
     }
 }
 

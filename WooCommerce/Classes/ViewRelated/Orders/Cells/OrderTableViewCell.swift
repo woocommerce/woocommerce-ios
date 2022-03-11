@@ -122,8 +122,34 @@ private extension OrderTableViewCell {
 private extension OrderTableViewCell {
     func configureBackground() {
         backgroundColor = .listForeground
-        selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = .listBackground
+        let backgroundView: UIView = {
+            let view = UIView()
+            view.backgroundColor = .listBackground
+
+            let topSeparatorView = UIView()
+            topSeparatorView.backgroundColor = .border
+            topSeparatorView.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(topSeparatorView)
+            NSLayoutConstraint.activate([
+                view.topAnchor.constraint(equalTo: topSeparatorView.topAnchor),
+                view.leadingAnchor.constraint(equalTo: topSeparatorView.leadingAnchor),
+                view.trailingAnchor.constraint(equalTo: topSeparatorView.trailingAnchor),
+                topSeparatorView.heightAnchor.constraint(equalToConstant: 1.0)
+            ])
+
+            let bottomSeparatorView = UIView()
+            bottomSeparatorView.backgroundColor = .border
+            bottomSeparatorView.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(bottomSeparatorView)
+            NSLayoutConstraint.activate([
+                view.topAnchor.constraint(equalTo: bottomSeparatorView.topAnchor),
+                view.leadingAnchor.constraint(equalTo: bottomSeparatorView.leadingAnchor),
+                view.trailingAnchor.constraint(equalTo: bottomSeparatorView.trailingAnchor),
+                bottomSeparatorView.heightAnchor.constraint(equalToConstant: 1.0)
+            ])
+            return view
+        }()
+        selectedBackgroundView = backgroundView
     }
 
     /// Setup: Labels

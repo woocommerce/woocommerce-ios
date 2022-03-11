@@ -327,10 +327,6 @@ private extension SimplePaymentsSummary {
         static let taxesDisclaimer = NSLocalizedString("Taxes are automatically calculated based on your store address.",
                                                        comment: "Disclaimer in the simple payments summary screen about taxes.")
 
-        static let taxRate = NSLocalizedString("Tax (%1$@%%)",
-                                               comment: "Tax percentage to be applied to the simple payments order. " +
-                                               "%1$@%% is a placeholder for the tax rate as a percentage")
-
         static let takePayment = NSLocalizedString("Take Payment (%1$@)",
                                                    comment: "Text of the button that creates a simple payment order. " +
                                                    "%1$@ is a placeholder for the total amount to collect")

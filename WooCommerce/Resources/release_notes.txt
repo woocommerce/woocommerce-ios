@@ -1,13 +1,3 @@
-- [**] In-Person Payments: Added card details to refund confirmation screen to help with refunding to the payment card [https://github.com/woocommerce/woocommerce-ios/pull/6241]
-- [*] Coupons: Replace the toggles on Usage Details screen with text for uneditable contents. [https://github.com/woocommerce/woocommerce-ios/pull/6287]
-- [*] Improve image loading for thumbnails especially on the Product list. [https://github.com/woocommerce/woocommerce-ios/pull/6299]
-- [*] Coupons: Added feedback banner on the top of the coupon list. [https://github.com/woocommerce/woocommerce-ios/pull/6316]
-- [*] Coupons: Handled error when loading total discounted amount fails. [https://github.com/woocommerce/woocommerce-ios/pull/6368]
-- [internal] Removed all feature flags for Shipping Labels. Please smoke test all parts of Shipping Labels to make sure that everything still works as before. [https://github.com/woocommerce/woocommerce-ios/pull/6270]
-- [*] In-Person Payments: Localized messages and UI [https://github.com/woocommerce/woocommerce-ios/pull/6317]
-- [*] My Store: Fixed incorrect currency symbol of revenue text for stores with non-USD currency. [https://github.com/woocommerce/woocommerce-ios/pull/6335]
-- [*] Notifications: Dismiss presented view before presenting content from notifications [https://github.com/woocommerce/woocommerce-ios/pull/6354]
-- [*] Reviews: Fixed missing product information on first load [https://github.com/woocommerce/woocommerce-ios/pull/6367]
-- [internal] Removed the feature flag for My store tab UI updates. Please smoke test the store stats and top performers in the "My store" tab to make sure everything works as before. [https://github.com/woocommerce/woocommerce-ios/pull/6334]
-- [*] In-Person Payments: Add support for accepting payments on bookable products [https://github.com/woocommerce/woocommerce-ios/pull/6364]
+You’ll notice the credit card details for an in-person payment are now shown when making a refund. This will let you tell your customers exactly where the funds will go!
 
+A few new features aren’t quite ready for the mainstream, but you can check them out early! Create orders, view coupons, and more! Head to the Menu tab, settings, and Experimental settings to enable it. We welcome your feedback on the app, especially the new features we’re working on and giving early access to.

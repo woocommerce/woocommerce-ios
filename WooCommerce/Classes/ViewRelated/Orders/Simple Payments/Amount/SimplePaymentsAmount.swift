@@ -74,7 +74,14 @@ final class SimplePaymentsAmountHostingController: UIHostingController<SimplePay
 /// Intercepts to the dismiss drag gesture.
 ///
 extension SimplePaymentsAmountHostingController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        rootView.viewModel.userDidCancelFlow()
+    }
+
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
+            return !rootView.viewModel.disableViewActions
+        }
 
         if viewModel.shouldEnableSwipeToDismiss {
             return true

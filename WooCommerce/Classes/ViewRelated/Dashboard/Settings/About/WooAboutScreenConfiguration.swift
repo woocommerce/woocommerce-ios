@@ -81,7 +81,7 @@ class WooAboutScreenConfiguration: AboutScreenConfiguration {
     // Provides app info to display in the header of the about screen.
     //
     static var appInfo: AboutScreenAppInfo {
-        let name = (Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String) ?? ""
+        let name = WooConstants.appDisplayName
         let version = (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String) ?? ""
         let versionString = NSLocalizedString("Version %@", comment: "The app's version. %@ will be replaced by the current version number")
 

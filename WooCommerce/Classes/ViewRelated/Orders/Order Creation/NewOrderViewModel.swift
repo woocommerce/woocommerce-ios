@@ -237,8 +237,9 @@ final class NewOrderViewModel: ObservableObject {
 
     lazy private(set) var noteViewModel = { OrderNotesViewModel(originalNote: orderSynchronizer.order.customerNote ?? "") }()
 
-    func onOrderNoteUpdate() {
+    func onOrderNoteUpdate() -> String {
         orderSynchronizer.setNotes.send(noteViewModel.newNote)
+        return noteViewModel.newNote
     }
 
     // MARK: - API Requests

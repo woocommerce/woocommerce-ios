@@ -6,19 +6,21 @@ struct OrderNotesSection: View {
 
     @State private var showEditNotesView: Bool = false
 
+    @State private var notes: String = ""
+
     var body: some View {
-        OrderNotesSectionContent(notes: viewModel.orderNotes, showEditNotesView: $showEditNotesView)
+        OrderNotesSectionContent(notes: $notes, showEditNotesView: $showEditNotesView)
             .sheet(
                 isPresented: $showEditNotesView,
                 onDismiss: {
                     viewModel.noteViewModel.userDidCancelFlow()
-                    viewModel.onOrderNoteUpdate()
+                    notes = viewModel.onOrderNoteUpdate()
                 },
                 content: {
                     EditCustomerNote(
                         dismiss: {
                             showEditNotesView.toggle()
-                            viewModel.onOrderNoteUpdate()
+                            notes = viewModel.onOrderNoteUpdate()
                         },
                         viewModel: viewModel.noteViewModel
                     )
@@ -29,7 +31,7 @@ struct OrderNotesSection: View {
 
 private struct OrderNotesSectionContent: View {
     /// View model to drive the view content
-    var notes: String
+    @Binding var notes: String
 
     @Binding var showEditNotesView: Bool
 
@@ -110,8 +112,8 @@ private extension OrderNotesSectionContent {
 struct CustomerNotesSection_Previews: PreviewProvider {
     static var previews: some View {
         ScrollView {
-            OrderNotesSectionContent(notes: "", showEditNotesView: .constant(false))
-            OrderNotesSectionContent(notes: "Some notes", showEditNotesView: .constant(false))
+            OrderNotesSectionContent(notes: .constant(""), showEditNotesView: .constant(false))
+            OrderNotesSectionContent(notes: .constant("Some notes"), showEditNotesView: .constant(false))
         }
     }
 }

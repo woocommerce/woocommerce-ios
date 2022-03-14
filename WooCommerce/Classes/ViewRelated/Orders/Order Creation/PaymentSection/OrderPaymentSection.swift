@@ -36,16 +36,14 @@ struct OrderPaymentSection: View {
 
             TitleAndValueRow(title: Localization.productsTotal, value: .content(viewModel.itemsTotal), selectionStyle: .none) {}
 
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreation) {
-                shippingRow
-                    .sheet(isPresented: $shouldShowShippingLineDetails) {
-                        ShippingLineDetails(viewModel: viewModel.shippingLineViewModel)
-                    }
-                feesRow
-                    .sheet(isPresented: $shouldShowFeeLineDetails) {
-                        FeeLineDetails(viewModel: viewModel.feeLineViewModel)
-                    }
-            }
+            shippingRow
+                .sheet(isPresented: $shouldShowShippingLineDetails) {
+                    ShippingLineDetails(viewModel: viewModel.shippingLineViewModel)
+                }
+            feesRow
+                .sheet(isPresented: $shouldShowFeeLineDetails) {
+                    FeeLineDetails(viewModel: viewModel.feeLineViewModel)
+                }
 
             if viewModel.shouldShowTaxes {
                 TitleAndValueRow(title: Localization.taxesTotal, value: .content(viewModel.taxesTotal))

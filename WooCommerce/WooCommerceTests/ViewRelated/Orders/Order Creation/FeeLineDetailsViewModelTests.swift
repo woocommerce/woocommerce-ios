@@ -302,7 +302,7 @@ final class FeeLineDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(savedFeeLine?.taxStatus, .taxable)
     }
 
-    func test_view_model_amount_placeholder_is_not_empty_string() {
+    func test_view_model_amount_placeholder_has_expected_value() {
         // Given
         let viewModel = FeeLineDetailsViewModel(isExistingFeeLine: false,
                                                 baseAmountForPercentage: 0,

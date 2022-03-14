@@ -462,7 +462,6 @@ extension StoreStatsV4PeriodViewController: ChartViewDelegate {
         chartValueSelectedEventsSubject
             .debounce(for: .seconds(Constants.chartValueSelectedEventsDebounce), scheduler: DispatchQueue.main)
             .sink { [weak self] _ in
-                print("shiki: chartValueSelected \(Date().timeIntervalSince1970)")
                 self?.usageTracksEventEmitter.interacted()
             }.store(in: &cancellables)
     }

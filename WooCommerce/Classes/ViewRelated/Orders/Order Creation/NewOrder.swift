@@ -30,8 +30,7 @@ final class NewOrderHostingController: UIHostingController<NewOrder> {
                 presentationController?.delegate = self
             }
         } else {
-            // Handle swipe back gesture
-            navigationController?.interactivePopGestureRecognizer?.delegate = self
+            handleSwipeBackGesture()
         }
     }
 }

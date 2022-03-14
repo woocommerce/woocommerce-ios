@@ -67,8 +67,9 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     /// Defines if the swipe-to-dismiss gesture on the Simple Payment flow should be enabled
     ///
     var shouldEnableSwipeToDismiss: Bool {
-        priceFieldFormatter.amountDecimal == nil ||
-        priceFieldFormatter.amountDecimal == .zero
+        (priceFieldFormatter.amountDecimal == nil ||
+        priceFieldFormatter.amountDecimal == .zero) &&
+        !loading
     }
 
     /// Retains the SummaryViewModel.

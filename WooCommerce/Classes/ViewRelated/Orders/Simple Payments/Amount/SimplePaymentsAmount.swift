@@ -81,11 +81,7 @@ extension SimplePaymentsAmountHostingController: UIAdaptivePresentationControlle
             return !rootView.viewModel.disableViewActions
         }
 
-        if rootView.viewModel.shouldEnableSwipeToDismiss {
-            return true
-        }
-
-        return false
+        return rootView.viewModel.shouldEnableSwipeToDismiss
     }
 
     func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {

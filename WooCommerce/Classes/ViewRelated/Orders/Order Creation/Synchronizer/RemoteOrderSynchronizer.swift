@@ -89,27 +89,6 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
             }
             .store(in: &subscriptions)
     }
-
-    /// Deletes the order if it has been synced remotely.
-    ///
-    func discardOrder() {
-        Just(order)
-            .filter { // Only continue if the order has been synced remotely.
-                $0.orderID != .zero
-            }
-            .sink { order in
-                let action = OrderAction.deleteOrder(siteID: order.siteID, order: order, deletePermanently: true) { result in
-                    switch result {
-                    case .success:
-                        break
-                    case .failure(let error):
-                        DDLogError("⛔️ Error deleting draft order #\(order.orderID): \(error)")
-                    }
-                }
-                self.stores.dispatch(action)
-            }
-            .store(in: &subscriptions)
-    }
 }
 
 // MARK: Helpers

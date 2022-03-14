@@ -276,7 +276,20 @@ final class NewOrderViewModel: ObservableObject {
     /// Deletes the order if it has been synced remotely, and removes it from local storage.
     ///
     func discardOrder() {
-        orderSynchronizer.discardOrder()
+        // Only continue if the order has been synced remotely.
+        guard orderSynchronizer.order.orderID != .zero else {
+            return
+        }
+
+        let action = OrderAction.deleteOrder(siteID: siteID, order: orderSynchronizer.order, deletePermanently: true) { result in
+            switch result {
+            case .success:
+                break
+            case .failure(let error):
+                DDLogError("⛔️ Error deleting new order: \(error)")
+            }
+        }
+        stores.dispatch(action)
     }
 }
 

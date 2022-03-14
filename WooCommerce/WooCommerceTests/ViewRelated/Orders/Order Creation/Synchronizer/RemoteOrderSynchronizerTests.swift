@@ -872,46 +872,6 @@ class RemoteOrderSynchronizerTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isSuccess)
     }
-
-    func test_discard_order_deletes_order_if_order_exists_remotely() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
-
-        // When
-        let orderDeleted: Bool = waitFor { promise in
-            stores.whenReceivingAction(ofType: OrderAction.self) { action in
-                switch action {
-                case .createOrder(_, let order, let completion):
-                    completion(.success(order.copy(orderID: self.sampleOrderID)))
-                case .deleteOrder:
-                    promise(true)
-                default:
-                    XCTFail("Unexpected action: \(action)")
-                }
-            }
-
-            let input = OrderSyncProductInput.init(product: .product(.fake()), quantity: 1)
-            self.createOrder(on: synchronizer, input: input)
-
-            synchronizer.discardOrder()
-        }
-
-        // Then
-        XCTAssertTrue(orderDeleted)
-    }
-
-    func test_discard_order_skips_remote_deletion_for_local_order() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
-        stores.whenReceivingAction(ofType: OrderAction.self) { action in
-            XCTFail("Unexpected action: \(action)")
-        }
-
-        // When
-        synchronizer.discardOrder()
-    }
 }
 
 private extension RemoteOrderSynchronizerTests {

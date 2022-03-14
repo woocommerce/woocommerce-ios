@@ -584,6 +584,53 @@ final class NewOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.hasChanges)
     }
+
+    func test_discard_order_deletes_order_if_order_exists_remotely() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, enableRemoteSync: true)
+        waitForExpectation { expectation in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .createOrder(_, let order, let completion):
+                    completion(.success(order.copy(orderID: 12)))
+                    expectation.fulfill()
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+            // Trigger remote sync
+            viewModel.saveShippingLine(ShippingLine.fake())
+        }
+
+        // When
+        let orderDeleted: Bool = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .deleteOrder:
+                    promise(true)
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+            viewModel.discardOrder()
+        }
+
+        // Then
+        XCTAssertTrue(orderDeleted)
+    }
+
+    func test_discard_order_skips_remote_deletion_for_local_order() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            XCTFail("Unexpected action: \(action)")
+        }
+
+        // When
+        viewModel.discardOrder()
+    }
 }
 
 private extension MockStorageManager {

@@ -354,6 +354,8 @@ platform :ios do
   #####################################################################################
   desc 'Builds and uploads for distribution'
   lane :build_and_upload_itc do |options|
+    ensure_sentry_installed
+
     ios_build_prechecks(skip_confirm: options[:skip_confirm], external: true) unless options[:skip_prechecks]
     ios_build_preflight unless options[:skip_prechecks]
 

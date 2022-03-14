@@ -86,7 +86,6 @@ struct EditCustomerNote<ViewModel: EditCustomerNoteViewModelProtocol>: View {
                 .padding()
                 .navigationTitle(Localization.title)
                 .navigationBarTitleDisplayMode(.inline)
-                .navigationViewStyle(StackNavigationViewStyle())
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
                         Button(Localization.cancel, action: {
@@ -100,6 +99,7 @@ struct EditCustomerNote<ViewModel: EditCustomerNoteViewModelProtocol>: View {
                 }
         }
         .wooNavigationBarStyle()
+        .navigationViewStyle(.stack)
     }
 
     /// Decides if the navigation trailing item should be a done button or a loading indicator.

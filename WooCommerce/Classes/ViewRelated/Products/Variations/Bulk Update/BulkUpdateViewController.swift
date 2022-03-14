@@ -19,9 +19,20 @@ final class BulkUpdateViewController: UIViewController {
 
     private var sections: [Section] = []
 
-    init(viewModel: BulkUpdateViewModel) {
+    /// Dedicated `NoticePresenter` because this controller is modally presented we use this here instead of ServiceLocator.noticePresenter
+    ///
+    private lazy var noticePresenter: NoticePresenter = {
+        let noticePresenter = DefaultNoticePresenter()
+        noticePresenter.presentingViewController = self
+        return noticePresenter
+    }()
+
+    init(viewModel: BulkUpdateViewModel, noticePresenter: NoticePresenter? = nil) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
+        if let noticePresenter = noticePresenter {
+            self.noticePresenter = noticePresenter
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -68,10 +79,11 @@ final class BulkUpdateViewController: UIViewController {
                 self.tableView.reloadData()
             case .error:
                 self.removeGhostContent()
+                self.displaySyncingError()
             }
         }.store(in: &subscriptions)
 
-        viewModel.activate()
+        viewModel.syncVariations()
     }
 
     /// Configures the ghost view: registers Nibs and table view settings
@@ -133,6 +145,29 @@ final class BulkUpdateViewController: UIViewController {
     @objc private func cancelButtonTapped() {
         viewModel.handleTapCancel()
     }
+
+    /// Displays the error `Notice`.
+    ///
+    private func displaySyncingError() {
+        let title = Localization.noticeUnableToSyncVariations
+        let actionTitle = Localization.noticeRetryAction
+        let notice = Notice(title: title, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
+            self?.viewModel.syncVariations()
+        }
+
+        noticePresenter.enqueue(notice: notice)
+    }
+
+    /// Called when the price option is selected
+    ///
+    private func navigateToEditPriceSettings() {
+        let bulkUpdatePriceSettingsViewModel = viewModel.viewModelForBulkUpdatePriceOfType(.regular, priceUpdateDidFinish: { [weak self] in
+            guard let self = self else { return }
+            self.navigationController?.popToViewController(self, animated: true)
+        })
+        let viewController = BulkUpdatePriceViewController(viewModel: bulkUpdatePriceSettingsViewModel)
+        show(viewController, sender: nil)
+    }
 }
 
 // MARK: - UITableViewDataSource Conformance
@@ -182,6 +217,15 @@ private extension BulkUpdateViewController {
 // MARK: - UITableViewDelegate Conformance
 //
 extension BulkUpdateViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let row = rowAtIndexPath(indexPath)
+
+        switch row {
+        case .regularPrice:
+            navigateToEditPriceSettings()
+        }
+    }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return UITableView.automaticDimension
@@ -239,6 +283,9 @@ private extension BulkUpdateViewController {
     enum Localization {
         static let cancelButtonTitle = NSLocalizedString("Cancel", comment: "Button title that closes the presented screen")
         static let screenTitle = NSLocalizedString("Bulk Update", comment: "Title that appears on top of the bulk update of product variations screen")
+        static let noticeUnableToSyncVariations = NSLocalizedString("Unable to retrieve variations",
+                                                                    comment: "Unable to retrieve variations for bulk update screen")
+        static let noticeRetryAction = NSLocalizedString("Retry", comment: "Retry Action")
     }
 }
 

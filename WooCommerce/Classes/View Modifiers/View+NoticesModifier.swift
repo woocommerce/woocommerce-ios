@@ -12,11 +12,15 @@ struct NoticeModifier: ViewModifier {
     ///
     @Binding var notice: Notice?
 
+    /// Whether the notice should be auto-dismissed.
+    ///
+    let autoDismiss: Bool
+
     /// Cancelable task that clears a notice.
     ///
     @State private var clearNoticeTask = DispatchWorkItem(block: {})
 
-    /// Time the notice will remain on screen.
+    /// Time the notice will remain on screen, if it is auto-dismissed.
     ///
     private let onScreenNoticeTime = 5.0
 
@@ -65,9 +69,10 @@ struct NoticeModifier: ViewModifier {
         }
     }
 
-    /// Cancels any ongoing clear notice task and dispatches it again.
+    /// Cancels any ongoing clear notice task and dispatches it again, if the notice should be auto-dismissed.
     ///
     private func dispatchClearNoticeTask() {
+        guard autoDismiss else { return }
         clearNoticeTask.cancel()
         clearNoticeTask = .init {
             $notice.wrappedValue = nil
@@ -217,8 +222,11 @@ private extension NoticeAlert {
 extension View {
     /// Shows the provided notice in front of the view.
     ///
-    func notice(_ notice: Binding<Notice?>) -> some View {
-        modifier(NoticeModifier(notice: notice))
+    /// - Parameters:
+    ///   - notice: Notice to be displayed.
+    ///   - autoDismiss: Whether the notice should be auto-dismissed.
+    func notice(_ notice: Binding<Notice?>, autoDismiss: Bool = true) -> some View {
+        modifier(NoticeModifier(notice: notice, autoDismiss: autoDismiss))
     }
 }
 

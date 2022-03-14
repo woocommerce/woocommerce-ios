@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 66 (Release 8.8.0.0)
+- @pmusolino 2022-03-09
+    - Update `Order`'s `items` relationship to be ordered.
+
 ## Model 65 (Release 8.6.0.0)
 - @joshheald 2022-02-14
     - Added `WCPayCharge` entity.

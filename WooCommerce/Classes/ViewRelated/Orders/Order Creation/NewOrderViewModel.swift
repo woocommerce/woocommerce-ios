@@ -129,6 +129,10 @@ final class NewOrderViewModel: ObservableObject {
     /// - Parameter shippingLine: Optional shipping line object to save. `nil` will remove existing shipping line.
     func saveShippingLine(_ shippingLine: ShippingLine?) {
         orderSynchronizer.setShipping.send(shippingLine)
+
+        if shippingLine != nil {
+            analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodAdd(flow: .creation))
+        }
     }
 
     /// Saves a fee.
@@ -136,6 +140,10 @@ final class NewOrderViewModel: ObservableObject {
     /// - Parameter shippingLine: Optional shipping line object to save. `nil` will remove existing shipping line.
     func saveFeeLine(_ feeLine: OrderFeeLine?) {
         orderSynchronizer.setFee.send(feeLine)
+
+        if feeLine != nil {
+            analytics.track(event: WooAnalyticsEvent.Orders.orderFeeAdd(flow: .creation))
+        }
     }
 
     // MARK: -
@@ -159,7 +167,7 @@ final class NewOrderViewModel: ObservableObject {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
-         enableRemoteSync: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreationRemoteSynchronizer)) {
+         enableRemoteSync: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreation)) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
@@ -170,6 +178,7 @@ final class NewOrderViewModel: ObservableObject {
 
         configureDisabledState()
         configureNavigationTrailingItem()
+        configureSyncErrors()
         configureStatusBadgeViewModel()
         configureProductRowViewModels()
         configureCustomerDataViewModel()
@@ -257,7 +266,7 @@ final class NewOrderViewModel: ObservableObject {
                 self.onOrderCreated(newOrder)
                 self.trackCreateOrderSuccess()
             case .failure(let error):
-                self.notice = NoticeFactory.createOrderCreationErrorNotice()
+                self.notice = NoticeFactory.createOrderErrorNotice()
                 self.trackCreateOrderFailure(error: error)
                 DDLogError("⛔️ Error creating new order: \(error)")
             }
@@ -443,6 +452,23 @@ private extension NewOrderViewModel {
             .assign(to: &$navigationTrailingItem)
     }
 
+    /// Updates the notice based on the `orderSynchronizer` sync state.
+    ///
+    func configureSyncErrors() {
+        orderSynchronizer.statePublisher
+            .map { [weak self] state in
+                guard let self = self else { return nil }
+                switch state {
+                case .error(let error):
+                    DDLogError("⛔️ Error syncing new order remotely: \(error)")
+                    return NoticeFactory.syncOrderErrorNotice(with: self.orderSynchronizer)
+                default:
+                    return nil
+                }
+            }
+            .assign(to: &$notice)
+    }
+
     /// Updates status badge viewmodel based on status order property.
     ///
     func configureStatusBadgeViewModel() {
@@ -542,6 +568,7 @@ private extension NewOrderViewModel {
     /// Tracks when customer details have been added
     ///
     func trackCustomerDetailsAdded() {
+        guard customerDataViewModel.isDataAvailable else { return }
         let areAddressesDifferent: Bool = {
             guard let billingAddress = orderSynchronizer.order.billingAddress, let shippingAddress = orderSynchronizer.order.shippingAddress else {
                 return false
@@ -558,10 +585,12 @@ private extension NewOrderViewModel {
     /// or figure out a better way to get the product count.
     ///
     func trackCreateButtonTapped() {
-        let hasCustomerDetails = orderSynchronizer.order.billingAddress != nil || orderSynchronizer.order.shippingAddress != nil
+        let hasCustomerDetails = customerDataViewModel.isDataAvailable
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreateButtonTapped(status: orderSynchronizer.order.status,
                                                                                 productCount: orderSynchronizer.order.items.count,
-                                                                                hasCustomerDetails: hasCustomerDetails))
+                                                                                hasCustomerDetails: hasCustomerDetails,
+                                                                                hasFees: orderSynchronizer.order.fees.isNotEmpty,
+                                                                                hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty))
     }
 
     /// Tracks an order creation success
@@ -684,14 +713,25 @@ extension NewOrderViewModel {
     enum NoticeFactory {
         /// Returns a default order creation error notice.
         ///
-        static func createOrderCreationErrorNotice() -> Notice {
-            Notice(title: Localization.errorMessage, feedbackType: .error)
+        static func createOrderErrorNotice() -> Notice {
+            Notice(title: Localization.errorMessageOrderCreation, feedbackType: .error)
+        }
+
+        /// Returns an order sync error notice.
+        ///
+        static func syncOrderErrorNotice(with orderSynchronizer: OrderSynchronizer) -> Notice {
+            Notice(title: Localization.errorMessageOrderSync, feedbackType: .error, actionTitle: Localization.retryOrderSync) {
+                orderSynchronizer.retryTrigger.send()
+            }
         }
     }
 }
 
 private extension NewOrderViewModel {
     enum Localization {
-        static let errorMessage = NSLocalizedString("Unable to create new order", comment: "Notice displayed when order creation fails")
+        static let errorMessageOrderCreation = NSLocalizedString("Unable to create new order", comment: "Notice displayed when order creation fails")
+        static let errorMessageOrderSync = NSLocalizedString("Unable to load taxes for order",
+                                                             comment: "Notice displayed when taxes cannot be synced for new order")
+        static let retryOrderSync = NSLocalizedString("Retry", comment: "Action button to retry syncing the draft order")
     }
 }

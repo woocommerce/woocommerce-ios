@@ -1084,6 +1084,41 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(wcPayCharge.value(forKey: "cardPresentDetails") as? WCPayCardPresentPaymentDetails, payment)
         XCTAssertEqual(payment.value(forKey: "receipt") as? WCPayCardPresentReceiptDetails, receipt)
     }
+
+    func test_migrating_from_65_to_66_makes_items_ordered_in_order() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 65")
+        let sourceContext = sourceContainer.viewContext
+
+        let _ = insertOrder(to: sourceContext)
+
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "Order"), 1)
+        XCTAssertEqual(try sourceContext.count(entityName: "OrderItem"), 0)
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 66")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+
+        XCTAssertEqual(try targetContext.count(entityName: "Order"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "OrderItem"), 0)
+        XCTAssertEqual(try targetContext.count(entityName: "OrderItemAttribute"), 0)
+
+        let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
+
+        // Creates an `OrderItem` and adds it to `Order`.
+        let orderItem1 = insertOrderItem(itemID: 1, to: targetContext)
+        let orderItem2 = insertOrderItem(itemID: 2, to: targetContext)
+        let orderItem3 = insertOrderItem(itemID: 3, to: targetContext)
+        migratedOrder.setValue(NSOrderedSet(array: [orderItem1, orderItem3, orderItem2]), forKey: "items")
+        try targetContext.save()
+
+        XCTAssertEqual(try targetContext.count(entityName: "OrderItem"), 3)
+        XCTAssertEqual(migratedOrder.value(forKey: "items") as? NSOrderedSet, NSOrderedSet(array: [orderItem1, orderItem3, orderItem2]))
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -1262,9 +1297,9 @@ private extension MigrationTests {
     }
 
     @discardableResult
-    func insertOrderItem(to context: NSManagedObjectContext) -> NSManagedObject {
+    func insertOrderItem(itemID: Int64 = 134, to context: NSManagedObjectContext) -> NSManagedObject {
         context.insert(entityName: "OrderItem", properties: [
-            "itemID": 134
+            "itemID": itemID
         ])
     }
 

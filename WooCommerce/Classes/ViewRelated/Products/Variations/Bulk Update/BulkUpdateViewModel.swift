@@ -63,9 +63,9 @@ final class BulkUpdateViewModel {
 
     /// This is the main activation method for this view model.
     ///
-    /// This should only be called when the corresponding view was loaded.
+    /// This should called after the corresponding view was loaded.
     ///
-    func activate() {
+    func syncVariations() {
         synchProductVariations()
     }
 
@@ -103,6 +103,18 @@ final class BulkUpdateViewModel {
 
     func handleTapCancel() {
         onCancelButtonTapped()
+    }
+
+    /// Creates a view model for the bulk price setting.
+    ///
+    func viewModelForBulkUpdatePriceOfType(_ editingPriceType: BulkUpdatePriceSettingsViewModel.EditingPriceType,
+                                           priceUpdateDidFinish: @escaping () -> Void) -> BulkUpdatePriceSettingsViewModel {
+        return BulkUpdatePriceSettingsViewModel(siteID: siteID,
+                                                productID: productID,
+                                                bulkUpdateOptionsModel: bulkUpdateFormModel,
+                                                editingPriceType: editingPriceType,
+                                                priceUpdateDidFinish: priceUpdateDidFinish)
+
     }
 
     /// Provides the view model with all user facing data of the option for updating the regular price

@@ -23,6 +23,24 @@ final class ShippingLineDetailsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.amount, "11.30")
+        XCTAssertFalse(viewModel.shouldDisableDoneButton)
+    }
+
+    func test_view_model_formats_negative_amount_correctly() {
+        // Given
+        let viewModel = ShippingLineDetailsViewModel(isExistingShippingLine: false,
+                                                     initialMethodTitle: "",
+                                                     shippingTotal: "",
+                                                     locale: usLocale,
+                                                     storeCurrencySettings: usStoreSettings,
+                                                     didSelectSave: { _ in })
+
+        // When
+        viewModel.amount = "-hi:11.3005.02-"
+
+        // Then
+        XCTAssertEqual(viewModel.amount, "-11.30")
+        XCTAssertFalse(viewModel.shouldDisableDoneButton)
     }
 
     func test_view_model_formats_amount_with_custom_currency_settings() {
@@ -61,6 +79,21 @@ final class ShippingLineDetailsViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.isExistingShippingLine)
         XCTAssertEqual(viewModel.amount, "11.30")
+        XCTAssertEqual(viewModel.methodTitle, "Flat Rate")
+    }
+
+    func test_view_model_prefills_negative_input_data_correctly() {
+        // Given
+        let viewModel = ShippingLineDetailsViewModel(isExistingShippingLine: true,
+                                                     initialMethodTitle: "Flat Rate",
+                                                     shippingTotal: "-$11.30",
+                                                     locale: usLocale,
+                                                     storeCurrencySettings: usStoreSettings,
+                                                     didSelectSave: { _ in })
+
+        // Then
+        XCTAssertTrue(viewModel.isExistingShippingLine)
+        XCTAssertEqual(viewModel.amount, "-11.30")
         XCTAssertEqual(viewModel.methodTitle, "Flat Rate")
     }
 
@@ -129,6 +162,28 @@ final class ShippingLineDetailsViewModelTests: XCTestCase {
         // Then
         viewModel.saveData()
         XCTAssertEqual(savedShippingLine?.total, "11.30")
+        XCTAssertEqual(savedShippingLine?.methodTitle, "Flat Rate")
+    }
+
+    func test_view_model_creates_shippping_line_with_negative_data_from_fields() {
+        // Given
+        var savedShippingLine: ShippingLine?
+        let viewModel = ShippingLineDetailsViewModel(isExistingShippingLine: false,
+                                                     initialMethodTitle: "",
+                                                     shippingTotal: "",
+                                                     locale: usLocale,
+                                                     storeCurrencySettings: usStoreSettings,
+                                                     didSelectSave: { newShippingLine in
+            savedShippingLine = newShippingLine
+        })
+
+        // When
+        viewModel.amount = "-11.30"
+        viewModel.methodTitle = "Flat Rate"
+
+        // Then
+        viewModel.saveData()
+        XCTAssertEqual(savedShippingLine?.total, "-11.30")
         XCTAssertEqual(savedShippingLine?.methodTitle, "Flat Rate")
     }
 

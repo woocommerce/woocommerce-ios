@@ -112,7 +112,7 @@ struct FeeLineDetails: View {
             BindableTextfield(viewModel.amountPlaceholder,
                               text: $viewModel.amount,
                               focus: $focusFixedAmountInput)
-                .keyboardType(.decimalPad)
+                .keyboardType(.numbersAndPunctuation)
                 .addingCurrencySymbol(viewModel.currencySymbol, on: viewModel.currencyPosition)
                 .onTapGesture {
                     focusFixedAmountInput = true
@@ -133,7 +133,7 @@ struct FeeLineDetails: View {
             BindableTextfield("0",
                               text: $viewModel.percentage,
                               focus: $focusPercentageAmountInput)
-                .keyboardType(.decimalPad)
+                .keyboardType(.numbersAndPunctuation)
                 .onTapGesture {
                     focusPercentageAmountInput = true
                 }

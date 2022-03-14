@@ -342,6 +342,8 @@ extension WooAnalyticsEvent {
             static let orderStatus = "order_status"
             static let productCount = "product_count"
             static let hasCustomerDetails = "has_customer_details"
+            static let hasFees = "has_fees"
+            static let hasShippingMethod = "has_shipping_method"
             static let errorContext = "error_context"
             static let errorDescription = "error_description"
             static let to = "to"
@@ -364,6 +366,14 @@ extension WooAnalyticsEvent {
             ])
         }
 
+        static func orderFeeAdd(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFeeAdd, properties: [Keys.flow: flow.rawValue])
+        }
+
+        static func orderShippingMethodAdd(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderShippingMethodAdd, properties: [Keys.flow: flow.rawValue])
+        }
+
         static func orderStatusChange(flow: Flow, orderID: Int64?, from oldStatus: OrderStatusEnum, to newStatus: OrderStatusEnum) -> WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType?] = [
                 Keys.flow: flow.rawValue,
@@ -376,11 +386,15 @@ extension WooAnalyticsEvent {
 
         static func orderCreateButtonTapped(status: OrderStatusEnum,
                                             productCount: Int,
-                                            hasCustomerDetails: Bool) -> WooAnalyticsEvent {
+                                            hasCustomerDetails: Bool,
+                                            hasFees: Bool,
+                                            hasShippingMethod: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderCreateButtonTapped, properties: [
                 Keys.orderStatus: status.rawValue,
                 Keys.productCount: Int64(productCount),
-                Keys.hasCustomerDetails: hasCustomerDetails
+                Keys.hasCustomerDetails: hasCustomerDetails,
+                Keys.hasFees: hasFees,
+                Keys.hasShippingMethod: hasShippingMethod
             ])
         }
 

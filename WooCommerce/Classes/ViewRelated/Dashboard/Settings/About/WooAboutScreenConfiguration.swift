@@ -1,8 +1,9 @@
 import UIKit
 import AutomatticAbout
 import SafariServices
+import WordPressShared
 
-class WooAboutScreenConfiguration: AboutScreenConfiguration {
+final class WooAboutScreenConfiguration: AboutScreenConfiguration {
     var sections: [AboutScreenSection] {
         [
             [
@@ -17,7 +18,7 @@ class WooAboutScreenConfiguration: AboutScreenConfiguration {
                 AboutItem(title: Titles.instagram, cellStyle: .value1, action: { [weak self] context in
                     self?.present(url: Links.instagram, from: context.viewController)
                 }),
-                AboutItem(title: Titles.twitter, cellStyle: .value1, action: { [weak self] context in
+                AboutItem(title: Titles.twitter, subtitle: Subtitles.twitter, cellStyle: .value1, action: { [weak self] context in
                     self?.present(url: Links.twitter, from: context.viewController)
                 }),
                 AboutItem(title: Titles.website, subtitle: Subtitles.website, cellStyle: .value1, action: { [weak self] context in
@@ -81,12 +82,8 @@ class WooAboutScreenConfiguration: AboutScreenConfiguration {
     // Provides app info to display in the header of the about screen.
     //
     static var appInfo: AboutScreenAppInfo {
-        let name = WooConstants.appDisplayName
-        let version = (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String) ?? ""
-        let versionString = NSLocalizedString("Version %@", comment: "The app's version. %@ will be replaced by the current version number")
-
-        return AboutScreenAppInfo(name: name,
-                                  version: String(format: versionString, version),
+        return AboutScreenAppInfo(name: WooConstants.appDisplayName,
+                                  version: Bundle.main.detailedVersionNumber(),
                                   icon: UIImage(named: iconNameFromBundle())!)
     }
 
@@ -111,8 +108,8 @@ class WooAboutScreenConfiguration: AboutScreenConfiguration {
 
     private enum Titles {
         static let rateUs           = NSLocalizedString("Rate us", comment: "Title of button that allows the user to rate the app in the App Store")
-        static let share              = NSLocalizedString("Share with Friends", comment: "Title for button allowing users to share "
-                                                                                         + "information about the app with friends, such as via Messages")
+        static let share             = NSLocalizedString("Share with Friends", comment: "Title for button allowing users to share "
+                                                                                        + "information about the app with friends, such as via Messages")
         static let instagram        = NSLocalizedString("Instagram", comment: "Title of a button linking to the app's Instagram profile")
         static let twitter          = NSLocalizedString("Twitter", comment: "Title of a button linking to the app's Twitter profile")
         static let website          = NSLocalizedString("Website", comment: "Title of a button linking to the app's website")
@@ -126,6 +123,7 @@ class WooAboutScreenConfiguration: AboutScreenConfiguration {
     private enum Subtitles {
         static let website          = "woocommerce.app"
         static let blog             = "woocommerce.com/blog"
+        static let twitter          = "@woocommerce"
         static let workWithUs       = NSLocalizedString("Join from anywhere",
                                                         comment: "Subtitle for button displaying the Automattic Work With Us web page, "
                                                                  + "indicating that Automattic employees can work from anywhere in the world")

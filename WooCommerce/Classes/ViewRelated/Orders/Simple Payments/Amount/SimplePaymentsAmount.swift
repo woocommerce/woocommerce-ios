@@ -21,13 +21,11 @@ final class SimplePaymentsAmountHostingController: UIHostingController<SimplePay
     /// Presents notices at the system level, currently uses the main tab-bar as source view controller.
     ///
     private let systemNoticePresenter: NoticePresenter
-    private let viewModel: SimplePaymentsAmountViewModel
 
     init(viewModel: SimplePaymentsAmountViewModel,
          presentNoticePublisher: AnyPublisher<SimplePaymentsNotice, Never>,
          systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         self.systemNoticePresenter = systemNoticePresenter
-        self.viewModel = viewModel
         super.init(rootView: SimplePaymentsAmount(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
@@ -83,15 +81,17 @@ extension SimplePaymentsAmountHostingController: UIAdaptivePresentationControlle
             return !rootView.viewModel.disableViewActions
         }
 
-        if viewModel.shouldEnableSwipeToDismiss {
+        if rootView.viewModel.shouldEnableSwipeToDismiss {
             return true
         }
 
+        return false
+    }
+
+    func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
             self?.dismiss(animated: true, completion: nil)
         })
-
-        return false
     }
 }
 

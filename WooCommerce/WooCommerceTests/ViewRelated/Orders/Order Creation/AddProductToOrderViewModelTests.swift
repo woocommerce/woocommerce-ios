@@ -238,6 +238,25 @@ class AddProductToOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.productRows.count, 2)
     }
+
+    func test_view_model_fires_error_notice_when_product_sync_fails() {
+        // Given
+        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, stores: stores)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
+                onCompletion(.failure(NSError(domain: "Error", code: 0)))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+
+        // When
+        viewModel.onLoadTrigger.send()
+
+        // Then
+        XCTAssertEqual(viewModel.notice, AddProductToOrderViewModel.NoticeFactory.productSyncNotice())
+    }
 }
 
 // MARK: - Utils

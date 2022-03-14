@@ -24,6 +24,11 @@ final class AddProductToOrderViewModel: ObservableObject {
     ///
     let onLoadTrigger: PassthroughSubject<Void, Never> = PassthroughSubject()
 
+    /// Defines the current notice that should be shown.
+    /// Defaults to `nil`.
+    ///
+    @Published var notice: Notice?
+
     /// All products that can be added to an order.
     ///
     private var products: [Product] {
@@ -159,6 +164,7 @@ extension AddProductToOrderViewModel: SyncingCoordinatorDelegate {
             case .success:
                 self.updateProductsResultsController()
             case .failure(let error):
+                self.notice = NoticeFactory.productSyncNotice()
                 DDLogError("⛔️ Error synchronizing products during order creation: \(error)")
             }
 
@@ -184,6 +190,7 @@ extension AddProductToOrderViewModel: SyncingCoordinatorDelegate {
             case .success:
                 self.updateProductsResultsController()
             case .failure(let error):
+                self.notice = NoticeFactory.productSyncNotice()
                 DDLogError("⛔️ Error searching products during order creation: \(error)")
             }
 
@@ -311,5 +318,21 @@ extension AddProductToOrderViewModel {
                             manageStock: false,
                             canChangeQuantity: false,
                             imageURL: nil)
+    }
+
+    /// Add Product to Order notices
+    ///
+    enum NoticeFactory {
+        /// Returns a default product sync error notice.
+        ///
+        static func productSyncNotice() -> Notice {
+            Notice(title: Localization.errorMessage, feedbackType: .error)
+        }
+    }
+}
+
+private extension AddProductToOrderViewModel {
+    enum Localization {
+        static let errorMessage = NSLocalizedString("Unable to sync products", comment: "Notice displayed when syncing the list of products fails")
     }
 }

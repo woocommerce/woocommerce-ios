@@ -57,6 +57,7 @@ struct AddProductToOrder: View {
             }
         }
         .wooNavigationBarStyle()
+        .notice($viewModel.notice)
     }
 
     /// Creates the `ProductRow` for a product, depending on whether the product is variable.

@@ -64,6 +64,7 @@ struct AddProductVariationToOrder: View {
         .onAppear {
             viewModel.onLoadTrigger.send()
         }
+        .notice($viewModel.notice)
     }
 }
 

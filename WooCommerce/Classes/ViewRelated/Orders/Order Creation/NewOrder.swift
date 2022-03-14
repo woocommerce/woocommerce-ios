@@ -62,15 +62,14 @@ extension NewOrderHostingController {
 ///
 extension NewOrderHostingController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
-        guard viewModel.hasChanges else {
-            return true
-        }
+        return !viewModel.hasChanges
+    }
+
+    func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
             self?.viewModel.discardOrder()
             self?.dismiss(animated: true, completion: nil)
         })
-
-        return false
     }
 }
 

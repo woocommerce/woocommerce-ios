@@ -454,7 +454,7 @@ extension StoreStatsV4PeriodViewController: ChartViewDelegate {
 
     private func observeChartValueSelectedEvents() {
         chartValueSelectedEventsSubject
-            .debounce(for: .seconds(1), scheduler: DispatchQueue.main)
+            .debounce(for: .seconds(Constants.chartValueSelectedEventsDebounce), scheduler: DispatchQueue.main)
             .sink { [weak self] _ in
                 print("shiki: chartValueSelected \(Date().timeIntervalSince1970)")
                 self?.usageTracksEventEmitter.interacted()
@@ -713,5 +713,12 @@ private extension StoreStatsV4PeriodViewController {
         static let headerComponentBackgroundColor: UIColor = .clear
 
         static let ghostStyle: GhostStyle = .wooDefaultGhostStyle
+
+        /// The wait time before the `StoreStatsUsageTracksEventEmitter.interacted()` is called.
+        ///
+        /// We debounce it because there are just too many events received from `chartValueSelected()` when
+        /// the user holds and drags on the chart. Having too many events might skew the
+        /// `StoreStatsUsageTracksEventEmitter` algorithm.
+        static let chartValueSelectedEventsDebounce: TimeInterval = 1.0
     }
 }

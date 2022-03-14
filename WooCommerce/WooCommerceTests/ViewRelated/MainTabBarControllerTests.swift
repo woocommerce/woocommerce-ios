@@ -25,8 +25,10 @@ final class MainTabBarControllerTests: XCTestCase {
         // Arrange
         // Sets mock `FeatureFlagService` before `MainTabBarController` is initialized so that the feature flags are set correctly.
         let isHubMenuFeatureFlagOn = false
-        ServiceLocator.setFeatureFlagService(MockFeatureFlagService(isHubMenuOn: isHubMenuFeatureFlagOn))
-        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController else {
+        let featureFlagService = MockFeatureFlagService(isHubMenuOn: isHubMenuFeatureFlagOn)
+        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
+            return MainTabBarController(coder: coder, featureFlagService: featureFlagService)
+        }) else {
             return
         }
 
@@ -53,9 +55,10 @@ final class MainTabBarControllerTests: XCTestCase {
         // Arrange
         // Sets mock `FeatureFlagService` before `MainTabBarController` is initialized so that the feature flags are set correctly.
         let isHubMenuFeatureFlagOn = true
-        ServiceLocator.setFeatureFlagService(MockFeatureFlagService(isHubMenuOn: isHubMenuFeatureFlagOn))
-
-        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController else {
+        let featureFlagService = MockFeatureFlagService(isHubMenuOn: isHubMenuFeatureFlagOn)
+        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
+            return MainTabBarController(coder: coder, featureFlagService: featureFlagService)
+        }) else {
             return
         }
 
@@ -83,9 +86,11 @@ final class MainTabBarControllerTests: XCTestCase {
         // Sets mock `FeatureFlagService` before `MainTabBarController` is initialized so that the feature flags are set correctly.
         let isSplitViewInOrdersTabOn = true
         let isHubMenuFeatureFlagOn = true
-        ServiceLocator.setFeatureFlagService(MockFeatureFlagService(isHubMenuOn: isHubMenuFeatureFlagOn, isSplitViewInOrdersTabOn: isSplitViewInOrdersTabOn))
+        let featureFlagService = MockFeatureFlagService(isHubMenuOn: isHubMenuFeatureFlagOn, isSplitViewInOrdersTabOn: isSplitViewInOrdersTabOn)
 
-        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController else {
+        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
+            return MainTabBarController(coder: coder, featureFlagService: featureFlagService)
+        }) else {
             return
         }
 

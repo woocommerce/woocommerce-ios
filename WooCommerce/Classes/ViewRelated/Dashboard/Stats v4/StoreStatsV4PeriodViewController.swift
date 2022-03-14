@@ -114,6 +114,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     }
 
     private var cancellables: Set<AnyCancellable> = []
+    private let chartValueSelectedEventsSubject = PassthroughSubject<Void, Never>()
 
     // MARK: - Initialization
 
@@ -156,6 +157,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
         observeConversionStatsViewState()
         observeYAxisMaximum()
         observeYAxisMinimum()
+        observeChartValueSelectedEvents()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -446,7 +448,17 @@ extension StoreStatsV4PeriodViewController: ChartViewDelegate {
     func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
         let selectedIndex = Int(entry.x)
         updateUI(selectedBarIndex: selectedIndex)
-        usageTracksEventEmitter.interacted()
+
+        chartValueSelectedEventsSubject.send()
+    }
+
+    private func observeChartValueSelectedEvents() {
+        chartValueSelectedEventsSubject
+            .debounce(for: .seconds(1), scheduler: DispatchQueue.main)
+            .sink { [weak self] _ in
+                print("shiki: chartValueSelected \(Date().timeIntervalSince1970)")
+                self?.usageTracksEventEmitter.interacted()
+            }.store(in: &cancellables)
     }
 }
 

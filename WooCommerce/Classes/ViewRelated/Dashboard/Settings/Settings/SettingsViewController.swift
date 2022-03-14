@@ -222,49 +222,6 @@ private extension SettingsViewController {
     }
 }
 
-// MARK: - Crash Debug Menu
-//
-extension SettingsViewController {
-
-    private var crashDebugMenuGestureRecognizer: UITapGestureRecognizer {
-        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didInvokeCrashDebugMenu))
-        gestureRecognizer.numberOfTapsRequired = 4
-        return gestureRecognizer
-    }
-
-    @objc func didInvokeCrashDebugMenu(_ sender: UITapGestureRecognizer? = nil) {
-
-        let menuTitle = NSLocalizedString(
-            "Crash Debug Menu",
-            comment: "The title for a menu that helps debug crashes in production builds"
-        )
-
-        let crashDebugMenu = UIAlertController(title: menuTitle, message: nil, preferredStyle: .actionSheet)
-        crashDebugMenu.addAction(crashDebugMenuCrashAction)
-        crashDebugMenu.addAction(crashDebugMenuCancelAction)
-
-        present(crashDebugMenu, animated: true, completion: nil)
-    }
-
-    private var crashDebugMenuCrashAction: UIAlertAction {
-        let crashTitle = NSLocalizedString(
-            "Crash Immediately",
-            comment: "The title for a button that causes the app to deliberately crash for debugging purposes"
-        )
-
-        return UIAlertAction(title: crashTitle, style: .destructive) { _ in
-            ServiceLocator.crashLogging.crash()
-        }
-    }
-
-    private var crashDebugMenuCancelAction: UIAlertAction {
-        let cancelTitle = NSLocalizedString(
-            "Cancel",
-            comment: "The title for a button that dismisses the crash debug menu"
-        )
-        return UIAlertAction(title: cancelTitle, style: .cancel, handler: nil)
-    }
-}
 
 // MARK: - Convenience Methods
 //
@@ -364,8 +321,8 @@ private extension SettingsViewController {
         let configuration = WooAboutScreenConfiguration()
         let controller = AutomatticAboutScreen.controller(appInfo: WooAboutScreenConfiguration.appInfo,
                                                           configuration: configuration)
-        self.present(controller, animated: true) {
-            self.tableView.deselectSelectedRowWithAnimation(true)
+        present(controller, animated: true) { [weak self] in
+            self?.tableView.deselectSelectedRowWithAnimation(true)
         }
     }
 
@@ -414,7 +371,37 @@ private extension SettingsViewController {
 }
 
 
-// MARK: - UITextViewDeletgate Conformance
+// MARK: - Crash Debug Menu
+//
+private extension SettingsViewController {
+
+    var crashDebugMenuGestureRecognizer: UITapGestureRecognizer {
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didInvokeCrashDebugMenu))
+        gestureRecognizer.numberOfTapsRequired = 4
+        return gestureRecognizer
+    }
+
+    @objc func didInvokeCrashDebugMenu(_ sender: UITapGestureRecognizer? = nil) {
+        let crashDebugMenu = UIAlertController(title: Localization.CrashDebugMenu.title, message: nil, preferredStyle: .actionSheet)
+        crashDebugMenu.addAction(crashDebugMenuCrashAction)
+        crashDebugMenu.addAction(crashDebugMenuCancelAction)
+
+        present(crashDebugMenu, animated: true, completion: nil)
+    }
+
+    var crashDebugMenuCrashAction: UIAlertAction {
+        return UIAlertAction(title: Localization.CrashDebugMenu.crashImmediately, style: .destructive) { _ in
+            ServiceLocator.crashLogging.crash()
+        }
+    }
+
+    var crashDebugMenuCancelAction: UIAlertAction {
+        return UIAlertAction(title: Localization.CrashDebugMenu.cancel, style: .cancel, handler: nil)
+    }
+}
+
+
+// MARK: - UITextViewDelegate Conformance
 //
 extension SettingsViewController: UITextViewDelegate {
 
@@ -710,6 +697,23 @@ private extension SettingsViewController {
             "Made with love by Automattic. <a href=\"https://automattic.com/work-with-us/\">We’re hiring!</a>",
             comment: "It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>`"
         )
+
+        enum CrashDebugMenu {
+            static let title = NSLocalizedString(
+                "Crash Debug Menu",
+                comment: "The title for a menu that helps debug crashes in production builds"
+            )
+
+            static let crashImmediately = NSLocalizedString(
+                "Crash Immediately",
+                comment: "The title for a button that causes the app to deliberately crash for debugging purposes"
+            )
+
+            static let cancel = NSLocalizedString(
+                "Cancel",
+                comment: "The title for a button that dismisses the crash debug menu"
+            )
+        }
 
         enum LogoutAlert {
             static let alertMessage = NSLocalizedString(

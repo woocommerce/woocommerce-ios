@@ -25,10 +25,14 @@ extension ShareAppTextActivityItemSource: UIActivityItemSource {
     }
 
     func activityViewController(_ activityViewController: UIActivityViewController, subjectForActivityType activityType: UIActivity.ActivityType?) -> String {
-        return Self.defaultSubjectText
+        return Localization.defaultSubjectText
     }
+}
 
-    static let defaultSubjectText = NSLocalizedString("WooCommerce Mobile App - Run your store from anywhere",
-                                                      comment: "Subject line for when sharing the app with others through mail or any other activity types "
-                                                        + "that support contains a subject field.")
+private extension ShareAppTextActivityItemSource {
+    enum Localization {
+        static let defaultSubjectText = NSLocalizedString("WooCommerce Mobile App - Run your store from anywhere",
+                                                          comment: "Subject line for when sharing the app with others through mail or any other activity "
+                                                          + "types that support contains a subject field.")
+    }
 }

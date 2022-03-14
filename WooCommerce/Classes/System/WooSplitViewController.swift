@@ -5,7 +5,16 @@ import UIKit
 ///
 final class WooSplitViewController: UISplitViewController {
 
-    init() {
+    /// Convenient type for the closure to handle collapsing a split view
+    ///
+    typealias ColumnForCollapsingHandler = (UISplitViewController) -> UISplitViewController.Column
+
+    private let columnForCollapsingHandler: ColumnForCollapsingHandler
+
+    /// Init a split view with an optional handler to decide which column to collapse the split view into.
+    /// By default, always display the primary column when collapsed.
+    init(columnForCollapsingHandler: @escaping ColumnForCollapsingHandler = { _ in .primary }) {
+        self.columnForCollapsingHandler = columnForCollapsingHandler
         super.init(style: .doubleColumn)
         configureCommonStyle()
     }
@@ -24,8 +33,7 @@ final class WooSplitViewController: UISplitViewController {
 extension WooSplitViewController: UISplitViewControllerDelegate {
     func splitViewController(_ splitViewController: UISplitViewController,
                              topColumnForCollapsingToProposedTopColumn proposedTopColumn: UISplitViewController.Column) -> UISplitViewController.Column {
-        // Always fall back to display the primary column when collapsed.
-        return .primary
+        return columnForCollapsingHandler(splitViewController)
     }
 
     func splitViewController(_ splitViewController: UISplitViewController, willChangeTo displayMode: UISplitViewController.DisplayMode) {

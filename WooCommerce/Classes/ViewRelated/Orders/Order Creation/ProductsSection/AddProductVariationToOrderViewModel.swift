@@ -38,7 +38,15 @@ final class AddProductVariationToOrderViewModel: ObservableObject {
     /// All purchasable product variations for the product.
     ///
     private var productVariations: [ProductVariation] {
-        productVariationsResultsController.fetchedObjects.filter { $0.purchasable }
+        productVariationsResultsController.fetchedObjects
+            .filter { $0.purchasable }
+            .sorted {
+                if $0.menuOrder == $1.menuOrder {
+                    return ProductVariationFormatter().generateName(for: $0, from: productAttributes) <
+                        ProductVariationFormatter().generateName(for: $1, from: productAttributes)
+                }
+                return $0.menuOrder < $1.menuOrder
+            }
     }
 
     /// View models for each product variation row

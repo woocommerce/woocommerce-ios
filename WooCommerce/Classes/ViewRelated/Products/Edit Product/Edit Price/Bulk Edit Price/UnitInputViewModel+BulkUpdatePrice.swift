@@ -1,5 +1,4 @@
 import Foundation
-import Yosemite
 
 extension UnitInputViewModel {
     /// Creates a `UnitInputViewModel` for configuring the cell for the bulk price update.

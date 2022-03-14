@@ -317,7 +317,7 @@ private extension OrderStore {
     func createOrder(siteID: Int64, order: Order, onCompletion: @escaping (Result<Order, Error>) -> Void) {
         remote.createOrder(siteID: siteID,
                            order: order,
-                           fields: [.status, .items, .billingAddress, .shippingAddress, .shippingLines, .feeLines]) { [weak self] result in
+                           fields: [.status, .items, .billingAddress, .shippingAddress, .shippingLines, .feeLines, .customerNotes]) { [weak self] result in
             switch result {
             case .success(let order):
                 // Auto-draft orders are temporary and should not be stored

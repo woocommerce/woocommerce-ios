@@ -53,6 +53,7 @@
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="inputAndUnitStackView" destination="Ob4-NO-lKK" id="ENb-Cm-KUp"/>
+                <outlet property="inputAndUnitStackViewTotitleLabel" destination="ohO-Vo-Z9g" id="hD7-mw-hCx"/>
                 <outlet property="inputTextField" destination="Egc-4I-j1K" id="ABz-lR-XQG"/>
                 <outlet property="titleLabel" destination="USm-hW-Nqm" id="z1x-su-ObU"/>
                 <outlet property="unitLabel" destination="Zeq-2u-wuX" id="GWc-C1-ftr"/>

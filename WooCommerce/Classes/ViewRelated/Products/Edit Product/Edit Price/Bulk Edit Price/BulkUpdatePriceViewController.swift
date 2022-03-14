@@ -135,8 +135,7 @@ private extension BulkUpdatePriceViewController {
     func configure(_ cell: UITableViewCell, at indexPath: IndexPath) {
         switch cell {
         case let cell as UnitInputTableViewCell:
-            let cellViewModel = Product.createRegularPriceViewModel(regularPrice: viewModel.currentPrice,
-                                                                    using: ServiceLocator.currencySettings) { [weak self] value in
+            let cellViewModel = UnitInputViewModel.createBulkPriceViewModel(using: ServiceLocator.currencySettings) { [weak self] value in
                 self?.viewModel.handlePriceChange(value)
             }
             cell.selectionStyle = .none

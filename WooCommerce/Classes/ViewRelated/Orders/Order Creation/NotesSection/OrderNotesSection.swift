@@ -6,8 +6,8 @@ struct OrderNotesSection: View {
     @ObservedObject var viewModel: NewOrderViewModel
 
     /// View model to drive the view content
-    private var notesDataViewModel: NewOrderViewModel.NotesDataViewModel {
-        viewModel.notesDataViewModel
+    private var notesDataViewModel: NewOrderViewModel.CustomerNoteDataViewModel {
+        viewModel.customerNoteDataViewModel
     }
 
     @State private var showEditNotesView: Bool = false
@@ -35,7 +35,7 @@ struct OrderNotesSection: View {
 
 private struct OrderNotesSectionContent: View {
     /// View model to drive the view content
-    var viewModel: NewOrderViewModel.NotesDataViewModel
+    var viewModel: NewOrderViewModel.CustomerNoteDataViewModel
 
     @Binding var showEditNotesView: Bool
 
@@ -115,8 +115,8 @@ private extension OrderNotesSectionContent {
 
 struct CustomerNotesSection_Previews: PreviewProvider {
     static var previews: some View {
-        let emptyViewModel = NewOrderViewModel.NotesDataViewModel(customerNotes: "")
-        let notesViewModel = NewOrderViewModel.NotesDataViewModel(customerNotes: "some notes")
+        let emptyViewModel = NewOrderViewModel.CustomerNoteDataViewModel(customerNotes: "")
+        let notesViewModel = NewOrderViewModel.CustomerNoteDataViewModel(customerNotes: "some notes")
 
         ScrollView {
             OrderNotesSectionContent(viewModel: emptyViewModel, showEditNotesView: .constant(false))

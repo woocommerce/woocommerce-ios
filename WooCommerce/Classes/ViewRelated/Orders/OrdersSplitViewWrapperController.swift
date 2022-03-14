@@ -64,9 +64,7 @@ private extension OrdersSplitViewWrapperController {
     func handleCollapsingSplitView(splitViewController: UISplitViewController) -> UISplitViewController.Column {
         let secondaryColumnNavigationController = splitViewController.viewController(for: .secondary) as? UINavigationController
         if let navigationController = secondaryColumnNavigationController,
-           navigationController.viewControllers.contains(where: { $0 is OrderDetailsViewController }),
-           ((navigationController.topViewController is OrderDetailsViewController) == false ||
-            navigationController.topViewController?.presentedViewController != nil) {
+           navigationController.viewControllers.contains(where: { $0 is OrderDetailsViewController }) {
             return .secondary
         }
         return .primary

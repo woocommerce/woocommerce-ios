@@ -183,6 +183,7 @@ final class NewOrderViewModel: ObservableObject {
         configureProductRowViewModels()
         configureCustomerDataViewModel()
         configurePaymentDataViewModel()
+        configureOrderDataViewModel()
     }
 
     /// Selects an order item by setting the `selectedProductViewModel`.
@@ -241,14 +242,12 @@ final class NewOrderViewModel: ObservableObject {
     }
 
     // MARK: Order notes data properties
-
-    lazy private(set) var orderNotes = { orderSynchronizer.order.customerNote ?? "" }()
+    @Published private(set) var notesDataViewModel: NotesDataViewModel = .init(customerNotes: "")
 
     lazy private(set) var noteViewModel = { OrderNotesViewModel(originalNote: orderSynchronizer.order.customerNote ?? "") }()
 
-    func onOrderNoteUpdate() -> String {
+    func onOrderNoteUpdate() {
         orderSynchronizer.setNotes.send(noteViewModel.newNote)
-        return noteViewModel.newNote
     }
 
     // MARK: - API Requests
@@ -417,6 +416,16 @@ extension NewOrderViewModel {
                                                             didSelectSave: saveFeeLineClosure)
         }
     }
+
+    /// Representation of order notes data display properties
+    ///
+    struct NotesDataViewModel {
+        let customerNotes: String
+
+        init(customerNotes: String) {
+            self.customerNotes = customerNotes
+        }
+    }
 }
 
 // MARK: - Helpers
@@ -524,6 +533,17 @@ private extension NewOrderViewModel {
             }
             .assign(to: &$customerDataViewModel)
     }
+
+    /// Updates notes data viewmodel based on order customer notes.
+    ///
+    func configureOrderDataViewModel() {
+        orderSynchronizer.orderPublisher
+                .map {
+                    NotesDataViewModel(customerNotes: $0.customerNote ?? "")
+                }
+                .assign(to: &$notesDataViewModel)
+    }
+
 
     /// Updates payment section view model based on items in the order and order sync state.
     ///

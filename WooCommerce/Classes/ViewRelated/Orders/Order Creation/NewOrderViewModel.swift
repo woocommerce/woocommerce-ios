@@ -537,10 +537,10 @@ private extension NewOrderViewModel {
                 }()
 
                 return PaymentDataViewModel(itemsTotal: orderTotals.itemsTotal.stringValue,
-                                            shouldShowShippingTotal: order.shippingLines.isNotEmpty,
+                                            shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
                                             shippingTotal: order.shippingTotal,
                                             shippingMethodTitle: shippingMethodTitle,
-                                            shouldShowFees: order.fees.isNotEmpty,
+                                            shouldShowFees: order.fees.filter { $0.name != nil }.isNotEmpty,
                                             feesBaseAmountForPercentage: orderTotals.feesBaseAmountForPercentage as Decimal,
                                             feesTotal: orderTotals.feesTotal.stringValue,
                                             shouldShowTaxes: order.totalTax.isNotEmpty,

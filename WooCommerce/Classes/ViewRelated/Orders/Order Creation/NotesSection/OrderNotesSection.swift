@@ -1,26 +1,30 @@
 import SwiftUI
 
 struct OrderNotesSection: View {
+
     /// Parent view model to access all data
     @ObservedObject var viewModel: NewOrderViewModel
 
+    /// View model to drive the view content
+    private var notesDataViewModel: NewOrderViewModel.NotesDataViewModel {
+        viewModel.notesDataViewModel
+    }
+
     @State private var showEditNotesView: Bool = false
 
-    @State private var notes: String = ""
-
     var body: some View {
-        OrderNotesSectionContent(notes: $notes, showEditNotesView: $showEditNotesView)
+        OrderNotesSectionContent(viewModel: notesDataViewModel, showEditNotesView: $showEditNotesView)
             .sheet(
                 isPresented: $showEditNotesView,
                 onDismiss: {
                     viewModel.noteViewModel.userDidCancelFlow()
-                    notes = viewModel.onOrderNoteUpdate()
+                    viewModel.onOrderNoteUpdate()
                 },
                 content: {
                     EditCustomerNote(
                         dismiss: {
                             showEditNotesView.toggle()
-                            notes = viewModel.onOrderNoteUpdate()
+                            viewModel.onOrderNoteUpdate()
                         },
                         viewModel: viewModel.noteViewModel
                     )
@@ -31,7 +35,7 @@ struct OrderNotesSection: View {
 
 private struct OrderNotesSectionContent: View {
     /// View model to drive the view content
-    @Binding var notes: String
+    var viewModel: NewOrderViewModel.NotesDataViewModel
 
     @Binding var showEditNotesView: Bool
 
@@ -43,12 +47,12 @@ private struct OrderNotesSectionContent: View {
                 Text(Localization.notes)
                     .headlineStyle()
                 Spacer()
-                if notes.isNotEmpty {
+                if viewModel.customerNotes.isNotEmpty {
                     createEditNotesButton
                 }
             }.padding([.leading, .top, .trailing])
 
-            if notes.isEmpty {
+            if viewModel.customerNotes.isEmpty {
                 createOrderNotesView
             } else {
                 createNoteDataView
@@ -82,7 +86,7 @@ private struct OrderNotesSectionContent: View {
     }
 
     private var createNoteDataView: some View {
-        Text(notes)
+        Text(viewModel.customerNotes)
             .padding([.leading, .bottom, .trailing])
     }
 }
@@ -111,9 +115,12 @@ private extension OrderNotesSectionContent {
 
 struct CustomerNotesSection_Previews: PreviewProvider {
     static var previews: some View {
+        let emptyViewModel = NewOrderViewModel.NotesDataViewModel(customerNotes: "")
+        let notesViewModel = NewOrderViewModel.NotesDataViewModel(customerNotes: "some notes")
+
         ScrollView {
-            OrderNotesSectionContent(notes: .constant(""), showEditNotesView: .constant(false))
-            OrderNotesSectionContent(notes: .constant("Some notes"), showEditNotesView: .constant(false))
+            OrderNotesSectionContent(viewModel: emptyViewModel, showEditNotesView: .constant(false))
+            OrderNotesSectionContent(viewModel: notesViewModel, showEditNotesView: .constant(false))
         }
     }
 }

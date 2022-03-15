@@ -120,8 +120,10 @@ final class SiteSettingsRemoteTests: XCTestCase {
         }
 
         // Then
-        let settings = try result.get()
-        XCTAssertEqual(settings.value, "yes")
+        let setting = try result.get()
+        XCTAssertEqual(setting.settingGroupKey, "general")
+        XCTAssertEqual(setting.settingID, "woocommerce_enable_coupons")
+        XCTAssertEqual(setting.value, "yes")
     }
 
     func test_loadCouponSetting_properly_relays_netwoking_errors() throws {
@@ -133,6 +135,45 @@ final class SiteSettingsRemoteTests: XCTestCase {
         // When
         let result: Result<Networking.SiteSetting, Error> = waitFor { promise in
             remote.loadCouponSetting(for: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        let resultError = try XCTUnwrap(result.failure as? NetworkError)
+        XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 500))
+    }
+
+    // MARK: - Update coupon setting tests
+    func test_updateCouponSetting_properly_returns_parsed_settings() throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "settings/general/woocommerce_enable_coupons", filename: "setting-coupon")
+        let remote = SiteSettingsRemote(network: network)
+
+        // When
+        let result: Result<Networking.SiteSetting, Error> = waitFor { promise in
+            remote.updateCouponSetting(for: self.sampleSiteID, value: "yes") { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let setting = try result.get()
+        XCTAssertEqual(setting.settingGroupKey, "general")
+        XCTAssertEqual(setting.settingID, "woocommerce_enable_coupons")
+        XCTAssertEqual(setting.value, "yes")
+    }
+
+    func test_updateCouponSetting_properly_relays_netwoking_errors() throws {
+        // Given
+        let remote = SiteSettingsRemote(network: network)
+        let error = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: "settings/general/woocommerce_enable_coupons", error: error)
+
+        // When
+        let result: Result<Networking.SiteSetting, Error> = waitFor { promise in
+            remote.updateCouponSetting(for: self.sampleSiteID, value: "yes") { result in
                 promise(result)
             }
         }

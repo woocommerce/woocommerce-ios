@@ -559,6 +559,10 @@ private extension CardPresentPaymentStore {
             upsertCardPresentDetails(details, for: storageWCPayCharge, in: storage)
         case .card(let details):
             upsertCardDetails(details, for: storageWCPayCharge, in: storage)
+        case .interacPresent(let details):
+            storageWCPayCharge.cardDetails = nil
+            storageWCPayCharge.cardPresentDetails = nil
+            #warning("actually do this")
         case .unknown:
             storageWCPayCharge.cardDetails = nil
             storageWCPayCharge.cardPresentDetails = nil

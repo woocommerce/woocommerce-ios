@@ -260,7 +260,7 @@ class ProductRowViewModelTests: XCTestCase {
         // Given
         let product = Product.fake()
         var productRemoved = false
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true, removeProduct: { productRemoved = true })
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true, removeProductIntent: { productRemoved = true })
 
         // When
         viewModel.decrementQuantity()

@@ -89,10 +89,9 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         quantity < minimumQuantity
     }
 
-    /// Closure to remove the product.
-    /// Used when the quantity is decremented below the minimum quantity.
+    /// Closure to run when the quantity is decremented below the minimum quantity.
     ///
-    var removeProduct: () -> Void
+    var removeProductIntent: () -> Void
 
     /// Number of variations in a variable product
     ///
@@ -112,7 +111,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          numberOfVariations: Int = 0,
          variationDisplayMode: VariationDisplayMode? = nil,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-         removeProduct: @escaping (() -> Void) = {}) {
+         removeProductIntent: @escaping (() -> Void) = {}) {
         self.id = id ?? Int64(UUID().uuidString.hashValue)
         self.productOrVariationID = productOrVariationID
         self.name = name
@@ -127,7 +126,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.currencyFormatter = currencyFormatter
         self.numberOfVariations = numberOfVariations
         self.variationDisplayMode = variationDisplayMode
-        self.removeProduct = removeProduct
+        self.removeProductIntent = removeProductIntent
     }
 
     /// Initialize `ProductRowViewModel` with a `Product`
@@ -137,7 +136,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      quantity: Decimal = 1,
                      canChangeQuantity: Bool,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-                     removeProduct: @escaping (() -> Void) = {}) {
+                     removeProductIntent: @escaping (() -> Void) = {}) {
         // Don't show any price for variable products; price will be shown for each product variation.
         let price: String?
         if product.productType == .variable {
@@ -159,7 +158,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   imageURL: product.imageURL,
                   numberOfVariations: product.variations.count,
                   currencyFormatter: currencyFormatter,
-                  removeProduct: removeProduct)
+                  removeProductIntent: removeProductIntent)
     }
 
     /// Initialize `ProductRowViewModel` with a `ProductVariation`
@@ -171,7 +170,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      canChangeQuantity: Bool,
                      displayMode: VariationDisplayMode,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-                     removeProduct: @escaping (() -> Void) = {}) {
+                     removeProductIntent: @escaping (() -> Void) = {}) {
         let imageURL: URL?
         if let encodedImageURLString = productVariation.image?.src.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
             imageURL = URL(string: encodedImageURLString)
@@ -192,7 +191,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   imageURL: imageURL,
                   variationDisplayMode: displayMode,
                   currencyFormatter: currencyFormatter,
-                  removeProduct: removeProduct)
+                  removeProductIntent: removeProductIntent)
     }
 
     /// Determines which product variation details to display.
@@ -269,7 +268,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     func decrementQuantity() {
         guard quantity > minimumQuantity else {
-            return removeProduct()
+            return removeProductIntent()
         }
         quantity -= 1
     }

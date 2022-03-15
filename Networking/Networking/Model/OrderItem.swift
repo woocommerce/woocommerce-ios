@@ -77,14 +77,8 @@ public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, Genera
         }
 
         let quantity = try container.decode(Decimal.self, forKey: .quantity)
-
-        /// WC versions lower than `6.3` send the item price as a `number`.
-        /// WC Versions equal or greater than `6.3` send the item price as a `string`.
-        ///
-        let decimalPrice = container.failsafeDecodeIfPresent(targetType: String.self,
-                                                             forKey: .price,
-                                                             alternativeTypes: [.decimal { String(describing: $0) }])
-        let price = NSDecimalNumber(string: decimalPrice)
+        let decimalPrice = try container.decodeIfPresent(Decimal.self, forKey: .price) ?? Decimal(0)
+        let price = NSDecimalNumber(decimal: decimalPrice)
 
         let sku = try container.decodeIfPresent(String.self, forKey: .sku)
         let subtotal = try container.decode(String.self, forKey: .subtotal)

@@ -32,7 +32,7 @@ final class LocalOrderSynchronizer: OrderSynchronizer {
 
     var setFee = PassthroughSubject<OrderFeeLine?, Never>()
 
-    var setNotes = PassthroughSubject<String?, Never>()
+    var setNote = PassthroughSubject<String?, Never>()
 
     var retryTrigger = PassthroughSubject<Void, Never>()
 

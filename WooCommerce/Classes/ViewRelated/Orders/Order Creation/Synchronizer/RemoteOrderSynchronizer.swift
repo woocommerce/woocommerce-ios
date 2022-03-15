@@ -32,7 +32,7 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
 
     var setFee = PassthroughSubject<OrderFeeLine?, Never>()
 
-    var setNotes = PassthroughSubject<String?, Never>()
+    var setNote = PassthroughSubject<String?, Never>()
 
     var retryTrigger = PassthroughSubject<Void, Never>()
 
@@ -146,7 +146,7 @@ private extension RemoteOrderSynchronizer {
             }
             .assign(to: &$order)
 
-        setNotes.withLatestFrom(orderPublisher)
+        setNote.withLatestFrom(orderPublisher)
             .map { notes, order in
                 order.copy(customerNote: notes)
             }

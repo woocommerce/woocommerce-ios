@@ -109,7 +109,7 @@ final class NewOrderViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, enableRemoteSync: true)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
 
         // When
         waitForExpectation { expectation in
@@ -134,7 +134,7 @@ final class NewOrderViewModelTests: XCTestCase {
     func test_view_model_clears_error_notice_when_order_is_syncing() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, enableRemoteSync: true)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
         viewModel.notice = NewOrderViewModel.NoticeFactory.createOrderErrorNotice()
 
         // When
@@ -482,7 +482,7 @@ final class NewOrderViewModelTests: XCTestCase {
     func test_payment_section_loading_indicator_is_enabled_while_order_syncs() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, enableRemoteSync: true)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
 
         // When
         let isLoadingDuringSync: Bool = waitFor { promise in
@@ -509,7 +509,7 @@ final class NewOrderViewModelTests: XCTestCase {
         let expectation = expectation(description: "Order with taxes is synced")
         let currencySettings = CurrencySettings()
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, currencySettings: currencySettings, enableRemoteSync: true)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, currencySettings: currencySettings)
 
         // When
         stores.whenReceivingAction(ofType: OrderAction.self) { action in

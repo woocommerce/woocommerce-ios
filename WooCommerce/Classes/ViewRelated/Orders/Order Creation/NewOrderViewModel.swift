@@ -172,15 +172,13 @@ final class NewOrderViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         analytics: Analytics = ServiceLocator.analytics,
-         enableRemoteSync: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreation)) {
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.analytics = analytics
-        self.orderSynchronizer = enableRemoteSync ? RemoteOrderSynchronizer(siteID: siteID, stores: stores)
-                                                  : LocalOrderSynchronizer(siteID: siteID, stores: stores, currencySettings: currencySettings)
+        self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, stores: stores, currencySettings: currencySettings)
 
         configureDisabledState()
         configureNavigationTrailingItem()
@@ -543,10 +541,10 @@ private extension NewOrderViewModel {
                 }()
 
                 return PaymentDataViewModel(itemsTotal: orderTotals.itemsTotal.stringValue,
-                                            shouldShowShippingTotal: order.shippingLines.isNotEmpty,
+                                            shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
                                             shippingTotal: order.shippingTotal,
                                             shippingMethodTitle: shippingMethodTitle,
-                                            shouldShowFees: order.fees.isNotEmpty,
+                                            shouldShowFees: order.fees.filter { $0.name != nil }.isNotEmpty,
                                             feesBaseAmountForPercentage: orderTotals.feesBaseAmountForPercentage as Decimal,
                                             feesTotal: orderTotals.feesTotal.stringValue,
                                             shouldShowTaxes: order.totalTax.isNotEmpty,

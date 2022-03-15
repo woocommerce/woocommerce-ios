@@ -67,10 +67,11 @@ public class OrderStore: Store {
         case let .createOrder(siteID, order, onCompletion):
             createOrder(siteID: siteID, order: order, onCompletion: onCompletion)
 
-        case let .updateSimplePaymentsOrder(siteID, orderID, feeID, amount, taxable, orderNote, email, onCompletion):
+        case let .updateSimplePaymentsOrder(siteID, orderID, feeID, status, amount, taxable, orderNote, email, onCompletion):
             updateSimplePaymentsOrder(siteID: siteID,
                                       orderID: orderID,
                                       feeID: feeID,
+                                      status: status,
                                       amount: amount,
                                       taxable: taxable,
                                       orderNote: orderNote,
@@ -293,6 +294,7 @@ private extension OrderStore {
     func updateSimplePaymentsOrder(siteID: Int64,
                                    orderID: Int64,
                                    feeID: Int64,
+                                   status: OrderStatusEnum,
                                    amount: String,
                                    taxable: Bool,
                                    orderNote: String?,
@@ -300,7 +302,7 @@ private extension OrderStore {
                                    onCompletion: @escaping (Result<Order, Error>) -> Void) {
 
         // Recreate the original order
-        let originalOrder = OrderFactory.simplePaymentsOrder(amount: amount, taxable: taxable)
+        let originalOrder = OrderFactory.simplePaymentsOrder(status: status, amount: amount, taxable: taxable)
 
         // Create updated fields
         let newFee = OrderFactory.simplePaymentFee(feeID: feeID, amount: amount, taxable: taxable)
@@ -318,7 +320,7 @@ private extension OrderStore {
 
         // Set new fields
         let updatedOrder = originalOrder.copy(orderID: orderID, customerNote: orderNote, billingAddress: newBillingAddress, fees: [newFee])
-        let updateFields: [OrderUpdateField] = [.customerNote, .billingAddress, .fees]
+        let updateFields: [OrderUpdateField] = [.customerNote, .billingAddress, .fees, .status]
 
         updateOrder(siteID: siteID, order: updatedOrder, fields: updateFields, onCompletion: onCompletion)
     }

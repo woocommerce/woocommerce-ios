@@ -224,6 +224,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         let action = OrderAction.updateSimplePaymentsOrder(siteID: siteID,
                                                            orderID: orderID,
                                                            feeID: feeID,
+                                                           status: .pending, // Force .pending status to properly generate the payment link in the next screen.
                                                            amount: providedAmount,
                                                            taxable: enableTaxes,
                                                            orderNote: noteContent,

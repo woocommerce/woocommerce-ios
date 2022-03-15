@@ -78,6 +78,7 @@ public enum OrderAction: Action {
     case updateSimplePaymentsOrder(siteID: Int64,
                                    orderID: Int64,
                                    feeID: Int64,
+                                   status: OrderStatusEnum,
                                    amount: String,
                                    taxable: Bool,
                                    orderNote: String?,

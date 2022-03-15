@@ -2,6 +2,7 @@ import UIKit
 import Yosemite
 import Combine
 import protocol Storage.StorageManagerType
+import Experiments
 
 /// The root tab controller for Orders, which contains the `OrderListViewController` .
 ///
@@ -20,7 +21,8 @@ final class OrdersRootViewController: UIViewController {
         emptyStateConfig: .simple(
             message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
             image: .waitingForCustomersImage
-        )
+        ),
+        switchDetailsHandler: handleSwitchingDetails(viewModel:)
     )
 
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
@@ -68,6 +70,8 @@ final class OrdersRootViewController: UIViewController {
 
         return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
+  
+    private let featureFlagService: FeatureFlagService
 
     // MARK: View Lifecycle
 
@@ -75,10 +79,14 @@ final class OrdersRootViewController: UIViewController {
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
         self.storageManager = storageManager
+        self.featureFlagService = ServiceLocator.featureFlagService
         super.init(nibName: Self.nibName, bundle: nil)
 
         configureTitle()
-        configureTabBarItem()
+
+        if !featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            configureTabBarItem()
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -111,6 +119,9 @@ final class OrdersRootViewController: UIViewController {
     }
 
     override var shouldShowOfflineBanner: Bool {
+        if featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            return false
+        }
         return true
     }
 
@@ -135,7 +146,6 @@ final class OrdersRootViewController: UIViewController {
             DDLogError("## Notification with [\(note.noteID)] lacks its OrderID!")
             return
         }
-
         let loaderViewController = OrderLoaderViewController(note: note, orderID: Int64(orderID), siteID: Int64(siteID))
         navigationController?.pushViewController(loaderViewController, animated: true)
     }
@@ -161,6 +171,15 @@ final class OrdersRootViewController: UIViewController {
         }, onDismissAction: {
         })
         present(filterOrderListViewController, animated: true, completion: nil)
+    }
+
+    /// This is to update the order detail in split view
+    ///
+    private func handleSwitchingDetails(viewModel: OrderDetailsViewModel) {
+        let orderDetailsViewController = OrderDetailsViewController(viewModel: viewModel)
+        let orderDetailsNavigationController = WooNavigationController(rootViewController: orderDetailsViewController)
+
+        splitViewController?.showDetailViewController(orderDetailsNavigationController, sender: nil)
     }
 }
 
@@ -199,7 +218,7 @@ private extension OrdersRootViewController {
     func configureFiltersBar() {
         // Display the filtered orders bar
         // if the feature flag is enabled
-        let isOrderListFiltersEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderListFilters)
+        let isOrderListFiltersEnabled = featureFlagService.isFeatureFlagEnabled(.orderListFilters)
         if isOrderListFiltersEnabled {
             stackView.addArrangedSubview(filtersBar)
         }
@@ -378,8 +397,8 @@ private extension OrdersRootViewController {
     /// Pushes an `OrderDetailsViewController` onto the navigation stack.
     ///
     private func navigateToOrderDetail(_ order: Order) {
-        guard let orderViewController = OrderDetailsViewController.instantiatedViewControllerFromStoryboard() else { return }
-        orderViewController.viewModel = OrderDetailsViewModel(order: order)
+        let viewModel = OrderDetailsViewModel(order: order)
+        let orderViewController = OrderDetailsViewController(viewModel: viewModel)
 
         // Cleanup navigation (remove new order flow views) before navigating to order details
         if let navigationController = navigationController, let indexOfSelf = navigationController.viewControllers.firstIndex(of: self) {

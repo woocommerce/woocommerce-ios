@@ -22,10 +22,6 @@ public enum FeatureFlag: Int {
     ///
     case jetpackConnectionPackageSupport
 
-    /// Allows new orders to be manually created
-    ///
-    case orderCreation
-
     /// Display the new tab "Menu" in the tab bar.
     ///
     case hubMenu
@@ -45,10 +41,6 @@ public enum FeatureFlag: Int {
     /// Support for In-Person Payments in Canada
     ///
     case canadaInPersonPayments
-
-    /// Displays the tax lines breakup in simple payments summary screen
-    ///
-    case taxLinesInSimplePayments
 
     /// Displays the Inbox option under the Hub Menu.
     ///

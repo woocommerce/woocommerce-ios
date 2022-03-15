@@ -104,7 +104,7 @@ private extension LocalOrderSynchronizer {
             }
             .assign(to: &$order)
 
-        setNotes.withLatestFrom(orderPublisher)
+        setNote.withLatestFrom(orderPublisher)
             .map { notes, order in order.copy(customerNote: notes) }
             .assign(to: &$order)
     }

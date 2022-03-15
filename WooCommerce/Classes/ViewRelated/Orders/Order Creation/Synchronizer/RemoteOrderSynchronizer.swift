@@ -147,8 +147,8 @@ private extension RemoteOrderSynchronizer {
             .assign(to: &$order)
 
         setNotes.withLatestFrom(orderPublisher)
-            .map { notes, order  in 
-                order.copy(customerNote: notes) 
+            .map { notes, order in
+                order.copy(customerNote: notes)
             }
             .assign(to: &$order)
     }

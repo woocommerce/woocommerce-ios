@@ -18,19 +18,30 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_initial_viewModel_state() {
+    func test_initial_viewModel_state() throws {
         // Given
-        let viewModel = BulkUpdatePriceSettingsViewModel(siteID: 0, productID: 0, productVariations: [], editingPriceType: .regular, priceUpdateDidFinish: { })
+        let viewModel = BulkUpdatePriceSettingsViewModel(siteID: 0,
+                                                         productID: 0,
+                                                         bulkUpdateOptionsModel: BulkUpdateOptionsModel(productVariations: []),
+                                                         editingPriceType: .regular,
+                                                         priceUpdateDidFinish: { })
 
         // Then
         XCTAssertEqual(viewModel.saveButtonState, .disabled)
         XCTAssertNil(viewModel.bulkUpdatePriceError)
+        XCTAssertEqual(viewModel.sections.count, 1)
+        XCTAssertEqual(viewModel.sections.first?.rows.count, 1)
+        let footerText = try XCTUnwrap(viewModel.sections.first?.footer)
+        XCTAssertTrue(footerText.isNotEmpty)
     }
 
     func test_state_when_price_is_changed_from_empty_to_a_value() {
         // Given
-        let viewModel = BulkUpdatePriceSettingsViewModel(siteID: 0, productID: 0, productVariations: [], editingPriceType: .regular, priceUpdateDidFinish: { })
-
+        let viewModel = BulkUpdatePriceSettingsViewModel(siteID: 0,
+                                                         productID: 0,
+                                                         bulkUpdateOptionsModel: BulkUpdateOptionsModel(productVariations: []),
+                                                         editingPriceType: .regular,
+                                                         priceUpdateDidFinish: { })
         viewModel.handlePriceChange("42")
 
         // Then
@@ -40,8 +51,11 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
 
     func test_state_when_price_is_changed_from_a_value_to_empty() {
         // Given
-        let viewModel = BulkUpdatePriceSettingsViewModel(siteID: 0, productID: 0, productVariations: [], editingPriceType: .regular, priceUpdateDidFinish: { })
-
+        let viewModel = BulkUpdatePriceSettingsViewModel(siteID: 0,
+                                                         productID: 0,
+                                                         bulkUpdateOptionsModel: BulkUpdateOptionsModel(productVariations: []),
+                                                         editingPriceType: .regular,
+                                                         priceUpdateDidFinish: { })
         viewModel.handlePriceChange("")
 
         // Then
@@ -54,7 +68,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
         let variations = [MockProductVariation().productVariation().copy(dateOnSaleStart: Date(), dateOnSaleEnd: Date(), salePrice: "42")]
         let viewModel = BulkUpdatePriceSettingsViewModel(siteID: 0,
                                                          productID: 0,
-                                                         productVariations: variations,
+                                                         bulkUpdateOptionsModel: BulkUpdateOptionsModel(productVariations: variations),
                                                          editingPriceType: .regular,
                                                          priceUpdateDidFinish: { })
 
@@ -72,7 +86,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
                           MockProductVariation().productVariation().copy(dateOnSaleStart: Date(), dateOnSaleEnd: Date(), salePrice: "42")]
         let viewModel = BulkUpdatePriceSettingsViewModel(siteID: 0,
                                                          productID: 0,
-                                                         productVariations: variations,
+                                                         bulkUpdateOptionsModel: BulkUpdateOptionsModel(productVariations: variations),
                                                          editingPriceType: .regular,
                                                          priceUpdateDidFinish: { })
 
@@ -89,7 +103,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
         let variations = [MockProductVariation().productVariation().copy(dateOnSaleStart: Date(), dateOnSaleEnd: Date(), salePrice: "42")]
         let viewModel = BulkUpdatePriceSettingsViewModel(siteID: 0,
                                                          productID: 0,
-                                                         productVariations: variations,
+                                                         bulkUpdateOptionsModel: BulkUpdateOptionsModel(productVariations: variations),
                                                          editingPriceType: .regular,
                                                          priceUpdateDidFinish: { })
 
@@ -108,7 +122,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
                           MockProductVariation().productVariation().copy(dateOnSaleStart: Date(), dateOnSaleEnd: Date(), salePrice: "42")]
         let viewModel = BulkUpdatePriceSettingsViewModel(siteID: 0,
                                                          productID: 0,
-                                                         productVariations: variations,
+                                                         bulkUpdateOptionsModel: BulkUpdateOptionsModel(productVariations: variations),
                                                          editingPriceType: .regular,
                                                          priceUpdateDidFinish: { })
 
@@ -129,14 +143,35 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
         }
         let viewModel = BulkUpdatePriceSettingsViewModel(siteID: 0,
                                                          productID: 0,
-                                                         productVariations: variations,
+                                                         bulkUpdateOptionsModel: BulkUpdateOptionsModel(productVariations: variations),
                                                          editingPriceType: .regular,
-                                                         priceUpdateDidFinish: { },
-                                                         storesManager: storesManager)
+                                                         priceUpdateDidFinish: { })
 
         // When
         viewModel.handlePriceChange("50")
         viewModel.saveButtonTapped()
+
+        // Then
+        XCTAssertEqual(viewModel.saveButtonState, .loading)
+        XCTAssertNil(viewModel.bulkUpdatePriceError)
+    }
+
+    func test_state_remains_loading_when_price_changes() {
+        // Given
+        let variations = [MockProductVariation().productVariation().copy(dateOnSaleStart: Date(), dateOnSaleEnd: Date(), salePrice: "9")]
+        storesManager.whenReceivingAction(ofType: ProductVariationAction.self) { _ in
+            // do nothing to stay in "syncing" state
+        }
+        let viewModel = BulkUpdatePriceSettingsViewModel(siteID: 0,
+                                                         productID: 0,
+                                                         bulkUpdateOptionsModel: BulkUpdateOptionsModel(productVariations: variations),
+                                                         editingPriceType: .regular,
+                                                         priceUpdateDidFinish: { })
+
+        // When
+        viewModel.handlePriceChange("50")
+        viewModel.saveButtonTapped()
+        viewModel.handlePriceChange("500")
 
         // Then
         XCTAssertEqual(viewModel.saveButtonState, .loading)
@@ -156,7 +191,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
         }
         let viewModel = BulkUpdatePriceSettingsViewModel(siteID: 0,
                                                          productID: 0,
-                                                         productVariations: variations,
+                                                         bulkUpdateOptionsModel: BulkUpdateOptionsModel(productVariations: variations),
                                                          editingPriceType: .regular,
                                                          priceUpdateDidFinish: { },
                                                          storesManager: storesManager)
@@ -184,7 +219,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
         }
         let viewModel = BulkUpdatePriceSettingsViewModel(siteID: 0,
                                                          productID: 0,
-                                                         productVariations: variations,
+                                                         bulkUpdateOptionsModel: BulkUpdateOptionsModel(productVariations: variations),
                                                          editingPriceType: .regular,
                                                          priceUpdateDidFinish: {
                                                             isCallbackCalled = true
@@ -220,7 +255,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
         }
         let viewModel = BulkUpdatePriceSettingsViewModel(siteID: 0,
                                                          productID: 0,
-                                                         productVariations: variations,
+                                                         bulkUpdateOptionsModel: BulkUpdateOptionsModel(productVariations: variations),
                                                          editingPriceType: .regular,
                                                          priceUpdateDidFinish: { },
                                                          storesManager: storesManager)

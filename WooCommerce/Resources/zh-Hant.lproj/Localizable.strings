@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-03-08 11:32:22+0000 */
+/* Translation-Revision-Date: 2022-03-10 11:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -41,7 +41,7 @@
 "%1$@ and %2$@" = "%1$@和 %2$@";
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
-"%1$@ card ending %2$@" = "%1$@ card ending %2$@";
+"%1$@ card ending %2$@" = "卡號結尾是 %2$@ 的 %1$@ 卡";
 
 /* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
 "%1$@ excl. %2$@" = "除 %2$@以外的 %1$@";
@@ -243,7 +243,7 @@
 "A customs form must be printed and included on this international shipment" = "此國際貨件須列印並附上海關表格";
 
 /* Message when attempting to pay for a test transaction with a live card. */
-"A live card was used on a site in test mode. Use a test card instead." = "A live card was used on a site in test mode. Use a test card instead.";
+"A live card was used on a site in test mode. Use a test card instead." = "在測試模式下的網站上使用了有效信用卡。 請改用測試卡片。";
 
 /* Error message when there was a network error checking In-Person Payments requirements */
 "A network error occurred. Please check your connection and try again." = "網路發生錯誤。 請檢查你的連線並再試一次。";
@@ -282,7 +282,7 @@
 "ADDRESS" = "地址";
 
 /* Reads as 'AID'. Part of the mandatory data in receipts */
-"AID" = "AID";
+"AID" = "輔助";
 
 /* About this app (information page title) */
 "About" = "關於";
@@ -291,7 +291,7 @@
 "About the App" = "關於此應用程式";
 
 /* Reads as 'Account Type'. Part of the mandatory data in receipts */
-"Account Type" = "Account Type";
+"Account Type" = "帳戶類型";
 
 /* Title for the error screen when a Card Present Payments extension is installed but not activated */
 "Activate %1$@" = "啟用 %1$@";
@@ -336,7 +336,7 @@
 "Add Downloadable File" = "新增可下載的檔案";
 
 /* Title for the Fee screen during order creation */
-"Add Fee" = "Add Fee";
+"Add Fee" = "新增費用";
 
 /* Title text of the button that adds fees when creating a new order */
 "Add Fees" = "新增費用";
@@ -407,7 +407,7 @@
 "Add a tracking" = "新增追蹤";
 
 /* Cell text in Add / Edit variation when there are no images. */
-"Add a variation image" = "Add a variation image";
+"Add a variation image" = "新增子項圖片";
 
 /* Button title in the Shipping Label Payment Method screen if there is an existing payment method */
 "Add another credit card" = "新增其他信用卡";
@@ -539,23 +539,23 @@
 "Amount" = "金額";
 
 /* Title for the amount field on the Fee Details screen during order creationParameters: %1$@ - fee type (percent sign or currency symbol) */
-"Amount (%1$@)" = "Amount (%1$@)";
+"Amount (%1$@)" = "金額 (%1$@)";
 
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
 "Amount Eligible For Refund" = "符合退款資格的金額";
 
 /* Line description for 'Amount Paid' cart total on the receipt
    Title of 'Amount Paid' section in the receipt */
-"Amount Paid" = "Amount Paid";
+"Amount Paid" = "付款金額";
 
 /* A failure reason for when an error HTTP status code was returned from the site, with the specific error code. */
-"An HTTP error code %i was returned." = "An HTTP error code %i was returned.";
+"An HTTP error code %i was returned." = "已傳回 HTTP 錯誤代碼 %i。";
 
 /* A failure reason for when an error HTTP status code was returned from the site. */
-"An HTTP error code was returned." = "An HTTP error code was returned.";
+"An HTTP error code was returned." = "已傳回 HTTP 錯誤代碼。";
 
 /* Error message when Bluetooth is not enabled for this application. */
-"An error occurred accessing Bluetooth - please enable Bluetooth and try again" = "An error occurred accessing Bluetooth - please enable Bluetooth and try again";
+"An error occurred accessing Bluetooth - please enable Bluetooth and try again" = "存取藍牙時發生錯誤 - 請啟用藍牙，然後再試一次";
 
 /* An error description explaining that a Menu could not be created. */
 "An error occurred creating the Menu." = "建立「選單」時發生錯誤。";
@@ -573,16 +573,16 @@
 "An error occurred while processing your request: " = "處理要求時發生錯誤：";
 
 /* Message when it looks like a duplicate transaction is being attempted. */
-"An identical transaction was submitted recently. If you wish to continue, try another means of payment" = "An identical transaction was submitted recently. If you wish to continue, try another means of payment";
+"An identical transaction was submitted recently. If you wish to continue, try another means of payment" = "近期送出了一筆完全相同的交易。 如果想繼續，請嘗試其他付款方式";
 
 /* Message when an incorrect PIN has been entered too many times. */
-"An incorrect PIN has been entered too many times. Try another means of payment" = "An incorrect PIN has been entered too many times. Try another means of payment";
+"An incorrect PIN has been entered too many times. Try another means of payment" = "輸入太多次不正確的 PIN 碼。 請嘗試其他付款方式";
 
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "可選擇在購買之後傳送備註給客戶";
 
 /* A failure reason for when the error that occured wasn't able to be determined. */
-"An unknown error occurred." = "An unknown error occurred.";
+"An unknown error occurred." = "發生未知的錯誤。";
 
 /* Title of analytics as part of Jetpack benefits. */
 "Analytics" = "分析";
@@ -605,7 +605,7 @@
 "Application Logs" = "應用程式記錄檔";
 
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
-"Application Name" = "Application Name";
+"Application Name" = "應用程式名稱";
 
 /* Change order status screen - button title to apply selection */
 "Apply" = "套用";
@@ -663,7 +663,7 @@
 "Are you sure you want to remove this variation?" = "你確定要移除此款式嗎？";
 
 /* Message displayed in the alert for dismissing all the inbox notes. */
-"Are you sure? Inbox messages will be dismissed forever." = "Are you sure? Inbox messages will be dismissed forever.";
+"Are you sure? Inbox messages will be dismissed forever." = "確定要繼續操作嗎？ 收件匣訊息將永久關閉。";
 
 /* Placeholder in the Attribute Name row on Rename Attributes screen. */
 "Attribute name" = "屬性名稱";
@@ -749,7 +749,7 @@
 
 /* Button title in the action sheet of product variatiosns that shows the bulk update
    Title that appears on top of the bulk update of product variations screen */
-"Bulk Update" = "Bulk Update";
+"Bulk Update" = "批次更新";
 
 /* Title of the text field for editing the button text for an external/affiliate product */
 "Button Text" = "按鈕文字";
@@ -807,10 +807,10 @@
 "Card" = "卡片";
 
 /* Error message when a card is left in the reader and another transaction started. */
-"Card was left in reader - please remove and reinsert card" = "Card was left in reader - please remove and reinsert card";
+"Card was left in reader - please remove and reinsert card" = "卡片留在讀卡機中 - 請取出卡片，然後重新插入";
 
 /* Error message when the card is removed from the reader prematurely. */
-"Card was removed too soon - please try transaction again" = "Card was removed too soon - please try transaction again";
+"Card was removed too soon - please try transaction again" = "太快移除卡片 - 請重新交易";
 
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "貨運業者和費率";
@@ -969,7 +969,7 @@
 "Connecting to reader" = "正在連線至讀卡機";
 
 /* Error message when establishing a connection to the card reader times out. */
-"Connecting to the card reader timed out - ensure it is nearby and charged and then try again" = "Connecting to the card reader timed out - ensure it is nearby and charged and then try again";
+"Connecting to the card reader timed out - ensure it is nearby and charged and then try again" = "連接讀卡機逾時 - 請確認讀卡機在附近且已充電，然後再試一次";
 
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "連結你的帳號";
@@ -1215,7 +1215,7 @@
 "Date Range" = "日期範圍";
 
 /* Title of 'Date Paid' section in the receipt */
-"Date paid" = "Date paid";
+"Date paid" = "付款日期";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "出貨日期";
@@ -1278,7 +1278,7 @@
 "Discount" = "折扣";
 
 /* Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s) */
-"Discount %1$@" = "Discount %1$@";
+"Discount %1$@" = "折扣 %1$@";
 
 /* Title of the Discounted Orders label on Coupon Details screen */
 "Discounted Orders" = "折扣訂單";
@@ -1288,10 +1288,10 @@
 "Dismiss" = "關閉";
 
 /* Dismiss All button in Inbox Notes for dismissing all the notes. */
-"Dismiss All" = "Dismiss All";
+"Dismiss All" = "全部關閉";
 
 /* Title of the alert for dismissing all the inbox notes. */
-"Dismiss all messages" = "Dismiss all messages";
+"Dismiss all messages" = "關閉全部訊息";
 
 /* Display label for the product's inventory backorders setting option */
 "Do not allow" = "不允許";
@@ -1545,7 +1545,7 @@
 "Error in finding the address in Apple Maps" = "在 Apple 地圖中尋找位址時的錯誤";
 
 /* Message displayed when fail to loading total discounted amount in Coupon Details screen */
-"Error loading data" = "Error loading data";
+"Error loading data" = "載入資料時發生錯誤";
 
 /* Alert title when there is an error requesting shipping label document for printing */
 "Error previewing shipping label" = "預覽郵寄標籤時發生錯誤";
@@ -1588,7 +1588,7 @@
 "Featured Product" = "特色商品";
 
 /* Title for the Fee Details screen during order creation */
-"Fee" = "Fee";
+"Fee" = "費用";
 
 /* Title in the navigation bar when the survey is completed */
 "Feedback Sent!" = "你的意見已送出！";
@@ -1927,7 +1927,7 @@
 "Insert" = "插入";
 
 /* Message from the in-person payment card reader prompting user to insert their card */
-"Insert Card" = "Insert Card";
+"Insert Card" = "插入卡片";
 
 /* Accessibility label for insert horizontal ruler button on formatting toolbar. */
 "Insert Horizontal Ruler" = "插入水平尺規";
@@ -1936,7 +1936,7 @@
 "Insert Link" = "插入連結";
 
 /* Message from the in-person payment card reader prompting user to insert or swipe their card */
-"Insert Or Swipe Card" = "Insert Or Swipe Card";
+"Insert Or Swipe Card" = "插入卡片或刷卡";
 
 /* Navigates to Install Jetpack screen.
    Title of install action in the Jetpack benefits view. - Title of the Install Jetpack intro view - Title of the Install Jetpack view */
@@ -2292,7 +2292,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Minimum value %@, maximum value %@" = "最小值：%1$@；最大值：%2$@";
 
 /* The description in product variations bulk update, of a value, that is different acrossall variations */
-"Mixed" = "Mixed";
+"Mixed" = "混合";
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Monitor and approve your product reviews" = "監控和核准你的產品評論";
@@ -2324,7 +2324,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Moves the comment to Trash" = "將這則留言移到垃圾桶";
 
 /* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
-"Multiple Contactless Cards Detected" = "Multiple Contactless Cards Detected";
+"Multiple Contactless Cards Detected" = "偵測到多張感應式卡片";
 
 /* Title of the hub menu view in case there is no title for the store */
 "My Store" = "我的商店";
@@ -2401,16 +2401,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No address specified." = "指定任何地址";
 
 /* Error message when a card reader was expected to already have been connected. */
-"No card reader is connected - connect a reader and try again" = "No card reader is connected - connect a reader and try again";
+"No card reader is connected - connect a reader and try again" = "未連接讀卡機 - 請連接讀卡機，然後再試一次";
 
 /* Title for the error screen when there was a network error checking In-Person Payments requirements. */
 "No connection" = "沒有連線";
 
 /* Error message when there is no connection to the Internet. */
-"No connection to the Internet - please connect to the Internet and try again" = "No connection to the Internet - please connect to the Internet and try again";
+"No connection to the Internet - please connect to the Internet and try again" = "未連接網路 - 請連接網路，然後再試一次";
 
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
-"No coupons found" = "No coupons found";
+"No coupons found" = "沒有找到折價券";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "目前沒有資料";
@@ -2688,7 +2688,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Payment Method Selected" = "已選取付款方式";
 
 /* Message when the presented card remaining credit or balance is insufficient for the purchase. */
-"Payment declined due to insufficient funds. Try another means of payment" = "Payment declined due to insufficient funds. Try another means of payment";
+"Payment declined due to insufficient funds. Try another means of payment" = "付款因餘額不足遭拒。 請嘗試其他付款方式";
 
 /* Error message. Presented to users after a collecting a payment fails
    Error message. Presented to users after collecting a payment fails */
@@ -2705,10 +2705,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Payment successful" = "付款成功";
 
 /* Message when we don't know exactly why the payment was declined. */
-"Payment was declined for an unknown reason. Try another means of payment" = "Payment was declined for an unknown reason. Try another means of payment";
+"Payment was declined for an unknown reason. Try another means of payment" = "付款因不明原因遭拒。 請嘗試其他付款方式";
 
 /* Message when payment is declined for a non specific reason. */
-"Payment was declined for an unspecified reason. Try another means of payment" = "Payment was declined for an unspecified reason. Try another means of payment";
+"Payment was declined for an unspecified reason. Try another means of payment" = "付款因不明原因遭拒。 請嘗試其他付款方式";
 
 /* Display label for pending order status.
    Display label for the review's pending status */
@@ -3162,7 +3162,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Registered Domain" = "已註冊的網域";
 
 /* The label in the option of selecting to bulk update the regular price of a product variation */
-"Regular Price" = "Regular Price";
+"Regular Price" = "原價";
 
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "原價：%@";
@@ -3175,10 +3175,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Remove Attribute" = "移除屬性";
 
 /* Message from the in-person payment card reader prompting user to remove their card */
-"Remove Card" = "Remove Card";
+"Remove Card" = "移除卡片";
 
 /* Text for the button to remove a fee from the order during order creation */
-"Remove Fee from Order" = "Remove Fee from Order";
+"Remove Fee from Order" = "從訂單中移除費用";
 
 /* Title on the alert when the user taps to delete a Product image */
 "Remove Image" = "移除圖片";
@@ -3254,7 +3254,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Retry After Updating" = "更新後重試";
 
 /* Message from the in-person payment card reader prompting user to retry payment with their card */
-"Retry Card" = "Retry Card";
+"Retry Card" = "再試一次卡片";
 
 /* Action button to check site's connection again. */
 "Retry Connection" = "重試連線";
@@ -3701,7 +3701,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Sorry, that username is unavailable." = "很抱歉，該使用者名稱無法使用。";
 
 /* Error message when the card reader service experiences an unexpected internal service error. */
-"Sorry, this payment couldn’t be processed" = "Sorry, this payment couldn’t be processed";
+"Sorry, this payment couldn’t be processed" = "抱歉，無法處理此付款";
 
 /* No comment provided by engineer. */
 "Sorry, usernames can only contain lowercase letters (a-z) and numbers." = "很抱歉，使用者名稱只能包含小寫字母 (a-z) 和數字。";
@@ -3794,13 +3794,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Sum of products and package weight" = "產品與包裹總重";
 
 /* Title of 'Summary' section in the receipt when the order number is unknown */
-"Summary" = "Summary";
+"Summary" = "摘要";
 
 /* Title of 'Summary' section in the receipt. %1$@ is the order number, e.g. 4920 */
-"Summary: Order #%1$@" = "Summary: Order #%1$@";
+"Summary: Order #%1$@" = "摘要：訂單 #%1$@";
 
 /* Message from the in-person payment card reader prompting user to swipe their card */
-"Swipe Card" = "Swipe Card";
+"Swipe Card" = "刷卡";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "切換商店";
@@ -3840,7 +3840,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "System status report copied to clipboard" = "複製到剪貼簿的系統狀態報告";
 
 /* Message when attempting to pay for a live transaction with a test card. */
-"System test cards are not permitted for payment. Try another means of payment" = "System test cards are not permitted for payment. Try another means of payment";
+"System test cards are not permitted for payment. Try another means of payment" = "不允許使用系統測試卡片付款。 請嘗試其他付款方式";
 
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags. - Title of the Tags row on Product main screen */
@@ -3851,7 +3851,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation bar title for the Simple Payments Methods screens. %1$@ is a placeholder for the total amount to collect
    Text of the button that creates a simple payment order. %1$@ is a placeholder for the total amount to collect */
-"Take Payment (%1$@)" = "Take Payment (%1$@)";
+"Take Payment (%1$@)" = "收款 (%1$@)";
 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "拍攝相片";
@@ -3934,7 +3934,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Tax" = "稅金";
 
 /* Tax percentage to be applied to the simple payments order. %1$@%% is a placeholder for the tax rate as a percentage */
-"Tax (%1$@%%)" = "Tax (%1$@%%)";
+"Tax (%1$@%%)" = "稅金 (%1$@%%)";
 
 /* Section header title for product tax settings */
 "Tax Settings" = "稅金設定";
@@ -3994,7 +3994,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Thank you for sharing your thoughts with us" = "感謝你與我們分享你的想法";
 
 /* Confirmation message in Inbox Notes after responding to a survey. */
-"Thank you for your feedback!" = "Thank you for your feedback!";
+"Thank you for your feedback!" = "感謝你的意見回饋！";
 
 /* Shown when a user pastes a code into the two factor field that contains letters or is the wrong length */
 "That doesn't appear to be a valid verification code." = "該驗證碼似乎無效。";
@@ -4027,7 +4027,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "你的商店已安裝 %1$@ 擴充功能，但需要更新才能使用親自收款功能。 請更新至最新版本。";
 
 /* Error message when the card reader loses its Bluetooth connection to the card reader. */
-"The Bluetooth connection to the card reader disconnected unexpectedly" = "The Bluetooth connection to the card reader disconnected unexpectedly";
+"The Bluetooth connection to the card reader disconnected unexpectedly" = "藍牙與讀卡機的連接意外中斷";
 
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "沒有任何與 Google 帳號「%@」匹配的 WordPress.com 帳號";
@@ -4045,46 +4045,46 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The attribute couldn't be saved." = "無法儲存該屬性。";
 
 /* Message when the card presented does not support the order currency. */
-"The card does not support this currency. Try another means of payment" = "The card does not support this currency. Try another means of payment";
+"The card does not support this currency. Try another means of payment" = "卡片不支援此幣別。 請嘗試其他付款方式";
 
 /* Message when the card presented does not allow this type of purchase. */
-"The card does not support this type of purchase. Try another means of payment" = "The card does not support this type of purchase. Try another means of payment";
+"The card does not support this type of purchase. Try another means of payment" = "卡片不支援這類購買項目。 請嘗試其他付款方式";
 
 /* Message when the presented card is past its expiration date. */
-"The card has expired. Try another means of payment" = "The card has expired. Try another means of payment";
+"The card has expired. Try another means of payment" = "卡片已到期。 請嘗試其他付款方式";
 
 /* Message when payment is declined for a non specific reason. */
-"The card or card account is invalid. Try another means of payment" = "The card or card account is invalid. Try another means of payment";
+"The card or card account is invalid. Try another means of payment" = "卡片或卡片帳號無效。 請嘗試其他付款方式";
 
 /* Error message when the card reader is busy executing another command. */
-"The card reader is busy executing another command - please try again" = "The card reader is busy executing another command - please try again";
+"The card reader is busy executing another command - please try again" = "讀卡機正忙於執行其他命令 - 請再試一次";
 
 /* Error message when the card reader is incompatible with the application. */
-"The card reader is not compatible with this application - please try updating the application or using a different reader" = "The card reader is not compatible with this application - please try updating the application or using a different reader";
+"The card reader is not compatible with this application - please try updating the application or using a different reader" = "讀卡機與此應用程式不相容 - 請嘗試更新應用程式或使用其他讀卡機";
 
 /* Error message when the card reader session has timed out. */
-"The card reader session has expired - please disconnect and reconnect the card reader and then try again" = "The card reader session has expired - please disconnect and reconnect the card reader and then try again";
+"The card reader session has expired - please disconnect and reconnect the card reader and then try again" = "讀卡機工作階段已過期 - 請中斷並重新連接讀卡機，然後再試一次";
 
 /* Error message when the card reader software is too far out of date to process payments. */
-"The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "The card reader software is out-of-date - please update the card reader software before attempting to process payments";
+"The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "讀卡機軟體已過期 - 請先更新讀卡機軟體，再嘗試處理付款";
 
 /* Error message when the card reader software update fails due to a communication error. */
-"The card reader software update failed due to a communication error - please try again" = "The card reader software update failed due to a communication error - please try again";
+"The card reader software update failed due to a communication error - please try again" = "通訊錯誤導致讀卡機軟體更新失敗 - 請再試一次";
 
 /* Error message when the card reader software update fails due to a problem with the update server. */
-"The card reader software update failed due to a problem with the update server - please try again" = "The card reader software update failed due to a problem with the update server - please try again";
+"The card reader software update failed due to a problem with the update server - please try again" = "更新伺服器時發生問題，導致讀卡機軟體更新失敗 - 請再試一次";
 
 /* Error message when the card reader software update fails unexpectedly. */
-"The card reader software update failed unexpectedly - please try again" = "The card reader software update failed unexpectedly - please try again";
+"The card reader software update failed unexpectedly - please try again" = "讀卡機軟體更新意外失敗 - 請再試一次";
 
 /* Error message when the card reader software update is interrupted. */
-"The card reader software update was interrupted before it could complete - please try again" = "The card reader software update was interrupted before it could complete - please try again";
+"The card reader software update was interrupted before it could complete - please try again" = "讀卡機軟體更新尚未完成即被中斷 - 請再試一次";
 
 /* Error message when the card reader itself declines the card. */
-"The card was declined by the card reader - please try another means of payment" = "The card was declined by the card reader - please try another means of payment";
+"The card was declined by the card reader - please try another means of payment" = "該卡片被讀卡機拒絕 - 請嘗試其他付款方式";
 
 /* Error message when the card processor declines the payment. */
-"The card was declined by the payment processor - please try another means of payment" = "The card was declined by the payment processor - please try another means of payment";
+"The card was declined by the payment processor - please try another means of payment" = "該卡片被付款處理商拒絕 - 請嘗試其他付款方式";
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "此伺服器的憑證無效。你可能正連線至冒充為「%@」的伺服器，而這可能洩漏你的機密資料。\n\n是否仍然要信任憑證？";
@@ -4099,10 +4099,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The new service package name is not unique." = "新的服務包裹名稱與其他包裹名稱重複。";
 
 /* Message when the presented card does not allow the purchase amount. */
-"The payment amount is not allowed for the card presented. Try another means of payment." = "The payment amount is not allowed for the card presented. Try another means of payment.";
+"The payment amount is not allowed for the card presented. Try another means of payment." = "顯示的卡片不允許該支付金額。 請嘗試其他付款方式。";
 
 /* Error message when the payment can not be processed (i.e. order amount is below the minimum amount allowed.) */
-"The payment can not be processed by the payment processor." = "The payment can not be processed by the payment processor.";
+"The payment can not be processed by the payment processor." = "付款處理商無法處理付款。";
 
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "電話號碼無效，或是你無法使用此裝置致電顧客。";
@@ -4114,7 +4114,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The reader has a critically low battery. Please charge the reader or try a different reader." = "讀卡機電量過低。 請為讀卡機充電，或嘗試使用其他讀卡機。";
 
 /* Error message when a request times out. */
-"The request timed out - please try again" = "The request timed out - please try again";
+"The request timed out - please try again" = "要求逾時 - 請再試一次";
 
 /* Product price error notice message, when the sale price is added but the regular price is not */
 "The sale price can't be added without the regular price." = "無法在沒有原價的情況下新增售價。";
@@ -4126,10 +4126,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The sale price should be lower than the regular price." = "銷售價格必須低於正常價格。";
 
 /* A failure reason for when the request couldn't be serialized. */
-"The serialization of the request failed." = "The serialization of the request failed.";
+"The serialization of the request failed." = "要求序列化失敗。";
 
 /* A failure reason for when the response couldn't be serialized. */
-"The serialization of the response failed." = "The serialization of the response failed.";
+"The serialization of the response failed." = "回應序列化失敗。";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "伺服器傳回空白回應。這通常代表你必須增加網站的記憶體限制。";
@@ -4162,25 +4162,25 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The stock quantity for this product. Editable." = "此產品的存貨數量。可編輯。";
 
 /* Error message when there is an issue with the store address preventing an action (e.g. reader connection.) */
-"The store address is incomplete or missing, please update it before continuing." = "The store address is incomplete or missing, please update it before continuing.";
+"The store address is incomplete or missing, please update it before continuing." = "商店地址不完整或遺漏，請更新資訊後再繼續。";
 
 /* Error message when there is an issue with the store postal code preventing an action (e.g. reader connection.) */
-"The store postal code is invalid or missing, please update it before continuing." = "The store postal code is invalid or missing, please update it before continuing.";
+"The store postal code is invalid or missing, please update it before continuing." = "商店郵遞區號無效或遺漏，請更新資訊後再繼續。";
 
 /* Error message when the system cancels a command. */
-"The system canceled the command unexpectedly - please try again" = "The system canceled the command unexpectedly - please try again";
+"The system canceled the command unexpectedly - please try again" = "系統意外取消命令 - 請再試一次";
 
 /* Error message when the card reader service experiences an unexpected software error. */
-"The system experienced an unexpected software error" = "The system experienced an unexpected software error";
+"The system experienced an unexpected software error" = "系統發生未預期的軟體錯誤";
 
 /* Error message when the card reader service is busy executing another command. */
-"The system is busy executing another command - please try again" = "The system is busy executing another command - please try again";
+"The system is busy executing another command - please try again" = "系統正忙於執行其他命令 - 請再試一次";
 
 /* Message for the error alert when fetching system status report fails */
 "The system status report for your site cannot be fetched at the moment. Please try again." = "目前無法擷取你的網站系統狀態報告。 請再試一次。";
 
 /* Message when the presented card postal code doesn't match the order postal code. */
-"The transaction postal code and card postal code do not match. Try another means of payment" = "The transaction postal code and card postal code do not match. Try another means of payment";
+"The transaction postal code and card postal code do not match. Try another means of payment" = "交易郵遞區號和卡片郵遞區號不符。 請嘗試其他付款方式";
 
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "無法產生該款式。";
@@ -4198,7 +4198,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "There was a problem blocking posts from the specified site." = "封鎖指定網站的文章時發生問題。";
 
 /* A general error message shown to the user when there was an API communication failure. */
-"There was a problem communicating with the site." = "There was a problem communicating with the site.";
+"There was a problem communicating with the site." = "與網站通訊時發生問題。";
 
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "移除指定網站的封鎖時發生問題。";
@@ -4242,7 +4242,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "This Year" = "今年";
 
 /* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
-"This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this." = "This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this.";
+"This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this." = "此應用程式需要權限才能透過藍牙連接讀卡機。若你希望允許此權限，請變更隱私設定。";
 
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "此應用程式要求你在伺服器上安裝 WooCommerce 3.5，否則無法正常運作。請儘快更新以繼續使用此應用程式。";
@@ -4251,7 +4251,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "此應用程式只支援「管理員」和「商店經理」使用者角色。 請聯絡商店擁有者以升級你的角色。";
 
 /* Message when a card requires a PIN code and we have no means of entering such a code. */
-"This card requires a PIN code and thus cannot be processed. Try another means of payment" = "This card requires a PIN code and thus cannot be processed. Try another means of payment";
+"This card requires a PIN code and thus cannot be processed. Try another means of payment" = "這張卡片需要 PIN 碼，因此無法處理。 請嘗試其他付款方式";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "這個電子郵件地址沒有在 WordPress.com 上註冊。";
@@ -4397,10 +4397,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try Again" = "再試一次";
 
 /* Message from the in-person payment card reader prompting user to retry a payment using a different card */
-"Try Another Card" = "Try Another Card";
+"Try Another Card" = "請嘗試其他卡片";
 
 /* Message from the in-person payment card reader prompting user to retry a payment using a different method, e.g. swipe, tap, insert */
-"Try Another Read Method" = "Try Another Read Method";
+"Try Another Read Method" = "請嘗試其他讀取方法";
 
 /* Button to try to collect a payment again. Presented to users after a collecting a payment fails */
 "Try Collecting Again" = "重新嘗試收款";
@@ -4413,7 +4413,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try again" = "再試一次";
 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
-"Try another means of payment" = "Try another means of payment";
+"Try another means of payment" = "請嘗試其他付款方式";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "請嘗試使用其他電子郵件登入";
@@ -4422,7 +4422,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try with the site address" = "請嘗試使用網站位址登入";
 
 /* Message when a card is declined due to a potentially temporary problem. */
-"Trying again may succeed, or try another means of payment" = "Trying again may succeed, or try another means of payment";
+"Trying again may succeed, or try another means of payment" = "再試一次可能會成功，或嘗試其他付款方式";
 
 /* Settings > Manage Card Reader > Connect > Hint to power on reader */
 "Turn card reader on and place it next to mobile device" = "開啟讀卡機並將其放在行動裝置旁";
@@ -4444,10 +4444,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable To Connect" = "無法連線";
 
 /* Error message when Bluetooth is not enabled or available. */
-"Unable to access Bluetooth - please enable Bluetooth and try again" = "Unable to access Bluetooth - please enable Bluetooth and try again";
+"Unable to access Bluetooth - please enable Bluetooth and try again" = "無法存取藍牙 - 請啟用藍牙，然後再試一次";
 
 /* Error message when location services is not enabled for this application. */
-"Unable to access Location Services - please enable Location Services and try again" = "Unable to access Location Services - please enable Location Services and try again";
+"Unable to access Location Services - please enable Location Services and try again" = "無法存取定位服務 - 請啟用定位服務，然後再試一次";
 
 /* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number}. Parameters: %1$d - order number */
 "Unable to add note to order #%1$d" = "無法為訂單 #%1$d 新增備註";
@@ -4459,19 +4459,19 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to change status of order #%1$d" = "無法變更訂單 #%1$d 的狀態";
 
 /* Error message when communication with the card reader is disrupted. */
-"Unable to communicate with reader - please try again" = "Unable to communicate with reader - please try again";
+"Unable to communicate with reader - please try again" = "無法與讀卡機通訊 - 請再試一次";
 
 /* Error message when the card reader service attempts to connect to a reader without discovering it first. */
-"Unable to connect to card reader - card reader was not correctly discovered - please try again" = "Unable to connect to card reader - card reader was not correctly discovered - please try again";
+"Unable to connect to card reader - card reader was not correctly discovered - please try again" = "無法連接讀卡機 - 未正確找到讀卡機 - 請再試一次";
 
 /* Error message when attempting to connect to a card reader which is already in use. */
-"Unable to connect to card reader - the card reader is already in use" = "Unable to connect to card reader - the card reader is already in use";
+"Unable to connect to card reader - the card reader is already in use" = "無法連接讀卡機 - 讀卡機已在使用中";
 
 /* Error message when a card reader is already connected and we were not expecting one. */
-"Unable to connect to reader - another reader is already connected" = "Unable to connect to reader - another reader is already connected";
+"Unable to connect to reader - another reader is already connected" = "無法連接讀卡機 - 已連接其他讀卡機";
 
 /* Error message the card reader battery level is too low to connect to the phone or tablet. */
-"Unable to connect to reader - the reader has a critically low battery - charge the reader and try again." = "Unable to connect to reader - the reader has a critically low battery - charge the reader and try again.";
+"Unable to connect to reader - the reader has a critically low battery - charge the reader and try again." = "無法連接讀卡機 - 讀卡機電量嚴重不足 - 請將讀卡機充電後再試一次。";
 
 /* Notice displayed when order creation fails */
 "Unable to create new order" = "無法建立新訂單";
@@ -4501,19 +4501,19 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to load product attributes" = "無法載入商品屬性";
 
 /* Notice displayed when taxes cannot be synced for new order */
-"Unable to load taxes for order" = "Unable to load taxes for order";
+"Unable to load taxes for order" = "無法載入訂單稅金";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "無法將評論標記為%@";
 
 /* Error message when the card reader cannot be used to perform the requested task. */
-"Unable to perform request with the connected reader - unsupported feature - please try again with another reader" = "Unable to perform request with the connected reader - unsupported feature - please try again with another reader";
+"Unable to perform request with the connected reader - unsupported feature - please try again with another reader" = "無法使用連接的讀卡機執行要求 - 不支援功能 - 請使用其他讀卡機再試一次";
 
 /* Error message when the application is so out of date that the backend refuses to work with it. */
-"Unable to perform software request - please update this application and try again" = "Unable to perform software request - please update this application and try again";
+"Unable to perform software request - please update this application and try again" = "無法執行軟體要求 - 請更新此應用程式，然後再試一次";
 
 /* Error message when the payment intent is invalid. */
-"Unable to process payment due to invalid data - please try again" = "Unable to process payment due to invalid data - please try again";
+"Unable to process payment due to invalid data - please try again" = "資料無效，無法處理付款 - 請再試一次";
 
 /* Error message when the order amount is below the minimum amount allowed. */
 "Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@" = "無法處理付款。 訂單總金額低於可以收取的最低金額 %1$@";
@@ -4522,13 +4522,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to process payment. Order total amount is not valid." = "無法處理付款。 訂單總金額無效。";
 
 /* Error message when the card reader times out while reading a card. */
-"Unable to read card - the system timed out - please try again" = "Unable to read card - the system timed out - please try again";
+"Unable to read card - the system timed out - please try again" = "無法讀卡 - 系統逾時 - 請再試一次";
 
 /* Error message when the card reader is unable to read any chip on the inserted card. */
-"Unable to read inserted card - please try removing and inserting card again" = "Unable to read inserted card - please try removing and inserting card again";
+"Unable to read inserted card - please try removing and inserting card again" = "無法讀取插入的卡片 - 請嘗試取出並重新插入卡片";
 
 /* Error message when the card reader is unable to read a swiped card. */
-"Unable to read swiped card - please try swiping again" = "Unable to read swiped card - please try swiping again";
+"Unable to read swiped card - please try swiping again" = "無法讀取刷入的卡片 - 請重新刷卡";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "無法透過該 URL 讀取 WordPress 網站。 點選「需要更多說明？」即可檢視常見問題。";
@@ -4543,16 +4543,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to save changes to the payment method" = "無法儲存付款方式變更";
 
 /* Error message when Bluetooth Low Energy is not supported on the user device. */
-"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device" = "Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device";
+"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device" = "無法搜尋讀卡機 - 此裝置不支援藍牙低功耗 - 請使用其他裝置";
 
 /* Error message when Bluetooth scan times out during reader discovery. */
-"Unable to search for card readers - Bluetooth timed out - please try again" = "Unable to search for card readers - Bluetooth timed out - please try again";
+"Unable to search for card readers - Bluetooth timed out - please try again" = "無法搜尋讀卡機 - 藍牙逾時 - 請再試一次";
 
 /* Error notice title when we fail to update an address in the edit address screen. */
 "Unable to update address." = "無法更新地址。";
 
 /* Error message when the card reader battery level is too low to safely perform a software update. */
-"Unable to update card reader software - the reader battery is too low" = "Unable to update card reader software - the reader battery is too low";
+"Unable to update card reader software - the reader battery is too low" = "無法更新讀卡機軟體 - 讀卡機電池電量過低";
 
 /* Title for the error screen when In-Person Payments is unavailable */
 "Unable to verify In-Person Payments for this store" = "無法驗證此商店的親自收款功能";
@@ -4792,7 +4792,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "View add-ons from your device!" = "查看裝置的附加元件！";
 
 /* Title of the feedback banner on the coupon list screen */
-"View and edit coupons" = "View and edit coupons";
+"View and edit coupons" = "檢視並編輯優惠券";
 
 /* The action to update downloadable files settings for a product */
 "View downloadable file settings" = "查看可下載的檔案設定";
@@ -4875,10 +4875,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "We don’t support In-Person Payments in your country" = "我們不支援在你的國家\/地區使用親自收款功能";
 
 /* Title for the error screen when In-Person Payments is not supported in a specific country */
-"We don’t support In-Person Payments with Stripe in %1$@" = "We don’t support In-Person Payments with Stripe in %1$@";
+"We don’t support In-Person Payments with Stripe in %1$@" = "我們不支援在%1$@使用 Stripe 親自收款功能";
 
 /* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country */
-"We don’t support In-Person Payments with Stripe in your country" = "We don’t support In-Person Payments with Stripe in your country";
+"We don’t support In-Person Payments with Stripe in your country" = "我們不支援在你的國家\/地區使用 Stripe 親自收款功能";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "我們稍微修改了輸入的地址。 如果內容正確，請使用建議地址，確保正確運送。";
@@ -4945,7 +4945,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Welcome to the world’s most popular website builder." = "歡迎使用全球最受歡迎的網站建置工具。";
 
 /* Content of the feedback banner on the coupon list screen */
-"We’ve been working on making it possible to view and edit coupons from your device!" = "We’ve been working on making it possible to view and edit coupons from your device!";
+"We’ve been working on making it possible to view and edit coupons from your device!" = "我們一直努力讓你可以在裝置上查看並編輯優惠券！";
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "我該使用什麼電子郵件登入？";

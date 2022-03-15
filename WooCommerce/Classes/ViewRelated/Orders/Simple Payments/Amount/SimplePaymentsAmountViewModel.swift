@@ -117,24 +117,30 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
 
         loading = true
 
-        // Order created as taxable to delegate taxes calculation to the API.
-        let action = OrderAction.createSimplePaymentsOrder(siteID: siteID, amount: amount, taxable: true) { [weak self] result in
+        // Fetches the correct order initial status.
+        NewOrderInitialStatusResolver(siteID: siteID, stores: stores).resolve { [weak self] initialOrderStatus in
             guard let self = self else { return }
-            self.loading = false
 
-            switch result {
-            case .success(let order):
-                self.summaryViewModel = SimplePaymentsSummaryViewModel(order: order,
-                                                                       providedAmount: self.amount,
-                                                                       presentNoticeSubject: self.presentNoticeSubject)
+            // Order created as taxable to delegate taxes calculation to the API.
+            let action = OrderAction.createSimplePaymentsOrder(siteID: self.siteID, amount: self.amount, taxable: true) { [weak self] result in
+                guard let self = self else { return }
+                self.loading = false
 
-            case .failure(let error):
-                self.presentNoticeSubject.send(.error(Localization.creationError))
-                self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowFailed(source: .amount))
-                DDLogError("⛔️ Error creating simple payments order: \(error)")
+                switch result {
+                case .success(let order):
+                    self.summaryViewModel = SimplePaymentsSummaryViewModel(order: order,
+                                                                           providedAmount: self.amount,
+                                                                           presentNoticeSubject: self.presentNoticeSubject)
+
+                case .failure(let error):
+                    self.presentNoticeSubject.send(.error(Localization.creationError))
+                    self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowFailed(source: .amount))
+                    DDLogError("⛔️ Error creating simple payments order: \(error)")
+                }
             }
+
+            stores.dispatch(action)
         }
-        stores.dispatch(action)
     }
 
     /// Track the flow cancel scenario.

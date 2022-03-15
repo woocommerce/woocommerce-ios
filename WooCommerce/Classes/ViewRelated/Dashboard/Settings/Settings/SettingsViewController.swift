@@ -320,7 +320,8 @@ private extension SettingsViewController {
 
         let configuration = WooAboutScreenConfiguration()
         let controller = AutomatticAboutScreen.controller(appInfo: WooAboutScreenConfiguration.appInfo,
-                                                          configuration: configuration)
+                                                          configuration: configuration,
+                                                          fonts: WooAboutScreenConfiguration.headerFonts)
         present(controller, animated: true) { [weak self] in
             self?.tableView.deselectSelectedRowWithAnimation(true)
         }

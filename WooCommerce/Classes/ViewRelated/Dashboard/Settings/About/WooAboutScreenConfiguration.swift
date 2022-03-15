@@ -64,12 +64,18 @@ final class WooAboutScreenConfiguration: AboutScreenConfiguration {
 
     // MARK: - Header Info
 
-    // Provides app info to display in the header of the about screen.
-    //
+    /// Provides app info to display in the header of the about screen.
+    ///
     static var appInfo: AboutScreenAppInfo {
         return AboutScreenAppInfo(name: WooConstants.appDisplayName,
                                   version: Bundle.main.detailedVersionNumber(),
                                   icon: UIImage(named: iconNameFromBundle())!)
+    }
+
+    /// Provides font definitions for use in the header of the about screen.
+    ///
+    static var headerFonts: AboutScreenFonts {
+        return AboutScreenFonts(appName: .largeTitle.bold, appVersion: .subheadline)
     }
 }
 

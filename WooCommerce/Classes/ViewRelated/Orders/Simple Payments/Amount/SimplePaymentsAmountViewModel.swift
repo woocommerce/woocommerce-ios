@@ -122,7 +122,10 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
             guard let self = self else { return }
 
             // Order created as taxable to delegate taxes calculation to the API.
-            let action = OrderAction.createSimplePaymentsOrder(siteID: self.siteID, amount: self.amount, taxable: true) { [weak self] result in
+            let action = OrderAction.createSimplePaymentsOrder(siteID: self.siteID,
+                                                               status: initialOrderStatus,
+                                                               amount: self.amount,
+                                                               taxable: true) { [weak self] result in
                 guard let self = self else { return }
                 self.loading = false
 
@@ -139,7 +142,7 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
                 }
             }
 
-            stores.dispatch(action)
+            self.stores.dispatch(action)
         }
     }
 

@@ -7,14 +7,14 @@ public enum OrderFactory {
     /// Creates an order suitable to be used as a simple payments order.
     /// Under the hood it uses a fee line with or without taxes to create an order with the desired amount.
     ///
-    static func simplePaymentsOrder(amount: String, taxable: Bool) -> Order {
+    static func simplePaymentsOrder(status: OrderStatusEnum = .autoDraft, amount: String, taxable: Bool) -> Order {
         Order(siteID: 0,
               orderID: 0,
               parentID: 0,
               customerID: 0,
               orderKey: "",
               number: "",
-              status: .pending,
+              status: status,
               currency: "",
               customerNote: "",
               dateCreated: Date(),

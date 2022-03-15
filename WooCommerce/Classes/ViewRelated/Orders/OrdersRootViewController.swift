@@ -314,7 +314,7 @@ private extension OrdersRootViewController {
                                                                  dateRange: settings.dateRangeFilter,
                                                                  numberOfActiveFilters: settings.numberOfActiveFilters())
             case .failure(let error):
-                assertionFailure("It was not possible to sync local orders settings: \(String(describing: error))")
+                print("It was not possible to sync local orders settings: \(String(describing: error))")
             }
             onCompletion(result)
         }

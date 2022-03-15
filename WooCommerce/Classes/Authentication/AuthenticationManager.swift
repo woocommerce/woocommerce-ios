@@ -263,6 +263,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     ///
     func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, onDismiss: @escaping () -> Void) {
         let matcher = ULAccountMatcher()
+        matcher.refreshStoredSites()
 
         guard let siteURL = credentials.wpcom?.siteURL, matcher.match(originalURL: siteURL) else {
             DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: credentials.wpcom?.siteURL))")

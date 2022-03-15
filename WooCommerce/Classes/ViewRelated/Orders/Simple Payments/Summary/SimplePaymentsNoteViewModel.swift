@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 
-class SimplePaymentsNoteViewModel: EditCustomerNoteViewModelProtocol {
+final class SimplePaymentsNoteViewModel: EditCustomerNoteViewModelProtocol {
 
     /// Store for the edited content
     ///

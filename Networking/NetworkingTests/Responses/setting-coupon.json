@@ -1,0 +1,23 @@
+{
+	"data": {
+        "id": "woocommerce_enable_coupons",
+        "label": "Enable coupons",
+        "description": "Enable the use of coupon codes",
+        "type": "checkbox",
+        "default": "yes",
+        "tip": "Coupons can be applied from the cart and checkout pages.",
+        "value": "yes",
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general/woocommerce_enable_coupons"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v2/settings/general"
+                }
+            ]
+        }
+    }
+}

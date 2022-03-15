@@ -77,7 +77,20 @@ extension SimplePaymentsAmountHostingController: UIAdaptivePresentationControlle
     }
 
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
-        !rootView.viewModel.disableViewActions
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
+            return !rootView.viewModel.disableViewActions
+        }
+
+        return rootView.viewModel.shouldEnableSwipeToDismiss
+    }
+
+    func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
+            return
+        }
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+            self?.dismiss(animated: true, completion: nil)
+        })
     }
 }
 

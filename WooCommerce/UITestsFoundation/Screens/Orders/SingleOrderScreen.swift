@@ -15,18 +15,25 @@ public final class SingleOrderScreen: ScreenObject {
 
     @discardableResult
     public func verifySingleOrder(order: OrderData) throws -> Self {
-        app.assertTextVisibilityCount(textToFind: order.status, expectedCount: 1)
-        app.assertTextVisibilityCount(textToFind: order.total, expectedCount: 1)
+        // Check that navigation bar contains order number
+        let navigationBarTitles = app.navigationBars.map { $0.staticTexts.element.label }
+        let expectedTitle = "#\(order.number)"
+        XCTAssertTrue(navigationBarTitles.contains(where: { $0.contains(expectedTitle) }), "No navigation bar found with title \(expectedTitle)")
 
-        // Expects 2 instances of order.number - one in Header and one in Summary
-        app.assertTextVisibilityCount(textToFind: "#\(order.number)", expectedCount: 2)
+        let orderDetailTableView = app.tables["order-details-table-view"]
+        orderDetailTableView.assertTextVisibilityCount(textToFind: order.status, expectedCount: 1)
+        orderDetailTableView.assertTextVisibilityCount(textToFind: order.total, expectedCount: 1)
+
+        // Expects 1 instance of order.number in Summary
+        orderDetailTableView.assertTextVisibilityCount(textToFind: "#\(order.number)", expectedCount: 1)
 
         // Expects 2 instances of first_name - one in Summary and one in Shipping details
-        app.assertTextVisibilityCount(textToFind: order.billing.first_name, expectedCount: 2)
-        app.assertElement(matching: "summary-table-view-cell", existsOnCellWithIdentifier: "\(order.billing.first_name) \(order.billing.last_name)")
+        orderDetailTableView.assertTextVisibilityCount(textToFind: order.billing.first_name, expectedCount: 2)
+        orderDetailTableView.assertElement(matching: "summary-table-view-cell",
+                                           existsOnCellWithIdentifier: "\(order.billing.first_name) \(order.billing.last_name)")
 
         for product in order.line_items {
-            XCTAssertTrue(app.staticTexts[product.name].isFullyVisibleOnScreen(), "'\(product.name)' is missing!")
+            XCTAssertTrue(orderDetailTableView.staticTexts[product.name].isFullyVisibleOnScreen(), "'\(product.name)' is missing!")
         }
 
         return self

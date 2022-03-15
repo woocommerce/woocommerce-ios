@@ -146,7 +146,7 @@ public class OrdersRemote: Remote {
                         }
                     case .shippingLines:
                         params[Order.CodingKeys.shippingLines.rawValue] = try order.shippingLines.compactMap { try $0.toDictionary() }
-                    case .customerNotes:
+                    case .customerNote:
                         params[Order.CodingKeys.customerNote.rawValue] = order.customerNote
                     }
                 }

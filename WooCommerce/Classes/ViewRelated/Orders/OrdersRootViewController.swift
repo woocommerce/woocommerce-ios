@@ -70,7 +70,7 @@ final class OrdersRootViewController: UIViewController {
 
         return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
-  
+
     private let featureFlagService: FeatureFlagService
 
     // MARK: View Lifecycle

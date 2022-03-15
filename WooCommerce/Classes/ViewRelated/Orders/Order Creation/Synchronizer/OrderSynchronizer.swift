@@ -81,7 +81,7 @@ protocol OrderSynchronizer {
     ///
     var setFee: PassthroughSubject<OrderFeeLine?, Never> { get }
 
-    var setNotes: PassthroughSubject<String?, Never> { get }
+    var setNote: PassthroughSubject<String?, Never> { get }
 
     /// Trigger to retry a remote sync.
     ///

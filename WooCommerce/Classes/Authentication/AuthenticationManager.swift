@@ -274,7 +274,11 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
         storePickerCoordinator?.onDismiss = onDismiss
-        storePickerCoordinator?.start()
+        if let site = matcher.matchedSite(originalURL: siteURL) {
+            storePickerCoordinator?.didSelectStore(with: site.siteID, onCompletion: onDismiss)
+        } else {
+            storePickerCoordinator?.start()
+        }
     }
 
     /// Presents the Signup Epilogue, in the specified NavigationController.

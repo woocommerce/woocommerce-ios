@@ -259,7 +259,6 @@ private extension StorePickerViewController {
     }
 
     func stateWasUpdated() {
-        autoselectStoreIfPossible()
         preselectStoreIfPossible()
         reloadInterface()
     }

@@ -93,6 +93,13 @@ final class OrderDetailsViewController: UIViewController {
         super.viewDidLayoutSubviews()
         tableView.updateHeaderHeight()
     }
+
+    override var shouldShowOfflineBanner: Bool {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            return false
+        }
+        return true
+    }
 }
 
 // MARK: - TableView Configuration

@@ -2,6 +2,7 @@ import Combine
 import UIKit
 import Yosemite
 import WordPressUI
+import Experiments
 
 
 /// Enum representing the individual tabs
@@ -105,10 +106,22 @@ final class MainTabBarController: UITabBarController {
     private var hubMenuTabCoordinator: HubMenuCoordinator?
 
     private var cancellableSiteID: AnyCancellable?
-
+    private let featureFlagService: FeatureFlagService
     private let stores: StoresManager = ServiceLocator.stores
 
-    private let isHubMenuFeatureFlagOn = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.hubMenu)
+    private lazy var isHubMenuFeatureFlagOn = featureFlagService.isFeatureFlagEnabled(.hubMenu)
+
+    private lazy var isOrdersSplitViewFeatureFlagOn = featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
+
+    init?(coder: NSCoder, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+        self.featureFlagService = featureFlagService
+        super.init(coder: coder)
+    }
+
+    required init?(coder: NSCoder) {
+        self.featureFlagService = ServiceLocator.featureFlagService
+        super.init(coder: coder)
+    }
 
     deinit {
         cancellableSiteID?.cancel()
@@ -338,11 +351,11 @@ extension MainTabBarController {
         switch note.kind {
         case .storeOrder:
             switchToOrdersTab {
-                guard let ordersVC: OrdersSplitViewWrapperController = childViewController() else {
-                    return
+                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+                    (childViewController() as? OrdersSplitViewWrapperController)?.presentDetails(for: note)
+                } else {
+                    (childViewController() as? OrdersRootViewController)?.presentDetails(for: note)
                 }
-
-                ordersVC.presentDetails(for: note)
             }
         default:
             break
@@ -381,11 +394,10 @@ private extension MainTabBarController {
             let productsTabIndex = WooTab.products.visibleIndex(isHubMenuFeatureFlagOn)
             controllers.insert(productsNavigationController, at: productsTabIndex)
 
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.hubMenu) {
+            if isHubMenuFeatureFlagOn {
                 let hubMenuTabIndex = WooTab.hubMenu.visibleIndex(isHubMenuFeatureFlagOn)
                 controllers.insert(hubMenuNavigationController, at: hubMenuTabIndex)
-            }
-            else {
+            } else {
                 let reviewsTabIndex = WooTab.reviews.visibleIndex(isHubMenuFeatureFlagOn)
                 controllers.insert(reviewsNavigationController, at: reviewsTabIndex)
             }
@@ -448,7 +460,11 @@ private extension MainTabBarController {
     }
 
     func createOrdersViewController(siteID: Int64) -> UIViewController {
-        OrdersSplitViewWrapperController(siteID: siteID)
+        if isOrdersSplitViewFeatureFlagOn {
+            return OrdersSplitViewWrapperController(siteID: siteID)
+        } else {
+            return OrdersRootViewController(siteID: siteID)
+        }
     }
 
     func createProductsViewController(siteID: Int64) -> UIViewController {

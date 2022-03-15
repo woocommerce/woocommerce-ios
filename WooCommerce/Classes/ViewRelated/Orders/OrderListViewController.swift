@@ -116,6 +116,8 @@ final class OrderListViewController: UIViewController {
     ///
     private var selectedIndexPath: IndexPath?
 
+    private lazy var isSplitViewInOrdersTabEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
+
     // MARK: - View Lifecycle
 
     /// Designated initializer.
@@ -179,6 +181,14 @@ final class OrderListViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.updateHeaderHeight()
+    }
+
+    override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.willTransition(to: newCollection, with: coordinator)
+        if isSplitViewInOrdersTabEnabled, selectedIndexPath != nil {
+            // Reload table view to update selected state on the list when changing rotation
+            tableView.reloadData()
+        }
     }
 
     /// Returns a function that creates cells for `dataSource`.
@@ -553,7 +563,7 @@ private extension OrderListViewController {
 extension OrderListViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if splitViewController?.isCollapsed == true {
+        if splitViewController?.isCollapsed == true || !isSplitViewInOrdersTabEnabled {
             tableView.deselectRow(at: indexPath, animated: true)
         }
 
@@ -571,7 +581,12 @@ extension OrderListViewController: UITableViewDelegate {
         ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": order.orderID,
                                                                     "status": order.status.rawValue])
 
-        switchDetailsHandler(orderDetailsViewModel)
+        if isSplitViewInOrdersTabEnabled {
+            switchDetailsHandler(orderDetailsViewModel)
+        } else {
+            let viewController = OrderDetailsViewController(viewModel: orderDetailsViewModel)
+            navigationController?.pushViewController(viewController, animated: true)
+        }
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -580,7 +595,7 @@ extension OrderListViewController: UITableViewDelegate {
         }
 
         syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: itemIndex)
-        if indexPath == selectedIndexPath {
+        if isSplitViewInOrdersTabEnabled, indexPath == selectedIndexPath {
             highlightSelectedRowIfNeeded()
         }
     }

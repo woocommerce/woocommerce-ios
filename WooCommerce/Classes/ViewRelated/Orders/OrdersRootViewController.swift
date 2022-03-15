@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 import Combine
+import Experiments
 
 /// The root tab controller for Orders, which contains the `OrderListViewController` .
 ///
@@ -56,13 +57,20 @@ final class OrdersRootViewController: UIViewController {
     ///
     private var isOrderCreationEnabled: Bool = false
 
+    private let featureFlagService: FeatureFlagService
+
     // MARK: View Lifecycle
 
     init(siteID: Int64) {
         self.siteID = siteID
+        self.featureFlagService = ServiceLocator.featureFlagService
         super.init(nibName: Self.nibName, bundle: nil)
 
         configureTitle()
+
+        if !featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            configureTabBarItem()
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -91,6 +99,13 @@ final class OrdersRootViewController: UIViewController {
         ServiceLocator.pushNotesManager.resetBadgeCount(type: .storeOrder)
     }
 
+    override var shouldShowOfflineBanner: Bool {
+        if featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            return false
+        }
+        return true
+    }
+
     /// Shows `SearchViewController`.
     ///
     @objc private func displaySearchOrders() {
@@ -103,6 +118,17 @@ final class OrdersRootViewController: UIViewController {
         let navigationController = WooNavigationController(rootViewController: searchViewController)
 
         present(navigationController, animated: true, completion: nil)
+    }
+
+    /// Presents the Details for the Notification with the specified Identifier.
+    ///
+    func presentDetails(for note: Note) {
+        guard let orderID = note.meta.identifier(forKey: .order), let siteID = note.meta.identifier(forKey: .site) else {
+            DDLogError("## Notification with [\(note.noteID)] lacks its OrderID!")
+            return
+        }
+        let loaderViewController = OrderLoaderViewController(note: note, orderID: Int64(orderID), siteID: Int64(siteID))
+        navigationController?.pushViewController(loaderViewController, animated: true)
     }
 
     /// Present `FilterListViewController`
@@ -123,6 +149,8 @@ final class OrdersRootViewController: UIViewController {
         present(filterOrderListViewController, animated: true, completion: nil)
     }
 
+    /// This is to update the order detail in split view
+    ///
     private func handleSwitchingDetails(viewModel: OrderDetailsViewModel) {
         let orderDetailsViewController = OrderDetailsViewController(viewModel: viewModel)
         let orderDetailsNavigationController = WooNavigationController(rootViewController: orderDetailsViewController)
@@ -143,6 +171,14 @@ private extension OrdersRootViewController {
         title = Localization.defaultOrderListTitle
     }
 
+    /// Set up properties for `self` as a root tab bar controller.
+    ///
+    func configureTabBarItem() {
+        tabBarItem.title = title
+        tabBarItem.image = .pagesImage
+        tabBarItem.accessibilityIdentifier = "tab-bar-orders-item"
+    }
+
     /// Sets navigation buttons.
     /// Search: Is always present.
     /// Add: Always present.
@@ -158,7 +194,7 @@ private extension OrdersRootViewController {
     func configureFiltersBar() {
         // Display the filtered orders bar
         // if the feature flag is enabled
-        let isOrderListFiltersEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderListFilters)
+        let isOrderListFiltersEnabled = featureFlagService.isFeatureFlagEnabled(.orderListFilters)
         if isOrderListFiltersEnabled {
             stackView.addArrangedSubview(filtersBar)
         }

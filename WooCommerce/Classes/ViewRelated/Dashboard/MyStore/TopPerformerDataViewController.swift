@@ -25,7 +25,7 @@ final class TopPerformerDataViewController: UIViewController {
 
     /// A child view controller that is shown when `displayGhostContent()` is called.
     ///
-    private lazy var ghostTableViewController = GhostTableViewController()
+    private lazy var ghostTableViewController = GhostTableViewController(cellClass: ProductTableViewCell.self)
 
     /// ResultsController: Loads TopEarnerStats for the current granularity from the Storage Layer
     ///
@@ -303,56 +303,6 @@ private extension TopPerformerDataViewController {
             return Constants.emptyStateRowCount
         }
         return itemCount
-    }
-}
-
-// MARK: - Ghost View
-
-private extension TopPerformerDataViewController {
-    final class GhostTableViewController: UITableViewController {
-
-        init() {
-            super.init(style: .plain)
-        }
-
-        required init?(coder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
-
-        override func viewDidLoad() {
-            super.viewDidLoad()
-
-            // Make sure that Ghost will not have any dataSource or delegate to _swap_. This is
-            // just to reduce the chance of having ”invalid number of rows” crashes because of
-            // delegate swapping.
-            tableView.dataSource = nil
-            tableView.delegate = nil
-
-            tableView.backgroundColor = TableViewStyle.backgroundColor
-            tableView.separatorStyle = .none
-            tableView.estimatedRowHeight = Constants.estimatedRowHeight
-            tableView.applyFooterViewForHidingExtraRowPlaceholders()
-            tableView.registerNib(for: ProductTableViewCell.self)
-        }
-
-        /// Activate the ghost if this view is added to the parent.
-        ///
-        override func viewWillAppear(_ animated: Bool) {
-            super.viewWillAppear(animated)
-
-            let options = GhostOptions(displaysSectionHeader: false,
-                                       reuseIdentifier: ProductTableViewCell.reuseIdentifier,
-                                       rowsPerSection: Constants.placeholderRowsPerSection)
-            tableView.displayGhostContent(options: options,
-                                          style: .wooDefaultGhostStyle)
-        }
-
-        /// Deactivate the ghost if this view is removed from the parent.
-        ///
-        override func viewWillDisappear(_ animated: Bool) {
-            super.viewWillDisappear(animated)
-            tableView.removeGhostContent()
-        }
     }
 }
 

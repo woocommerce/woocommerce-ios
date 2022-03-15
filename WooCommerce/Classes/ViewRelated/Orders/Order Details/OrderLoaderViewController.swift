@@ -180,12 +180,8 @@ private extension OrderLoaderViewController {
     /// Presents the OrderDetailsViewController, as a childViewController, for a given Order.
     ///
     func presentOrderDetails(for order: Order) {
-        guard let detailsViewController = OrderDetailsViewController.instantiatedViewControllerFromStoryboard() else {
-            fatalError()
-        }
-
-        // Setup the DetailsViewController
-        detailsViewController.viewModel = OrderDetailsViewModel(order: order)
+        let viewModel = OrderDetailsViewModel(order: order)
+        let detailsViewController = OrderDetailsViewController(viewModel: viewModel)
 
         // Attach
         addChild(detailsViewController)

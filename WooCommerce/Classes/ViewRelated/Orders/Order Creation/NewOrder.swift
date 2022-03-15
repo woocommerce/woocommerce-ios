@@ -29,7 +29,32 @@ final class NewOrderHostingController: UIHostingController<NewOrder> {
             } else {
                 presentationController?.delegate = self
             }
+        } else {
+            handleSwipeBackGesture()
         }
+    }
+}
+
+/// Intercepts back navigation (selecting back button or swiping back).
+///
+extension NewOrderHostingController {
+    override func shouldPopOnBackButton() -> Bool {
+        guard !viewModel.hasChanges else {
+            presentDiscardChangesActionSheet()
+            return false
+        }
+        return true
+    }
+
+    override func shouldPopOnSwipeBack() -> Bool {
+        return shouldPopOnBackButton()
+    }
+
+    private func presentDiscardChangesActionSheet() {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+            self?.viewModel.discardOrder()
+            self?.navigationController?.popViewController(animated: true)
+        })
     }
 }
 
@@ -42,6 +67,7 @@ extension NewOrderHostingController: UIAdaptivePresentationControllerDelegate {
 
     func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+            self?.viewModel.discardOrder()
             self?.dismiss(animated: true, completion: nil)
         })
     }

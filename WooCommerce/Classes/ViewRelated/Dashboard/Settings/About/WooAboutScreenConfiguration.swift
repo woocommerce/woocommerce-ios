@@ -95,9 +95,9 @@ private extension WooAboutScreenConfiguration {
 
     // MARK: - Header Info Helper
 
-    // Returns the name of the app's primary icon as defined in Info.plist
-    //
-    private static func iconNameFromBundle() -> String {
+    /// Returns the name of the app's primary icon as defined in Info.plist
+    ///
+    static func iconNameFromBundle() -> String {
         guard let icons =
                 Bundle.main.infoDictionary?[Constants.infoPlistBundleIconsKey] as? [String: Any],
               let primaryIcon = icons[Constants.infoPlistPrimaryIconKey] as? [String: Any],
@@ -116,7 +116,7 @@ private extension WooAboutScreenConfiguration {
         static let infoPlistIconFilesKey      = "CFBundleIconFiles"
     }
 
-    private enum Links {
+    enum Links {
         static let rateUs           = AppRatingManager.Constants.defaultAppReviewURL
         static let instagram        = URL(string: "http://instagram.com/woocommerce")!
         static let twitter          = URL(string: "http://twitter.com/woocommerce")!
@@ -158,7 +158,7 @@ private extension WooAboutScreenConfiguration {
 
 // MARK: - Legal and More submenu
 
-class WooLegalAndMoreSubmenuConfiguration: AboutScreenConfiguration {
+final class WooLegalAndMoreSubmenuConfiguration: AboutScreenConfiguration {
     lazy var sections: [[AboutItem]] = {
         [
             [
@@ -207,7 +207,7 @@ private extension WooLegalAndMoreSubmenuConfiguration {
 
     // MARK: - Constants
 
-    private enum Links {
+    enum Links {
         static let termsOfService     = WooConstants.URLs.termsOfService.asURL()
         static let privacyPolicy      = WooConstants.URLs.privacy.asURL()
         static let ccpa               = WooConstants.URLs.californiaPrivacy.asURL()

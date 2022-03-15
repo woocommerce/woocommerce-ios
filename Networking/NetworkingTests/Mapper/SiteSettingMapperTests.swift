@@ -11,7 +11,6 @@ final class SiteSettingMapperTests: XCTestCase {
     ///
     func test_SiteSetting_fields_are_properly_parsed() throws {
         let setting = try XCTUnwrap(mapLoadCouponSettingResponse())
-        
         XCTAssertEqual(setting.siteID, dummySiteID)
         XCTAssertEqual(setting.settingID, "woocommerce_enable_coupons")
         XCTAssertEqual(setting.settingDescription, "Enable the use of coupon codes")

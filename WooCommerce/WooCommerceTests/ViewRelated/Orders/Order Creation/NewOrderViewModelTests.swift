@@ -583,6 +583,7 @@ final class NewOrderViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.hasChanges)
+    }
 
     func test_shipping_method_tracked_when_added() throws {
         // Given

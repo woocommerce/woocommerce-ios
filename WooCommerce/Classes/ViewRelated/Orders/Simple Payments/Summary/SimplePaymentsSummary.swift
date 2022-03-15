@@ -177,15 +177,9 @@ private struct PaymentsSection: View {
                         .padding(.horizontal)
                         .fixedSize(horizontal: false, vertical: true)
 
-                    if viewModel.showTaxBreakup {
-                        ForEach(viewModel.taxLines) { taxLine in
-                            TitleAndValueRow(title: taxLine.title,
-                                             value: .content(taxLine.value),
-                                             selectionStyle: .none) {}
-                        }
-                    } else {
-                        TitleAndValueRow(title: String(format: SimplePaymentsSummary.Localization.taxRate, viewModel.taxRate),
-                                         value: .content(viewModel.taxAmount),
+                    ForEach(viewModel.taxLines) { taxLine in
+                        TitleAndValueRow(title: taxLine.title,
+                                         value: .content(taxLine.value),
                                          selectionStyle: .none) {}
                     }
                 }
@@ -333,10 +327,6 @@ private extension SimplePaymentsSummary {
         static let taxesDisclaimer = NSLocalizedString("Taxes are automatically calculated based on your store address.",
                                                        comment: "Disclaimer in the simple payments summary screen about taxes.")
 
-        static let taxRate = NSLocalizedString("Tax (%1$@%%)",
-                                               comment: "Tax percentage to be applied to the simple payments order. " +
-                                               "%1$@%% is a placeholder for the tax rate as a percentage")
-
         static let takePayment = NSLocalizedString("Take Payment (%1$@)",
                                                    comment: "Text of the button that creates a simple payment order. " +
                                                    "%1$@ is a placeholder for the total amount to collect")
@@ -370,7 +360,6 @@ struct SimplePaymentsSummary_Preview: PreviewProvider {
                                                                     value: taxAmount)
         return .init(providedAmount: "40.0",
                      totalWithTaxes: "$42.3",
-                     taxAmount: taxAmount,
                      taxLines: [taxLine],
                      noteContent: noteContent)
     }

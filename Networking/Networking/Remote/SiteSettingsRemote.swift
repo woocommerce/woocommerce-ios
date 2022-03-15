@@ -47,30 +47,38 @@ public class SiteSettingsRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    /// Retrieve setting for whether coupons are enabled for a given site
+    /// Retrieve detail for a single setting for a given site
     ///
     /// - Parameters:
-    ///   - siteID: Site for which we'll fetch the coupon setting.
+    ///   - siteID: Site for which we'll fetch the setting.
+    ///   - settingGroup: The group the setting belong to.
+    ///   - settingID: ID of the setting.
     ///   - completion: Closure to be executed upon completion.
     ///
-    public func loadCouponSetting(for siteID: Int64, completion: @escaping (Result<SiteSetting, Error>) -> Void) {
-        let path = Constants.siteSettingsPath + Constants.generalSettingsGroup + "/" + Constants.couponEnabledSettingID
+    public func loadSetting(for siteID: Int64, settingGroup: SiteSettingGroup, settingID: String, completion: @escaping (Result<SiteSetting, Error>) -> Void) {
+        let path = Constants.siteSettingsPath + settingGroup.rawValue + "/" + settingID
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
         let mapper = SiteSettingMapper(siteID: siteID, settingsGroup: SiteSettingGroup.general)
 
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    /// Update setting for coupon for a given site
+    /// Update value for a single setting for a given site
     ///
     /// - Parameters:
-    ///   - siteID: Site for which we'll update the coupon setting.
+    ///   - siteID: Site for which we'll update setting.
+    ///   - settingGroup: The group the setting belong to.
+    ///   - settingID: ID of the setting.
     ///   - value: New value for the setting.
     ///   - completion: Closure to be executed upon completion.
     ///
-    public func updateCouponSetting(for siteID: Int64, value: String, completion: @escaping (Result<SiteSetting, Error>) -> Void) {
+    public func updateSetting(for siteID: Int64,
+                              settingGroup: SiteSettingGroup,
+                              settingID: String,
+                              value: String,
+                              completion: @escaping (Result<SiteSetting, Error>) -> Void) {
         let parameters: [String: Any] = [Constants.valueParameter: value]
-        let path = Constants.siteSettingsPath + Constants.generalSettingsGroup + "/" + Constants.couponEnabledSettingID
+        let path = Constants.siteSettingsPath + settingGroup.rawValue + "/" + settingID
         let request = JetpackRequest(wooApiVersion: .mark3, method: .put, siteID: siteID, path: path, parameters: parameters)
         let mapper = SiteSettingMapper(siteID: siteID, settingsGroup: SiteSettingGroup.general)
 
@@ -87,7 +95,6 @@ private extension SiteSettingsRemote {
         static let generalSettingsGroup: String   = "general"
         static let productSettingsGroup: String   = "products"
         static let advancedSettingsGroup: String   = "advanced"
-        static let couponEnabledSettingID: String = "woocommerce_enable_coupons"
         static let valueParameter: String = "value"
     }
 }

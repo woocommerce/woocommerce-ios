@@ -71,7 +71,9 @@ struct InPersonPaymentsView: View {
             case InPersonPaymentsSupportLink.supportURL:
                 showSupport?()
             case InPersonPaymentsLearnMore.learnMoreURL:
-                if let url = viewModel.learnMoreURL { showURL?(url) }
+                if let url = viewModel.learnMoreURL {
+                    showURL?(url)
+                }
             default:
                 showURL?(url)
             }

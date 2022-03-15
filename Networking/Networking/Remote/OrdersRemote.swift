@@ -325,6 +325,6 @@ public extension OrdersRemote {
         case billingAddress
         case shippingAddress
         case shippingLines
-        case customerNotes
+        case customerNote
     }
 }

@@ -219,9 +219,16 @@ final class NewOrderViewModel: ObservableObject {
                                        name: product.name,
                                        quantity: item.quantity,
                                        canChangeQuantity: canChangeQuantity,
-                                       displayMode: .attributes(attributes))
+                                       displayMode: .attributes(attributes),
+                                       removeProductIntent: { [weak self] in
+                self?.selectOrderItem(item.itemID) })
         } else {
-            return ProductRowViewModel(id: item.itemID, product: product, quantity: item.quantity, canChangeQuantity: canChangeQuantity)
+            return ProductRowViewModel(id: item.itemID,
+                                       product: product,
+                                       quantity: item.quantity,
+                                       canChangeQuantity: canChangeQuantity,
+                                       removeProductIntent: { [weak self] in
+                self?.selectOrderItem(item.itemID) })
         }
     }
 

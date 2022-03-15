@@ -274,6 +274,11 @@ private extension OrderStore {
         remote.createOrder(siteID: siteID, order: order, fields: [.status, .feeLines]) { [weak self] result in
             switch result {
             case .success(let order):
+                // Auto-draft orders are temporary and should not be stored
+                guard order.status != .autoDraft else {
+                    return onCompletion(result)
+                }
+
                 self?.upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {
                     onCompletion(result)
                 })

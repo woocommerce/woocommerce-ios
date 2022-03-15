@@ -8,13 +8,42 @@ final class NewOrderHostingController: UIHostingController<NewOrder> {
     /// References to keep the Combine subscriptions alive within the lifecycle of the object.
     ///
     private var subscriptions: Set<AnyCancellable> = []
+    private let viewModel: NewOrderViewModel
 
     init(viewModel: NewOrderViewModel) {
+        self.viewModel = viewModel
         super.init(rootView: NewOrder(viewModel: viewModel))
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            // Set presentation delegate to track the user dismiss flow event
+            if let navigationController = navigationController {
+                navigationController.presentationController?.delegate = self
+            } else {
+                presentationController?.delegate = self
+            }
+        }
+    }
+}
+
+/// Intercepts to the dismiss drag gesture.
+///
+extension NewOrderHostingController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+        return !viewModel.hasChanges
+    }
+
+    func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+            self?.dismiss(animated: true, completion: nil)
+        })
     }
 }
 

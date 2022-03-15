@@ -12,6 +12,12 @@ final class NewOrderViewModel: ObservableObject {
 
     private var cancellables: Set<AnyCancellable> = []
 
+    /// Indicates whether user has made any changes
+    ///
+    var hasChanges: Bool {
+        orderSynchronizer.order != OrderFactory.emptyNewOrder
+    }
+
     /// Active navigation bar trailing item.
     /// Defaults to create button.
     ///

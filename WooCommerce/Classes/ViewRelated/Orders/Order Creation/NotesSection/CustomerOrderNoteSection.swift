@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct OrderNotesSection: View {
+struct CustomerOrderNoteSection: View {
 
     /// Parent view model to access all data
     @ObservedObject var viewModel: NewOrderViewModel
@@ -48,14 +48,14 @@ private struct OrderNotesSectionContent: View {
                     .headlineStyle()
                 Spacer()
                 if viewModel.customerNotes.isNotEmpty {
-                    createEditNotesButton
+                    createEditNotesButton()
                 }
             }.padding([.leading, .top, .trailing])
 
             if viewModel.customerNotes.isEmpty {
-                createOrderNotesView
+                createOrderNotesView()
             } else {
-                createNoteDataView
+                createNoteDataView()
             }
         }
         .padding(.horizontal, insets: safeAreaInsets)
@@ -63,7 +63,7 @@ private struct OrderNotesSectionContent: View {
         .addingTopAndBottomDividers()
     }
 
-    private var createEditNotesButton: some View {
+    private func createEditNotesButton() -> some View {
         Button(Localization.editButton) {
             showEditNotesView.toggle()
         }
@@ -74,7 +74,7 @@ private struct OrderNotesSectionContent: View {
         .accessibilityLabel(Text(Localization.editButtonAccessibilityLabel))
     }
 
-    private var createOrderNotesView: some View {
+    private func createOrderNotesView() -> some View {
         Group {
             Spacer(minLength: Layout.verticalHeadlineSpacing)
             Button(Localization.addNotes) {
@@ -85,7 +85,7 @@ private struct OrderNotesSectionContent: View {
         }
     }
 
-    private var createNoteDataView: some View {
+    private func createNoteDataView() -> some View {
         Text(viewModel.customerNotes)
             .padding([.leading, .bottom, .trailing])
     }

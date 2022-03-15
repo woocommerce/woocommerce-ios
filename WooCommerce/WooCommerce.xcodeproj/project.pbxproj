@@ -1185,7 +1185,7 @@
 		B5FD111221D3CE7700560344 /* NewNoteViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5FD111121D3CE7700560344 /* NewNoteViewController.xib */; };
 		B5FD111621D3F13700560344 /* BordersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5FD111521D3F13700560344 /* BordersView.swift */; };
 		B63AAF4B254AD2C6000B28A2 /* URL+SurveyViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63AAF4A254AD2C6000B28A2 /* URL+SurveyViewControllerTests.swift */; };
-		B651474527D644FF00C9C4E6 /* OrderNotesSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B651474427D644FF00C9C4E6 /* OrderNotesSection.swift */; };
+		B651474527D644FF00C9C4E6 /* CustomerOrderNoteSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B651474427D644FF00C9C4E6 /* CustomerOrderNoteSection.swift */; };
 		B651474727D6522A00C9C4E6 /* NewOrderCustomerNotesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B651474627D6522A00C9C4E6 /* NewOrderCustomerNotesViewModel.swift */; };
 		B687940C27699D420092BCA0 /* RefundFeesCalculationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B687940B27699D410092BCA0 /* RefundFeesCalculationUseCase.swift */; };
 		B6E851F3276320C70041D1BA /* RefundFeesDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E851F2276320C70041D1BA /* RefundFeesDetailsViewModel.swift */; };
@@ -2862,7 +2862,7 @@
 		B5FD111121D3CE7700560344 /* NewNoteViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NewNoteViewController.xib; sourceTree = "<group>"; };
 		B5FD111521D3F13700560344 /* BordersView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BordersView.swift; sourceTree = "<group>"; };
 		B63AAF4A254AD2C6000B28A2 /* URL+SurveyViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+SurveyViewControllerTests.swift"; sourceTree = "<group>"; };
-		B651474427D644FF00C9C4E6 /* OrderNotesSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderNotesSection.swift; sourceTree = "<group>"; };
+		B651474427D644FF00C9C4E6 /* CustomerOrderNoteSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerOrderNoteSection.swift; sourceTree = "<group>"; };
 		B651474627D6522A00C9C4E6 /* NewOrderCustomerNotesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewOrderCustomerNotesViewModel.swift; sourceTree = "<group>"; };
 		B687940B27699D410092BCA0 /* RefundFeesCalculationUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundFeesCalculationUseCase.swift; sourceTree = "<group>"; };
 		B6E851F2276320C70041D1BA /* RefundFeesDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundFeesDetailsViewModel.swift; sourceTree = "<group>"; };
@@ -6383,7 +6383,7 @@
 		B651474327D644DE00C9C4E6 /* NotesSection */ = {
 			isa = PBXGroup;
 			children = (
-				B651474427D644FF00C9C4E6 /* OrderNotesSection.swift */,
+				B651474427D644FF00C9C4E6 /* CustomerOrderNoteSection.swift */,
 				B651474627D6522A00C9C4E6 /* NewOrderCustomerNotesViewModel.swift */,
 				53284C9FD06F2BDABC554BEE /* EditOrderNotesViewModel.swift */,
 			);
@@ -8501,7 +8501,7 @@
 				E15F163126C5117300D3059B /* InPersonPaymentsNoConnectionView.swift in Sources */,
 				456CB50D2444BFAC00992A05 /* ProductPurchaseNoteViewController.swift in Sources */,
 				D802541F2655137A001B2CC1 /* CardPresentModalNonRetryableError.swift in Sources */,
-				B651474527D644FF00C9C4E6 /* OrderNotesSection.swift in Sources */,
+				B651474527D644FF00C9C4E6 /* CustomerOrderNoteSection.swift in Sources */,
 				029F29FC24D94106004751CA /* EditableProductVariationModel.swift in Sources */,
 				0218B4EC242E06F00083A847 /* MediaType+WPMediaType.swift in Sources */,
 				D85A3C5026C153A500C0E026 /* InPersonPaymentsPluginNotActivatedView.swift in Sources */,

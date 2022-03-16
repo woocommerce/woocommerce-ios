@@ -1,5 +1,0 @@
-Hemos actualizado nuestra función experimental de creación de pedidos.  Ahora los productos variables muestran la lista de sus atributos.
-
-Además, hemos añadido otra función experimental: la gestión de cupones. Para activarla, ve a la pestaña Más, Ajustes y Ajustes experimentales. Agradecemos tus comentarios sobre la aplicación, sobre todo acerca de las nuevas funciones en las que estamos trabajando y a las que puedes acceder de manera anticipada.
-
-Damos las gracias especialmente al usuario de GitHub chrisKns por su contribución a las mejoras de esta versión. ❤

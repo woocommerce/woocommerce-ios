@@ -1,5 +1,5 @@
 import SwiftUI
-import struct Yosemite.OrderFeeLine
+import Yosemite
 
 class FeeLineDetailsViewModel: ObservableObject {
 
@@ -66,7 +66,7 @@ class FeeLineDetailsViewModel: ObservableObject {
     /// Returns true when there are no valid pending changes.
     ///
     var shouldDisableDoneButton: Bool {
-        guard finalAmountDecimal > .zero else {
+        guard finalAmountDecimal != .zero else {
             return true
         }
 
@@ -89,6 +89,8 @@ class FeeLineDetailsViewModel: ObservableObject {
     ///
     private let currencyFormatter: CurrencyFormatter
 
+    private let minusSign: String = NumberFormatter().minusSign
+
     /// Placeholder for amount text field.
     ///
     let amountPlaceholder: String
@@ -106,7 +108,7 @@ class FeeLineDetailsViewModel: ObservableObject {
          locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          didSelectSave: @escaping ((OrderFeeLine?) -> Void)) {
-        self.priceFieldFormatter = .init(locale: locale, storeCurrencySettings: storeCurrencySettings)
+        self.priceFieldFormatter = .init(locale: locale, storeCurrencySettings: storeCurrencySettings, allowNegativeNumber: true)
         self.percentSymbol = NumberFormatter().percentSymbol
         self.currencySymbol = storeCurrencySettings.symbol(from: storeCurrencySettings.currencyCode)
         self.currencyPosition = storeCurrencySettings.currencyPosition
@@ -122,7 +124,7 @@ class FeeLineDetailsViewModel: ObservableObject {
             self.initialAmount = .zero
         }
 
-        if initialAmount > 0, let formattedInputAmount = currencyFormatter.formatAmount(initialAmount) {
+        if initialAmount != 0, let formattedInputAmount = currencyFormatter.formatAmount(initialAmount) {
             self.amount = priceFieldFormatter.formatAmount(formattedInputAmount)
             self.percentage = priceFieldFormatter.formatAmount("\(initialAmount / baseAmountForPercentage * 100)")
         }
@@ -135,14 +137,7 @@ class FeeLineDetailsViewModel: ObservableObject {
             return
         }
 
-        let feeLine = OrderFeeLine(feeID: 0,
-                                   name: "Fee",
-                                   taxClass: "",
-                                   taxStatus: .none,
-                                   total: priceFieldFormatter.formatAmount(finalAmountString),
-                                   totalTax: "",
-                                   taxes: [],
-                                   attributes: [])
+        let feeLine = OrderFactory.newOrderFee(total: priceFieldFormatter.formatAmount(finalAmountString))
         didSelectSave(feeLine)
     }
 }
@@ -155,6 +150,8 @@ private extension FeeLineDetailsViewModel {
         let deviceDecimalSeparator = Locale.autoupdatingCurrent.decimalSeparator ?? "."
         let numberOfDecimals = 2
 
+        let negativePrefix = amount.hasPrefix(minusSign) ? minusSign : ""
+
         let sanitized = amount
             .filter { $0.isNumber || "\($0)" == deviceDecimalSeparator }
 
@@ -162,14 +159,14 @@ private extension FeeLineDetailsViewModel {
         let components = sanitized.components(separatedBy: deviceDecimalSeparator)
         switch components.count {
         case 1 where sanitized.contains(deviceDecimalSeparator):
-            return components[0] + deviceDecimalSeparator
+            return negativePrefix + components[0] + deviceDecimalSeparator
         case 1:
-            return components[0]
+            return negativePrefix + components[0]
         case 2...Int.max:
             let number = components[0]
             let decimals = components[1]
             let trimmedDecimals = decimals.prefix(numberOfDecimals)
-            return number + deviceDecimalSeparator + trimmedDecimals
+            return negativePrefix + number + deviceDecimalSeparator + trimmedDecimals
         default:
             fatalError("Should not happen, components can't be 0 or negative")
         }

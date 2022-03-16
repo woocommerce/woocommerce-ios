@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-03-03 22:44:49+0000 */
+/* Translation-Revision-Date: 2022-03-10 09:54:13+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -40,6 +40,9 @@
 /* Combined rule for a coupon. Reads like: 2 Products and 1 Category */
 "%1$@ and %2$@" = "%1$@ と %2$@";
 
+/* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
+"%1$@ card ending %2$@" = "最後の4桁が%2$@の %1$@ カード";
+
 /* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
 "%1$@ excl. %2$@" = "%1$@ (%2$@ を除く)";
 
@@ -71,15 +74,8 @@
 /* Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM). */
 "%1$@ • %2$@" = "%1$@• %2$@";
 
-/* Displays a time range followed by a specific date/time */
-"%1$@ › %2$@" = "%1$@ › %2$@";
-
 /* Card reader battery level as an integer percentage */
 "%1$@%% Battery" = "バッテリー%1$@%%";
-
-/* Displays a date range for a stats interval
-   Displays a date range for a stats interval in the legacy version */
-"%1$@-%2$@" = "%1$@-%2$@";
 
 /* In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and weight. For example, “purple, has logo・1lbs”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the weight with the unit. */
 "%1$@・%2$@" = "%1$@・%2$@";
@@ -246,6 +242,9 @@
 /* Main message on the Print Customs Invoice screen of Shipping Label flow */
 "A customs form must be printed and included on this international shipment" = "この国外配送では税関申告書を印刷して添付する必要があります";
 
+/* Message when attempting to pay for a test transaction with a live card. */
+"A live card was used on a site in test mode. Use a test card instead." = "本番用カードがテストモードのサイトで使用されました。 挿入されているテストカードを使用してください。";
+
 /* Error message when there was a network error checking In-Person Payments requirements */
 "A network error occurred. Please check your connection and try again." = "ネットワークエラーが発生しました。 接続を確認して、もう一度お試しください。";
 
@@ -282,11 +281,17 @@
 /* Details section title in the Edit Address Form */
 "ADDRESS" = "住所";
 
+/* Reads as 'AID'. Part of the mandatory data in receipts */
+"AID" = "AID";
+
 /* About this app (information page title) */
 "About" = "このサイトについて";
 
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "このアプリについて";
+
+/* Reads as 'Account Type'. Part of the mandatory data in receipts */
+"Account Type" = "アカウントの種類";
 
 /* Title for the error screen when a Card Present Payments extension is installed but not activated */
 "Activate %1$@" = "%1$@ を有効にする";
@@ -321,9 +326,6 @@
    Product Add Category navigation title */
 "Add Category" = "カテゴリーを追加";
 
-/* Title for the action button to add coupon on the coupon list screen. */
-"Add Coupon" = "クーポンを追加";
-
 /* Title text of the button that adds customer data when creating a new order */
 "Add Customer Details" = "お客様の詳細を追加";
 
@@ -332,6 +334,9 @@
 
 /* Downloadable file screen navigation title */
 "Add Downloadable File" = "ダウンロード可能なファイルを追加";
+
+/* Title for the Fee screen during order creation */
+"Add Fee" = "手数料を追加";
 
 /* Title text of the button that adds fees when creating a new order */
 "Add Fees" = "手数料を追加";
@@ -400,6 +405,9 @@
 
 /* Accessibility label for the 'Add a tracking' button */
 "Add a tracking" = "追跡を追加";
+
+/* Cell text in Add / Edit variation when there are no images. */
+"Add a variation image" = "バリエーション画像を追加";
 
 /* Button title in the Shipping Label Payment Method screen if there is an existing payment method */
 "Add another credit card" = "別のクレジットカードを追加";
@@ -530,8 +538,24 @@
    Title of the Amount label on Coupon Details screen */
 "Amount" = "合計";
 
+/* Title for the amount field on the Fee Details screen during order creationParameters: %1$@ - fee type (percent sign or currency symbol) */
+"Amount (%1$@)" = "合計 (%1$@)";
+
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
 "Amount Eligible For Refund" = "返金対象額";
+
+/* Line description for 'Amount Paid' cart total on the receipt
+   Title of 'Amount Paid' section in the receipt */
+"Amount Paid" = "支払額";
+
+/* A failure reason for when an error HTTP status code was returned from the site, with the specific error code. */
+"An HTTP error code %i was returned." = "HTTP エラーコード %i が返されました。";
+
+/* A failure reason for when an error HTTP status code was returned from the site. */
+"An HTTP error code was returned." = "HTTP エラーコードが返されました。";
+
+/* Error message when Bluetooth is not enabled for this application. */
+"An error occurred accessing Bluetooth - please enable Bluetooth and try again" = "Bluetooth へのアクセス時にエラーが発生しました。Bluetooth を有効にしてから、もう一度お試しください。";
 
 /* An error description explaining that a Menu could not be created. */
 "An error occurred creating the Menu." = "メニューを作成する際にエラーが発生しました。";
@@ -548,8 +572,17 @@
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "リクエストの処理中にエラーが発生しました。";
 
+/* Message when it looks like a duplicate transaction is being attempted. */
+"An identical transaction was submitted recently. If you wish to continue, try another means of payment" = "同一の取引が最近送信されています。 続行する場合は、別の支払方法をお試しください";
+
+/* Message when an incorrect PIN has been entered too many times. */
+"An incorrect PIN has been entered too many times. Try another means of payment" = "上限回数を超えて誤った PIN が入力されました。 別の支払方法をお試しください";
+
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "購入後、お客様に送るオプション備考";
+
+/* A failure reason for when the error that occured wasn't able to be determined. */
+"An unknown error occurred." = "不明なエラーが発生しました。";
 
 /* Title of analytics as part of Jetpack benefits. */
 "Analytics" = "アナリティクス";
@@ -570,6 +603,9 @@
 
 /* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
 "Application Logs" = "アプリケーションログ";
+
+/* Reads as 'Application name'. Part of the mandatory data in receipts */
+"Application Name" = "アプリケーション名";
 
 /* Change order status screen - button title to apply selection */
 "Apply" = "適用";
@@ -625,6 +661,9 @@
 
 /* Body of the alert when a user is deleting a variation */
 "Are you sure you want to remove this variation?" = "このバリエーションを削除してもよいですか ?";
+
+/* Message displayed in the alert for dismissing all the inbox notes. */
+"Are you sure? Inbox messages will be dismissed forever." = "本当に実行しますか ? 今後受信トレイのメッセージが表示されなくなります。";
 
 /* Placeholder in the Attribute Name row on Rename Attributes screen. */
 "Attribute name" = "属性名";
@@ -705,11 +744,12 @@
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "太字";
 
-/* The description on the placeholder overlay when there are no coupons on the coupon list screen. */
-"Boost your business by sending customers special offers and discounts." = "顧客に特別オファーや割引を提供して売上を向上";
-
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "ボックス";
+
+/* Button title in the action sheet of product variatiosns that shows the bulk update
+   Title that appears on top of the bulk update of product variations screen */
+"Bulk Update" = "一括更新";
 
 /* Title of the text field for editing the button text for an external/affiliate product */
 "Button Text" = "ボタンテキスト";
@@ -736,7 +776,7 @@
 "Can Not Request Link" = "リンクをリクエストできません";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
+   Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title that closes the action sheet in product variations - Button title that closes the presented screen - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
 "Cancel" = "キャンセル";
 
 /* Display label for cancelled order status. */
@@ -765,6 +805,12 @@
 
 /* Card method title on the select payment method screen for simple payments */
 "Card" = "カード";
+
+/* Error message when a card is left in the reader and another transaction started. */
+"Card was left in reader - please remove and reinsert card" = "カードがリーダーに残っています。カードを取り外して、もう一度挿入してください";
+
+/* Error message when the card is removed from the reader prematurely. */
+"Card was removed too soon - please try transaction again" = "カードの取り外しが早すぎました。取引をもう一度お試しください。";
 
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "配送業者と金額";
@@ -849,7 +895,7 @@
 "Clear all" = "すべてクリア";
 
 /* Text for the close button in the Add Product screen
-   Text for the close button in the Edit Address Form - Text for the close button in the Product screen - Text for the close button in the Shipping Line Details screen - Title of the Close action on the Jetpack Install view */
+   Text for the close button in the Edit Address Form - Text for the close button in the Fee Details screen - Text for the close button in the Product screen - Text for the close button in the Shipping Line Details screen - Title of the Close action on the Jetpack Install view */
 "Close" = "閉じる";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
@@ -921,6 +967,9 @@
 
 /* Title label for modal dialog that appears when connecting to a card reader */
 "Connecting to reader" = "Reader に接続しています";
+
+/* Error message when establishing a connection to the card reader times out. */
+"Connecting to the card reader timed out - ensure it is nearby and charged and then try again" = "カードリーダーとの接続がタイムアウトしました。充電されたカードリーダーが近くにあることを確認し、もう一度お試しください。";
 
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "アカウントへの接続";
@@ -1105,9 +1154,6 @@
 /* Cell title: the current date. */
 "Current" = "Current";
 
-/* Error when the user tap on Country field in Shipping Label Address Validation */
-"Currently we support just the United States from mobile." = "現在モバイルでは米国にのみ対応しています";
-
 /* Name of the section for custom shipment tracking carriers */
 "Custom" = "カスタム";
 
@@ -1167,6 +1213,9 @@
 /* Navigation title of the orders filter selector screen for date range
    Row title for filtering orders by date range. */
 "Date Range" = "日付の範囲";
+
+/* Title of 'Date Paid' section in the receipt */
+"Date paid" = "支払日";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "出荷日";
@@ -1228,12 +1277,21 @@
    Title of the Discount row in Coupon Details screen */
 "Discount" = "割引";
 
+/* Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s) */
+"Discount %1$@" = "割引 %1$@";
+
 /* Title of the Discounted Orders label on Coupon Details screen */
 "Discounted Orders" = "割引注文";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Button to dismiss the alert presented when finding a reader to connect to fails - Button to dismiss. Presented to users after collecting a payment fails - Button to dismiss. Presented to users when updating the card reader software fails - Dismiss button in inbox note row. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab - The title of the button to dismiss the SimplePayments top banner - Title of the button to dismiss the banner notice in the add-ons view */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Button to dismiss the alert presented when finding a reader to connect to fails - Button to dismiss. Presented to users after collecting a payment fails - Button to dismiss. Presented to users when updating the card reader software fails - Dismiss button in inbox note row. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab - The title of the button to dismiss the SimplePayments top banner - Title of the button to dismiss the banner notice in the add-ons view - Title of the dismiss action button on the coupon list screen */
 "Dismiss" = "非表示";
+
+/* Dismiss All button in Inbox Notes for dismissing all the notes. */
+"Dismiss All" = "すべて非表示";
+
+/* Title of the alert for dismissing all the inbox notes. */
+"Dismiss all messages" = "メッセージをすべて非表示にする";
 
 /* Display label for the product's inventory backorders setting option */
 "Do not allow" = "許可しない";
@@ -1251,7 +1309,7 @@
 "Don't have an account? _Sign up_" = "アカウントをお持ちでない場合は_登録_してください。";
 
 /* Action title to select products to add to a grouped product from search results
-   Done button on the Jetpack Install Progress screen. - Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - Text for the done button in the Shipping Line Details screen - The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again. */
+   Done button on the Jetpack Install Progress screen. - Done navigation button in Inbox Notes webview - Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - Text for the done button in the Fee Details screen - Text for the done button in the Shipping Line Details screen - The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again. */
 "Done" = "完了";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -1486,14 +1544,14 @@
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Apple Maps で住所の検索中に発生したエラー";
 
+/* Message displayed when fail to loading total discounted amount in Coupon Details screen */
+"Error loading data" = "データ読み込みエラー";
+
 /* Alert title when there is an error requesting shipping label document for printing */
 "Error previewing shipping label" = "配送ラベルのプレビューでエラーが発生しました";
 
 /* Notice displayed when the label purchase fails */
 "Error purchasing the label" = "ラベルの購入時にエラーが発生しました";
-
-/* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
-"Everyone loves a deal" = "誰もがお得な情報を求めています";
 
 /* Title for the exclude sale items row in coupon usage details screen. */
 "Exclude Sale Items" = "セール品を除外";
@@ -1529,11 +1587,14 @@
 /* Featured Product switch in Product Catalog Visibility */
 "Featured Product" = "おすすめ商品";
 
+/* Title for the Fee Details screen during order creation */
+"Fee" = "手数料";
+
 /* Title in the navigation bar when the survey is completed */
 "Feedback Sent!" = "フィードバックを送信しました";
 
 /* Fees label for payment view
-   Label for the row showing the cost of fees in the order */
+   Label for the row showing the cost of fees in the order - Line description for 'Fees' cart total on the receipt. Only shown when non-zero. */
 "Fees" = "手数料";
 
 /* Title on the refund screen that lists the fees total cost */
@@ -1653,6 +1714,9 @@
 
 /* Type Gift of content to be declared for the customs form in Shipping Label flow */
 "Gift" = "ギフト";
+
+/* Title of the feedback action button on the coupon list screen */
+"Give Feedback" = "フィードバックを残す";
 
 /* The title of the button to give feedback about products beta features on the banner on the products tab
    The title of the button to give feedback about shipping labels features on the banner in order details - Title of the button to give feedback about the add-ons feature - Title of the button to give feedback about the Simple Payments feature - Title on the navigation bar for the products feedback survey */
@@ -1837,8 +1901,8 @@
 /* The plugin is not active on the site and has enabled automatic updates */
 "Inactive, Autoupdates on" = "プラグイン無効化中。自動更新オン。";
 
-/* Title for the screen that shows inbox notes.
-   Title of the Inbox menu in the hub menu */
+/* Navigation title of the webview which is used in Inbox Notes.
+   Title for the screen that shows inbox notes. - Title of the Inbox menu in the hub menu */
 "Inbox" = "受信箱";
 
 /* Describes a standard *.wordpress.com site domain */
@@ -1862,11 +1926,17 @@
 /* Label action for inserting a link on the editor */
 "Insert" = "挿入";
 
+/* Message from the in-person payment card reader prompting user to insert their card */
+"Insert Card" = "カードを挿入してください";
+
 /* Accessibility label for insert horizontal ruler button on formatting toolbar. */
 "Insert Horizontal Ruler" = "水平線を挿入";
 
 /* Accessibility label for insert link button on formatting toolbar. */
 "Insert Link" = "リンクを挿入";
+
+/* Message from the in-person payment card reader prompting user to insert or swipe their card */
+"Insert Or Swipe Card" = "カードを挿入またはスワイプしてください";
 
 /* Navigates to Install Jetpack screen.
    Title of install action in the Jetpack benefits view. - Title of the Install Jetpack intro view - Title of the Install Jetpack view */
@@ -2221,6 +2291,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
 "Minimum value %@, maximum value %@" = "最小値%1$@、最大値%2$@";
 
+/* The description in product variations bulk update, of a value, that is different acrossall variations */
+"Mixed" = "混合";
+
 /* Caption displayed in promotional screens shown during the login flow. */
 "Monitor and approve your product reviews" = "商品レビューを監視、承認";
 
@@ -2249,6 +2322,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Trash Action Spoken hint */
 "Moves the comment to Trash" = "コメントをゴミ箱に移動する";
+
+/* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
+"Multiple Contactless Cards Detected" = "複数の非接触型カードが検出されました";
 
 /* Title of the hub menu view in case there is no title for the store */
 "My Store" = "自分のストア";
@@ -2311,6 +2387,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Next nav bar button title in Add Product Attribute Options screen - Next nav bar button title in Add Product Attribute screen - Title for the button to confirm the amount in the simple payments screen - Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
 "Next" = "次へ";
 
+/* Value for the individual use only row or the exclude sale items row in Coupon Usage Details screen when the value is false */
+"No" = "いいえ";
+
 /* Value for the allowed emails row in Coupon Usage Details screen when no restriction is set */
 "No Restrictions" = "制限なし";
 
@@ -2321,8 +2400,17 @@ This part is the link to the website, and forms part of a longer sentence which 
    Order details > customer info > shipping details. This is where the address would normally display. - Placeholder for empty address in order customer data */
 "No address specified." = "住所が指定されていません。";
 
+/* Error message when a card reader was expected to already have been connected. */
+"No card reader is connected - connect a reader and try again" = "カードリーダーが接続されていません。リーダーを接続してもう一度お試しください。";
+
 /* Title for the error screen when there was a network error checking In-Person Payments requirements. */
 "No connection" = "接続できません";
+
+/* Error message when there is no connection to the Internet. */
+"No connection to the Internet - please connect to the Internet and try again" = "インターネットに接続されていません。インターネットに接続してもう一度お試しください。";
+
+/* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
+"No coupons found" = "クーポンがありません";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "使用可能なデータがありません";
@@ -2377,7 +2465,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No tax classes yet" = "税区分がまだありません";
 
 /* Display label for the order fee's tax status setting option
-   Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow - Value for fields in Coupon Usage Details screen when no value is set */
+   Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow - The description in product variations bulk update, of a value, that is missing from all variations - Value for fields in Coupon Usage Details screen when no value is set */
 "None" = "なし";
 
 /* Title of dismiss action in the Jetpack benefits view. */
@@ -2391,6 +2479,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "お客様への通知";
+
+/* Title of order note section in the receipt, commonly used for Quick Orders. */
+"Notes" = "メモ";
 
 /* Info text for the generate first variation screen */
 "Now that you’ve added attributes, you can create your first variation!" = "属性の追加が完了しました。最初のバリエーションを作成してください。";
@@ -2596,11 +2687,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header for list of payment methods in Payment Method screen */
 "Payment Method Selected" = "お支払い方法が選択されました";
 
+/* Message when the presented card remaining credit or balance is insufficient for the purchase. */
+"Payment declined due to insufficient funds. Try another means of payment" = "資金が不足しているため支払いが拒否されました。 別の支払方法をお試しください";
+
 /* Error message. Presented to users after a collecting a payment fails
    Error message. Presented to users after collecting a payment fails */
 "Payment failed" = "支払いに失敗しました";
 
-/* Title of the webview of adding a payment method in Shipping Labels */
+/* Title of 'Payment method' section in the receipt
+   Title of the webview of adding a payment method in Shipping Labels */
 "Payment method" = "決済方法";
 
 /* Notice that will be displayed after adding a new Shipping Label payment method */
@@ -2608,6 +2703,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label informing users that the payment succeeded. Presented to users when a payment is collected */
 "Payment successful" = "支払いに成功しました";
+
+/* Message when we don't know exactly why the payment was declined. */
+"Payment was declined for an unknown reason. Try another means of payment" = "不明な理由により支払いが拒否されました。 別の支払方法をお試しください";
+
+/* Message when payment is declined for a non specific reason. */
+"Payment was declined for an unspecified reason. Try another means of payment" = "不明な理由により支払いが拒否されました。 別の支払方法をお試しください";
 
 /* Display label for pending order status.
    Display label for the review's pending status */
@@ -2793,7 +2894,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Previously Refunded" = "過去に返金済み";
 
 /* Product Price Settings navigation title
-   Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
+   Section header title for product price - The title for the price settings section in the product variation bulk updatescreen - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
 "Price" = "価格";
 
 /* Title of print button on Print Customs Invoice screen of Shipping Label flow when there are more than one invoice */
@@ -2856,8 +2957,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Indicates that a payment is being processed */
 "Processing payment..." = "支払いを処理しています...";
 
-/* Legacy description for Top Performers left column header
-   Product section title - Product section title if there is only one product. - Product section title in Review Order screen if there is one product. - Title for the Product screen during order creation */
+/* Product section title
+   Product section title if there is only one product. - Product section title in Review Order screen if there is one product. - Title for the Product screen during order creation */
 "Product" = "商品";
 
 /* The title on the navigation bar when viewing an order item add-ons
@@ -2998,8 +3099,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "﻿注文返金﻿の理由";
 
-/* The title of the view containing a receipt preview */
+/* The title of the view containing a receipt preview
+   Title of receipt. */
 "Receipt" = "領収書";
+
+/* Title of receipt. Reads like Receipt from WooCommerce, Inc. */
+"Receipt from %1$@" = "%1$@からのレシート";
 
 /* Button to reload plugin data after activating a Card Present Payments extension */
 "Refresh After Activating" = "アクティベート後に再度読み込む";
@@ -3056,6 +3161,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "登録済みドメイン";
 
+/* The label in the option of selecting to bulk update the regular price of a product variation */
+"Regular Price" = "標準価格";
+
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "標準価格 :%@";
 
@@ -3065,6 +3173,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Confirmation title before removing an attribute from a variation. */
 "Remove Attribute" = "属性を削除";
+
+/* Message from the in-person payment card reader prompting user to remove their card */
+"Remove Card" = "カードを取り外してください";
+
+/* Text for the button to remove a fee from the order during order creation */
+"Remove Fee from Order" = "注文から手数料を削除";
 
 /* Title on the alert when the user taps to delete a Product image */
 "Remove Image" = "画像を削除";
@@ -3132,12 +3246,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Retrieves a list of products that contain a given keyword." = "特定のキーワードを含む商品リストを検索します。";
 
 /* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
-   Button to retry when there was a network error checking In-Person Payments requirements - Retry Action - Retry the last action */
+   Action button to retry syncing the draft order - Button to retry when there was a network error checking In-Person Payments requirements - Retry Action - Retry the last action */
 "Retry" = "再度試す";
 
 /* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages.
    Button to try again after connecting to a specific reader fails due to postal code problems. Intended for use after the merchant corrects the postal code in the store admin pages. */
 "Retry After Updating" = "更新後に再試行";
+
+/* Message from the in-person payment card reader prompting user to retry payment with their card */
+"Retry Card" = "カードをもう一度お試しください";
 
 /* Action button to check site's connection again. */
 "Retry Connection" = "再度接続を試す";
@@ -3395,7 +3512,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Shipped %@" = "出荷日: %@";
 
 /* Label for the row showing the cost of shipping in the order
-   Placeholder for the name field on the Shipping Line Details screen during order creation - Product Shipping Settings navigation title - Shipping label for payment view - Title for the Shipping Line Details screen during order creation - Title of the product form bottom sheet action for editing shipping settings. - Title of the Shipping Settings row on Product main screen */
+   Line description for 'Shipping' cart total on the receipt. Only shown when non-zero - Placeholder for the name field on the Shipping Line Details screen during order creation - Product Shipping Settings navigation title - Shipping label for payment view - Title for the Shipping Line Details screen during order creation - Title of the product form bottom sheet action for editing shipping settings. - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "配送";
 
 /* Shipping Address title for customer info section
@@ -3583,6 +3700,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Sorry, that username is unavailable." = "そのユーザー名はご利用いただけません。";
 
+/* Error message when the card reader service experiences an unexpected internal service error. */
+"Sorry, this payment couldn’t be processed" = "支払いを処理できませんでした";
+
 /* No comment provided by engineer. */
 "Sorry, usernames can only contain lowercase letters (a-z) and numbers." = "ユーザー名には半角英字の小文字 (a-z) と数字のみを使ってください。";
 
@@ -3664,7 +3784,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Subscription" = "定期購入";
 
 /* Create Shipping Label form -> Subtotal label
-   Subtotal label for a refund details view - Title on the refund screen that lists the fees subtotal cost - Title on the refund screen that lists the products refund subtotal cost - Title on the refund screen that lists the shipping subtotal cost - Title text of the row that shows the subtotal when creating a simple payment */
+   Line description for 'Subtotal' cart total on the receipt. The subtotal of the products purchased before discounts. - Subtotal label for a refund details view - Title on the refund screen that lists the fees subtotal cost - Title on the refund screen that lists the products refund subtotal cost - Title on the refund screen that lists the shipping subtotal cost - Title text of the row that shows the subtotal when creating a simple payment */
 "Subtotal" = "小計";
 
 /* Notice text after updating the order successfully */
@@ -3672,6 +3792,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the footer in Shipping Label Package Detail screen */
 "Sum of products and package weight" = "商品と荷物の重量の合計";
+
+/* Title of 'Summary' section in the receipt when the order number is unknown */
+"Summary" = "ご注文内容";
+
+/* Title of 'Summary' section in the receipt. %1$@ is the order number, e.g. 4920 */
+"Summary: Order #%1$@" = "ご注文内容: 注文番号%1$@";
+
+/* Message from the in-person payment card reader prompting user to swipe their card */
+"Swipe Card" = "カードをスワイプしてください";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "ストアを切り替える";
@@ -3710,6 +3839,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Toast message showing up when tapping Copy button on System Status Report screen. */
 "System status report copied to clipboard" = "システムステータスレポートをクリップボードにコピーしました";
 
+/* Message when attempting to pay for a live transaction with a test card. */
+"System test cards are not permitted for payment. Try another means of payment" = "システムテストカードは支払いを許可されていません。 別の支払方法をお試しください";
+
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags. - Title of the Tags row on Product main screen */
 "Tags" = "タグ";
@@ -3717,9 +3849,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the simple payments screen */
 "Take Payment" = "支払いを受け取る";
 
-/* Navigation bar title for the Simple Payments Methods screens
-   Text of the button that creates a simple payment order. Contains the total amount to collect */
-"Take Payment ((total))" = "お支払い ((合計))";
+/* Navigation bar title for the Simple Payments Methods screens. %1$@ is a placeholder for the total amount to collect
+   Text of the button that creates a simple payment order. %1$@ is a placeholder for the total amount to collect */
+"Take Payment (%1$@)" = "支払い (%1$@) を受け取る";
 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "写真を撮る";
@@ -3801,8 +3933,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Tax label for the tax detail row. - Title on the refunds screen that lists the fees tax cost - Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
 "Tax" = "税";
 
-/* Tax percentage to be applied to the simple payments order */
-"Tax ((rate)%)" = "税率 ((rate)%)";
+/* Tax percentage to be applied to the simple payments order. %1$@%% is a placeholder for the tax rate as a percentage */
+"Tax (%1$@%%)" = "税率 (%1$@%%)";
 
 /* Section header title for product tax settings */
 "Tax Settings" = "税設定";
@@ -3823,7 +3955,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Display label for the product's tax status setting option */
 "Taxable" = "課税";
 
-/* Taxes label for payment view */
+/* Label for the row showing the taxes in the order
+   Line description for tax charged on the whole cart. Only shown when non-zero - Taxes label for payment view */
 "Taxes" = "税";
 
 /* Disclaimer in the simple payments summary screen about taxes. */
@@ -3860,6 +3993,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text thanking the user when the survey is completed */
 "Thank you for sharing your thoughts with us" = "ご意見をお聞かせいただきありがとうございます";
 
+/* Confirmation message in Inbox Notes after responding to a survey. */
+"Thank you for your feedback!" = "フィードバックをありがとうございました。";
+
 /* Shown when a user pastes a code into the two factor field that contains letters or is the wrong length */
 "That doesn't appear to be a valid verification code." = "正しい認証コードではないようです。";
 
@@ -3890,6 +4026,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when a Card Present Payments extension is installed but the version is not supported */
 "The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "ご使用のストアに %1$@ 拡張機能がインストールされていますが、オフラインでの支払いを行うには更新する必要があります。 最新バージョンに更新してください。";
 
+/* Error message when the card reader loses its Bluetooth connection to the card reader. */
+"The Bluetooth connection to the card reader disconnected unexpectedly" = "Bluetooth とカードリーダーの接続が予期せず切断されました";
+
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "Google アカウント「%@」は、WordPress.com のアカウントと一致しません";
 
@@ -3905,6 +4044,48 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error title when trying to update or create an attribute remotely. */
 "The attribute couldn't be saved." = "属性を保存できませんでした。";
 
+/* Message when the card presented does not support the order currency. */
+"The card does not support this currency. Try another means of payment" = "カードはこの通貨をサポートしていません。 別の支払方法をお試しください";
+
+/* Message when the card presented does not allow this type of purchase. */
+"The card does not support this type of purchase. Try another means of payment" = "カードはこの種類の購入をサポートしていません。 別の支払方法をお試しください";
+
+/* Message when the presented card is past its expiration date. */
+"The card has expired. Try another means of payment" = "カードの有効期限が過ぎています。 別の支払方法をお試しください";
+
+/* Message when payment is declined for a non specific reason. */
+"The card or card account is invalid. Try another means of payment" = "カードまたはカード口座が無効です。 別の支払方法をお試しください";
+
+/* Error message when the card reader is busy executing another command. */
+"The card reader is busy executing another command - please try again" = "カードリーダーは別のコマンドを実行中です。もう一度お試しください。";
+
+/* Error message when the card reader is incompatible with the application. */
+"The card reader is not compatible with this application - please try updating the application or using a different reader" = "カードリーダーにこのアプリケーションとの互換性がありません。アプリケーションをアップデートするか、別のリーダーを使用してください。";
+
+/* Error message when the card reader session has timed out. */
+"The card reader session has expired - please disconnect and reconnect the card reader and then try again" = "カードリーダーのセッションの期限が切れています。カードリーダーの接続を解除し、接続し直してからもう一度お試しください。";
+
+/* Error message when the card reader software is too far out of date to process payments. */
+"The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "カードリーダーのソフトウェアの期限が切れています。カードリーダーのソフトウェアを更新してから、支払いを処理してみてください。";
+
+/* Error message when the card reader software update fails due to a communication error. */
+"The card reader software update failed due to a communication error - please try again" = "通信エラーにより、カードリーダーのソフトウェアの更新に失敗しました。もう一度お試しください。";
+
+/* Error message when the card reader software update fails due to a problem with the update server. */
+"The card reader software update failed due to a problem with the update server - please try again" = "更新サーバーに問題が発生したため、カードリーダーのソフトウェアの更新に失敗しました。もう一度お試しください。";
+
+/* Error message when the card reader software update fails unexpectedly. */
+"The card reader software update failed unexpectedly - please try again" = "カードリーダーのソフトウェアの更新が予期せずに失敗しました。もう一度お試しください。";
+
+/* Error message when the card reader software update is interrupted. */
+"The card reader software update was interrupted before it could complete - please try again" = "カードリーダーのソフトウェアの更新が完了する前に中断されました。もう一度お試しください。";
+
+/* Error message when the card reader itself declines the card. */
+"The card was declined by the card reader - please try another means of payment" = "カードがカードリーダーにより拒否されました。別の支払方法をお試しください。";
+
+/* Error message when the card processor declines the payment. */
+"The card was declined by the payment processor - please try another means of payment" = "カードが決済業者により拒否されました。別の支払方法をお試しください。";
+
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "このサーバーの証明書が無効です。「%@」を偽装しているサーバーに接続中の可能性があるため、機密情報が危険にさらされる恐れがあります。\n\nこの証明書をそのまま信頼しますか ?";
 
@@ -3917,6 +4098,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The message of the alert when another service package has the same name */
 "The new service package name is not unique." = "新しいサービスパッケージの名前が一意ではありません。";
 
+/* Message when the presented card does not allow the purchase amount. */
+"The payment amount is not allowed for the card presented. Try another means of payment." = "この支払い額は提示されたカードで許可されていません。 別の支払方法をお試しください。";
+
+/* Error message when the payment can not be processed (i.e. order amount is below the minimum amount allowed.) */
+"The payment can not be processed by the payment processor." = "決済業者はこの支払いを処理できません。";
+
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "電話番号が有効でないか、この端末から顧客に電話できません。";
 
@@ -3926,6 +4113,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
 "The reader has a critically low battery. Please charge the reader or try a different reader." = "リーダーのバッテリー残量が非常に少なくなっています。 リーダーを充電するか、別のリーダーをお試しください。";
 
+/* Error message when a request times out. */
+"The request timed out - please try again" = "リクエストがタイムアウトしました。もう一度お試しください。";
+
 /* Product price error notice message, when the sale price is added but the regular price is not */
 "The sale price can't be added without the regular price." = "セール価格を標準価格なしで追加することはできません。";
 
@@ -3934,6 +4124,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Product price error notice message, when the sale price is higher than the regular price */
 "The sale price should be lower than the regular price." = "セール価格は通常価格よりも低く設定する必要があります。";
+
+/* A failure reason for when the request couldn't be serialized. */
+"The serialization of the request failed." = "リクエストのシリアル化に失敗しました。";
+
+/* A failure reason for when the response couldn't be serialized. */
+"The serialization of the response failed." = "レスポンスのシリアル化に失敗しました。";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "サーバーが空のレスポンスを返しました。これは通常、サイトのメモリ上限を上げる必要があることを意味しています。";
@@ -3965,8 +4161,26 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility hint, informing the user that the cell shows the stock quantity information for this product. */
 "The stock quantity for this product. Editable." = "この商品の在庫数。編集可能。";
 
+/* Error message when there is an issue with the store address preventing an action (e.g. reader connection.) */
+"The store address is incomplete or missing, please update it before continuing." = "ストアの住所が不完全または不明です。住所を更新してから続行してください。";
+
+/* Error message when there is an issue with the store postal code preventing an action (e.g. reader connection.) */
+"The store postal code is invalid or missing, please update it before continuing." = "ストアの郵便番号が無効または不明です。郵便番号を更新してから続行してください。";
+
+/* Error message when the system cancels a command. */
+"The system canceled the command unexpectedly - please try again" = "システムによりコマンドが予期せずキャンセルされました。もう一度お試しください。";
+
+/* Error message when the card reader service experiences an unexpected software error. */
+"The system experienced an unexpected software error" = "システムで予期しないソフトウェアエラーが発生しました";
+
+/* Error message when the card reader service is busy executing another command. */
+"The system is busy executing another command - please try again" = "システムは別のコマンドを実行中です。もう一度お試しください。";
+
 /* Message for the error alert when fetching system status report fails */
 "The system status report for your site cannot be fetched at the moment. Please try again." = "現在、サイトのシステムステータスレポートを取得できません。 もう一度お試しください。";
+
+/* Message when the presented card postal code doesn't match the order postal code. */
+"The transaction postal code and card postal code do not match. Try another means of payment" = "取引の郵便番号とカードの郵便番号が一致しません。 別の支払方法をお試しください";
 
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "バリエーションを生成できませんでした。";
@@ -3982,6 +4196,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "指定のサイトからの投稿をブロックする際に問題が発生しました。";
+
+/* A general error message shown to the user when there was an API communication failure. */
+"There was a problem communicating with the site." = "サイトとの通信中に問題が発生しました。";
 
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "指定したサイトのブロックを解除する際に問題が発生しました。";
@@ -4024,11 +4241,17 @@ This part is the link to the website, and forms part of a longer sentence which 
    Top Performers section title - this year */
 "This Year" = "今年";
 
+/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this." = "このアプリが Bluetooth 経由でカードリーダーに接続するには権限が必要です。許可する場合は、プライバシー設定を変更してください。";
+
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "このアプリは、サーバーに WooCommerce 3.5をインストールしない限り、正常に機能しません。引き続きアプリを使用するには、すぐに更新する必要があります。";
 
 /* Message explaining more detail on why the user's role is incorrect. */
 "This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "このアプリでサポートされているユーザー権限グループは、管理者とショップマネージャーのみです。 自分の権限グループを更新するには、ストア所有者に連絡してください。";
+
+/* Message when a card requires a PIN code and we have no means of entering such a code. */
+"This card requires a PIN code and thus cannot be processed. Try another means of payment" = "このカードには PIN コードが必要なため、処理できません。 別の支払方法をお試しください";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "このメールアドレスは WordPress.com に登録されていません。";
@@ -4129,12 +4352,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Used when a Reader Topic is not found for a specific id */
 "Topic not found for id:" = "次の ID に該当するトピックは見つかりませんでした:";
 
-/* Legacy description for Top Performers right column header */
-"Total Spend" = "支払い合計額";
-
-/* Top performers — label for the total number of products ordered */
-"Total orders: %ld" = "注文合計:%ld";
-
 /* Title of the row for adding the package weight in Shipping Label Package Detail screen */
 "Total package weight" = "荷物の総重量";
 
@@ -4179,6 +4396,12 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to try again after connecting to a specific reader fails due to a critically low battery. - Button to try again. Presented to users after a failure occurs - Try Again button on the error alert when fetching system status report fails */
 "Try Again" = "もう一度お試しください";
 
+/* Message from the in-person payment card reader prompting user to retry a payment using a different card */
+"Try Another Card" = "別のカードでお試しください";
+
+/* Message from the in-person payment card reader prompting user to retry a payment using a different method, e.g. swipe, tap, insert */
+"Try Another Read Method" = "別の読み取り方法をお試しください";
+
 /* Button to try to collect a payment again. Presented to users after a collecting a payment fails */
 "Try Collecting Again" = "もう一度受け取りを試みる";
 
@@ -4189,11 +4412,17 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
 "Try again" = "もう一度お試しください";
 
+/* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
+"Try another means of payment" = "別の支払方法をお試しください";
+
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "別のメールで試す";
 
 /* When social login fails, this button offers to let them try tp login using a URL */
 "Try with the site address" = "サイトアドレスで試す";
+
+/* Message when a card is declined due to a potentially temporary problem. */
+"Trying again may succeed, or try another means of payment" = "もう一度試すか、別の支払方法をお試しください";
 
 /* Settings > Manage Card Reader > Connect > Hint to power on reader */
 "Turn card reader on and place it next to mobile device" = "カードリーダーをオンにしてモバイルデバイスの横に配置";
@@ -4214,6 +4443,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "接続できない";
 
+/* Error message when Bluetooth is not enabled or available. */
+"Unable to access Bluetooth - please enable Bluetooth and try again" = "Bluetooth にアクセスできません。Bluetooth を有効にしてから、もう一度お試しください。";
+
+/* Error message when location services is not enabled for this application. */
+"Unable to access Location Services - please enable Location Services and try again" = "位置情報サービスにアクセスできません。位置情報サービスを有効にしてから、もう一度お試しください。";
+
 /* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number}. Parameters: %1$d - order number */
 "Unable to add note to order #%1$d" = "注文番号%1$dにメモを追加できません";
 
@@ -4222,6 +4457,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number}. Parameters: %1$d - order number */
 "Unable to change status of order #%1$d" = "注文番号%1$dのステータスを変更できません";
+
+/* Error message when communication with the card reader is disrupted. */
+"Unable to communicate with reader - please try again" = "リーダーと通信できません。もう一度お試しください。";
+
+/* Error message when the card reader service attempts to connect to a reader without discovering it first. */
+"Unable to connect to card reader - card reader was not correctly discovered - please try again" = "カードリーダーが正しく検出されなかったため、接続できません。もう一度お試しください。";
+
+/* Error message when attempting to connect to a card reader which is already in use. */
+"Unable to connect to card reader - the card reader is already in use" = "このカードリーダーは使用中のため接続できません。";
+
+/* Error message when a card reader is already connected and we were not expecting one. */
+"Unable to connect to reader - another reader is already connected" = "リーダーに接続できません。別のリーダーにすでに接続されています。";
+
+/* Error message the card reader battery level is too low to connect to the phone or tablet. */
+"Unable to connect to reader - the reader has a critically low battery - charge the reader and try again." = "リーダーのバッテリー残量が極めて少ないため、リーダーに接続できません。リーダーを充電してからもう一度お試しください。";
 
 /* Notice displayed when order creation fails */
 "Unable to create new order" = "新しい注文を作成できません";
@@ -4250,14 +4500,35 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Load Product Attributes Action Failed */
 "Unable to load product attributes" = "商品属性を読み込めません";
 
+/* Notice displayed when taxes cannot be synced for new order */
+"Unable to load taxes for order" = "注文の税額を読み込めません";
+
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "レビューを%@に変更できませんでした";
+
+/* Error message when the card reader cannot be used to perform the requested task. */
+"Unable to perform request with the connected reader - unsupported feature - please try again with another reader" = "機能がサポートされていないため、接続されているリーダーではリクエストを実行できません。別のリーダーを使ってもう一度お試しください。";
+
+/* Error message when the application is so out of date that the backend refuses to work with it. */
+"Unable to perform software request - please update this application and try again" = "ソフトウェアのリクエストを実行できません。アプリケーションをアップデートしてから、もう一度お試しください。";
+
+/* Error message when the payment intent is invalid. */
+"Unable to process payment due to invalid data - please try again" = "無効なデータのため支払いを処理できません。もう一度お試しください。";
 
 /* Error message when the order amount is below the minimum amount allowed. */
 "Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@" = "支払いを処理できません。 注文の合計金額が請求可能な最低金額 (%1$@) を下回っています。";
 
 /* Error message when the order amount is not valid. */
 "Unable to process payment. Order total amount is not valid." = "支払いを処理できません。 注文の合計金額が有効ではありません。";
+
+/* Error message when the card reader times out while reading a card. */
+"Unable to read card - the system timed out - please try again" = "システムがタイムアウトしたため、カードの読み取りができません。もう一度お試しください。";
+
+/* Error message when the card reader is unable to read any chip on the inserted card. */
+"Unable to read inserted card - please try removing and inserting card again" = "カードの読み取りができません。カードを取り外し、もう一度挿入してください。";
+
+/* Error message when the card reader is unable to read a swiped card. */
+"Unable to read swiped card - please try swiping again" = "カードの読み取りができません。もう一度スワイプしてください。";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "その URL の WordPress サイトを読み込めません。 「ヘルプが必要ですか ?」をタップして FAQ を表示してください。";
@@ -4271,8 +4542,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
 "Unable to save changes to the payment method" = "お支払い方法の変更を保存できませんでした";
 
+/* Error message when Bluetooth Low Energy is not supported on the user device. */
+"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device" = "カードリーダーを検索できません。お使いのデバイスでは Bluetooth Low Energy がサポートされていません。別のデバイスをご使用ください。";
+
+/* Error message when Bluetooth scan times out during reader discovery. */
+"Unable to search for card readers - Bluetooth timed out - please try again" = "Bluetooth のタイムアウトにより、カードリーダーを検索できません。もう一度お試しください";
+
 /* Error notice title when we fail to update an address in the edit address screen. */
 "Unable to update address." = "住所を更新できません。";
+
+/* Error message when the card reader battery level is too low to safely perform a software update. */
+"Unable to update card reader software - the reader battery is too low" = "リーダーのバッテリー残量が少ないため、カードリーダーのソフトウェアを更新できません";
 
 /* Title for the error screen when In-Person Payments is unavailable */
 "Unable to verify In-Person Payments for this store" = "このストアのオフラインでの支払いを検証できません";
@@ -4511,6 +4791,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the banner notice in the add-ons view */
 "View add-ons from your device!" = "お使いの端末でアドオンを表示します。";
 
+/* Title of the feedback banner on the coupon list screen */
+"View and edit coupons" = "クーポンを表示して編集する";
+
 /* The action to update downloadable files settings for a product */
 "View downloadable file settings" = "ダウンロード可能なファイル設定を表示";
 
@@ -4591,6 +4874,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country */
 "We don’t support In-Person Payments in your country" = "お住まいの国ではオフラインでの支払いがサポートされていません";
 
+/* Title for the error screen when In-Person Payments is not supported in a specific country */
+"We don’t support In-Person Payments with Stripe in %1$@" = "%1$@ では Stripe によるオフラインでの支払いがサポートされていません";
+
+/* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country */
+"We don’t support In-Person Payments with Stripe in your country" = "お住まいの国では Stripe によるオフラインでの支払いがサポートされていません";
+
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "入力された住所が一部修正されました。 正しい場合は、正確に配送できるように提案された住所を使用してください。";
 
@@ -4654,6 +4943,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Welcome to the world’s most popular website builder." = "世界で最も人気のサイト構築サービスへようこそ。";
+
+/* Content of the feedback banner on the coupon list screen */
+"We’ve been working on making it possible to view and edit coupons from your device!" = "デバイスからクーポンを表示、編集できる機能を開発中です !";
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "サインインにはどのメールアドレスを使用すればよいですか ?";
@@ -4723,6 +5015,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "Yahoo Mail";
+
+/* Value for the individual use only row or the exclude sale items row in Coupon Usage Details screen when the value is true */
+"Yes" = "はい";
 
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "変更する";

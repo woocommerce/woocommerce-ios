@@ -1,5 +1,0 @@
-We’ve made updates to our experimental order creation feature. Variable products now show the list of their attributes.
-
-We also added another experimental feature – Coupon management! Head to the More tab, settings, and Experimental settings to enable it. We welcome your feedback on the app, especially the new features we’re working on and giving early access to.
-
-A special thank you goes to GitHub user chrisKns for helping contribute improvements to this release. ❤

@@ -8,6 +8,10 @@ public enum CardPresentPaymentAction: Action {
     ///
     case use(paymentGatewayAccount: PaymentGatewayAccount)
 
+    /// Retrieves the current configuration for IPP.
+    ///
+    case loadActivePaymentGatewayExtension(onCompletion: (CardPresentPaymentGatewayExtension) -> Void)
+
     /// Retrieves and stores payment gateway account(s) for the provided `siteID`
     /// We support payment gateway accounts for both the WooCommerce Payments extension AND
     /// the Stripe extension. Let's attempt to load each and update view storage with the results.

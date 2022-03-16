@@ -18,7 +18,7 @@ public enum CardPresentPaymentOnboardingState: Equatable {
 
     /// Store is not located in one of the supported countries for Stripe (but it is for WCPay).
     ///
-    case countryNotSupportedStripe(countryCode: String)
+    case countryNotSupportedStripe(plugin: CardPresentPaymentsPlugins, countryCode: String)
 
     /// No CPP plugin is installed on the store.
     ///
@@ -43,21 +43,21 @@ public enum CardPresentPaymentOnboardingState: Equatable {
 
     /// The connected Stripe account has not been reviewed by Stripe yet. This is a temporary state and the user needs to wait.
     ///
-    case stripeAccountUnderReview
+    case stripeAccountUnderReview(plugin: CardPresentPaymentsPlugins)
 
     /// There are some pending requirements on the connected Stripe account. The merchant still has some time before the deadline to fix them expires.
     /// In-person payments should work without issues.
     ///
-    case stripeAccountPendingRequirement(deadline: Date?)
+    case stripeAccountPendingRequirement(plugin: CardPresentPaymentsPlugins, deadline: Date?)
 
     /// There are some overdue requirements on the connected Stripe account. Connecting to a reader or accepting payments is not supported in this state.
     ///
-    case stripeAccountOverdueRequirement
+    case stripeAccountOverdueRequirement(plugin: CardPresentPaymentsPlugins)
 
     /// The Stripe account was rejected by Stripe.
     /// This can happen for example when the account is flagged as fraudulent or the merchant violates the terms of service.
     ///
-    case stripeAccountRejected
+    case stripeAccountRejected(plugin: CardPresentPaymentsPlugins)
 
     /// Generic error - for example, one of the requests failed.
     ///

@@ -76,6 +76,8 @@ public class OrderStore: Store {
                                       orderNote: orderNote,
                                       email: email,
                                       onCompletion: onCompletion)
+        case let .deleteOrder(siteID, order, deletePermanently, onCompletion):
+            deleteOrder(siteID: siteID, order: order, deletePermanently: deletePermanently, onCompletion: onCompletion)
         }
     }
 }
@@ -367,6 +369,28 @@ private extension OrderStore {
                 })
             case .failure:
                 onCompletion(result)
+            }
+        }
+    }
+
+    /// Deletes a given order.
+    ///
+    func deleteOrder(siteID: Int64, order: Order, deletePermanently: Bool, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        // Optimistically delete the order from storage
+        deleteStoredOrder(siteID: siteID, orderID: order.orderID)
+
+        remote.deleteOrder(for: siteID, orderID: order.orderID, force: deletePermanently) { [weak self] result in
+            switch result {
+            case .success:
+                onCompletion(result)
+            case .failure:
+                // Revert optimistic deletion unless the order is an auto-draft (shouldn't be stored)
+                guard order.status != .autoDraft else {
+                    return onCompletion(result)
+                }
+                self?.upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {
+                    onCompletion(result)
+                })
             }
         }
     }

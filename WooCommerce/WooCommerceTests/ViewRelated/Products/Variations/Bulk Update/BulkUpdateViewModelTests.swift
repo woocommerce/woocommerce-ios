@@ -37,7 +37,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
                                             storesManager: storesManager)
 
         // When
-        viewModel.activate()
+        viewModel.syncVariations()
 
         // Then
         let action = try XCTUnwrap(storesManager.receivedActions.first as? ProductVariationAction)
@@ -69,7 +69,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         }
 
         // When
-        viewModel.activate()
+        viewModel.syncVariations()
 
         // Then
         XCTAssertEqual(viewModel.syncState, .syncing)
@@ -88,7 +88,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         }
 
         // When
-        viewModel.activate()
+        viewModel.syncVariations()
 
         // Then
         XCTAssertEqual(viewModel.syncState, .error)
@@ -107,7 +107,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         }
 
         // When
-        viewModel.activate()
+        viewModel.syncVariations()
 
         // Then
         XCTAssertEqual(viewModel.syncState, .synced([]))
@@ -130,7 +130,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         let viewModel = BulkUpdateViewModel(siteID: 1, productID: 1, onCancelButtonTapped: {}, storageManager: storageManager, storesManager: storesManager)
 
         // When
-        viewModel.activate()
+        viewModel.syncVariations()
 
         // Then
         waitUntil {
@@ -161,7 +161,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         let viewModel = BulkUpdateViewModel(siteID: 1, productID: 1, onCancelButtonTapped: {}, storageManager: storageManager, storesManager: storesManager)
 
         // When
-        viewModel.activate()
+        viewModel.syncVariations()
 
         // Then
         waitUntil {
@@ -193,7 +193,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         let viewModel = BulkUpdateViewModel(siteID: 1, productID: 1, onCancelButtonTapped: {}, storageManager: storageManager, storesManager: storesManager)
 
         // When
-        viewModel.activate()
+        viewModel.syncVariations()
 
         // Then
         waitUntil {
@@ -225,7 +225,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         let viewModel = BulkUpdateViewModel(siteID: 1, productID: 1, onCancelButtonTapped: {}, storageManager: storageManager, storesManager: storesManager)
 
         // When
-        viewModel.activate()
+        viewModel.syncVariations()
 
         // Then
         waitUntil {
@@ -257,7 +257,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         let viewModel = BulkUpdateViewModel(siteID: 1, productID: 1, onCancelButtonTapped: {}, storageManager: storageManager, storesManager: storesManager)
 
         // When
-        viewModel.activate()
+        viewModel.syncVariations()
 
         // Then
         waitUntil {

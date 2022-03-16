@@ -1,5 +1,0 @@
-Vi har uppdaterat vår experimentella funktion för beställningsskapande. Variabla produkter visar nu en lista med sina attribut.
-
-Vi har också lagt till en annan experimentell funktion – rabattkodshantering! Gå till fliken Mer, välj Inställningar och sedan Experimentella inställningar för att aktivera funktionen. Vi välkomnar feedback om appen, särskilt rörande de nya funktioner som vi arbetar med och tillhandahåller tidig åtkomst till.
-
-Ett särskilt tack till GitHub-användaren chrisKns som har bidragit med förbättringar till den här versionen. ❤

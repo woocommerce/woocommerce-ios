@@ -1,5 +1,0 @@
-Deneysel sipariş oluşturma özelliğimizde güncellemeler yaptık. Değişken ürünler için artık özelliklerinin listesi de gösteriliyor. 
-
-Ayrıca başka bir deneysel özellik ekledik – Kupon yönetimi! Etkinleştirmek için Diğer sekmesine, ayarlara ve Deneysel ayarlar bölümüne gidin. Uygulamayla, özellikle de üzerinde çalıştığımız ve erken erişim sağladığımız yeni özelliklerle ilgili görüşlerinizi bekliyoruz. 
-
-GitHub kullanıcısı chrisKns'a bu sürümdeki iyileştirmelere katkıda bulunduğu için özel olarak teşekkür ediyoruz. ❤

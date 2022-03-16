@@ -1,5 +1,0 @@
-We hebben wat aanpassingen aangebracht aan onze experimentele functie voor het aanmaken van bestellingen. Variabele producten tonen nu een lijst van hun eigenschappen.
-
-We hebben ook een andere experimentele functie toegevoegd – Couponbeheer! Ga naar het tabblad ‘Meer’, ‘instellingen’ en dan ‘Experimentele instellingen’ om het in te schakelen. We horen graag je feedback over de app, en vooral over de nieuwe functies die we aan het ontwikkelen zijn en nu vroegtijdig toegankelijk zijn.
-
-Speciale dank aan GitHub-gebruiker chrisKns voor het helpen met het verbeteren van deze release. ❤️

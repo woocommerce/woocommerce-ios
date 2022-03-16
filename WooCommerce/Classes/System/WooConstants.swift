@@ -5,6 +5,10 @@ import Foundation
 ///
 enum WooConstants {
 
+    /// App Display Name, used on the About screen
+    ///
+    static let appDisplayName = "WooCommerce"
+
     /// CoreData Stack Name
     ///
     static let databaseStackName = "WooCommerce"

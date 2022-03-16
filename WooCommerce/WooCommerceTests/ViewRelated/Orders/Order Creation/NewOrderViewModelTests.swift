@@ -688,6 +688,35 @@ final class NewOrderViewModelTests: XCTestCase {
         XCTAssertTrue(analytics.receivedEvents.isEmpty)
     }
 
+    func test_customer_note_tracked_when_added() throws {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.noteViewModel.newNote = "Test"
+        viewModel.onOrderNoteUpdate()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderNoteAdd.rawValue])
+
+        let properties = try XCTUnwrap(analytics.receivedProperties.first?["flow"] as? String)
+        XCTAssertEqual(properties, "creation")
+    }
+
+    func test_customer_note_not_tracked_when_removed() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.noteViewModel.newNote = ""
+        viewModel.onOrderNoteUpdate()
+
+        // Then
+        XCTAssertTrue(analytics.receivedEvents.isEmpty)
+    }
+
     func test_discard_order_deletes_order_if_order_exists_remotely() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)

@@ -1,7 +1,7 @@
 import SwiftUI
 import WebKit
 import Alamofire
-import Networking
+import class Networking.UserAgent
 
 // Bridge UIKit `WKWebView` component to SwiftUI for URLs that need authentication on WPCom
 struct AuthenticatedWebView: UIViewRepresentable {

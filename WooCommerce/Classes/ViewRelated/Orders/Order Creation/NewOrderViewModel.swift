@@ -266,7 +266,7 @@ final class NewOrderViewModel: ObservableObject {
     ///
     func onOrderNoteUpdate() {
         orderSynchronizer.setNote.send(noteViewModel.newNote)
-        analytics.track(event: WooAnalyticsEvent.Orders.orderCustomerNoteAdd(flow: .creation))
+        trackCustomerNoteAdded()
     }
 
     // MARK: - API Requests
@@ -630,6 +630,13 @@ private extension NewOrderViewModel {
             return billingAddress != shippingAddress
         }()
         analytics.track(event: WooAnalyticsEvent.Orders.orderCustomerAdd(flow: .creation, hasDifferentShippingDetails: areAddressesDifferent))
+    }
+
+    /// Tracks when customer note have been added
+    ///
+    func trackCustomerNoteAdded() {
+        guard customerNoteDataViewModel.customerNotes.isNotEmpty else { return }
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCustomerNoteAdd(flow: .creation))
     }
 
     /// Tracks when the create order button is tapped.

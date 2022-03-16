@@ -657,13 +657,17 @@ final class SettingStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "settings/general/woocommerce_enable_coupons", filename: "setting-coupon")
 
         // When
-        let action = SettingAction.retrieveCouponSetting(siteID: self.sampleSiteID) { _ in }
-        store.onAction(action)
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = SettingAction.retrieveCouponSetting(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
 
         // Then
-        let expected = SiteSetting.fake().copy(siteID: sampleSiteID, settingID: "woocommerce_enable_coupons", value: "no", settingGroupKey: "general")
-        let updated = viewStorage.loadSiteSetting(siteID: sampleSiteID, settingID: expected.settingID)?.toReadOnly()
-        XCTAssertEqual(expected, updated)
+        XCTAssertTrue(result.isSuccess)
+        let updated = viewStorage.loadSiteSetting(siteID: sampleSiteID, settingID: "woocommerce_enable_coupons")?.toReadOnly()
+        XCTAssertEqual(updated?.value, "yes")
     }
 
     func test_retrieveCouponSetting_returns_error_when_loading_fails_and_setting_is_not_found_in_storage() {
@@ -704,6 +708,45 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertFalse(result.isFailure)
         let isEnabled = try XCTUnwrap(result.get())
         XCTAssertFalse(isEnabled)
+    }
+
+    func test_enableCouponSetting_updates_stored_settings() {
+        // Given
+        let oldSetting = SiteSetting.fake().copy(siteID: sampleSiteID, settingID: "woocommerce_enable_coupons", value: "no", settingGroupKey: "general")
+        storageManager.insertSampleSiteSetting(readOnlySiteSetting: oldSetting)
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "settings/general/woocommerce_enable_coupons", filename: "setting-coupon")
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = SettingAction.enableCouponSetting(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertFalse(result.isFailure)
+        let updated = viewStorage.loadSiteSetting(siteID: sampleSiteID, settingID: "woocommerce_enable_coupons")?.toReadOnly()
+        XCTAssertEqual(updated?.value, "yes")
+    }
+
+    func test_enableCouponSetting_returns_error_if_remote_request_fails() {
+        // Given
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: "settings/general/woocommerce_enable_coupons", error: expectedError)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = SettingAction.enableCouponSetting(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
     }
 }
 

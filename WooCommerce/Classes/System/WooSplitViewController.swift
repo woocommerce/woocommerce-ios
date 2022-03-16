@@ -9,11 +9,11 @@ final class WooSplitViewController: UISplitViewController {
     ///
     typealias ColumnForCollapsingHandler = (UISplitViewController) -> UISplitViewController.Column
 
-    private let columnForCollapsingHandler: ColumnForCollapsingHandler
+    private let columnForCollapsingHandler: ColumnForCollapsingHandler?
 
     /// Init a split view with an optional handler to decide which column to collapse the split view into.
     /// By default, always display the primary column when collapsed.
-    init(columnForCollapsingHandler: @escaping ColumnForCollapsingHandler = { _ in .primary }) {
+    init(columnForCollapsingHandler: ColumnForCollapsingHandler? = nil) {
         self.columnForCollapsingHandler = columnForCollapsingHandler
         super.init(style: .doubleColumn)
         configureCommonStyle()
@@ -33,7 +33,7 @@ final class WooSplitViewController: UISplitViewController {
 extension WooSplitViewController: UISplitViewControllerDelegate {
     func splitViewController(_ splitViewController: UISplitViewController,
                              topColumnForCollapsingToProposedTopColumn proposedTopColumn: UISplitViewController.Column) -> UISplitViewController.Column {
-        return columnForCollapsingHandler(splitViewController)
+        return columnForCollapsingHandler?(splitViewController) ?? proposedTopColumn
     }
 
     func splitViewController(_ splitViewController: UISplitViewController, willChangeTo displayMode: UISplitViewController.DisplayMode) {

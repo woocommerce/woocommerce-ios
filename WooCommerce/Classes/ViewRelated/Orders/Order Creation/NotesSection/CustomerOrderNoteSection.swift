@@ -102,13 +102,13 @@ private extension OrderNotesSectionContent {
     }
 
     enum Localization {
-        static let notes = NSLocalizedString("Order Notes", comment: "Title text of the section that shows the Order notes when creating a new order")
+        static let notes = NSLocalizedString("Customer note", comment: "Title text of the section that shows the Order customer note when creating a new order")
         static let addNotes = NSLocalizedString("Add Note",
-                                                          comment: "Title text of the button that adds notes data when creating a new order")
-        static let editButton = NSLocalizedString("Edit", comment: "Button to edit a note on the New Order screen")
+                                                          comment: "Title text of the button that adds customer note data when creating a new order")
+        static let editButton = NSLocalizedString("Edit", comment: "Button to edit the customer note on the New Order screen")
         static let editButtonAccessibilityLabel = NSLocalizedString(
-            "Edit order notes",
-            comment: "Accessibility label for the button to edit customer details on the New Order screen"
+            "Edit customer note",
+            comment: "Accessibility label for the button to edit customer note on the New Order screen"
         )
     }
 }

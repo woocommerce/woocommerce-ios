@@ -93,6 +93,10 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     private let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never>
 
+    /// Defines the status for a new simple payments order. `auto-draft` for new stores. `pending` for old stores.
+    ///
+    private var initialOrderStatus: OrderStatusEnum = .pending
+
     /// Analytics tracker.
     ///
     private let analytics: Analytics
@@ -108,6 +112,8 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
         self.priceFieldFormatter = .init(locale: locale, storeCurrencySettings: storeCurrencySettings)
         self.presentNoticeSubject = presentNoticeSubject
         self.analytics = analytics
+
+        updateInitialOrderStatus()
     }
 
     /// Called when the view taps the done button.
@@ -118,7 +124,7 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
         loading = true
 
         // Order created as taxable to delegate taxes calculation to the API.
-        let action = OrderAction.createSimplePaymentsOrder(siteID: siteID, amount: amount, taxable: true) { [weak self] result in
+        let action = OrderAction.createSimplePaymentsOrder(siteID: siteID, status: initialOrderStatus, amount: amount, taxable: true) { [weak self] result in
             guard let self = self else { return }
             self.loading = false
 
@@ -141,6 +147,14 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     func userDidCancelFlow() {
         analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowCanceled())
+    }
+
+    /// Updates the initial order status.
+    ///
+    private func updateInitialOrderStatus() {
+        NewOrderInitialStatusResolver(siteID: siteID, stores: stores).resolve { [weak self] baseStatus in
+            self?.initialOrderStatus = baseStatus
+        }
     }
 }
 

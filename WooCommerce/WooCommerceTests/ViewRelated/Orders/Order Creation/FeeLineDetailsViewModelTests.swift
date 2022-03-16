@@ -324,9 +324,6 @@ final class FeeLineDetailsViewModelTests: XCTestCase {
                                                 storeCurrencySettings: usStoreSettings,
                                                 didSelectSave: { _ in })
 
-        // When
-        viewModel.amount = "hi:11.3005.02-"
-
         // Then
         XCTAssertFalse(viewModel.isPercentageOptionAvailable)
         XCTAssertFalse(viewModel.isExistingFeeLine)

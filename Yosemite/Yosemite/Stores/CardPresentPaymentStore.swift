@@ -555,14 +555,10 @@ private extension CardPresentPaymentStore {
         let storageWCPayCharge = existingOrNewWCPayCharge(siteID: readonlyCharge.siteID, chargeID: readonlyCharge.id, in: storage)
 
         switch readonlyCharge.paymentMethodDetails {
-        case .cardPresent(let details):
+        case .cardPresent(let details), .interacPresent(let details):
             upsertCardPresentDetails(details, for: storageWCPayCharge, in: storage)
         case .card(let details):
             upsertCardDetails(details, for: storageWCPayCharge, in: storage)
-        case .interacPresent(let details):
-            storageWCPayCharge.cardDetails = nil
-            storageWCPayCharge.cardPresentDetails = nil
-            #warning("actually do this")
         case .unknown:
             storageWCPayCharge.cardDetails = nil
             storageWCPayCharge.cardPresentDetails = nil

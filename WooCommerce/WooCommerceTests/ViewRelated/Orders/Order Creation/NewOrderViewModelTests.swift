@@ -533,6 +533,20 @@ final class NewOrderViewModelTests: XCTestCase {
 
     }
 
+    func test_customer_note_section_is_updated_when_note_is_added_to_order() {
+        // Given
+        let storageManager = MockStorageManager()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let expectedCustomerNote = "Test"
+
+        //When
+        viewModel.noteViewModel.newNote = expectedCustomerNote
+        viewModel.onOrderNoteUpdate()
+
+        //Then
+        XCTAssertEqual(viewModel.customerNoteDataViewModel.customerNotes, expectedCustomerNote)
+    }
+
     func test_hasChanges_returns_false_initially() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)

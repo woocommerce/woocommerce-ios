@@ -44,6 +44,10 @@ public class SettingStore: Store {
             retrieveSiteAPI(siteID: siteID, onCompletion: onCompletion)
         case let .getPaymentsPagePath(siteID, onCompletion):
             getPaymentsPagePath(siteID: siteID, onCompletion: onCompletion)
+        case let .retrieveCouponSetting(siteID, onCompletion):
+            retrieveCouponSetting(siteID: siteID, onCompletion: onCompletion)
+        case let .enableCouponSetting(siteID, onCompletion):
+            enableCouponSetting(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -114,6 +118,18 @@ private extension SettingStore {
               }
 
         onCompletion(.success(paymentPagePath))
+    }
+
+    /// Retrieves the setting for whether coupons are enabled for the specified store
+    ///
+    func retrieveCouponSetting(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void) {
+        // TODO
+    }
+
+    /// Enables coupons for the specified store
+    ///
+    func enableCouponSetting(siteID: Int64, onCompletion: (Result<Void, Error>) -> Void) {
+        // TODO
     }
 }
 

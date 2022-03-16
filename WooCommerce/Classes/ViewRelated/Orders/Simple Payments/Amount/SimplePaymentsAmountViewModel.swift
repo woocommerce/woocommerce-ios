@@ -93,6 +93,10 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     private let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never>
 
+    /// Defines the status for a new simple payments order. `auto-draft` for new stores. `pending` for old stores.
+    ///
+    private var initialOrderStatus: OrderStatusEnum = .pending
+
     /// Analytics tracker.
     ///
     private let analytics: Analytics
@@ -108,6 +112,8 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
         self.priceFieldFormatter = .init(locale: locale, storeCurrencySettings: storeCurrencySettings)
         self.presentNoticeSubject = presentNoticeSubject
         self.analytics = analytics
+
+        updateInitialOrderStatus()
     }
 
     /// Called when the view taps the done button.
@@ -117,39 +123,38 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
 
         loading = true
 
-        // Fetches the correct order initial status.
-        NewOrderInitialStatusResolver(siteID: siteID, stores: stores).resolve { [weak self] initialOrderStatus in
+        // Order created as taxable to delegate taxes calculation to the API.
+        let action = OrderAction.createSimplePaymentsOrder(siteID: siteID, status: initialOrderStatus, amount: amount, taxable: true) { [weak self] result in
             guard let self = self else { return }
+            self.loading = false
 
-            // Order created as taxable to delegate taxes calculation to the API.
-            let action = OrderAction.createSimplePaymentsOrder(siteID: self.siteID,
-                                                               status: initialOrderStatus,
-                                                               amount: self.amount,
-                                                               taxable: true) { [weak self] result in
-                guard let self = self else { return }
-                self.loading = false
+            switch result {
+            case .success(let order):
+                self.summaryViewModel = SimplePaymentsSummaryViewModel(order: order,
+                                                                       providedAmount: self.amount,
+                                                                       presentNoticeSubject: self.presentNoticeSubject)
 
-                switch result {
-                case .success(let order):
-                    self.summaryViewModel = SimplePaymentsSummaryViewModel(order: order,
-                                                                           providedAmount: self.amount,
-                                                                           presentNoticeSubject: self.presentNoticeSubject)
-
-                case .failure(let error):
-                    self.presentNoticeSubject.send(.error(Localization.creationError))
-                    self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowFailed(source: .amount))
-                    DDLogError("⛔️ Error creating simple payments order: \(error)")
-                }
+            case .failure(let error):
+                self.presentNoticeSubject.send(.error(Localization.creationError))
+                self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowFailed(source: .amount))
+                DDLogError("⛔️ Error creating simple payments order: \(error)")
             }
-
-            self.stores.dispatch(action)
         }
+        stores.dispatch(action)
     }
 
     /// Track the flow cancel scenario.
     ///
     func userDidCancelFlow() {
         analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowCanceled())
+    }
+
+    /// Updates the initial order status.
+    ///
+    private func updateInitialOrderStatus() {
+        NewOrderInitialStatusResolver(siteID: siteID, stores: stores).resolve { [weak self] baseStatus in
+            self?.initialOrderStatus = baseStatus
+        }
     }
 }
 

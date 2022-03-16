@@ -118,13 +118,19 @@ final class NewOrderViewModel: ObservableObject {
     ///
     @Published var selectedProductViewModel: ProductInOrderViewModel? = nil
 
+    // MARK: Customer data properties
+
+    /// Representation of customer data display properties.
+    ///
+    @Published private(set) var customerDataViewModel: CustomerDataViewModel = .init(billingAddress: nil, shippingAddress: nil)
+
     // MARK: Customer note properties
 
-    /// Representation of customer note data display properties
+    /// Representation of customer note data display properties.
     ///
     @Published private(set) var customerNoteDataViewModel: CustomerNoteDataViewModel = .init(customerNotes: "")
 
-    /// View model for the customer note section
+    /// View model for the customer note section.
     ///
     lazy private(set) var noteViewModel = { CustomerOrderNoteViewModel(originalNote: "") }()
 
@@ -232,12 +238,6 @@ final class NewOrderViewModel: ObservableObject {
         }
     }
 
-    // MARK: Customer data properties
-
-    /// Representation of customer data display properties.
-    ///
-    @Published private(set) var customerDataViewModel: CustomerDataViewModel = .init(billingAddress: nil, shippingAddress: nil)
-
     /// Creates a view model to be used in Address Form for customer address.
     ///
     func createOrderAddressFormViewModel() -> CreateOrderAddressFormViewModel {
@@ -251,6 +251,8 @@ final class NewOrderViewModel: ObservableObject {
         })
     }
 
+    /// Updates the order creation draft with the current set customer note.
+    ///
     func onOrderNoteUpdate() {
         orderSynchronizer.setNote.send(noteViewModel.newNote)
         analytics.track(event: WooAnalyticsEvent.Orders.orderCustomerNoteAdd(flow: .creation))

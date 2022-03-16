@@ -118,6 +118,16 @@ final class NewOrderViewModel: ObservableObject {
     ///
     @Published var selectedProductViewModel: ProductInOrderViewModel? = nil
 
+    // MARK: Customer note properties
+
+    /// Representation of customer note data display properties
+    ///
+    @Published private(set) var customerNoteDataViewModel: CustomerNoteDataViewModel = .init(customerNotes: "")
+
+    /// View model for the customer note section
+    ///
+    lazy private(set) var noteViewModel = { CustomerOrderNoteViewModel(originalNote: "") }()
+
     // MARK: Payment properties
 
     /// Representation of payment data display properties
@@ -240,11 +250,6 @@ final class NewOrderViewModel: ObservableObject {
             self?.trackCustomerDetailsAdded()
         })
     }
-
-    // MARK: Order notes data properties
-    @Published private(set) var customerNoteDataViewModel: CustomerNoteDataViewModel = .init(customerNotes: "")
-
-    lazy private(set) var noteViewModel = { CustomerOrderNoteViewModel(originalNote: customerNoteDataViewModel.customerNotes) }()
 
     func onOrderNoteUpdate() {
         orderSynchronizer.setNote.send(noteViewModel.newNote)

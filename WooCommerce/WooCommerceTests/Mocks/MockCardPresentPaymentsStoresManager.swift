@@ -17,6 +17,7 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
     private var failUpdate: Bool
     private var failConnection: Bool
     private var softwareUpdateSubject: CurrentValueSubject<CardReaderSoftwareUpdateState, Never> = .init(.none)
+    private var paymentExtension: CardPresentPaymentGatewayExtension
 
     init(connectedReaders: [CardReader],
          discoveredReaders: [CardReader],
@@ -24,7 +25,8 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
          storageManager: StorageManagerType = MockStorageManager(),
          failDiscovery: Bool = false,
          failUpdate: Bool = false,
-         failConnection: Bool = false
+         failConnection: Bool = false,
+         paymentExtension: CardPresentPaymentGatewayExtension = .wcpay
     ) {
         self.connectedReaders = connectedReaders
         self.discoveredReaders = discoveredReaders
@@ -32,6 +34,7 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
         self.failUpdate = failUpdate
         self.failConnection = failConnection
         self.storageManager = storageManager
+        self.paymentExtension = paymentExtension
         super.init(sessionManager: sessionManager)
     }
 
@@ -83,6 +86,8 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
         case .loadAccounts(let siteID, let onCompletion):
             insertSamplePaymentGateway(forSiteID: siteID)
             onCompletion(Result.success(()))
+        case .loadActivePaymentGatewayExtension(let onCompletion):
+            onCompletion(paymentExtension)
         default:
             fatalError("Not available")
         }

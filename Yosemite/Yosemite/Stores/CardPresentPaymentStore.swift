@@ -18,7 +18,7 @@ public final class CardPresentPaymentStore: Store {
     private let commonReaderConfigProvider: CommonReaderConfigProvider
 
     /// Which backend is the store using? Default to WCPay until told otherwise
-    private var usingBackend: CardPresentPaymentStoreBackend = .wcpay
+    private var usingBackend: CardPresentPaymentGatewayExtension = .wcpay
 
     private let remote: WCPayRemote
     private let stripeRemote: StripeRemote
@@ -58,6 +58,8 @@ public final class CardPresentPaymentStore: Store {
         switch action {
         case .use(let account):
             use(paymentGatewayAccount: account)
+        case .loadActivePaymentGatewayExtension(let completion):
+            loadActivePaymentGateway(onCompletion: completion)
         case .loadAccounts(let siteID, let onCompletion):
             loadAccounts(siteID: siteID,
                          onCompletion: onCompletion)
@@ -107,19 +109,7 @@ public final class CardPresentPaymentStore: Store {
 // MARK: - Services
 //
 private extension CardPresentPaymentStore {
-    /// Which backend is the store to use? WCPay or Stripe?
-    ///
-    enum CardPresentPaymentStoreBackend {
-        /// Use WCPay as the backend
-        ///
-        case wcpay
-
-        /// Use Stripe as the backend
-        ///
-        case stripe
-    }
-
-    func startCardReaderDiscovery(siteID: Int64, onReaderDiscovered: @escaping (_ readers: [CardReader]) -> Void, onError: @escaping (Error) -> Void) {
+   func startCardReaderDiscovery(siteID: Int64, onReaderDiscovered: @escaping (_ readers: [CardReader]) -> Void, onError: @escaping (Error) -> Void) {
         do {
             switch usingBackend {
             case .wcpay:
@@ -362,6 +352,10 @@ private extension CardPresentPaymentStore {
         }
 
         usingBackend = .wcpay
+    }
+
+    func loadActivePaymentGateway(onCompletion: (CardPresentPaymentGatewayExtension) -> Void) {
+        onCompletion(usingBackend)
     }
 
     /// Loads the account corresponding to the currently selected backend. Deletes the other (if it exists).

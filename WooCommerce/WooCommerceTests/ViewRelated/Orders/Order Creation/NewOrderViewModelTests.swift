@@ -541,7 +541,7 @@ final class NewOrderViewModelTests: XCTestCase {
 
         //When
         viewModel.noteViewModel.newNote = expectedCustomerNote
-        viewModel.onOrderNoteUpdate()
+        viewModel.updateCustomerNote()
 
         //Then
         XCTAssertEqual(viewModel.customerNoteDataViewModel.customerNotes, expectedCustomerNote)
@@ -606,7 +606,7 @@ final class NewOrderViewModelTests: XCTestCase {
 
         //When
         viewModel.noteViewModel.newNote = "Test"
-        viewModel.onOrderNoteUpdate()
+        viewModel.updateCustomerNote()
 
         //Then
         XCTAssertTrue(viewModel.hasChanges)
@@ -709,7 +709,7 @@ final class NewOrderViewModelTests: XCTestCase {
 
         // When
         viewModel.noteViewModel.newNote = "Test"
-        viewModel.onOrderNoteUpdate()
+        viewModel.updateCustomerNote()
 
         // Then
         XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderNoteAdd.rawValue])
@@ -725,7 +725,7 @@ final class NewOrderViewModelTests: XCTestCase {
 
         // When
         viewModel.noteViewModel.newNote = ""
-        viewModel.onOrderNoteUpdate()
+        viewModel.updateCustomerNote()
 
         // Then
         XCTAssertTrue(analytics.receivedEvents.isEmpty)

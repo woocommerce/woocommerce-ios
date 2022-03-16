@@ -18,13 +18,13 @@ struct CustomerOrderNoteSection: View {
                 isPresented: $showEditNotesView,
                 onDismiss: {
                     viewModel.noteViewModel.userDidCancelFlow()
-                    viewModel.onOrderNoteUpdate()
+                    viewModel.updateCustomerNote()
                 },
                 content: {
                     EditCustomerNote(
                         dismiss: {
                             showEditNotesView.toggle()
-                            viewModel.onOrderNoteUpdate()
+                            viewModel.updateCustomerNote()
                         },
                         viewModel: viewModel.noteViewModel
                     )

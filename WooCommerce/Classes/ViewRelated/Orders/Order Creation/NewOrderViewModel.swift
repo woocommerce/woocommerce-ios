@@ -264,7 +264,7 @@ final class NewOrderViewModel: ObservableObject {
 
     /// Updates the order creation draft with the current set customer note.
     ///
-    func onOrderNoteUpdate() {
+    func updateCustomerNote() {
         orderSynchronizer.setNote.send(noteViewModel.newNote)
         trackCustomerNoteAdded()
     }

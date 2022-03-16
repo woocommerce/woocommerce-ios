@@ -12,6 +12,12 @@ final class NewOrderViewModel: ObservableObject {
 
     private var cancellables: Set<AnyCancellable> = []
 
+    /// Indicates whether user has made any changes
+    ///
+    var hasChanges: Bool {
+        orderSynchronizer.order != OrderFactory.emptyNewOrder
+    }
+
     /// Active navigation bar trailing item.
     /// Defaults to create button.
     ///
@@ -182,15 +188,13 @@ final class NewOrderViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         analytics: Analytics = ServiceLocator.analytics,
-         enableRemoteSync: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreation)) {
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.analytics = analytics
-        self.orderSynchronizer = enableRemoteSync ? RemoteOrderSynchronizer(siteID: siteID, stores: stores)
-                                                  : LocalOrderSynchronizer(siteID: siteID, stores: stores, currencySettings: currencySettings)
+        self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, stores: stores, currencySettings: currencySettings)
 
         configureDisabledState()
         configureNavigationTrailingItem()
@@ -232,9 +236,16 @@ final class NewOrderViewModel: ObservableObject {
                                        name: product.name,
                                        quantity: item.quantity,
                                        canChangeQuantity: canChangeQuantity,
-                                       displayMode: .attributes(attributes))
+                                       displayMode: .attributes(attributes),
+                                       removeProductIntent: { [weak self] in
+                self?.selectOrderItem(item.itemID) })
         } else {
-            return ProductRowViewModel(id: item.itemID, product: product, quantity: item.quantity, canChangeQuantity: canChangeQuantity)
+            return ProductRowViewModel(id: item.itemID,
+                                       product: product,
+                                       quantity: item.quantity,
+                                       canChangeQuantity: canChangeQuantity,
+                                       removeProductIntent: { [weak self] in
+                self?.selectOrderItem(item.itemID) })
         }
     }
 
@@ -291,6 +302,25 @@ final class NewOrderViewModel: ObservableObject {
         let oldStatus = orderSynchronizer.order.status
         orderSynchronizer.setStatus.send(newStatus)
         analytics.track(event: WooAnalyticsEvent.Orders.orderStatusChange(flow: .creation, orderID: nil, from: oldStatus, to: newStatus))
+    }
+
+    /// Deletes the order if it has been synced remotely, and removes it from local storage.
+    ///
+    func discardOrder() {
+        // Only continue if the order has been synced remotely.
+        guard orderSynchronizer.order.orderID != .zero else {
+            return
+        }
+
+        let action = OrderAction.deleteOrder(siteID: siteID, order: orderSynchronizer.order, deletePermanently: true) { result in
+            switch result {
+            case .success:
+                break
+            case .failure(let error):
+                DDLogError("⛔️ Error deleting new order: \(error)")
+            }
+        }
+        stores.dispatch(action)
     }
 }
 
@@ -572,10 +602,10 @@ private extension NewOrderViewModel {
                 }()
 
                 return PaymentDataViewModel(itemsTotal: orderTotals.itemsTotal.stringValue,
-                                            shouldShowShippingTotal: order.shippingLines.isNotEmpty,
+                                            shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
                                             shippingTotal: order.shippingTotal,
                                             shippingMethodTitle: shippingMethodTitle,
-                                            shouldShowFees: order.fees.isNotEmpty,
+                                            shouldShowFees: order.fees.filter { $0.name != nil }.isNotEmpty,
                                             feesBaseAmountForPercentage: orderTotals.feesBaseAmountForPercentage as Decimal,
                                             feesTotal: orderTotals.feesTotal.stringValue,
                                             shouldShowTaxes: order.totalTax.isNotEmpty,

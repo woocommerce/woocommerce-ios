@@ -116,7 +116,7 @@ extension XCUIElement {
 
     func getStaticTextVisibilityCount(textToFind: String) throws -> Int {
         let predicate = NSPredicate(format: "label CONTAINS[c] %@", textToFind)
-        return XCUIApplication().staticTexts.containing(predicate).count
+        return staticTexts.containing(predicate).count
     }
 
     public func assertTextVisibilityCount(textToFind: String, expectedCount: Int = 1) {

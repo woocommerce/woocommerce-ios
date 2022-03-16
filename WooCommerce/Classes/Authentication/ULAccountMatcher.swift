@@ -25,7 +25,6 @@ final class ULAccountMatcher {
     /// - Parameter originalURL: a store address
     /// - Returns: a boolean indicating if the url passed as parameter is already saved
     func match(originalURL: String) -> Bool {
-        refreshResults()
 
         /// When loggin in with a wp.com account, WPAuthenticator will set the
         /// account's blog URL to be `https://wordpress.com`
@@ -39,7 +38,23 @@ final class ULAccountMatcher {
             .contains(originalURL)
     }
 
-    private func refreshResults() {
+    /// Returns a locally stored site that matches the given site URL.
+    /// - Parameter originalURL: a site address.
+    /// - Returns: a locally stored `Site` that matches the given site URL. If there is no match, `nil` is returned.
+    func matchedSite(originalURL: String) -> Site? {
+
+        /// When logging in with a wp.com account, WPAuthenticator will set the
+        /// account's blog URL to be `https://wordpress.com`
+        /// We want to return `nil` in this case.
+        guard originalURL != wpComURL else {
+            return nil
+        }
+
+        return sites.first { $0.url == originalURL }
+    }
+
+    /// Refreshes locally stored sites that were synced previously.
+    func refreshStoredSites() {
         try? resultsController.performFetch()
     }
 }

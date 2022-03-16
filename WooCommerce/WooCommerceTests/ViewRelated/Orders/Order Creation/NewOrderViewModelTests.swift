@@ -2,7 +2,7 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 
-class NewOrderViewModelTests: XCTestCase {
+final class NewOrderViewModelTests: XCTestCase {
 
     let sampleSiteID: Int64 = 123
     let sampleProductID: Int64 = 5
@@ -109,7 +109,7 @@ class NewOrderViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, enableRemoteSync: true)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
 
         // When
         waitForExpectation { expectation in
@@ -134,7 +134,7 @@ class NewOrderViewModelTests: XCTestCase {
     func test_view_model_clears_error_notice_when_order_is_syncing() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, enableRemoteSync: true)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
         viewModel.notice = NewOrderViewModel.NoticeFactory.createOrderErrorNotice()
 
         // When
@@ -482,7 +482,7 @@ class NewOrderViewModelTests: XCTestCase {
     func test_payment_section_loading_indicator_is_enabled_while_order_syncs() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, enableRemoteSync: true)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
 
         // When
         let isLoadingDuringSync: Bool = waitFor { promise in
@@ -509,7 +509,7 @@ class NewOrderViewModelTests: XCTestCase {
         let expectation = expectation(description: "Order with taxes is synced")
         let currencySettings = CurrencySettings()
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, currencySettings: currencySettings, enableRemoteSync: true)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, currencySettings: currencySettings)
 
         // When
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
@@ -531,6 +531,58 @@ class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentDataViewModel.taxesTotal, "$2.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 2.50)
 
+    }
+
+    func test_hasChanges_returns_false_initially() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+
+        // When
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
+
+        // Then
+        XCTAssertFalse(viewModel.hasChanges)
+    }
+
+    func test_hasChanges_returns_true_when_product_quantity_changes() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // When
+        viewModel.addProductViewModel.selectProduct(product.productID)
+
+        // Then
+        XCTAssertTrue(viewModel.hasChanges)
+    }
+
+    func test_hasChanges_returns_true_when_order_status_is_updated() {
+        // Given
+        let storageManager = MockStorageManager()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // When
+        viewModel.updateOrderStatus(newStatus: .completed)
+
+        // Then
+        XCTAssertTrue(viewModel.hasChanges)
+    }
+
+    func test_hasChanges_returns_true_when_customer_information_is_updated() {
+        // Given
+        let storageManager = MockStorageManager()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let addressViewModel = viewModel.createOrderAddressFormViewModel()
+
+        // When
+        addressViewModel.fields.firstName = sampleAddress1().firstName
+        addressViewModel.fields.lastName = sampleAddress1().lastName
+        addressViewModel.saveAddress(onFinish: { _ in })
+
+        // Then
+        XCTAssertTrue(viewModel.hasChanges)
     }
 
     func test_shipping_method_tracked_when_added() throws {
@@ -621,6 +673,53 @@ class NewOrderViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(analytics.receivedEvents.isEmpty)
+    }
+
+    func test_discard_order_deletes_order_if_order_exists_remotely() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
+        waitForExpectation { expectation in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .createOrder(_, let order, let completion):
+                    completion(.success(order.copy(orderID: 12)))
+                    expectation.fulfill()
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+            // Trigger remote sync
+            viewModel.saveShippingLine(ShippingLine.fake())
+        }
+
+        // When
+        let orderDeleted: Bool = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .deleteOrder:
+                    promise(true)
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+            viewModel.discardOrder()
+        }
+
+        // Then
+        XCTAssertTrue(orderDeleted)
+    }
+
+    func test_discard_order_skips_remote_deletion_for_local_order() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            XCTFail("Unexpected action: \(action)")
+        }
+
+        // When
+        viewModel.discardOrder()
     }
 }
 

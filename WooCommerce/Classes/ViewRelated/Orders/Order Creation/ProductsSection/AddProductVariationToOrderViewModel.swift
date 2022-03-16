@@ -82,8 +82,11 @@ final class AddProductVariationToOrderViewModel: ObservableObject {
     ///
     private lazy var productVariationsResultsController: ResultsController<StorageProductVariation> = {
         let predicate = NSPredicate(format: "siteID == %lld AND productID == %lld", siteID, productID)
-        let descriptor = NSSortDescriptor(keyPath: \StorageProductVariation.menuOrder, ascending: true)
-        let resultsController = ResultsController<StorageProductVariation>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+        let menuOrderDescriptor = NSSortDescriptor(keyPath: \StorageProductVariation.menuOrder, ascending: true)
+        let variationIdDescriptor = NSSortDescriptor(keyPath: \StorageProductVariation.productVariationID, ascending: false)
+        let resultsController = ResultsController<StorageProductVariation>(storageManager: storageManager,
+                                                                           matching: predicate,
+                                                                           sortedBy: [menuOrderDescriptor, variationIdDescriptor])
         return resultsController
     }()
 

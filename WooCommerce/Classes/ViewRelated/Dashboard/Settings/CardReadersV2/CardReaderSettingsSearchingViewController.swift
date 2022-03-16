@@ -49,6 +49,8 @@ final class CardReaderSettingsSearchingViewController: UIHostingController<CardR
         }
 
         self.viewModel?.didUpdate = onViewModelDidUpdate
+
+        rootView.learnMoreUrl = self.viewModel?.learnMoreURL
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -109,6 +111,7 @@ private extension CardReaderSettingsSearchingViewController {
 struct CardReaderSettingsSearchingView: View {
     var connectClickAction: (() -> Void)? = nil
     var showURL: ((URL) -> Void)? = nil
+    var learnMoreUrl: URL? = nil
 
     @Environment(\.verticalSizeClass) var verticalSizeClass
 
@@ -142,7 +145,16 @@ struct CardReaderSettingsSearchingView: View {
                 .padding(.bottom, 8)
 
             InPersonPaymentsLearnMore()
-                .customOpenURL(action: {url in showURL?(url)})
+                .customOpenURL(action: { url in
+                    switch url {
+                    case InPersonPaymentsLearnMore.learnMoreURL:
+                        if let url = learnMoreUrl {
+                            showURL?(url)
+                        }
+                    default:
+                        showURL?(url)
+                    }
+                })
         }
             .frame(
                 maxWidth: .infinity,

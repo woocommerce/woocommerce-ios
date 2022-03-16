@@ -38,6 +38,10 @@ final class CouponListViewModel {
     ///
     @Published private(set) var couponViewModels: [CouponListCellViewModel] = []
 
+    /// Whether coupons are disabled for this store
+    ///
+    @Published private(set) var couponsDisabled: Bool = false
+
     /// siteID: siteID of the currently active site, used for fetching and storing coupons
     ///
     private let siteID: Int64
@@ -119,9 +123,22 @@ final class CouponListViewModel {
         let action = AppSettingsAction.updateFeedbackStatus(type: .couponManagement,
                                                             status: .dismissed) { [weak self] result in
             if let error = result.failure {
-                DDLogError("⛔️ Error update feedback visibility for coupon management: \(error)")
+                DDLogError("⛔️ Error updating feedback visibility for coupon management: \(error)")
             }
             self?.isFeedbackBannerEnabledInAppSettings = false
+        }
+        storesManager.dispatch(action)
+    }
+
+    func loadCouponSetting() {
+        let action = SettingAction.retrieveCouponSetting(siteID: siteID) { [weak self] result in
+            switch result {
+            case .success(let isEnabled):
+                self?.couponsDisabled = !isEnabled
+                self?.state = .empty
+            case .failure(let error):
+                DDLogError("⛔️ Error retrieving coupon setting: \(error)")
+            }
         }
         storesManager.dispatch(action)
     }

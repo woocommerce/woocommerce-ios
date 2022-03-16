@@ -6,6 +6,7 @@ final class CardReaderSettingsSearchingViewModel: CardReaderSettingsPresentedVie
     private(set) var shouldShow: CardReaderSettingsTriState = .isUnknown
     var didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?
     var didUpdate: (() -> Void)?
+    var learnMoreURL: URL? = nil
 
     private(set) var noConnectedReader: CardReaderSettingsTriState = .isUnknown {
         didSet {
@@ -29,13 +30,16 @@ final class CardReaderSettingsSearchingViewModel: CardReaderSettingsPresentedVie
         foundReader?.id
     }
 
-    init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?, knownReaderProvider: CardReaderSettingsKnownReaderProvider? = nil) {
+    init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?, knownReaderProvider: CardReaderSettingsKnownReaderProvider? = nil,
+         stores: StoresManager = ServiceLocator.stores
+    ) {
         self.didChangeShouldShow = didChangeShouldShow
         self.siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min
         self.knownReaderProvider = knownReaderProvider
 
         beginKnownReaderObservation()
         beginConnectedReaderObservation()
+        updateLearnMoreUrl(stores: stores)
     }
 
     deinit {
@@ -90,5 +94,20 @@ final class CardReaderSettingsSearchingViewModel: CardReaderSettingsPresentedVie
         if didChange {
             didChangeShouldShow?(shouldShow)
         }
+    }
+
+    /// Load active payment gateway plugin from the payment store and update learn more url
+    ///
+    private func updateLearnMoreUrl(stores: StoresManager) {
+        let loadLearnMoreUrlAction = CardPresentPaymentAction
+            .loadActivePaymentGatewayExtension() { [weak self] result in
+                switch result {
+                case .wcpay:
+                    self?.learnMoreURL = WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL()
+                case .stripe:
+                    self?.learnMoreURL = WooConstants.URLs.inPersonPaymentsLearnMoreStripe.asURL()
+                }
+            }
+        stores.dispatch(loadLearnMoreUrlAction)
     }
 }

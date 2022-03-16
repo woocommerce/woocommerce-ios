@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 import Combine
+import protocol Storage.StorageManagerType
 import Experiments
 
 /// The root tab controller for Orders, which contains the `OrderListViewController` .
@@ -57,12 +58,27 @@ final class OrdersRootViewController: UIViewController {
     ///
     private var isOrderCreationEnabled: Bool = false
 
+    private let storageManager: StorageManagerType
+
+    /// Used for looking up the `OrderStatus` to show in the `Order Filters`.
+    ///
+    /// The `OrderStatus` data is fetched from the API by `OrderListViewModel`.
+    ///
+    private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
+        let descriptor = NSSortDescriptor(key: "slug", ascending: true)
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+
+        return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
     private let featureFlagService: FeatureFlagService
 
     // MARK: View Lifecycle
 
-    init(siteID: Int64) {
+    init(siteID: Int64,
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
+        self.storageManager = storageManager
         self.featureFlagService = ServiceLocator.featureFlagService
         super.init(nibName: Self.nibName, bundle: nil)
 
@@ -87,7 +103,10 @@ final class OrdersRootViewController: UIViewController {
         /// We sync the local order settings for configuring local statuses and date range filters.
         /// If there are some info stored when this screen is loaded, the data will be updated using the stored filters.
         ///
-        syncLocalOrdersSettings { _ in }
+        syncLocalOrdersSettings { [weak self] _ in
+            guard let self = self else { return }
+            self.configureStatusResultsController()
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -135,7 +154,12 @@ final class OrdersRootViewController: UIViewController {
     ///
     private func filterButtonTapped() {
         ServiceLocator.analytics.track(.orderListViewFilterOptionsTapped)
-        let viewModel = FilterOrderListViewModel(filters: filters)
+
+        // Fetch stored statuses
+        try? statusResultsController.performFetch()
+        let allowedStatuses = statusResultsController.fetchedObjects.map { $0 }
+
+        let viewModel = FilterOrderListViewModel(filters: filters, allowedStatuses: allowedStatuses)
         let filterOrderListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
             self?.filters = filters
             let statuses = (filters.orderStatus ?? []).map { $0.rawValue }.joined(separator: ",")
@@ -237,6 +261,31 @@ private extension OrdersRootViewController {
             self?.configureNavigationButtons(isOrderCreationExperimentalToggleEnabled: isOrderCreationEnabled)
         }
     }
+
+    /// Connect hooks on `ResultsController` and query cached data.
+    /// This is useful for stay up to date with the remote statuses, resetting the filters if one of the local status filters was deleted remotely.
+    ///
+    func configureStatusResultsController() {
+        statusResultsController.onDidChangeObject = { [weak self] (updatedOrdersStatus, _, _, _) in
+            guard let self = self else { return }
+            self.resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: self.statusResultsController.fetchedObjects)
+        }
+
+        try? statusResultsController.performFetch()
+        resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: statusResultsController.fetchedObjects)
+    }
+
+    /// If the current applied status filters does not match the existing status filters fetched from API, we reset them.
+    ///
+    func resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: [OrderStatus]) {
+        guard let storedOrderFilters = filters.orderStatus else { return }
+        for storedOrderFilter in storedOrderFilters {
+            if !orderStatuses.map({$0.status}).contains(storedOrderFilter) {
+                clearFilters()
+                break
+            }
+        }
+    }
 }
 
 extension OrdersRootViewController: OrderListViewControllerDelegate {
@@ -264,9 +313,10 @@ private extension OrdersRootViewController {
                 self?.filters = FilterOrderListViewModel.Filters(orderStatus: settings.orderStatusesFilter,
                                                                  dateRange: settings.dateRangeFilter,
                                                                  numberOfActiveFilters: settings.numberOfActiveFilters())
-            case .failure:
-                break
+            case .failure(let error):
+                print("It was not possible to sync local orders settings: \(String(describing: error))")
             }
+            onCompletion(result)
         }
         ServiceLocator.stores.dispatch(action)
     }

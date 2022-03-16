@@ -678,7 +678,7 @@ final class NewOrderViewModelTests: XCTestCase {
     func test_discard_order_deletes_order_if_order_exists_remotely() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, enableRemoteSync: true)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
         waitForExpectation { expectation in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {

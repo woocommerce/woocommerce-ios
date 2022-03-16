@@ -3,7 +3,7 @@ import XCTest
 
 /// SiteSettingsRemote Unit Tests
 ///
-class SiteSettingsRemoteTests: XCTestCase {
+final class SiteSettingsRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
@@ -104,5 +104,87 @@ class SiteSettingsRemoteTests: XCTestCase {
         // Then
         let settings = try result.get()
         XCTAssertEqual(settings.count, 2)
+    }
+
+    // MARK: - Load single setting tests
+    func test_loadSetting_properly_returns_parsed_settings() throws {
+        // Given
+        let couponSettingID = "woocommerce_enable_coupons"
+        network.simulateResponse(requestUrlSuffix: "settings/general/\(couponSettingID)", filename: "setting-coupon")
+        let remote = SiteSettingsRemote(network: network)
+
+        // When
+        let result: Result<Networking.SiteSetting, Error> = waitFor { promise in
+            remote.loadSetting(for: self.sampleSiteID, settingGroup: .general, settingID: couponSettingID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let setting = try result.get()
+        XCTAssertEqual(setting.settingGroupKey, "general")
+        XCTAssertEqual(setting.settingID, "woocommerce_enable_coupons")
+        XCTAssertEqual(setting.value, "yes")
+    }
+
+    func test_loadCouponSetting_properly_relays_netwoking_errors() throws {
+        // Given
+        let couponSettingID = "woocommerce_enable_coupons"
+        let remote = SiteSettingsRemote(network: network)
+        let error = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: "settings/general/\(couponSettingID)", error: error)
+
+        // When
+        let result: Result<Networking.SiteSetting, Error> = waitFor { promise in
+            remote.loadSetting(for: self.sampleSiteID, settingGroup: .general, settingID: couponSettingID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        let resultError = try XCTUnwrap(result.failure as? NetworkError)
+        XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 500))
+    }
+
+    // MARK: - Update coupon setting tests
+    func test_updateCouponSetting_properly_returns_parsed_settings() throws {
+        // Given
+        let couponSettingID = "woocommerce_enable_coupons"
+        network.simulateResponse(requestUrlSuffix: "settings/general/\(couponSettingID)", filename: "setting-coupon")
+        let remote = SiteSettingsRemote(network: network)
+
+        // When
+        let result: Result<Networking.SiteSetting, Error> = waitFor { promise in
+            remote.updateSetting(for: self.sampleSiteID, settingGroup: .general, settingID: couponSettingID, value: "yes") { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let setting = try result.get()
+        XCTAssertEqual(setting.settingGroupKey, "general")
+        XCTAssertEqual(setting.settingID, "woocommerce_enable_coupons")
+        XCTAssertEqual(setting.value, "yes")
+    }
+
+    func test_updateCouponSetting_properly_relays_netwoking_errors() throws {
+        // Given
+        let couponSettingID = "woocommerce_enable_coupons"
+        let remote = SiteSettingsRemote(network: network)
+        let error = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: "settings/general/\(couponSettingID)", error: error)
+
+        // When
+        let result: Result<Networking.SiteSetting, Error> = waitFor { promise in
+            remote.updateSetting(for: self.sampleSiteID, settingGroup: .general, settingID: couponSettingID, value: "yes") { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        let resultError = try XCTUnwrap(result.failure as? NetworkError)
+        XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 500))
     }
 }

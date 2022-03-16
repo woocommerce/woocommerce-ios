@@ -140,7 +140,17 @@ private extension SettingStore {
     /// Enables coupons for the specified store
     ///
     func enableCouponSetting(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        // TODO
+        siteSettingsRemote.updateSetting(for: siteID, settingGroup: .general, settingID: SettingKeys.coupons, value: SettingValue.yes) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let setting):
+                self.upsertStoredGeneralSettingsInBackground(siteID: siteID, readOnlySiteSettings: [setting]) {
+                    onCompletion(.success(Void()))
+                }
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
     }
 }
 

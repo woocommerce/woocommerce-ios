@@ -132,7 +132,13 @@ private extension SettingStore {
                     onCompletion(.success(isEnabled))
                 }
             case .failure(let error):
-                onCompletion(.failure(error))
+                // fall back to retrieve from storage
+                if let setting = self.sharedDerivedStorage.loadSiteSetting(siteID: siteID, settingID: SettingKeys.coupons) {
+                    let isEnabled = setting.value == SettingValue.yes
+                    onCompletion(.success(isEnabled))
+                } else {
+                    onCompletion(.failure(error))
+                }
             }
         }
     }

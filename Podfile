@@ -43,7 +43,7 @@ target 'WooCommerce' do
   pod 'WordPressAuthenticator', '~> 2.0.0-beta.1'
   # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => ''
   # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => ''
-  # pod 'WordPressAuthenticator', :path => '~/WordPressAuthenticator-iOS'
+  # pod 'WordPressAuthenticator', :path => '../WordPressAuthenticator-iOS'
 
   pod 'WordPressShared', '~> 1.15'
 

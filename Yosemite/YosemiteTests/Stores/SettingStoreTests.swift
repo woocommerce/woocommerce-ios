@@ -6,7 +6,7 @@ import XCTest
 
 /// SettingStoreTests Unit Tests
 ///
-class SettingStoreTests: XCTestCase {
+final class SettingStoreTests: XCTestCase {
 
     /// Mock Dispatcher!
     ///
@@ -629,6 +629,81 @@ class SettingStoreTests: XCTestCase {
         // Then
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error, .paymentsPageNotFound)
+    }
+
+    func test_retrieveCouponSetting_returns_correct_setting() throws {
+        // Given
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "settings/general/woocommerce_enable_coupons", filename: "setting-coupon")
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = SettingAction.retrieveCouponSetting(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let isEnabled = try XCTUnwrap(result.get())
+        XCTAssertTrue(isEnabled)
+    }
+
+    func test_retrieveCouponSetting_updates_stored_settings() {
+        // Given
+        let oldSetting = SiteSetting.fake().copy(siteID: sampleSiteID, settingID: "woocommerce_enable_coupons", value: "no", settingGroupKey: "general")
+        storageManager.insertSampleSiteSetting(readOnlySiteSetting: oldSetting)
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "settings/general/woocommerce_enable_coupons", filename: "setting-coupon")
+
+        // When
+        let action = SettingAction.retrieveCouponSetting(siteID: self.sampleSiteID) { _ in }
+        store.onAction(action)
+
+        // Then
+        let expected = SiteSetting.fake().copy(siteID: sampleSiteID, settingID: "woocommerce_enable_coupons", value: "no", settingGroupKey: "general")
+        let updated = viewStorage.loadSiteSetting(siteID: sampleSiteID, settingID: expected.settingID)?.toReadOnly()
+        XCTAssertEqual(expected, updated)
+    }
+
+    func test_retrieveCouponSetting_returns_error_when_loading_fails_and_setting_is_not_found_in_storage() {
+        // Given
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: "settings/general/woocommerce_enable_coupons", error: expectedError)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = SettingAction.retrieveCouponSetting(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
+
+    func test_retrieveCouponSetting_returns_stored_setting_when_loading_fails_and_setting_is_found_in_storage() throws {
+        // Given
+        let oldSetting = SiteSetting.fake().copy(siteID: sampleSiteID, settingID: "woocommerce_enable_coupons", value: "no", settingGroupKey: "general")
+        storageManager.insertSampleSiteSetting(readOnlySiteSetting: oldSetting)
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: "settings/general/woocommerce_enable_coupons", error: expectedError)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = SettingAction.retrieveCouponSetting(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertFalse(result.isFailure)
+        let isEnabled = try XCTUnwrap(result.get())
+        XCTAssertFalse(isEnabled)
     }
 }
 

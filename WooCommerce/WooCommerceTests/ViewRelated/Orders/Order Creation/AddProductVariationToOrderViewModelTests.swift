@@ -170,21 +170,20 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
         XCTAssertEqual(timesSynced, 1)
     }
 
-    func test_product_variations_sorted_by_menu_order_and_name() {
+    func test_product_variations_sorted_by_menu_order_and_id() {
         // Given
-        let product = Product.fake().copy(productID: sampleProductID,
-                                          attributes: [ProductAttribute.fake().copy(siteID: sampleSiteID, attributeID: 1, name: "Color", variation: true)])
-        let variation1 = sampleProductVariation.copy(attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")], menuOrder: 1)
-        let variation2 = sampleProductVariation.copy(attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Green")], menuOrder: 0)
-        let variation3 = sampleProductVariation.copy(attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Red")], menuOrder: 0)
+        let product = Product.fake().copy(productID: sampleProductID)
+        let variation1 = sampleProductVariation.copy(productVariationID: 3, menuOrder: 1)
+        let variation2 = sampleProductVariation.copy(productVariationID: 2, menuOrder: 0)
+        let variation3 = sampleProductVariation.copy(productVariationID: 1, menuOrder: 0)
         insert([variation1, variation2, variation3])
 
         // When
         let viewModel = AddProductVariationToOrderViewModel(siteID: sampleSiteID, product: product, storageManager: storageManager, stores: stores)
 
         // Then
-        let sortedProductVariationNames = viewModel.productVariationRows.map { $0.name }
-        XCTAssertEqual(sortedProductVariationNames, ["Green", "Red", "Blue"])
+        let sortedProductVariationIDs = viewModel.productVariationRows.map { $0.productOrVariationID }
+        XCTAssertEqual(sortedProductVariationIDs, [2, 1, 3])
     }
 }
 

@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 
-class OrderCreationNotesViewModel: EditCustomerNoteViewModelProtocol {
+class EditOrderNotesViewModel: EditCustomerNoteViewModelProtocol {
     /// Store for the edited content
     ///
     @Published var newNote: String
@@ -25,8 +25,6 @@ class OrderCreationNotesViewModel: EditCustomerNoteViewModelProtocol {
     func updateNote(onFinish: @escaping (Bool) -> Void) {
         originalNote = newNote
         onFinish(true)
-
-        updateNoteAnalyticsTrackAction()
     }
 
     /// Revert to original content.
@@ -39,14 +37,9 @@ class OrderCreationNotesViewModel: EditCustomerNoteViewModelProtocol {
     ///
     @Published private var originalNote: String
 
-    /// Analytics engine.
-    ///
-    private let updateNoteAnalyticsTrackAction: () -> Void
-
-    init(originalNote: String = "", updateNoteAnalyticsTrackAction: @escaping () -> Void) {
+    init(originalNote: String = "") {
         self.originalNote = originalNote
         self.newNote = originalNote
-        self.updateNoteAnalyticsTrackAction = updateNoteAnalyticsTrackAction
         bindNoteChanges()
     }
 

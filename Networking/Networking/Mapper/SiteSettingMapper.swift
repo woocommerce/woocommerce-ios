@@ -1,6 +1,6 @@
 import Foundation
 
-/// Mapper: SiteSetting
+/// Mapper for a single SiteSetting
 ///
 struct SiteSettingMapper: Mapper {
 

@@ -122,13 +122,24 @@ private extension SettingStore {
 
     /// Retrieves the setting for whether coupons are enabled for the specified store
     ///
-    func retrieveCouponSetting(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void) {
-        // TODO
+    func retrieveCouponSetting(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        siteSettingsRemote.loadSetting(for: siteID, settingGroup: .general, settingID: SettingKeys.coupons) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let setting):
+                self.upsertStoredGeneralSettingsInBackground(siteID: siteID, readOnlySiteSettings: [setting]) {
+                    let isEnabled = setting.value == SettingValue.yes
+                    onCompletion(.success(isEnabled))
+                }
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
     }
 
     /// Enables coupons for the specified store
     ///
-    func enableCouponSetting(siteID: Int64, onCompletion: (Result<Void, Error>) -> Void) {
+    func enableCouponSetting(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
         // TODO
     }
 }
@@ -234,5 +245,10 @@ extension SettingStore {
     ///
     private enum SettingKeys {
         static let paymentsPage = "woocommerce_checkout_pay_endpoint"
+        static let coupons = "woocommerce_enable_coupons"
+    }
+
+    private enum SettingValue {
+        static let yes = "yes"
     }
 }

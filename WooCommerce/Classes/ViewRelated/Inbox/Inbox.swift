@@ -17,79 +17,83 @@ struct Inbox: View {
     }
 
     var body: some View {
-        // Anchor the action sheet at the top to be able to show the popover on iPad in the most appropriate position
-        Divider()
-            .actionSheet(isPresented: $showingActionSheet) {
-                ActionSheet(
-                    title: Text(Localization.title),
-                    buttons: [
-                        .default(Text(Localization.dismissAllNotes), action: {
-                            showingDismissAlert = true
-                        }),
-                        .cancel()
-                    ]
-                )
-            }
-            .alert(isPresented: $showingDismissAlert) {
-                return Alert(title: Text(Localization.dismissAllNotesAlertTitle),
-                             message: Text(Localization.dismissAllNotesAlertMessage),
-                             primaryButton: .default(Text(Localization.dismissAllNotes), action: viewModel.dismissAllInboxNotes),
-                             secondaryButton: .cancel())
-            }
-
-        Group {
-            switch viewModel.syncState {
-            case .results:
-                RefreshableInfiniteScrollList(isLoading: viewModel.shouldShowBottomActivityIndicator,
-                                              loadAction: viewModel.onLoadNextPageAction,
-                                              refreshAction: { completion in
-                    viewModel.onRefreshAction(completion: completion)
-                }) {
-                    ForEach(viewModel.noteRowViewModels) { rowViewModel in
-                        InboxNoteRow(viewModel: rowViewModel)
-                    }
-                    .background(Constants.listForeground)
+        VStack(alignment: .leading, spacing: 0) {
+            // Anchor the action sheet at the top to be able to show the popover on iPad in the most appropriate position
+            // When the app supports iOS 15+, we can remove this workaround by moving the `actionSheet` and `alert` calls to the `ToolbarItem`'s button.
+            Divider()
+                .hidden()
+                .actionSheet(isPresented: $showingActionSheet) {
+                    ActionSheet(
+                        title: Text(Localization.title),
+                        buttons: [
+                            .default(Text(Localization.dismissAllNotes), action: {
+                                showingDismissAlert = true
+                            }),
+                            .cancel()
+                        ]
+                    )
                 }
-                .padding(.horizontal, insets: safeAreaInsets)
-                .background(Constants.listForeground)
-            case .empty:
-                EmptyState(title: Localization.emptyStateTitle,
-                           description: Localization.emptyStateMessage,
-                           image: .emptyInboxNotesImage)
-                    .frame(maxHeight: .infinity)
-                    .padding(insets: safeAreaInsets)
-            case .syncingFirstPage:
-                ScrollView {
-                    LazyVStack(spacing: 0) {
-                        ForEach(viewModel.placeholderRowViewModels) { rowViewModel in
+                .alert(isPresented: $showingDismissAlert) {
+                    return Alert(title: Text(Localization.dismissAllNotesAlertTitle),
+                                 message: Text(Localization.dismissAllNotesAlertMessage),
+                                 primaryButton: .default(Text(Localization.dismissAllNotes), action: viewModel.dismissAllInboxNotes),
+                                 secondaryButton: .cancel())
+                }
+
+            Group {
+                switch viewModel.syncState {
+                case .results:
+                    RefreshableInfiniteScrollList(isLoading: viewModel.shouldShowBottomActivityIndicator,
+                                                  loadAction: viewModel.onLoadNextPageAction,
+                                                  refreshAction: { completion in
+                        viewModel.onRefreshAction(completion: completion)
+                    }) {
+                        ForEach(viewModel.noteRowViewModels) { rowViewModel in
                             InboxNoteRow(viewModel: rowViewModel)
-                                .redacted(reason: .placeholder)
-                                .shimmering()
+                        }
+                        .background(Constants.listForeground)
+                    }
+                    .padding(.horizontal, insets: safeAreaInsets)
+                    .background(Constants.listForeground)
+                case .empty:
+                    EmptyState(title: Localization.emptyStateTitle,
+                               description: Localization.emptyStateMessage,
+                               image: .emptyInboxNotesImage)
+                        .frame(maxHeight: .infinity)
+                        .padding(insets: safeAreaInsets)
+                case .syncingFirstPage:
+                    ScrollView {
+                        LazyVStack(spacing: 0) {
+                            ForEach(viewModel.placeholderRowViewModels) { rowViewModel in
+                                InboxNoteRow(viewModel: rowViewModel)
+                                    .redacted(reason: .placeholder)
+                                    .shimmering()
+                            }
                         }
                     }
+                    .padding(.horizontal, insets: safeAreaInsets)
+                    .background(Constants.listForeground)
                 }
-                .padding(.horizontal, insets: safeAreaInsets)
-                .background(Constants.listForeground)
             }
-        }
-        .ignoresSafeArea()
-        .background(Constants.listBackground.ignoresSafeArea())
-        .navigationTitle(Localization.title)
-        .onAppear {
-            viewModel.onLoadTrigger.send()
-        }
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    showingActionSheet = true
-                }, label: {
-                    Image(uiImage: .moreImage)
-                        .renderingMode(.template)
-                })
-                    .renderedIf(viewModel.syncState == .results)
+            .ignoresSafeArea()
+            .background(Constants.listBackground.ignoresSafeArea())
+            .navigationTitle(Localization.title)
+            .onAppear {
+                viewModel.onLoadTrigger.send()
             }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        showingActionSheet = true
+                    }, label: {
+                        Image(uiImage: .moreImage)
+                            .renderingMode(.template)
+                    })
+                        .renderedIf(viewModel.syncState == .results)
+                }
+            }
+            .wooNavigationBarStyle()
         }
-        .wooNavigationBarStyle()
     }
 }
 

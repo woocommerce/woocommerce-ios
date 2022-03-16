@@ -6,7 +6,7 @@ import Yosemite
 final class OrdersSplitViewWrapperController: UIViewController {
     private let siteID: Int64
 
-    private let ordersSplitViewController = WooSplitViewController()
+    private lazy var ordersSplitViewController = WooSplitViewController(columnForCollapsingHandler: handleCollapsingSplitView)
 
     init(siteID: Int64) {
         self.siteID = siteID
@@ -59,6 +59,14 @@ private extension OrdersSplitViewWrapperController {
         emptyStateViewController.configure(config)
 
         ordersSplitViewController.viewControllers = [ordersNavigationController, emptyStateViewController]
+    }
+
+    func handleCollapsingSplitView(splitViewController: UISplitViewController) -> UISplitViewController.Column {
+        if let navigationController = splitViewController.viewController(for: .secondary) as? UINavigationController,
+           navigationController.viewControllers.contains(where: { $0 is OrderDetailsViewController }) {
+            return .secondary
+        }
+        return .primary
     }
 
     /// Set up properties for `self` as a root tab bar controller.

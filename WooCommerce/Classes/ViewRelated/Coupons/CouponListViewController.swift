@@ -285,7 +285,7 @@ private extension CouponListViewController {
                                    image: .emptyCouponsImage,
                                    details: Localization.couponsDisabledDetail,
                                    buttonTitle: Localization.couponsDisabledAction) { [weak self] _ in
-                    // TODO
+                    self?.viewModel.enableCoupons()
                 }
             } else {
                 return .simple(

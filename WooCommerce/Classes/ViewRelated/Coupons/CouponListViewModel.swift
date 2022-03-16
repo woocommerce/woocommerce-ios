@@ -130,6 +130,8 @@ final class CouponListViewModel {
         storesManager.dispatch(action)
     }
 
+    /// Check whether coupons are enabled for this store.
+    ///
     func loadCouponSetting() {
         let action = SettingAction.retrieveCouponSetting(siteID: siteID) { [weak self] result in
             switch result {
@@ -138,6 +140,22 @@ final class CouponListViewModel {
                 self?.state = .empty
             case .failure(let error):
                 DDLogError("⛔️ Error retrieving coupon setting: \(error)")
+            }
+        }
+        storesManager.dispatch(action)
+    }
+
+    /// Enable coupons for the store
+    ///
+    func enableCoupons() {
+        state = .loading
+        let action = SettingAction.enableCouponSetting(siteID: siteID) { [weak self] result in
+            switch result {
+            case .success:
+                self?.syncingCoordinator.synchronizeFirstPage(reason: nil, onCompletion: nil)
+            case .failure(let error):
+                DDLogError("⛔️ Error enabling coupon setting: \(error)")
+                self?.loadCouponSetting()
             }
         }
         storesManager.dispatch(action)

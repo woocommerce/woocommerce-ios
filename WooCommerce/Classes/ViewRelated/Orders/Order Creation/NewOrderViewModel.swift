@@ -248,6 +248,7 @@ final class NewOrderViewModel: ObservableObject {
 
     func onOrderNoteUpdate() {
         orderSynchronizer.setNote.send(noteViewModel.newNote)
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCustomerNoteAdd(flow: .creation))
     }
 
     // MARK: - API Requests

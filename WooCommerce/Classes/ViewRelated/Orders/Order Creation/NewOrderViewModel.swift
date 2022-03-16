@@ -429,10 +429,6 @@ extension NewOrderViewModel {
     ///
     struct CustomerNoteDataViewModel {
         let customerNotes: String
-
-        init(customerNotes: String) {
-            self.customerNotes = customerNotes
-        }
     }
 }
 

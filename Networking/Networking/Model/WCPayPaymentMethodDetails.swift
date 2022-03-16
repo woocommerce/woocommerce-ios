@@ -16,6 +16,9 @@ public enum WCPayPaymentMethodDetails: Decodable, GeneratedCopiable, GeneratedFa
     /// A card present payment, with `details`. This represents an In-Person Payment.
     case cardPresent(details: WCPayCardPresentPaymentDetails)
 
+    /// An interac present payment, with `details`. This represents an In-Person Payment, and is specific to some Canadian payments.
+    case interacPresent(details: WCPayCardPresentPaymentDetails)
+
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
@@ -36,8 +39,10 @@ public enum WCPayPaymentMethodDetails: Decodable, GeneratedCopiable, GeneratedFa
             }
             self = .cardPresent(details: cardPresentDetails)
         case .interacPresent:
-            // Unsupported for now, coming up in https://github.com/woocommerce/woocommerce-ios/issues/5979
-            self = .unknown
+            guard let interacPresentDetails = try? container.decode(WCPayCardPresentPaymentDetails.self, forKey: .interacPresent) else {
+                throw WCPayPaymentMethodDetailsDecodingError.noDetailsPresentForPaymentType
+            }
+            self = .interacPresent(details: interacPresentDetails)
         case .unknown:
             self = .unknown
         }
@@ -49,6 +54,7 @@ internal extension WCPayPaymentMethodDetails {
         case type
         case card
         case cardPresent = "card_present"
+        case interacPresent = "interac_present"
     }
 }
 

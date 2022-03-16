@@ -155,14 +155,16 @@ private extension RefundConfirmationViewModel {
     ///
     func makeRefundViaRow() -> RefundConfirmationViewModelRow {
         if gatewaySupportsAutomaticRefunds() {
-            guard case .cardPresent(let cardDetails) = details.charge?.paymentMethodDetails else {
+            switch details.charge?.paymentMethodDetails {
+            case .some(.cardPresent(let cardDetails)), .some(.interacPresent(let cardDetails)):
+                return PaymentDetailsRow(cardIcon: cardDetails.brand.icon,
+                                         cardIconAspectHorizontal: cardDetails.brand.iconAspectHorizontal,
+                                         paymentGateway: details.order.paymentMethodTitle,
+                                         paymentMethodDescription: cardDetails.brand.cardDescription(last4: cardDetails.last4),
+                                         accessibilityDescription: cardDetails.brand.cardAccessibilityDescription(last4: cardDetails.last4))
+            default:
                 return SimpleTextRow(text: details.order.paymentMethodTitle)
             }
-            return PaymentDetailsRow(cardIcon: cardDetails.brand.icon,
-                                     cardIconAspectHorizontal: cardDetails.brand.iconAspectHorizontal,
-                                     paymentGateway: details.order.paymentMethodTitle,
-                                     paymentMethodDescription: cardDetails.brand.cardDescription(last4: cardDetails.last4),
-                                     accessibilityDescription: cardDetails.brand.cardAccessibilityDescription(last4: cardDetails.last4))
         } else {
             return TitleAndBodyRow(title: Localization.manualRefund(via: details.order.paymentMethodTitle),
                                    body: Localization.refundWillNotBeIssued(paymentMethod: details.order.paymentMethodTitle))

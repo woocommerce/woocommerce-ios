@@ -60,6 +60,8 @@ private extension WCPayPaymentMethodDetails {
             return "card"
         case .cardPresent(_):
             return "cardPresent"
+        case .interacPresent(_):
+            return "interacPresent"
         }
     }
 
@@ -71,6 +73,8 @@ private extension WCPayPaymentMethodDetails {
             self = .card(details: cardDetails)
         case ("cardPresent", _, .some(let cardPresentDetails)):
             self = .cardPresent(details: cardPresentDetails)
+        case ("interacPresent", _, .some(let interacPresentDetails)):
+            self = .interacPresent(details: interacPresentDetails)
         default:
             self = .unknown
         }

@@ -44,6 +44,10 @@ public class SettingStore: Store {
             retrieveSiteAPI(siteID: siteID, onCompletion: onCompletion)
         case let .getPaymentsPagePath(siteID, onCompletion):
             getPaymentsPagePath(siteID: siteID, onCompletion: onCompletion)
+        case let .retrieveCouponSetting(siteID, onCompletion):
+            retrieveCouponSetting(siteID: siteID, onCompletion: onCompletion)
+        case let .enableCouponSetting(siteID, onCompletion):
+            enableCouponSetting(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -114,6 +118,45 @@ private extension SettingStore {
               }
 
         onCompletion(.success(paymentPagePath))
+    }
+
+    /// Retrieves the setting for whether coupons are enabled for the specified store
+    ///
+    func retrieveCouponSetting(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        siteSettingsRemote.loadSetting(for: siteID, settingGroup: .general, settingID: SettingKeys.coupons) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let setting):
+                self.upsertStoredGeneralSettingsInBackground(siteID: siteID, readOnlySiteSettings: [setting]) {
+                    let isEnabled = setting.value == SettingValue.yes
+                    onCompletion(.success(isEnabled))
+                }
+            case .failure(let error):
+                // fall back to retrieve from storage
+                if let setting = self.sharedDerivedStorage.loadSiteSetting(siteID: siteID, settingID: SettingKeys.coupons) {
+                    let isEnabled = setting.value == SettingValue.yes
+                    onCompletion(.success(isEnabled))
+                } else {
+                    onCompletion(.failure(error))
+                }
+            }
+        }
+    }
+
+    /// Enables coupons for the specified store
+    ///
+    func enableCouponSetting(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        siteSettingsRemote.updateSetting(for: siteID, settingGroup: .general, settingID: SettingKeys.coupons, value: SettingValue.yes) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let setting):
+                self.upsertStoredGeneralSettingsInBackground(siteID: siteID, readOnlySiteSettings: [setting]) {
+                    onCompletion(.success(Void()))
+                }
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
     }
 }
 
@@ -218,5 +261,10 @@ extension SettingStore {
     ///
     private enum SettingKeys {
         static let paymentsPage = "woocommerce_checkout_pay_endpoint"
+        static let coupons = "woocommerce_enable_coupons"
+    }
+
+    private enum SettingValue {
+        static let yes = "yes"
     }
 }

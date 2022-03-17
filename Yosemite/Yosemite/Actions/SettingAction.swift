@@ -25,4 +25,12 @@ public enum SettingAction: Action {
     /// Retrieves the store payments page path.
     ///
     case getPaymentsPagePath(siteID: Int64, onCompletion: (Result<String, SettingStore.SettingError>) -> Void)
+
+    /// Retrieves the setting for whether coupons are enabled for the specified store
+    ///
+    case retrieveCouponSetting(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Enables coupons for the specified store
+    ///
+    case enableCouponSetting(siteID: Int64, onCompletion: (Result<Void, Error>) -> Void)
 }

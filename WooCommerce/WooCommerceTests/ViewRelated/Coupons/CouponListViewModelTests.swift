@@ -454,48 +454,12 @@ final class CouponListViewModelTests: XCTestCase {
         assertEqual(.coupons, sut.state)
     }
 
-    func test_state_is_couponsDisabled_if_enableCoupons_fails_and_retrieveCouponSetting_returns_false() {
+    func test_state_is_couponDisabled_if_enableCoupons_fails() {
         // Given
         let sampleSiteID: Int64 = 123
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: SettingAction.self) { action in
             switch action {
-            case let .retrieveCouponSetting(_, onCompletion):
-                onCompletion(.success(true))
-            case let .enableCouponSetting(_, onCompletion):
-                let error = NSError(domain: "Test", code: 503, userInfo: nil)
-                onCompletion(.failure(error))
-            default:
-                break
-            }
-        }
-        stores.whenReceivingAction(ofType: CouponAction.self) { action in
-            switch action {
-            case let .synchronizeCoupons(_, _, _, onCompletion):
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
-        sut = CouponListViewModel(siteID: sampleSiteID,
-                                  storesManager: stores,
-                                  storageManager: mockStorageManager)
-
-        // When
-        sut.enableCoupons()
-
-        // Then
-        assertEqual(.empty, sut.state)
-    }
-
-    func test_state_is_empty_if_enableCoupons_fails_and_retrieveCouponSetting_returns_true_and_synchronizeFirstPage_succeeds_without_data() {
-        // Given
-        let sampleSiteID: Int64 = 123
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        stores.whenReceivingAction(ofType: SettingAction.self) { action in
-            switch action {
-            case let .retrieveCouponSetting(_, onCompletion):
-                onCompletion(.success(false))
             case let .enableCouponSetting(_, onCompletion):
                 let error = NSError(domain: "Test", code: 503, userInfo: nil)
                 onCompletion(.failure(error))

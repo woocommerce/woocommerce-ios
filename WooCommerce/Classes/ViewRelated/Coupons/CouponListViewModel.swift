@@ -138,19 +138,7 @@ final class CouponListViewModel {
                 self.syncingCoordinator.synchronizeFirstPage(reason: nil, onCompletion: nil)
             case .failure(let error):
                 DDLogError("⛔️ Error enabling coupon setting: \(error)")
-                self.loadCouponSetting { [weak self] result in
-                    switch result {
-                    case .success(let isEnabled):
-                        if isEnabled {
-                            self?.syncingCoordinator.synchronizeFirstPage(reason: nil, onCompletion: nil)
-                        } else {
-                            self?.state = .couponsDisabled
-                        }
-                    case .failure(let error):
-                        DDLogError("⛔️ Error retrieving coupon setting: \(error)")
-                        self?.state = .couponsDisabled
-                    }
-                }
+                self.state = .couponsDisabled
             }
         }
         storesManager.dispatch(action)

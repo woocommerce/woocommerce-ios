@@ -48,6 +48,10 @@ public class SettingStore: Store {
             retrieveCouponSetting(siteID: siteID, onCompletion: onCompletion)
         case let .enableCouponSetting(siteID, onCompletion):
             enableCouponSetting(siteID: siteID, onCompletion: onCompletion)
+        case let .retrieveAnalyticsSetting(siteID, onCompletion):
+            retrieveAnalyticsSetting(siteID: siteID, onCompletion: onCompletion)
+        case let .enableAnalyticsSetting(siteID, onCompletion):
+            enableAnalyticsSetting(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -157,6 +161,18 @@ private extension SettingStore {
                 onCompletion(.failure(error))
             }
         }
+    }
+
+    /// Retrieves the setting for whether WC Analytics are enabled for the specified store
+    ///
+    func retrieveAnalyticsSetting(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void) {
+        // TODO
+    }
+
+    /// Enables WC Analytics for the specified store
+    ///
+    func enableAnalyticsSetting(siteID: Int64, onCompletion: (Result<Void, Error>) -> Void) {
+        // TODO
     }
 }
 

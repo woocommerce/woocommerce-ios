@@ -26,6 +26,9 @@ struct CouponDetails: View {
     @State private var showingShareSheet: Bool = false
     @State private var showingUsageDetails: Bool = false
 
+    // Tracks the scale of the view due to accessibility changes
+    @ScaledMetric private var scale: CGFloat = 1.0
+
     /// The presenter to display notice when the coupon code is copied.
     /// It is kept internal so that the hosting controller can update its presenting controller to itself.
     let noticePresenter: DefaultNoticePresenter
@@ -89,10 +92,30 @@ struct CouponDetails: View {
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                     .padding(.horizontal, Constants.margin)
                                 Spacer()
-                                Text(Localization.amount)
-                                    .secondaryBodyStyle()
+                                Button {
+                                    // TODO
+                                } label: {
+                                    HStack(spacing: Constants.errorIconHorizontalPadding) {
+                                        Text(Localization.amount)
+                                            .secondaryBodyStyle()
+
+                                        Image(uiImage: .infoImage)
+                                            .renderingMode(.template)
+                                            .resizable()
+                                            .foregroundColor(Color(viewModel.hasWCAnalyticsDisabled ?
+                                                                   UIColor.withColorStudio(.orange, shade: .shade30) :
+                                                                    UIColor.error))
+                                            .frame(width: Constants.errorIconSize * scale,
+                                                   height: Constants.errorIconSize * scale)
+                                            .renderedIf(viewModel.shouldShowErrorLoadingAmount)
+                                        Spacer()
+                                    }
                                     .frame(maxWidth: .infinity, alignment: .leading)
-                                    .padding(.horizontal, Constants.margin)
+                                    .contentShape(Rectangle())
+                                }
+                                .buttonStyle(.plain)
+                                .disabled(!viewModel.shouldShowErrorLoadingAmount)
+                                .padding(.horizontal, Constants.margin)
                             }
                             HStack(alignment: .firstTextBaseline) {
                                 Text(viewModel.discountedOrdersCount)
@@ -187,6 +210,8 @@ private extension CouponDetails {
     enum Constants {
         static let margin: CGFloat = 16
         static let verticalSpacing: CGFloat = 8
+        static let errorIconSize: CGFloat = 20
+        static let errorIconHorizontalPadding: CGFloat = 4
     }
 
     enum Localization {

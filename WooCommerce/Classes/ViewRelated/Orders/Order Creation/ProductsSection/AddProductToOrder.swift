@@ -25,8 +25,8 @@ struct AddProductToOrder: View {
                             Divider().frame(height: Constants.dividerHeight)
                                 .padding(.leading, Constants.defaultPadding)
                         }
+                        .background(Color(.listForeground))
                     }
-                                       .background(Color(.listForeground))
                 case .empty:
                     EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
                         .frame(maxHeight: .infinity)

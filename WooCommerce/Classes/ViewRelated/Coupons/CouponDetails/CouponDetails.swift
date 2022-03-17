@@ -25,6 +25,7 @@ struct CouponDetails: View {
     @State private var showingActionSheet: Bool = false
     @State private var showingShareSheet: Bool = false
     @State private var showingUsageDetails: Bool = false
+    @State private var showingAmountLoadingErrorPrompt: Bool = false
 
     // Tracks the scale of the view due to accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
@@ -92,30 +93,7 @@ struct CouponDetails: View {
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                     .padding(.horizontal, Constants.margin)
                                 Spacer()
-                                Button {
-                                    // TODO
-                                } label: {
-                                    HStack(spacing: Constants.errorIconHorizontalPadding) {
-                                        Text(Localization.amount)
-                                            .secondaryBodyStyle()
-
-                                        Image(uiImage: .infoImage)
-                                            .renderingMode(.template)
-                                            .resizable()
-                                            .foregroundColor(Color(viewModel.hasWCAnalyticsDisabled ?
-                                                                   UIColor.withColorStudio(.orange, shade: .shade30) :
-                                                                    UIColor.error))
-                                            .frame(width: Constants.errorIconSize * scale,
-                                                   height: Constants.errorIconSize * scale)
-                                            .renderedIf(viewModel.shouldShowErrorLoadingAmount)
-                                        Spacer()
-                                    }
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .contentShape(Rectangle())
-                                }
-                                .buttonStyle(.plain)
-                                .disabled(!viewModel.shouldShowErrorLoadingAmount)
-                                .padding(.horizontal, Constants.margin)
+                                amountTitleView
                             }
                             HStack(alignment: .firstTextBaseline) {
                                 Text(viewModel.discountedOrdersCount)
@@ -124,10 +102,7 @@ struct CouponDetails: View {
                                     .padding(.horizontal, Constants.margin)
                                 Spacer()
                                 Group {
-                                    if viewModel.hasErrorLoadingAmount && viewModel.discountedAmount == nil {
-                                        Text(Localization.errorLoadingAnalytics)
-                                            .errorStyle()
-                                    } else if let amount = viewModel.discountedAmount {
+                                    if let amount = viewModel.discountedAmount {
                                         Text(amount)
                                             .font(.title)
                                     } else {
@@ -202,6 +177,50 @@ struct CouponDetails: View {
         .wooNavigationBarStyle()
     }
 
+    @ViewBuilder
+    private var amountTitleView: some View {
+        Button(action: showAmountLoadingErrorDetails) {
+            HStack(spacing: Constants.errorIconHorizontalPadding) {
+                Text(Localization.amount)
+                    .secondaryBodyStyle()
+
+                Image(uiImage: .infoImage)
+                    .renderingMode(.template)
+                    .resizable()
+                    .foregroundColor(Color(viewModel.hasWCAnalyticsDisabled ?
+                                           UIColor.withColorStudio(.orange, shade: .shade30) :
+                                            UIColor.error))
+                    .frame(width: Constants.errorIconSize * scale,
+                           height: Constants.errorIconSize * scale)
+                    .renderedIf(viewModel.shouldShowErrorLoadingAmount)
+                    .actionSheet(isPresented: $showingAmountLoadingErrorPrompt) {
+                        ActionSheet(
+                            title: Text(Localization.errorLoadingAnalytics),
+                            buttons: [
+                                .default(Text(Localization.tryAgain), action: {
+                                    viewModel.loadCouponReport()
+                                }),
+                                .cancel()
+                            ]
+                        )
+                    }
+                Spacer()
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .disabled(!viewModel.shouldShowErrorLoadingAmount)
+        .padding(.horizontal, Constants.margin)
+    }
+
+    private func showAmountLoadingErrorDetails() {
+        if viewModel.hasWCAnalyticsDisabled {
+            // TODO: show modal for disabled analytics
+        } else {
+            showingAmountLoadingErrorPrompt = true
+        }
+    }
 }
 
 // MARK: - Subtypes
@@ -231,8 +250,12 @@ private extension CouponDetails {
         static let amount = NSLocalizedString("Amount", comment: "Title of the Amount label on Coupon Details screen")
         static let usageDetails = NSLocalizedString("Usage details", comment: "Title of the Usage details row in Coupon Details screen")
         static let errorLoadingAnalytics = NSLocalizedString(
-            "Error loading data",
-            comment: "Message displayed when fail to loading total discounted amount in Coupon Details screen"
+            "We encountered a problem loading analytics",
+            comment: "Message displayed in the error prompt when loading total discounted amount in Coupon Details screen fails"
+        )
+        static let tryAgain = NSLocalizedString(
+            "Try Again",
+            comment: "Action displayed in the error prompt when loading total discounted amount in Coupon Details screen fails"
         )
     }
 

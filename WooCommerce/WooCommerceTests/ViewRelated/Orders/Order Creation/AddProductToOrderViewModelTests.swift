@@ -257,6 +257,28 @@ class AddProductToOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.notice, AddProductToOrderViewModel.NoticeFactory.productSyncNotice())
     }
+
+    func test_view_model_fires_error_notice_when_product_search_fails() {
+        // Given
+        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, stores: stores)
+
+        // When
+        let notice: Notice? = waitFor { promise in
+            self.stores.whenReceivingAction(ofType: ProductAction.self) { action in
+                switch action {
+                case let .searchProducts(_, _, _, _, _, onCompletion):
+                    onCompletion(.failure(NSError(domain: "Error", code: 0)))
+                    promise(viewModel.notice)
+                default:
+                    XCTFail("Received unsupported action: \(action)")
+                }
+            }
+            viewModel.searchTerm = "shirt"
+        }
+
+        // Then
+        XCTAssertEqual(notice, AddProductToOrderViewModel.NoticeFactory.productSearchNotice())
+    }
 }
 
 // MARK: - Utils

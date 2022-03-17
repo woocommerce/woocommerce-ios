@@ -185,6 +185,25 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
         let sortedProductVariationIDs = viewModel.productVariationRows.map { $0.productOrVariationID }
         XCTAssertEqual(sortedProductVariationIDs, [2, 1, 3])
     }
+
+    func test_view_model_fires_error_notice_when_product_variation_sync_fails() {
+        // Given
+        let viewModel = AddProductVariationToOrderViewModel(siteID: sampleSiteID, product: Product.fake(), stores: stores)
+        stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
+            switch action {
+            case let .synchronizeProductVariations(_, _, _, _, onCompletion):
+                onCompletion(NSError(domain: "Error", code: 0))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+
+        // When
+        viewModel.onLoadTrigger.send()
+
+        // Then
+        XCTAssertEqual(viewModel.notice, AddProductVariationToOrderViewModel.NoticeFactory.productVariationSyncNotice())
+    }
 }
 
 // MARK: - Utils

@@ -43,6 +43,10 @@ final class CardPresentPaymentStoreTests: XCTestCase {
     ///
     private let sampleChargeID = "ch_3KMVap2EdyGr1FMV1uKJEWtg"
 
+    /// Testing Charge ID for interac transaction
+    ///
+    private let sampleInteracChargeID = "ch_3KdC1s2ETjwGHy9P0Cawro7o"
+
     /// Testing Charge ID for card transaction
     ///
     private let sampleCardChargeID = "ch_3KMuym2EdyGr1FMV0uQZeFqm"
@@ -505,6 +509,37 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         let storedDetails = storageCharge?.cardDetails
         XCTAssertEqual(storedDetails?.last4, "1111")
         XCTAssertNil(storageCharge?.cardPresentDetails)
+    }
+
+    func test_fetchWCPayCharge_inserts_interac_present_charge_details_in_storage() throws {
+        let store = CardPresentPaymentStore(dispatcher: dispatcher,
+                                            storageManager: storageManager,
+                                            network: network,
+                                            cardReaderService: mockCardReaderService)
+
+        network.simulateResponse(requestUrlSuffix: "payments/charges/\(sampleInteracChargeID)",
+                                 filename: "wcpay-charge-interac-present")
+
+        let result: Result<Yosemite.WCPayCharge, Error> = waitFor { [self] promise in
+            let action = CardPresentPaymentAction.fetchWCPayCharge(siteID: self.sampleSiteID, chargeID: self.sampleInteracChargeID, onCompletion: { result in
+                promise(result)
+            })
+            store.onAction(action)
+        }
+        XCTAssertTrue(result.isSuccess)
+
+        XCTAssert(viewStorage.countObjects(ofType: Storage.WCPayCharge.self, matching: nil) == 1)
+
+        let storageCharge = viewStorage.loadWCPayCharge(siteID: sampleSiteID, chargeID: sampleInteracChargeID)
+
+        XCTAssert(viewStorage.countObjects(ofType: Storage.WCPayCardPaymentDetails.self, matching: nil) == 0)
+        XCTAssert(viewStorage.countObjects(ofType: Storage.WCPayCardPresentPaymentDetails.self, matching: nil) == 1)
+        XCTAssert(viewStorage.countObjects(ofType: Storage.WCPayCardPresentReceiptDetails.self, matching: nil) == 1)
+
+        let storedDetails = storageCharge?.cardPresentDetails
+        XCTAssertEqual(storedDetails?.receipt?.applicationPreferredName, "Interac")
+        XCTAssertEqual(storedDetails?.last4, "1933")
+        XCTAssertNil(storageCharge?.cardDetails)
     }
 
     /// Verifies that the store hits the network when fetching a charge, and propagates errors.

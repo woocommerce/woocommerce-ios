@@ -244,9 +244,9 @@ private extension SettingsViewModel {
             let rows: [Row]
             // Show the whats new row only there is a non-nil announcement available.
             if announcement != nil {
-                rows = [.about, .whatsNew, .licenses]
+                rows = [.about, .whatsNew]
             } else {
-                rows = [.about, .licenses]
+                rows = [.about]
             }
             return Section(title: Localization.aboutTheAppTitle,
                            rows: rows,

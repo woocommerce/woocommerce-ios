@@ -88,9 +88,25 @@ extension SimplePaymentsAmountHostingController: UIAdaptivePresentationControlle
         guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
             return
         }
-        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+
+        presentCancelOrderActionSheet(viewController: self) { [weak self] _ in
             self?.dismiss(animated: true, completion: nil)
-        })
+        }
+    }
+
+    private func presentCancelOrderActionSheet(viewController: UIViewController, onDismiss: ((UIAlertAction) -> Void)? = nil) {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
+        actionSheet.addDestructiveActionWithTitle(SimplePaymentsAmount.Localization.dismissOrder, handler: onDismiss)
+        actionSheet.addCancelActionWithTitle(SimplePaymentsAmount.Localization.cancelTitle)
+
+        if let popoverController = actionSheet.popoverPresentationController {
+            popoverController.sourceView = viewController.view
+            popoverController.sourceRect = viewController.view.bounds
+            popoverController.permittedArrowDirections = []
+        }
+
+        viewController.present(actionSheet, animated: true)
     }
 }
 
@@ -194,6 +210,7 @@ private extension SimplePaymentsAmount {
         static let created = NSLocalizedString("🎉 Order created", comment: "Notice text after creating a simple payment order")
         static let completed = NSLocalizedString("🎉 Order completed", comment: "Notice text after completing a simple payment order")
         static let buttonTitle = NSLocalizedString("Next", comment: "Title for the button to confirm the amount in the simple payments screen")
+        static let dismissOrder = NSLocalizedString("Dismiss Order", comment: "Title for dismiss the action when dragging the screen down.")
     }
 
     enum Layout {

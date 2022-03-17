@@ -29,10 +29,7 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
         let product = Product.fake().copy(productID: sampleProductID,
                                           attributes: [ProductAttribute.fake().copy(siteID: sampleSiteID, attributeID: 1, name: "Color", variation: true),
                                                        ProductAttribute.fake().copy(siteID: sampleSiteID, attributeID: 2, name: "Size", variation: true)])
-        let productVariation = ProductVariation.fake().copy(siteID: sampleSiteID,
-                                                            productID: sampleProductID,
-                                                            attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")],
-                                                            purchasable: true)
+        let productVariation = sampleProductVariation.copy(attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")])
         insert(productVariation)
 
         // When
@@ -50,10 +47,7 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
     func test_product_variation_rows_only_include_purchasable_product_variations() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
-        let purchasableProductVariation = ProductVariation.fake().copy(siteID: sampleSiteID,
-                                                                       productID: sampleProductID,
-                                                                       productVariationID: 1,
-                                                                       purchasable: true)
+        let purchasableProductVariation = sampleProductVariation.copy(productVariationID: 1)
         let nonPurchasableProductVariation = ProductVariation.fake().copy(siteID: sampleSiteID, productVariationID: 2, purchasable: false)
         insert([purchasableProductVariation, nonPurchasableProductVariation])
 
@@ -118,8 +112,7 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
             switch action {
             case let .synchronizeProductVariations(_, _, _, _, onCompletion):
                 XCTAssertEqual(viewModel.syncStatus, .firstPageSync)
-                let productVariation = ProductVariation.fake().copy(siteID: self.sampleSiteID, productID: self.sampleProductID, purchasable: true)
-                self.insert(productVariation)
+                self.insert(self.sampleProductVariation)
                 onCompletion(nil)
             default:
                 XCTFail("Unsupported Action")
@@ -136,8 +129,7 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
     func test_sync_status_does_not_change_while_syncing_when_storage_contains_product_variations() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
-        let productVariation = ProductVariation.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
-        insert(productVariation)
+        insert(sampleProductVariation)
 
         let viewModel = AddProductVariationToOrderViewModel(siteID: sampleSiteID, product: product, storageManager: storageManager, stores: stores)
         stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
@@ -177,6 +169,22 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(timesSynced, 1)
     }
+
+    func test_product_variations_sorted_by_menu_order_and_id() {
+        // Given
+        let product = Product.fake().copy(productID: sampleProductID)
+        let variation1 = sampleProductVariation.copy(productVariationID: 3, menuOrder: 1)
+        let variation2 = sampleProductVariation.copy(productVariationID: 2, menuOrder: 0)
+        let variation3 = sampleProductVariation.copy(productVariationID: 1, menuOrder: 0)
+        insert([variation1, variation2, variation3])
+
+        // When
+        let viewModel = AddProductVariationToOrderViewModel(siteID: sampleSiteID, product: product, storageManager: storageManager, stores: stores)
+
+        // Then
+        let sortedProductVariationIDs = viewModel.productVariationRows.map { $0.productOrVariationID }
+        XCTAssertEqual(sortedProductVariationIDs, [2, 1, 3])
+    }
 }
 
 // MARK: - Utils
@@ -201,5 +209,13 @@ private extension AddProductVariationToOrderViewModelTests {
         for readOnlyVariation in readOnlyVariations {
             insert(readOnlyVariation)
         }
+    }
+
+    /// A purchasable product variation.
+    ///
+    var sampleProductVariation: Yosemite.ProductVariation {
+        ProductVariation.fake().copy(siteID: sampleSiteID,
+                                     productID: sampleProductID,
+                                     purchasable: true)
     }
 }

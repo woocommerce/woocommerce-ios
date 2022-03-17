@@ -2,6 +2,7 @@ import UIKit
 import MessageUI
 import Gridicons
 import SafariServices
+import AutomatticAbout
 
 protocol SettingsViewPresenter: AnyObject {
     func refreshViewContent()
@@ -83,6 +84,8 @@ private extension SettingsViewController {
         footerView.iconColor = .primary
         footerView.footnote.textAlignment = .center
         footerView.footnote.delegate = self
+        footerView.icon.addGestureRecognizer(crashDebugMenuGestureRecognizer)
+        footerView.icon.isUserInteractionEnabled = true
 
         tableView.tableFooterView = footerContainer
         footerContainer.addSubview(footerView)
@@ -122,8 +125,6 @@ private extension SettingsViewController {
             configureAbout(cell: cell)
         case let cell as BasicTableViewCell where row == .whatsNew:
             configureWhatsNew(cell: cell)
-        case let cell as BasicTableViewCell where row == .licenses:
-            configureLicenses(cell: cell)
         case let cell as BasicTableViewCell where row == .deviceSettings:
             configureAppSettings(cell: cell)
         case let cell as BasicTableViewCell where row == .wormholy:
@@ -192,12 +193,6 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = Localization.wooCommerce
-    }
-
-    func configureLicenses(cell: BasicTableViewCell) {
-        cell.accessoryType = .disclosureIndicator
-        cell.selectionStyle = .default
-        cell.textLabel?.text = Localization.thirdPartyLicenses
     }
 
     func configureAppSettings(cell: BasicTableViewCell) {
@@ -322,18 +317,14 @@ private extension SettingsViewController {
 
     func aboutWasPressed() {
         ServiceLocator.analytics.track(.settingsAboutLinkTapped)
-        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: AboutViewController.self) else {
-            fatalError("Cannot instantiate `AboutViewController` from Dashboard storyboard")
-        }
-        show(viewController, sender: self)
-    }
 
-    func licensesWasPressed() {
-        ServiceLocator.analytics.track(.settingsLicensesLinkTapped)
-        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: LicensesViewController.self) else {
-            fatalError("Cannot instantiate `LicensesViewController` from Dashboard storyboard")
+        let configuration = WooAboutScreenConfiguration()
+        let controller = AutomatticAboutScreen.controller(appInfo: WooAboutScreenConfiguration.appInfo,
+                                                          configuration: configuration,
+                                                          fonts: WooAboutScreenConfiguration.headerFonts)
+        present(controller, animated: true) { [weak self] in
+            self?.tableView.deselectSelectedRowWithAnimation(true)
         }
-        show(viewController, sender: self)
     }
 
     func betaFeaturesWasPressed() {
@@ -381,7 +372,37 @@ private extension SettingsViewController {
 }
 
 
-// MARK: - UITextViewDeletgate Conformance
+// MARK: - Crash Debug Menu
+//
+private extension SettingsViewController {
+
+    var crashDebugMenuGestureRecognizer: UITapGestureRecognizer {
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didInvokeCrashDebugMenu))
+        gestureRecognizer.numberOfTapsRequired = 4
+        return gestureRecognizer
+    }
+
+    @objc func didInvokeCrashDebugMenu(_ sender: UITapGestureRecognizer? = nil) {
+        let crashDebugMenu = UIAlertController(title: Localization.CrashDebugMenu.title, message: nil, preferredStyle: .actionSheet)
+        crashDebugMenu.addAction(crashDebugMenuCrashAction)
+        crashDebugMenu.addAction(crashDebugMenuCancelAction)
+
+        present(crashDebugMenu, animated: true, completion: nil)
+    }
+
+    var crashDebugMenuCrashAction: UIAlertAction {
+        return UIAlertAction(title: Localization.CrashDebugMenu.crashImmediately, style: .destructive) { _ in
+            ServiceLocator.crashLogging.crash()
+        }
+    }
+
+    var crashDebugMenuCancelAction: UIAlertAction {
+        return UIAlertAction(title: Localization.CrashDebugMenu.cancel, style: .cancel, handler: nil)
+    }
+}
+
+
+// MARK: - UITextViewDelegate Conformance
 //
 extension SettingsViewController: UITextViewDelegate {
 
@@ -466,8 +487,6 @@ extension SettingsViewController: UITableViewDelegate {
             presentSurveyForFeedback()
         case .about:
             aboutWasPressed()
-        case .licenses:
-            licensesWasPressed()
         case .deviceSettings:
             deviceSettingsWasPressed()
         case .wormholy:
@@ -544,7 +563,6 @@ extension SettingsViewController {
         // About the App
         case about
         case whatsNew
-        case licenses
 
         // Other
         case deviceSettings
@@ -577,8 +595,6 @@ extension SettingsViewController {
             case .sendFeedback:
                 return BasicTableViewCell.self
             case .about:
-                return BasicTableViewCell.self
-            case .licenses:
                 return BasicTableViewCell.self
             case .deviceSettings:
                 return BasicTableViewCell.self
@@ -658,11 +674,6 @@ private extension SettingsViewController {
             comment: "Navigates to about WooCommerce app screen"
         )
 
-        static let thirdPartyLicenses = NSLocalizedString(
-            "Third Party Licenses",
-            comment: "Navigates to screen with third party software licenses"
-        )
-
         static let openDeviceSettings = NSLocalizedString(
             "Open Device Settings",
             comment: "Opens iOS's Device Settings for the app"
@@ -687,6 +698,23 @@ private extension SettingsViewController {
             "Made with love by Automattic. <a href=\"https://automattic.com/work-with-us/\">We’re hiring!</a>",
             comment: "It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>`"
         )
+
+        enum CrashDebugMenu {
+            static let title = NSLocalizedString(
+                "Crash Debug Menu",
+                comment: "The title for a menu that helps debug crashes in production builds"
+            )
+
+            static let crashImmediately = NSLocalizedString(
+                "Crash Immediately",
+                comment: "The title for a button that causes the app to deliberately crash for debugging purposes"
+            )
+
+            static let cancel = NSLocalizedString(
+                "Cancel",
+                comment: "The title for a button that dismisses the crash debug menu"
+            )
+        }
 
         enum LogoutAlert {
             static let alertMessage = NSLocalizedString(

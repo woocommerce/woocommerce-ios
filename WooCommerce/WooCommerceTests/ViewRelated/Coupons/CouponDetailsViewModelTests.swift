@@ -214,13 +214,14 @@ final class CouponDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.shareMessage, shareMessage)
     }
 
-    func test_hasErrorLoadingAmount_returns_false_initially() {
+    func test_hasErrorLoadingAmount_and_hasWCAnalyticsDisabled_return_false_initially() {
         // Given
         let sampleCoupon = Coupon.fake().copy(code: "TEST", amount: "10.00", discountType: .percent, productIds: [12, 23])
         let viewModel = CouponDetailsViewModel(coupon: sampleCoupon)
 
         // Then
         XCTAssertFalse(viewModel.hasErrorLoadingAmount)
+        XCTAssertFalse(viewModel.hasWCAnalyticsDisabled)
     }
 
     func test_hasErrorLoadingAmount_returns_false_if_loading_amount_succeeds() {
@@ -244,7 +245,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.hasErrorLoadingAmount)
     }
 
-    func test_hasErrorLoadingAmount_returns_true_if_loading_amount_fails() {
+    func test_hasErrorLoadingAmount_returns_true_if_loading_amount_fails_and_retrieveAnalyticsSetting_returns_true() {
         // Given
         let sampleCoupon = Coupon.fake().copy(code: "TEST", amount: "10.00", discountType: .percent, productIds: [12, 23])
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -260,9 +261,111 @@ final class CouponDetailsViewModelTests: XCTestCase {
                 break
             }
         }
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .retrieveAnalyticsSetting(_, onCompletion):
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
         viewModel.loadCouponReport()
 
         // Then
         XCTAssertTrue(viewModel.hasErrorLoadingAmount)
+        XCTAssertFalse(viewModel.hasWCAnalyticsDisabled)
+    }
+
+    func test_hasErrorLoadingAmount_returns_true_if_loading_amount_fails_and_retrieveAnalyticsSetting_returns_false() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(code: "TEST", amount: "10.00", discountType: .percent, productIds: [12, 23])
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, stores: stores)
+
+        // When
+        stores.whenReceivingAction(ofType: CouponAction.self) { action in
+            switch action {
+            case .loadCouponReport(_, _, _, let onCompletion):
+                let error = NSError(domain: "Test", code: 0, userInfo: [:])
+                onCompletion(.failure(error))
+            default:
+                break
+            }
+        }
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .retrieveAnalyticsSetting(_, onCompletion):
+                onCompletion(.success(false))
+            default:
+                break
+            }
+        }
+        viewModel.loadCouponReport()
+
+        // Then
+        XCTAssertFalse(viewModel.hasErrorLoadingAmount)
+        XCTAssertTrue(viewModel.hasWCAnalyticsDisabled)
+    }
+
+    func test_shouldShowErrorLoadingAmount_returns_false_if_usageCount_is_zero() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(code: "TEST", amount: "10.00", discountType: .percent, usageCount: 0, productIds: [12, 23])
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, stores: stores)
+
+        // When
+        stores.whenReceivingAction(ofType: CouponAction.self) { action in
+            switch action {
+            case .loadCouponReport(_, _, _, let onCompletion):
+                let error = NSError(domain: "Test", code: 0, userInfo: [:])
+                onCompletion(.failure(error))
+            default:
+                break
+            }
+        }
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .retrieveAnalyticsSetting(_, onCompletion):
+                onCompletion(.success(false))
+            default:
+                break
+            }
+        }
+        viewModel.loadCouponReport()
+
+        // Then
+        XCTAssertTrue(viewModel.hasWCAnalyticsDisabled) // Confidence check
+        XCTAssertFalse(viewModel.shouldShowErrorLoadingAmount)
+    }
+
+    func test_shouldShowErrorLoadingAmount_returns_true_if_usageCount_is_not_zero() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(code: "TEST", amount: "10.00", discountType: .percent, usageCount: 1, productIds: [12, 23])
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, stores: stores)
+
+        // When
+        stores.whenReceivingAction(ofType: CouponAction.self) { action in
+            switch action {
+            case .loadCouponReport(_, _, _, let onCompletion):
+                let error = NSError(domain: "Test", code: 0, userInfo: [:])
+                onCompletion(.failure(error))
+            default:
+                break
+            }
+        }
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .retrieveAnalyticsSetting(_, onCompletion):
+                onCompletion(.success(false))
+            default:
+                break
+            }
+        }
+        viewModel.loadCouponReport()
+
+        // Then
+        XCTAssertTrue(viewModel.hasWCAnalyticsDisabled) // Confidence check
+        XCTAssertTrue(viewModel.shouldShowErrorLoadingAmount)
     }
 }

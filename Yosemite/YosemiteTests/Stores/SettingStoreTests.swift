@@ -788,25 +788,7 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertEqual(updated?.value, "yes")
     }
 
-    func test_retrieveAnalyticsSetting_returns_error_when_loading_fails_and_setting_is_not_found_in_storage() {
-        // Given
-        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500)
-        network.simulateError(requestUrlSuffix: "settings/advanced/woocommerce_analytics_enabled", error: expectedError)
-
-        // When
-        let result: Result<Bool, Error> = waitFor { promise in
-            let action = SettingAction.retrieveAnalyticsSetting(siteID: self.sampleSiteID) { result in
-                promise(result)
-            }
-            store.onAction(action)
-        }
-
-        // Then
-        XCTAssertTrue(result.isFailure)
-    }
-
-    func test_retrieveAnalyticsSetting_returns_stored_setting_when_loading_fails_and_setting_is_found_in_storage() throws {
+    func test_retrieveAnalyticsSetting_returns_error_when_loading_fails_and_setting_is_found_in_storage() throws {
         // Given
         let oldSetting = SiteSetting.fake().copy(siteID: sampleSiteID, settingID: "woocommerce_analytics_enabled", value: "no", settingGroupKey: "general")
         storageManager.insertSampleSiteSetting(readOnlySiteSetting: oldSetting)
@@ -823,9 +805,7 @@ final class SettingStoreTests: XCTestCase {
         }
 
         // Then
-        XCTAssertFalse(result.isFailure)
-        let isEnabled = try XCTUnwrap(result.get())
-        XCTAssertFalse(isEnabled)
+        XCTAssertTrue(result.isFailure)
     }
 
     func test_enableAnalyticsSetting_updates_stored_settings() {

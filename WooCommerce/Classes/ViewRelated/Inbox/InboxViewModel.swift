@@ -118,6 +118,8 @@ extension InboxViewModel: PaginationTrackerDelegate {
             guard let self = self else { return }
             switch result {
             case .success(let notes):
+                ServiceLocator.analytics.track(.inboxNotesLoaded,
+                                               withProperties: ["is_loading_more": pageNumber != self.pageFirstIndex])
                 let hasNextPage = notes.count == pageSize
                 onCompletion?(.success(hasNextPage))
 
@@ -130,6 +132,7 @@ extension InboxViewModel: PaginationTrackerDelegate {
                 }
             case .failure(let error):
                 DDLogError("⛔️ Error synchronizing inbox notes: \(error)")
+                ServiceLocator.analytics.track(.inboxNotesLoadedFailed, withError: error)
                 onCompletion?(.failure(error))
             }
         }

@@ -573,6 +573,11 @@ public enum WooAnalyticsStat: String {
     case couponsLoadedFailed = "coupons_loaded_failed"
     case couponsListSearchTapped = "coupons_list_search_tapped"
     case couponDetails = "coupon_details"
+
+    // MARK: Inbox Notes
+    case inboxNotesLoaded = "inbox_notes_loaded"
+    case inboxNotesLoadedFailed = "inbox_notes_load_failed"
+    case inboxNoteAction = "inbox_note_action"
 }
 
 public extension WooAnalyticsStat {

@@ -137,6 +137,9 @@ public enum UnderlyingError: Error, Equatable {
 
     /// The store setup is incomplete, and the action can't be performed until the user provides a valid postal code in the site admin.
     case invalidPostalCode
+
+    /// There was no refund in progress to cancel
+    case noRefundInProgress
 }
 
 extension UnderlyingError {
@@ -321,6 +324,10 @@ extension UnderlyingError: LocalizedError {
             return NSLocalizedString("The store postal code is invalid or missing, please update it before continuing.",
                                      comment: "Error message when there is an issue with the store postal code preventing " +
                                      "an action (e.g. reader connection.)")
+        case .noRefundInProgress:
+            return NSLocalizedString("Sorry, this refund could not be canceled",
+                                     comment: "Error message shown when a refund could not be canceled (likely because " +
+                                     "it had already completed)")
         }
     }
 }

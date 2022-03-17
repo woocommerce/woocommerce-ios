@@ -62,6 +62,9 @@ public enum CardPresentPaymentAction: Action {
     ///
     case refundPayment(parameters: RefundParameters)
 
+    /// Cancels a refund, if one is in progress
+    case cancelRefund
+
     /// Check the state of available software updates.
     case observeCardReaderUpdateState(onCompletion: (AnyPublisher<CardReaderSoftwareUpdateState, Never>) -> Void)
 

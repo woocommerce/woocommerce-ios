@@ -113,6 +113,12 @@ final class MockCardReaderService: CardReaderService {
             .eraseToAnyPublisher()
     }
 
+    func cancelRefund() -> AnyPublisher<Void, Error> {
+        Just(())
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher()
+    }
+
     func installUpdate() -> Void {
     }
 }

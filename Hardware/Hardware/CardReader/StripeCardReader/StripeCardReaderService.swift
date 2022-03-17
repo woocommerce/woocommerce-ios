@@ -8,6 +8,7 @@ public final class StripeCardReaderService: NSObject {
 
     private var discoveryCancellable: StripeTerminal.Cancelable?
     private var paymentCancellable: StripeTerminal.Cancelable?
+    private var refundCancellable: StripeTerminal.Cancelable?
 
     private var discoveredReadersSubject = CurrentValueSubject<[CardReader], Error>([])
     private let connectedReadersSubject = CurrentValueSubject<[CardReader], Never>([])
@@ -523,6 +524,22 @@ extension StripeCardReaderService {
                 }
             }
         }
+    }
+
+    public func cancelRefund() -> AnyPublisher<Void, Error> {
+        return Future() { [weak self] promise in
+            guard let refundCancellable = self?.refundCancellable else {
+                return promise(.failure(CardReaderServiceError.refundCancellation(underlyingError: .noRefundInProgress)))
+            }
+
+            refundCancellable.cancel({ error in
+                if let error = error {
+                    promise(.failure(CardReaderServiceError.refundCancellation(underlyingError: UnderlyingError(with: error))))
+                }
+                promise(.success(()))
+            })
+            //TODO: handle timeout?
+        }.eraseToAnyPublisher()
     }
 }
 

@@ -246,7 +246,10 @@ private extension RemoteOrderSynchronizer {
                 switch result {
                 case .success(let remoteOrder):
                     // Return the order with the current selected status.
-                    let newLocalOrder = remoteOrder.copy(status: self.order.status)
+                    let newLocalOrder = remoteOrder.copy(
+                            status: self.order.status,
+                            customerNote: self.order.customerNote
+                    )
                     promise(.success(newLocalOrder))
 
                 case .failure(let error):
@@ -273,7 +276,10 @@ private extension RemoteOrderSynchronizer {
                 switch result {
                 case .success(let remoteOrder):
                     // Return the order with the current selected status.
-                    let newLocalOrder = remoteOrder.copy(status: self.order.status)
+                    let newLocalOrder = remoteOrder.copy(
+                            status: self.order.status,
+                            customerNote: self.order.customerNote
+                    )
                     promise(.success(newLocalOrder))
 
                 case .failure(let error):

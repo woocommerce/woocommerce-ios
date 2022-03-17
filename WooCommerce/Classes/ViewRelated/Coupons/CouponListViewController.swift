@@ -66,6 +66,7 @@ final class CouponListViewController: UIViewController {
 
     private func configureViewModel() {
         viewModel.$state
+            .removeDuplicates()
             .sink { [weak self] state in
                 guard let self = self else { return }
                 self.resetViews()

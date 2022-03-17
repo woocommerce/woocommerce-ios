@@ -65,16 +65,15 @@ final class CouponListViewController: UIViewController {
     }
 
     private func configureViewModel() {
-        viewModel.$state.combineLatest(viewModel.$couponsDisabled)
-            .removeDuplicates(by: { oldValues, newValues in
-                oldValues.0 == newValues.0 && oldValues.1 == newValues.1
-            })
-            .sink { [weak self] state, couponsDisabled in
+        viewModel.$state
+            .sink { [weak self] state in
                 guard let self = self else { return }
                 self.resetViews()
                 switch state {
                 case .empty:
-                    self.displayNoResultsOverlay(couponsDisabled: couponsDisabled)
+                    self.displayNoResultsOverlay()
+                case .couponsDisabled:
+                    self.displayCouponsDisabledOverlay()
                 case .loading:
                     self.displayPlaceholderCoupons()
                 case .coupons:
@@ -120,7 +119,6 @@ final class CouponListViewController: UIViewController {
 
         // Call this after the state subscription for extra safety
         viewModel.viewDidLoad()
-        viewModel.loadCouponSetting()
     }
 }
 
@@ -276,25 +274,27 @@ extension CouponListViewController {
 private extension CouponListViewController {
     /// Displays the overlay when there are no results.
     ///
-    func displayNoResultsOverlay(couponsDisabled: Bool) {
+    func displayNoResultsOverlay() {
         let emptyStateViewController = EmptyStateViewController(style: .list)
+        let config: EmptyStateViewController.Config = .simple(
+            message: .init(string: Localization.emptyStateMessage),
+            image: .emptyCouponsImage
+        )
 
-        let config: EmptyStateViewController.Config = {
-            if couponsDisabled {
-                return .withButton(message: .init(string: Localization.couponsDisabledMessage),
-                                   image: .emptyCouponsImage,
-                                   details: Localization.couponsDisabledDetail,
-                                   buttonTitle: Localization.couponsDisabledAction) { [weak self] _ in
-                    self?.viewModel.enableCoupons()
-                }
-            } else {
-                return .simple(
-                    message: .init(string: Localization.emptyStateMessage),
-                    image: .emptyCouponsImage
-                )
-            }
-        }()
+        displayEmptyStateViewController(emptyStateViewController)
+        emptyStateViewController.configure(config)
+    }
 
+    /// Displays the overlay when coupons are disabled for the store.
+    ///
+    func displayCouponsDisabledOverlay() {
+        let emptyStateViewController = EmptyStateViewController(style: .list)
+        let config: EmptyStateViewController.Config = .withButton(message: .init(string: Localization.couponsDisabledMessage),
+                                                                  image: .emptyCouponsImage,
+                                                                  details: Localization.couponsDisabledDetail,
+                                                                  buttonTitle: Localization.couponsDisabledAction) { [weak self] _ in
+            self?.viewModel.enableCoupons()
+        }
         displayEmptyStateViewController(emptyStateViewController)
         emptyStateViewController.configure(config)
     }

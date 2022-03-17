@@ -56,15 +56,15 @@ private class WooNavigationControllerDelegate: NSObject, UINavigationControllerD
     /// Configures the back button for the managed `ViewController` and forwards the event to the children delegate.
     ///
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-        currentController = viewController
-        configureOfflineBanner(for: viewController)
         configureBackButton(for: viewController)
         forwardDelegate?.navigationController?(navigationController, willShow: viewController, animated: animated)
     }
 
-    /// Forwards the event to the children delegate.
+    /// Configures the offline banner and forwards the event to the children delegate.
     ///
     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+        currentController = viewController
+        configureOfflineBanner(for: viewController)
         forwardDelegate?.navigationController?(navigationController, didShow: viewController, animated: animated)
     }
 

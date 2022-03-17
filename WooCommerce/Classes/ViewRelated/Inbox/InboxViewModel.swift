@@ -140,6 +140,9 @@ extension InboxViewModel: PaginationTrackerDelegate {
     }
 
     func dismissAllInboxNotes() {
+        ServiceLocator.analytics.track(.inboxNoteAction,
+                                       withProperties: ["action": "dismiss_all"])
+
         // Since the dismiss all API endpoint only deletes notes that match the given parameters, we want to match the parameters with the load request
         // and specify the page size to include all the synced notes based on the last sync request.
         let pageSizeForAllSyncedNotes = highestSyncedPageNumber * pageSize

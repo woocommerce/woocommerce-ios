@@ -134,11 +134,11 @@ final class NewOrderViewModel: ObservableObject {
 
     /// Representation of customer note data display properties.
     ///
-    @Published private(set) var customerNoteDataViewModel: CustomerNoteDataViewModel = .init(customerNotes: "")
+    @Published private(set) var customerNoteDataViewModel: CustomerNoteDataViewModel = .init(customerNote: "")
 
     /// View model for the customer note section.
     ///
-    lazy private(set) var noteViewModel = { CustomerOrderNoteViewModel(originalNote: "") }()
+    lazy private(set) var noteViewModel = { NewOrderCustomerNoteViewModel(originalNote: "") }()
 
     // MARK: Payment properties
 
@@ -458,7 +458,7 @@ extension NewOrderViewModel {
     /// Representation of order notes data display properties
     ///
     struct CustomerNoteDataViewModel {
-        let customerNotes: String
+        let customerNote: String
     }
 }
 
@@ -573,7 +573,7 @@ private extension NewOrderViewModel {
     func configureCustomerNoteDataViewModel() {
         orderSynchronizer.orderPublisher
                 .map {
-                    CustomerNoteDataViewModel(customerNotes: $0.customerNote ?? "")
+                    CustomerNoteDataViewModel(customerNote: $0.customerNote ?? "")
                 }
                 .assign(to: &$customerNoteDataViewModel)
     }
@@ -635,7 +635,7 @@ private extension NewOrderViewModel {
     /// Tracks when customer note have been added
     ///
     func trackCustomerNoteAdded() {
-        guard customerNoteDataViewModel.customerNotes.isNotEmpty else { return }
+        guard customerNoteDataViewModel.customerNote.isNotEmpty else { return }
         analytics.track(event: WooAnalyticsEvent.Orders.orderCustomerNoteAdd(flow: .creation))
     }
 

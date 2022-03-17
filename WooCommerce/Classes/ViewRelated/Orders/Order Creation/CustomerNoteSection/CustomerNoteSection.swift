@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct CustomerOrderNoteSection: View {
+struct CustomerNoteSection: View {
 
     /// Parent view model to access all data
     @ObservedObject var viewModel: NewOrderViewModel
@@ -13,7 +13,7 @@ struct CustomerOrderNoteSection: View {
     @State private var showEditNotesView: Bool = false
 
     var body: some View {
-        OrderNotesSectionContent(viewModel: notesDataViewModel, showEditNotesView: $showEditNotesView)
+        CustomerNoteSectionContent(viewModel: notesDataViewModel, showEditNotesView: $showEditNotesView)
             .sheet(
                 isPresented: $showEditNotesView,
                 onDismiss: {
@@ -33,7 +33,7 @@ struct CustomerOrderNoteSection: View {
     }
 }
 
-private struct OrderNotesSectionContent: View {
+private struct CustomerNoteSectionContent: View {
     /// View model to drive the view content
     var viewModel: NewOrderViewModel.CustomerNoteDataViewModel
 
@@ -47,12 +47,12 @@ private struct OrderNotesSectionContent: View {
                 Text(Localization.notes)
                     .headlineStyle()
                 Spacer()
-                if viewModel.customerNotes.isNotEmpty {
+                if viewModel.customerNote.isNotEmpty {
                     createEditNotesButton()
                 }
             }.padding([.leading, .top, .trailing])
 
-            if viewModel.customerNotes.isEmpty {
+            if viewModel.customerNote.isEmpty {
                 createOrderNotesView()
             } else {
                 createNoteDataView()
@@ -86,13 +86,13 @@ private struct OrderNotesSectionContent: View {
     }
 
     private func createNoteDataView() -> some View {
-        Text(viewModel.customerNotes)
+        Text(viewModel.customerNote)
             .padding([.leading, .bottom, .trailing])
     }
 }
 
 // MARK: Constants
-private extension OrderNotesSectionContent {
+private extension CustomerNoteSectionContent {
     enum Layout {
         static let verticalHeadlineSpacing: CGFloat = 22.0
         static let verticalEmailSpacing: CGFloat = 4.0
@@ -113,14 +113,14 @@ private extension OrderNotesSectionContent {
     }
 }
 
-struct CustomerNotesSection_Previews: PreviewProvider {
+struct CustomerNoteSection_Previews: PreviewProvider {
     static var previews: some View {
-        let emptyViewModel = NewOrderViewModel.CustomerNoteDataViewModel(customerNotes: "")
-        let notesViewModel = NewOrderViewModel.CustomerNoteDataViewModel(customerNotes: "some notes")
+        let emptyViewModel = NewOrderViewModel.CustomerNoteDataViewModel(customerNote: "")
+        let notesViewModel = NewOrderViewModel.CustomerNoteDataViewModel(customerNote: "some notes")
 
         ScrollView {
-            OrderNotesSectionContent(viewModel: emptyViewModel, showEditNotesView: .constant(false))
-            OrderNotesSectionContent(viewModel: notesViewModel, showEditNotesView: .constant(false))
+            CustomerNoteSectionContent(viewModel: emptyViewModel, showEditNotesView: .constant(false))
+            CustomerNoteSectionContent(viewModel: notesViewModel, showEditNotesView: .constant(false))
         }
     }
 }

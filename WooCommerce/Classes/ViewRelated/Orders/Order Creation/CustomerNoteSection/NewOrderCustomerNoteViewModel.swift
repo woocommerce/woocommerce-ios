@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 
-class CustomerOrderNoteViewModel: EditCustomerNoteViewModelProtocol {
+class NewOrderCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
     /// Store for the edited content
     ///
     @Published var newNote: String
@@ -47,9 +47,9 @@ class CustomerOrderNoteViewModel: EditCustomerNoteViewModelProtocol {
     ///
     private func bindNoteChanges() {
         Publishers.CombineLatest($newNote, $originalNote)
-                .map { editedContent, originalNote -> EditCustomerNoteNavigationItem in
-                    .done(enabled: editedContent != originalNote)
-                }
-                .assign(to: &$navigationTrailingItem)
+            .map { editedContent, originalNote -> EditCustomerNoteNavigationItem in
+                .done(enabled: editedContent != originalNote)
+            }
+            .assign(to: &$navigationTrailingItem)
     }
 }

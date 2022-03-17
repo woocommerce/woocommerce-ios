@@ -544,7 +544,7 @@ final class NewOrderViewModelTests: XCTestCase {
         viewModel.updateCustomerNote()
 
         //Then
-        XCTAssertEqual(viewModel.customerNoteDataViewModel.customerNotes, expectedCustomerNote)
+        XCTAssertEqual(viewModel.customerNoteDataViewModel.customerNote, expectedCustomerNote)
     }
 
     func test_hasChanges_returns_false_initially() {

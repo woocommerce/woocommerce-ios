@@ -75,7 +75,7 @@ struct Inbox: View {
                     .background(Constants.listForeground)
                 }
             }
-            .ignoresSafeArea()
+            .ignoresSafeArea(.container, edges: [.horizontal])
             .background(Constants.listBackground.ignoresSafeArea())
             .navigationTitle(Localization.title)
             .onAppear {

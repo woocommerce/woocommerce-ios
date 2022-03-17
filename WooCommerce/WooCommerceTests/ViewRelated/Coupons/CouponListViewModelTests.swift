@@ -371,4 +371,25 @@ final class CouponListViewModelTests: XCTestCase {
         XCTAssertEqual(status, .dismissed)
         XCTAssertFalse(sut.shouldDisplayFeedbackBanner)
     }
+
+    func test_state_is_couponsDisabled_if_coupon_setting_returns_false() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .retrieveCouponSetting(_, onCompletion):
+                onCompletion(.success(false))
+            default:
+                break
+            }
+        }
+        sut = CouponListViewModel(siteID: 123,
+                                  storesManager: stores)
+
+        // When
+        sut.handleCouponSyncResult(result: .success(false), pageNumber: 1)
+
+        // Then
+        assertEqual(.couponsDisabled, sut.state)
+    }
 }

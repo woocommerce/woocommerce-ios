@@ -89,6 +89,8 @@ public final class CardPresentPaymentStore: Store {
                            onCompletion: completion)
         case .cancelPayment(let completion):
             cancelPayment(onCompletion: completion)
+        case .refundPayment(let parameters):
+            refundPayment(parameters: parameters)
         case .observeCardReaderUpdateState(onCompletion: let completion):
             observeCardReaderUpdateState(onCompletion: completion)
         case .startCardReaderUpdate:
@@ -247,6 +249,21 @@ private extension CardPresentPaymentStore {
         }, receiveValue: {
             onCompletion?(.success(()))
         }))
+    }
+
+    func refundPayment(parameters: RefundParameters) {
+        cardReaderService.refundPayment(parameters: parameters)
+            .sink { error in
+                switch error {
+                case .failure(let error):
+                    print("Refund error! \(error.localizedDescription)")
+                case .finished:
+                    break
+                }
+            } receiveValue: { status in
+                print("Refund Success! \(status)")
+            }
+
     }
 
     func observeCardReaderUpdateState(onCompletion: (AnyPublisher<CardReaderSoftwareUpdateState, Never>) -> Void) {

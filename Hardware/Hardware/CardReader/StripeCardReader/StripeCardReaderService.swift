@@ -459,6 +459,72 @@ private extension StripeCardReaderService {
     }
 }
 
+// MARK: - Refunds
+extension StripeCardReaderService {
+    public func refundPayment(parameters: RefundParameters) -> AnyPublisher<String, Error> {
+        if isChipCardInserted {
+            sendReaderEvent(CardReaderEvent.make(displayMessage: .removeCard))
+        }
+        return waitForInsertedCardToBeRemoved()
+            .flatMap {
+                self.createRefundParameters(parameters: parameters)
+            }
+            .flatMap { refundParameters in
+                self.refund(refundParameters)
+            }
+            .map({ refund in
+                switch refund.status {
+                case .succeeded:
+                    return "success"
+                case .failed:
+                    return "failed"
+                case .pending:
+                    return "pending"
+                case .unknown:
+                    return "unknown"
+                @unknown default:
+                    fatalError()
+                }
+            })
+            .eraseToAnyPublisher()
+    }
+
+    func createRefundParameters(parameters: RefundParameters) -> Future<StripeTerminal.RefundParameters, Error> {
+        return Future() { promise in
+            guard let refundParameters = parameters.toStripe() else {
+                return promise(.failure(CardReaderServiceError.refundPayment(underlyingError: .internalServiceError)))
+            }
+            return promise(.success(refundParameters))
+        }
+    }
+
+    /// Calling any other SDK methods between collectRefundPaymentMethod and processRefund will result in undefined behavior.
+    /// We have a spinlock to prevent other SDK methods being used until processRefund is done. It will need a timeout.
+    ///
+    func refund(_ parameters: StripeTerminal.RefundParameters) -> Future<StripeTerminal.Refund, Error> {
+        return Future() { [weak self] promise in
+            self?.refundCancellable = Terminal.shared.collectRefundPaymentMethod(parameters) { collectError in
+                if let error = collectError {
+                    print("collectRefundPaymentMethod failed. \(error)")
+                    promise(.failure(CardReaderServiceError.refundPayment(underlyingError: UnderlyingError(with: error))))
+                } else {
+                    // Process refund
+                    Terminal.shared.processRefund { processedRefund, processError in
+                        if let error = processError {
+                            print("Process refund failed. \(error)")
+                            promise(.failure(CardReaderServiceError.refundPayment(underlyingError: UnderlyingError(with: error))))
+                        } else if let refund = processedRefund, refund.status == .succeeded {
+                            print("Process refund successful! \(refund)")
+                            promise(.success(refund))
+                        } else {
+                            print("Refund pending or unsuccessful.")
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 // MARK: - DiscoveryDelegate.
 extension StripeCardReaderService: DiscoveryDelegate {

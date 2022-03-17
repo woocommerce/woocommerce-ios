@@ -67,6 +67,12 @@ public struct NoOpCardReaderService: CardReaderService {
         }
     }
 
+    public func refundPayment(parameters: RefundParameters) -> AnyPublisher<String, Error> {
+        return Future() { promise in
+            promise(.failure(NSError.init(domain: "noopcardreader", code: 0, userInfo: nil)))
+        }.eraseToAnyPublisher()
+    }
+
     /// Triggers a software update.
     ///
     /// To check the progress of the update, observe the softwareUpdateEvents publisher.

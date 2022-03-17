@@ -268,10 +268,8 @@ extension UnderlyingError: LocalizedError {
             return NSLocalizedString("The card reader is busy executing another command - please try again",
                                      comment: "Error message when the card reader is busy executing another command.")
         case .readerIncompatible:
-            return NSLocalizedString("""
-The card reader is not compatible with this application - please try \
-updating the application or using a different reader
-""",
+            return NSLocalizedString("The card reader is not compatible with this application - please try updating the " +
+                                     "application or using a different reader",
                                      comment: "Error message when the card reader is incompatible with the application.")
         case .readerCommunicationError:
             return NSLocalizedString("Unable to communicate with reader - please try again",

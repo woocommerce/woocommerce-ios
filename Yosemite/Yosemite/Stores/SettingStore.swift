@@ -165,14 +165,44 @@ private extension SettingStore {
 
     /// Retrieves the setting for whether WC Analytics are enabled for the specified store
     ///
-    func retrieveAnalyticsSetting(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void) {
-        // TODO
+    func retrieveAnalyticsSetting(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        siteSettingsRemote.loadSetting(for: siteID, settingGroup: .advanced, settingID: SettingKeys.analytics) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let setting):
+                self.upsertStoredAdvancedSettingsInBackground(siteID: siteID, readOnlySiteSettings: [setting]) {
+                    let isEnabled = setting.value == SettingValue.yes
+                    onCompletion(.success(isEnabled))
+                }
+            case .failure(let error):
+                // fall back to retrieve from storage
+                if let setting = self.sharedDerivedStorage.loadSiteSetting(siteID: siteID, settingID: SettingKeys.analytics) {
+                    let isEnabled = setting.value == SettingValue.yes
+                    onCompletion(.success(isEnabled))
+                } else {
+                    onCompletion(.failure(error))
+                }
+            }
+        }
     }
 
     /// Enables WC Analytics for the specified store
     ///
-    func enableAnalyticsSetting(siteID: Int64, onCompletion: (Result<Void, Error>) -> Void) {
-        // TODO
+    func enableAnalyticsSetting(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        siteSettingsRemote.updateSetting(for: siteID,
+                                            settingGroup: .advanced,
+                                            settingID: SettingKeys.analytics,
+                                            value: SettingValue.yes) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let setting):
+                self.upsertStoredAdvancedSettingsInBackground(siteID: siteID, readOnlySiteSettings: [setting]) {
+                    onCompletion(.success(Void()))
+                }
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
     }
 }
 
@@ -278,6 +308,7 @@ extension SettingStore {
     private enum SettingKeys {
         static let paymentsPage = "woocommerce_checkout_pay_endpoint"
         static let coupons = "woocommerce_enable_coupons"
+        static let analytics = "woocommerce_analytics_enabled"
     }
 
     private enum SettingValue {

@@ -216,7 +216,7 @@ struct CouponDetails: View {
 
     private func showAmountLoadingErrorDetails() {
         if viewModel.hasWCAnalyticsDisabled {
-            // TODO: show modal for disabled analytics
+            // TODO-6360: show modal for disabled analytics
         } else {
             showingAmountLoadingErrorPrompt = true
         }

@@ -413,7 +413,8 @@ final class CouponListViewModelTests: XCTestCase {
                                   storesManager: stores)
 
         // When
-        sut.handleCouponSyncResult(result: .success(false), pageNumber: 1)
+        let error = NSError(domain: "Test", code: 503, userInfo: nil)
+        sut.handleCouponSyncResult(result: .failure(error), pageNumber: 1)
 
         // Then
         assertEqual(.couponsDisabled, sut.state)

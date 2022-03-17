@@ -240,13 +240,25 @@ extension CouponListViewModel: SyncingCoordinatorDelegate {
             DDLogInfo("Synchronized coupons")
             ServiceLocator.analytics.track(.couponsLoaded,
                                            withProperties: ["is_loading_more": pageNumber != SyncingCoordinator.Defaults.pageFirstIndex])
-
+            transitionToResultsUpdatedState(hasData: couponViewModels.isNotEmpty)
         case .failure(let error):
             DDLogError("⛔️ Error synchronizing coupons: \(error)")
             ServiceLocator.analytics.track(.couponsLoadedFailed, withError: error)
+            loadCouponSetting { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let isEnabled):
+                    if isEnabled {
+                        self.transitionToResultsUpdatedState(hasData: self.couponViewModels.isNotEmpty)
+                    } else {
+                        self.state = .couponsDisabled
+                    }
+                case .failure(let error):
+                    DDLogError("⛔️ Error retrieving coupon setting: \(error)")
+                    self.transitionToResultsUpdatedState(hasData: self.couponViewModels.isNotEmpty)
+                }
+            }
         }
-
-        self.transitionToResultsUpdatedState(hasData: couponViewModels.isNotEmpty)
     }
 }
 
@@ -265,16 +277,7 @@ private extension CouponListViewModel {
         if hasData {
             state = .coupons
         } else {
-            loadCouponSetting { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success(let isEnabled):
-                    self.state = isEnabled ? .empty : .couponsDisabled
-                case .failure(let error):
-                    DDLogError("⛔️ Error retrieving coupon setting: \(error)")
-                    self.state = .empty
-                }
-            }
+            state = .empty
         }
     }
 }

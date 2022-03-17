@@ -179,6 +179,12 @@ struct CouponDetails: View {
 
     @ViewBuilder
     private var amountTitleView: some View {
+        Text(Localization.amount)
+            .secondaryBodyStyle()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, Constants.margin)
+            .renderedIf(!viewModel.shouldShowErrorLoadingAmount)
+
         Button(action: showAmountLoadingErrorDetails) {
             HStack(spacing: Constants.errorIconHorizontalPadding) {
                 Text(Localization.amount)
@@ -187,12 +193,11 @@ struct CouponDetails: View {
                 Image(uiImage: .infoImage)
                     .renderingMode(.template)
                     .resizable()
-                    .foregroundColor(Color(viewModel.hasWCAnalyticsDisabled ?
-                                           UIColor.withColorStudio(.orange, shade: .shade30) :
-                                            UIColor.error))
+                    .foregroundColor(viewModel.hasWCAnalyticsDisabled ?
+                                     Color(UIColor.withColorStudio(.orange, shade: .shade30)) :
+                                     Color(UIColor.error))
                     .frame(width: Constants.errorIconSize * scale,
                            height: Constants.errorIconSize * scale)
-                    .renderedIf(viewModel.shouldShowErrorLoadingAmount)
                     .actionSheet(isPresented: $showingAmountLoadingErrorPrompt) {
                         ActionSheet(
                             title: Text(Localization.errorLoadingAnalytics),
@@ -210,8 +215,8 @@ struct CouponDetails: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .disabled(!viewModel.shouldShowErrorLoadingAmount)
         .padding(.horizontal, Constants.margin)
+        .renderedIf(viewModel.shouldShowErrorLoadingAmount)
     }
 
     private func showAmountLoadingErrorDetails() {

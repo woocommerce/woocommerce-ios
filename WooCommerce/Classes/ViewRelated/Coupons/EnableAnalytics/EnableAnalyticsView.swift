@@ -7,6 +7,10 @@ struct EnableAnalyticsView: View {
 
     private let contactSupportAction: () -> Void
     private let dismissAction: () -> Void
+    private let noticePresenter: DefaultNoticePresenter
+
+    /// Keeping a reference to the presenting controller to present notice and contact support
+    private let presentingController: UIViewController?
 
     private var contactSupportAttributedString: NSAttributedString {
         let font: UIFont = .body
@@ -30,11 +34,19 @@ struct EnableAnalyticsView: View {
     }
 
     init(viewModel: EnableAnalyticsViewModel,
-         contactSupportAction: @escaping () -> Void,
+         presentingController: UIViewController?,
          dismissAction: @escaping () -> Void) {
         self.viewModel = viewModel
-        self.contactSupportAction = contactSupportAction
         self.dismissAction = dismissAction
+
+        self.contactSupportAction = {
+            if let viewController = presentingController?.presentedViewController {
+                ZendeskProvider.shared.showNewRequestIfPossible(from: viewController)
+            }
+        }
+
+        self.noticePresenter = DefaultNoticePresenter()
+        self.presentingController = presentingController
     }
 
     var body: some View {
@@ -69,10 +81,19 @@ struct EnableAnalyticsView: View {
             Spacer()
 
             // Primary Button to enable Analytics
-            Button(Localization.enableAction, action: {
-                // TODO
-            })
-            .buttonStyle(PrimaryButtonStyle())
+            Button(Localization.enableAction) {
+                viewModel.enableAnalytics(onSuccess: {
+                    setupNoticePresenterIfPossible()
+                    let notice = Notice(title: Localization.analyticsEnabled, feedbackType: .success)
+                    noticePresenter.enqueue(notice: notice)
+                    dismissAction()
+                }, onFailure: {
+                    setupNoticePresenterIfPossible()
+                    let notice = Notice(title: Localization.errorEnablingAnalytics, feedbackType: .error)
+                    noticePresenter.enqueue(notice: notice)
+                })
+            }
+            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.enablingAnalyticsInProgress))
             .fixedSize(horizontal: false, vertical: true)
             .padding(.horizontal, Constants.actionButtonMargin)
             .padding(.bottom, Constants.actionButtonMargin)
@@ -82,7 +103,15 @@ struct EnableAnalyticsView: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.horizontal, Constants.actionButtonMargin)
                 .padding(.bottom, Constants.actionButtonMargin)
+        }        
+    }
+
+    private func setupNoticePresenterIfPossible() {
+        guard let currentModal = presentingController?.presentedViewController,
+              noticePresenter.presentingViewController == nil else {
+            return
         }
+        noticePresenter.presentingViewController = currentModal
     }
 }
 
@@ -108,13 +137,18 @@ private extension EnableAnalyticsView {
         static let contactSupport = NSLocalizedString("Contact support", comment: "Action button to contact support on enable analytics screen")
         static let enableAction = NSLocalizedString("Enable analytics", comment: "Action title to enable Analytics for a store")
         static let dismissAction = NSLocalizedString("Not now", comment: "Action title to dismiss enabling Analytics for a store")
+        static let analyticsEnabled = NSLocalizedString("Analytics enabled successfully.", comment: "Message when enabling analytics succeeds")
+        static let errorEnablingAnalytics = NSLocalizedString(
+            "Error enabling analytics. Please try again.",
+            comment: "Error message when enabling analytics fails"
+        )
     }
 }
 
 struct EnableAnalyticsView_Previews: PreviewProvider {
     static var previews: some View {
         EnableAnalyticsView(viewModel: .init(siteID: 123),
-                            contactSupportAction: {},
+                            presentingController: nil,
                             dismissAction: {})
     }
 }

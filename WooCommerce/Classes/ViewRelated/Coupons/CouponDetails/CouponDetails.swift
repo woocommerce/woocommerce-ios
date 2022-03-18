@@ -13,14 +13,6 @@ final class CouponDetailsHostingController: UIHostingController<CouponDetails> {
 
         // Set presenting view controller to show the notice presenter here
         rootView.noticePresenter.presentingViewController = self
-
-        rootView.contactSupportAction = { [unowned self] in
-            if let presented = self.presentedViewController {
-                ZendeskProvider.shared.showNewRequestIfPossible(from: presented)
-            } else {
-                ZendeskProvider.shared.showNewRequestIfPossible(from: self)
-            }
-        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -42,8 +34,6 @@ struct CouponDetails: View {
     /// The presenter to display notice when the coupon code is copied.
     /// It is kept internal so that the hosting controller can update its presenting controller to itself.
     let noticePresenter: DefaultNoticePresenter
-
-    var contactSupportAction: () -> Void = {}
 
     init(viewModel: CouponDetailsViewModel) {
         self.viewModel = viewModel
@@ -176,9 +166,10 @@ struct CouponDetails: View {
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
             .sheet(isPresented: $showingEnableAnalytics) {
                 EnableAnalyticsView(viewModel: .init(siteID: viewModel.siteID),
-                                    contactSupportAction: contactSupportAction) {
+                                    presentingController: noticePresenter.presentingViewController,
+                                    dismissAction: {
                     showingEnableAnalytics = false
-                }
+                })
             }
         }
         .toolbar {

@@ -34,9 +34,10 @@ struct NoticeModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .animation(nil, value: notice) // Only apply the animation to the notice stack, not the rest of the view content
-            .overlay(buildNoticeStack())
-            .animation(.easeInOut, value: notice)
+            .overlay(
+                buildNoticeStack()
+                    .animation(.easeInOut, value: notice)
+            )
     }
 
     /// Builds a notice view at the bottom of the screen.

@@ -34,8 +34,10 @@ struct NoticeModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .overlay(buildNoticeStack())
-            .animation(.easeInOut, value: notice)
+            .overlay(
+                buildNoticeStack()
+                    .animation(.easeInOut, value: notice)
+            )
     }
 
     /// Builds a notice view at the bottom of the screen.

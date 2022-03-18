@@ -23,6 +23,11 @@ final class AddProductVariationToOrderViewModel: ObservableObject {
     ///
     let onLoadTrigger: PassthroughSubject<Void, Never> = PassthroughSubject()
 
+    /// Defines the current notice that should be shown.
+    /// Defaults to `nil`.
+    ///
+    @Published var notice: Notice?
+
     /// The ID of the parent variable product
     ///
     private let productID: Int64
@@ -147,6 +152,7 @@ extension AddProductVariationToOrderViewModel: SyncingCoordinatorDelegate {
             guard let self = self else { return }
 
             if let error = error {
+                self.notice = NoticeFactory.productVariationSyncNotice()
                 DDLogError("⛔️ Error synchronizing product variations during order creation: \(error)")
             } else {
                 self.updateProductVariationsResultsController()
@@ -251,5 +257,22 @@ extension AddProductVariationToOrderViewModel {
                             manageStock: false,
                             canChangeQuantity: false,
                             imageURL: nil)
+    }
+
+    /// Add Product Variation to Order notices
+    ///
+    enum NoticeFactory {
+        /// Returns a default product variation sync error notice.
+        ///
+        static func productVariationSyncNotice() -> Notice {
+            Notice(title: Localization.errorMessage, feedbackType: .error)
+        }
+    }
+}
+
+private extension AddProductVariationToOrderViewModel {
+    enum Localization {
+        static let errorMessage = NSLocalizedString("Unable to sync product variations",
+                                                    comment: "Notice displayed when syncing the list of product variations fails")
     }
 }

@@ -25,8 +25,8 @@ struct AddProductToOrder: View {
                             Divider().frame(height: Constants.dividerHeight)
                                 .padding(.leading, Constants.defaultPadding)
                         }
+                        .background(Color(.listForeground))
                     }
-                                       .background(Color(.listForeground))
                 case .empty:
                     EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
                         .frame(maxHeight: .infinity)
@@ -57,6 +57,7 @@ struct AddProductToOrder: View {
             }
         }
         .wooNavigationBarStyle()
+        .notice($viewModel.notice)
     }
 
     /// Creates the `ProductRow` for a product, depending on whether the product is variable.

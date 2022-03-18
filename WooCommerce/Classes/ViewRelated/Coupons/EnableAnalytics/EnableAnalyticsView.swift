@@ -6,13 +6,20 @@ struct EnableAnalyticsView: View {
     @ObservedObject private var viewModel: EnableAnalyticsViewModel
     @Environment(\.presentationMode) private var presentation
 
+    /// Action to trigger when Contact Support is selected
     private let contactSupportAction: () -> Void
+    
+    /// Closure to trigger when enabling analytics succeeds
     private let completionHandler: () -> Void
+
+    /// The presenter to display notice when enabling analytics succeeds or fails.
     private let noticePresenter: DefaultNoticePresenter
 
     /// Keeping a reference to the presenting controller to present notice and contact support
     private let presentingController: UIViewController?
 
+    /// The attributed string to display for the contact support button
+    /// Essentially is a message with the Contact Support text highlighted
     private var contactSupportAttributedString: NSAttributedString {
         let font: UIFont = .body
         let foregroundColor: UIColor = .text
@@ -100,6 +107,7 @@ struct EnableAnalyticsView: View {
             .padding(.horizontal, Constants.actionButtonMargin)
             .padding(.bottom, Constants.actionButtonMargin)
 
+            /// Secondary Button to dismiss the view
             Button(Localization.dismissAction) {
                 presentation.wrappedValue.dismiss()
             }

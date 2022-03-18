@@ -4,9 +4,9 @@ import SwiftUI
 ///
 struct EnableAnalyticsView: View {
     @ObservedObject private var viewModel: EnableAnalyticsViewModel
+    @Environment(\.presentationMode) private var presentation
 
     private let contactSupportAction: () -> Void
-    private let dismissAction: () -> Void
     private let completionHandler: () -> Void
     private let noticePresenter: DefaultNoticePresenter
 
@@ -36,10 +36,8 @@ struct EnableAnalyticsView: View {
 
     init(viewModel: EnableAnalyticsViewModel,
          presentingController: UIViewController?,
-         dismissAction: @escaping () -> Void,
          completionHandler: @escaping () -> Void) {
         self.viewModel = viewModel
-        self.dismissAction = dismissAction
         self.completionHandler = completionHandler
 
         self.contactSupportAction = {
@@ -90,6 +88,7 @@ struct EnableAnalyticsView: View {
                     let notice = Notice(title: Localization.analyticsEnabled, feedbackType: .success)
                     noticePresenter.enqueue(notice: notice)
                     completionHandler()
+                    presentation.wrappedValue.dismiss()
                 }, onFailure: {
                     setupNoticePresenterIfPossible()
                     let notice = Notice(title: Localization.errorEnablingAnalytics, feedbackType: .error)
@@ -101,11 +100,13 @@ struct EnableAnalyticsView: View {
             .padding(.horizontal, Constants.actionButtonMargin)
             .padding(.bottom, Constants.actionButtonMargin)
 
-            Button(Localization.dismissAction, action: dismissAction)
-                .buttonStyle(SecondaryButtonStyle())
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.horizontal, Constants.actionButtonMargin)
-                .padding(.bottom, Constants.actionButtonMargin)
+            Button(Localization.dismissAction) {
+                presentation.wrappedValue.dismiss()
+            }
+            .buttonStyle(SecondaryButtonStyle())
+            .fixedSize(horizontal: false, vertical: true)
+            .padding(.horizontal, Constants.actionButtonMargin)
+            .padding(.bottom, Constants.actionButtonMargin)
         }
     }
 
@@ -152,7 +153,6 @@ struct EnableAnalyticsView_Previews: PreviewProvider {
     static var previews: some View {
         EnableAnalyticsView(viewModel: .init(siteID: 123),
                             presentingController: nil,
-                            dismissAction: {},
                             completionHandler: {})
     }
 }

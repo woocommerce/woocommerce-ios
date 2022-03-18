@@ -170,11 +170,7 @@ struct CouponDetails: View {
             .sheet(isPresented: $showingEnableAnalytics) {
                 EnableAnalyticsView(viewModel: .init(siteID: viewModel.siteID),
                                     presentingController: noticePresenter.presentingViewController,
-                                    dismissAction: {
-                    showingEnableAnalytics = false
-                },
                                     completionHandler: {
-                    showingEnableAnalytics = false
                     viewModel.loadCouponReport()
                 })
             }

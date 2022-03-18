@@ -400,6 +400,10 @@ extension UIImage {
         return UIImage(named: "icon-jetpack-green")!
     }
 
+    static var enableAnalyticsImage: UIImage {
+        return UIImage(named: "woo-analytics")!
+    }
+
     /// Info Icon
     ///
     static var infoImage: UIImage {

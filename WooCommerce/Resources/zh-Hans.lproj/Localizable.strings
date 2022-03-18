@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-03-10 09:54:57+0000 */
+/* Translation-Revision-Date: 2022-03-11 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -41,7 +41,7 @@
 "%1$@ and %2$@" = "%1$@ 和 %2$@";
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
-"%1$@ card ending %2$@" = "%1$@ 银行卡， 尾号为 %2$@";
+"%1$@ card ending %2$@" = "尾号为 %2$@ 的 %1$@ 银行卡";
 
 /* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
 "%1$@ excl. %2$@" = "%1$@（%2$@ 除外）";
@@ -243,7 +243,7 @@
 "A customs form must be printed and included on this international shipment" = "必须打印报关单并随附在此国际配送中";
 
 /* Message when attempting to pay for a test transaction with a live card. */
-"A live card was used on a site in test mode. Use a test card instead." = "在站点处于测试模式下使用实时卡。 改用测试卡。";
+"A live card was used on a site in test mode. Use a test card instead." = "在站点处于测试模式下时使用了实际的银行卡， 请改用测试卡。";
 
 /* Error message when there was a network error checking In-Person Payments requirements */
 "A network error occurred. Please check your connection and try again." = "发生网络错误。 请检查您的连接，然后重试。";
@@ -291,7 +291,7 @@
 "About the App" = "关于该应用程序";
 
 /* Reads as 'Account Type'. Part of the mandatory data in receipts */
-"Account Type" = "帐户类型";
+"Account Type" = "账户类型";
 
 /* Title for the error screen when a Card Present Payments extension is installed but not activated */
 "Activate %1$@" = "启用 %1$@";
@@ -555,7 +555,7 @@
 "An HTTP error code was returned." = "返回了 HTTP 错误代码。";
 
 /* Error message when Bluetooth is not enabled for this application. */
-"An error occurred accessing Bluetooth - please enable Bluetooth and try again" = "连接蓝牙时出现错误 - 请启用蓝牙并重试";
+"An error occurred accessing Bluetooth - please enable Bluetooth and try again" = "连接蓝牙时出现错误，请启用蓝牙并重试";
 
 /* An error description explaining that a Menu could not be created. */
 "An error occurred creating the Menu." = "创建菜单时出错。";
@@ -807,10 +807,10 @@
 "Card" = "卡片";
 
 /* Error message when a card is left in the reader and another transaction started. */
-"Card was left in reader - please remove and reinsert card" = "银行留在读卡器中 - 请取出并重新插入卡";
+"Card was left in reader - please remove and reinsert card" = "银行留在读卡器中，请取出并重新插入卡";
 
 /* Error message when the card is removed from the reader prematurely. */
-"Card was removed too soon - please try transaction again" = "银行卡拿出速度过快 - 请重新尝试交易";
+"Card was removed too soon - please try transaction again" = "银行卡取出速度过快，请重新尝试交易";
 
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "承运商和费率";
@@ -969,7 +969,7 @@
 "Connecting to reader" = "正在连接阅读器";
 
 /* Error message when establishing a connection to the card reader times out. */
-"Connecting to the card reader timed out - ensure it is nearby and charged and then try again" = "连接读卡器时超时 - 请确保读卡器位于附近并且电量充足，然后重试";
+"Connecting to the card reader timed out - ensure it is nearby and charged and then try again" = "连接读卡器时超时，请确保读卡器位于附近并且电量充足，然后重试";
 
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "连接到您的帐户";
@@ -1278,7 +1278,7 @@
 "Discount" = "折扣";
 
 /* Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s) */
-"Discount %1$@" = "%1$@ 折扣";
+"Discount %1$@" = "折扣 %1$@";
 
 /* Title of the Discounted Orders label on Coupon Details screen */
 "Discounted Orders" = "享受折扣的订单";
@@ -2401,13 +2401,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No address specified." = "未指定地址。";
 
 /* Error message when a card reader was expected to already have been connected. */
-"No card reader is connected - connect a reader and try again" = "未连接读卡器 - 请连接读卡器并重试";
+"No card reader is connected - connect a reader and try again" = "未连接读卡器，请连接读卡器并重试";
 
 /* Title for the error screen when there was a network error checking In-Person Payments requirements. */
 "No connection" = "没有连接";
 
 /* Error message when there is no connection to the Internet. */
-"No connection to the Internet - please connect to the Internet and try again" = "未连接互联网 - 请连接到互联网并重试";
+"No connection to the Internet - please connect to the Internet and try again" = "未连接互联网，请连接到互联网并重试";
 
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
 "No coupons found" = "没有找到优惠券";
@@ -3840,7 +3840,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "System status report copied to clipboard" = "已将系统状态报告复制到剪贴板";
 
 /* Message when attempting to pay for a live transaction with a test card. */
-"System test cards are not permitted for payment. Try another means of payment" = "禁止使用系统测试卡付款。 请尝试其他付款方式";
+"System test cards are not permitted for payment. Try another means of payment" = "不允许使用系统测试卡付款。 请尝试其他付款方式";
 
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags. - Title of the Tags row on Product main screen */
@@ -4048,43 +4048,43 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The card does not support this currency. Try another means of payment" = "银行卡不支持当前币种。 请尝试其他付款方式";
 
 /* Message when the card presented does not allow this type of purchase. */
-"The card does not support this type of purchase. Try another means of payment" = "银行卡不支持当前购买类型 请尝试其他付款方式";
+"The card does not support this type of purchase. Try another means of payment" = "银行卡不支持用于当前购买类型。 请尝试其他付款方式";
 
 /* Message when the presented card is past its expiration date. */
 "The card has expired. Try another means of payment" = "银行卡已过期。 请尝试其他付款方式";
 
 /* Message when payment is declined for a non specific reason. */
-"The card or card account is invalid. Try another means of payment" = "银行卡或银行卡账户无效 请尝试其他付款方式";
+"The card or card account is invalid. Try another means of payment" = "银行卡或银行卡账户无效。 请尝试其他付款方式";
 
 /* Error message when the card reader is busy executing another command. */
-"The card reader is busy executing another command - please try again" = "读卡器正忙于处理其他命令 - 请重试";
+"The card reader is busy executing another command - please try again" = "读卡器正在处理其他命令，请重试";
 
 /* Error message when the card reader is incompatible with the application. */
-"The card reader is not compatible with this application - please try updating the application or using a different reader" = "读卡器不兼容此应用程序 - 请尝试更新应用程序或使用其他读卡器";
+"The card reader is not compatible with this application - please try updating the application or using a different reader" = "读卡器不兼容此应用程序，请尝试更新应用程序或使用其他读卡器";
 
 /* Error message when the card reader session has timed out. */
-"The card reader session has expired - please disconnect and reconnect the card reader and then try again" = "读卡器会话已过期 - 请断开连接并重新连接读卡器，然后重试";
+"The card reader session has expired - please disconnect and reconnect the card reader and then try again" = "读卡器会话已过期，请断开连接并重新连接读卡器，然后重试";
 
 /* Error message when the card reader software is too far out of date to process payments. */
-"The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "读卡器软件已过时 - 请更新读卡器软件，然后再尝试处理付款";
+"The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "读卡器软件已过时，请更新读卡器软件，然后再尝试处理付款";
 
 /* Error message when the card reader software update fails due to a communication error. */
-"The card reader software update failed due to a communication error - please try again" = "由于通信错误，读卡器软件更新失败 - 请重试";
+"The card reader software update failed due to a communication error - please try again" = "由于通信错误，读卡器软件更新失败，请重试";
 
 /* Error message when the card reader software update fails due to a problem with the update server. */
-"The card reader software update failed due to a problem with the update server - please try again" = "由于更新服务器出现问题，读卡器软件更新失败 - 请重试";
+"The card reader software update failed due to a problem with the update server - please try again" = "由于更新服务器出现问题，读卡器软件更新失败，请重试";
 
 /* Error message when the card reader software update fails unexpectedly. */
-"The card reader software update failed unexpectedly - please try again" = "读卡器软件更新出现意外故障 - 请重试";
+"The card reader software update failed unexpectedly - please try again" = "读卡器软件更新出现意外故障，请重试";
 
 /* Error message when the card reader software update is interrupted. */
-"The card reader software update was interrupted before it could complete - please try again" = "读卡器软件更新在完成前中断 - 请重试";
+"The card reader software update was interrupted before it could complete - please try again" = "读卡器软件更新在完成前中断，请重试";
 
 /* Error message when the card reader itself declines the card. */
-"The card was declined by the card reader - please try another means of payment" = "读卡器已拒绝该卡 - 请尝试其他付款方式";
+"The card was declined by the card reader - please try another means of payment" = "读卡器已拒绝该卡，请尝试其他付款方式";
 
 /* Error message when the card processor declines the payment. */
-"The card was declined by the payment processor - please try another means of payment" = "付款处理器已拒绝该卡 - 请尝试其他付款方式";
+"The card was declined by the payment processor - please try another means of payment" = "付款处理器已拒绝该卡，请尝试其他付款方式";
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "此服务器的证书无效。您所连接的服务器伪装成了“%@”，这可能会给您的凭证信息带来危险。\n\n仍然信任此证书吗？";
@@ -4099,10 +4099,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The new service package name is not unique." = "新服务包裹名称不唯一。";
 
 /* Message when the presented card does not allow the purchase amount. */
-"The payment amount is not allowed for the card presented. Try another means of payment." = "当前银行卡不支持付款金额。 请尝试其他付款方式。";
+"The payment amount is not allowed for the card presented. Try another means of payment." = "当前银行卡不支持该付款金额。 请尝试其他付款方式。";
 
 /* Error message when the payment can not be processed (i.e. order amount is below the minimum amount allowed.) */
-"The payment can not be processed by the payment processor." = "付款处理器无法处理付款。";
+"The payment can not be processed by the payment processor." = "付款处理器无法处理该付款。";
 
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "电话号码无效或您没有致电来自此设备的客户。";
@@ -4114,7 +4114,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The reader has a critically low battery. Please charge the reader or try a different reader." = "读卡器电量严重不足。 请为读卡器充电或更换读卡器。";
 
 /* Error message when a request times out. */
-"The request timed out - please try again" = "请求超时 - 请重试";
+"The request timed out - please try again" = "请求超时，请重试";
 
 /* Product price error notice message, when the sale price is added but the regular price is not */
 "The sale price can't be added without the regular price." = "无法在未添加正常价格的情况下添加优惠价格。";
@@ -4168,13 +4168,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The store postal code is invalid or missing, please update it before continuing." = "商店邮政编码无效或缺失，请更新后再继续。";
 
 /* Error message when the system cancels a command. */
-"The system canceled the command unexpectedly - please try again" = "系统意外取消了命令 - 请重试";
+"The system canceled the command unexpectedly - please try again" = "系统意外取消了命令，请重试";
 
 /* Error message when the card reader service experiences an unexpected software error. */
 "The system experienced an unexpected software error" = "系统遇到了意外软件错误";
 
 /* Error message when the card reader service is busy executing another command. */
-"The system is busy executing another command - please try again" = "系统正忙于处理其他命令 - 请重试";
+"The system is busy executing another command - please try again" = "系统正在处理其他命令，请重试";
 
 /* Message for the error alert when fetching system status report fails */
 "The system status report for your site cannot be fetched at the moment. Please try again." = "目前无法获取您站点的系统状态报告。 请重试。";
@@ -4242,7 +4242,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "This Year" = "今年";
 
 /* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
-"This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this." = "此应用程序需要获取蓝牙的访问权限，才可以连接到读卡器。如要允许此操作，请更改隐私设置。";
+"This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this." = "此应用程序需要获取蓝牙的访问权限才可以连接到读卡器。如要允许此操作，请更改隐私设置。";
 
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "此应用程序需要您在服务器上安装 WooCommerce 3.5，否则无法正常运行。请尽快更新以便继续使用此应用程序。";
@@ -4444,10 +4444,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable To Connect" = "无法连接";
 
 /* Error message when Bluetooth is not enabled or available. */
-"Unable to access Bluetooth - please enable Bluetooth and try again" = "无法访问蓝牙 - 请启用蓝牙并重试";
+"Unable to access Bluetooth - please enable Bluetooth and try again" = "无法访问蓝牙，请启用蓝牙并重试";
 
 /* Error message when location services is not enabled for this application. */
-"Unable to access Location Services - please enable Location Services and try again" = "无法访问位置服务 - 请启用位置服务并重试";
+"Unable to access Location Services - please enable Location Services and try again" = "无法访问位置服务，请启用位置服务并重试";
 
 /* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number}. Parameters: %1$d - order number */
 "Unable to add note to order #%1$d" = "无法将备注添加到订单号 %1$d";
@@ -4459,19 +4459,19 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to change status of order #%1$d" = "无法更改订单号 %1$d 的状态";
 
 /* Error message when communication with the card reader is disrupted. */
-"Unable to communicate with reader - please try again" = "无法与读卡器通信 - 请重试";
+"Unable to communicate with reader - please try again" = "无法与读卡器通信，请重试";
 
 /* Error message when the card reader service attempts to connect to a reader without discovering it first. */
-"Unable to connect to card reader - card reader was not correctly discovered - please try again" = "无法连接到读卡器 - 未正确发现读卡器 - 请重试";
+"Unable to connect to card reader - card reader was not correctly discovered - please try again" = "无法连接到读卡器，未正确发现读卡器，请重试";
 
 /* Error message when attempting to connect to a card reader which is already in use. */
-"Unable to connect to card reader - the card reader is already in use" = "无法连接到读卡器 - 读卡器已在使用中";
+"Unable to connect to card reader - the card reader is already in use" = "无法连接到读卡器，读卡器已在使用中";
 
 /* Error message when a card reader is already connected and we were not expecting one. */
-"Unable to connect to reader - another reader is already connected" = "无法连接到读卡器 - 已连接另一个读卡器";
+"Unable to connect to reader - another reader is already connected" = "无法连接到读卡器，已连接另一个读卡器";
 
 /* Error message the card reader battery level is too low to connect to the phone or tablet. */
-"Unable to connect to reader - the reader has a critically low battery - charge the reader and try again." = "无法连接到读卡器 - 读卡器电量过低 - 请为读卡器充电并重试。";
+"Unable to connect to reader - the reader has a critically low battery - charge the reader and try again." = "无法连接到读卡器，读卡器电量过低，请为读卡器充电并重试。";
 
 /* Notice displayed when order creation fails */
 "Unable to create new order" = "无法创建新订单";
@@ -4507,13 +4507,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to mark review as %@" = "无法将评论标记为%@";
 
 /* Error message when the card reader cannot be used to perform the requested task. */
-"Unable to perform request with the connected reader - unsupported feature - please try again with another reader" = "无法执行已连接读卡器的请求 - 不支持的功能 - 请使用其他读卡器重试";
+"Unable to perform request with the connected reader - unsupported feature - please try again with another reader" = "无法执行已连接读卡器的请求，不支持的功能，请使用其他读卡器重试";
 
 /* Error message when the application is so out of date that the backend refuses to work with it. */
-"Unable to perform software request - please update this application and try again" = "无法执行软件请求 - 请更新此应用程序并重试";
+"Unable to perform software request - please update this application and try again" = "无法执行软件请求，请更新此应用程序并重试";
 
 /* Error message when the payment intent is invalid. */
-"Unable to process payment due to invalid data - please try again" = "由于无效数据，无法处理支付 - 请重试";
+"Unable to process payment due to invalid data - please try again" = "由于数据无效，无法处理支付，请重试";
 
 /* Error message when the order amount is below the minimum amount allowed. */
 "Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@" = "无法处理付款。 订单总金额低于您可以收取的最低金额，即 %1$@";
@@ -4522,13 +4522,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to process payment. Order total amount is not valid." = "无法处理付款。 订单总额无效。";
 
 /* Error message when the card reader times out while reading a card. */
-"Unable to read card - the system timed out - please try again" = "无法读取卡 - 系统超时 - 请重试";
+"Unable to read card - the system timed out - please try again" = "无法读取卡，系统超时，请重试";
 
 /* Error message when the card reader is unable to read any chip on the inserted card. */
-"Unable to read inserted card - please try removing and inserting card again" = "无法读取插入的卡 - 请尝试移除卡并重新插入";
+"Unable to read inserted card - please try removing and inserting card again" = "无法读取插入的卡，请尝试移除卡并重新插入";
 
 /* Error message when the card reader is unable to read a swiped card. */
-"Unable to read swiped card - please try swiping again" = "无法读取所刷的卡 - 请尝试重新刷卡";
+"Unable to read swiped card - please try swiping again" = "无法读取所刷的卡，请尝试重新刷卡";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "无法通过该 URL 读取 WordPress 站点。 轻点“需要更多帮助？”可查看常见问题解答。";
@@ -4543,10 +4543,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to save changes to the payment method" = "无法保存对付款方式的更改";
 
 /* Error message when Bluetooth Low Energy is not supported on the user device. */
-"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device" = "无法搜索读卡器 - 此设备不支持蓝牙低能耗模式 - 请使用其他设备";
+"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device" = "搜索不到读卡器，此设备不支持蓝牙低能耗模式，请使用其他设备";
 
 /* Error message when Bluetooth scan times out during reader discovery. */
-"Unable to search for card readers - Bluetooth timed out - please try again" = "无法搜索读卡器 - 蓝牙超时 - 请重试";
+"Unable to search for card readers - Bluetooth timed out - please try again" = "无法搜索读卡器，蓝牙超时，请重试";
 
 /* Error notice title when we fail to update an address in the edit address screen. */
 "Unable to update address." = "无法更新地址。";
@@ -4875,7 +4875,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "We don’t support In-Person Payments in your country" = "在您的国家\/地区，我们不支持现场付款";
 
 /* Title for the error screen when In-Person Payments is not supported in a specific country */
-"We don’t support In-Person Payments with Stripe in %1$@" = "在 %1$@，我们不支持现场付款";
+"We don’t support In-Person Payments with Stripe in %1$@" = "在%1$@，我们不支持使用 Stripe 现场付款";
 
 /* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country */
 "We don’t support In-Person Payments with Stripe in your country" = "在您的国家\/地区，我们不支持使用 Stripe 现场付款";

@@ -164,7 +164,9 @@ extension AddProductToOrderViewModel: SyncingCoordinatorDelegate {
             case .success:
                 self.updateProductsResultsController()
             case .failure(let error):
-                self.notice = NoticeFactory.productSyncNotice()
+                self.notice = NoticeFactory.productSyncNotice() { [weak self] in
+                    self?.sync(pageNumber: pageNumber, pageSize: pageSize, onCompletion: nil)
+                }
                 DDLogError("⛔️ Error synchronizing products during order creation: \(error)")
             }
 
@@ -190,7 +192,9 @@ extension AddProductToOrderViewModel: SyncingCoordinatorDelegate {
             case .success:
                 self.updateProductsResultsController()
             case .failure(let error):
-                self.notice = NoticeFactory.productSearchNotice()
+                self.notice = NoticeFactory.productSearchNotice() { [weak self] in
+                    self?.searchProducts(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: nil)
+                }
                 DDLogError("⛔️ Error searching products during order creation: \(error)")
             }
 
@@ -221,6 +225,7 @@ private extension AddProductToOrderViewModel {
     ///
     func transitionToSyncingState() {
         shouldShowScrollIndicator = true
+        notice = nil
         if products.isEmpty {
             syncStatus = .firstPageSync
         }
@@ -323,23 +328,30 @@ extension AddProductToOrderViewModel {
     /// Add Product to Order notices
     ///
     enum NoticeFactory {
-        /// Returns a default product sync error notice.
+        /// Returns a product sync error notice with a retry button.
         ///
-        static func productSyncNotice() -> Notice {
-            Notice(title: Localization.syncErrorMessage, feedbackType: .error)
+        static func productSyncNotice(retryAction: @escaping () -> Void) -> Notice {
+            Notice(title: Localization.syncErrorMessage, feedbackType: .error, actionTitle: Localization.errorActionTitle) {
+                retryAction()
+            }
         }
 
-        /// Returns a product search error notice.
+        /// Returns a product search error notice with a retry button.
         ///
-        static func productSearchNotice() -> Notice {
-            Notice(title: Localization.searchErrorMessage, feedbackType: .error)
+        static func productSearchNotice(retryAction: @escaping () -> Void) -> Notice {
+            Notice(title: Localization.searchErrorMessage, feedbackType: .error, actionTitle: Localization.errorActionTitle) {
+                retryAction()
+            }
         }
     }
 }
 
 private extension AddProductToOrderViewModel {
     enum Localization {
-        static let syncErrorMessage = NSLocalizedString("Unable to sync products", comment: "Notice displayed when syncing the list of products fails")
-        static let searchErrorMessage = NSLocalizedString("Unable to search products", comment: "Notice displayed when searching the list of products fails")
+        static let syncErrorMessage = NSLocalizedString("There was an error syncing products",
+                                                        comment: "Notice displayed when syncing the list of products fails")
+        static let searchErrorMessage = NSLocalizedString("There was an error searching products",
+                                                          comment: "Notice displayed when searching the list of products fails")
+        static let errorActionTitle = NSLocalizedString("Retry", comment: "Retry action for an error notice")
     }
 }

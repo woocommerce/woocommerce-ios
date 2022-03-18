@@ -152,7 +152,9 @@ extension AddProductVariationToOrderViewModel: SyncingCoordinatorDelegate {
             guard let self = self else { return }
 
             if let error = error {
-                self.notice = NoticeFactory.productVariationSyncNotice()
+                self.notice = NoticeFactory.productVariationSyncNotice() { [weak self] in
+                    self?.sync(pageNumber: pageNumber, pageSize: pageSize, onCompletion: nil)
+                }
                 DDLogError("⛔️ Error synchronizing product variations during order creation: \(error)")
             } else {
                 self.updateProductVariationsResultsController()
@@ -262,17 +264,20 @@ extension AddProductVariationToOrderViewModel {
     /// Add Product Variation to Order notices
     ///
     enum NoticeFactory {
-        /// Returns a default product variation sync error notice.
+        /// Returns a product variation sync error notice with a retry button.
         ///
-        static func productVariationSyncNotice() -> Notice {
-            Notice(title: Localization.errorMessage, feedbackType: .error)
+        static func productVariationSyncNotice(retryAction: @escaping () -> Void) -> Notice {
+            Notice(title: Localization.errorMessage, feedbackType: .error, actionTitle: Localization.errorActionTitle) {
+                retryAction()
+            }
         }
     }
 }
 
 private extension AddProductVariationToOrderViewModel {
     enum Localization {
-        static let errorMessage = NSLocalizedString("Unable to sync product variations",
+        static let errorMessage = NSLocalizedString("There was an error syncing product variations",
                                                     comment: "Notice displayed when syncing the list of product variations fails")
+        static let errorActionTitle = NSLocalizedString("Retry", comment: "Retry action for an error notice")
     }
 }

@@ -5,7 +5,7 @@ import SwiftUI
 final class JetpackInstallHostingController: UIHostingController<JetpackInstallView> {
     init(siteID: Int64, siteURL: String, siteAdminURL: String) {
         super.init(rootView: JetpackInstallView(siteID: siteID, siteURL: siteURL, siteAdminURL: siteAdminURL))
-        rootView.supportAction = {
+        rootView.supportAction = { [unowned self] in
             ZendeskProvider.shared.showNewRequestIfPossible(from: self)
         }
     }

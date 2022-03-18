@@ -5,8 +5,11 @@ import SwiftUI
 struct EnableAnalyticsView: View {
     @ObservedObject private var viewModel: EnableAnalyticsViewModel
 
+    private let contactSupportAction: () -> Void
+    private let dismissAction: () -> Void
+
     private var contactSupportAttributedString: NSAttributedString {
-        let font: UIFont = .callout
+        let font: UIFont = .body
         let foregroundColor: UIColor = .text
         let linkColor: UIColor = .textLink
         let linkContent = Localization.contactSupport
@@ -26,8 +29,12 @@ struct EnableAnalyticsView: View {
         return attributedString
     }
 
-    init(viewModel: EnableAnalyticsViewModel) {
+    init(viewModel: EnableAnalyticsViewModel,
+         contactSupportAction: @escaping () -> Void,
+         dismissAction: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.contactSupportAction = contactSupportAction
+        self.dismissAction = dismissAction
     }
 
     var body: some View {
@@ -44,18 +51,16 @@ struct EnableAnalyticsView: View {
                     .padding(Constants.imagePadding)
 
                 Text(Localization.analyticsDisabled)
-                    .font(.callout)
-                    .foregroundColor(.primary)
+                    .bodyStyle()
 
                 Text(Localization.analyticsExplained)
-                    .font(.callout)
-                    .foregroundColor(.primary)
+                    .bodyStyle()
 
-                Button(action: {
-                    // TODO
-                }, label: {
+                Button(action: contactSupportAction, label: {
                     AttributedText(contactSupportAttributedString)
-                })
+                        .fixedSize(horizontal: false, vertical: true)
+                        .contentShape(Rectangle())
+                }).buttonStyle(.plain)
             }
             .multilineTextAlignment(.center)
             .padding(.horizontal, Constants.contentHorizontalMargin)
@@ -72,13 +77,11 @@ struct EnableAnalyticsView: View {
             .padding(.horizontal, Constants.actionButtonMargin)
             .padding(.bottom, Constants.actionButtonMargin)
 
-            Button(Localization.dismissAction, action: {
-                // TODO
-            })
-            .buttonStyle(SecondaryButtonStyle())
-            .fixedSize(horizontal: false, vertical: true)
-            .padding(.horizontal, Constants.actionButtonMargin)
-            .padding(.bottom, Constants.actionButtonMargin)
+            Button(Localization.dismissAction, action: dismissAction)
+                .buttonStyle(SecondaryButtonStyle())
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.horizontal, Constants.actionButtonMargin)
+                .padding(.bottom, Constants.actionButtonMargin)
         }
     }
 }
@@ -110,6 +113,8 @@ private extension EnableAnalyticsView {
 
 struct EnableAnalyticsView_Previews: PreviewProvider {
     static var previews: some View {
-        EnableAnalyticsView(viewModel: .init(siteID: 123))
+        EnableAnalyticsView(viewModel: .init(siteID: 123),
+                            contactSupportAction: {},
+                            dismissAction: {})
     }
 }

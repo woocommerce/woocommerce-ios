@@ -13,6 +13,14 @@ final class CouponDetailsHostingController: UIHostingController<CouponDetails> {
 
         // Set presenting view controller to show the notice presenter here
         rootView.noticePresenter.presentingViewController = self
+
+        rootView.contactSupportAction = { [unowned self] in
+            if let presented = self.presentedViewController {
+                ZendeskProvider.shared.showNewRequestIfPossible(from: presented)
+            } else {
+                ZendeskProvider.shared.showNewRequestIfPossible(from: self)
+            }
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -26,6 +34,7 @@ struct CouponDetails: View {
     @State private var showingShareSheet: Bool = false
     @State private var showingUsageDetails: Bool = false
     @State private var showingAmountLoadingErrorPrompt: Bool = false
+    @State private var showingEnableAnalytics: Bool = false
 
     // Tracks the scale of the view due to accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
@@ -33,6 +42,8 @@ struct CouponDetails: View {
     /// The presenter to display notice when the coupon code is copied.
     /// It is kept internal so that the hosting controller can update its presenting controller to itself.
     let noticePresenter: DefaultNoticePresenter
+
+    var contactSupportAction: () -> Void = {}
 
     init(viewModel: CouponDetailsViewModel) {
         self.viewModel = viewModel
@@ -163,6 +174,12 @@ struct CouponDetails: View {
             }
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
+            .sheet(isPresented: $showingEnableAnalytics) {
+                EnableAnalyticsView(viewModel: .init(siteID: viewModel.siteID),
+                                    contactSupportAction: contactSupportAction) {
+                    showingEnableAnalytics = false
+                }
+            }
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -221,7 +238,7 @@ struct CouponDetails: View {
 
     private func showAmountLoadingErrorDetails() {
         if viewModel.hasWCAnalyticsDisabled {
-            // TODO-6360: show modal for disabled analytics
+            showingEnableAnalytics = true
         } else {
             showingAmountLoadingErrorPrompt = true
         }

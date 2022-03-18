@@ -202,7 +202,7 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
         viewModel.onLoadTrigger.send()
 
         // Then
-        XCTAssertEqual(viewModel.notice, AddProductVariationToOrderViewModel.NoticeFactory.productVariationSyncNotice())
+        XCTAssertEqual(viewModel.notice, AddProductVariationToOrderViewModel.NoticeFactory.productVariationSyncNotice(retryAction: {}))
     }
 }
 

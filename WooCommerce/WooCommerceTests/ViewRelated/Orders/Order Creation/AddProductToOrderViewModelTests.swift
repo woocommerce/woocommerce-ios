@@ -255,7 +255,7 @@ class AddProductToOrderViewModelTests: XCTestCase {
         viewModel.onLoadTrigger.send()
 
         // Then
-        XCTAssertEqual(viewModel.notice, AddProductToOrderViewModel.NoticeFactory.productSyncNotice())
+        XCTAssertEqual(viewModel.notice, AddProductToOrderViewModel.NoticeFactory.productSyncNotice(retryAction: {}))
     }
 
     func test_view_model_fires_error_notice_when_product_search_fails() {
@@ -277,7 +277,7 @@ class AddProductToOrderViewModelTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(notice, AddProductToOrderViewModel.NoticeFactory.productSearchNotice())
+        XCTAssertEqual(notice, AddProductToOrderViewModel.NoticeFactory.productSearchNotice(retryAction: {}))
     }
 }
 

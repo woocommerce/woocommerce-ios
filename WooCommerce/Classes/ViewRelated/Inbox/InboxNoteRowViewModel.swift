@@ -101,6 +101,8 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
 
 extension InboxNoteRowViewModel {
     func markInboxNoteAsActioned(actionID: Int64) {
+        ServiceLocator.analytics.track(.inboxNoteAction,
+                                       withProperties: ["action": "open"])
         let action = InboxNotesAction.markInboxNoteAsActioned(siteID: siteID,
                                                               noteID: id,
                                                               actionID: actionID) { result in
@@ -115,6 +117,8 @@ extension InboxNoteRowViewModel {
     }
 
     func dismissInboxNote(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        ServiceLocator.analytics.track(.inboxNoteAction,
+                                       withProperties: ["action": "dismiss"])
         let action = InboxNotesAction.dismissInboxNote(siteID: siteID, noteID: id) { result in
             switch result {
             case .success:

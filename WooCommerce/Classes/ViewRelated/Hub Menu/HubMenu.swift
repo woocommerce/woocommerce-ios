@@ -45,7 +45,7 @@ struct HubMenu: View {
                                 ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "view_store"])
                                 showingViewStore = true
                             case .inbox:
-                                // TODO: Inbox analytics
+                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "inbox"])
                                 showingInbox = true
                             case .reviews:
                                 ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "reviews"])

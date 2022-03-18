@@ -265,6 +265,7 @@ private extension CardPresentPaymentStore {
             } receiveValue: { status in
                 DDLogInfo("🍁 Refund Success! \(status)")
             }
+            .store(in: &cancellables)
     }
 
     func cancelRefund() {
@@ -279,6 +280,7 @@ private extension CardPresentPaymentStore {
             } receiveValue: {
                 DDLogInfo("🍁 Refund cancelled successfully!")
             }
+            .store(in: &cancellables)
     }
 
     func observeCardReaderUpdateState(onCompletion: (AnyPublisher<CardReaderSoftwareUpdateState, Never>) -> Void) {

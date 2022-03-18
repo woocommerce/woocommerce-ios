@@ -36,10 +36,11 @@ struct ProductRow: View {
                         Text(viewModel.skuLabel)
                             .subheadlineStyle()
                     }
-                    .accessibilityElement(children: .combine)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
+                .accessibilityElement()
+                .accessibilityLabel(viewModel.productAccessibilityLabel)
 
                 ProductStepper(viewModel: viewModel)
                     .renderedIf(viewModel.canChangeQuantity)

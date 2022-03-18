@@ -54,14 +54,42 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     private let variationDisplayMode: VariationDisplayMode?
 
+    /// Stock or variation attributes label.
+    /// Provides stock label for non-variations; uses variation display mode to determine the label for variations.
+    ///
+    private var stockOrAttributesLabel: String {
+        switch variationDisplayMode {
+        case .attributes(let attributes):
+            return createAttributesText(from: attributes)
+        default:
+            return createStockText()
+        }
+    }
+
+    /// Price label based on a product's price and quantity.
+    ///
+    private var priceLabel: String? {
+        guard let price = price else {
+            return nil
+        }
+        let productSubtotal = quantity * (currencyFormatter.convertToDecimal(from: price)?.decimalValue ?? Decimal.zero)
+        return currencyFormatter.formatAmount(productSubtotal)
+    }
+
+    /// Variations label for a variable product.
+    ///
+    private var variationsLabel: String? {
+        guard numberOfVariations > 0 else {
+            return nil
+        }
+        let format = String.pluralize(numberOfVariations, singular: Localization.singleVariation, plural: Localization.pluralVariations)
+        return String.localizedStringWithFormat(format, numberOfVariations)
+    }
+
     /// Label showing product details. Can include stock status or attributes, price, and variations (if any).
     ///
     var productDetailsLabel: String {
-        let stockOrAttributesLabel = createStockOrAttributesText()
-        let priceLabel = createPriceText()
-        let variationsLabel = createVariationsText()
-
-        return [stockOrAttributesLabel, priceLabel, variationsLabel]
+        [stockOrAttributesLabel, priceLabel, variationsLabel]
             .compactMap({ $0 })
             .joined(separator: " • ")
     }
@@ -74,6 +102,14 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         }
         return String.localizedStringWithFormat(Localization.skuFormat, sku)
     }()
+
+    /// Custom accessibility label for product.
+    ///
+    var productAccessibilityLabel: String {
+        [name, stockOrAttributesLabel, priceLabel, variationsLabel, skuLabel]
+            .compactMap({ $0 })
+            .joined(separator: ". ")
+    }
 
     /// Quantity of product in the order
     ///
@@ -204,18 +240,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         case attributes([VariationAttributeViewModel])
     }
 
-    /// Creates the stock or variation attributes text.
-    /// Returns stock text for non-variations; uses variation display mode to determine the text for variations.
-    ///
-    private func createStockOrAttributesText() -> String {
-        switch variationDisplayMode {
-        case .attributes(let attributes):
-            return createAttributesText(from: attributes)
-        default:
-            return createStockText()
-        }
-    }
-
     /// Create the stock text based on a product's stock status/quantity.
     ///
     private func createStockText() -> String {
@@ -236,26 +260,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     private func createAttributesText(from attributes: [VariationAttributeViewModel]) -> String {
         return attributes.map { $0.nameOrValue }.joined(separator: ", ")
-    }
-
-    /// Create the price text based on a product's price and quantity.
-    ///
-    private func createPriceText() -> String? {
-        guard let price = price else {
-            return nil
-        }
-        let productSubtotal = quantity * (currencyFormatter.convertToDecimal(from: price)?.decimalValue ?? Decimal.zero)
-        return currencyFormatter.formatAmount(productSubtotal)
-    }
-
-    /// Create the variations text for a variable product.
-    ///
-    private func createVariationsText() -> String? {
-        guard numberOfVariations > 0 else {
-            return nil
-        }
-        let format = String.pluralize(numberOfVariations, singular: Localization.singleVariation, plural: Localization.pluralVariations)
-        return String.localizedStringWithFormat(format, numberOfVariations)
     }
 
     /// Increment the product quantity.

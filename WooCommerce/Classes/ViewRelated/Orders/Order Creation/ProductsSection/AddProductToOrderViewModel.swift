@@ -192,7 +192,9 @@ extension AddProductToOrderViewModel: SyncingCoordinatorDelegate {
             case .success:
                 self.updateProductsResultsController()
             case .failure(let error):
-                self.notice = NoticeFactory.productSearchNotice()
+                self.notice = NoticeFactory.productSearchNotice() { [weak self] in
+                    self?.searchProducts(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: nil)
+                }
                 DDLogError("⛔️ Error searching products during order creation: \(error)")
             }
 
@@ -333,10 +335,12 @@ extension AddProductToOrderViewModel {
             }
         }
 
-        /// Returns a product search error notice.
+        /// Returns a product search error notice with a retry button.
         ///
-        static func productSearchNotice() -> Notice {
-            Notice(title: Localization.searchErrorMessage, feedbackType: .error)
+        static func productSearchNotice(retryAction: @escaping () -> Void) -> Notice {
+            Notice(title: Localization.searchErrorMessage, feedbackType: .error, actionTitle: Localization.errorActionTitle) {
+                retryAction()
+            }
         }
     }
 }

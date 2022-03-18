@@ -348,8 +348,10 @@ extension AddProductToOrderViewModel {
 
 private extension AddProductToOrderViewModel {
     enum Localization {
-        static let syncErrorMessage = NSLocalizedString("Unable to sync products", comment: "Notice displayed when syncing the list of products fails")
-        static let searchErrorMessage = NSLocalizedString("Unable to search products", comment: "Notice displayed when searching the list of products fails")
+        static let syncErrorMessage = NSLocalizedString("There was an error syncing products",
+                                                        comment: "Notice displayed when syncing the list of products fails")
+        static let searchErrorMessage = NSLocalizedString("There was an error searching products",
+                                                          comment: "Notice displayed when searching the list of products fails")
         static let errorActionTitle = NSLocalizedString("Retry", comment: "Retry action for an error notice")
     }
 }

@@ -276,7 +276,7 @@ extension AddProductVariationToOrderViewModel {
 
 private extension AddProductVariationToOrderViewModel {
     enum Localization {
-        static let errorMessage = NSLocalizedString("Unable to sync product variations",
+        static let errorMessage = NSLocalizedString("There was an error syncing product variations",
                                                     comment: "Notice displayed when syncing the list of product variations fails")
         static let errorActionTitle = NSLocalizedString("Retry", comment: "Retry action for an error notice")
     }

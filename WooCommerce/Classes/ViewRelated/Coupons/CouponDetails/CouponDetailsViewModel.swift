@@ -28,6 +28,10 @@ final class CouponDetailsViewModel: ObservableObject {
     ///
     @Published private(set) var hasErrorLoadingAmount: Bool = false
 
+    /// Indicates if WC Analytics is disabled for this store
+    ///
+    @Published private(set) var hasWCAnalyticsDisabled: Bool = false
+
     /// The message to be shared about the coupon
     ///
     var shareMessage: String {
@@ -56,6 +60,10 @@ final class CouponDetailsViewModel: ObservableObject {
         }
     }
 
+    var shouldShowErrorLoadingAmount: Bool {
+        (hasErrorLoadingAmount || hasWCAnalyticsDisabled) && discountedAmount == nil
+    }
+
     private let stores: StoresManager
     private let currencySettings: CurrencySettings
 
@@ -82,6 +90,9 @@ final class CouponDetailsViewModel: ObservableObject {
     }
 
     func loadCouponReport() {
+        // Reset error states
+        hasWCAnalyticsDisabled = false
+        hasErrorLoadingAmount = false
         // Get "ancient" date to fetch all possible reports
         let startDate = Date(timeIntervalSince1970: 1)
         let action = CouponAction.loadCouponReport(siteID: coupon.siteID, couponID: coupon.couponID, startDate: startDate) { [weak self] result in
@@ -92,8 +103,22 @@ final class CouponDetailsViewModel: ObservableObject {
                 self.discountedAmount = self.formatStringAmount("\(report.amount)")
                 self.hasErrorLoadingAmount = false
             case .failure(let error):
-                self.hasErrorLoadingAmount = true
                 DDLogError("⛔️ Error loading coupon report: \(error)")
+
+                self.retrieveAnalyticsSetting { [weak self] result in
+                    guard let self = self else { return }
+                    switch result {
+                    case .success(let isEnabled):
+                        if isEnabled {
+                            self.hasErrorLoadingAmount = true
+                        } else {
+                            self.hasWCAnalyticsDisabled = true
+                        }
+                    case .failure(let error):
+                        DDLogError("⛔️ Error retrieving analytics setting: \(error)")
+                        self.hasErrorLoadingAmount = true
+                    }
+                }
             }
         }
         stores.dispatch(action)
@@ -173,6 +198,11 @@ private extension CouponDetailsViewModel {
         default:
             return Localization.allProducts
         }
+    }
+
+    func retrieveAnalyticsSetting(completion: @escaping (Result<Bool, Error>) -> Void) {
+        let action = SettingAction.retrieveAnalyticsSetting(siteID: coupon.siteID, onCompletion: completion)
+        stores.dispatch(action)
     }
 }
 

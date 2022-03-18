@@ -25,6 +25,10 @@ struct CouponDetails: View {
     @State private var showingActionSheet: Bool = false
     @State private var showingShareSheet: Bool = false
     @State private var showingUsageDetails: Bool = false
+    @State private var showingAmountLoadingErrorPrompt: Bool = false
+
+    // Tracks the scale of the view due to accessibility changes
+    @ScaledMetric private var scale: CGFloat = 1.0
 
     /// The presenter to display notice when the coupon code is copied.
     /// It is kept internal so that the hosting controller can update its presenting controller to itself.
@@ -89,10 +93,7 @@ struct CouponDetails: View {
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                     .padding(.horizontal, Constants.margin)
                                 Spacer()
-                                Text(Localization.amount)
-                                    .secondaryBodyStyle()
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .padding(.horizontal, Constants.margin)
+                                amountTitleView
                             }
                             HStack(alignment: .firstTextBaseline) {
                                 Text(viewModel.discountedOrdersCount)
@@ -101,9 +102,9 @@ struct CouponDetails: View {
                                     .padding(.horizontal, Constants.margin)
                                 Spacer()
                                 Group {
-                                    if viewModel.hasErrorLoadingAmount && viewModel.discountedAmount == nil {
-                                        Text(Localization.errorLoadingAnalytics)
-                                            .errorStyle()
+                                    if viewModel.shouldShowErrorLoadingAmount {
+                                        Text(Localization.errorLoadingData)
+                                            .secondaryBodyStyle()
                                     } else if let amount = viewModel.discountedAmount {
                                         Text(amount)
                                             .font(.title)
@@ -179,6 +180,55 @@ struct CouponDetails: View {
         .wooNavigationBarStyle()
     }
 
+    @ViewBuilder
+    private var amountTitleView: some View {
+        Text(Localization.amount)
+            .secondaryBodyStyle()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, Constants.margin)
+            .renderedIf(!viewModel.shouldShowErrorLoadingAmount)
+
+        Button(action: showAmountLoadingErrorDetails) {
+            HStack(spacing: Constants.errorIconHorizontalPadding) {
+                Text(Localization.amount)
+                    .secondaryBodyStyle()
+
+                Image(uiImage: .infoImage)
+                    .renderingMode(.template)
+                    .resizable()
+                    .foregroundColor(viewModel.hasWCAnalyticsDisabled ?
+                                     Color(UIColor.withColorStudio(.orange, shade: .shade30)) :
+                                     Color(UIColor.error))
+                    .frame(width: Constants.errorIconSize * scale,
+                           height: Constants.errorIconSize * scale)
+                    .actionSheet(isPresented: $showingAmountLoadingErrorPrompt) {
+                        ActionSheet(
+                            title: Text(Localization.errorLoadingAnalytics),
+                            buttons: [
+                                .default(Text(Localization.tryAgain), action: {
+                                    viewModel.loadCouponReport()
+                                }),
+                                .cancel()
+                            ]
+                        )
+                    }
+                Spacer()
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .padding(.horizontal, Constants.margin)
+        .renderedIf(viewModel.shouldShowErrorLoadingAmount)
+    }
+
+    private func showAmountLoadingErrorDetails() {
+        if viewModel.hasWCAnalyticsDisabled {
+            // TODO-6360: show modal for disabled analytics
+        } else {
+            showingAmountLoadingErrorPrompt = true
+        }
+    }
 }
 
 // MARK: - Subtypes
@@ -187,6 +237,8 @@ private extension CouponDetails {
     enum Constants {
         static let margin: CGFloat = 16
         static let verticalSpacing: CGFloat = 8
+        static let errorIconSize: CGFloat = 20
+        static let errorIconHorizontalPadding: CGFloat = 4
     }
 
     enum Localization {
@@ -205,9 +257,17 @@ private extension CouponDetails {
         static let discountedOrders = NSLocalizedString("Discounted Orders", comment: "Title of the Discounted Orders label on Coupon Details screen")
         static let amount = NSLocalizedString("Amount", comment: "Title of the Amount label on Coupon Details screen")
         static let usageDetails = NSLocalizedString("Usage details", comment: "Title of the Usage details row in Coupon Details screen")
-        static let errorLoadingAnalytics = NSLocalizedString(
+        static let errorLoadingData = NSLocalizedString(
             "Error loading data",
-            comment: "Message displayed when fail to loading total discounted amount in Coupon Details screen"
+            comment: "Message displayed on Coupon Details screen when loading total discounted amount fails"
+        )
+        static let errorLoadingAnalytics = NSLocalizedString(
+            "We encountered a problem loading analytics",
+            comment: "Message displayed in the error prompt when loading total discounted amount in Coupon Details screen fails"
+        )
+        static let tryAgain = NSLocalizedString(
+            "Try Again",
+            comment: "Action displayed in the error prompt when loading total discounted amount in Coupon Details screen fails"
         )
     }
 

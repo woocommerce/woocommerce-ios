@@ -7,6 +7,7 @@ struct EnableAnalyticsView: View {
 
     private let contactSupportAction: () -> Void
     private let dismissAction: () -> Void
+    private let completionHandler: () -> Void
     private let noticePresenter: DefaultNoticePresenter
 
     /// Keeping a reference to the presenting controller to present notice and contact support
@@ -35,9 +36,11 @@ struct EnableAnalyticsView: View {
 
     init(viewModel: EnableAnalyticsViewModel,
          presentingController: UIViewController?,
-         dismissAction: @escaping () -> Void) {
+         dismissAction: @escaping () -> Void,
+         completionHandler: @escaping () -> Void) {
         self.viewModel = viewModel
         self.dismissAction = dismissAction
+        self.completionHandler = completionHandler
 
         self.contactSupportAction = {
             if let viewController = presentingController?.presentedViewController {
@@ -86,7 +89,7 @@ struct EnableAnalyticsView: View {
                     setupNoticePresenterIfPossible()
                     let notice = Notice(title: Localization.analyticsEnabled, feedbackType: .success)
                     noticePresenter.enqueue(notice: notice)
-                    dismissAction()
+                    completionHandler()
                 }, onFailure: {
                     setupNoticePresenterIfPossible()
                     let notice = Notice(title: Localization.errorEnablingAnalytics, feedbackType: .error)
@@ -103,7 +106,7 @@ struct EnableAnalyticsView: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.horizontal, Constants.actionButtonMargin)
                 .padding(.bottom, Constants.actionButtonMargin)
-        }        
+        }
     }
 
     private func setupNoticePresenterIfPossible() {
@@ -149,6 +152,7 @@ struct EnableAnalyticsView_Previews: PreviewProvider {
     static var previews: some View {
         EnableAnalyticsView(viewModel: .init(siteID: 123),
                             presentingController: nil,
-                            dismissAction: {})
+                            dismissAction: {},
+                            completionHandler: {})
     }
 }

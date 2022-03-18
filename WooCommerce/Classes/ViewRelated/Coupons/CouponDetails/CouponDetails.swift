@@ -172,6 +172,10 @@ struct CouponDetails: View {
                                     presentingController: noticePresenter.presentingViewController,
                                     dismissAction: {
                     showingEnableAnalytics = false
+                },
+                                    completionHandler: {
+                    showingEnableAnalytics = false
+                    viewModel.loadCouponReport()
                 })
             }
         }

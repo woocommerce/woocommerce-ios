@@ -506,19 +506,26 @@ extension StripeCardReaderService {
         return Future() { [weak self] promise in
             self?.refundCancellable = Terminal.shared.collectRefundPaymentMethod(parameters) { collectError in
                 if let error = collectError {
-                    print("collectRefundPaymentMethod failed. \(error)")
                     promise(.failure(CardReaderServiceError.refundPayment(underlyingError: UnderlyingError(with: error))))
                 } else {
                     // Process refund
                     Terminal.shared.processRefund { processedRefund, processError in
                         if let error = processError {
-                            print("Process refund failed. \(error)")
                             promise(.failure(CardReaderServiceError.refundPayment(underlyingError: UnderlyingError(with: error))))
-                        } else if let refund = processedRefund, refund.status == .succeeded {
-                            print("Process refund successful! \(refund)")
-                            promise(.success(refund))
+                        } else if let refund = processedRefund {
+                            switch refund.status {
+                                //TODO: Find out how best to handle pending and unknown. Succeed for now based on Stripe's sample code
+                            case .succeeded, .pending, .unknown:
+                                promise(.success(refund))
+                            case .failed:
+                                //TODO: Consider using `refund.failureReason` here
+                                promise(.failure(CardReaderServiceError.refundPayment(underlyingError: .internalServiceError)))
+                            @unknown default:
+                                break
+                            }
                         } else {
-                            print("Refund pending or unsuccessful.")
+                            promise(.failure(CardReaderServiceError.refundPayment(underlyingError: .internalServiceError)))
+                            //TODO: check why we might have no refund and no error
                         }
                     }
                 }

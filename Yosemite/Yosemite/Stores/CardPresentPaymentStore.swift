@@ -258,12 +258,12 @@ private extension CardPresentPaymentStore {
             .sink { error in
                 switch error {
                 case .failure(let error):
-                    DDLogInfo("🍁 Refund error! \(error.localizedDescription)")
+                    DDLogError("⛔️ Error during client-side refund: \(error.localizedDescription)")
                 case .finished:
                     break
                 }
             } receiveValue: { status in
-                DDLogInfo("🍁 Refund Success! \(status)")
+                DDLogInfo("💳 Refund Success: \(status)")
             }
             .store(in: &cancellables)
     }
@@ -273,7 +273,7 @@ private extension CardPresentPaymentStore {
             .sink { error in
                 switch error {
                 case .failure(let error):
-                    DDLogInfo("🍁 Refund cancellation error! \(error.localizedDescription)")
+                    DDLogError("⛔️ Error cancelling client-side refund: \(error.localizedDescription)")
                 case .finished:
                     break
                 }

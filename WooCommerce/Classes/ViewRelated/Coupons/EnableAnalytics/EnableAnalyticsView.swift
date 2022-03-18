@@ -8,7 +8,7 @@ struct EnableAnalyticsView: View {
 
     /// Action to trigger when Contact Support is selected
     private let contactSupportAction: () -> Void
-    
+
     /// Closure to trigger when enabling analytics succeeds
     private let completionHandler: () -> Void
 

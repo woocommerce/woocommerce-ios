@@ -164,7 +164,9 @@ extension AddProductToOrderViewModel: SyncingCoordinatorDelegate {
             case .success:
                 self.updateProductsResultsController()
             case .failure(let error):
-                self.notice = NoticeFactory.productSyncNotice()
+                self.notice = NoticeFactory.productSyncNotice() { [weak self] in
+                    self?.sync(pageNumber: pageNumber, pageSize: pageSize, onCompletion: nil)
+                }
                 DDLogError("⛔️ Error synchronizing products during order creation: \(error)")
             }
 
@@ -323,10 +325,12 @@ extension AddProductToOrderViewModel {
     /// Add Product to Order notices
     ///
     enum NoticeFactory {
-        /// Returns a default product sync error notice.
+        /// Returns a product sync error notice with a retry button.
         ///
-        static func productSyncNotice() -> Notice {
-            Notice(title: Localization.syncErrorMessage, feedbackType: .error)
+        static func productSyncNotice(retryAction: @escaping () -> Void) -> Notice {
+            Notice(title: Localization.syncErrorMessage, feedbackType: .error, actionTitle: Localization.errorActionTitle) {
+                retryAction()
+            }
         }
 
         /// Returns a product search error notice.
@@ -341,5 +345,6 @@ private extension AddProductToOrderViewModel {
     enum Localization {
         static let syncErrorMessage = NSLocalizedString("Unable to sync products", comment: "Notice displayed when syncing the list of products fails")
         static let searchErrorMessage = NSLocalizedString("Unable to search products", comment: "Notice displayed when searching the list of products fails")
+        static let errorActionTitle = NSLocalizedString("Retry", comment: "Retry action for an error notice")
     }
 }

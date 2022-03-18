@@ -374,8 +374,6 @@ class RemoteOrderSynchronizerTests: XCTestCase {
             switch action {
             case .createOrder(_, _, let completion):
                 completion(.success(.fake().copy(orderID: self.sampleOrderID, customerNote: randomNote)))
-            case .updateOrder(_, _, _, _):
-                XCTFail("Unexpected action: \(action)")
             default:
                 XCTFail("Unexpected action: \(action)")
             }

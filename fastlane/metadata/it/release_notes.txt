@@ -1,0 +1,3 @@
+Noterai che i dettagli della carta di credito per un pagamento di persona vengono ora mostrati quando si effettua un rimborso. Questo permetterà di dire ai clienti esattamente dove andranno i fondi.
+
+Alcune nuove funzionalità non sono ancora pronte per la pubblicazione, ma puoi verificarle in anticipo. Crea ordini, visualizza coupon e altro ancora. Vai alla scheda Menu, alle impostazioni e a Impostazioni delle funzionalità sperimentali per attivarla. Riceviamo volentieri il tuo feedback sull'app, in particolare sulle nuove funzionalità su cui stiamo lavorando e a cui diamo l'accesso in anteprima.

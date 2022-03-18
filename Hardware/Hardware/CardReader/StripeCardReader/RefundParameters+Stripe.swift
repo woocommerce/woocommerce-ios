@@ -2,8 +2,8 @@
 import StripeTerminal
 
 extension Hardware.RefundParameters {
-    /// Initializes a StripeTerminal.PaymentIntentParameters from a
-    /// Hardware.PaymentIntentParameters
+    /// Initializes a StripeTerminal.RefundParameters from a
+    /// Hardware.RefundParameters
     func toStripe() -> StripeTerminal.RefundParameters? {
         // Shortcircuit if we do not have a valid currency code
         guard !currency.isEmpty else {

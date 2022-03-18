@@ -85,6 +85,27 @@ final class JetpackRequestTests: XCTestCase {
         XCTAssertEqual(output.httpMethod?.uppercased(), "GET")
         XCTAssertTrue((output.url?.absoluteString.contains("%26_method%3Ddelete"))!)
     }
+
+    /// Verifies that a PUT JetpackRequest will actually become a POST with a `_method=put` param in body
+    ///
+    func test_put_request_becomes_post_request() throws {
+        // Given
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .put, siteID: sampleSiteID, path: sampleRPC, parameters: sampleParameters)
+
+        // When
+        let output = try request.asURLRequest()
+        guard let urlRequest = try? request.asURLRequest(),
+              let generatedBodyAsData = urlRequest.httpBody,
+              let generatedBody = String(data: generatedBodyAsData, encoding: .utf8)
+        else {
+            XCTFail()
+            return
+        }
+
+        // Then
+        XCTAssertEqual(output.httpMethod?.uppercased(), "POST")
+        XCTAssertTrue(generatedBody.contains("%26_method%3Dput"))
+    }
 }
 
 

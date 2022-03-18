@@ -73,6 +73,8 @@ final class CouponListViewController: UIViewController {
                 switch state {
                 case .empty:
                     self.displayNoResultsOverlay()
+                case .couponsDisabled:
+                    self.displayCouponsDisabledOverlay()
                 case .loading:
                     self.displayPlaceholderCoupons()
                 case .coupons:
@@ -270,16 +272,30 @@ extension CouponListViewController {
 
 // MARK: - Empty state view controller
 //
-extension CouponListViewController {
+private extension CouponListViewController {
     /// Displays the overlay when there are no results.
     ///
     func displayNoResultsOverlay() {
         let emptyStateViewController = EmptyStateViewController(style: .list)
-        let config = EmptyStateViewController.Config.simple(
+        let config: EmptyStateViewController.Config = .simple(
             message: .init(string: Localization.emptyStateMessage),
             image: .emptyCouponsImage
         )
 
+        displayEmptyStateViewController(emptyStateViewController)
+        emptyStateViewController.configure(config)
+    }
+
+    /// Displays the overlay when coupons are disabled for the store.
+    ///
+    func displayCouponsDisabledOverlay() {
+        let emptyStateViewController = EmptyStateViewController(style: .list)
+        let config: EmptyStateViewController.Config = .withButton(message: .init(string: Localization.couponsDisabledMessage),
+                                                                  image: .emptyCouponsImage,
+                                                                  details: Localization.couponsDisabledDetail,
+                                                                  buttonTitle: Localization.couponsDisabledAction) { [weak self] _ in
+            self?.viewModel.enableCoupons()
+        }
         displayEmptyStateViewController(emptyStateViewController)
         emptyStateViewController.configure(config)
     }
@@ -352,6 +368,19 @@ private extension CouponListViewController {
         static let emptyStateMessage = NSLocalizedString(
             "No coupons found",
             comment: "The title on the placeholder overlay when there are no coupons on the coupon list screen.")
+
+        static let couponsDisabledMessage = NSLocalizedString(
+            "Everyone loves a deal",
+            comment: "The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store."
+        )
+        static let couponsDisabledDetail = NSLocalizedString(
+            "You currently have Coupons disabled for this store. Enable coupons to get started.",
+            comment: "The description on the placeholder overlay on the coupon list screen when coupons are disabled for the store."
+        )
+        static let couponsDisabledAction = NSLocalizedString(
+            "Enable Coupons",
+            comment: "The action button on the placeholder overlay on the coupon list screen when coupons are disabled for the store."
+        )
 
         static let accessibilityLabelSearchCoupons = NSLocalizedString("Search coupons", comment: "Accessibility label for the Search Coupons button")
         static let accessibilityHintSearchCoupons = NSLocalizedString(

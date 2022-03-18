@@ -46,6 +46,9 @@ final class ShippingLabelFormViewController: UIViewController {
     }
 
     override var shouldShowOfflineBanner: Bool {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            return false
+        }
         return true
     }
 }

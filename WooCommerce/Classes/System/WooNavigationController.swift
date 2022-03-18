@@ -21,9 +21,6 @@ class WooNavigationController: UINavigationController {
     override func viewDidLoad() {
         super.viewDidLoad()
         super.delegate = navigationDelegate
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-            extendedLayoutIncludesOpaqueBars = true
-        }
     }
 
     /// Sets the status bar of the pushed view to white.
@@ -59,18 +56,15 @@ private class WooNavigationControllerDelegate: NSObject, UINavigationControllerD
     /// Configures the back button for the managed `ViewController` and forwards the event to the children delegate.
     ///
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-            viewController.extendedLayoutIncludesOpaqueBars = true
-        }
-        currentController = viewController
-        configureOfflineBanner(for: viewController)
         configureBackButton(for: viewController)
         forwardDelegate?.navigationController?(navigationController, willShow: viewController, animated: animated)
     }
 
-    /// Forwards the event to the children delegate.
+    /// Configures the offline banner and forwards the event to the children delegate.
     ///
     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+        currentController = viewController
+        configureOfflineBanner(for: viewController)
         forwardDelegate?.navigationController?(navigationController, didShow: viewController, animated: animated)
     }
 
@@ -141,8 +135,16 @@ private extension WooNavigationControllerDelegate {
         offlineBannerView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(offlineBannerView)
 
-        // TODO-6381: fix issue with zero extra bottom space for split view
-        let extraBottomSpace = viewController.hidesBottomBarWhenPushed ? navigationController.view.safeAreaInsets.bottom : 0
+        let extraBottomSpace: CGFloat
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            // When split view is enabled, we're using a translucent tab bar.
+            // So when tab bar is visible, the bottom safe area is non-zero and we need to display content based on that.
+            extraBottomSpace = navigationController.view.safeAreaInsets.bottom
+        } else {
+            // With an opaque tab bar, all contents are displayed above it,
+            // so we don't need to care about the bottom safe area, only when the tab bar is hidden.
+            extraBottomSpace = viewController.hidesBottomBarWhenPushed ? navigationController.view.safeAreaInsets.bottom : 0
+        }
         NSLayoutConstraint.activate([
             offlineBannerView.heightAnchor.constraint(equalToConstant: OfflineBannerView.height),
             offlineBannerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),

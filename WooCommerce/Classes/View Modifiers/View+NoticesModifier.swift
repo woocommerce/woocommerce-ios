@@ -76,17 +76,24 @@ struct NoticeModifier: ViewModifier {
     private func dispatchClearNoticeTask() {
         guard autoDismiss else { return }
         clearNoticeTask.cancel()
-        clearNoticeTask = .init {
-            $notice.wrappedValue = nil
-        }
+        setClearNoticeTask()
         DispatchQueue.main.asyncAfter(deadline: .now() + onScreenNoticeTime, execute: clearNoticeTask)
     }
 
     /// Synchronously performs the clear notice task and cancels it to prevent any future execution.
     ///
     private func performClearNoticeTask() {
+        setClearNoticeTask()
         clearNoticeTask.perform()
         clearNoticeTask.cancel()
+    }
+
+    /// Sets the clear notice task.
+    ///
+    private func setClearNoticeTask() {
+        clearNoticeTask = .init {
+            $notice.wrappedValue = nil
+        }
     }
 
     /// Sends haptic feedback if required.

@@ -245,7 +245,7 @@ private extension RemoteOrderSynchronizer {
 
                 switch result {
                 case .success(let remoteOrder):
-                    let newLocalOrder = remoteOrder.updateOrderWithLocalState(localOrder: self.order)
+                    let newLocalOrder = self.updateOrderWithLocalState(targetOrder: remoteOrder, localOrder: self.order)
                     promise(.success(newLocalOrder))
 
                 case .failure(let error):
@@ -271,7 +271,7 @@ private extension RemoteOrderSynchronizer {
 
                 switch result {
                 case .success(let remoteOrder):
-                    let newLocalOrder = remoteOrder.updateOrderWithLocalState(localOrder: self.order)
+                    let newLocalOrder = self.updateOrderWithLocalState(targetOrder: remoteOrder, localOrder: self.order)
                     promise(.success(newLocalOrder))
 
                 case .failure(let error):
@@ -318,6 +318,11 @@ private extension RemoteOrderSynchronizer {
         case .commit:
             return OrderUpdateField.allCases // When committing changes, we update everything.
         }
+    }
+
+    /// Return the targeted order with the current selected state.
+    func updateOrderWithLocalState(targetOrder: Order, localOrder: Order) -> Order {
+        targetOrder.copy(status: localOrder.status, customerNote: localOrder.customerNote)
     }
 }
 
@@ -384,10 +389,5 @@ private extension Order {
             return item.copy(itemID: .zero, subtotal: "", total: "")
         }
         return copy(items: sanitizedItems)
-    }
-
-    /// Return the targeted order with the current selected state.
-    func updateOrderWithLocalState(localOrder: Order) -> Order {
-        self.copy(status: localOrder.status, customerNote: localOrder.customerNote)
     }
 }

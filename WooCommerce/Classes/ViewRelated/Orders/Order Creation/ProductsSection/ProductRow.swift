@@ -95,8 +95,8 @@ private struct ProductStepper: View {
                 .stroke(Color(UIColor.separator), lineWidth: Layout.stepperBorderWidth)
         )
         .accessibilityElement(children: .ignore)
-        .accessibility(label: Text(Localization.quantityLabel))
-        .accessibility(value: Text(viewModel.quantity.description))
+        .accessibilityLabel("\(viewModel.name): \(Localization.quantityLabel)")
+        .accessibilityValue(viewModel.quantity.description)
         .accessibilityAdjustableAction { direction in
             switch direction {
             case .decrement:

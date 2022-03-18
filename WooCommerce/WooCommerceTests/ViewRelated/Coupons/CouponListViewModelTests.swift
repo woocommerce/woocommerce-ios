@@ -371,4 +371,85 @@ final class CouponListViewModelTests: XCTestCase {
         XCTAssertEqual(status, .dismissed)
         XCTAssertFalse(sut.shouldDisplayFeedbackBanner)
     }
+
+    func test_state_is_couponsDisabled_if_coupon_setting_returns_false() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .retrieveCouponSetting(_, onCompletion):
+                onCompletion(.success(false))
+            default:
+                break
+            }
+        }
+        sut = CouponListViewModel(siteID: 123,
+                                  storesManager: stores)
+
+        // When
+        let error = NSError(domain: "Test", code: 503, userInfo: nil)
+        sut.handleCouponSyncResult(result: .failure(error), pageNumber: 1)
+
+        // Then
+        assertEqual(.couponsDisabled, sut.state)
+    }
+
+    func test_state_is_coupons_if_enableCoupons_and_synchronizeFirstPage_succeed() {
+        // Given
+        let sampleSiteID: Int64 = 123
+        mockStorageManager.insertSampleCoupon(readOnlyCoupon: Coupon.fake().copy(siteID: sampleSiteID))
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .retrieveCouponSetting(_, onCompletion):
+                onCompletion(.success(true))
+            case let .enableCouponSetting(_, onCompletion):
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+        stores.whenReceivingAction(ofType: CouponAction.self) { action in
+            switch action {
+            case let .synchronizeCoupons(_, _, _, onCompletion):
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+        sut = CouponListViewModel(siteID: sampleSiteID,
+                                  storesManager: stores,
+                                  storageManager: mockStorageManager)
+
+        // When
+        sut.buildCouponViewModels()
+        sut.enableCoupons()
+
+        // Then
+        assertEqual(.coupons, sut.state)
+    }
+
+    func test_state_is_couponDisabled_if_enableCoupons_fails() {
+        // Given
+        let sampleSiteID: Int64 = 123
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .enableCouponSetting(_, onCompletion):
+                let error = NSError(domain: "Test", code: 503, userInfo: nil)
+                onCompletion(.failure(error))
+            default:
+                break
+            }
+        }
+        sut = CouponListViewModel(siteID: sampleSiteID,
+                                  storesManager: stores,
+                                  storageManager: mockStorageManager)
+
+        // When
+        sut.enableCoupons()
+
+        // Then
+        assertEqual(.couponsDisabled, sut.state)
+    }
 }

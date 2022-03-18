@@ -103,7 +103,10 @@ struct CouponDetails: View {
                                     .padding(.horizontal, Constants.margin)
                                 Spacer()
                                 Group {
-                                    if let amount = viewModel.discountedAmount {
+                                    if viewModel.shouldShowErrorLoadingAmount {
+                                        Text(Localization.errorLoadingData)
+                                            .secondaryBodyStyle()
+                                    } else if let amount = viewModel.discountedAmount {
                                         Text(amount)
                                             .font(.title)
                                     } else {
@@ -262,6 +265,10 @@ private extension CouponDetails {
         static let discountedOrders = NSLocalizedString("Discounted Orders", comment: "Title of the Discounted Orders label on Coupon Details screen")
         static let amount = NSLocalizedString("Amount", comment: "Title of the Amount label on Coupon Details screen")
         static let usageDetails = NSLocalizedString("Usage details", comment: "Title of the Usage details row in Coupon Details screen")
+        static let errorLoadingData = NSLocalizedString(
+            "Error loading data",
+            comment: "Message displayed on Coupon Details screen when loading total discounted amount fails"
+        )
         static let errorLoadingAnalytics = NSLocalizedString(
             "We encountered a problem loading analytics",
             comment: "Message displayed in the error prompt when loading total discounted amount in Coupon Details screen fails"

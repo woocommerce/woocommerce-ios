@@ -533,6 +533,20 @@ final class NewOrderViewModelTests: XCTestCase {
 
     }
 
+    func test_customer_note_section_is_updated_when_note_is_added_to_order() {
+        // Given
+        let storageManager = MockStorageManager()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let expectedCustomerNote = "Test"
+
+        //When
+        viewModel.noteViewModel.newNote = expectedCustomerNote
+        viewModel.updateCustomerNote()
+
+        //Then
+        XCTAssertEqual(viewModel.customerNoteDataViewModel.customerNote, expectedCustomerNote)
+    }
+
     func test_hasChanges_returns_false_initially() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -582,6 +596,19 @@ final class NewOrderViewModelTests: XCTestCase {
         addressViewModel.saveAddress(onFinish: { _ in })
 
         // Then
+        XCTAssertTrue(viewModel.hasChanges)
+    }
+
+    func test_hasChanges_returns_true_when_customer_note_is_updated() {
+        // Given
+        let storageManager = MockStorageManager()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        //When
+        viewModel.noteViewModel.newNote = "Test"
+        viewModel.updateCustomerNote()
+
+        //Then
         XCTAssertTrue(viewModel.hasChanges)
     }
 
@@ -670,6 +697,35 @@ final class NewOrderViewModelTests: XCTestCase {
         // When
         addressViewModel.fields.address1 = ""
         addressViewModel.saveAddress(onFinish: { _ in })
+
+        // Then
+        XCTAssertTrue(analytics.receivedEvents.isEmpty)
+    }
+
+    func test_customer_note_tracked_when_added() throws {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.noteViewModel.newNote = "Test"
+        viewModel.updateCustomerNote()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderNoteAdd.rawValue])
+
+        let properties = try XCTUnwrap(analytics.receivedProperties.first?["flow"] as? String)
+        XCTAssertEqual(properties, "creation")
+    }
+
+    func test_customer_note_not_tracked_when_removed() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.noteViewModel.newNote = ""
+        viewModel.updateCustomerNote()
 
         // Then
         XCTAssertTrue(analytics.receivedEvents.isEmpty)

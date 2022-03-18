@@ -124,6 +124,22 @@ final class NewOrderViewModel: ObservableObject {
     ///
     @Published var selectedProductViewModel: ProductInOrderViewModel? = nil
 
+    // MARK: Customer data properties
+
+    /// Representation of customer data display properties.
+    ///
+    @Published private(set) var customerDataViewModel: CustomerDataViewModel = .init(billingAddress: nil, shippingAddress: nil)
+
+    // MARK: Customer note properties
+
+    /// Representation of customer note data display properties.
+    ///
+    @Published private(set) var customerNoteDataViewModel: CustomerNoteDataViewModel = .init(customerNote: "")
+
+    /// View model for the customer note section.
+    ///
+    lazy private(set) var noteViewModel = { NewOrderCustomerNoteViewModel(originalNote: "") }()
+
     // MARK: Payment properties
 
     /// Representation of payment data display properties
@@ -187,6 +203,7 @@ final class NewOrderViewModel: ObservableObject {
         configureProductRowViewModels()
         configureCustomerDataViewModel()
         configurePaymentDataViewModel()
+        configureCustomerNoteDataViewModel()
     }
 
     /// Selects an order item by setting the `selectedProductViewModel`.
@@ -232,12 +249,6 @@ final class NewOrderViewModel: ObservableObject {
         }
     }
 
-    // MARK: Customer data properties
-
-    /// Representation of customer data display properties.
-    ///
-    @Published private(set) var customerDataViewModel: CustomerDataViewModel = .init(billingAddress: nil, shippingAddress: nil)
-
     /// Creates a view model to be used in Address Form for customer address.
     ///
     func createOrderAddressFormViewModel() -> CreateOrderAddressFormViewModel {
@@ -249,6 +260,13 @@ final class NewOrderViewModel: ObservableObject {
             self?.orderSynchronizer.setAddresses.send(input)
             self?.trackCustomerDetailsAdded()
         })
+    }
+
+    /// Updates the order creation draft with the current set customer note.
+    ///
+    func updateCustomerNote() {
+        orderSynchronizer.setNote.send(noteViewModel.newNote)
+        trackCustomerNoteAdded()
     }
 
     // MARK: - API Requests
@@ -436,6 +454,12 @@ extension NewOrderViewModel {
                                                             didSelectSave: saveFeeLineClosure)
         }
     }
+
+    /// Representation of order notes data display properties
+    ///
+    struct CustomerNoteDataViewModel {
+        let customerNote: String
+    }
 }
 
 // MARK: - Helpers
@@ -544,6 +568,17 @@ private extension NewOrderViewModel {
             .assign(to: &$customerDataViewModel)
     }
 
+    /// Updates notes data viewmodel based on order customer notes.
+    ///
+    func configureCustomerNoteDataViewModel() {
+        orderSynchronizer.orderPublisher
+                .map {
+                    CustomerNoteDataViewModel(customerNote: $0.customerNote ?? "")
+                }
+                .assign(to: &$customerNoteDataViewModel)
+    }
+
+
     /// Updates payment section view model based on items in the order and order sync state.
     ///
     func configurePaymentDataViewModel() {
@@ -595,6 +630,13 @@ private extension NewOrderViewModel {
             return billingAddress != shippingAddress
         }()
         analytics.track(event: WooAnalyticsEvent.Orders.orderCustomerAdd(flow: .creation, hasDifferentShippingDetails: areAddressesDifferent))
+    }
+
+    /// Tracks when customer note have been added
+    ///
+    func trackCustomerNoteAdded() {
+        guard customerNoteDataViewModel.customerNote.isNotEmpty else { return }
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCustomerNoteAdd(flow: .creation))
     }
 
     /// Tracks when the create order button is tapped.

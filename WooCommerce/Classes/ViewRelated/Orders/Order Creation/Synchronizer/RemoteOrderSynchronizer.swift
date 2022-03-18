@@ -32,6 +32,8 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
 
     var setFee = PassthroughSubject<OrderFeeLine?, Never>()
 
+    var setNote = PassthroughSubject<String?, Never>()
+
     var retryTrigger = PassthroughSubject<Void, Never>()
 
     // MARK: Private properties
@@ -143,6 +145,12 @@ private extension RemoteOrderSynchronizer {
                 return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
             }
             .assign(to: &$order)
+
+        setNote.withLatestFrom(orderPublisher)
+            .map { notes, order in
+                order.copy(customerNote: notes)
+            }
+            .assign(to: &$order)
     }
 
     /// Creates or updates the order when a significant order input occurs.
@@ -237,8 +245,7 @@ private extension RemoteOrderSynchronizer {
 
                 switch result {
                 case .success(let remoteOrder):
-                    // Return the order with the current selected status.
-                    let newLocalOrder = remoteOrder.copy(status: self.order.status)
+                    let newLocalOrder = self.updateOrderWithLocalState(targetOrder: remoteOrder, localOrder: self.order)
                     promise(.success(newLocalOrder))
 
                 case .failure(let error):
@@ -264,8 +271,7 @@ private extension RemoteOrderSynchronizer {
 
                 switch result {
                 case .success(let remoteOrder):
-                    // Return the order with the current selected status.
-                    let newLocalOrder = remoteOrder.copy(status: self.order.status)
+                    let newLocalOrder = self.updateOrderWithLocalState(targetOrder: remoteOrder, localOrder: self.order)
                     promise(.success(newLocalOrder))
 
                 case .failure(let error):
@@ -312,6 +318,11 @@ private extension RemoteOrderSynchronizer {
         case .commit:
             return OrderUpdateField.allCases // When committing changes, we update everything.
         }
+    }
+
+    /// Return the targeted order with the current selected state.
+    func updateOrderWithLocalState(targetOrder: Order, localOrder: Order) -> Order {
+        targetOrder.copy(status: localOrder.status, customerNote: localOrder.customerNote)
     }
 }
 

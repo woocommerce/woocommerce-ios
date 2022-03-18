@@ -351,6 +351,83 @@ class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertNil(firstLine.name)
     }
 
+    func test_sending_customer_note_input_updates_local_order() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
+        let expectedNotes = "Test customer note"
+
+        // When
+        synchronizer.setNote.send(expectedNotes)
+
+        // Then
+        XCTAssertEqual(synchronizer.order.customerNote, expectedNotes)
+    }
+
+    func test_creating_customer_note_input_updates_local_order() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
+        let randomNote = "Unexpected customer note"
+        let expectedNote = "Second customer note"
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case .createOrder(_, _, let completion):
+                completion(.success(.fake().copy(orderID: self.sampleOrderID, customerNote: randomNote)))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        synchronizer.setNote.send(expectedNote)
+        let resultOrder = try waitFor { promise in
+            synchronizer.commitAllChanges { result in
+                promise(result)
+            }
+        }.get()
+
+        // Then
+        XCTAssertEqual(resultOrder.customerNote, expectedNote)
+    }
+
+    func test_updating_customer_note_input_updates_local_order() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
+        let product = Product.fake().copy(productID: sampleProductID)
+        let firstNote = "First customer note"
+        let expectedNote = "Second customer note"
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case .createOrder(_, _, let completion):
+                completion(.success(.fake().copy(orderID: self.sampleOrderID)))
+            case .updateOrder(_, let order, _, let completion):
+                completion(.success(order.copy(customerNote: firstNote)))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        synchronizer.setNote.send(firstNote)
+        let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+        createOrder(on: synchronizer, input: input)
+
+        let input2 = OrderSyncProductInput(product: .product(product), quantity: 2)
+        synchronizer.setProduct.send(input2)
+        synchronizer.setNote.send(expectedNote)
+
+        let resultOrder = try waitFor { promise in
+            synchronizer.commitAllChanges { result in
+                promise(result)
+            }
+        }.get()
+
+        // Then
+        XCTAssertEqual(resultOrder.customerNote, expectedNote)
+    }
+
     func test_states_are_properly_set_upon_success_order_creation() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)

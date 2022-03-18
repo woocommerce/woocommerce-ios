@@ -99,6 +99,10 @@ struct NewOrder: View {
                         Spacer(minLength: Layout.sectionSpacing)
 
                         OrderCustomerSection(viewModel: viewModel)
+
+                        Spacer(minLength: Layout.sectionSpacing)
+
+                        CustomerNoteSection(viewModel: viewModel)
                     }
                     .disabled(viewModel.disabled)
                 }

@@ -225,6 +225,7 @@ private extension AddProductToOrderViewModel {
     ///
     func transitionToSyncingState() {
         shouldShowScrollIndicator = true
+        notice = nil
         if products.isEmpty {
             syncStatus = .firstPageSync
         }

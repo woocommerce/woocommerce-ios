@@ -113,19 +113,6 @@ final class CouponListViewModelTests: XCTestCase {
     }
 
     func test_handleCouponSyncResult_shows_empty_when_no_coupons_present() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        stores.whenReceivingAction(ofType: SettingAction.self) { action in
-            switch action {
-            case let .retrieveCouponSetting(_, onCompletion):
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
-        sut = CouponListViewModel(siteID: 123,
-                                  storesManager: stores)
-
         // When
         sut.handleCouponSyncResult(result: .success(false), pageNumber: 1)
 
@@ -206,19 +193,6 @@ final class CouponListViewModelTests: XCTestCase {
     }
 
     func test_shouldDisplayFeedbackBanner_returns_false_if_state_is_empty() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        stores.whenReceivingAction(ofType: SettingAction.self) { action in
-            switch action {
-            case let .retrieveCouponSetting(_, onCompletion):
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
-        sut = CouponListViewModel(siteID: 123,
-                                  storesManager: stores)
-
         // When
         sut.handleCouponSyncResult(result: .success(false), pageNumber: 1)
         XCTAssertEqual(sut.state, .empty) // confidence check

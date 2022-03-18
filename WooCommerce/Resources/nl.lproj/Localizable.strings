@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-03-11 13:54:04+0000 */
+/* Translation-Revision-Date: 2022-03-18 23:00:01+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -41,7 +41,7 @@
 "%1$@ and %2$@" = "%1$@ en %2$@";
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
-"%1$@ card ending %2$@" = "%1$@ eindigt op %$2@";
+"%1$@ card ending %2$@" = "%1$@ eindigt op %2$@";
 
 /* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
 "%1$@ excl. %2$@" = "%1$@ excl. %2$@";
@@ -3851,7 +3851,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation bar title for the Simple Payments Methods screens. %1$@ is a placeholder for the total amount to collect
    Text of the button that creates a simple payment order. %1$@ is a placeholder for the total amount to collect */
-"Take Payment (%1$@)" = "Betaling ontvangen (%$1@)";
+"Take Payment (%1$@)" = "Betaling ontvangen (%1$@)";
 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "Een foto maken";
@@ -3934,7 +3934,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Tax" = "Belasting";
 
 /* Tax percentage to be applied to the simple payments order. %1$@%% is a placeholder for the tax rate as a percentage */
-"Tax (%1$@%%)" = "Btw (%$1@%%)";
+"Tax (%1$@%%)" = "Btw (%1$@%%)";
 
 /* Section header title for product tax settings */
 "Tax Settings" = "Belastinginstellingen";
@@ -4875,7 +4875,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "We don’t support In-Person Payments in your country" = "We ondersteunen fysieke betalingen niet in je land";
 
 /* Title for the error screen when In-Person Payments is not supported in a specific country */
-"We don’t support In-Person Payments with Stripe in %1$@" = "We ondersteunen fysieke betalingen met Stripe niet in %$1@";
+"We don’t support In-Person Payments with Stripe in %1$@" = "We ondersteunen fysieke betalingen met Stripe niet in %1$@";
 
 /* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country */
 "We don’t support In-Person Payments with Stripe in your country" = "We ondersteunen fysieke betalingen met Stripe niet in je land";

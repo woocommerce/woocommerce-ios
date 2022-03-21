@@ -35,6 +35,10 @@ final class IssueRefundViewModel {
         ///  Holds the quantity of items to refund
         ///
         var refundQuantityStore = RefundQuantityStore()
+
+        /// Charge to be refunded
+        ///
+        var charge: WCPayCharge?
     }
 
     /// Current ViewModel state
@@ -45,6 +49,7 @@ final class IssueRefundViewModel {
             title = calculateTitle()
             selectedItemsTitle = createSelectedItemsCount()
             isNextButtonEnabled = calculateNextButtonEnableState()
+            isNextButtonAnimating = calculateNextButtonAnimatingState()
             hasUnsavedChanges = calculatePendingChangesState()
             onChange?()
         }
@@ -65,6 +70,10 @@ final class IssueRefundViewModel {
     /// Boolean indicating if the next button is enabled
     ///
     private(set) var isNextButtonEnabled: Bool = false
+
+    /// Boolean indicating if the next button's activity indicator is animating
+    ///
+    private(set) var isNextButtonAnimating: Bool = false
 
     /// Boolean indicating if the "select all" button is visible
     ///
@@ -94,14 +103,20 @@ final class IssueRefundViewModel {
         return resultsController.fetchedObjects.first
     }()
 
-    /// Charge related to the order. Used to show card details in the `Refund Via` section.
+    /// Charge related to the order. Used to show card details in the `Refund Via` section, and the refund confirmation screen.
     ///
-    private lazy var charge: WCPayCharge? = {
+    private var charge: WCPayCharge? {
+        return chargeResultsController?.fetchedObjects.first
+    }
+
+    /// ResultsController for the charge relating to the order. Used to show card details in the `Refund Via` section, and the refund confirmation screen.
+    ///
+    private lazy var chargeResultsController: ResultsController<StorageWCPayCharge>? = {
         guard let resultsController = createWcPayChargeResultsController() else {
             return nil
         }
         try? resultsController.performFetch()
-        return resultsController.fetchedObjects.first
+        return resultsController
     }()
 
     private let analytics: Analytics
@@ -116,7 +131,7 @@ final class IssueRefundViewModel {
         self.analytics = analytics
         self.stores = stores
         let items = Self.filterItems(from: order, with: refunds)
-        state = State(order: order, refunds: refunds, itemsToRefund: items, currencySettings: currencySettings)
+        state = State(order: order, refunds: refunds, itemsToRefund: items, currencySettings: currencySettings, charge: nil)
         sections = createSections()
         title = calculateTitle()
         isNextButtonEnabled = calculateNextButtonEnableState()
@@ -130,7 +145,7 @@ final class IssueRefundViewModel {
     /// confirm and submit the refund.
     func createRefundConfirmationViewModel() -> RefundConfirmationViewModel {
         let details = RefundConfirmationViewModel.Details(order: state.order,
-                                                          charge: charge,
+                                                          charge: state.charge,
                                                           amount: "\(calculateRefundTotal())",
                                                           refundsShipping: state.shouldRefundShipping,
                                                           refundsFees: state.shouldRefundFees,
@@ -252,7 +267,10 @@ private extension IssueRefundViewModel {
         guard let chargeID = state.order.chargeID else {
             return
         }
-        let action = CardPresentPaymentAction.fetchWCPayCharge(siteID: state.order.siteID, chargeID: chargeID, onCompletion: { _ in })
+        let action = CardPresentPaymentAction.fetchWCPayCharge(siteID: state.order.siteID, chargeID: chargeID, onCompletion: { [weak self] _ in
+            guard let self = self else { return }
+            self.state.charge = self.charge
+        })
         stores.dispatch(action)
     }
 }
@@ -403,19 +421,26 @@ extension IssueRefundViewModel {
         return String.pluralize(count, singular: Localization.itemSingular, plural: Localization.itemsPlural)
     }
 
-    /// Calculates wether the next button should be enabled or not
+    /// Calculates whether the next button should be enabled or not
     ///
     private func calculateNextButtonEnableState() -> Bool {
         calculatePendingChangesState()
     }
 
-    /// Calculates wether there are pending changes to commit
+    /// Calculates whether the next button should be animating or not
+    ///
+    private func calculateNextButtonAnimatingState() -> Bool {
+        // When we have a chargeID, we need to wait until we fetch the charge.
+        return state.order.chargeID != nil && state.charge == nil
+    }
+
+    /// Calculates whether there are pending changes to commit
     ///
     private func calculatePendingChangesState() -> Bool {
         state.refundQuantityStore.count() > 0 || state.shouldRefundShipping || state.shouldRefundFees
     }
 
-    /// Calculates wether the "select all" button should be visible or not.
+    /// Calculates whether the "select all" button should be visible or not.
     ///
     private func calculateSelectAllButtonVisibility() -> Bool {
         return state.itemsToRefund.isNotEmpty

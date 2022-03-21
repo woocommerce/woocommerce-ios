@@ -30,15 +30,15 @@ struct ShippingLineDetails: View {
                                 Text(Localization.amountField)
                                     .bodyStyle()
                                     .fixedSize()
-
-                                Spacer()
-
-                                BindableTextfield(viewModel.amountPlaceholder, text: $viewModel.amount, focus: $focusAmountInput)
-                                    .keyboardType(.numbersAndPunctuation)
-                                    .addingCurrencySymbol(viewModel.currencySymbol, on: viewModel.currencyPosition)
-                                    .onTapGesture {
-                                        focusAmountInput = true
-                                    }
+                                HStack {
+                                    Spacer()
+                                    BindableTextfield(viewModel.amountPlaceholder, text: $viewModel.amount, focus: $focusAmountInput)
+                                        .keyboardType(.numbersAndPunctuation)
+                                        .addingCurrencySymbol(viewModel.currencySymbol, on: viewModel.currencyPosition)
+                                        .onTapGesture {
+                                            focusAmountInput = true
+                                        }
+                                }
                             }
                             .frame(minHeight: Layout.amountRowHeight)
                             .padding([.leading, .trailing], Layout.amountRowPadding)

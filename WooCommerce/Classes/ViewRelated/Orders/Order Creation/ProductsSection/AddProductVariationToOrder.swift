@@ -59,7 +59,7 @@ struct AddProductVariationToOrder: View {
                 } label: {
                     Image(uiImage: .chevronLeftImage).flipsForRightToLeftLayoutDirection(true)
                 }
-                .accessibilityLabel(Text(Localization.backButtonAccessibilityLabel))
+                .accessibilityLabel(Localization.backButtonAccessibilityLabel)
             }
         }
         .onAppear {

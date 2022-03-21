@@ -39,6 +39,7 @@ struct ShippingLabelAddNewPackage: View {
                     } label: {
                         Image(uiImage: .chevronLeftImage).flipsForRightToLeftLayoutDirection(true)
                     }
+                    .accessibilityLabel(Localization.backButtonAccessibilityLabel)
                 }
                 // Done button
                 ToolbarItem(placement: .confirmationAction, content: {
@@ -96,6 +97,7 @@ private extension ShippingLabelAddNewPackage {
         static let errorAlertTitle = NSLocalizedString("Cannot add package", comment: "The title of the alert when there is a generic error adding the package")
         static let errorAlertMessage = NSLocalizedString("Unexpected error",
                                                          comment: "The message of the alert when there is an unexpected error adding the package")
+        static let backButtonAccessibilityLabel = NSLocalizedString("Back", comment: "Accessibility label for Back button in the navigation bar")
     }
 }
 

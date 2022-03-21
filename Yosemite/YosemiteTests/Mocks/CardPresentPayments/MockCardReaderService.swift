@@ -107,6 +107,18 @@ final class MockCardReaderService: CardReaderService {
         }
     }
 
+    func refundPayment(parameters: RefundParameters) -> AnyPublisher<String, Error> {
+        Just("success")
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher()
+    }
+
+    func cancelRefund() -> AnyPublisher<Void, Error> {
+        Just(())
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher()
+    }
+
     func installUpdate() -> Void {
     }
 }

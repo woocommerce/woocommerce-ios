@@ -136,6 +136,7 @@ public typealias CardReaderServiceError = Hardware.CardReaderServiceError
 public typealias CardReaderType = Hardware.CardReaderType
 public typealias CardReaderConfigError = Hardware.CardReaderConfigError
 public typealias PaymentParameters = Hardware.PaymentIntentParameters
+public typealias RefundParameters = Hardware.RefundParameters
 public typealias PaymentIntent = Hardware.PaymentIntent
 public typealias PrintingResult = Hardware.PrintingResult
 public typealias CardPresentReceiptParameters = Hardware.CardPresentReceiptParameters

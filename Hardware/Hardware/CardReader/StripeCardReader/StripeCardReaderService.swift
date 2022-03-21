@@ -8,6 +8,7 @@ public final class StripeCardReaderService: NSObject {
 
     private var discoveryCancellable: StripeTerminal.Cancelable?
     private var paymentCancellable: StripeTerminal.Cancelable?
+    private var refundCancellable: StripeTerminal.Cancelable?
 
     private var discoveredReadersSubject = CurrentValueSubject<[CardReader], Error>([])
     private let connectedReadersSubject = CurrentValueSubject<[CardReader], Never>([])
@@ -459,6 +460,95 @@ private extension StripeCardReaderService {
     }
 }
 
+// MARK: - Refunds
+extension StripeCardReaderService {
+    public func refundPayment(parameters: RefundParameters) -> AnyPublisher<String, Error> {
+        if isChipCardInserted {
+            sendReaderEvent(CardReaderEvent.make(displayMessage: .removeCard))
+        }
+        return waitForInsertedCardToBeRemoved()
+            .flatMap {
+                self.createRefundParameters(parameters: parameters)
+            }
+            .flatMap { refundParameters in
+                self.refund(refundParameters)
+            }
+            .map({ refund in
+                switch refund.status {
+                case .succeeded:
+                    return "success"
+                case .failed:
+                    return "failed"
+                case .pending:
+                    return "pending"
+                case .unknown:
+                    return "unknown"
+                @unknown default:
+                    fatalError()
+                }
+            })
+            .eraseToAnyPublisher()
+    }
+
+    func createRefundParameters(parameters: RefundParameters) -> Future<StripeTerminal.RefundParameters, Error> {
+        return Future() { promise in
+            guard let refundParameters = parameters.toStripe() else {
+                return promise(.failure(CardReaderServiceError.refundPayment(underlyingError: .internalServiceError)))
+            }
+            return promise(.success(refundParameters))
+        }
+    }
+
+    /// Calling any other SDK methods between collectRefundPaymentMethod and processRefund will result in undefined behavior.
+    /// We have a spinlock to prevent other SDK methods being used until processRefund is done. It will need a timeout.
+    ///
+    func refund(_ parameters: StripeTerminal.RefundParameters) -> Future<StripeTerminal.Refund, Error> {
+        return Future() { [weak self] promise in
+            self?.refundCancellable = Terminal.shared.collectRefundPaymentMethod(parameters) { collectError in
+                if let error = collectError {
+                    promise(.failure(CardReaderServiceError.refundPayment(underlyingError: UnderlyingError(with: error))))
+                } else {
+                    // Process refund
+                    Terminal.shared.processRefund { processedRefund, processError in
+                        if let error = processError {
+                            promise(.failure(CardReaderServiceError.refundPayment(underlyingError: UnderlyingError(with: error))))
+                        } else if let refund = processedRefund {
+                            switch refund.status {
+                                //TODO: Find out how best to handle pending and unknown. Succeed for now based on Stripe's sample code
+                            case .succeeded, .pending, .unknown:
+                                promise(.success(refund))
+                            case .failed:
+                                //TODO: Consider using `refund.failureReason` here
+                                promise(.failure(CardReaderServiceError.refundPayment(underlyingError: .internalServiceError)))
+                            @unknown default:
+                                break
+                            }
+                        } else {
+                            promise(.failure(CardReaderServiceError.refundPayment(underlyingError: .internalServiceError)))
+                            //TODO: check why we might have no refund and no error
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public func cancelRefund() -> AnyPublisher<Void, Error> {
+        return Future() { [weak self] promise in
+            guard let refundCancellable = self?.refundCancellable else {
+                return promise(.failure(CardReaderServiceError.refundCancellation(underlyingError: .noRefundInProgress)))
+            }
+
+            refundCancellable.cancel({ error in
+                if let error = error {
+                    promise(.failure(CardReaderServiceError.refundCancellation(underlyingError: UnderlyingError(with: error))))
+                }
+                promise(.success(()))
+            })
+            //TODO: handle timeout?
+        }.eraseToAnyPublisher()
+    }
+}
 
 // MARK: - DiscoveryDelegate.
 extension StripeCardReaderService: DiscoveryDelegate {

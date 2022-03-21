@@ -9,10 +9,10 @@ final class EnableAnalyticsViewModelTests: XCTestCase {
         let sampleSiteID: Int64 = 135
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = EnableAnalyticsViewModel(siteID: sampleSiteID, stores: stores)
-        var onSuccessTrigged = false
+        var onSuccessTriggered = false
         var onFailureTriggered = false
         let onSuccess: () -> Void = {
-            onSuccessTrigged = true
+            onSuccessTriggered = true
         }
         let onFailure: () -> Void = {
             onFailureTriggered = true
@@ -31,7 +31,7 @@ final class EnableAnalyticsViewModelTests: XCTestCase {
         viewModel.enableAnalytics(onSuccess: onSuccess, onFailure: onFailure)
 
         // Then
-        XCTAssertTrue(onSuccessTrigged)
+        XCTAssertTrue(onSuccessTriggered)
         XCTAssertFalse(onFailureTriggered)
     }
 
@@ -40,10 +40,10 @@ final class EnableAnalyticsViewModelTests: XCTestCase {
         let sampleSiteID: Int64 = 135
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = EnableAnalyticsViewModel(siteID: sampleSiteID, stores: stores)
-        var onSuccessTrigged = false
+        var onSuccessTriggered = false
         var onFailureTriggered = false
         let onSuccess: () -> Void = {
-            onSuccessTrigged = true
+            onSuccessTriggered = true
         }
         let onFailure: () -> Void = {
             onFailureTriggered = true
@@ -68,7 +68,7 @@ final class EnableAnalyticsViewModelTests: XCTestCase {
         viewModel.enableAnalytics(onSuccess: onSuccess, onFailure: onFailure)
 
         // Then
-        XCTAssertTrue(onSuccessTrigged)
+        XCTAssertTrue(onSuccessTriggered)
         XCTAssertFalse(onFailureTriggered)
     }
 
@@ -77,10 +77,10 @@ final class EnableAnalyticsViewModelTests: XCTestCase {
         let sampleSiteID: Int64 = 135
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = EnableAnalyticsViewModel(siteID: sampleSiteID, stores: stores)
-        var onSuccessTrigged = false
+        var onSuccessTriggered = false
         var onFailureTriggered = false
         let onSuccess: () -> Void = {
-            onSuccessTrigged = true
+            onSuccessTriggered = true
         }
         let onFailure: () -> Void = {
             onFailureTriggered = true
@@ -99,7 +99,7 @@ final class EnableAnalyticsViewModelTests: XCTestCase {
         viewModel.enableAnalytics(onSuccess: onSuccess, onFailure: onFailure)
 
         // Then
-        XCTAssertFalse(onSuccessTrigged)
+        XCTAssertFalse(onSuccessTriggered)
         XCTAssertTrue(onFailureTriggered)
     }
 }

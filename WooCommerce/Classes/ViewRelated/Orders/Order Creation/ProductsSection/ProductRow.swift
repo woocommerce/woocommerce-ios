@@ -11,6 +11,16 @@ struct ProductRow: View {
     // Tracks the scale of the view due to accessibility changes
     @ScaledMetric private var scale: CGFloat = 1
 
+    /// Accessibility hint describing the product row tap gesture.
+    /// Avoids overwriting the product stepper accessibility hint, when the stepper is rendered.
+    ///
+    let accessibilityHint: String
+
+    init(viewModel: ProductRowViewModel, accessibilityHint: String = "") {
+        self.viewModel = viewModel
+        self.accessibilityHint = accessibilityHint
+    }
+
     var body: some View {
         VStack {
             AdaptiveStack(horizontalAlignment: .leading) {
@@ -36,10 +46,13 @@ struct ProductRow: View {
                         Text(viewModel.skuLabel)
                             .subheadlineStyle()
                     }
-                    .accessibilityElement(children: .combine)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
+                .accessibilityElement(children: .ignore)
+                .accessibilityAddTraits(.isButton)
+                .accessibilityLabel(viewModel.productAccessibilityLabel)
+                .accessibilityHint(accessibilityHint)
 
                 ProductStepper(viewModel: viewModel)
                     .renderedIf(viewModel.canChangeQuantity)
@@ -94,8 +107,8 @@ private struct ProductStepper: View {
                 .stroke(Color(UIColor.separator), lineWidth: Layout.stepperBorderWidth)
         )
         .accessibilityElement(children: .ignore)
-        .accessibility(label: Text(Localization.quantityLabel))
-        .accessibility(value: Text(viewModel.quantity.description))
+        .accessibilityLabel("\(viewModel.name): \(Localization.quantityLabel)")
+        .accessibilityValue(viewModel.quantity.description)
         .accessibilityAdjustableAction { direction in
             switch direction {
             case .decrement:

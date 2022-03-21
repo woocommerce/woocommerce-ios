@@ -1643,9 +1643,9 @@
 			buildConfigurationList = B5C9DE092087FEC0006B910A /* Build configuration list for PBXNativeTarget "Yosemite" */;
 			buildPhases = (
 				D05CE52EBA8EDA14B248EF77 /* [CP] Check Pods Manifest.lock */,
+				B5C9DDF22087FEC0006B910A /* Headers */,
 				B5C9DDF02087FEC0006B910A /* Sources */,
 				B5C9DDF12087FEC0006B910A /* Frameworks */,
-				B5C9DDF22087FEC0006B910A /* Headers */,
 				B5C9DDF32087FEC0006B910A /* Resources */,
 				263E37DD2641AD6B00260D3B /* Embed Frameworks */,
 			);

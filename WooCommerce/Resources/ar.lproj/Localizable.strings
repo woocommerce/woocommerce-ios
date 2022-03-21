@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-03-08 11:32:22+0000 */
+/* Translation-Revision-Date: 2022-03-11 18:54:05+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -41,7 +41,7 @@
 "%1$@ and %2$@" = "%1$@ و%2$@";
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
-"%1$@ card ending %2$@" = "%1$@ card ending %2$@";
+"%1$@ card ending %2$@" = "بطاقة %1$@ تنتهي بـ %2$@";
 
 /* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
 "%1$@ excl. %2$@" = "%1$@ باستثناء %2$@";
@@ -243,7 +243,7 @@
 "A customs form must be printed and included on this international shipment" = "تجب طباعة نموذج الجمارك وتضمينه في هذه الشحنة الدولية";
 
 /* Message when attempting to pay for a test transaction with a live card. */
-"A live card was used on a site in test mode. Use a test card instead." = "A live card was used on a site in test mode. Use a test card instead.";
+"A live card was used on a site in test mode. Use a test card instead." = "تم استخدام بطاقة مباشرة على موقع في وضع الاختبار. استخدم بطاقة اختبار بدلاً من ذلك.";
 
 /* Error message when there was a network error checking In-Person Payments requirements */
 "A network error occurred. Please check your connection and try again." = "حدثت مشكلة في الشبكة. يرجى التحقّق من اتصالك والمحاولة لاحقًا.";
@@ -291,7 +291,7 @@
 "About the App" = "حول التطبيق";
 
 /* Reads as 'Account Type'. Part of the mandatory data in receipts */
-"Account Type" = "Account Type";
+"Account Type" = "نوع الحساب";
 
 /* Title for the error screen when a Card Present Payments extension is installed but not activated */
 "Activate %1$@" = "تفعيل %1$@";
@@ -336,7 +336,7 @@
 "Add Downloadable File" = "إضافة ملف قابل للتنزيل";
 
 /* Title for the Fee screen during order creation */
-"Add Fee" = "Add Fee";
+"Add Fee" = "إضافة رسوم إضافية";
 
 /* Title text of the button that adds fees when creating a new order */
 "Add Fees" = "إضافة رسوم";
@@ -407,7 +407,7 @@
 "Add a tracking" = "إضافة التتبع";
 
 /* Cell text in Add / Edit variation when there are no images. */
-"Add a variation image" = "Add a variation image";
+"Add a variation image" = "إضافة صورة التباين";
 
 /* Button title in the Shipping Label Payment Method screen if there is an existing payment method */
 "Add another credit card" = "أضف بطاقة ائتمان أخرى";
@@ -539,23 +539,23 @@
 "Amount" = "الكمية";
 
 /* Title for the amount field on the Fee Details screen during order creationParameters: %1$@ - fee type (percent sign or currency symbol) */
-"Amount (%1$@)" = "Amount (%1$@)";
+"Amount (%1$@)" = "المبلغ (%1$@)";
 
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
 "Amount Eligible For Refund" = "المبلغ الذي يستحق الاسترداد";
 
 /* Line description for 'Amount Paid' cart total on the receipt
    Title of 'Amount Paid' section in the receipt */
-"Amount Paid" = "Amount Paid";
+"Amount Paid" = "المبلغ المدفوع";
 
 /* A failure reason for when an error HTTP status code was returned from the site, with the specific error code. */
-"An HTTP error code %i was returned." = "An HTTP error code %i was returned.";
+"An HTTP error code %i was returned." = "تم إرجاع رمز خطأ HTML %i.";
 
 /* A failure reason for when an error HTTP status code was returned from the site. */
-"An HTTP error code was returned." = "An HTTP error code was returned.";
+"An HTTP error code was returned." = "تم إرجاع رمز خطأ HTTP.";
 
 /* Error message when Bluetooth is not enabled for this application. */
-"An error occurred accessing Bluetooth - please enable Bluetooth and try again" = "An error occurred accessing Bluetooth - please enable Bluetooth and try again";
+"An error occurred accessing Bluetooth - please enable Bluetooth and try again" = "حدث خطأ في أثناء الوصول إلى البلوتوث - يرجى تمكين البلوتوث والمحاولة مجددًا";
 
 /* An error description explaining that a Menu could not be created. */
 "An error occurred creating the Menu." = "حدث خطأ أثناء إنشاء القائمة.";
@@ -573,16 +573,16 @@
 "An error occurred while processing your request: " = "حدث خطأ أثناء معالجة طلبك: ";
 
 /* Message when it looks like a duplicate transaction is being attempted. */
-"An identical transaction was submitted recently. If you wish to continue, try another means of payment" = "An identical transaction was submitted recently. If you wish to continue, try another means of payment";
+"An identical transaction was submitted recently. If you wish to continue, try another means of payment" = "تم إرسال معاملة مماثلة مؤخرًا. إذا كنت ترغب في المواصلة، فقم بتجربة وسائل دفع أخرى";
 
 /* Message when an incorrect PIN has been entered too many times. */
-"An incorrect PIN has been entered too many times. Try another means of payment" = "An incorrect PIN has been entered too many times. Try another means of payment";
+"An incorrect PIN has been entered too many times. Try another means of payment" = "تم إدخال رمز PIN غير صحيح مرات عديدة. تجربة وسائل دفع أخرى";
 
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "ملحوظة اختيارية يتم إرسالها إلى العميل بعد الشراء";
 
 /* A failure reason for when the error that occured wasn't able to be determined. */
-"An unknown error occurred." = "An unknown error occurred.";
+"An unknown error occurred." = "حدث خطأ غير متوقع.";
 
 /* Title of analytics as part of Jetpack benefits. */
 "Analytics" = "التحليلات";
@@ -605,7 +605,7 @@
 "Application Logs" = "سجلات التطبيق";
 
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
-"Application Name" = "Application Name";
+"Application Name" = "اسم التطبيق";
 
 /* Change order status screen - button title to apply selection */
 "Apply" = "تقديم";
@@ -663,7 +663,7 @@
 "Are you sure you want to remove this variation?" = "هل أنت متأكد من رغبتك في إزالة هذا النوع؟";
 
 /* Message displayed in the alert for dismissing all the inbox notes. */
-"Are you sure? Inbox messages will be dismissed forever." = "Are you sure? Inbox messages will be dismissed forever.";
+"Are you sure? Inbox messages will be dismissed forever." = "هل أنت متأكد؟ سيتم تجاهل رسائل علبة الوارد إلى الأبد.";
 
 /* Placeholder in the Attribute Name row on Rename Attributes screen. */
 "Attribute name" = "اسم السمة";
@@ -749,7 +749,7 @@
 
 /* Button title in the action sheet of product variatiosns that shows the bulk update
    Title that appears on top of the bulk update of product variations screen */
-"Bulk Update" = "Bulk Update";
+"Bulk Update" = "التحديث المُجمَّع";
 
 /* Title of the text field for editing the button text for an external/affiliate product */
 "Button Text" = "نص الزر";
@@ -807,10 +807,10 @@
 "Card" = "بطاقة";
 
 /* Error message when a card is left in the reader and another transaction started. */
-"Card was left in reader - please remove and reinsert card" = "Card was left in reader - please remove and reinsert card";
+"Card was left in reader - please remove and reinsert card" = "تم ترك البطاقة في القارئ - يرجى إزالة البطاقة وإعادة إدراجها";
 
 /* Error message when the card is removed from the reader prematurely. */
-"Card was removed too soon - please try transaction again" = "Card was removed too soon - please try transaction again";
+"Card was removed too soon - please try transaction again" = "تمت إزالة البطاقة مبكرًا جدًا - يرجى محاولة المعاملة مجددًا";
 
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "شركة النقل وأسعارها";
@@ -969,7 +969,7 @@
 "Connecting to reader" = "الربط بالقارئ";
 
 /* Error message when establishing a connection to the card reader times out. */
-"Connecting to the card reader timed out - ensure it is nearby and charged and then try again" = "Connecting to the card reader timed out - ensure it is nearby and charged and then try again";
+"Connecting to the card reader timed out - ensure it is nearby and charged and then try again" = "انتهت مهلة الاتصال بقارئ البطاقة - تأكَّد من أنه قريب ومشحون، ثم حاول مجددًا";
 
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "الربط بحسابك";
@@ -1215,7 +1215,7 @@
 "Date Range" = "نطاق التاريخ";
 
 /* Title of 'Date Paid' section in the receipt */
-"Date paid" = "Date paid";
+"Date paid" = "تاريخ الدفع";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "تاريخ الشحن";
@@ -1278,7 +1278,7 @@
 "Discount" = "خصم";
 
 /* Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s) */
-"Discount %1$@" = "Discount %1$@";
+"Discount %1$@" = "خصم قدره %1$@";
 
 /* Title of the Discounted Orders label on Coupon Details screen */
 "Discounted Orders" = "الطلبات التي يسري عليها الخصم";
@@ -1288,10 +1288,10 @@
 "Dismiss" = "رفض";
 
 /* Dismiss All button in Inbox Notes for dismissing all the notes. */
-"Dismiss All" = "Dismiss All";
+"Dismiss All" = "تجاهل الكل";
 
 /* Title of the alert for dismissing all the inbox notes. */
-"Dismiss all messages" = "Dismiss all messages";
+"Dismiss all messages" = "تجاهل جميع الرسائل";
 
 /* Display label for the product's inventory backorders setting option */
 "Do not allow" = "لا تسمح بذلك";
@@ -1545,7 +1545,7 @@
 "Error in finding the address in Apple Maps" = "حدث خطأ في أثناء العثور على العنوان في خرائط Apple";
 
 /* Message displayed when fail to loading total discounted amount in Coupon Details screen */
-"Error loading data" = "Error loading data";
+"Error loading data" = "حدث خطأ أثناء تحميل البيانات";
 
 /* Alert title when there is an error requesting shipping label document for printing */
 "Error previewing shipping label" = "حدث خطأ في أثناء معاينة ملصق الشحن";
@@ -1588,7 +1588,7 @@
 "Featured Product" = "منتج مميز";
 
 /* Title for the Fee Details screen during order creation */
-"Fee" = "Fee";
+"Fee" = "رسوم";
 
 /* Title in the navigation bar when the survey is completed */
 "Feedback Sent!" = "تم إرسال الملاحظات!";
@@ -1927,7 +1927,7 @@
 "Insert" = "إدراج";
 
 /* Message from the in-person payment card reader prompting user to insert their card */
-"Insert Card" = "Insert Card";
+"Insert Card" = "إدراج بطاقة";
 
 /* Accessibility label for insert horizontal ruler button on formatting toolbar. */
 "Insert Horizontal Ruler" = "إدراج مسطرة أفقية";
@@ -1936,7 +1936,7 @@
 "Insert Link" = "إدراج رابط";
 
 /* Message from the in-person payment card reader prompting user to insert or swipe their card */
-"Insert Or Swipe Card" = "Insert Or Swipe Card";
+"Insert Or Swipe Card" = "إدراج بطاقة أو تمريرها";
 
 /* Navigates to Install Jetpack screen.
    Title of install action in the Jetpack benefits view. - Title of the Install Jetpack intro view - Title of the Install Jetpack view */
@@ -2292,7 +2292,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Minimum value %@, maximum value %@" = "قيمة الحد الأدنى %1$@، قيمة الحد الأقصى %2$@";
 
 /* The description in product variations bulk update, of a value, that is different acrossall variations */
-"Mixed" = "Mixed";
+"Mixed" = "مختلط";
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Monitor and approve your product reviews" = "مراقبة مراجعات منتجك والموافقة عليها";
@@ -2324,7 +2324,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Moves the comment to Trash" = "ينقل التعليق إلى سلة المهملات";
 
 /* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
-"Multiple Contactless Cards Detected" = "Multiple Contactless Cards Detected";
+"Multiple Contactless Cards Detected" = "تم اكتشاف عدة بطاقات غير تلامسية";
 
 /* Title of the hub menu view in case there is no title for the store */
 "My Store" = "مخزني";
@@ -2401,16 +2401,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No address specified." = "لا يوجد عنوان محدد.";
 
 /* Error message when a card reader was expected to already have been connected. */
-"No card reader is connected - connect a reader and try again" = "No card reader is connected - connect a reader and try again";
+"No card reader is connected - connect a reader and try again" = "لا يوجد قارئ بطاقة متصل - اربط قارئًا، وحاول مجددًا";
 
 /* Title for the error screen when there was a network error checking In-Person Payments requirements. */
 "No connection" = "لا يوجد اتصال";
 
 /* Error message when there is no connection to the Internet. */
-"No connection to the Internet - please connect to the Internet and try again" = "No connection to the Internet - please connect to the Internet and try again";
+"No connection to the Internet - please connect to the Internet and try again" = "لا يوجد اتصال بالإنترنت - يرجى الاتصال بالإنترنت والمحاولة مجددًا";
 
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
-"No coupons found" = "No coupons found";
+"No coupons found" = "لم يتم العثور على قسائم";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "لا توجد بيانات متاحة";
@@ -2688,7 +2688,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Payment Method Selected" = "تم تحديد طريقة الدفع";
 
 /* Message when the presented card remaining credit or balance is insufficient for the purchase. */
-"Payment declined due to insufficient funds. Try another means of payment" = "Payment declined due to insufficient funds. Try another means of payment";
+"Payment declined due to insufficient funds. Try another means of payment" = "تم رفض عملية الدفع لأن الأموال غير كافية. تجربة وسائل دفع أخرى";
 
 /* Error message. Presented to users after a collecting a payment fails
    Error message. Presented to users after collecting a payment fails */
@@ -2705,10 +2705,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Payment successful" = "تمت عملية الدفع بنجاح";
 
 /* Message when we don't know exactly why the payment was declined. */
-"Payment was declined for an unknown reason. Try another means of payment" = "Payment was declined for an unknown reason. Try another means of payment";
+"Payment was declined for an unknown reason. Try another means of payment" = "تم رفض عملية الدفع لسبب غير معروف. تجربة وسائل دفع أخرى";
 
 /* Message when payment is declined for a non specific reason. */
-"Payment was declined for an unspecified reason. Try another means of payment" = "Payment was declined for an unspecified reason. Try another means of payment";
+"Payment was declined for an unspecified reason. Try another means of payment" = "تم رفض عملية الدفع لسبب غير محدَّد. تجربة وسائل دفع أخرى";
 
 /* Display label for pending order status.
    Display label for the review's pending status */
@@ -3162,7 +3162,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Registered Domain" = "النطاق المُسجل";
 
 /* The label in the option of selecting to bulk update the regular price of a product variation */
-"Regular Price" = "Regular Price";
+"Regular Price" = "السعر العادي";
 
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "السعر العادي: %@";
@@ -3175,10 +3175,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Remove Attribute" = "إزالة السمة";
 
 /* Message from the in-person payment card reader prompting user to remove their card */
-"Remove Card" = "Remove Card";
+"Remove Card" = "إزالة البطاقة";
 
 /* Text for the button to remove a fee from the order during order creation */
-"Remove Fee from Order" = "Remove Fee from Order";
+"Remove Fee from Order" = "إزالة الرسوم من الطلب";
 
 /* Title on the alert when the user taps to delete a Product image */
 "Remove Image" = "إزالة الصورة";
@@ -3254,7 +3254,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Retry After Updating" = "إعادة المحاولة بعد التحديث";
 
 /* Message from the in-person payment card reader prompting user to retry payment with their card */
-"Retry Card" = "Retry Card";
+"Retry Card" = "إعادة تجربة البطاقة";
 
 /* Action button to check site's connection again. */
 "Retry Connection" = "إعادة محاولة الاتصال";
@@ -3701,7 +3701,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Sorry, that username is unavailable." = "عذرًا، اسم المستخدم غير متاح.";
 
 /* Error message when the card reader service experiences an unexpected internal service error. */
-"Sorry, this payment couldn’t be processed" = "Sorry, this payment couldn’t be processed";
+"Sorry, this payment couldn’t be processed" = "عذرًا، تتعذر معالجة عملية الدفع هذه";
 
 /* No comment provided by engineer. */
 "Sorry, usernames can only contain lowercase letters (a-z) and numbers." = "عذرًا، يمكن أن تحتوي أسماء المستخدمين فقط على حروف أبجدية صغيرة (a-z) وأرقام.";
@@ -3794,13 +3794,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Sum of products and package weight" = "إجمالي المنتجات ووزن الحزمة";
 
 /* Title of 'Summary' section in the receipt when the order number is unknown */
-"Summary" = "Summary";
+"Summary" = "ملخّص (موجز)";
 
 /* Title of 'Summary' section in the receipt. %1$@ is the order number, e.g. 4920 */
-"Summary: Order #%1$@" = "Summary: Order #%1$@";
+"Summary: Order #%1$@" = "الملخص: الطلب رقم %1$@";
 
 /* Message from the in-person payment card reader prompting user to swipe their card */
-"Swipe Card" = "Swipe Card";
+"Swipe Card" = "تمرير البطاقة";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "تحويل المتجر";
@@ -3840,7 +3840,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "System status report copied to clipboard" = "تم نسخ تقرير حالة النظام إلى الحافظة";
 
 /* Message when attempting to pay for a live transaction with a test card. */
-"System test cards are not permitted for payment. Try another means of payment" = "System test cards are not permitted for payment. Try another means of payment";
+"System test cards are not permitted for payment. Try another means of payment" = "غير مسموح ببطاقات اختبار النظام للدفع. تجربة وسائل دفع أخرى";
 
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags. - Title of the Tags row on Product main screen */
@@ -3851,7 +3851,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation bar title for the Simple Payments Methods screens. %1$@ is a placeholder for the total amount to collect
    Text of the button that creates a simple payment order. %1$@ is a placeholder for the total amount to collect */
-"Take Payment (%1$@)" = "Take Payment (%1$@)";
+"Take Payment (%1$@)" = "تحصيل الدفع (%1$@)";
 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "التقاط صورة";
@@ -3934,7 +3934,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Tax" = "الضريبة";
 
 /* Tax percentage to be applied to the simple payments order. %1$@%% is a placeholder for the tax rate as a percentage */
-"Tax (%1$@%%)" = "Tax (%1$@%%)";
+"Tax (%1$@%%)" = "الضريبة (%1$@%%)";
 
 /* Section header title for product tax settings */
 "Tax Settings" = "إعدادات الضريبة";
@@ -3994,7 +3994,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Thank you for sharing your thoughts with us" = "شكرًا لك على مشاركة أفكارك معنا";
 
 /* Confirmation message in Inbox Notes after responding to a survey. */
-"Thank you for your feedback!" = "Thank you for your feedback!";
+"Thank you for your feedback!" = "نشكرك على ملاحظاتك!";
 
 /* Shown when a user pastes a code into the two factor field that contains letters or is the wrong length */
 "That doesn't appear to be a valid verification code." = "لا يبدو هذا رمز تحقيق صالحًا.";
@@ -4027,7 +4027,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "تم تثبيت إضافة %1$@ على مخزنك ولكن يتعيَّن تحديثها للمدفوعات الشخصية. يرجى تحديثها إلى أحدث إصدار.";
 
 /* Error message when the card reader loses its Bluetooth connection to the card reader. */
-"The Bluetooth connection to the card reader disconnected unexpectedly" = "The Bluetooth connection to the card reader disconnected unexpectedly";
+"The Bluetooth connection to the card reader disconnected unexpectedly" = "تم قطع اتصال البلوتوث بقارئ البطاقة بشكل غير متوقع";
 
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "لا يتطابق حساب غوغل \"‎%@\" مع أي حساب موجود على ووردبريس.كوم";
@@ -4045,46 +4045,46 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The attribute couldn't be saved." = "يتعذر حفظ السمة.";
 
 /* Message when the card presented does not support the order currency. */
-"The card does not support this currency. Try another means of payment" = "The card does not support this currency. Try another means of payment";
+"The card does not support this currency. Try another means of payment" = "لا تدعم البطاقة هذه العملة. تجربة وسائل دفع أخرى";
 
 /* Message when the card presented does not allow this type of purchase. */
-"The card does not support this type of purchase. Try another means of payment" = "The card does not support this type of purchase. Try another means of payment";
+"The card does not support this type of purchase. Try another means of payment" = "لا تدعم البطاقة نوع الشراء هذا. تجربة وسائل دفع أخرى";
 
 /* Message when the presented card is past its expiration date. */
-"The card has expired. Try another means of payment" = "The card has expired. Try another means of payment";
+"The card has expired. Try another means of payment" = "انتهت صلاحية البطاقة. تجربة وسائل دفع أخرى";
 
 /* Message when payment is declined for a non specific reason. */
-"The card or card account is invalid. Try another means of payment" = "The card or card account is invalid. Try another means of payment";
+"The card or card account is invalid. Try another means of payment" = "البطاقة أو حساب البطاقة غير صالحين تجربة وسائل دفع أخرى";
 
 /* Error message when the card reader is busy executing another command. */
-"The card reader is busy executing another command - please try again" = "The card reader is busy executing another command - please try again";
+"The card reader is busy executing another command - please try again" = "قارئ البطاقة مشغول في تنفيذ أمر آخر - يرجى المحاولة مجددًا";
 
 /* Error message when the card reader is incompatible with the application. */
-"The card reader is not compatible with this application - please try updating the application or using a different reader" = "The card reader is not compatible with this application - please try updating the application or using a different reader";
+"The card reader is not compatible with this application - please try updating the application or using a different reader" = "قارئ البطاقة غير متوافق مع هذا التطبيق - يرجى محاولة تحديث هذا التطبيق أو استخدام قارئ مختلف";
 
 /* Error message when the card reader session has timed out. */
-"The card reader session has expired - please disconnect and reconnect the card reader and then try again" = "The card reader session has expired - please disconnect and reconnect the card reader and then try again";
+"The card reader session has expired - please disconnect and reconnect the card reader and then try again" = "انتهت صلاحية جلسة قارئ البطاقة - يرجى قطع اتصال قارئ البطاقة وإعادته، ثم حاول مجددًا";
 
 /* Error message when the card reader software is too far out of date to process payments. */
-"The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "The card reader software is out-of-date - please update the card reader software before attempting to process payments";
+"The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "برنامج قارئ البطاقة قديم - يرجى تحديث برنامج قارئ البطاقة قبل محاولة معالجة عمليات الدفع";
 
 /* Error message when the card reader software update fails due to a communication error. */
-"The card reader software update failed due to a communication error - please try again" = "The card reader software update failed due to a communication error - please try again";
+"The card reader software update failed due to a communication error - please try again" = "فشل تحديث برنامج قارئ البطاقة بسبب مشكلة في الاتصال - يرجى المحاولة مجددًا";
 
 /* Error message when the card reader software update fails due to a problem with the update server. */
-"The card reader software update failed due to a problem with the update server - please try again" = "The card reader software update failed due to a problem with the update server - please try again";
+"The card reader software update failed due to a problem with the update server - please try again" = "فشل تحديث برنامج قارئ البطاقة بسبب مشكلة مع خادم التحديث - يرجى المحاولة مجددًا";
 
 /* Error message when the card reader software update fails unexpectedly. */
-"The card reader software update failed unexpectedly - please try again" = "The card reader software update failed unexpectedly - please try again";
+"The card reader software update failed unexpectedly - please try again" = "فشل تحديث برنامج قارئ البطاقة بشكل غير متوقع - يرجى المحاولة مجددًا";
 
 /* Error message when the card reader software update is interrupted. */
-"The card reader software update was interrupted before it could complete - please try again" = "The card reader software update was interrupted before it could complete - please try again";
+"The card reader software update was interrupted before it could complete - please try again" = "انقطع تحديث برنامج قارئ البطاقة قبل اكتماله - يرجى المحاولة مجددًا";
 
 /* Error message when the card reader itself declines the card. */
-"The card was declined by the card reader - please try another means of payment" = "The card was declined by the card reader - please try another means of payment";
+"The card was declined by the card reader - please try another means of payment" = "تم رفض البطاقة بواسطة قارئ البطاقة - يرجى تجربة وسائل دفع أخرى";
 
 /* Error message when the card processor declines the payment. */
-"The card was declined by the payment processor - please try another means of payment" = "The card was declined by the payment processor - please try another means of payment";
+"The card was declined by the payment processor - please try another means of payment" = "تم رفض البطاقة بواسطة مُعالج الدفع - يرجى تجربة وسائل دفع أخرى";
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "شهادة هذا الخادم غير صالحة. قد تكون مرتبطًا بخادم يبدو &quot;%@&quot; والذي قد يجعل معلوماتك السرية في خطر.\n\nهل تريد أن تثق في الشهادة على أية حال؟";
@@ -4099,10 +4099,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The new service package name is not unique." = "اسم حزمة الخدمة الجديد غير فريد.";
 
 /* Message when the presented card does not allow the purchase amount. */
-"The payment amount is not allowed for the card presented. Try another means of payment." = "The payment amount is not allowed for the card presented. Try another means of payment.";
+"The payment amount is not allowed for the card presented. Try another means of payment." = "مبلغ عملية الدفع غير مسموح به للبطاقة التي تم تقديمها. تجربة وسائل دفع أخرى";
 
 /* Error message when the payment can not be processed (i.e. order amount is below the minimum amount allowed.) */
-"The payment can not be processed by the payment processor." = "The payment can not be processed by the payment processor.";
+"The payment can not be processed by the payment processor." = "تتعذر معالجة عملية الدفع بواسطة مُعالجة الدفع.";
 
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "رقم الهاتف غير صالح، أو يتعذر عليك الاتصال بالعميل من هذا الجهاز.";
@@ -4114,7 +4114,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The reader has a critically low battery. Please charge the reader or try a different reader." = "بطارية القارئ منخفضة للغاية. يرجى شحن القارئ أو جرب قارئًا مختلفًا.";
 
 /* Error message when a request times out. */
-"The request timed out - please try again" = "The request timed out - please try again";
+"The request timed out - please try again" = "انتهت مهلة الطلب - يرجى المحاولة مجددًا";
 
 /* Product price error notice message, when the sale price is added but the regular price is not */
 "The sale price can't be added without the regular price." = "تتعذر إضافة سعر البيع من دون السعر العادي.";
@@ -4126,10 +4126,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The sale price should be lower than the regular price." = "ينبغي أن يكون سعر العرض أقل من السعر العادي.";
 
 /* A failure reason for when the request couldn't be serialized. */
-"The serialization of the request failed." = "The serialization of the request failed.";
+"The serialization of the request failed." = "فشل إنشاء تسلسل الطلب.";
 
 /* A failure reason for when the response couldn't be serialized. */
-"The serialization of the response failed." = "The serialization of the response failed.";
+"The serialization of the response failed." = "فشل إنشاء تسلسل الاستجابة.";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "أرجع الخادم استجابة فارغة. يعني ذلك عادة أنك بحاجة إلى زيادة الحد الأقصى لذاكرة موقعك.";
@@ -4162,25 +4162,25 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The stock quantity for this product. Editable." = "كمية المخزون لهذا المنتج. قابل للتحرير.";
 
 /* Error message when there is an issue with the store address preventing an action (e.g. reader connection.) */
-"The store address is incomplete or missing, please update it before continuing." = "The store address is incomplete or missing, please update it before continuing.";
+"The store address is incomplete or missing, please update it before continuing." = "عنوان المتجر غير مكتمل أو مفقود، يرجى تحديثه قبل المتابعة.";
 
 /* Error message when there is an issue with the store postal code preventing an action (e.g. reader connection.) */
-"The store postal code is invalid or missing, please update it before continuing." = "The store postal code is invalid or missing, please update it before continuing.";
+"The store postal code is invalid or missing, please update it before continuing." = "الرمز البريدي للمتجر غير صالح أو مفقود، يرجى تحديثه قبل المتابعة.";
 
 /* Error message when the system cancels a command. */
-"The system canceled the command unexpectedly - please try again" = "The system canceled the command unexpectedly - please try again";
+"The system canceled the command unexpectedly - please try again" = "قام النظام بإلغاء الأمر بشكل غير متوقع - يرجى المحاولة مجددًا";
 
 /* Error message when the card reader service experiences an unexpected software error. */
-"The system experienced an unexpected software error" = "The system experienced an unexpected software error";
+"The system experienced an unexpected software error" = "واجه النظام خطأ غير متوقع في برنامج";
 
 /* Error message when the card reader service is busy executing another command. */
-"The system is busy executing another command - please try again" = "The system is busy executing another command - please try again";
+"The system is busy executing another command - please try again" = "النظام مشغول في تنفيذ أمر آخر - يرجى المحاولة مجددًا";
 
 /* Message for the error alert when fetching system status report fails */
 "The system status report for your site cannot be fetched at the moment. Please try again." = "يتعذر إحضار تقرير حالة نظام موقعك في هذه اللحظة. يُرجى المحاولة مرة أخرى.";
 
 /* Message when the presented card postal code doesn't match the order postal code. */
-"The transaction postal code and card postal code do not match. Try another means of payment" = "The transaction postal code and card postal code do not match. Try another means of payment";
+"The transaction postal code and card postal code do not match. Try another means of payment" = "الرمز البريدي للمعاملة والرمز البريدي للبطاقة غير متطابقين تجربة وسائل دفع أخرى";
 
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "يتعذر إنشاء المجموعة.";
@@ -4198,7 +4198,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "There was a problem blocking posts from the specified site." = "حدثت مشكلة أثناء حظر المقالات من الموقع المحدد.";
 
 /* A general error message shown to the user when there was an API communication failure. */
-"There was a problem communicating with the site." = "There was a problem communicating with the site.";
+"There was a problem communicating with the site." = "حدثت مشكلة في أثناء الاتصال بالموقع.";
 
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "حدثت مشكلة أثناء إزالة حظر الموقع المحدد.";
@@ -4242,7 +4242,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "This Year" = "هذا العام";
 
 /* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
-"This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this." = "This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this.";
+"This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this." = "يلزم هذا التطبيق صلاحية للوصول إلى البلوتوث للاتصال بقارئ البطاقة، يُرجى تغيير إعدادات الخصوصية إذا كنت ترغب في السماح بهذا.";
 
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "يتطلب هذا التطبيق تثبيت WooCommerce 3.5 على خادمك، ولن يعمل بشكل سليم من دونه. يمكنك التحديث في أقرب وقت ممكن للاستمرار في استخدام هذا التطبيق.";
@@ -4251,7 +4251,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "يدعم هذا التطبيق رُتب أعضاء المسؤول ومدير المتجر فقط. يرجى الاتصال بمالك مخزنك لترقية رتبتك.";
 
 /* Message when a card requires a PIN code and we have no means of entering such a code. */
-"This card requires a PIN code and thus cannot be processed. Try another means of payment" = "This card requires a PIN code and thus cannot be processed. Try another means of payment";
+"This card requires a PIN code and thus cannot be processed. Try another means of payment" = "تتطلب هذه البطاقة رمز PIN، ولهذا السبب تتعذر معالجتها. تجربة وسائل دفع أخرى";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "عنوان البريد الإلكتروني هذا غير مسجَّل على وردبرس. كوم.";
@@ -4397,10 +4397,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try Again" = "حاول مرّة اخرى";
 
 /* Message from the in-person payment card reader prompting user to retry a payment using a different card */
-"Try Another Card" = "Try Another Card";
+"Try Another Card" = "تجربة بطاقة أخرى";
 
 /* Message from the in-person payment card reader prompting user to retry a payment using a different method, e.g. swipe, tap, insert */
-"Try Another Read Method" = "Try Another Read Method";
+"Try Another Read Method" = "تجربة طريقة قارئ أخرى";
 
 /* Button to try to collect a payment again. Presented to users after a collecting a payment fails */
 "Try Collecting Again" = "محاولة الجمع مجددًا";
@@ -4413,7 +4413,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try again" = "حاول مرة أخرى";
 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
-"Try another means of payment" = "Try another means of payment";
+"Try another means of payment" = "تجربة وسائل دفع أخرى";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "حاول ببريد إلكتروني آخر";
@@ -4422,7 +4422,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try with the site address" = "حاول بعنوان الموقع";
 
 /* Message when a card is declined due to a potentially temporary problem. */
-"Trying again may succeed, or try another means of payment" = "Trying again may succeed, or try another means of payment";
+"Trying again may succeed, or try another means of payment" = "قد تنجح المحاولة مجددًا أو قم بتجربة وسائل دفع أخرى";
 
 /* Settings > Manage Card Reader > Connect > Hint to power on reader */
 "Turn card reader on and place it next to mobile device" = "تشغيل قارئ البطاقة ووضعه بجوار الجهاز المحمول";
@@ -4444,10 +4444,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable To Connect" = "يتعذر الاتصال";
 
 /* Error message when Bluetooth is not enabled or available. */
-"Unable to access Bluetooth - please enable Bluetooth and try again" = "Unable to access Bluetooth - please enable Bluetooth and try again";
+"Unable to access Bluetooth - please enable Bluetooth and try again" = "يتعذر الوصول إلى البلوتوث - يرجى تمكين البلوتوث والمحاولة مجددًا";
 
 /* Error message when location services is not enabled for this application. */
-"Unable to access Location Services - please enable Location Services and try again" = "Unable to access Location Services - please enable Location Services and try again";
+"Unable to access Location Services - please enable Location Services and try again" = "يتعذر الوصول إلى خدمات الموقع - يرجى تمكين خدمات الموقع والمحاولة مجددًا";
 
 /* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number}. Parameters: %1$d - order number */
 "Unable to add note to order #%1$d" = "تتعذر إضافة ملحوظة إلى الطلب #⁦%1$d⁩";
@@ -4459,19 +4459,19 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to change status of order #%1$d" = "يتعذر تغيير حالة الطلب رقم ⁦%1$d⁩";
 
 /* Error message when communication with the card reader is disrupted. */
-"Unable to communicate with reader - please try again" = "Unable to communicate with reader - please try again";
+"Unable to communicate with reader - please try again" = "يتعذر الاتصال بالقارئ - يرجى المحاولة مجددًا";
 
 /* Error message when the card reader service attempts to connect to a reader without discovering it first. */
-"Unable to connect to card reader - card reader was not correctly discovered - please try again" = "Unable to connect to card reader - card reader was not correctly discovered - please try again";
+"Unable to connect to card reader - card reader was not correctly discovered - please try again" = "يتعذر الاتصال بقارئ البطاقة - لم يتم اكتشاف قارئ البطاقة بشكل صحيح - يرجى المحاولة مجددًا";
 
 /* Error message when attempting to connect to a card reader which is already in use. */
-"Unable to connect to card reader - the card reader is already in use" = "Unable to connect to card reader - the card reader is already in use";
+"Unable to connect to card reader - the card reader is already in use" = "يتعذر الاتصال بقارئ البطاقة - قارئ البطاقة قيد الاستخدام بالفعل";
 
 /* Error message when a card reader is already connected and we were not expecting one. */
-"Unable to connect to reader - another reader is already connected" = "Unable to connect to reader - another reader is already connected";
+"Unable to connect to reader - another reader is already connected" = "يتعذر الاتصال بالقارئ - قارئ آخر متصل بالفعل";
 
 /* Error message the card reader battery level is too low to connect to the phone or tablet. */
-"Unable to connect to reader - the reader has a critically low battery - charge the reader and try again." = "Unable to connect to reader - the reader has a critically low battery - charge the reader and try again.";
+"Unable to connect to reader - the reader has a critically low battery - charge the reader and try again." = "يتعذر الاتصال بالقارئ - يعاني القارئ من بطارية منخفضة للغاية - اشحن القارئ، وحاول مجددًا.";
 
 /* Notice displayed when order creation fails */
 "Unable to create new order" = "يتعذر إنشاء طلب جديد";
@@ -4501,19 +4501,19 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to load product attributes" = "يتعذر تحميل سمات المنتج";
 
 /* Notice displayed when taxes cannot be synced for new order */
-"Unable to load taxes for order" = "Unable to load taxes for order";
+"Unable to load taxes for order" = "يتعذر تحميل الضرائب الخاصة بالطلب";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "Unable to mark review as %@";
 
 /* Error message when the card reader cannot be used to perform the requested task. */
-"Unable to perform request with the connected reader - unsupported feature - please try again with another reader" = "Unable to perform request with the connected reader - unsupported feature - please try again with another reader";
+"Unable to perform request with the connected reader - unsupported feature - please try again with another reader" = "يتعذر تنفيذ الطلب باستخدام القارئ المتصل - ميزة غير مدعومة - يرجى المحاولة مجددًا باستخدام قارئ آخر";
 
 /* Error message when the application is so out of date that the backend refuses to work with it. */
-"Unable to perform software request - please update this application and try again" = "Unable to perform software request - please update this application and try again";
+"Unable to perform software request - please update this application and try again" = "يتعذر تنفيذ طلب البرنامج - يرجى تحديث هذا التطبيق والمحاولة مجددًا";
 
 /* Error message when the payment intent is invalid. */
-"Unable to process payment due to invalid data - please try again" = "Unable to process payment due to invalid data - please try again";
+"Unable to process payment due to invalid data - please try again" = "تتعذر معالجة عملية الدفع بسبب بيانات غير صالحة - يرجى المحاولة مجددًا";
 
 /* Error message when the order amount is below the minimum amount allowed. */
 "Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@" = "تتعذر معالجة الدفع. إجمالي مبلغ الطلب أقل من الحد الأدنى للمبلغ الذي يمكنك دفعه الذي يبلغ %1$@";
@@ -4522,13 +4522,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to process payment. Order total amount is not valid." = "تتعذر معالجة الدفع. إجمالي مبلغ الطلب غير صالح.";
 
 /* Error message when the card reader times out while reading a card. */
-"Unable to read card - the system timed out - please try again" = "Unable to read card - the system timed out - please try again";
+"Unable to read card - the system timed out - please try again" = "تتعذر قراءة البطاقة - انتهت مهلة النظام - يرجى المحاولة مجددًا";
 
 /* Error message when the card reader is unable to read any chip on the inserted card. */
-"Unable to read inserted card - please try removing and inserting card again" = "Unable to read inserted card - please try removing and inserting card again";
+"Unable to read inserted card - please try removing and inserting card again" = "تتعذر قراءة البطاقة التي تم إدراجها - يرجى محاولة إزالة البطاقة وإدراجها مجددًا";
 
 /* Error message when the card reader is unable to read a swiped card. */
-"Unable to read swiped card - please try swiping again" = "Unable to read swiped card - please try swiping again";
+"Unable to read swiped card - please try swiping again" = "تتعذر قراءة البطاقة التي تم تمريرها - يرجى محاولة تمريرها مجددًا";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "يتعذر قراءة موقع WordPress على معرف URL ذلك. انقر على \"هل تحتاج إلى مساعدة إضافية\" لعرض الأسئلة المتداولة.";
@@ -4543,16 +4543,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to save changes to the payment method" = "يتعذر حفظ التغييرات على طريقة الدفع";
 
 /* Error message when Bluetooth Low Energy is not supported on the user device. */
-"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device" = "Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device";
+"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device" = "يتعذر البحث عن قارئ البطاقة - البلوتوث منخفض الطاقة غير مدعوم على هذا الجهاز - يرجى استخدام جهاز مختلف";
 
 /* Error message when Bluetooth scan times out during reader discovery. */
-"Unable to search for card readers - Bluetooth timed out - please try again" = "Unable to search for card readers - Bluetooth timed out - please try again";
+"Unable to search for card readers - Bluetooth timed out - please try again" = "يتعذر البحث عن قارئ البطاقة - انتهت مهلة البلوتوث - يرجى المحاولة مجددًا";
 
 /* Error notice title when we fail to update an address in the edit address screen. */
 "Unable to update address." = "يتعذر تحديث العنوان.";
 
 /* Error message when the card reader battery level is too low to safely perform a software update. */
-"Unable to update card reader software - the reader battery is too low" = "Unable to update card reader software - the reader battery is too low";
+"Unable to update card reader software - the reader battery is too low" = " يتعذر تحديث برنامج قارئ البطاقة - حيث إن بطارية القارئ منخفضة للغاية";
 
 /* Title for the error screen when In-Person Payments is unavailable */
 "Unable to verify In-Person Payments for this store" = "يتعذر التحقُّق من المدفوعات الشخصية لهذا المخزن";
@@ -4792,7 +4792,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "View add-ons from your device!" = "اعرض الوظائف الإضافية من جهازك!";
 
 /* Title of the feedback banner on the coupon list screen */
-"View and edit coupons" = "View and edit coupons";
+"View and edit coupons" = "عرض القسائم وتحريرها";
 
 /* The action to update downloadable files settings for a product */
 "View downloadable file settings" = "عرض إعدادات الملف القابلة للتنزيل";
@@ -4875,10 +4875,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "We don’t support In-Person Payments in your country" = "لا ندعم المدفوعات الشخصية في بلدك";
 
 /* Title for the error screen when In-Person Payments is not supported in a specific country */
-"We don’t support In-Person Payments with Stripe in %1$@" = "We don’t support In-Person Payments with Stripe in %1$@";
+"We don’t support In-Person Payments with Stripe in %1$@" = "لا ندعم المدفوعات الشخصية باستخدام Stripe في %1$@";
 
 /* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country */
-"We don’t support In-Person Payments with Stripe in your country" = "We don’t support In-Person Payments with Stripe in your country";
+"We don’t support In-Person Payments with Stripe in your country" = "لا ندعم المدفوعات الشخصية باستخدام Stripe في بلدك";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "لقد أجرينا تعديلاً طفيفًا على العنوان الذي تم إدخاله. إذا كان صحيحًا، فيرجى استخدام العنوان المقترح لضمان التوصيل الدقيق.";
@@ -4945,7 +4945,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Welcome to the world’s most popular website builder." = "مرحبًا بك في منشئ مواقع الويب الأكثر رواجًا في العالم.";
 
 /* Content of the feedback banner on the coupon list screen */
-"We’ve been working on making it possible to view and edit coupons from your device!" = "We’ve been working on making it possible to view and edit coupons from your device!";
+"We’ve been working on making it possible to view and edit coupons from your device!" = "لقد كنا نعمل على إتاحة عرض القسائم وتحريرها من جهازك!";
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "ما البريد الإلكتروني الذي أستخدمه لتسجيل الدخول؟";

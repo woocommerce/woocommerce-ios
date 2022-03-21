@@ -1,0 +1,3 @@
+Du kommer att märka att kreditkortsuppgifter för personliga betalningar nu visas när du gör en återbetalning. Detta meddelar dina kunder exakt vart pengarna tar vägen.
+
+Vissa nya funktioner är inte helt redo för lansering än, men du kan testa dem i förväg. Skapa beställningar, visa rabattkoder med mera. Gå till fliken Meny, välj Inställningar och sedan Experimentella inställningar för att aktivera funktionen. Vi välkomnar feedback om appen, särskilt rörande de nya funktioner som vi arbetar med och tillhandahåller tidig åtkomst till.

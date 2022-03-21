@@ -1,0 +1,3 @@
+Detail kartu kredit untuk pembayaran langsung kini ditunjukkan saat pengembalian dana. Dengan demikian, pelanggan Anda tahu pasti ke mana dana dikirimkan.
+
+Beberapa fitur baru belum siap untuk diluncurkan secara resmi, tetapi Anda dapat mencobanya lebih awal. Buat pesanan, lihat kupon, dan lain-lain. Arahkan kursor ke tab Menu, pengaturan, dan pengaturan Eksperimental untuk mengaktifkannya. Kami menyambut feedback Anda tentang aplikasi, terutama fitur baru yang sedang kami kerjakan dan dapat Anda akses lebih awal.

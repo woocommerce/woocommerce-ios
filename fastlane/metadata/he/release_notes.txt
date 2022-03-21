@@ -1,0 +1,3 @@
+You’ll notice the credit card details for an in-person payment are now shown when making a refund. This will let you tell your customers exactly where the funds will go!
+
+A few new features aren’t quite ready for the mainstream, but you can check them out early! Create orders, view coupons, and more! Head to the Menu tab, settings, and Experimental settings to enable it. נשמח לשמוע מה דעתך על האפליקציה, במיוחד על האפשרויות החדשות שאנחנו מפתחים ונותנים אליהן גישה מוקדמת.

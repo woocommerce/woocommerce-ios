@@ -30,7 +30,7 @@ struct EnableAnalyticsView: View {
         paragraphStyle.alignment = .center
 
         let attributedString = NSMutableAttributedString(
-            string: String(format: "%@ %@", Localization.needSomeHelp, linkContent),
+            string: .localizedStringWithFormat(Localization.needSomeHelp, linkContent),
             attributes: [.font: font,
                          .foregroundColor: foregroundColor,
                          .paragraphStyle: paragraphStyle,
@@ -145,7 +145,10 @@ private extension EnableAnalyticsView {
             "Enable WooCommerce Analytics to see missing stats for your store.",
             comment: "Description about WooCommerce Analytics on the enable analytics screen"
         )
-        static let needSomeHelp = NSLocalizedString("Need some help?", comment: "Message on enable analytics screen for support")
+        static let needSomeHelp = NSLocalizedString(
+            "Need some help? %1$@",
+            comment: "Message format on enable analytics screen for support. The %@ placeholder is a URL with more information."
+        )
         static let contactSupport = NSLocalizedString("Contact support", comment: "Action button to contact support on enable analytics screen")
         static let enableAction = NSLocalizedString("Enable analytics", comment: "Action title to enable Analytics for a store")
         static let dismissAction = NSLocalizedString("Not now", comment: "Action title to dismiss enabling Analytics for a store")

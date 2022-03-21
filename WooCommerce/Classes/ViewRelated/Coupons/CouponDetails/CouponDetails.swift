@@ -26,6 +26,7 @@ struct CouponDetails: View {
     @State private var showingShareSheet: Bool = false
     @State private var showingUsageDetails: Bool = false
     @State private var showingAmountLoadingErrorPrompt: Bool = false
+    @State private var showingEnableAnalytics: Bool = false
 
     // Tracks the scale of the view due to accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
@@ -166,6 +167,13 @@ struct CouponDetails: View {
             }
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
+            .sheet(isPresented: $showingEnableAnalytics) {
+                EnableAnalyticsView(viewModel: .init(siteID: viewModel.siteID),
+                                    presentingController: noticePresenter.presentingViewController,
+                                    completionHandler: {
+                    viewModel.loadCouponReport()
+                })
+            }
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -224,7 +232,7 @@ struct CouponDetails: View {
 
     private func showAmountLoadingErrorDetails() {
         if viewModel.hasWCAnalyticsDisabled {
-            // TODO-6360: show modal for disabled analytics
+            showingEnableAnalytics = true
         } else {
             showingAmountLoadingErrorPrompt = true
         }

@@ -4,6 +4,8 @@ import Yosemite
 /// View model for `CouponDetails` view
 ///
 final class CouponDetailsViewModel: ObservableObject {
+    let siteID: Int64
+
     /// Code of the coupon
     ///
     @Published private(set) var couponCode: String = ""
@@ -70,6 +72,7 @@ final class CouponDetailsViewModel: ObservableObject {
     init(coupon: Coupon,
          stores: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+        self.siteID = coupon.siteID
         self.coupon = coupon
         self.stores = stores
         self.currencySettings = currencySettings
@@ -95,7 +98,7 @@ final class CouponDetailsViewModel: ObservableObject {
         hasErrorLoadingAmount = false
         // Get "ancient" date to fetch all possible reports
         let startDate = Date(timeIntervalSince1970: 1)
-        let action = CouponAction.loadCouponReport(siteID: coupon.siteID, couponID: coupon.couponID, startDate: startDate) { [weak self] result in
+        let action = CouponAction.loadCouponReport(siteID: siteID, couponID: coupon.couponID, startDate: startDate) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let report):

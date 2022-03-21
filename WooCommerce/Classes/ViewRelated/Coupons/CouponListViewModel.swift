@@ -166,6 +166,7 @@ private extension CouponListViewModel {
 
         do {
             try resultsController.performFetch()
+            buildCouponViewModels()
         } catch {
             ServiceLocator.crashLogging.logError(error)
         }

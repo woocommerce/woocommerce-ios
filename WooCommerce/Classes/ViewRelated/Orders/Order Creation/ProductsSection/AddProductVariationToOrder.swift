@@ -57,7 +57,7 @@ struct AddProductVariationToOrder: View {
                 Button {
                     presentation.wrappedValue.dismiss()
                 } label: {
-                    Image(uiImage: .chevronLeftImage.imageFlippedForRightToLeftLayoutDirection())
+                    Image(uiImage: .chevronLeftImage).flipsForRightToLeftLayoutDirection(true)
                 }
                 .accessibilityLabel(Text(Localization.backButtonAccessibilityLabel))
             }

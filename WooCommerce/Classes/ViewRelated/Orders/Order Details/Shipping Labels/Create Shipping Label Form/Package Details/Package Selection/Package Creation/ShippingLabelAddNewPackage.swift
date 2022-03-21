@@ -37,7 +37,7 @@ struct ShippingLabelAddNewPackage: View {
                     Button {
                         presentation.wrappedValue.dismiss()
                     } label: {
-                        Image(uiImage: .chevronLeftImage.imageFlippedForRightToLeftLayoutDirection())
+                        Image(uiImage: .chevronLeftImage).flipsForRightToLeftLayoutDirection(true)
                     }
                 }
                 // Done button

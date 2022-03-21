@@ -23,6 +23,7 @@ struct OrderStatusSection: View {
                     .padding(.vertical, Layout.StatusBadge.verticalPadding)
                     .background(Color(viewModel.statusBadgeViewModel.color))
                     .cornerRadius(Layout.StatusBadge.cornerRadius)
+                    .padding(.vertical, Layout.StatusBadge.outsideVerticalPadding)
 
                 Spacer()
 
@@ -54,6 +55,7 @@ private extension OrderStatusSection {
         enum StatusBadge {
             static let horizontalPadding: CGFloat = 12.0
             static let verticalPadding: CGFloat = 4.0
+            static let outsideVerticalPadding: CGFloat = 10.0
             static let cornerRadius: CGFloat = 4.0
         }
         static let linkButtonTrailingPadding: CGFloat = 22.0

@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+8.9
+-----
+
+
 8.8
 -----
 - [*] Updates the app's About screen to be consistent with Automattic's other mobile apps. [https://github.com/woocommerce/woocommerce-ios/pull/6421]

@@ -110,7 +110,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
                         self.readerUpdateProgress = 0
                         ServiceLocator.analytics.track(
                             event: WooAnalyticsEvent.InPersonPayments.cardReaderSoftwareUpdateStarted(
-                                forGatewayID: self.connectedGatewayID, updateType: self.updateType
+                                forGatewayID: self.connectedGatewayID, updateType: self.updateType, countryCode: self.configuration.countryCode
                             )
                         )
                     case .installing(progress: let progress):
@@ -124,7 +124,10 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
                         self.readerUpdateError = error
                         ServiceLocator.analytics.track(
                             event: WooAnalyticsEvent.InPersonPayments.cardReaderSoftwareUpdateFailed(
-                                forGatewayID: self.connectedGatewayID, updateType: self.updateType, error: error
+                                forGatewayID: self.connectedGatewayID,
+                                updateType: self.updateType,
+                                error: error,
+                                countryCode: self.configuration.countryCode
                             )
                         )
                         self.completeCardReaderUpdate(success: false)
@@ -133,7 +136,9 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
                         self.softwareUpdateCancelable = nil
                         ServiceLocator.analytics.track(
                             event: WooAnalyticsEvent.InPersonPayments.cardReaderSoftwareUpdateSuccess(
-                                forGatewayID: self.connectedGatewayID, updateType: self.updateType
+                                forGatewayID: self.connectedGatewayID,
+                                updateType: self.updateType,
+                                countryCode: self.configuration.countryCode
                             )
                         )
                         // If we were installing a software update, introduce a small delay so the user can
@@ -189,7 +194,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     func startCardReaderUpdate() {
         ServiceLocator.analytics.track(
             event: WooAnalyticsEvent.InPersonPayments.cardReaderSoftwareUpdateTapped(
-                forGatewayID: self.connectedGatewayID, updateType: self.updateType
+                forGatewayID: connectedGatewayID, updateType: updateType, countryCode: configuration.countryCode
             )
         )
         let action = CardPresentPaymentAction.startCardReaderUpdate
@@ -205,7 +210,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
             guard let self = self else { return }
             ServiceLocator.analytics.track(
                 event: WooAnalyticsEvent.InPersonPayments.cardReaderSoftwareUpdateCancelTapped(
-                    forGatewayID: self.connectedGatewayID, updateType: self.updateType
+                    forGatewayID: self.connectedGatewayID, updateType: self.updateType, countryCode: self.configuration.countryCode
                 )
             )
             self.softwareUpdateCancelable?.cancel(completion: { [weak self] result in
@@ -216,7 +221,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
                 } else {
                     ServiceLocator.analytics.track(
                         event: WooAnalyticsEvent.InPersonPayments.cardReaderSoftwareUpdateCanceled(
-                            forGatewayID: self.connectedGatewayID, updateType: self.updateType
+                            forGatewayID: self.connectedGatewayID, updateType: self.updateType, countryCode: self.configuration.countryCode
                         )
                     )
                     self.completeCardReaderUpdate(success: false)

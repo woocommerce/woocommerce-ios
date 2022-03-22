@@ -487,7 +487,8 @@ private extension CardReaderConnectionController {
                 ServiceLocator.analytics.track(
                     event: WooAnalyticsEvent.InPersonPayments.cardReaderSoftwareUpdateCancelTapped(
                         forGatewayID: self.gatewayID,
-                        updateType: .required
+                        updateType: .required,
+                        countryCode: self.configuration.countryCode
                     )
                 )
                 cancelable.cancel { result in
@@ -497,7 +498,8 @@ private extension CardReaderConnectionController {
                         ServiceLocator.analytics.track(
                             event: WooAnalyticsEvent.InPersonPayments.cardReaderSoftwareUpdateCanceled(
                                 forGatewayID: self.gatewayID,
-                                updateType: .required
+                                updateType: .required,
+                                countryCode: self.configuration.countryCode
                             )
                         )
                     }

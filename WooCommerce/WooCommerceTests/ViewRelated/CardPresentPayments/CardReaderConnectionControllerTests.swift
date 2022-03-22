@@ -48,7 +48,8 @@ class CardReaderConnectionControllerTests: XCTestCase {
             forSiteID: sampleSiteID,
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
-            alertsProvider: mockAlerts
+            alertsProvider: mockAlerts,
+            configuration: Mocks.configuration
         )
 
         // When
@@ -82,7 +83,8 @@ class CardReaderConnectionControllerTests: XCTestCase {
             forSiteID: sampleSiteID,
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
-            alertsProvider: mockAlerts
+            alertsProvider: mockAlerts,
+            configuration: Mocks.configuration
         )
 
         // When
@@ -124,7 +126,8 @@ class CardReaderConnectionControllerTests: XCTestCase {
             forSiteID: sampleSiteID,
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
-            alertsProvider: mockAlerts
+            alertsProvider: mockAlerts,
+            configuration: Mocks.configuration
         )
 
         // When
@@ -159,7 +162,8 @@ class CardReaderConnectionControllerTests: XCTestCase {
             forSiteID: sampleSiteID,
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
-            alertsProvider: mockAlerts
+            alertsProvider: mockAlerts,
+            configuration: Mocks.configuration
         )
 
         // When
@@ -195,7 +199,8 @@ class CardReaderConnectionControllerTests: XCTestCase {
             forSiteID: sampleSiteID,
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
-            alertsProvider: mockAlerts
+            alertsProvider: mockAlerts,
+            configuration: Mocks.configuration
         )
 
         // When
@@ -233,7 +238,8 @@ class CardReaderConnectionControllerTests: XCTestCase {
             forSiteID: sampleSiteID,
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
-            alertsProvider: mockAlerts
+            alertsProvider: mockAlerts,
+            configuration: Mocks.configuration
         )
 
         // When
@@ -275,7 +281,8 @@ class CardReaderConnectionControllerTests: XCTestCase {
             forSiteID: sampleSiteID,
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
-            alertsProvider: mockAlerts
+            alertsProvider: mockAlerts,
+            configuration: Mocks.configuration
         )
 
         // When
@@ -310,7 +317,8 @@ class CardReaderConnectionControllerTests: XCTestCase {
             forSiteID: sampleSiteID,
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
-            alertsProvider: mockAlerts
+            alertsProvider: mockAlerts,
+            configuration: Mocks.configuration
         )
 
         // When
@@ -348,7 +356,8 @@ class CardReaderConnectionControllerTests: XCTestCase {
             forSiteID: sampleSiteID,
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
-            alertsProvider: mockAlerts
+            alertsProvider: mockAlerts,
+            configuration: Mocks.configuration
         )
 
         // When
@@ -386,7 +395,8 @@ class CardReaderConnectionControllerTests: XCTestCase {
             forSiteID: sampleSiteID,
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
-            alertsProvider: mockAlerts
+            alertsProvider: mockAlerts,
+            configuration: Mocks.configuration
         )
 
         // When
@@ -400,5 +410,11 @@ class CardReaderConnectionControllerTests: XCTestCase {
 
         // Then
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+}
+
+private extension CardReaderConnectionControllerTests {
+    enum Mocks {
+        static let configuration = CardPresentPaymentsConfiguration(country: "US", canadaEnabled: true)
     }
 }

@@ -20,6 +20,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analyticsProvider))
 
         viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
+                                                         configuration: Mocks.configuration,
                                                          delayToShowUpdateSuccessMessage: .milliseconds(1))
     }
 
@@ -36,6 +37,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
             XCTAssertTrue(shouldShow == .isFalse)
             expectation.fulfill()
         },
+                                                     configuration: Mocks.configuration,
                                                      delayToShowUpdateSuccessMessage: .milliseconds(1))
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
@@ -48,13 +50,14 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
             XCTAssertTrue(shouldShow == .isTrue)
             expectation.fulfill()
         },
+                                                         configuration: Mocks.configuration,
                                                          delayToShowUpdateSuccessMessage: .milliseconds(1))
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     func test_view_model_correctly_formats_connected_card_reader_battery_level() {
-        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
+        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil, configuration: Mocks.configuration)
         XCTAssertEqual(viewModel.connectedReaderBatteryLevel, "50% Battery")
     }
 
@@ -67,12 +70,14 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         ServiceLocator.setStores(mockStoresManager)
 
         viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
+                                                         configuration: Mocks.configuration,
                                                          delayToShowUpdateSuccessMessage: .milliseconds(1))
         XCTAssertEqual(viewModel.connectedReaderBatteryLevel, "Unknown Battery Level")
     }
 
     func test_view_model_correctly_formats_connected_card_reader_software_version() {
         let viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
+                                                             configuration: Mocks.configuration,
                                                              delayToShowUpdateSuccessMessage: .milliseconds(1))
         XCTAssertEqual(viewModel.connectedReaderSoftwareVersion, "Version: 1.00.03.34-SZZZ_Generic_v45-300001")
     }
@@ -86,6 +91,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         ServiceLocator.setStores(mockStoresManager)
 
         viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
+                                                         configuration: Mocks.configuration,
                                                          delayToShowUpdateSuccessMessage: .milliseconds(1))
         XCTAssertEqual(viewModel.connectedReaderSoftwareVersion, "Unknown Software Version")
     }
@@ -131,6 +137,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         ServiceLocator.setStores(mockStoresManager)
 
         viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
+                                                         configuration: Mocks.configuration,
                                                          delayToShowUpdateSuccessMessage: .milliseconds(1))
 
         var updateDidBegin = false
@@ -402,5 +409,11 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.optionalReaderUpdateAvailable)
+    }
+}
+
+private extension CardReaderSettingsConnectedViewModelTests {
+    enum Mocks {
+        static let configuration = CardPresentPaymentsConfiguration(country: "US", canadaEnabled: true)
     }
 }

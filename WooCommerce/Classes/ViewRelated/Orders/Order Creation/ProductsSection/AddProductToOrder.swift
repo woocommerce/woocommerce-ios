@@ -73,8 +73,10 @@ struct AddProductToOrder: View {
                     DisclosureIndicator()
                 }
             }
+            .accessibilityHint(Localization.variableProductRowAccessibilityHint)
         } else {
             ProductRow(viewModel: rowViewModel)
+                .accessibilityHint(Localization.productRowAccessibilityHint)
                 .onTapGesture {
                     viewModel.selectProduct(rowViewModel.productOrVariationID)
                     isPresented.toggle()
@@ -95,6 +97,12 @@ private extension AddProductToOrder {
         static let emptyStateMessage = NSLocalizedString("No products found",
                                                          comment: "Message displayed if there are no products to display in the Add Product screen")
         static let searchPlaceholder = NSLocalizedString("Search Products", comment: "Placeholder on the search field to search for a specific product")
+        static let productRowAccessibilityHint = NSLocalizedString("Adds product to order.",
+                                                                   comment: "Accessibility hint for selecting a product in the Add Product screen")
+        static let variableProductRowAccessibilityHint = NSLocalizedString(
+            "Opens list of product variations.",
+            comment: "Accessibility hint for selecting a variable product in the Add Product screen"
+        )
     }
 }
 

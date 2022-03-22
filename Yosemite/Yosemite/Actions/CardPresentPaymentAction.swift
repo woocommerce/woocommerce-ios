@@ -62,6 +62,13 @@ public enum CardPresentPaymentAction: Action {
     /// Cancels an active attempt to collect a payment.
     case cancelPayment(onCompletion: ((Result<Void, Error>) -> Void)?)
 
+    /// Refund payment of an order, client side. Only for use on Interac payments
+    ///
+    case refundPayment(parameters: RefundParameters)
+
+    /// Cancels a refund, if one is in progress
+    case cancelRefund
+
     /// Check the state of available software updates.
     case observeCardReaderUpdateState(onCompletion: (AnyPublisher<CardReaderSoftwareUpdateState, Never>) -> Void)
 

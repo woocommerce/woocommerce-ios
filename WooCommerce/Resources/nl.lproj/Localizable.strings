@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-03-08 11:32:22+0000 */
+/* Translation-Revision-Date: 2022-03-18 23:00:01+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -41,7 +41,7 @@
 "%1$@ and %2$@" = "%1$@ en %2$@";
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
-"%1$@ card ending %2$@" = "%1$@ card ending %2$@";
+"%1$@ card ending %2$@" = "%1$@ eindigt op %2$@";
 
 /* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
 "%1$@ excl. %2$@" = "%1$@ excl. %2$@";
@@ -243,7 +243,7 @@
 "A customs form must be printed and included on this international shipment" = "Er moet een douaneformulier worden afgedrukt en worden bijgevoegd bij deze internationale verzending";
 
 /* Message when attempting to pay for a test transaction with a live card. */
-"A live card was used on a site in test mode. Use a test card instead." = "A live card was used on a site in test mode. Use a test card instead.";
+"A live card was used on a site in test mode. Use a test card instead." = "Er werd een live kaart gebruikt op een site in de testmodus. Gebruik in plaats daarvan een testkaart.";
 
 /* Error message when there was a network error checking In-Person Payments requirements */
 "A network error occurred. Please check your connection and try again." = "Er is een netwerkfout opgetreden. Controleer je verbinding en probeer het nogmaals.";
@@ -291,7 +291,7 @@
 "About the App" = "Over de app";
 
 /* Reads as 'Account Type'. Part of the mandatory data in receipts */
-"Account Type" = "Account Type";
+"Account Type" = "Type account";
 
 /* Title for the error screen when a Card Present Payments extension is installed but not activated */
 "Activate %1$@" = "Activeer %1$@";
@@ -336,7 +336,7 @@
 "Add Downloadable File" = "Downloadbaar bestand toevoegen";
 
 /* Title for the Fee screen during order creation */
-"Add Fee" = "Add Fee";
+"Add Fee" = "Kosten toevoegen";
 
 /* Title text of the button that adds fees when creating a new order */
 "Add Fees" = "Toeslagen toevoegen";
@@ -407,7 +407,7 @@
 "Add a tracking" = "Tracking toevoegen";
 
 /* Cell text in Add / Edit variation when there are no images. */
-"Add a variation image" = "Add a variation image";
+"Add a variation image" = "Voeg een variatie-afbeelding toe";
 
 /* Button title in the Shipping Label Payment Method screen if there is an existing payment method */
 "Add another credit card" = "Een andere creditcard toevoegen";
@@ -539,23 +539,23 @@
 "Amount" = "Bedrag";
 
 /* Title for the amount field on the Fee Details screen during order creationParameters: %1$@ - fee type (percent sign or currency symbol) */
-"Amount (%1$@)" = "Amount (%1$@)";
+"Amount (%1$@)" = "Bedrag (%1$@)";
 
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
 "Amount Eligible For Refund" = "Bedrag dat wordt terugbetaald";
 
 /* Line description for 'Amount Paid' cart total on the receipt
    Title of 'Amount Paid' section in the receipt */
-"Amount Paid" = "Amount Paid";
+"Amount Paid" = "Betaald bedrag";
 
 /* A failure reason for when an error HTTP status code was returned from the site, with the specific error code. */
-"An HTTP error code %i was returned." = "An HTTP error code %i was returned.";
+"An HTTP error code %i was returned." = "Er is een HTTP-foutcode %i gegeven.";
 
 /* A failure reason for when an error HTTP status code was returned from the site. */
-"An HTTP error code was returned." = "An HTTP error code was returned.";
+"An HTTP error code was returned." = "Er is een HTTP-foutcode gegeven.";
 
 /* Error message when Bluetooth is not enabled for this application. */
-"An error occurred accessing Bluetooth - please enable Bluetooth and try again" = "An error occurred accessing Bluetooth - please enable Bluetooth and try again";
+"An error occurred accessing Bluetooth - please enable Bluetooth and try again" = "Er is een fout opgetreden bij het openen van Bluetooth - schakel Bluetooth in en probeer het opnieuw";
 
 /* An error description explaining that a Menu could not be created. */
 "An error occurred creating the Menu." = "Fout bij aanmaken van het menu.";
@@ -573,16 +573,16 @@
 "An error occurred while processing your request: " = "Er deed zich een fout voor tijdens verwerken van je verzoek:";
 
 /* Message when it looks like a duplicate transaction is being attempted. */
-"An identical transaction was submitted recently. If you wish to continue, try another means of payment" = "An identical transaction was submitted recently. If you wish to continue, try another means of payment";
+"An identical transaction was submitted recently. If you wish to continue, try another means of payment" = "Er is recent een identieke transactie ingediend. Als je door wilt gaan, probeer een andere betaalmethode";
 
 /* Message when an incorrect PIN has been entered too many times. */
-"An incorrect PIN has been entered too many times. Try another means of payment" = "An incorrect PIN has been entered too many times. Try another means of payment";
+"An incorrect PIN has been entered too many times. Try another means of payment" = "Er is te vaak een onjuiste pincode ingevoerd. Probeer een andere betaalmethode";
 
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "Een optionele opmerking om naar de klant te sturen na aankoop";
 
 /* A failure reason for when the error that occured wasn't able to be determined. */
-"An unknown error occurred." = "An unknown error occurred.";
+"An unknown error occurred." = "Er is een onbekende fout opgetreden.";
 
 /* Title of analytics as part of Jetpack benefits. */
 "Analytics" = "Analytische gegevens";
@@ -605,7 +605,7 @@
 "Application Logs" = "Toepassingslogs";
 
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
-"Application Name" = "Application Name";
+"Application Name" = "Toepassingsnaam";
 
 /* Change order status screen - button title to apply selection */
 "Apply" = "Toepassen";
@@ -663,7 +663,7 @@
 "Are you sure you want to remove this variation?" = "Weet je zeker dat je deze variatie wilt verwijderen?";
 
 /* Message displayed in the alert for dismissing all the inbox notes. */
-"Are you sure? Inbox messages will be dismissed forever." = "Are you sure? Inbox messages will be dismissed forever.";
+"Are you sure? Inbox messages will be dismissed forever." = "Weet je het zeker? Inboxberichten zullen voor altijd worden genegeerd.";
 
 /* Placeholder in the Attribute Name row on Rename Attributes screen. */
 "Attribute name" = "Naam eigenschap";
@@ -749,7 +749,7 @@
 
 /* Button title in the action sheet of product variatiosns that shows the bulk update
    Title that appears on top of the bulk update of product variations screen */
-"Bulk Update" = "Bulk Update";
+"Bulk Update" = "Bulkupdate";
 
 /* Title of the text field for editing the button text for an external/affiliate product */
 "Button Text" = "Knoptekst";
@@ -807,10 +807,10 @@
 "Card" = "Kaart";
 
 /* Error message when a card is left in the reader and another transaction started. */
-"Card was left in reader - please remove and reinsert card" = "Card was left in reader - please remove and reinsert card";
+"Card was left in reader - please remove and reinsert card" = "Kaart is in de lezer gelaten - verwijder de kaart en voer hem opnieuw in";
 
 /* Error message when the card is removed from the reader prematurely. */
-"Card was removed too soon - please try transaction again" = "Card was removed too soon - please try transaction again";
+"Card was removed too soon - please try transaction again" = "Kaart is te vroeg verwijderd - probeer de transactie opnieuw";
 
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "Bezorgservice en tarieven";
@@ -969,7 +969,7 @@
 "Connecting to reader" = "Er wordt verbinding gemaakt met lezer";
 
 /* Error message when establishing a connection to the card reader times out. */
-"Connecting to the card reader timed out - ensure it is nearby and charged and then try again" = "Connecting to the card reader timed out - ensure it is nearby and charged and then try again";
+"Connecting to the card reader timed out - ensure it is nearby and charged and then try again" = "Er heeft een time-out plaatsgevonden tijdens het verbinden met de kaartlezer - controleer dat de kaartlezer nabij en opgeladen is en probeer het dan opnieuw";
 
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "Je account koppelen";
@@ -1215,7 +1215,7 @@
 "Date Range" = "Datumbereik";
 
 /* Title of 'Date Paid' section in the receipt */
-"Date paid" = "Date paid";
+"Date paid" = "Datum van betaling";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "Datum van verzending";
@@ -1278,7 +1278,7 @@
 "Discount" = "Korting";
 
 /* Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s) */
-"Discount %1$@" = "Discount %1$@";
+"Discount %1$@" = "Korting %1$@";
 
 /* Title of the Discounted Orders label on Coupon Details screen */
 "Discounted Orders" = "Bestellingen met korting";
@@ -1288,10 +1288,10 @@
 "Dismiss" = "Afbreken";
 
 /* Dismiss All button in Inbox Notes for dismissing all the notes. */
-"Dismiss All" = "Dismiss All";
+"Dismiss All" = "Alles negeren";
 
 /* Title of the alert for dismissing all the inbox notes. */
-"Dismiss all messages" = "Dismiss all messages";
+"Dismiss all messages" = "Alle meldingen negeren";
 
 /* Display label for the product's inventory backorders setting option */
 "Do not allow" = "Niet toestaan";
@@ -1545,7 +1545,7 @@
 "Error in finding the address in Apple Maps" = "Er is een fout opgetreden bij het vinden van het adres op Apple Maps";
 
 /* Message displayed when fail to loading total discounted amount in Coupon Details screen */
-"Error loading data" = "Error loading data";
+"Error loading data" = "Fout bij laden gegevens";
 
 /* Alert title when there is an error requesting shipping label document for printing */
 "Error previewing shipping label" = "Fout bij voorbeeldweergave verzendlabel";
@@ -1588,7 +1588,7 @@
 "Featured Product" = "Uitgelicht product";
 
 /* Title for the Fee Details screen during order creation */
-"Fee" = "Fee";
+"Fee" = "Kosten";
 
 /* Title in the navigation bar when the survey is completed */
 "Feedback Sent!" = "Feedback verzonden!";
@@ -1927,7 +1927,7 @@
 "Insert" = "Invoegen";
 
 /* Message from the in-person payment card reader prompting user to insert their card */
-"Insert Card" = "Insert Card";
+"Insert Card" = "Voer een kaart in";
 
 /* Accessibility label for insert horizontal ruler button on formatting toolbar. */
 "Insert Horizontal Ruler" = "Horizontale liniaal invoeren";
@@ -1936,7 +1936,7 @@
 "Insert Link" = "Link invoeren";
 
 /* Message from the in-person payment card reader prompting user to insert or swipe their card */
-"Insert Or Swipe Card" = "Insert Or Swipe Card";
+"Insert Or Swipe Card" = "Veeg een kaart of voer er een in";
 
 /* Navigates to Install Jetpack screen.
    Title of install action in the Jetpack benefits view. - Title of the Install Jetpack intro view - Title of the Install Jetpack view */
@@ -2292,7 +2292,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Minimum value %@, maximum value %@" = "Minimale waarde %1$@, maximale waarde %2$@";
 
 /* The description in product variations bulk update, of a value, that is different acrossall variations */
-"Mixed" = "Mixed";
+"Mixed" = "Gecombineerd";
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Monitor and approve your product reviews" = "Volg en keur je productbeoordelingen goed";
@@ -2324,7 +2324,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Moves the comment to Trash" = "Verplaatst de reactie naar de prullenbak";
 
 /* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
-"Multiple Contactless Cards Detected" = "Multiple Contactless Cards Detected";
+"Multiple Contactless Cards Detected" = "Meerdere contactloze kaarten gedetecteerd";
 
 /* Title of the hub menu view in case there is no title for the store */
 "My Store" = "Mijn winkel";
@@ -2401,16 +2401,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No address specified." = "Geen adres opgegeven.";
 
 /* Error message when a card reader was expected to already have been connected. */
-"No card reader is connected - connect a reader and try again" = "No card reader is connected - connect a reader and try again";
+"No card reader is connected - connect a reader and try again" = "Er is geen kaartlezer verbonden - verbind een kaartlezer en probeer het opnieuw";
 
 /* Title for the error screen when there was a network error checking In-Person Payments requirements. */
 "No connection" = "Geen verbinding";
 
 /* Error message when there is no connection to the Internet. */
-"No connection to the Internet - please connect to the Internet and try again" = "No connection to the Internet - please connect to the Internet and try again";
+"No connection to the Internet - please connect to the Internet and try again" = "Geen verbinding met het internet - verbind met het internet en probeer het opnieuw";
 
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
-"No coupons found" = "No coupons found";
+"No coupons found" = "Geen waardebonnen gevonden";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Geen gegevens beschikbaar";
@@ -2688,7 +2688,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Payment Method Selected" = "Betaalmethode geselecteerd";
 
 /* Message when the presented card remaining credit or balance is insufficient for the purchase. */
-"Payment declined due to insufficient funds. Try another means of payment" = "Payment declined due to insufficient funds. Try another means of payment";
+"Payment declined due to insufficient funds. Try another means of payment" = "Betaling geweigerd vanwege onvoldoende saldo. Probeer een andere betaalmethode";
 
 /* Error message. Presented to users after a collecting a payment fails
    Error message. Presented to users after collecting a payment fails */
@@ -2705,10 +2705,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Payment successful" = "Betaling gelukt";
 
 /* Message when we don't know exactly why the payment was declined. */
-"Payment was declined for an unknown reason. Try another means of payment" = "Payment was declined for an unknown reason. Try another means of payment";
+"Payment was declined for an unknown reason. Try another means of payment" = "Betaling geweigerd om onbekende reden. Probeer een andere betaalmethode";
 
 /* Message when payment is declined for a non specific reason. */
-"Payment was declined for an unspecified reason. Try another means of payment" = "Payment was declined for an unspecified reason. Try another means of payment";
+"Payment was declined for an unspecified reason. Try another means of payment" = "Betaling geweigerd om niet nader gespecificeerde reden. Probeer een andere betaalmethode";
 
 /* Display label for pending order status.
    Display label for the review's pending status */
@@ -3162,7 +3162,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Registered Domain" = "Geregistreerd domein";
 
 /* The label in the option of selecting to bulk update the regular price of a product variation */
-"Regular Price" = "Regular Price";
+"Regular Price" = "Reguliere prijs";
 
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Reguliere prijs: %@";
@@ -3175,10 +3175,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Remove Attribute" = "Eigenschap verwijderen";
 
 /* Message from the in-person payment card reader prompting user to remove their card */
-"Remove Card" = "Remove Card";
+"Remove Card" = "Kaart verwijderen";
 
 /* Text for the button to remove a fee from the order during order creation */
-"Remove Fee from Order" = "Remove Fee from Order";
+"Remove Fee from Order" = "Kosten verwijderen uit bestelling";
 
 /* Title on the alert when the user taps to delete a Product image */
 "Remove Image" = "Afbeelding verwijderen";
@@ -3254,7 +3254,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Retry After Updating" = "Opnieuw proberen na bijwerken";
 
 /* Message from the in-person payment card reader prompting user to retry payment with their card */
-"Retry Card" = "Retry Card";
+"Retry Card" = "Probeer de kaart opnieuw";
 
 /* Action button to check site's connection again. */
 "Retry Connection" = "Opnieuw verbinding maken";
@@ -3701,7 +3701,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Sorry, that username is unavailable." = "Sorry, deze gebruikersnaam is niet beschikbaar.";
 
 /* Error message when the card reader service experiences an unexpected internal service error. */
-"Sorry, this payment couldn’t be processed" = "Sorry, this payment couldn’t be processed";
+"Sorry, this payment couldn’t be processed" = "Deze betaling kon niet worden verwerkt";
 
 /* No comment provided by engineer. */
 "Sorry, usernames can only contain lowercase letters (a-z) and numbers." = "Sorry, gebruikersnamen kunnen alleen kleine letters (a-z) en nummers bevatten.";
@@ -3794,13 +3794,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Sum of products and package weight" = "Totaalaantal producten en gewicht van pakket";
 
 /* Title of 'Summary' section in the receipt when the order number is unknown */
-"Summary" = "Summary";
+"Summary" = "Overzicht";
 
 /* Title of 'Summary' section in the receipt. %1$@ is the order number, e.g. 4920 */
-"Summary: Order #%1$@" = "Summary: Order #%1$@";
+"Summary: Order #%1$@" = "Samenvatting: Bestelling #%1$@";
 
 /* Message from the in-person payment card reader prompting user to swipe their card */
-"Swipe Card" = "Swipe Card";
+"Swipe Card" = "Veeg de kaart";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "Winkel wijzigen";
@@ -3840,7 +3840,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "System status report copied to clipboard" = "Systeemstatusrapport gekopieerd naar klembord";
 
 /* Message when attempting to pay for a live transaction with a test card. */
-"System test cards are not permitted for payment. Try another means of payment" = "System test cards are not permitted for payment. Try another means of payment";
+"System test cards are not permitted for payment. Try another means of payment" = "Er mag niet worden betaald met systeemtestkaarten. Probeer een andere betaalmethode";
 
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags. - Title of the Tags row on Product main screen */
@@ -3851,7 +3851,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation bar title for the Simple Payments Methods screens. %1$@ is a placeholder for the total amount to collect
    Text of the button that creates a simple payment order. %1$@ is a placeholder for the total amount to collect */
-"Take Payment (%1$@)" = "Take Payment (%1$@)";
+"Take Payment (%1$@)" = "Betaling ontvangen (%1$@)";
 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "Een foto maken";
@@ -3934,7 +3934,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Tax" = "Belasting";
 
 /* Tax percentage to be applied to the simple payments order. %1$@%% is a placeholder for the tax rate as a percentage */
-"Tax (%1$@%%)" = "Tax (%1$@%%)";
+"Tax (%1$@%%)" = "Btw (%1$@%%)";
 
 /* Section header title for product tax settings */
 "Tax Settings" = "Belastinginstellingen";
@@ -3994,7 +3994,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Thank you for sharing your thoughts with us" = "Bedankt dat je je gedachten met ons gedeeld hebt";
 
 /* Confirmation message in Inbox Notes after responding to a survey. */
-"Thank you for your feedback!" = "Thank you for your feedback!";
+"Thank you for your feedback!" = "Bedankt voor je feedback!";
 
 /* Shown when a user pastes a code into the two factor field that contains letters or is the wrong length */
 "That doesn't appear to be a valid verification code." = "Dat blijkt geen geldige verificatiecode.";
@@ -4027,7 +4027,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "De %1$@-extensie is geïnstalleerd in je winkel, maar moet worden bijgewerkt voor fysieke betalingen. Werk deze bij naar de meest recente versie.";
 
 /* Error message when the card reader loses its Bluetooth connection to the card reader. */
-"The Bluetooth connection to the card reader disconnected unexpectedly" = "The Bluetooth connection to the card reader disconnected unexpectedly";
+"The Bluetooth connection to the card reader disconnected unexpectedly" = "De Bluetooth-verbinding met de kaartlezer is onverwachts verbroken";
 
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "Het Google-account \"%@\" komt niet overeen met een account op WordPress.com";
@@ -4045,46 +4045,46 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The attribute couldn't be saved." = "De eigenschap kon niet worden opgeslagen.";
 
 /* Message when the card presented does not support the order currency. */
-"The card does not support this currency. Try another means of payment" = "The card does not support this currency. Try another means of payment";
+"The card does not support this currency. Try another means of payment" = "De kaart ondersteunt deze valuta niet. Probeer een andere betaalmethode";
 
 /* Message when the card presented does not allow this type of purchase. */
-"The card does not support this type of purchase. Try another means of payment" = "The card does not support this type of purchase. Try another means of payment";
+"The card does not support this type of purchase. Try another means of payment" = "De kaart ondersteunt dit type aankoop niet. Probeer een andere betaalmethode";
 
 /* Message when the presented card is past its expiration date. */
-"The card has expired. Try another means of payment" = "The card has expired. Try another means of payment";
+"The card has expired. Try another means of payment" = "De kaart is vervallen. Probeer een andere betaalmethode";
 
 /* Message when payment is declined for a non specific reason. */
-"The card or card account is invalid. Try another means of payment" = "The card or card account is invalid. Try another means of payment";
+"The card or card account is invalid. Try another means of payment" = "De kaart of het account van de kaart is ongeldig. Probeer een andere betaalmethode";
 
 /* Error message when the card reader is busy executing another command. */
-"The card reader is busy executing another command - please try again" = "The card reader is busy executing another command - please try again";
+"The card reader is busy executing another command - please try again" = "De kaartlezer voert al een andere opdracht uit - probeer het opnieuw";
 
 /* Error message when the card reader is incompatible with the application. */
-"The card reader is not compatible with this application - please try updating the application or using a different reader" = "The card reader is not compatible with this application - please try updating the application or using a different reader";
+"The card reader is not compatible with this application - please try updating the application or using a different reader" = "De kaartlezer is niet compatibel met deze applicatie - werk de applicatie bij of probeer een andere lezer";
 
 /* Error message when the card reader session has timed out. */
-"The card reader session has expired - please disconnect and reconnect the card reader and then try again" = "The card reader session has expired - please disconnect and reconnect the card reader and then try again";
+"The card reader session has expired - please disconnect and reconnect the card reader and then try again" = "De sessie van de kaartlezer is verlopen - probeer het opnieuw nadat je de verbinding hebt verbroken en de kaartlezer opnieuw hebt verbonden";
 
 /* Error message when the card reader software is too far out of date to process payments. */
-"The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "The card reader software is out-of-date - please update the card reader software before attempting to process payments";
+"The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "De software van de kaartlezer is verouderd - werk de software van de kaartlezer bij voordat je een betaling probeert te verwerken";
 
 /* Error message when the card reader software update fails due to a communication error. */
-"The card reader software update failed due to a communication error - please try again" = "The card reader software update failed due to a communication error - please try again";
+"The card reader software update failed due to a communication error - please try again" = "De software-update van de kaartlezer is mislukt vanwege een communicatiefout - probeer het opnieuw";
 
 /* Error message when the card reader software update fails due to a problem with the update server. */
-"The card reader software update failed due to a problem with the update server - please try again" = "The card reader software update failed due to a problem with the update server - please try again";
+"The card reader software update failed due to a problem with the update server - please try again" = "De software-update van de kaartlezer is mislukt vanwege een probleem met de updateserver - probeer het opnieuw";
 
 /* Error message when the card reader software update fails unexpectedly. */
-"The card reader software update failed unexpectedly - please try again" = "The card reader software update failed unexpectedly - please try again";
+"The card reader software update failed unexpectedly - please try again" = "De software-update van de kaartlezer is onverwachts mislukt - probeer het opnieuw";
 
 /* Error message when the card reader software update is interrupted. */
-"The card reader software update was interrupted before it could complete - please try again" = "The card reader software update was interrupted before it could complete - please try again";
+"The card reader software update was interrupted before it could complete - please try again" = "De software-update van de kaartlezer is onderbroken voordat deze kon worden voltooid - probeer het opnieuw";
 
 /* Error message when the card reader itself declines the card. */
-"The card was declined by the card reader - please try another means of payment" = "The card was declined by the card reader - please try another means of payment";
+"The card was declined by the card reader - please try another means of payment" = "De kaart is geweigerd door de kaartlezer - probeer een andere betaalmethode";
 
 /* Error message when the card processor declines the payment. */
-"The card was declined by the payment processor - please try another means of payment" = "The card was declined by the payment processor - please try another means of payment";
+"The card was declined by the payment processor - please try another means of payment" = "De kaart is geweigerd door de betaalverwerker - probeer een andere betaalmethode";
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Het certificaat voor deze server is ongeldig. Je maakt mogelijk verbinding met een server die zich voordoet als “%@”, wat je vertrouwelijke informatie in gevaar kan brengen.\n\nWil je het certificaat toch vertrouwen?";
@@ -4099,10 +4099,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The new service package name is not unique." = "De naam voor het nieuwe servicepakket is niet uniek.";
 
 /* Message when the presented card does not allow the purchase amount. */
-"The payment amount is not allowed for the card presented. Try another means of payment." = "The payment amount is not allowed for the card presented. Try another means of payment.";
+"The payment amount is not allowed for the card presented. Try another means of payment." = "Het betalingsbedrag is niet toegestaan voor de getoonde kaart. Probeer een andere betaalmethode.";
 
 /* Error message when the payment can not be processed (i.e. order amount is below the minimum amount allowed.) */
-"The payment can not be processed by the payment processor." = "The payment can not be processed by the payment processor.";
+"The payment can not be processed by the payment processor." = "De betaling kan niet worden verwerkt door de betalingsverwerker.";
 
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "Het telefoonnummer is ongeldig, of je kunt de klant niet vanaf dit apparaat bellen.";
@@ -4114,7 +4114,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The reader has a critically low battery. Please charge the reader or try a different reader." = "De batterij van de reader is bijna leeg. Laad de reader op of probeer een andere reader.";
 
 /* Error message when a request times out. */
-"The request timed out - please try again" = "The request timed out - please try again";
+"The request timed out - please try again" = "Er heeft een time-out plaatsgevonden tijdens het verzoek - probeer het opnieuw";
 
 /* Product price error notice message, when the sale price is added but the regular price is not */
 "The sale price can't be added without the regular price." = "De verkoopprijs kan niet worden toegevoegd zonder de reguliere prijs.";
@@ -4126,10 +4126,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The sale price should be lower than the regular price." = "De verkoopprijs moet lager zijn dan de reguliere prijs.";
 
 /* A failure reason for when the request couldn't be serialized. */
-"The serialization of the request failed." = "The serialization of the request failed.";
+"The serialization of the request failed." = "De serialisatie van het verzoek is mislukt.";
 
 /* A failure reason for when the response couldn't be serialized. */
-"The serialization of the response failed." = "The serialization of the response failed.";
+"The serialization of the response failed." = "De serialisatie van de reactie is mislukt.";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "De server heeft een lege respons teruggestuurd. Dat betekent meestal dat je de geheugenlimiet voor je site moet verhogen.";
@@ -4162,25 +4162,25 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The stock quantity for this product. Editable." = "De voorraad van dit product. Bewerkbaar.";
 
 /* Error message when there is an issue with the store address preventing an action (e.g. reader connection.) */
-"The store address is incomplete or missing, please update it before continuing." = "The store address is incomplete or missing, please update it before continuing.";
+"The store address is incomplete or missing, please update it before continuing." = "Het adres van de winkel is niet compleet of ontbreekt. Werk het bij voordat je verder gaat.";
 
 /* Error message when there is an issue with the store postal code preventing an action (e.g. reader connection.) */
-"The store postal code is invalid or missing, please update it before continuing." = "The store postal code is invalid or missing, please update it before continuing.";
+"The store postal code is invalid or missing, please update it before continuing." = "De postcode van de winkel is ongeldig of ontbreekt. Werk het bij voordat je verder gaat.";
 
 /* Error message when the system cancels a command. */
-"The system canceled the command unexpectedly - please try again" = "The system canceled the command unexpectedly - please try again";
+"The system canceled the command unexpectedly - please try again" = "Het systeem heeft de opdracht onverwachts geannuleerd - probeer het opnieuw";
 
 /* Error message when the card reader service experiences an unexpected software error. */
-"The system experienced an unexpected software error" = "The system experienced an unexpected software error";
+"The system experienced an unexpected software error" = "Het systeem ondervindt een onverwachte softwarefout";
 
 /* Error message when the card reader service is busy executing another command. */
-"The system is busy executing another command - please try again" = "The system is busy executing another command - please try again";
+"The system is busy executing another command - please try again" = "Het systeem voert al een andere opdracht uit - probeer het opnieuw";
 
 /* Message for the error alert when fetching system status report fails */
 "The system status report for your site cannot be fetched at the moment. Please try again." = "Het systeemstatusrapport voor je site kan momenteel niet opgehaald worden. Probeer het nog eens.";
 
 /* Message when the presented card postal code doesn't match the order postal code. */
-"The transaction postal code and card postal code do not match. Try another means of payment" = "The transaction postal code and card postal code do not match. Try another means of payment";
+"The transaction postal code and card postal code do not match. Try another means of payment" = "De postcode van de transactie en de postcode van de kaart komen niet overeen. Probeer een andere betaalmethode";
 
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "De variatie kon niet worden gegenereerd .";
@@ -4198,7 +4198,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "There was a problem blocking posts from the specified site." = "Er is een probleem opgetreden bij het blokkeren van berichten van de opgegeven site.";
 
 /* A general error message shown to the user when there was an API communication failure. */
-"There was a problem communicating with the site." = "There was a problem communicating with the site.";
+"There was a problem communicating with the site." = "Er is een probleem opgetreden bij het communiceren met de site.";
 
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "Er is een probleem opgetreden bij het opheffen van de blokkering voor opgegeven site.";
@@ -4242,7 +4242,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "This Year" = "Dit jaar";
 
 /* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
-"This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this." = "This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this.";
+"This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this." = "Deze app heeft toestemming nodig om Bluetooth te gebruiken om verbinding te maken met een kaartlezer. Wijzig de privacyinstellingen als je dit wilt toestaan.";
 
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "Voor deze app moet WooCommerce 3.5 op je server zijn geïnstalleerd. Zonder deze versie zal de app niet goed werken. Werk WooCommerce zo snel mogelijk bij om deze app te blijven gebruiken.";
@@ -4251,7 +4251,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "Deze app ondersteunt alleen de gebruikersrollen Beheerder en Winkelmanager. Neem contact op met je winkeleigenaar voor het upgraden van je rol.";
 
 /* Message when a card requires a PIN code and we have no means of entering such a code. */
-"This card requires a PIN code and thus cannot be processed. Try another means of payment" = "This card requires a PIN code and thus cannot be processed. Try another means of payment";
+"This card requires a PIN code and thus cannot be processed. Try another means of payment" = "Deze kaart vereist een PIN-code en kan daarom niet worden verwerkt. Probeer een andere betaalmethode";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "Dit e-mailadres is niet geregistreerd op WordPress.com.";
@@ -4397,10 +4397,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try Again" = "Probeer opnieuw";
 
 /* Message from the in-person payment card reader prompting user to retry a payment using a different card */
-"Try Another Card" = "Try Another Card";
+"Try Another Card" = "Probeer een andere kaart";
 
 /* Message from the in-person payment card reader prompting user to retry a payment using a different method, e.g. swipe, tap, insert */
-"Try Another Read Method" = "Try Another Read Method";
+"Try Another Read Method" = "Probeer een andere leesmethode";
 
 /* Button to try to collect a payment again. Presented to users after a collecting a payment fails */
 "Try Collecting Again" = "Probeer opnieuw te ontvangen";
@@ -4413,7 +4413,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try again" = "Probeer opnieuw";
 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
-"Try another means of payment" = "Try another means of payment";
+"Try another means of payment" = "Probeer een andere betaalmethode";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Probeer met ander e-mailadres";
@@ -4422,7 +4422,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try with the site address" = "Probeer met het site-adres";
 
 /* Message when a card is declined due to a potentially temporary problem. */
-"Trying again may succeed, or try another means of payment" = "Trying again may succeed, or try another means of payment";
+"Trying again may succeed, or try another means of payment" = "Het opnieuw proberen kan helpen, of probeer een andere betaalmethode";
 
 /* Settings > Manage Card Reader > Connect > Hint to power on reader */
 "Turn card reader on and place it next to mobile device" = "Zet de kaartlezer aan en plaats deze naast het mobiele apparaat";
@@ -4444,10 +4444,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable To Connect" = "Verbinding niet mogelijk";
 
 /* Error message when Bluetooth is not enabled or available. */
-"Unable to access Bluetooth - please enable Bluetooth and try again" = "Unable to access Bluetooth - please enable Bluetooth and try again";
+"Unable to access Bluetooth - please enable Bluetooth and try again" = "Kan Bluetooth niet openen - schakel Bluetooth in en probeer het opnieuw";
 
 /* Error message when location services is not enabled for this application. */
-"Unable to access Location Services - please enable Location Services and try again" = "Unable to access Location Services - please enable Location Services and try again";
+"Unable to access Location Services - please enable Location Services and try again" = "Kan locatiediensten niet openen - schakel locatiediensten in en probeer het opnieuw";
 
 /* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number}. Parameters: %1$d - order number */
 "Unable to add note to order #%1$d" = "Kan geen notitie toevoegen aan bestelnr.%1$d";
@@ -4459,19 +4459,19 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to change status of order #%1$d" = "Kan status niet wijzigen voor bestelnr.%1$d";
 
 /* Error message when communication with the card reader is disrupted. */
-"Unable to communicate with reader - please try again" = "Unable to communicate with reader - please try again";
+"Unable to communicate with reader - please try again" = "Kan niet communiceren met de lezer - probeer het opnieuw";
 
 /* Error message when the card reader service attempts to connect to a reader without discovering it first. */
-"Unable to connect to card reader - card reader was not correctly discovered - please try again" = "Unable to connect to card reader - card reader was not correctly discovered - please try again";
+"Unable to connect to card reader - card reader was not correctly discovered - please try again" = "Kan geen verbinding maken met de kaartlezer - de kaartlezer is niet juist ontdekt - probeer het opnieuw";
 
 /* Error message when attempting to connect to a card reader which is already in use. */
-"Unable to connect to card reader - the card reader is already in use" = "Unable to connect to card reader - the card reader is already in use";
+"Unable to connect to card reader - the card reader is already in use" = "Kan geen verbinding maken met de kaartlezer - de kaartlezer is al in gebruik";
 
 /* Error message when a card reader is already connected and we were not expecting one. */
-"Unable to connect to reader - another reader is already connected" = "Unable to connect to reader - another reader is already connected";
+"Unable to connect to reader - another reader is already connected" = "Kan geen verbinding maken met de lezer - een andere lezer is al verbonden";
 
 /* Error message the card reader battery level is too low to connect to the phone or tablet. */
-"Unable to connect to reader - the reader has a critically low battery - charge the reader and try again." = "Unable to connect to reader - the reader has a critically low battery - charge the reader and try again.";
+"Unable to connect to reader - the reader has a critically low battery - charge the reader and try again." = "Kan geen verbinding maken met de lezer - de batterij van de lezer is bijna leeg - laad de lezer op en probeer het opnieuw.";
 
 /* Notice displayed when order creation fails */
 "Unable to create new order" = "Kon nieuwe bestelling niet aanmaken";
@@ -4501,19 +4501,19 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to load product attributes" = "Kon producteigenschappen niet laden";
 
 /* Notice displayed when taxes cannot be synced for new order */
-"Unable to load taxes for order" = "Unable to load taxes for order";
+"Unable to load taxes for order" = "Kan belasting niet laden voor bestelling";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "Kan beoordeling niet markeren als %@";
 
 /* Error message when the card reader cannot be used to perform the requested task. */
-"Unable to perform request with the connected reader - unsupported feature - please try again with another reader" = "Unable to perform request with the connected reader - unsupported feature - please try again with another reader";
+"Unable to perform request with the connected reader - unsupported feature - please try again with another reader" = "Kan de aanvraag niet uitvoeren met de verbonden lezer - niet-ondersteunde functie - probeer het opnieuw met een andere lezer";
 
 /* Error message when the application is so out of date that the backend refuses to work with it. */
-"Unable to perform software request - please update this application and try again" = "Unable to perform software request - please update this application and try again";
+"Unable to perform software request - please update this application and try again" = "Kan de software-aanvraag niet uitvoeren - werk deze applicatie bij en probeer het opnieuw";
 
 /* Error message when the payment intent is invalid. */
-"Unable to process payment due to invalid data - please try again" = "Unable to process payment due to invalid data - please try again";
+"Unable to process payment due to invalid data - please try again" = "Kan de betaling niet verwerken vanwege ongeldige gegevens - probeer het opnieuw";
 
 /* Error message when the order amount is below the minimum amount allowed. */
 "Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@" = "Kan betaling niet verwerken. Totaalbedrag bestelling is minder dan het minimumbedrag dat je kunt vragen. Dit minimumbedrag is %1$@";
@@ -4522,13 +4522,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to process payment. Order total amount is not valid." = "Kan betaling niet verwerken. Totaalbedrag bestelling is niet geldig.";
 
 /* Error message when the card reader times out while reading a card. */
-"Unable to read card - the system timed out - please try again" = "Unable to read card - the system timed out - please try again";
+"Unable to read card - the system timed out - please try again" = "Kan de kaart niet lezen - er heeft een time-out van het systeem plaatsgevonden - probeer het opnieuw";
 
 /* Error message when the card reader is unable to read any chip on the inserted card. */
-"Unable to read inserted card - please try removing and inserting card again" = "Unable to read inserted card - please try removing and inserting card again";
+"Unable to read inserted card - please try removing and inserting card again" = "Kan de ingevoerde kaart niet lezen - verwijder de kaart en voer hem opnieuw in";
 
 /* Error message when the card reader is unable to read a swiped card. */
-"Unable to read swiped card - please try swiping again" = "Unable to read swiped card - please try swiping again";
+"Unable to read swiped card - please try swiping again" = "Kan de geveegde kaart niet lezen - haal de kaart opnieuw langs de lezer";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "Kon geen WordPress-site lezen op deze URL. Tik op ‘Meer hulp nodig?’ om de veelgestelde vragen te bekijken.";
@@ -4543,16 +4543,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to save changes to the payment method" = "Kan wijzigingen aan de betalingsmethode niet opslaan";
 
 /* Error message when Bluetooth Low Energy is not supported on the user device. */
-"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device" = "Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device";
+"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device" = "Kan niet zoeken naar kaartlezers - Bluetooth Low Energy wordt niet ondersteund op dit apparaat - gebruik een ander apparaat";
 
 /* Error message when Bluetooth scan times out during reader discovery. */
-"Unable to search for card readers - Bluetooth timed out - please try again" = "Unable to search for card readers - Bluetooth timed out - please try again";
+"Unable to search for card readers - Bluetooth timed out - please try again" = "Kan niet zoeken naar kaartlezers - er heeft een time-out van bluetooth plaatsgevonden - probeer het opnieuw";
 
 /* Error notice title when we fail to update an address in the edit address screen. */
 "Unable to update address." = "Kan adres niet bijwerken.";
 
 /* Error message when the card reader battery level is too low to safely perform a software update. */
-"Unable to update card reader software - the reader battery is too low" = "Unable to update card reader software - the reader battery is too low";
+"Unable to update card reader software - the reader battery is too low" = "De software van de kaartlezer kan niet worden bijgewerkt - de lezer heeft te weinig batterij";
 
 /* Title for the error screen when In-Person Payments is unavailable */
 "Unable to verify In-Person Payments for this store" = "Fysieke betalingen kunnen niet worden geverifieerd voor deze winkel";
@@ -4792,7 +4792,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "View add-ons from your device!" = "Bekijk extra opties vanaf je apparaat!";
 
 /* Title of the feedback banner on the coupon list screen */
-"View and edit coupons" = "View and edit coupons";
+"View and edit coupons" = "Coupons bekijken en bewerken";
 
 /* The action to update downloadable files settings for a product */
 "View downloadable file settings" = "Downloadbare bestandinstellingen bekijken";
@@ -4875,10 +4875,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "We don’t support In-Person Payments in your country" = "We ondersteunen fysieke betalingen niet in je land";
 
 /* Title for the error screen when In-Person Payments is not supported in a specific country */
-"We don’t support In-Person Payments with Stripe in %1$@" = "We don’t support In-Person Payments with Stripe in %1$@";
+"We don’t support In-Person Payments with Stripe in %1$@" = "We ondersteunen fysieke betalingen met Stripe niet in %1$@";
 
 /* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country */
-"We don’t support In-Person Payments with Stripe in your country" = "We don’t support In-Person Payments with Stripe in your country";
+"We don’t support In-Person Payments with Stripe in your country" = "We ondersteunen fysieke betalingen met Stripe niet in je land";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "We hebben het adres dat is ingevoerd een beetje aangepast. Indien het juist is, gebruik dan het voorgestelde adres om zeker te zijn van een nauwkeurige levering.";
@@ -4945,7 +4945,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Welcome to the world’s most popular website builder." = "Welkom bij de meest populaire websitebouwer ter wereld.";
 
 /* Content of the feedback banner on the coupon list screen */
-"We’ve been working on making it possible to view and edit coupons from your device!" = "We’ve been working on making it possible to view and edit coupons from your device!";
+"We’ve been working on making it possible to view and edit coupons from your device!" = "We hebben hard gewerkt zodat jij coupons vanuit je apparaat kunt bekijken en bewerken!";
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "Welke e-mail moet ik gebruiken om me aan te melden?";

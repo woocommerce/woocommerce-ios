@@ -27,6 +27,15 @@ public enum CardReaderServiceError: Error {
     /// Error thrown while cancelling a payment
     case paymentCancellation(underlyingError: UnderlyingError = .internalServiceError)
 
+    /// Error thrown while setting up a refund
+    case refundCreation(underlyingError: UnderlyingError = .internalServiceError)
+
+    /// Error thrown while refunding a payment
+    case refundPayment(underlyingError: UnderlyingError = .internalServiceError)
+
+    /// Error thrown while cancelling a refund
+    case refundCancellation(underlyingError: UnderlyingError = .internalServiceError)
+
     /// Error thrown while updating the reader firmware
     case softwareUpdate(underlyingError: UnderlyingError = .internalServiceError, batteryLevel: Double?)
 
@@ -37,21 +46,17 @@ public enum CardReaderServiceError: Error {
 extension CardReaderServiceError: LocalizedError {
     public var errorDescription: String? {
         switch self {
-        case .connection(let underlyingError):
-            return underlyingError.errorDescription
-        case .discovery(let underlyingError):
-            return underlyingError.errorDescription
-        case .disconnection(let underlyingError):
-            return underlyingError.errorDescription
-        case .intentCreation(let underlyingError):
-            return underlyingError.errorDescription
-        case .paymentMethodCollection(let underlyingError):
-            return underlyingError.errorDescription
-        case .paymentCapture(let underlyingError):
-            return underlyingError.errorDescription
-        case .paymentCancellation(let underlyingError):
-            return underlyingError.errorDescription
-        case .softwareUpdate(let underlyingError, _):
+        case .connection(let underlyingError),
+                .discovery(let underlyingError),
+                .disconnection(let underlyingError),
+                .intentCreation(let underlyingError),
+                .paymentMethodCollection(let underlyingError),
+                .paymentCapture(let underlyingError),
+                .paymentCancellation(let underlyingError),
+                .refundCreation(let underlyingError),
+                .refundPayment(let underlyingError),
+                .refundCancellation(let underlyingError),
+                .softwareUpdate(let underlyingError, _):
             return underlyingError.errorDescription
         case .bluetoothDenied:
             return NSLocalizedString(

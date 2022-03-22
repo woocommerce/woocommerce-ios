@@ -1,3 +1,10 @@
-You’ll notice the credit card details for an in-person payment are now shown when making a refund. This will let you tell your customers exactly where the funds will go!
+- [*] Updates the app's About screen to be consistent with Automattic's other mobile apps. [https://github.com/woocommerce/woocommerce-ios/pull/6421]
+- [***] Experimental Feature: It's now possible to add custom shipping method and fees in order creation flow. Tax amount and Order total is now synced from backend. [https://github.com/woocommerce/woocommerce-ios/pull/6429]
+- [**] Now it's possible to filter orders by custom statuses. [https://github.com/woocommerce/woocommerce-ios/pull/6390]
+- [*] Fixed issue presenting Edit Customer Note screen as a modal on large screens. [https://github.com/woocommerce/woocommerce-ios/pull/6406]
+- [*] Products displayed in Order Detail now follow the same order of the web. [https://github.com/woocommerce/woocommerce-ios/pull/6401]
+- [*] Simple Payments now shows a detailed tax break up before taking the payment. [https://github.com/woocommerce/woocommerce-ios/pull/6412]
+- [*] Coupons list now shows an error view if coupons are disabled for the store. Coupons can be enabled again from this view. [https://github.com/woocommerce/woocommerce-ios/pull/6446]
+- [*] Coupon details screen now displays more informative error messages when loading the total discount amount fails. [https://github.com/woocommerce/woocommerce-ios/pull/6457]
+- [internal] Shipping Labels: the navigation bar in the web view for adding payments is now correctly hidden. [https://github.com/woocommerce/woocommerce-ios/pull/6435]
 
-A few new features aren’t quite ready for the mainstream, but you can check them out early! Create orders, view coupons, and more! Head to the Menu tab, settings, and Experimental settings to enable it. We welcome your feedback on the app, especially the new features we’re working on and giving early access to.

@@ -1,0 +1,3 @@
+Artık geri ödeme yaparken şahsen ödeme için kredi kartı bilgilerinin gösterildiğini göreceksiniz. Bu, müşterilerinize paranın tam olarak nereye gideceğini söylemenizi sağlar!
+
+Birkaç yeni özellik ana akım için tam olarak hazır değil, ancak bunları erkenden kontrol edebilirsiniz! Siparişler oluşturun, kuponları görüntüleyin ve daha fazlasını yapın! Etkinleştirmek için Menü sekmesine, ayarlara ve Deneysel ayarlara gidin. Uygulamayla, özellikle de üzerinde çalıştığımız ve erken erişim sağladığımız yeni özelliklerle ilgili görüşlerinizi bekliyoruz. 

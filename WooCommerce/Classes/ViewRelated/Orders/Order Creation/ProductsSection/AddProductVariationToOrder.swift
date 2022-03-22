@@ -21,6 +21,7 @@ struct AddProductVariationToOrder: View {
                                    loadAction: viewModel.syncNextPage) {
                     ForEach(viewModel.productVariationRows) { rowViewModel in
                         ProductRow(viewModel: rowViewModel)
+                            .accessibilityHint(Localization.productRowAccessibilityHint)
                             .padding(Constants.defaultPadding)
                             .onTapGesture {
                                 viewModel.selectVariation(rowViewModel.productOrVariationID)
@@ -79,6 +80,8 @@ private extension AddProductVariationToOrder {
                                                          comment: "Message displayed if there are no product variations for a product.")
 
         static let backButtonAccessibilityLabel = NSLocalizedString("Back", comment: "Accessibility label for Back button in the navigation bar")
+        static let productRowAccessibilityHint = NSLocalizedString("Adds variation to order.",
+                                                                   comment: "Accessibility hint for selecting a variation in a list of product variations")
     }
 }
 

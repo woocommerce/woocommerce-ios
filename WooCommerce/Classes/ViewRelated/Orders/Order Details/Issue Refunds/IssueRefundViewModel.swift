@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import protocol Storage.StorageManagerType
 
 /// ViewModel for presenting the issue refund screen to the user.
 ///
@@ -123,18 +124,23 @@ final class IssueRefundViewModel {
 
     private let stores: StoresManager
 
+    private let storage: StorageManagerType
+
     init(order: Order,
          refunds: [Refund],
          currencySettings: CurrencySettings,
          analytics: Analytics = ServiceLocator.analytics,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         storage: StorageManagerType = ServiceLocator.storageManager) {
         self.analytics = analytics
         self.stores = stores
+        self.storage = storage
         let items = Self.filterItems(from: order, with: refunds)
         state = State(order: order, refunds: refunds, itemsToRefund: items, currencySettings: currencySettings, charge: nil)
         sections = createSections()
         title = calculateTitle()
         isNextButtonEnabled = calculateNextButtonEnableState()
+        isNextButtonAnimating = calculateNextButtonAnimatingState()
         isSelectAllButtonVisible = calculateSelectAllButtonVisibility()
         selectedItemsTitle = createSelectedItemsCount()
         hasUnsavedChanges = calculatePendingChangesState()
@@ -246,14 +252,14 @@ private extension IssueRefundViewModel {
     func createProductsResultsController() -> ResultsController<StorageProduct> {
         let itemsIDs = state.itemsToRefund.map { $0.item.productID }
         let predicate = NSPredicate(format: "siteID == %lld AND productID IN %@", state.order.siteID, itemsIDs)
-        return ResultsController<StorageProduct>(storageManager: ServiceLocator.storageManager, matching: predicate, sortedBy: [])
+        return ResultsController<StorageProduct>(storageManager: storage, matching: predicate, sortedBy: [])
     }
 
     /// Results controller that fetches the payment gateway used on this order.
     ///
     func createPaymentGatewayResultsController() -> ResultsController<StoragePaymentGateway> {
         let predicate = NSPredicate(format: "siteID == %lld AND gatewayID == %@", state.order.siteID, state.order.paymentMethodID)
-        return ResultsController<StoragePaymentGateway>(storageManager: ServiceLocator.storageManager, matching: predicate, sortedBy: [])
+        return ResultsController<StoragePaymentGateway>(storageManager: storage, matching: predicate, sortedBy: [])
     }
 
     func createWcPayChargeResultsController() -> ResultsController<StorageWCPayCharge>? {
@@ -261,7 +267,7 @@ private extension IssueRefundViewModel {
             return nil
         }
         let predicate = NSPredicate(format: "siteID == %ld AND chargeID == %@", state.order.siteID, chargeID)
-        return ResultsController<StorageWCPayCharge>(storageManager: ServiceLocator.storageManager, matching: predicate, sortedBy: [])
+        return ResultsController<StorageWCPayCharge>(storageManager: storage, matching: predicate, sortedBy: [])
     }
 
     func observeCharge() {

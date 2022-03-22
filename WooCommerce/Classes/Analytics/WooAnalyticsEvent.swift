@@ -566,6 +566,7 @@ extension WooAnalyticsEvent {
 
         enum Keys {
             static let batteryLevel = "battery_level"
+            static let countryCode = "country"
             static let gatewayID = "plugin_slug"
             static let errorDescription = "error_description"
             static let softwareUpdateType = "software_update_type"
@@ -581,9 +582,10 @@ extension WooAnalyticsEvent {
         /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         /// `error` is the error to be included in the event properties.
         ///
-        static func cardReaderDiscoveryFailed(forGatewayID: String?, error: Error) -> WooAnalyticsEvent {
+        static func cardReaderDiscoveryFailed(forGatewayID: String?, error: Error, countryCode: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderDiscoveryFailed,
                               properties: [
+                                Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.errorDescription: error.localizedDescription
                               ]
@@ -630,7 +632,8 @@ extension WooAnalyticsEvent {
                               ]
             )
         }
-        /// Tracksed when a software update is initiated manually
+
+        /// Tracked when a software update is initiated manually
         /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         /// `updateType` is `.required` or `.optional`
         ///
@@ -713,9 +716,10 @@ extension WooAnalyticsEvent {
         /// Tracked when the user taps to collect a payment
         /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///
-        static func collectPaymentTapped(forGatewayID: String?) -> WooAnalyticsEvent {
+        static func collectPaymentTapped(forGatewayID: String?, countryCode: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentTapped,
                               properties: [
+                                Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
                               ]
             )

@@ -30,12 +30,16 @@ final class CardReaderSettingsSearchingViewModel: CardReaderSettingsPresentedVie
         foundReader?.id
     }
 
-    init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?, knownReaderProvider: CardReaderSettingsKnownReaderProvider? = nil,
-         stores: StoresManager = ServiceLocator.stores
-    ) {
+    let configuration: CardPresentPaymentsConfiguration
+
+    init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?,
+         knownReaderProvider: CardReaderSettingsKnownReaderProvider? = nil,
+         stores: StoresManager = ServiceLocator.stores,
+         configuration: CardPresentPaymentsConfiguration) {
         self.didChangeShouldShow = didChangeShouldShow
         self.siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min
         self.knownReaderProvider = knownReaderProvider
+        self.configuration = configuration
 
         beginKnownReaderObservation()
         beginConnectedReaderObservation()
@@ -82,7 +86,7 @@ final class CardReaderSettingsSearchingViewModel: CardReaderSettingsPresentedVie
     }
 
     /// Updates whether the view this viewModel is associated with should be shown or not
-    /// Notifes the viewModel owner if a change occurs via didChangeShouldShow
+    /// Notifies the viewModel owner if a change occurs via didChangeShouldShow
     ///
     private func reevaluateShouldShow() {
         let newShouldShow: CardReaderSettingsTriState = noConnectedReader

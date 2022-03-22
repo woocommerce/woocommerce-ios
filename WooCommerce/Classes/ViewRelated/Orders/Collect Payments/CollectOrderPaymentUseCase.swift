@@ -71,7 +71,8 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     private lazy var connectionController = {
         CardReaderConnectionController(forSiteID: siteID,
                                        knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
-                                       alertsProvider: CardReaderSettingsAlerts())
+                                       alertsProvider: CardReaderSettingsAlerts(),
+                                       configuration: configurationLoader.configuration)
     }()
 
     /// IPP Configuration loader
@@ -168,7 +169,8 @@ private extension CollectOrderPaymentUseCase {
     ///
     func attemptPayment(onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> ()) {
         // Track tapped event
-        analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentTapped(forGatewayID: paymentGatewayAccount.gatewayID))
+        analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentTapped(forGatewayID: paymentGatewayAccount.gatewayID,
+                                                                                       countryCode: configurationLoader.configuration.countryCode))
 
         // Show reader ready alert
         alerts.readerIsReady(title: Localization.collectPaymentTitle(username: order.billingAddress?.firstName), amount: formattedAmount)

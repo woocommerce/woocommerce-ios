@@ -81,6 +81,7 @@ final class CardReaderConnectionController {
     private var siteID: Int64
     private var knownCardReaderProvider: CardReaderSettingsKnownReaderProvider
     private var alerts: CardReaderSettingsAlertsProvider
+    private let configuration: CardPresentPaymentsConfiguration
 
     /// Reader(s) discovered by the card reader service
     ///
@@ -127,7 +128,8 @@ final class CardReaderConnectionController {
         storageManager: StorageManagerType = ServiceLocator.storageManager,
         stores: StoresManager = ServiceLocator.stores,
         knownReaderProvider: CardReaderSettingsKnownReaderProvider,
-        alertsProvider: CardReaderSettingsAlertsProvider
+        alertsProvider: CardReaderSettingsAlertsProvider,
+        configuration: CardPresentPaymentsConfiguration
     ) {
         siteID = forSiteID
         self.storageManager = storageManager
@@ -138,6 +140,7 @@ final class CardReaderConnectionController {
         foundReaders = []
         knownReaderID = nil
         skippedReaderIDs = []
+        self.configuration = configuration
 
         configureResultsControllers()
         loadPaymentGatewayAccounts()
@@ -367,7 +370,9 @@ private extension CardReaderConnectionController {
                 guard let self = self else { return }
 
                 ServiceLocator.analytics.track(
-                    event: WooAnalyticsEvent.InPersonPayments.cardReaderDiscoveryFailed(forGatewayID: self.gatewayID, error: error)
+                    event: WooAnalyticsEvent.InPersonPayments.cardReaderDiscoveryFailed(forGatewayID: self.gatewayID,
+                                                                                        error: error,
+                                                                                        countryCode: self.configuration.countryCode)
                 )
                 self.state = .discoveryFailed(error)
             })

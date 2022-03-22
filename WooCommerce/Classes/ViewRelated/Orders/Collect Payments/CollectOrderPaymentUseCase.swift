@@ -11,7 +11,7 @@ protocol CollectOrderPaymentProtocol {
     /// Starts the collect payment flow.
     ///
     ///
-    /// - Parameter backButtonTitle: Title for the back button after a payment is sucessful.
+    /// - Parameter backButtonTitle: Title for the back button after a payment is successful.
     /// - Parameter onCollect: Closure Invoked after the collect process has finished.
     /// - Parameter onCompleted: Closure Invoked after the flow has been totally completed.
     func collectPayment(backButtonTitle: String, onCollect: @escaping (Result<Void, Error>) -> (), onCompleted: @escaping () -> ())
@@ -103,7 +103,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     /// 4. If failure: Allows retry
     ///
     ///
-    /// - Parameter backButtonTitle: Title for the back button after a payment is sucessfull.
+    /// - Parameter backButtonTitle: Title for the back button after a payment is successful.
     /// - Parameter onCollect: Closure Invoked after the collect process has finished.
     /// - Parameter onCompleted: Closure Invoked after the flow has been totally completed, Currently after merchant has handled the receipt.
     func collectPayment(backButtonTitle: String, onCollect: @escaping (Result<Void, Error>) -> (), onCompleted: @escaping () -> ()) {

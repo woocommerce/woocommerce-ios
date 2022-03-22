@@ -138,6 +138,7 @@ final class IssueRefundViewModel {
         isSelectAllButtonVisible = calculateSelectAllButtonVisibility()
         selectedItemsTitle = createSelectedItemsCount()
         hasUnsavedChanges = calculatePendingChangesState()
+        observeCharge()
         fetchCharge()
     }
 
@@ -263,14 +264,18 @@ private extension IssueRefundViewModel {
         return ResultsController<StorageWCPayCharge>(storageManager: ServiceLocator.storageManager, matching: predicate, sortedBy: [])
     }
 
+    func observeCharge() {
+        chargeResultsController?.onDidChangeContent = { [weak self] in
+            guard let self = self else { return }
+            self.state.charge = self.charge
+        }
+    }
+
     func fetchCharge() {
         guard let chargeID = state.order.chargeID else {
             return
         }
-        let action = CardPresentPaymentAction.fetchWCPayCharge(siteID: state.order.siteID, chargeID: chargeID, onCompletion: { [weak self] _ in
-            guard let self = self else { return }
-            self.state.charge = self.charge
-        })
+        let action = CardPresentPaymentAction.fetchWCPayCharge(siteID: state.order.siteID, chargeID: chargeID, onCompletion: { _ in })
         stores.dispatch(action)
     }
 }

@@ -12,7 +12,6 @@ final class IssueRefundViewController: UIViewController {
     @IBOutlet private var headerStackView: UIStackView!
     @IBOutlet private var itemsSelectedLabel: UILabel!
     @IBOutlet private var nextButton: ButtonActivityIndicator!
-
     @IBOutlet private var selectAllButton: UIButton!
 
     private let imageService: ImageService

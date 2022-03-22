@@ -78,10 +78,11 @@ private struct OrderCustomerSectionContent: View {
 
     private var customerDataView: some View {
         Group {
-            addressDetails(title: Localization.shippingTitle, formattedAddress: viewModel.shippingAddressFormatted)
+            addressDetails(title: Localization.billingTitle, formattedAddress: viewModel.billingAddressFormatted)
             Divider()
                 .padding(.leading)
-            addressDetails(title: Localization.billingTitle, formattedAddress: viewModel.billingAddressFormatted)
+            addressDetails(title: Localization.shippingTitle, formattedAddress: viewModel.shippingAddressFormatted)
+
         }
     }
 

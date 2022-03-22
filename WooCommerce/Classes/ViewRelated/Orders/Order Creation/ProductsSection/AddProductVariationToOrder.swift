@@ -13,6 +13,10 @@ struct AddProductVariationToOrder: View {
     ///
     @ObservedObject var viewModel: AddProductVariationToOrderViewModel
 
+    ///   Environment safe areas
+    ///
+    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
+
     var body: some View {
         Group {
             switch viewModel.syncStatus {
@@ -30,7 +34,8 @@ struct AddProductVariationToOrder: View {
                         Divider().frame(height: Constants.dividerHeight)
                             .padding(.leading, Constants.defaultPadding)
                     }
-                    .background(Color(.listForeground))
+                    .padding(.horizontal, insets: safeAreaInsets)
+                    .background(Color(.listForeground).ignoresSafeArea())
                 }
             case .empty:
                 EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
@@ -41,6 +46,7 @@ struct AddProductVariationToOrder: View {
                         .redacted(reason: .placeholder)
                         .shimmering()
                 }
+                .padding(.horizontal, insets: safeAreaInsets)
                 .listStyle(PlainListStyle())
             default:
                 EmptyView()

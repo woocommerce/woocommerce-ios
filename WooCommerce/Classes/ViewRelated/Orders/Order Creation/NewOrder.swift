@@ -90,7 +90,7 @@ struct NewOrder: View {
 
                         Spacer(minLength: Layout.sectionSpacing)
 
-                        ProductsSection(geometry: geometry, scroll: scroll, viewModel: viewModel, navigationButtonID: $navigationButtonID)
+                        ProductsSection(scroll: scroll, viewModel: viewModel, navigationButtonID: $navigationButtonID)
 
                         Spacer(minLength: Layout.sectionSpacing)
 
@@ -136,7 +136,6 @@ struct NewOrder: View {
 /// Represents the Products section
 ///
 private struct ProductsSection: View {
-    let geometry: GeometryProxy
     let scroll: ScrollViewProxy
 
     /// View model to drive the view content
@@ -152,6 +151,10 @@ private struct ProductsSection: View {
     /// ID for Add Product button
     ///
     @Namespace var addProductButton
+
+    ///   Environment safe areas
+    ///
+    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
 
     var body: some View {
         Group {
@@ -188,7 +191,7 @@ private struct ProductsSection: View {
                         }
                 })
             }
-            .padding(.horizontal, insets: geometry.safeAreaInsets)
+            .padding(.horizontal, insets: safeAreaInsets)
             .padding()
             .background(Color(.listForeground))
 

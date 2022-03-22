@@ -11,10 +11,15 @@ struct AddProductToOrder: View {
     ///
     @ObservedObject var viewModel: AddProductToOrderViewModel
 
+    ///   Environment safe areas
+    ///
+    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
+
     var body: some View {
         NavigationView {
             VStack {
                 SearchHeader(filterText: $viewModel.searchTerm, filterPlaceholder: Localization.searchPlaceholder)
+                    .padding(.horizontal, insets: safeAreaInsets)
                 switch viewModel.syncStatus {
                 case .results:
                     InfiniteScrollList(isLoading: viewModel.shouldShowScrollIndicator,
@@ -25,7 +30,8 @@ struct AddProductToOrder: View {
                             Divider().frame(height: Constants.dividerHeight)
                                 .padding(.leading, Constants.defaultPadding)
                         }
-                        .background(Color(.listForeground))
+                        .padding(.horizontal, insets: safeAreaInsets)
+                        .background(Color(.listForeground).ignoresSafeArea())
                     }
                 case .empty:
                     EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
@@ -36,6 +42,7 @@ struct AddProductToOrder: View {
                             .redacted(reason: .placeholder)
                             .shimmering()
                     }
+                    .padding(.horizontal, insets: safeAreaInsets)
                     .listStyle(PlainListStyle())
                 default:
                     EmptyView()

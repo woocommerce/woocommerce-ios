@@ -11,7 +11,7 @@ protocol CollectOrderPaymentProtocol {
     /// Starts the collect payment flow.
     ///
     ///
-    /// - Parameter backButtonTitle: Title for the back button after a payment is sucessfull.
+    /// - Parameter backButtonTitle: Title for the back button after a payment is sucessful.
     /// - Parameter onCollect: Closure Invoked after the collect process has finished.
     /// - Parameter onCompleted: Closure Invoked after the flow has been totally completed.
     func collectPayment(backButtonTitle: String, onCollect: @escaping (Result<Void, Error>) -> (), onCompleted: @escaping () -> ())

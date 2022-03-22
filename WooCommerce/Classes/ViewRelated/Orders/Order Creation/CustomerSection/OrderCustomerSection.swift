@@ -97,6 +97,7 @@ private struct OrderCustomerSectionContent: View {
                     .bodyStyle()
             }
         }
+        .accessibilityElement(children: .combine)
         .padding()
     }
 }

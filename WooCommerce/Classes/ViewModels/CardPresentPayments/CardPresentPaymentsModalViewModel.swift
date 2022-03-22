@@ -78,6 +78,6 @@ enum PaymentsModalActionsMode {
     /// Two action buttons
     case twoAction
 
-    /// Two action buttons and an auxiiary button
+    /// Two action buttons and an auxiliary button
     case twoActionAndAuxiliary
 }

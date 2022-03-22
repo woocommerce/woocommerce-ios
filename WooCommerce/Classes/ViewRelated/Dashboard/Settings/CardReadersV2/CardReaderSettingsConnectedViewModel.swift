@@ -10,6 +10,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     private var didGetConnectedReaders: Bool = false
     private var connectedReaders = [CardReader]()
     private let knownReaderProvider: CardReaderSettingsKnownReaderProvider?
+    private let configuration: CardPresentPaymentsConfiguration
     private(set) var siteID: Int64
 
     private(set) var optionalReaderUpdateAvailable: Bool = false
@@ -45,10 +46,12 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
 
     init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?,
          knownReaderProvider: CardReaderSettingsKnownReaderProvider? = nil,
+         configuration: CardPresentPaymentsConfiguration,
          delayToShowUpdateSuccessMessage: DispatchTimeInterval = .seconds(1)) {
         self.didChangeShouldShow = didChangeShouldShow
         self.knownReaderProvider = knownReaderProvider
         self.siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min
+        self.configuration = configuration
         self.delayToShowUpdateSuccessMessage = delayToShowUpdateSuccessMessage
 
         configureResultsControllers()
@@ -239,7 +242,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     func disconnectReader() {
         ServiceLocator.analytics.track(
             event: WooAnalyticsEvent.InPersonPayments.cardReaderDisconnectTapped(
-                forGatewayID: self.connectedGatewayID
+                forGatewayID: connectedGatewayID, countryCode: configuration.countryCode
             )
         )
 

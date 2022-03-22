@@ -572,7 +572,10 @@ private extension CardReaderConnectionController {
                 guard let self = self else { return }
                 self.knownCardReaderProvider.rememberCardReader(cardReaderID: reader.id)
                 ServiceLocator.analytics.track(
-                    event: WooAnalyticsEvent.InPersonPayments.cardReaderConnectionSuccess(forGatewayID: self.gatewayID, batteryLevel: reader.batteryLevel)
+                    event: WooAnalyticsEvent.InPersonPayments
+                        .cardReaderConnectionSuccess(forGatewayID: self.gatewayID,
+                                                     batteryLevel: reader.batteryLevel,
+                                                     countryCode: self.configuration.countryCode)
                 )
                 // If we were installing a software update, introduce a small delay so the user can
                 // actually see a success message showing the installation was complete
@@ -586,7 +589,9 @@ private extension CardReaderConnectionController {
             case .failure(let error):
                 guard let self = self else { return }
                 ServiceLocator.analytics.track(
-                    event: WooAnalyticsEvent.InPersonPayments.cardReaderConnectionFailed(forGatewayID: self.gatewayID, error: error)
+                    event: WooAnalyticsEvent.InPersonPayments.cardReaderConnectionFailed(forGatewayID: self.gatewayID,
+                                                                                         error: error,
+                                                                                         countryCode: self.configuration.countryCode)
                 )
                 self.state = .connectingFailed(error)
             }

@@ -48,7 +48,8 @@ final class CardReaderSettingsViewModelsOrderedList: CardReaderSettingsPrioritiz
                     didChangeShouldShow: { [weak self] state in
                         self?.onDidChangeShouldShow(state)
                     },
-                    knownReaderProvider: knownReaderProvider
+                    knownReaderProvider: knownReaderProvider,
+                    configuration: configuration
                 ),
                 viewIdentifier: "CardReaderSettingsConnectedViewController"
             )

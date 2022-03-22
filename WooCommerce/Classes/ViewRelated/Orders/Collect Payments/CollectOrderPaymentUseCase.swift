@@ -209,7 +209,8 @@ private extension CollectOrderPaymentUseCase {
     ///
     func handleSuccessfulPayment(receipt: CardPresentReceiptParameters, onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> ()) {
         // Record success
-        analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentSuccess(forGatewayID: paymentGatewayAccount.gatewayID))
+        analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentSuccess(forGatewayID: paymentGatewayAccount.gatewayID,
+                                                                                        countryCode: configurationLoader.configuration.countryCode))
 
         // Success Callback
         onCompletion(.success(receipt))
@@ -219,7 +220,9 @@ private extension CollectOrderPaymentUseCase {
     ///
     func handlePaymentFailureAndRetryPayment(_ error: Error, onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> ()) {
         // Record error
-        analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentFailed(forGatewayID: paymentGatewayAccount.gatewayID, error: error))
+        analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentFailed(forGatewayID: paymentGatewayAccount.gatewayID,
+                                                                                       error: error,
+                                                                                       countryCode: configurationLoader.configuration.countryCode))
         DDLogError("Failed to collect payment: \(error.localizedDescription)")
 
         // Inform about the error
@@ -248,7 +251,8 @@ private extension CollectOrderPaymentUseCase {
     func cancelPayment() {
         paymentOrchestrator.cancelPayment { [weak self, analytics] _ in
             guard let self = self else { return }
-            analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentCanceled(forGatewayID: self.paymentGatewayAccount.gatewayID))
+            analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentCanceled(forGatewayID: self.paymentGatewayAccount.gatewayID,
+                                                                                             countryCode: self.configurationLoader.configuration.countryCode))
         }
     }
 

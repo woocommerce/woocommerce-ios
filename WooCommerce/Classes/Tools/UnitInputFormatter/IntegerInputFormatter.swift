@@ -29,6 +29,10 @@ struct IntegerInputFormatter: UnitInputFormatter {
             return defaultValue
         }
 
+        guard text != "\(minus)" else {
+            return text
+        }
+
         var formattedText = numberFormatter.number(from: text)?.stringValue ?? defaultValue
 
         // The minus sign is maintained if present

@@ -13,11 +13,7 @@ final class CardReaderSettingsSearchingViewController: UIHostingController<CardR
     /// Connection Controller (helps connect readers)
     ///
     private lazy var connectionController: CardReaderConnectionController? = {
-        guard let viewModel = viewModel else {
-            return nil
-        }
-
-        guard let knownReaderProvider = viewModel.knownReaderProvider else {
+        guard let viewModel = viewModel, let knownReaderProvider = viewModel.knownReaderProvider else {
             return nil
         }
 

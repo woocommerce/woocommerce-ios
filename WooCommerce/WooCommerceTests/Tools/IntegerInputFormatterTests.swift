@@ -7,37 +7,37 @@ final class IntegerInputFormatterTests: XCTestCase {
 
     // MARK: test cases for `isValid(input:)`
 
-    func test_isValid_with_empty_input_then_returns_true() {
+    func test_empty_input_is_valid() {
         let input = ""
         XCTAssertTrue(formatter.isValid(input: input))
     }
 
-    func test_isValid_with_alphanumeric_input_then_returns_false() {
+    func test_alphanumeric_input_is_not_valid() {
         let input = "06two"
         XCTAssertFalse(formatter.isValid(input: input))
     }
 
-    func test_isValid_with_decimal_input_then_returns_false() {
+    func test_decimal_input_is_not_valid() {
         let input = "9990.52"
         XCTAssertFalse(formatter.isValid(input: input))
     }
 
-    func test_isValid_with_trailing_point_input_then_returns_false() {
+    func test_input_with_trailing_point_is_not_valid() {
         let input = "9990."
         XCTAssertFalse(formatter.isValid(input: input))
     }
 
-    func test_isValid_with_integer_input_then_returns_true() {
+    func test_integer_input_is_valid() {
         let input = "888888"
         XCTAssertTrue(formatter.isValid(input: input))
     }
 
-    func test_isValid_with_negative_input_then_returns_true() {
+    func test_negative_input_is_valid() {
         let input = "-888888"
         XCTAssertTrue(formatter.isValid(input: input))
     }
 
-    func test_isValid_with_minus_sign_input_then_returns_true() {
+    func test_only_minus_sign_input_is_valid() {
         let input = "-"
         XCTAssertTrue(formatter.isValid(input: input))
     }

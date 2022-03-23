@@ -166,10 +166,9 @@ private extension IssueRefundViewController {
 
     func updateButtonState(enabled: Bool, showActivityIndicator: Bool) {
         nextButton.isEnabled = enabled && !showActivityIndicator
-        switch showActivityIndicator {
-        case true:
+        if showActivityIndicator {
             nextButton.showActivityIndicator()
-        case false:
+        } else {
             nextButton.hideActivityIndicator()
         }
     }

@@ -263,7 +263,8 @@ private extension IssueRefundViewModel {
     }
 
     func createWcPayChargeResultsController() -> ResultsController<StorageWCPayCharge>? {
-        guard let chargeID = state.order.chargeID else {
+        guard let chargeID = state.order.chargeID,
+              chargeID.isNotEmpty else {
             return nil
         }
         let predicate = NSPredicate(format: "siteID == %ld AND chargeID == %@", state.order.siteID, chargeID)
@@ -442,7 +443,7 @@ extension IssueRefundViewModel {
     ///
     private func calculateNextButtonAnimatingState() -> Bool {
         // When we have a chargeID, we need to wait until we fetch the charge.
-        return state.order.chargeID != nil && state.charge == nil
+        state.charge == nil && !state.order.chargeID.isNilOrEmpty
     }
 
     /// Calculates whether there are pending changes to commit

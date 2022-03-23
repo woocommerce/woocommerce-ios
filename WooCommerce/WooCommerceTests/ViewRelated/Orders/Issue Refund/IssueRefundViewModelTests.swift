@@ -627,6 +627,30 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isNextButtonAnimating)
     }
 
+    func test_viewModel_does_not_show_spinner_when_there_is_no_charge_to_fetch() {
+        // Given
+        // The order has a chargeID
+        let order = MockOrders().sampleOrder().copy(chargeID: nil)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores)
+
+        // Then
+        XCTAssertFalse(viewModel.isNextButtonAnimating)
+    }
+
+    func test_viewModel_does_not_show_spinner_when_there_is_no_charge_to_fetch_but_an_empty_chargeID() {
+        // Given
+        // The order has a chargeID
+        let order = MockOrders().sampleOrder().copy(chargeID: "")
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores)
+
+        // Then
+        XCTAssertFalse(viewModel.isNextButtonAnimating)
+    }
+
     func test_viewModel_hides_spinner_when_charge_found_in_storage() {
         // Given
         // The order has a chargeID

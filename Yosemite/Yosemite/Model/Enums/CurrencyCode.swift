@@ -53,4 +53,8 @@ public enum CurrencyCode: String, CaseIterable {
     YER,
     // Z
     ZAR, ZMW
+
+    public init?(caseInsensitiveRawValue: String) {
+        self.init(rawValue: caseInsensitiveRawValue.uppercased())
+    }
 }

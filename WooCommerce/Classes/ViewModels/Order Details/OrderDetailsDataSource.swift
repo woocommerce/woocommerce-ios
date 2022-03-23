@@ -205,9 +205,15 @@ final class OrderDetailsDataSource: NSObject {
 
     private let imageService: ImageService = ServiceLocator.imageService
 
-    init(order: Order, storageManager: StorageManagerType = ServiceLocator.storageManager) {
+    /// IPP Configuration loader
+    private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
+
+    init(order: Order,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration) {
         self.storageManager = storageManager
         self.order = order
+        self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
         self.couponLines = order.coupons
 
         super.init()
@@ -1504,7 +1510,10 @@ private extension OrderDetailsDataSource {
     }
 
     func isOrderCurrencyEligibleForCardPayment() -> Bool {
-        CurrencyCode(rawValue: order.currency) == .USD
+        guard let currency = CurrencyCode(caseInsensitiveRawValue: order.currency) else {
+            return false
+        }
+        return cardPresentPaymentsConfiguration.currencies.contains(currency)
     }
 
     func isOrderStatusEligibleForCardPayment() -> Bool {

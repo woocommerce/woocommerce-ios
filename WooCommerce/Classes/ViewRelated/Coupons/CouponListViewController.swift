@@ -47,6 +47,12 @@ final class CouponListViewController: UIViewController {
 
     private lazy var topBannerView: TopBannerView = createFeedbackBannerView()
 
+    private lazy var noticePresenter: DefaultNoticePresenter = {
+        let noticePresenter = DefaultNoticePresenter()
+        noticePresenter.presentingViewController = self
+        return noticePresenter
+    }()
+
     init(siteID: Int64) {
         self.siteID = siteID
         self.viewModel = CouponListViewModel(siteID: siteID)
@@ -170,7 +176,12 @@ extension CouponListViewController: UITableViewDelegate {
             return
         }
         let detailsViewModel = CouponDetailsViewModel(coupon: coupon)
-        let hostingController = CouponDetailsHostingController(viewModel: detailsViewModel)
+        let hostingController = CouponDetailsHostingController(viewModel: detailsViewModel) { [weak self] in
+            guard let self = self else { return }
+            self.navigationController?.popViewController(animated: true)
+            let notice = Notice(title: Localization.couponDeleted, feedbackType: .success)
+            self.noticePresenter.enqueue(notice: notice)
+        }
         navigationController?.pushViewController(hostingController, animated: true)
     }
 }
@@ -394,5 +405,6 @@ private extension CouponListViewController {
         )
         static let giveFeedbackAction = NSLocalizedString("Give Feedback", comment: "Title of the feedback action button on the coupon list screen")
         static let dismissAction = NSLocalizedString("Dismiss", comment: "Title of the dismiss action button on the coupon list screen")
+        static let couponDeleted = NSLocalizedString("Coupon deleted", comment: "Notice message after deleting coupon from the Coupon Details screen")
     }
 }

@@ -5,8 +5,8 @@ import Yosemite
 ///
 final class CouponDetailsHostingController: UIHostingController<CouponDetails> {
 
-    init(viewModel: CouponDetailsViewModel) {
-        super.init(rootView: CouponDetails(viewModel: viewModel))
+    init(viewModel: CouponDetailsViewModel, onDeletion: @escaping () -> Void) {
+        super.init(rootView: CouponDetails(viewModel: viewModel, onDeletion: onDeletion))
         // The navigation title is set here instead of the SwiftUI view's `navigationTitle`
         // to avoid the blinking of the title label when pushed from UIKit view.
         title = NSLocalizedString("Coupon", comment: "Title of Coupon Details screen")
@@ -21,6 +21,9 @@ final class CouponDetailsHostingController: UIHostingController<CouponDetails> {
 }
 
 struct CouponDetails: View {
+    // Closure to be triggered when the coupon is deleted successfully
+    private let onDeletion: () -> Void
+
     @ObservedObject private var viewModel: CouponDetailsViewModel
     @State private var showingActionSheet: Bool = false
     @State private var showingShareSheet: Bool = false
@@ -32,14 +35,13 @@ struct CouponDetails: View {
     // Tracks the scale of the view due to accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
-
     /// The presenter to display notice when the coupon code is copied.
     /// It is kept internal so that the hosting controller can update its presenting controller to itself.
     let noticePresenter: DefaultNoticePresenter
 
-    init(viewModel: CouponDetailsViewModel) {
+    init(viewModel: CouponDetailsViewModel, onDeletion: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.onDeletion = onDeletion
         self.noticePresenter = DefaultNoticePresenter()
         viewModel.syncCoupon()
         viewModel.loadCouponReport()
@@ -265,15 +267,10 @@ struct CouponDetails: View {
     }
 
     private func handleCouponDeletion() {
-        viewModel.deleteCoupon {
-            let notice = Notice(title: Localization.couponDeleted, feedbackType: .success)
-            noticePresenter.enqueue(notice: notice)
-            presentationMode.wrappedValue.dismiss()
-        } onFailure: {
+        viewModel.deleteCoupon(onSuccess: onDeletion, onFailure: {
             let notice = Notice(title: Localization.errorDeletingCoupon, feedbackType: .error)
             noticePresenter.enqueue(notice: notice)
-        }
-
+        })
     }
 }
 
@@ -324,7 +321,6 @@ private extension CouponDetails {
             "Delete",
             comment: "Title for the action button on the confirm alert for deleting coupon on the Coupon Details screen"
         )
-        static let couponDeleted = NSLocalizedString("Coupon deleted", comment: "Notice message after deleting coupon on the Coupon Details screen")
         static let errorDeletingCoupon = NSLocalizedString(
             "Failed to delete coupon. Please try again.",
             comment: "Error message on the Coupon Details screen when deleting coupon fails"
@@ -343,7 +339,7 @@ private extension CouponDetails {
 #if DEBUG
 struct CouponDetails_Previews: PreviewProvider {
     static var previews: some View {
-        CouponDetails(viewModel: CouponDetailsViewModel(coupon: Coupon.sampleCoupon))
+        CouponDetails(viewModel: CouponDetailsViewModel(coupon: Coupon.sampleCoupon), onDeletion: {})
     }
 }
 #endif

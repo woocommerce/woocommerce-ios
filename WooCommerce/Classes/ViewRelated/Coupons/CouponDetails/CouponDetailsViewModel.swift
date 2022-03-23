@@ -126,6 +126,19 @@ final class CouponDetailsViewModel: ObservableObject {
         }
         stores.dispatch(action)
     }
+
+    func deleteCoupon(onSuccess: @escaping () -> Void, onFailure: @escaping () -> Void) {
+        let action = CouponAction.deleteCoupon(siteID: siteID, couponID: coupon.couponID) { result in
+            switch result {
+            case .success:
+                onSuccess()
+            case .failure(let error):
+                DDLogError("⛔️ Error deleting coupon: \(error)")
+                onFailure()
+            }
+        }
+        stores.dispatch(action)
+    }
 }
 
 // MARK: - Private helpers

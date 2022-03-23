@@ -27,6 +27,7 @@ struct CouponDetails: View {
     @State private var showingUsageDetails: Bool = false
     @State private var showingAmountLoadingErrorPrompt: Bool = false
     @State private var showingEnableAnalytics: Bool = false
+    @State private var showingDeletionConfirmAlert: Bool = false
 
     // Tracks the scale of the view due to accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
@@ -73,6 +74,9 @@ struct CouponDetails: View {
                                     .default(Text(Localization.shareCoupon), action: {
                                         showingShareSheet = true
                                         ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "shared_code"])
+                                    }),
+                                    .destructive(Text(Localization.deleteCoupon), action: {
+                                        showingDeletionConfirmAlert = true
                                     }),
                                     .cancel()
                                 ]

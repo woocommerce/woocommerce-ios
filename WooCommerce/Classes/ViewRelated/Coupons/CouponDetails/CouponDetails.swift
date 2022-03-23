@@ -57,6 +57,30 @@ struct CouponDetails: View {
         ]
     }
 
+    private var actionSheetButtons: [ActionSheet.Button] {
+        var buttons: [ActionSheet.Button] = [
+            .default(Text(Localization.copyCode), action: {
+                UIPasteboard.general.string = viewModel.couponCode
+                let notice = Notice(title: Localization.couponCopied, feedbackType: .success)
+                noticePresenter.enqueue(notice: notice)
+                ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "copied_code"])
+            }),
+            .default(Text(Localization.shareCoupon), action: {
+                showingShareSheet = true
+                ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "shared_code"])
+            }),
+        ]
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.couponEditAndDelete) {
+            buttons.append(.destructive(Text(Localization.deleteCoupon), action: {
+                showingDeletionConfirmAlert = true
+            }))
+        }
+
+        buttons.append(.cancel())
+        return buttons
+    }
+
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
@@ -66,22 +90,7 @@ struct CouponDetails: View {
                         .actionSheet(isPresented: $showingActionSheet) {
                             ActionSheet(
                                 title: Text(Localization.manageCoupon),
-                                buttons: [
-                                    .default(Text(Localization.copyCode), action: {
-                                        UIPasteboard.general.string = viewModel.couponCode
-                                        let notice = Notice(title: Localization.couponCopied, feedbackType: .success)
-                                        noticePresenter.enqueue(notice: notice)
-                                        ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "copied_code"])
-                                    }),
-                                    .default(Text(Localization.shareCoupon), action: {
-                                        showingShareSheet = true
-                                        ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "shared_code"])
-                                    }),
-                                    .destructive(Text(Localization.deleteCoupon), action: {
-                                        showingDeletionConfirmAlert = true
-                                    }),
-                                    .cancel()
-                                ]
+                                buttons: actionSheetButtons
                             )
                         }
                         .shareSheet(isPresented: $showingShareSheet) {

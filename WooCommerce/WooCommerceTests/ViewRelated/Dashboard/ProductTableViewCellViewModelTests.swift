@@ -8,7 +8,7 @@ final class ProductTableViewCellViewModelTests: XCTestCase {
         let statsItem = TopEarnerStatsItem.fake().copy(productName: "Kiwi 🥝",
                                                        quantity: 5,
                                                        total: 3888.822,
-                                                       currency: CurrencySettings.CurrencyCode.USD.rawValue,
+                                                       currency: CurrencyCode.USD.rawValue,
                                                        imageUrl: "wp.com/kiwi-image")
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
 

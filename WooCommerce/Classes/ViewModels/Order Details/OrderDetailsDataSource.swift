@@ -1504,7 +1504,7 @@ private extension OrderDetailsDataSource {
     }
 
     func isOrderCurrencyEligibleForCardPayment() -> Bool {
-        CurrencySettings.CurrencyCode(rawValue: order.currency) == .USD
+        CurrencyCode(rawValue: order.currency) == .USD
     }
 
     func isOrderStatusEligibleForCardPayment() -> Bool {

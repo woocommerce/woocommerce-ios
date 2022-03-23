@@ -107,7 +107,7 @@ final class IssueRefundViewModel {
     /// Charge related to the order. Used to show card details in the `Refund Via` section, and the refund confirmation screen.
     ///
     private var charge: WCPayCharge? {
-        return chargeResultsController?.fetchedObjects.first
+        chargeResultsController?.fetchedObjects.first
     }
 
     /// ResultsController for the charge relating to the order. Used to show card details in the `Refund Via` section, and the refund confirmation screen.
@@ -454,7 +454,7 @@ extension IssueRefundViewModel {
     /// Calculates whether the "select all" button should be visible or not.
     ///
     private func calculateSelectAllButtonVisibility() -> Bool {
-        return state.itemsToRefund.isNotEmpty
+        state.itemsToRefund.isNotEmpty
     }
 
     /// Returns `true` if a shipping refund is found.

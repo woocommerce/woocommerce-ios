@@ -29,6 +29,7 @@ struct IntegerInputFormatter: UnitInputFormatter {
             return defaultValue
         }
 
+        // No need to apply formatting when we only have the minus sign
         guard text != "\(minus)" else {
             return text
         }

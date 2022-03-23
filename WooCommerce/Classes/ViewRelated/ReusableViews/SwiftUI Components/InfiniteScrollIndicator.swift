@@ -19,9 +19,17 @@ struct InfiniteScrollIndicator: View {
             .frame(maxWidth: .infinity, alignment: .center)
             .listRowInsets(EdgeInsets())
             .listRowBackground(Color(.listBackground))
+            .accessibilityElement()
+            .accessibilityLabel(Localization.accessibilityLabel)
             .if(!showContent) { progressView in
                 progressView.hidden() // Hidden but still in view hierarchy so `onAppear` will trigger the load action when needed
             }
+    }
+}
+
+private extension InfiniteScrollIndicator {
+    enum Localization {
+        static let accessibilityLabel = NSLocalizedString("Loading", comment: "Accessibility label for loading indicator (spinner) at the bottom of a list")
     }
 }
 

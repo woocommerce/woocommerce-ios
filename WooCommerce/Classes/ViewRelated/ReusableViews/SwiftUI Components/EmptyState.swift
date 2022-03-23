@@ -16,6 +16,7 @@ struct EmptyState: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: Constants.width)
+                    .accessibility(hidden: true)
             }
             if let description = description {
                 Text(description)

@@ -368,4 +368,91 @@ final class CouponDetailsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.hasWCAnalyticsDisabled) // Confidence check
         XCTAssertTrue(viewModel.shouldShowErrorLoadingAmount)
     }
+
+    func test_deleteCoupon_triggers_onSuccess_if_deletion_succeeds() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(siteID: 123, couponID: 456)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, stores: stores)
+        var onSuccessTriggered = false
+        var onFailureTriggered = false
+        let onSuccess: () -> Void = {
+            onSuccessTriggered = true
+        }
+        let onFailure: () -> Void = {
+            onFailureTriggered = true
+        }
+
+        // When
+        stores.whenReceivingAction(ofType: CouponAction.self) { action in
+            switch action {
+            case let .deleteCoupon(siteID, couponID, onCompletion):
+                // Confidence check
+                XCTAssertEqual(siteID, sampleCoupon.siteID)
+                XCTAssertEqual(couponID, sampleCoupon.couponID)
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+        viewModel.deleteCoupon(onSuccess: onSuccess, onFailure: onFailure)
+
+        // Then
+        XCTAssertTrue(onSuccessTriggered)
+        XCTAssertFalse(onFailureTriggered)
+    }
+
+    func test_deleteCoupon_triggers_onFailure_if_deletion_fails() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(siteID: 123, couponID: 456)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, stores: stores)
+        var onSuccessTriggered = false
+        var onFailureTriggered = false
+        let onSuccess: () -> Void = {
+            onSuccessTriggered = true
+        }
+        let onFailure: () -> Void = {
+            onFailureTriggered = true
+        }
+
+        // When
+        stores.whenReceivingAction(ofType: CouponAction.self) { action in
+            switch action {
+            case let .deleteCoupon(_, _, onCompletion):
+                let error = NSError(domain: "test", code: 400, userInfo: nil)
+                onCompletion(.failure(error))
+            default:
+                break
+            }
+        }
+        viewModel.deleteCoupon(onSuccess: onSuccess, onFailure: onFailure)
+
+        // Then
+        XCTAssertFalse(onSuccessTriggered)
+        XCTAssertTrue(onFailureTriggered)
+    }
+
+    func test_deleteCoupon_updates_isLoading_correctly() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(siteID: 123, couponID: 456)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, stores: stores)
+        XCTAssertFalse(viewModel.isLoading)
+
+        // When
+        stores.whenReceivingAction(ofType: CouponAction.self) { action in
+            switch action {
+            case let .deleteCoupon(_, _, onCompletion):
+                XCTAssertTrue(viewModel.isLoading)
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+        viewModel.deleteCoupon(onSuccess: {}, onFailure: {})
+
+        // Then
+        XCTAssertFalse(viewModel.isLoading)
+    }
 }

@@ -1,9 +1,9 @@
 import Foundation
 
 public struct CardPresentPaymentsConfiguration {
-    private let countryCode: String
     private let stripeTerminalforCanadaEnabled: Bool
 
+    public let countryCode: String
     public let paymentMethods: [WCPayPaymentMethodType]
     public let currencies: [String]
     public let paymentGateways: [String]

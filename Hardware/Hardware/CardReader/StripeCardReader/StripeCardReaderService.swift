@@ -271,7 +271,7 @@ extension StripeCardReaderService: CardReaderService {
     }
 
     public func connect(_ reader: CardReader) -> AnyPublisher<CardReader, Error> {
-        guard let stripeReader = self.discoveredStripeReadersCache.reader(matching: reader) as? Reader else {
+        guard let stripeReader = discoveredStripeReadersCache.reader(matching: reader) as? Reader else {
             return Future() { promise in
                 promise(.failure(CardReaderServiceError.connection()))
             }.eraseToAnyPublisher()

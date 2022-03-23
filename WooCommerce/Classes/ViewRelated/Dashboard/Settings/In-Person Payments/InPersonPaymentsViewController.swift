@@ -31,9 +31,9 @@ struct InPersonPaymentsView: View {
                 InPersonPaymentsLoading()
             case .selectPlugin:
                 if viewModel.userIsAdministrator {
-                    InPersonPaymentsPluginConfictAdmin(onRefresh: viewModel.refresh)
+                    InPersonPaymentsPluginConflictAdmin(onRefresh: viewModel.refresh)
                 } else {
-                    InPersonPaymentsPluginConfictShopManager(onRefresh: viewModel.refresh)
+                    InPersonPaymentsPluginConflictShopManager(onRefresh: viewModel.refresh)
                 }
             case .countryNotSupported(let countryCode):
                 InPersonPaymentsCountryNotSupported(countryCode: countryCode)
@@ -55,7 +55,7 @@ struct InPersonPaymentsView: View {
             case .stripeAccountPendingRequirement(_, let deadline):
                 InPersonPaymentsStripeAccountPending(deadline: deadline)
             case .stripeAccountUnderReview:
-                InPersonPaymentsStripeAcountReview()
+                InPersonPaymentsStripeAccountReview()
             case .stripeAccountRejected:
                 InPersonPaymentsStripeRejected()
             case .completed(let plugin):

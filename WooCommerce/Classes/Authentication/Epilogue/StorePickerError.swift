@@ -10,8 +10,7 @@ final class StorePickerErrorHostingController: UIHostingController<StorePickerEr
     static func createWithActions(presenting: UIViewController) -> StorePickerErrorHostingController {
         let viewController = StorePickerErrorHostingController()
         viewController.setActions(troubleshootingAction: {
-            let safariViewController = SFSafariViewController(url: WooConstants.URLs.troubleshootErrorLoadingData.asURL())
-            viewController.present(safariViewController, animated: true)
+            WebviewHelper.launch(WooConstants.URLs.troubleshootErrorLoadingData.asURL(), with: viewController, modalPresentationStyle: .automatic)
         },
         contactSupportAction: {
             presenting.dismiss(animated: true) {

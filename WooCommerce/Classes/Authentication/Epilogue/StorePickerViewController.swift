@@ -615,8 +615,11 @@ extension StorePickerViewController: UITableViewDataSource {
             hideActionButton()
             let cell = tableView.dequeueReusableCell(EmptyStoresTableViewCell.self, for: indexPath)
             cell.onJetpackSetupButtonTapped = { [weak self] in
-                let safariViewController = SFSafariViewController(url: WooConstants.URLs.emptyStoresJetpackSetup.asURL())
-                self?.present(safariViewController, animated: true, completion: nil)
+                guard let self = self else {
+                    return
+                }
+
+                WebviewHelper.launch(WooConstants.URLs.emptyStoresJetpackSetup.asURL(), with: self, modalPresentationStyle: .automatic)
             }
             return cell
         }

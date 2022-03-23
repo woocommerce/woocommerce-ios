@@ -283,17 +283,13 @@ private extension PrivacySettingsViewController {
     /// Display Automattic's Cookie Policy web page
     ///
     func presentCookiePolicyWebView() {
-        let safariViewController = SFSafariViewController(url: WooConstants.URLs.cookie.asURL())
-        safariViewController.modalPresentationStyle = .pageSheet
-        present(safariViewController, animated: true, completion: nil)
+        WebviewHelper.launch(WooConstants.URLs.cookie.asURL(), with: self)
     }
 
     /// Display Automattic's Privacy Policy web page
     ///
     func presentPrivacyPolicyWebView() {
-        let safariViewController = SFSafariViewController(url: WooConstants.URLs.privacy.asURL())
-        safariViewController.modalPresentationStyle = .pageSheet
-        present(safariViewController, animated: true, completion: nil)
+        WebviewHelper.launch(WooConstants.URLs.privacy.asURL(), with: self)
     }
 }
 

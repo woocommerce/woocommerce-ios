@@ -10,14 +10,14 @@ final class WebviewHelper {
     ///   - stringURL: the unconverted URL string
     ///   - sender: the view controller that will present the webview
     ///
-    static func launch(_ stringURL: String?, with sender: UIViewController) {
+    static func launch(_ stringURL: String?, with sender: UIViewController, modalPresentationStyle: UIModalPresentationStyle = .pageSheet) {
         guard let urlString = stringURL,
             let url = URL(string: urlString) else {
                 DDLogError("Webview Helper Error - could not convert string to URL: \(String(describing: stringURL)).")
                 return
         }
 
-        launch(url, with: sender)
+        launch(url, with: sender, modalPresentationStyle: modalPresentationStyle)
     }
 
     /// Launch webview URLs using a common style.
@@ -26,9 +26,9 @@ final class WebviewHelper {
     ///   - URL: the URL
     ///   - sender: the view controller that will present the webview
     ///
-    static func launch(_ url: URL, with sender: UIViewController) {
+    static func launch(_ url: URL, with sender: UIViewController, modalPresentationStyle: UIModalPresentationStyle = .pageSheet) {
         let safariViewController = SFSafariViewController(url: url)
-        safariViewController.modalPresentationStyle = .pageSheet
+        safariViewController.modalPresentationStyle = modalPresentationStyle
         sender.present(safariViewController, animated: true, completion: nil)
     }
 }

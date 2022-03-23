@@ -84,8 +84,7 @@ private extension WooAboutScreenConfiguration {
     // MARK: - Presentation Actions
 
     func present(url: URL, from viewController: UIViewController) {
-        let vc = SFSafariViewController(url: url)
-        viewController.present(vc, animated: true, completion: nil)
+        WebviewHelper.launch(url, with: viewController, modalPresentationStyle: .automatic)
     }
 
     func presentShareSheet(from viewController: UIViewController, sourceView: UIView?) {
@@ -198,8 +197,7 @@ private extension WooLegalAndMoreSubmenuConfiguration {
     }
 
     func present(url: URL, from viewController: UIViewController) {
-        let vc = SFSafariViewController(url: url)
-        viewController.present(vc, animated: true, completion: nil)
+        WebviewHelper.launch(url, with: viewController, modalPresentationStyle: .automatic)
     }
 
     func presentLicenses(from viewController: UIViewController) {

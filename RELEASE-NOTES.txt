@@ -3,7 +3,7 @@
 8.9
 -----
 - [*] Coupons: Fixed issue loading the coupon list from the local storage on initial load. [https://github.com/woocommerce/woocommerce-ios/pull/6463]
-
+- [*] Hub Menu: Multiple menu items can no longer be tapped simultaneously. [https://github.com/woocommerce/woocommerce-ios/pull/6484]
 
 8.8
 -----

@@ -32,6 +32,8 @@ struct CouponDetails: View {
     // Tracks the scale of the view due to accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
+
     /// The presenter to display notice when the coupon code is copied.
     /// It is kept internal so that the hosting controller can update its presenting controller to itself.
     let noticePresenter: DefaultNoticePresenter
@@ -181,9 +183,7 @@ struct CouponDetails: View {
             .alert(isPresented: $showingDeletionConfirmAlert, content: {
                 Alert(title: Text(Localization.deleteCoupon),
                       message: Text(Localization.deleteCouponConfirm),
-                      primaryButton: .destructive(Text(Localization.deleteButton), action: {
-                    // TODO
-                }),
+                      primaryButton: .destructive(Text(Localization.deleteButton), action: handleCouponDeletion),
                       secondaryButton: .cancel())
             })
 
@@ -250,6 +250,18 @@ struct CouponDetails: View {
             showingAmountLoadingErrorPrompt = true
         }
     }
+
+    private func handleCouponDeletion() {
+        viewModel.deleteCoupon {
+            let notice = Notice(title: Localization.couponDeleted, feedbackType: .success)
+            noticePresenter.enqueue(notice: notice)
+            presentationMode.wrappedValue.dismiss()
+        } onFailure: {
+            let notice = Notice(title: Localization.errorDeletingCoupon, feedbackType: .error)
+            noticePresenter.enqueue(notice: notice)
+        }
+
+    }
 }
 
 // MARK: - Subtypes
@@ -300,6 +312,10 @@ private extension CouponDetails {
             comment: "Title for the action button on the confirm alert for deleting coupon on the Coupon Details screen"
         )
         static let couponDeleted = NSLocalizedString("Coupon deleted", comment: "Notice message after deleting coupon on the Coupon Details screen")
+        static let errorDeletingCoupon = NSLocalizedString(
+            "Failed to delete coupon. Please try again.",
+            comment: "Error message on the Coupon Details screen when deleting coupon fails"
+        )
     }
 
     struct DetailRow: Identifiable {

@@ -190,12 +190,16 @@ struct CouponDetails: View {
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    showingActionSheet = true
-                }, label: {
-                    Image(uiImage: .moreImage)
-                        .renderingMode(.template)
-                })
+                if viewModel.isLoading {
+                    ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                } else {
+                    Button(action: {
+                        showingActionSheet = true
+                    }, label: {
+                        Image(uiImage: .moreImage)
+                            .renderingMode(.template)
+                    })
+                }
             }
         }
         .wooNavigationBarStyle()

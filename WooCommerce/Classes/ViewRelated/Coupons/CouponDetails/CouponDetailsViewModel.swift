@@ -34,6 +34,10 @@ final class CouponDetailsViewModel: ObservableObject {
     ///
     @Published private(set) var hasWCAnalyticsDisabled: Bool = false
 
+    /// Indicates whether a network call is in progress
+    ///
+    @Published private(set) var isLoading: Bool = false
+
     /// The message to be shared about the coupon
     ///
     var shareMessage: String {
@@ -128,7 +132,9 @@ final class CouponDetailsViewModel: ObservableObject {
     }
 
     func deleteCoupon(onSuccess: @escaping () -> Void, onFailure: @escaping () -> Void) {
-        let action = CouponAction.deleteCoupon(siteID: siteID, couponID: coupon.couponID) { result in
+        isLoading = true
+        let action = CouponAction.deleteCoupon(siteID: siteID, couponID: coupon.couponID) { [weak self] result in
+            self?.isLoading = false
             switch result {
             case .success:
                 onSuccess()

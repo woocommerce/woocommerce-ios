@@ -178,6 +178,15 @@ struct CouponDetails: View {
                     viewModel.loadCouponReport()
                 })
             }
+            .alert(isPresented: $showingDeletionConfirmAlert, content: {
+                Alert(title: Text(Localization.deleteCoupon),
+                      message: Text(Localization.deleteCouponConfirm),
+                      primaryButton: .destructive(Text(Localization.deleteButton), action: {
+                    // TODO
+                }),
+                      secondaryButton: .cancel())
+            })
+
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -285,10 +294,6 @@ private extension CouponDetails {
         static let deleteCouponConfirm = NSLocalizedString(
             "Are you sure you want to delete this coupon?",
             comment: "Confirm message for deleting coupon on the Coupon Details screen"
-        )
-        static let cancelButton = NSLocalizedString(
-            "Cancel",
-            comment: "Title for the cancel button on the confirm alert for deleting coupon on the Coupon Details screen"
         )
         static let deleteButton = NSLocalizedString(
             "Delete",

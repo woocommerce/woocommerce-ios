@@ -277,6 +277,20 @@ private extension CouponDetails {
             "Try Again",
             comment: "Action displayed in the error prompt when loading total discounted amount in Coupon Details screen fails"
         )
+        static let deleteCoupon = NSLocalizedString("Delete Coupon", comment: "Action title for deleting coupon on the Coupon Details screen")
+        static let deleteCouponConfirm = NSLocalizedString(
+            "Are you sure you want to delete this coupon?",
+            comment: "Confirm message for deleting coupon on the Coupon Details screen"
+        )
+        static let cancelButton = NSLocalizedString(
+            "Cancel",
+            comment: "Title for the cancel button on the confirm alert for deleting coupon on the Coupon Details screen"
+        )
+        static let deleteButton = NSLocalizedString(
+            "Delete",
+            comment: "Title for the action button on the confirm alert for deleting coupon on the Coupon Details screen"
+        )
+        static let couponDeleted = NSLocalizedString("Coupon deleted", comment: "Notice message after deleting coupon on the Coupon Details screen")
     }
 
     struct DetailRow: Identifiable {

@@ -615,9 +615,7 @@ extension StorePickerViewController: UITableViewDataSource {
             hideActionButton()
             let cell = tableView.dequeueReusableCell(EmptyStoresTableViewCell.self, for: indexPath)
             cell.onJetpackSetupButtonTapped = { [weak self] in
-                guard let self = self else {
-                    return
-                }
+                guard let self = self else { return }
 
                 WebviewHelper.launch(WooConstants.URLs.emptyStoresJetpackSetup.asURL(), with: self)
             }

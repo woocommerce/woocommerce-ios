@@ -118,9 +118,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
         ErrorTopBannerFactory.createTopBanner(isExpanded: false,
                                               expandedStateChangeHandler: {},
                                               onTroubleshootButtonPressed: { [weak self] in
-                                                guard let self = self else {
-                                                    return
-                                                }
+                                                guard let self = self else { return }
 
                                                 WebviewHelper.launch(WooConstants.URLs.troubleshootErrorLoadingData.asURL(), with: self)
                                               },

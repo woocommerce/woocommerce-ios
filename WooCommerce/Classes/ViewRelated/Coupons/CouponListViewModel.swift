@@ -130,6 +130,8 @@ final class CouponListViewModel {
     /// Enable coupons for the store
     ///
     func enableCoupons() {
+        ServiceLocator.analytics.track(.couponSettingEnabled)
+
         state = .loading
         let action = SettingAction.enableCouponSetting(siteID: siteID) { [weak self] result in
             guard let self = self else { return }
@@ -203,7 +205,12 @@ private extension CouponListViewModel {
     /// Check whether coupons are enabled for this store.
     ///
     func loadCouponSetting(completionHandler: @escaping ((Result<Bool, Error>) -> Void)) {
-        let action = SettingAction.retrieveCouponSetting(siteID: siteID, onCompletion: completionHandler)
+        let action = SettingAction.retrieveCouponSetting(siteID: siteID) { result in
+            if let isEnabled = try? result.get(), !isEnabled {
+                ServiceLocator.analytics.track(.couponSettingDisabled)
+            }
+            completionHandler(result)
+        }
         storesManager.dispatch(action)
     }
 }

@@ -39,6 +39,7 @@ private struct OrderCustomerSectionContent: View {
         VStack(alignment: .leading, spacing: .zero) {
             HStack(alignment: .top) {
                 Text(Localization.customer)
+                    .accessibilityAddTraits(.isHeader)
                     .headlineStyle()
 
                 Spacer()

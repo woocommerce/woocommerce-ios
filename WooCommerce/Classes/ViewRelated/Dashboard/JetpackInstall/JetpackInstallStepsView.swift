@@ -7,24 +7,6 @@ struct JetpackInstallStepsView: View {
     // Closure invoked when Done button is tapped
     private let dismissAction: () -> Void
 
-    /// The site for which Jetpack should be installed
-    private let siteURL: String
-
-    /// URL for the site's admin page
-    private let siteAdminURL: String
-
-    /// WPAdmin URL to navigate user when install fails.
-    private var wpAdminURL: URL? {
-        switch viewModel.currentStep {
-        case .installation:
-            return URL(string: "\(siteAdminURL)\(Constants.wpAdminInstallPath)")
-        case .activation:
-            return URL(string: "\(siteAdminURL)\(Constants.wpAdminPluginsPath)")
-        default:
-            return nil
-        }
-    }
-
     /// Whether the WPAdmin webview is being shown.
     @State private var showingWPAdminWebview: Bool = false
 
@@ -38,7 +20,7 @@ struct JetpackInstallStepsView: View {
     private var descriptionAttributedString: NSAttributedString {
         let font: UIFont = .body
         let boldFont: UIFont = font.bold
-        let siteName = siteURL.trimHTTPScheme()
+        let siteName = viewModel.siteURL.trimHTTPScheme()
 
         let attributedString = NSMutableAttributedString(
             string: String(format: Localization.installDescription, siteName),
@@ -51,13 +33,9 @@ struct JetpackInstallStepsView: View {
         return attributedString
     }
 
-    init(siteURL: String,
-         siteAdminURL: String,
-         viewModel: JetpackInstallStepsViewModel,
+    init(viewModel: JetpackInstallStepsViewModel,
          supportAction: @escaping () -> Void,
          dismissAction: @escaping () -> Void) {
-        self.siteURL = siteURL
-        self.siteAdminURL = siteAdminURL
         self.viewModel = viewModel
         self.supportAction = supportAction
         self.dismissAction = dismissAction
@@ -192,12 +170,10 @@ struct JetpackInstallStepsView: View {
                 .padding(Constants.actionButtonMargin)
             }
         }
-        .if(wpAdminURL != nil) { view in
-            view.safariSheet(isPresented: $showingWPAdminWebview, url: wpAdminURL, onDismiss: {
-                showingWPAdminWebview = false
-                viewModel.checkJetpackPluginDetails()
-            })
-        }
+        .safariSheet(isPresented: $showingWPAdminWebview, url: viewModel.wpAdminURL, onDismiss: {
+            showingWPAdminWebview = false
+            viewModel.checkJetpackPluginDetails()
+        })
     }
 }
 
@@ -216,9 +192,6 @@ private extension JetpackInstallStepsView {
         static let stepItemHorizontalSpacing: CGFloat = 24
         static let stepItemsVerticalSpacing: CGFloat = 20
         static let stepImageSize: CGFloat = 24
-        // TODO-5365: Remove the hard-code wp-admin by fetching option admin_url for sites
-        static let wpAdminInstallPath: String = "plugin-install.php?tab=plugin-information&plugin=jetpack"
-        static let wpAdminPluginsPath: String = "plugins.php"
     }
 
     enum Localization {
@@ -234,12 +207,12 @@ private extension JetpackInstallStepsView {
 
 struct JetpackInstallStepsView_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = JetpackInstallStepsViewModel(siteID: 123)
-        JetpackInstallStepsView(siteURL: "automattic.com", siteAdminURL: "", viewModel: viewModel, supportAction: {}, dismissAction: {})
+        let viewModel = JetpackInstallStepsViewModel(siteID: 123, siteURL: "automattic.com", siteAdminURL: "")
+        JetpackInstallStepsView(viewModel: viewModel, supportAction: {}, dismissAction: {})
             .preferredColorScheme(.light)
             .previewLayout(.fixed(width: 414, height: 780))
 
-        JetpackInstallStepsView(siteURL: "automattic.com", siteAdminURL: "", viewModel: viewModel, supportAction: {}, dismissAction: {})
+        JetpackInstallStepsView(viewModel: viewModel, supportAction: {}, dismissAction: {})
             .preferredColorScheme(.dark)
             .previewLayout(.fixed(width: 414, height: 780))
     }

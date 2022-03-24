@@ -72,10 +72,14 @@ final class OrderDetailsViewModel {
         }
     }
 
+    /// IPP Configuration loader
+    private lazy var configurationLoader = CardPresentConfigurationLoader(stores: stores)
+
     /// The datasource that will be used to render the Order Details screen
     ///
     private(set) lazy var dataSource: OrderDetailsDataSource = {
-        return OrderDetailsDataSource(order: order)
+        return OrderDetailsDataSource(order: order,
+                                      cardPresentPaymentsConfiguration: configurationLoader.configuration)
     }()
 
     /// Order Notes

@@ -1,7 +1,7 @@
 import XCTest
 @testable import WooCommerce
 @testable import Networking
-
+import Yosemite
 
 /// Currency Formatter Tests - Decimals
 ///
@@ -14,7 +14,7 @@ class CurrencyFormatterTests: XCTestCase {
     ///
     private func setUpSampleSiteSettings() -> [SiteSetting] {
         let settings = mapLoadGeneralSiteSettingsResponse()
-        var siteSettings = [SiteSetting]()
+        var siteSettings: [SiteSetting] = []
 
         siteSettings.append(settings[14])
         siteSettings.append(settings[15])
@@ -216,7 +216,7 @@ class CurrencyFormatterTests: XCTestCase {
         let thousandSeparator = "."
         let decimalPosition = 3
         let currencyPosition = CurrencySettings.CurrencyPosition.rightSpace
-        let currencyCode = CurrencySettings.CurrencyCode.GBP
+        let currencyCode = CurrencyCode.GBP
         let stringAmount = "-7867818684.64"
         let expectedResult = "-7.867.818.684,640 £"
 
@@ -257,7 +257,7 @@ class CurrencyFormatterTests: XCTestCase {
         let thousandSeparator = "."
         let decimalPosition = 3
         let currencyPosition = CurrencySettings.CurrencyPosition.rightSpace
-        let currencyCode = CurrencySettings.CurrencyCode.GBP
+        let currencyCode = CurrencyCode.GBP
         let decimalAmount = NSDecimalNumber(floatLiteral: -7867818684.64)
         let expectedResult = "-7.867.818.684,640 £"
 
@@ -288,7 +288,7 @@ class CurrencyFormatterTests: XCTestCase {
     /// This use case is for the y-axis values in the dashboard charts.
     func testFormattingANegativeValueInHumanReadableString() {
         let currencyPosition = CurrencySettings.CurrencyPosition.rightSpace
-        let currencyCode = CurrencySettings.CurrencyCode.GBP
+        let currencyCode = CurrencyCode.GBP
         let value = Double(-7867818684.64)
         let stringAmount = value.humanReadableString()
         let expectedResult = "-7.9b £"

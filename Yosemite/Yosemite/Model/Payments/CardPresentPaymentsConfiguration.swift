@@ -5,14 +5,14 @@ public struct CardPresentPaymentsConfiguration {
 
     public let countryCode: String
     public let paymentMethods: [WCPayPaymentMethodType]
-    public let currencies: [String]
+    public let currencies: [CurrencyCode]
     public let paymentGateways: [String]
     public let supportedReaders: [CardReaderType]
 
     init(countryCode: String,
          stripeTerminalforCanadaEnabled: Bool,
          paymentMethods: [WCPayPaymentMethodType],
-         currencies: [String],
+         currencies: [CurrencyCode],
          paymentGateways: [String],
          supportedReaders: [CardReaderType]) {
         self.countryCode = countryCode
@@ -30,7 +30,7 @@ public struct CardPresentPaymentsConfiguration {
                 countryCode: country,
                 stripeTerminalforCanadaEnabled: canadaEnabled,
                 paymentMethods: [.cardPresent],
-                currencies: ["USD"],
+                currencies: [.USD],
                 paymentGateways: [WCPayAccount.gatewayID, StripeAccount.gatewayID],
                 supportedReaders: [.chipper, .stripeM2]
             )
@@ -39,7 +39,7 @@ public struct CardPresentPaymentsConfiguration {
                 countryCode: country,
                 stripeTerminalforCanadaEnabled: true,
                 paymentMethods: [.cardPresent, .interacPresent],
-                currencies: ["CAD"],
+                currencies: [.CAD],
                 paymentGateways: [WCPayAccount.gatewayID],
                 supportedReaders: [.wisepad3]
             )

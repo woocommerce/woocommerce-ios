@@ -780,13 +780,20 @@ extension WooAnalyticsEvent {
         ///   - countryCode: the country code of the store.
         ///
         static func collectPaymentFailed(forGatewayID: String?, error: Error, countryCode: String) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .collectPaymentFailed,
-                              properties: [
-                                Keys.countryCode: countryCode,
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
-                                Keys.errorDescription: error.localizedDescription
-                              ]
-            )
+            let paymentMethod: PaymentMethod? = {
+                guard case let CardReaderServiceError.paymentCaptureWithPaymentMethod(_, paymentMethod) = error else {
+                    return nil
+                }
+                return paymentMethod
+            }()
+            let properties: [String: WooAnalyticsEventPropertyType] = [
+                Keys.countryCode: countryCode,
+                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                Keys.errorDescription: error.localizedDescription,
+                Keys.paymentMethodType: paymentMethod?.analyticsValue
+            ].compactMapValues { $0 }
+            return WooAnalyticsEvent(statName: .collectPaymentFailed,
+                              properties: properties)
         }
 
         /// Tracked when the payment collection is cancelled

@@ -218,7 +218,7 @@ private extension PaymentCaptureOrchestrator {
                 onCompletion(.success(.init(paymentMethod: paymentMethod,
                                             receiptParameters: receiptParameters)))
             case .failure(let error):
-                onCompletion(.failure(error))
+                onCompletion(.failure(CardReaderServiceError.paymentCaptureWithPaymentMethod(underlyingError: error, paymentMethod: paymentMethod)))
                 return
             }
         }

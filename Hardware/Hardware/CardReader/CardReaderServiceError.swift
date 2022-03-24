@@ -24,6 +24,10 @@ public enum CardReaderServiceError: Error {
     /// Error thrown while capturing a payment
     case paymentCapture(underlyingError: UnderlyingError = .internalServiceError)
 
+    /// Error thrown when the order payment fails to be captured with a known payment method.
+    /// The payment method is currently used for analytics.
+    case paymentCaptureWithPaymentMethod(underlyingError: Error, paymentMethod: PaymentMethod)
+
     /// Error thrown while cancelling a payment
     case paymentCancellation(underlyingError: UnderlyingError = .internalServiceError)
 
@@ -49,6 +53,8 @@ extension CardReaderServiceError: LocalizedError {
             return underlyingError.errorDescription
         case .paymentCapture(let underlyingError):
             return underlyingError.errorDescription
+        case .paymentCaptureWithPaymentMethod(underlyingError: let underlyingError, paymentMethod: _):
+            return underlyingError.localizedDescription
         case .paymentCancellation(let underlyingError):
             return underlyingError.errorDescription
         case .softwareUpdate(let underlyingError, _):

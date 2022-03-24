@@ -170,10 +170,12 @@ struct JetpackInstallStepsView: View {
                 .padding(Constants.actionButtonMargin)
             }
         }
-        .safariSheet(isPresented: $showingWPAdminWebview, url: viewModel.wpAdminURL, onDismiss: {
-            showingWPAdminWebview = false
-            viewModel.checkJetpackPluginDetails()
-        })
+        .if(viewModel.wpAdminURL != nil) { view in
+            view.safariSheet(isPresented: $showingWPAdminWebview, url: viewModel.wpAdminURL, onDismiss: {
+                showingWPAdminWebview = false
+                viewModel.checkJetpackPluginDetails()
+            })
+        }
     }
 }
 

@@ -36,6 +36,7 @@ struct FilterListSelector<ViewModel: FilterListSelectorViewModelable>: View {
                 .background(Color(.listForeground))
 
             ListSelector(command: viewModel.command, tableStyle: .plain)
+                .ignoresSafeArea()
         }
         .navigationTitle(viewModel.navigationTitle)
     }

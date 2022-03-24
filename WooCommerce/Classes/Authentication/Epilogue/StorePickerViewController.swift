@@ -619,7 +619,7 @@ extension StorePickerViewController: UITableViewDataSource {
                     return
                 }
 
-                WebviewHelper.launch(WooConstants.URLs.emptyStoresJetpackSetup.asURL(), with: self, modalPresentationStyle: .automatic)
+                WebviewHelper.launch(WooConstants.URLs.emptyStoresJetpackSetup.asURL(), with: self)
             }
             return cell
         }

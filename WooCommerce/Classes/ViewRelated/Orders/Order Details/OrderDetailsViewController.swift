@@ -592,7 +592,7 @@ private extension OrderDetailsViewController {
     }
 
     func displayWebView(url: URL) {
-        WebviewHelper.launch(url, with: self, modalPresentationStyle: .automatic)
+        WebviewHelper.launch(url, with: self)
     }
 
     func productsMoreMenuTapped(sourceView: UIView) {

@@ -472,7 +472,7 @@ private extension ReviewOrderViewController {
             return
         }
 
-        WebviewHelper.launch(url, with: self, modalPresentationStyle: .automatic)
+        WebviewHelper.launch(url, with: self)
     }
 
     /// Trigger view model to delete specified tracking and then reload data

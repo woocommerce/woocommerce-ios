@@ -1,6 +1,5 @@
 import Foundation
 import UIKit
-import SwiftUI
 
 final class CardReaderSettingsPresentingViewController: UIViewController {
 
@@ -41,7 +40,7 @@ final class CardReaderSettingsPresentingViewController: UIViewController {
             return
         }
 
-        childViewController = self.storyboard!.instantiateViewController(withIdentifier: viewModelAndView.viewIdentifier)
+        childViewController = storyboard!.instantiateViewController(withIdentifier: viewModelAndView.viewIdentifier)
 
         guard let childViewController = childViewController else {
             return
@@ -76,23 +75,6 @@ private extension CardReaderSettingsPresentingViewController {
 
 // MARK: - SwiftUI compatibility
 //
-
-/// SwiftUI wrapper for CardReaderSettingsPresentingViewController
-///
-struct CardReaderSettingsPresentingView: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> some UIViewController {
-        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: CardReaderSettingsPresentingViewController.self) else {
-            fatalError("Cannot instantiate `CardReaderSettingsPresentingViewController` from Dashboard storyboard")
-        }
-
-        let viewModelsAndViews = CardReaderSettingsViewModelsOrderedList()
-        viewController.configure(viewModelsAndViews: viewModelsAndViews)
-        return viewController
-    }
-
-    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
-    }
-}
 
 // MARK: - Localization
 //

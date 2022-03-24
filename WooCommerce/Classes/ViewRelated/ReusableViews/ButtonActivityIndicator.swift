@@ -15,6 +15,8 @@ final class ButtonActivityIndicator: UIButton {
             frm.origin.y = (frame.height - frm.height) / 2.0
             indicator.frame = frm.integral
         }
+
+        titleLabel?.isHidden = indicator.isAnimating
     }
 
     /// Display the loader indicator inside the button

@@ -72,14 +72,14 @@ extension StripeCardReaderService: CardReaderService {
 
         if shouldUseSimulatedCardReader {
             // You can test with different reader software update scenarios.
-            // Stripe doc: https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPSimulatorConfiguration.html#/c:objc(cs)SCPSimulatorConfiguration(py)availableReaderUpdate
+            // https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPSimulatorConfiguration.html#/c:objc(cs)SCPSimulatorConfiguration(py)availableReaderUpdate
             Terminal.shared.simulatorConfiguration.availableReaderUpdate = .none
 
             // You can use simulated test cards with a card type, or a card number with different brands and in various success
             // and error cases: https://stripe.com/docs/terminal/references/testing#simulated-test-cards
             // Example with `charge_declined` error:
             // Terminal.shared.simulatorConfiguration.simulatedCard = .init(testCardNumber: "4000000000000002")
-            // Stripe doc: https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPSimulatorConfiguration.html#/c:objc(cs)SCPSimulatorConfiguration(py)simulatedCard
+            // https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPSimulatorConfiguration.html#/c:objc(cs)SCPSimulatorConfiguration(py)simulatedCard
             Terminal.shared.simulatorConfiguration.simulatedCard = .init(type: .amex)
         }
 

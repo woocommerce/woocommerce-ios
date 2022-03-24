@@ -90,7 +90,7 @@ struct NewOrder: View {
 
                         Spacer(minLength: Layout.sectionSpacing)
 
-                        ProductsSection(geometry: geometry, scroll: scroll, viewModel: viewModel, navigationButtonID: $navigationButtonID)
+                        ProductsSection(scroll: scroll, viewModel: viewModel, navigationButtonID: $navigationButtonID)
 
                         Spacer(minLength: Layout.sectionSpacing)
 
@@ -136,7 +136,6 @@ struct NewOrder: View {
 /// Represents the Products section
 ///
 private struct ProductsSection: View {
-    let geometry: GeometryProxy
     let scroll: ScrollViewProxy
 
     /// View model to drive the view content
@@ -153,6 +152,10 @@ private struct ProductsSection: View {
     ///
     @Namespace var addProductButton
 
+    ///   Environment safe areas
+    ///
+    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
+
     var body: some View {
         Group {
             Divider()
@@ -162,7 +165,7 @@ private struct ProductsSection: View {
                     .headlineStyle()
 
                 ForEach(viewModel.productRows) { productRow in
-                    ProductRow(viewModel: productRow)
+                    ProductRow(viewModel: productRow, accessibilityHint: NewOrder.Localization.productRowAccessibilityHint)
                         .onTapGesture {
                             viewModel.selectOrderItem(productRow.id)
                         }
@@ -188,7 +191,7 @@ private struct ProductsSection: View {
                         }
                 })
             }
-            .padding(.horizontal, insets: geometry.safeAreaInsets)
+            .padding(.horizontal, insets: safeAreaInsets)
             .padding()
             .background(Color(.listForeground))
 
@@ -210,6 +213,8 @@ private extension NewOrder {
         static let createButton = NSLocalizedString("Create", comment: "Button to create an order on the New Order screen")
         static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating a new order")
         static let addProduct = NSLocalizedString("Add Product", comment: "Title text of the button that adds a product when creating a new order")
+        static let productRowAccessibilityHint = NSLocalizedString("Opens product detail.",
+                                                                   comment: "Accessibility hint for selecting a product in a new order")
     }
 }
 

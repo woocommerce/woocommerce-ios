@@ -43,6 +43,12 @@ public protocol CardReaderService {
     /// Cancels a PaymentIntent
     func cancelPaymentIntent() -> Future<Void, Error>
 
+    /// Refunds a payment
+    func refundPayment(parameters: RefundParameters) -> AnyPublisher<String, Error>
+
+    /// Cancels an in-flight refund
+    func cancelRefund() -> AnyPublisher<Void, Error>
+
     /// Triggers a software update.
     ///
     /// To check the progress of the update, observe the softwareUpdateEvents publisher.

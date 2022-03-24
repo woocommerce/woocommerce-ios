@@ -11,11 +11,11 @@ struct OrderStatusSection: View {
     var body: some View {
         Divider()
 
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: .zero) {
             Text(viewModel.dateString)
                 .footnoteStyle()
 
-            HStack {
+            HStack(alignment: .lastTextBaseline) {
                 Text(viewModel.statusBadgeViewModel.title)
                     .foregroundColor(.black)
                     .footnoteStyle()
@@ -23,6 +23,8 @@ struct OrderStatusSection: View {
                     .padding(.vertical, Layout.StatusBadge.verticalPadding)
                     .background(Color(viewModel.statusBadgeViewModel.color))
                     .cornerRadius(Layout.StatusBadge.cornerRadius)
+                    .padding(.top, Layout.StatusBadge.topPadding)
+                    .padding(.bottom, Layout.StatusBadge.bottomPadding)
 
                 Spacer()
 
@@ -36,7 +38,7 @@ struct OrderStatusSection: View {
                 .sheet(isPresented: $viewModel.shouldShowOrderStatusList) {
                     OrderStatusList(siteID: viewModel.siteID, status: viewModel.currentOrderStatus) { newStatus in
                         viewModel.updateOrderStatus(newStatus: newStatus)
-                    }
+                    }.ignoresSafeArea()
                 }
             }
         }
@@ -54,6 +56,8 @@ private extension OrderStatusSection {
         enum StatusBadge {
             static let horizontalPadding: CGFloat = 12.0
             static let verticalPadding: CGFloat = 4.0
+            static let topPadding: CGFloat = 8.0
+            static let bottomPadding: CGFloat = 16.0
             static let cornerRadius: CGFloat = 4.0
         }
         static let linkButtonTrailingPadding: CGFloat = 22.0

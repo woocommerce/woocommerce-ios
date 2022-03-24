@@ -13,6 +13,10 @@ struct AddProductVariationToOrder: View {
     ///
     @ObservedObject var viewModel: AddProductVariationToOrderViewModel
 
+    ///   Environment safe areas
+    ///
+    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
+
     var body: some View {
         Group {
             switch viewModel.syncStatus {
@@ -21,6 +25,7 @@ struct AddProductVariationToOrder: View {
                                    loadAction: viewModel.syncNextPage) {
                     ForEach(viewModel.productVariationRows) { rowViewModel in
                         ProductRow(viewModel: rowViewModel)
+                            .accessibilityHint(Localization.productRowAccessibilityHint)
                             .padding(Constants.defaultPadding)
                             .onTapGesture {
                                 viewModel.selectVariation(rowViewModel.productOrVariationID)
@@ -29,7 +34,8 @@ struct AddProductVariationToOrder: View {
                         Divider().frame(height: Constants.dividerHeight)
                             .padding(.leading, Constants.defaultPadding)
                     }
-                    .background(Color(.listForeground))
+                    .padding(.horizontal, insets: safeAreaInsets)
+                    .background(Color(.listForeground).ignoresSafeArea())
                 }
             case .empty:
                 EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
@@ -38,8 +44,11 @@ struct AddProductVariationToOrder: View {
                 List(viewModel.ghostRows) { rowViewModel in
                     ProductRow(viewModel: rowViewModel)
                         .redacted(reason: .placeholder)
+                        .accessibilityRemoveTraits(.isButton)
+                        .accessibilityLabel(Localization.loadingRowsAccessibilityLabel)
                         .shimmering()
                 }
+                .padding(.horizontal, insets: safeAreaInsets)
                 .listStyle(PlainListStyle())
             default:
                 EmptyView()
@@ -56,9 +65,9 @@ struct AddProductVariationToOrder: View {
                 Button {
                     presentation.wrappedValue.dismiss()
                 } label: {
-                    Image(uiImage: .chevronLeftImage.imageFlippedForRightToLeftLayoutDirection())
+                    Image(uiImage: .chevronLeftImage).flipsForRightToLeftLayoutDirection(true)
                 }
-                .accessibilityLabel(Text(Localization.backButtonAccessibilityLabel))
+                .accessibilityLabel(Localization.backButtonAccessibilityLabel)
             }
         }
         .onAppear {
@@ -79,6 +88,10 @@ private extension AddProductVariationToOrder {
                                                          comment: "Message displayed if there are no product variations for a product.")
 
         static let backButtonAccessibilityLabel = NSLocalizedString("Back", comment: "Accessibility label for Back button in the navigation bar")
+        static let productRowAccessibilityHint = NSLocalizedString("Adds variation to order.",
+                                                                   comment: "Accessibility hint for selecting a variation in a list of product variations")
+        static let loadingRowsAccessibilityLabel = NSLocalizedString("Loading product variations",
+                                                                     comment: "Accessibility label for placeholder rows while product variations are loading")
     }
 }
 

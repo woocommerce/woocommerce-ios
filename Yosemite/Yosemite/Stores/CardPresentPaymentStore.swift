@@ -91,6 +91,10 @@ public final class CardPresentPaymentStore: Store {
                            onCompletion: completion)
         case .cancelPayment(let completion):
             cancelPayment(onCompletion: completion)
+        case .refundPayment(let parameters):
+            refundPayment(parameters: parameters)
+        case .cancelRefund:
+            cancelRefund()
         case .observeCardReaderUpdateState(onCompletion: let completion):
             observeCardReaderUpdateState(onCompletion: completion)
         case .startCardReaderUpdate:
@@ -237,6 +241,36 @@ private extension CardPresentPaymentStore {
         }, receiveValue: {
             onCompletion?(.success(()))
         }))
+    }
+
+    func refundPayment(parameters: RefundParameters) {
+        cardReaderService.refundPayment(parameters: parameters)
+            .sink { error in
+                switch error {
+                case .failure(let error):
+                    DDLogError("⛔️ Error during client-side refund: \(error.localizedDescription)")
+                case .finished:
+                    break
+                }
+            } receiveValue: { status in
+                DDLogInfo("💳 Refund Success: \(status)")
+            }
+            .store(in: &cancellables)
+    }
+
+    func cancelRefund() {
+        cardReaderService.cancelRefund()
+            .sink { error in
+                switch error {
+                case .failure(let error):
+                    DDLogError("⛔️ Error cancelling client-side refund: \(error.localizedDescription)")
+                case .finished:
+                    break
+                }
+            } receiveValue: {
+                DDLogInfo("🍁 Refund cancelled successfully!")
+            }
+            .store(in: &cancellables)
     }
 
     func observeCardReaderUpdateState(onCompletion: (AnyPublisher<CardReaderSoftwareUpdateState, Never>) -> Void) {

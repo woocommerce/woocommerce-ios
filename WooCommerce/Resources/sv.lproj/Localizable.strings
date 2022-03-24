@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-03-08 14:53:05+0000 */
+/* Translation-Revision-Date: 2022-03-14 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -41,7 +41,7 @@
 "%1$@ and %2$@" = "%1$@ och %2$@";
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
-"%1$@ card ending %2$@" = "%1$@ card ending %2$@";
+"%1$@ card ending %2$@" = "%1$@-kortets sista siffror är %2$@";
 
 /* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
 "%1$@ excl. %2$@" = "%1$@ förutom %2$@";
@@ -243,7 +243,7 @@
 "A customs form must be printed and included on this international shipment" = "Ett tullformulär måste skrivas ut och inkluderas i denna internationella försändelse";
 
 /* Message when attempting to pay for a test transaction with a live card. */
-"A live card was used on a site in test mode. Use a test card instead." = "A live card was used on a site in test mode. Use a test card instead.";
+"A live card was used on a site in test mode. Use a test card instead." = "Ett live-kort användes på en webbplats i testläge. Använd ett testkort istället.";
 
 /* Error message when there was a network error checking In-Person Payments requirements */
 "A network error occurred. Please check your connection and try again." = "En nätverksfel uppstod. Kontrollera din anslutning och försök igen.";
@@ -282,7 +282,7 @@
 "ADDRESS" = "ADRESS";
 
 /* Reads as 'AID'. Part of the mandatory data in receipts */
-"AID" = "AID";
+"AID" = "HJÄLP";
 
 /* About this app (information page title) */
 "About" = "Om";
@@ -546,16 +546,16 @@
 
 /* Line description for 'Amount Paid' cart total on the receipt
    Title of 'Amount Paid' section in the receipt */
-"Amount Paid" = "Amount Paid";
+"Amount Paid" = "Betalt belopp";
 
 /* A failure reason for when an error HTTP status code was returned from the site, with the specific error code. */
-"An HTTP error code %i was returned." = "An HTTP error code %i was returned.";
+"An HTTP error code %i was returned." = "Svaret var en HTTP-felkod %i.";
 
 /* A failure reason for when an error HTTP status code was returned from the site. */
-"An HTTP error code was returned." = "An HTTP error code was returned.";
+"An HTTP error code was returned." = "Svaret var en HTTP-felkod.";
 
 /* Error message when Bluetooth is not enabled for this application. */
-"An error occurred accessing Bluetooth - please enable Bluetooth and try again" = "An error occurred accessing Bluetooth - please enable Bluetooth and try again";
+"An error occurred accessing Bluetooth - please enable Bluetooth and try again" = "Det gick inte att komma åt Bluetooth – aktivera Bluetooth och försök igen";
 
 /* An error description explaining that a Menu could not be created. */
 "An error occurred creating the Menu." = "Ett fel uppstod vid skapandet av menyn.";
@@ -573,10 +573,10 @@
 "An error occurred while processing your request: " = "Ett fel inträffade när din begäran behandlades:";
 
 /* Message when it looks like a duplicate transaction is being attempted. */
-"An identical transaction was submitted recently. If you wish to continue, try another means of payment" = "An identical transaction was submitted recently. If you wish to continue, try another means of payment";
+"An identical transaction was submitted recently. If you wish to continue, try another means of payment" = "En identisk transaktion skickades nyligen. Om du vill fortsätta, prova en annan betalningsmetod";
 
 /* Message when an incorrect PIN has been entered too many times. */
-"An incorrect PIN has been entered too many times. Try another means of payment" = "An incorrect PIN has been entered too many times. Try another means of payment";
+"An incorrect PIN has been entered too many times. Try another means of payment" = "En felaktig PIN-kod har angetts för många gånger. Prova en annan betalningsmetod";
 
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "Ett valfritt meddelande som kan skickas till kunden efter köpet";
@@ -663,7 +663,7 @@
 "Are you sure you want to remove this variation?" = "Är du säker på att du vill ta bort den här varianten?";
 
 /* Message displayed in the alert for dismissing all the inbox notes. */
-"Are you sure? Inbox messages will be dismissed forever." = "Are you sure? Inbox messages will be dismissed forever.";
+"Are you sure? Inbox messages will be dismissed forever." = "Är du säker? Inkorgsmeddelanden kommer att avfärdas för alltid.";
 
 /* Placeholder in the Attribute Name row on Rename Attributes screen. */
 "Attribute name" = "Attributnamn";
@@ -807,10 +807,10 @@
 "Card" = "Kort";
 
 /* Error message when a card is left in the reader and another transaction started. */
-"Card was left in reader - please remove and reinsert card" = "Card was left in reader - please remove and reinsert card";
+"Card was left in reader - please remove and reinsert card" = "Kortet lämnades i läsaren – avlägsna kortet och för in det igen";
 
 /* Error message when the card is removed from the reader prematurely. */
-"Card was removed too soon - please try transaction again" = "Card was removed too soon - please try transaction again";
+"Card was removed too soon - please try transaction again" = "Kortet togs bort för snabbt – försök genomföra transaktionen igen";
 
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "Transportföretag och avgifter";
@@ -969,7 +969,7 @@
 "Connecting to reader" = "Ansluter till läsare";
 
 /* Error message when establishing a connection to the card reader times out. */
-"Connecting to the card reader timed out - ensure it is nearby and charged and then try again" = "Connecting to the card reader timed out - ensure it is nearby and charged and then try again";
+"Connecting to the card reader timed out - ensure it is nearby and charged and then try again" = "Tidsgränsen för anslutningen till kortläsaren uppnåddes – se till att enheten finns i närheten och är laddad och försök sedan igen";
 
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "Ansluter till ditt konto";
@@ -1215,7 +1215,7 @@
 "Date Range" = "Datumintervall";
 
 /* Title of 'Date Paid' section in the receipt */
-"Date paid" = "Date paid";
+"Date paid" = "Datum för betalning";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "Datum skickat";
@@ -1545,7 +1545,7 @@
 "Error in finding the address in Apple Maps" = "Det gick inte att hitta adressen i Apple Maps";
 
 /* Message displayed when fail to loading total discounted amount in Coupon Details screen */
-"Error loading data" = "Error loading data";
+"Error loading data" = "Fel vid laddning av data";
 
 /* Alert title when there is an error requesting shipping label document for printing */
 "Error previewing shipping label" = "Fel vid förhandsgranskning av fraktetikett";
@@ -1936,7 +1936,7 @@
 "Insert Link" = "Infoga länk";
 
 /* Message from the in-person payment card reader prompting user to insert or swipe their card */
-"Insert Or Swipe Card" = "Insert Or Swipe Card";
+"Insert Or Swipe Card" = "För in eller dra kort";
 
 /* Navigates to Install Jetpack screen.
    Title of install action in the Jetpack benefits view. - Title of the Install Jetpack intro view - Title of the Install Jetpack view */
@@ -2292,7 +2292,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Minimum value %@, maximum value %@" = "Minimivärde %1$@, maxvärde %2$@";
 
 /* The description in product variations bulk update, of a value, that is different acrossall variations */
-"Mixed" = "Mixed";
+"Mixed" = "Blandat";
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Monitor and approve your product reviews" = "Övervaka och godkänn dina produktrecensioner";
@@ -2324,7 +2324,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Moves the comment to Trash" = "Flyttar kommentaren till papperskorgen";
 
 /* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
-"Multiple Contactless Cards Detected" = "Multiple Contactless Cards Detected";
+"Multiple Contactless Cards Detected" = "Flera kontaktlösa kort upptäckta";
 
 /* Title of the hub menu view in case there is no title for the store */
 "My Store" = "Min butik";
@@ -2688,7 +2688,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Payment Method Selected" = "Betalningsmetod vald";
 
 /* Message when the presented card remaining credit or balance is insufficient for the purchase. */
-"Payment declined due to insufficient funds. Try another means of payment" = "Payment declined due to insufficient funds. Try another means of payment";
+"Payment declined due to insufficient funds. Try another means of payment" = "Betalningen avvisades på grund av otillräckliga medel. Prova en annan betalningsmetod";
 
 /* Error message. Presented to users after a collecting a payment fails
    Error message. Presented to users after collecting a payment fails */
@@ -2705,10 +2705,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Payment successful" = "Betalning lyckades";
 
 /* Message when we don't know exactly why the payment was declined. */
-"Payment was declined for an unknown reason. Try another means of payment" = "Payment was declined for an unknown reason. Try another means of payment";
+"Payment was declined for an unknown reason. Try another means of payment" = "Betalningen avvisades av okänd anledning. Prova en annan betalningsmetod";
 
 /* Message when payment is declined for a non specific reason. */
-"Payment was declined for an unspecified reason. Try another means of payment" = "Payment was declined for an unspecified reason. Try another means of payment";
+"Payment was declined for an unspecified reason. Try another means of payment" = "Betalningen avvisades av ospecificerad anledning. Prova en annan betalningsmetod";
 
 /* Display label for pending order status.
    Display label for the review's pending status */
@@ -3254,7 +3254,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Retry After Updating" = "Försök igen efter uppdatering";
 
 /* Message from the in-person payment card reader prompting user to retry payment with their card */
-"Retry Card" = "Retry Card";
+"Retry Card" = "Prova att använda kortet igen";
 
 /* Action button to check site's connection again. */
 "Retry Connection" = "Försök ansluta igen";
@@ -3794,13 +3794,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Sum of products and package weight" = "Summa av produkter och förpackningsvikt";
 
 /* Title of 'Summary' section in the receipt when the order number is unknown */
-"Summary" = "Summary";
+"Summary" = "Sammanfattning";
 
 /* Title of 'Summary' section in the receipt. %1$@ is the order number, e.g. 4920 */
-"Summary: Order #%1$@" = "Summary: Order #%1$@";
+"Summary: Order #%1$@" = "Sammanfattning: Beställning #%1$@";
 
 /* Message from the in-person payment card reader prompting user to swipe their card */
-"Swipe Card" = "Swipe Card";
+"Swipe Card" = "Dra kort";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "Växla butik";
@@ -3840,7 +3840,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "System status report copied to clipboard" = "Systemstatusrapport kopierad till urklipp";
 
 /* Message when attempting to pay for a live transaction with a test card. */
-"System test cards are not permitted for payment. Try another means of payment" = "System test cards are not permitted for payment. Try another means of payment";
+"System test cards are not permitted for payment. Try another means of payment" = "Systemtestkort är inte tillåtna för betalning. Prova en annan betalningsmetod";
 
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags. - Title of the Tags row on Product main screen */
@@ -3851,7 +3851,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation bar title for the Simple Payments Methods screens. %1$@ is a placeholder for the total amount to collect
    Text of the button that creates a simple payment order. %1$@ is a placeholder for the total amount to collect */
-"Take Payment (%1$@)" = "Take Payment (%1$@)";
+"Take Payment (%1$@)" = "Ta emot betalning (%1$@)";
 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "Ta ett foto";
@@ -3934,7 +3934,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Tax" = "Moms";
 
 /* Tax percentage to be applied to the simple payments order. %1$@%% is a placeholder for the tax rate as a percentage */
-"Tax (%1$@%%)" = "Tax (%1$@%%)";
+"Tax (%1$@%%)" = "Moms (%1$@%%)";
 
 /* Section header title for product tax settings */
 "Tax Settings" = "Momsinställningar";
@@ -4027,7 +4027,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "%1$@-utökningen är installerad för din butik, men behöver uppdateras för att ta emot personliga betalningar. Uppdatera den till den senaste versionen.";
 
 /* Error message when the card reader loses its Bluetooth connection to the card reader. */
-"The Bluetooth connection to the card reader disconnected unexpectedly" = "The Bluetooth connection to the card reader disconnected unexpectedly";
+"The Bluetooth connection to the card reader disconnected unexpectedly" = "Bluetooth-anslutningen till kortläsaren kopplades oväntat från";
 
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "Google-kontot ”%@” matchar inte något konto på WordPress.com";
@@ -4045,16 +4045,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The attribute couldn't be saved." = "Attributet kunde inte sparas.";
 
 /* Message when the card presented does not support the order currency. */
-"The card does not support this currency. Try another means of payment" = "The card does not support this currency. Try another means of payment";
+"The card does not support this currency. Try another means of payment" = "Kortet stöder inte denna valuta. Prova en annan betalningsmetod";
 
 /* Message when the card presented does not allow this type of purchase. */
-"The card does not support this type of purchase. Try another means of payment" = "The card does not support this type of purchase. Try another means of payment";
+"The card does not support this type of purchase. Try another means of payment" = "Kortet stöder inte denna typ av köp. Prova en annan betalningsmetod";
 
 /* Message when the presented card is past its expiration date. */
-"The card has expired. Try another means of payment" = "The card has expired. Try another means of payment";
+"The card has expired. Try another means of payment" = "Kortet har löpt ut. Prova en annan betalningsmetod";
 
 /* Message when payment is declined for a non specific reason. */
-"The card or card account is invalid. Try another means of payment" = "The card or card account is invalid. Try another means of payment";
+"The card or card account is invalid. Try another means of payment" = "Kortet eller kortkontot är ogiltigt. Prova en annan betalningsmetod";
 
 /* Error message when the card reader is busy executing another command. */
 "The card reader is busy executing another command - please try again" = "Kortläsaren är upptagen med att utföra ett annat kommando – försök igen";
@@ -4063,28 +4063,28 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The card reader is not compatible with this application - please try updating the application or using a different reader" = "Kortläsaren är inte kompatibel med denna applikation – försök att uppdatera applikationen eller använd en annan läsare";
 
 /* Error message when the card reader session has timed out. */
-"The card reader session has expired - please disconnect and reconnect the card reader and then try again" = "The card reader session has expired - please disconnect and reconnect the card reader and then try again";
+"The card reader session has expired - please disconnect and reconnect the card reader and then try again" = "Kortläsarens sessions har löpt ut – koppla från kortläsaren, återanslut den och försök sedan igen";
 
 /* Error message when the card reader software is too far out of date to process payments. */
-"The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "The card reader software is out-of-date - please update the card reader software before attempting to process payments";
+"The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "Kortläsarens programvara behöver uppdateras – uppdatera kortläsarens programvara innan du försöker behandla betalningar";
 
 /* Error message when the card reader software update fails due to a communication error. */
-"The card reader software update failed due to a communication error - please try again" = "The card reader software update failed due to a communication error - please try again";
+"The card reader software update failed due to a communication error - please try again" = "Uppdateringen av kortläsarens programvara misslyckades på grund av ett kommunikationsfel – försök igen";
 
 /* Error message when the card reader software update fails due to a problem with the update server. */
-"The card reader software update failed due to a problem with the update server - please try again" = "The card reader software update failed due to a problem with the update server - please try again";
+"The card reader software update failed due to a problem with the update server - please try again" = "Uppdateringen av kortläsarens programvara misslyckades på grund av ett problem med uppdateringsservern – försök igen";
 
 /* Error message when the card reader software update fails unexpectedly. */
-"The card reader software update failed unexpectedly - please try again" = "The card reader software update failed unexpectedly - please try again";
+"The card reader software update failed unexpectedly - please try again" = "Uppdateringen av kortläsarens programvara misslyckades oväntat – försök igen";
 
 /* Error message when the card reader software update is interrupted. */
-"The card reader software update was interrupted before it could complete - please try again" = "The card reader software update was interrupted before it could complete - please try again";
+"The card reader software update was interrupted before it could complete - please try again" = "Uppdateringen av kortläsarens programvara avbröts innan den kunde slutföras – försök igen";
 
 /* Error message when the card reader itself declines the card. */
-"The card was declined by the card reader - please try another means of payment" = "The card was declined by the card reader - please try another means of payment";
+"The card was declined by the card reader - please try another means of payment" = "Kortet avvisades av kortläsaren – prova en annan betalningsmetod";
 
 /* Error message when the card processor declines the payment. */
-"The card was declined by the payment processor - please try another means of payment" = "The card was declined by the payment processor - please try another means of payment";
+"The card was declined by the payment processor - please try another means of payment" = "Kortet avvisades av betalningsbehandlaren – prova en annan betalningsmetod";
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Certifikatet för den här servern är inte giltigt. Det kan hända att du ansluter till en server som påstår sig vara \"%@\", vilket kan försätta din sekretessbelagda information i fara.\n\nVill du lita på certifikatet i alla fall?";
@@ -4099,10 +4099,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The new service package name is not unique." = "Det nya tjänstepaketnamnet är inte unikt.";
 
 /* Message when the presented card does not allow the purchase amount. */
-"The payment amount is not allowed for the card presented. Try another means of payment." = "The payment amount is not allowed for the card presented. Try another means of payment.";
+"The payment amount is not allowed for the card presented. Try another means of payment." = "Betalningsbeloppet är inte tillåtet för det aktuella kortet. Prova en annan betalningsmetod.";
 
 /* Error message when the payment can not be processed (i.e. order amount is below the minimum amount allowed.) */
-"The payment can not be processed by the payment processor." = "The payment can not be processed by the payment processor.";
+"The payment can not be processed by the payment processor." = "Betalningen kan inte behandlas av betalningsbehandlaren.";
 
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "Telefonnumret är inte giltigt eller så kan du inte ringa kunden från denna enhet.";
@@ -4114,7 +4114,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The reader has a critically low battery. Please charge the reader or try a different reader." = "Batterinivån i läsaren är mycket låg. Ladda läsaren eller prova en annan läsare.";
 
 /* Error message when a request times out. */
-"The request timed out - please try again" = "The request timed out - please try again";
+"The request timed out - please try again" = "Tidsgränsen för begäran uppnåddes – försök igen";
 
 /* Product price error notice message, when the sale price is added but the regular price is not */
 "The sale price can't be added without the regular price." = "Reapriset kan inte läggas till utan ordinarie pris.";
@@ -4126,10 +4126,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The sale price should be lower than the regular price." = "Reapriset ska vara lägre än ordinarie pris.";
 
 /* A failure reason for when the request couldn't be serialized. */
-"The serialization of the request failed." = "The serialization of the request failed.";
+"The serialization of the request failed." = "Serialiseringen av begäran misslyckades.";
 
 /* A failure reason for when the response couldn't be serialized. */
-"The serialization of the response failed." = "The serialization of the response failed.";
+"The serialization of the response failed." = "Serialiseringen av svaret misslyckades.";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "Servern skickade tillbaka ett tomt svar. Detta betyder vanligtvis att du behöver öka minnesgränsen för din webbplats.";
@@ -4168,19 +4168,19 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The store postal code is invalid or missing, please update it before continuing." = "Butikens postnummer är ogiltigt eller saknas, uppdatera det innan du fortsätter.";
 
 /* Error message when the system cancels a command. */
-"The system canceled the command unexpectedly - please try again" = "The system canceled the command unexpectedly - please try again";
+"The system canceled the command unexpectedly - please try again" = "Systemet avbröt oväntat kommandot – försök igen";
 
 /* Error message when the card reader service experiences an unexpected software error. */
-"The system experienced an unexpected software error" = "The system experienced an unexpected software error";
+"The system experienced an unexpected software error" = "Systemet stötte på ett oväntat programvarufel";
 
 /* Error message when the card reader service is busy executing another command. */
-"The system is busy executing another command - please try again" = "The system is busy executing another command - please try again";
+"The system is busy executing another command - please try again" = "Systemet är upptaget med att köra ett annat kommando – försök igen";
 
 /* Message for the error alert when fetching system status report fails */
 "The system status report for your site cannot be fetched at the moment. Please try again." = "Systemstatusrapporten för din webbplats kan inte hämtas för tillfället. Försök igen.";
 
 /* Message when the presented card postal code doesn't match the order postal code. */
-"The transaction postal code and card postal code do not match. Try another means of payment" = "The transaction postal code and card postal code do not match. Try another means of payment";
+"The transaction postal code and card postal code do not match. Try another means of payment" = "Transaktionens postnummer och kortets postnummer matchar inte. Prova en annan betalningsmetod";
 
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "Variationen kunde inte genereras.";
@@ -4242,7 +4242,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "This Year" = "Det här året";
 
 /* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
-"This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this." = "This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this.";
+"This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this." = "Den här appen behöver tillstånd att använda Bluetooth för att ansluta till en kortläsare, ändra integritetsinställningarna om du vill tillåta detta.";
 
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "Du behöver installera WooCommerce 3.5 på din server för att kunna använda den här appen, annars kommer den inte att fungera korrekt. Uppdatera så snart möjligt för att kunna fortsätta använda den här appen.";
@@ -4251,7 +4251,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "Den här appen har endast stöd för användarrollerna Administratör och Butikschef. Kontakta butiksägaren för att uppgradera din roll.";
 
 /* Message when a card requires a PIN code and we have no means of entering such a code. */
-"This card requires a PIN code and thus cannot be processed. Try another means of payment" = "This card requires a PIN code and thus cannot be processed. Try another means of payment";
+"This card requires a PIN code and thus cannot be processed. Try another means of payment" = "Detta kort kräver en PIN-kod och kan därför inte behandlas. Prova en annan betalningsmetod";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "Denna e-postadress är inte registrerad på WordPress.com.";
@@ -4400,7 +4400,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try Another Card" = "Prova ett annat kort";
 
 /* Message from the in-person payment card reader prompting user to retry a payment using a different method, e.g. swipe, tap, insert */
-"Try Another Read Method" = "Try Another Read Method";
+"Try Another Read Method" = "Prova en annan metod";
 
 /* Button to try to collect a payment again. Presented to users after a collecting a payment fails */
 "Try Collecting Again" = "Prova att ta emot igen";
@@ -4413,7 +4413,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try again" = "Försök igen";
 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
-"Try another means of payment" = "Try another means of payment";
+"Try another means of payment" = "Prova en annan betalningsmetod";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Prova med en annan e-postadress";
@@ -4422,7 +4422,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try with the site address" = "Prova med webbplatsens adress";
 
 /* Message when a card is declined due to a potentially temporary problem. */
-"Trying again may succeed, or try another means of payment" = "Trying again may succeed, or try another means of payment";
+"Trying again may succeed, or try another means of payment" = "Det kan fungera att försöka igen, eller så kan du prova en annan betalningsmetod";
 
 /* Settings > Manage Card Reader > Connect > Hint to power on reader */
 "Turn card reader on and place it next to mobile device" = "Starta kortläsaren och placera den bredvid den mobila enheten";
@@ -4444,10 +4444,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable To Connect" = "Kan inte ansluta";
 
 /* Error message when Bluetooth is not enabled or available. */
-"Unable to access Bluetooth - please enable Bluetooth and try again" = "Unable to access Bluetooth - please enable Bluetooth and try again";
+"Unable to access Bluetooth - please enable Bluetooth and try again" = "Det gick inte att komma åt Bluetooth – aktivera Bluetooth och försök igen";
 
 /* Error message when location services is not enabled for this application. */
-"Unable to access Location Services - please enable Location Services and try again" = "Unable to access Location Services - please enable Location Services and try again";
+"Unable to access Location Services - please enable Location Services and try again" = "Det gick inte att komma åt Platstjänster – aktivera Platstjänster och försök igen";
 
 /* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number}. Parameters: %1$d - order number */
 "Unable to add note to order #%1$d" = "Det gick inte att lägga till en notering till order nummer%1$d";
@@ -4501,16 +4501,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to load product attributes" = "Det gick inte att läsa in produktattributen";
 
 /* Notice displayed when taxes cannot be synced for new order */
-"Unable to load taxes for order" = "Unable to load taxes for order";
+"Unable to load taxes for order" = "Det gick inte att läsa in moms för beställningen";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "Kan inte markera recension som %@";
 
 /* Error message when the card reader cannot be used to perform the requested task. */
-"Unable to perform request with the connected reader - unsupported feature - please try again with another reader" = "Unable to perform request with the connected reader - unsupported feature - please try again with another reader";
+"Unable to perform request with the connected reader - unsupported feature - please try again with another reader" = "Begäran kunde inte utföras med den anslutna läsaren – funktionen stöds inte – försök igen med en annan läsare";
 
 /* Error message when the application is so out of date that the backend refuses to work with it. */
-"Unable to perform software request - please update this application and try again" = "Unable to perform software request - please update this application and try again";
+"Unable to perform software request - please update this application and try again" = "Programvarubegäran kunde inte utföras – uppdatera applikationen och försök igen";
 
 /* Error message when the payment intent is invalid. */
 "Unable to process payment due to invalid data - please try again" = "Kan inte behandla betalning på grund av ogiltig data – försök igen";
@@ -4522,13 +4522,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to process payment. Order total amount is not valid." = "Det gick inte att bearbeta betalningen. Det totala beloppet för beställningen är inte giltigt.";
 
 /* Error message when the card reader times out while reading a card. */
-"Unable to read card - the system timed out - please try again" = "Unable to read card - the system timed out - please try again";
+"Unable to read card - the system timed out - please try again" = "Det gick inte att läsa kortet – systemets tidsgräns uppnåddes – försök igen";
 
 /* Error message when the card reader is unable to read any chip on the inserted card. */
 "Unable to read inserted card - please try removing and inserting card again" = "Kan inte att läsa det isatta kortet – försök att ta bort och sätta i kortet igen";
 
 /* Error message when the card reader is unable to read a swiped card. */
-"Unable to read swiped card - please try swiping again" = "Unable to read swiped card - please try swiping again";
+"Unable to read swiped card - please try swiping again" = "Det gick inte att läsa det använda kortet – försök använda kortet igen";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "Kunde inte läsa WordPress-webbplatsen på denna URL. Tryck på \"Behöver du hjälp?\" för att visa Vanliga frågor.";
@@ -4543,16 +4543,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to save changes to the payment method" = "Det gick inte att spara ändringarna av betalningsmetoden";
 
 /* Error message when Bluetooth Low Energy is not supported on the user device. */
-"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device" = "Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device";
+"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device" = "Det gick inte att söka efter kortläsare – Bluetooth Low Energy stöds inte på den här enheten – använd en annan enhet";
 
 /* Error message when Bluetooth scan times out during reader discovery. */
-"Unable to search for card readers - Bluetooth timed out - please try again" = "Unable to search for card readers - Bluetooth timed out - please try again";
+"Unable to search for card readers - Bluetooth timed out - please try again" = "Det gick inte att söka efter kortläsare – Bluetooth-tidsgränsen uppnåddes – försök igen";
 
 /* Error notice title when we fail to update an address in the edit address screen. */
 "Unable to update address." = "Kan inte uppdatera adress.";
 
 /* Error message when the card reader battery level is too low to safely perform a software update. */
-"Unable to update card reader software - the reader battery is too low" = "Unable to update card reader software - the reader battery is too low";
+"Unable to update card reader software - the reader battery is too low" = "Det gick inte att uppdatera kortläsarprogramvaran – batterinivån i läsaren är för låg";
 
 /* Title for the error screen when In-Person Payments is unavailable */
 "Unable to verify In-Person Payments for this store" = "Det gick inte att verifiera personliga betalningar för den här butiken.";
@@ -4875,10 +4875,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "We don’t support In-Person Payments in your country" = "Vi stöder inte personliga betalningar i ditt land";
 
 /* Title for the error screen when In-Person Payments is not supported in a specific country */
-"We don’t support In-Person Payments with Stripe in %1$@" = "We don’t support In-Person Payments with Stripe in %1$@";
+"We don’t support In-Person Payments with Stripe in %1$@" = "Vi stöder inte personliga betalningar med Stripe i %1$@";
 
 /* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country */
-"We don’t support In-Person Payments with Stripe in your country" = "We don’t support In-Person Payments with Stripe in your country";
+"We don’t support In-Person Payments with Stripe in your country" = "Vi stöder inte personliga betalningar med Stripe i ditt land";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "Vi har ändrat den adress du angav något. Använd den föreslagna adressen om den stämmer för att försäkra korrekt leverans.";

@@ -1,5 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+8.9
+-----
+- [*] Coupons: Fixed issue loading the coupon list from the local storage on initial load. [https://github.com/woocommerce/woocommerce-ios/pull/6463]
+
+
 8.8
 -----
 - [*] Updates the app's About screen to be consistent with Automattic's other mobile apps. [https://github.com/woocommerce/woocommerce-ios/pull/6421]
@@ -9,6 +14,7 @@
 - [*] Products displayed in Order Detail now follow the same order of the web. [https://github.com/woocommerce/woocommerce-ios/pull/6401]
 - [*] Simple Payments now shows a detailed tax break up before taking the payment. [https://github.com/woocommerce/woocommerce-ios/pull/6412]
 - [*] Coupons list now shows an error view if coupons are disabled for the store. Coupons can be enabled again from this view. [https://github.com/woocommerce/woocommerce-ios/pull/6446]
+- [*] Coupon details screen now displays more informative error messages when loading the total discount amount fails. [https://github.com/woocommerce/woocommerce-ios/pull/6457]
 - [internal] Shipping Labels: the navigation bar in the web view for adding payments is now correctly hidden. [https://github.com/woocommerce/woocommerce-ios/pull/6435]
 
 8.7

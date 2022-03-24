@@ -11,7 +11,7 @@ final class IssueRefundViewController: UIViewController {
 
     @IBOutlet private var headerStackView: UIStackView!
     @IBOutlet private var itemsSelectedLabel: UILabel!
-    @IBOutlet private var nextButton: UIButton!
+    @IBOutlet private var nextButton: ButtonActivityIndicator!
     @IBOutlet private var selectAllButton: UIButton!
 
     private let imageService: ImageService
@@ -74,7 +74,7 @@ private extension IssueRefundViewController {
     func updateWithViewModelContent() {
         title = viewModel.title
         itemsSelectedLabel.text = viewModel.selectedItemsTitle
-        nextButton.isEnabled = viewModel.isNextButtonEnabled
+        updateButtonState(enabled: viewModel.isNextButtonEnabled, showActivityIndicator: viewModel.isNextButtonAnimating)
         selectAllButton.isHidden = !viewModel.isSelectAllButtonVisible
         tableView.reloadData()
     }
@@ -162,6 +162,15 @@ private extension IssueRefundViewController {
         headerStackView.axis = traitCollection.preferredContentSizeCategory > .extraExtraExtraLarge ? .vertical : .horizontal
         headerStackView.alignment = headerStackView.axis == .vertical ? .center : .fill
         headerStackView.spacing = 8
+    }
+
+    func updateButtonState(enabled: Bool, showActivityIndicator: Bool) {
+        nextButton.isEnabled = enabled && !showActivityIndicator
+        if showActivityIndicator {
+            nextButton.showActivityIndicator()
+        } else {
+            nextButton.hideActivityIndicator()
+        }
     }
 }
 

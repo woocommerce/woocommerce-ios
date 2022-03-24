@@ -42,14 +42,12 @@ struct JetpackInstallView: View {
     init(siteID: Int64, siteURL: String, siteAdminURL: String) {
         self.siteURL = siteURL
         self.siteAdminURL = siteAdminURL
-        self.installStepsViewModel = JetpackInstallStepsViewModel(siteID: siteID)
+        self.installStepsViewModel = JetpackInstallStepsViewModel(siteID: siteID, siteURL: siteURL, siteAdminURL: siteAdminURL)
     }
 
     var body: some View {
         if hasStarted {
-            JetpackInstallStepsView(siteURL: siteURL,
-                                    siteAdminURL: siteAdminURL,
-                                    viewModel: installStepsViewModel,
+            JetpackInstallStepsView(viewModel: installStepsViewModel,
                                     supportAction: supportAction,
                                     dismissAction: dismissAction)
         } else {

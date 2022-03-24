@@ -13,6 +13,12 @@ final class JetpackInstallStepsViewModel: ObservableObject {
     ///
     private let stores: StoresManager
 
+    /// The site for which Jetpack should be installed
+    let siteURL: String
+
+    /// URL for the site's admin page
+    private let siteAdminURL: String
+
     /// Current step of the installation
     ///
     @Published private(set) var currentStep: JetpackInstallStep?
@@ -20,6 +26,28 @@ final class JetpackInstallStepsViewModel: ObservableObject {
     /// Whether the install failed. This will be observed by `JetpackInstallStepsView` to present error modal.
     ///
     @Published private(set) var installFailed: Bool = false
+
+    /// WPAdmin URL to navigate user when install fails.
+    var wpAdminURL: URL? {
+        var path = siteAdminURL
+        if !path.hasValidSchemeForBrowser {
+            // fall back to constructing the path from siteURL and WP admin path
+            if siteURL.hasValidSchemeForBrowser {
+                path = siteURL + Constants.wpAdminPath
+            } else {
+                // silent failure - merchant won't be able to install in WP Admin
+                return nil
+            }
+        }
+        switch currentStep {
+        case .installation:
+            return URL(string: "\(path)\(Constants.wpAdminInstallPath)")
+        case .activation:
+            return URL(string: "\(path)\(Constants.wpAdminPluginsPath)")
+        default:
+            return nil
+        }
+    }
 
     /// Number of retries done for current step.
     ///
@@ -29,9 +57,14 @@ final class JetpackInstallStepsViewModel: ObservableObject {
     ///
     private var installError: Error?
 
-    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
+    init(siteID: Int64,
+         siteURL: String,
+         siteAdminURL: String,
+         stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.stores = stores
+        self.siteURL = siteURL
+        self.siteAdminURL = siteAdminURL
     }
 
     /// Starts the steps by checking Jetpack-the-plugin.
@@ -160,5 +193,8 @@ private extension JetpackInstallStepsViewModel {
         static let jetpackSlug: String = "jetpack"
         static let jetpackPluginName: String = "jetpack/jetpack"
         static let maxRetryCount: Int = 2
+        static let wpAdminPath: String = "/wp-admin/"
+        static let wpAdminInstallPath: String = "plugin-install.php?tab=plugin-information&plugin=jetpack"
+        static let wpAdminPluginsPath: String = "plugins.php"
     }
 }

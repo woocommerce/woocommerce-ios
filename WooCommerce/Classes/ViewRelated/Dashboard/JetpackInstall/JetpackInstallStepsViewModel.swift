@@ -35,7 +35,6 @@ final class JetpackInstallStepsViewModel: ObservableObject {
             if siteURL.hasValidSchemeForBrowser {
                 path = siteURL + Constants.wpAdminPath
             } else {
-                // silent failure - merchant won't be able to install in WP Admin
                 return nil
             }
         }

@@ -1,6 +1,10 @@
 import SwiftUI
 
 struct JetpackInstallStepsView: View {
+    /// The presenter to display notice when an error occurs.
+    /// It is kept internal so that the hosting controller can update its presenting controller to itself.
+    private let noticePresenter: DefaultNoticePresenter
+
     // Closure invoked when Contact Support button is tapped
     private let supportAction: () -> Void
 
@@ -34,9 +38,11 @@ struct JetpackInstallStepsView: View {
     }
 
     init(viewModel: JetpackInstallStepsViewModel,
+         noticePresenter: DefaultNoticePresenter,
          supportAction: @escaping () -> Void,
          dismissAction: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.noticePresenter = noticePresenter
         self.supportAction = supportAction
         self.dismissAction = dismissAction
         viewModel.startInstallation()
@@ -152,8 +158,13 @@ struct JetpackInstallStepsView: View {
                             if viewModel.currentStep == .connection {
                                 viewModel.checkSiteConnection()
                             } else {
-                                showingWPAdminWebview = true
                                 ServiceLocator.analytics.track(.jetpackInstallInWPAdminButtonTapped)
+                                if viewModel.wpAdminURL == nil {
+                                    let notice = Notice(title: Localization.errorOpeningWPAdmin, feedbackType: .error)
+                                    noticePresenter.enqueue(notice: notice)
+                                } else {
+                                    showingWPAdminWebview = true
+                                }
                             }
                         }
                         .buttonStyle(SecondaryButtonStyle())
@@ -204,17 +215,21 @@ private extension JetpackInstallStepsView {
         static let doneButton = NSLocalizedString("Done", comment: "Done button on the Jetpack Install Progress screen.")
         static let errorTitle = NSLocalizedString("Sorry, something went wrong during install", comment: "Error title when Jetpack install fails")
         static let supportAction = NSLocalizedString("Contact Support", comment: "Action button to contact support when Jetpack install fails")
+        static let errorOpeningWPAdmin = NSLocalizedString(
+            "Cannot find information about your site's WP-Admin. Please try again.",
+            comment: "Error message when no URL to WP-Admin page is found during Jetpack install flow"
+        )
     }
 }
 
 struct JetpackInstallStepsView_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = JetpackInstallStepsViewModel(siteID: 123, siteURL: "automattic.com", siteAdminURL: "")
-        JetpackInstallStepsView(viewModel: viewModel, supportAction: {}, dismissAction: {})
+        JetpackInstallStepsView(viewModel: viewModel, noticePresenter: .init(), supportAction: {}, dismissAction: {})
             .preferredColorScheme(.light)
             .previewLayout(.fixed(width: 414, height: 780))
 
-        JetpackInstallStepsView(viewModel: viewModel, supportAction: {}, dismissAction: {})
+        JetpackInstallStepsView(viewModel: viewModel, noticePresenter: .init(), supportAction: {}, dismissAction: {})
             .preferredColorScheme(.dark)
             .previewLayout(.fixed(width: 414, height: 780))
     }

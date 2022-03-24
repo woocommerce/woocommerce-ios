@@ -22,6 +22,9 @@ struct HubMenuElement: View {
 
     var body: some View {
         Button {
+            guard !isDisabled else {
+                return
+            }
             isDisabled = true
             onTapGesture()
         } label: {

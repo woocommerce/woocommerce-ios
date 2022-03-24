@@ -73,9 +73,7 @@ final class OrderDetailsViewModel {
     }
 
     /// IPP Configuration loader
-    private lazy var configurationLoader = {
-        CardPresentConfigurationLoader(stores: stores)
-    }()
+    private lazy var configurationLoader = CardPresentConfigurationLoader(stores: stores)
 
     /// The datasource that will be used to render the Order Details screen
     ///

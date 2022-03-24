@@ -205,7 +205,7 @@ final class OrderDetailsDataSource: NSObject {
 
     private let imageService: ImageService = ServiceLocator.imageService
 
-    /// IPP Configuration loader
+    /// IPP Configuration
     private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
     init(order: Order,

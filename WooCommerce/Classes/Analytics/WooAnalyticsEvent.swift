@@ -800,7 +800,8 @@ extension WooAnalyticsEvent {
                 Keys.paymentMethodType: paymentMethod?.analyticsValue
             ].compactMapValues { $0 }
             return WooAnalyticsEvent(statName: .collectPaymentFailed,
-                              properties: properties)
+                                     properties: properties,
+                                     error: error)
         }
 
         /// Tracked when the payment collection is cancelled

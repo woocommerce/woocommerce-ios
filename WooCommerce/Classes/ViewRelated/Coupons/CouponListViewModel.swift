@@ -60,22 +60,16 @@ final class CouponListViewModel {
     ///
     private let storageManager: StorageManagerType
 
-    /// Currency settings to format amount of coupons
-    ///
-    private let currencySettings: CurrencySettings
-
     // MARK: - Initialization and setup
     //
     init(siteID: Int64,
          syncingCoordinator: SyncingCoordinatorProtocol = SyncingCoordinator(),
          storesManager: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
         self.syncingCoordinator = syncingCoordinator
         self.storesManager = storesManager
         self.storageManager = storageManager
-        self.currencySettings = currencySettings
         self.resultsController = Self.createResultsController(siteID: siteID,
                                                               storageManager: storageManager)
         configureSyncingCoordinator()
@@ -86,7 +80,7 @@ final class CouponListViewModel {
     func buildCouponViewModels() {
         couponViewModels = resultsController.fetchedObjects.map { coupon in
             CouponListCellViewModel(title: coupon.code,
-                                    subtitle: coupon.summary(currencySettings: currencySettings),
+                                    subtitle: coupon.summary(),
                                     accessibilityLabel: coupon.description.isEmpty ? coupon.description : coupon.code,
                                     status: coupon.expiryStatus().localizedName,
                                     statusBackgroundColor: coupon.expiryStatus().statusBackgroundColor)

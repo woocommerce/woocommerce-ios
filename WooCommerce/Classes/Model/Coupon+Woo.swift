@@ -50,7 +50,7 @@ extension Coupon {
 
     /// Summary line for the coupon
     ///
-    func summary(currencySettings: CurrencySettings) -> String {
+    func summary(currencySettings: CurrencySettings = ServiceLocator.currencySettings) -> String {
         let amount = formattedAmount(currencySettings: currencySettings)
         let applyRules = localizeApplyRules(productsCount: productIds.count,
                                             excludedProductsCount: excludedProductIds.count,

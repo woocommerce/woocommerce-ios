@@ -8,7 +8,7 @@ protocol ShipmentProviderListDelegate: AnyObject {
 final class ShipmentProvidersViewController: UIViewController {
     private let viewModel: ShippingProvidersViewModel
     private weak var delegate: ShipmentProviderListDelegate?
-    private var emptyStateView: EmptyListMessageWithActionView?
+    private weak var emptyStateView: EmptyListMessageWithActionView?
 
     @IBOutlet weak var table: UITableView!
 

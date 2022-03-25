@@ -796,7 +796,6 @@ extension WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType] = [
                 Keys.countryCode: countryCode,
                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
-                Keys.errorDescription: error.localizedDescription,
                 Keys.paymentMethodType: paymentMethod?.analyticsValue
             ].compactMapValues { $0 }
             return WooAnalyticsEvent(statName: .collectPaymentFailed,

@@ -142,7 +142,12 @@ private extension ProductReviewsDataSource {
 //
 extension ProductReviewsDataSource: ReviewsInteractionDelegate {
     func didSelectItem(at indexPath: IndexPath, in viewController: UIViewController) {
-        // no-op: we don't want to catch the selected item in Products
+        let review = reviewsResultsController.object(at: indexPath)
+
+        let detailsViewController = ReviewDetailsViewController(productReview: review,
+                                                                product: product,
+                                                                notification: nil)
+        viewController.navigationController?.pushViewController(detailsViewController, animated: true)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

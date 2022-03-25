@@ -22,8 +22,12 @@ extension String {
 /// String: URL manipulation
 ///
 extension String {
+    var hasValidSchemeForBrowser: Bool {
+        hasPrefix("http://") || hasPrefix("https://")
+    }
+
     func addHTTPSSchemeIfNecessary() -> String {
-        if self.hasPrefix("http://") || self.hasPrefix("https://") {
+        if hasValidSchemeForBrowser {
             return self
         }
 

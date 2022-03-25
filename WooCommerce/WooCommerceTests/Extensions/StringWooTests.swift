@@ -42,4 +42,18 @@ final class StringWooTests: XCTestCase {
 
         XCTAssertEqual(notAURL.trimHTTPScheme(), expectedResult)
     }
+
+    func test_hasValidSchemeForBrowser_returns_correct_value() {
+        // Given
+        let pathWithoutScheme = "test.com"
+
+        // Then
+        XCTAssertFalse(pathWithoutScheme.hasValidSchemeForBrowser)
+
+        // Given
+        let pathWithScheme = "https://test.com"
+
+        // Then
+        XCTAssertTrue(pathWithScheme.hasValidSchemeForBrowser)
+    }
 }

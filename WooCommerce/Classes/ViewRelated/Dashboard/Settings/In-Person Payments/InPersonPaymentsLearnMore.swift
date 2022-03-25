@@ -15,7 +15,8 @@ struct InPersonPaymentsLearnMore: View {
         }
             .padding(.vertical, Constants.verticalPadding)
             .onTapGesture {
-                ServiceLocator.analytics.track(.cardPresentOnboardingLearnMoreTapped)
+                ServiceLocator.analytics.track(event: WooAnalyticsEvent.InPersonPayments
+                                                .cardPresentOnboardingLearnMoreTapped(countryCode: SiteAddress().countryCode))
                 customOpenURL?(InPersonPaymentsLearnMore.learnMoreURL)
             }
     }

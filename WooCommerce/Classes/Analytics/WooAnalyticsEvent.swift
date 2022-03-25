@@ -817,5 +817,18 @@ extension WooAnalyticsEvent {
                               ]
             )
         }
+
+        static func cardPresentOnboardingLearnMoreTapped(countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardPresentOnboardingLearnMoreTapped,
+                              properties: [Keys.countryCode: countryCode])
+        }
+
+        static func cardPresentOnboardingNotCompleted(reason: String, countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardPresentOnboardingNotCompleted,
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                "reason": reason
+                              ])
+        }
     }
 }

@@ -206,8 +206,6 @@
 		31799AFC2705189200D78179 /* wcpay-location.json in Resources */ = {isa = PBXBuildFile; fileRef = 31799AFB2705189200D78179 /* wcpay-location.json */; };
 		31799AFE270518AD00D78179 /* wcpay-location-error.json in Resources */ = {isa = PBXBuildFile; fileRef = 31799AFD270518AD00D78179 /* wcpay-location-error.json */; };
 		31884A3B2603F3C7003FE338 /* SitePluginStatusEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31884A3A2603F3C7003FE338 /* SitePluginStatusEnum.swift */; };
-		318E8FD326C31F1C00F519D7 /* CustomerMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 318E8FD226C31F1C00F519D7 /* CustomerMapper.swift */; };
-		318E8FD526C31F9500F519D7 /* Customer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 318E8FD426C31F9500F519D7 /* Customer.swift */; };
 		318E8FD726C322EA00F519D7 /* wcpay-customer.json in Resources */ = {isa = PBXBuildFile; fileRef = 318E8FD626C322EA00F519D7 /* wcpay-customer.json */; };
 		318E8FD926C324D900F519D7 /* wcpay-customer-error.json in Resources */ = {isa = PBXBuildFile; fileRef = 318E8FD826C324D900F519D7 /* wcpay-customer-error.json */; };
 		3192F21C260D32550067FEF9 /* WCPayAccountMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3192F21B260D32550067FEF9 /* WCPayAccountMapper.swift */; };
@@ -888,8 +886,6 @@
 		31799AFB2705189200D78179 /* wcpay-location.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-location.json"; sourceTree = "<group>"; };
 		31799AFD270518AD00D78179 /* wcpay-location-error.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-location-error.json"; sourceTree = "<group>"; };
 		31884A3A2603F3C7003FE338 /* SitePluginStatusEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginStatusEnum.swift; sourceTree = "<group>"; };
-		318E8FD226C31F1C00F519D7 /* CustomerMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerMapper.swift; sourceTree = "<group>"; };
-		318E8FD426C31F9500F519D7 /* Customer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Customer.swift; sourceTree = "<group>"; };
 		318E8FD626C322EA00F519D7 /* wcpay-customer.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-customer.json"; sourceTree = "<group>"; };
 		318E8FD826C324D900F519D7 /* wcpay-customer-error.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-customer-error.json"; sourceTree = "<group>"; };
 		3192F21B260D32550067FEF9 /* WCPayAccountMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayAccountMapper.swift; sourceTree = "<group>"; };
@@ -1806,7 +1802,6 @@
 				450106842399A7CB00E24722 /* TaxClass.swift */,
 				31799AF7270508C600D78179 /* RemoteReaderLocation.swift */,
 				D8EDFE2125EE88C9003D2213 /* ReaderConnectionToken.swift */,
-				318E8FD426C31F9500F519D7 /* Customer.swift */,
 				31054705262E278100C5C02B /* RemotePaymentIntent.swift */,
 				3192F21F260D33BB0067FEF9 /* WCPayAccount.swift */,
 				3192F223260D34C40067FEF9 /* WCPayAccountStatusEnum.swift */,
@@ -2126,7 +2121,6 @@
 				311D412D2783C07D00052F64 /* StripeAccountMapper.swift */,
 				3192F21B260D32550067FEF9 /* WCPayAccountMapper.swift */,
 				D8EDFE2525EE8A60003D2213 /* ReaderConnectionTokenMapper.swift */,
-				318E8FD226C31F1C00F519D7 /* CustomerMapper.swift */,
 				3178A49E2703E5CF00A8B4CA /* RemoteReaderLocationMapper.swift */,
 				31054701262E04F700C5C02B /* RemotePaymentIntentMapper.swift */,
 				45A4B84D25D2E11300776FB4 /* ShippingLabelAddressValidationSuccessMapper.swift */,
@@ -2937,7 +2931,6 @@
 				B557DA1820979D51005962F4 /* Credentials.swift in Sources */,
 				DEC51AF72769A15B009F3DF4 /* SystemStatus+Security.swift in Sources */,
 				CE583A0E2109154500D73C1C /* OrderNoteMapper.swift in Sources */,
-				318E8FD526C31F9500F519D7 /* Customer.swift in Sources */,
 				D8FBFF0D22D3AF4A006E3336 /* StatsGranularityV4.swift in Sources */,
 				261870782540A252006522A1 /* ShippingLineTax.swift in Sources */,
 				74046E1B217A684D007DD7BF /* SiteSettingsRemote.swift in Sources */,
@@ -3013,7 +3006,6 @@
 				45152811257A81730076B03C /* ProductAttributeMapper.swift in Sources */,
 				B505F6D120BEE39600BB1B69 /* AccountRemote.swift in Sources */,
 				B567AF2B20A0FA4200AB6C62 /* OrderListMapper.swift in Sources */,
-				318E8FD326C31F1C00F519D7 /* CustomerMapper.swift in Sources */,
 				021A84DA257DF92800BC71D1 /* ShippingLabelRefundMapper.swift in Sources */,
 				02BDB83523EA98C800BCC63E /* String+HTML.swift in Sources */,
 				B505F6CF20BEE38B00BB1B69 /* Account.swift in Sources */,

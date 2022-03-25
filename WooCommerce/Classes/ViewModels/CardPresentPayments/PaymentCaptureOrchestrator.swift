@@ -36,67 +36,51 @@ final class PaymentCaptureOrchestrator {
 
         ServiceLocator.stores.dispatch(setAccount)
 
-        /// First ask the backend to create/assign a Stripe customer for the order
+        guard let parameters = paymentParameters(
+            order: order,
+            statementDescriptor: paymentGatewayAccount.statementDescriptor,
+            paymentMethodTypes: paymentMethodTypes
+        ) else {
+            DDLogError("Error: failed to create payment parameters for an order")
+            onCompletion(.failure(CardReaderServiceError.paymentCapture()))
+            return
+        }
+
+        /// Briefly suppress pass (wallet) presentation so that the merchant doesn't attempt to pay for the buyer's order when the
+        /// reader begins to collect payment.
         ///
-        var customerID: String?
-        let customerAction = CardPresentPaymentAction.fetchOrderCustomer(siteID: order.siteID, orderID: order.orderID) { [self] result in
-            switch result {
-            case .success(let customer):
-                customerID = customer.id
-            case .failure:
-                // It is not ideal but ok to proceed to payment intent creation without a customer ID
-                DDLogWarn("Warning: failed to fetch customer ID for an order")
-            }
+        suppressPassPresentation()
 
-            guard let parameters = paymentParameters(
-                    order: order,
-                    statementDescriptor: paymentGatewayAccount.statementDescriptor,
-                    paymentMethodTypes: paymentMethodTypes,
-                    customerID: customerID
-            ) else {
-                DDLogError("Error: failed to create payment parameters for an order")
-                onCompletion(.failure(CardReaderServiceError.paymentCapture()))
-                return
-            }
-
-            /// Briefly suppress pass (wallet) presentation so that the merchant doesn't attempt to pay for the buyer's order when the
-            /// reader begins to collect payment.
-            ///
-            suppressPassPresentation()
-
-            let paymentAction = CardPresentPaymentAction.collectPayment(
-                siteID: order.siteID,
-                orderID: order.orderID,
-                parameters: parameters,
-                onCardReaderMessage: { (event) in
-                    switch event {
+        let paymentAction = CardPresentPaymentAction.collectPayment(
+            siteID: order.siteID,
+            orderID: order.orderID,
+            parameters: parameters,
+            onCardReaderMessage: {(event) in
+                switch event {
                     case .waitingForInput:
                         onWaitingForInput()
                     case .displayMessage(let message):
                         onDisplayMessage(message)
                     default:
                         break
-                    }
-                },
-                onCompletion: { [weak self] result in
-                    self?.allowPassPresentation()
-                    onProcessingMessage()
-                    self?.completePaymentIntentCapture(
-                        order: order,
-                        captureResult: result,
-                        onCompletion: onCompletion
-                    )
                 }
-            )
+            },
+            onCompletion: {[weak self] result in
+                self?.allowPassPresentation()
+                onProcessingMessage()
+                self?.completePaymentIntentCapture(
+                    order: order,
+                    captureResult: result,
+                    onCompletion: onCompletion
+                )
+            }
+        )
 
-            ServiceLocator.stores.dispatch(paymentAction)
-        }
-
-        ServiceLocator.stores.dispatch(customerAction)
+        ServiceLocator.stores.dispatch(paymentAction)
     }
 
     func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        let action = CardPresentPaymentAction.cancelPayment() { [weak self] result in
+        let action = CardPresentPaymentAction.cancelPayment() {[weak self] result in
             self?.allowPassPresentation()
             onCompletion(result)
         }
@@ -104,7 +88,7 @@ final class PaymentCaptureOrchestrator {
     }
 
     func emailReceipt(for order: Order, params: CardPresentReceiptParameters, onContent: @escaping (String) -> Void) {
-        let action = ReceiptAction.generateContent(order: order, parameters: params) { emailContent in
+        let action = ReceiptAction.generateContent(order: order, parameters: params) {emailContent in
             onContent(emailContent)
         }
 
@@ -135,7 +119,7 @@ private extension PaymentCaptureOrchestrator {
             return
         }
 
-        walletSuppressionRequestToken = PKPassLibrary.requestAutomaticPassPresentationSuppression() { result in
+        walletSuppressionRequestToken = PKPassLibrary.requestAutomaticPassPresentationSuppression() {result in
             guard result == .success else {
                 DDLogWarn("Automatic pass presentation suppression request failed. Reason: \(result.rawValue)")
 
@@ -168,16 +152,16 @@ private extension PaymentCaptureOrchestrator {
 
 private extension PaymentCaptureOrchestrator {
     func completePaymentIntentCapture(order: Order,
-                                    captureResult: Result<PaymentIntent, Error>,
-                                    onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
+                                      captureResult: Result<PaymentIntent, Error>,
+                                      onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
         switch captureResult {
-        case .failure(let error):
-            onCompletion(.failure(error))
-        case .success(let paymentIntent):
-            submitPaymentIntent(siteID: order.siteID,
-                                order: order,
-                                paymentIntent: paymentIntent,
-                                onCompletion: onCompletion)
+            case .failure(let error):
+                onCompletion(.failure(error))
+            case .success(let paymentIntent):
+                submitPaymentIntent(siteID: order.siteID,
+                    order: order,
+                    paymentIntent: paymentIntent,
+                    onCompletion: onCompletion)
         }
     }
 
@@ -186,8 +170,8 @@ private extension PaymentCaptureOrchestrator {
                              paymentIntent: PaymentIntent,
                              onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
         let action = CardPresentPaymentAction.captureOrderPayment(siteID: siteID,
-                                                                     orderID: order.orderID,
-                                                                     paymentIntentID: paymentIntent.id) { [weak self] result in
+            orderID: order.orderID,
+            paymentIntentID: paymentIntent.id) {[weak self] result in
             guard let self = self else {
                 return
             }
@@ -202,20 +186,20 @@ private extension PaymentCaptureOrchestrator {
             }
 
             switch result {
-            case .success:
-                self.celebrate() // plays a sound, haptic
-                self.saveReceipt(for: order, params: receiptParameters)
-                onCompletion(.success(receiptParameters))
-            case .failure(let error):
-                onCompletion(.failure(error))
-                return
+                case .success:
+                    self.celebrate() // plays a sound, haptic
+                    self.saveReceipt(for: order, params: receiptParameters)
+                    onCompletion(.success(receiptParameters))
+                case .failure(let error):
+                    onCompletion(.failure(error))
+                    return
             }
         }
 
         ServiceLocator.stores.dispatch(action)
     }
 
-    func paymentParameters(order: Order, statementDescriptor: String?, paymentMethodTypes: [String], customerID: String?) -> PaymentParameters? {
+    func paymentParameters(order: Order, statementDescriptor: String?, paymentMethodTypes: [String]) -> PaymentParameters? {
         guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
             DDLogError("Error: attempted to collect payment for an order without a valid total.")
             return nil
@@ -231,13 +215,12 @@ private extension PaymentCaptureOrchestrator {
         )
 
         return PaymentParameters(amount: orderTotal as Decimal,
-                                 currency: order.currency,
-                                 receiptDescription: receiptDescription(orderNumber: order.number),
-                                 statementDescription: statementDescriptor,
-                                 receiptEmail: order.billingAddress?.email,
-                                 paymentMethodTypes: paymentMethodTypes,
-                                 metadata: metadata,
-                                 customerID: customerID)
+            currency: order.currency,
+            receiptDescription: receiptDescription(orderNumber: order.number),
+            statementDescription: statementDescriptor,
+            receiptEmail: order.billingAddress?.email,
+            paymentMethodTypes: paymentMethodTypes,
+            metadata: metadata)
     }
 
     func receiptDescription(orderNumber: String) -> String? {
@@ -246,8 +229,8 @@ private extension PaymentCaptureOrchestrator {
         }
 
         return String.localizedStringWithFormat(Localization.receiptDescription,
-                                                orderNumber,
-                                                storeName)
+            orderNumber,
+            storeName)
     }
 
     func celebrate() {
@@ -289,11 +272,11 @@ private extension PaymentCaptureOrchestrator {
 private extension PaymentCaptureOrchestrator {
     enum Localization {
         static let receiptDescription = NSLocalizedString("In-Person Payment for Order #%1$@ for %2$@",
-                                                          comment: "Message included in emailed receipts. "
-                                                            + "Reads as: In-Person Payment for "
-                                                            + "Order @{number} for @{store name} "
-                                                            + "Parameters: %1$@ - order number, "
-                                                            + "%2$@ - store name")
+            comment: "Message included in emailed receipts. "
+                + "Reads as: In-Person Payment for "
+                + "Order @{number} for @{store name} "
+                + "Parameters: %1$@ - order number, "
+                + "%2$@ - store name")
     }
 }
 
@@ -304,10 +287,10 @@ private extension PaymentCaptureOrchestrator {
 
         public var errorDescription: String? {
             switch self {
-            case .belowMinimumAmount(let amount):
-                return String.localizedStringWithFormat(Localizations.belowMinimumAmount, amount)
-            case .other:
-                return Localizations.defaultMessage
+                case .belowMinimumAmount(let amount):
+                    return String.localizedStringWithFormat(Localizations.belowMinimumAmount, amount)
+                case .other:
+                    return Localizations.defaultMessage
             }
         }
 

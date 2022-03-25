@@ -144,7 +144,6 @@ public typealias CardPresentTransactionDetails = Hardware.CardPresentTransaction
 public typealias StripeAccount = Networking.StripeAccount
 public typealias WCPayAccount = Networking.WCPayAccount
 public typealias WCPayAccountStatusEnum = Networking.WCPayAccountStatusEnum
-public typealias WCPayCustomer = Networking.Customer
 public typealias WCPayPaymentMethodType = Networking.WCPayPaymentMethodType
 public typealias WCPayCharge = Networking.WCPayCharge
 public typealias WCPayCardBrand = Networking.WCPayCardBrand

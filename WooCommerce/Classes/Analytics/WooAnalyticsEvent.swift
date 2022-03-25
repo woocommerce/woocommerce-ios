@@ -39,8 +39,15 @@ import Yosemite
 /// ~~~
 ///
 public struct WooAnalyticsEvent {
+    init(statName: WooAnalyticsStat, properties: [String: WooAnalyticsEventPropertyType], error: Error? = nil) {
+        self.statName = statName
+        self.properties = properties
+        self.error = error
+    }
+
     let statName: WooAnalyticsStat
     let properties: [String: WooAnalyticsEventPropertyType]
+    let error: Error?
 }
 
 // MARK: - In-app Feedback and Survey

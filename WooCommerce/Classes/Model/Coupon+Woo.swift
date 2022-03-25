@@ -74,7 +74,11 @@ extension Coupon {
         let result = calendar.compare(expiryDate, to: now, toGranularity: .minute)
         return result == .orderedDescending ? .active : .expired
     }
+}
 
+// MARK: - Subtypes
+extension Coupon {
+    /// Expiry status for coupons
     enum ExpiryStatus {
         case active
         case expired
@@ -105,6 +109,36 @@ extension Coupon {
             static let active = NSLocalizedString("Active", comment: "Status of coupons that are active")
             static let expired = NSLocalizedString("Expired", comment: "Status of coupons that are expired")
         }
+    }
+
+    private enum Localization {
+        static let allProducts = NSLocalizedString(
+            "all products",
+            comment: "Text indicating that there's no limit to the number of products that a coupon can be applied for. Displayed on coupon list items and details screen"
+        )
+        static let singleProduct = NSLocalizedString(
+            "%1$d Product",
+            comment: "The number of products allowed for a coupon in singular form. Reads like: 1 Product"
+        )
+        static let multipleProducts = NSLocalizedString(
+            "%1$d Products",
+            comment: "The number of products allowed for a coupon in plural form. " +
+            "Reads like: 10 Products"
+        )
+        static let singleCategory = NSLocalizedString(
+            "%1$d Category",
+            comment: "The number of category allowed for a coupon in singular form. Reads like: 1 Category"
+        )
+        static let multipleCategories = NSLocalizedString(
+            "%1$d Categories",
+            comment: "The number of category allowed for a coupon in plural form. " +
+            "Reads like: 10 Categories"
+        )
+        static let summaryFormat = NSLocalizedString(
+            "%1$@ off %2$@",
+            comment: "Summary line for a coupon, with the discounted amount and number of products and categories that the coupon is limited to. " +
+            "Reads like: '10% off all products' or '$15 off 2 Product 1 Category'"
+        )
     }
 }
 

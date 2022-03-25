@@ -56,7 +56,7 @@ extension Coupon {
                                             excludedProductsCount: excludedProductIds.count,
                                             categoriesCount: productCategories.count,
                                             excludedCategoriesCount: excludedProductCategories.count)
-        return amount.isEmpty ? applyRules.capitalized : String.localizedStringWithFormat(Localization.summaryFormat, amount, applyRules)
+        return amount.isEmpty ? applyRules : String.localizedStringWithFormat(Localization.summaryFormat, amount, applyRules)
     }
 
     /// Formatted amount for the coupon
@@ -154,7 +154,7 @@ extension Coupon {
 
     private enum Localization {
         static let allProducts = NSLocalizedString(
-            "all products",
+            "All Products",
             comment: "Text indicating that there's no limit to the number of products that a coupon can be applied for. " +
             "Displayed on coupon list items and details screen"
         )
@@ -182,8 +182,8 @@ extension Coupon {
             "Reads like: '10% off all products' or '$15 off 2 Product 1 Category'"
         )
         static let allWithException = NSLocalizedString(
-            "all products excl. %1$@",
-            comment: "Exception rule for a coupon. Reads like: all products excl. 2 Products"
+            "All Products excl. %1$@",
+            comment: "Exception rule for a coupon. Reads like: All Products excl. 2 Products"
         )
         static let ruleWithException = NSLocalizedString(
             "%1$@ excl. %2$@",

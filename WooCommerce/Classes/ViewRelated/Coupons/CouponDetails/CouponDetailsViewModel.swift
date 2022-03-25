@@ -140,7 +140,20 @@ private extension CouponDetailsViewModel {
             discountedAmount = formatStringAmount("0")
         }
 
-        amount = coupon.formattedAmount(currencySettings: currencySettings)
+        switch coupon.discountType {
+        case .percent:
+            let percentFormatter = NumberFormatter()
+            percentFormatter.numberStyle = .percent
+            if let amountDouble = Double(coupon.amount) {
+                let amountNumber = NSNumber(value: amountDouble / 100)
+                amount = percentFormatter.string(from: amountNumber) ?? ""
+            }
+        case .fixedCart, .fixedProduct:
+            amount = formatStringAmount(coupon.amount)
+        case .other:
+            amount = coupon.amount
+        }
+
         productsAppliedTo = localizeApplyRules(productsCount: coupon.productIds.count,
                                                excludedProductsCount: coupon.excludedProductIds.count,
                                                categoriesCount: coupon.productCategories.count,

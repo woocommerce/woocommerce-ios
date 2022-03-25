@@ -29,15 +29,39 @@ extension Coupon.DiscountType {
 //
 extension Coupon {
 
+    /// Expiry status for Coupons.
+    ///
+    func expiryStatus(now: Date = Date()) -> ExpiryStatus {
+        guard let expiryDate = dateExpires else {
+            return .active
+        }
+
+        guard let gmtTimeZone = TimeZone(identifier: "GMT") else {
+            return .expired
+        }
+
+        var calendar = Calendar.current
+        calendar.timeZone = gmtTimeZone
+
+        // Compare the dates by minute to get around edge cases of timezone differences.
+        let result = calendar.compare(expiryDate, to: now, toGranularity: .minute)
+        return result == .orderedDescending ? .active : .expired
+    }
+
     /// Summary line for the coupon
     ///
-    var summary: String {
-        return ""
+    func summary(currencySettings: CurrencySettings) -> String {
+        let amount = formattedAmount(currencySettings: currencySettings)
+        let applyRules = localizeApplyRules(productsCount: productIds.count,
+                                            excludedProductsCount: excludedProductIds.count,
+                                            categoriesCount: productCategories.count,
+                                            excludedCategoriesCount: excludedProductCategories.count)
+        return amount.isEmpty ? applyRules.capitalized : String.localizedStringWithFormat(Localization.summaryFormat, amount, applyRules)
     }
 
     /// Formatted amount for the coupon
     ///
-    func formattedAmount(currencySettings: CurrencySettings) -> String {
+    private func formattedAmount(currencySettings: CurrencySettings) -> String {
         var amountString: String = ""
         switch discountType {
         case .percent:
@@ -56,23 +80,40 @@ extension Coupon {
         return amountString
     }
 
-    /// Expiry status for Coupons.
+    /// Localize content for the "Apply to" field. This takes into consideration different cases of apply rules:
+    ///    - When only specific products or categories are defined: Display "x Products" or "x Categories"
+    ///    - When specific products/categories and exceptions are defined: Display "x Products excl. y Categories" etc.
+    ///    - When both specific products and categories are defined: Display "x Products and y Categories"
+    ///    - When only exceptions are defined: Display "All excl. x Products" or "All excl. y Categories"
     ///
-    func expiryStatus(now: Date = Date()) -> ExpiryStatus {
-        guard let expiryDate = dateExpires else {
-            return .active
+    private func localizeApplyRules(productsCount: Int, excludedProductsCount: Int, categoriesCount: Int, excludedCategoriesCount: Int) -> String {
+        let productText = String.pluralize(productsCount, singular: Localization.singleProduct, plural: Localization.multipleProducts)
+        let productExceptionText = String.pluralize(excludedProductsCount, singular: Localization.singleProduct, plural: Localization.multipleProducts)
+        let categoryText = String.pluralize(categoriesCount, singular: Localization.singleCategory, plural: Localization.multipleCategories)
+        let categoryExceptionText = String.pluralize(excludedCategoriesCount, singular: Localization.singleCategory, plural: Localization.multipleCategories)
+
+        switch (productsCount, excludedProductsCount, categoriesCount, excludedCategoriesCount) {
+        case let (products, _, categories, _) where products > 0 && categories > 0:
+            return String.localizedStringWithFormat(Localization.combinedRules, productText, categoryText)
+        case let (products, excludedProducts, _, _) where products > 0 && excludedProducts > 0:
+            return String.localizedStringWithFormat(Localization.ruleWithException, productText, productExceptionText)
+        case let (products, _, _, excludedCategories) where products > 0 && excludedCategories > 0:
+            return String.localizedStringWithFormat(Localization.ruleWithException, productText, categoryExceptionText)
+        case let (products, _, _, _) where products > 0:
+            return productText
+        case let (_, excludedProducts, categories, _) where excludedProducts > 0 && categories > 0:
+            return String.localizedStringWithFormat(Localization.ruleWithException, categoryText, productExceptionText)
+        case let (_, _, categories, excludedCategories) where categories > 0 && excludedCategories > 0:
+            return String.localizedStringWithFormat(Localization.ruleWithException, categoryText, categoryExceptionText)
+        case let (_, _, categories, _) where categories > 0:
+            return categoryText
+        case let (_, excludedProducts, _, _) where excludedProducts > 0:
+            return String.localizedStringWithFormat(Localization.allWithException, productExceptionText)
+        case let (_, _, _, excludedCategories) where excludedCategories > 0:
+            return String.localizedStringWithFormat(Localization.allWithException, categoryExceptionText)
+        default:
+            return Localization.allProducts
         }
-
-        guard let gmtTimeZone = TimeZone(identifier: "GMT") else {
-            return .expired
-        }
-
-        var calendar = Calendar.current
-        calendar.timeZone = gmtTimeZone
-
-        // Compare the dates by minute to get around edge cases of timezone differences.
-        let result = calendar.compare(expiryDate, to: now, toGranularity: .minute)
-        return result == .orderedDescending ? .active : .expired
     }
 }
 
@@ -114,7 +155,8 @@ extension Coupon {
     private enum Localization {
         static let allProducts = NSLocalizedString(
             "all products",
-            comment: "Text indicating that there's no limit to the number of products that a coupon can be applied for. Displayed on coupon list items and details screen"
+            comment: "Text indicating that there's no limit to the number of products that a coupon can be applied for. " +
+            "Displayed on coupon list items and details screen"
         )
         static let singleProduct = NSLocalizedString(
             "%1$d Product",
@@ -138,6 +180,18 @@ extension Coupon {
             "%1$@ off %2$@",
             comment: "Summary line for a coupon, with the discounted amount and number of products and categories that the coupon is limited to. " +
             "Reads like: '10% off all products' or '$15 off 2 Product 1 Category'"
+        )
+        static let allWithException = NSLocalizedString(
+            "all products excl. %1$@",
+            comment: "Exception rule for a coupon. Reads like: all products excl. 2 Products"
+        )
+        static let ruleWithException = NSLocalizedString(
+            "%1$@ excl. %2$@",
+            comment: "Exception rule for a coupon. Reads like: 3 Products excl. 1 Category"
+        )
+        static let combinedRules = NSLocalizedString(
+            "%1$@, %2$@",
+            comment: "Combined rule for a coupon. Reads like: 2 Products, 1 Category"
         )
     }
 }

@@ -2,7 +2,6 @@ import SwiftUI
 
 struct JetpackInstallStepsView: View {
     /// The presenter to display notice when an error occurs.
-    /// It is kept internal so that the hosting controller can update its presenting controller to itself.
     private let noticePresenter: DefaultNoticePresenter
 
     // Closure invoked when Contact Support button is tapped

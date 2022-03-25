@@ -27,7 +27,7 @@ extension String {
     }
 
     func addHTTPSSchemeIfNecessary() -> String {
-        if self.hasPrefix("http://") || self.hasPrefix("https://") {
+        if hasValidSchemeForBrowser {
             return self
         }
 

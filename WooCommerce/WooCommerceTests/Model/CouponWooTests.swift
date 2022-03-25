@@ -34,4 +34,98 @@ final class CouponWooTests: XCTestCase {
         // Then
         XCTAssertEqual(coupon.expiryStatus(now: now), .expired)
     }
+
+    func test_summary_returns_correct_amount_fixedProduct_discount_type() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(
+            amount: "10.00",
+            discountType: .fixedProduct
+        )
+        let currencySettings = CurrencySettings()
+
+        // Then
+        XCTAssertTrue(sampleCoupon.summary(currencySettings: currencySettings).contains("$10.00"))
+    }
+
+    func test_summary_returns_correct_amount_percentage_discount_type() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(
+            amount: "10.00",
+            discountType: .percent
+        )
+
+        // Then
+        XCTAssertTrue(sampleCoupon.summary().contains("10%"))
+    }
+
+    func test_coupon_apply_rule_with_no_limit() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(productIds: [], excludedProductIds: [], productCategories: [], excludedProductCategories: [])
+
+        // Then
+        XCTAssertTrue(sampleCoupon.summary().contains(NSLocalizedString("All Products", comment: "")))
+    }
+
+    func test_coupon_apply_rule_with_one_productId() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(productIds: [12], excludedProductIds: [], productCategories: [], excludedProductCategories: [])
+
+        // Then
+        let appliedTo = String(format: NSLocalizedString("%d Product", comment: ""), 1)
+        XCTAssertTrue(sampleCoupon.summary().contains(appliedTo))
+    }
+
+    func test_coupon_apply_rule_with_multiple_productIds() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(productIds: [12, 23, 45], excludedProductIds: [], productCategories: [], excludedProductCategories: [])
+
+        // Then
+        let appliedTo = String(format: NSLocalizedString("%d Products", comment: ""), 3)
+        XCTAssertTrue(sampleCoupon.summary().contains(appliedTo))
+    }
+
+    func test_coupon_apply_rule_with_multiple_productIds_and_categories() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(productIds: [12, 23, 45], excludedProductIds: [], productCategories: [22, 33], excludedProductCategories: [])
+
+        // Then
+        let appliedTo = String(format: NSLocalizedString("%d Products, %d Categories", comment: ""), 3, 2)
+        XCTAssertTrue(sampleCoupon.summary().contains(appliedTo))
+    }
+
+    func test_coupon_apply_rule_with_productIds_and_excluded_categories() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(productIds: [12, 23, 45], excludedProductIds: [], productCategories: [], excludedProductCategories: [11])
+
+        // Then
+        let appliedTo = String(format: NSLocalizedString("%d Products excl. %d Category", comment: ""), 3, 1)
+        XCTAssertTrue(sampleCoupon.summary().contains(appliedTo))
+    }
+
+    func test_coupon_apply_rule_with_categories_and_excluded_products() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(productIds: [], excludedProductIds: [11, 22], productCategories: [1, 2, 3], excludedProductCategories: [])
+
+        // Then
+        let appliedTo = String(format: NSLocalizedString("%d Categories excl. %d Products", comment: ""), 3, 2)
+        XCTAssertTrue(sampleCoupon.summary().contains(appliedTo))
+    }
+
+    func test_coupon_apply_rule_with_excluded_products() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(productIds: [], excludedProductIds: [11, 22], productCategories: [], excludedProductCategories: [])
+
+        // Then
+        let appliedTo = String(format: NSLocalizedString("All Products excl. %d Products", comment: ""), 2)
+        XCTAssertTrue(sampleCoupon.summary().contains(appliedTo))
+    }
+
+    func test_coupon_apply_rule_with_excluded_categories() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(productIds: [], excludedProductIds: [], productCategories: [], excludedProductCategories: [11, 22])
+
+        // Then
+        let appliedTo = String(format: NSLocalizedString("All Products excl. %d Categories", comment: ""), 2)
+        XCTAssertTrue(sampleCoupon.summary().contains(appliedTo))
+    }
 }

@@ -1,13 +1,6 @@
 import Hardware
 
 public extension PaymentIntent {
-    /// Returns the payment method from a PaymentIntent after the payment is processed and captured.
-    /// Before the payment is processed and captured, `nil` is returned.
-    /// - Returns: an optional payment method that is set after the payment is processed and captured.
-    func paymentMethod() -> PaymentMethod? {
-        charges.first?.paymentMethod
-    }
-
     /// Maps a PaymentIntent into an struct that contains only the data we need to
     /// render a receipt.
     /// - Returns: an optional struct containing all the data that needs to go into a receipt

@@ -281,7 +281,7 @@ private extension ShipmentProvidersViewController {
 
     func presentEmptyStateIfNecessary(term: String = "") {
         guard viewModel.isListEmpty else {
-            removeEmptyState()
+            removeEmptyStateView()
             return
         }
 
@@ -292,15 +292,15 @@ private extension ShipmentProvidersViewController {
             return
         }
 
-        addEmptyState(with: term)
+        configureAndAddEmptyStateView(with: term)
     }
 
-    func removeEmptyState() {
+    func removeEmptyStateView() {
         emptyStateView?.removeFromSuperview()
         emptyStateView = nil
     }
 
-    func addEmptyState(with term: String = "") {
+    func configureAndAddEmptyStateView(with term: String = "") {
         emptyStateView = EmptyListMessageWithActionView.instantiateFromNib()
         updateEmptyStateView(with: term)
         emptyStateView?.actionText = NSLocalizedString("Custom Carrier",

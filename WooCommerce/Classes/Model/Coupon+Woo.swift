@@ -25,9 +25,37 @@ extension Coupon.DiscountType {
     }
 }
 
-// MARK: - Coupon expiry status
+// MARK: - Coupon details
 //
 extension Coupon {
+
+    /// Summary line for the coupon
+    ///
+    var summary: String {
+        return ""
+    }
+
+    /// Formatted amount for the coupon
+    ///
+    func formattedAmount(currencySettings: CurrencySettings) -> String {
+        var amountString: String = ""
+        switch discountType {
+        case .percent:
+            let percentFormatter = NumberFormatter()
+            percentFormatter.numberStyle = .percent
+            if let amountDouble = Double(amount) {
+                let amountNumber = NSNumber(value: amountDouble / 100)
+                amountString = percentFormatter.string(from: amountNumber) ?? ""
+            }
+        case .fixedCart, .fixedProduct:
+            let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+            amountString = currencyFormatter.formatAmount(amount) ?? ""
+        case .other:
+            break // skip formatting for unsupported types
+        }
+        return amountString
+    }
+
     /// Expiry status for Coupons.
     ///
     func expiryStatus(now: Date = Date()) -> ExpiryStatus {

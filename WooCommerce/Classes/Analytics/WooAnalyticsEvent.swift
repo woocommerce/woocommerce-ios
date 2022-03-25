@@ -818,11 +818,21 @@ extension WooAnalyticsEvent {
             )
         }
 
+        /// Tracked when the "learn more" button in the In-Person Payments onboarding is tapped.
+        ///
+        /// - Parameter countryCode: the country code of the store.
+        ///
         static func cardPresentOnboardingLearnMoreTapped(countryCode: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardPresentOnboardingLearnMoreTapped,
                               properties: [Keys.countryCode: countryCode])
         }
 
+        /// Tracked when the In-Person Payments onboarding cannot be completed for some reason.
+        ///
+        /// - Parameters:
+        ///   - reason: the reason why the onboarding is not completed.
+        ///   - countryCode: the country code of the store.
+        ///
         static func cardPresentOnboardingNotCompleted(reason: String, countryCode: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardPresentOnboardingNotCompleted,
                               properties: [

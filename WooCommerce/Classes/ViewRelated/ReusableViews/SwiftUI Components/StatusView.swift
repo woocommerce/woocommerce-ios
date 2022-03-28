@@ -17,6 +17,7 @@ struct StatusView: View {
     var body: some View {
         Text(label)
             .font(.caption)
+            .padding(.vertical, Constants.verticalMargin)
             .padding(.horizontal, Constants.horizontalMargin)
             .background(Color(backgroundColor))
             .cornerRadius(Constants.cornerRadius)
@@ -25,8 +26,9 @@ struct StatusView: View {
 
 private extension StatusView {
     enum Constants {
-        static let horizontalMargin: CGFloat = 4
-        static let cornerRadius: CGFloat = 2
+        static let horizontalMargin: CGFloat = 8
+        static let verticalMargin: CGFloat = 4
+        static let cornerRadius: CGFloat = 4
     }
 }
 

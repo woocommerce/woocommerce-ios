@@ -83,10 +83,11 @@ struct CouponDetails: View {
                     .padding(.horizontal, Constants.margin)
                     .padding(.vertical, Constants.summarySectionVerticalSpacing)
 
+                    Divider()
+
                     summarySection
                         .padding(.horizontal, insets: geometry.safeAreaInsets)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.bottom, Constants.margin)
                         .background(Color(.listForeground))
 
                     Divider()

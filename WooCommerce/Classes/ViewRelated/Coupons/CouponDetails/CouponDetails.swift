@@ -245,6 +245,7 @@ struct CouponDetails: View {
             actions.append(contentsOf: [
                 .default(Text(Localization.editCoupon), action: {
                     // TODO: add analytics
+                    // TODO: open the editing screen
                 })
             ])
         }

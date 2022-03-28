@@ -84,7 +84,9 @@ final class CouponListViewController: UIViewController {
                 case .loading:
                     self.displayPlaceholderCoupons()
                 case .coupons:
-                    self.tableView.reloadData()
+                    // the table view is reloaded when coupon view models are updated
+                    // so there's no need to reload here
+                    break
                 case .refreshing:
                     self.refreshControl.beginRefreshing()
                 case .loadingNextPage:
@@ -121,6 +123,12 @@ final class CouponListViewController: UIViewController {
             .removeDuplicates()
             .sink { [weak self] hasData in
                 self?.configureNavigationBarItems(hasCoupons: hasData)
+            }
+            .store(in: &subscriptions)
+
+        viewModel.$couponViewModels
+            .sink { [weak self] _ in
+                self?.tableView.reloadData()
             }
             .store(in: &subscriptions)
 

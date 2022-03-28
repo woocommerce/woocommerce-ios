@@ -60,10 +60,10 @@ final class AddOrderCoordinatorTests: XCTestCase {
 
 private extension AddOrderCoordinatorTests {
     func makeAddProductCoordinator(isOrderCreationEnabled: Bool) -> AddOrderCoordinator {
-        let sourceBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: nil)
+        let sourceView = UIView()
         return AddOrderCoordinator(siteID: 100,
                                    isOrderCreationEnabled: isOrderCreationEnabled,
-                                   sourceBarButtonItem: sourceBarButtonItem,
+                                   sourceView: sourceView,
                                    sourceNavigationController: navigationController)
     }
 }

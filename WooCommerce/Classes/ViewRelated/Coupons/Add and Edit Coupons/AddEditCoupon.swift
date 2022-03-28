@@ -1,8 +1,9 @@
 import SwiftUI
+import Yosemite
 
 struct AddEditCoupon: View {
 
-    let viewModel: AddEditCouponViewModel
+    @ObservedObject private(set) var viewModel: AddEditCouponViewModel
 
     init(_ viewModel: AddEditCouponViewModel) {
         self.viewModel = viewModel
@@ -10,12 +11,19 @@ struct AddEditCoupon: View {
     }
 
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationView {
+            Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        }
+
     }
 }
 
 struct AddEditCoupon_Previews: PreviewProvider {
     static var previews: some View {
-        AddEditCoupon(AddEditCouponViewModel())
+
+        /// Edit Coupon
+        ///
+        let editingViewModel = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon)
+        AddEditCoupon(editingViewModel)
     }
 }

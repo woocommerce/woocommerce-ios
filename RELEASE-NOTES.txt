@@ -5,6 +5,7 @@
 - [*] Coupons: Fixed issue loading the coupon list from the local storage on initial load. [https://github.com/woocommerce/woocommerce-ios/pull/6463]
 - [*] In-Person Payments: Removed collecting L2/L3 data
 
+- [*] Jetpack CP: Fixed crash when attempting to access WP-Admin with an invalid URL that has an unsupported scheme. [https://github.com/woocommerce/woocommerce-ios/pull/6502]
 
 8.8
 -----

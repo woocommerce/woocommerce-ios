@@ -162,6 +162,7 @@ private struct ProductsSection: View {
 
             VStack(alignment: .leading, spacing: NewOrder.Layout.verticalSpacing) {
                 Text(NewOrder.Localization.products)
+                    .accessibilityAddTraits(.isHeader)
                     .headlineStyle()
 
                 ForEach(viewModel.productRows) { productRow in

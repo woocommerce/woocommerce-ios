@@ -28,7 +28,6 @@ final class WebviewHelper {
     ///
     static func launch(_ url: URL, with sender: UIViewController) {
         let safariViewController = SFSafariViewController(url: url)
-        safariViewController.modalPresentationStyle = .pageSheet
         sender.present(safariViewController, animated: true, completion: nil)
     }
 }

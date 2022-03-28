@@ -592,8 +592,7 @@ private extension OrderDetailsViewController {
     }
 
     func displayWebView(url: URL) {
-        let safariViewController = SFSafariViewController(url: url)
-        present(safariViewController, animated: true, completion: nil)
+        WebviewHelper.launch(url, with: self)
     }
 
     func productsMoreMenuTapped(sourceView: UIView) {
@@ -657,9 +656,7 @@ private extension OrderDetailsViewController {
             actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelTrackingMoreMenu.trackShipmentAction) { [weak self] _ in
                 guard let self = self else { return }
                 ServiceLocator.analytics.track(event: .shipmentTrackingMenu(action: .track))
-                let safariViewController = SFSafariViewController(url: url)
-                safariViewController.modalPresentationStyle = .pageSheet
-                self.present(safariViewController, animated: true, completion: nil)
+                WebviewHelper.launch(url, with: self)
             }
         }
 

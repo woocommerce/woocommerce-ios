@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import Experiments
 
 /// View model for `CouponDetails` view
 ///
@@ -68,14 +69,17 @@ final class CouponDetailsViewModel: ObservableObject {
 
     private let stores: StoresManager
     private let currencySettings: CurrencySettings
+    let isEditingEnabled: Bool
 
     init(coupon: Coupon,
          stores: StoresManager = ServiceLocator.stores,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         featureFlags: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = coupon.siteID
         self.coupon = coupon
         self.stores = stores
         self.currencySettings = currencySettings
+        isEditingEnabled = featureFlags.isFeatureFlagEnabled(.couponEditing)
         populateDetails()
     }
 

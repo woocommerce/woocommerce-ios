@@ -111,7 +111,7 @@ private extension ShippingLineDetails {
         static let shipping = NSLocalizedString("Shipping", comment: "Title for the Shipping Line Details screen during order creation")
 
         static let amountField = NSLocalizedString("Amount (%1$@)", comment: "Title for the amount field on the Shipping Details screen during order creation"
-                                                   + "Parameters: %1$@ - fee type (percent sign or currency symbol)")
+                                                   + "Parameters: %1$@ - currency symbol")
         static let nameField = NSLocalizedString("Name", comment: "Title for the name field on the Shipping Line Details screen during order creation")
 
         static let close = NSLocalizedString("Close", comment: "Text for the close button in the Shipping Line Details screen")

@@ -141,7 +141,7 @@ extension InPersonPaymentsMenuViewController {
             fatalError("Cannot instantiate `CardReaderSettingsPresentingViewController` from Dashboard storyboard")
         }
 
-        let viewModelsAndViews = CardReaderSettingsViewModelsOrderedList()
+        let viewModelsAndViews = CardReaderSettingsViewModelsOrderedList(configuration: configurationLoader.configuration)
         viewController.configure(viewModelsAndViews: viewModelsAndViews)
         show(viewController, sender: self)
     }

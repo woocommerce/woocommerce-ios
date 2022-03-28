@@ -25,6 +25,7 @@ struct OrderPaymentSection: View {
         VStack(alignment: .leading, spacing: .zero) {
             HStack {
                 Text(Localization.payment)
+                    .accessibilityAddTraits(.isHeader)
                     .headlineStyle()
 
                 Spacer()

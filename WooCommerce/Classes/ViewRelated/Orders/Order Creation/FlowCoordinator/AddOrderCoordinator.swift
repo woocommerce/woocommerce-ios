@@ -25,6 +25,17 @@ final class AddOrderCoordinator: Coordinator {
         self.navigationController = sourceNavigationController
     }
 
+    init(siteID: Int64,
+         isOrderCreationEnabled: Bool,
+         sourceView: UIView,
+         sourceNavigationController: UINavigationController) {
+        self.siteID = siteID
+        self.isOrderCreationEnabled = isOrderCreationEnabled
+        self.sourceBarButtonItem = nil
+        self.sourceView = sourceView
+        self.navigationController = sourceNavigationController
+    }
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

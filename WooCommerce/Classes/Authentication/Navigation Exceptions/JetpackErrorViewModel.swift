@@ -41,15 +41,17 @@ struct JetpackErrorViewModel: ULErrorViewModel {
 
     // MARK: - Actions
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        guard let url = URL(string: Strings.instructionsURLString) else {
+        showInstructionsScreen(in: viewController)
+        analytics.track(.loginJetpackRequiredViewInstructionsButtonTapped)
+    }
+
+    private func showInstructionsScreen(in viewController: UIViewController?) {
+        guard let url = URL(string: Strings.instructionsURLString),
+              let viewController = viewController else {
             return
         }
 
-        let safariViewController = SFSafariViewController(url: url)
-        safariViewController.modalPresentationStyle = .pageSheet
-        viewController?.present(safariViewController, animated: true)
-
-        analytics.track(.loginJetpackRequiredViewInstructionsButtonTapped)
+        WebviewHelper.launch(url, with: viewController)
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {

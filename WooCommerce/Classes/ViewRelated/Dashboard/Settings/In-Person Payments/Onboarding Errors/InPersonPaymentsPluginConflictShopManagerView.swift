@@ -1,7 +1,7 @@
 import SwiftUI
 import Yosemite
 
-struct InPersonPaymentsPluginConfictShopManager: View {
+struct InPersonPaymentsPluginConflictShopManager: View {
     let onRefresh: () -> Void
     @State var presentedSetupURL: URL? = nil
     @Environment(\.verticalSizeClass) var verticalSizeClass
@@ -66,6 +66,6 @@ private enum Constants {
 
 struct InPersonPaymentsPluginConfictShopManager_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsPluginConfictShopManager(onRefresh: {})
+        InPersonPaymentsPluginConflictShopManager(onRefresh: {})
     }
 }

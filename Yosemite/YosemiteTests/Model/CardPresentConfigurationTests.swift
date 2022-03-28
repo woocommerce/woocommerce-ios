@@ -7,7 +7,7 @@ class CardPresentConfigurationTests: XCTestCase {
     func test_configuration_for_US_with_Canada_enabled() throws {
         let configuration = CardPresentPaymentsConfiguration(country: "US", canadaEnabled: true)
         XCTAssertTrue(configuration.isSupportedCountry)
-        XCTAssertEqual(configuration.currencies, [Constants.Currency.usd])
+        XCTAssertEqual(configuration.currencies, [.USD])
         XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay, Constants.PaymentGateway.stripe])
         XCTAssertEqual(configuration.paymentMethods, [.cardPresent])
         XCTAssertEqual(configuration.purchaseCardReaderUrl(for: .wcPay).absoluteString, Constants.PurchaseURL.wcpay)
@@ -17,7 +17,7 @@ class CardPresentConfigurationTests: XCTestCase {
     func test_configuration_for_US_with_Canada_disabled() throws {
         let configuration = CardPresentPaymentsConfiguration(country: "US", canadaEnabled: false)
         XCTAssertTrue(configuration.isSupportedCountry)
-        XCTAssertEqual(configuration.currencies, [Constants.Currency.usd])
+        XCTAssertEqual(configuration.currencies, [.USD])
         XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay, Constants.PaymentGateway.stripe])
         XCTAssertEqual(configuration.paymentMethods, [.cardPresent])
         XCTAssertEqual(configuration.purchaseCardReaderUrl(for: .wcPay).absoluteString, Constants.PurchaseURL.wcpay)
@@ -28,7 +28,7 @@ class CardPresentConfigurationTests: XCTestCase {
     func test_configuration_for_Canada_with_Canada_enabled() throws {
         let configuration = CardPresentPaymentsConfiguration(country: "CA", canadaEnabled: true)
         XCTAssertTrue(configuration.isSupportedCountry)
-        XCTAssertEqual(configuration.currencies, [Constants.Currency.cad])
+        XCTAssertEqual(configuration.currencies, [.CAD])
         XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay])
         XCTAssertEqual(configuration.paymentMethods, [.cardPresent, .interacPresent])
         XCTAssertEqual(configuration.purchaseCardReaderUrl(for: .wcPay).absoluteString, Constants.PurchaseURL.wcpay)
@@ -43,10 +43,6 @@ class CardPresentConfigurationTests: XCTestCase {
     }
 
     private enum Constants {
-        enum Currency {
-            static let usd = "USD"
-            static let cad = "CAD"
-        }
 
         enum PaymentGateway {
             static let wcpay = "woocommerce-payments"

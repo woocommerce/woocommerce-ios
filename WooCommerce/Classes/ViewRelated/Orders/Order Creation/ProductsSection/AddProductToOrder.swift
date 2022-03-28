@@ -40,6 +40,8 @@ struct AddProductToOrder: View {
                     List(viewModel.ghostRows) { rowViewModel in
                         ProductRow(viewModel: rowViewModel)
                             .redacted(reason: .placeholder)
+                            .accessibilityRemoveTraits(.isButton)
+                            .accessibilityLabel(Localization.loadingRowsAccessibilityLabel)
                             .shimmering()
                     }
                     .padding(.horizontal, insets: safeAreaInsets)
@@ -110,6 +112,8 @@ private extension AddProductToOrder {
             "Opens list of product variations.",
             comment: "Accessibility hint for selecting a variable product in the Add Product screen"
         )
+        static let loadingRowsAccessibilityLabel = NSLocalizedString("Loading products",
+                                                                     comment: "Accessibility label for placeholder rows while products are loading")
     }
 }
 

@@ -38,7 +38,7 @@ struct OrderStatusSection: View {
                 .sheet(isPresented: $viewModel.shouldShowOrderStatusList) {
                     OrderStatusList(siteID: viewModel.siteID, status: viewModel.currentOrderStatus) { newStatus in
                         viewModel.updateOrderStatus(newStatus: newStatus)
-                    }
+                    }.ignoresSafeArea()
                 }
             }
         }

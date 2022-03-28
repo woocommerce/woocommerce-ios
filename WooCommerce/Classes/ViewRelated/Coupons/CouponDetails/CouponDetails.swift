@@ -88,6 +88,7 @@ struct CouponDetails: View {
                     summarySection
                         .padding(.horizontal, insets: geometry.safeAreaInsets)
                         .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.bottom, Constants.margin)
                         .background(Color(.listForeground))
 
                     Divider()
@@ -204,6 +205,9 @@ struct CouponDetails: View {
                 Text(String.localizedStringWithFormat(Localization.pluralLimitPerUser, viewModel.usageLimitPerUser))
                     .renderedIf(viewModel.usageLimitPerUser > 1)
             }
+            .renderedIf(viewModel.minimumAmount.isNotEmpty ||
+                        viewModel.maximumAmount.isNotEmpty ||
+                        viewModel.usageLimitPerUser > 0)
 
             Text(String.localizedStringWithFormat(Localization.expiryFormat, viewModel.expiryDate))
                 .renderedIf(viewModel.expiryDate.isNotEmpty)

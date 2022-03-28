@@ -22,6 +22,29 @@ final class CouponDetailsViewModel: ObservableObject {
     ///
     @Published private(set) var amount: String = ""
 
+    /// Number of times this coupon be used per customer
+    @Published private(set) var usageLimitPerUser: Int64?
+
+    /// If `true`, this coupon will not be applied to items that have sale prices
+    ///
+    @Published private(set) var excludeSaleItems: Bool = false
+
+    /// Minimum order amount that needs to be in the cart before coupon applies
+    ///
+    @Published private(set) var minimumAmount: String = ""
+
+    /// Maximum order amount allowed when using the coupon
+    /// 
+    @Published private(set) var maximumAmount: String = ""
+
+    /// Whether the coupon should provide free shipping
+    ///
+    @Published private(set) var allowsFreeShipping: Bool = false
+
+    /// Email addresses of customers who are allowed to use this coupon, which may include * as wildcard
+    ///
+    @Published private(set) var emailRestrictions: [String] = []
+
     /// Summary of the coupon
     ///
     @Published private(set) var summary: String = ""
@@ -150,6 +173,12 @@ private extension CouponDetailsViewModel {
         summary = coupon.summary(currencySettings: currencySettings)
 
         expiryDate = coupon.dateExpires?.toString(dateStyle: .long, timeStyle: .none) ?? ""
+        usageLimitPerUser = coupon.usageLimitPerUser
+        excludeSaleItems = coupon.excludeSaleItems
+        minimumAmount = formatStringAmount(coupon.minimumAmount)
+        maximumAmount = formatStringAmount(coupon.maximumAmount)
+        allowsFreeShipping = coupon.freeShipping
+        emailRestrictions = coupon.emailRestrictions
     }
 
     func formatStringAmount(_ amount: String) -> String {

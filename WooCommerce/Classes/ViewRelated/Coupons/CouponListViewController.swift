@@ -3,7 +3,7 @@ import UIKit
 import WordPressUI
 import class SwiftUI.UIHostingController
 
-final class CouponListViewController: UIViewController {
+final class CouponListViewController: UIViewController, GhostableViewController {
     @IBOutlet private weak var tableView: UITableView!
     private let viewModel: CouponListViewModel
     private let siteID: Int64
@@ -12,9 +12,7 @@ final class CouponListViewController: UIViewController {
     ///
     private var emptyStateViewController: UIViewController?
 
-    /// A child view controller that is shown when `displayGhostContent()` is called.
-    ///
-    private lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(displaysSectionHeader: false,
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(displaysSectionHeader: false,
                                                                                                         cellClass: TitleAndSubtitleAndStatusTableViewCell.self,
                                                                                                         rowsPerSection: Constants.placeholderRowsPerSection,
                                                                                                         estimatedRowHeight: Constants.estimatedRowHeight))
@@ -262,17 +260,13 @@ extension CouponListViewController {
     /// Renders the Placeholder Coupons
     ///
     func displayPlaceholderCoupons() {
-        let options = GhostOptions(displaysSectionHeader: false,
-                                   reuseIdentifier: TitleAndSubtitleAndStatusTableViewCell.reuseIdentifier,
-                                   rowsPerSection: Constants.placeholderRowsPerSection)
-        tableView.displayGhostContent(options: options,
-                                       style: .wooDefaultGhostStyle)
+        displayGhostContent()
     }
 
     /// Removes the Placeholder Coupons
     ///
     func removePlaceholderCoupons() {
-        tableView.removeGhostContent()
+        removeGhostContent()
     }
 }
 

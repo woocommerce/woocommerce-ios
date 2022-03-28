@@ -53,6 +53,10 @@ final class CouponDetailsViewModel: ObservableObject {
     ///
     @Published private(set) var emailRestrictions: [String] = []
 
+    /// Whether the coupon can only be used alone (`true`) or in conjunction with other coupons (`false`)
+    ///
+    @Published private(set) var individualUseOnly: Bool = false
+
     /// Summary of the coupon
     ///
     @Published private(set) var summary: String = ""
@@ -194,6 +198,7 @@ private extension CouponDetailsViewModel {
 
         allowsFreeShipping = coupon.freeShipping
         emailRestrictions = coupon.emailRestrictions
+        individualUseOnly = coupon.individualUse
 
         let status = coupon.expiryStatus()
         expiryStatus = status.localizedName

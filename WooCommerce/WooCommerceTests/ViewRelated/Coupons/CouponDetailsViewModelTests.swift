@@ -35,6 +35,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
             discountType: .percent,
             description: "Coupon description",
             dateExpires: Date(timeIntervalSince1970: 1642755825), // GMT: January 21, 2022
+            individualUse: true,
             productIds: [],
             usageLimitPerUser: 3,
             freeShipping: true,
@@ -56,6 +57,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.minimumAmount, "$5.00")
         XCTAssertEqual(viewModel.maximumAmount, "")
         XCTAssertEqual(viewModel.emailRestrictions, ["*@a8c.com", "someone.else@example.com"])
+        XCTAssertTrue(viewModel.individualUseOnly)
     }
 
     func test_coupon_is_updated_after_synchronizing() {

@@ -185,6 +185,9 @@ struct CouponDetails: View {
 
                 Text(viewModel.summary)
 
+                Text(Localization.individualUse)
+                    .renderedIf(viewModel.individualUseOnly)
+
                 Text(Localization.allowsFreeShipping)
                     .renderedIf(viewModel.allowsFreeShipping)
 
@@ -295,6 +298,10 @@ private extension CouponDetails {
         static let excludesSaleItems = NSLocalizedString(
             "Excludes sale items",
             comment: "Text on Coupon Details screen to indicate that the coupon can not be applied to sale items"
+        )
+        static let individualUse = NSLocalizedString(
+            "Individual use only",
+            comment: "Text on Coupon Details screen to indicate that the coupon can not be applied in conjunction with other coupons"
         )
         static let minimumSpend = NSLocalizedString(
             "Minimum spend of %1$@",

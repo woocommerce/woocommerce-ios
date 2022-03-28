@@ -14,13 +14,30 @@ public final class OrdersScreen: ScreenObject {
         $0.buttons["Filter"]
     }
 
+    private let createButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["new-order-type-sheet-button"]
+    }
+
+    private let newOrderCellGetter: (XCUIApplication) -> XCUIElement = {
+        $0.cells["new_order_full_manual_order"]
+    }
+
     private var searchButton: XCUIElement { searchButtonGetter(app) }
+
+    /// Button (`+`) to create a new order or simple payment
+    ///
+    private var createButton: XCUIElement { createButtonGetter(app) }
+
+    /// Button (on the Orders bottom sheet) to create a full manual order
+    ///
+    private var newOrderButton: XCUIElement { newOrderCellGetter(app) }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [
                 searchButtonGetter,
-                filterButtonGetter
+                filterButtonGetter,
+                createButtonGetter
             ],
             app: app
         )
@@ -61,5 +78,14 @@ public final class OrdersScreen: ScreenObject {
     public func verifyOrdersScreenLoaded() throws -> Self {
         XCTAssertTrue(isLoaded)
         return self
+    }
+
+    /// Starts the order creation flow by navigating from the Orders screen to the New Order screen.
+    /// - Returns: New Order screen object.
+    @discardableResult
+    public func startOrderCreation() throws -> NewOrderScreen {
+        createButton.tap()
+        newOrderButton.tap()
+        return try NewOrderScreen()
     }
 }

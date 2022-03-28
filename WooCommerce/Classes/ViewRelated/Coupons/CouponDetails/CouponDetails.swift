@@ -25,6 +25,7 @@ struct CouponDetails: View {
     @State private var showingActionSheet: Bool = false
     @State private var showingShareSheet: Bool = false
     @State private var showingUsageDetails: Bool = false
+    @State private var showingEditCoupon: Bool = false
     @State private var showingAmountLoadingErrorPrompt: Bool = false
     @State private var showingEnableAnalytics: Bool = false
 
@@ -162,6 +163,9 @@ struct CouponDetails: View {
                     viewModel.loadCouponReport()
                 })
             }
+            .sheet(isPresented: $showingEditCoupon) {
+                AddEditCoupon(AddEditCouponViewModel(existingCoupon: viewModel.coupon))
+            }
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -245,7 +249,7 @@ struct CouponDetails: View {
             actions.append(contentsOf: [
                 .default(Text(Localization.editCoupon), action: {
                     // TODO: add analytics
-                    // TODO: open the editing screen
+                    showingEditCoupon = true
                 })
             ])
         }

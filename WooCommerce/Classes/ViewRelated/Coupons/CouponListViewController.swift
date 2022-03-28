@@ -12,6 +12,13 @@ final class CouponListViewController: UIViewController {
     ///
     private var emptyStateViewController: UIViewController?
 
+    /// A child view controller that is shown when `displayGhostContent()` is called.
+    ///
+    private lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(displaysSectionHeader: false,
+                                                                                                        cellClass: TitleAndSubtitleAndStatusTableViewCell.self,
+                                                                                                        rowsPerSection: Constants.placeholderRowsPerSection,
+                                                                                                        estimatedRowHeight: Constants.estimatedRowHeight))
+
     /// Pull To Refresh Support.
     ///
     private lazy var refreshControl: UIRefreshControl = {

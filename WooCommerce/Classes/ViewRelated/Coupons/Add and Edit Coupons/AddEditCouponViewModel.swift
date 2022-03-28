@@ -19,7 +19,7 @@ final class AddEditCouponViewModel: ObservableObject {
             case .fixedProduct:
                 return Localization.titleCreateFixedProductDiscount
             default:
-                return String()
+                return Localization.titleCreateGenericDiscount
             }
         case .editing:
             switch discountType {
@@ -30,7 +30,7 @@ final class AddEditCouponViewModel: ObservableObject {
             case .fixedProduct:
                 return Localization.titleEditFixedProductDiscount
             default:
-                return String()
+                return Localization.titleEditGenericDiscount
             }
         }
     }
@@ -74,6 +74,9 @@ private extension AddEditCouponViewModel {
         static let titleEditFixedProductDiscount = NSLocalizedString(
             "Edit fixed product discount",
             comment: "Title of the view for editing a coupon with fixed product discount.")
+        static let titleEditGenericDiscount = NSLocalizedString(
+            "Edit discount",
+            comment: "Title of the view for editing a coupon with generic discount.")
         static let titleCreatePercentageDiscount = NSLocalizedString(
             "Create percentage discount",
             comment: "Title of the view for creating a coupon with percentage discount.")
@@ -83,5 +86,8 @@ private extension AddEditCouponViewModel {
         static let titleCreateFixedProductDiscount = NSLocalizedString(
             "Create fixed product discount",
             comment: "Title of the view for creating a coupon with fixed product discount.")
+        static let titleCreateGenericDiscount = NSLocalizedString(
+            "Create discount",
+            comment: "Title of the view for creating a coupon with generic discount.")
     }
 }

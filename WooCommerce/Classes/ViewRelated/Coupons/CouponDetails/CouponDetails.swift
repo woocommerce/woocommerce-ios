@@ -72,29 +72,11 @@ struct CouponDetails: View {
                             ShareSheet(activityItems: [viewModel.shareMessage])
                         }
 
-                    VStack(alignment: .leading, spacing: Constants.summarySectionVerticalSpacing) {
-                        Text(Localization.summarySectionTitle)
-                            .bold()
-                            .padding(.vertical, Constants.margin)
-
-                        VStack(alignment: .leading, spacing: Constants.margin) {
-                            Text(Localization.description)
-                                .secondaryBodyStyle()
-                            Text(viewModel.description.quoted)
-                        }
-                        .renderedIf(viewModel.description.isNotEmpty)
-
-                        Text(viewModel.discountType)
-                            .bodyStyle()
-
-                        Text(viewModel.summary)
-                            .bodyStyle()
-                    }
-                    .padding(.horizontal, Constants.margin)
-                    .padding(.horizontal, insets: geometry.safeAreaInsets)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.bottom, Constants.margin)
-                    .background(Color(.listForeground))
+                    summarySection
+                        .padding(.horizontal, insets: geometry.safeAreaInsets)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.bottom, Constants.margin)
+                        .background(Color(.listForeground))
 
                     Divider()
                     Spacer().frame(height: Constants.margin)
@@ -172,6 +154,55 @@ struct CouponDetails: View {
         .wooNavigationBarStyle()
     }
 
+    private var summarySection: some View {
+        VStack(alignment: .leading, spacing: Constants.summarySectionVerticalSpacing) {
+            Text(Localization.summarySectionTitle)
+                .bold()
+                .padding(.top, Constants.margin)
+
+            VStack(alignment: .leading, spacing: Constants.margin) {
+                Text(Localization.description)
+                    .secondaryBodyStyle()
+                Text(viewModel.description.quoted)
+            }
+            .renderedIf(viewModel.description.isNotEmpty)
+
+            VStack(alignment: .leading, spacing: Constants.summarySectionVerticalSpacing) {
+                Text(viewModel.discountType)
+
+                Text(viewModel.summary)
+
+                Text(Localization.allowsFreeShipping)
+                    .renderedIf(viewModel.allowsFreeShipping)
+
+                Text(Localization.excludesSaleItems)
+                    .renderedIf(viewModel.excludeSaleItems)
+            }
+
+            VStack(alignment: .leading, spacing: Constants.summarySectionVerticalSpacing) {
+                Text(String.localizedStringWithFormat(Localization.minimumSpend, viewModel.minimumAmount))
+                    .renderedIf(viewModel.minimumAmount.isNotEmpty)
+
+                Text(String.localizedStringWithFormat(Localization.maximumSpend, viewModel.maximumAmount))
+                    .renderedIf(viewModel.maximumAmount.isNotEmpty)
+
+                Text(String.localizedStringWithFormat(Localization.singularLimitPerUser, viewModel.usageLimitPerUser))
+                    .renderedIf(viewModel.usageLimitPerUser == 1)
+
+                Text(String.localizedStringWithFormat(Localization.pluralLimitPerUser, viewModel.usageLimitPerUser))
+                    .renderedIf(viewModel.usageLimitPerUser > 1)
+            }
+
+            Text(String.localizedStringWithFormat(Localization.expiryFormat, viewModel.expiryDate))
+                .renderedIf(viewModel.expiryDate.isNotEmpty)
+
+            Text(String.localizedStringWithFormat(Localization.emailRestriction, viewModel.emailRestrictions.joined(separator: ", ")))
+                .renderedIf(viewModel.emailRestrictions.isNotEmpty)
+        }
+        .bodyStyle()
+        .padding(.horizontal, Constants.margin)
+    }
+
     @ViewBuilder
     private var amountTitleView: some View {
         Text(Localization.amount)
@@ -237,6 +268,39 @@ private extension CouponDetails {
     enum Localization {
         static let summarySectionTitle = NSLocalizedString("Coupon Summary", comment: "Title of Summary section in Coupon Details screen")
         static let description = NSLocalizedString("Description", comment: "Title of the description field in Coupon Details screen")
+        static let expiryFormat = NSLocalizedString(
+            "Expires %1$@",
+            comment: "Formatted content for coupon expiry date, reads like: Expires August 4, 2022"
+        )
+        static let allowsFreeShipping = NSLocalizedString(
+            "Allows free shipping",
+            comment: "Text on Coupon Details screen to indicate that the coupon allows free shipping"
+        )
+        static let excludesSaleItems = NSLocalizedString(
+            "Excludes sale items",
+            comment: "Text on Coupon Details screen to indicate that the coupon can not be applied to sale items"
+        )
+        static let minimumSpend = NSLocalizedString(
+            "Minimum spend of %1$@",
+            comment: "The minimum limit of spending required for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00"
+        )
+        static let maximumSpend = NSLocalizedString(
+            "Maximum spend of %1$@",
+            comment: "The maximum limit of spending allowed for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00"
+        )
+        static let singularLimitPerUser = NSLocalizedString(
+            "%1$d use per user",
+            comment: "The singular limit of time for each user to apply a coupon, reads like: 1 use per user"
+        )
+        static let pluralLimitPerUser = NSLocalizedString(
+            "%1$d uses per user",
+            comment: "The plural limit of time for each user to apply a coupon, reads like: 10 uses per user"
+        )
+        static let emailRestriction = NSLocalizedString(
+            "Restricted to customers with emails: %1$@",
+            comment: "Restriction for customers with specified emails to use a coupon, " +
+            "reads like: Restricted to customers with emails: *@a8c.com, *@vip.com"
+        )
 
         static let manageCoupon = NSLocalizedString("Manage Coupon", comment: "Title of the action sheet displayed from the Coupon Details screen")
         static let copyCode = NSLocalizedString("Copy Code", comment: "Action title for copying coupon code from the Coupon Details screen")

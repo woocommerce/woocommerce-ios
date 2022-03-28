@@ -23,7 +23,7 @@ final class CouponDetailsViewModel: ObservableObject {
     @Published private(set) var amount: String = ""
 
     /// Number of times this coupon be used per customer
-    @Published private(set) var usageLimitPerUser: Int64?
+    @Published private(set) var usageLimitPerUser: Int64 = Constants.noLimit
 
     /// If `true`, this coupon will not be applied to items that have sale prices
     ///
@@ -173,7 +173,7 @@ private extension CouponDetailsViewModel {
         summary = coupon.summary(currencySettings: currencySettings)
 
         expiryDate = coupon.dateExpires?.toString(dateStyle: .long, timeStyle: .none) ?? ""
-        usageLimitPerUser = coupon.usageLimitPerUser
+        usageLimitPerUser = coupon.usageLimitPerUser ?? Constants.noLimit
         excludeSaleItems = coupon.excludeSaleItems
         minimumAmount = formatStringAmount(coupon.minimumAmount)
         maximumAmount = formatStringAmount(coupon.maximumAmount)
@@ -195,6 +195,9 @@ private extension CouponDetailsViewModel {
 // MARK: - Subtypes
 //
 private extension CouponDetailsViewModel {
+    enum Constants {
+        static let noLimit: Int64 = -1
+    }
     enum Localization {
         static let shareMessageAllProducts = NSLocalizedString(
             "Apply %1$@ off to all products with the promo code “%2$@”.",

@@ -76,6 +76,8 @@ struct CouponDetails: View {
                         Text(viewModel.couponCode)
                             .font(.title2)
                             .bold()
+                        StatusView(label: viewModel.expiryStatus,
+                                   backgroundColor: viewModel.expiryStatusBackgroundColor)
                     }
                     .padding(.horizontal, insets: geometry.safeAreaInsets)
                     .padding(.horizontal, Constants.margin)

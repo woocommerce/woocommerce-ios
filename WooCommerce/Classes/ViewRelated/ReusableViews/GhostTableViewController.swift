@@ -1,15 +1,30 @@
 import UIKit
 import WordPressUI
 
+/// This struct encapsulates the necessary data to configure an instance of `GhostTableViewController`
+struct GhostTableViewOptions {
+    let ghostOptions: GhostOptions
+    let estimatedRowHeight: CGFloat
+    let cellClass: UITableViewCell.Type
+
+    init(displaysSectionHeader: Bool = true,
+         cellClass: UITableViewCell.Type,
+         rowsPerSection: [Int],
+         estimatedRowHeight: CGFloat) {
+        // By just passing the cellClass in the initializer we enforce that the GhostOptions reuseIdentifier is always that of the cellClass
+        ghostOptions = GhostOptions(displaysSectionHeader: displaysSectionHeader, reuseIdentifier: cellClass.reuseIdentifier, rowsPerSection: rowsPerSection)
+        self.estimatedRowHeight = estimatedRowHeight
+        self.cellClass = cellClass
+    }
+}
+
 /// A view controller to display ghost animation over a table view
 ///
 final class GhostTableViewController: UITableViewController {
+    private let options: GhostTableViewOptions
 
-    /// Cell class for the table view cells
-    private let cellClass: UITableViewCell.Type
-
-    init(cellClass: UITableViewCell.Type = WooBasicTableViewCell.self) {
-        self.cellClass = cellClass
+    init(options: GhostTableViewOptions) {
+        self.options = options
         super.init(style: .plain)
     }
 
@@ -28,9 +43,9 @@ final class GhostTableViewController: UITableViewController {
 
         tableView.backgroundColor = UIColor.basicBackground
         tableView.separatorStyle = .none
-        tableView.estimatedRowHeight = Constants.estimatedRowHeight
+        tableView.estimatedRowHeight = options.estimatedRowHeight
         tableView.applyFooterViewForHidingExtraRowPlaceholders()
-        tableView.registerNib(for: cellClass)
+        tableView.registerNib(for: options.cellClass)
     }
 
     /// Activate the ghost if this view is added to the parent.
@@ -38,10 +53,7 @@ final class GhostTableViewController: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        let options = GhostOptions(displaysSectionHeader: false,
-                                   reuseIdentifier: cellClass.reuseIdentifier,
-                                   rowsPerSection: Constants.placeholderRowsPerSection)
-        tableView.displayGhostContent(options: options,
+        tableView.displayGhostContent(options: options.ghostOptions,
                                       style: .wooDefaultGhostStyle)
     }
 
@@ -52,8 +64,4 @@ final class GhostTableViewController: UITableViewController {
         tableView.removeGhostContent()
     }
 
-    private enum Constants {
-        static let estimatedRowHeight = CGFloat(80)
-        static let placeholderRowsPerSection = [3]
-    }
 }

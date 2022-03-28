@@ -25,7 +25,10 @@ final class TopPerformerDataViewController: UIViewController {
 
     /// A child view controller that is shown when `displayGhostContent()` is called.
     ///
-    private lazy var ghostTableViewController = GhostTableViewController(cellClass: ProductTableViewCell.self)
+    private lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(displaysSectionHeader: false,
+                                                                                                        cellClass: ProductTableViewCell.self,
+                                                                                                        rowsPerSection: Constants.placeholderRowsPerSection,
+                                                                                                        estimatedRowHeight: Constants.estimatedRowHeight))
 
     /// ResultsController: Loads TopEarnerStats for the current granularity from the Storage Layer
     ///

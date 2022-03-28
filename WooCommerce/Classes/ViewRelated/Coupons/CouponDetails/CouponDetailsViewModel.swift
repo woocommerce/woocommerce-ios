@@ -10,6 +10,14 @@ final class CouponDetailsViewModel: ObservableObject {
     ///
     @Published private(set) var couponCode: String = ""
 
+    /// Whether the coupon is still active or has expired
+    ///
+    @Published private(set) var expiryStatus: String = ""
+
+    /// Background color for the expiry status view
+    ///
+    @Published private(set) var expiryStatusBackgroundColor: UIColor = .clear
+
     /// Description of the coupon
     ///
     @Published private(set) var description: String = ""
@@ -179,6 +187,10 @@ private extension CouponDetailsViewModel {
         maximumAmount = formatStringAmount(coupon.maximumAmount)
         allowsFreeShipping = coupon.freeShipping
         emailRestrictions = coupon.emailRestrictions
+
+        let status = coupon.expiryStatus()
+        expiryStatus = status.localizedName
+        expiryStatusBackgroundColor = status.statusBackgroundColor
     }
 
     func formatStringAmount(_ amount: String) -> String {

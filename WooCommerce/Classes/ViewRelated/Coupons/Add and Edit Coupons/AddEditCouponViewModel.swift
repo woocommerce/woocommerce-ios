@@ -6,8 +6,8 @@ import Yosemite
 final class AddEditCouponViewModel: ObservableObject {
 
     private let siteID: Int64
-    let editingOption: EditingOption
-    let discountType: Coupon.DiscountType
+    private let editingOption: EditingOption
+    private let discountType: Coupon.DiscountType
     var titleView: String {
         switch editingOption {
         case .creation:

@@ -3,9 +3,9 @@ import WordPressUI
 
 /// This struct encapsulates the necessary data to configure an instance of `GhostTableViewController`
 struct GhostTableViewOptions {
-    let ghostOptions: GhostOptions
-    let estimatedRowHeight: CGFloat
-    let cellClass: UITableViewCell.Type
+    fileprivate let ghostOptions: GhostOptions
+    fileprivate let estimatedRowHeight: CGFloat
+    fileprivate let cellClass: UITableViewCell.Type
 
     init(displaysSectionHeader: Bool = true,
          cellClass: UITableViewCell.Type,

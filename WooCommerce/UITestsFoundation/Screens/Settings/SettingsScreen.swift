@@ -11,6 +11,10 @@ public final class SettingsScreen: ScreenObject {
         $0.cells.staticTexts["body-label"]
     }
 
+    private let betaFeaturesGetter: (XCUIApplication) -> XCUIElement = {
+        $0.cells["settings-beta-features-button"]
+    }
+
     private let logOutButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.cells["settings-log-out-button"]
     }
@@ -18,8 +22,6 @@ public final class SettingsScreen: ScreenObject {
     init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [
-                selectedStoreNameGetter,
-                selectedSiteUrlGetter,
                 logOutButtonGetter
             ],
             app: app
@@ -48,6 +50,14 @@ public final class SettingsScreen: ScreenObject {
         }
 
         return try PrologueScreen()
+    }
+
+    /// Navigates to the Experimental Features screen.
+    /// - Returns: Experimental Features screen object.
+    @discardableResult
+    public func goToExperimentalFeatures() throws -> BetaFeaturesScreen {
+        betaFeaturesGetter(app).tap()
+        return try BetaFeaturesScreen()
     }
 }
 

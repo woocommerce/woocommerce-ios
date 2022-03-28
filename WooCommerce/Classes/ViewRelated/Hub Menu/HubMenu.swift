@@ -151,6 +151,7 @@ struct HubMenu: View {
                             }
                         }
                     }
+                    .accessibilityIdentifier("dashboard-settings-button")
                     Spacer()
                 }
                 .fixedSize()

@@ -14,6 +14,10 @@ final class CouponDetailsViewModel: ObservableObject {
     ///
     @Published private(set) var description: String = ""
 
+    /// Discount type of the coupon
+    ///
+    @Published private(set) var discountType: String = ""
+
     /// Amount of the coupon
     ///
     @Published private(set) var amount: String = ""
@@ -134,6 +138,7 @@ private extension CouponDetailsViewModel {
 
     func populateDetails() {
         couponCode = coupon.code
+        discountType = coupon.discountType.localizedName
         description = coupon.description
         discountedOrdersCount = "\(coupon.usageCount)"
         if coupon.usageCount == 0 {

@@ -44,16 +44,6 @@ struct CouponDetails: View {
         ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "loaded"])
     }
 
-    private var detailRows: [DetailRow] {
-        [
-            .init(title: Localization.couponCode, content: viewModel.couponCode, action: {}),
-            .init(title: Localization.description, content: viewModel.description, action: {}),
-            .init(title: Localization.discount, content: viewModel.amount, action: {}),
-            .init(title: Localization.applyTo, content: viewModel.productsAppliedTo, action: {}),
-            .init(title: Localization.expiryDate, content: viewModel.expiryDate, action: {})
-        ]
-    }
-
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
@@ -81,6 +71,34 @@ struct CouponDetails: View {
                         .shareSheet(isPresented: $showingShareSheet) {
                             ShareSheet(activityItems: [viewModel.shareMessage])
                         }
+
+                    VStack(alignment: .leading, spacing: Constants.summarySectionVerticalSpacing) {
+                        Text(Localization.summarySectionTitle)
+                            .bold()
+                            .padding(.vertical, Constants.margin)
+
+                        VStack(alignment: .leading, spacing: Constants.margin) {
+                            Text(Localization.description)
+                                .secondaryBodyStyle()
+                            Text(viewModel.description.quoted)
+                        }
+                        .renderedIf(viewModel.description.isNotEmpty)
+
+                        Text(viewModel.discountType)
+                            .bodyStyle()
+
+                        Text(viewModel.summary)
+                            .bodyStyle()
+                    }
+                    .padding(.horizontal, Constants.margin)
+                    .padding(.horizontal, insets: geometry.safeAreaInsets)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.bottom, Constants.margin)
+                    .background(Color(.listForeground))
+
+                    Divider()
+                    Spacer().frame(height: Constants.margin)
+                    Divider()
 
                     VStack(alignment: .leading, spacing: 0) {
                         Text(Localization.performance)
@@ -125,40 +143,6 @@ struct CouponDetails: View {
                     .padding(.bottom, Constants.margin)
                     .background(Color(.listForeground))
 
-                    Divider()
-                    Spacer().frame(height: Constants.margin)
-                    Divider()
-
-                    VStack(alignment: .leading, spacing: 0) {
-                        Text(Localization.detailSectionTitle)
-                            .bold()
-                            .padding(Constants.margin)
-                            .padding(.horizontal, insets: geometry.safeAreaInsets)
-                        ForEach(detailRows) { row in
-                            TitleAndValueRow(title: row.title,
-                                             value: .content(row.content),
-                                             selectionStyle: .none,
-                                             action: row.action)
-                                .padding(.vertical, Constants.verticalSpacing)
-                                .padding(.horizontal, insets: geometry.safeAreaInsets)
-                            Divider()
-                                .padding(.leading, Constants.margin)
-                                .padding(.leading, insets: geometry.safeAreaInsets)
-                        }
-                    }
-                    .background(Color(.listForeground))
-
-                    Spacer().frame(height: Constants.margin)
-                    Divider()
-                    VStack {
-                        NavigationRow(content: {
-                            Text(Localization.usageDetails)
-                                .bodyStyle()
-                        }, action: {
-                            showingUsageDetails = true
-                        }).padding(.horizontal, insets: geometry.safeAreaInsets)
-                    }
-                    .background(Color(.listForeground))
                     Divider()
                 }
                 NavigationLink(destination: CouponUsageDetails(viewModel: .init(coupon: viewModel.coupon)), isActive: $showingUsageDetails) {
@@ -247,15 +231,13 @@ private extension CouponDetails {
         static let verticalSpacing: CGFloat = 8
         static let errorIconSize: CGFloat = 20
         static let errorIconHorizontalPadding: CGFloat = 4
+        static let summarySectionVerticalSpacing: CGFloat = 24
     }
 
     enum Localization {
-        static let detailSectionTitle = NSLocalizedString("Coupon Details", comment: "Title of Details section in Coupon Details screen")
-        static let couponCode = NSLocalizedString("Coupon Code", comment: "Title of the Coupon Code row in Coupon Details screen")
-        static let description = NSLocalizedString("Description", comment: "Title of the Description row in Coupon Details screen")
-        static let discount = NSLocalizedString("Discount", comment: "Title of the Discount row in Coupon Details screen")
-        static let applyTo = NSLocalizedString("Apply To", comment: "Title of the Apply To row in Coupon Details screen")
-        static let expiryDate = NSLocalizedString("Coupon Expiry Date", comment: "Title of the Coupon Expiry Date row in Coupon Details screen")
+        static let summarySectionTitle = NSLocalizedString("Coupon Summary", comment: "Title of Summary section in Coupon Details screen")
+        static let description = NSLocalizedString("Description", comment: "Title of the description field in Coupon Details screen")
+
         static let manageCoupon = NSLocalizedString("Manage Coupon", comment: "Title of the action sheet displayed from the Coupon Details screen")
         static let copyCode = NSLocalizedString("Copy Code", comment: "Action title for copying coupon code from the Coupon Details screen")
         static let couponCopied = NSLocalizedString("Coupon copied", comment: "Notice message displayed when a coupon code is " +

@@ -63,5 +63,4 @@ final class GhostTableViewController: UITableViewController {
         super.viewWillDisappear(animated)
         tableView.removeGhostContent()
     }
-
 }

@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct InPersonPaymentsPluginConfictAdmin: View {
+struct InPersonPaymentsPluginConflictAdmin: View {
     let onRefresh: () -> Void
     @State var presentedSetupURL: URL? = nil
     @Environment(\.verticalSizeClass) var verticalSizeClass
@@ -80,6 +80,6 @@ private enum Constants {
 
 struct InPersonPaymentsPluginConfictAdmin_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsPluginConfictAdmin(onRefresh: {})
+        InPersonPaymentsPluginConflictAdmin(onRefresh: {})
     }
 }

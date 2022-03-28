@@ -70,6 +70,19 @@ extension StripeCardReaderService: CardReaderService {
         }
         Terminal.shared.logLevel = terminalLogLevel
 
+        if shouldUseSimulatedCardReader {
+            // You can test with different reader software update scenarios.
+            // https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPSimulatorConfiguration.html#/c:objc(cs)SCPSimulatorConfiguration(py)availableReaderUpdate
+            Terminal.shared.simulatorConfiguration.availableReaderUpdate = .none
+
+            // You can use simulated test cards with a card type, or a card number with different brands and in various success
+            // and error cases: https://stripe.com/docs/terminal/references/testing#simulated-test-cards
+            // Example with `charge_declined` error:
+            // Terminal.shared.simulatorConfiguration.simulatedCard = .init(testCardNumber: "4000000000000002")
+            // https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPSimulatorConfiguration.html#/c:objc(cs)SCPSimulatorConfiguration(py)simulatedCard
+            Terminal.shared.simulatorConfiguration.simulatedCard = .init(type: .amex)
+        }
+
         let config = DiscoveryConfiguration(
             discoveryMethod: .bluetoothScan,
             simulated: shouldUseSimulatedCardReader
@@ -271,7 +284,7 @@ extension StripeCardReaderService: CardReaderService {
     }
 
     public func connect(_ reader: CardReader) -> AnyPublisher<CardReader, Error> {
-        guard let stripeReader = self.discoveredStripeReadersCache.reader(matching: reader) as? Reader else {
+        guard let stripeReader = discoveredStripeReadersCache.reader(matching: reader) as? Reader else {
             return Future() { promise in
                 promise(.failure(CardReaderServiceError.connection()))
             }.eraseToAnyPublisher()

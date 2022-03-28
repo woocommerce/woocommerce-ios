@@ -44,6 +44,8 @@ struct AddProductVariationToOrder: View {
                 List(viewModel.ghostRows) { rowViewModel in
                     ProductRow(viewModel: rowViewModel)
                         .redacted(reason: .placeholder)
+                        .accessibilityRemoveTraits(.isButton)
+                        .accessibilityLabel(Localization.loadingRowsAccessibilityLabel)
                         .shimmering()
                 }
                 .padding(.horizontal, insets: safeAreaInsets)
@@ -88,6 +90,8 @@ private extension AddProductVariationToOrder {
         static let backButtonAccessibilityLabel = NSLocalizedString("Back", comment: "Accessibility label for Back button in the navigation bar")
         static let productRowAccessibilityHint = NSLocalizedString("Adds variation to order.",
                                                                    comment: "Accessibility hint for selecting a variation in a list of product variations")
+        static let loadingRowsAccessibilityLabel = NSLocalizedString("Loading product variations",
+                                                                     comment: "Accessibility label for placeholder rows while product variations are loading")
     }
 }
 

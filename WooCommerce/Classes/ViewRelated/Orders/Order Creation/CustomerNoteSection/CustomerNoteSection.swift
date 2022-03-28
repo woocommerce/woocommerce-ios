@@ -45,6 +45,7 @@ private struct CustomerNoteSectionContent: View {
         VStack(alignment: .leading, spacing: .zero) {
             HStack(alignment: .top) {
                 Text(Localization.notes)
+                    .accessibilityAddTraits(.isHeader)
                     .headlineStyle()
                 Spacer()
                 if viewModel.customerNote.isNotEmpty {

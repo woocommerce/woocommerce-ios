@@ -1,5 +1,6 @@
 import Photos
 import Yosemite
+import Combine
 
 /// Provides images based on Product image status:
 /// - Requests the image from `PHImageManager` for a `PHASset`

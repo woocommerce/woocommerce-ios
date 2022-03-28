@@ -3,7 +3,7 @@ import WordPressAuthenticator
 import SafariServices
 
 
-/// UI containing modals preented in the Card Present Payments flows.
+/// UI containing modals presented in the Card Present Payments flows.
 final class CardPresentPaymentsModalViewController: UIViewController {
     /// The view model providing configuration for this view controller
     /// and support for user actions

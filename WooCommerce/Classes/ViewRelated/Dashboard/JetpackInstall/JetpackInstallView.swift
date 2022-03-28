@@ -8,6 +8,9 @@ final class JetpackInstallHostingController: UIHostingController<JetpackInstallV
         rootView.supportAction = { [unowned self] in
             ZendeskProvider.shared.showNewRequestIfPossible(from: self)
         }
+
+        // Set presenting view controller to show the notice presenter here
+        rootView.noticePresenter.presentingViewController = self
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -22,6 +25,10 @@ final class JetpackInstallHostingController: UIHostingController<JetpackInstallV
 /// Displays Jetpack Install flow.
 ///
 struct JetpackInstallView: View {
+    /// The presenter to display notice when an error occurs.
+    /// It is kept internal so that the hosting controller can update its presenting controller to itself.
+    let noticePresenter: DefaultNoticePresenter = .init()
+
     // Closure invoked when Contact Support button is tapped
     var supportAction: () -> Void = {}
 
@@ -42,14 +49,13 @@ struct JetpackInstallView: View {
     init(siteID: Int64, siteURL: String, siteAdminURL: String) {
         self.siteURL = siteURL
         self.siteAdminURL = siteAdminURL
-        self.installStepsViewModel = JetpackInstallStepsViewModel(siteID: siteID)
+        self.installStepsViewModel = JetpackInstallStepsViewModel(siteID: siteID, siteURL: siteURL, siteAdminURL: siteAdminURL)
     }
 
     var body: some View {
         if hasStarted {
-            JetpackInstallStepsView(siteURL: siteURL,
-                                    siteAdminURL: siteAdminURL,
-                                    viewModel: installStepsViewModel,
+            JetpackInstallStepsView(viewModel: installStepsViewModel,
+                                    noticePresenter: noticePresenter,
                                     supportAction: supportAction,
                                     dismissAction: dismissAction)
         } else {

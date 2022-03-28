@@ -36,7 +36,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         insert(refund: makeRefund(orderID: order.orderID, siteID: order.siteID))
 
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.configureResultsControllers { }
 
         // When
@@ -59,7 +59,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
     func test_refund_button_is_visible() throws {
         // Given
         let order = makeOrder()
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
 
         // When
         dataSource.reloadSections()
@@ -73,7 +73,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
     func test_refund_button_is_not_visible_when_the_order_is_refunded() throws {
         // Given
         let order = MockOrders().makeOrder(status: .refunded, items: [makeOrderItem()])
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
 
         // When
         dataSource.reloadSections()
@@ -87,7 +87,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
     func test_markOrderComplete_button_is_visible_and_primary_style_if_order_is_processing_and_not_eligible_for_shipping_label_creation() throws {
         // Given
         let order = makeOrder().copy(status: .processing)
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.isEligibleForShippingLabelCreation = false
 
         // When
@@ -101,7 +101,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
     func test_markOrderComplete_button_is_visible_and_secondary_style_if_order_is_processing_and_eligible_for_shipping_label_creation() throws {
         // Given
         let order = makeOrder().copy(status: .processing)
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.isEligibleForShippingLabelCreation = true
 
         // When
@@ -116,7 +116,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
     func test_markOrderComplete_button_is_hidden_if_order_is_not_processing() throws {
         // Given
         let order = makeOrder().copy(status: .onHold)
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
 
         // When
         dataSource.reloadSections()
@@ -134,7 +134,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Given
         let order = makeOrder().copy(status: .processing, datePaid: .some(nil), paymentMethodID: "cod")
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.configureResultsControllers { }
 
         // When
@@ -156,7 +156,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Given
         let order = makeOrder().copy(status: .onHold, datePaid: .some(nil), paymentMethodID: "woocommerce_payments")
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.configureResultsControllers { }
 
         // When
@@ -178,7 +178,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Given
         let order = makeOrder().copy(status: .processing, datePaid: nil, paymentMethodID: "stripe")
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.configureResultsControllers { }
 
         // When
@@ -200,7 +200,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Given
         let order = makeOrder().copy(status: .processing, datePaid: nil, paymentMethodID: "stripe")
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.configureResultsControllers { }
 
         // When
@@ -222,7 +222,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Given
         let order = makeOrder().copy(status: .processing, datePaid: nil, total: "0", paymentMethodID: "cod")
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.configureResultsControllers { }
 
         // When
@@ -244,7 +244,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Given
         let order = makeOrder().copy(status: .processing, datePaid: .some(nil), total: "1", paymentMethodID: "cod")
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.configureResultsControllers { }
 
         // When
@@ -266,7 +266,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Given
         let order = makeOrder().copy(status: .processing, datePaid: nil, total: "0", paymentMethodID: "wc-booking-gateway")
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.configureResultsControllers { }
 
         // When
@@ -288,7 +288,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Given
         let order = makeOrder().copy(status: .processing, datePaid: .some(nil), total: "1", paymentMethodID: "wc-booking-gateway")
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.configureResultsControllers { }
 
         // When
@@ -311,7 +311,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Given
         let order = makeOrder().copy(status: .processing, datePaid: Date(), total: "0", paymentMethodID: "cod")
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.configureResultsControllers { }
 
         // When
@@ -333,7 +333,53 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Given
         let order = makeOrder().copy(status: .processing, currency: "usd", datePaid: .some(nil), total: "100", paymentMethodID: "cod")
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        dataSource.configureResultsControllers { }
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
+        XCTAssertNotNil(row(row: .collectCardPaymentButton, in: paymentSection))
+
+        // Clean up
+        storageManager.viewStorage.deleteObject(account)
+        storageManager.viewStorage.saveIfNeeded()
+    }
+
+    func test_collect_payment_button_is_visible_if_order_is_eligible_and_currency_is_in_configuration() throws {
+        // Setup
+        let account = storageManager.insertCardPresentEligibleAccount()
+        storageManager.viewStorage.saveIfNeeded()
+
+        // Given
+        let configuration = CardPresentPaymentsConfiguration(country: "CA", canadaEnabled: true)
+        let order = makeOrder().copy(status: .processing, currency: "cad", datePaid: .some(nil), total: "100", paymentMethodID: "cod")
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: configuration)
+        dataSource.configureResultsControllers { }
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
+        XCTAssertNotNil(row(row: .collectCardPaymentButton, in: paymentSection))
+
+        // Clean up
+        storageManager.viewStorage.deleteObject(account)
+        storageManager.viewStorage.saveIfNeeded()
+    }
+
+    func test_collect_payment_button_is_not_visible_if_order_currency_is_not_in_configuration() throws {
+        // Setup
+        let account = storageManager.insertCardPresentEligibleAccount()
+        storageManager.viewStorage.saveIfNeeded()
+
+        // Given
+        let configuration = CardPresentPaymentsConfiguration(country: "US", canadaEnabled: true)
+        let order = makeOrder().copy(status: .processing, currency: "cad", datePaid: .some(nil), total: "100", paymentMethodID: "cod")
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: configuration)
         dataSource.configureResultsControllers { }
 
         // When
@@ -348,14 +394,15 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         storageManager.viewStorage.saveIfNeeded()
     }
 
-    func test_collect_payment_button_is_not_visible_if_order_currency_is_not_usd() throws {
+    func test_collect_payment_button_is_not_visible_if_order_currency_would_be_in_configuration_but_not_enabled() throws {
         // Setup
         let account = storageManager.insertCardPresentEligibleAccount()
         storageManager.viewStorage.saveIfNeeded()
 
         // Given
+        let configuration = CardPresentPaymentsConfiguration(country: "CA", canadaEnabled: false)
         let order = makeOrder().copy(status: .processing, currency: "cad", datePaid: .some(nil), total: "100", paymentMethodID: "cod")
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: configuration)
         dataSource.configureResultsControllers { }
 
         // When
@@ -373,7 +420,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
     func test_create_shipping_label_button_is_visible_for_eligible_order_with_no_labels() throws {
         // Given
         let order = makeOrder()
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.isEligibleForShippingLabelCreation = true
 
         // When
@@ -391,7 +438,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let refundedShippingLabel = ShippingLabel.fake().copy(siteID: order.siteID, orderID: order.orderID, refund: ShippingLabelRefund.fake())
         insert(shippingLabel: refundedShippingLabel)
 
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.isEligibleForShippingLabelCreation = true
         dataSource.configureResultsControllers { }
 
@@ -410,7 +457,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let shippingLabel = ShippingLabel.fake().copy(siteID: order.siteID, orderID: order.orderID)
         insert(shippingLabel: shippingLabel)
 
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.isEligibleForShippingLabelCreation = true
         dataSource.configureResultsControllers { }
 
@@ -426,7 +473,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
     func test_create_shipping_label_button_is_not_visible_for_ineligible_order() throws {
         // Given
         let order = makeOrder()
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.isEligibleForShippingLabelCreation = false
 
         // When
@@ -443,7 +490,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let order = makeOrder().copy(status: .processing, datePaid: .some(nil), total: "100", paymentMethodID: "cod")
         storageManager.insertCardPresentEligibleAccount()
         storageManager.viewStorage.saveIfNeeded()
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.isEligibleForShippingLabelCreation = true
 
         // When
@@ -462,7 +509,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let shippingLabel = ShippingLabel.fake().copy(siteID: order.siteID, orderID: order.orderID)
         insert(shippingLabel: shippingLabel)
 
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.isEligibleForShippingLabelCreation = true
         dataSource.configureResultsControllers { }
 
@@ -483,7 +530,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let refundedShippingLabel = ShippingLabel.fake().copy(siteID: order.siteID, orderID: order.orderID, refund: ShippingLabelRefund.fake())
         insert(shippingLabel: refundedShippingLabel)
 
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.isEligibleForShippingLabelCreation = true
         dataSource.configureResultsControllers { }
 
@@ -502,7 +549,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Given
         let order = makeOrder()
 
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.isEligibleForShippingLabelCreation = true
         dataSource.configureResultsControllers { }
 
@@ -521,7 +568,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Given
         let order = makeOrder()
 
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.isEligibleForShippingLabelCreation = false
         dataSource.configureResultsControllers { }
 
@@ -541,7 +588,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let order = makeOrder().copy(status: .processing, datePaid: .some(nil), total: "100", paymentMethodID: "cod")
         storageManager.insertCardPresentEligibleAccount()
         storageManager.viewStorage.saveIfNeeded()
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.isEligibleForShippingLabelCreation = true
 
         // When
@@ -689,5 +736,12 @@ private final class MockPaymentGatewayAccountStoresManager: MockStorageManager {
         newAccount.isCardPresentEligible = false
 
         return newAccount
+    }
+}
+
+
+private extension OrderDetailsDataSourceTests {
+    enum Mocks {
+        static let configuration = CardPresentPaymentsConfiguration(country: "US", canadaEnabled: true)
     }
 }

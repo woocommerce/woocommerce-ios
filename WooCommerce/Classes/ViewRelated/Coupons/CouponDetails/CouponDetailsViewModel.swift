@@ -183,8 +183,15 @@ private extension CouponDetailsViewModel {
         expiryDate = coupon.dateExpires?.toString(dateStyle: .long, timeStyle: .none) ?? ""
         usageLimitPerUser = coupon.usageLimitPerUser ?? Constants.noLimit
         excludeSaleItems = coupon.excludeSaleItems
-        minimumAmount = formatStringAmount(coupon.minimumAmount)
-        maximumAmount = formatStringAmount(coupon.maximumAmount)
+
+        if let digitMinimumAmount = Double(coupon.minimumAmount), digitMinimumAmount > 0 {
+            minimumAmount = formatStringAmount(coupon.minimumAmount)
+        }
+
+        if let digitMaximumAmount = Double(coupon.maximumAmount), digitMaximumAmount > 0 {
+            maximumAmount = formatStringAmount(coupon.maximumAmount)
+        }
+
         allowsFreeShipping = coupon.freeShipping
         emailRestrictions = coupon.emailRestrictions
 

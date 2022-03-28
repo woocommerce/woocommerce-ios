@@ -13,9 +13,9 @@ final class CouponListViewController: UIViewController, GhostableViewController 
     private var emptyStateViewController: UIViewController?
 
     lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(displaysSectionHeader: false,
-                                                                                                        cellClass: TitleAndSubtitleAndStatusTableViewCell.self,
-                                                                                                        rowsPerSection: Constants.placeholderRowsPerSection,
-                                                                                                        estimatedRowHeight: Constants.estimatedRowHeight))
+                                                                                                cellClass: TitleAndSubtitleAndStatusTableViewCell.self,
+                                                                                                rowsPerSection: Constants.placeholderRowsPerSection,
+                                                                                                estimatedRowHeight: Constants.estimatedRowHeight))
 
     /// Pull To Refresh Support.
     ///

@@ -9,7 +9,7 @@ final class CouponDetailsHostingController: UIHostingController<CouponDetails> {
         super.init(rootView: CouponDetails(viewModel: viewModel))
         // The navigation title is set here instead of the SwiftUI view's `navigationTitle`
         // to avoid the blinking of the title label when pushed from UIKit view.
-        title = NSLocalizedString("Coupon", comment: "Title of Coupon Details screen")
+        title = viewModel.couponCode
 
         // Set presenting view controller to show the notice presenter here
         rootView.noticePresenter.presentingViewController = self
@@ -71,6 +71,15 @@ struct CouponDetails: View {
                         .shareSheet(isPresented: $showingShareSheet) {
                             ShareSheet(activityItems: [viewModel.shareMessage])
                         }
+
+                    VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
+                        Text(viewModel.couponCode)
+                            .font(.title2)
+                            .bold()
+                    }
+                    .padding(.horizontal, insets: geometry.safeAreaInsets)
+                    .padding(.horizontal, Constants.margin)
+                    .padding(.vertical, Constants.summarySectionVerticalSpacing)
 
                     summarySection
                         .padding(.horizontal, insets: geometry.safeAreaInsets)

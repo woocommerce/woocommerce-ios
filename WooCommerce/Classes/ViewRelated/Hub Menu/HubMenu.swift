@@ -17,6 +17,8 @@ struct HubMenu: View {
     /// Make sure to reset the value to false after dismissing sub-flows
     @State private var shouldDisableItemTaps = false
 
+    private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+
     init(siteID: Int64, navigationController: UINavigationController? = nil) {
         viewModel = HubMenuViewModel(siteID: siteID, navigationController: navigationController)
     }
@@ -99,6 +101,10 @@ struct HubMenu: View {
         .background(Color(.listBackground).edgesIgnoringSafeArea(.all))
         .onAppear {
             viewModel.setupMenuElements()
+            enableMenuItemTaps()
+        }
+        .onReceive(timer) { _ in
+            // fall back method in case menu disabled state is not reset properly
             enableMenuItemTaps()
         }
     }

@@ -2,11 +2,18 @@ import UIKit
 import Yosemite
 
 /// The UI that shows the approved Reviews related to a specific product.
-final class ProductReviewsViewController: UIViewController {
+final class ProductReviewsViewController: UIViewController, GhostableViewController {
 
     private let product: Product
 
     private let viewModel: ProductReviewsViewModel
+
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: ProductReviewTableViewCell.self,
+                                                                                                estimatedRowHeight: ProductReviewsDataSource
+                                                                                                                    .Settings
+                                                                                                                    .estimatedRowHeight,
+                                                                                                backgroundColor: .listBackground,
+                                                                                                separatorStyle: .singleLine))
 
     /// Pull To Refresh Support.
     ///
@@ -170,13 +177,15 @@ private extension ProductReviewsViewController {
     /// Renders Placeholder Reviews.
     ///
     func displayPlaceholderReviews() {
-        viewModel.displayPlaceholderReviews(tableView: tableView)
+        displayGhostContent()
+        viewModel.didDisplayPlaceholderReviews()
     }
 
     /// Removes Placeholder Reviews.
     ///
     func removePlaceholderReviews() {
-        viewModel.removePlaceholderReviews(tableView: tableView)
+        removeGhostContent()
+        viewModel.didRemovePlaceholderReviews(tableView: tableView)
     }
 
     /// Displays the EmptyStateViewController.

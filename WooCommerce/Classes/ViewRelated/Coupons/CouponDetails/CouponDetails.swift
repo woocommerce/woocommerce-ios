@@ -63,19 +63,7 @@ struct CouponDetails: View {
                         .actionSheet(isPresented: $showingActionSheet) {
                             ActionSheet(
                                 title: Text(Localization.manageCoupon),
-                                buttons: [
-                                    .default(Text(Localization.copyCode), action: {
-                                        UIPasteboard.general.string = viewModel.couponCode
-                                        let notice = Notice(title: Localization.couponCopied, feedbackType: .success)
-                                        noticePresenter.enqueue(notice: notice)
-                                        ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "copied_code"])
-                                    }),
-                                    .default(Text(Localization.shareCoupon), action: {
-                                        showingShareSheet = true
-                                        ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "shared_code"])
-                                    }),
-                                    .cancel()
-                                ]
+                                buttons: generateActionSheetActions()
                             )
                         }
                         .shareSheet(isPresented: $showingShareSheet) {
@@ -237,6 +225,35 @@ struct CouponDetails: View {
             showingAmountLoadingErrorPrompt = true
         }
     }
+
+    private func generateActionSheetActions() -> [Alert.Button] {
+        var actions: [Alert.Button] =
+        [
+            .default(Text(Localization.copyCode), action: {
+                UIPasteboard.general.string = viewModel.couponCode
+                let notice = Notice(title: Localization.couponCopied, feedbackType: .success)
+                noticePresenter.enqueue(notice: notice)
+                ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "copied_code"])
+            }),
+            .default(Text(Localization.shareCoupon), action: {
+                showingShareSheet = true
+                ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "shared_code"])
+            })
+        ]
+
+        if viewModel.isEditingEnabled {
+            actions.append(contentsOf: [
+                .default(Text(Localization.editCoupon), action: {
+                    // TODO: add analytics
+                    // TODO: open the editing screen
+                })
+            ])
+        }
+
+        actions.append(.cancel())
+
+        return actions
+    }
 }
 
 // MARK: - Subtypes
@@ -261,6 +278,7 @@ private extension CouponDetails {
         static let couponCopied = NSLocalizedString("Coupon copied", comment: "Notice message displayed when a coupon code is " +
                                                     "copied from the Coupon Details screen")
         static let shareCoupon = NSLocalizedString("Share Coupon", comment: "Action title for sharing coupon from the Coupon Details screen")
+        static let editCoupon = NSLocalizedString("Edit Coupon", comment: "Action title for editing a coupon from the Coupon Details screen")
         static let performance = NSLocalizedString("Performance", comment: "Title of the Performance section on Coupons Details screen")
         static let discountedOrders = NSLocalizedString("Discounted Orders", comment: "Title of the Discounted Orders label on Coupon Details screen")
         static let amount = NSLocalizedString("Amount", comment: "Title of the Amount label on Coupon Details screen")

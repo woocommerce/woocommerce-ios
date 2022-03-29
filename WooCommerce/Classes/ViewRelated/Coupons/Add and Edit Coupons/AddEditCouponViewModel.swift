@@ -42,7 +42,7 @@ final class AddEditCouponViewModel: ObservableObject {
         discountType = existingCoupon.discountType
     }
 
-    enum EditingOption {
+    private enum EditingOption {
         case creation
         case editing
     }

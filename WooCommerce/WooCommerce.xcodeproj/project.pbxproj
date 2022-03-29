@@ -742,6 +742,9 @@
 		456CB50E2444BFAC00992A05 /* ProductPurchaseNoteViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 456CB50C2444BFAC00992A05 /* ProductPurchaseNoteViewController.xib */; };
 		457151AB243B6E8000EB2DFA /* ProductSlugViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457151A9243B6E8000EB2DFA /* ProductSlugViewController.swift */; };
 		457151AC243B6E8000EB2DFA /* ProductSlugViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 457151AA243B6E8000EB2DFA /* ProductSlugViewController.xib */; };
+		4572641727F1EB0D004E1F95 /* AddEditCoupon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4572641627F1EB0D004E1F95 /* AddEditCoupon.swift */; };
+		4572641927F1EB27004E1F95 /* AddEditCouponViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4572641827F1EB27004E1F95 /* AddEditCouponViewModel.swift */; };
+		4572641B27F1FDF2004E1F95 /* AddEditCouponViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4572641A27F1FDF2004E1F95 /* AddEditCouponViewModelTests.swift */; };
 		4574745D24EA84D800CF49BC /* ProductTypeBottomSheetListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4574745C24EA84D800CF49BC /* ProductTypeBottomSheetListSelectorCommand.swift */; };
 		4574745F24EA9ADE00CF49BC /* ProductTypeBottomSheetListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4574745E24EA9ADE00CF49BC /* ProductTypeBottomSheetListSelectorCommandTests.swift */; };
 		457509E4267B9E91005FA2EA /* AggregatedProductListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457509E2267B9E91005FA2EA /* AggregatedProductListViewController.swift */; };
@@ -2399,6 +2402,9 @@
 		456CB50C2444BFAC00992A05 /* ProductPurchaseNoteViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductPurchaseNoteViewController.xib; sourceTree = "<group>"; };
 		457151A9243B6E8000EB2DFA /* ProductSlugViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSlugViewController.swift; sourceTree = "<group>"; };
 		457151AA243B6E8000EB2DFA /* ProductSlugViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductSlugViewController.xib; sourceTree = "<group>"; };
+		4572641627F1EB0D004E1F95 /* AddEditCoupon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditCoupon.swift; sourceTree = "<group>"; };
+		4572641827F1EB27004E1F95 /* AddEditCouponViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditCouponViewModel.swift; sourceTree = "<group>"; };
+		4572641A27F1FDF2004E1F95 /* AddEditCouponViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditCouponViewModelTests.swift; sourceTree = "<group>"; };
 		4574745C24EA84D800CF49BC /* ProductTypeBottomSheetListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTypeBottomSheetListSelectorCommand.swift; sourceTree = "<group>"; };
 		4574745E24EA9ADE00CF49BC /* ProductTypeBottomSheetListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTypeBottomSheetListSelectorCommandTests.swift; sourceTree = "<group>"; };
 		457509E2267B9E91005FA2EA /* AggregatedProductListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AggregatedProductListViewController.swift; sourceTree = "<group>"; };
@@ -4374,6 +4380,7 @@
 				DE74F2A127E41D4F0002FE59 /* EnableAnalytics */,
 				DE69C54B27BB7163000BB888 /* UsageDetails */,
 				DE7B479127A38ABC0018742E /* CouponDetails */,
+				4572641527F1EABE004E1F95 /* Add and Edit Coupons */,
 				03FBDA9C263AD49100ACE257 /* CouponListViewController.swift */,
 				03FBDAA2263AED2F00ACE257 /* CouponListViewController.xib */,
 				03FBDAF1263EE47C00ACE257 /* CouponListViewModel.swift */,
@@ -4390,6 +4397,7 @@
 				DE7B479627A3C4980018742E /* CouponDetailsViewModelTests.swift */,
 				DE69C54E27BCB4B6000BB888 /* CouponUsageDetailsViewModelTests.swift */,
 				DE74F2A627E47F620002FE59 /* EnableAnalyticsViewModelTests.swift */,
+				4572641A27F1FDF2004E1F95 /* AddEditCouponViewModelTests.swift */,
 			);
 			path = Coupons;
 			sourceTree = "<group>";
@@ -5078,6 +5086,15 @@
 				457151AA243B6E8000EB2DFA /* ProductSlugViewController.xib */,
 			);
 			path = Slug;
+			sourceTree = "<group>";
+		};
+		4572641527F1EABE004E1F95 /* Add and Edit Coupons */ = {
+			isa = PBXGroup;
+			children = (
+				4572641627F1EB0D004E1F95 /* AddEditCoupon.swift */,
+				4572641827F1EB27004E1F95 /* AddEditCouponViewModel.swift */,
+			);
+			path = "Add and Edit Coupons";
 			sourceTree = "<group>";
 		};
 		45739F2E2436302600480C95 /* Catalog Visibility */ = {
@@ -9219,6 +9236,7 @@
 				744F00D221B582A9007EFA93 /* StarRatingView.swift in Sources */,
 				45F627B9253603AE00894B86 /* ProductDownloadSettingsViewModel.swift in Sources */,
 				031B10E3274FE2AE007390BA /* CardPresentModalConnectionFailedUpdateAddress.swift in Sources */,
+				4572641727F1EB0D004E1F95 /* AddEditCoupon.swift in Sources */,
 				318109E825E5B8D600EE0BE7 /* NumberedListItemTableViewCell.swift in Sources */,
 				DE26B52C277DA11800A2EA0A /* CouponListView.swift in Sources */,
 				AEA622B2274669D3002A9B57 /* AddOrderCoordinator.swift in Sources */,
@@ -9304,6 +9322,7 @@
 				CE0F17CF22A8105800964A63 /* ReadMoreTableViewCell.swift in Sources */,
 				DEC2961F26BD1605005A056B /* ShippingLabelCustomsFormListViewModel.swift in Sources */,
 				D843D5D722485B19001BFA55 /* ShippingProvidersViewModel.swift in Sources */,
+				4572641927F1EB27004E1F95 /* AddEditCouponViewModel.swift in Sources */,
 				31E6F21F26B3577800227E6F /* CardReaderConnectionController.swift in Sources */,
 				02ADC7CC239762E0008D4BED /* PaginatedListSelectorViewProperties.swift in Sources */,
 				03FBDAF2263EE47C00ACE257 /* CouponListViewModel.swift in Sources */,
@@ -9595,6 +9614,7 @@
 				2667BFE72530E78F008099D4 /* RefundItemsValuesCalculationUseCaseTests.swift in Sources */,
 				E12AF69B26BA8B2000C371C1 /* CardPresentPaymentsOnboardingUseCaseTests.swift in Sources */,
 				D802549B265531D4001B2CC1 /* CardPresentModalConnectingToReaderTests.swift in Sources */,
+				4572641B27F1FDF2004E1F95 /* AddEditCouponViewModelTests.swift in Sources */,
 				AEE1D4FF25D1580E006A490B /* AttributeOptionListSelectorCommandTests.swift in Sources */,
 				02B296A922FA6E0000FD7A4C /* DateStartAndEndTests.swift in Sources */,
 				02B653AC2429F7BF00A9C839 /* MockTaxClassStoresManager.swift in Sources */,

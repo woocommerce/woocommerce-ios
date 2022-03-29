@@ -27,7 +27,6 @@ final class TopPerformerDataViewController: UIViewController, GhostableViewContr
     ///
     lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(displaysSectionHeader: false,
                                                                                                 cellClass: ProductTableViewCell.self,
-                                                                                                rowsPerSection: Constants.placeholderRowsPerSection,
                                                                                                 estimatedRowHeight: Constants.estimatedRowHeight))
 
     /// ResultsController: Loads TopEarnerStats for the current granularity from the Storage Layer

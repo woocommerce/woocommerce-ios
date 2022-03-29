@@ -30,9 +30,9 @@ final class AddOrderCoordinatorTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_it_presents_bottom_sheet_when_all_types_are_available() throws {
+    func test_it_presents_bottom_sheet_on_start() throws {
         // Given
-        let coordinator = makeAddProductCoordinator(isOrderCreationEnabled: true)
+        let coordinator = makeAddProductCoordinator()
 
         // When
         coordinator.start()
@@ -43,26 +43,12 @@ final class AddOrderCoordinatorTests: XCTestCase {
         // Then
         assertThat(coordinator.navigationController.presentedViewController, isAnInstanceOf: BottomSheetViewController.self)
     }
-
-    func test_it_opens_simple_payments_when_its_only_available_type() throws {
-        // Given
-        let coordinator = makeAddProductCoordinator(isOrderCreationEnabled: false)
-
-        // When
-        coordinator.start()
-
-        // Then
-        let presentedNC = coordinator.navigationController.presentedViewController as? UINavigationController
-        assertThat(presentedNC, isAnInstanceOf: WooNavigationController.self)
-        assertThat(presentedNC?.topViewController, isAnInstanceOf: SimplePaymentsAmountHostingController.self)
-    }
 }
 
 private extension AddOrderCoordinatorTests {
-    func makeAddProductCoordinator(isOrderCreationEnabled: Bool) -> AddOrderCoordinator {
+    func makeAddProductCoordinator() -> AddOrderCoordinator {
         let sourceView = UIView()
         return AddOrderCoordinator(siteID: 100,
-                                   isOrderCreationEnabled: isOrderCreationEnabled,
                                    sourceView: sourceView,
                                    sourceNavigationController: navigationController)
     }

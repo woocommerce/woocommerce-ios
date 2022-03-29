@@ -54,10 +54,6 @@ final class OrdersRootViewController: UIViewController {
         }
     }
 
-    /// Stores status for order creation availability.
-    ///
-    private var isOrderCreationEnabled: Bool = false
-
     private let storageManager: StorageManagerType
 
     /// Used for looking up the `OrderStatus` to show in the `Order Filters`.
@@ -97,6 +93,7 @@ final class OrdersRootViewController: UIViewController {
         super.viewDidLoad()
         configureTitle()
         configureView()
+        configureNavigationButtons()
         configureFiltersBar()
         configureChildViewController()
 
@@ -111,9 +108,6 @@ final class OrdersRootViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
-        // Needed in ViewWillAppear because this View Controller is never recreated.
-        fetchExperimentalTogglesAndConfigureNavigationButtons()
 
         ServiceLocator.pushNotesManager.resetBadgeCount(type: .storeOrder)
     }
@@ -207,9 +201,9 @@ private extension OrdersRootViewController {
     /// Search: Is always present.
     /// Add: Always present.
     ///
-    func configureNavigationButtons(isOrderCreationExperimentalToggleEnabled: Bool) {
+    func configureNavigationButtons() {
         let buttons: [UIBarButtonItem] = [
-            createAddOrderItem(isOrderCreationEnabled: isOrderCreationExperimentalToggleEnabled),
+            createAddOrderItem(),
             createSearchBarButtonItem()
         ]
         navigationItem.rightBarButtonItems = buttons
@@ -242,24 +236,6 @@ private extension OrdersRootViewController {
         addChild(ordersViewController)
         stackView.addArrangedSubview(contentView)
         ordersViewController.didMove(toParent: self)
-    }
-
-    /// Fetches the latest values of order-related experimental feature toggles and re configures navigation buttons.
-    ///
-    func fetchExperimentalTogglesAndConfigureNavigationButtons() {
-        let group = DispatchGroup()
-        var isOrderCreationEnabled = false
-
-        group.enter()
-        let orderCreationAction = AppSettingsAction.loadOrderCreationSwitchState { result in
-            isOrderCreationEnabled = (try? result.get()) ?? false
-            group.leave()
-        }
-        ServiceLocator.stores.dispatch(orderCreationAction)
-
-        group.notify(queue: .main) { [weak self] in
-            self?.configureNavigationButtons(isOrderCreationExperimentalToggleEnabled: isOrderCreationEnabled)
-        }
     }
 
     /// Connect hooks on `ResultsController` and query cached data.
@@ -354,22 +330,14 @@ private extension OrdersRootViewController {
 
     /// Create a `UIBarButtonItem` to be used as a way to create a new order.
     ///
-    func createAddOrderItem(isOrderCreationEnabled: Bool) -> UIBarButtonItem {
-        self.isOrderCreationEnabled = isOrderCreationEnabled
-
+    func createAddOrderItem() -> UIBarButtonItem {
         let button = UIBarButtonItem(image: .plusBarButtonItemImage,
                                      style: .plain,
                                      target: self,
                                      action: #selector(presentOrderCreationFlow(sender:)))
         button.accessibilityTraits = .button
-
-        if isOrderCreationEnabled {
-            button.accessibilityLabel = NSLocalizedString("Choose new order type", comment: "Opens action sheet to choose a type of a new order")
-            button.accessibilityIdentifier = "new-order-type-sheet-button"
-        } else {
-            button.accessibilityLabel = NSLocalizedString("Add simple payments order", comment: "Navigates to a screen to create a simple payments order")
-            button.accessibilityIdentifier = "simple-payments-add-button"
-        }
+        button.accessibilityLabel = NSLocalizedString("Choose new order type", comment: "Opens action sheet to choose a type of a new order")
+        button.accessibilityIdentifier = "new-order-type-sheet-button"
         return button
     }
 
@@ -381,7 +349,6 @@ private extension OrdersRootViewController {
         }
 
         let coordinatingController = AddOrderCoordinator(siteID: siteID,
-                                                         isOrderCreationEnabled: isOrderCreationEnabled,
                                                          sourceBarButtonItem: sender,
                                                          sourceNavigationController: navigationController)
         coordinatingController.onOrderCreated = { [weak self] order in

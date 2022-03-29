@@ -1,10 +1,3 @@
-//
-//  GhostableViewController.swift
-//  WooCommerce
-//
-//  Created by César Vargas Casaseca on 28/3/22.
-//  Copyright © 2022 Automattic. All rights reserved.
-//
 
 import Foundation
 import UIKit

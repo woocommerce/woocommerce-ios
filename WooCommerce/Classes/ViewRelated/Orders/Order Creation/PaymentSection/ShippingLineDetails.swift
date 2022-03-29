@@ -27,14 +27,13 @@ struct ShippingLineDetails: View {
                     Section {
                         Group {
                             AdaptiveStack(horizontalAlignment: .leading) {
-                                Text(Localization.amountField)
+                                Text(String.localizedStringWithFormat(Localization.amountField, viewModel.currencySymbol))
                                     .bodyStyle()
                                     .fixedSize()
                                 HStack {
                                     Spacer()
                                     BindableTextfield(viewModel.amountPlaceholder, text: $viewModel.amount, focus: $focusAmountInput)
                                         .keyboardType(.numbersAndPunctuation)
-                                        .addingCurrencySymbol(viewModel.currencySymbol, on: viewModel.currencyPosition)
                                         .onTapGesture {
                                             focusAmountInput = true
                                         }
@@ -111,7 +110,8 @@ private extension ShippingLineDetails {
         static let addShipping = NSLocalizedString("Add Shipping", comment: "Title for the Shipping Line screen during order creation")
         static let shipping = NSLocalizedString("Shipping", comment: "Title for the Shipping Line Details screen during order creation")
 
-        static let amountField = NSLocalizedString("Amount", comment: "Title for the amount field on the Shipping Line Details screen during order creation")
+        static let amountField = NSLocalizedString("Amount (%1$@)", comment: "Title for the amount field on the Shipping Details screen during order creation"
+                                                   + "Parameters: %1$@ - currency symbol")
         static let nameField = NSLocalizedString("Name", comment: "Title for the name field on the Shipping Line Details screen during order creation")
 
         static let close = NSLocalizedString("Close", comment: "Text for the close button in the Shipping Line Details screen")

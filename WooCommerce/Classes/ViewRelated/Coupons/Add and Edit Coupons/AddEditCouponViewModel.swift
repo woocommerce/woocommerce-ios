@@ -16,27 +16,9 @@ final class AddEditCouponViewModel: ObservableObject {
     var title: String {
         switch editingOption {
         case .creation:
-            switch discountType {
-            case .percent:
-                return Localization.titleCreatePercentageDiscount
-            case .fixedCart:
-                return Localization.titleCreateFixedCardDiscount
-            case .fixedProduct:
-                return Localization.titleCreateFixedProductDiscount
-            default:
-                return Localization.titleCreateGenericDiscount
-            }
+            return discountType.titleCreateCoupon
         case .editing:
-            switch discountType {
-            case .percent:
-                return Localization.titleEditPercentageDiscount
-            case .fixedCart:
-                return Localization.titleEditFixedCardDiscount
-            case .fixedProduct:
-                return Localization.titleEditFixedProductDiscount
-            default:
-                return Localization.titleEditGenericDiscount
-            }
+            return discountType.titleEditCoupon
         }
     }
 
@@ -63,36 +45,5 @@ final class AddEditCouponViewModel: ObservableObject {
     enum EditingOption {
         case creation
         case editing
-    }
-}
-
-// MARK: - Constants
-//
-private extension AddEditCouponViewModel {
-    enum Localization {
-        static let titleEditPercentageDiscount = NSLocalizedString(
-            "Edit percentage discount",
-            comment: "Title of the view for editing a coupon with percentage discount.")
-        static let titleEditFixedCardDiscount = NSLocalizedString(
-            "Edit fixed card discount",
-            comment: "Title of the view for editing a coupon with fixed card discount.")
-        static let titleEditFixedProductDiscount = NSLocalizedString(
-            "Edit fixed product discount",
-            comment: "Title of the view for editing a coupon with fixed product discount.")
-        static let titleEditGenericDiscount = NSLocalizedString(
-            "Edit discount",
-            comment: "Title of the view for editing a coupon with generic discount.")
-        static let titleCreatePercentageDiscount = NSLocalizedString(
-            "Create percentage discount",
-            comment: "Title of the view for creating a coupon with percentage discount.")
-        static let titleCreateFixedCardDiscount = NSLocalizedString(
-            "Create fixed card discount",
-            comment: "Title of the view for creating a coupon with fixed card discount.")
-        static let titleCreateFixedProductDiscount = NSLocalizedString(
-            "Create fixed product discount",
-            comment: "Title of the view for creating a coupon with fixed product discount.")
-        static let titleCreateGenericDiscount = NSLocalizedString(
-            "Create discount",
-            comment: "Title of the view for creating a coupon with generic discount.")
     }
 }

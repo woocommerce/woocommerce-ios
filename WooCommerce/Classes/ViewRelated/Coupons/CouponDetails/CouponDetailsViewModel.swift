@@ -79,7 +79,7 @@ final class CouponDetailsViewModel: ObservableObject {
         self.coupon = coupon
         self.stores = stores
         self.currencySettings = currencySettings
-        isEditingEnabled = featureFlags.isFeatureFlagEnabled(.couponEditing)
+        isEditingEnabled = featureFlags.isFeatureFlagEnabled(.couponEditing) && coupon.discountType != .other
         populateDetails()
     }
 

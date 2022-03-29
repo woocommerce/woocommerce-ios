@@ -13,6 +13,16 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
     ///
     private let onAddressUpdate: ((NewOrderAddressData) -> Void)?
 
+    /// Binding that determines whether the address form can be dismissed.
+    ///
+    lazy var canDismiss: Binding<Bool> = { [weak self] in
+        guard let self = self else { return .constant(true) }
+        return Binding(
+            get: { !self.hasPendingChanges() },
+            set: { _ in }
+        )
+    }()
+
     init(siteID: Int64,
          addressData: NewOrderAddressData,
          onAddressUpdate: ((NewOrderAddressData) -> Void)?,

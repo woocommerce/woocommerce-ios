@@ -386,6 +386,12 @@ open class AddressFormViewModel: ObservableObject {
         let secondaryEmailIsValid = secondaryFields.email.isEmpty || EmailFormatValidator.validate(string: fields.email)
         return primaryEmailIsValid && secondaryEmailIsValid
     }
+
+    /// Returns `true` if there are changes pending to commit. `False` otherwise.
+    ///
+    func hasPendingChanges() -> Bool {
+        return navigationTrailingItem == .done(enabled: true)
+    }
 }
 
 extension AddressFormViewModel {

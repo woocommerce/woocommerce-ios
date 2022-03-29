@@ -17,11 +17,13 @@ struct OrderCustomerSection: View {
     var body: some View {
         OrderCustomerSectionContent(viewModel: viewModel.customerDataViewModel, showAddressForm: $showAddressForm)
         .sheet(isPresented: $showAddressForm) {
+            let addressFormViewModel = viewModel.createOrderAddressFormViewModel()
             NavigationView {
                 EditOrderAddressForm(dismiss: {
                     showAddressForm.toggle()
-                }, viewModel: viewModel.createOrderAddressFormViewModel())
+                }, viewModel: addressFormViewModel)
             }
+            .discardChangesPrompt(canDismiss: addressFormViewModel.canDismiss, didDismiss: addressFormViewModel.userDidCancelFlow)
         }
     }
 }

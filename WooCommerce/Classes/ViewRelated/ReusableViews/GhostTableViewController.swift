@@ -6,15 +6,18 @@ struct GhostTableViewOptions {
     fileprivate let ghostOptions: GhostOptions
     fileprivate let estimatedRowHeight: CGFloat
     fileprivate let cellClass: UITableViewCell.Type
+    fileprivate let tableViewStyle: UITableView.Style
 
     init(displaysSectionHeader: Bool = true,
          cellClass: UITableViewCell.Type,
-         rowsPerSection: [Int],
-         estimatedRowHeight: CGFloat) {
+         rowsPerSection: [Int] = [3],
+         estimatedRowHeight: CGFloat = 44,
+         tableViewStyle: UITableView.Style = .plain) {
         // By just passing the cellClass in the initializer we enforce that the GhostOptions reuseIdentifier is always that of the cellClass
         ghostOptions = GhostOptions(displaysSectionHeader: displaysSectionHeader, reuseIdentifier: cellClass.reuseIdentifier, rowsPerSection: rowsPerSection)
         self.estimatedRowHeight = estimatedRowHeight
         self.cellClass = cellClass
+        self.tableViewStyle = tableViewStyle
     }
 }
 
@@ -25,7 +28,7 @@ final class GhostTableViewController: UITableViewController {
 
     init(options: GhostTableViewOptions) {
         self.options = options
-        super.init(style: .plain)
+        super.init(style: options.tableViewStyle)
     }
 
     required init?(coder: NSCoder) {

@@ -7,7 +7,7 @@ struct DiscardChangesWrapper<Content: View>: UIViewControllerRepresentable {
 
     /// Whether the view can be dismissed. When `false` the discard changes prompt is displayed.
     ///
-    @Binding var canDismiss: Bool
+    let canDismiss: Bool // This shouldn't be a binding because we are not mutating it, just reading from it.
 
     /// Optional method to be invoked when the view is dismissed.
     ///
@@ -17,17 +17,13 @@ struct DiscardChangesWrapper<Content: View>: UIViewControllerRepresentable {
 
     func makeUIViewController(context: Context) -> UIViewControllerType {
         let viewController = UIHostingController(rootView: view)
-
-        // Sets the presentation controller delegate on the hosting controller
-        context.coordinator.parentObserver = viewController.observe(\.parent, changeHandler: { vc, _ in
-            vc.parent?.presentationController?.delegate = context.coordinator
-        })
-
         return viewController
     }
 
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
         // No-op
+        context.coordinator.wrapper = self // We need to update the coordinator view/wrapper
+        uiViewController.parent?.presentationController?.delegate = context.coordinator // We can update the delegate here, no need for any observers
     }
 
     func makeCoordinator() -> Self.Coordinator {
@@ -35,8 +31,7 @@ struct DiscardChangesWrapper<Content: View>: UIViewControllerRepresentable {
     }
 
     class Coordinator: NSObject, UIAdaptivePresentationControllerDelegate {
-        let wrapper: DiscardChangesWrapper
-        var parentObserver: NSKeyValueObservation?
+        var wrapper: DiscardChangesWrapper
 
         init(_ wrapper: DiscardChangesWrapper) {
             self.wrapper = wrapper
@@ -64,7 +59,7 @@ extension View {
     /// - Parameters:
     ///   - canDismiss: Whether the view can be dismissed. When `false` the discard changes prompt is displayed.
     ///   - didCancelFlow: Optional method to be invoked when the view is dismissed.
-    func discardChangesPrompt(canDismiss: Binding<Bool>, didDismiss: (() -> Void)? = nil) -> some View {
+    func discardChangesPrompt(canDismiss: Bool, didDismiss: (() -> Void)? = nil) -> some View {
         DiscardChangesWrapper(view: self, canDismiss: canDismiss, didDismiss: didDismiss)
     }
 }

@@ -7,6 +7,8 @@ struct OrderCustomerSection: View {
     /// Parent view model to access all data
     @ObservedObject var viewModel: NewOrderViewModel
 
+    @StateObject var addressFormViewModel: CreateOrderAddressFormViewModel // TODO: this needs to be a binding hold by the main view model and nilled on dissapear
+
     /// View model to drive the view content
     private var customerDataViewModel: NewOrderViewModel.CustomerDataViewModel {
         viewModel.customerDataViewModel
@@ -17,13 +19,12 @@ struct OrderCustomerSection: View {
     var body: some View {
         OrderCustomerSectionContent(viewModel: viewModel.customerDataViewModel, showAddressForm: $showAddressForm)
         .sheet(isPresented: $showAddressForm) {
-            let addressFormViewModel = viewModel.createOrderAddressFormViewModel()
             NavigationView {
                 EditOrderAddressForm(dismiss: {
                     showAddressForm.toggle()
                 }, viewModel: addressFormViewModel)
             }
-            .discardChangesPrompt(canDismiss: addressFormViewModel.canDismiss, didDismiss: addressFormViewModel.userDidCancelFlow)
+            .discardChangesPrompt(canDismiss: !addressFormViewModel.hasPendingChanges, didDismiss: addressFormViewModel.userDidCancelFlow)
         }
     }
 }

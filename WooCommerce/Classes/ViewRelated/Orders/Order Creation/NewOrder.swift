@@ -98,7 +98,7 @@ struct NewOrder: View {
 
                         Spacer(minLength: Layout.sectionSpacing)
 
-                        OrderCustomerSection(viewModel: viewModel)
+                        OrderCustomerSection(viewModel: viewModel, addressFormViewModel: viewModel.createOrderAddressFormViewModel())
 
                         Spacer(minLength: Layout.sectionSpacing)
 

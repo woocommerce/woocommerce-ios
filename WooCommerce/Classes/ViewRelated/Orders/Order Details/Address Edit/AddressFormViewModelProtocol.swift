@@ -263,6 +263,7 @@ open class AddressFormViewModel: ObservableObject {
             guard let self = self else { return }
             self.bindSyncTrigger()
             self.bindNavigationTrailingItemPublisher()
+            self.bindHasPendingChangesPublisher()
 
             self.fetchStoredCountriesAndTriggerSyncIfNeeded()
             self.refreshCountryAndStateObjects()
@@ -314,6 +315,9 @@ open class AddressFormViewModel: ObservableObject {
     /// Defaults to `nil`.
     ///
     @Published var notice: Notice?
+
+    // TODO: Add docs
+    @Published private(set) var hasPendingChanges: Bool = false
 
     /// Defines if the state field should be defined as a list selector.
     ///
@@ -385,12 +389,6 @@ open class AddressFormViewModel: ObservableObject {
         let primaryEmailIsValid = fields.email.isEmpty || EmailFormatValidator.validate(string: fields.email)
         let secondaryEmailIsValid = secondaryFields.email.isEmpty || EmailFormatValidator.validate(string: fields.email)
         return primaryEmailIsValid && secondaryEmailIsValid
-    }
-
-    /// Returns `true` if there are changes pending to commit. `False` otherwise.
-    ///
-    func hasPendingChanges() -> Bool {
-        return navigationTrailingItem == .done(enabled: true)
     }
 }
 
@@ -476,6 +474,15 @@ private extension AddressFormViewModel {
                              secondaryOriginalAddress != secondaryFields.toAddress())
             }
             .assign(to: &$navigationTrailingItem)
+    }
+
+    // TODO: Add docs
+    func bindHasPendingChangesPublisher() {
+        $navigationTrailingItem
+            .map {
+                $0 == .done(enabled: true)
+            }
+            .assign(to: &$hasPendingChanges)
     }
 
     /// Fetches countries from storage, If there are no stored countries, trigger a sync request.

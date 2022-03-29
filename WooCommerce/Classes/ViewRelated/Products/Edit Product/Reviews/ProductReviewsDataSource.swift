@@ -39,7 +39,8 @@ final class ProductReviewsDataSource: NSObject, ReviewsDataSource {
         return reviewsResultsController.isEmpty
     }
 
-    /// Notifications
+    /// With this `ResultsController` we retrieve the WordPress.com notifications associated with the product reviews.
+    /// Later we can filter them and pass it to the review detail view so it can be marked as read.
     ///
     private lazy var notificationsResultsController: ResultsController<StorageNote> = {
         let storageManager = ServiceLocator.storageManager
@@ -60,7 +61,8 @@ final class ProductReviewsDataSource: NSObject, ReviewsDataSource {
                                                                    notDeletedPredicate])
     }()
 
-    /// Notifications associated with the reviews. In this case, we don't want to show notifications.
+    /// Notifications associated with the reviews.
+    /// To be filtered and marked as read in the review detail view if they are linked to the review.
     ///
     var notifications: [Note] {
         return notificationsResultsController.fetchedObjects

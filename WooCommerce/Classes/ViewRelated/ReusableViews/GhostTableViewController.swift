@@ -9,6 +9,7 @@ struct GhostTableViewOptions {
     fileprivate let tableViewStyle: UITableView.Style
     fileprivate let backgroundColor: UIColor
     fileprivate let separatorStyle: UITableViewCell.SeparatorStyle
+    fileprivate let isScrollEnabled: Bool
 
     init(displaysSectionHeader: Bool = true,
          cellClass: UITableViewCell.Type,
@@ -16,7 +17,8 @@ struct GhostTableViewOptions {
          estimatedRowHeight: CGFloat = 44,
          tableViewStyle: UITableView.Style = .plain,
          backgroundColor: UIColor = .basicBackground,
-         separatorStyle: UITableViewCell.SeparatorStyle = .none) {
+         separatorStyle: UITableViewCell.SeparatorStyle = .none,
+         isScrollEnabled: Bool = true) {
         // By just passing the cellClass in the initializer we enforce that the GhostOptions reuseIdentifier is always that of the cellClass
         ghostOptions = GhostOptions(displaysSectionHeader: displaysSectionHeader, reuseIdentifier: cellClass.reuseIdentifier, rowsPerSection: rowsPerSection)
         self.estimatedRowHeight = estimatedRowHeight
@@ -24,6 +26,7 @@ struct GhostTableViewOptions {
         self.tableViewStyle = tableViewStyle
         self.backgroundColor = backgroundColor
         self.separatorStyle = separatorStyle
+        self.isScrollEnabled = isScrollEnabled
     }
 }
 
@@ -53,6 +56,7 @@ final class GhostTableViewController: UITableViewController {
         tableView.backgroundColor = options.backgroundColor
         tableView.separatorStyle = options.separatorStyle
         tableView.estimatedRowHeight = options.estimatedRowHeight
+        tableView.isScrollEnabled = options.isScrollEnabled
         tableView.applyFooterViewForHidingExtraRowPlaceholders()
         tableView.registerNib(for: options.cellClass)
     }

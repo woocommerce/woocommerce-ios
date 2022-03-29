@@ -236,7 +236,6 @@ private extension ReviewsViewModel {
 
 private extension ReviewsViewModel {
     enum Settings {
-        static let placeholderRowsPerSection = [3]
         static let firstPage = 1
         static let pageSize = 25
     }

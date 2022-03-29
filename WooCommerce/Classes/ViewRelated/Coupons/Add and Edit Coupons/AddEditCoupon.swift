@@ -1,6 +1,8 @@
 import SwiftUI
 import Yosemite
 
+/// A view for Adding or Editing a Coupon.
+///
 struct AddEditCoupon: View {
 
     @ObservedObject private(set) var viewModel: AddEditCouponViewModel

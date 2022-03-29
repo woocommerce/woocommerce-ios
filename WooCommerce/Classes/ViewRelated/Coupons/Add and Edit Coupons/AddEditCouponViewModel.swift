@@ -6,8 +6,13 @@ import Yosemite
 final class AddEditCouponViewModel: ObservableObject {
 
     private let siteID: Int64
+
+    /// Based on the Editing Option, the `AddEditCoupon` view can be in Creation or Editing mode.
+    ///
     private let editingOption: EditingOption
+
     private let discountType: Coupon.DiscountType
+
     var titleView: String {
         switch editingOption {
         case .creation:

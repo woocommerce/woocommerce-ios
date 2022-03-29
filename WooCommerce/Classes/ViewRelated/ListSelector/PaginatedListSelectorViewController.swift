@@ -63,8 +63,8 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
     private let rowType = Cell.self
 
     lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: Cell.self,
-                                                                                                rowsPerSection: placeholderRowsPerSection,
-                                                                                                estimatedRowHeight: estimatedRowHeight))
+                                                                                                backgroundColor: .listBackground,
+                                                                                                separatorStyle: viewProperties.separatorStyle))
 
     private lazy var tableView: UITableView = UITableView(frame: .zero, style: viewProperties.tableViewStyle)
 
@@ -297,10 +297,6 @@ private extension PaginatedListSelectorViewController {
         tableView.sectionFooterHeight = .leastNonzeroMagnitude
 
         tableView.separatorStyle = viewProperties.separatorStyle
-
-        // Removes extra header spacing in ghost content view.
-        tableView.estimatedSectionHeaderHeight = 0
-        tableView.sectionHeaderHeight = 0
 
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false

@@ -45,6 +45,7 @@ final class CouponListViewController: UIViewController {
 
     private var subscriptions: Set<AnyCancellable> = []
 
+    private lazy var dataSource: UITableViewDiffableDataSource<Section, CouponListViewModel.CellViewModel> = makeDataSource()
     private lazy var topBannerView: TopBannerView = createFeedbackBannerView()
 
     private lazy var noticePresenter: DefaultNoticePresenter = {
@@ -127,8 +128,12 @@ final class CouponListViewController: UIViewController {
             .store(in: &subscriptions)
 
         viewModel.$couponViewModels
-            .sink { [weak self] _ in
-                self?.tableView.reloadData()
+            .sink { [weak self] viewModels in
+                guard let self = self else { return }
+                var snapshot = NSDiffableDataSourceSnapshot<Section, CouponListViewModel.CellViewModel>()
+                snapshot.appendSections([.main])
+                snapshot.appendItems(viewModels, toSection: Section.main)
+                self.dataSource.apply(snapshot)
             }
             .store(in: &subscriptions)
 
@@ -208,7 +213,7 @@ private extension CouponListViewController {
 
     func configureTableView() {
         registerTableViewCells()
-        tableView.dataSource = self
+        tableView.dataSource = dataSource
         tableView.estimatedRowHeight = Constants.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.addSubview(refreshControl)
@@ -217,6 +222,20 @@ private extension CouponListViewController {
 
     func registerTableViewCells() {
         TitleAndSubtitleAndStatusTableViewCell.register(for: tableView)
+    }
+
+    func makeDataSource() -> UITableViewDiffableDataSource<Section, CouponListViewModel.CellViewModel> {
+        let reuseIdentifier = TitleAndSubtitleAndStatusTableViewCell.reuseIdentifier
+        return UITableViewDiffableDataSource(
+            tableView: tableView,
+            cellProvider: {  tableView, indexPath, cellViewModel in
+                let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
+                if let cell = cell as? TitleAndSubtitleAndStatusTableViewCell {
+                    cell.configureCell(viewModel: cellViewModel)
+                }
+                return cell
+            }
+        )
     }
 
     /// Shows `SearchViewController`.
@@ -347,31 +366,16 @@ private extension CouponListViewController {
 }
 
 
-// MARK: - TableView Data Source
-//
-extension CouponListViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        viewModel.couponViewModels.count
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: TitleAndSubtitleAndStatusTableViewCell.reuseIdentifier, for: indexPath)
-        if let cellViewModel = viewModel.couponViewModels[safe: indexPath.row],
-            let cell = cell as? TitleAndSubtitleAndStatusTableViewCell {
-            cell.configureCell(viewModel: cellViewModel)
-        }
-
-        return cell
-    }
-}
-
-
 // MARK: - Nested Types
 //
 private extension CouponListViewController {
     enum Constants {
         static let estimatedRowHeight = CGFloat(86)
         static let placeholderRowsPerSection = [3]
+    }
+
+    enum Section: Int {
+        case main
     }
 }
 

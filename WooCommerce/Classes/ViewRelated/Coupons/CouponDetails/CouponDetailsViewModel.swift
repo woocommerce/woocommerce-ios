@@ -73,7 +73,9 @@ final class CouponDetailsViewModel: ObservableObject {
 
     private let stores: StoresManager
     private let currencySettings: CurrencySettings
+
     let isEditingEnabled: Bool
+    let isDeletingEnabled: Bool
 
     init(coupon: Coupon,
          stores: StoresManager = ServiceLocator.stores,
@@ -84,6 +86,7 @@ final class CouponDetailsViewModel: ObservableObject {
         self.stores = stores
         self.currencySettings = currencySettings
         isEditingEnabled = featureFlags.isFeatureFlagEnabled(.couponEditing) && coupon.discountType != .other
+        isDeletingEnabled = featureFlags.isFeatureFlagEnabled(.couponDeletion)
         populateDetails()
     }
 

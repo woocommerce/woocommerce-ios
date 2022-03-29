@@ -59,6 +59,41 @@ struct CouponDetails: View {
         ]
     }
 
+    private var actionSheetButtons: [Alert.Button] {
+        var buttons: [Alert.Button] =
+        [
+            .default(Text(Localization.copyCode), action: {
+                UIPasteboard.general.string = viewModel.couponCode
+                let notice = Notice(title: Localization.couponCopied, feedbackType: .success)
+                noticePresenter.enqueue(notice: notice)
+                ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "copied_code"])
+            }),
+            .default(Text(Localization.shareCoupon), action: {
+                showingShareSheet = true
+                ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "shared_code"])
+            })
+        ]
+
+        if viewModel.isEditingEnabled {
+            buttons.append(contentsOf: [
+                .default(Text(Localization.editCoupon), action: {
+                    // TODO: add analytics
+                    // TODO: open the editing screen
+                })
+            ])
+        }
+
+        if viewModel.isDeletingEnabled {
+            buttons.append(.destructive(Text(Localization.deleteCoupon), action: {
+                showingDeletionConfirmAlert = true
+            }))
+        }
+
+        buttons.append(.cancel())
+
+        return buttons
+    }
+
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
@@ -68,7 +103,7 @@ struct CouponDetails: View {
                         .actionSheet(isPresented: $showingActionSheet) {
                             ActionSheet(
                                 title: Text(Localization.manageCoupon),
-                                buttons: generateActionSheetActions()
+                                buttons: actionSheetButtons
                             )
                         }
                         .shareSheet(isPresented: $showingShareSheet) {
@@ -247,41 +282,6 @@ struct CouponDetails: View {
             let notice = Notice(title: Localization.errorDeletingCoupon, feedbackType: .error)
             noticePresenter.enqueue(notice: notice)
         })
-    }
-
-    private func generateActionSheetActions() -> [Alert.Button] {
-        var actions: [Alert.Button] =
-        [
-            .default(Text(Localization.copyCode), action: {
-                UIPasteboard.general.string = viewModel.couponCode
-                let notice = Notice(title: Localization.couponCopied, feedbackType: .success)
-                noticePresenter.enqueue(notice: notice)
-                ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "copied_code"])
-            }),
-            .default(Text(Localization.shareCoupon), action: {
-                showingShareSheet = true
-                ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "shared_code"])
-            })
-        ]
-
-        if viewModel.isEditingEnabled {
-            actions.append(contentsOf: [
-                .default(Text(Localization.editCoupon), action: {
-                    // TODO: add analytics
-                    // TODO: open the editing screen
-                })
-            ])
-        }
-
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.couponEditAndDelete) {
-            buttons.append(.destructive(Text(Localization.deleteCoupon), action: {
-                showingDeletionConfirmAlert = true
-            }))
-        }
-
-        actions.append(.cancel())
-
-        return actions
     }
 }
 

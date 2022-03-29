@@ -56,7 +56,7 @@ public enum FeatureFlag: Int {
 
     /// Displays the option to delete coupons
     ///
-    case couponDelete
+    case couponDeletion
 
     /// Displays the option to edit a coupon
     ///

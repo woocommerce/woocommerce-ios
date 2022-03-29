@@ -12,7 +12,7 @@ final class PluginListViewController: UIViewController, GhostableViewController 
     lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(
                                                                                                 cellClass: HeadlineLabelTableViewCell.self,
                                                                                                 rowsPerSection: [10],
-                                                                                                tableViewStyle: .plain,
+                                                                                                tableViewStyle: .grouped,
                                                                                                 backgroundColor: .listBackground,
                                                                                                 separatorStyle: .singleLine,
                                                                                                 isScrollEnabled: false))

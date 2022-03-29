@@ -438,13 +438,13 @@ final class CouponDetailsViewModelTests: XCTestCase {
         let sampleCoupon = Coupon.fake().copy(siteID: 123, couponID: 456)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, stores: stores)
-        XCTAssertFalse(viewModel.isLoading)
+        XCTAssertFalse(viewModel.isDeletionInProgress)
 
         // When
         stores.whenReceivingAction(ofType: CouponAction.self) { action in
             switch action {
             case let .deleteCoupon(_, _, onCompletion):
-                XCTAssertTrue(viewModel.isLoading)
+                XCTAssertTrue(viewModel.isDeletionInProgress)
                 onCompletion(.success(()))
             default:
                 break
@@ -453,6 +453,6 @@ final class CouponDetailsViewModelTests: XCTestCase {
         viewModel.deleteCoupon(onSuccess: {}, onFailure: {})
 
         // Then
-        XCTAssertFalse(viewModel.isLoading)
+        XCTAssertFalse(viewModel.isDeletionInProgress)
     }
 }

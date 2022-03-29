@@ -212,7 +212,7 @@ struct CouponDetails: View {
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                if viewModel.isLoading {
+                if viewModel.isDeletionInProgress {
                     ActivityIndicator(isAnimating: .constant(true), style: .medium)
                 } else {
                     Button(action: {

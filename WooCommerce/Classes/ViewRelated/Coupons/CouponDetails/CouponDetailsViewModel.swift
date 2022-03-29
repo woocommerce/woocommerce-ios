@@ -37,7 +37,7 @@ final class CouponDetailsViewModel: ObservableObject {
 
     /// Indicates whether a network call is in progress
     ///
-    @Published private(set) var isLoading: Bool = false
+    @Published private(set) var isDeletionInProgress: Bool = false
 
     /// The message to be shared about the coupon
     ///
@@ -139,9 +139,9 @@ final class CouponDetailsViewModel: ObservableObject {
     }
 
     func deleteCoupon(onSuccess: @escaping () -> Void, onFailure: @escaping () -> Void) {
-        isLoading = true
+        isDeletionInProgress = true
         let action = CouponAction.deleteCoupon(siteID: siteID, couponID: coupon.couponID) { [weak self] result in
-            self?.isLoading = false
+            self?.isDeletionInProgress = false
             switch result {
             case .success:
                 onSuccess()

@@ -5,7 +5,7 @@ import Yosemite
 ///
 struct AddEditCoupon: View {
 
-    @ObservedObject private(set) var viewModel: AddEditCouponViewModel
+    @ObservedObject private var viewModel: AddEditCouponViewModel
     @Environment(\.presentationMode) var presentation
 
     init(_ viewModel: AddEditCouponViewModel) {

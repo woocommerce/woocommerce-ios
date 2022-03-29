@@ -66,7 +66,7 @@ extension SurveyViewController {
         case productsVariationsFeedback
         case shippingLabelsRelease3Feedback
         case addOnsI1
-        case simplePaymentsPrototype
+        case orderCreation
         case couponManagement
 
         fileprivate var url: URL {
@@ -93,8 +93,8 @@ extension SurveyViewController {
                     .asURL()
                     .tagPlatform("ios")
                     .tagAppVersion(Bundle.main.bundleVersion())
-            case .simplePaymentsPrototype:
-                return WooConstants.URLs.simplePaymentsPrototypeFeedback
+            case .orderCreation:
+                return WooConstants.URLs.orderCreationFeedback
                     .asURL()
                     .tagPlatform("ios")
                     .tagAppVersion(Bundle.main.bundleVersion())
@@ -110,7 +110,7 @@ extension SurveyViewController {
             switch self {
             case .inAppFeedback:
                 return Localization.title
-            case .productsVariationsFeedback, .shippingLabelsRelease3Feedback, .addOnsI1, .simplePaymentsPrototype, .couponManagement:
+            case .productsVariationsFeedback, .shippingLabelsRelease3Feedback, .addOnsI1, .orderCreation, .couponManagement:
                 return Localization.giveFeedback
             }
         }
@@ -126,8 +126,8 @@ extension SurveyViewController {
                 return .shippingLabelsRelease3
             case .addOnsI1:
                 return .addOnsI1
-            case .simplePaymentsPrototype:
-                return .simplePaymentsPrototype
+            case .orderCreation:
+                return .orderCreation
             case .couponManagement:
                 return .couponManagement
             }

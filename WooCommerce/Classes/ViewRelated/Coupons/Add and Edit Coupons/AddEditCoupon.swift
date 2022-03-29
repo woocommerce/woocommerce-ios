@@ -26,7 +26,7 @@ struct AddEditCoupon: View {
                                     }
                                 }
         }
-        .navigationTitle(viewModel.titleView)
+        .navigationTitle(viewModel.title)
         .wooNavigationBarStyle()
     }
 }

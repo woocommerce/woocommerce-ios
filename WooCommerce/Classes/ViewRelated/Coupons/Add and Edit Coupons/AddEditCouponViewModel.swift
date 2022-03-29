@@ -13,7 +13,7 @@ final class AddEditCouponViewModel: ObservableObject {
 
     private let discountType: Coupon.DiscountType
 
-    var titleView: String {
+    var title: String {
         switch editingOption {
         case .creation:
             switch discountType {

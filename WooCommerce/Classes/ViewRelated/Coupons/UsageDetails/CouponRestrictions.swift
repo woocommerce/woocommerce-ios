@@ -1,14 +1,14 @@
 import SwiftUI
 
-struct CouponUsageDetails: View {
+struct CouponRestrictions: View {
 
     @State private var showingAllowedEmails: Bool = false
-    @ObservedObject private var viewModel: CouponUsageDetailsViewModel
+    @ObservedObject private var viewModel: CouponRestrictionsViewModel
 
     // Tracks the scale of the view due to accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    init(viewModel: CouponUsageDetailsViewModel) {
+    init(viewModel: CouponRestrictionsViewModel) {
         self.viewModel = viewModel
     }
 
@@ -150,7 +150,7 @@ struct CouponUsageDetails: View {
     }
 }
 
-private extension CouponUsageDetails {
+private extension CouponRestrictions {
     enum Constants {
         static let margin: CGFloat = 16
         static let verticalSpacing: CGFloat = 8
@@ -230,11 +230,11 @@ private extension CouponUsageDetails {
 }
 
 #if DEBUG
-struct CouponUsageDetails_Previews: PreviewProvider {
+struct CouponRestrictions_Previews: PreviewProvider {
     static var previews: some View {
-        CouponUsageDetails(viewModel: .init(coupon: .sampleCoupon))
+        CouponRestrictions(viewModel: .init(coupon: .sampleCoupon))
 
-        CouponUsageDetails(viewModel: .init(coupon: .sampleCoupon))
+        CouponRestrictions(viewModel: .init(coupon: .sampleCoupon))
             .previewLayout(.fixed(width: 715, height: 320))
     }
 }

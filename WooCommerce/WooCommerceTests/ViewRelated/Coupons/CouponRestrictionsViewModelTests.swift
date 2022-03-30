@@ -2,7 +2,7 @@ import XCTest
 @testable import WooCommerce
 @testable import Yosemite
 
-final class CouponUsageDetailsViewModelTests: XCTestCase {
+final class CouponRestrictionsViewModelTests: XCTestCase {
 
     func test_usage_details_are_correct() {
         // Given
@@ -14,7 +14,7 @@ final class CouponUsageDetailsViewModelTests: XCTestCase {
                                         minimumAmount: "10.00",
                                         maximumAmount: "1000.00",
                                         emailRestrictions: ["*@a8c.com", "vip@mail.com"])
-        let viewModel = CouponUsageDetailsViewModel(coupon: coupon, currencySettings: CurrencySettings())
+        let viewModel = CouponRestrictionsViewModel(coupon: coupon, currencySettings: CurrencySettings())
 
         // Then
         XCTAssertEqual(viewModel.minimumSpend, "10.00")

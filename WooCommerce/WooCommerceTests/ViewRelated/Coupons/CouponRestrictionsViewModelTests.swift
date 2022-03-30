@@ -4,7 +4,7 @@ import XCTest
 
 final class CouponRestrictionsViewModelTests: XCTestCase {
 
-    func test_usage_details_are_correct() {
+    func test_restriction_details_are_correct() {
         // Given
         let coupon = Coupon.fake().copy(individualUse: true,
                                         usageLimit: 1000,

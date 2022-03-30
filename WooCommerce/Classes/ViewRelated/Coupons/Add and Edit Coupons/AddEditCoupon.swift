@@ -15,19 +15,22 @@ struct AddEditCoupon: View {
 
     var body: some View {
         NavigationView {
-
-            //TODO: implement the content of the view
-            Text("Hello, World!")
-                .toolbar {
-                                    ToolbarItem(placement: .cancellationAction) {
-                                        Button("Cancel", action: {
-                                            presentation.wrappedValue.dismiss()
-                                        })
-                                    }
-                                }
-                .navigationTitle(viewModel.title)
-                .navigationBarTitleDisplayMode(.large)
-                .wooNavigationBarStyle()
+            GeometryReader { geometry in
+                ScrollView {
+                    ListHeaderView(text: Localization.headerCouponDetails.uppercased(), alignment: .left)
+                        .padding(.horizontal, insets: geometry.safeAreaInsets)
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel", action: {
+                        presentation.wrappedValue.dismiss()
+                    })
+                }
+            }
+            .navigationTitle(viewModel.title)
+            .navigationBarTitleDisplayMode(.large)
+            .wooNavigationBarStyle()
         }
     }
 }
@@ -39,6 +42,9 @@ private extension AddEditCoupon {
         static let titleEditPercentageDiscount = NSLocalizedString(
             "Cancel",
             comment: "Cancel button in the navigation bar of the view for adding or editing a coupon.")
+        static let headerCouponDetails = NSLocalizedString(
+            "Coupon details",
+            comment: "Header of the coupon details in the view for adding or editing a coupon.")
     }
 }
 

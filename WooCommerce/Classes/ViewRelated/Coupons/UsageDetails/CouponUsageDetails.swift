@@ -75,28 +75,39 @@ struct CouponUsageDetails: View {
                     .background(Color(.listForeground))
                     .padding(.top, Constants.margin)
 
-                    ListHeaderView(text: Localization.usageLimits.uppercased(), alignment: .left)
-                        .padding(.horizontal, insets: geometry.safeAreaInsets)
-                    VStack(alignment: .leading, spacing: 0) {
-                        Divider()
-                        TitleAndValueRow(title: Localization.individualUseOnly,
-                                         value: .content(viewModel.individualUseOnly ? Localization.yes : Localization.no))
+                    VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
+                        TitleAndToggleRow(title: Localization.individualUseOnly,
+                                          isOn: $viewModel.individualUseOnly)
+                            .padding(.horizontal, Constants.margin)
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
-                            .padding(.vertical, Constants.verticalSpacing)
+
                         Divider()
                             .padding(.leading, Constants.margin)
                             .padding(.leading, insets: geometry.safeAreaInsets)
-                        TitleAndValueRow(title: Localization.excludeSaleItems,
-                                         value: .content(viewModel.excludeSaleItems ? Localization.yes : Localization.no))
+
+                        Text(Localization.individualUseDescription)
+                            .footnoteStyle()
+                            .padding(.horizontal, Constants.margin)
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
-                            .padding(.vertical, Constants.verticalSpacing)
+
+                        TitleAndToggleRow(title: Localization.excludeSaleItems,
+                                          isOn: $viewModel.excludeSaleItems)
+                            .padding(.horizontal, Constants.margin)
+                            .padding(.horizontal, insets: geometry.safeAreaInsets)
+
                         Divider()
+                            .padding(.leading, Constants.margin)
+                            .padding(.leading, insets: geometry.safeAreaInsets)
+
+                        Text(Localization.excludeSaleItemsDescription)
+                            .footnoteStyle()
+                            .padding(.horizontal, Constants.margin)
+                            .padding(.horizontal, insets: geometry.safeAreaInsets)
                     }
-                    .background(Color(.listForeground))
-                    .padding(.bottom, Constants.margin)
+                    .padding(.vertical, Constants.margin)
                 }
             }
-            .background(Color(.listBackground))
+            .background(Color(.listForeground))
             .ignoresSafeArea(.container, edges: [.horizontal])
         }
         .navigationTitle(Localization.usageDetails)
@@ -116,12 +127,12 @@ private extension CouponUsageDetails {
             comment: "Title for the usage restrictions section on coupon usage details screen"
         )
         static let minimumSpend = NSLocalizedString(
-            "Minimum Spend (%1$@)",
+            "Min. Spend (%1$@)",
             comment: "Title for the minimum spend row on coupon usage details screen with currency symbol within the brackets. " +
             "Reads like: Minimum Spend ($)"
         )
         static let maximumSpend = NSLocalizedString(
-            "Maximum Spend (%1$@)",
+            "Max. Spend (%1$@)",
             comment: "Title for the maximum spend row on coupon usage details screen with currency symbol within the brackets. " +
             "Reads like: Maximum Spend ($)"
         )
@@ -141,32 +152,33 @@ private extension CouponUsageDetails {
             "Allowed Emails",
             comment: "Title for the allowed email row in coupon usage details screen."
         )
-        static let usageLimits = NSLocalizedString("Usage Limits", comment: "Title for the usage limits section on coupon usage details screen")
         static let individualUseOnly = NSLocalizedString(
             "Individual Use Only",
             comment: "Title for the individual use only row in coupon usage details screen."
+        )
+        static let individualUseDescription = NSLocalizedString(
+            "Turn this on if the coupon cannot be used in conjunction with other coupons.",
+            comment: "Description for the individual use only row in coupon usage details screen."
         )
         static let excludeSaleItems = NSLocalizedString(
             "Exclude Sale Items",
             comment: "Title for the exclude sale items row in coupon usage details screen."
         )
+        static let excludeSaleItemsDescription = NSLocalizedString(
+            "Turn this on if the coupon should not apply to items on sale. " +
+            "Per-item coupons will only work if the item is not on sale. " +
+            "Per-cart coupons will only work if there are items in the cart that are not on sale.",
+            comment: "Description for the exclude sale items row in coupon usage details screen."
+        )
         static let none = NSLocalizedString("None", comment: "Value for fields in Coupon Usage Details screen when no value is set")
         static let unlimited = NSLocalizedString("Unlimited", comment: "Value for fields in Coupon Usage Details screen when no limit is set")
         static let allQualifyingInCart = NSLocalizedString(
-            "All Qualifying in Cart",
+            "All Qualifying",
             comment: "Value for the limit usage to X items row in Coupon Usage Details screen when no limit is set"
         )
         static let noRestrictions = NSLocalizedString(
             "No Restrictions",
             comment: "Value for the allowed emails row in Coupon Usage Details screen when no restriction is set"
-        )
-        static let yes = NSLocalizedString(
-            "Yes",
-            comment: "Value for the individual use only row or the exclude sale items row in Coupon Usage Details screen when the value is true"
-        )
-        static let no = NSLocalizedString(
-            "No",
-            comment: "Value for the individual use only row or the exclude sale items row in Coupon Usage Details screen when the value is false"
         )
     }
 }

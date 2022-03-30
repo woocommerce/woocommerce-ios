@@ -386,6 +386,8 @@ final class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(paymentDataViewModel.orderTotal, "£30.00")
     }
 
+    // MARK: - Payment Section Tests
+
     func test_payment_section_is_updated_when_products_update() {
         // Given
         let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
@@ -656,19 +658,7 @@ final class NewOrderViewModelTests: XCTestCase {
 
     }
 
-    func test_customer_note_section_is_updated_when_note_is_added_to_order() {
-        // Given
-        let storageManager = MockStorageManager()
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
-        let expectedCustomerNote = "Test"
-
-        //When
-        viewModel.noteViewModel.newNote = expectedCustomerNote
-        viewModel.updateCustomerNote()
-
-        //Then
-        XCTAssertEqual(viewModel.customerNoteDataViewModel.customerNote, expectedCustomerNote)
-    }
+    // MARK: - hasChanges Tests
 
     func test_hasChanges_returns_false_initially() {
         // Given
@@ -760,6 +750,8 @@ final class NewOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.hasChanges)
     }
+
+    // MARK: - Tracking Tests
 
     func test_shipping_method_tracked_when_added() throws {
         // Given
@@ -878,6 +870,22 @@ final class NewOrderViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(analytics.receivedEvents.isEmpty)
+    }
+
+    // MARK: -
+
+    func test_customer_note_section_is_updated_when_note_is_added_to_order() {
+        // Given
+        let storageManager = MockStorageManager()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let expectedCustomerNote = "Test"
+
+        //When
+        viewModel.noteViewModel.newNote = expectedCustomerNote
+        viewModel.updateCustomerNote()
+
+        //Then
+        XCTAssertEqual(viewModel.customerNoteDataViewModel.customerNote, expectedCustomerNote)
     }
 
     func test_discard_order_deletes_order_if_order_exists_remotely() {

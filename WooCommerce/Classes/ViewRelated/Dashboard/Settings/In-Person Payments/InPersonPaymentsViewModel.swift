@@ -74,12 +74,14 @@ final class InPersonPaymentsViewModel: ObservableObject {
     }
 }
 
-private func trackState(_ state: CardPresentPaymentOnboardingState) {
-    guard let reason = state.reasonForAnalytics else {
-        return
+private extension InPersonPaymentsViewModel {
+    func trackState(_ state: CardPresentPaymentOnboardingState) {
+        guard let reason = state.reasonForAnalytics else {
+            return
+        }
+        ServiceLocator.analytics
+            .track(event: .InPersonPayments
+                    .cardPresentOnboardingNotCompleted(reason: reason,
+                                                       countryCode: useCase.configurationLoader.configuration.countryCode))
     }
-    let properties = [
-        "reason": reason
-    ]
-    ServiceLocator.analytics.track(.cardPresentOnboardingNotCompleted, withProperties: properties)
 }

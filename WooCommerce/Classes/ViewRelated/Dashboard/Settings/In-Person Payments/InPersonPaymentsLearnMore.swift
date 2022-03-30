@@ -4,6 +4,8 @@ struct InPersonPaymentsLearnMore: View {
     static let learnMoreURL = URL(string: "woocommerce://in-person-payments/learn-more")!
     @Environment(\.customOpenURL) var customOpenURL
 
+    private let cardPresentConfiguration = CardPresentConfigurationLoader().configuration
+
     var body: some View {
         HStack(spacing: 16) {
             Image(uiImage: .infoOutlineImage)
@@ -15,7 +17,8 @@ struct InPersonPaymentsLearnMore: View {
         }
             .padding(.vertical, Constants.verticalPadding)
             .onTapGesture {
-                ServiceLocator.analytics.track(.cardPresentOnboardingLearnMoreTapped)
+                ServiceLocator.analytics.track(event: WooAnalyticsEvent.InPersonPayments
+                                                .cardPresentOnboardingLearnMoreTapped(countryCode: cardPresentConfiguration.countryCode))
                 customOpenURL?(InPersonPaymentsLearnMore.learnMoreURL)
             }
     }

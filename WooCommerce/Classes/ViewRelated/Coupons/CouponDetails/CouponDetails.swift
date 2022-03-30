@@ -27,7 +27,6 @@ struct CouponDetails: View {
     @ObservedObject private var viewModel: CouponDetailsViewModel
     @State private var showingActionSheet: Bool = false
     @State private var showingShareSheet: Bool = false
-    @State private var showingUsageDetails: Bool = false
     @State private var showingEditCoupon: Bool = false
     @State private var showingAmountLoadingErrorPrompt: Bool = false
     @State private var showingEnableAnalytics: Bool = false
@@ -190,9 +189,6 @@ struct CouponDetails: View {
                     .background(Color(.listForeground))
                     Divider()
                 }
-                NavigationLink(destination: CouponUsageDetails(viewModel: .init(coupon: viewModel.coupon)), isActive: $showingUsageDetails) {
-                    EmptyView()
-                }.hidden()
             }
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])

@@ -7,7 +7,7 @@ import class AutomatticTracks.CrashLogging
 /// Shows a list of products with pull to refresh and infinite scroll
 /// TODO: it will be good to have unit tests for this, introducing a `ViewModel`
 ///
-final class ProductsViewController: UIViewController, GhostableViewController {
+final class ProductsViewController: UIViewController {
 
     /// Main TableView
     ///
@@ -15,10 +15,6 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         let tableView = UITableView(frame: .zero, style: .plain)
         return tableView
     }()
-
-    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: ProductsTabProductTableViewCell.self,
-                                                                                                estimatedRowHeight: Constants.estimatedRowHeight,
-                                                                                                separatorStyle: .none))
 
     /// Pull To Refresh Support.
     ///
@@ -346,8 +342,8 @@ private extension ProductsViewController {
         tableView.rowHeight = UITableView.automaticDimension
 
         // Removes extra header spacing in ghost content view.
-        ghostTableViewController.tableView.estimatedSectionHeaderHeight = 0
-        ghostTableViewController.tableView.sectionHeaderHeight = 0
+        tableView.estimatedSectionHeaderHeight = 0
+        tableView.sectionHeaderHeight = 0
 
         tableView.backgroundColor = .listBackground
         tableView.tableFooterView = footerSpinnerView
@@ -724,14 +720,16 @@ private extension ProductsViewController {
     /// Renders the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
     ///
     func displayPlaceholderProducts() {
-        displayGhostContent()
+        let options = GhostOptions(reuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier, rowsPerSection: Constants.placeholderRowsPerSection)
+        tableView.displayGhostContent(options: options,
+        style: .wooDefaultGhostStyle)
         resultsController.stopForwardingEvents()
     }
 
     /// Removes the Placeholder Products (and restores the ResultsController <> UITableView link).
     ///
     func removePlaceholderProducts() {
-        removeGhostContent()
+        tableView.removeGhostContent()
         // Assign again the original closure
         setClosuresToResultController(resultsController, onReload: { [weak self] in
             self?.reloadTableAndView()
@@ -1047,6 +1045,7 @@ private extension ProductsViewController {
     enum Constants {
         static let headerViewSpacing = CGFloat(8)
         static let estimatedRowHeight = CGFloat(86)
+        static let placeholderRowsPerSection = [3]
         static let headerDefaultHeight = CGFloat(130)
         static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         static let toolbarButtonInsets = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)

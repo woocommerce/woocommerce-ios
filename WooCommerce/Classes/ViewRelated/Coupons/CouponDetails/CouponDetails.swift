@@ -112,6 +112,14 @@ struct CouponDetails: View {
                     .padding(.horizontal, Constants.margin)
                     .padding(.vertical, Constants.summarySectionVerticalSpacing)
 
+                    Text(viewModel.description)
+                        .bold()
+                        .footnoteStyle()
+                        .renderedIf(viewModel.description.isNotEmpty)
+                        .padding(.horizontal, insets: geometry.safeAreaInsets)
+                        .padding(.horizontal, Constants.margin)
+                        .padding(.bottom, Constants.summarySectionVerticalSpacing)
+
                     Divider()
 
                     summarySection
@@ -214,13 +222,6 @@ struct CouponDetails: View {
             Text(Localization.summarySectionTitle)
                 .bold()
                 .padding(.top, Constants.margin)
-
-            VStack(alignment: .leading, spacing: Constants.margin) {
-                Text(Localization.description)
-                    .secondaryBodyStyle()
-                Text(viewModel.description.quoted)
-            }
-            .renderedIf(viewModel.description.isNotEmpty)
 
             VStack(alignment: .leading, spacing: Constants.summarySectionVerticalSpacing) {
                 Text(viewModel.discountType)
@@ -335,7 +336,6 @@ private extension CouponDetails {
 
     enum Localization {
         static let summarySectionTitle = NSLocalizedString("Coupon Summary", comment: "Title of Summary section in Coupon Details screen")
-        static let description = NSLocalizedString("Description", comment: "Title of the description field in Coupon Details screen")
         static let expiryFormat = NSLocalizedString(
             "Expires %1$@",
             comment: "Formatted content for coupon expiry date, reads like: Expires August 4, 2022"

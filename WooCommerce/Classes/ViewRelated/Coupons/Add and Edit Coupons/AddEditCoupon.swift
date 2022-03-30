@@ -23,7 +23,7 @@ struct AddEditCoupon: View {
             }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel", action: {
+                    Button(Localization.cancelButton, action: {
                         presentation.wrappedValue.dismiss()
                     })
                 }
@@ -39,7 +39,7 @@ struct AddEditCoupon: View {
 //
 private extension AddEditCoupon {
     enum Localization {
-        static let titleEditPercentageDiscount = NSLocalizedString(
+        static let cancelButton = NSLocalizedString(
             "Cancel",
             comment: "Cancel button in the navigation bar of the view for adding or editing a coupon.")
         static let headerCouponDetails = NSLocalizedString(

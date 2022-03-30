@@ -6,7 +6,8 @@ final class AddAttributeViewController: UIViewController, GhostableViewControlle
 
     @IBOutlet private weak var tableView: UITableView!
 
-    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(displaysSectionHeader: false, cellClass: WooBasicTableViewCell.self))
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(displaysSectionHeader: false,
+                                                                                                cellClass: WooBasicTableViewCell.self))
 
     private let viewModel: AddAttributeViewModel
 

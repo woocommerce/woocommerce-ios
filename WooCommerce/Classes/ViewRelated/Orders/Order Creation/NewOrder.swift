@@ -120,6 +120,7 @@ struct NewOrder: View {
                         viewModel.createOrder()
                     }
                     .id(navigationButtonID)
+                    .accessibilityIdentifier("new-order-create-button")
                     .disabled(viewModel.disabled)
 
                 case .loading:

@@ -24,4 +24,17 @@ final class OrdersTests: XCTestCase {
             .goBackToOrdersScreen()
             .verifyOrdersScreenLoaded()
     }
+
+    func test_create_new_order() throws {
+        // Enables experimental Order Creation feature.
+        // This can be removed when Order Creation is released.
+        try TabNavComponent().goToMenuScreen()
+            .openSettingsPane()
+            .goToExperimentalFeatures()
+            .enableOrderCreation()
+
+        try TabNavComponent().goToOrdersScreen()
+            .startOrderCreation()
+            .createOrder()
+    }
 }

@@ -65,12 +65,10 @@ extension LicensesViewController: WKNavigationDelegate {
             return
         }
 
-        // Open the link in a modal SFSafariViewController instead of the webview displaying the
+        // Use WebviewHelper instead of the webview displaying the
         // licenses HTML — we don't want to build another browser here
         if let url = navigationAction.request.url {
-            let safariViewController = SFSafariViewController(url: url)
-            safariViewController.modalPresentationStyle = .pageSheet
-            present(safariViewController, animated: true, completion: nil)
+            WebviewHelper.launch(url, with: self)
         }
         decisionHandler(.cancel)
     }

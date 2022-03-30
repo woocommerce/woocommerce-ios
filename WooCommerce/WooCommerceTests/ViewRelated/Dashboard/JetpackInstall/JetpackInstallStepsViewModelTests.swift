@@ -5,11 +5,13 @@ import XCTest
 final class JetpackInstallStepsViewModelTests: XCTestCase {
 
     private let testSiteID: Int64 = 1232
+    private let testSiteURL = "https://test.com"
+    private let testWPAdminURL = "https://test.com/wp-admin/"
 
     func test_startInstallation_dispatches_installSitePlugin_action_if_getPluginDetails_fails() {
         // Given
         let storesManager = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID, stores: storesManager)
+        let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID, siteURL: testSiteURL, siteAdminURL: testWPAdminURL, stores: storesManager)
 
         // When
         var pluginDetailsSiteID: Int64?
@@ -41,7 +43,7 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
     func test_activateSitePlugin_is_dispatched_when_installSitePlugin_succeeds() {
         // Given
         let storesManager = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID, stores: storesManager)
+        let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID, siteURL: testSiteURL, siteAdminURL: testWPAdminURL, stores: storesManager)
 
         // When
         var activatedSiteID: Int64?
@@ -69,7 +71,7 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
     func test_startInstallation_skips_installSitePlugin_action_if_getPluginDetails_succeeds() {
         // Given
         let storesManager = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID, stores: storesManager)
+        let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID, siteURL: testSiteURL, siteAdminURL: testWPAdminURL, stores: storesManager)
 
         // When
         var installedSiteID: Int64?
@@ -100,7 +102,7 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
     func test_installSitePlugin_is_retried_2_times_if_continuously_fails() {
         // Given
         let storesManager = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID, stores: storesManager)
+        let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID, siteURL: testSiteURL, siteAdminURL: testWPAdminURL, stores: storesManager)
 
         // When
         var installedPluginInvokedCount = 0
@@ -125,7 +127,7 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
     func test_loadAndSynchronizeSite_is_dispatched_when_activating_plugin_succeeds() {
         // Given
         let storesManager = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID, stores: storesManager)
+        let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID, siteURL: testSiteURL, siteAdminURL: testWPAdminURL, stores: storesManager)
 
         // When
         var checkedSiteID: Int64?
@@ -164,7 +166,7 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
     func test_currentStep_is_installation_on_startInstallation() {
         // Given
         let storesManager = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID, stores: storesManager)
+        let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID, siteURL: testSiteURL, siteAdminURL: testWPAdminURL, stores: storesManager)
 
         // When
         storesManager.whenReceivingAction(ofType: SitePluginAction.self) { action in
@@ -184,7 +186,7 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
     func test_currentStep_is_activate_when_installation_succeeds() {
         // Given
         let storesManager = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID, stores: storesManager)
+        let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID, siteURL: testSiteURL, siteAdminURL: testWPAdminURL, stores: storesManager)
 
         // When
         storesManager.whenReceivingAction(ofType: SitePluginAction.self) { action in
@@ -206,7 +208,7 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
     func test_currentStep_is_connection_when_installation_and_activation_succeeds() {
         // Given
         let storesManager = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID, stores: storesManager)
+        let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID, siteURL: testSiteURL, siteAdminURL: testWPAdminURL, stores: storesManager)
 
         // When
         storesManager.whenReceivingAction(ofType: SitePluginAction.self) { action in
@@ -230,7 +232,7 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
     func test_currentStep_is_done_when_site_has_isWooCommerceActive_and_not_isJetpackCPConnected() {
         // Given
         let storesManager = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID, stores: storesManager)
+        let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID, siteURL: testSiteURL, siteAdminURL: testWPAdminURL, stores: storesManager)
 
         // When
         storesManager.whenReceivingAction(ofType: SitePluginAction.self) { action in
@@ -268,7 +270,7 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
     func test_currentStep_is_not_done_when_site_does_not_have_isWooCommerceActive() {
         // Given
         let storesManager = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID, stores: storesManager)
+        let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID, siteURL: testSiteURL, siteAdminURL: testWPAdminURL, stores: storesManager)
 
         // When
         storesManager.whenReceivingAction(ofType: SitePluginAction.self) { action in
@@ -301,5 +303,69 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.currentStep, .connection)
         XCTAssertTrue(viewModel.installFailed)
         XCTAssertEqual(checkConnectionInvokedCount, 3) // 1 initial time plus 2 retries
+    }
+
+    func test_wpAdminURL_returns_siteAdminURL_if_it_has_valid_scheme() {
+        // Given
+        let storesManager = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID, siteURL: testSiteURL, siteAdminURL: testWPAdminURL, stores: storesManager)
+
+        // When
+        storesManager.whenReceivingAction(ofType: SitePluginAction.self) { action in
+            switch action {
+            case .getPluginDetails(_, _, let onCompletion):
+                onCompletion(.failure(NSError(domain: "Not Found", code: 404)))
+            default:
+                break
+            }
+        }
+        viewModel.startInstallation() // force the installation step to get non-nil url
+
+        // Then
+        XCTAssertEqual(viewModel.wpAdminURL?.absoluteString.hasPrefix(testWPAdminURL), true)
+    }
+
+    func test_wpAdminURL_returns_url_constructed_from_siteURL_if_it_does_not_have_valid_scheme() {
+        // Given
+        let storesManager = MockStoresManager(sessionManager: .testingInstance)
+        let invalidAdminURL = ""
+        let constructedPath = testSiteURL + "/wp-admin/"
+        let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID, siteURL: testSiteURL, siteAdminURL: invalidAdminURL, stores: storesManager)
+
+        // When
+        storesManager.whenReceivingAction(ofType: SitePluginAction.self) { action in
+            switch action {
+            case .getPluginDetails(_, _, let onCompletion):
+                onCompletion(.failure(NSError(domain: "Not Found", code: 404)))
+            default:
+                break
+            }
+        }
+        viewModel.startInstallation() // force the installation step to get non-nil url
+
+        // Then
+        XCTAssertEqual(viewModel.wpAdminURL?.absoluteString.hasPrefix(constructedPath), true)
+    }
+
+    func test_wpAdminURL_returns_nil_if_both_siteURL_and_siteAdminURL_do_not_have_valid_scheme() {
+        // Given
+        let storesManager = MockStoresManager(sessionManager: .testingInstance)
+        let invalidSiteURL = ""
+        let invalidAdminURL = ""
+        let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID, siteURL: invalidSiteURL, siteAdminURL: invalidAdminURL, stores: storesManager)
+
+        // When
+        storesManager.whenReceivingAction(ofType: SitePluginAction.self) { action in
+            switch action {
+            case .getPluginDetails(_, _, let onCompletion):
+                onCompletion(.failure(NSError(domain: "Not Found", code: 404)))
+            default:
+                break
+            }
+        }
+        viewModel.startInstallation() // force the installation step to get non-nil url
+
+        // Then
+        XCTAssertNil(viewModel.wpAdminURL)
     }
 }

@@ -25,7 +25,7 @@ enum CouponListState {
 
 final class CouponListViewModel {
 
-    typealias CouponListCellViewModel = TitleAndSubtitleAndStatusTableViewCell.ViewModel
+    typealias CellViewModel = TitleAndSubtitleAndStatusTableViewCell.ViewModel
 
     /// Active state
     ///
@@ -37,7 +37,7 @@ final class CouponListViewModel {
 
     /// couponViewModels: ViewModels for the cells representing Coupons
     ///
-    @Published private(set) var couponViewModels: [CouponListCellViewModel] = []
+    @Published private(set) var couponViewModels: [CellViewModel] = []
 
     /// siteID: siteID of the currently active site, used for fetching and storing coupons
     ///
@@ -79,11 +79,11 @@ final class CouponListViewModel {
 
     func buildCouponViewModels() {
         couponViewModels = resultsController.fetchedObjects.map { coupon in
-            CouponListCellViewModel(title: coupon.code,
-                                    subtitle: coupon.discountType.localizedName, // to be updated after UI is finalized
-                                    accessibilityLabel: coupon.description.isEmpty ? coupon.description : coupon.code,
-                                    status: coupon.expiryStatus().localizedName,
-                                    statusBackgroundColor: coupon.expiryStatus().statusBackgroundColor)
+            CellViewModel(title: coupon.code,
+                          subtitle: coupon.summary(), // to be updated after UI is finalized
+                          accessibilityLabel: coupon.description.isEmpty ? coupon.description : coupon.code,
+                          status: coupon.expiryStatus().localizedName,
+                          statusBackgroundColor: coupon.expiryStatus().statusBackgroundColor)
         }
     }
 
@@ -130,6 +130,8 @@ final class CouponListViewModel {
     /// Enable coupons for the store
     ///
     func enableCoupons() {
+        ServiceLocator.analytics.track(.couponSettingEnabled)
+
         state = .loading
         let action = SettingAction.enableCouponSetting(siteID: siteID) { [weak self] result in
             guard let self = self else { return }
@@ -203,7 +205,12 @@ private extension CouponListViewModel {
     /// Check whether coupons are enabled for this store.
     ///
     func loadCouponSetting(completionHandler: @escaping ((Result<Bool, Error>) -> Void)) {
-        let action = SettingAction.retrieveCouponSetting(siteID: siteID, onCompletion: completionHandler)
+        let action = SettingAction.retrieveCouponSetting(siteID: siteID) { result in
+            if let isEnabled = try? result.get(), !isEnabled {
+                ServiceLocator.analytics.track(.couponSettingDisabled)
+            }
+            completionHandler(result)
+        }
         storesManager.dispatch(action)
     }
 }

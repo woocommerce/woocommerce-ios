@@ -211,7 +211,7 @@ public class CurrencyFormatter {
 
         // If we are here, the human readable version of the amount param is a "large" number *OR* a small number but rounding has been requested,
         // so let's just put the currency symbol on the correct side of the string with proper spacing (based on the site settings).
-        let code = CurrencySettings.CurrencyCode(rawValue: currency) ?? currencySettings.currencyCode
+        let code = CurrencyCode(rawValue: currency) ?? currencySettings.currencyCode
         let symbol = currencySettings.symbol(from: code)
         let position = currencySettings.currencyPosition
         let isNegative = amount.isNegative()
@@ -233,7 +233,7 @@ public class CurrencyFormatter {
     func formatAmount(_ amount: NSDecimalNumber, with currency: String? = nil, locale: Locale = .current, numberOfDecimals: Int? = nil) -> String? {
         let currency = currency ?? currencySettings.currencyCode.rawValue
         // Get the currency code
-        let code = CurrencySettings.CurrencyCode(rawValue: currency) ?? currencySettings.currencyCode
+        let code = CurrencyCode(rawValue: currency) ?? currencySettings.currencyCode
         // Grab the read-only currency options. These are set by the user in Site > Settings.
         let symbol = currencySettings.symbol(from: code)
         let separator = currencySettings.decimalSeparator

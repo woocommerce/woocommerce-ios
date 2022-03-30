@@ -120,6 +120,7 @@ struct NewOrder: View {
                         viewModel.createOrder()
                     }
                     .id(navigationButtonID)
+                    .accessibilityIdentifier("new-order-create-button")
                     .disabled(viewModel.disabled)
 
                 case .loading:
@@ -162,6 +163,7 @@ private struct ProductsSection: View {
 
             VStack(alignment: .leading, spacing: NewOrder.Layout.verticalSpacing) {
                 Text(NewOrder.Localization.products)
+                    .accessibilityAddTraits(.isHeader)
                     .headlineStyle()
 
                 ForEach(viewModel.productRows) { productRow in

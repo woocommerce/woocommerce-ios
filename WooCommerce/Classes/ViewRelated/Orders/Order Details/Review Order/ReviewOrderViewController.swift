@@ -471,8 +471,8 @@ private extension ReviewOrderViewController {
               let url = URL(string: trackingURL) else {
             return
         }
-        let safariViewController = SFSafariViewController(url: url)
-        present(safariViewController, animated: true, completion: nil)
+
+        WebviewHelper.launch(url, with: self)
     }
 
     /// Trigger view model to delete specified tracking and then reload data

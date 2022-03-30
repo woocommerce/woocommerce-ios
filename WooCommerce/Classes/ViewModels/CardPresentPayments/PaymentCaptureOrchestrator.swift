@@ -199,7 +199,7 @@ private extension PaymentCaptureOrchestrator {
         ServiceLocator.stores.dispatch(action)
     }
 
-    func paymentParameters(order: Order, statementDescriptor: String?, paymentMethodTypes: [String], customerID: String?) -> PaymentParameters? {
+    func paymentParameters(order: Order, statementDescriptor: String?, paymentMethodTypes: [String]) -> PaymentParameters? {
         guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
             DDLogError("Error: attempted to collect payment for an order without a valid total.")
             return nil

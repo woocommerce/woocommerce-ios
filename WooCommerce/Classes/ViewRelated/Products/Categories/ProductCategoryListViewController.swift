@@ -65,12 +65,13 @@ private extension ProductCategoryListViewController {
             case .initialized:
                 break
             case .syncing:
-                self?.displayGhostTableView()
+                self?.displayGhostContent()
             case let .failed(retryToken):
-                self?.removeGhostTableView()
+                self?.removeGhostContent()
                 self?.displaySyncingErrorNotice(retryToken: retryToken)
             case .synced:
-                self?.removeGhostTableView()
+                self?.tableView.reloadData()
+                self?.removeGhostContent()
             }
         }
     }

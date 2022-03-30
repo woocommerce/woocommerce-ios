@@ -748,6 +748,19 @@ final class NewOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.hasChanges)
     }
 
+    func test_hasChanges_returns_true_when_fee_line_is_updated() {
+        // Given
+        let storageManager = MockStorageManager()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let feeLine = OrderFeeLine.fake()
+
+        // When
+        viewModel.saveFeeLine(feeLine)
+
+        // Then
+        XCTAssertTrue(viewModel.hasChanges)
+    }
+
     func test_shipping_method_tracked_when_added() throws {
         // Given
         let analytics = MockAnalyticsProvider()

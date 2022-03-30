@@ -793,14 +793,33 @@ extension WooAnalyticsEvent {
                 }
                 return paymentMethod
             }()
+            let errorDescription: String? = {
+                guard case let CardReaderServiceError.paymentCaptureWithPaymentMethod(underlyingError, paymentMethod) = error else {
+                    return error.localizedDescription
+                }
+                switch paymentMethod {
+                case let .cardPresent(details):
+                    return [
+                        "underlyingError": underlyingError,
+                        "cardBrand": details.brand
+                    ].description
+                case let .interacPresent(details):
+                    return [
+                        "underlyingError": underlyingError,
+                        "cardBrand": details.brand
+                    ].description
+                default:
+                    return underlyingError.localizedDescription
+                }
+            }()
             let properties: [String: WooAnalyticsEventPropertyType] = [
                 Keys.countryCode: countryCode,
                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
-                Keys.paymentMethodType: paymentMethod?.analyticsValue
+                Keys.paymentMethodType: paymentMethod?.analyticsValue,
+                Keys.errorDescription: errorDescription
             ].compactMapValues { $0 }
             return WooAnalyticsEvent(statName: .collectPaymentFailed,
-                                     properties: properties,
-                                     error: error)
+                                     properties: properties)
         }
 
         /// Tracked when the payment collection is cancelled

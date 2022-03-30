@@ -12,10 +12,7 @@ final class ProductCategoryListViewController: UIViewController, GhostableViewCo
 
     lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(displaysSectionHeader: false,
                                                                                                 cellClass: ProductCategoryTableViewCell.self,
-
-                                                                                                tableViewStyle: .plain,
-                                                                                                backgroundColor: .listBackground,
-                                                                                                separatorStyle: .singleLine))
+                                                                                                tableViewStyle: .plain))
 
     let viewModel: ProductCategoryListViewModel
 

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct CouponUsageDetails: View {
 
+    @State private var showingAllowedEmails: Bool = false
     @ObservedObject private var viewModel: CouponUsageDetailsViewModel
 
     // Tracks the scale of the view due to accessibility changes
@@ -45,6 +46,9 @@ struct CouponUsageDetails: View {
                                              text: $viewModel.usageLimitPerUser,
                                              keyboardType: .asciiCapableNumberPad)
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
+                        Divider()
+                            .padding(.leading, Constants.margin)
+                            .padding(.leading, insets: geometry.safeAreaInsets)
                     }
                     .background(Color(.listForeground))
 
@@ -60,11 +64,11 @@ struct CouponUsageDetails: View {
                         TitleAndValueRow(title: Localization.allowedEmails,
                                          value: viewModel.allowedEmails.isNotEmpty ?
                                             .content(viewModel.allowedEmails) :
-                                            .content(Localization.noRestrictions),
+                                                .content(Localization.noRestrictions),
                                          selectionStyle: .disclosure) {
-                            // TODO: show input
+                            showingAllowedEmails = true
                         }
-                        .padding(.horizontal, insets: geometry.safeAreaInsets)
+                                         .padding(.horizontal, insets: geometry.safeAreaInsets)
 
                         Divider()
                             .padding(.leading, Constants.margin)
@@ -137,8 +141,12 @@ struct CouponUsageDetails: View {
             }
             .background(Color(.listForeground))
             .ignoresSafeArea(.container, edges: [.horizontal])
+
+            LazyNavigationLink(destination: CouponAllowedEmails(emailFormats: $viewModel.allowedEmails), isActive: $showingAllowedEmails) {
+                EmptyView()
+            }
         }
-        .navigationTitle(Localization.usageDetails)
+        .navigationTitle(Localization.usageRestriction)
     }
 }
 
@@ -151,7 +159,6 @@ private extension CouponUsageDetails {
     }
 
     enum Localization {
-        static let usageDetails = NSLocalizedString("Usage Details", comment: "Navigation title for usage details screen")
         static let usageRestriction = NSLocalizedString(
             "Usage Restrictions",
             comment: "Title for the usage restrictions section on coupon usage details screen"

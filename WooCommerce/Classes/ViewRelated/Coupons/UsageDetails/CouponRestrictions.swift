@@ -166,12 +166,12 @@ private extension CouponRestrictions {
         static let minimumSpend = NSLocalizedString(
             "Min. Spend (%1$@)",
             comment: "Title for the minimum spend row on coupon usage details screen with currency symbol within the brackets. " +
-            "Reads like: Minimum Spend ($)"
+            "Reads like: Min. Spend ($)"
         )
         static let maximumSpend = NSLocalizedString(
             "Max. Spend (%1$@)",
             comment: "Title for the maximum spend row on coupon usage details screen with currency symbol within the brackets. " +
-            "Reads like: Maximum Spend ($)"
+            "Reads like: Max. Spend ($)"
         )
         static let usageLimitPerCoupon = NSLocalizedString(
             "Usage Limit Per Coupon",

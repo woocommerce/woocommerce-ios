@@ -13,8 +13,7 @@ final class ProductVariationsViewController: UIViewController, GhostableViewCont
     ///
     private lazy var emptyStateViewController = EmptyStateViewController(style: .list)
 
-    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(displaysSectionHeader: false,
-                                                                                                cellClass: ProductsTabProductTableViewCell.self,
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: ProductsTabProductTableViewCell.self,
                                                                                                 estimatedRowHeight: Settings.estimatedRowHeight,
                                                                                                 separatorStyle: .none,
                                                                                                 isScrollEnabled: false))
@@ -208,8 +207,8 @@ private extension ProductVariationsViewController {
         tableView.rowHeight = UITableView.automaticDimension
 
         // Removes extra header spacing in ghost content view.
-        tableView.estimatedSectionHeaderHeight = 0
-        tableView.sectionHeaderHeight = 0
+        ghostTableViewController.tableView.estimatedSectionHeaderHeight = 0
+        ghostTableViewController.tableView.sectionHeaderHeight = 0
 
         tableView.backgroundColor = .listBackground
         tableView.refreshControl = refreshControl

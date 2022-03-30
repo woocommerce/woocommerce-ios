@@ -22,7 +22,8 @@ extension GhostableViewController {
         ghostTableViewController.didMove(toParent: self)
     }
 
-    /// Displays the animated ghost view by adding the `GhostTableViewController` as child, and its view on top of the specified view so size and position are the same
+    /// Displays the animated ghost view by adding the `GhostTableViewController` as child,
+    /// and its view on top of the specified view, being the size and position the same.
     ///
     /// - parameter containerView: The view to which the `GhostTableViewController` `view` will be added
     ///

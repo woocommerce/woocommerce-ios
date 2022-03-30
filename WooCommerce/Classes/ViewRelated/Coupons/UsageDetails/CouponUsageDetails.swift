@@ -4,6 +4,9 @@ struct CouponUsageDetails: View {
 
     @ObservedObject private var viewModel: CouponUsageDetailsViewModel
 
+    // Tracks the scale of the view due to accessibility changes
+    @ScaledMetric private var scale: CGFloat = 1.0
+
     init(viewModel: CouponUsageDetailsViewModel) {
         self.viewModel = viewModel
     }
@@ -99,6 +102,38 @@ struct CouponUsageDetails: View {
                     }
                     .padding(.vertical, Constants.margin)
                 }
+
+                VStack(alignment: .leading, spacing: Constants.margin) {
+                    Text(Localization.exclusions.uppercased())
+                        .footnoteStyle()
+                    Button(action: {
+                        // TODO: show product selection
+                    }) {
+                        HStack {
+                            Image(uiImage: UIImage.plusImage)
+                                .resizable()
+                                .frame(width: Constants.plusIconSize * scale, height: Constants.plusIconSize * scale)
+                            Text(Localization.excludeProducts)
+                        }
+                    }
+                    .buttonStyle(SecondaryButtonStyle(labelFont: .body))
+
+                    Button(action: {
+                        // TODO: show category selection
+                    }) {
+                        HStack {
+                            Image(uiImage: UIImage.plusImage)
+                                .resizable()
+                                .frame(width: Constants.plusIconSize * scale, height: Constants.plusIconSize * scale)
+                            Text(Localization.excludeProductCategories)
+                        }
+                    }
+                    .buttonStyle(SecondaryButtonStyle(labelFont: .body))
+                }
+                .padding(.vertical, Constants.sectionSpacing)
+                .padding(.horizontal, Constants.margin)
+                .padding(.horizontal, insets: geometry.safeAreaInsets)
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
             .background(Color(.listForeground))
             .ignoresSafeArea(.container, edges: [.horizontal])
@@ -111,6 +146,8 @@ private extension CouponUsageDetails {
     enum Constants {
         static let margin: CGFloat = 16
         static let verticalSpacing: CGFloat = 8
+        static let sectionSpacing: CGFloat = 30
+        static let plusIconSize: CGFloat = 16
     }
 
     enum Localization {

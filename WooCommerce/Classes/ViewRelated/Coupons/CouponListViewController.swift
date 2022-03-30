@@ -16,7 +16,7 @@ final class CouponListViewController: UIViewController, GhostableViewController 
                                                                                                 cellClass: TitleAndSubtitleAndStatusTableViewCell.self,
                                                                                                 rowsPerSection: Constants.placeholderRowsPerSection,
                                                                                                 estimatedRowHeight: Constants.estimatedRowHeight,
-                                                                                                separatorStyle: .singleLine))
+                                                                                                backgroundColor: .basicBackground))
 
     /// Pull To Refresh Support.
     ///

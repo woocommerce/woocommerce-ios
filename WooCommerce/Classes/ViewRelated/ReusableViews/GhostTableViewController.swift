@@ -16,8 +16,8 @@ struct GhostTableViewOptions {
          rowsPerSection: [Int] = [3],
          estimatedRowHeight: CGFloat = 44,
          tableViewStyle: UITableView.Style = .plain,
-         backgroundColor: UIColor = .basicBackground,
-         separatorStyle: UITableViewCell.SeparatorStyle = .none,
+         backgroundColor: UIColor = .listBackground,
+         separatorStyle: UITableViewCell.SeparatorStyle = .singleLine,
          isScrollEnabled: Bool = true) {
         // By just passing the cellClass in the initializer we enforce that the GhostOptions reuseIdentifier is always that of the cellClass
         ghostOptions = GhostOptions(displaysSectionHeader: displaysSectionHeader, reuseIdentifier: cellClass.reuseIdentifier, rowsPerSection: rowsPerSection)

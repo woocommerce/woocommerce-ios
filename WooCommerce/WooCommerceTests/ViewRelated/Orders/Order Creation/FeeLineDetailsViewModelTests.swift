@@ -22,7 +22,6 @@ final class FeeLineDetailsViewModelTests: XCTestCase {
         viewModel.amount = "hi:11.3005.02-"
 
         // Then
-        XCTAssertFalse(viewModel.isPercentageOptionAvailable)
         XCTAssertEqual(viewModel.amount, "11.30")
         XCTAssertEqual(viewModel.currencySymbol, "$")
         XCTAssertEqual(viewModel.currencyPosition, .left)
@@ -301,5 +300,32 @@ final class FeeLineDetailsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(savedFeeLine?.taxStatus, .taxable)
+    }
+
+    func test_view_model_amount_placeholder_has_expected_value() {
+        // Given
+        let viewModel = FeeLineDetailsViewModel(isExistingFeeLine: false,
+                                                baseAmountForPercentage: 0,
+                                                feesTotal: "",
+                                                locale: usLocale,
+                                                storeCurrencySettings: usStoreSettings,
+                                                didSelectSave: { _ in })
+
+        // Then
+        XCTAssertEqual(viewModel.amountPlaceholder, "0")
+    }
+
+    func test_view_model_initializes_correctly_with_no_existing_fee_line() {
+        // Given
+        let viewModel = FeeLineDetailsViewModel(isExistingFeeLine: false,
+                                                baseAmountForPercentage: 0,
+                                                feesTotal: "",
+                                                locale: usLocale,
+                                                storeCurrencySettings: usStoreSettings,
+                                                didSelectSave: { _ in })
+
+        // Then
+        XCTAssertFalse(viewModel.isPercentageOptionAvailable)
+        XCTAssertFalse(viewModel.isExistingFeeLine)
     }
 }

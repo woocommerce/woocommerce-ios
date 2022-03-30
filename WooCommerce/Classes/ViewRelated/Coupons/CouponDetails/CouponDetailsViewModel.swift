@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import Experiments
 
 /// View model for `CouponDetails` view
 ///
@@ -73,6 +74,10 @@ final class CouponDetailsViewModel: ObservableObject {
     ///
     @Published private(set) var hasWCAnalyticsDisabled: Bool = false
 
+    /// Indicates whether a network call is in progress
+    ///
+    @Published private(set) var isDeletionInProgress: Bool = false
+
     /// The message to be shared about the coupon
     ///
     var shareMessage: String {
@@ -108,13 +113,19 @@ final class CouponDetailsViewModel: ObservableObject {
     private let stores: StoresManager
     private let currencySettings: CurrencySettings
 
+    let isEditingEnabled: Bool
+    let isDeletingEnabled: Bool
+
     init(coupon: Coupon,
          stores: StoresManager = ServiceLocator.stores,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         featureFlags: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = coupon.siteID
         self.coupon = coupon
         self.stores = stores
         self.currencySettings = currencySettings
+        isEditingEnabled = featureFlags.isFeatureFlagEnabled(.couponEditing) && coupon.discountType != .other
+        isDeletingEnabled = featureFlags.isFeatureFlagEnabled(.couponDeletion)
         populateDetails()
     }
 
@@ -161,6 +172,21 @@ final class CouponDetailsViewModel: ObservableObject {
                         self.hasErrorLoadingAmount = true
                     }
                 }
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    func deleteCoupon(onSuccess: @escaping () -> Void, onFailure: @escaping () -> Void) {
+        isDeletionInProgress = true
+        let action = CouponAction.deleteCoupon(siteID: siteID, couponID: coupon.couponID) { [weak self] result in
+            self?.isDeletionInProgress = false
+            switch result {
+            case .success:
+                onSuccess()
+            case .failure(let error):
+                DDLogError("⛔️ Error deleting coupon: \(error)")
+                onFailure()
             }
         }
         stores.dispatch(action)

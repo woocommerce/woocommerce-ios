@@ -3,14 +3,29 @@ import SwiftUI
 /// This view represent a single element of the HubMenu
 ///
 struct HubMenuElement: View {
-    let image: UIImage
-    let imageColor: UIColor
-    let text: String
-    let badge: Int
-    let onTapGesture: (() -> Void)
+    private let image: UIImage
+    private let imageColor: UIColor
+    private let text: String
+    private let badge: Int
+    private let onTapGesture: (() -> Void)
+
+    @Binding private var isDisabled: Bool
+
+    init(image: UIImage, imageColor: UIColor, text: String, badge: Int, isDisabled: Binding<Bool>, onTapGesture: @escaping (() -> Void)) {
+        self.image = image
+        self.imageColor = imageColor
+        self.text = text
+        self.badge = badge
+        self._isDisabled = isDisabled
+        self.onTapGesture = onTapGesture
+    }
 
     var body: some View {
         Button {
+            guard !isDisabled else {
+                return
+            }
+            isDisabled = true
             onTapGesture()
         } label: {
             ZStack(alignment: .topTrailing) {
@@ -42,6 +57,7 @@ struct HubMenuElement: View {
                     .renderedIf(badge > 0)
             }
         }
+        .disabled(isDisabled)
     }
 
     private struct HubMenuBadge: View {
@@ -62,7 +78,7 @@ struct HubMenuElement: View {
         }
     }
 
-    enum Constants {
+    private enum Constants {
         static let iconTopPadding: CGFloat = 32
         static let paddingBetweenElements: CGFloat = 8
         static let minimumBottomPadding: CGFloat = 2
@@ -80,6 +96,7 @@ struct HubMenuElement_Previews: PreviewProvider {
                        imageColor: .brand,
                        text: "Menu",
                        badge: 1,
+                       isDisabled: .constant(false),
                        onTapGesture: {})
             .previewLayout(.fixed(width: 160, height: 160))
             .previewDisplayName("Hub Menu Element")

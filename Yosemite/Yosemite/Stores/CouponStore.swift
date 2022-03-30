@@ -107,13 +107,11 @@ private extension CouponStore {
                 onCompletion(.failure(error))
 
             case .success(let coupons):
-                if pageNumber == Default.firstPageNumber {
-                    self.deleteStoredCoupons(siteID: siteID)
-                }
-
+                let shouldClearData = pageNumber == Default.firstPageNumber
                 let hasNextPage = coupons.count == pageSize
                 self.upsertStoredCouponsInBackground(readOnlyCoupons: coupons,
-                                                     siteID: siteID) {
+                                                     siteID: siteID,
+                                                     shouldClearExistingCoupons: shouldClearData) {
                     onCompletion(.success(hasNextPage))
                 }
             }
@@ -270,10 +268,15 @@ private extension CouponStore {
     ///
     func upsertStoredCouponsInBackground(readOnlyCoupons: [Networking.Coupon],
                                          siteID: Int64,
+                                         shouldClearExistingCoupons: Bool = false,
                                          onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform { [weak self] in
-            self?.upsertStoredCoupons(readOnlyCoupons: readOnlyCoupons,
+            guard let self = self else { return }
+            if shouldClearExistingCoupons {
+                derivedStorage.deleteCoupons(siteID: siteID)
+            }
+            self.upsertStoredCoupons(readOnlyCoupons: readOnlyCoupons,
                                       in: derivedStorage,
                                       siteID: siteID)
         }
@@ -299,14 +302,6 @@ private extension CouponStore {
 
             storageCoupon.update(with: coupon)
         }
-    }
-
-    /// Deletes all Storage.Coupon with the specified `siteID`
-    ///
-    func deleteStoredCoupons(siteID: Int64) {
-        let storage = storageManager.viewStorage
-        storage.deleteCoupons(siteID: siteID)
-        storage.saveIfNeeded()
     }
 
     /// Deletes the Storage.Coupon with the specified `siteID` and `couponID` in a background thread.

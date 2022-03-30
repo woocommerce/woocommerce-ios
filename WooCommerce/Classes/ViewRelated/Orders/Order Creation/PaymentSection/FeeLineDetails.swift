@@ -113,7 +113,6 @@ struct FeeLineDetails: View {
                                   text: $viewModel.amount,
                                   focus: $focusFixedAmountInput)
                     .keyboardType(.numbersAndPunctuation)
-                    .addingCurrencySymbol(viewModel.currencySymbol, on: viewModel.currencyPosition)
                     .onTapGesture {
                         focusFixedAmountInput = true
                     }

@@ -5,8 +5,8 @@ import Yosemite
 ///
 final class CouponDetailsHostingController: UIHostingController<CouponDetails> {
 
-    init(viewModel: CouponDetailsViewModel) {
-        super.init(rootView: CouponDetails(viewModel: viewModel))
+    init(viewModel: CouponDetailsViewModel, onDeletion: @escaping () -> Void) {
+        super.init(rootView: CouponDetails(viewModel: viewModel, onDeletion: onDeletion))
         // The navigation title is set here instead of the SwiftUI view's `navigationTitle`
         // to avoid the blinking of the title label when pushed from UIKit view.
         title = viewModel.couponCode
@@ -21,12 +21,17 @@ final class CouponDetailsHostingController: UIHostingController<CouponDetails> {
 }
 
 struct CouponDetails: View {
+    // Closure to be triggered when the coupon is deleted successfully
+    private let onDeletion: () -> Void
+
     @ObservedObject private var viewModel: CouponDetailsViewModel
     @State private var showingActionSheet: Bool = false
     @State private var showingShareSheet: Bool = false
     @State private var showingUsageDetails: Bool = false
+    @State private var showingEditCoupon: Bool = false
     @State private var showingAmountLoadingErrorPrompt: Bool = false
     @State private var showingEnableAnalytics: Bool = false
+    @State private var showingDeletionConfirmAlert: Bool = false
 
     // Tracks the scale of the view due to accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
@@ -35,13 +40,49 @@ struct CouponDetails: View {
     /// It is kept internal so that the hosting controller can update its presenting controller to itself.
     let noticePresenter: DefaultNoticePresenter
 
-    init(viewModel: CouponDetailsViewModel) {
+    init(viewModel: CouponDetailsViewModel, onDeletion: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.onDeletion = onDeletion
         self.noticePresenter = DefaultNoticePresenter()
         viewModel.syncCoupon()
         viewModel.loadCouponReport()
 
         ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "loaded"])
+    }
+
+    private var actionSheetButtons: [Alert.Button] {
+        var buttons: [Alert.Button] =
+        [
+            .default(Text(Localization.copyCode), action: {
+                UIPasteboard.general.string = viewModel.couponCode
+                let notice = Notice(title: Localization.couponCopied, feedbackType: .success)
+                noticePresenter.enqueue(notice: notice)
+                ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "copied_code"])
+            }),
+            .default(Text(Localization.shareCoupon), action: {
+                showingShareSheet = true
+                ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "shared_code"])
+            })
+        ]
+
+        if viewModel.isEditingEnabled {
+            buttons.append(contentsOf: [
+                .default(Text(Localization.editCoupon), action: {
+                    // TODO: add analytics
+                    showingEditCoupon = true
+                })
+            ])
+        }
+
+        if viewModel.isDeletingEnabled {
+            buttons.append(.destructive(Text(Localization.deleteCoupon), action: {
+                showingDeletionConfirmAlert = true
+            }))
+        }
+
+        buttons.append(.cancel())
+
+        return buttons
     }
 
     var body: some View {
@@ -53,19 +94,7 @@ struct CouponDetails: View {
                         .actionSheet(isPresented: $showingActionSheet) {
                             ActionSheet(
                                 title: Text(Localization.manageCoupon),
-                                buttons: [
-                                    .default(Text(Localization.copyCode), action: {
-                                        UIPasteboard.general.string = viewModel.couponCode
-                                        let notice = Notice(title: Localization.couponCopied, feedbackType: .success)
-                                        noticePresenter.enqueue(notice: notice)
-                                        ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "copied_code"])
-                                    }),
-                                    .default(Text(Localization.shareCoupon), action: {
-                                        showingShareSheet = true
-                                        ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "shared_code"])
-                                    }),
-                                    .cancel()
-                                ]
+                                buttons: actionSheetButtons
                             )
                         }
                         .shareSheet(isPresented: $showingShareSheet) {
@@ -153,15 +182,28 @@ struct CouponDetails: View {
                     viewModel.loadCouponReport()
                 })
             }
+            .alert(isPresented: $showingDeletionConfirmAlert, content: {
+                Alert(title: Text(Localization.deleteCoupon),
+                      message: Text(Localization.deleteCouponConfirm),
+                      primaryButton: .destructive(Text(Localization.deleteButton), action: handleCouponDeletion),
+                      secondaryButton: .cancel())
+            })
+            .sheet(isPresented: $showingEditCoupon) {
+                AddEditCoupon(AddEditCouponViewModel(existingCoupon: viewModel.coupon))
+            }
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    showingActionSheet = true
-                }, label: {
-                    Image(uiImage: .moreImage)
-                        .renderingMode(.template)
-                })
+                if viewModel.isDeletionInProgress {
+                    ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                } else {
+                    Button(action: {
+                        showingActionSheet = true
+                    }, label: {
+                        Image(uiImage: .moreImage)
+                            .renderingMode(.template)
+                    })
+                }
             }
         }
         .wooNavigationBarStyle()
@@ -271,6 +313,13 @@ struct CouponDetails: View {
             showingAmountLoadingErrorPrompt = true
         }
     }
+
+    private func handleCouponDeletion() {
+        viewModel.deleteCoupon(onSuccess: onDeletion, onFailure: {
+            let notice = Notice(title: Localization.errorDeletingCoupon, feedbackType: .error)
+            noticePresenter.enqueue(notice: notice)
+        })
+    }
 }
 
 // MARK: - Subtypes
@@ -330,6 +379,7 @@ private extension CouponDetails {
         static let couponCopied = NSLocalizedString("Coupon copied", comment: "Notice message displayed when a coupon code is " +
                                                     "copied from the Coupon Details screen")
         static let shareCoupon = NSLocalizedString("Share Coupon", comment: "Action title for sharing coupon from the Coupon Details screen")
+        static let editCoupon = NSLocalizedString("Edit Coupon", comment: "Action title for editing a coupon from the Coupon Details screen")
         static let performance = NSLocalizedString("Performance", comment: "Title of the Performance section on Coupons Details screen")
         static let discountedOrders = NSLocalizedString("Discounted Orders", comment: "Title of the Discounted Orders label on Coupon Details screen")
         static let amount = NSLocalizedString("Amount", comment: "Title of the Amount label on Coupon Details screen")
@@ -346,6 +396,19 @@ private extension CouponDetails {
             "Try Again",
             comment: "Action displayed in the error prompt when loading total discounted amount in Coupon Details screen fails"
         )
+        static let deleteCoupon = NSLocalizedString("Delete Coupon", comment: "Action title for deleting coupon on the Coupon Details screen")
+        static let deleteCouponConfirm = NSLocalizedString(
+            "Are you sure you want to delete this coupon?",
+            comment: "Confirm message for deleting coupon on the Coupon Details screen"
+        )
+        static let deleteButton = NSLocalizedString(
+            "Delete",
+            comment: "Title for the action button on the confirm alert for deleting coupon on the Coupon Details screen"
+        )
+        static let errorDeletingCoupon = NSLocalizedString(
+            "Failed to delete coupon. Please try again.",
+            comment: "Error message on the Coupon Details screen when deleting coupon fails"
+        )
     }
 
     struct DetailRow: Identifiable {
@@ -360,7 +423,7 @@ private extension CouponDetails {
 #if DEBUG
 struct CouponDetails_Previews: PreviewProvider {
     static var previews: some View {
-        CouponDetails(viewModel: CouponDetailsViewModel(coupon: Coupon.sampleCoupon))
+        CouponDetails(viewModel: CouponDetailsViewModel(coupon: Coupon.sampleCoupon), onDeletion: {})
     }
 }
 #endif

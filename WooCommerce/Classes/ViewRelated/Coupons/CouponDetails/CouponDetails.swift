@@ -136,7 +136,6 @@ struct CouponDetails: View {
                         Text(Localization.performance)
                             .bold()
                             .padding(Constants.margin)
-                            .padding(.horizontal, insets: geometry.safeAreaInsets)
                         VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
                             HStack(alignment: .firstTextBaseline) {
                                 Text(Localization.discountedOrders)
@@ -172,6 +171,7 @@ struct CouponDetails: View {
                             }
                         }
                     }
+                    .padding(.horizontal, insets: geometry.safeAreaInsets)
                     .padding(.bottom, Constants.margin)
                     .background(Color(.listForeground))
 
@@ -182,7 +182,7 @@ struct CouponDetails: View {
                 }.hidden()
             }
             .background(Color(.listBackground))
-            .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
+            .ignoresSafeArea(.container, edges: [.horizontal])
             .sheet(isPresented: $showingEnableAnalytics) {
                 EnableAnalyticsView(viewModel: .init(siteID: viewModel.siteID),
                                     presentingController: noticePresenter.presentingViewController,

@@ -42,10 +42,9 @@ final class ReviewsViewModelTests: XCTestCase {
 
     func testDisplayPlaceHolderReviewsStopsForWardingEventsInDataSource() {
         // Given
-        let table = UITableView()
         let mockDataSource = MockReviewsDataSource()
         let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource)
-        viewModel.displayPlaceholderReviews(tableView: table)
+        viewModel.didDisplayPlaceholderReviews()
 
         // Then
         XCTAssertTrue(mockDataSource.stopsForwardingEventsWasHit)
@@ -58,7 +57,7 @@ final class ReviewsViewModelTests: XCTestCase {
         let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource)
 
         // When
-        viewModel.removePlaceholderReviews(tableView: table)
+        viewModel.didRemovePlaceholderReviews(tableView: table)
 
         // Then
         XCTAssertTrue(mockDataSource.startForwardingEventsWasHit)

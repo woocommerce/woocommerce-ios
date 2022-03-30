@@ -18,7 +18,7 @@ extension GhostableViewController {
         ghostView.translatesAutoresizingMaskIntoConstraints = false
         addChild(ghostTableViewController)
         view.addSubview(ghostView)
-        view.pinSubviewToAllEdges(ghostView)
+        view.pinSubviewToSafeArea(ghostView)
         ghostTableViewController.didMove(toParent: self)
     }
 

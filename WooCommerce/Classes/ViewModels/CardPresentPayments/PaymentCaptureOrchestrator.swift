@@ -55,7 +55,7 @@ final class PaymentCaptureOrchestrator {
             siteID: order.siteID,
             orderID: order.orderID,
             parameters: parameters,
-            onCardReaderMessage: {(event) in
+            onCardReaderMessage: { (event) in
                 switch event {
                 case .waitingForInput:
                     onWaitingForInput()

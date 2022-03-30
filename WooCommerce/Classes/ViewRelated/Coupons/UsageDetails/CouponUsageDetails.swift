@@ -12,8 +12,6 @@ struct CouponUsageDetails: View {
         GeometryReader { geometry in
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    ListHeaderView(text: Localization.usageRestriction.uppercased(), alignment: .left)
-                        .padding(.horizontal, insets: geometry.safeAreaInsets)
                     VStack(alignment: .leading, spacing: 0) {
                         TitleAndTextFieldRow(title: String.localizedStringWithFormat(Localization.minimumSpend, viewModel.currencySymbol),
                                              placeholder: Localization.none,

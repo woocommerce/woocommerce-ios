@@ -41,6 +41,7 @@ private extension AddEditCoupon {
     }
 }
 
+#if DEBUG
 struct AddEditCoupon_Previews: PreviewProvider {
     static var previews: some View {
 
@@ -50,3 +51,4 @@ struct AddEditCoupon_Previews: PreviewProvider {
         AddEditCoupon(editingViewModel)
     }
 }
+#endif

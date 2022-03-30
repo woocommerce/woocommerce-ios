@@ -479,6 +479,42 @@ final class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 8.50)
     }
 
+    func test_payment_section_values_correct_when_shipping_line_is_negative() {
+        // Given
+        let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
+
+        // When
+        viewModel.addProductViewModel.selectProduct(product.productID)
+        let testShippingLine = ShippingLine(shippingID: 0,
+                                            methodTitle: "Flat Rate",
+                                            methodID: "other",
+                                            total: "-5",
+                                            totalTax: "",
+                                            taxes: [])
+        viewModel.saveShippingLine(testShippingLine)
+
+        // Then
+        XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowShippingTotal)
+        XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "-£5.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£3.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 3.50)
+
+        // When
+        viewModel.saveShippingLine(nil)
+
+        // Then
+        XCTAssertFalse(viewModel.paymentDataViewModel.shouldShowShippingTotal)
+        XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "£0.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£8.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 8.50)
+    }
+
     func test_payment_section_loading_indicator_is_enabled_while_order_syncs() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)

@@ -15,11 +15,9 @@ struct CouponUsageDetails: View {
                     ListHeaderView(text: Localization.usageRestriction.uppercased(), alignment: .left)
                         .padding(.horizontal, insets: geometry.safeAreaInsets)
                     VStack(alignment: .leading, spacing: 0) {
-                        Divider()
                         TitleAndTextFieldRow(title: String.localizedStringWithFormat(Localization.minimumSpend, viewModel.currencySymbol),
                                              placeholder: Localization.none,
                                              text: $viewModel.minimumSpend,
-                                             editable: false,
                                              keyboardType: .decimalPad)
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()
@@ -28,7 +26,6 @@ struct CouponUsageDetails: View {
                         TitleAndTextFieldRow(title: String.localizedStringWithFormat(Localization.maximumSpend, viewModel.currencySymbol),
                                              placeholder: Localization.none,
                                              text: $viewModel.maximumSpend,
-                                             editable: false,
                                              keyboardType: .decimalPad)
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()
@@ -37,7 +34,6 @@ struct CouponUsageDetails: View {
                         TitleAndTextFieldRow(title: Localization.usageLimitPerCoupon,
                                              placeholder: Localization.unlimited,
                                              text: $viewModel.usageLimitPerCoupon,
-                                             editable: false,
                                              keyboardType: .asciiCapableNumberPad)
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()
@@ -46,20 +42,15 @@ struct CouponUsageDetails: View {
                         TitleAndTextFieldRow(title: Localization.usageLimitPerUser,
                                              placeholder: Localization.unlimited,
                                              text: $viewModel.usageLimitPerUser,
-                                             editable: false,
                                              keyboardType: .asciiCapableNumberPad)
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
-                        Divider()
                     }
                     .background(Color(.listForeground))
-                    .padding(.bottom, Constants.margin)
 
                     VStack(alignment: .leading, spacing: 0) {
-                        Divider()
                         TitleAndTextFieldRow(title: Localization.limitUsageToXItems,
                                              placeholder: Localization.allQualifyingInCart,
                                              text: $viewModel.limitUsageToXItems,
-                                             editable: false,
                                              keyboardType: .asciiCapableNumberPad)
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()
@@ -68,12 +59,16 @@ struct CouponUsageDetails: View {
                         TitleAndValueRow(title: Localization.allowedEmails,
                                          value: viewModel.allowedEmails.isNotEmpty ?
                                             .content(viewModel.allowedEmails) :
-                                            .content(Localization.noRestrictions))
-                            .padding(.horizontal, insets: geometry.safeAreaInsets)
+                                            .content(Localization.noRestrictions),
+                                         selectionStyle: .disclosure) {
+                            // TODO: show input
+                        }
+                        .padding(.horizontal, insets: geometry.safeAreaInsets)
+
                         Divider()
+                            .padding(.leading, Constants.margin)
+                            .padding(.leading, insets: geometry.safeAreaInsets)
                     }
-                    .background(Color(.listForeground))
-                    .padding(.top, Constants.margin)
 
                     VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
                         TitleAndToggleRow(title: Localization.individualUseOnly,

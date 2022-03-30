@@ -201,8 +201,8 @@ private extension ProductVariationsViewController {
         tableView.rowHeight = UITableView.automaticDimension
 
         // Removes extra header spacing in ghost content view.
-        ghostTableViewController.tableView.estimatedSectionHeaderHeight = 0
-        ghostTableViewController.tableView.sectionHeaderHeight = 0
+        tableView.estimatedSectionHeaderHeight = 0
+        tableView.sectionHeaderHeight = 0
 
         tableView.backgroundColor = .listBackground
         tableView.refreshControl = refreshControl

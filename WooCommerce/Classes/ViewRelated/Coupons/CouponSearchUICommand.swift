@@ -49,7 +49,13 @@ final class CouponSearchUICommand: SearchUICommand {
 
     func didSelectSearchResult(model: Coupon, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {
         let detailsViewModel = CouponDetailsViewModel(coupon: model)
-        let couponDetails = CouponDetails(viewModel: detailsViewModel)
+        let couponDetails = CouponDetails(viewModel: detailsViewModel) {
+            viewController.navigationController?.popViewController(animated: true)
+            let notice = Notice(title: Localization.couponDeleted, feedbackType: .success)
+            let noticePresenter = DefaultNoticePresenter()
+            noticePresenter.presentingViewController = viewController
+            noticePresenter.enqueue(notice: notice)
+        }
         let hostingController = UIHostingController(rootView: couponDetails)
         viewController.navigationController?.pushViewController(hostingController, animated: true)
     }
@@ -75,5 +81,6 @@ private extension CouponSearchUICommand {
         static let emptyResultMessage = NSLocalizedString("We're sorry, we couldn't find results for “%@”",
                                                           comment: "Message for empty Coupons search results. The %@ is a " +
                                                           "placeholder for the text entered by the user.")
+        static let couponDeleted = NSLocalizedString("Coupon deleted", comment: "Notice message after deleting coupon from the Coupon Details screen")
     }
 }

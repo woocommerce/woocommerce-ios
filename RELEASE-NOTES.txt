@@ -3,6 +3,7 @@
 8.9
 -----
 - [*] Coupons: Fixed issue loading the coupon list from the local storage on initial load. [https://github.com/woocommerce/woocommerce-ios/pull/6463]
+- [*] Hub Menu: Multiple menu items can no longer be tapped simultaneously. [https://github.com/woocommerce/woocommerce-ios/pull/6484]
 - [*] Jetpack CP: Fixed crash when attempting to access WP-Admin with an invalid URL that has an unsupported scheme. [https://github.com/woocommerce/woocommerce-ios/pull/6502]
 - [***] Orders: Order Creation is now available to everyone! You can go to the Orders tab and tap the + button to create a new order. [https://github.com/woocommerce/woocommerce-ios/pull/6537]
 

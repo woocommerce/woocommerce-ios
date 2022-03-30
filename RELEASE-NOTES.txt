@@ -4,6 +4,7 @@
 -----
 - [*] Coupons: Fixed issue loading the coupon list from the local storage on initial load. [https://github.com/woocommerce/woocommerce-ios/pull/6463]
 - [*] Jetpack CP: Fixed crash when attempting to access WP-Admin with an invalid URL that has an unsupported scheme. [https://github.com/woocommerce/woocommerce-ios/pull/6502]
+- [internal] Loading ghost screens are refactored to avoid a potential crash. Please quickly smoke test them so they look OK. https://github.com/woocommerce/woocommerce-ios/issues/2448
 
 8.8
 -----
@@ -128,7 +129,7 @@
 - [*] Fix incorrect subtitle on customs row of Shipping Label purchase flow. [https://github.com/woocommerce/woocommerce-ios/pull/5093]
 - [*] Make sure customs form printing option is not available on non-international orders. [https://github.com/woocommerce/woocommerce-ios/pull/5104]
 - [*] Fix incorrect logo for DHL in Shipping Labels flow. [https://github.com/woocommerce/woocommerce-ios/pull/5105]
- 
+
 7.6
 -----
 - [x] Show an improved error modal if there are problems while selecting a store. [https://github.com/woocommerce/woocommerce-ios/pull/5006]
@@ -300,7 +301,7 @@
 
 5.6
 -----
-- [**] Fixed order list sometimes not showing newly submitted orders. 
+- [**] Fixed order list sometimes not showing newly submitted orders.
 - [*] now the date pickers on iOS 14 are opened as modal view. [https://github.com/woocommerce/woocommerce-ios/pull/3148]
 - [*] now it's possible to remove an image from a Product Variation if the WC version 4.7+. [https://github.com/woocommerce/woocommerce-ios/pull/3159]
 - [*] removed the Product Title in product screen navigation bar. [https://github.com/woocommerce/woocommerce-ios/pull/3187]
@@ -311,7 +312,7 @@
 
 
 5.5
------ 
+-----
 - [**] Products M4 features are now available to all. Products M4 features: add a simple/grouped/external product with actions to publish or save as draft. [https://github.com/woocommerce/woocommerce-ios/pull/3133]
 - [*] enhancement: Order details screen now shows variation attributes for WC version 4.7+. [https://github.com/woocommerce/woocommerce-ios/pull/3109]
 - [*] fix: Product detail screen now includes the number of ratings for that product. [https://github.com/woocommerce/woocommerce-ios/pull/3089]
@@ -361,7 +362,7 @@
 - [*] bugfix: now reviews are refreshed correctly. If you try to delete or to set as spam a review from the web, the result will match in the product reviews list.
 - [*] If the Products switch is on in Settings > Experimental Features:
   - For a variable product, the stock status is not shown in the product details anymore when stock management is disabled since stock status is controlled at variation level.
-- [internal] The Order List and Orders Search → Filter has a new backend architecture (#2820). This was changed as an experiment to fix #1543. This affects iOS 13.0 users only. No new behaviors have been added. Github project: https://git.io/JUBco. 
+- [internal] The Order List and Orders Search → Filter has a new backend architecture (#2820). This was changed as an experiment to fix #1543. This affects iOS 13.0 users only. No new behaviors have been added. Github project: https://git.io/JUBco.
 - [*] Orders → Search list will now show the full counts instead of “99+”. #2825
 
 
@@ -414,7 +415,7 @@
 - [*] In Order Details, SKU was removed from the Products List. It is still shown when fulfilling the order or viewing the product details.
 - [*] Polish the loading state on the product variations screen.
 - [*] When opening a simple product from outside of the Products tab (e.g. from Top Performers section or an order), the product name and ellipsis menu (if the Products feature switch is enabled) should be visible in the navigation bar.
- 
+
 
 4.4
 -----
@@ -435,7 +436,7 @@
 -----
 - Products: now the Product details can be edited and saved outside Products tab (e.g. from Order details or Top Performers).
 - [internal]: the navigation to the password entry screen has changed and can cause regressions. See https://git.io/JflDW for testing details.
-- [internal] Refactored some API calls for fetching a Note, Product, and Product Review. 
+- [internal] Refactored some API calls for fetching a Note, Product, and Product Review.
 - Products: we improved our VoiceOver support in Product Price settings
 - In Settings > Experimental Features, a Products switch is now available for turning Products M2 features on and off for simple products (default off for beta testing). Products M2 features: update product images, product settings, viewing and sharing a product.
 - The WIP banner on the Products tab is now collapsed by default for more vertical space.
@@ -450,7 +451,7 @@
 - The Processing orders list will now show upcoming (future) orders.
 - Improved stats: fixed the incorrect time range on "This Week" tab when loading improved stats on a day when daily saving time changes.
 - [internal]: the "send magic link" screen has navigation changes that can cause regressions. See https://git.io/Jfqio for testing details.
-- The Orders list is now automatically refreshed when reopening the app. 
+- The Orders list is now automatically refreshed when reopening the app.
 - The Orders list is automatically refreshed if a new order (push notification) comes in.
 - Orders -> Search: The statuses now shows the total number of orders with that status.
 
@@ -461,7 +462,7 @@
 - The Photo Library permission alert shouldn't be prompted when opening the readonly product details or edit product for simple products, which is reproducible on iOS 11 or 12 devices. (The permission is only triggered when uploading images in Zendesk support or in debug builds with Products M2 enabled.)
 - [internal] Updated the empty search result views for Products and Orders. https://git.io/Jvdap
 
- 
+
 4.0
 -----
 - Products is now available with limited editing for simple products!
@@ -485,14 +486,14 @@
 - The Shipping Provider flow, will be called now Shipping Carrier.
 - Edit Products: in price settings, the order of currency and price field follows the store currency options under wp-admin > WooCommerce > Settings > General.
 - [internal] The signup and login flows have code changes. See https://git.io/Jv1Me for testing details.
- 
+
 3.8
 -----
 - Dashboard stats: any negative revenue (from refunds for example) for a time period are shown now.
 - Redesigned Orders List: Processing and All Orders are now shown in front. Filtering was moved to the Search view.
 - Fix Reviews sometimes failing to load on some WooCommerce configurations
 - Experimental: a Products feature switch is visible in Settings > Experimental Features that shows/hides the Products tab, and allow to edit a product.
- 
+
 3.7
 -----
 - Dashboard: now tapping on a product on "Top Performers" section open the product detail
@@ -533,7 +534,7 @@
 - bugfix: Fixed clipped content on section headings with larger font sizes
 - bugfix: Fixed footer overlapping the last row in Settings > About with larger font sizes
 - bugfix: the Orders badge on tab bar now is correctly refreshed after switching stores
- 
+
 3.2.1
 -----
 - bugfix: the order detail status and "Begin fulfillment" button now are correctly updated when the order status changes
@@ -546,7 +547,7 @@
 - Enhancement: Support for dark mode
 - bugfix: Settings no longer convert to partial dark mode.
 - Experimental: Support the latest wc-admin plugin release, v0.23.0 and up
- 
+
 3.1
 -----
 - The order detail view now includes the shipping method of the order.
@@ -561,17 +562,17 @@
 -----
 - bugfix: for sites with empty site time zone in the API (usually with UTC specified in wp-admin settings) and when the site time zone is not GMT+0, the stats v4 data no longer has the wrong boundaries (example in #1357).
 - bugfix: fixed a UI appearance problem on mail composer on iOS 13.
- 
+
 2.9
 -----
 - bugfix: the badge "9+" on the Orders tab doesn't overlap with the tab label on iPhone SE/8 landscape now, and polished based on design spec.
 - bugfix: the Top Performers in the new stats page should not have a dark header bar when launching the app in Dark mode.
 - Enhancement: preselect current Order status when editing the status with a list of order statuses.
 - bugfix: on Orders tab, the order status filter now stays after changing an Order status.
- 
+
 2.8
 -----
- 
+
 2.7
 -----
 - Enhancement: Enhancements to the Order Details screen, adding more customer information.
@@ -582,7 +583,7 @@
 - Enhancement: removed the "New Orders" card from the My store tab, now that the Orders tab displays the same information.
 - Added brand new stats page for user with the WooCommerce Admin plugin and provided an option for users to opt in or out directly from the Settings page.
 - bugfix: Order Details: icon on "Details" cell for fulfilled order can be wrong.
- 
+
 2.6
 -----
 - bugfix: 9+ orders in the orders badge text is now easier to read
@@ -594,7 +595,7 @@
 -----
 - bugfix: on certain devices, pulling down to refresh on Order Details screen used to result in weird UI with misplaced labels. Should be fixed in this release.
 - Enhancement: Display a badge in the bottom tab, overlapping the Orders icon, to indicate the number of orders processing.
-- Enhancement: The Notifications tab has been replaced by Reviews 
+- Enhancement: The Notifications tab has been replaced by Reviews
 
 2.4
 -----
@@ -609,24 +610,24 @@
 2.2
 -----
 - improvement: opting out of Tracks syncs with WordPress.com
- 
+
 2.1
 -----
 - improvement: improved support for RTL languages in the Dashboard
 - enhancement: You can now view product images on orders. Tapping on Products in Orders will present a view-only version of the Product's Details.
- 
+
 2.0
 -----
 - bugfix: dates in the Order Details screen are now localised.
 - improvement: improved support for larger font sizes in the login screen
- 
+
 1.9
 -----
 - bugfix: fixes "Unable to load content" error message when attempting to get Top Performers content.
 - new feature: You can now manually add shipment tracking to an Order. This feature is for users who have the [Shipment Tracking plugin](https://woocommerce.com/products/shipment-tracking) installed.
 - bugfix: fixes Store Picker: some users are unable to continue after logging in.
 - bugfix: fixes a crash when the network connection is slow
- 
+
 1.8
 -----
 
@@ -637,7 +638,7 @@
 - improvement: improved support for large text sizes.
 - bugfix: fixes Order List not loading for some users.
 - bugfix: fixes "Unable to load content" error message when attempting to get Top Performers content.
- 
+
 1.7
 -----
 - improvement: you can now log in using a site address.

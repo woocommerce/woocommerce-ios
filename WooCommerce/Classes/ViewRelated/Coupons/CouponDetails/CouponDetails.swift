@@ -178,16 +178,6 @@ struct CouponDetails: View {
 
                     Spacer().frame(height: Constants.margin)
                     Divider()
-                    VStack {
-                        NavigationRow(content: {
-                            Text(Localization.usageDetails)
-                                .bodyStyle()
-                        }, action: {
-                            showingUsageDetails = true
-                        }).padding(.horizontal, insets: geometry.safeAreaInsets)
-                    }
-                    .background(Color(.listForeground))
-                    Divider()
                 }
             }
             .background(Color(.listBackground))

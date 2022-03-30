@@ -55,8 +55,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
                                                                                                 cellClass: OrderTableViewCell.self,
                                                                                                 estimatedRowHeight: Settings.estimatedRowHeight,
                                                                                                 tableViewStyle: .grouped,
-                                                                                                backgroundColor: .listBackground,
-                                                                                                separatorStyle: .singleLine,
                                                                                                 isScrollEnabled: false))
 
     /// Pull To Refresh Support.

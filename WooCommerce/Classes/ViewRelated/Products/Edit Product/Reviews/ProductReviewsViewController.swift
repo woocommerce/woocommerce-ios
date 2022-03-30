@@ -11,9 +11,7 @@ final class ProductReviewsViewController: UIViewController, GhostableViewControl
     lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: ProductReviewTableViewCell.self,
                                                                                                 estimatedRowHeight: ProductReviewsDataSource
                                                                                                                     .Settings
-                                                                                                                    .estimatedRowHeight,
-                                                                                                backgroundColor: .listBackground,
-                                                                                                separatorStyle: .singleLine))
+                                                                                                                    .estimatedRowHeight))
 
     /// Pull To Refresh Support.
     ///

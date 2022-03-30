@@ -7,16 +7,11 @@ import class AutomatticTracks.CrashLogging
 
 /// Displays a paginated list of Product Variations with its price or visibility.
 ///
-final class ProductVariationsViewController: UIViewController, GhostableViewController {
+final class ProductVariationsViewController: UIViewController {
 
     /// Empty state screen
     ///
     private lazy var emptyStateViewController = EmptyStateViewController(style: .list)
-
-    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: ProductsTabProductTableViewCell.self,
-                                                                                                estimatedRowHeight: Settings.estimatedRowHeight,
-                                                                                                separatorStyle: .none,
-                                                                                                isScrollEnabled: false))
 
     @IBOutlet private weak var tableView: UITableView!
 
@@ -157,7 +152,6 @@ final class ProductVariationsViewController: UIViewController, GhostableViewCont
         super.viewDidLayoutSubviews()
 
         tableView.updateHeaderHeight()
-        ghostTableViewController.tableView.updateHeaderHeight()
     }
 }
 
@@ -601,14 +595,16 @@ private extension ProductVariationsViewController {
     /// Renders the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
     ///
     func displayPlaceholderProducts() {
-        displayGhostContent()
+        let options = GhostOptions(reuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
+        tableView.displayGhostContent(options: options, style: .wooDefaultGhostStyle)
+
         resultsController.stopForwardingEvents()
     }
 
     /// Removes the Placeholder Products (and restores the ResultsController <> UITableView link).
     ///
     func removePlaceholderProducts() {
-        removeGhostContent()
+        tableView.removeGhostContent()
         resultsController.startForwardingEvents(to: tableView)
         configureResultsControllerEventHandling(resultsController)
         tableView.reloadData()
@@ -758,6 +754,7 @@ private extension ProductVariationsViewController {
 
     enum Settings {
         static let estimatedRowHeight = CGFloat(86)
+        static let placeholderRowsPerSection = [3]
     }
 
     enum Localization {

@@ -58,11 +58,7 @@ final class GhostTableViewController: UITableViewController {
         tableView.estimatedRowHeight = options.estimatedRowHeight
         tableView.isScrollEnabled = options.isScrollEnabled
         tableView.applyFooterViewForHidingExtraRowPlaceholders()
-        registerCellClass()
-    }
-
-    private func registerCellClass() {
-        options.cellClass.nibExistsInMainBundle() ? tableView.registerNib(for: options.cellClass) : tableView.register(options.cellClass)
+        tableView.registerNib(for: options.cellClass)
     }
 
     /// Activate the ghost if this view is added to the parent.

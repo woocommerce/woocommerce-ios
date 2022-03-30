@@ -233,6 +233,8 @@ public enum WooAnalyticsStat: String {
     case orderTrackingDeleteFailed = "order_tracking_delete_failed"
     case orderTrackingDeleteSuccess = "order_tracking_delete_success"
     case orderTrackingProvidersLoaded = "order_tracking_providers_loaded"
+    case orderFeeAdd = "order_fee_add"
+    case orderShippingMethodAdd = "order_shipping_method_add"
 
     // MARK: Order List Sorting/Filtering
     //
@@ -565,6 +567,19 @@ public enum WooAnalyticsStat: String {
     case hubMenuSwitchStoreTapped = "hub_menu_switch_store_tapped"
     case hubMenuOptionTapped = "hub_menu_option_tapped"
     case hubMenuSettingsTapped = "hub_menu_settings_tapped"
+
+    // MARK: Coupons
+    case couponsLoaded = "coupons_loaded"
+    case couponsLoadedFailed = "coupons_loaded_failed"
+    case couponsListSearchTapped = "coupons_list_search_tapped"
+    case couponDetails = "coupon_details"
+    case couponSettingDisabled = "coupon_settings_disabled"
+    case couponSettingEnabled = "coupon_settings_enabled"
+
+    // MARK: Inbox Notes
+    case inboxNotesLoaded = "inbox_notes_loaded"
+    case inboxNotesLoadedFailed = "inbox_notes_load_failed"
+    case inboxNoteAction = "inbox_note_action"
 }
 
 public extension WooAnalyticsStat {

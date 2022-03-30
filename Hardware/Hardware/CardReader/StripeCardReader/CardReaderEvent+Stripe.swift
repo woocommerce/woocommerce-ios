@@ -11,7 +11,7 @@ extension CardReaderEvent {
     /// Factory method
     /// - Parameter readerInputOptions: An instance of a StripeTerminal.ReaderDisplayMessage
     static func make(displayMessage: ReaderDisplayMessage) -> Self {
-         .displayMessage(Terminal.stringFromReaderDisplayMessage(displayMessage))
+        return .displayMessage(displayMessage.localizedMessage)
     }
 }
 #endif

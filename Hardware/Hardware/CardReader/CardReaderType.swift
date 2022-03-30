@@ -5,6 +5,8 @@ public enum CardReaderType {
     case chipper
     /// Stripe M2
     case stripeM2
+    /// BBPOS WisePad 3
+    case wisepad3
     /// Other
     case other
 }
@@ -22,6 +24,8 @@ extension CardReaderType {
             return "CHIPPER_2X"
         case .stripeM2:
             return "STRIPE_M2"
+        case .wisepad3:
+            return "WISEPAD_3"
         default:
             return "UNKNOWN"
         }

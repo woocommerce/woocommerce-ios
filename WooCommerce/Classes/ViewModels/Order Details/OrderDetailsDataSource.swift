@@ -205,9 +205,15 @@ final class OrderDetailsDataSource: NSObject {
 
     private let imageService: ImageService = ServiceLocator.imageService
 
-    init(order: Order, storageManager: StorageManagerType = ServiceLocator.storageManager) {
+    /// IPP Configuration
+    private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
+
+    init(order: Order,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration) {
         self.storageManager = storageManager
         self.order = order
+        self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
         self.couponLines = order.coupons
 
         super.init()
@@ -1504,7 +1510,10 @@ private extension OrderDetailsDataSource {
     }
 
     func isOrderCurrencyEligibleForCardPayment() -> Bool {
-        CurrencySettings.CurrencyCode(rawValue: order.currency) == .USD
+        guard let currency = CurrencyCode(caseInsensitiveRawValue: order.currency) else {
+            return false
+        }
+        return cardPresentPaymentsConfiguration.currencies.contains(currency)
     }
 
     func isOrderStatusEligibleForCardPayment() -> Bool {
@@ -1513,7 +1522,12 @@ private extension OrderDetailsDataSource {
 
     func isOrderPaymentMethodEligibleForCardPayment() -> Bool {
         let paymentMethod = OrderPaymentMethod(rawValue: order.paymentMethodID)
-        return paymentMethod == .cod || paymentMethod == .woocommercePayments || paymentMethod == .none
+        switch paymentMethod {
+        case .booking, .cod, .woocommercePayments, .none:
+            return true
+        case .unknown:
+            return false
+        }
     }
 
     func hasCardPresentEligiblePaymentGatewayAccount() -> Bool {

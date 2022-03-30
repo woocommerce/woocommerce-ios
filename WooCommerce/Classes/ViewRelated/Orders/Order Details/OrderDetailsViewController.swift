@@ -48,27 +48,23 @@ final class OrderDetailsViewController: UIViewController {
 
     /// Order to be rendered!
     ///
-    var viewModel: OrderDetailsViewModel! {
-        didSet {
-            reloadTableViewSectionsAndData()
-        }
-    }
+    private let viewModel: OrderDetailsViewModel
 
     private let notices = OrderDetailsNotices()
 
     // MARK: - View Lifecycle
+    init(viewModel: OrderDetailsViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: Self.nibName, bundle: nil)
+    }
 
-    /// Create an instance of `Self` from its corresponding storyboard.
-    ///
-    static func instantiatedViewControllerFromStoryboard() -> Self? {
-        let storyboard = UIStoryboard.orders
-        let identifier = "OrderDetailsViewController"
-        return storyboard.instantiateViewController(withIdentifier: identifier) as? Self
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureNavigation()
+        configureNavigationBarTitle()
         configureTopLoaderView()
         configureTableView()
         registerTableViewCells()
@@ -99,10 +95,12 @@ final class OrderDetailsViewController: UIViewController {
     }
 
     override var shouldShowOfflineBanner: Bool {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            return false
+        }
         return true
     }
 }
-
 
 // MARK: - TableView Configuration
 //
@@ -123,11 +121,12 @@ private extension OrderDetailsViewController {
         tableView.rowHeight = UITableView.automaticDimension
 
         tableView.dataSource = viewModel.dataSource
+        tableView.accessibilityIdentifier = "order-details-table-view"
     }
 
     /// Setup: Navigation
     ///
-    func configureNavigation() {
+    func configureNavigationBarTitle() {
         let titleFormat = NSLocalizedString("Order #%1$@", comment: "Order number title. Parameters: %1$@ - order number")
         title = String.localizedStringWithFormat(titleFormat, viewModel.order.number)
     }
@@ -593,8 +592,7 @@ private extension OrderDetailsViewController {
     }
 
     func displayWebView(url: URL) {
-        let safariViewController = SFSafariViewController(url: url)
-        present(safariViewController, animated: true, completion: nil)
+        WebviewHelper.launch(url, with: self)
     }
 
     func productsMoreMenuTapped(sourceView: UIView) {
@@ -658,9 +656,7 @@ private extension OrderDetailsViewController {
             actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelTrackingMoreMenu.trackShipmentAction) { [weak self] _ in
                 guard let self = self else { return }
                 ServiceLocator.analytics.track(event: .shipmentTrackingMenu(action: .track))
-                let safariViewController = SFSafariViewController(url: url)
-                safariViewController.modalPresentationStyle = .pageSheet
-                self.present(safariViewController, animated: true, completion: nil)
+                WebviewHelper.launch(url, with: self)
             }
         }
 

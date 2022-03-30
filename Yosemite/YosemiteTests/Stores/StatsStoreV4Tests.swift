@@ -64,7 +64,7 @@ final class StatsStoreV4Tests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatsV4.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatsV4Interval.self), 1)
         let readOnlyOrderStats = viewStorage.firstObject(ofType: Storage.OrderStatsV4.self)?.toReadOnly()
-        XCTAssertEqual(readOnlyOrderStats, sampleStats())
+        assertEqual(sampleStats(), readOnlyOrderStats)
     }
 
     /// Verifies that `StatsActionV4.retrieveStats` returns an error whenever there is an error response from the backend.
@@ -440,6 +440,20 @@ private extension StatsStoreV4Tests {
                                   taxes: 0,
                                   shipping: 0,
                                   netRevenue: 800,
+                                  totalProducts: 2)
+    }
+
+    /// Matches the first interval's `subtotals` field in `order-stats-v4-year` response.
+    func sampleIntervalSubtotals() -> Networking.OrderStatsV4Totals {
+        return OrderStatsV4Totals(totalOrders: 3,
+                                  totalItemsSold: 5,
+                                  grossRevenue: 800,
+                                  couponDiscount: 0,
+                                  totalCoupons: 0,
+                                  refunds: 0,
+                                  taxes: 0,
+                                  shipping: 0,
+                                  netRevenue: 800,
                                   totalProducts: 0)
     }
 
@@ -451,7 +465,7 @@ private extension StatsStoreV4Tests {
         return OrderStatsV4Interval(interval: "2019",
                                     dateStart: "2019-07-09 00:00:00",
                                     dateEnd: "2019-07-09 23:59:59",
-                                    subtotals: sampleTotals())
+                                    subtotals: sampleIntervalSubtotals())
     }
 
     func sampleStatsMutated() -> Networking.OrderStatsV4 {

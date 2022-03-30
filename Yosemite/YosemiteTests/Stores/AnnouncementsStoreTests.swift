@@ -189,6 +189,11 @@ private extension AnnouncementsStoreTests {
             "features": [[
                 "title": "foo",
                 "subtitle": "bar",
+                "icons": [[
+                    "iconUrl": "https://s0.wordpress.com/i/store/mobile/plans-premium.png",
+                    "iconBase64": "",
+                    "iconType": ""
+                ]],
                 "iconBase64": "",
                 "iconUrl": "https://s0.wordpress.com/i/store/mobile/plans-premium.png"
             ]],

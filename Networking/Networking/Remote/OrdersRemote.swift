@@ -135,10 +135,7 @@ public class OrdersRemote: Remote {
                     case .status:
                         params[Order.CodingKeys.status.rawValue] = order.status.rawValue
                     case .items:
-                        params[Order.CodingKeys.items.rawValue] = order.items.map { item in
-                            [OrderItem.CodingKeys.productID.rawValue: item.variationID != 0 ? item.variationID : item.productID,
-                             OrderItem.CodingKeys.quantity.rawValue: Int64(truncating: item.quantity as NSDecimalNumber)]
-                        }
+                        params[Order.CodingKeys.items.rawValue] = try order.items.map { try $0.toDictionary() }
                     case .billingAddress:
                         if let billingAddress = order.billingAddress {
                             params[Order.CodingKeys.billingAddress.rawValue] = try billingAddress.toDictionary()
@@ -147,6 +144,10 @@ public class OrdersRemote: Remote {
                         if let shippingAddress = order.shippingAddress {
                             params[Order.CodingKeys.shippingAddress.rawValue] = try shippingAddress.toDictionary()
                         }
+                    case .shippingLines:
+                        params[Order.CodingKeys.shippingLines.rawValue] = try order.shippingLines.compactMap { try $0.toDictionary() }
+                    case .customerNote:
+                        params[Order.CodingKeys.customerNote.rawValue] = order.customerNote
                     }
                 }
             }()
@@ -201,6 +202,13 @@ public class OrdersRemote: Remote {
                     case .fees:
                         let feesEncoded = try order.fees.map { try $0.toDictionary() }
                         params[Order.CodingKeys.feeLines.rawValue] = feesEncoded
+                    case .shippingLines:
+                        let shippingEncoded = try order.shippingLines.map { try $0.toDictionary() }
+                        params[Order.CodingKeys.shippingLines.rawValue] = shippingEncoded
+                    case .status:
+                        params[Order.CodingKeys.status.rawValue] = order.status.rawValue
+                    case .items:
+                        params[Order.CodingKeys.items.rawValue] = try order.items.map { try $0.toDictionary() }
                     }
                 }
             }()
@@ -232,6 +240,22 @@ public class OrdersRemote: Remote {
         let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Deletes the given order.
+    ///
+    /// - Parameters:
+    ///   - siteID: Site which hosts the Order.
+    ///   - orderID: Identifier of the Order to be deleted.
+    ///   - force: If true, the Order will be permanently deleted.
+    ///   - completion: Closure to be executed upon completion.
+    ///
+    public func deleteOrder(for siteID: Int64, orderID: Int64, force: Bool, completion: @escaping (Result<Order, Error>) -> Void) {
+        let path = "\(Constants.ordersPath)/\(orderID)"
+        let parameters = [ParameterKeys.force: String(force)]
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .delete, siteID: siteID, path: path, parameters: parameters)
+        let mapper = OrderMapper(siteID: siteID)
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 
@@ -260,6 +284,7 @@ public extension OrdersRemote {
         static let fields: String           = "_fields"
         static let after: String            = "after"
         static let before: String           = "before"
+        static let force: String            = "force"
     }
 
     enum ParameterValues {
@@ -269,20 +294,26 @@ public extension OrdersRemote {
         private static let commonOrderFieldValues = [
             "id", "parent_id", "number", "status", "currency", "customer_id", "customer_note", "date_created_gmt", "date_modified_gmt", "date_paid_gmt",
             "discount_total", "discount_tax", "shipping_total", "shipping_tax", "total", "total_tax", "payment_method", "payment_method_title",
-            "billing", "coupon_lines", "shipping_lines", "refunds", "fee_lines", "order_key", "tax_lines"
+            "billing", "coupon_lines", "shipping_lines", "refunds", "fee_lines", "order_key", "tax_lines", "meta_data"
         ]
+        // Use with caution. Any fields in here will be overwritten with empty values by
+        // `Order+ReadOnlyConvertible.swift: Order.update(with:)` when the list of orders is fetched.
+        // See p91TBi-7yL-p2 for discussion.
         private static let singleOrderExtraFieldValues = [
-            "line_items", "shipping", "meta_data"
+            "line_items", "shipping"
         ]
     }
 
     /// Order fields supported for update
     ///
-    enum UpdateOrderField {
+    enum UpdateOrderField: CaseIterable {
         case customerNote
         case shippingAddress
         case billingAddress
         case fees
+        case shippingLines
+        case items
+        case status
     }
 
     /// Order fields supported for create
@@ -293,5 +324,7 @@ public extension OrdersRemote {
         case items
         case billingAddress
         case shippingAddress
+        case shippingLines
+        case customerNote
     }
 }

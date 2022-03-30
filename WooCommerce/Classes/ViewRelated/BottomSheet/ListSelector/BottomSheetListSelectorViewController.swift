@@ -63,6 +63,7 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(Cell.self, for: indexPath)
         let model = command.data[indexPath.row]
+        cell.accessibilityTraits.insert(.button)
         command.configureCell(cell: cell, model: model)
 
         return cell

@@ -21,8 +21,7 @@ final class DashboardUIFactoryTests: XCTestCase {
         mockStoresManager = MockStatsVersionStoresManager(sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = true
         ServiceLocator.setStores(mockStoresManager)
-        let mockFeatureFlagService = MockFeatureFlagService(isMyStoreTabUpdatesOn: false)
-        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID, featureFlagService: mockFeatureFlagService)
+        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID)
 
         // When
         var dashboard: DashboardUI?
@@ -34,7 +33,7 @@ final class DashboardUIFactoryTests: XCTestCase {
         }
 
         // Then
-        XCTAssertTrue(dashboard is OldStoreStatsAndTopPerformersViewController)
+        XCTAssertTrue(dashboard is StoreStatsAndTopPerformersViewController)
     }
 
     func test_it_loads_deprecated_dashboard_when_V4_is_unavailable_while_no_stats_version_is_saved() {
@@ -42,12 +41,11 @@ final class DashboardUIFactoryTests: XCTestCase {
         mockStoresManager = MockStatsVersionStoresManager(sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = false
         ServiceLocator.setStores(mockStoresManager)
-        let mockFeatureFlagService = MockFeatureFlagService(isMyStoreTabUpdatesOn: false)
-        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID, featureFlagService: mockFeatureFlagService)
+        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID)
 
         // When
         var dashboardUITypes: [UIViewController.Type] = []
-        let expectedDashboardUITypes: [UIViewController.Type] = [OldStoreStatsAndTopPerformersViewController.self,
+        let expectedDashboardUITypes: [UIViewController.Type] = [StoreStatsAndTopPerformersViewController.self,
                                                                  DeprecatedDashboardStatsViewController.self]
 
         waitForExpectation(description: #function, count: expectedDashboardUITypes.count) { exp in
@@ -70,14 +68,13 @@ final class DashboardUIFactoryTests: XCTestCase {
         mockStoresManager.isStatsV4Available = true
         ServiceLocator.setStores(mockStoresManager)
 
-        let mockFeatureFlagService = MockFeatureFlagService(isMyStoreTabUpdatesOn: false)
-        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID, featureFlagService: mockFeatureFlagService)
+        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID)
 
         let expectation = self.expectation(description: "Wait for the stats v4")
         expectation.expectedFulfillmentCount = 1
 
         dashboardUIFactory.reloadDashboardUI { dashboardUI in
-            XCTAssertTrue(dashboardUI is OldStoreStatsAndTopPerformersViewController)
+            XCTAssertTrue(dashboardUI is StoreStatsAndTopPerformersViewController)
             expectation.fulfill()
         }
         waitForExpectations(timeout: 0.1, handler: nil)
@@ -90,8 +87,7 @@ final class DashboardUIFactoryTests: XCTestCase {
         mockStoresManager.isStatsV4Available = false
         ServiceLocator.setStores(mockStoresManager)
 
-        let mockFeatureFlagService = MockFeatureFlagService(isMyStoreTabUpdatesOn: false)
-        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID, featureFlagService: mockFeatureFlagService)
+        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID)
 
         var dashboardUIArray: [DashboardUI] = []
         let expectation = self.expectation(description: "Wait for the stats v4")
@@ -101,7 +97,7 @@ final class DashboardUIFactoryTests: XCTestCase {
             dashboardUIArray.append(dashboardUI)
             // The first updated view controller is v4, and the second view controller is reverted back to v3.
             if dashboardUIArray.count >= 2 {
-                XCTAssertTrue(dashboardUIArray[0] is OldStoreStatsAndTopPerformersViewController)
+                XCTAssertTrue(dashboardUIArray[0] is StoreStatsAndTopPerformersViewController)
                 XCTAssertTrue(dashboardUIArray[1] is DeprecatedDashboardStatsViewController)
 
                 guard let self = self else {
@@ -118,7 +114,7 @@ final class DashboardUIFactoryTests: XCTestCase {
                     // The first view controller is v4 -> v3 UI, and the second view controller is v3 -> v4 UI.
                     if dashboardUIArray.count >= 2 {
                         XCTAssertTrue(dashboardUIArray[0] is DeprecatedDashboardStatsViewController)
-                        XCTAssertTrue(dashboardUIArray[1] is OldStoreStatsAndTopPerformersViewController)
+                        XCTAssertTrue(dashboardUIArray[1] is StoreStatsAndTopPerformersViewController)
                         expectation.fulfill()
                     }
                 }
@@ -133,8 +129,7 @@ final class DashboardUIFactoryTests: XCTestCase {
                                                             sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = false
         ServiceLocator.setStores(mockStoresManager)
-        let mockFeatureFlagService = MockFeatureFlagService(isMyStoreTabUpdatesOn: false)
-        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID, featureFlagService: mockFeatureFlagService)
+        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID)
 
         // When
         let exp = self.expectation(description: #function)
@@ -149,14 +144,13 @@ final class DashboardUIFactoryTests: XCTestCase {
         XCTAssertTrue(renderedDashboard is DeprecatedDashboardStatsViewController)
     }
 
-    func test_new_stats_screen_is_shown_if_V4_is_available_and_myStoreTabUpdates_feature_enabled() {
+    func test_new_stats_screen_is_shown_if_V4_is_available() {
         // Given
         mockStoresManager = MockStatsVersionStoresManager(initialStatsVersionLastShown: .v4,
                                                             sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = true
         ServiceLocator.setStores(mockStoresManager)
-        let mockFeatureFlagService = MockFeatureFlagService(isMyStoreTabUpdatesOn: true)
-        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID, featureFlagService: mockFeatureFlagService)
+        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID)
 
         // When
         let renderedDashboard: DashboardUI = waitFor { promise in

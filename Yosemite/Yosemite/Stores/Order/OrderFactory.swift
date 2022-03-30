@@ -3,18 +3,18 @@ import Networking
 
 /// Factory to create convenience order types.
 ///
-enum OrderFactory {
+public enum OrderFactory {
     /// Creates an order suitable to be used as a simple payments order.
     /// Under the hood it uses a fee line with or without taxes to create an order with the desired amount.
     ///
-    static func simplePaymentsOrder(amount: String, taxable: Bool) -> Order {
+    static func simplePaymentsOrder(status: OrderStatusEnum, amount: String, taxable: Bool) -> Order {
         Order(siteID: 0,
               orderID: 0,
               parentID: 0,
               customerID: 0,
               orderKey: "",
               number: "",
-              status: .pending,
+              status: status,
               currency: "",
               customerNote: "",
               dateCreated: Date(),
@@ -51,4 +51,33 @@ enum OrderFactory {
               taxes: [],
               attributes: [])
     }
+
+    /// Creates a fee line suitable to be used within a new order.
+    ///
+    public static func newOrderFee(total: String) -> OrderFeeLine {
+        OrderFeeLine(feeID: 0,
+                     name: "Fee",
+                     taxClass: "",
+                     taxStatus: .taxable,
+                     total: total,
+                     totalTax: "",
+                     taxes: [],
+                     attributes: [])
+    }
+
+    /// Creates a fee line suitable to delete a fee line already saved remotely in an order.
+    ///
+    public static func deletedFeeLine(_ feeLine: OrderFeeLine) -> OrderFeeLine {
+        feeLine.copy(name: .some(nil), total: "0")
+    }
+
+    /// Creates a shipping line suitable to delete a shipping line already saved remotely in an order.
+    ///
+    public static func deletedShippingLine(_ shippingLine: ShippingLine) -> ShippingLine {
+        shippingLine.copy(methodID: .some(nil))
+    }
+
+    /// References a new empty order with constants `Date` values.
+    ///
+    public static let emptyNewOrder = Order.empty
 }

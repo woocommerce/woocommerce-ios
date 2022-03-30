@@ -8,9 +8,8 @@ final class StoreStatsPeriodViewModel {
     // MARK: - Public data & observables
 
     /// Used for chart updates.
-    var orderStatsIntervals: [OrderStatsV4Interval] {
-        orderStatsData.intervals
-    }
+    private(set) lazy var orderStatsIntervals: AnyPublisher<[OrderStatsV4Interval], Never> =
+    $orderStatsData.map { $0.intervals }.eraseToAnyPublisher()
 
     /// Updated externally from user interactions with the chart.
     @Published var selectedIntervalIndex: Int? = nil
@@ -27,11 +26,10 @@ final class StoreStatsPeriodViewModel {
         .removeDuplicates()
         .eraseToAnyPublisher()
 
-    /// Emits revenue stats text values based on order stats and selected time interval.
-    private(set) lazy var revenueStatsText: AnyPublisher<String, Never> =
-    Publishers.CombineLatest($orderStatsData.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
-        .compactMap { [weak self] orderStatsData, selectedIntervalIndex in
-            self?.createRevenueStats(orderStatsData: orderStatsData, selectedIntervalIndex: selectedIntervalIndex)
+    /// Emits revenue stats text values based on order stats, selected time interval, and currency code.
+    private(set) lazy var revenueStatsText: AnyPublisher<String, Never> = $orderStatsData.combineLatest($selectedIntervalIndex, currencySettings.$currencyCode)
+        .compactMap { [weak self] orderStatsData, selectedIntervalIndex, currencyCode in
+            self?.createRevenueStats(orderStatsData: orderStatsData, selectedIntervalIndex: selectedIntervalIndex, currencyCode: currencyCode.rawValue)
         }
         .removeDuplicates()
         .eraseToAnyPublisher()
@@ -61,11 +59,6 @@ final class StoreStatsPeriodViewModel {
             return self?.createTimeRangeBarViewModel(orderStatsData: orderStatsData, selectedIntervalIndex: selectedIntervalIndex)
         }
         .eraseToAnyPublisher()
-
-    /// Emits a boolean to reload chart, and the boolean indicates whether the reload should be animated.
-    var reloadChartAnimated: AnyPublisher<Bool, Never> {
-        shouldReloadChartAnimated.eraseToAnyPublisher()
-    }
 
     /// Emits the view state for visitor stats based on the visitor stats mode and the selected time interval.
     private(set) lazy var visitorStatsViewState: AnyPublisher<StoreStatsDataOrRedactedView.State, Never> =
@@ -110,8 +103,6 @@ final class StoreStatsPeriodViewModel {
     typealias OrderStatsData = (stats: OrderStatsV4?, intervals: [OrderStatsV4Interval])
     @Published private var orderStatsData: OrderStatsData = (nil, [])
 
-    private let shouldReloadChartAnimated: PassthroughSubject<Bool, Never> = .init()
-
     // MARK: - Results controllers
 
     /// SiteVisitStats ResultsController: Loads site visit stats from the Storage Layer
@@ -138,8 +129,8 @@ final class StoreStatsPeriodViewModel {
     private let siteID: Int64
     private let timeRange: StatsTimeRangeV4
     private let currencyFormatter: CurrencyFormatter
-    private let currencyCode: String
     private let storageManager: StorageManagerType
+    private let currencySettings: CurrencySettings
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -147,13 +138,13 @@ final class StoreStatsPeriodViewModel {
          timeRange: StatsTimeRangeV4,
          siteTimezone: TimeZone,
          currencyFormatter: CurrencyFormatter,
-         currencyCode: String,
+         currencySettings: CurrencySettings,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
         self.timeRange = timeRange
         self.siteTimezone = siteTimezone
         self.currencyFormatter = currencyFormatter
-        self.currencyCode = currencyCode
+        self.currencySettings = currencySettings
         self.storageManager = storageManager
 
         // Make sure the ResultsControllers are ready to observe changes to the data even before the view loads
@@ -174,16 +165,14 @@ private extension StoreStatsPeriodViewModel {
             return StatsTimeRangeBarViewModel(startDate: startDate,
                                               endDate: endDate,
                                               timeRange: timeRange,
-                                              timezone: siteTimezone,
-                                              isMyStoreTabUpdatesEnabled: true)
+                                              timezone: siteTimezone)
         }
         let date = orderStatsIntervals[selectedIndex].dateStart(timeZone: siteTimezone)
         return StatsTimeRangeBarViewModel(startDate: startDate,
                                           endDate: endDate,
                                           selectedDate: date,
                                           timeRange: timeRange,
-                                          timezone: siteTimezone,
-                                          isMyStoreTabUpdatesEnabled: true)
+                                          timezone: siteTimezone)
     }
 
     func createOrderStatsText(orderStatsData: OrderStatsData, selectedIntervalIndex: Int?) -> String {
@@ -194,7 +183,7 @@ private extension StoreStatsPeriodViewModel {
         }
     }
 
-    func createRevenueStats(orderStatsData: OrderStatsData, selectedIntervalIndex: Int?) -> String {
+    func createRevenueStats(orderStatsData: OrderStatsData, selectedIntervalIndex: Int?, currencyCode: String) -> String {
         if let revenue = revenue(at: selectedIntervalIndex, orderStats: orderStatsData.stats, orderStatsIntervals: orderStatsData.intervals) {
             // If revenue is an integer, no decimal points are shown.
             let numberOfDecimals: Int? = revenue.isInteger ? 0: nil
@@ -367,10 +356,6 @@ private extension StoreStatsPeriodViewModel {
         let orderStats = orderStatsResultsController.fetchedObjects.first
         let intervals = orderStatsIntervals(from: orderStats)
         orderStatsData = (stats: orderStats, intervals: intervals)
-
-        // Don't animate the chart here - this helps avoid a "double animation" effect if a
-        // small number of values change (the chart WILL be updated correctly however)
-        shouldReloadChartAnimated.send(false)
     }
 }
 

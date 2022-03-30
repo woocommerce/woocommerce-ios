@@ -12,7 +12,7 @@ struct MockShippingLabelActionHandler: MockActionHandler {
             /// Not implemented
             case .synchronizeShippingLabels(_, _, let completion):
                 success(completion)
-            case .checkCreationEligibility(_, _, _, _, _, let onCompletion):
+            case .checkCreationEligibility(_, _, let onCompletion):
                 onCompletion(false)
             default: unimplementedAction(action: action)
         }

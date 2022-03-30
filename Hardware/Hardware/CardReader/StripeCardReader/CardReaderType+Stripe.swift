@@ -11,6 +11,8 @@ extension CardReaderType {
             return .chipper
         case .stripeM2:
             return .stripeM2
+        case .wisePad3:
+            return .wisepad3
         default:
             return .other
         }

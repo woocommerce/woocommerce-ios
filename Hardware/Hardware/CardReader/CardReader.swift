@@ -15,7 +15,7 @@ public struct CardReader {
     /// The Hardware status.
     public let status: CardReaderStatus
 
-    /// The reader's sofware version, if available
+    /// The reader's software version, if available
     public let softwareVersion: String?
 
     /// The reader's battery level, if available.

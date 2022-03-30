@@ -67,7 +67,7 @@ public enum OrderAction: Action {
 
     /// Creates a simple payments order with a specific amount value and  tax status.
     ///
-    case createSimplePaymentsOrder(siteID: Int64, amount: String, taxable: Bool, onCompletion: (Result<Order, Error>) -> Void)
+    case createSimplePaymentsOrder(siteID: Int64, status: OrderStatusEnum, amount: String, taxable: Bool, onCompletion: (Result<Order, Error>) -> Void)
 
     /// Creates a manual order with the provided order details.
     ///
@@ -78,9 +78,14 @@ public enum OrderAction: Action {
     case updateSimplePaymentsOrder(siteID: Int64,
                                    orderID: Int64,
                                    feeID: Int64,
+                                   status: OrderStatusEnum,
                                    amount: String,
                                    taxable: Bool,
                                    orderNote: String?,
                                    email: String?,
                                    onCompletion: (Result<Order, Error>) -> Void)
+
+    /// Deletes a given order.
+    ///
+    case deleteOrder(siteID: Int64, order: Order, deletePermanently: Bool, onCompletion: (Result<Order, Error>) -> Void)
 }

@@ -66,7 +66,7 @@ struct ShippingLabelCustomsFormInput: View {
 
     private var contentRows: some View {
         VStack(spacing: 0) {
-            TitleAndValueRow(title: Localization.contentTypeTitle, value: .placeholder(viewModel.contentsType.localizedName), selectable: true) {
+            TitleAndValueRow(title: Localization.contentTypeTitle, value: .placeholder(viewModel.contentsType.localizedName), selectionStyle: .disclosure) {
                 showingContentTypes.toggle()
             }
             .sheet(isPresented: $showingContentTypes, content: {
@@ -99,7 +99,9 @@ struct ShippingLabelCustomsFormInput: View {
 
     private var restrictionRows: some View {
         VStack(spacing: 0) {
-            TitleAndValueRow(title: Localization.restrictionTypeTitle, value: .placeholder(viewModel.restrictionType.localizedName), selectable: true) {
+            TitleAndValueRow(title: Localization.restrictionTypeTitle,
+                             value: .placeholder(viewModel.restrictionType.localizedName),
+                             selectionStyle: .disclosure) {
                 showingRestrictionTypes.toggle()
             }
             .sheet(isPresented: $showingRestrictionTypes, content: {
@@ -215,9 +217,10 @@ private extension ShippingLabelCustomsFormInput {
     }
 }
 
+#if DEBUG
 struct ShippingLabelCustomsFormInput_Previews: PreviewProvider {
     static let sampleViewModel: ShippingLabelCustomsFormInputViewModel = {
-        let sampleOrder = ShippingLabelPackageDetailsViewModel.sampleOrder()
+        let sampleOrder = ShippingLabelSampleData.sampleOrder()
         let sampleForm = ShippingLabelCustomsForm(packageID: "Food Package", packageName: "Food Package", items: [])
         return .init(customsForm: sampleForm, destinationCountry: Country(code: "VN", name: "Vietnam", states: []), countries: [], currency: "$")
     }()
@@ -226,3 +229,4 @@ struct ShippingLabelCustomsFormInput_Previews: PreviewProvider {
         ShippingLabelCustomsFormInput(isCollapsible: true, packageNumber: 1, safeAreaInsets: .zero, viewModel: sampleViewModel)
     }
 }
+#endif

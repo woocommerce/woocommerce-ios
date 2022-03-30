@@ -32,6 +32,15 @@
 %1$@ is a placeholder that always replaced with \"Learn more\" string, - which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@ about accepting payments with your mobile device and ordering card readers";
 
+/* Combined rule for a coupon. Reads like: 2 Products and 1 Category */
+"%1$@ and %2$@" = "%1$@ and %2$@";
+
+/* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
+"%1$@ card ending %2$@" = "%1$@ card ending %2$@";
+
+/* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
+"%1$@ excl. %2$@" = "%1$@ excl. %2$@";
+
 /* Label about product's inventory stock status shown during order creation
    Label about product's inventory stock status shown on Products tab */
 "%1$@ in stock" = "%1$@ in stock";
@@ -60,15 +69,8 @@
 /* Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM). */
 "%1$@ • %2$@" = "%1$@ • %2$@";
 
-/* Displays a time range followed by a specific date/time */
-"%1$@ › %2$@" = "%1$@ › %2$@";
-
 /* Card reader battery level as an integer percentage */
 "%1$@%% Battery" = "%1$@%% Battery";
-
-/* Displays a date range for a stats interval
-   Displays a date range for a stats interval in the legacy version */
-"%1$@-%2$@" = "%1$@-%2$@";
 
 /* In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and weight. For example, “purple, has logo・1lbs”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the weight with the unit. */
 "%1$@・%2$@" = "%1$@・%2$@";
@@ -82,6 +84,12 @@
 /* Plural format of number of business days in Shipping Labels > Carrier and Rates */
 "%1$d business days" = "%1$d business days";
 
+/* The number of category allowed for a coupon in plural form. Reads like: 10 Categories */
+"%1$d Categories" = "%1$d Categories";
+
+/* The number of category allowed for a coupon in singular form. Reads like: 1 Category */
+"%1$d Category" = "%1$d Category";
+
 /* For example: `1 item` in Shipping Label package row */
 "%1$d item" = "%1$d item";
 
@@ -90,6 +98,12 @@
 
 /* Total number of items and packages in Shipping Label form. */
 "%1$d items in %2$d packages" = "%1$d items in %2$d packages";
+
+/* The number of products allowed for a coupon in singular form. Reads like: 1 Product */
+"%1$d Product" = "%1$d Product";
+
+/* The number of products allowed for a coupon in plural form. Reads like: 10 Products */
+"%1$d Products" = "%1$d Products";
 
 /* Number of rates selected in Shipping Labels > Carrier and Rates */
 "%1$d rates selected" = "%1$d rates selected";
@@ -117,6 +131,9 @@
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
 "%@ via %@" = "%1$@ via %2$@";
 
+/* No comment provided by engineer. */
+"%d Categories excl. %d Products" = "%1$d Categories excl. %2$d Products";
+
 /* For example: `1 item` in Aggregated Product List */
 "%d item" = "%d item";
 
@@ -125,6 +142,18 @@
 
 /* Title of the label indicating that there are multiple items to refund. */
 "%d items selected" = "%d items selected";
+
+/* No comment provided by engineer. */
+"%d Product" = "%d Product";
+
+/* No comment provided by engineer. */
+"%d Products" = "%d Products";
+
+/* No comment provided by engineer. */
+"%d Products and %d Categories" = "%1$d Products and %2$d Categories";
+
+/* No comment provided by engineer. */
+"%d Products excl. %d Category" = "%1$d Products excl. %2$d Category";
 
 /* Refund item price and quantity format. EG: 2 x $10.00 each */
 "%d x %@ each" = "%1$d x %2$@ each";
@@ -211,6 +240,9 @@
 /* Main message on the Print Customs Invoice screen of Shipping Label flow */
 "A customs form must be printed and included on this international shipment" = "A customs form must be printed and included on this international shipment";
 
+/* Message when attempting to pay for a test transaction with a live card. */
+"A live card was used on a site in test mode. Use a test card instead." = "A live card was used on a site in test mode. Use a test card instead.";
+
 /* Error message when there was a network error checking In-Person Payments requirements */
 "A network error occurred. Please check your connection and try again." = "A network error occurred. Please check your connection and try again.";
 
@@ -241,11 +273,11 @@
 /* Shown when a user types a non-number into the two factor field. */
 "A verification code will only contain numbers." = "A verification code will only contain numbers.";
 
-/* About this app (information page title) */
-"About" = "About";
-
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "About the App";
+
+/* Reads as 'Account Type'. Part of the mandatory data in receipts */
+"Account Type" = "Account Type";
 
 /* Title for the error screen when a Card Present Payments extension is installed but not activated */
 "Activate %1$@" = "Activate %1$@";
@@ -295,6 +327,9 @@
 /* Accessibility label for the 'Add a tracking' button */
 "Add a tracking" = "Add a tracking";
 
+/* Cell text in Add / Edit variation when there are no images. */
+"Add a variation image" = "Add a variation image";
+
 /* Button title in the Shipping Label Payment Method screen if there is an existing payment method */
 "Add another credit card" = "Add another credit card";
 
@@ -308,14 +343,11 @@
    Product Add Category navigation title */
 "Add Category" = "Add Category";
 
-/* Title for the action button to add coupon on the coupon list screen. */
-"Add Coupon" = "Add Coupon";
-
 /* Button title in the Shipping Label Payment Method screen */
 "Add credit card" = "Add credit card";
 
-/* Title text of the button that adds a customer when creating a new order */
-"Add customer" = "Add customer";
+/* Title text of the button that adds customer data when creating a new order */
+"Add Customer Details" = "Add Customer Details";
 
 /* Title for the button to add the Customer Provided Note in Order Details */
 "Add Customer Note" = "Add Customer Note";
@@ -325,6 +357,12 @@
 
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press enter" = "Add each option and press enter";
+
+/* Title for the Fee screen during order creation */
+"Add Fee" = "Add Fee";
+
+/* Title text of the button that adds fees when creating a new order */
+"Add Fees" = "Add Fees";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
 "Add File" = "Add File";
@@ -342,7 +380,8 @@
 /* Voiceover accessibility label for the tags field in product tags. */
 "Add new tags, separated by commas." = "Add new tags, separated by commas.";
 
-/* Title text of the button that adds a note when creating a simple payment */
+/* Title text of the button that adds a note when creating a simple payment
+   Title text of the button that adds customer note data when creating a new order */
 "Add Note" = "Add Note";
 
 /* Header of existing attribute options section in Add Attribute Options screen */
@@ -361,11 +400,8 @@
 "Add price to your variations to make them visible on your store" = "Add price to your variations to make them visible on your store";
 
 /* Action to add product on the placeholder overlay when there are no products on the Products tab
-   Title for the screen to add a product to an order */
+   Title for the screen to add a product to an order - Title text of the button that adds a product when creating a new order */
 "Add Product" = "Add Product";
-
-/* Title text of the button that adds a product when creating a new order */
-"Add product" = "Add product";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "Add product link";
@@ -379,6 +415,10 @@
 
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "Add products' downloadable files' info remotely";
+
+/* Title for the Shipping Line screen during order creation
+   Title text of the button that adds shipping line when creating a new order */
+"Add Shipping" = "Add Shipping";
 
 /* Title for the button to add the Shipping Address in Order Details */
 "Add Shipping Address" = "Add Shipping Address";
@@ -427,14 +467,23 @@
 /* Shipping Label Suggested address entered placeholder */
 "Address Suggested" = "Address Suggested";
 
+/* Accessibility hint for selecting a product in the Add Product screen */
+"Adds product to order." = "Adds product to order.";
+
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "Adds tracking to an order.";
+
+/* Accessibility hint for selecting a variation in a list of product variations */
+"Adds variation to order." = "Adds variation to order.";
 
 /* Adult signature required in Shipping Labels > Carrier and Rates */
 "Adult signature required (+%1$@)" = "Adult signature required (+%1$@)";
 
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "Advanced tool to review the app status";
+
+/* Reads as 'AID'. Part of the mandatory data in receipts */
+"AID" = "AID";
 
 /* Option to select the Airmail app when logging in with magic links */
 "Airmail" = "Airmail";
@@ -445,11 +494,23 @@
 /* Name of final step in Install Jetpack flow. */
 "All done" = "All done";
 
+/* Exception rule for a coupon. Reads like: All excl. 2 Products */
+"All excl. %1$@" = "All excl. %1$@";
+
+/* No comment provided by engineer. */
+"All excl. %d Categories" = "All excl. %d Categories";
+
+/* No comment provided by engineer. */
+"All excl. %d Products" = "All excl. %d Products";
+
 /* Header bar label on top of order list when no filters are applied */
 "All Orders" = "All Orders";
 
 /* The text to be displayed in when the coupon is not limit to any specific product */
 "All Products" = "All Products";
+
+/* Value for the limit usage to X items row in Coupon Usage Details screen when no limit is set */
+"All Qualifying in Cart" = "All Qualifying in Cart";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "All reviews marked as read";
@@ -466,14 +527,31 @@
 /* Display label for the product's inventory backorders setting option */
 "Allow, but notify customer" = "Allow, but notify customer";
 
+/* Title for the allowed email row in coupon usage details screen. */
+"Allowed Emails" = "Allowed Emails";
+
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "Almost there! Please enter the verification code from your authenticator app.";
 
 /* String displayed before offering alternative login methods */
 "Alternatively:" = "Alternatively:";
 
+/* Title for the amount field on the Shipping Line Details screen during order creation
+   Title of the Amount label on Coupon Details screen */
+"Amount" = "Amount";
+
+/* Title for the amount field on the Fee Details screen during order creationParameters: %1$@ - fee type (percent sign or currency symbol) */
+"Amount (%1$@)" = "Amount (%1$@)";
+
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
 "Amount Eligible For Refund" = "Amount Eligible For Refund";
+
+/* Line description for 'Amount Paid' cart total on the receipt
+   Title of 'Amount Paid' section in the receipt */
+"Amount Paid" = "Amount Paid";
+
+/* Error message when Bluetooth is not enabled for this application. */
+"An error occurred accessing Bluetooth - please enable Bluetooth and try again" = "An error occurred accessing Bluetooth - please enable Bluetooth and try again";
 
 /* An error description explaining that a Menu could not be created. */
 "An error occurred creating the Menu." = "An error occurred creating the Menu.";
@@ -490,11 +568,29 @@
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "An error occurred while processing your request: ";
 
+/* A failure reason for when an error HTTP status code was returned from the site, with the specific error code. */
+"An HTTP error code %i was returned." = "An HTTP error code %i was returned.";
+
+/* A failure reason for when an error HTTP status code was returned from the site. */
+"An HTTP error code was returned." = "An HTTP error code was returned.";
+
+/* Message when it looks like a duplicate transaction is being attempted. */
+"An identical transaction was submitted recently. If you wish to continue, try another means of payment" = "An identical transaction was submitted recently. If you wish to continue, try another means of payment";
+
+/* Message when an incorrect PIN has been entered too many times. */
+"An incorrect PIN has been entered too many times. Try another means of payment" = "An incorrect PIN has been entered too many times. Try another means of payment";
+
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "An optional note to send the customer after purchase";
 
+/* A failure reason for when the error that occured wasn't able to be determined. */
+"An unknown error occurred." = "An unknown error occurred.";
+
 /* Title of analytics as part of Jetpack benefits. */
 "Analytics" = "Analytics";
+
+/* Message when enabling analytics succeeds */
+"Analytics enabled successfully." = "Analytics enabled successfully.";
 
 /* Case Any in Order Filters for Order Statuses
    Display label for all order statuses selected in Order Filters - Label for one of the filters in order date range - Product variation attribute description where the attribute is set to any value. - Title when there is no filter set. */
@@ -513,8 +609,23 @@
 /* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
 "Application Logs" = "Application Logs";
 
+/* Reads as 'Application name'. Part of the mandatory data in receipts */
+"Application Name" = "Application Name";
+
 /* Change order status screen - button title to apply selection */
 "Apply" = "Apply";
+
+/* Message to share the coupon code if it is applicable to all products. Reads like: Apply 10% off to all products with the promo code “20OFF”. */
+"Apply %1$@ off to all products with the promo code “%2$@”." = "Apply %1$@ off to all products with the promo code “%2$@”.";
+
+/* Message to share the coupon code if it is applicable to some products. Reads like: Apply 10% off to some products with the promo code “20OFF”. */
+"Apply %1$@ off to some products with the promo code “%2$@”." = "Apply %1$@ off to some products with the promo code “%2$@”.";
+
+/* No comment provided by engineer. */
+"Apply %@ off to all products with the promo code “%@”." = "Apply %1$@ off to all products with the promo code “%2$@”.";
+
+/* No comment provided by engineer. */
+"Apply %@ off to some products with the promo code “%@”." = "Apply %1$@ off to some products with the promo code “%2$@”.";
 
 /* Title of the Apply To row in Coupon Details screen */
 "Apply To" = "Apply To";
@@ -556,6 +667,9 @@
 /* Body of the alert when a user is deleting a variation */
 "Are you sure you want to remove this variation?" = "Are you sure you want to remove this variation?";
 
+/* Message displayed in the alert for dismissing all the inbox notes. */
+"Are you sure? Inbox messages will be dismissed forever." = "Are you sure? Inbox messages will be dismissed forever.";
+
 /* Placeholder in the Attribute Name row on Rename Attributes screen. */
 "Attribute name" = "Attribute name";
 
@@ -582,11 +696,15 @@
 /* Subtitle of the cell in Product Price Settings > Schedule sale */
 "Automatically start and end a sale" = "Automatically start and end a sale";
 
+/* Title of a button linking to the Automattic website */
+"Automattic family" = "Automattic family";
+
 /* A unit test string. It reads: Awaiting payment via <payment method title>.A payment method example is: 'Credit Card (Stripe)'
    Awaiting payment via (payment method title) */
 "Awaiting payment via %@" = "Awaiting payment via %@";
 
-/* Alert button title - dismisses alert, which cancels the log out attempt */
+/* Accessibility label for Back button in the navigation bar
+   Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "Back";
 
 /* Accessibility announcement message when device goes back online */
@@ -628,17 +746,21 @@
 /* Accessibility label for block quote button on formatting toolbar. */
 "Block Quote" = "Block Quote";
 
+/* Title of a button linking to the app's blog */
+"Blog" = "Blog";
+
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
 "Bluetooth permission required" = "Bluetooth permission required";
 
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "Bold";
 
-/* The description on the placeholder overlay when there are no coupons on the coupon list screen. */
-"Boost your business by sending customers special offers and discounts." = "Boost your business by sending customers special offers and discounts.";
-
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "Box";
+
+/* Button title in the action sheet of product variatiosns that shows the bulk update
+   Title that appears on top of the bulk update of product variations screen */
+"Bulk Update" = "Bulk Update";
 
 /* Title of the text field for editing the button text for an external/affiliate product */
 "Button Text" = "Button Text";
@@ -662,7 +784,7 @@
 "Can Not Request Link" = "Can Not Request Link";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
+   Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title that closes the action sheet in product variations - Button title that closes the presented screen - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
 "Cancel" = "Cancel";
 
 /* Display label for cancelled order status. */
@@ -692,6 +814,12 @@
 /* Card method title on the select payment method screen for simple payments */
 "Card" = "Card";
 
+/* Error message when a card is left in the reader and another transaction started. */
+"Card was left in reader - please remove and reinsert card" = "Card was left in reader - please remove and reinsert card";
+
+/* Error message when the card is removed from the reader prematurely. */
+"Card was removed too soon - please try transaction again" = "Card was removed too soon - please try transaction again";
+
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "Carrier and Rates";
 
@@ -704,9 +832,6 @@
 /* Catalog Visibility label in Product Settings
    Product Catalog Visibility navigation title */
 "Catalog Visibility" = "Catalog Visibility";
-
-/* shown in promotional screens during first launch */
-"Catch up with your favorite sites and join the conversation anywhere, any time." = "Catch up with your favorite sites and join the conversation anywhere, any time.";
 
 /* Edit product categories screen - Screen title
    Filter product categories screen - Screen title - Title of the Categories row on Product main screen - Title of the product form bottom sheet action for editing categories. */
@@ -775,7 +900,7 @@
 "Clear Filters" = "Clear Filters";
 
 /* Text for the close button in the Add Product screen
-   Text for the close button in the Edit Address Form - Text for the close button in the Product screen - Title of the Close action on the Jetpack Install view */
+   Text for the close button in the Edit Address Form - Text for the close button in the Fee Details screen - Text for the close button in the Product screen - Text for the close button in the Shipping Line Details screen - Title of the Close action on the Jetpack Install view */
 "Close" = "Close";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
@@ -790,6 +915,9 @@
 /* Alert title when starting the collect payment flow with a user name. */
 "Collect payment from %1$@" = "Collect payment from %1$@";
 
+/* Message displayed if there are no inbox notes to display in the inbox screen. */
+"Come back soon for more tips and insights on growing your store" = "Come back soon for more tips and insights on growing your store";
+
 /* Text field company in Edit Address Form
    Text field company in Shipping Label Address Validation */
 "Company" = "Company";
@@ -802,6 +930,9 @@
 
 /* Title for the error screen when there is more than one plugin active that supports in-person payments. */
 "Conflicting payment plugins detected" = "Conflicting payment plugins detected";
+
+/* Title displayed if there are no inbox notes in the inbox screen. */
+"Congrats, you’ve read everything!" = "Congrats, you’ve read everything!";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
 "Congratulations! Your reader is running the latest software" = "Congratulations! Your reader is running the latest software";
@@ -839,6 +970,9 @@
 /* Title label for modal dialog that appears when connecting to a card reader */
 "Connecting to reader" = "Connecting to reader";
 
+/* Error message when establishing a connection to the card reader times out. */
+"Connecting to the card reader timed out - ensure it is nearby and charged and then try again" = "Connecting to the card reader timed out - ensure it is nearby and charged and then try again";
+
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "Connecting to WordPress.com";
 
@@ -860,6 +994,9 @@
 /* Action button to contact support when Jetpack install fails
    Contact Support title - Text for the button to contact support from the store picker error screen - The title of the button to contact support in the Error Loading Data banner */
 "Contact Support" = "Contact Support";
+
+/* Action button to contact support on enable analytics screen */
+"Contact support" = "Contact support";
 
 /* Title of a button to contact support in the error screen for In-Person payments */
 "Contact us" = "Contact us";
@@ -903,6 +1040,9 @@
 
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "Copy";
+
+/* Action title for copying coupon code from the Coupon Details screen */
+"Copy Code" = "Copy Code";
 
 /* Copy email address button title */
 "Copy email address" = "Copy email address";
@@ -956,11 +1096,17 @@
 /* Title of the Coupon Code row in Coupon Details screen */
 "Coupon Code" = "Coupon Code";
 
+/* Notice message displayed when a coupon code is copied from the Coupon Details screen */
+"Coupon copied" = "Coupon copied";
+
 /* Title of Details section in Coupon Details screen */
 "Coupon Details" = "Coupon Details";
 
 /* Title of the Coupon Expiry Date row in Coupon Details screen */
 "Coupon Expiry Date" = "Coupon Expiry Date";
+
+/* Cell title on beta features screen to enable coupon management */
+"Coupon Management" = "Coupon Management";
 
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
@@ -1016,8 +1162,14 @@
 /* Cell title: the current date. */
 "Current" = "Current";
 
-/* Error when the user tap on Country field in Shipping Label Address Validation */
-"Currently we support just the United States from mobile." = "Currently we support just the United States from mobile.";
+/* Message in the footer of bulk price setting screen with the current price, when it is the same for all variations */
+"Current price is %@." = "Current price is %@.";
+
+/* Message in the footer of bulk price setting screen, when none of the variations have price value. */
+"Current price is not set." = "Current price is not set.";
+
+/* Message in the footer of bulk price setting screen, when variations have different price values. */
+"Current prices are mixed." = "Current prices are mixed.";
 
 /* Name of the section for custom shipment tracking carriers */
 "Custom" = "Custom";
@@ -1049,6 +1201,12 @@
    Customer info section title in Review Order screen - Title text of the section that shows Customer details when creating a new order */
 "Customer" = "Customer";
 
+/* Title for the Shipping Address Form for Customer Details */
+"Customer Details" = "Customer Details";
+
+/* Title text of the section that shows the Order customer note when creating a new order */
+"Customer Note" = "Customer Note";
+
 /* Title of the banner notice in Shipping Labels -> Carrier and Rates */
 "Customer paid a %1$@ of %2$@ for shipping" = "Customer paid a %1$@ of %2$@ for shipping";
 
@@ -1071,6 +1229,9 @@
 
 /* Details text in the shipping label creation info screen */
 "Cut the post office line by printing shipping labels at home with your mobile device at discounted rates!" = "Cut the post office line by printing shipping labels at home with your mobile device at discounted rates!";
+
+/* Title of 'Date Paid' section in the receipt */
+"Date paid" = "Date paid";
 
 /* Navigation title of the orders filter selector screen for date range
    Row title for filtering orders by date range. */
@@ -1139,9 +1300,24 @@
    Title of the Discount row in Coupon Details screen */
 "Discount" = "Discount";
 
+/* Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s) */
+"Discount %1$@" = "Discount %1$@";
+
+/* Title of the Discounted Orders label on Coupon Details screen */
+"Discounted Orders" = "Discounted Orders";
+
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Button to dismiss the alert presented when finding a reader to connect to fails - Button to dismiss. Presented to users after collecting a payment fails - Button to dismiss. Presented to users when updating the card reader software fails - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab - The title of the button to dismiss the SimplePayments top banner - Title of the button to dismiss the banner notice in the add-ons view */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Button to dismiss the alert presented when finding a reader to connect to fails - Button to dismiss. Presented to users after collecting a payment fails - Button to dismiss. Presented to users when updating the card reader software fails - Dismiss button in inbox note row. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab - The title of the button to dismiss the SimplePayments top banner - Title of the button to dismiss the banner notice in the add-ons view - Title of the dismiss action button on the coupon list screen */
 "Dismiss" = "Dismiss";
+
+/* Dismiss All button in Inbox Notes for dismissing all the notes. */
+"Dismiss All" = "Dismiss All";
+
+/* Title of the alert for dismissing all the inbox notes. */
+"Dismiss all messages" = "Dismiss all messages";
+
+/* Title for dismiss the action when dragging the screen down. */
+"Dismiss Order" = "Dismiss Order";
 
 /* Display label for the product's inventory backorders setting option */
 "Do not allow" = "Do not allow";
@@ -1159,7 +1335,7 @@
 "Don't have an account? _Sign up_" = "Don't have an account? _Sign up_";
 
 /* Action title to select products to add to a grouped product from search results
-   Done button on the Jetpack Install Progress screen. - Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again. */
+   Done button on the Jetpack Install Progress screen. - Done navigation button in Inbox Notes webview - Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - Text for the done button in the Fee Details screen - Text for the done button in the Shipping Line Details screen - The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again. */
 "Done" = "Done";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -1223,14 +1399,15 @@
 /* Downloadable Product label in Product Settings */
 "Downloadable Product" = "Downloadable Product";
 
-/* Display label for the product's draft status */
+/* Display label for auto-draft order status.
+   Display label for the product's draft status */
 "Draft" = "Draft";
 
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "Easily identify your products with unique codes";
 
 /* Button to edit a customer on the New Order screen
-   Button to edit an order status on the New Order screen - Title text of the button that edits a note when creating a simple payment */
+   Button to edit an order status on the New Order screen - Button to edit the customer note on the New Order screen - Title text of the button that edits a note when creating a simple payment */
 "Edit" = "Edit";
 
 /* Action to edit the address in Shipping Label Suggested screen */
@@ -1243,8 +1420,17 @@
    Navigation title for the Product Attributes screen */
 "Edit Attributes" = "Edit Attributes";
 
+/* Accessibility label for the button to edit customer details on the New Order screen */
+"Edit Customer Details" = "Edit Customer Details";
+
+/* Accessibility label for the button to edit customer note on the New Order screen */
+"Edit customer note" = "Edit customer note";
+
 /* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "Edit Products";
+
+/* Accessibility label for the button to edit order status on the New Order screen */
+"Edit Status" = "Edit Status";
 
 /* Carrier eligible for free pickup in Shipping Labels > Carrier and Rates */
 "Eligible for free pickup" = "Eligible for free pickup";
@@ -1281,8 +1467,20 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "Empty URL";
 
+/* Action title to enable Analytics for a store */
+"Enable analytics" = "Enable analytics";
+
+/* The action button on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
+"Enable Coupons" = "Enable Coupons";
+
 /* Enable Reviews label in Product Settings */
 "Enable Reviews" = "Enable Reviews";
+
+/* Description about WooCommerce Analytics on the enable analytics screen */
+"Enable WooCommerce Analytics to see missing stats for your store." = "Enable WooCommerce Analytics to see missing stats for your store.";
+
+/* Title for the enable analytics screen */
+"Enable WooCommerce Analytics to see your stats" = "Enable WooCommerce Analytics to see your stats";
 
 /* Title of the status row on Product Variation main screen to enable/disable a variation */
 "Enabled" = "Enabled";
@@ -1381,11 +1579,17 @@
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "Envelope";
 
+/* Error message when enabling analytics fails */
+"Error enabling analytics. Please try again." = "Error enabling analytics. Please try again.";
+
 /* Title for the error alert when fetching system status report fails */
 "Error fetching report" = "Error fetching report";
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Error in finding the address in Apple Maps";
+
+/* Message displayed on Coupon Details screen when loading total discounted amount fails */
+"Error loading data" = "Error loading data";
 
 /* Alert title when there is an error requesting shipping label document for printing */
 "Error previewing shipping label" = "Error previewing shipping label";
@@ -1393,12 +1597,15 @@
 /* Notice displayed when the label purchase fails */
 "Error purchasing the label" = "Error purchasing the label";
 
-/* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
+/* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
 "Everyone loves a deal" = "Everyone loves a deal";
 
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "example.com";
+
+/* Title for the exclude sale items row in coupon usage details screen. */
+"Exclude Sale Items" = "Exclude Sale Items";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -1431,10 +1638,14 @@
 /* Featured Product switch in Product Catalog Visibility */
 "Featured Product" = "Featured Product";
 
+/* Title for the Fee Details screen during order creation */
+"Fee" = "Fee";
+
 /* Title in the navigation bar when the survey is completed */
 "Feedback Sent!" = "Feedback Sent!";
 
-/* Fees label for payment view */
+/* Fees label for payment view
+   Label for the row showing the cost of fees in the order - Line description for 'Fees' cart total on the receipt. Only shown when non-zero. */
 "Fees" = "Fees";
 
 /* Title on the refund screen that lists the fees total cost */
@@ -1450,9 +1661,6 @@
 
 /* Subtitle of the cell Customs inside Create Shipping Label form */
 "Fill out customs form" = "Fill out customs form";
-
-/* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass).  */
-"Fill with password manager" = "Fill with password manager";
 
 /* Title of the toolbar button to filter orders without filters applied.
    Title of the toolbar button to filter products by different attributes. - Title of the toolbar button to filter products without any filters applied. */
@@ -1501,9 +1709,6 @@
 
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "Fixed Product Discount";
-
-/* Shown in the prologue carousel (promotional screens) during first launch. */
-"Follow your favorite sites and discover new blogs." = "Follow your favorite sites and discover new blogs.";
 
 /* User role badge */
 "Follower" = "Follower";
@@ -1561,6 +1766,9 @@
 /* The title of the button to give feedback about products beta features on the banner on the products tab
    The title of the button to give feedback about shipping labels features on the banner in order details - Title of the button to give feedback about the add-ons feature - Title of the button to give feedback about the Simple Payments feature - Title on the navigation bar for the products feedback survey */
 "Give feedback" = "Give feedback";
+
+/* Title of the feedback action button on the coupon list screen */
+"Give Feedback" = "Give Feedback";
 
 /* Option to select the Gmail app when logging in with magic links */
 "Gmail" = "Gmail";
@@ -1636,6 +1844,9 @@
 
 /* Browse our help documentation website title */
 "Help Center" = "Help Center";
+
+/* Text used when sharing a link to the app with a friend. */
+"Hey! Here is a link to download the WooCommerce app. I'm really enjoying it and thought you might too." = "Hey! Here is a link to download the WooCommerce app. I'm really enjoying it and thought you might too.";
 
 /* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
    Display label for the product's catalog visibility */
@@ -1729,6 +1940,10 @@
 /* The plugin is not active on the site and has enabled automatic updates */
 "Inactive, Autoupdates on" = "Inactive, Autoupdates on";
 
+/* Navigation title of the webview which is used in Inbox Notes.
+   Title for the screen that shows inbox notes. - Title of the Inbox menu in the hub menu */
+"Inbox" = "Inbox";
+
 /* Describes a standard *.wordpress.com site domain */
 "Included with Site" = "Included with Site";
 
@@ -1741,17 +1956,29 @@
 /* Subtitle of the product form bottom sheet action for linked products. */
 "Increase sales with upsells and cross-sells" = "Increase sales with upsells and cross-sells";
 
+/* Title for the individual use only row in coupon usage details screen. */
+"Individual Use Only" = "Individual Use Only";
+
 /* Description for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Individually shipped item" = "Individually shipped item";
 
 /* Label action for inserting a link on the editor */
 "Insert" = "Insert";
 
+/* Message from the in-person payment card reader prompting user to insert their card */
+"Insert Card" = "Insert Card";
+
 /* Accessibility label for insert horizontal ruler button on formatting toolbar. */
 "Insert Horizontal Ruler" = "Insert Horizontal Ruler";
 
 /* Accessibility label for insert link button on formatting toolbar. */
 "Insert Link" = "Insert Link";
+
+/* Message from the in-person payment card reader prompting user to insert or swipe their card */
+"Insert Or Swipe Card" = "Insert Or Swipe Card";
+
+/* Title of a button linking to the app's Instagram profile */
+"Instagram" = "Instagram";
 
 /* Navigates to Install Jetpack screen.
    Title of install action in the Jetpack benefits view. - Title of the Install Jetpack intro view - Title of the Install Jetpack view */
@@ -1777,6 +2004,9 @@
 
 /* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Place holder is an amount. */
 "Insurance (up to %1$@)" = "Insurance (up to %1$@)";
+
+/* Title of an alert letting the user know the email address that they've entered isn't valid */
+"Invalid Email Address" = "Invalid Email Address";
 
 /* Error message generated when announcement service is unable to return a valid endpoint. */
 "Invalid endpoint" = "Invalid endpoint";
@@ -1815,9 +2045,6 @@
    Title of the Inventory Settings row on Product main screen - Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "Inventory";
 
-/* Cell title on beta features screen to enable accepting in-person payments for stores with the WooCommerce Stripe Payment Gateway extension */
-"IPP with Stripe extension" = "IPP with Stripe extension";
-
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "Issue Refund";
 
@@ -1832,6 +2059,9 @@
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username/password isn't associated with this site." = "It looks like this username/password isn't associated with this site.";
+
+/* Message on enable analytics screen to notify that the module is disabled for the store */
+"It looks like you have analytics disabled." = "It looks like you have analytics disabled.";
 
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "It seems like you've entered an incorrect password. Want to give it another try?";
@@ -1868,6 +2098,9 @@
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats.";
+
+/* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
+"Join from anywhere" = "Join from anywhere";
 
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "Keep Editing";
@@ -1930,6 +2163,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "Legal (8.5 x 14 in)";
 
+/* Title of a button linking to a list of legal documents like privacy policy,terms of service, etc */
+"Legal and more" = "Legal and more";
+
 /* Title for the row to enter the package length on the Add New Custom Package screen in Shipping Label flow
    Title of the cell in Product Shipping Settings > Length */
 "Length" = "Length";
@@ -1942,6 +2178,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support.";
+
+/* Title for the limit usage to X items row in coupon usage details screen. */
+"Limit Usage to X Items" = "Limit Usage to X Items";
 
 /* Description of the Action sheet option when the user wants to change the Product type to external product */
 "Link a product to an external website" = "Link a product to an external website";
@@ -2035,14 +2274,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigates to Card Reader management screen */
 "Manage card reader" = "Manage card reader";
 
+/* Title of the action sheet displayed from the Coupon Details screen */
+"Manage Coupon" = "Manage Coupon";
+
 /* Button to open browser to manage plugins */
 "Manage Plugins" = "Manage Plugins";
 
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "Manage stock";
-
-/* shown in promotional screens during first launch */
-"Manage your Jetpack-powered site on the go — you've got WordPress in your pocket." = "Manage your Jetpack-powered site on the go — you've got WordPress in your pocket.";
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Manage your store orders on the go " = "Manage your store orders on the go ";
@@ -2084,6 +2323,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "Mark this order as complete and notify the customer";
 
+/* Title for the maximum spend row on coupon usage details screen with currency symbol within the brackets. Reads like: Maximum Spend ($) */
+"Maximum Spend (%1$@)" = "Maximum Spend (%1$@)";
+
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "Media doesn't have an associated file to upload.";
 
@@ -2109,8 +2351,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Option to select the Microsft Outlook app when logging in with magic links */
 "Microsoft Outlook" = "Microsoft Outlook";
 
+/* Title for the minimum spend row on coupon usage details screen with currency symbol within the brackets. Reads like: Minimum Spend ($) */
+"Minimum Spend (%1$@)" = "Minimum Spend (%1$@)";
+
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
 "Minimum value %@, maximum value %@" = "Minimum value %1$@, maximum value %2$@";
+
+/* The description in product variations bulk update, of a value, that is different acrossall variations */
+"Mixed" = "Mixed";
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Monitor and approve your product reviews" = "Monitor and approve your product reviews";
@@ -2141,6 +2389,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Trash Action Spoken hint */
 "Moves the comment to Trash" = "Moves the comment to Trash";
 
+/* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
+"Multiple Contactless Cards Detected" = "Multiple Contactless Cards Detected";
+
 /* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
 "My store" = "My store";
 
@@ -2151,7 +2402,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "My Tickets" = "My Tickets";
 
 /* Name text field placeholder
-   Text field name in Shipping Label Address Validation */
+   Text field name in Shipping Label Address Validation - Title for the name field on the Shipping Line Details screen during order creation */
 "Name" = "Name";
 
 /* Error showed in Shipping Label Address Validation for the name field */
@@ -2177,6 +2428,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Text preceding the Contact Us button in the survey completed screen */
 "Need some help?" = "Need some help?";
 
+/* Message format on enable analytics screen for support. The %@ placeholder is a URL with more information. */
+"Need some help? %1$@" = "Need some help? %1$@";
+
 /* The title for the net amount paid cell */
 "Net Payment" = "Net Payment";
 
@@ -2192,9 +2446,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "New Attribute Name";
 
-/* Title for the Shipping Address Form for New Customer */
-"New Customer" = "New Customer";
-
 /* The title of the top banner on the Products tab. */
 "New features available!" = "New features available!";
 
@@ -2205,6 +2456,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Next nav bar button title in Add Product Attribute Options screen - Next nav bar button title in Add Product Attribute screen - Title for the button to confirm the amount in the simple payments screen - Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
 "Next" = "Next";
 
+/* Value for the individual use only row or the exclude sale items row in Coupon Usage Details screen when the value is false */
+"No" = "No";
+
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "No activity this period";
 
@@ -2212,8 +2466,17 @@ This part is the link to the website, and forms part of a longer sentence which 
    Order details > customer info > shipping details. This is where the address would normally display. - Placeholder for empty address in order customer data */
 "No address specified." = "No address specified.";
 
+/* Error message when a card reader was expected to already have been connected. */
+"No card reader is connected - connect a reader and try again" = "No card reader is connected - connect a reader and try again";
+
 /* Title for the error screen when there was a network error checking In-Person Payments requirements. */
 "No connection" = "No connection";
+
+/* Error message when there is no connection to the Internet. */
+"No connection to the Internet - please connect to the Internet and try again" = "No connection to the Internet - please connect to the Internet and try again";
+
+/* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
+"No coupons found" = "No coupons found";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "No data available";
@@ -2233,6 +2496,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The text on the placeholder overlay when no products match the filter on the Products tab */
 "No matching products found" = "No matching products found";
 
+/* Message on the detail view of the Orders tab before any order is selected */
+"No order selected" = "No order selected";
+
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "No price set";
 
@@ -2248,6 +2514,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder for empty product ratings */
 "No ratings" = "No ratings";
+
+/* Value for the allowed emails row in Coupon Usage Details screen when no restriction is set */
+"No Restrictions" = "No Restrictions";
 
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier'. Parameters: %1$@ - carrier name */
 "No results found for %1$@\nAdd a custom carrier" = "No results found for %1$@\nAdd a custom carrier";
@@ -2268,10 +2537,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No tax classes yet" = "No tax classes yet";
 
 /* Display label for the order fee's tax status setting option
-   Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow */
+   Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow - The description in product variations bulk update, of a value, that is missing from all variations - Value for fields in Coupon Usage Details screen when no value is set */
 "None" = "None";
 
-/* Title of dismiss action in the Jetpack benefits view. */
+/* Action title to dismiss enabling Analytics for a store
+   Title of dismiss action in the Jetpack benefits view. */
 "Not now" = "Not now";
 
 /* Instructions after a Magic Link was sent, but the email can't be found in their inbox. */
@@ -2282,6 +2552,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "Note to customer";
+
+/* Title of order note section in the receipt, commonly used for Quick Orders. */
+"Notes" = "Notes";
 
 /* Info text for the generate first variation screen */
 "Now that you’ve added attributes, you can create your first variation!" = "Now that you’ve added attributes, you can create your first variation!";
@@ -2318,9 +2591,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for on hold order status. */
 "On hold" = "On hold";
 
-/* Accessibility label for 1 password button */
-"One Password button" = "One Password button";
-
 /* Helper text above photo list in Product images screen */
 "Only one photo can be displayed by variation" = "Only one photo can be displayed by variation";
 
@@ -2349,8 +2619,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "Opens a list of available statuses.";
 
-/* Accessibility hint for 1 password button */
-"Opens One Password manager" = "Opens One Password manager";
+/* Accessibility hint for selecting a variable product in the Add Product screen */
+"Opens list of product variations." = "Opens list of product variations.";
+
+/* Accessibility hint for selecting a product in a new order */
+"Opens product detail." = "Opens product detail.";
 
 /* Placeholder of cell presenting the title of the new attribute option. */
 "Option name" = "Option name";
@@ -2486,6 +2759,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title text of the row that shows the payment headline when creating a simple payment - Title text of the section that shows Payment details when creating a new order */
 "Payment" = "Payment";
 
+/* Message when the presented card remaining credit or balance is insufficient for the purchase. */
+"Payment declined due to insufficient funds. Try another means of payment" = "Payment declined due to insufficient funds. Try another means of payment";
+
 /* Error message. Presented to users after a collecting a payment fails
    Error message. Presented to users after collecting a payment fails */
 "Payment failed" = "Payment failed";
@@ -2494,7 +2770,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of payment method in shipping label details - Title of the cell Payment Method inside Create Shipping Label form */
 "Payment Method" = "Payment Method";
 
-/* Title of the webview of adding a payment method in Shipping Labels */
+/* Title of 'Payment method' section in the receipt
+   Title of the webview of adding a payment method in Shipping Labels */
 "Payment method" = "Payment method";
 
 /* Notice that will be displayed after adding a new Shipping Label payment method */
@@ -2505,6 +2782,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label informing users that the payment succeeded. Presented to users when a payment is collected */
 "Payment successful" = "Payment successful";
+
+/* Message when we don't know exactly why the payment was declined. */
+"Payment was declined for an unknown reason. Try another means of payment" = "Payment was declined for an unknown reason. Try another means of payment";
+
+/* Message when payment is declined for a non specific reason. */
+"Payment was declined for an unspecified reason. Try another means of payment" = "Payment was declined for an unspecified reason. Try another means of payment";
 
 /* Display label for pending order status.
    Display label for the review's pending status */
@@ -2519,6 +2802,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Name of percentage discount type */
 "Percentage Discount" = "Percentage Discount";
+
+/* Title of the Performance section on Coupons Details screen */
+"Performance" = "Performance";
 
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
@@ -2575,7 +2861,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Please enter a username." = "Please enter a username.";
 
-/* Error message displayed when the user attempts use an invalid email address. */
+/* An error message. */
+"Please enter a valid email address for a WordPress.com account." = "Please enter a valid email address for a WordPress.com account.";
+
+/* Error message displayed when the user attempts use an invalid email address.
+   Notice text when the merchant enters an invalid email */
 "Please enter a valid email address." = "Please enter a valid email address.";
 
 /* Placeholder for editing the text of a text link */
@@ -2683,7 +2973,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Previously Refunded" = "Previously Refunded";
 
 /* Product Price Settings navigation title
-   Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
+   Section header title for product price - The title for the price settings section in the product variation bulk updatescreen - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
 "Price" = "Price";
 
 /* Title of print button on Print Customs Invoice screen of Shipping Label flow when there are more than one invoice */
@@ -2718,10 +3008,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of in-progress modal when requesting document with multiple shipping labels for printing */
 "Printing Labels" = "Printing Labels";
 
-/* Opens the California Privacy Policy web page */
+/* Title of button that displays the California Privacy Notice */
 "Privacy Notice for California Users" = "Privacy Notice for California Users";
 
-/* Opens the Privacy Policy web page */
+/* Title of button that displays the App's privacy policy */
 "Privacy Policy" = "Privacy Policy";
 
 /* Navigates to Privacy Settings screen
@@ -2746,8 +3036,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Indicates that a payment is being processed */
 "Processing payment..." = "Processing payment...";
 
-/* Legacy description for Top Performers left column header
-   Product section title - Product section title if there is only one product. - Product section title in Review Order screen if there is one product. - Title for the Product screen during order creation */
+/* Product section title
+   Product section title if there is only one product. - Product section title in Review Order screen if there is one product. - Title for the Product screen during order creation */
 "Product" = "Product";
 
 /* Product section title */
@@ -2817,9 +3107,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action for creating a new product remotely with a published status */
 "Publish" = "Publish";
 
-/* shown in promotional screens during first launch */
-"Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do.";
-
 /* Title of the Publish Settings section on Product Settings screen */
 "Publish Settings" = "Publish Settings";
 
@@ -2867,6 +3154,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Restriction type Quarantine for contents declared in the customs form for Shipping Label flow */
 "Quarantine" = "Quarantine";
 
+/* Title of button that allows the user to rate the app in the App Store */
+"Rate us" = "Rate us";
+
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "rated %ld times";
 
@@ -2897,8 +3187,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "Reason for refunding order";
 
-/* The title of the view containing a receipt preview */
+/* The title of the view containing a receipt preview
+   Title of receipt. */
 "Receipt" = "Receipt";
+
+/* Title of receipt. Reads like Receipt from WooCommerce, Inc. */
+"Receipt from %1$@" = "Receipt from %1$@";
 
 /* Button to reload plugin data after activating a Card Present Payments extension */
 "Refresh After Activating" = "Refresh After Activating";
@@ -2955,6 +3249,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "Registered Domain";
 
+/* The label in the option of selecting to bulk update the regular price of a product variation */
+"Regular Price" = "Regular Price";
+
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Regular price: %@";
 
@@ -2965,8 +3262,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Confirmation title before removing an attribute from a variation. */
 "Remove Attribute" = "Remove Attribute";
 
+/* Message from the in-person payment card reader prompting user to remove their card */
+"Remove Card" = "Remove Card";
+
 /* Label action for removing a link from the editor */
 "Remove end date" = "Remove end date";
+
+/* Text for the button to remove a fee from the order during order creation */
+"Remove Fee from Order" = "Remove Fee from Order";
 
 /* Title on the alert when the user taps to delete a Product image */
 "Remove Image" = "Remove Image";
@@ -2978,7 +3281,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Remove product" = "Remove product";
 
 /* Text for the button to remove a product from the order during order creation */
-"Remove product from order" = "Remove product from order";
+"Remove Product from Order" = "Remove Product from Order";
+
+/* Text for the button to remove a shipping line from the order during order creation */
+"Remove Shipping from Order" = "Remove Shipping from Order";
 
 /* Title of the alert when a user is deleting a variation */
 "Remove variation" = "Remove variation";
@@ -3028,12 +3334,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Retrieves a list of products that contain a given keyword." = "Retrieves a list of products that contain a given keyword.";
 
 /* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
-   Button to retry when there was a network error checking In-Person Payments requirements - Retry Action - Retry the last action */
+   Action button to retry syncing the draft order - Button to retry when there was a network error checking In-Person Payments requirements - Retry Action - Retry action for an error notice - Retry the last action */
 "Retry" = "Retry";
 
 /* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages.
    Button to try again after connecting to a specific reader fails due to postal code problems. Intended for use after the merchant corrects the postal code in the store admin pages. */
 "Retry After Updating" = "Retry After Updating";
+
+/* Message from the in-person payment card reader prompting user to retry payment with their card */
+"Retry Card" = "Retry Card";
 
 /* Action button to check site's connection again. */
 "Retry Connection" = "Retry Connection";
@@ -3079,7 +3388,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Sanitary / Phytosanitary Inspection" = "Sanitary / Phytosanitary Inspection";
 
 /* Action for saving a Product remotely
-   Add Product Category. Save button title in navbar. - Add Product Tags. Save button title in navbar. */
+   Add Product Category. Save button title in navbar. - Add Product Tags. Save button title in navbar. - Button title that save the price selection for bulk variation update */
 "Save" = "Save";
 
 /* Button title to save a product as draft in Product More Options Action Sheet */
@@ -3139,14 +3448,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Search Orders */
 "Search orders" = "Search orders";
 
+/* Placeholder on the search field to search for a specific product */
+"Search Products" = "Search Products";
+
 /* Search Products */
 "Search products" = "Search products";
 
 /* Display label for the product's catalog visibility */
 "Search results only" = "Search results only";
-
-/* Shown in the prologue carousel (promotional screens) during first launch. */
-"See comments and notifications in real time." = "See comments and notifications in real time.";
 
 /* Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
 "See Connected Stores" = "See Connected Stores";
@@ -3237,11 +3546,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title Share in Edit Product More Options Action Sheet */
 "Share" = "Share";
 
+/* Action title for sharing coupon from the Coupon Details screen */
+"Share Coupon" = "Share Coupon";
+
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "Share information with our analytics tool about your use of services while logged in to your WordPress.com account.";
 
 /* Payment Link method title on the select payment method screen for simple payments */
 "Share Payment Link" = "Share Payment Link";
+
+/* Title for button allowing users to share information about the app with friends, such as via Messages */
+"Share with Friends" = "Share with Friends";
 
 /* Shipping Label Address Validation navigation title
    Shipping Label Suggested Address navigation title - Title of origin address in shipping label details - Title of the cell Ship from inside Create Shipping Label form */
@@ -3265,8 +3580,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Date an item was shipped */
 "Shipped %@" = "Shipped %@";
 
-/* Product Shipping Settings navigation title
-   Shipping label for payment view - Title of the product form bottom sheet action for editing shipping settings. - Title of the Shipping Settings row on Product main screen */
+/* Label for the row showing the cost of shipping in the order
+   Line description for 'Shipping' cart total on the receipt. Only shown when non-zero - Placeholder for the name field on the Shipping Line Details screen during order creation - Product Shipping Settings navigation title - Shipping label for payment view - Title for the Shipping Line Details screen during order creation - Title of the product form bottom sheet action for editing shipping settings. - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "Shipping";
 
 /* Shipping Address title for customer info section
@@ -3473,6 +3788,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Sorry, that username is unavailable." = "Sorry, that username is unavailable.";
 
+/* Error message when the card reader service experiences an unexpected internal service error. */
+"Sorry, this payment couldn’t be processed" = "Sorry, this payment couldn’t be processed";
+
+/* Error message shown when a refund could not be canceled (likely because it had already completed) */
+"Sorry, this refund could not be canceled" = "Sorry, this refund could not be canceled";
+
 /* No comment provided by engineer. */
 "Sorry, usernames can only contain lowercase letters (a-z) and numbers." = "Sorry, usernames can only contain lowercase letters (a-z) and numbers.";
 
@@ -3554,7 +3875,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Subscription" = "Subscription";
 
 /* Create Shipping Label form -> Subtotal label
-   Subtotal label for a refund details view - Title on the refund screen that lists the fees subtotal cost - Title on the refund screen that lists the products refund subtotal cost - Title on the refund screen that lists the shipping subtotal cost - Title text of the row that shows the subtotal when creating a simple payment */
+   Line description for 'Subtotal' cart total on the receipt. The subtotal of the products purchased before discounts. - Subtotal label for a refund details view - Title on the refund screen that lists the fees subtotal cost - Title on the refund screen that lists the products refund subtotal cost - Title on the refund screen that lists the shipping subtotal cost - Title text of the row that shows the subtotal when creating a simple payment */
 "Subtotal" = "Subtotal";
 
 /* Notice text after updating the order successfully */
@@ -3562,6 +3883,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the footer in Shipping Label Package Detail screen */
 "Sum of products and package weight" = "Sum of products and package weight";
+
+/* Title of 'Summary' section in the receipt when the order number is unknown */
+"Summary" = "Summary";
+
+/* Title of 'Summary' section in the receipt. %1$@ is the order number, e.g. 4920 */
+"Summary: Order #%1$@" = "Summary: Order #%1$@";
+
+/* Message from the in-person payment card reader prompting user to swipe their card */
+"Swipe Card" = "Swipe Card";
 
 /* Switch store option in the hub menu */
 "Switch store" = "Switch store";
@@ -3571,9 +3901,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. Parameters: %1$@ - store name */
 "Switched to %1$@." = "Switched to %1$@.";
-
-/* Message presented after users switch to a new store when multi-store push notifications are not supported. Reads like: Switched to {store name}. You will only receive notifications from this store. Parameters: %1$@ - store name */
-"Switched to %1$@. You will only receive notifications from this store." = "Switched to %1$@. You will only receive notifications from this store.";
 
 /* Accessibility Identifier for the Default Font Aztec Style. */
 "Switches to the default Font Size" = "Switches to the default Font Size";
@@ -3603,6 +3930,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Toast message showing up when tapping Copy button on System Status Report screen. */
 "System status report copied to clipboard" = "System status report copied to clipboard";
 
+/* Message when attempting to pay for a live transaction with a test card. */
+"System test cards are not permitted for payment. Try another means of payment" = "System test cards are not permitted for payment. Try another means of payment";
+
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags. - Title of the Tags row on Product main screen */
 "Tags" = "Tags";
@@ -3613,9 +3943,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the simple payments screen */
 "Take Payment" = "Take Payment";
 
-/* Navigation bar title for the Simple Payments Methods screens
-   Text of the button that creates a simple payment order. Contains the total amount to collect */
-"Take Payment (\(total))" = "Take Payment (\(total))";
+/* Navigation bar title for the Simple Payments Methods screens. %1$@ is a placeholder for the total amount to collect
+   Text of the button that creates a simple payment order. %1$@ is a placeholder for the total amount to collect */
+"Take Payment (%1$@)" = "Take Payment (%1$@)";
 
 /* Title of the banner notice in the Simple Payments feature */
 "Take payments from your device!" = "Take payments from your device!";
@@ -3694,9 +4024,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Tax label for the tax detail row. - Title on the refunds screen that lists the fees tax cost - Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
 "Tax" = "Tax";
 
-/* Tax percentage to be applied to the simple payments order */
-"Tax (\(rate)%)" = "Tax (\(rate)%)";
-
 /* Title of the cell in Product Price Settings > Tax class */
 "Tax class" = "Tax class";
 
@@ -3716,19 +4043,17 @@ This part is the link to the website, and forms part of a longer sentence which 
    Display label for the product's tax status setting option */
 "Taxable" = "Taxable";
 
-/* Taxes label for payment view */
+/* Label for the row showing the taxes in the order
+   Line description for tax charged on the whole cart. Only shown when non-zero - Taxes label for payment view */
 "Taxes" = "Taxes";
 
 /* Disclaimer in the simple payments summary screen about taxes. */
 "Taxes are automatically calculated based on your store address." = "Taxes are automatically calculated based on your store address.";
 
-/* Information about taxes and the order total when creating a new order */
-"Taxes will be automatically calculated based on your store settings." = "Taxes will be automatically calculated based on your store settings.";
-
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "Tell us more about %1$@...";
 
-/* Opens the Terms of Service web page */
+/* Title of button that displays the App's terms of service */
 "Terms of Service" = "Terms of Service";
 
 /* Cell description on the beta features screen to enable creating new orders */
@@ -3737,8 +4062,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Cell description on beta features screen to enable accepting in-person payments for stores in Canada */
 "Test out In-Person Payments in Canada" = "Test out In-Person Payments in Canada";
 
-/* Cell description on beta features screen to enable accepting in-person payments for stores with the WooCommerce Stripe Payment Gateway extension */
-"Test out In-Person Payments with the Stripe Payment Gateway extension" = "Test out In-Person Payments with the Stripe Payment Gateway extension";
+/* Cell description on beta features screen to enable coupon management */
+"Test out managing coupons as we get ready to launch" = "Test out managing coupons as we get ready to launch";
 
 /* Cell description on beta features screen to enable product SKU input scanner in inventory settings. */
 "Test out scanning a barcode for a product SKU in the product inventory settings" = "Test out scanning a barcode for a product SKU in the product inventory settings";
@@ -3752,6 +4077,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Text thanking the user when the survey is completed */
 "Thank you for sharing your thoughts with us" = "Thank you for sharing your thoughts with us";
+
+/* Confirmation message in Inbox Notes after responding to a survey. */
+"Thank you for your feedback!" = "Thank you for your feedback!";
 
 /* Shown when a user pastes a code into the two factor field that contains letters or is the wrong length */
 "That doesn't appear to be a valid verification code." = "That doesn't appear to be a valid verification code.";
@@ -3789,6 +4117,51 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error title when trying to update or create an attribute remotely. */
 "The attribute couldn't be saved." = "The attribute couldn't be saved.";
 
+/* Error message when the card reader loses its Bluetooth connection to the card reader. */
+"The Bluetooth connection to the card reader disconnected unexpectedly" = "The Bluetooth connection to the card reader disconnected unexpectedly";
+
+/* Message when the card presented does not support the order currency. */
+"The card does not support this currency. Try another means of payment" = "The card does not support this currency. Try another means of payment";
+
+/* Message when the card presented does not allow this type of purchase. */
+"The card does not support this type of purchase. Try another means of payment" = "The card does not support this type of purchase. Try another means of payment";
+
+/* Message when the presented card is past its expiration date. */
+"The card has expired. Try another means of payment" = "The card has expired. Try another means of payment";
+
+/* Message when payment is declined for a non specific reason. */
+"The card or card account is invalid. Try another means of payment" = "The card or card account is invalid. Try another means of payment";
+
+/* Error message when the card reader is busy executing another command. */
+"The card reader is busy executing another command - please try again" = "The card reader is busy executing another command - please try again";
+
+/* Error message when the card reader is incompatible with the application. */
+"The card reader is not compatible with this application - please try updating the application or using a different reader" = "The card reader is not compatible with this application - please try updating the application or using a different reader";
+
+/* Error message when the card reader session has timed out. */
+"The card reader session has expired - please disconnect and reconnect the card reader and then try again" = "The card reader session has expired - please disconnect and reconnect the card reader and then try again";
+
+/* Error message when the card reader software is too far out of date to process payments. */
+"The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "The card reader software is out-of-date - please update the card reader software before attempting to process payments";
+
+/* Error message when the card reader software update fails due to a communication error. */
+"The card reader software update failed due to a communication error - please try again" = "The card reader software update failed due to a communication error - please try again";
+
+/* Error message when the card reader software update fails due to a problem with the update server. */
+"The card reader software update failed due to a problem with the update server - please try again" = "The card reader software update failed due to a problem with the update server - please try again";
+
+/* Error message when the card reader software update fails unexpectedly. */
+"The card reader software update failed unexpectedly - please try again" = "The card reader software update failed unexpectedly - please try again";
+
+/* Error message when the card reader software update is interrupted. */
+"The card reader software update was interrupted before it could complete - please try again" = "The card reader software update was interrupted before it could complete - please try again";
+
+/* Error message when the card reader itself declines the card. */
+"The card was declined by the card reader - please try another means of payment" = "The card was declined by the card reader - please try another means of payment";
+
+/* Error message when the card processor declines the payment. */
+"The card was declined by the payment processor - please try another means of payment" = "The card was declined by the payment processor - please try another means of payment";
+
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?";
 
@@ -3807,14 +4180,29 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Fetching an Order Failed */
 "The Order couldn't be loaded!" = "The Order couldn't be loaded!";
 
+/* Message when the presented card does not allow the purchase amount. */
+"The payment amount is not allowed for the card presented. Try another means of payment." = "The payment amount is not allowed for the card presented. Try another means of payment.";
+
+/* Error message when the payment can not be processed (i.e. order amount is below the minimum amount allowed.) */
+"The payment can not be processed by the payment processor." = "The payment can not be processed by the payment processor.";
+
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "The phone number is not valid or you can't call the customer from this device.";
 
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "The price for this product. Editable.";
 
+/* Message in the footer of bulk price setting screen (singular). */
+"The price will be updated for %d variation." = "The price will be updated for %d variation.";
+
+/* Message in the footer of bulk price setting screen (plurar). */
+"The price will be updated for %d variations." = "The price will be updated for %d variations.";
+
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
 "The reader has a critically low battery. Please charge the reader or try a different reader." = "The reader has a critically low battery. Please charge the reader or try a different reader.";
+
+/* Error message when a request times out. */
+"The request timed out - please try again" = "The request timed out - please try again";
 
 /* Product price error notice message, when the sale price is added but the regular price is not */
 "The sale price can't be added without the regular price." = "The sale price can't be added without the regular price.";
@@ -3824,6 +4212,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Product price error notice message, when the sale price is higher than the regular price */
 "The sale price should be lower than the regular price." = "The sale price should be lower than the regular price.";
+
+/* A failure reason for when the request couldn't be serialized. */
+"The serialization of the request failed." = "The serialization of the request failed.";
+
+/* A failure reason for when the response couldn't be serialized. */
+"The serialization of the response failed." = "The serialization of the response failed.";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "The server returned an empty response. This usually means you need to increase the memory limit for your site.";
@@ -3855,8 +4249,26 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility hint, informing the user that the cell shows the stock quantity information for this product. */
 "The stock quantity for this product. Editable." = "The stock quantity for this product. Editable.";
 
+/* Error message when there is an issue with the store address preventing an action (e.g. reader connection.) */
+"The store address is incomplete or missing, please update it before continuing." = "The store address is incomplete or missing, please update it before continuing.";
+
+/* Error message when there is an issue with the store postal code preventing an action (e.g. reader connection.) */
+"The store postal code is invalid or missing, please update it before continuing." = "The store postal code is invalid or missing, please update it before continuing.";
+
+/* Error message when the system cancels a command. */
+"The system canceled the command unexpectedly - please try again" = "The system canceled the command unexpectedly - please try again";
+
+/* Error message when the card reader service experiences an unexpected software error. */
+"The system experienced an unexpected software error" = "The system experienced an unexpected software error";
+
+/* Error message when the card reader service is busy executing another command. */
+"The system is busy executing another command - please try again" = "The system is busy executing another command - please try again";
+
 /* Message for the error alert when fetching system status report fails */
 "The system status report for your site cannot be fetched at the moment. Please try again." = "The system status report for your site cannot be fetched at the moment. Please try again.";
+
+/* Message when the presented card postal code doesn't match the order postal code. */
+"The transaction postal code and card postal code do not match. Try another means of payment" = "The transaction postal code and card postal code do not match. Try another means of payment";
 
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "The URL is missing a valid host.";
@@ -3876,6 +4288,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "There was a problem blocking posts from the specified site.";
 
+/* A general error message shown to the user when there was an API communication failure. */
+"There was a problem communicating with the site." = "There was a problem communicating with the site.";
+
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "There was a problem removing the block for specified site.";
 
@@ -3888,6 +4303,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "There was an error issuing the refund";
 
+/* Notice displayed when searching the list of products fails */
+"There was an error searching products" = "There was an error searching products";
+
+/* Notice displayed when syncing the list of product variations fails */
+"There was an error syncing product variations" = "There was an error syncing product variations";
+
+/* Notice displayed when syncing the list of products fails */
+"There was an error syncing products" = "There was an error syncing products";
+
 /* Notice text after failing to update a simple payments order.
    Notice text after failing to update the order successfully */
 "There was an error updating the order" = "There was an error updating the order";
@@ -3898,15 +4322,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text when there is an unknown error while trying to collect payments */
 "There was an error while trying to collect the payment." = "There was an error while trying to collect the payment.";
 
-/* Navigates to screen with third party software licenses
-   Software Licenses (information page title) */
+/* Software Licenses (information page title)
+   Title of button that displays information about the third party software libraries used in the creation of this app */
 "Third Party Licenses" = "Third Party Licenses";
+
+/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this." = "This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this.";
 
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app.";
 
 /* Message explaining more detail on why the user's role is incorrect. */
 "This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role.";
+
+/* Message when a card requires a PIN code and we have no means of entering such a code. */
+"This card requires a PIN code and thus cannot be processed. Try another means of payment" = "This card requires a PIN code and thus cannot be processed. Try another means of payment";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "This email address is not registered on WordPress.com.";
@@ -4025,17 +4455,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Used when a Reader Topic is not found for a specific id */
 "Topic not found for id:" = "Topic not found for id:";
 
-/* Top performers — label for the total number of products ordered */
-"Total orders: %ld" = "Total orders: %ld";
-
 /* Title of the row for adding the package weight in Shipping Label Package Detail screen */
 "Total package weight" = "Total package weight";
 
 /* Total package weight label in Shipping Label form. %1$@ is a placeholder for the weight */
 "Total package weight: %1$@" = "Total package weight: %1$@";
-
-/* Legacy description for Top Performers right column header */
-"Total Spend" = "Total Spend";
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Track sales and high performing products" = "Track sales and high performing products";
@@ -4075,9 +4499,18 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
 "Try again" = "Try again";
 
-/* Button to retry a software update. Presented to users when updating the card reader software fails
-   Button to try again after connecting to a specific reader fails due to a critically low battery. - Button to try again. Presented to users after a failure occurs - Try Again button on the error alert when fetching system status report fails */
+/* Action displayed in the error prompt when loading total discounted amount in Coupon Details screen fails
+   Button to retry a software update. Presented to users when updating the card reader software fails - Button to try again after connecting to a specific reader fails due to a critically low battery. - Button to try again. Presented to users after a failure occurs - Try Again button on the error alert when fetching system status report fails */
 "Try Again" = "Try Again";
+
+/* Message from the in-person payment card reader prompting user to retry a payment using a different card */
+"Try Another Card" = "Try Another Card";
+
+/* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
+"Try another means of payment" = "Try another means of payment";
+
+/* Message from the in-person payment card reader prompting user to retry a payment using a different method, e.g. swipe, tap, insert */
+"Try Another Read Method" = "Try Another Read Method";
 
 /* Button to try to collect a payment again. Presented to users after a collecting a payment fails */
 "Try Collecting Again" = "Try Collecting Again";
@@ -4091,17 +4524,29 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* When social login fails, this button offers to let them try tp login using a URL */
 "Try with the site address" = "Try with the site address";
 
+/* Message when a card is declined due to a potentially temporary problem. */
+"Trying again may succeed, or try another means of payment" = "Trying again may succeed, or try another means of payment";
+
 /* Settings > Manage Card Reader > Connect > Hint to power on reader */
 "Turn card reader on and place it next to mobile device" = "Turn card reader on and place it next to mobile device";
 
 /* Settings > Manage Card Reader > Connect > Hint to enable Bluetooth */
 "Turn mobile device Bluetooth on" = "Turn mobile device Bluetooth on";
 
+/* Title of a button linking to the app's Twitter profile */
+"Twitter" = "Twitter";
+
 /* Placeholder for the Content Details row in Customs screen of Shipping Label flow */
 "Type of contents" = "Type of contents";
 
 /* Placeholder for the Restriction Details row in Customs screen of Shipping Label flow */
 "Type of restriction" = "Type of restriction";
+
+/* Error message when Bluetooth is not enabled or available. */
+"Unable to access Bluetooth - please enable Bluetooth and try again" = "Unable to access Bluetooth - please enable Bluetooth and try again";
+
+/* Error message when location services is not enabled for this application. */
+"Unable to access Location Services - please enable Location Services and try again" = "Unable to access Location Services - please enable Location Services and try again";
 
 /* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number}. Parameters: %1$d - order number */
 "Unable to add note to order #%1$d" = "Unable to add note to order #%1$d";
@@ -4112,8 +4557,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number}. Parameters: %1$d - order number */
 "Unable to change status of order #%1$d" = "Unable to change status of order #%1$d";
 
+/* Error message when communication with the card reader is disrupted. */
+"Unable to communicate with reader - please try again" = "Unable to communicate with reader - please try again";
+
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "Unable To Connect";
+
+/* Error message when the card reader service attempts to connect to a reader without discovering it first. */
+"Unable to connect to card reader - card reader was not correctly discovered - please try again" = "Unable to connect to card reader - card reader was not correctly discovered - please try again";
+
+/* Error message when attempting to connect to a card reader which is already in use. */
+"Unable to connect to card reader - the card reader is already in use" = "Unable to connect to card reader - the card reader is already in use";
+
+/* Error message when a card reader is already connected and we were not expecting one. */
+"Unable to connect to reader - another reader is already connected" = "Unable to connect to reader - another reader is already connected";
+
+/* Error message the card reader battery level is too low to connect to the phone or tablet. */
+"Unable to connect to reader - the reader has a critically low battery - charge the reader and try again." = "Unable to connect to reader - the reader has a critically low battery - charge the reader and try again.";
 
 /* Notice displayed when order creation fails */
 "Unable to create new order" = "Unable to create new order";
@@ -4142,8 +4602,20 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of error presented when loading the list of shipment carriers failed. It reads: Unable to load Shipment Carriers */
 "Unable to load Shipment Carriers" = "Unable to load Shipment Carriers";
 
+/* Notice displayed when taxes cannot be synced for new order */
+"Unable to load taxes for order" = "Unable to load taxes for order";
+
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "Unable to mark review as %@";
+
+/* Error message when the card reader cannot be used to perform the requested task. */
+"Unable to perform request with the connected reader - unsupported feature - please try again with another reader" = "Unable to perform request with the connected reader - unsupported feature - please try again with another reader";
+
+/* Error message when the application is so out of date that the backend refuses to work with it. */
+"Unable to perform software request - please update this application and try again" = "Unable to perform software request - please update this application and try again";
+
+/* Error message when the payment intent is invalid. */
+"Unable to process payment due to invalid data - please try again" = "Unable to process payment due to invalid data - please try again";
 
 /* Error message when the order amount is below the minimum amount allowed. */
 "Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@" = "Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@";
@@ -4151,8 +4623,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the order amount is not valid. */
 "Unable to process payment. Order total amount is not valid." = "Unable to process payment. Order total amount is not valid.";
 
+/* Error message when the card reader times out while reading a card. */
+"Unable to read card - the system timed out - please try again" = "Unable to read card - the system timed out - please try again";
+
+/* Error message when the card reader is unable to read any chip on the inserted card. */
+"Unable to read inserted card - please try removing and inserting card again" = "Unable to read inserted card - please try removing and inserting card again";
+
+/* Error message when the card reader is unable to read a swiped card. */
+"Unable to read swiped card - please try swiping again" = "Unable to read swiped card - please try swiping again";
+
 /* No comment provided by engineer. */
-"Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ.";
+"Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ.";
 
 /* Refresh Action Failed */
 "Unable to refresh list" = "Unable to refresh list";
@@ -4160,11 +4641,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* An error message shown when failing to retrieve information about user roles, before letting the user in to manage the store. */
 "Unable to retrieve user roles." = "Unable to retrieve user roles.";
 
+/* Unable to retrieve variations for bulk update screen */
+"Unable to retrieve variations" = "Unable to retrieve variations";
+
 /* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
 "Unable to save changes to the payment method" = "Unable to save changes to the payment method";
 
+/* Error message when Bluetooth Low Energy is not supported on the user device. */
+"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device" = "Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device";
+
+/* Error message when Bluetooth scan times out during reader discovery. */
+"Unable to search for card readers - Bluetooth timed out - please try again" = "Unable to search for card readers - Bluetooth timed out - please try again";
+
 /* Error notice title when we fail to update an address in the edit address screen. */
 "Unable to update address." = "Unable to update address.";
+
+/* Error message when the card reader battery level is too low to safely perform a software update. */
+"Unable to update card reader software - the reader battery is too low" = "Unable to update card reader software - the reader battery is too low";
 
 /* Title for the error screen when In-Person Payments is unavailable */
 "Unable to verify In-Person Payments for this store" = "Unable to verify In-Person Payments for this store";
@@ -4206,6 +4699,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Used when the response doesn't have a valid url to display */
 "unknown url" = "unknown url";
+
+/* Value for fields in Coupon Usage Details screen when no limit is set */
+"Unlimited" = "Unlimited";
 
 /* Back button title when the product doesn't have a name */
 "Unnamed product" = "Unnamed product";
@@ -4257,6 +4753,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Settings > Manage Card Reader > Connected Reader > A button to update the reader software */
 "Update Reader Software" = "Update Reader Software";
 
+/* Title that appears on top of the of bulk price setting screen */
+"Update Regular Price" = "Update Regular Price";
+
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "Update to WooCommerce 3.5 to keep using this app";
 
@@ -4299,6 +4798,24 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title for editing the URL of a text link
    URL text field placeholder */
 "URL" = "URL";
+
+/* Title of the Usage details row in Coupon Details screen */
+"Usage details" = "Usage details";
+
+/* Navigation title for usage details screen */
+"Usage Details" = "Usage Details";
+
+/* Title for the usage limit per coupon row in coupon usage details screen. */
+"Usage Limit Per Coupon" = "Usage Limit Per Coupon";
+
+/* Title for the usage limit per user row in coupon usage details screen. */
+"Usage Limit Per User" = "Usage Limit Per User";
+
+/* Title for the usage limits section on coupon usage details screen */
+"Usage Limits" = "Usage Limits";
+
+/* Title for the usage restrictions section on coupon usage details screen */
+"Usage Restrictions" = "Usage Restrictions";
 
 /* Action to use the address in Shipping Label Validation screen as entered */
 "Use Address as Entered" = "Use Address as Entered";
@@ -4356,9 +4873,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network." = "Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network.";
 
-/* Displays the version of the App */
-"Version %@" = "Version %@";
-
 /* Displays the connected reader software version */
 "Version: %1$@" = "Version: %1$@";
 
@@ -4371,6 +4885,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the banner notice in the add-ons view */
 "View add-ons from your device!" = "View add-ons from your device!";
+
+/* Title of the feedback banner on the coupon list screen */
+"View and edit coupons" = "View and edit coupons";
 
 /* View application log cell title */
 "View Application Log" = "View Application Log";
@@ -4429,12 +4946,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* View title during the Google auth process. */
 "Waiting..." = "Waiting...";
 
-/* shown in promotional screens during first launch */
-"Watch readers from around the world read and interact with your site — in real time." = "Watch readers from around the world read and interact with your site — in real time.";
-
-/* Shown in the prologue carousel (promotional screens) during first launch. */
-"Watch your audience grow with in-depth analytics." = "Watch your audience grow with in-depth analytics.";
-
 /* Error message when the merchant's payment account has been rejected */
 "We are sorry but we can't support In-Person Payments for this store." = "We are sorry but we can't support In-Person Payments for this store.";
 
@@ -4465,6 +4976,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country */
 "We don’t support In-Person Payments in your country" = "We don’t support In-Person Payments in your country";
+
+/* Title for the error screen when In-Person Payments is not supported in a specific country */
+"We don’t support In-Person Payments with Stripe in %1$@" = "We don’t support In-Person Payments with Stripe in %1$@";
+
+/* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country */
+"We don’t support In-Person Payments with Stripe in your country" = "We don’t support In-Person Payments with Stripe in your country";
+
+/* Message displayed in the error prompt when loading total discounted amount in Coupon Details screen fails */
+"We encountered a problem loading analytics" = "We encountered a problem loading analytics";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery.";
@@ -4515,6 +5035,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com.";
 
+/* Title of a button linking to the app's website */
+"Website" = "Website";
+
 /* Title of the cell in Product Shipping Settings > Weight */
 "Weight" = "Weight";
 
@@ -4527,8 +5050,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "Weight: %1$@%2$@";
 
-/* Shown in the prologue carousel (promotional screens) during first launch. */
-"Welcome to the world’s most popular website builder." = "Welcome to the world’s most popular website builder.";
+/* Content of the feedback banner on the coupon list screen */
+"We’ve been working on making it possible to view and edit coupons from your device!" = "We’ve been working on making it possible to view and edit coupons from your device!";
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "What email do I use to sign in?";
@@ -4562,8 +5085,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the cell in Product Shipping Settings > Width */
 "Width" = "Width";
 
-/* Shown in the prologue carousel (promotional screens) during first launch. */
-"With this powerful editor you can post on the go." = "With this powerful editor you can post on the go.";
+/* Navigates to WisePad 3 Card Reader manual */
+"WisePad 3 card reader manual" = "WisePad 3 card reader manual";
 
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";
@@ -4576,6 +5099,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subject of new Zendesk ticket. */
 "WooCommerce for iOS Support" = "WooCommerce for iOS Support";
+
+/* Subject line for when sharing the app with others through mail or any other activity types that support contains a subject field. */
+"WooCommerce Mobile App - Run your store from anywhere" = "WooCommerce Mobile App - Run your store from anywhere";
 
 /* Navigation title of the webview which used by the merchant to update their store address */
 "WooCommerce Settings" = "WooCommerce Settings";
@@ -4590,6 +5116,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %@ uses WordPress %@. We recommend to update to the latest version, or at least %@" = "WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@";
 
+/* Title of a button linking to the Automattic Work With Us web page */
+"Work with us" = "Work with us";
+
 /* Add a note screen - Write Note section title */
 "WRITE NOTE" = "WRITE NOTE";
 
@@ -4598,6 +5127,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "Yahoo Mail";
+
+/* Value for the individual use only row or the exclude sale items row in Coupon Usage Details screen when the value is true */
+"Yes" = "Yes";
 
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "Yes, change";
@@ -4633,6 +5165,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider.";
 
+/* The description on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
+"You currently have Coupons disabled for this store. Enable coupons to get started." = "You currently have Coupons disabled for this store. Enable coupons to get started.";
+
 /* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
 "You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments.";
 
@@ -4647,9 +5182,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection.";
-
-/* shown in promotional screens during first launch */
-"Your notifications travel with you — see comments and likes as they happen." = "Your notifications travel with you — see comments and likes as they happen.";
 
 /* Title for the error screen when the merchant's In-Person Payments account is restricted because there are pending requirements */
 "Your payments account has pending requirements" = "Your payments account has pending requirements";
@@ -4678,9 +5210,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} Log in with Google.";
-
-/* About View's Footer Text. The variable is the current year */
-"© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd." = "© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd.";
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 Order Completed";

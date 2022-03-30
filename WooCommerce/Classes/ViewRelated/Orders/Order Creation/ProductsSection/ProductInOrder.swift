@@ -65,7 +65,7 @@ private extension ProductInOrder {
     enum Localization {
         static let title = NSLocalizedString("Product", comment: "Title for the Product screen during order creation")
         static let close = NSLocalizedString("Close", comment: "Text for the close button in the Product screen")
-        static let remove = NSLocalizedString("Remove product from order",
+        static let remove = NSLocalizedString("Remove Product from Order",
                                               comment: "Text for the button to remove a product from the order during order creation")
     }
 }

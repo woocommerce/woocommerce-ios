@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import protocol Storage.StorageManagerType
 
 /// ViewModel for presenting the issue refund screen to the user.
 ///
@@ -35,6 +36,10 @@ final class IssueRefundViewModel {
         ///  Holds the quantity of items to refund
         ///
         var refundQuantityStore = RefundQuantityStore()
+
+        /// Charge to be refunded
+        ///
+        var charge: WCPayCharge?
     }
 
     /// Current ViewModel state
@@ -45,6 +50,7 @@ final class IssueRefundViewModel {
             title = calculateTitle()
             selectedItemsTitle = createSelectedItemsCount()
             isNextButtonEnabled = calculateNextButtonEnableState()
+            isNextButtonAnimating = calculateNextButtonAnimatingState()
             hasUnsavedChanges = calculatePendingChangesState()
             onChange?()
         }
@@ -65,6 +71,10 @@ final class IssueRefundViewModel {
     /// Boolean indicating if the next button is enabled
     ///
     private(set) var isNextButtonEnabled: Bool = false
+
+    /// Boolean indicating if the next button's activity indicator is animating
+    ///
+    private(set) var isNextButtonAnimating: Bool = false
 
     /// Boolean indicating if the "select all" button is visible
     ///
@@ -94,24 +104,55 @@ final class IssueRefundViewModel {
         return resultsController.fetchedObjects.first
     }()
 
+    /// Charge related to the order. Used to show card details in the `Refund Via` section, and the refund confirmation screen.
+    ///
+    private var charge: WCPayCharge? {
+        chargeResultsController?.fetchedObjects.first
+    }
+
+    /// ResultsController for the charge relating to the order. Used to show card details in the `Refund Via` section, and the refund confirmation screen.
+    ///
+    private lazy var chargeResultsController: ResultsController<StorageWCPayCharge>? = {
+        guard let resultsController = createWcPayChargeResultsController() else {
+            return nil
+        }
+        try? resultsController.performFetch()
+        return resultsController
+    }()
+
     private let analytics: Analytics
 
-    init(order: Order, refunds: [Refund], currencySettings: CurrencySettings, analytics: Analytics = ServiceLocator.analytics) {
+    private let stores: StoresManager
+
+    private let storage: StorageManagerType
+
+    init(order: Order,
+         refunds: [Refund],
+         currencySettings: CurrencySettings,
+         analytics: Analytics = ServiceLocator.analytics,
+         stores: StoresManager = ServiceLocator.stores,
+         storage: StorageManagerType = ServiceLocator.storageManager) {
         self.analytics = analytics
+        self.stores = stores
+        self.storage = storage
         let items = Self.filterItems(from: order, with: refunds)
-        state = State(order: order, refunds: refunds, itemsToRefund: items, currencySettings: currencySettings)
+        state = State(order: order, refunds: refunds, itemsToRefund: items, currencySettings: currencySettings, charge: nil)
         sections = createSections()
         title = calculateTitle()
         isNextButtonEnabled = calculateNextButtonEnableState()
+        isNextButtonAnimating = calculateNextButtonAnimatingState()
         isSelectAllButtonVisible = calculateSelectAllButtonVisibility()
         selectedItemsTitle = createSelectedItemsCount()
         hasUnsavedChanges = calculatePendingChangesState()
+        observeCharge()
+        fetchCharge()
     }
 
     /// Creates the `ViewModel` to be used when navigating to the page where the user can
     /// confirm and submit the refund.
     func createRefundConfirmationViewModel() -> RefundConfirmationViewModel {
         let details = RefundConfirmationViewModel.Details(order: state.order,
+                                                          charge: state.charge,
                                                           amount: "\(calculateRefundTotal())",
                                                           refundsShipping: state.shouldRefundShipping,
                                                           refundsFees: state.shouldRefundFees,
@@ -211,14 +252,38 @@ private extension IssueRefundViewModel {
     func createProductsResultsController() -> ResultsController<StorageProduct> {
         let itemsIDs = state.itemsToRefund.map { $0.item.productID }
         let predicate = NSPredicate(format: "siteID == %lld AND productID IN %@", state.order.siteID, itemsIDs)
-        return ResultsController<StorageProduct>(storageManager: ServiceLocator.storageManager, matching: predicate, sortedBy: [])
+        return ResultsController<StorageProduct>(storageManager: storage, matching: predicate, sortedBy: [])
     }
 
     /// Results controller that fetches the payment gateway used on this order.
     ///
     func createPaymentGatewayResultsController() -> ResultsController<StoragePaymentGateway> {
         let predicate = NSPredicate(format: "siteID == %lld AND gatewayID == %@", state.order.siteID, state.order.paymentMethodID)
-        return ResultsController<StoragePaymentGateway>(storageManager: ServiceLocator.storageManager, matching: predicate, sortedBy: [])
+        return ResultsController<StoragePaymentGateway>(storageManager: storage, matching: predicate, sortedBy: [])
+    }
+
+    func createWcPayChargeResultsController() -> ResultsController<StorageWCPayCharge>? {
+        guard let chargeID = state.order.chargeID,
+              chargeID.isNotEmpty else {
+            return nil
+        }
+        let predicate = NSPredicate(format: "siteID == %ld AND chargeID == %@", state.order.siteID, chargeID)
+        return ResultsController<StorageWCPayCharge>(storageManager: storage, matching: predicate, sortedBy: [])
+    }
+
+    func observeCharge() {
+        chargeResultsController?.onDidChangeContent = { [weak self] in
+            guard let self = self else { return }
+            self.state.charge = self.charge
+        }
+    }
+
+    func fetchCharge() {
+        guard let chargeID = state.order.chargeID else {
+            return
+        }
+        let action = CardPresentPaymentAction.fetchWCPayCharge(siteID: state.order.siteID, chargeID: chargeID, onCompletion: { _ in })
+        stores.dispatch(action)
     }
 }
 
@@ -368,22 +433,29 @@ extension IssueRefundViewModel {
         return String.pluralize(count, singular: Localization.itemSingular, plural: Localization.itemsPlural)
     }
 
-    /// Calculates wether the next button should be enabled or not
+    /// Calculates whether the next button should be enabled or not
     ///
     private func calculateNextButtonEnableState() -> Bool {
         calculatePendingChangesState()
     }
 
-    /// Calculates wether there are pending changes to commit
+    /// Calculates whether the next button should be animating or not
+    ///
+    private func calculateNextButtonAnimatingState() -> Bool {
+        // When we have a chargeID, we need to wait until we fetch the charge.
+        state.charge == nil && !state.order.chargeID.isNilOrEmpty
+    }
+
+    /// Calculates whether there are pending changes to commit
     ///
     private func calculatePendingChangesState() -> Bool {
         state.refundQuantityStore.count() > 0 || state.shouldRefundShipping || state.shouldRefundFees
     }
 
-    /// Calculates wether the "select all" button should be visible or not.
+    /// Calculates whether the "select all" button should be visible or not.
     ///
     private func calculateSelectAllButtonVisibility() -> Bool {
-        return state.itemsToRefund.isNotEmpty
+        state.itemsToRefund.isNotEmpty
     }
 
     /// Returns `true` if a shipping refund is found.

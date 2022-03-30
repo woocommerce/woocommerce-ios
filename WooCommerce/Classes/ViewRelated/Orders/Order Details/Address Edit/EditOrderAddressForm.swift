@@ -197,6 +197,7 @@ struct SingleAddressForm: View {
     var body: some View {
         ListHeaderView(text: Localization.detailsSection, alignment: .left)
             .padding(.horizontal, insets: safeAreaInsets)
+            .accessibility(addTraits: .isHeader)
         VStack(spacing: 0) {
             TitleAndTextFieldRow(title: Localization.firstNameField,
                                  placeholder: "",
@@ -237,6 +238,7 @@ struct SingleAddressForm: View {
 
         ListHeaderView(text: sectionTitle, alignment: .left)
             .padding(.horizontal, insets: safeAreaInsets)
+            .accessibility(addTraits: .isHeader)
         VStack(spacing: 0) {
             Group {
                 TitleAndTextFieldRow(title: Localization.companyField,
@@ -300,7 +302,7 @@ struct SingleAddressForm: View {
 
                 TitleAndValueRow(title: Localization.countryField,
                                  value: .init(placeHolder: Localization.placeholderSelectOption, content: fields.country),
-                                 selectable: true) {
+                                 selectionStyle: .disclosure) {
                     showCountrySelector = true
                 }
                 Divider()
@@ -319,7 +321,7 @@ struct SingleAddressForm: View {
         if showStateFieldAsSelector {
             TitleAndValueRow(title: Localization.stateField,
                              value: .init(placeHolder: Localization.placeholderSelectOption, content: fields.state),
-                             selectable: true) {
+                             selectionStyle: .disclosure) {
                 showStateSelector = true
             }
         } else {

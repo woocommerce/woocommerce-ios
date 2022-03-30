@@ -1,6 +1,7 @@
 import UIKit
 import WordPressUI
 import Yosemite
+import Experiments
 
 import class AutomatticTracks.CrashLogging
 
@@ -101,6 +102,7 @@ final class ProductVariationsViewController: UIViewController {
     private let viewModel: ProductVariationsViewModel
     private let noticePresenter: NoticePresenter
     private let analytics: Analytics
+    private let featureFlagService: FeatureFlagService
 
     /// ViewController that pushed `self`. Needed in order to go back to it when the first variation is created.
     ///
@@ -114,12 +116,14 @@ final class ProductVariationsViewController: UIViewController {
          viewModel: ProductVariationsViewModel,
          product: Product,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.initialViewController = initialViewController
         self.product = product
         self.viewModel = viewModel
         self.noticePresenter = noticePresenter
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -132,7 +136,8 @@ final class ProductVariationsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        configureNavigationBar()
+        configureNavigationBarTitle()
+        configureNavigationBarButtons()
         configureMainView()
         configureTableView()
         configureSyncingCoordinator()
@@ -157,11 +162,26 @@ private extension ProductVariationsViewController {
 
     /// Set the title and navigation buttons.
     ///
-    func configureNavigationBar() {
+    func configureNavigationBarTitle() {
         title = NSLocalizedString(
             "Variations",
             comment: "Title that appears on top of the Product Variation List screen."
         )
+    }
+
+    /// Sets the navigation bar buttons
+    ///
+    func configureNavigationBarButtons() {
+        guard featureFlagService.isFeatureFlagEnabled(.bulkEditProductVariations) && resultsController.fetchedObjects.isNotEmpty else {
+            // Do not display the "more" button with the bulk update option if we do not have any variations
+            navigationItem.rightBarButtonItem = nil
+            return
+        }
+
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: .moreImage,
+                                                            style: .plain,
+                                                            target: self,
+                                                            action: #selector(presentMoreActionSheet(_:)))
     }
 
     /// Apply Woo styles.
@@ -341,6 +361,7 @@ private extension ProductVariationsViewController {
     func configureResultsControllerEventHandling(_ resultsController: ResultsController<StorageProductVariation>) {
         let onReload = { [weak self] in
             self?.tableView.reloadData()
+            self?.configureNavigationBarButtons()
         }
 
         resultsController.onDidChangeContent = { [weak tableView] in
@@ -541,6 +562,30 @@ private extension ProductVariationsViewController {
         analytics.track(event: WooAnalyticsEvent.Variations.addMoreVariationsButtonTapped(productID: product.productID))
         createVariation()
     }
+
+    /// More Options Action Sheet
+    ///
+    @objc func presentMoreActionSheet(_ sender: UIBarButtonItem) {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
+
+        actionSheet.addDefaultActionWithTitle(ActionSheetStrings.bulkUpdate) { [weak self] _ in
+            guard let self = self else { return }
+
+            let viewModel = BulkUpdateViewModel(siteID: self.siteID, productID: self.productID, onCancelButtonTapped: { [weak self] in
+                self?.dismiss(animated: true)
+            })
+            let navigationController = WooNavigationController(rootViewController: BulkUpdateViewController(viewModel: viewModel))
+            self.present(navigationController, animated: true)
+        }
+
+        actionSheet.addCancelActionWithTitle(ActionSheetStrings.cancel)
+
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.barButtonItem = sender
+
+        present(actionSheet, animated: true)
+    }
 }
 
 // MARK: - Placeholders
@@ -733,5 +778,12 @@ private extension ProductVariationsViewController {
         static let generateVariationError = NSLocalizedString("The variation couldn't be generated.",
                                                               comment: "Error title when failing to generate a variation.")
         static let variationCreated = NSLocalizedString("Variation created", comment: "Text for the notice after creating the first variation.")
+    }
+
+    /// Localizated strings for the  action sheet options
+    ///
+    private enum ActionSheetStrings {
+        static let bulkUpdate = NSLocalizedString("Bulk Update", comment: "Button title in the action sheet of product variatiosns that shows the bulk update")
+        static let cancel = NSLocalizedString("Cancel", comment: "Button title that closes the action sheet in product variations")
     }
 }

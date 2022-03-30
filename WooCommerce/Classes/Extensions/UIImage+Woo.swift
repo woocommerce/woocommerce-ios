@@ -228,6 +228,12 @@ extension UIImage {
         return UIImage(named: "woo-empty-coupons")!
     }
 
+    /// Empty Inbox Notes Icon
+    ///
+    static var emptyInboxNotesImage: UIImage {
+        UIImage(named: "woo-empty-inbox-notes")!
+    }
+
     /// Empty Products Icon
     ///
     static var emptyProductsImage: UIImage {
@@ -392,6 +398,10 @@ extension UIImage {
 
     static var jetpackGreenLogoImage: UIImage {
         return UIImage(named: "icon-jetpack-green")!
+    }
+
+    static var enableAnalyticsImage: UIImage {
+        return UIImage(named: "woo-analytics")!
     }
 
     /// Info Icon
@@ -848,6 +858,12 @@ extension UIImage {
     ///
     static var megaphoneIcon: UIImage {
         return UIImage(imageLiteralResourceName: "megaphone").imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// Speaker icon
+    ///
+    static var speakerIcon: UIImage {
+        return UIImage.gridicon(.speaker).imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Multiple Users Image

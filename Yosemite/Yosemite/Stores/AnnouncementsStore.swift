@@ -123,11 +123,18 @@ private extension AnnouncementsStore {
 private extension AnnouncementsStore {
     /// Map `WordPressKit.Announcement` to `StorageAnnouncement` model
     func mapAnnouncementToStorageModel(_ announcement: Announcement) -> StorageAnnouncement {
-        let mappedFeatures = announcement.features.map {
-            StorageFeature(title: $0.title,
-                           subtitle: $0.subtitle,
-                           iconUrl: $0.iconUrl,
-                           iconBase64: $0.iconBase64)
+        let mappedFeatures: [StorageFeature] = announcement.features.map {
+            let mappedIcons = $0.icons?.map {
+                StorageFeatureIcon(iconUrl: $0.iconUrl,
+                                   iconBase64: $0.iconBase64,
+                                   iconType: $0.iconType)
+            }
+
+            return StorageFeature(title: $0.title,
+                                  subtitle: $0.subtitle,
+                                  icons: mappedIcons,
+                                  iconUrl: $0.iconUrl,
+                                  iconBase64: $0.iconBase64)
         }
 
         return StorageAnnouncement(appVersionName: announcement.appVersionName,

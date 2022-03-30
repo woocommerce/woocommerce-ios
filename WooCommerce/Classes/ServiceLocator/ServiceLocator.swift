@@ -260,6 +260,14 @@ extension ServiceLocator {
         _shippingSettingsService = mock
     }
 
+    static func setSelectedSiteSettings(_ mock: SelectedSiteSettings) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _selectedSiteSettings = mock
+    }
+
     static func setCurrencySettings(_ mock: CurrencySettings) {
         guard isRunningTests() else {
             return

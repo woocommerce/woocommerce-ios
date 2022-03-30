@@ -35,7 +35,7 @@ public final class ProductReviewsRemote: Remote, ProductReviewsRemoteProtocol {
                                 pageSize: Int = Default.pageSize,
                                 products: [Int64]? = nil,
                                 status: ProductReviewStatus? = nil,
-                                completion: @escaping ([ProductReview]?, Error?) -> Void) {
+                                completion: @escaping (Result<[ProductReview], Error>) -> Void) {
 
 
         let stringOfProductIDs = products?.map { String($0) }.joined(separator: ",") ?? ""

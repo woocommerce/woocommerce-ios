@@ -46,6 +46,13 @@ final class CardBrandTests: XCTestCase {
         XCTAssertEqual(cardBrand, .dinersClub)
     }
 
+    func test_card_brand_maps_to_interac() {
+        let terminalCardBrand = StripeTerminal.CardBrand.interac
+        let cardBrand = CardBrand(brand: terminalCardBrand)
+
+        XCTAssertEqual(cardBrand, .interac)
+    }
+
     func test_card_brand_maps_to_unknown() {
         let terminalCardBrand = StripeTerminal.CardBrand.unknown
         let cardBrand = CardBrand(brand: terminalCardBrand)

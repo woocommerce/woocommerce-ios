@@ -729,6 +729,91 @@ final class ProductVariationStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
     }
+
+    /// Verifies that `ProductVariationAction.updateProductVariations` returns the expected `ProductVariations`.
+    ///
+    func test_updateProductVariations_is_correctly_updating_productVariation() throws {
+        // Given
+        let remote = MockProductVariationsRemote()
+        let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        let variationIDs: [Int64] = [17, 42]
+        let variationA = MockProductVariation().productVariation(siteID: sampleSiteID, productID: sampleProductID, variationID: variationIDs[0])
+        let variationB = MockProductVariation().productVariation(siteID: sampleSiteID, productID: sampleProductID, variationID: variationIDs[1])
+
+        let expectedVariations = [variationA.copy(dateCreated: Date.distantFuture),
+                                  variationB.copy(dateCreated: Date.distantPast)]
+
+
+        let variations = expectedVariations.map({ $0.copy(regularPrice: "1") })
+
+        remote.whenUpdatingProductVariations(siteID: sampleSiteID,
+                                             productID: sampleProductID,
+                                             productVariationIDs: variationIDs,
+                                             thenReturn: .success(expectedVariations))
+
+        // Saves an existing ProductVariations into storage
+        // The regular price is expected to be updated
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: variations[0])
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: variations[1])
+        assertEqual(viewStorage.countObjects(ofType: StorageProductVariation.self), 2)
+
+        // When
+        var result: Result<[Yosemite.ProductVariation], ProductUpdateError>?
+        waitForExpectation { expectation in
+            let action = ProductVariationAction.updateProductVariations(siteID: sampleSiteID,
+                                                                        productID: sampleProductID,
+                                                                        productVariations: variations) { aResult in
+                result = aResult
+                expectation.fulfill()
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let updatedVariations = try? result?.get()
+        assertEqual(updatedVariations, expectedVariations)
+
+        let storedVariations = viewStorage.loadProductVariations(siteID: sampleSiteID, productID: sampleProductID)
+        let readOnlyVariations = try XCTUnwrap(storedVariations?.map({ $0.toReadOnly() }))
+        assertEqual(readOnlyVariations, expectedVariations)
+    }
+
+    /// Verifies that `ProductVariationAction.updateProductVariations` returns an error whenever there is an error response from the backend.
+    ///
+    func test_updateProductVariations_returns_error_upon_response_error() {
+        // Given
+        let remote = MockProductVariationsRemote()
+        let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        let variationIDs: [Int64] = [17, 42]
+        remote.whenUpdatingProductVariations(siteID: sampleSiteID,
+                                             productID: sampleProductID,
+                                             productVariationIDs: variationIDs,
+                                             thenReturn: .failure(NSError(domain: "", code: 400, userInfo: nil)))
+        // Saves an existing ProductVariations into storage.
+        let productVariations = [MockProductVariation().productVariation(siteID: sampleSiteID, productID: sampleProductID, variationID: variationIDs[0]),
+                                 MockProductVariation().productVariation(siteID: sampleSiteID, productID: sampleProductID, variationID: variationIDs[1])]
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: productVariations[0])
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: productVariations[1])
+        assertEqual(viewStorage.countObjects(ofType: StorageProductVariation.self), 2)
+
+        // When
+        var result: Result<[Yosemite.ProductVariation], ProductUpdateError>?
+        waitForExpectation { expectation in
+            let action = ProductVariationAction.updateProductVariations(siteID: sampleSiteID,
+                                                                        productID: sampleProductID,
+                                                                        productVariations: productVariations) { aResult in
+                result = aResult
+                expectation.fulfill()
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(result).isFailure)
+
+        // The existing ProductVariations should not be deleted.
+        assertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariation.self), 2)
+    }
 }
 
 
@@ -766,7 +851,7 @@ private extension ProductVariationStoreTests {
                                 dateModified: dateFromGMT("2019-11-14T13:06:42"),
                                 dateOnSaleStart: dateFromGMT("2019-10-15T21:30:00"),
                                 dateOnSaleEnd: dateFromGMT("2019-10-27T21:29:59"),
-                                status: .publish,
+                                status: .published,
                                 description: "<p>Nutty chocolate marble, 99% and organic.</p>\n",
                                 sku: "99%-nuts-marble",
                                 price: "12",

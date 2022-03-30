@@ -29,8 +29,7 @@ final class DevicesRemoteTests: XCTestCase {
         remote.registerDevice(device: Parameters.appleDevice,
                               applicationId: Parameters.applicationId,
                               applicationVersion: Parameters.applicationVersion,
-                              defaultStoreID: Parameters.defaultStoreID,
-                              pushNotificationsForAllStoresEnabled: false) { (settings, error) in
+                              defaultStoreID: Parameters.defaultStoreID) { (settings, error) in
 
             XCTAssertNil(error)
             XCTAssertNotNil(settings)
@@ -41,9 +40,9 @@ final class DevicesRemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that registerDevice when pushNotificationsForAllStores feature is enabled sets the `selected_blog_id` parameter to empty string.
+    /// Verifies that registerDevice sets the `selected_blog_id` parameter to empty string.
     ///
-    func test_registerDevice_with_pushNotificationsForAllStores_enabled_sets_selected_blog_id_to_empty_string() throws {
+    func test_registerDevice_sets_selected_blog_id_to_empty_string() throws {
         // Given
         let remote = DevicesRemote(network: network)
 
@@ -51,32 +50,11 @@ final class DevicesRemoteTests: XCTestCase {
         remote.registerDevice(device: Parameters.appleDevice,
                               applicationId: Parameters.applicationId,
                               applicationVersion: Parameters.applicationVersion,
-                              defaultStoreID: Parameters.defaultStoreID,
-                              pushNotificationsForAllStoresEnabled: true) { (_, _) in }
+                              defaultStoreID: Parameters.defaultStoreID) { (_, _) in }
 
         // Then
         let queryParameters = try XCTUnwrap(network.queryParameters)
         let expectedParam = "selected_blog_id="
-        XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
-    }
-
-    /// Verifies that registerDevice when pushNotificationsForAllStores feature is disabled sets the `selected_blog_id` to the default store ID.
-    ///
-    func test_registerDevice_with_pushNotificationsForAllStores_disabled_sets_selected_blog_id() throws {
-        // Given
-        let remote = DevicesRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "devices/new", filename: "device-settings")
-
-        // When
-        remote.registerDevice(device: Parameters.appleDevice,
-                              applicationId: Parameters.applicationId,
-                              applicationVersion: Parameters.applicationVersion,
-                              defaultStoreID: Parameters.defaultStoreID,
-                              pushNotificationsForAllStoresEnabled: false) { (_, _) in }
-
-        // Then
-        let queryParameters = try XCTUnwrap(network.queryParameters)
-        let expectedParam = "selected_blog_id=\(Parameters.defaultStoreID)"
         XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
     }
 
@@ -91,8 +69,7 @@ final class DevicesRemoteTests: XCTestCase {
         remote.registerDevice(device: Parameters.appleDevice,
                               applicationId: Parameters.applicationId,
                               applicationVersion: Parameters.applicationVersion,
-                              defaultStoreID: Parameters.defaultStoreID,
-                              pushNotificationsForAllStoresEnabled: false) { (settings, error) in
+                              defaultStoreID: Parameters.defaultStoreID) { (settings, error) in
 
             XCTAssertNotNil(error)
             XCTAssertNil(settings)

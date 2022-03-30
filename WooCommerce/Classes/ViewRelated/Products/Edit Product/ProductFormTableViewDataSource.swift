@@ -81,8 +81,8 @@ private extension ProductFormTableViewDataSource {
 private extension ProductFormTableViewDataSource {
     func configureCellInPrimaryFieldsSection(_ cell: UITableViewCell, row: ProductFormSection.PrimaryFieldRow) {
         switch row {
-        case .images(let editable, let allowsMultipleImages):
-            configureImages(cell: cell, isEditable: editable, allowsMultipleImages: allowsMultipleImages)
+        case .images(let editable, let allowsMultipleImages, let isVariation):
+            configureImages(cell: cell, isEditable: editable, allowsMultipleImages: allowsMultipleImages, isVariation: isVariation)
         case .name(let name, let editable, let productStatus):
             configureName(cell: cell, name: name, isEditable: editable, productStatus: productStatus)
         case .variationName(let name):
@@ -91,7 +91,7 @@ private extension ProductFormTableViewDataSource {
             configureDescription(cell: cell, description: description, isEditable: editable)
         }
     }
-    func configureImages(cell: UITableViewCell, isEditable: Bool, allowsMultipleImages: Bool) {
+    func configureImages(cell: UITableViewCell, isEditable: Bool, allowsMultipleImages: Bool, isVariation: Bool) {
         guard let cell = cell as? ProductImagesHeaderTableViewCell else {
             fatalError()
         }
@@ -119,7 +119,7 @@ private extension ProductFormTableViewDataSource {
             }
         }
         else {
-            cell.configure(with: productImageStatuses, config: .extendedAddImages, productUIImageLoader: productUIImageLoader)
+            cell.configure(with: productImageStatuses, config: .extendedAddImages(isVariation: isVariation), productUIImageLoader: productUIImageLoader)
         }
         cell.onImageSelected = { [weak self] (productImage, indexPath) in
             self?.onAddImage?()

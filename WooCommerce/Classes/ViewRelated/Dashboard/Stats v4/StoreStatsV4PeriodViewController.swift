@@ -63,9 +63,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
         return ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
     }
 
-    private var orderStatsIntervals: [OrderStatsV4Interval] {
-        viewModel.orderStatsIntervals
-    }
+    private var orderStatsIntervals: [OrderStatsV4Interval] = []
 
     private var revenueItems: [Double] {
         orderStatsIntervals.map({ ($0.revenueValue as NSDecimalNumber).doubleValue })
@@ -116,6 +114,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     }
 
     private var cancellables: Set<AnyCancellable> = []
+    private let chartValueSelectedEventsSubject = PassthroughSubject<Void, Never>()
 
     // MARK: - Initialization
 
@@ -124,7 +123,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     init(siteID: Int64,
          timeRange: StatsTimeRangeV4,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-         currencyCode: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) {
         self.timeRange = timeRange
         self.granularity = timeRange.intervalGranularity
@@ -132,7 +131,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
                                                    timeRange: timeRange,
                                                    siteTimezone: siteTimezone,
                                                    currencyFormatter: currencyFormatter,
-                                                   currencyCode: currencyCode)
+                                                   currencySettings: currencySettings)
         self.usageTracksEventEmitter = usageTracksEventEmitter
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
@@ -153,11 +152,12 @@ final class StoreStatsV4PeriodViewController: UIViewController {
         observeStatsLabels()
         observeSelectedBarIndex()
         observeTimeRangeBarViewModel()
-        observeReloadChartAnimated()
+        observeOrderStatsIntervals()
         observeVisitorStatsViewState()
         observeConversionStatsViewState()
         observeYAxisMaximum()
         observeYAxisMinimum()
+        observeChartValueSelectedEvents()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -217,9 +217,15 @@ private extension StoreStatsV4PeriodViewController {
         }.store(in: &cancellables)
     }
 
-    func observeReloadChartAnimated() {
-        viewModel.reloadChartAnimated.sink { [weak self] animated in
-            self?.reloadChart(animateChart: animated)
+    func observeOrderStatsIntervals() {
+        viewModel.orderStatsIntervals.sink { [weak self] orderStatsIntervals in
+            guard let self = self else { return }
+
+            self.orderStatsIntervals = orderStatsIntervals
+
+            // Don't animate the chart here - this helps avoid a "double animation" effect if a
+            // small number of values change (the chart WILL be updated correctly however)
+            self.reloadChart(animateChart: false)
         }.store(in: &cancellables)
     }
 
@@ -442,7 +448,22 @@ extension StoreStatsV4PeriodViewController: ChartViewDelegate {
     func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
         let selectedIndex = Int(entry.x)
         updateUI(selectedBarIndex: selectedIndex)
-        usageTracksEventEmitter.interacted()
+
+        chartValueSelectedEventsSubject.send()
+    }
+
+    /// Observe `chartValueSelected` events and call `StoreStatsUsageTracksEventEmitter.interacted()` when
+    /// no similar events have been received after some time.
+    ///
+    /// We debounce it because there are just too many events received from `chartValueSelected()` when
+    /// the user holds and drags on the chart. Having too many events might skew the
+    /// `StoreStatsUsageTracksEventEmitter` algorithm.
+    private func observeChartValueSelectedEvents() {
+        chartValueSelectedEventsSubject
+            .debounce(for: .seconds(Constants.chartValueSelectedEventsDebounce), scheduler: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.usageTracksEventEmitter.interacted()
+            }.store(in: &cancellables)
     }
 }
 
@@ -697,5 +718,8 @@ private extension StoreStatsV4PeriodViewController {
         static let headerComponentBackgroundColor: UIColor = .clear
 
         static let ghostStyle: GhostStyle = .wooDefaultGhostStyle
+
+        /// The wait time before the `StoreStatsUsageTracksEventEmitter.interacted()` is called.
+        static let chartValueSelectedEventsDebounce: TimeInterval = 1.0
     }
 }

@@ -13,7 +13,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     /// Unique ID for the view model.
     ///
-    let id: String
+    let id: Int64
 
     // MARK: Product properties
 
@@ -49,14 +49,47 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     private let manageStock: Bool
 
-    /// Label showing product details: stock status, price, and variations (if any).
+    /// Display mode for a product variation.
+    /// Determines which details to display in the product details label.
+    ///
+    private let variationDisplayMode: VariationDisplayMode?
+
+    /// Stock or variation attributes label.
+    /// Provides stock label for non-variations; uses variation display mode to determine the label for variations.
+    ///
+    private var stockOrAttributesLabel: String {
+        switch variationDisplayMode {
+        case .attributes(let attributes):
+            return createAttributesText(from: attributes)
+        default:
+            return createStockText()
+        }
+    }
+
+    /// Price label based on a product's price and quantity.
+    ///
+    private var priceLabel: String? {
+        guard let price = price else {
+            return nil
+        }
+        let productSubtotal = quantity * (currencyFormatter.convertToDecimal(from: price)?.decimalValue ?? Decimal.zero)
+        return currencyFormatter.formatAmount(productSubtotal)
+    }
+
+    /// Variations label for a variable product.
+    ///
+    private var variationsLabel: String? {
+        guard numberOfVariations > 0 else {
+            return nil
+        }
+        let format = String.pluralize(numberOfVariations, singular: Localization.singleVariation, plural: Localization.pluralVariations)
+        return String.localizedStringWithFormat(format, numberOfVariations)
+    }
+
+    /// Label showing product details. Can include stock status or attributes, price, and variations (if any).
     ///
     var productDetailsLabel: String {
-        let stockLabel = createStockText()
-        let priceLabel = createPriceText()
-        let variationsLabel = createVariationsText()
-
-        return [stockLabel, priceLabel, variationsLabel]
+        [stockOrAttributesLabel, priceLabel, variationsLabel]
             .compactMap({ $0 })
             .joined(separator: " • ")
     }
@@ -70,6 +103,14 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         return String.localizedStringWithFormat(Localization.skuFormat, sku)
     }()
 
+    /// Custom accessibility label for product.
+    ///
+    var productAccessibilityLabel: String {
+        [name, stockOrAttributesLabel, priceLabel, variationsLabel, skuLabel]
+            .compactMap({ $0 })
+            .joined(separator: ". ")
+    }
+
     /// Quantity of product in the order
     ///
     @Published private(set) var quantity: Decimal
@@ -81,14 +122,18 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Whether the quantity can be decremented.
     ///
     var shouldDisableQuantityDecrementer: Bool {
-        quantity <= minimumQuantity
+        quantity < minimumQuantity
     }
+
+    /// Closure to run when the quantity is decremented below the minimum quantity.
+    ///
+    var removeProductIntent: () -> Void
 
     /// Number of variations in a variable product
     ///
     let numberOfVariations: Int
 
-    init(id: String? = nil,
+    init(id: Int64? = nil,
          productOrVariationID: Int64,
          name: String,
          sku: String?,
@@ -100,8 +145,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          canChangeQuantity: Bool,
          imageURL: URL?,
          numberOfVariations: Int = 0,
-         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
-        self.id = id ?? productOrVariationID.description
+         variationDisplayMode: VariationDisplayMode? = nil,
+         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+         removeProductIntent: @escaping (() -> Void) = {}) {
+        self.id = id ?? Int64(UUID().uuidString.hashValue)
         self.productOrVariationID = productOrVariationID
         self.name = name
         self.sku = sku
@@ -114,15 +161,18 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.imageURL = imageURL
         self.currencyFormatter = currencyFormatter
         self.numberOfVariations = numberOfVariations
+        self.variationDisplayMode = variationDisplayMode
+        self.removeProductIntent = removeProductIntent
     }
 
     /// Initialize `ProductRowViewModel` with a `Product`
     ///
-    convenience init(id: String? = nil,
+    convenience init(id: Int64? = nil,
                      product: Product,
                      quantity: Decimal = 1,
                      canChangeQuantity: Bool,
-                     currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
+                     currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+                     removeProductIntent: @escaping (() -> Void) = {}) {
         // Don't show any price for variable products; price will be shown for each product variation.
         let price: String?
         if product.productType == .variable {
@@ -143,17 +193,20 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   canChangeQuantity: canChangeQuantity,
                   imageURL: product.imageURL,
                   numberOfVariations: product.variations.count,
-                  currencyFormatter: currencyFormatter)
+                  currencyFormatter: currencyFormatter,
+                  removeProductIntent: removeProductIntent)
     }
 
     /// Initialize `ProductRowViewModel` with a `ProductVariation`
     ///
-    convenience init(id: String? = nil,
+    convenience init(id: Int64? = nil,
                      productVariation: ProductVariation,
                      name: String,
                      quantity: Decimal = 1,
                      canChangeQuantity: Bool,
-                     currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
+                     displayMode: VariationDisplayMode,
+                     currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+                     removeProductIntent: @escaping (() -> Void) = {}) {
         let imageURL: URL?
         if let encodedImageURLString = productVariation.image?.src.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
             imageURL = URL(string: encodedImageURLString)
@@ -172,7 +225,19 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   quantity: quantity,
                   canChangeQuantity: canChangeQuantity,
                   imageURL: imageURL,
-                  currencyFormatter: currencyFormatter)
+                  variationDisplayMode: displayMode,
+                  currencyFormatter: currencyFormatter,
+                  removeProductIntent: removeProductIntent)
+    }
+
+    /// Determines which product variation details to display.
+    ///
+    enum VariationDisplayMode {
+        /// Displays the variation's stock status
+        case stock
+
+        /// Displays the provided list of variation attributes
+        case attributes([VariationAttributeViewModel])
     }
 
     /// Create the stock text based on a product's stock status/quantity.
@@ -191,24 +256,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         }
     }
 
-    /// Create the price text based on a product's price and quantity.
+    /// Create the attributes text based on the provided product variation attributes.
     ///
-    private func createPriceText() -> String? {
-        guard let price = price else {
-            return nil
-        }
-        let productSubtotal = quantity * (currencyFormatter.convertToDecimal(from: price)?.decimalValue ?? Decimal.zero)
-        return currencyFormatter.formatAmount(productSubtotal)
-    }
-
-    /// Create the variations text for a variable product.
-    ///
-    private func createVariationsText() -> String? {
-        guard numberOfVariations > 0 else {
-            return nil
-        }
-        let format = String.pluralize(numberOfVariations, singular: Localization.singleVariation, plural: Localization.pluralVariations)
-        return String.localizedStringWithFormat(format, numberOfVariations)
+    private func createAttributesText(from attributes: [VariationAttributeViewModel]) -> String {
+        return attributes.map { $0.nameOrValue }.joined(separator: ", ")
     }
 
     /// Increment the product quantity.
@@ -221,7 +272,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     func decrementQuantity() {
         guard quantity > minimumQuantity else {
-            return
+            return removeProductIntent()
         }
         quantity -= 1
     }

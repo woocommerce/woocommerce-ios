@@ -21,8 +21,7 @@ final class NoPeriodDataTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        contentView.backgroundColor = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates) ?
-        Constants.backgroundColor: Constants.legacyBackgroundColor
+        contentView.backgroundColor = Constants.backgroundColor
         backgroundColor = .listForeground
     }
 }
@@ -30,6 +29,5 @@ final class NoPeriodDataTableViewCell: UITableViewCell {
 private extension NoPeriodDataTableViewCell {
     enum Constants {
         static let backgroundColor: UIColor = .systemBackground
-        static let legacyBackgroundColor: UIColor = .listForeground
     }
 }

@@ -3,10 +3,12 @@ import SwiftUI
 final class InPersonPaymentsViewController: UIHostingController<InPersonPaymentsView> {
     init(viewModel: InPersonPaymentsViewModel) {
         super.init(rootView: InPersonPaymentsView(viewModel: viewModel))
-        rootView.showSupport = {
+        rootView.showSupport = { [weak self] in
+            guard let self = self else { return }
             ZendeskProvider.shared.showNewWCPayRequestIfPossible(from: self)
         }
-        rootView.showURL = { url in
+        rootView.showURL = { [weak self] url in
+            guard let self = self else { return }
             WebviewHelper.launch(url, with: self)
         }
     }
@@ -22,8 +24,6 @@ struct InPersonPaymentsView: View {
     var showSupport: (() -> Void)? = nil
     var showURL: ((URL) -> Void)? = nil
 
-    let userIsAdministrator = true // TODO
-
     var body: some View {
         Group {
             switch viewModel.state {
@@ -31,12 +31,14 @@ struct InPersonPaymentsView: View {
                 InPersonPaymentsLoading()
             case .selectPlugin:
                 if viewModel.userIsAdministrator {
-                    InPersonPaymentsPluginConfictAdmin(onRefresh: viewModel.refresh)
+                    InPersonPaymentsPluginConflictAdmin(onRefresh: viewModel.refresh)
                 } else {
-                    InPersonPaymentsPluginConfictShopManager(onRefresh: viewModel.refresh)
+                    InPersonPaymentsPluginConflictShopManager(onRefresh: viewModel.refresh)
                 }
             case .countryNotSupported(let countryCode):
                 InPersonPaymentsCountryNotSupported(countryCode: countryCode)
+            case .countryNotSupportedStripe(_, let countryCode):
+                InPersonPaymentsCountryNotSupportedStripe(countryCode: countryCode)
             case .pluginNotInstalled:
                 InPersonPaymentsPluginNotInstalled(onRefresh: viewModel.refresh)
             case .pluginUnsupportedVersion(let plugin):
@@ -50,14 +52,14 @@ struct InPersonPaymentsView: View {
                 InPersonPaymentsPluginNotSetup(plugin: plugin, onRefresh: viewModel.refresh)
             case .stripeAccountOverdueRequirement:
                 InPersonPaymentsStripeAccountOverdue()
-            case .stripeAccountPendingRequirement(let deadline):
+            case .stripeAccountPendingRequirement(_, let deadline):
                 InPersonPaymentsStripeAccountPending(deadline: deadline)
             case .stripeAccountUnderReview:
-                InPersonPaymentsStripeAcountReview()
+                InPersonPaymentsStripeAccountReview()
             case .stripeAccountRejected:
                 InPersonPaymentsStripeRejected()
-            case .completed:
-                InPersonPaymentsMenu()
+            case .completed(let plugin):
+                InPersonPaymentsMenu(plugin: plugin)
             case .noConnectionError:
                 InPersonPaymentsNoConnection(onRefresh: viewModel.refresh)
             default:
@@ -68,6 +70,10 @@ struct InPersonPaymentsView: View {
             switch url {
             case InPersonPaymentsSupportLink.supportURL:
                 showSupport?()
+            case InPersonPaymentsLearnMore.learnMoreURL:
+                if let url = viewModel.learnMoreURL {
+                    showURL?(url)
+                }
             default:
                 showURL?(url)
             }

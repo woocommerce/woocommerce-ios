@@ -584,6 +584,13 @@ public extension StorageType {
         return firstObject(ofType: PaymentGatewayAccount.self, matching: predicate)
     }
 
+    /// Returns a charge with a specified `siteID` and `chargeID`
+    ///
+    func loadWCPayCharge(siteID: Int64, chargeID: String) -> WCPayCharge? {
+        let predicate = \WCPayCharge.siteID == siteID && \WCPayCharge.chargeID == chargeID
+        return firstObject(ofType: WCPayCharge.self, matching: predicate)
+    }
+
     // MARK: - System plugins
 
     /// Returns all stored system plugins for a provided `siteID`.
@@ -599,5 +606,22 @@ public extension StorageType {
     func loadSystemPlugin(siteID: Int64, name: String) -> SystemPlugin? {
         let predicate = \SystemPlugin.siteID == siteID && \SystemPlugin.name == name
         return firstObject(ofType: SystemPlugin.self, matching: predicate)
+    }
+
+    // MARK: - Inbox Notes
+
+    /// Returns a single Inbox Note given a `siteID` and `id`
+    ///
+    func loadInboxNote(siteID: Int64, id: Int64) -> InboxNote? {
+        let predicate = \InboxNote.siteID == siteID && \InboxNote.id == id
+        return firstObject(ofType: InboxNote.self, matching: predicate)
+    }
+
+    /// Returns all stored Inbox Notes for a provided `siteID`.
+    ///
+    func loadAllInboxNotes(siteID: Int64) -> [InboxNote] {
+        let predicate = \InboxNote.siteID == siteID
+        let descriptor = NSSortDescriptor(keyPath: \InboxNote.dateCreated, ascending: false)
+        return allObjects(ofType: InboxNote.self, matching: predicate, sortedBy: [descriptor])
     }
 }

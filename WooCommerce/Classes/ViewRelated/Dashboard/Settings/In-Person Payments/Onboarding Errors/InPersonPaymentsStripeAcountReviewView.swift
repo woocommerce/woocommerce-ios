@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct InPersonPaymentsStripeAcountReview: View {
+struct InPersonPaymentsStripeAccountReview: View {
     var body: some View {
         InPersonPaymentsOnboardingError(
             title: Localization.title,
@@ -27,8 +27,8 @@ private enum Localization {
     )
 }
 
-struct InPersonPaymentsStripeAcountReview_Previews: PreviewProvider {
+struct InPersonPaymentsStripeAccountReview_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsStripeAcountReview()
+        InPersonPaymentsStripeAccountReview()
     }
 }

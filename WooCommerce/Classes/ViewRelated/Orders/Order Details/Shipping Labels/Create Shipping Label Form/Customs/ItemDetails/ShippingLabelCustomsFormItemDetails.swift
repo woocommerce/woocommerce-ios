@@ -125,7 +125,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
             // Origin country
             VStack(spacing: 0) {
                 VStack(spacing: 0) {
-                    TitleAndValueRow(title: Localization.originTitle, value: .placeholder(viewModel.originCountry.name), selectable: true) {
+                    TitleAndValueRow(title: Localization.originTitle, value: .placeholder(viewModel.originCountry.name), selectionStyle: .disclosure) {
                         isShowingCountries.toggle()
                     }
                     .sheet(isPresented: $isShowingCountries, content: {

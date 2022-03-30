@@ -3,8 +3,6 @@ import UIKit
 import Gridicons
 import WordPressUI
 import Yosemite
-import SafariServices.SFSafariViewController
-
 
 // MARK: - DashboardViewController
 //
@@ -38,8 +36,7 @@ final class DashboardViewController: UIViewController {
     ///
     private lazy var innerStackView: UIStackView = {
         let view = UIStackView()
-        let horizontalMargin = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates) ?
-        Constants.horizontalMargin: Constants.legacyHorizontalMargin
+        let horizontalMargin = Constants.horizontalMargin
         view.layoutMargins = UIEdgeInsets(top: 0, left: horizontalMargin, bottom: 0, right: horizontalMargin)
         view.isLayoutMarginsRelativeArrangement = true
         return view
@@ -64,8 +61,9 @@ final class DashboardViewController: UIViewController {
         ErrorTopBannerFactory.createTopBanner(isExpanded: false,
                                               expandedStateChangeHandler: {},
                                               onTroubleshootButtonPressed: { [weak self] in
-                                                let safariViewController = SFSafariViewController(url: WooConstants.URLs.troubleshootErrorLoadingData.asURL())
-                                                self?.present(safariViewController, animated: true, completion: nil)
+                                                guard let self = self else { return }
+
+                                                WebviewHelper.launch(WooConstants.URLs.troubleshootErrorLoadingData.asURL(), with: self)
                                               },
                                               onContactSupportButtonPressed: { [weak self] in
                                                 guard let self = self else { return }
@@ -138,8 +136,7 @@ final class DashboardViewController: UIViewController {
 private extension DashboardViewController {
 
     func configureView() {
-        view.backgroundColor = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates) ?
-        Constants.backgroundColor: Constants.legacyBackgroundColor
+        view.backgroundColor = Constants.backgroundColor
     }
 
     func configureNavigation() {
@@ -171,9 +168,7 @@ private extension DashboardViewController {
 
     func configureSubtitle() {
         storeNameLabel.text = ServiceLocator.stores.sessionManager.defaultSite?.name ?? Localization.title
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates) {
-            storeNameLabel.textColor = Constants.storeNameTextColor
-        }
+        storeNameLabel.textColor = Constants.storeNameTextColor
         innerStackView.addArrangedSubview(storeNameLabel)
         headerStackView.addArrangedSubview(innerStackView)
     }
@@ -213,13 +208,11 @@ private extension DashboardViewController {
     }
 
     func configureDashboardUIContainer() {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) {
-            hiddenScrollView.configureForLargeTitleWorkaround()
-            // Adds the "hidden" scroll view to the root of the UIViewController for large titles.
-            view.addSubview(hiddenScrollView)
-            hiddenScrollView.translatesAutoresizingMaskIntoConstraints = false
-            view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
-        }
+        hiddenScrollView.configureForLargeTitleWorkaround()
+        // Adds the "hidden" scroll view to the root of the UIViewController for large titles.
+        view.addSubview(hiddenScrollView)
+        hiddenScrollView.translatesAutoresizingMaskIntoConstraints = false
+        view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
 
         // A container view is added to respond to safe area insets from the view controller.
         // This is needed when the child view controller's view has to use a frame-based layout
@@ -265,9 +258,7 @@ private extension DashboardViewController {
 
     func reloadDashboardUIStatsVersion(forced: Bool) {
         dashboardUIFactory.reloadDashboardUI(onUIUpdate: { [weak self] dashboardUI in
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) {
-                dashboardUI.scrollDelegate = self
-            }
+            dashboardUI.scrollDelegate = self
             self?.onDashboardUIUpdate(forced: forced, updatedDashboardUI: dashboardUI)
         })
     }
@@ -287,8 +278,7 @@ private extension DashboardViewController {
     }
 
     func updateUI(site: Site?) {
-        guard let siteName = site?.name, siteName.isEmpty == false,
-              ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) else {
+        guard let siteName = site?.name, siteName.isEmpty == false else {
             shouldShowStoreNameAsSubtitle = false
             storeNameLabel.text = nil
             return
@@ -484,10 +474,8 @@ private extension DashboardViewController {
     enum Constants {
         static let bannerBottomMargin = CGFloat(8)
         static let horizontalMargin = CGFloat(16)
-        static let legacyHorizontalMargin = CGFloat(20)
         static let storeNameTextColor: UIColor = .secondaryLabel
         static let backgroundColor: UIColor = .systemBackground
-        static let legacyBackgroundColor: UIColor = .listBackground
         static let collapsedNavigationBarHeight = CGFloat(44)
     }
 }

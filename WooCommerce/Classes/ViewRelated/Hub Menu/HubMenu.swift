@@ -45,8 +45,7 @@ struct HubMenu: View {
                                 ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "view_store"])
                                 showingViewStore = true
                             case .inbox:
-                                // TODO: Inbox analytics
-                                // TODO: 5954 - Show Inbox view
+                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "inbox"])
                                 showingInbox = true
                             case .reviews:
                                 ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "reviews"])
@@ -67,6 +66,11 @@ struct HubMenu: View {
             .safariSheet(isPresented: $showingWooCommerceAdmin, url: viewModel.woocommerceAdminURL)
             .safariSheet(isPresented: $showingViewStore, url: viewModel.storeURL)
             NavigationLink(destination:
+                            Inbox(viewModel: .init(siteID: viewModel.siteID)),
+                           isActive: $showingInbox) {
+                EmptyView()
+            }.hidden()
+            NavigationLink(destination:
                             ReviewsView(siteID: viewModel.siteID),
                            isActive: $showingReviews) {
                 EmptyView()
@@ -80,6 +84,9 @@ struct HubMenu: View {
         }
         .navigationBarHidden(true)
         .background(Color(.listBackground).edgesIgnoringSafeArea(.all))
+        .onAppear {
+            viewModel.setupMenuElements()
+        }
     }
 
     func pushReviewDetailsView(using parcel: ProductReviewFromNoteParcel) {
@@ -144,6 +151,7 @@ struct HubMenu: View {
                             }
                         }
                     }
+                    .accessibilityIdentifier("dashboard-settings-button")
                     Spacer()
                 }
                 .fixedSize()

@@ -7,7 +7,7 @@ import WordPressUI
 import class AutomatticTracks.CrashLogging
 
 
-final class TopPerformerDataViewController: UIViewController {
+final class TopPerformerDataViewController: UIViewController, GhostableViewController {
 
     // MARK: - Properties
 
@@ -25,7 +25,9 @@ final class TopPerformerDataViewController: UIViewController {
 
     /// A child view controller that is shown when `displayGhostContent()` is called.
     ///
-    private lazy var ghostTableViewController = GhostTableViewController()
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(displaysSectionHeader: false,
+                                                                                                cellClass: ProductTableViewCell.self,
+                                                                                                estimatedRowHeight: Constants.estimatedRowHeight))
 
     /// ResultsController: Loads TopEarnerStats for the current granularity from the Storage Layer
     ///
@@ -44,7 +46,6 @@ final class TopPerformerDataViewController: UIViewController {
     private var isInitialLoad: Bool = true  // Used in trackChangedTabIfNeeded()
 
     private let imageService: ImageService = ServiceLocator.imageService
-    private let isMyStoreTabUpdatesEnabled: Bool
 
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
 
@@ -82,7 +83,6 @@ final class TopPerformerDataViewController: UIViewController {
         self.currentDate = currentDate
         self.granularity = timeRange.topEarnerStatsGranularity
         self.timeRange = timeRange
-        self.isMyStoreTabUpdatesEnabled = featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates)
         self.usageTracksEventEmitter = usageTracksEventEmitter
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
@@ -107,44 +107,6 @@ final class TopPerformerDataViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         trackChangedTabIfNeeded()
-    }
-}
-
-
-// MARK: - Public Interface
-//
-extension TopPerformerDataViewController {
-
-    /// Renders Placeholder Content.
-    ///
-    /// Why is this public? Because the `syncTopPerformers` method is actually called from TopPerformersViewController.
-    /// We coordinate multiple placeholder animations from that spot!
-    ///
-    func displayGhostContent() {
-        guard let ghostView = ghostTableViewController.view else {
-            return
-        }
-
-        ghostView.translatesAutoresizingMaskIntoConstraints = false
-        addChild(ghostTableViewController)
-        view.addSubview(ghostView)
-        view.pinSubviewToAllEdges(ghostView)
-        ghostTableViewController.didMove(toParent: self)
-    }
-
-    /// Removes the Placeholder Content.
-    ///
-    /// Why is this public? Because the `syncTopPerformers` method is actually called from TopPerformersViewController.
-    /// We coordinate multiple placeholder animations from that spot!
-    ///
-    func removeGhostContent() {
-        guard let ghostView = ghostTableViewController.view else {
-            return
-        }
-
-        ghostTableViewController.willMove(toParent: nil)
-        ghostView.removeFromSuperview()
-        ghostTableViewController.removeFromParent()
     }
 }
 
@@ -191,7 +153,7 @@ private extension TopPerformerDataViewController {
     }
 
     func registerTableViewHeaderFooters() {
-        let headersAndFooters = isMyStoreTabUpdatesEnabled ? [TwoColumnSectionHeaderView.self]: [TopPerformersHeaderView.self]
+        let headersAndFooters = [TwoColumnSectionHeaderView.self]
 
         for kind in headersAndFooters {
             tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
@@ -222,19 +184,7 @@ extension TopPerformerDataViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        if isMyStoreTabUpdatesEnabled {
-            return nil
-        } else {
-            guard let cell =
-                    tableView.dequeueReusableHeaderFooterView(withIdentifier: TopPerformersHeaderView.reuseIdentifier) as? TopPerformersHeaderView else {
-                fatalError()
-            }
-
-            cell.configure(descriptionText: Text.sectionDescription,
-                           leftText: Text.legacySectionLeftColumn.uppercased(),
-                           rightText: Text.legacySectionRightColumn.uppercased())
-            return cell
-        }
+        nil
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -242,7 +192,7 @@ extension TopPerformerDataViewController: UITableViewDataSource {
             return tableView.dequeueReusableCell(withIdentifier: NoPeriodDataTableViewCell.reuseIdentifier, for: indexPath)
         }
         let cell = tableView.dequeueReusableCell(ProductTableViewCell.self, for: indexPath)
-        let viewModel = ProductTableViewCell.ViewModel(statsItem: statsItem, isMyStoreTabUpdatesEnabled: isMyStoreTabUpdatesEnabled)
+        let viewModel = ProductTableViewCell.ViewModel(statsItem: statsItem)
         cell.configure(viewModel: viewModel, imageService: imageService)
         cell.hidesBottomBorder = tableView.lastIndexPathOfTheLastSection() == indexPath ? true : false
         return cell
@@ -265,11 +215,11 @@ extension TopPerformerDataViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
-        return isMyStoreTabUpdatesEnabled ? 0: Constants.estimatedSectionHeight
+        0
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return isMyStoreTabUpdatesEnabled ? 0: UITableView.automaticDimension
+        0
     }
 }
 
@@ -304,24 +254,12 @@ private extension TopPerformerDataViewController {
     }
 
     func statsItem(at indexPath: IndexPath) -> TopEarnerStatsItem? {
-        if isMyStoreTabUpdatesEnabled {
-            guard let topEarnerStatsItem = topEarnerStats?.items?
-                    .sorted(by: >)[safe: indexPath.row] else {
-                return nil
-            }
+        guard let topEarnerStatsItem = topEarnerStats?.items?
+                .sorted(by: >)[safe: indexPath.row] else {
+                    return nil
+                }
 
-            return topEarnerStatsItem
-        } else {
-            guard let topEarnerStatsItem = topEarnerStats?.items?
-                    .sorted(by: { lhs, rhs in
-                        lhs.total < rhs.total ||
-                        (lhs.total == rhs.total && lhs.quantity < rhs.quantity)
-                    })[safe: indexPath.row] else {
-                return nil
-            }
-
-            return topEarnerStatsItem
-        }
+        return topEarnerStatsItem
     }
 
     func numberOfRows() -> Int {
@@ -329,56 +267,6 @@ private extension TopPerformerDataViewController {
             return Constants.emptyStateRowCount
         }
         return itemCount
-    }
-}
-
-// MARK: - Ghost View
-
-private extension TopPerformerDataViewController {
-    final class GhostTableViewController: UITableViewController {
-
-        init() {
-            super.init(style: .plain)
-        }
-
-        required init?(coder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
-
-        override func viewDidLoad() {
-            super.viewDidLoad()
-
-            // Make sure that Ghost will not have any dataSource or delegate to _swap_. This is
-            // just to reduce the chance of having ”invalid number of rows” crashes because of
-            // delegate swapping.
-            tableView.dataSource = nil
-            tableView.delegate = nil
-
-            tableView.backgroundColor = TableViewStyle.backgroundColor
-            tableView.separatorStyle = .none
-            tableView.estimatedRowHeight = Constants.estimatedRowHeight
-            tableView.applyFooterViewForHidingExtraRowPlaceholders()
-            tableView.registerNib(for: ProductTableViewCell.self)
-        }
-
-        /// Activate the ghost if this view is added to the parent.
-        ///
-        override func viewWillAppear(_ animated: Bool) {
-            super.viewWillAppear(animated)
-
-            let options = GhostOptions(displaysSectionHeader: false,
-                                       reuseIdentifier: ProductTableViewCell.reuseIdentifier,
-                                       rowsPerSection: Constants.placeholderRowsPerSection)
-            tableView.displayGhostContent(options: options,
-                                          style: .wooDefaultGhostStyle)
-        }
-
-        /// Deactivate the ghost if this view is removed from the parent.
-        ///
-        override func viewWillDisappear(_ animated: Bool) {
-            super.viewWillDisappear(animated)
-            tableView.removeGhostContent()
-        }
     }
 }
 
@@ -390,8 +278,6 @@ private extension TopPerformerDataViewController {
                                                           comment: "Description for Top Performers section of My Store tab.")
         static let sectionLeftColumn = NSLocalizedString("Products", comment: "Description for Top Performers left column header")
         static let sectionRightColumn = NSLocalizedString("Items Sold", comment: "Description for Top Performers right column header")
-        static let legacySectionLeftColumn = NSLocalizedString("Product", comment: "Legacy description for Top Performers left column header")
-        static let legacySectionRightColumn = NSLocalizedString("Total Spend", comment: "Legacy description for Top Performers right column header")
     }
 
     enum TableViewStyle {

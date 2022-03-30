@@ -116,16 +116,16 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         // Figure out main action button first
         var buttons: [ActionButtonType] = {
             switch (formType, originalProductModel.status, productModel.status, originalProduct.product.existsRemotely, hasUnsavedChanges()) {
-            case (.add, .publish, .publish, false, _): // New product with publish status
+            case (.add, .published, .published, false, _): // New product with publish status
                 return [.publish]
 
-            case (.add, .publish, _, false, _): // New product with a different status
+            case (.add, .published, _, false, _): // New product with a different status
                 return [.save] // And publish in more
 
-            case (.edit, .publish, _, true, true): // Existing published product with changes
+            case (.edit, .published, _, true, true): // Existing published product with changes
                 return [.save]
 
-            case (.edit, .publish, _, true, false): // Existing published product with no changes
+            case (.edit, .published, _, true, false): // Existing published product with no changes
                 return []
 
             case (.edit, _, _, true, true): // Any other existing product with changes
@@ -198,7 +198,7 @@ extension ProductFormViewModel {
     ///
     func canShowPublishOption() -> Bool {
         let newProduct = formType == .add && !originalProduct.product.existsRemotely
-        let existingUnpublishedProduct = formType == .edit && originalProduct.product.existsRemotely && originalProduct.status != .publish
+        let existingUnpublishedProduct = formType == .edit && originalProduct.product.existsRemotely && originalProduct.status != .published
 
         let productCanBePublished = newProduct || existingUnpublishedProduct
         let publishIsNotAlreadyVisible = !actionButtons.contains(.publish)
@@ -215,7 +215,7 @@ extension ProductFormViewModel {
     }
 
     func canViewProductInStore() -> Bool {
-        originalProduct.product.productStatus == .publish && formType != .add
+        originalProduct.product.productStatus == .published && formType != .add
     }
 
     func canShareProduct() -> Bool {

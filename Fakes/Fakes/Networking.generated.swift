@@ -213,7 +213,7 @@ extension InboxNote {
             actions: .fake(),
             title: .fake(),
             content: .fake(),
-            isDeleted: .fake(),
+            isRemoved: .fake(),
             isRead: .fake(),
             dateCreated: .fake()
         )
@@ -542,7 +542,7 @@ extension OrderStatusEnum {
     /// Returns a "ready to use" type filled with fake values.
     ///
     public static func fake() -> OrderStatusEnum {
-        .pending
+        .autoDraft
     }
 }
 extension OrderTaxLine {
@@ -869,7 +869,7 @@ extension ProductStatus {
     /// Returns a "ready to use" type filled with fake values.
     ///
     public static func fake() -> ProductStatus {
-        .publish
+        .published
     }
 }
 extension ProductStockStatus {

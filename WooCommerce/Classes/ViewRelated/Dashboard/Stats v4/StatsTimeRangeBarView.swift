@@ -30,14 +30,9 @@ private extension StatsTimeRangeBarView {
         label.setContentCompressionResistancePriority(.required, for: .vertical)
         pinSubviewToAllEdges(label, insets: Constants.labelInsets)
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates) {
-            label.font = Constants.labelFont
-            label.textColor = Constants.labelColor
-            label.textAlignment = Constants.labelTextAlignment
-        } else {
-            label.font = StyleManager.headlineSemiBold
-            label.textColor = .text
-        }
+        label.font = Constants.labelFont
+        label.textColor = Constants.labelColor
+        label.textAlignment = Constants.labelTextAlignment
     }
 }
 

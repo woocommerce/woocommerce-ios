@@ -1,12 +1,13 @@
 import XCTest
 import Yosemite
+import Fakes
 @testable import WooCommerce
 
 class ProductRowViewModelTests: XCTestCase {
 
     func test_viewModel_is_created_with_correct_initial_values_from_product() {
         // Given
-        let rowID = "0"
+        let rowID = Int64(0)
         let imageURLString = "https://woo.com/woo.jpg"
         let product = Product.fake().copy(productID: 12,
                                           name: "Test Product",
@@ -38,7 +39,7 @@ class ProductRowViewModelTests: XCTestCase {
 
     func test_viewModel_is_created_with_correct_initial_values_from_product_variation() {
         // Given
-        let rowID = "0"
+        let rowID = Int64(0)
         let imageURLString = "https://woo.com/woo.jpg"
         let name = "Blue - Any Size"
         let productVariation = ProductVariation.fake().copy(productVariationID: 12,
@@ -46,7 +47,7 @@ class ProductRowViewModelTests: XCTestCase {
                                                             image: ProductImage.fake().copy(src: imageURLString))
 
         // When
-        let viewModel = ProductRowViewModel(id: rowID, productVariation: productVariation, name: name, canChangeQuantity: false)
+        let viewModel = ProductRowViewModel(id: rowID, productVariation: productVariation, name: name, canChangeQuantity: false, displayMode: .stock)
 
         // Then
         XCTAssertEqual(viewModel.id, rowID)
@@ -156,6 +157,37 @@ class ProductRowViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productDetailsLabel, expectedProductDetailsLabel)
     }
 
+    func test_view_model_creates_expected_label_for_variation_with_attributes_display_mode() {
+        // Given
+        let variation = ProductVariation.fake().copy(attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")], stockStatus: .inStock)
+        let attributes = [VariationAttributeViewModel(name: "Color", value: "Blue"), VariationAttributeViewModel(name: "Size")]
+
+        // When
+        let viewModel = ProductRowViewModel(productVariation: variation, name: "", canChangeQuantity: false, displayMode: .attributes(attributes))
+
+        // Then
+        let expectedAttributesText = "Blue, Any Size"
+        let unexpectedStockText = "In stock"
+        XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedAttributesText),
+                      "Expected label to contain \"\(expectedAttributesText)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
+        XCTAssertFalse(viewModel.productDetailsLabel.contains(unexpectedStockText))
+    }
+
+    func test_view_model_creates_expected_label_for_variation_with_stock_display_mode() {
+        // Given
+        let variation = ProductVariation.fake().copy(attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")], stockStatus: .inStock)
+
+        // When
+        let viewModel = ProductRowViewModel(productVariation: variation, name: "", canChangeQuantity: false, displayMode: .stock)
+
+        // Then
+        let expectedStockText = "In stock"
+        let unexpectedAttributesText = "Blue"
+        XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedStockText),
+                      "Expected label to contain \"\(expectedStockText)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
+        XCTAssertFalse(viewModel.productDetailsLabel.contains(unexpectedAttributesText))
+    }
+
     func test_sku_label_is_formatted_correctly_for_product_with_sku() {
         // Given
         let sku = "123456"
@@ -201,15 +233,39 @@ class ProductRowViewModelTests: XCTestCase {
         // Given
         let product = Product.fake()
         let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
-
-        // Then
         XCTAssertEqual(viewModel.quantity, 1)
-        XCTAssertTrue(viewModel.shouldDisableQuantityDecrementer, "Quantity decrementer is not disabled at minimum value")
 
         // When
         viewModel.decrementQuantity()
 
         // Then
         XCTAssertEqual(viewModel.quantity, 1)
+    }
+
+    func test_cannot_decrement_quantity_below_zero() {
+        // Given
+        let product = Product.fake()
+        let viewModel = ProductRowViewModel(product: product, quantity: 0, canChangeQuantity: true)
+        XCTAssertEqual(viewModel.quantity, 0)
+
+        // When
+        viewModel.decrementQuantity()
+
+        // Then
+        XCTAssertEqual(viewModel.quantity, 0)
+        XCTAssertTrue(viewModel.shouldDisableQuantityDecrementer, "Quantity decrementer is not disabled")
+    }
+
+    func test_decrement_quantity_at_minimum_quantity_removes_product() {
+        // Given
+        let product = Product.fake()
+        var productRemoved = false
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true, removeProductIntent: { productRemoved = true })
+
+        // When
+        viewModel.decrementQuantity()
+
+        // Then
+        XCTAssertTrue(productRemoved)
     }
 }

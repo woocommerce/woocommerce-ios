@@ -661,4 +661,49 @@ final class WCPayRemoteTests: XCTestCase {
 
         XCTAssertTrue(result.isFailure)
     }
+
+    func test_fetchCharge_properly_returns_charge_with_payment_method_details() throws {
+        let remote = WCPayRemote(network: network)
+        let chargeID = "ch_3KMVap2EdyGr1FMV1uKJEWtg"
+        let expectedPaymentMethodDetails = WCPayPaymentMethodDetails.cardPresent(
+            details: .init(brand: .visa,
+                           last4: "9969",
+                           funding: .credit,
+                           receipt: .init(accountType: .credit,
+                                          applicationPreferredName: "Stripe Credit",
+                                          dedicatedFileName: "A000000003101001")))
+
+        network.simulateResponse(
+            requestUrlSuffix: "payments/charges/\(chargeID)",
+            filename: "wcpay-charge-card-present"
+        )
+
+        let result: Result<WCPayCharge, Error> = waitFor { promise in
+            remote.fetchCharge(for: self.sampleSiteID, chargeID: chargeID) { result in
+                promise(result)
+            }
+        }
+
+        XCTAssertTrue(result.isSuccess)
+        let charge = try result.get()
+        XCTAssertEqual(charge.paymentMethodDetails, expectedPaymentMethodDetails)
+    }
+
+    func test_fetchCharge_properly_handles_error_response() throws {
+        let remote = WCPayRemote(network: network)
+        let chargeID = "ch_3KMVapErrorERROR"
+
+        network.simulateResponse(
+            requestUrlSuffix: "payments/charges/\(chargeID)",
+            filename: "wcpay-charge-error"
+        )
+
+        let result: Result<WCPayCharge, Error> = waitFor { promise in
+            remote.fetchCharge(for: self.sampleSiteID, chargeID: chargeID) { result in
+                promise(result)
+            }
+        }
+
+        XCTAssertTrue(result.isFailure)
+    }
 }

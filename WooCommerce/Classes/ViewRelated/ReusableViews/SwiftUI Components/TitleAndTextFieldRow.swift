@@ -3,23 +3,27 @@ import SwiftUI
 /// Renders a row with a label on the left side, and a text field on the right side, with eventually a symbol (like $)
 ///
 struct TitleAndTextFieldRow: View {
-    let title: String
-    let placeholder: String
-    @Binding var text: String
-    let symbol: String?
-    let keyboardType: UIKeyboardType
-    let onEditingChanged: ((Bool) -> Void)?
+    private let title: String
+    private let placeholder: String
+    private let symbol: String?
+    private let keyboardType: UIKeyboardType
+    private let onEditingChanged: ((Bool) -> Void)?
+    private let editable: Bool
+
+    @Binding private var text: String
 
     init(title: String,
          placeholder: String,
          text: Binding<String>,
          symbol: String? = nil,
+         editable: Bool = true,
          keyboardType: UIKeyboardType = .default,
          onEditingChanged: ((Bool) -> Void)? = nil) {
         self.title = title
         self.placeholder = placeholder
         self._text = text
         self.symbol = symbol
+        self.editable = editable
         self.keyboardType = keyboardType
         self.onEditingChanged = onEditingChanged
     }
@@ -35,6 +39,7 @@ struct TitleAndTextFieldRow: View {
                     .multilineTextAlignment(.trailing)
                     .font(.body)
                     .keyboardType(keyboardType)
+                    .disabled(!editable)
                 if let symbol = symbol {
                     Text(symbol)
                         .bodyStyle()

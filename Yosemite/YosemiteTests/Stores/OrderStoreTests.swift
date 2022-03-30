@@ -645,7 +645,7 @@ final class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders", filename: "order")
 
         // When
-        let action = OrderAction.createSimplePaymentsOrder(siteID: self.sampleSiteID, amount: "125.50", taxable: false) { _ in }
+        let action = OrderAction.createSimplePaymentsOrder(siteID: self.sampleSiteID, status: .autoDraft, amount: "125.50", taxable: false) { _ in }
         store.onAction(action)
 
         // Then
@@ -667,7 +667,7 @@ final class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders", filename: "order")
 
         // When
-        let action = OrderAction.createSimplePaymentsOrder(siteID: self.sampleSiteID, amount: "125.50", taxable: true) { _ in }
+        let action = OrderAction.createSimplePaymentsOrder(siteID: self.sampleSiteID, status: .autoDraft, amount: "125.50", taxable: true) { _ in }
         store.onAction(action)
 
         // Then
@@ -683,14 +683,14 @@ final class OrderStoreTests: XCTestCase {
         assertEqual(received, expected)
     }
 
-    func test_create_simple_payments_order_stores_orders_correctly() throws {
+    func test_create_pending_simple_payments_order_stores_orders_correctly() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "orders", filename: "order")
 
         // When
         let storedOrder: Yosemite.Order? = waitFor { promise in
-            let action = OrderAction.createSimplePaymentsOrder(siteID: self.sampleSiteID, amount: "125.50", taxable: false) { _ in
+            let action = OrderAction.createSimplePaymentsOrder(siteID: self.sampleSiteID, status: .pending, amount: "125.50", taxable: false) { _ in
                 let order = self.storageManager.viewStorage.loadOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID)?.toReadOnly()
                 promise(order)
             }
@@ -699,6 +699,24 @@ final class OrderStoreTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(storedOrder)
+    }
+
+    func test_create_draft_simple_payments_order_does_not_get_stored() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "order-auto-draft-status")
+
+        // When
+        let storedOrder: Yosemite.Order? = waitFor { promise in
+            let action = OrderAction.createSimplePaymentsOrder(siteID: self.sampleSiteID, status: .autoDraft, amount: "125.50", taxable: false) { _ in
+                let order = self.storageManager.viewStorage.loadOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID)?.toReadOnly()
+                promise(order)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertNil(storedOrder)
     }
 
     func test_create_order_stores_orders_correctly() throws {
@@ -734,6 +752,7 @@ final class OrderStoreTests: XCTestCase {
         let action = OrderAction.updateSimplePaymentsOrder(siteID: sampleSiteID,
                                                            orderID: sampleOrderID,
                                                            feeID: feeID,
+                                                           status: .pending,
                                                            amount: amount,
                                                            taxable: taxable,
                                                            orderNote: note,
@@ -767,6 +786,126 @@ final class OrderStoreTests: XCTestCase {
 
         let receivedNote = try XCTUnwrap(request.parameters["customer_note"] as? String)
         assertEqual(receivedNote, note)
+    }
+
+    func test_create_order_sends_expected_fields() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
+
+        // When
+        let action = OrderAction.createOrder(siteID: sampleSiteID, order: sampleOrder()) { _ in }
+        store.onAction(action)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let receivedKeys = Array(request.parameters.keys).sorted()
+        let expectedKeys = [
+            "billing",
+            "customer_note",
+            "fee_lines",
+            "line_items",
+            "shipping",
+            "shipping_lines",
+            "status"
+        ]
+        assertEqual(expectedKeys, receivedKeys)
+    }
+
+    func test_create_order_does_not_upsert_autodrafts() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "order-auto-draft-status")
+
+        // When
+        let result: Result<Yosemite.Order, Error> = waitFor { promise in
+            let action = OrderAction.createOrder(siteID: self.sampleSiteID, order: self.sampleOrder()) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
+    }
+
+    func test_update_order_does_not_upsert_autodrafts() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order-auto-draft-status")
+
+        // When
+        let result: Result<Yosemite.Order, Error> = waitFor { promise in
+            let action = OrderAction.updateOrder(siteID: self.sampleSiteID, order: self.sampleOrder(), fields: []) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
+    }
+
+    func test_delete_order_removes_order_from_storage() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let order = sampleOrder()
+        store.upsertStoredOrder(readOnlyOrder: order, in: viewStorage)
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
+
+        // When
+        let result: Result<Yosemite.Order, Error> = waitFor { promise in
+            let action = OrderAction.deleteOrder(siteID: self.sampleSiteID, order: order, deletePermanently: false) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
+    }
+
+    func test_delete_order_keeps_order_in_storage_if_deletion_fails() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let order = sampleOrder()
+        store.upsertStoredOrder(readOnlyOrder: order, in: viewStorage)
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "generic_error")
+
+        // When
+        let result: Result<Yosemite.Order, Error> = waitFor { promise in
+            let action = OrderAction.deleteOrder(siteID: self.sampleSiteID, order: order, deletePermanently: false) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 1)
+    }
+
+    func test_delete_order_does_not_keep_autodraft_order_in_storage_if_deletion_fails() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let order = sampleOrder().copy(status: .autoDraft)
+        store.upsertStoredOrder(readOnlyOrder: order, in: viewStorage)
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "generic_error")
+
+        // When
+        let result: Result<Yosemite.Order, Error> = waitFor { promise in
+            let action = OrderAction.deleteOrder(siteID: self.sampleSiteID, order: order, deletePermanently: false) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
     }
 }
 

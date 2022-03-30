@@ -8,13 +8,68 @@ final class NewOrderHostingController: UIHostingController<NewOrder> {
     /// References to keep the Combine subscriptions alive within the lifecycle of the object.
     ///
     private var subscriptions: Set<AnyCancellable> = []
+    private let viewModel: NewOrderViewModel
 
     init(viewModel: NewOrderViewModel) {
+        self.viewModel = viewModel
         super.init(rootView: NewOrder(viewModel: viewModel))
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            // Set presentation delegate to track the user dismiss flow event
+            if let navigationController = navigationController {
+                navigationController.presentationController?.delegate = self
+            } else {
+                presentationController?.delegate = self
+            }
+        } else {
+            handleSwipeBackGesture()
+        }
+    }
+}
+
+/// Intercepts back navigation (selecting back button or swiping back).
+///
+extension NewOrderHostingController {
+    override func shouldPopOnBackButton() -> Bool {
+        guard !viewModel.hasChanges else {
+            presentDiscardChangesActionSheet()
+            return false
+        }
+        return true
+    }
+
+    override func shouldPopOnSwipeBack() -> Bool {
+        return shouldPopOnBackButton()
+    }
+
+    private func presentDiscardChangesActionSheet() {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+            self?.viewModel.discardOrder()
+            self?.navigationController?.popViewController(animated: true)
+        })
+    }
+}
+
+/// Intercepts to the dismiss drag gesture.
+///
+extension NewOrderHostingController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+        return !viewModel.hasChanges
+    }
+
+    func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+            self?.viewModel.discardOrder()
+            self?.dismiss(animated: true, completion: nil)
+        })
     }
 }
 
@@ -35,18 +90,21 @@ struct NewOrder: View {
 
                         Spacer(minLength: Layout.sectionSpacing)
 
-                        ProductsSection(geometry: geometry, scroll: scroll, viewModel: viewModel, navigationButtonID: $navigationButtonID)
+                        ProductsSection(scroll: scroll, viewModel: viewModel, navigationButtonID: $navigationButtonID)
 
                         Spacer(minLength: Layout.sectionSpacing)
 
-                        if viewModel.shouldShowPaymentSection {
-                            OrderPaymentSection(viewModel: viewModel.paymentDataViewModel)
+                        OrderPaymentSection(viewModel: viewModel.paymentDataViewModel)
 
-                            Spacer(minLength: Layout.sectionSpacing)
-                        }
+                        Spacer(minLength: Layout.sectionSpacing)
 
                         OrderCustomerSection(viewModel: viewModel)
+
+                        Spacer(minLength: Layout.sectionSpacing)
+
+                        CustomerNoteSection(viewModel: viewModel)
                     }
+                    .disabled(viewModel.disabled)
                 }
                 .background(Color(.listBackground).ignoresSafeArea())
                 .ignoresSafeArea(.container, edges: [.horizontal])
@@ -57,20 +115,21 @@ struct NewOrder: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 switch viewModel.navigationTrailingItem {
-                case .none:
-                    EmptyView()
                 case .create:
                     Button(Localization.createButton) {
                         viewModel.createOrder()
-                    }.id(navigationButtonID)
+                    }
+                    .id(navigationButtonID)
+                    .accessibilityIdentifier("new-order-create-button")
+                    .disabled(viewModel.disabled)
+
                 case .loading:
                     ProgressView()
                 }
             }
         }
         .wooNavigationBarStyle()
-        .notice($viewModel.notice)
-        .disabled(viewModel.disabled)
+        .notice($viewModel.notice, autoDismiss: false)
     }
 }
 
@@ -78,7 +137,6 @@ struct NewOrder: View {
 /// Represents the Products section
 ///
 private struct ProductsSection: View {
-    let geometry: GeometryProxy
     let scroll: ScrollViewProxy
 
     /// View model to drive the view content
@@ -95,21 +153,26 @@ private struct ProductsSection: View {
     ///
     @Namespace var addProductButton
 
+    ///   Environment safe areas
+    ///
+    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
+
     var body: some View {
         Group {
             Divider()
 
             VStack(alignment: .leading, spacing: NewOrder.Layout.verticalSpacing) {
                 Text(NewOrder.Localization.products)
+                    .accessibilityAddTraits(.isHeader)
                     .headlineStyle()
 
                 ForEach(viewModel.productRows) { productRow in
-                    ProductRow(viewModel: productRow)
+                    ProductRow(viewModel: productRow, accessibilityHint: NewOrder.Localization.productRowAccessibilityHint)
                         .onTapGesture {
                             viewModel.selectOrderItem(productRow.id)
                         }
-                        .sheet(item: $viewModel.selectedOrderItem) { item in
-                            createProductInOrderView(for: item)
+                        .sheet(item: $viewModel.selectedProductViewModel) { productViewModel in
+                            ProductInOrder(viewModel: productViewModel)
                         }
 
                     Divider()
@@ -125,26 +188,17 @@ private struct ProductsSection: View {
                 }, content: {
                     AddProductToOrder(isPresented: $showAddProduct, viewModel: viewModel.addProductViewModel)
                         .onDisappear {
+                            viewModel.addProductViewModel.clearSearch()
                             navigationButtonID = UUID()
                         }
                 })
             }
-            .padding(.horizontal, insets: geometry.safeAreaInsets)
+            .padding(.horizontal, insets: safeAreaInsets)
             .padding()
             .background(Color(.listForeground))
 
             Divider()
         }
-    }
-
-    @ViewBuilder private func createProductInOrderView(for item: NewOrderViewModel.NewOrderItem) -> some View {
-        if let productRowViewModel = viewModel.createProductRowViewModel(for: item, canChangeQuantity: false) {
-            let productInOrderViewModel = ProductInOrderViewModel(productRowViewModel: productRowViewModel) {
-                viewModel.removeItemFromOrder(item)
-            }
-            ProductInOrder(viewModel: productInOrderViewModel)
-        }
-        EmptyView()
     }
 }
 
@@ -160,7 +214,9 @@ private extension NewOrder {
         static let title = NSLocalizedString("New Order", comment: "Title for the order creation screen")
         static let createButton = NSLocalizedString("Create", comment: "Button to create an order on the New Order screen")
         static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating a new order")
-        static let addProduct = NSLocalizedString("Add product", comment: "Title text of the button that adds a product when creating a new order")
+        static let addProduct = NSLocalizedString("Add Product", comment: "Title text of the button that adds a product when creating a new order")
+        static let productRowAccessibilityHint = NSLocalizedString("Opens product detail.",
+                                                                   comment: "Accessibility hint for selecting a product in a new order")
     }
 }
 

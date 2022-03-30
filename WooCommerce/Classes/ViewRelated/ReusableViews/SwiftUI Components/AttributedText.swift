@@ -25,6 +25,9 @@ import SwiftUI
  SOFTWARE.
  */
 
+/// Note: the font and foreground color of the text have to be set in `NSAttributedString`'s attributes.
+/// `font` and `attributedTextForegroundColor` functions do not take effect.
+/// The link color can be set with `attributedTextLinkColor`.
 struct AttributedText: View {
     @StateObject private var textViewStore = TextViewStore()
 

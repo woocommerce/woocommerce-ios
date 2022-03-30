@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="64" id="NHm-a8-XDy" customClass="RefundConfirmationCardDetailsCell" customModule="WooCommerce" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="64"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="NHm-a8-XDy" id="sO4-37-glO">
+                <rect key="frame" x="0.0" y="0.0" width="414" height="64"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="tHW-My-D4r">
+                        <rect key="frame" x="16" y="16" width="382" height="32"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="m1E-aU-rbQ">
+                                <rect key="frame" x="0.0" y="0.0" width="50.5" height="32"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="32" id="AuZ-rN-OeF"/>
+                                    <constraint firstAttribute="width" secondItem="m1E-aU-rbQ" secondAttribute="height" multiplier="1.58:1" placeholder="YES" id="Wow-Wp-mc9"/>
+                                </constraints>
+                            </imageView>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="K9C-y2-KHj">
+                                <rect key="frame" x="66.5" y="0.0" width="315.5" height="32"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rcH-oE-AN7">
+                                        <rect key="frame" x="0.0" y="0.0" width="315.5" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ORL-kd-uyt">
+                                        <rect key="frame" x="0.0" y="20.5" width="315.5" height="11.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                    </stackView>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="tHW-My-D4r" firstAttribute="leading" secondItem="sO4-37-glO" secondAttribute="leading" constant="16" id="6yz-KH-kI6"/>
+                    <constraint firstAttribute="bottom" secondItem="tHW-My-D4r" secondAttribute="bottom" constant="16" id="W8c-7C-FGW"/>
+                    <constraint firstAttribute="trailing" secondItem="tHW-My-D4r" secondAttribute="trailing" constant="16" id="asf-uD-r5F"/>
+                    <constraint firstItem="tHW-My-D4r" firstAttribute="top" secondItem="sO4-37-glO" secondAttribute="top" constant="16" id="u5s-A6-ilA"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="cardBrandImageView" destination="m1E-aU-rbQ" id="lfA-en-3Px"/>
+                <outlet property="cardDescriptionLabel" destination="ORL-kd-uyt" id="2Bl-PE-JdN"/>
+                <outlet property="titleLabel" destination="rcH-oE-AN7" id="3FB-3O-q1J"/>
+            </connections>
+            <point key="canvasLocation" x="137.68115942028987" y="158.70535714285714"/>
+        </tableViewCell>
+    </objects>
+</document>

@@ -39,6 +39,7 @@ private struct OrderCustomerSectionContent: View {
         VStack(alignment: .leading, spacing: .zero) {
             HStack(alignment: .top) {
                 Text(Localization.customer)
+                    .accessibilityAddTraits(.isHeader)
                     .headlineStyle()
 
                 Spacer()
@@ -51,6 +52,7 @@ private struct OrderCustomerSectionContent: View {
                     .fixedSize(horizontal: true, vertical: true)
                     .padding(.top, -Layout.linkButtonTopPadding) // remove padding to align button title to the top
                     .padding(.trailing, -Layout.linkButtonTrailingPadding) // remove padding to align button title to the side
+                    .accessibilityLabel(Text(Localization.editButtonAccessibilityLabel))
                 }
             }
             .padding([.leading, .top, .trailing])
@@ -77,10 +79,11 @@ private struct OrderCustomerSectionContent: View {
 
     private var customerDataView: some View {
         Group {
-            addressDetails(title: Localization.shippingTitle, formattedAddress: viewModel.shippingAddressFormatted)
+            addressDetails(title: Localization.billingTitle, formattedAddress: viewModel.billingAddressFormatted)
             Divider()
                 .padding(.leading)
-            addressDetails(title: Localization.billingTitle, formattedAddress: viewModel.billingAddressFormatted)
+            addressDetails(title: Localization.shippingTitle, formattedAddress: viewModel.shippingAddressFormatted)
+
         }
     }
 
@@ -96,6 +99,7 @@ private struct OrderCustomerSectionContent: View {
                     .bodyStyle()
             }
         }
+        .accessibilityElement(children: .combine)
         .padding()
     }
 }
@@ -115,6 +119,10 @@ private extension OrderCustomerSectionContent {
         static let addCustomerDetails = NSLocalizedString("Add Customer Details",
                                                           comment: "Title text of the button that adds customer data when creating a new order")
         static let editButton = NSLocalizedString("Edit", comment: "Button to edit a customer on the New Order screen")
+        static let editButtonAccessibilityLabel = NSLocalizedString(
+            "Edit Customer Details",
+            comment: "Accessibility label for the button to edit customer details on the New Order screen"
+        )
 
         static let billingTitle = NSLocalizedString("Billing Address", comment: "Title for the Billing Address section in order customer data")
         static let shippingTitle = NSLocalizedString("Shipping Address", comment: "Title for the Edit Shipping Address section in order customer data")
@@ -128,7 +136,6 @@ struct OrderCustomerSection_Previews: PreviewProvider {
     static var previews: some View {
         let emptyViewModel = NewOrderViewModel.CustomerDataViewModel(billingAddress: nil, shippingAddress: nil)
         let addressViewModel = NewOrderViewModel.CustomerDataViewModel(fullName: "Johnny Appleseed",
-                                                                       email: "scrambled@scrambled.com",
                                                                        billingAddressFormatted: nil,
                                                                        shippingAddressFormatted: """
                                                                             Johnny Appleseed

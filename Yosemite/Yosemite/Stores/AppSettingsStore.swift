@@ -193,10 +193,6 @@ public class AppSettingsStore: Store {
             getSimplePaymentsTaxesToggleState(siteID: siteID, onCompletion: onCompletion)
         case .resetGeneralStoreSettings:
             resetGeneralStoreSettings()
-        case .loadStripeInPersonPaymentsSwitchState(onCompletion: let onCompletion):
-            loadStripeInPersonPaymentsSwitchState(onCompletion: onCompletion)
-        case .setStripeInPersonPaymentsSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
-            setStripeInPersonPaymentsSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadCanadaInPersonPaymentsSwitchState(onCompletion: let onCompletion):
             loadCanadaInPersonPaymentsSwitchState(onCompletion: onCompletion)
         case .setCanadaInPersonPaymentsSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
@@ -205,6 +201,10 @@ public class AppSettingsStore: Store {
             setProductSKUInputScannerFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadProductSKUInputScannerFeatureSwitchState(onCompletion: let onCompletion):
             loadProductSKUInputScannerFeatureSwitchState(onCompletion: onCompletion)
+        case .setCouponManagementFeatureSwitchState(let isEnabled, let onCompletion):
+            setCouponManagementFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
+        case .loadCouponManagementFeatureSwitchState(let onCompletion):
+            loadCouponManagementFeatureSwitchState(onCompletion: onCompletion)
         }
     }
 }
@@ -300,25 +300,6 @@ private extension AppSettingsStore {
 
     }
 
-    /// Loads the current WooCommerce Stripe Payment Gateway extension In-Person Payments beta feature switch state from `GeneralAppSettings`
-    ///
-    func loadStripeInPersonPaymentsSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
-        let settings = loadOrCreateGeneralAppSettings()
-        onCompletion(.success(settings.isStripeInPersonPaymentsSwitchEnabled))
-    }
-
-    /// Sets the provided WooCommerce Stripe Payment Gateway extension In-Person Payments  beta feature switch state into `GeneralAppSettings`
-    ///
-    func setStripeInPersonPaymentsSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
-        do {
-            let settings = loadOrCreateGeneralAppSettings().copy(isStripeInPersonPaymentsSwitchEnabled: isEnabled)
-            try saveGeneralAppSettings(settings)
-            onCompletion(.success(()))
-        } catch {
-            onCompletion(.failure(error))
-        }
-    }
-
     /// Loads the current In-Person Payments in Canada beta feature switch state from `GeneralAppSettings`
     ///
     func loadCanadaInPersonPaymentsSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
@@ -355,6 +336,25 @@ private extension AppSettingsStore {
     func loadProductSKUInputScannerFeatureSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
         let settings = loadOrCreateGeneralAppSettings()
         onCompletion(.success(settings.isProductSKUInputScannerSwitchEnabled))
+    }
+
+    /// Sets the state for the Coupon Mangagement beta feature switch into `GeneralAppSettings`.
+    ///
+    func setCouponManagementFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            let settings = loadOrCreateGeneralAppSettings().copy(isCouponManagementSwitchEnabled: isEnabled)
+            try saveGeneralAppSettings(settings)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+    }
+
+    /// Loads the most recent state for the Coupon Management beta feature switch from `GeneralAppSettings`.
+    ///
+    func loadCouponManagementFeatureSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
+        let settings = loadOrCreateGeneralAppSettings()
+        onCompletion(.success(settings.isCouponManagementSwitchEnabled))
     }
 
     /// Loads the last persisted eligibility error information from `GeneralAppSettings`
@@ -414,9 +414,9 @@ private extension AppSettingsStore {
                                       feedbacks: [:],
                                       isViewAddOnsSwitchEnabled: false,
                                       isOrderCreationSwitchEnabled: false,
-                                      isStripeInPersonPaymentsSwitchEnabled: false,
                                       isCanadaInPersonPaymentsSwitchEnabled: false,
                                       isProductSKUInputScannerSwitchEnabled: false,
+                                      isCouponManagementSwitchEnabled: false,
                                       knownCardReaders: [],
                                       lastEligibilityErrorInfo: nil)
         }

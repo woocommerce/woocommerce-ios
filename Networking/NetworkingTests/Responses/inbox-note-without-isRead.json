@@ -1,0 +1,45 @@
+{
+    "data": {
+        "id": 80,
+        "name": "lead_gen_existing_customers_1",
+        "type": "marketing",
+        "locale": "en_US",
+        "title": "Talk to a consultant",
+        "content": "As your business grows, you want to optimize costs, streamline operations, and sell more. We can help. Talk to us about how you can get the most out of WooCommerce.",
+        "content_data": {},
+        "status": "unactioned",
+        "source": "woocommerce.com",
+        "date_created": "2022-02-13T11:23:51",
+        "date_reminder": null,
+        "is_snoozable": false,
+        "actions": [
+            {
+                "id": 7635,
+                "name": "lead_gen_existing_customers_1",
+                "label": "Yes, please",
+                "query": "https://woocommerce.com/take-your-business-to-the-next-level/",
+                "status": "actioned",
+                "primary": false,
+                "actioned_text": "",
+                "url": "https://woocommerce.com/take-your-business-to-the-next-level/"
+            }
+        ],
+        "layout": "plain",
+        "image": "",
+        "is_deleted": false,
+        "date_created_gmt": "2022-02-13T16:23:51",
+        "date_reminder_gmt": null,
+        "_links": {
+            "self": [
+                {
+                    "href": "https://example.com/wp-json/wc-analytics/admin/notes/80"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://example.com/wp-json/wc-analytics/admin/notes"
+                }
+            ]
+        }
+    }
+}

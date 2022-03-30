@@ -25,6 +25,13 @@ public enum ProductVariationAction: Action {
     ///
     case updateProductVariation(productVariation: ProductVariation, onCompletion: (Result<ProductVariation, ProductUpdateError>) -> Void)
 
+    /// Updates the provided ProductVariations.
+    ///
+    case updateProductVariations(siteID: Int64,
+                                 productID: Int64,
+                                 productVariations: [ProductVariation],
+                                 onCompletion: (Result<[ProductVariation], ProductUpdateError>) -> Void)
+
     /// Requests the variations in a specified Order that have not been fetched.
     ///
     case requestMissingVariations(for: Order, onCompletion: (Error?) -> Void)

@@ -166,7 +166,7 @@ private struct PaymentsSection: View {
                     .headlineStyle()
                     .padding([.horizontal, .top])
 
-                TitleAndValueRow(title: SimplePaymentsSummary.Localization.subtotal, value: .content(viewModel.providedAmount), selectable: false) {}
+                TitleAndValueRow(title: SimplePaymentsSummary.Localization.subtotal, value: .content(viewModel.providedAmount), selectionStyle: .none) {}
 
                 TitleAndToggleRow(title: SimplePaymentsSummary.Localization.chargeTaxes, isOn: $viewModel.enableTaxes)
                     .padding(.horizontal)
@@ -177,21 +177,15 @@ private struct PaymentsSection: View {
                         .padding(.horizontal)
                         .fixedSize(horizontal: false, vertical: true)
 
-                    if viewModel.showTaxBreakup {
-                        ForEach(viewModel.taxLines) { taxLine in
-                            TitleAndValueRow(title: taxLine.title,
-                                             value: .content(taxLine.value),
-                                             selectable: false) {}
-                        }
-                    } else {
-                        TitleAndValueRow(title: SimplePaymentsSummary.Localization.taxRate(viewModel.taxRate),
-                                         value: .content(viewModel.taxAmount),
-                                         selectable: false) {}
+                    ForEach(viewModel.taxLines) { taxLine in
+                        TitleAndValueRow(title: taxLine.title,
+                                         value: .content(taxLine.value),
+                                         selectionStyle: .none) {}
                     }
                 }
                 .renderedIf(viewModel.enableTaxes)
 
-                TitleAndValueRow(title: SimplePaymentsSummary.Localization.total, value: .content(viewModel.total), bold: true, selectable: false) {}
+                TitleAndValueRow(title: SimplePaymentsSummary.Localization.total, value: .content(viewModel.total), bold: true, selectionStyle: .none) {}
             }
             .padding(.horizontal, insets: safeAreaInsets)
             .background(Color(.listForeground))
@@ -287,7 +281,7 @@ private struct TakePaymentSection: View {
             Divider()
                 .ignoresSafeArea()
 
-            Button(SimplePaymentsSummary.Localization.takePayment(total: viewModel.total), action: {
+            Button(String(format: SimplePaymentsSummary.Localization.takePayment, viewModel.total), action: {
                 viewModel.updateOrder()
             })
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.showLoadingIndicator))
@@ -333,14 +327,9 @@ private extension SimplePaymentsSummary {
         static let taxesDisclaimer = NSLocalizedString("Taxes are automatically calculated based on your store address.",
                                                        comment: "Disclaimer in the simple payments summary screen about taxes.")
 
-        static func taxRate(_ rate: String) -> String {
-            NSLocalizedString("Tax (\(rate)%)", comment: "Tax percentage to be applied to the simple payments order")
-        }
-
-        static func takePayment(total: String) -> String {
-            NSLocalizedString("Take Payment (\(total))",
-                              comment: "Text of the button that creates a simple payment order. Contains the total amount to collect")
-        }
+        static let takePayment = NSLocalizedString("Take Payment (%1$@)",
+                                                   comment: "Text of the button that creates a simple payment order. " +
+                                                   "%1$@ is a placeholder for the total amount to collect")
     }
 }
 
@@ -371,7 +360,6 @@ struct SimplePaymentsSummary_Preview: PreviewProvider {
                                                                     value: taxAmount)
         return .init(providedAmount: "40.0",
                      totalWithTaxes: "$42.3",
-                     taxAmount: taxAmount,
                      taxLines: [taxLine],
                      noteContent: noteContent)
     }

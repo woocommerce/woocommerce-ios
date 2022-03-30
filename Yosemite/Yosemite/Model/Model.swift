@@ -133,8 +133,10 @@ public typealias CardReaderEvent = Hardware.CardReaderEvent
 public typealias CardReaderSoftwareUpdateState = Hardware.CardReaderSoftwareUpdateState
 public typealias CardReaderServiceDiscoveryStatus = Hardware.CardReaderServiceDiscoveryStatus
 public typealias CardReaderServiceError = Hardware.CardReaderServiceError
+public typealias CardReaderType = Hardware.CardReaderType
 public typealias CardReaderConfigError = Hardware.CardReaderConfigError
 public typealias PaymentParameters = Hardware.PaymentIntentParameters
+public typealias RefundParameters = Hardware.RefundParameters
 public typealias PaymentIntent = Hardware.PaymentIntent
 public typealias PrintingResult = Hardware.PrintingResult
 public typealias CardPresentReceiptParameters = Hardware.CardPresentReceiptParameters
@@ -144,6 +146,14 @@ public typealias WCPayAccount = Networking.WCPayAccount
 public typealias WCPayAccountStatusEnum = Networking.WCPayAccountStatusEnum
 public typealias WCPayCustomer = Networking.Customer
 public typealias WCPayPaymentMethodType = Networking.WCPayPaymentMethodType
+public typealias WCPayCharge = Networking.WCPayCharge
+public typealias WCPayCardBrand = Networking.WCPayCardBrand
+public typealias WCPayCardFunding = Networking.WCPayCardFunding
+public typealias WCPayCardPresentPaymentDetails = Networking.WCPayCardPresentPaymentDetails
+public typealias WCPayCardPaymentDetails = Networking.WCPayCardPaymentDetails
+public typealias WCPayCardPresentReceiptDetails = Networking.WCPayCardPresentReceiptDetails
+public typealias WCPayPaymentMethodDetails = Networking.WCPayPaymentMethodDetails
+public typealias WCPayChargeStatus = Networking.WCPayChargeStatus
 
 // MARK: - Exported Storage Symbols
 
@@ -156,6 +166,9 @@ public typealias StorageAddOnGroup = Storage.AddOnGroup
 public typealias StorageAnnouncement = Storage.Announcement
 public typealias StorageEligibilityErrorInfo = Storage.EligibilityErrorInfo
 public typealias StorageFeature = Storage.Feature
+public typealias StorageFeatureIcon = Storage.FeatureIcon
+public typealias StorageInboxNote = Storage.InboxNote
+public typealias StorageInboxAction = Storage.InboxAction
 public typealias StorageNote = Storage.Note
 public typealias StorageOrder = Storage.Order
 public typealias StorageOrderItemAttribute = Storage.OrderItemAttribute
@@ -205,6 +218,7 @@ public typealias StorageSystemPlugin = Storage.SystemPlugin
 public typealias StorageTopEarnerStats = Storage.TopEarnerStats
 public typealias StorageTopEarnerStatsItem = Storage.TopEarnerStatsItem
 public typealias StorageTaxClass = Storage.TaxClass
+public typealias StorageWCPayCharge = Storage.WCPayCharge
 
 // MARK: - Internal ReadOnly Models
 

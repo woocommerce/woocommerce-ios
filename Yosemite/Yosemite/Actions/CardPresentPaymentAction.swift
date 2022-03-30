@@ -8,6 +8,10 @@ public enum CardPresentPaymentAction: Action {
     ///
     case use(paymentGatewayAccount: PaymentGatewayAccount)
 
+    /// Retrieves the current configuration for IPP.
+    ///
+    case loadActivePaymentGatewayExtension(onCompletion: (CardPresentPaymentGatewayExtension) -> Void)
+
     /// Retrieves and stores payment gateway account(s) for the provided `siteID`
     /// We support payment gateway accounts for both the WooCommerce Payments extension AND
     /// the Stripe extension. Let's attempt to load each and update view storage with the results.
@@ -58,6 +62,13 @@ public enum CardPresentPaymentAction: Action {
     /// Cancels an active attempt to collect a payment.
     case cancelPayment(onCompletion: ((Result<Void, Error>) -> Void)?)
 
+    /// Refund payment of an order, client side. Only for use on Interac payments
+    ///
+    case refundPayment(parameters: RefundParameters)
+
+    /// Cancels a refund, if one is in progress
+    case cancelRefund
+
     /// Check the state of available software updates.
     case observeCardReaderUpdateState(onCompletion: (AnyPublisher<CardReaderSoftwareUpdateState, Never>) -> Void)
 
@@ -73,4 +84,8 @@ public enum CardPresentPaymentAction: Action {
 
     /// Checks if a reader is connected
     case checkCardReaderConnected(onCompletion: (AnyPublisher<[CardReader], Never>) -> Void)
+
+    /// Fetches Charge details by charge ID
+    ///
+    case fetchWCPayCharge(siteID: Int64, chargeID: String, onCompletion: (Result<WCPayCharge, Error>) -> Void)
 }

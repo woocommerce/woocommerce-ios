@@ -25,6 +25,17 @@ final class AddOrderCoordinator: Coordinator {
         self.navigationController = sourceNavigationController
     }
 
+    init(siteID: Int64,
+         isOrderCreationEnabled: Bool,
+         sourceView: UIView,
+         sourceNavigationController: UINavigationController) {
+        self.siteID = siteID
+        self.isOrderCreationEnabled = isOrderCreationEnabled
+        self.sourceBarButtonItem = nil
+        self.sourceView = sourceView
+        self.navigationController = sourceNavigationController
+    }
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -80,8 +91,13 @@ private extension AddOrderCoordinator {
         viewModel.onOrderCreated = onOrderCreated
 
         let viewController = NewOrderHostingController(viewModel: viewModel)
-        viewController.hidesBottomBarWhenPushed = true
-        navigationController.pushViewController(viewController, animated: true)
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            let newOrderNC = WooNavigationController(rootViewController: viewController)
+            navigationController.present(newOrderNC, animated: true)
+        } else {
+            viewController.hidesBottomBarWhenPushed = true
+            navigationController.pushViewController(viewController, animated: true)
+        }
 
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderAddNew())
     }

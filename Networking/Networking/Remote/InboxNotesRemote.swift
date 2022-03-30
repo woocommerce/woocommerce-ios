@@ -17,6 +17,14 @@ public protocol InboxNotesRemoteProtocol {
                           noteID: Int64,
                           completion: @escaping (Result<InboxNote, Error>) -> ())
 
+    func dismissAllInboxNotes(for siteID: Int64,
+                              pageNumber: Int,
+                              pageSize: Int,
+                              orderBy: InboxNotesRemote.OrderBy,
+                              type: [InboxNotesRemote.NoteType]?,
+                              status: [InboxNotesRemote.Status]?,
+                              completion: @escaping (Result<[InboxNote], Error>) -> ())
+
     func markInboxNoteAsActioned(for siteID: Int64,
                                  noteID: Int64,
                                  actionID: Int64,
@@ -51,7 +59,8 @@ public final class InboxNotesRemote: Remote, InboxNotesRemoteProtocol {
         var parameters = [
             ParameterKey.orderBy: orderBy.rawValue,
             ParameterKey.page: pageNumber,
-            ParameterKey.pageSize: pageSize
+            ParameterKey.pageSize: pageSize,
+            ParameterKey.fields: ParameterValue.noteFields
         ] as [String: Any]
 
         if let type = type {
@@ -87,14 +96,61 @@ public final class InboxNotesRemote: Remote, InboxNotesRemoteProtocol {
     public func dismissInboxNote(for siteID: Int64,
                                  noteID: Int64,
                                  completion: @escaping (Result<InboxNote, Error>) -> ()) {
+        let request = JetpackRequest(wooApiVersion: .wcAnalytics,
+                                     method: .delete,
+                                     siteID: siteID,
+                                     path: Path.notes + "/delete/\(noteID)",
+                                     parameters: [ParameterKey.fields: ParameterValue.noteFields])
+
+        let mapper = InboxNoteMapper(siteID: siteID)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    // MARK: - DISMISS all Inbox Notes
+
+    /// Dismiss all `InboxNote`s.
+    /// This internally marks all notification’s is_deleted field to true and these notifications do not show in the results anymore.
+    ///
+    /// - Parameters:
+    ///     - siteID: The site for which we'll dismiss all the InboxNotes.
+    ///     - pageNumber: The page number of the Inbox Notes list to be fetched.
+    ///     - pageSize: The maximum number of Inbox Notes to be fetched for the current page.
+    ///     - orderBy: The type of sorting that the Inbox Notes list will follow.
+    ///     - type: The array of Inbox Notes Types.
+    ///     - status: The array of Inbox Notes with a specific array of status that will be fetched.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func dismissAllInboxNotes(for siteID: Int64,
+                                     pageNumber: Int,
+                                     pageSize: Int,
+                                     orderBy: InboxNotesRemote.OrderBy,
+                                     type: [InboxNotesRemote.NoteType]?,
+                                     status: [InboxNotesRemote.Status]?,
+                                     completion: @escaping (Result<[InboxNote], Error>) -> ()) {
+        var parameters = [
+            ParameterKey.orderBy: orderBy.rawValue,
+            ParameterKey.page: pageNumber,
+            ParameterKey.pageSize: pageSize,
+            ParameterKey.fields: ParameterValue.noteFields
+        ] as [String: Any]
+
+        if let type = type {
+            let stringOfTypes = type.map { $0.rawValue }
+            parameters[ParameterKey.type] = stringOfTypes.joined(separator: ",")
+        }
+        if let status = status {
+            let stringOfStatuses = status.map { $0.rawValue }
+            parameters[ParameterKey.status] = stringOfStatuses.joined(separator: ",")
+        }
 
         let request = JetpackRequest(wooApiVersion: .wcAnalytics,
                                      method: .delete,
                                      siteID: siteID,
-                                     path: Path.notes + "/\(noteID)",
-                                     parameters: nil)
+                                     path: Path.notes + "/delete/all",
+                                     parameters: parameters)
 
-        let mapper = InboxNoteMapper(siteID: siteID)
+        let mapper = InboxNoteListMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -119,7 +175,7 @@ public final class InboxNotesRemote: Remote, InboxNotesRemoteProtocol {
                                      method: .post,
                                      siteID: siteID,
                                      path: Path.notes + "/\(noteID)/action/\(actionID)",
-                                     parameters: nil)
+                                     parameters: [ParameterKey.fields: ParameterValue.noteFields])
 
         let mapper = InboxNoteMapper(siteID: siteID)
 
@@ -146,6 +202,12 @@ public extension InboxNotesRemote {
         static let pageSize = "per_page"
         static let type = "type"
         static let status = "status"
+        static let fields = "_fields"
+    }
+
+    private enum ParameterValue {
+        static let noteFields = ["id", "name", "type", "status", "actions", "title", "content", "is_deleted", "is_read", "date_created_gmt"]
+            .joined(separator: ",")
     }
 
     /// Order By parameter

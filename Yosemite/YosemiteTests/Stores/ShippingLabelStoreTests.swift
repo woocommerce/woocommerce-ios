@@ -449,23 +449,16 @@ final class ShippingLabelStoreTests: XCTestCase {
         // Given
         let remote = MockShippingLabelRemote()
         let orderID: Int64 = 22
-        let isFeatureFlagEnabled = false
         let expectedEligibility = true
         remote.whenCheckingCreationEligiblity(siteID: sampleSiteID,
                                               orderID: orderID,
-                                              canCreatePaymentMethod: isFeatureFlagEnabled,
-                                              canCreateCustomsForm: isFeatureFlagEnabled,
-                                              canCreatePackage: isFeatureFlagEnabled,
                                               thenReturn: .success(ShippingLabelCreationEligibilityResponse(isEligible: expectedEligibility, reason: nil)))
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
         let isEligibleForCreation: Bool = waitFor { promise in
             let action = ShippingLabelAction.checkCreationEligibility(siteID: self.sampleSiteID,
-                                                                      orderID: orderID,
-                                                                      canCreatePaymentMethod: isFeatureFlagEnabled,
-                                                                      canCreateCustomsForm: isFeatureFlagEnabled,
-                                                                      canCreatePackage: isFeatureFlagEnabled) { isEligible in
+                                                                      orderID: orderID) { isEligible in
                 promise(isEligible)
             }
             store.onAction(action)
@@ -479,23 +472,16 @@ final class ShippingLabelStoreTests: XCTestCase {
         // Given
         let remote = MockShippingLabelRemote()
         let orderID: Int64 = 22
-        let isFeatureFlagEnabled = false
         let expectedEligibility = false
         remote.whenCheckingCreationEligiblity(siteID: sampleSiteID,
                                               orderID: orderID,
-                                              canCreatePaymentMethod: isFeatureFlagEnabled,
-                                              canCreateCustomsForm: isFeatureFlagEnabled,
-                                              canCreatePackage: isFeatureFlagEnabled,
                                               thenReturn: .failure(NetworkError.notFound))
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
         let isEligibleForCreation: Bool = waitFor { promise in
             let action = ShippingLabelAction.checkCreationEligibility(siteID: self.sampleSiteID,
-                                                                      orderID: orderID,
-                                                                      canCreatePaymentMethod: isFeatureFlagEnabled,
-                                                                      canCreateCustomsForm: isFeatureFlagEnabled,
-                                                                      canCreatePackage: isFeatureFlagEnabled) { isEligible in
+                                                                      orderID: orderID) { isEligible in
                 promise(isEligible)
             }
             store.onAction(action)

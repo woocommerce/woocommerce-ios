@@ -53,4 +53,15 @@ extension MockStripeCardReader {
                              batteryLevel: NSNumber(floatLiteral: 0.5),
                              locationId: "st_simulated")
     }
+
+    static func wisepad3() -> Self {
+        MockStripeCardReader(serialNumber: "W3E-SIMULATOR-1",
+                             stripeId: "SIMULATOR",
+                             label: "Simulated WisePad 3",
+                             status: .online,
+                             deviceSoftwareVersion: "0.0.0.1",
+                             deviceType: .wisePad3,
+                             batteryLevel: NSNumber(floatLiteral: 0.5),
+                             locationId: "st_simulated")
+    }
 }

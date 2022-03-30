@@ -114,7 +114,7 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
         self.stores = stores
         self.storage = storage
         self.analytics = analytics
-        self.title = Localization.title(total: formattedTotal)
+        self.title = String(format: Localization.title, formattedTotal)
 
         bindStoreCPPState()
         fetchPaymentLink(orderKey: orderKey)
@@ -220,7 +220,7 @@ private extension SimplePaymentsMethodsViewModel {
     func bindStoreCPPState() {
         cppStoreStateObserver
             .statePublisher
-            .map { $0 == .completed }
+            .map { $0.isCompleted }
             .removeDuplicates()
             .assign(to: &$showPayWithCardRow)
         cppStoreStateObserver.refresh()
@@ -277,9 +277,9 @@ private extension SimplePaymentsMethodsViewModel {
         static let continueToOrders = NSLocalizedString("Continue To Orders",
                                                         comment: "Button to dismiss modal overlay and go back to the orders list after a sucessful payment")
 
-        static func title(total: String) -> String {
-            NSLocalizedString("Take Payment (\(total))", comment: "Navigation bar title for the Simple Payments Methods screens")
-        }
+        static let title = NSLocalizedString("Take Payment (%1$@)",
+                                             comment: "Navigation bar title for the Simple Payments Methods screens. " +
+                                             "%1$@ is a placeholder for the total amount to collect")
 
         static func markAsPaidInfo(total: String) -> String {
             NSLocalizedString("This will mark your order as complete if you received \(total) outside of WooCommerce",

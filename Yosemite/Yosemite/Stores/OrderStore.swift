@@ -62,20 +62,23 @@ public class OrderStore: Store {
         case let .updateOrder(siteID, order, fields, onCompletion):
             updateOrder(siteID: siteID, order: order, fields: fields, onCompletion: onCompletion)
 
-        case let .createSimplePaymentsOrder(siteID, amount, taxable, onCompletion):
-            createSimplePaymentsOrder(siteID: siteID, amount: amount, taxable: taxable, onCompletion: onCompletion)
+        case let .createSimplePaymentsOrder(siteID, status, amount, taxable, onCompletion):
+            createSimplePaymentsOrder(siteID: siteID, status: status, amount: amount, taxable: taxable, onCompletion: onCompletion)
         case let .createOrder(siteID, order, onCompletion):
             createOrder(siteID: siteID, order: order, onCompletion: onCompletion)
 
-        case let .updateSimplePaymentsOrder(siteID, orderID, feeID, amount, taxable, orderNote, email, onCompletion):
+        case let .updateSimplePaymentsOrder(siteID, orderID, feeID, status, amount, taxable, orderNote, email, onCompletion):
             updateSimplePaymentsOrder(siteID: siteID,
                                       orderID: orderID,
                                       feeID: feeID,
+                                      status: status,
                                       amount: amount,
                                       taxable: taxable,
                                       orderNote: orderNote,
                                       email: email,
                                       onCompletion: onCompletion)
+        case let .deleteOrder(siteID, order, deletePermanently, onCompletion):
+            deleteOrder(siteID: siteID, order: order, deletePermanently: deletePermanently, onCompletion: onCompletion)
         }
     }
 }
@@ -263,11 +266,20 @@ private extension OrderStore {
 
     /// Creates a simple payments order with a specific amount value and no tax.
     ///
-    func createSimplePaymentsOrder(siteID: Int64, amount: String, taxable: Bool, onCompletion: @escaping (Result<Order, Error>) -> Void) {
-        let order = OrderFactory.simplePaymentsOrder(amount: amount, taxable: taxable)
-        remote.createOrder(siteID: siteID, order: order, fields: [.feeLines]) { [weak self] result in
+    func createSimplePaymentsOrder(siteID: Int64,
+                                   status: OrderStatusEnum,
+                                   amount: String,
+                                   taxable: Bool,
+                                   onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        let order = OrderFactory.simplePaymentsOrder(status: status, amount: amount, taxable: taxable)
+        remote.createOrder(siteID: siteID, order: order, fields: [.status, .feeLines]) { [weak self] result in
             switch result {
             case .success(let order):
+                // Auto-draft orders are temporary and should not be stored
+                guard order.status != .autoDraft else {
+                    return onCompletion(result)
+                }
+
                 self?.upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {
                     onCompletion(result)
                 })
@@ -282,6 +294,7 @@ private extension OrderStore {
     func updateSimplePaymentsOrder(siteID: Int64,
                                    orderID: Int64,
                                    feeID: Int64,
+                                   status: OrderStatusEnum,
                                    amount: String,
                                    taxable: Bool,
                                    orderNote: String?,
@@ -289,7 +302,7 @@ private extension OrderStore {
                                    onCompletion: @escaping (Result<Order, Error>) -> Void) {
 
         // Recreate the original order
-        let originalOrder = OrderFactory.simplePaymentsOrder(amount: amount, taxable: taxable)
+        let originalOrder = OrderFactory.simplePaymentsOrder(status: status, amount: amount, taxable: taxable)
 
         // Create updated fields
         let newFee = OrderFactory.simplePaymentFee(feeID: feeID, amount: amount, taxable: taxable)
@@ -307,7 +320,7 @@ private extension OrderStore {
 
         // Set new fields
         let updatedOrder = originalOrder.copy(orderID: orderID, customerNote: orderNote, billingAddress: newBillingAddress, fees: [newFee])
-        let updateFields: [OrderUpdateField] = [.customerNote, .billingAddress, .fees]
+        let updateFields: [OrderUpdateField] = [.customerNote, .billingAddress, .fees, .status]
 
         updateOrder(siteID: siteID, order: updatedOrder, fields: updateFields, onCompletion: onCompletion)
     }
@@ -315,9 +328,15 @@ private extension OrderStore {
     /// Creates a manual order with the provided order details.
     ///
     func createOrder(siteID: Int64, order: Order, onCompletion: @escaping (Result<Order, Error>) -> Void) {
-        remote.createOrder(siteID: siteID, order: order, fields: [.status, .items, .billingAddress, .shippingAddress]) { [weak self] result in
+        remote.createOrder(siteID: siteID,
+                           order: order,
+                           fields: [.status, .items, .billingAddress, .shippingAddress, .shippingLines, .feeLines, .customerNote]) { [weak self] result in
             switch result {
             case .success(let order):
+                // Auto-draft orders are temporary and should not be stored
+                guard order.status != .autoDraft else {
+                    return onCompletion(result)
+                }
                 self?.upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {
                     onCompletion(result)
                 })
@@ -352,11 +371,37 @@ private extension OrderStore {
         remote.updateOrder(from: siteID, order: order, fields: fields) { [weak self] result in
             switch result {
             case .success(let order):
+                // Auto-draft orders are temporary and should not be stored
+                guard order.status != .autoDraft else {
+                    return onCompletion(result)
+                }
                 self?.upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {
                     onCompletion(result)
                 })
             case .failure:
                 onCompletion(result)
+            }
+        }
+    }
+
+    /// Deletes a given order.
+    ///
+    func deleteOrder(siteID: Int64, order: Order, deletePermanently: Bool, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        // Optimistically delete the order from storage
+        deleteStoredOrder(siteID: siteID, orderID: order.orderID)
+
+        remote.deleteOrder(for: siteID, orderID: order.orderID, force: deletePermanently) { [weak self] result in
+            switch result {
+            case .success:
+                onCompletion(result)
+            case .failure:
+                // Revert optimistic deletion unless the order is an auto-draft (shouldn't be stored)
+                guard order.status != .autoDraft else {
+                    return onCompletion(result)
+                }
+                self?.upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {
+                    onCompletion(result)
+                })
             }
         }
     }

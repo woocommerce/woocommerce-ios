@@ -69,9 +69,7 @@ private extension FancyAlertViewController {
                 return
             }
 
-            let safariViewController = SFSafariViewController(url: url)
-            safariViewController.modalPresentationStyle = .pageSheet
-            controller.present(safariViewController, animated: true)
+            WebviewHelper.launch(url, with: controller)
         }
     }
 }

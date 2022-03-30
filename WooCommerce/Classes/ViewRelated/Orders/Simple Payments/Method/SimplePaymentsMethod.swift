@@ -150,13 +150,7 @@ private struct MethodRow: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-                Image(uiImage: .chevronImage)
-                    .resizable()
-                    .flipsForRightToLeftLayoutDirection(true)
-                    .frame(width: SimplePaymentsMethod.Layout.chevronWidthHeight(scale: scale),
-                           height: SimplePaymentsMethod.Layout.chevronWidthHeight(scale: scale))
-                    .foregroundColor(Color(.systemGray))
-                    .accessibility(hidden: true)
+                DisclosureIndicator()
             }
             .padding(.vertical, SimplePaymentsMethod.Layout.verticalPadding)
             .padding(.horizontal, insets: safeAreaInsets)
@@ -205,10 +199,6 @@ private extension SimplePaymentsMethod {
 
         static func iconWidthHeight(scale: CGFloat) -> CGFloat {
             24 * scale
-        }
-
-        static func chevronWidthHeight(scale: CGFloat) -> CGFloat {
-            22 * scale
         }
     }
 }

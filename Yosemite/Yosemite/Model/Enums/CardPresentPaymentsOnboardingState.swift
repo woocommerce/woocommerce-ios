@@ -6,7 +6,7 @@ public enum CardPresentPaymentOnboardingState: Equatable {
 
     /// All the requirements are met and the feature is ready to use
     ///
-    case completed
+    case completed(plugin: CardPresentPaymentsPlugins)
 
     /// There is more than one plugin installed and activated. The user must deactivate one.
     /// 
@@ -15,6 +15,10 @@ public enum CardPresentPaymentOnboardingState: Equatable {
     /// Store is not located in one of the supported countries.
     ///
     case countryNotSupported(countryCode: String)
+
+    /// Store is not located in one of the supported countries for Stripe (but it is for WCPay).
+    ///
+    case countryNotSupportedStripe(plugin: CardPresentPaymentsPlugins, countryCode: String)
 
     /// No CPP plugin is installed on the store.
     ///
@@ -39,21 +43,21 @@ public enum CardPresentPaymentOnboardingState: Equatable {
 
     /// The connected Stripe account has not been reviewed by Stripe yet. This is a temporary state and the user needs to wait.
     ///
-    case stripeAccountUnderReview
+    case stripeAccountUnderReview(plugin: CardPresentPaymentsPlugins)
 
     /// There are some pending requirements on the connected Stripe account. The merchant still has some time before the deadline to fix them expires.
     /// In-person payments should work without issues.
     ///
-    case stripeAccountPendingRequirement(deadline: Date?)
+    case stripeAccountPendingRequirement(plugin: CardPresentPaymentsPlugins, deadline: Date?)
 
     /// There are some overdue requirements on the connected Stripe account. Connecting to a reader or accepting payments is not supported in this state.
     ///
-    case stripeAccountOverdueRequirement
+    case stripeAccountOverdueRequirement(plugin: CardPresentPaymentsPlugins)
 
     /// The Stripe account was rejected by Stripe.
     /// This can happen for example when the account is flagged as fraudulent or the merchant violates the terms of service.
     ///
-    case stripeAccountRejected
+    case stripeAccountRejected(plugin: CardPresentPaymentsPlugins)
 
     /// Generic error - for example, one of the requests failed.
     ///
@@ -74,6 +78,8 @@ extension CardPresentPaymentOnboardingState {
         case .selectPlugin:
             return "multiple_plugins_installed"
         case .countryNotSupported(countryCode: _):
+            return "country_not_supported"
+        case .countryNotSupportedStripe(countryCode: _):
             return "country_not_supported"
         case .pluginNotInstalled:
             return "wcpay_not_installed"
@@ -99,6 +105,14 @@ extension CardPresentPaymentOnboardingState {
             return "no_connection_error"
         }
     }
+
+    public var isCompleted: Bool {
+        if case .completed(_) = self {
+            return true
+        } else {
+            return false
+        }
+    }
 }
 
 public enum CardPresentPaymentsPlugins: Equatable, CaseIterable {
@@ -121,7 +135,7 @@ public enum CardPresentPaymentsPlugins: Equatable, CaseIterable {
         case .wcPay:
             return "3.2.1"
         case .stripe:
-            return "6.1.0"
+            return "6.2.0"
         }
     }
 }

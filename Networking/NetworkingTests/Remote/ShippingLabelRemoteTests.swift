@@ -412,10 +412,7 @@ final class ShippingLabelRemoteTests: XCTestCase {
         // When
         let result: Result<ShippingLabelCreationEligibilityResponse, Error> = waitFor { promise in
             remote.checkCreationEligibility(siteID: self.sampleSiteID,
-                                            orderID: orderID,
-                                            canCreatePaymentMethod: false,
-                                            canCreateCustomsForm: false,
-                                            canCreatePackage: false) { result in
+                                            orderID: orderID) { result in
                 promise(result)
             }
         }
@@ -434,10 +431,7 @@ final class ShippingLabelRemoteTests: XCTestCase {
         // When
         let result: Result<ShippingLabelCreationEligibilityResponse, Error> = waitFor { promise in
             remote.checkCreationEligibility(siteID: self.sampleSiteID,
-                                            orderID: orderID,
-                                            canCreatePaymentMethod: false,
-                                            canCreateCustomsForm: false,
-                                            canCreatePackage: false) { result in
+                                            orderID: orderID) { result in
                 promise(result)
             }
         }

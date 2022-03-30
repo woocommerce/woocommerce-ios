@@ -1,3 +1,3 @@
-Diese Version enthält einen neuen Tab namens „Menü“.  Wir haben die Shop-Einstellungen, die Wechselmöglichkeit zwischen unterschiedlichen Shops und die Anzeige von WooCommerce Admin auf diesen Bildschirm verschoben. In den nächsten Monaten werden hier weitere Funktionen verfügbar sein!
+Ab sofort werden bei Rückerstattungen die Kreditkartendaten für persönliche Zahlungen angezeigt. So kannst du deinen Kunden genau mitteilen, wohin das Guthaben überwiesen wird!
 
-In dieser Version wurde außerdem ein Problem mit dem Produktbildschirm behoben, wodurch der Name des Produkts zum vorherigen Namen zurückgeändert wurde, wenn du ein Bild hochgeladen hast. Danke, dass ihr Fehler meldet – wir hören zu!
+Einige neue Funktionen sind noch nicht für alle Nutzer verfügbar, du kannst sie dir aber schon vorab ansehen! Bestellungen erstellen, Gutscheine anzeigen und vieles mehr! Unter dem Tab „Menü“ > „Einstellungen“ > „Experimentelle Einstellungen“ kannst du sie aktivieren. Wir freuen uns auf dein Feedback zur App, vor allem zu den neuen Funktionen, an denen wir zurzeit arbeiten und auf die wir frühzeitigen Zugriff gewähren.

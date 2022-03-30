@@ -2,6 +2,7 @@ import Combine
 import UIKit
 import Yosemite
 import WordPressUI
+import Experiments
 
 
 /// Enum representing the individual tabs
@@ -83,7 +84,7 @@ final class MainTabBarController: UITabBarController {
     /// Used for overriding the status bar style for all child view controllers
     ///
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) ? .default: StyleManager.statusBarLight
+        .default
     }
 
     /// Notifications badge
@@ -105,10 +106,22 @@ final class MainTabBarController: UITabBarController {
     private var hubMenuTabCoordinator: HubMenuCoordinator?
 
     private var cancellableSiteID: AnyCancellable?
-
+    private let featureFlagService: FeatureFlagService
     private let stores: StoresManager = ServiceLocator.stores
 
-    private let isHubMenuFeatureFlagOn = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.hubMenu)
+    private lazy var isHubMenuFeatureFlagOn = featureFlagService.isFeatureFlagEnabled(.hubMenu)
+
+    private lazy var isOrdersSplitViewFeatureFlagOn = featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
+
+    init?(coder: NSCoder, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+        self.featureFlagService = featureFlagService
+        super.init(coder: coder)
+    }
+
+    required init?(coder: NSCoder) {
+        self.featureFlagService = ServiceLocator.featureFlagService
+        super.init(coder: coder)
+    }
 
     deinit {
         cancellableSiteID?.cancel()
@@ -161,9 +174,12 @@ final class MainTabBarController: UITabBarController {
 
     // MARK: - Public Methods
 
-    /// Switches the TabBarcController to the specified Tab
+    /// Switches the TabBarController to the specified Tab
     ///
     func navigateTo(_ tab: WooTab, animated: Bool = false, completion: (() -> Void)? = nil) {
+        if let presentedController = Self.childViewController()?.presentedViewController {
+            presentedController.dismiss(animated: true)
+        }
         selectedIndex = tab.visibleIndex(isHubMenuFeatureFlagOn)
         if let navController = selectedViewController as? UINavigationController {
             navController.popToRootViewController(animated: animated) {
@@ -335,11 +351,11 @@ extension MainTabBarController {
         switch note.kind {
         case .storeOrder:
             switchToOrdersTab {
-                guard let ordersVC: OrdersRootViewController = childViewController() else {
-                    return
+                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+                    (childViewController() as? OrdersSplitViewWrapperController)?.presentDetails(for: note)
+                } else {
+                    (childViewController() as? OrdersRootViewController)?.presentDetails(for: note)
                 }
-
-                ordersVC.presentDetails(for: note)
             }
         default:
             break
@@ -378,11 +394,10 @@ private extension MainTabBarController {
             let productsTabIndex = WooTab.products.visibleIndex(isHubMenuFeatureFlagOn)
             controllers.insert(productsNavigationController, at: productsTabIndex)
 
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.hubMenu) {
+            if isHubMenuFeatureFlagOn {
                 let hubMenuTabIndex = WooTab.hubMenu.visibleIndex(isHubMenuFeatureFlagOn)
                 controllers.insert(hubMenuNavigationController, at: hubMenuTabIndex)
-            }
-            else {
+            } else {
                 let reviewsTabIndex = WooTab.reviews.visibleIndex(isHubMenuFeatureFlagOn)
                 controllers.insert(reviewsNavigationController, at: reviewsTabIndex)
             }
@@ -445,7 +460,11 @@ private extension MainTabBarController {
     }
 
     func createOrdersViewController(siteID: Int64) -> UIViewController {
-        OrdersRootViewController(siteID: siteID)
+        if isOrdersSplitViewFeatureFlagOn {
+            return OrdersSplitViewWrapperController(siteID: siteID)
+        } else {
+            return OrdersRootViewController(siteID: siteID)
+        }
     }
 
     func createProductsViewController(siteID: Int64) -> UIViewController {
@@ -455,7 +474,7 @@ private extension MainTabBarController {
     func createReviewsTabCoordinator() -> ReviewsCoordinator {
         ReviewsCoordinator(navigationController: reviewsNavigationController,
                            willPresentReviewDetailsFromPushNotification: { [weak self] in
-                            self?.navigateTo(.reviews)
+            self?.navigateTo(.reviews)
         })
     }
 

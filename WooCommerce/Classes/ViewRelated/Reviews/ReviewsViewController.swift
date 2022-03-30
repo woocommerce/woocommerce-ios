@@ -1,6 +1,4 @@
 import UIKit
-import SafariServices.SFSafariViewController
-
 
 // MARK: - ReviewsViewController
 //
@@ -102,8 +100,9 @@ final class ReviewsViewController: UIViewController {
                                                 self?.tableView.updateHeaderHeight()
                                               },
                                               onTroubleshootButtonPressed: { [weak self] in
-                                                let safariViewController = SFSafariViewController(url: WooConstants.URLs.troubleshootErrorLoadingData.asURL())
-                                                self?.present(safariViewController, animated: true, completion: nil)
+                                                guard let self = self else { return }
+
+                                                WebviewHelper.launch(WooConstants.URLs.troubleshootErrorLoadingData.asURL(), with: self)
                                               },
                                               onContactSupportButtonPressed: { [weak self] in
                                                 guard let self = self else { return }
@@ -256,6 +255,7 @@ private extension ReviewsViewController {
     @IBAction func presentMoreActions() {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
+        actionSheet.popoverPresentationController?.barButtonItem = rightBarButton
 
         actionSheet.addCancelActionWithTitle(Localization.ActionSheet.cancelAction)
         actionSheet.addDefaultActionWithTitle(Localization.ActionSheet.markAsReadAction) { [weak self] _ in
@@ -442,9 +442,7 @@ private extension ReviewsViewController {
         case .placeholder:
             displayPlaceholderReviews()
         case .syncing(let pageNumber):
-            if pageNumber == SyncingCoordinator.Defaults.pageFirstIndex {
-                displayPlaceholderReviews()
-            } else {
+            if pageNumber != SyncingCoordinator.Defaults.pageFirstIndex {
                 ensureFooterSpinnerIsStarted()
             }
         }

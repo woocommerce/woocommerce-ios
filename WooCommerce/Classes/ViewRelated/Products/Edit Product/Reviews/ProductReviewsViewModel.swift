@@ -84,15 +84,15 @@ extension ProductReviewsViewModel {
                                                                    pageNumber: pageNumber,
                                                                    pageSize: pageSize,
                                                                    products: [productID],
-                                                                   status: .approved) { error in
-                                                                    if let error = error {
-            DDLogError("⛔️ Error synchronizing reviews for product ID :\(productID). Error: \(error)")
-                                                                        ServiceLocator.analytics.track(.productReviewListLoadFailed, withError: error)
-                                                                    } else {
-                                                                        ServiceLocator.analytics.track(.productReviewListLoaded)
-                                                                    }
-
-                                                                    onCompletion?()
+                                                                   status: .approved) { result in
+            switch result {
+            case .failure(let error):
+                DDLogError("⛔️ Error synchronizing reviews for product ID :\(productID). Error: \(error)")
+                ServiceLocator.analytics.track(.productReviewListLoadFailed, withError: error)
+            case .success:
+                ServiceLocator.analytics.track(.productReviewListLoaded)
+            }
+            onCompletion?()
         }
 
         ServiceLocator.stores.dispatch(action)

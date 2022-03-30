@@ -1,3 +1,3 @@
-Du kommer att märka att den här versionen innehåller en ny flik med namnet "Meny". Vi har flyttat butiksinställningarna, möjligheten att växla mellan olika butiker och visning av WooCommerce Admin till den skärmen. Ytterligare funktioner kommer att läggas till där under de kommande månaderna!
+Du kommer att märka att kreditkortsuppgifter för personliga betalningar nu visas när du gör en återbetalning. Detta meddelar dina kunder exakt vart pengarna tar vägen.
 
-Den här versionen inkluderar också en korrigering för produktskärmen, där ett fel tidigare gjorde att produktens namn återgick till det föregående namnet om du laddade upp en bild. Tack för att ni rapporterar buggar – vi lyssnar!
+Vissa nya funktioner är inte helt redo för lansering än, men du kan testa dem i förväg. Skapa beställningar, visa rabattkoder med mera. Gå till fliken Meny, välj Inställningar och sedan Experimentella inställningar för att aktivera funktionen. Vi välkomnar feedback om appen, särskilt rörande de nya funktioner som vi arbetar med och tillhandahåller tidig åtkomst till.

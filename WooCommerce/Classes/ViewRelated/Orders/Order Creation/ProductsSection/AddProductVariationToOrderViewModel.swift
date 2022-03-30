@@ -23,6 +23,11 @@ final class AddProductVariationToOrderViewModel: ObservableObject {
     ///
     let onLoadTrigger: PassthroughSubject<Void, Never> = PassthroughSubject()
 
+    /// Defines the current notice that should be shown.
+    /// Defaults to `nil`.
+    ///
+    @Published var notice: Notice?
+
     /// The ID of the parent variable product
     ///
     private let productID: Int64
@@ -44,7 +49,12 @@ final class AddProductVariationToOrderViewModel: ObservableObject {
     /// View models for each product variation row
     ///
     var productVariationRows: [ProductRowViewModel] {
-        productVariations.map { .init(productVariation: $0, name: createVariationName(for: $0), canChangeQuantity: false) }
+        return productVariations.map {
+            .init(productVariation: $0,
+                  name: ProductVariationFormatter().generateName(for: $0, from: productAttributes),
+                  canChangeQuantity: false,
+                  displayMode: .stock)
+        }
     }
 
     /// Closure to be invoked when a product variation is selected
@@ -77,8 +87,11 @@ final class AddProductVariationToOrderViewModel: ObservableObject {
     ///
     private lazy var productVariationsResultsController: ResultsController<StorageProductVariation> = {
         let predicate = NSPredicate(format: "siteID == %lld AND productID == %lld", siteID, productID)
-        let descriptor = NSSortDescriptor(keyPath: \StorageProductVariation.menuOrder, ascending: true)
-        let resultsController = ResultsController<StorageProductVariation>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+        let menuOrderDescriptor = NSSortDescriptor(keyPath: \StorageProductVariation.menuOrder, ascending: true)
+        let variationIdDescriptor = NSSortDescriptor(keyPath: \StorageProductVariation.productVariationID, ascending: false)
+        let resultsController = ResultsController<StorageProductVariation>(storageManager: storageManager,
+                                                                           matching: predicate,
+                                                                           sortedBy: [menuOrderDescriptor, variationIdDescriptor])
         return resultsController
     }()
 
@@ -124,18 +137,6 @@ final class AddProductVariationToOrderViewModel: ObservableObject {
         }
         onVariationSelected?(selectedVariation)
     }
-
-    /// Creates a name for a provided variation using all available product attributes, e.g. "Blue - Any Size"
-    ///
-    func createVariationName(for variation: ProductVariation) -> String {
-        let variationAttributes = productAttributes.map { attribute -> VariationAttributeViewModel in
-            guard let variationAttribute = variation.attributes.first(where: { $0.id == attribute.attributeID && $0.name == attribute.name }) else {
-                return VariationAttributeViewModel(name: attribute.name)
-            }
-            return VariationAttributeViewModel(productVariationAttribute: variationAttribute)
-        }
-        return variationAttributes.map { $0.nameOrValue }.joined(separator: " - ")
-    }
 }
 
 // MARK: - SyncingCoordinatorDelegate & Sync Methods
@@ -151,6 +152,9 @@ extension AddProductVariationToOrderViewModel: SyncingCoordinatorDelegate {
             guard let self = self else { return }
 
             if let error = error {
+                self.notice = NoticeFactory.productVariationSyncNotice() { [weak self] in
+                    self?.sync(pageNumber: pageNumber, pageSize: pageSize, onCompletion: nil)
+                }
                 DDLogError("⛔️ Error synchronizing product variations during order creation: \(error)")
             } else {
                 self.updateProductVariationsResultsController()
@@ -255,5 +259,25 @@ extension AddProductVariationToOrderViewModel {
                             manageStock: false,
                             canChangeQuantity: false,
                             imageURL: nil)
+    }
+
+    /// Add Product Variation to Order notices
+    ///
+    enum NoticeFactory {
+        /// Returns a product variation sync error notice with a retry button.
+        ///
+        static func productVariationSyncNotice(retryAction: @escaping () -> Void) -> Notice {
+            Notice(title: Localization.errorMessage, feedbackType: .error, actionTitle: Localization.errorActionTitle) {
+                retryAction()
+            }
+        }
+    }
+}
+
+private extension AddProductVariationToOrderViewModel {
+    enum Localization {
+        static let errorMessage = NSLocalizedString("There was an error syncing product variations",
+                                                    comment: "Notice displayed when syncing the list of product variations fails")
+        static let errorActionTitle = NSLocalizedString("Retry", comment: "Retry action for an error notice")
     }
 }

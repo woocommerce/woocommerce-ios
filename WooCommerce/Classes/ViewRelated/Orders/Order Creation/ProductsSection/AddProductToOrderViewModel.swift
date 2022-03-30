@@ -1,6 +1,7 @@
 import Yosemite
 import protocol Storage.StorageManagerType
 import Combine
+import Foundation
 
 /// View model for `AddProductToOrder`.
 ///
@@ -22,6 +23,11 @@ final class AddProductToOrderViewModel: ObservableObject {
     /// Trigger to perform any one time setups.
     ///
     let onLoadTrigger: PassthroughSubject<Void, Never> = PassthroughSubject()
+
+    /// Defines the current notice that should be shown.
+    /// Defaults to `nil`.
+    ///
+    @Published var notice: Notice?
 
     /// All products that can be added to an order.
     ///
@@ -74,6 +80,16 @@ final class AddProductToOrderViewModel: ObservableObject {
         return resultsController
     }()
 
+    /// Predicate for the results controller.
+    ///
+    private lazy var resultsPredicate: NSPredicate? = {
+        productsResultsController.predicate
+    }()
+
+    /// Current search term entered by the user.
+    /// Each update will trigger a remote product search and sync.
+    @Published var searchTerm: String = ""
+
     init(siteID: Int64,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
@@ -88,6 +104,7 @@ final class AddProductToOrderViewModel: ObservableObject {
         configureSyncingCoordinator()
         configureProductsResultsController()
         configureFirstPageLoad()
+        configureProductSearch()
     }
 
     /// Select a product to add to the order
@@ -107,6 +124,12 @@ final class AddProductToOrderViewModel: ObservableObject {
         }
         return AddProductVariationToOrderViewModel(siteID: siteID, product: variableProduct, onVariationSelected: onVariationSelected)
     }
+
+    /// Clears the current search term to display the full product list.
+    ///
+    func clearSearch() {
+        searchTerm = ""
+    }
 }
 
 // MARK: - SyncingCoordinatorDelegate & Sync Methods
@@ -115,6 +138,17 @@ extension AddProductToOrderViewModel: SyncingCoordinatorDelegate {
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)?) {
         transitionToSyncingState()
+
+        if searchTerm.isNotEmpty {
+            searchProducts(siteID: siteID, keyword: searchTerm, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        } else {
+            syncProducts(pageNumber: pageNumber, pageSize: pageSize, reason: reason, onCompletion: onCompletion)
+        }
+    }
+
+    /// Sync all products from remote.
+    ///
+    private func syncProducts(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)?) {
         let action = ProductAction.synchronizeProducts(siteID: siteID,
                                                        pageNumber: pageNumber,
                                                        pageSize: pageSize,
@@ -130,12 +164,44 @@ extension AddProductToOrderViewModel: SyncingCoordinatorDelegate {
             case .success:
                 self.updateProductsResultsController()
             case .failure(let error):
+                self.notice = NoticeFactory.productSyncNotice() { [weak self] in
+                    self?.sync(pageNumber: pageNumber, pageSize: pageSize, onCompletion: nil)
+                }
                 DDLogError("⛔️ Error synchronizing products during order creation: \(error)")
             }
 
             self.transitionToResultsUpdatedState()
             onCompletion?(result.isSuccess)
         }
+        stores.dispatch(action)
+    }
+
+    /// Sync products matching a given keyword.
+    ///
+    private func searchProducts(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
+        let action = ProductAction.searchProducts(siteID: siteID,
+                                                  keyword: keyword,
+                                                  pageNumber: pageNumber,
+                                                  pageSize: pageSize) { [weak self] result in
+            // Don't continue if this isn't the latest search.
+            guard let self = self, keyword == self.searchTerm else {
+                return
+            }
+
+            switch result {
+            case .success:
+                self.updateProductsResultsController()
+            case .failure(let error):
+                self.notice = NoticeFactory.productSearchNotice() { [weak self] in
+                    self?.searchProducts(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: nil)
+                }
+                DDLogError("⛔️ Error searching products during order creation: \(error)")
+            }
+
+            self.transitionToResultsUpdatedState()
+            onCompletion?(result.isSuccess)
+        }
+
         stores.dispatch(action)
     }
 
@@ -159,6 +225,7 @@ private extension AddProductToOrderViewModel {
     ///
     func transitionToSyncingState() {
         shouldShowScrollIndicator = true
+        notice = nil
         if products.isEmpty {
             syncStatus = .firstPageSync
         }
@@ -208,6 +275,30 @@ private extension AddProductToOrderViewModel {
             }
             .store(in: &subscriptions)
     }
+
+    /// Updates the product results predicate & triggers a new sync when search term changes
+    ///
+    func configureProductSearch() {
+        $searchTerm
+            .dropFirst() // Drop initial value
+            .removeDuplicates()
+            .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
+            .sink { [weak self] newSearchTerm in
+                guard let self = self else { return }
+
+                if newSearchTerm.isNotEmpty {
+                    // When the search query changes, also includes the original results predicate in addition to the search keyword.
+                    let searchResultsPredicate = NSPredicate(format: "ANY searchResults.keyword = %@", newSearchTerm)
+                    let subpredicates = [self.resultsPredicate, searchResultsPredicate].compactMap { $0 }
+                    self.productsResultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: subpredicates)
+                } else {
+                    // Resets the results to the full product list when there is no search query.
+                    self.productsResultsController.predicate = self.resultsPredicate
+                }
+
+                self.syncingCoordinator.resynchronize()
+            }.store(in: &subscriptions)
+    }
 }
 
 // MARK: - Utils
@@ -232,5 +323,35 @@ extension AddProductToOrderViewModel {
                             manageStock: false,
                             canChangeQuantity: false,
                             imageURL: nil)
+    }
+
+    /// Add Product to Order notices
+    ///
+    enum NoticeFactory {
+        /// Returns a product sync error notice with a retry button.
+        ///
+        static func productSyncNotice(retryAction: @escaping () -> Void) -> Notice {
+            Notice(title: Localization.syncErrorMessage, feedbackType: .error, actionTitle: Localization.errorActionTitle) {
+                retryAction()
+            }
+        }
+
+        /// Returns a product search error notice with a retry button.
+        ///
+        static func productSearchNotice(retryAction: @escaping () -> Void) -> Notice {
+            Notice(title: Localization.searchErrorMessage, feedbackType: .error, actionTitle: Localization.errorActionTitle) {
+                retryAction()
+            }
+        }
+    }
+}
+
+private extension AddProductToOrderViewModel {
+    enum Localization {
+        static let syncErrorMessage = NSLocalizedString("There was an error syncing products",
+                                                        comment: "Notice displayed when syncing the list of products fails")
+        static let searchErrorMessage = NSLocalizedString("There was an error searching products",
+                                                          comment: "Notice displayed when searching the list of products fails")
+        static let errorActionTitle = NSLocalizedString("Retry", comment: "Retry action for an error notice")
     }
 }

@@ -39,6 +39,10 @@ private extension ProductImagesCollectionViewDataSource {
         switch item {
         case .image(let status):
             configureImageCell(cell, productImageStatus: status)
+        case .extendedAddImage(let isVariation):
+            if let cell = cell as? ExtendedAddProductImageCollectionViewCell {
+                cell.configurePlaceholderLabelForProductImages(isVariation: isVariation)
+            }
         default:
             break
         }
@@ -87,7 +91,7 @@ private extension ProductImagesCollectionViewDataSource {
 enum ProductImagesItem {
     case image(status: ProductImageStatus)
     case addImage
-    case extendedAddImage
+    case extendedAddImage(isVariation: Bool)
 
     var reuseIdentifier: String {
         switch self {

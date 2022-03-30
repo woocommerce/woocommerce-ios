@@ -74,10 +74,8 @@ final class OrderSearchUICommand: SearchUICommand {
     }
 
     func didSelectSearchResult(model: Order, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {
-        guard let detailsViewController = OrderDetailsViewController.instantiatedViewControllerFromStoryboard() else {
-            fatalError()
-        }
-        detailsViewController.viewModel = OrderDetailsViewModel(order: model)
+        let viewModel = OrderDetailsViewModel(order: model)
+        let detailsViewController = OrderDetailsViewController(viewModel: viewModel)
 
         viewController.navigationController?.pushViewController(detailsViewController, animated: true)
     }

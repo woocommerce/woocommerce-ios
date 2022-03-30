@@ -13,11 +13,23 @@ struct DefaultImageService: ImageService {
     private let imageDownloader: ImageDownloader
     private let imageCache: ImageCache
 
+    /// A generous size to use for the `DownsamplingImageProcessor`.
+    /// The exact ratio isn't important because the library only needs
+    /// the higher dimension for creating thumbnails.
+    private let defaultThumbnailSize = CGSize(width: 800, height: 800)
+
+    /// Options for downloading images
+    ///
     private var defaultOptions: KingfisherOptionsInfo {
+        let options: KingfisherOptionsInfo = [
+            .targetCache(imageCache),
+            .processor(DownsamplingImageProcessor(size: defaultThumbnailSize)),
+            .cacheOriginalImage
+        ]
         if let imageDownloader = imageDownloader as? Kingfisher.ImageDownloader {
-            return [.targetCache(imageCache), .downloader(imageDownloader)]
+            return options + [.downloader(imageDownloader)]
         }
-        return [.targetCache(imageCache)]
+        return options
     }
 
     init(imageCache: ImageCache = ImageCache.default,
@@ -68,12 +80,9 @@ struct DefaultImageService: ImageService {
             case .success(let imageResult):
                 let image = imageResult.image
                 completion?(image, nil)
-                break
             case .failure(let error):
                 completion?(nil, .other(error: error))
-                break
             }
         }
     }
-
 }

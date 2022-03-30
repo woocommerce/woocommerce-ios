@@ -10,37 +10,9 @@ public enum FeatureFlag: Int {
     ///
     case barcodeScanner
 
-    /// Large titles on the main tabs
-    ///
-    case largeTitles
-
     /// Product Reviews
     ///
     case reviews
-
-    /// Shipping labels - Milestones 2 & 3
-    ///
-    case shippingLabelsM2M3
-
-    /// Shipping labels - International Shipping
-    ///
-    case shippingLabelsInternational
-
-    /// Shipping labels - Add payment methods
-    ///
-    case shippingLabelsAddPaymentMethods
-
-    /// Shipping labels - Add custom packages
-    ///
-    case shippingLabelsAddCustomPackages
-
-    /// Shipping labels - Multi-package support
-    ///
-    case shippingLabelsMultiPackage
-
-    /// Push notifications for all stores
-    ///
-    case pushNotificationsForAllStores
 
     /// Display the bar for displaying the filters in the Order List
     ///
@@ -50,10 +22,6 @@ public enum FeatureFlag: Int {
     ///
     case jetpackConnectionPackageSupport
 
-    /// Allows new orders to be manually created
-    ///
-    case orderCreation
-
     /// Display the new tab "Menu" in the tab bar.
     ///
     case hubMenu
@@ -62,17 +30,9 @@ public enum FeatureFlag: Int {
     ///
     case systemStatusReport
 
-    /// Allows sites using the WooCommerce Stripe Payment Gateway extension to accept In-Person Payments
+    /// Displays the option to view coupons
     ///
-    case stripeExtensionInPersonPayments
-
-    /// Home Screen project milestone 2: design updates to the My Store tab
-    ///
-    case myStoreTabUpdates
-
-    /// Displays the option to manage coupons
-    ///
-    case couponManagement
+    case couponView
 
     /// Barcode scanner for product SKU input
     ///
@@ -82,11 +42,19 @@ public enum FeatureFlag: Int {
     ///
     case canadaInPersonPayments
 
-    /// Displays the tax lines breakup in simple payments summary screen
-    ///
-    case taxLinesInSimplePayments
-
     /// Displays the Inbox option under the Hub Menu.
     ///
     case inbox
+
+    /// Displays the bulk update option in product variations
+    ///
+    case bulkEditProductVariations
+
+    /// Displays the Orders tab in a split view
+    ///
+    case splitViewInOrdersTab
+
+    /// Displays the option to edit a coupon
+    ///
+    case couponEditing
 }

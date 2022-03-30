@@ -128,6 +128,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.emptyCouponsImage)
     }
 
+    func test_empty_inbox_notes_image_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.emptyInboxNotesImage)
+    }
+
     func testEmptyProductsImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.emptyProductsImage)
     }
@@ -517,6 +521,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.megaphoneIcon)
     }
 
+    func test_speakerIcon_is_not_nil() {
+        XCTAssertNotNil(UIImage.speakerIcon)
+    }
+
     func testCloudImageIsNotNil() {
         XCTAssertNotNil(UIImage.cloudImage)
     }
@@ -595,5 +603,9 @@ final class IconsTests: XCTestCase {
 
     func test_simplePaymentsImage_is_not_nil() {
         XCTAssertNotNil(UIImage.simplePaymentsImage)
+    }
+
+    func test_enableAnalyticsImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.enableAnalyticsImage)
     }
 }

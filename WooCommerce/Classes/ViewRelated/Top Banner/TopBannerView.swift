@@ -81,8 +81,8 @@ private extension TopBannerView {
         infoLabel.applyBodyStyle()
         infoLabel.numberOfLines = 0
 
-        renderContent(of: viewModel)
         configureBannerType(type: viewModel.type)
+        renderContent(of: viewModel)
         updateStackViewsAxis()
     }
 
@@ -102,6 +102,9 @@ private extension TopBannerView {
         }
 
         iconImageView.image = viewModel.icon
+        if let color = viewModel.iconTintColor {
+            iconImageView.tintColor = color
+        }
 
         zip(viewModel.actionButtons, actionButtons).forEach { buttonInfo, button in
             button.setTitle(buttonInfo.title, for: .normal)

@@ -19,6 +19,8 @@ extension CardBrand {
             self = .jcb
         case .dinersClub:
             self = .dinersClub
+        case .interac:
+            self = .interac
         case .unknown:
             self = .unknown
         default:

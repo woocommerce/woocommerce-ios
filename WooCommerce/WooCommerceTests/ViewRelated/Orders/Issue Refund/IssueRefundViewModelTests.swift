@@ -1,5 +1,7 @@
 import XCTest
 import Yosemite
+import protocol Storage.StorageManagerType
+import protocol Storage.StorageType
 
 @testable import WooCommerce
 
@@ -10,8 +12,17 @@ final class IssueRefundViewModelTests: XCTestCase {
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
 
+    /// Mock Storage: InMemory
+    private var storageManager: StorageManagerType!
+
+    /// View storage for tests
+    private var storage: StorageType {
+        storageManager.viewStorage
+    }
+
     override func setUp() {
         super.setUp()
+        storageManager = MockStorageManager()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
@@ -580,5 +591,79 @@ final class IssueRefundViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.isSelectAllButtonVisible)
+    }
+
+    func test_viewModel_fetches_charge_before_creating_refundConfirmationViewModel() throws {
+        // Given
+        // The order has a chargeID
+        let order = MockOrders().sampleOrder().copy(chargeID: "ch_id")
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        // When
+        let chargeFetched: Bool = waitFor { promise in
+            stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+                guard case .fetchWCPayCharge(siteID: _, chargeID: "ch_id", onCompletion: _) = action else {
+                    return
+                }
+                promise(true)
+            }
+
+            _ = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores)
+        }
+
+        // Then
+        XCTAssertTrue(chargeFetched)
+    }
+
+    func test_viewModel_shows_spinner_when_charge_not_fetched_yet() {
+        // Given
+        // The order has a chargeID
+        let order = MockOrders().sampleOrder().copy(chargeID: "ch_id")
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores)
+
+        // Then
+        XCTAssertTrue(viewModel.isNextButtonAnimating)
+    }
+
+    func test_viewModel_does_not_show_spinner_when_there_is_no_charge_to_fetch() {
+        // Given
+        // The order has a chargeID
+        let order = MockOrders().sampleOrder().copy(chargeID: nil)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores)
+
+        // Then
+        XCTAssertFalse(viewModel.isNextButtonAnimating)
+    }
+
+    func test_viewModel_does_not_show_spinner_when_there_is_no_charge_to_fetch_but_an_empty_chargeID() {
+        // Given
+        // The order has a chargeID
+        let order = MockOrders().sampleOrder().copy(chargeID: "")
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores)
+
+        // Then
+        XCTAssertFalse(viewModel.isNextButtonAnimating)
+    }
+
+    func test_viewModel_hides_spinner_when_charge_found_in_storage() {
+        // Given
+        // The order has a chargeID
+        let order = MockOrders().sampleOrder().copy(chargeID: "ch_id")
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores, storage: storageManager)
+
+        let charge = storage.insertNewObject(ofType: StorageWCPayCharge.self)
+        charge.update(with: WCPayCharge.fake().copy(siteID: order.siteID, id: "ch_id"))
+        storage.saveIfNeeded()
+
+        // Then
+        XCTAssertFalse(viewModel.isNextButtonAnimating)
     }
 }

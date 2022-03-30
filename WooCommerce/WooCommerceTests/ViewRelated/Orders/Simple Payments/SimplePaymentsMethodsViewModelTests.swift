@@ -295,7 +295,7 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
 
     func test_card_row_is_shown_for_cpp_store() {
         // Given
-        let cppStateObserver = MockCardPresentPaymentsOnboardingUseCase(initial: .completed)
+        let cppStateObserver = MockCardPresentPaymentsOnboardingUseCase(initial: .completed(plugin: .wcPay))
         let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", cppStoreStateObserver: cppStateObserver)
 
         // Then
@@ -319,7 +319,7 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.showPayWithCardRow)
 
         // When
-        subject.send(.completed)
+        subject.send(.completed(plugin: .wcPay))
 
         // Then
         XCTAssertTrue(viewModel.showPayWithCardRow)

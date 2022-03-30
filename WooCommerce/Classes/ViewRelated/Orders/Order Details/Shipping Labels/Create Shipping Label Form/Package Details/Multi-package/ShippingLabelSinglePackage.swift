@@ -42,7 +42,7 @@ struct ShippingLabelSinglePackage: View {
                 VStack(spacing: 0) {
                     Divider()
 
-                    TitleAndValueRow(title: Localization.packageSelected, value: .placeholder(viewModel.selectedPackageName), selectable: true) {
+                    TitleAndValueRow(title: Localization.packageSelected, value: .placeholder(viewModel.selectedPackageName), selectionStyle: .disclosure) {
                         isShowingPackageSelection.toggle()
                     }
                     .padding(.horizontal, insets: safeAreaInsets)
@@ -149,10 +149,11 @@ private extension ShippingLabelSinglePackage {
     }
 }
 
+#if DEBUG
 struct ShippingLabelSinglePackage_Previews: PreviewProvider {
     static var previews: some View {
-        let order = ShippingLabelPackageDetailsViewModel.sampleOrder()
-        let packageResponse = ShippingLabelPackageDetailsViewModel.samplePackageDetails()
+        let order = ShippingLabelSampleData.sampleOrder()
+        let packageResponse = ShippingLabelSampleData.samplePackageDetails()
         let viewModel = ShippingLabelSinglePackageViewModel(order: order,
                                                             orderItems: [],
                                                             packagesResponse: packageResponse,
@@ -167,3 +168,4 @@ struct ShippingLabelSinglePackage_Previews: PreviewProvider {
                                    viewModel: viewModel)
     }
 }
+#endif

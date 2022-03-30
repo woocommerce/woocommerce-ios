@@ -1,29 +1,40 @@
 import Combine
+import Fakes
+import Storage
 import Yosemite
 @testable import WooCommerce
 
 /// Allows mocking for `CardPresentPaymentAction`.
 ///
 final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
+    /// Mock Storage: InMemory
+    ///
+    private var storageManager: StorageManagerType
+
     private var connectedReaders: [CardReader]
     private var discoveredReaders: [CardReader]
     private var failDiscovery: Bool
     private var failUpdate: Bool
     private var failConnection: Bool
     private var softwareUpdateSubject: CurrentValueSubject<CardReaderSoftwareUpdateState, Never> = .init(.none)
+    private var paymentExtension: CardPresentPaymentGatewayExtension
 
     init(connectedReaders: [CardReader],
          discoveredReaders: [CardReader],
          sessionManager: SessionManager,
+         storageManager: StorageManagerType = MockStorageManager(),
          failDiscovery: Bool = false,
          failUpdate: Bool = false,
-         failConnection: Bool = false
+         failConnection: Bool = false,
+         paymentExtension: CardPresentPaymentGatewayExtension = .wcpay
     ) {
         self.connectedReaders = connectedReaders
         self.discoveredReaders = discoveredReaders
         self.failDiscovery = failDiscovery
         self.failUpdate = failUpdate
         self.failConnection = failConnection
+        self.storageManager = storageManager
+        self.paymentExtension = paymentExtension
         super.init(sessionManager: sessionManager)
     }
 
@@ -72,6 +83,11 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
             // TODO: send error when we can handle failure state
             softwareUpdateSubject.send(.completed)
             softwareUpdateSubject.send(.none)
+        case .loadAccounts(let siteID, let onCompletion):
+            insertSamplePaymentGateway(forSiteID: siteID)
+            onCompletion(Result.success(()))
+        case .loadActivePaymentGatewayExtension(let onCompletion):
+            onCompletion(paymentExtension)
         default:
             fatalError("Not available")
         }
@@ -121,5 +137,23 @@ extension MockCardPresentPaymentsStoresManager {
 
     func simulateOptionalUpdateAvailable() {
         softwareUpdateSubject.send(.available)
+    }
+
+    func insertSamplePaymentGateway(forSiteID siteID: Int64) {
+        let paymentGatewayAccount = PaymentGatewayAccount
+            .fake()
+            .copy(
+                siteID: siteID,
+                gatewayID: "MOCKGATEWAY",
+                status: "complete",
+                hasPendingRequirements: false,
+                hasOverdueRequirements: false,
+                isCardPresentEligible: true,
+                isLive: true,
+                isInTestMode: false
+            )
+        storageManager.reset()
+        let newAccount = storageManager.viewStorage.insertNewObject(ofType: StoragePaymentGatewayAccount.self)
+        newAccount.update(with: paymentGatewayAccount)
     }
 }

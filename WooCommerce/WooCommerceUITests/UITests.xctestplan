@@ -9,7 +9,7 @@
     }
   ],
   "defaultOptions" : {
-
+    "testRepetitionMode" : "retryOnFailure"
   },
   "testTargets" : [
     {

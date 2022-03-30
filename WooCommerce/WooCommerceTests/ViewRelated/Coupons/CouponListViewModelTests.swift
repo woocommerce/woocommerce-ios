@@ -4,6 +4,8 @@ import Yosemite
 
 import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
+import enum Storage.FeedbackType
+import struct Storage.FeedbackSettings
 
 final class CouponListViewModelTests: XCTestCase {
     private var mockStorageManager: MockStorageManager!
@@ -27,11 +29,17 @@ final class CouponListViewModelTests: XCTestCase {
         mockSyncingCoordinator = MockSyncingCoordinator()
     }
 
-    private func setUpWithCouponFetched() {
+    private func setUpWithCouponFetched(injectedStores: StoresManager? = nil) {
         let coupon = Coupon.fake().copy(siteID: 123, code: "coupon")
         mockStorageManager.insertSampleCoupon(readOnlyCoupon: coupon)
-        sut = CouponListViewModel(siteID: 123,
-                                  storageManager: mockStorageManager)
+        if let stores = injectedStores {
+            sut = CouponListViewModel(siteID: 123,
+                                      storesManager: stores,
+                                      storageManager: mockStorageManager)
+        } else {
+            sut = CouponListViewModel(siteID: 123,
+                                      storageManager: mockStorageManager)
+        }
         sut.buildCouponViewModels()
     }
 
@@ -97,7 +105,7 @@ final class CouponListViewModelTests: XCTestCase {
         setUpWithCouponFetched()
 
         // When
-        sut.handleCouponSyncResult(result: .success(false))
+        sut.handleCouponSyncResult(result: .success(false), pageNumber: 1)
 
         // Then
         XCTAssertEqual(sut.state, .coupons)
@@ -106,7 +114,7 @@ final class CouponListViewModelTests: XCTestCase {
 
     func test_handleCouponSyncResult_shows_empty_when_no_coupons_present() {
         // When
-        sut.handleCouponSyncResult(result: .success(false))
+        sut.handleCouponSyncResult(result: .success(false), pageNumber: 1)
 
         // Then
         XCTAssertEqual(sut.state, .empty)
@@ -140,7 +148,7 @@ final class CouponListViewModelTests: XCTestCase {
         sut.refreshCoupons()
 
         // When
-        sut.handleCouponSyncResult(result: .success(false))
+        sut.handleCouponSyncResult(result: .success(false), pageNumber: 1)
 
         // Then
         XCTAssertEqual(sut.state, .coupons)
@@ -164,5 +172,284 @@ final class CouponListViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(sut.state, .loadingNextPage)
+    }
+
+    func test_shouldDisplayFeedbackBanner_returns_false_if_state_is_initialized() {
+        // Given
+        sut = CouponListViewModel(siteID: 123, syncingCoordinator: mockSyncingCoordinator)
+        XCTAssertEqual(sut.state, .initialized) // confidence check
+
+        // Then
+        XCTAssertFalse(sut.shouldDisplayFeedbackBanner)
+    }
+
+    func test_shouldDisplayFeedbackBanner_returns_false_if_state_is_loading() {
+        // When
+        sut.viewDidLoad()
+        XCTAssertEqual(sut.state, .loading) // confidence check
+
+        // Then
+        XCTAssertFalse(sut.shouldDisplayFeedbackBanner)
+    }
+
+    func test_shouldDisplayFeedbackBanner_returns_false_if_state_is_empty() {
+        // When
+        sut.handleCouponSyncResult(result: .success(false), pageNumber: 1)
+        XCTAssertEqual(sut.state, .empty) // confidence check
+
+        // Then
+        XCTAssertFalse(sut.shouldDisplayFeedbackBanner)
+    }
+
+    func test_shouldDisplayFeedbackBanner_returns_true_if_state_is_coupons_and_couponManagement_feedback_visibility_is_enabled_in_app_settings() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        var feedbackType: FeedbackType?
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadFeedbackVisibility(type, onCompletion):
+                feedbackType = type
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+        setUpWithCouponFetched(injectedStores: stores)
+
+        // When
+        sut.handleCouponSyncResult(result: .success(false), pageNumber: 1)
+        XCTAssertEqual(sut.state, .coupons) // confidence check
+
+        // Then
+        XCTAssertEqual(feedbackType, .couponManagement)
+        XCTAssertTrue(sut.shouldDisplayFeedbackBanner)
+    }
+
+    func test_shouldDisplayFeedbackBanner_returns_false_if_state_is_coupons_and_couponManagement_feedback_visibility_is_disabled_in_app_settings() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        var feedbackType: FeedbackType?
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadFeedbackVisibility(type, onCompletion):
+                feedbackType = type
+                onCompletion(.success(false))
+            default:
+                break
+            }
+        }
+        setUpWithCouponFetched(injectedStores: stores)
+
+        // When
+        sut.handleCouponSyncResult(result: .success(false), pageNumber: 1)
+        XCTAssertEqual(sut.state, .coupons) // confidence check
+
+        // Then
+        XCTAssertEqual(feedbackType, .couponManagement)
+        XCTAssertFalse(sut.shouldDisplayFeedbackBanner)
+    }
+
+    func test_shouldDisplayFeedbackBanner_returns_true_if_state_is_refreshing_and_couponManagement_feedback_visibility_is_enabled_in_app_settings() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        var feedbackType: FeedbackType?
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadFeedbackVisibility(type, onCompletion):
+                feedbackType = type
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+        setUpWithCouponFetched(injectedStores: stores) // we need to have existing data to enter refreshing state
+
+        // When
+        sut.refreshCoupons()
+        XCTAssertEqual(sut.state, .refreshing) // confidence check
+
+        // Then
+        XCTAssertEqual(feedbackType, .couponManagement)
+        XCTAssertTrue(sut.shouldDisplayFeedbackBanner)
+    }
+
+    func test_shouldDisplayFeedbackBanner_returns_false_if_state_is_refreshing_and_couponManagement_feedback_visibility_is_disabled_in_app_settings() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        var feedbackType: FeedbackType?
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadFeedbackVisibility(type, onCompletion):
+                feedbackType = type
+                onCompletion(.success(false))
+            default:
+                break
+            }
+        }
+        setUpWithCouponFetched(injectedStores: stores) // we need to have existing data to enter refreshing state
+
+        // When
+        sut.refreshCoupons()
+        XCTAssertEqual(sut.state, .refreshing) // confidence check
+
+        // Then
+        XCTAssertEqual(feedbackType, .couponManagement)
+        XCTAssertFalse(sut.shouldDisplayFeedbackBanner)
+    }
+
+    func test_shouldDisplayFeedbackBanner_returns_true_if_state_is_loadingNextPage_and_couponManagement_feedback_visibility_is_enabled_in_app_settings() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        var feedbackType: FeedbackType?
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadFeedbackVisibility(type, onCompletion):
+                feedbackType = type
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+        setUpWithCouponFetched(injectedStores: stores)
+
+        // When
+        sut.sync(pageNumber: 2, pageSize: 10, reason: nil, onCompletion: nil)
+        XCTAssertEqual(sut.state, .loadingNextPage) // confidence check
+
+        // Then
+        XCTAssertEqual(feedbackType, .couponManagement)
+        XCTAssertTrue(sut.shouldDisplayFeedbackBanner)
+    }
+
+    func test_shouldDisplayFeedbackBanner_returns_false_if_state_is_loadingNextPage_and_couponManagement_feedback_visibility_is_disabled_in_app_settings() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        var feedbackType: FeedbackType?
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadFeedbackVisibility(type, onCompletion):
+                feedbackType = type
+                onCompletion(.success(false))
+            default:
+                break
+            }
+        }
+        setUpWithCouponFetched(injectedStores: stores)
+
+        // When
+        sut.sync(pageNumber: 2, pageSize: 10, reason: nil, onCompletion: nil)
+        XCTAssertEqual(sut.state, .loadingNextPage) // confidence check
+
+        // Then
+        XCTAssertEqual(feedbackType, .couponManagement)
+        XCTAssertFalse(sut.shouldDisplayFeedbackBanner)
+    }
+
+    func test_shouldDisplayFeedbackBanner_returns_false_after_dismissing_feedback_banner() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        var status: FeedbackSettings.Status?
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadFeedbackVisibility(_, onCompletion):
+                onCompletion(.success(true))
+            case let .updateFeedbackStatus(_, newStatus, onCompletion):
+                status = newStatus
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+        setUpWithCouponFetched(injectedStores: stores)
+
+        // When
+        sut.handleCouponSyncResult(result: .success(false), pageNumber: 1)
+        XCTAssertTrue(sut.shouldDisplayFeedbackBanner) // confidence check
+        sut.dismissFeedbackBanner()
+
+        // Then
+        XCTAssertEqual(status, .dismissed)
+        XCTAssertFalse(sut.shouldDisplayFeedbackBanner)
+    }
+
+    func test_state_is_couponsDisabled_if_coupon_setting_returns_false() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .retrieveCouponSetting(_, onCompletion):
+                onCompletion(.success(false))
+            default:
+                break
+            }
+        }
+        sut = CouponListViewModel(siteID: 123,
+                                  storesManager: stores)
+
+        // When
+        let error = NSError(domain: "Test", code: 503, userInfo: nil)
+        sut.handleCouponSyncResult(result: .failure(error), pageNumber: 1)
+
+        // Then
+        assertEqual(.couponsDisabled, sut.state)
+    }
+
+    func test_state_is_coupons_if_enableCoupons_and_synchronizeFirstPage_succeed() {
+        // Given
+        let sampleSiteID: Int64 = 123
+        mockStorageManager.insertSampleCoupon(readOnlyCoupon: Coupon.fake().copy(siteID: sampleSiteID))
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .retrieveCouponSetting(_, onCompletion):
+                onCompletion(.success(true))
+            case let .enableCouponSetting(_, onCompletion):
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+        stores.whenReceivingAction(ofType: CouponAction.self) { action in
+            switch action {
+            case let .synchronizeCoupons(_, _, _, onCompletion):
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+        sut = CouponListViewModel(siteID: sampleSiteID,
+                                  storesManager: stores,
+                                  storageManager: mockStorageManager)
+
+        // When
+        sut.buildCouponViewModels()
+        sut.enableCoupons()
+
+        // Then
+        assertEqual(.coupons, sut.state)
+    }
+
+    func test_state_is_couponDisabled_if_enableCoupons_fails() {
+        // Given
+        let sampleSiteID: Int64 = 123
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .enableCouponSetting(_, onCompletion):
+                let error = NSError(domain: "Test", code: 503, userInfo: nil)
+                onCompletion(.failure(error))
+            default:
+                break
+            }
+        }
+        sut = CouponListViewModel(siteID: sampleSiteID,
+                                  storesManager: stores,
+                                  storageManager: mockStorageManager)
+
+        // When
+        sut.enableCoupons()
+
+        // Then
+        assertEqual(.couponsDisabled, sut.state)
     }
 }

@@ -20,7 +20,7 @@ final class MockProductVariation {
                                 dateModified: dateFromGMT("2020-07-21T08:35:47"),
                                 dateOnSaleStart: nil,
                                 dateOnSaleEnd: nil,
-                                status: .publish,
+                                status: .published,
                                 description: "<p>Nutty chocolate marble, 99% and organic.</p>\n",
                                 sku: "87%-strawberry-marble",
                                 price: "14.99",

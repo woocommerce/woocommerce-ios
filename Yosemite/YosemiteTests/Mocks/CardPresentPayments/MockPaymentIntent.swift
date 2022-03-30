@@ -28,7 +28,7 @@ private extension MockPaymentIntent {
     }
 
     static func mockPaymentMethod() -> PaymentMethod {
-        .presentCard(details: mockCardDetails())
+        .cardPresent(details: mockCardDetails())
     }
 
     static func mockCardDetails() -> CardPresentTransactionDetails {

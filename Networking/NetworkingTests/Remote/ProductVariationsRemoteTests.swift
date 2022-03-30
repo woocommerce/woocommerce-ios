@@ -58,7 +58,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
             XCTAssertEqual(expectedVariation.regularPrice, "\(expectedPrice)")
             XCTAssertEqual(expectedVariation.salePrice, "8")
 
-            XCTAssertEqual(expectedVariation.status, .publish)
+            XCTAssertEqual(expectedVariation.status, .published)
             XCTAssertEqual(expectedVariation.stockStatus, .inStock)
 
             let expectedAttributes: [ProductVariationAttribute] = [
@@ -232,6 +232,29 @@ final class ProductVariationsRemoteTests: XCTestCase {
         XCTAssertEqual(updatedProductVariation, productVariation)
     }
 
+    /// Verifies that updateProductVariations properly parses the `product-variations-bulk-update` sample response.
+    ///
+    func test_bulk_update_productVariations_properly_returns_parsed_products() {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        let sampleProductVariationID: Int64 = 2783
+
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations/batch", filename: "product-variations-bulk-update")
+        let productVariations = [sampleProductVariation(siteID: sampleSiteID, productID: sampleProductID, id: sampleProductVariationID)]
+
+        // When
+        var updatedProductVariation: [ProductVariation]?
+        waitForExpectation { expectation in
+            remote.updateProductVariations(siteID: sampleSiteID, productID: sampleProductID, productVariations: productVariations) { result in
+                updatedProductVariation = try? result.get()
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertEqual(updatedProductVariation, productVariations)
+    }
+
     /// Verifies that updateProductVariation properly relays Networking Layer errors.
     ///
     func testUpdateProductVariationProperlyRelaysNetwokingErrors() {
@@ -321,7 +344,7 @@ private extension ProductVariationsRemoteTests {
                                 dateModified: dateFromGMT("2020-07-21T08:35:47"),
                                 dateOnSaleStart: nil,
                                 dateOnSaleEnd: nil,
-                                status: .publish,
+                                status: .published,
                                 description: "<p>Nutty chocolate marble, 99% and organic.</p>\n",
                                 sku: "87%-strawberry-marble",
                                 price: "14.99",

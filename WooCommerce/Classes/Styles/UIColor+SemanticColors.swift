@@ -158,12 +158,7 @@ extension UIColor {
     /// App Navigation Bar.
     ///
     static var appBar: UIColor {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) {
-            return UIColor(light: .white, dark: .black)
-        } else {
-            return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade60),
-                           dark: .systemColor(.secondarySystemGroupedBackground))
-        }
+        UIColor(light: .white, dark: .black)
     }
 
     /// App Tab Bar.
@@ -283,11 +278,7 @@ extension UIColor {
     /// Color for loading indicators within navigation bars
     ///
     static var navigationBarLoadingIndicator: UIColor {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) {
-            return .systemGray
-        } else {
-            return .white
-        }
+        .systemGray
     }
 
     /// SearchBar background color.

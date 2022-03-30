@@ -18,7 +18,6 @@ public class DevicesRemote: Remote {
                                applicationId: String,
                                applicationVersion: String,
                                defaultStoreID: Int64,
-                               pushNotificationsForAllStoresEnabled: Bool,
                                completion: @escaping (DotcomDevice?, Error?) -> Void) {
         var parameters = [
             ParameterKeys.applicationId: applicationId,
@@ -28,7 +27,7 @@ public class DevicesRemote: Remote {
             ParameterKeys.deviceModel: device.model,
             ParameterKeys.deviceName: device.name,
             ParameterKeys.deviceOSVersion: device.iOSVersion,
-            ParameterKeys.defaultStoreID: pushNotificationsForAllStoresEnabled ? "": String(defaultStoreID)
+            ParameterKeys.defaultStoreID: ""
         ]
 
         if let deviceUUID = device.identifierForVendor {

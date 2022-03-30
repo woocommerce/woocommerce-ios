@@ -62,9 +62,9 @@ final class GeneralAppSettingsTests: XCTestCase {
                                                   feedbacks: feedbackSettings,
                                                   isViewAddOnsSwitchEnabled: true,
                                                   isOrderCreationSwitchEnabled: true,
-                                                  isStripeInPersonPaymentsSwitchEnabled: true,
                                                   isCanadaInPersonPaymentsSwitchEnabled: true,
                                                   isProductSKUInputScannerSwitchEnabled: true,
+                                                  isCouponManagementSwitchEnabled: true,
                                                   knownCardReaders: readers,
                                                   lastEligibilityErrorInfo: eligibilityInfo,
                                                   lastJetpackBenefitsBannerDismissedTime: jetpackBannerDismissedDate)
@@ -84,9 +84,9 @@ final class GeneralAppSettingsTests: XCTestCase {
         assertEqual(newSettings.lastEligibilityErrorInfo, eligibilityInfo)
         assertEqual(newSettings.isViewAddOnsSwitchEnabled, false)
         assertEqual(newSettings.isOrderCreationSwitchEnabled, true)
-        assertEqual(newSettings.isStripeInPersonPaymentsSwitchEnabled, true)
         assertEqual(newSettings.isCanadaInPersonPaymentsSwitchEnabled, true)
         assertEqual(newSettings.isProductSKUInputScannerSwitchEnabled, true)
+        assertEqual(newSettings.isCouponManagementSwitchEnabled, true)
         assertEqual(newSettings.lastJetpackBenefitsBannerDismissedTime, jetpackBannerDismissedDate)
     }
 }
@@ -96,9 +96,9 @@ private extension GeneralAppSettingsTests {
                                   feedbacks: [FeedbackType: FeedbackSettings] = [:],
                                   isViewAddOnsSwitchEnabled: Bool = false,
                                   isOrderCreationSwitchEnabled: Bool = false,
-                                  isStripeInPersonPaymentsSwitchEnabled: Bool = false,
                                   isCanadaInPersonPaymentsSwitchEnabled: Bool = false,
                                   isProductSKUInputScannerSwitchEnabled: Bool = false,
+                                  isCouponManagementSwitchEnabled: Bool = false,
                                   knownCardReaders: [String] = [],
                                   lastEligibilityErrorInfo: EligibilityErrorInfo? = nil,
                                   lastJetpackBenefitsBannerDismissedTime: Date? = nil) -> GeneralAppSettings {
@@ -106,9 +106,9 @@ private extension GeneralAppSettingsTests {
                            feedbacks: feedbacks,
                            isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
                            isOrderCreationSwitchEnabled: isOrderCreationSwitchEnabled,
-                           isStripeInPersonPaymentsSwitchEnabled: isStripeInPersonPaymentsSwitchEnabled,
                            isCanadaInPersonPaymentsSwitchEnabled: isCanadaInPersonPaymentsSwitchEnabled,
                            isProductSKUInputScannerSwitchEnabled: isProductSKUInputScannerSwitchEnabled,
+                           isCouponManagementSwitchEnabled: isCouponManagementSwitchEnabled,
                            knownCardReaders: knownCardReaders,
                            lastEligibilityErrorInfo: lastEligibilityErrorInfo,
                            lastJetpackBenefitsBannerDismissedTime: lastJetpackBenefitsBannerDismissedTime)

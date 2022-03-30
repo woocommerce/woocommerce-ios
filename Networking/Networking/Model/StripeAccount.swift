@@ -67,7 +67,7 @@ public struct StripeAccount: Decodable {
         let hasPendingRequirements = try container.decode(Bool.self, forKey: .hasPendingRequirements)
         let hasOverdueRequirements = try container.decode(Bool.self, forKey: .hasOverdueRequirements)
         let currentDeadline = try container.decodeIfPresent(Date.self, forKey: .currentDeadline)
-        let statementDescriptor = try container.decode(String.self, forKey: .statementDescriptor)
+        let statementDescriptor = try container.decodeIfPresent(String.self, forKey: .statementDescriptor)
         let currencyContainer = try container.nestedContainer(keyedBy: CurrencyCodingKeys.self, forKey: .storeCurrencies)
         let defaultCurrency = try currencyContainer.decode(String.self, forKey: .defaultCurrency)
         let supportedCurrencies = try currencyContainer.decode([String].self, forKey: .supported)
@@ -82,7 +82,7 @@ public struct StripeAccount: Decodable {
             hasPendingRequirements: hasPendingRequirements,
             hasOverdueRequirements: hasOverdueRequirements,
             currentDeadline: currentDeadline,
-            statementDescriptor: statementDescriptor,
+            statementDescriptor: statementDescriptor ?? "",
             defaultCurrency: defaultCurrency,
             supportedCurrencies: supportedCurrencies,
             country: country,

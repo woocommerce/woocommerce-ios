@@ -35,7 +35,11 @@ final class OrderListViewController: UIViewController {
 
     /// Main TableView.
     ///
-    private lazy var tableView = UITableView(frame: .zero, style: .grouped)
+    private lazy var tableView: UITableView = {
+        let tableView = UITableView(frame: .zero, style: .grouped)
+        tableView.accessibilityIdentifier = "orders-table-view"
+        return tableView
+    }()
 
     /// The data source that is bound to `tableView`.
     private lazy var dataSource: UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID> = {
@@ -104,6 +108,16 @@ final class OrderListViewController: UIViewController {
     ///
     private var topBannerView: TopBannerView?
 
+    /// Callback closure when an order is selected
+    ///
+    private var switchDetailsHandler: (OrderDetailsViewModel) -> Void
+
+    /// Currently selected index path in the table view
+    ///
+    private var selectedIndexPath: IndexPath?
+
+    private lazy var isSplitViewInOrdersTabEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
+
     // MARK: - View Lifecycle
 
     /// Designated initializer.
@@ -111,10 +125,12 @@ final class OrderListViewController: UIViewController {
     init(siteID: Int64,
          title: String,
          viewModel: OrderListViewModel,
-         emptyStateConfig: EmptyStateViewController.Config) {
+         emptyStateConfig: EmptyStateViewController.Config,
+         switchDetailsHandler: @escaping (OrderDetailsViewModel) -> Void) {
         self.siteID = siteID
         self.viewModel = viewModel
         self.emptyStateConfig = emptyStateConfig
+        self.switchDetailsHandler = switchDetailsHandler
 
         super.init(nibName: nil, bundle: nil)
 
@@ -160,6 +176,19 @@ final class OrderListViewController: UIViewController {
         tableView.reloadData()
 
         restartPlaceholderAnimation()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.updateHeaderHeight()
+    }
+
+    override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.willTransition(to: newCollection, with: coordinator)
+        if isSplitViewInOrdersTabEnabled, selectedIndexPath != nil {
+            // Reload table view to update selected state on the list when changing rotation
+            tableView.reloadData()
+        }
     }
 
     /// Returns a function that creates cells for `dataSource`.
@@ -350,7 +379,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
         // Configure header container view
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
         headerContainer.addSubview(topBannerView)
-        headerContainer.pinSubviewToSafeArea(topBannerView)
+        headerContainer.pinSubviewToAllEdges(topBannerView)
 
         tableView.tableHeaderView = headerContainer
         tableView.updateHeaderHeight()
@@ -361,6 +390,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
     private func hideTopBannerView() {
         topBannerView?.removeFromSuperview()
         tableView.tableHeaderView = nil
+        tableView.updateHeaderHeight()
     }
 }
 
@@ -393,6 +423,24 @@ extension OrderListViewController {
     ///
     private func ensureFooterSpinnerIsStopped() {
         footerSpinnerView.stopAnimating()
+    }
+}
+
+// MARK: - Split view helpers
+//
+private extension OrderListViewController {
+    /// Highlights the selected row if any row has been selected and the split view is not collapsed.
+    /// Removes the selected state otherwise.
+    ///
+    func highlightSelectedRowIfNeeded() {
+        guard let selectedIndexPath = selectedIndexPath else {
+            return
+        }
+        if splitViewController?.isCollapsed == true {
+            tableView.deselectRow(at: selectedIndexPath, animated: false)
+        } else {
+            tableView.selectRow(at: selectedIndexPath, animated: false, scrollPosition: .none)
+        }
     }
 }
 
@@ -515,7 +563,9 @@ private extension OrderListViewController {
 extension OrderListViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+        if splitViewController?.isCollapsed == true || !isSplitViewInOrdersTabEnabled {
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
 
         guard state != .placeholder else {
             return
@@ -526,18 +576,17 @@ extension OrderListViewController: UITableViewDelegate {
                 return
         }
 
-        guard let orderDetailsVC = OrderDetailsViewController.instantiatedViewControllerFromStoryboard() else {
-            assertionFailure("Expected OrderDetailsViewController to be instantiated")
-            return
-        }
-
-        orderDetailsVC.viewModel = orderDetailsViewModel
-
+        selectedIndexPath = indexPath
         let order = orderDetailsViewModel.order
         ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": order.orderID,
                                                                     "status": order.status.rawValue])
 
-        navigationController?.pushViewController(orderDetailsVC, animated: true)
+        if isSplitViewInOrdersTabEnabled {
+            switchDetailsHandler(orderDetailsViewModel)
+        } else {
+            let viewController = OrderDetailsViewController(viewModel: orderDetailsViewModel)
+            navigationController?.pushViewController(viewController, animated: true)
+        }
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -546,6 +595,9 @@ extension OrderListViewController: UITableViewDelegate {
         }
 
         syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: itemIndex)
+        if isSplitViewInOrdersTabEnabled, indexPath == selectedIndexPath {
+            highlightSelectedRowIfNeeded()
+        }
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -638,8 +690,9 @@ private extension OrderListViewController {
             self?.tableView.updateHeaderHeight()
         },
         onTroubleshootButtonPressed: { [weak self] in
-            let safariViewController = SFSafariViewController(url: WooConstants.URLs.troubleshootErrorLoadingData.asURL())
-            self?.present(safariViewController, animated: true, completion: nil)
+            guard let self = self else { return }
+
+            WebviewHelper.launch(WooConstants.URLs.troubleshootErrorLoadingData.asURL(), with: self)
         },
         onContactSupportButtonPressed: { [weak self] in
             guard let self = self else { return }

@@ -37,8 +37,9 @@ struct ShippingLabelAddNewPackage: View {
                     Button {
                         presentation.wrappedValue.dismiss()
                     } label: {
-                        Image(uiImage: .chevronLeftImage.imageFlippedForRightToLeftLayoutDirection())
+                        Image(uiImage: .chevronLeftImage).flipsForRightToLeftLayoutDirection(true)
                     }
+                    .accessibilityLabel(Localization.backButtonAccessibilityLabel)
                 }
                 // Done button
                 ToolbarItem(placement: .confirmationAction, content: {
@@ -96,15 +97,18 @@ private extension ShippingLabelAddNewPackage {
         static let errorAlertTitle = NSLocalizedString("Cannot add package", comment: "The title of the alert when there is a generic error adding the package")
         static let errorAlertMessage = NSLocalizedString("Unexpected error",
                                                          comment: "The message of the alert when there is an unexpected error adding the package")
+        static let backButtonAccessibilityLabel = NSLocalizedString("Back", comment: "Accessibility label for Back button in the navigation bar")
     }
 }
 
+#if DEBUG
 struct ShippingLabelAddNewPackage_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = ShippingLabelAddNewPackageViewModel(siteID: 12345,
-                                                            packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails(),
+                                                            packagesResponse: ShippingLabelSampleData.samplePackageDetails(),
                                                             onCompletion: { _, _, _ in })
 
         ShippingLabelAddNewPackage(viewModel: viewModel)
     }
 }
+#endif

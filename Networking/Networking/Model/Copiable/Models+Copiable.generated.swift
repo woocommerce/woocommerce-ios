@@ -203,7 +203,7 @@ extension InboxNote {
         actions: CopiableProp<[InboxAction]> = .copy,
         title: CopiableProp<String> = .copy,
         content: CopiableProp<String> = .copy,
-        isDeleted: CopiableProp<Bool> = .copy,
+        isRemoved: CopiableProp<Bool> = .copy,
         isRead: CopiableProp<Bool> = .copy,
         dateCreated: CopiableProp<Date> = .copy
     ) -> InboxNote {
@@ -215,7 +215,7 @@ extension InboxNote {
         let actions = actions ?? self.actions
         let title = title ?? self.title
         let content = content ?? self.content
-        let isDeleted = isDeleted ?? self.isDeleted
+        let isRemoved = isRemoved ?? self.isRemoved
         let isRead = isRead ?? self.isRead
         let dateCreated = dateCreated ?? self.dateCreated
 
@@ -228,7 +228,7 @@ extension InboxNote {
             actions: actions,
             title: title,
             content: content,
-            isDeleted: isDeleted,
+            isRemoved: isRemoved,
             isRead: isRead,
             dateCreated: dateCreated
         )
@@ -334,7 +334,7 @@ extension Order {
 extension OrderFeeLine {
     public func copy(
         feeID: CopiableProp<Int64> = .copy,
-        name: CopiableProp<String> = .copy,
+        name: NullableCopiableProp<String> = .copy,
         taxClass: CopiableProp<String> = .copy,
         taxStatus: CopiableProp<OrderFeeTaxStatus> = .copy,
         total: CopiableProp<String> = .copy,
@@ -979,6 +979,48 @@ extension ProductImage {
     }
 }
 
+extension ProductReview {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        reviewID: CopiableProp<Int64> = .copy,
+        productID: CopiableProp<Int64> = .copy,
+        dateCreated: CopiableProp<Date> = .copy,
+        statusKey: CopiableProp<String> = .copy,
+        reviewer: CopiableProp<String> = .copy,
+        reviewerEmail: CopiableProp<String> = .copy,
+        reviewerAvatarURL: NullableCopiableProp<String> = .copy,
+        review: CopiableProp<String> = .copy,
+        rating: CopiableProp<Int> = .copy,
+        verified: CopiableProp<Bool> = .copy
+    ) -> ProductReview {
+        let siteID = siteID ?? self.siteID
+        let reviewID = reviewID ?? self.reviewID
+        let productID = productID ?? self.productID
+        let dateCreated = dateCreated ?? self.dateCreated
+        let statusKey = statusKey ?? self.statusKey
+        let reviewer = reviewer ?? self.reviewer
+        let reviewerEmail = reviewerEmail ?? self.reviewerEmail
+        let reviewerAvatarURL = reviewerAvatarURL ?? self.reviewerAvatarURL
+        let review = review ?? self.review
+        let rating = rating ?? self.rating
+        let verified = verified ?? self.verified
+
+        return ProductReview(
+            siteID: siteID,
+            reviewID: reviewID,
+            productID: productID,
+            dateCreated: dateCreated,
+            statusKey: statusKey,
+            reviewer: reviewer,
+            reviewerEmail: reviewerEmail,
+            reviewerAvatarURL: reviewerAvatarURL,
+            review: review,
+            rating: rating,
+            verified: verified
+        )
+    }
+}
+
 extension ProductVariation {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
@@ -1468,6 +1510,33 @@ extension ShippingLabelPurchase {
     }
 }
 
+extension ShippingLine {
+    public func copy(
+        shippingID: CopiableProp<Int64> = .copy,
+        methodTitle: CopiableProp<String> = .copy,
+        methodID: NullableCopiableProp<String> = .copy,
+        total: CopiableProp<String> = .copy,
+        totalTax: CopiableProp<String> = .copy,
+        taxes: CopiableProp<[ShippingLineTax]> = .copy
+    ) -> ShippingLine {
+        let shippingID = shippingID ?? self.shippingID
+        let methodTitle = methodTitle ?? self.methodTitle
+        let methodID = methodID ?? self.methodID
+        let total = total ?? self.total
+        let totalTax = totalTax ?? self.totalTax
+        let taxes = taxes ?? self.taxes
+
+        return ShippingLine(
+            shippingID: shippingID,
+            methodTitle: methodTitle,
+            methodID: methodID,
+            total: total,
+            totalTax: totalTax,
+            taxes: taxes
+        )
+    }
+}
+
 extension Site {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
@@ -1741,8 +1810,8 @@ extension WCPayCardPresentPaymentDetails {
 extension WCPayCardPresentReceiptDetails {
     public func copy(
         accountType: CopiableProp<WCPayCardFunding> = .copy,
-        applicationPreferredName: CopiableProp<String> = .copy,
-        dedicatedFileName: CopiableProp<String> = .copy
+        applicationPreferredName: NullableCopiableProp<String> = .copy,
+        dedicatedFileName: NullableCopiableProp<String> = .copy
     ) -> WCPayCardPresentReceiptDetails {
         let accountType = accountType ?? self.accountType
         let applicationPreferredName = applicationPreferredName ?? self.applicationPreferredName

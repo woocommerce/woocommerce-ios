@@ -8,9 +8,19 @@ enum CouponListState {
     case initialized // ViewModel ready to receive actions
     case loading // View should show ghost cells
     case empty // View should display the empty state
+    case couponsDisabled // View should display the error state
     case coupons // View should display the contents of `couponViewModels`
     case refreshing // View should display the refresh control
     case loadingNextPage // View should display a bottom loading indicator and contents of `couponViewModels`
+
+    var shouldShowTopBanner: Bool {
+        switch self {
+        case .initialized, .loading, .empty, .couponsDisabled:
+            return false
+        case .coupons, .refreshing, .loadingNextPage:
+            return true
+        }
+    }
 }
 
 final class CouponListViewModel {
@@ -21,9 +31,13 @@ final class CouponListViewModel {
     ///
     @Published private(set) var state: CouponListState = .initialized
 
+    @Published private(set) var shouldDisplayFeedbackBanner: Bool = false
+
+    @Published private var isFeedbackBannerEnabledInAppSettings: Bool = false
+
     /// couponViewModels: ViewModels for the cells representing Coupons
     ///
-    var couponViewModels: [CouponListCellViewModel] = []
+    @Published private(set) var couponViewModels: [CouponListCellViewModel] = []
 
     /// siteID: siteID of the currently active site, used for fetching and storing coupons
     ///
@@ -60,42 +74,13 @@ final class CouponListViewModel {
                                                               storageManager: storageManager)
         configureSyncingCoordinator()
         configureResultsController()
-    }
-
-    private static func createResultsController(siteID: Int64,
-                                                storageManager: StorageManagerType) -> ResultsController<StorageCoupon> {
-        let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let descriptor = NSSortDescriptor(keyPath: \StorageCoupon.dateCreated,
-                                          ascending: false)
-
-        return ResultsController<StorageCoupon>(storageManager: storageManager,
-                                                matching: predicate,
-                                                sortedBy: [descriptor])
-    }
-
-    /// Setup: Results Controller
-    ///
-    private func configureResultsController() {
-        resultsController.onDidChangeContent = buildCouponViewModels
-        resultsController.onDidResetContent = buildCouponViewModels
-
-        do {
-            try resultsController.performFetch()
-        } catch {
-            ServiceLocator.crashLogging.logError(error)
-        }
-    }
-
-    /// Setup: Syncing Coordinator
-    ///
-    private func configureSyncingCoordinator() {
-        syncingCoordinator.delegate = self
+        configureFeedbackBannerVisibility()
     }
 
     func buildCouponViewModels() {
         couponViewModels = resultsController.fetchedObjects.map { coupon in
             CouponListCellViewModel(title: coupon.code,
-                                    subtitle: coupon.discountType.localizedName, // to be updated after UI is finalized
+                                    subtitle: coupon.summary(),
                                     accessibilityLabel: coupon.description.isEmpty ? coupon.description : coupon.code,
                                     status: coupon.expiryStatus().localizedName,
                                     statusBackgroundColor: coupon.expiryStatus().statusBackgroundColor)
@@ -128,8 +113,107 @@ final class CouponListViewModel {
     func tableWillDisplayCell(at indexPath: IndexPath) {
         syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: indexPath.row)
     }
+
+    /// Mark feedback request as dismissed and update banner visibility
+    ///
+    func dismissFeedbackBanner() {
+        let action = AppSettingsAction.updateFeedbackStatus(type: .couponManagement,
+                                                            status: .dismissed) { [weak self] result in
+            if let error = result.failure {
+                DDLogError("⛔️ Error updating feedback visibility for coupon management: \(error)")
+            }
+            self?.isFeedbackBannerEnabledInAppSettings = false
+        }
+        storesManager.dispatch(action)
+    }
+
+    /// Enable coupons for the store
+    ///
+    func enableCoupons() {
+        ServiceLocator.analytics.track(.couponSettingEnabled)
+
+        state = .loading
+        let action = SettingAction.enableCouponSetting(siteID: siteID) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success:
+                self.syncingCoordinator.synchronizeFirstPage(reason: nil, onCompletion: nil)
+            case .failure(let error):
+                DDLogError("⛔️ Error enabling coupon setting: \(error)")
+                self.state = .couponsDisabled
+            }
+        }
+        storesManager.dispatch(action)
+    }
 }
 
+// MARK: - Setup view model
+private extension CouponListViewModel {
+    static func createResultsController(siteID: Int64,
+                                                storageManager: StorageManagerType) -> ResultsController<StorageCoupon> {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let descriptor = NSSortDescriptor(keyPath: \StorageCoupon.dateCreated,
+                                          ascending: false)
+
+        return ResultsController<StorageCoupon>(storageManager: storageManager,
+                                                matching: predicate,
+                                                sortedBy: [descriptor])
+    }
+
+    /// Setup: Results Controller
+    ///
+    func configureResultsController() {
+        resultsController.onDidChangeContent = buildCouponViewModels
+        resultsController.onDidResetContent = buildCouponViewModels
+
+        do {
+            try resultsController.performFetch()
+            buildCouponViewModels()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
+    }
+
+    /// Setup: Syncing Coordinator
+    ///
+    func configureSyncingCoordinator() {
+        syncingCoordinator.delegate = self
+    }
+
+    func configureFeedbackBannerVisibility() {
+        checkAppSettingsForFeedbackBannerVisibility()
+        $state.combineLatest($isFeedbackBannerEnabledInAppSettings)
+            .map { state, feedbackBannerVisibility -> Bool in
+                state.shouldShowTopBanner && feedbackBannerVisibility
+            }
+            .assign(to: &$shouldDisplayFeedbackBanner)
+    }
+
+    func checkAppSettingsForFeedbackBannerVisibility() {
+        let action = AppSettingsAction.loadFeedbackVisibility(type: .couponManagement) { [weak self] result in
+            switch result {
+            case .success(let visible):
+                self?.isFeedbackBannerEnabledInAppSettings = visible
+            case.failure(let error):
+                self?.isFeedbackBannerEnabledInAppSettings = false
+                DDLogError("⛔️ Error load feedback visibility for coupon management: \(error)")
+            }
+        }
+        storesManager.dispatch(action)
+    }
+
+    /// Check whether coupons are enabled for this store.
+    ///
+    func loadCouponSetting(completionHandler: @escaping ((Result<Bool, Error>) -> Void)) {
+        let action = SettingAction.retrieveCouponSetting(siteID: siteID) { result in
+            if let isEnabled = try? result.get(), !isEnabled {
+                ServiceLocator.analytics.track(.couponSettingDisabled)
+            }
+            completionHandler(result)
+        }
+        storesManager.dispatch(action)
+    }
+}
 
 // MARK: - SyncingCoordinatorDelegate
 //
@@ -151,23 +235,38 @@ extension CouponListViewModel: SyncingCoordinatorDelegate {
                                 pageNumber: pageNumber,
                                 pageSize: pageSize) { [weak self] result in
                 guard let self = self else { return }
-                self.handleCouponSyncResult(result: result)
+                self.handleCouponSyncResult(result: result, pageNumber: pageNumber)
                 onCompletion?(result.isSuccess)
         }
 
         storesManager.dispatch(action)
     }
 
-    func handleCouponSyncResult(result: Result<Bool, Error>) {
+    func handleCouponSyncResult(result: Result<Bool, Error>, pageNumber: Int) {
         switch result {
         case .success:
             DDLogInfo("Synchronized coupons")
-
+            ServiceLocator.analytics.track(.couponsLoaded,
+                                           withProperties: ["is_loading_more": pageNumber != SyncingCoordinator.Defaults.pageFirstIndex])
+            transitionToResultsUpdatedState(hasData: couponViewModels.isNotEmpty)
         case .failure(let error):
             DDLogError("⛔️ Error synchronizing coupons: \(error)")
+            ServiceLocator.analytics.track(.couponsLoadedFailed, withError: error)
+            loadCouponSetting { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let isEnabled):
+                    if isEnabled {
+                        self.transitionToResultsUpdatedState(hasData: self.couponViewModels.isNotEmpty)
+                    } else {
+                        self.state = .couponsDisabled
+                    }
+                case .failure(let error):
+                    DDLogError("⛔️ Error retrieving coupon setting: \(error)")
+                    self.transitionToResultsUpdatedState(hasData: self.couponViewModels.isNotEmpty)
+                }
+            }
         }
-
-        self.transitionToResultsUpdatedState(hasData: couponViewModels.isNotEmpty)
     }
 }
 

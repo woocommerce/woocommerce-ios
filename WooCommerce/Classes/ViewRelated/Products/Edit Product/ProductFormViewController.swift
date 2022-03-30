@@ -173,7 +173,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         if viewModel.formType == .add {
             ServiceLocator.analytics.track(.addProductPublishTapped, withProperties: ["product_type": product.productType.rawValue])
         }
-        saveProduct(status: .publish)
+        saveProduct(status: .published)
     }
 
     func saveProductAsDraft() {

@@ -11,16 +11,27 @@ struct AddProductToOrder: View {
     ///
     @ObservedObject var viewModel: AddProductToOrderViewModel
 
+    ///   Environment safe areas
+    ///
+    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
+
     var body: some View {
         NavigationView {
-            Group {
+            VStack {
+                SearchHeader(filterText: $viewModel.searchTerm, filterPlaceholder: Localization.searchPlaceholder)
+                    .padding(.horizontal, insets: safeAreaInsets)
                 switch viewModel.syncStatus {
                 case .results:
                     InfiniteScrollList(isLoading: viewModel.shouldShowScrollIndicator,
                                        loadAction: viewModel.syncNextPage) {
                         ForEach(viewModel.productRows) { rowViewModel in
                             createProductRow(rowViewModel: rowViewModel)
+                                .padding(Constants.defaultPadding)
+                            Divider().frame(height: Constants.dividerHeight)
+                                .padding(.leading, Constants.defaultPadding)
                         }
+                        .padding(.horizontal, insets: safeAreaInsets)
+                        .background(Color(.listForeground).ignoresSafeArea())
                     }
                 case .empty:
                     EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
@@ -29,8 +40,11 @@ struct AddProductToOrder: View {
                     List(viewModel.ghostRows) { rowViewModel in
                         ProductRow(viewModel: rowViewModel)
                             .redacted(reason: .placeholder)
+                            .accessibilityRemoveTraits(.isButton)
+                            .accessibilityLabel(Localization.loadingRowsAccessibilityLabel)
                             .shimmering()
                     }
+                    .padding(.horizontal, insets: safeAreaInsets)
                     .listStyle(PlainListStyle())
                 default:
                     EmptyView()
@@ -50,6 +64,7 @@ struct AddProductToOrder: View {
             .onAppear {
                 viewModel.onLoadTrigger.send()
             }
+            .notice($viewModel.notice, autoDismiss: false)
         }
         .wooNavigationBarStyle()
     }
@@ -60,10 +75,17 @@ struct AddProductToOrder: View {
         if rowViewModel.numberOfVariations > 0,
            let addVariationToOrderVM = viewModel.getVariationsViewModel(for: rowViewModel.productOrVariationID) {
             LazyNavigationLink(destination: AddProductVariationToOrder(isPresented: $isPresented, viewModel: addVariationToOrderVM)) {
-                ProductRow(viewModel: rowViewModel)
+                HStack {
+                    ProductRow(viewModel: rowViewModel)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                    DisclosureIndicator()
+                }
             }
+            .accessibilityHint(Localization.variableProductRowAccessibilityHint)
         } else {
             ProductRow(viewModel: rowViewModel)
+                .accessibilityHint(Localization.productRowAccessibilityHint)
                 .onTapGesture {
                     viewModel.selectProduct(rowViewModel.productOrVariationID)
                     isPresented.toggle()
@@ -73,11 +95,25 @@ struct AddProductToOrder: View {
 }
 
 private extension AddProductToOrder {
+    enum Constants {
+        static let dividerHeight: CGFloat = 1
+        static let defaultPadding: CGFloat = 16
+    }
+
     enum Localization {
         static let title = NSLocalizedString("Add Product", comment: "Title for the screen to add a product to an order")
         static let close = NSLocalizedString("Close", comment: "Text for the close button in the Add Product screen")
         static let emptyStateMessage = NSLocalizedString("No products found",
                                                          comment: "Message displayed if there are no products to display in the Add Product screen")
+        static let searchPlaceholder = NSLocalizedString("Search Products", comment: "Placeholder on the search field to search for a specific product")
+        static let productRowAccessibilityHint = NSLocalizedString("Adds product to order.",
+                                                                   comment: "Accessibility hint for selecting a product in the Add Product screen")
+        static let variableProductRowAccessibilityHint = NSLocalizedString(
+            "Opens list of product variations.",
+            comment: "Accessibility hint for selecting a variable product in the Add Product screen"
+        )
+        static let loadingRowsAccessibilityLabel = NSLocalizedString("Loading products",
+                                                                     comment: "Accessibility label for placeholder rows while products are loading")
     }
 }
 

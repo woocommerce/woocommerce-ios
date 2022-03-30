@@ -22,6 +22,23 @@ extension GhostableViewController {
         ghostTableViewController.didMove(toParent: self)
     }
 
+    /// Displays the animated ghost view by adding the `GhostTableViewController` as child, and its view on top of the specified view so size and position are the same
+    ///
+    /// - parameter containerView: The view to which the `GhostTableViewController` `view` will be added
+    ///
+    func displayGhostContent(over containerView: UIView) {
+        guard let ghostView = ghostTableViewController.view,
+        containerView.isDescendant(of: view) else {
+            return
+        }
+
+        ghostView.translatesAutoresizingMaskIntoConstraints = false
+        addChild(ghostTableViewController)
+        containerView.addSubview(ghostView)
+        containerView.pinSubviewToSafeArea(ghostView)
+        ghostTableViewController.didMove(toParent: self)
+    }
+
     /// Removes the animated ghost
     func removeGhostContent() {
         guard let ghostView = ghostTableViewController.view else {

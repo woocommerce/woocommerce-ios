@@ -604,6 +604,23 @@ final class WCPayRemoteTests: XCTestCase {
         XCTAssertEqual(location.locationID, expectedLocationID)
     }
 
+    func test_loadDefaultReaderLocation_properly_handles_error_response() throws {
+        let remote = WCPayRemote(network: network)
+
+        network.simulateResponse(
+            requestUrlSuffix: "payments/terminal/locations/store",
+            filename: "wcpay-location-error"
+        )
+
+        let result: Result<RemoteReaderLocation, Error> = waitFor { promise in
+            remote.loadDefaultReaderLocation(for: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        XCTAssertTrue(result.isFailure)
+    }
+
     func test_fetchCharge_properly_returns_charge_with_payment_method_details() throws {
         let remote = WCPayRemote(network: network)
         let chargeID = "ch_3KMVap2EdyGr1FMV1uKJEWtg"

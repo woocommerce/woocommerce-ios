@@ -25,9 +25,10 @@ struct AddEditCoupon: View {
                                         })
                                     }
                                 }
+                .navigationTitle(viewModel.title)
+                .navigationBarTitleDisplayMode(.large)
+                .wooNavigationBarStyle()
         }
-        .navigationTitle(viewModel.title)
-        .wooNavigationBarStyle()
     }
 }
 

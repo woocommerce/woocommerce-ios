@@ -17,6 +17,8 @@ struct HubMenu: View {
     /// Make sure to reset the value to false after dismissing sub-flows
     @State private var shouldDisableItemTaps = false
 
+    /// A timer used as a fallback method for resetting disabled state of the menu
+    ///
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     init(siteID: Int64, navigationController: UINavigationController? = nil) {

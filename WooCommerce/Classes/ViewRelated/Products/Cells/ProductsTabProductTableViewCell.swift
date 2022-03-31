@@ -131,7 +131,7 @@ private extension ProductsTabProductTableViewCell {
 
         // Assigning a minimum default height to the labels might be helpful (e.g for the ghosting placeholder animation)
         nameLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 20).isActive = true
-        detailsLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 15).isActive = true
+        detailsLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 16).isActive = true
 
         NSLayoutConstraint.activate([
             bottomBorderView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),

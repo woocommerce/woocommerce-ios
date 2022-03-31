@@ -25,7 +25,7 @@ final class TopPerformerDataViewController: UIViewController, GhostableViewContr
 
     /// A child view controller that is shown when `displayGhostContent()` is called.
     ///
-    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(displaysSectionHeader: false,
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(sectionHeaderVerticalSpace: .none,
                                                                                                 cellClass: ProductTableViewCell.self,
                                                                                                 estimatedRowHeight: Constants.estimatedRowHeight,
                                                                                                 backgroundColor: .basicBackground,

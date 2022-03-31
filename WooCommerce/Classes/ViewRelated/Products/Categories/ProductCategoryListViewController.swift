@@ -10,7 +10,7 @@ final class ProductCategoryListViewController: UIViewController, GhostableViewCo
 
     @IBOutlet private var tableView: UITableView!
 
-    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(displaysSectionHeader: false,
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(sectionHeaderVerticalSpace: .none,
                                                                                                 cellClass: ProductCategoryTableViewCell.self))
 
     let viewModel: ProductCategoryListViewModel

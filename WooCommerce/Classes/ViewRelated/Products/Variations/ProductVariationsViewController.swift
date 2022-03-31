@@ -13,11 +13,12 @@ final class ProductVariationsViewController: UIViewController, GhostableViewCont
     ///
     private lazy var emptyStateViewController = EmptyStateViewController(style: .list)
 
-    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: ProductsTabProductTableViewCell.self,
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(sectionHeaderVerticalSpace: .medium,
+                                                                                                cellClass: ProductsTabProductTableViewCell.self,
                                                                                                 rowsPerSection: Settings.placeholderRowsPerSection,
                                                                                                 estimatedRowHeight: Settings.estimatedRowHeight,
                                                                                                 separatorStyle: .none,
-                                                                                               isScrollEnabled: false))
+                                                                                                isScrollEnabled: false))
 
     /// Whether the placeholder view should be shown when reloading the data
     ///
@@ -209,10 +210,6 @@ private extension ProductVariationsViewController {
         tableView.cellLayoutMarginsFollowReadableWidth = true
         tableView.estimatedRowHeight = Settings.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
-
-        // Removes extra header spacing in ghost content view.
-        ghostTableViewController.tableView.estimatedSectionHeaderHeight = 0
-        ghostTableViewController.tableView.sectionHeaderHeight = 0
 
         tableView.backgroundColor = .listBackground
         tableView.refreshControl = refreshControl

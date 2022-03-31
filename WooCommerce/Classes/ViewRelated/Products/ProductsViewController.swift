@@ -16,7 +16,8 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         return tableView
     }()
 
-    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: ProductsTabProductTableViewCell.self,
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(sectionHeaderVerticalSpace: .medium,
+                                                                                                cellClass: ProductsTabProductTableViewCell.self,
                                                                                                 rowsPerSection: Constants.placeholderRowsPerSection,
                                                                                                 estimatedRowHeight: Constants.estimatedRowHeight,
                                                                                                 separatorStyle: .none,
@@ -49,6 +50,8 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         return stackView
     }()
 
+    /// Whether the placeholder view should be shown when reloading the data
+    ///
     private var shouldShowPlaceholderView = false
 
     /// Top toolbar that shows the sort and filter CTAs.
@@ -348,10 +351,6 @@ private extension ProductsViewController {
         tableView.cellLayoutMarginsFollowReadableWidth = true
         tableView.estimatedRowHeight = Constants.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
-
-        // Removes extra header spacing in ghost content view.
-        ghostTableViewController.tableView.estimatedSectionHeaderHeight = 0
-        ghostTableViewController.tableView.sectionHeaderHeight = 0
 
         tableView.backgroundColor = .listBackground
         tableView.tableFooterView = footerSpinnerView

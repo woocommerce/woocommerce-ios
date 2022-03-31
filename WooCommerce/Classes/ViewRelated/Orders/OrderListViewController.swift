@@ -51,7 +51,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         return dataSource
     }()
 
-    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(displaysSectionHeader: false,
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(sectionHeaderVerticalSpace: .none,
                                                                                                 cellClass: OrderTableViewCell.self,
                                                                                                 estimatedRowHeight: Settings.estimatedRowHeight,
                                                                                                 tableViewStyle: .grouped,

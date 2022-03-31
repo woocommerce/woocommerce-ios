@@ -7,11 +7,21 @@ import class AutomatticTracks.CrashLogging
 
 /// Displays a paginated list of Product Variations with its price or visibility.
 ///
-final class ProductVariationsViewController: UIViewController {
+final class ProductVariationsViewController: UIViewController, GhostableViewController {
 
     /// Empty state screen
     ///
     private lazy var emptyStateViewController = EmptyStateViewController(style: .list)
+
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: ProductsTabProductTableViewCell.self,
+                                                                                                rowsPerSection: Settings.placeholderRowsPerSection,
+                                                                                                estimatedRowHeight: Settings.estimatedRowHeight,
+                                                                                                separatorStyle: .none,
+                                                                                               isScrollEnabled: false))
+
+    /// Whether the placeholder view should be shown when reloading the data
+    ///
+    private var shouldShowPlaceholderView = false
 
     @IBOutlet private weak var tableView: UITableView!
 
@@ -201,8 +211,8 @@ private extension ProductVariationsViewController {
         tableView.rowHeight = UITableView.automaticDimension
 
         // Removes extra header spacing in ghost content view.
-        tableView.estimatedSectionHeaderHeight = 0
-        tableView.sectionHeaderHeight = 0
+        ghostTableViewController.tableView.estimatedSectionHeaderHeight = 0
+        ghostTableViewController.tableView.sectionHeaderHeight = 0
 
         tableView.backgroundColor = .listBackground
         tableView.refreshControl = refreshControl
@@ -220,6 +230,9 @@ private extension ProductVariationsViewController {
     ///
     func registerTableViewCells() {
         tableView.register(ProductsTabProductTableViewCell.self)
+
+        // Register a simple one as the container for the placeholder ghost view
+        tableView.register(UITableViewCell.self)
     }
 
     /// Shows or hides the empty state screen.
@@ -380,27 +393,34 @@ private extension ProductVariationsViewController {
 extension ProductVariationsViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return resultsController.sections.count
+        return shouldShowPlaceholderView ? 1 : resultsController.sections.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return resultsController.sections[section].numberOfObjects
+        return shouldShowPlaceholderView ? 1 : resultsController.sections[section].numberOfObjects
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(ProductsTabProductTableViewCell.self, for: indexPath)
+        if shouldShowPlaceholderView {
+            let cell = tableView.dequeueReusableCell(UITableViewCell.self, for: indexPath)
+            displayGhostContent(over: cell.contentView)
 
-        let productVariation = resultsController.object(at: indexPath)
-        let model = EditableProductVariationModel(productVariation: productVariation,
-                                                  allAttributes: allAttributes,
-                                                  parentProductSKU: parentProductSKU)
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCell(ProductsTabProductTableViewCell.self, for: indexPath)
 
-        let viewModel = ProductsTabProductViewModel(productVariationModel: model)
-        cell.update(viewModel: viewModel, imageService: imageService)
-        cell.selectionStyle = .none
-        cell.accessoryType = .disclosureIndicator
+            let productVariation = resultsController.object(at: indexPath)
+            let model = EditableProductVariationModel(productVariation: productVariation,
+                                                      allAttributes: allAttributes,
+                                                      parentProductSKU: parentProductSKU)
 
-        return cell
+            let viewModel = ProductsTabProductViewModel(productVariationModel: model)
+            cell.update(viewModel: viewModel, imageService: imageService)
+            cell.selectionStyle = .none
+            cell.accessoryType = .disclosureIndicator
+
+            return cell
+        }
     }
 }
 
@@ -414,7 +434,13 @@ extension ProductVariationsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
+        return shouldShowPlaceholderView ? placeholderViewHeight() : UITableView.automaticDimension
+    }
+
+    private func placeholderViewHeight() -> CGFloat {
+        let placeholderRowsPerSection = Settings.placeholderRowsPerSection.first ?? 3
+
+        return Settings.estimatedRowHeight * CGFloat(placeholderRowsPerSection)
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -595,16 +621,17 @@ private extension ProductVariationsViewController {
     /// Renders the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
     ///
     func displayPlaceholderProducts() {
-        let options = GhostOptions(reuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
-        tableView.displayGhostContent(options: options, style: .wooDefaultGhostStyle)
-
+        shouldShowPlaceholderView = true
         resultsController.stopForwardingEvents()
+        tableView.reloadData()
     }
 
     /// Removes the Placeholder Products (and restores the ResultsController <> UITableView link).
     ///
     func removePlaceholderProducts() {
-        tableView.removeGhostContent()
+        shouldShowPlaceholderView = false
+        removeGhostContent()
+
         resultsController.startForwardingEvents(to: tableView)
         configureResultsControllerEventHandling(resultsController)
         tableView.reloadData()

@@ -1,6 +1,7 @@
 import Combine
 import Yosemite
 import protocol Storage.StorageManagerType
+import UIKit
 
 final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormViewModelProtocol {
 
@@ -33,6 +34,15 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
 
         if addressesAreDifferent {
             showDifferentAddressForm = true
+        }
+    }
+
+    /// Creates and presents a discard changes action sheet.
+    ///
+    func presentDiscardChangesActionSheet(viewController: UIViewController) {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: viewController) { [weak self] in
+            viewController.dismiss(animated: true, completion: nil)
+            self?.userDidCancelFlow()
         }
     }
 

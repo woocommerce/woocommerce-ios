@@ -5,6 +5,12 @@ import SwiftUI
 struct DiscardChangesWrapper<Content: View>: UIViewControllerRepresentable {
     let view: Content
 
+    /// Method that creates and presents a discard changes action sheet.
+    ///
+    /// Can inject a method from `UIAlertController+Helpers` or a custom action sheet, as needed.
+    ///
+    let presentActionSheet: (UIViewController) -> Void
+
     /// Whether the view can be dismissed. When `false` the discard changes prompt is displayed.
     ///
     let canDismiss: Bool
@@ -41,10 +47,7 @@ struct DiscardChangesWrapper<Content: View>: UIViewControllerRepresentable {
         }
 
         func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
-            UIAlertController.presentDiscardChangesActionSheet(viewController: presentationController.presentedViewController) { [weak self] in
-                presentationController.presentedViewController.dismiss(animated: true)
-                self?.wrapper.didDismiss?()
-            }
+            wrapper.presentActionSheet(presentationController.presentedViewController)
         }
 
         func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
@@ -56,9 +59,12 @@ struct DiscardChangesWrapper<Content: View>: UIViewControllerRepresentable {
 extension View {
     /// Adds a discard changes prompt on the dismiss drag gesture for the provided view.
     /// - Parameters:
+    ///   - presentActionSheet: Method that creates and presents a discard changes action sheet.
     ///   - canDismiss: Whether the view can be dismissed. When `false` the discard changes prompt is displayed.
-    ///   - didCancelFlow: Optional method to be invoked when the view is dismissed.
-    func discardChangesPrompt(canDismiss: Bool, didDismiss: (() -> Void)? = nil) -> some View {
-        DiscardChangesWrapper(view: self, canDismiss: canDismiss, didDismiss: didDismiss)
+    ///   - didDismiss: Optional method to be invoked when the view is dismissed.
+    func discardChangesPrompt(presentActionSheet: @escaping (UIViewController) -> Void,
+                              canDismiss: Bool,
+                              didDismiss: (() -> Void)? = nil) -> some View {
+        DiscardChangesWrapper(view: self, presentActionSheet: presentActionSheet, canDismiss: canDismiss, didDismiss: didDismiss)
     }
 }

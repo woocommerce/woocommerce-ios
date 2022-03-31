@@ -130,6 +130,14 @@ final class NewOrderViewModel: ObservableObject {
     ///
     @Published private(set) var customerDataViewModel: CustomerDataViewModel = .init(billingAddress: nil, shippingAddress: nil)
 
+    /// View model for the customer details address form.
+    ///
+    @Published var addressFormViewModel: CreateOrderAddressFormViewModel?
+
+    /// Trigger to reset the address form view model when changes are discarded.
+    ///
+    var resetAddressFormTrigger = PassthroughSubject<Void, Never>()
+
     // MARK: Customer note properties
 
     /// Representation of customer note data display properties.
@@ -202,6 +210,7 @@ final class NewOrderViewModel: ObservableObject {
         configureStatusBadgeViewModel()
         configureProductRowViewModels()
         configureCustomerDataViewModel()
+        configureAddressFormViewModel()
         configurePaymentDataViewModel()
         configureCustomerNoteDataViewModel()
     }
@@ -566,6 +575,18 @@ private extension NewOrderViewModel {
                 CustomerDataViewModel(billingAddress: $0.billingAddress, shippingAddress: $0.shippingAddress)
             }
             .assign(to: &$customerDataViewModel)
+    }
+
+    /// Configures address form view model and updates it when the form is reset.
+    ///
+    func configureAddressFormViewModel() {
+        addressFormViewModel = createOrderAddressFormViewModel()
+
+        resetAddressFormTrigger
+            .map { [weak self] _ in
+                self?.createOrderAddressFormViewModel()
+            }
+            .assign(to: &$addressFormViewModel)
     }
 
     /// Updates notes data viewmodel based on order customer notes.

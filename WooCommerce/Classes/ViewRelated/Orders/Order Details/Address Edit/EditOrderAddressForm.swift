@@ -60,7 +60,7 @@ final class EditOrderAddressHostingController: UIHostingController<EditOrderAddr
 ///
 extension EditOrderAddressHostingController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
-        !rootView.viewModel.hasPendingChanges()
+        !rootView.viewModel.hasPendingChanges
     }
 
     func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {

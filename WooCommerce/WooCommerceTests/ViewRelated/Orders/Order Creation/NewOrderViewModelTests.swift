@@ -313,13 +313,12 @@ final class NewOrderViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
-        let addressViewModel = viewModel.createOrderAddressFormViewModel()
         XCTAssertFalse(viewModel.customerDataViewModel.isDataAvailable)
 
         // When
-        addressViewModel.fields.firstName = sampleAddress1().firstName
-        addressViewModel.fields.lastName = sampleAddress1().lastName
-        addressViewModel.saveAddress(onFinish: { _ in })
+        viewModel.addressFormViewModel?.fields.firstName = sampleAddress1().firstName
+        viewModel.addressFormViewModel?.fields.lastName = sampleAddress1().lastName
+        viewModel.addressFormViewModel?.saveAddress(onFinish: { _ in })
 
         // Then
         XCTAssertTrue(viewModel.customerDataViewModel.isDataAvailable)
@@ -588,12 +587,11 @@ final class NewOrderViewModelTests: XCTestCase {
         // Given
         let storageManager = MockStorageManager()
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
-        let addressViewModel = viewModel.createOrderAddressFormViewModel()
 
         // When
-        addressViewModel.fields.firstName = sampleAddress1().firstName
-        addressViewModel.fields.lastName = sampleAddress1().lastName
-        addressViewModel.saveAddress(onFinish: { _ in })
+        viewModel.addressFormViewModel?.fields.firstName = sampleAddress1().firstName
+        viewModel.addressFormViewModel?.fields.lastName = sampleAddress1().lastName
+        viewModel.addressFormViewModel?.saveAddress(onFinish: { _ in })
 
         // Then
         XCTAssertTrue(viewModel.hasChanges)
@@ -672,12 +670,11 @@ final class NewOrderViewModelTests: XCTestCase {
         // Given
         let analytics = MockAnalyticsProvider()
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
-        let addressViewModel = viewModel.createOrderAddressFormViewModel()
 
         // When
-        addressViewModel.fields.address1 = sampleAddress1().address1
-        addressViewModel.showDifferentAddressForm = true
-        addressViewModel.saveAddress(onFinish: { _ in })
+        viewModel.addressFormViewModel?.fields.address1 = sampleAddress1().address1
+        viewModel.addressFormViewModel?.showDifferentAddressForm = true
+        viewModel.addressFormViewModel?.saveAddress(onFinish: { _ in })
 
         // Then
         XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderCustomerAdd.rawValue])
@@ -692,11 +689,10 @@ final class NewOrderViewModelTests: XCTestCase {
         // Given
         let analytics = MockAnalyticsProvider()
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
-        let addressViewModel = viewModel.createOrderAddressFormViewModel()
 
         // When
-        addressViewModel.fields.address1 = ""
-        addressViewModel.saveAddress(onFinish: { _ in })
+        viewModel.addressFormViewModel?.fields.address1 = ""
+        viewModel.addressFormViewModel?.saveAddress(onFinish: { _ in })
 
         // Then
         XCTAssertTrue(analytics.receivedEvents.isEmpty)
@@ -776,6 +772,18 @@ final class NewOrderViewModelTests: XCTestCase {
 
         // When
         viewModel.discardOrder()
+    }
+
+    func test_resetAddressFormTrigger_resets_customer_details_address_form_fields() {
+        // Given
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID)
+        viewModel.addressFormViewModel?.fields.firstName = sampleAddress1().firstName
+
+        // When
+        viewModel.resetAddressFormTrigger.send()
+
+        // Then
+        XCTAssertEqual(viewModel.addressFormViewModel?.fields.firstName, "")
     }
 }
 

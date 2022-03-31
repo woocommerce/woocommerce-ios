@@ -7,24 +7,26 @@ struct OrderCustomerSection: View {
     /// Parent view model to access all data
     @ObservedObject var viewModel: NewOrderViewModel
 
-    /// View model to drive the view content
-    private var customerDataViewModel: NewOrderViewModel.CustomerDataViewModel {
-        viewModel.customerDataViewModel
-    }
+    /// View model for the address form.
+    ///
+    @ObservedObject var addressFormViewModel: CreateOrderAddressFormViewModel
 
     @State private var showAddressForm: Bool = false
 
     var body: some View {
         OrderCustomerSectionContent(viewModel: viewModel.customerDataViewModel, showAddressForm: $showAddressForm)
-        .sheet(isPresented: $showAddressForm) {
-            let addressFormViewModel = viewModel.createOrderAddressFormViewModel()
-            NavigationView {
-                EditOrderAddressForm(dismiss: {
-                    showAddressForm.toggle()
-                }, viewModel: addressFormViewModel)
+            .sheet(isPresented: $showAddressForm) {
+                NavigationView {
+                    EditOrderAddressForm(dismiss: {
+                        showAddressForm.toggle()
+                    }, viewModel: addressFormViewModel)
+                }
+                .discardChangesPrompt(canDismiss: !addressFormViewModel.hasPendingChanges,
+                                      didDismiss: addressFormViewModel.userDidCancelFlow)
+                .onDisappear {
+                    viewModel.resetAddressFormTrigger.send()
+                }
             }
-            .discardChangesPrompt(canDismiss: addressFormViewModel.canDismiss, didDismiss: addressFormViewModel.userDidCancelFlow)
-        }
     }
 }
 

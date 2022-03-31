@@ -20,28 +20,31 @@ struct AddEditCoupon: View {
                     VStack (alignment: .leading) {
                         ListHeaderView(text: Localization.headerCouponDetails.uppercased(), alignment: .left)
 
-                        TitleAndTextFieldRow(title: Localization.couponAmountPercentage,
-                                             placeholder: Localization.couponAmountPercentage,
-                                             text: $viewModel.amountField,
-                                             editable: false,
-                                             fieldAlignment: .leading,
-                                             keyboardType: .asciiCapableNumberPad)
-                        Divider()
-                            .padding(.leading, Constants.margin)
+                        Group {
+                            TitleAndTextFieldRow(title: Localization.couponAmountPercentage,
+                                                 placeholder: Localization.couponAmountPercentage,
+                                                 text: $viewModel.amountField,
+                                                 editable: false,
+                                                 fieldAlignment: .leading,
+                                                 keyboardType: .asciiCapableNumberPad)
+                            Divider()
+                                .padding(.leading, Constants.margin)
+                        }
 
                         Text(Localization.footerCouponAmountPercentage)
                             .subheadlineStyle()
                             .padding(.horizontal, Constants.margin)
 
-                        TitleAndTextFieldRow(title: Localization.couponCode,
-                                             placeholder: Localization.couponCode,
-                                             text: $viewModel.codeField,
-                                             editable: false,
-                                             fieldAlignment: .leading,
-                                             keyboardType: .asciiCapableNumberPad)
-
-                        Divider()
-                            .padding(.leading, Constants.margin)
+                        Group {
+                            TitleAndTextFieldRow(title: Localization.couponCode,
+                                                 placeholder: Localization.couponCode,
+                                                 text: $viewModel.codeField,
+                                                 editable: false,
+                                                 fieldAlignment: .leading,
+                                                 keyboardType: .asciiCapableNumberPad)
+                            Divider()
+                                .padding(.leading, Constants.margin)
+                        }
 
                         Text(Localization.footerCouponCode)
                             .subheadlineStyle()
@@ -63,6 +66,15 @@ struct AddEditCoupon: View {
                         }
                         .buttonStyle(SecondaryButtonStyle())
                         .padding(.horizontal, Constants.margin)
+                        .padding(.bottom, Constants.verticalSpacing)
+
+                        Group {
+                            TitleAndValueRow(title: Localization.couponExpiryDate,
+                                             value: .placeholder(Localization.couponExpiryDatePlaceholder),
+                                             selectionStyle: .disclosure, action: { })
+                            Divider()
+                        }
+
                     }
                 }
                 .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
@@ -87,6 +99,7 @@ private extension AddEditCoupon {
 
     enum Constants {
         static let margin: CGFloat = 16
+        static let verticalSpacing: CGFloat = 8
     }
 
     enum Localization {
@@ -114,6 +127,12 @@ private extension AddEditCoupon {
         static let addDescriptionButton = NSLocalizedString(
             "+ Add Description (Optional)",
             comment: "Button for adding a description to a coupon in the view for adding or editing a coupon.")
+        static let couponExpiryDate = NSLocalizedString(
+            "Coupon Expiry Date",
+            comment: "Field in the view for adding or editing a coupon.")
+        static let couponExpiryDatePlaceholder = NSLocalizedString(
+            "None",
+            comment: "Coupon expiry date placeholder in the view for adding or editing a coupon")
     }
 }
 

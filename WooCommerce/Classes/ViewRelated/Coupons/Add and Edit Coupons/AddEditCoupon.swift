@@ -51,16 +51,18 @@ struct AddEditCoupon: View {
                             //TODO: handle action
                         } label: {
                             Text(Localization.regenerateCouponCodeButton)
-                        }.buttonStyle(LinkButtonStyle())
-                            .padding(.horizontal, Constants.margin)
+                        }
+                        .buttonStyle(LinkButtonStyle())
+                        .padding(.horizontal, Constants.margin)
 
                         Button {
                             //TODO: handle action
                         } label: {
                             Text(Localization.addDescriptionButton)
                                 .bodyStyle()
-                        }.buttonStyle(SecondaryButtonStyle())
-                            .padding(.horizontal, Constants.margin)
+                        }
+                        .buttonStyle(SecondaryButtonStyle())
+                        .padding(.horizontal, Constants.margin)
                     }
                 }
                 .ignoresSafeArea(.container, edges: [.horizontal, .bottom])

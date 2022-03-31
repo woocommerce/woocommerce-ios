@@ -9,8 +9,7 @@ final class PluginListViewController: UIViewController, GhostableViewController 
 
     @IBOutlet private var tableView: UITableView!
 
-    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(sectionHeaderVerticalSpace: .none,
-                                                                                                cellClass: HeadlineLabelTableViewCell.self,
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: HeadlineLabelTableViewCell.self,
                                                                                                 rowsPerSection: [10],
                                                                                                 isScrollEnabled: false))
 

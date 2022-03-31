@@ -18,7 +18,7 @@ struct GhostTableViewOptions {
     fileprivate let separatorStyle: UITableViewCell.SeparatorStyle
     fileprivate let isScrollEnabled: Bool
 
-    init(sectionHeaderVerticalSpace: GhostTableViewSectionHeaderVerticalSpace = .large,
+    init(sectionHeaderVerticalSpace: GhostTableViewSectionHeaderVerticalSpace = .none,
          cellClass: UITableViewCell.Type,
          rowsPerSection: [Int] = [3],
          estimatedRowHeight: CGFloat = 44,

@@ -113,7 +113,6 @@ private extension ProductReviewsViewController {
         tableView.delegate = self
         tableView.tableFooterView = footerSpinnerView
         tableView.sectionFooterHeight = .leastNonzeroMagnitude
-        tableView.allowsSelection = false
     }
 
     /// Setup: ResultsController

@@ -18,71 +18,72 @@ struct AddEditCoupon: View {
             GeometryReader { geometry in
                 ScrollView {
                     VStack (alignment: .leading) {
-                        ListHeaderView(text: Localization.headerCouponDetails.uppercased(), alignment: .left)
-
                         Group {
-                            TitleAndTextFieldRow(title: Localization.couponAmountPercentage,
-                                                 placeholder: Localization.couponAmountPercentage,
-                                                 text: $viewModel.amountField,
-                                                 editable: false,
-                                                 fieldAlignment: .leading,
-                                                 keyboardType: .asciiCapableNumberPad)
-                            Divider()
-                                .padding(.leading, Constants.margin)
-                        }
+                            ListHeaderView(text: Localization.headerCouponDetails.uppercased(), alignment: .left)
 
-                        Text(Localization.footerCouponAmountPercentage)
-                            .subheadlineStyle()
-                            .padding(.horizontal, Constants.margin)
+                            Group {
+                                TitleAndTextFieldRow(title: Localization.couponAmountPercentage,
+                                                     placeholder: Localization.couponAmountPercentage,
+                                                     text: $viewModel.amountField,
+                                                     editable: false,
+                                                     fieldAlignment: .leading,
+                                                     keyboardType: .asciiCapableNumberPad)
+                                Divider()
+                                    .padding(.leading, Constants.margin)
+                            }
 
-                        Group {
-                            TitleAndTextFieldRow(title: Localization.couponCode,
-                                                 placeholder: Localization.couponCode,
-                                                 text: $viewModel.codeField,
-                                                 editable: false,
-                                                 fieldAlignment: .leading,
-                                                 keyboardType: .asciiCapableNumberPad)
-                            Divider()
-                                .padding(.leading, Constants.margin)
-                        }
-
-                        Text(Localization.footerCouponCode)
-                            .subheadlineStyle()
-                            .padding(.horizontal, Constants.margin)
-
-                        Button {
-                            //TODO: handle action
-                        } label: {
-                            Text(Localization.regenerateCouponCodeButton)
-                        }
-                        .buttonStyle(LinkButtonStyle())
-                        .padding(.horizontal, Constants.margin)
-
-                        Button {
-                            //TODO: handle action
-                        } label: {
-                            Text(Localization.addDescriptionButton)
-                                .bodyStyle()
-                        }
-                        .buttonStyle(SecondaryButtonStyle())
-                        .padding(.horizontal, Constants.margin)
-                        .padding(.bottom, Constants.verticalSpacing)
-
-                        Group {
-                            TitleAndValueRow(title: Localization.couponExpiryDate,
-                                             value: .placeholder(Localization.couponExpiryDatePlaceholder),
-                                             selectionStyle: .disclosure, action: { })
-                            Divider()
-                                .padding(.leading, Constants.margin)
-                        }
-
-                        Group {
-                            TitleAndToggleRow(title: Localization.includeFreeShipping, isOn: .constant(false))
+                            Text(Localization.footerCouponAmountPercentage)
+                                .subheadlineStyle()
                                 .padding(.horizontal, Constants.margin)
-                            Divider()
-                                .padding(.leading, Constants.margin)
-                        }
 
+                            Group {
+                                TitleAndTextFieldRow(title: Localization.couponCode,
+                                                     placeholder: Localization.couponCode,
+                                                     text: $viewModel.codeField,
+                                                     editable: false,
+                                                     fieldAlignment: .leading,
+                                                     keyboardType: .asciiCapableNumberPad)
+                                Divider()
+                                    .padding(.leading, Constants.margin)
+                            }
+
+                            Text(Localization.footerCouponCode)
+                                .subheadlineStyle()
+                                .padding(.horizontal, Constants.margin)
+
+                            Button {
+                                //TODO: handle action
+                            } label: {
+                                Text(Localization.regenerateCouponCodeButton)
+                            }
+                            .buttonStyle(LinkButtonStyle())
+                            .padding(.horizontal, Constants.margin)
+
+                            Button {
+                                //TODO: handle action
+                            } label: {
+                                Text(Localization.addDescriptionButton)
+                                    .bodyStyle()
+                            }
+                            .buttonStyle(SecondaryButtonStyle())
+                            .padding(.horizontal, Constants.margin)
+                            .padding(.bottom, Constants.verticalSpacing)
+
+                            Group {
+                                TitleAndValueRow(title: Localization.couponExpiryDate,
+                                                 value: .placeholder(Localization.couponExpiryDatePlaceholder),
+                                                 selectionStyle: .disclosure, action: { })
+                                Divider()
+                                    .padding(.leading, Constants.margin)
+                            }
+
+                            Group {
+                                TitleAndToggleRow(title: Localization.includeFreeShipping, isOn: .constant(false))
+                                    .padding(.horizontal, Constants.margin)
+                                Divider()
+                                    .padding(.leading, Constants.margin)
+                            }
+                        }
 
                         Group {
                             ListHeaderView(text: Localization.headerApplyCouponTo.uppercased(), alignment: .left)
@@ -107,6 +108,25 @@ struct AddEditCoupon: View {
                             .buttonStyle(SecondaryButtonStyle())
                             .padding(.horizontal, Constants.margin)
                         }
+
+                        Group {
+                            ListHeaderView(text: Localization.headerUsageDetails.uppercased(), alignment: .left)
+
+                            TitleAndValueRow(title: Localization.usageRestrictions,
+                                             value: .placeholder(""),
+                                             selectionStyle: .disclosure, action: { })
+                            Divider()
+                                .padding(.leading, Constants.margin)
+                        }
+
+                        Button {
+                            //TODO: handle action
+                        } label: {
+                            Text(Localization.saveButton)
+                        }
+                        .buttonStyle(PrimaryButtonStyle())
+                        .padding(.horizontal, Constants.margin)
+                        .padding(.top, Constants.verticalSpacing)
                     }
                 }
                 .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
@@ -177,6 +197,13 @@ private extension AddEditCoupon {
         static let editProductCategoriesButton = NSLocalizedString(
             "Edit Product Categories",
             comment: "Button for specify the product categories where a coupon can be applied in the view for adding or editing a coupon.")
+        static let headerUsageDetails = NSLocalizedString(
+            "Usage Details",
+            comment: "Header of the section usage details in the view for adding or editing a coupon.")
+        static let usageRestrictions = NSLocalizedString(
+            "Usage Restrictions",
+            comment: "Field in the view for adding or editing a coupon.")
+        static let saveButton = NSLocalizedString("Save", comment: "Action for saving a Coupon remotely")
     }
 }
 

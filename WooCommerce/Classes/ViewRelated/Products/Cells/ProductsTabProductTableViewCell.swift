@@ -129,6 +129,10 @@ private extension ProductsTabProductTableViewCell {
         // Not initially enabled, saved for possible compact icon case
         productImageViewFixedHeightConstraint = productImageView.heightAnchor.constraint(equalTo: stackView.heightAnchor)
 
+        // Assigning a minimum default height for the labels might be helpful (e.g for the ghosting placeholder animation)
+        nameLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 20).isActive = true
+        detailsLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 20).isActive = true
+
         NSLayoutConstraint.activate([
             bottomBorderView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             bottomBorderView.trailingAnchor.constraint(equalTo: trailingAnchor),

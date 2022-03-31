@@ -97,8 +97,8 @@ private extension AddAttributeViewController {
                 self?.removeGhostContent()
                 self?.displaySyncingErrorNotice()
             case .synced:
-                self?.removeGhostContent()
                 self?.tableView.reloadData()
+                self?.removeGhostContent()
             }
         }
     }

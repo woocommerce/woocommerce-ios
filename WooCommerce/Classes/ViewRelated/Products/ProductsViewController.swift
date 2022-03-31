@@ -21,7 +21,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
                                                                                                 rowsPerSection: Constants.placeholderRowsPerSection,
                                                                                                 estimatedRowHeight: Constants.estimatedRowHeight,
                                                                                                 separatorStyle: .none,
-                                                                                               isScrollEnabled: false))
+                                                                                                isScrollEnabled: false))
 
     /// Pull To Refresh Support.
     ///

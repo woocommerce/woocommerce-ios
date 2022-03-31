@@ -594,7 +594,8 @@ private extension CardReaderConnectionController {
                 ServiceLocator.analytics.track(
                     event: WooAnalyticsEvent.InPersonPayments.cardReaderConnectionFailed(forGatewayID: self.gatewayID,
                                                                                          error: error,
-                                                                                         countryCode: self.configuration.countryCode)
+                                                                                         countryCode: self.configuration.countryCode,
+                                                                                         cardReaderModel: candidateReader.readerType.model)
                 )
                 self.state = .connectingFailed(error)
             }

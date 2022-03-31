@@ -250,7 +250,9 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     func disconnectReader() {
         ServiceLocator.analytics.track(
             event: WooAnalyticsEvent.InPersonPayments.cardReaderDisconnectTapped(
-                forGatewayID: connectedGatewayID, countryCode: configuration.countryCode
+                forGatewayID: connectedGatewayID,
+                countryCode: configuration.countryCode,
+                cardReaderModel: connectedReaderModel ?? ""
             )
         )
 

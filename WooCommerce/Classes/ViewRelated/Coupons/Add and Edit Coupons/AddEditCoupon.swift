@@ -82,6 +82,27 @@ struct AddEditCoupon: View {
                         }
                         .padding(.horizontal, Constants.margin)
 
+                        ListHeaderView(text: Localization.headerApplyCouponTo.uppercased(), alignment: .left)
+
+                        // TODO: add a new style with the icon on the left side
+                        Button {
+                            //TODO: handle action
+                        } label: {
+                            Text(Localization.addDescriptionButton)
+                                .bodyStyle()
+                        }
+                        .buttonStyle(SecondaryButtonStyle())
+                        .padding(.horizontal, Constants.margin)
+
+                        // TODO: add a new style with the icon on the left side
+                        Button {
+                            //TODO: handle action
+                        } label: {
+                            Text(Localization.addDescriptionButton)
+                                .bodyStyle()
+                        }
+                        .buttonStyle(SecondaryButtonStyle())
+                        .padding(.horizontal, Constants.margin)
                     }
                 }
                 .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
@@ -143,6 +164,10 @@ private extension AddEditCoupon {
         static let includeFreeShipping = NSLocalizedString(
             "Include Free Shipping?",
             comment: "Toggle field in the view for adding or editing a coupon.")
+        static let headerApplyCouponTo = NSLocalizedString(
+            "Apply this coupon to",
+            comment: "Header of the section for applying a coupon to specific products or categories in the view for adding or editing a coupon.")
+        
     }
 }
 

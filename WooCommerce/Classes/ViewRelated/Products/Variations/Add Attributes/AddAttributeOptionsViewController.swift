@@ -2,10 +2,12 @@ import UIKit
 import Yosemite
 import WordPressUI
 
-final class AddAttributeOptionsViewController: UIViewController {
+final class AddAttributeOptionsViewController: UIViewController, GhostableViewController {
 
     @IBOutlet weak private var tableView: UITableView!
-    private let ghostTableView = UITableView()
+
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(displaysSectionHeader: false,
+                                                                                                cellClass: WooBasicTableViewCell.self))
 
     private let viewModel: AddAttributeOptionsViewModel
 
@@ -59,7 +61,6 @@ final class AddAttributeOptionsViewController: UIViewController {
         super.viewDidLoad()
         configureMainView()
         configureTableView()
-        configureGhostTableView()
         registerTableViewHeaderSections()
         registerTableViewCells()
         startListeningToNotifications()
@@ -116,15 +117,6 @@ private extension AddAttributeOptionsViewController {
         tableView.allowsSelectionDuringEditing = true
     }
 
-    func configureGhostTableView() {
-        view.addSubview(ghostTableView)
-        ghostTableView.isHidden = true
-        ghostTableView.translatesAutoresizingMaskIntoConstraints = false
-        ghostTableView.pinSubviewToAllEdges(view)
-        ghostTableView.backgroundColor = .listBackground
-        ghostTableView.removeLastCellSeparator()
-    }
-
     func registerTableViewHeaderSections() {
         let headerNib = UINib(nibName: TwoColumnSectionHeaderView.reuseIdentifier, bundle: nil)
         tableView.register(headerNib, forHeaderFooterViewReuseIdentifier: TwoColumnSectionHeaderView.reuseIdentifier)
@@ -133,7 +125,6 @@ private extension AddAttributeOptionsViewController {
     func registerTableViewCells() {
         tableView.registerNib(for: BasicTableViewCell.self)
         tableView.registerNib(for: TextFieldTableViewCell.self)
-        ghostTableView.registerNib(for: WooBasicTableViewCell.self)
     }
 
     func observeViewModel() {
@@ -149,9 +140,9 @@ private extension AddAttributeOptionsViewController {
         tableView.reloadData()
 
         if viewModel.showGhostTableView {
-            displayGhostTableView()
+            displayGhostContent()
         } else {
-            removeGhostTableView()
+            removeGhostContent()
         }
 
         if viewModel.showSyncError {
@@ -328,27 +319,6 @@ private extension AddAttributeOptionsViewController {
         cell.textLabel?.text = text
         cell.imageView?.image = nil
         cell.imageView?.isUserInteractionEnabled = false
-    }
-}
-
-// MARK: - Placeholders
-//
-private extension AddAttributeOptionsViewController {
-    /// Renders ghost placeholder while options are being synched.
-    ///
-    func displayGhostTableView() {
-        let options = GhostOptions(displaysSectionHeader: false,
-                                   reuseIdentifier: WooBasicTableViewCell.reuseIdentifier,
-                                   rowsPerSection: [3])
-        ghostTableView.displayGhostContent(options: options, style: .wooDefaultGhostStyle)
-        ghostTableView.isHidden = false
-    }
-
-    /// Removes ghost placeholder
-    ///
-    func removeGhostTableView() {
-        ghostTableView.removeGhostContent()
-        ghostTableView.isHidden = true
     }
 }
 

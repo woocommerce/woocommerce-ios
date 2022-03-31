@@ -65,6 +65,6 @@ extension Analytics {
     /// - Parameter event: The event to track along with its properties.
     ///
     func track(event: WooAnalyticsEvent) {
-        track(event.statName, withProperties: event.properties)
+        track(event.statName, properties: event.properties, error: event.error)
     }
 }

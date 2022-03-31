@@ -105,3 +105,12 @@ public extension PaymentIntent {
         return metadata
     }
 }
+
+public extension PaymentIntent {
+    /// Returns the payment method from a PaymentIntent if available, typically after the payment is processed.
+    /// Before the payment is processed, `nil` is returned.
+    /// - Returns: an optional payment method that is set after the payment is processed.
+    func paymentMethod() -> PaymentMethod? {
+        charges.first?.paymentMethod
+    }
+}

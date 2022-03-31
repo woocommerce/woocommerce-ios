@@ -265,16 +265,16 @@ private extension CollectOrderPaymentUseCase {
     ///
     func presentReceiptAlert(receiptParameters: CardPresentReceiptParameters, backButtonTitle: String, onCompleted: @escaping () -> ()) {
         // Present receipt alert
-        alerts.success(printReceipt: { [order] in
+        alerts.success(printReceipt: { [order, configurationLoader] in
             // Inform about flow completion.
             onCompleted()
 
             // Delegate print action
-            ReceiptActionCoordinator.printReceipt(for: order, params: receiptParameters)
+            ReceiptActionCoordinator.printReceipt(for: order, params: receiptParameters, countryCode: configurationLoader.configuration.countryCode)
 
-        }, emailReceipt: { [order, analytics, paymentOrchestrator] in
+        }, emailReceipt: { [order, analytics, paymentOrchestrator, configurationLoader] in
             // Record button tapped
-            analytics.track(.receiptEmailTapped)
+            analytics.track(event: .InPersonPayments.receiptEmailTapped(countryCode: configurationLoader.configuration.countryCode))
 
             // Request & present email
             paymentOrchestrator.emailReceipt(for: order, params: receiptParameters) { [weak self] emailContent in
@@ -314,11 +314,13 @@ extension CollectOrderPaymentUseCase: MFMailComposeViewControllerDelegate {
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
         switch result {
         case .cancelled:
-            analytics.track(.receiptEmailCanceled)
+            analytics.track(event: .InPersonPayments.receiptEmailCanceled(countryCode: configurationLoader.configuration.countryCode))
         case .sent, .saved:
-            analytics.track(.receiptEmailSuccess)
+            analytics.track(event: .InPersonPayments.receiptEmailSuccess(countryCode: configurationLoader.configuration.countryCode))
         case .failed:
-            analytics.track(.receiptEmailFailed, withError: error ?? UnknownEmailError())
+            analytics.track(event: .InPersonPayments
+                .receiptEmailFailed(error: error ?? UnknownEmailError(),
+                                    countryCode: configurationLoader.configuration.countryCode))
         @unknown default:
             assertionFailure("MFMailComposeViewController finished with an unknown result type")
         }

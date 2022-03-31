@@ -1,6 +1,15 @@
 import Yosemite
 import PassKit
 
+/// Contains data associated with a payment that has been collected, processed, and captured.
+struct CardPresentCapturedPaymentData {
+    /// Currently used for analytics.
+    let paymentMethod: PaymentMethod
+
+    /// Used for receipt generation for display in the app.
+    let receiptParameters: CardPresentReceiptParameters
+}
+
 /// Orchestrates the sequence of actions required to capture a payment:
 /// 1. Check if there is a card reader connected
 /// 2. Launch the reader discovering and pairing UI if there is no reader connected
@@ -21,7 +30,7 @@ final class PaymentCaptureOrchestrator {
                         onWaitingForInput: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onDisplayMessage: @escaping (String) -> Void,
-                        onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
+                        onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
         /// Bail out if the order amount is below the minimum allowed:
         /// https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts
         guard isTotalAmountValid(order: order) else {
@@ -119,7 +128,7 @@ final class PaymentCaptureOrchestrator {
 }
 
 private extension PaymentCaptureOrchestrator {
-    /// Supress wallet presentation. This requires a special entitlement from Apple:
+    /// Suppress wallet presentation. This requires a special entitlement from Apple:
     /// `com.apple.developer.passkit.pass-presentation-suppression`
     /// See Woo-*.entitlements in WooCommerce/Resources
     ///
@@ -169,7 +178,7 @@ private extension PaymentCaptureOrchestrator {
 private extension PaymentCaptureOrchestrator {
     func completePaymentIntentCapture(order: Order,
                                     captureResult: Result<PaymentIntent, Error>,
-                                    onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
+                                    onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
         switch captureResult {
         case .failure(let error):
             onCompletion(.failure(error))
@@ -184,7 +193,7 @@ private extension PaymentCaptureOrchestrator {
     func submitPaymentIntent(siteID: Int64,
                              order: Order,
                              paymentIntent: PaymentIntent,
-                             onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
+                             onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
         let action = CardPresentPaymentAction.captureOrderPayment(siteID: siteID,
                                                                      orderID: order.orderID,
                                                                      paymentIntentID: paymentIntent.id) { [weak self] result in
@@ -192,7 +201,8 @@ private extension PaymentCaptureOrchestrator {
                 return
             }
 
-            guard let receiptParameters = paymentIntent.receiptParameters() else {
+            guard let paymentMethod = paymentIntent.paymentMethod(),
+                  let receiptParameters = paymentIntent.receiptParameters() else {
                 let error = CardReaderServiceError.paymentCapture()
 
                 DDLogError("⛔️ Payment completed without required metadata: \(error)")
@@ -205,9 +215,10 @@ private extension PaymentCaptureOrchestrator {
             case .success:
                 self.celebrate() // plays a sound, haptic
                 self.saveReceipt(for: order, params: receiptParameters)
-                onCompletion(.success(receiptParameters))
+                onCompletion(.success(.init(paymentMethod: paymentMethod,
+                                            receiptParameters: receiptParameters)))
             case .failure(let error):
-                onCompletion(.failure(error))
+                onCompletion(.failure(CardReaderServiceError.paymentCaptureWithPaymentMethod(underlyingError: error, paymentMethod: paymentMethod)))
                 return
             }
         }

@@ -279,6 +279,22 @@ class AddProductToOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(notice, AddProductToOrderViewModel.NoticeFactory.productSearchNotice(retryAction: {}))
     }
+
+    func test_selectProduct_invokes_onProductSelected_closure_for_existing_product() {
+        // Given
+        var selectedProduct: Int64?
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
+        insert(product)
+        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID,
+                                                   storageManager: storageManager,
+                                                   onProductSelected: { selectedProduct = $0.productID })
+
+        // When
+        viewModel.selectProduct(product.productID)
+
+        // Then
+        XCTAssertEqual(selectedProduct, product.productID)
+    }
 }
 
 // MARK: - Utils

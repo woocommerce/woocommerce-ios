@@ -488,7 +488,7 @@ extension StoreStatsV4PeriodViewController: IAxisValueFormatter {
             let intervalLabels = createOrderStatsIntervalLabels()
             let index = Int(value)
             if index >= intervalLabels.count {
-                DDLogInfo("orderStatsIntervals count: \(orderStatsIntervals.count); value: \(value); interval labels: \(intervalLabels)")
+                DDLogInfo("🔴 orderStatsIntervals count: \(orderStatsIntervals.count); value: \(value); interval labels: \(intervalLabels)")
             }
             return intervalLabels[index]
         } else {

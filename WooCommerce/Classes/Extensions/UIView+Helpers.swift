@@ -18,6 +18,13 @@ extension UIView {
     class func instantiateFromNib<T>() -> T {
         return loadNib().instantiate(withOwner: nil, options: nil).first as! T
     }
+
+    /// Returns whether there is a Nib associated with the receiver, being the filename its Class Name.
+    /// Use it to avoid *Could not load NIB in bundle* crash before loading it if you are not sure that it exists.
+    ///
+    class func nibExistsInMainBundle() -> Bool {
+        Bundle.main.path(forResource: classNameWithoutNamespaces, ofType: "nib") != nil
+    }
 }
 
 

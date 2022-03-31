@@ -7,7 +7,7 @@ import class AutomatticTracks.CrashLogging
 /// Shows a list of products with pull to refresh and infinite scroll
 /// TODO: it will be good to have unit tests for this, introducing a `ViewModel`
 ///
-final class ProductsViewController: UIViewController {
+final class ProductsViewController: UIViewController, GhostableViewController {
 
     /// Main TableView
     ///
@@ -15,6 +15,12 @@ final class ProductsViewController: UIViewController {
         let tableView = UITableView(frame: .zero, style: .plain)
         return tableView
     }()
+
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: ProductsTabProductTableViewCell.self,
+                                                                                                rowsPerSection: Constants.placeholderRowsPerSection,
+                                                                                                estimatedRowHeight: Constants.estimatedRowHeight,
+                                                                                                separatorStyle: .none,
+                                                                                               isScrollEnabled: false))
 
     /// Pull To Refresh Support.
     ///
@@ -42,6 +48,8 @@ final class ProductsViewController: UIViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
+
+    private var shouldShowPlaceholderView = false
 
     /// Top toolbar that shows the sort and filter CTAs.
     ///
@@ -342,8 +350,8 @@ private extension ProductsViewController {
         tableView.rowHeight = UITableView.automaticDimension
 
         // Removes extra header spacing in ghost content view.
-        tableView.estimatedSectionHeaderHeight = 0
-        tableView.sectionHeaderHeight = 0
+        ghostTableViewController.tableView.estimatedSectionHeaderHeight = 0
+        ghostTableViewController.tableView.sectionHeaderHeight = 0
 
         tableView.backgroundColor = .listBackground
         tableView.tableFooterView = footerSpinnerView
@@ -409,6 +417,9 @@ private extension ProductsViewController {
     ///
     func registerTableViewCells() {
         tableView.register(ProductsTabProductTableViewCell.self)
+
+        // Register a simple one as the container for the placeholder ghost view
+        tableView.register(UITableViewCell.self)
     }
 
     /// Show or hide the toolbar based on number of products
@@ -581,24 +592,29 @@ private extension ProductsViewController {
 extension ProductsViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return resultsController.sections.count
+        return shouldShowPlaceholderView ? 1 : resultsController.sections.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return resultsController.sections[section].numberOfObjects
+        return shouldShowPlaceholderView ? 1 : resultsController.sections[section].numberOfObjects
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(ProductsTabProductTableViewCell.self, for: indexPath)
+        if shouldShowPlaceholderView {
+            let cell = tableView.dequeueReusableCell(UITableViewCell.self, for: indexPath)
+            displayGhostContent(over: cell.contentView)
 
-        let product = resultsController.object(at: indexPath)
-        let viewModel = ProductsTabProductViewModel(product: product)
-        cell.update(viewModel: viewModel, imageService: imageService)
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCell(ProductsTabProductTableViewCell.self, for: indexPath)
+            let product = resultsController.object(at: indexPath)
+            let viewModel = ProductsTabProductViewModel(product: product)
+            cell.update(viewModel: viewModel, imageService: imageService)
 
-        return cell
+            return cell
+        }
     }
 }
-
 
 // MARK: - UITableViewDelegate Conformance
 //
@@ -609,7 +625,13 @@ extension ProductsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
+        return shouldShowPlaceholderView ? placeholderViewHeight() : UITableView.automaticDimension
+    }
+
+    private func placeholderViewHeight() -> CGFloat {
+        let placeholderRowsPerSection = Constants.placeholderRowsPerSection.first ?? 3
+
+        return Constants.estimatedRowHeight * CGFloat(placeholderRowsPerSection)
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -717,23 +739,25 @@ private extension ProductsViewController {
 //
 private extension ProductsViewController {
 
-    /// Renders the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
+    /// Triggers the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
     ///
     func displayPlaceholderProducts() {
-        let options = GhostOptions(reuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier, rowsPerSection: Constants.placeholderRowsPerSection)
-        tableView.displayGhostContent(options: options,
-        style: .wooDefaultGhostStyle)
+        shouldShowPlaceholderView = true
         resultsController.stopForwardingEvents()
+        tableView.reloadData()
     }
 
     /// Removes the Placeholder Products (and restores the ResultsController <> UITableView link).
     ///
     func removePlaceholderProducts() {
-        tableView.removeGhostContent()
-        // Assign again the original closure
+        shouldShowPlaceholderView = false
+        removeGhostContent()
+
+       // Assign again the original closure
         setClosuresToResultController(resultsController, onReload: { [weak self] in
             self?.reloadTableAndView()
         })
+
         tableView.reloadData()
     }
 

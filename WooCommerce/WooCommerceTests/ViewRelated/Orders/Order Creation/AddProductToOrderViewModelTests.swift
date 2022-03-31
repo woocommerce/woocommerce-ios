@@ -295,6 +295,35 @@ class AddProductToOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(selectedProduct, product.productID)
     }
+
+    func test_getVariationsViewModel_returns_expected_view_model_for_variable_product() throws {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "Test Product", purchasable: true, variations: [1, 2])
+        insert(product)
+        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID,
+                                                   storageManager: storageManager)
+
+        // When
+        let variationsViewModel = viewModel.getVariationsViewModel(for: product.productID)
+
+        // Then
+        let actualViewModel = try XCTUnwrap(variationsViewModel)
+        XCTAssertEqual(actualViewModel.productName, product.name)
+    }
+
+    func test_getVariationsViewModel_returns_nil_for_simple_product() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "Test Product", purchasable: true)
+        insert(product)
+        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID,
+                                                   storageManager: storageManager)
+
+        // When
+        let variationsViewModel = viewModel.getVariationsViewModel(for: product.productID)
+
+        // Then
+        XCTAssertNil(variationsViewModel)
+    }
 }
 
 // MARK: - Utils

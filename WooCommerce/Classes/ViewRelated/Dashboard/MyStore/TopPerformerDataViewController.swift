@@ -7,7 +7,7 @@ import WordPressUI
 import class AutomatticTracks.CrashLogging
 
 
-final class TopPerformerDataViewController: UIViewController {
+final class TopPerformerDataViewController: UIViewController, GhostableViewController {
 
     // MARK: - Properties
 
@@ -25,7 +25,11 @@ final class TopPerformerDataViewController: UIViewController {
 
     /// A child view controller that is shown when `displayGhostContent()` is called.
     ///
-    private lazy var ghostTableViewController = GhostTableViewController(cellClass: ProductTableViewCell.self)
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(displaysSectionHeader: false,
+                                                                                                cellClass: ProductTableViewCell.self,
+                                                                                                estimatedRowHeight: Constants.estimatedRowHeight,
+                                                                                                backgroundColor: .basicBackground,
+                                                                                                separatorStyle: .none))
 
     /// ResultsController: Loads TopEarnerStats for the current granularity from the Storage Layer
     ///
@@ -105,44 +109,6 @@ final class TopPerformerDataViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         trackChangedTabIfNeeded()
-    }
-}
-
-
-// MARK: - Public Interface
-//
-extension TopPerformerDataViewController {
-
-    /// Renders Placeholder Content.
-    ///
-    /// Why is this public? Because the `syncTopPerformers` method is actually called from TopPerformersViewController.
-    /// We coordinate multiple placeholder animations from that spot!
-    ///
-    func displayGhostContent() {
-        guard let ghostView = ghostTableViewController.view else {
-            return
-        }
-
-        ghostView.translatesAutoresizingMaskIntoConstraints = false
-        addChild(ghostTableViewController)
-        view.addSubview(ghostView)
-        view.pinSubviewToAllEdges(ghostView)
-        ghostTableViewController.didMove(toParent: self)
-    }
-
-    /// Removes the Placeholder Content.
-    ///
-    /// Why is this public? Because the `syncTopPerformers` method is actually called from TopPerformersViewController.
-    /// We coordinate multiple placeholder animations from that spot!
-    ///
-    func removeGhostContent() {
-        guard let ghostView = ghostTableViewController.view else {
-            return
-        }
-
-        ghostTableViewController.willMove(toParent: nil)
-        ghostView.removeFromSuperview()
-        ghostTableViewController.removeFromParent()
     }
 }
 

@@ -54,6 +54,10 @@ public enum FeatureFlag: Int {
     ///
     case splitViewInOrdersTab
 
+    /// Displays the option to delete coupons
+    ///
+    case couponDeletion
+
     /// Displays the option to edit a coupon
     ///
     case couponEditing

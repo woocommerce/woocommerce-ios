@@ -2,13 +2,16 @@ import UIKit
 
 // MARK: - ReviewsViewController
 //
-final class ReviewsViewController: UIViewController {
+final class ReviewsViewController: UIViewController, GhostableViewController {
 
     typealias ViewModel = ReviewsViewModelOutput & ReviewsViewModelActionsHandler
 
     /// Main TableView.
     ///
     @IBOutlet private weak var tableView: UITableView!
+
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: ProductReviewTableViewCell.self,
+                                                                                                estimatedRowHeight: Settings.estimatedRowHeight))
 
     /// Mark all as read nav bar button
     ///
@@ -337,13 +340,15 @@ private extension ReviewsViewController {
     /// Renders Placeholder Reviews.
     ///
     func displayPlaceholderReviews() {
-        viewModel.displayPlaceholderReviews(tableView: tableView)
+        displayGhostContent()
+        viewModel.didDisplayPlaceholderReviews()
     }
 
     /// Removes Placeholder Reviews.
     ///
     func removePlaceholderReviews() {
-        viewModel.removePlaceholderReviews(tableView: tableView)
+        removeGhostContent()
+        viewModel.didRemovePlaceholderReviews(tableView: tableView)
     }
 
     /// Displays the EmptyStateViewController.

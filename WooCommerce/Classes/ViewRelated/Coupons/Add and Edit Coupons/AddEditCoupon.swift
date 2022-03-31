@@ -73,7 +73,14 @@ struct AddEditCoupon: View {
                                              value: .placeholder(Localization.couponExpiryDatePlaceholder),
                                              selectionStyle: .disclosure, action: { })
                             Divider()
+                                .padding(.leading, Constants.margin)
                         }
+
+                        Group {
+                            TitleAndToggleRow(title: Localization.includeFreeShipping, isOn: .constant(false))
+                            Divider()
+                        }
+                        .padding(.horizontal, Constants.margin)
 
                     }
                 }
@@ -133,6 +140,9 @@ private extension AddEditCoupon {
         static let couponExpiryDatePlaceholder = NSLocalizedString(
             "None",
             comment: "Coupon expiry date placeholder in the view for adding or editing a coupon")
+        static let includeFreeShipping = NSLocalizedString(
+            "Include Free Shipping?",
+            comment: "Toggle field in the view for adding or editing a coupon.")
     }
 }
 

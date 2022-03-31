@@ -45,63 +45,47 @@ final class PaymentCaptureOrchestrator {
 
         ServiceLocator.stores.dispatch(setAccount)
 
-        /// First ask the backend to create/assign a Stripe customer for the order
-        ///
-        var customerID: String?
-        let customerAction = CardPresentPaymentAction.fetchOrderCustomer(siteID: order.siteID, orderID: order.orderID) { [self] result in
-            switch result {
-            case .success(let customer):
-                customerID = customer.id
-            case .failure:
-                // It is not ideal but ok to proceed to payment intent creation without a customer ID
-                DDLogWarn("Warning: failed to fetch customer ID for an order")
-            }
-
-            guard let parameters = paymentParameters(
-                    order: order,
-                    statementDescriptor: paymentGatewayAccount.statementDescriptor,
-                    paymentMethodTypes: paymentMethodTypes,
-                    customerID: customerID
-            ) else {
-                DDLogError("Error: failed to create payment parameters for an order")
-                onCompletion(.failure(CardReaderServiceError.paymentCapture()))
-                return
-            }
-
-            /// Briefly suppress pass (wallet) presentation so that the merchant doesn't attempt to pay for the buyer's order when the
-            /// reader begins to collect payment.
-            ///
-            suppressPassPresentation()
-
-            let paymentAction = CardPresentPaymentAction.collectPayment(
-                siteID: order.siteID,
-                orderID: order.orderID,
-                parameters: parameters,
-                onCardReaderMessage: { (event) in
-                    switch event {
-                    case .waitingForInput:
-                        onWaitingForInput()
-                    case .displayMessage(let message):
-                        onDisplayMessage(message)
-                    default:
-                        break
-                    }
-                },
-                onCompletion: { [weak self] result in
-                    self?.allowPassPresentation()
-                    onProcessingMessage()
-                    self?.completePaymentIntentCapture(
-                        order: order,
-                        captureResult: result,
-                        onCompletion: onCompletion
-                    )
-                }
-            )
-
-            ServiceLocator.stores.dispatch(paymentAction)
+        guard let parameters = paymentParameters(
+                order: order,
+                statementDescriptor: paymentGatewayAccount.statementDescriptor,
+                paymentMethodTypes: paymentMethodTypes
+        ) else {
+            DDLogError("Error: failed to create payment parameters for an order")
+            onCompletion(.failure(CardReaderServiceError.paymentCapture()))
+            return
         }
 
-        ServiceLocator.stores.dispatch(customerAction)
+        /// Briefly suppress pass (wallet) presentation so that the merchant doesn't attempt to pay for the buyer's order when the
+        /// reader begins to collect payment.
+        ///
+        suppressPassPresentation()
+
+        let paymentAction = CardPresentPaymentAction.collectPayment(
+            siteID: order.siteID,
+            orderID: order.orderID,
+            parameters: parameters,
+            onCardReaderMessage: { (event) in
+                switch event {
+                case .waitingForInput:
+                    onWaitingForInput()
+                case .displayMessage(let message):
+                    onDisplayMessage(message)
+                default:
+                    break
+                }
+            },
+            onCompletion: { [weak self] result in
+                self?.allowPassPresentation()
+                onProcessingMessage()
+                self?.completePaymentIntentCapture(
+                    order: order,
+                    captureResult: result,
+                    onCompletion: onCompletion
+                )
+            }
+        )
+
+        ServiceLocator.stores.dispatch(paymentAction)
     }
 
     func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
@@ -226,7 +210,7 @@ private extension PaymentCaptureOrchestrator {
         ServiceLocator.stores.dispatch(action)
     }
 
-    func paymentParameters(order: Order, statementDescriptor: String?, paymentMethodTypes: [String], customerID: String?) -> PaymentParameters? {
+    func paymentParameters(order: Order, statementDescriptor: String?, paymentMethodTypes: [String]) -> PaymentParameters? {
         guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
             DDLogError("Error: attempted to collect payment for an order without a valid total.")
             return nil
@@ -247,8 +231,7 @@ private extension PaymentCaptureOrchestrator {
                                  statementDescription: statementDescriptor,
                                  receiptEmail: order.billingAddress?.email,
                                  paymentMethodTypes: paymentMethodTypes,
-                                 metadata: metadata,
-                                 customerID: customerID)
+                                 metadata: metadata)
     }
 
     func receiptDescription(orderNumber: String) -> String? {

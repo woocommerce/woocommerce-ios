@@ -39,10 +39,33 @@ final class ProductReviewsDataSource: NSObject, ReviewsDataSource {
         return reviewsResultsController.isEmpty
     }
 
-    /// Notifications associated with the reviews. In this case, we don't want to show notifications.
+    /// With this `ResultsController` we retrieve the WordPress.com notifications associated with the product reviews.
+    /// Later we can filter them and pass it to the review detail view so it can be marked as read.
+    ///
+    private lazy var notificationsResultsController: ResultsController<StorageNote> = {
+        let storageManager = ServiceLocator.storageManager
+        let descriptor = NSSortDescriptor(keyPath: \StorageNote.timestamp, ascending: false)
+
+        return ResultsController<StorageNote>(storageManager: storageManager,
+                                              sectionNameKeyPath: "normalizedAgeAsString",
+                                              matching: notificationsPredicate,
+                                              sortedBy: [descriptor])
+    }()
+
+    private lazy var notificationsPredicate: NSPredicate = {
+        let notDeletedPredicate = NSPredicate(format: "deleteInProgress == NO")
+        let typeReviewPredicate =  NSPredicate(format: "subtype == %@", Note.Subkind.storeReview.rawValue)
+
+        return NSCompoundPredicate(andPredicateWithSubpredicates: [typeReviewPredicate,
+                                                                   sitePredicate(),
+                                                                   notDeletedPredicate])
+    }()
+
+    /// Notifications associated with the reviews.
+    /// To be filtered and marked as read in the review detail view if they are linked to the review.
     ///
     var notifications: [Note] {
-        return []
+        return notificationsResultsController.fetchedObjects
     }
 
     var reviewCount: Int {
@@ -135,6 +158,12 @@ private extension ProductReviewsDataSource {
 
         return ReviewViewModel(showProductTitle: false, review: review, product: product, notification: nil)
     }
+
+    private func notification(id reviewID: Int64) -> Note? {
+        let notifications = notificationsResultsController.fetchedObjects
+
+        return notifications.filter { $0.meta.identifier(forKey: .comment) == Int(reviewID) }.first
+    }
 }
 
 
@@ -142,7 +171,13 @@ private extension ProductReviewsDataSource {
 //
 extension ProductReviewsDataSource: ReviewsInteractionDelegate {
     func didSelectItem(at indexPath: IndexPath, in viewController: UIViewController) {
-        // no-op: we don't want to catch the selected item in Products
+        let review = reviewsResultsController.object(at: indexPath)
+        let note = notification(id: review.reviewID)
+
+        let detailsViewController = ReviewDetailsViewController(productReview: review,
+                                                                product: product,
+                                                                notification: note)
+        viewController.navigationController?.pushViewController(detailsViewController, animated: true)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

@@ -40,6 +40,17 @@ public enum BottomSheetOrderType: Hashable {
             return UIImage.pagesImage
         }
     }
+
+    /// Accessibility identifiers for the action sheet.
+    ///
+    var actionSheetAccessibilityID: String {
+        switch self {
+        case .simple:
+            return "new_order_simple_payment"
+        case .full:
+            return "new_order_full_manual_order"
+        }
+    }
 }
 
 final class OrderTypeBottomSheetListSelectorCommand: BottomSheetListSelectorCommand {
@@ -60,6 +71,7 @@ final class OrderTypeBottomSheetListSelectorCommand: BottomSheetListSelectorComm
     }
 
     func configureCell(cell: ImageAndTitleAndTextTableViewCell, model: BottomSheetOrderType) {
+        cell.accessibilityIdentifier = model.actionSheetAccessibilityID
         let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: model.actionSheetTitle,
                                                                     text: model.actionSheetDescription,
                                                                     image: model.actionSheetImage,

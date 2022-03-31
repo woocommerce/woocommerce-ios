@@ -9,7 +9,6 @@ extension GeneralAppSettings {
         installationDate: NullableCopiableProp<Date> = .copy,
         feedbacks: CopiableProp<[FeedbackType: FeedbackSettings]> = .copy,
         isViewAddOnsSwitchEnabled: CopiableProp<Bool> = .copy,
-        isOrderCreationSwitchEnabled: CopiableProp<Bool> = .copy,
         isCanadaInPersonPaymentsSwitchEnabled: CopiableProp<Bool> = .copy,
         isProductSKUInputScannerSwitchEnabled: CopiableProp<Bool> = .copy,
         isCouponManagementSwitchEnabled: CopiableProp<Bool> = .copy,
@@ -20,7 +19,6 @@ extension GeneralAppSettings {
         let installationDate = installationDate ?? self.installationDate
         let feedbacks = feedbacks ?? self.feedbacks
         let isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled ?? self.isViewAddOnsSwitchEnabled
-        let isOrderCreationSwitchEnabled = isOrderCreationSwitchEnabled ?? self.isOrderCreationSwitchEnabled
         let isCanadaInPersonPaymentsSwitchEnabled = isCanadaInPersonPaymentsSwitchEnabled ?? self.isCanadaInPersonPaymentsSwitchEnabled
         let isProductSKUInputScannerSwitchEnabled = isProductSKUInputScannerSwitchEnabled ?? self.isProductSKUInputScannerSwitchEnabled
         let isCouponManagementSwitchEnabled = isCouponManagementSwitchEnabled ?? self.isCouponManagementSwitchEnabled
@@ -32,7 +30,6 @@ extension GeneralAppSettings {
             installationDate: installationDate,
             feedbacks: feedbacks,
             isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
-            isOrderCreationSwitchEnabled: isOrderCreationSwitchEnabled,
             isCanadaInPersonPaymentsSwitchEnabled: isCanadaInPersonPaymentsSwitchEnabled,
             isProductSKUInputScannerSwitchEnabled: isProductSKUInputScannerSwitchEnabled,
             isCouponManagementSwitchEnabled: isCouponManagementSwitchEnabled,

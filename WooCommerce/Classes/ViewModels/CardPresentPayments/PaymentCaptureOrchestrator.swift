@@ -1,6 +1,15 @@
 import Yosemite
 import PassKit
 
+/// Contains data associated with a payment that has been collected, processed, and captured.
+struct CardPresentCapturedPaymentData {
+    /// Currently used for analytics.
+    let paymentMethod: PaymentMethod
+
+    /// Used for receipt generation for display in the app.
+    let receiptParameters: CardPresentReceiptParameters
+}
+
 /// Orchestrates the sequence of actions required to capture a payment:
 /// 1. Check if there is a card reader connected
 /// 2. Launch the reader discovering and pairing UI if there is no reader connected
@@ -21,7 +30,7 @@ final class PaymentCaptureOrchestrator {
                         onWaitingForInput: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onDisplayMessage: @escaping (String) -> Void,
-                        onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
+                        onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
         /// Bail out if the order amount is below the minimum allowed:
         /// https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts
         guard isTotalAmountValid(order: order) else {
@@ -36,63 +45,47 @@ final class PaymentCaptureOrchestrator {
 
         ServiceLocator.stores.dispatch(setAccount)
 
-        /// First ask the backend to create/assign a Stripe customer for the order
-        ///
-        var customerID: String?
-        let customerAction = CardPresentPaymentAction.fetchOrderCustomer(siteID: order.siteID, orderID: order.orderID) { [self] result in
-            switch result {
-            case .success(let customer):
-                customerID = customer.id
-            case .failure:
-                // It is not ideal but ok to proceed to payment intent creation without a customer ID
-                DDLogWarn("Warning: failed to fetch customer ID for an order")
-            }
-
-            guard let parameters = paymentParameters(
-                    order: order,
-                    statementDescriptor: paymentGatewayAccount.statementDescriptor,
-                    paymentMethodTypes: paymentMethodTypes,
-                    customerID: customerID
-            ) else {
-                DDLogError("Error: failed to create payment parameters for an order")
-                onCompletion(.failure(CardReaderServiceError.paymentCapture()))
-                return
-            }
-
-            /// Briefly suppress pass (wallet) presentation so that the merchant doesn't attempt to pay for the buyer's order when the
-            /// reader begins to collect payment.
-            ///
-            suppressPassPresentation()
-
-            let paymentAction = CardPresentPaymentAction.collectPayment(
-                siteID: order.siteID,
-                orderID: order.orderID,
-                parameters: parameters,
-                onCardReaderMessage: { (event) in
-                    switch event {
-                    case .waitingForInput:
-                        onWaitingForInput()
-                    case .displayMessage(let message):
-                        onDisplayMessage(message)
-                    default:
-                        break
-                    }
-                },
-                onCompletion: { [weak self] result in
-                    self?.allowPassPresentation()
-                    onProcessingMessage()
-                    self?.completePaymentIntentCapture(
-                        order: order,
-                        captureResult: result,
-                        onCompletion: onCompletion
-                    )
-                }
-            )
-
-            ServiceLocator.stores.dispatch(paymentAction)
+        guard let parameters = paymentParameters(
+                order: order,
+                statementDescriptor: paymentGatewayAccount.statementDescriptor,
+                paymentMethodTypes: paymentMethodTypes
+        ) else {
+            DDLogError("Error: failed to create payment parameters for an order")
+            onCompletion(.failure(CardReaderServiceError.paymentCapture()))
+            return
         }
 
-        ServiceLocator.stores.dispatch(customerAction)
+        /// Briefly suppress pass (wallet) presentation so that the merchant doesn't attempt to pay for the buyer's order when the
+        /// reader begins to collect payment.
+        ///
+        suppressPassPresentation()
+
+        let paymentAction = CardPresentPaymentAction.collectPayment(
+            siteID: order.siteID,
+            orderID: order.orderID,
+            parameters: parameters,
+            onCardReaderMessage: { (event) in
+                switch event {
+                case .waitingForInput:
+                    onWaitingForInput()
+                case .displayMessage(let message):
+                    onDisplayMessage(message)
+                default:
+                    break
+                }
+            },
+            onCompletion: { [weak self] result in
+                self?.allowPassPresentation()
+                onProcessingMessage()
+                self?.completePaymentIntentCapture(
+                    order: order,
+                    captureResult: result,
+                    onCompletion: onCompletion
+                )
+            }
+        )
+
+        ServiceLocator.stores.dispatch(paymentAction)
     }
 
     func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
@@ -119,7 +112,7 @@ final class PaymentCaptureOrchestrator {
 }
 
 private extension PaymentCaptureOrchestrator {
-    /// Supress wallet presentation. This requires a special entitlement from Apple:
+    /// Suppress wallet presentation. This requires a special entitlement from Apple:
     /// `com.apple.developer.passkit.pass-presentation-suppression`
     /// See Woo-*.entitlements in WooCommerce/Resources
     ///
@@ -169,7 +162,7 @@ private extension PaymentCaptureOrchestrator {
 private extension PaymentCaptureOrchestrator {
     func completePaymentIntentCapture(order: Order,
                                     captureResult: Result<PaymentIntent, Error>,
-                                    onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
+                                    onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
         switch captureResult {
         case .failure(let error):
             onCompletion(.failure(error))
@@ -184,7 +177,7 @@ private extension PaymentCaptureOrchestrator {
     func submitPaymentIntent(siteID: Int64,
                              order: Order,
                              paymentIntent: PaymentIntent,
-                             onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
+                             onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
         let action = CardPresentPaymentAction.captureOrderPayment(siteID: siteID,
                                                                      orderID: order.orderID,
                                                                      paymentIntentID: paymentIntent.id) { [weak self] result in
@@ -192,7 +185,8 @@ private extension PaymentCaptureOrchestrator {
                 return
             }
 
-            guard let receiptParameters = paymentIntent.receiptParameters() else {
+            guard let paymentMethod = paymentIntent.paymentMethod(),
+                  let receiptParameters = paymentIntent.receiptParameters() else {
                 let error = CardReaderServiceError.paymentCapture()
 
                 DDLogError("⛔️ Payment completed without required metadata: \(error)")
@@ -205,9 +199,10 @@ private extension PaymentCaptureOrchestrator {
             case .success:
                 self.celebrate() // plays a sound, haptic
                 self.saveReceipt(for: order, params: receiptParameters)
-                onCompletion(.success(receiptParameters))
+                onCompletion(.success(.init(paymentMethod: paymentMethod,
+                                            receiptParameters: receiptParameters)))
             case .failure(let error):
-                onCompletion(.failure(error))
+                onCompletion(.failure(CardReaderServiceError.paymentCaptureWithPaymentMethod(underlyingError: error, paymentMethod: paymentMethod)))
                 return
             }
         }
@@ -215,7 +210,7 @@ private extension PaymentCaptureOrchestrator {
         ServiceLocator.stores.dispatch(action)
     }
 
-    func paymentParameters(order: Order, statementDescriptor: String?, paymentMethodTypes: [String], customerID: String?) -> PaymentParameters? {
+    func paymentParameters(order: Order, statementDescriptor: String?, paymentMethodTypes: [String]) -> PaymentParameters? {
         guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
             DDLogError("Error: attempted to collect payment for an order without a valid total.")
             return nil
@@ -236,8 +231,7 @@ private extension PaymentCaptureOrchestrator {
                                  statementDescription: statementDescriptor,
                                  receiptEmail: order.billingAddress?.email,
                                  paymentMethodTypes: paymentMethodTypes,
-                                 metadata: metadata,
-                                 customerID: customerID)
+                                 metadata: metadata)
     }
 
     func receiptDescription(orderNumber: String) -> String? {

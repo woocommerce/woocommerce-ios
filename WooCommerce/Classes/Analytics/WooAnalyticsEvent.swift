@@ -39,8 +39,15 @@ import Yosemite
 /// ~~~
 ///
 public struct WooAnalyticsEvent {
+    init(statName: WooAnalyticsStat, properties: [String: WooAnalyticsEventPropertyType], error: Error? = nil) {
+        self.statName = statName
+        self.properties = properties
+        self.error = error
+    }
+
     let statName: WooAnalyticsStat
     let properties: [String: WooAnalyticsEventPropertyType]
+    let error: Error?
 }
 
 // MARK: - In-app Feedback and Survey
@@ -569,6 +576,7 @@ extension WooAnalyticsEvent {
             static let countryCode = "country"
             static let gatewayID = "plugin_slug"
             static let errorDescription = "error_description"
+            static let paymentMethodType = "payment_method_type"
             static let softwareUpdateType = "software_update_type"
         }
 
@@ -779,13 +787,39 @@ extension WooAnalyticsEvent {
         ///   - countryCode: the country code of the store.
         ///
         static func collectPaymentFailed(forGatewayID: String?, error: Error, countryCode: String) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .collectPaymentFailed,
-                              properties: [
-                                Keys.countryCode: countryCode,
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
-                                Keys.errorDescription: error.localizedDescription
-                              ]
-            )
+            let paymentMethod: PaymentMethod? = {
+                guard case let CardReaderServiceError.paymentCaptureWithPaymentMethod(_, paymentMethod) = error else {
+                    return nil
+                }
+                return paymentMethod
+            }()
+            let errorDescription: String? = {
+                guard case let CardReaderServiceError.paymentCaptureWithPaymentMethod(underlyingError, paymentMethod) = error else {
+                    return error.localizedDescription
+                }
+                switch paymentMethod {
+                case let .cardPresent(details):
+                    return [
+                        "underlyingError": underlyingError,
+                        "cardBrand": details.brand
+                    ].description
+                case let .interacPresent(details):
+                    return [
+                        "underlyingError": underlyingError,
+                        "cardBrand": details.brand
+                    ].description
+                default:
+                    return underlyingError.localizedDescription
+                }
+            }()
+            let properties: [String: WooAnalyticsEventPropertyType] = [
+                Keys.countryCode: countryCode,
+                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                Keys.paymentMethodType: paymentMethod?.analyticsValue,
+                Keys.errorDescription: errorDescription
+            ].compactMapValues { $0 }
+            return WooAnalyticsEvent(statName: .collectPaymentFailed,
+                                     properties: properties)
         }
 
         /// Tracked when the payment collection is cancelled
@@ -808,14 +842,52 @@ extension WooAnalyticsEvent {
         /// - Parameters:
         ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///   - countryCode: the country code of the store.
+        ///   - paymentMethod: the payment method of the captured payment.
         ///
-        static func collectPaymentSuccess(forGatewayID: String?, countryCode: String) -> WooAnalyticsEvent {
+        static func collectPaymentSuccess(forGatewayID: String?, countryCode: String, paymentMethod: PaymentMethod) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentSuccess,
                               properties: [
                                 Keys.countryCode: countryCode,
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                                Keys.paymentMethodType: paymentMethod.analyticsValue
                               ]
             )
+        }
+
+        /// Tracked when the "learn more" button in the In-Person Payments onboarding is tapped.
+        ///
+        /// - Parameter countryCode: the country code of the store.
+        ///
+        static func cardPresentOnboardingLearnMoreTapped(countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardPresentOnboardingLearnMoreTapped,
+                              properties: [Keys.countryCode: countryCode])
+        }
+
+        /// Tracked when the In-Person Payments onboarding cannot be completed for some reason.
+        ///
+        /// - Parameters:
+        ///   - reason: the reason why the onboarding is not completed.
+        ///   - countryCode: the country code of the store.
+        ///
+        static func cardPresentOnboardingNotCompleted(reason: String, countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardPresentOnboardingNotCompleted,
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                "reason": reason
+                              ])
+        }
+    }
+}
+
+private extension PaymentMethod {
+    var analyticsValue: String {
+        switch self {
+        case .card, .cardPresent:
+            return "card"
+        case .interacPresent:
+            return "card_interac"
+        case .unknown:
+            return "unknown"
         }
     }
 }

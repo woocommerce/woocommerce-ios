@@ -6,13 +6,24 @@ import TestKit
 final class CardPresentModalReaderIsReadyTests: XCTestCase {
     private var viewModel: CardPresentModalReaderIsReady!
 
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
     override func setUp() {
         super.setUp()
-        viewModel = CardPresentModalReaderIsReady(name: Expectations.name, amount: Expectations.amount)
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        viewModel = CardPresentModalReaderIsReady(name: Expectations.name,
+                                                  amount: Expectations.amount,
+                                                  paymentGatewayAccountID: Expectations.paymentGatewayAccountID,
+                                                  countryCode: Expectations.countryCode,
+                                                  analytics: analytics)
     }
 
     override func tearDown() {
         viewModel = nil
+        analytics = nil
+        analyticsProvider = nil
         super.tearDown()
     }
 
@@ -68,13 +79,31 @@ final class CardPresentModalReaderIsReadyTests: XCTestCase {
             XCTFail("Primary button failed to dispatch .cancelPayment action")
         }
     }
+
+    func test_tapping_secondary_button_tracks_cancel_event() throws {
+        // Given
+        assertEmpty(analyticsProvider.receivedEvents)
+
+        // When
+        viewModel.didTapSecondaryButton(in: nil)
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.count, 1)
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, "card_present_collect_payment_canceled")
+
+        let firstPropertiesBatch = try XCTUnwrap(analyticsProvider.receivedProperties.first)
+        XCTAssertEqual(firstPropertiesBatch["country"] as? String, Expectations.countryCode)
+        XCTAssertEqual(firstPropertiesBatch["plugin_slug"] as? String, Expectations.paymentGatewayAccountID)
+    }
 }
 
 
 private extension CardPresentModalReaderIsReadyTests {
     enum Expectations {
-        static var name = "name"
-        static var amount = "amount"
-        static var image = UIImage.cardPresentImage
+        static let name = "name"
+        static let amount = "amount"
+        static let image = UIImage.cardPresentImage
+        static let countryCode = "CA"
+        static let paymentGatewayAccountID = "woocommerce-payments"
     }
 }

@@ -28,6 +28,9 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     var connectedReaderID: String?
     var connectedReaderBatteryLevel: String?
     var connectedReaderSoftwareVersion: String?
+    var connectedReaderModel: String? {
+        connectedReaders.first?.readerType.model
+    }
 
     /// The connected gateway ID (plugin slug) - useful for the view controller's tracks events
     var connectedGatewayID: String?

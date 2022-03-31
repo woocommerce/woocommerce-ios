@@ -26,11 +26,13 @@ final class OrderDetailsPaymentAlerts {
 
     private let paymentGatewayAccountID: String?
     private let countryCode: String
+    private let cardReaderModel: String
 
-    init(presentingController: UIViewController, paymentGatewayAccountID: String?, countryCode: String) {
+    init(presentingController: UIViewController, paymentGatewayAccountID: String?, countryCode: String, cardReaderModel: String) {
         self.presentingController = presentingController
         self.paymentGatewayAccountID = paymentGatewayAccountID
         self.countryCode = countryCode
+        self.cardReaderModel = cardReaderModel
     }
 
     func presentViewModel(viewModel: CardPresentPaymentsModalViewModel) {
@@ -94,7 +96,11 @@ final class OrderDetailsPaymentAlerts {
 
 private extension OrderDetailsPaymentAlerts {
     func readerIsReady() -> CardPresentPaymentsModalViewModel {
-        CardPresentModalReaderIsReady(name: name, amount: amount, paymentGatewayAccountID: paymentGatewayAccountID, countryCode: countryCode)
+        CardPresentModalReaderIsReady(name: name,
+                                      amount: amount,
+                                      paymentGatewayAccountID: paymentGatewayAccountID,
+                                      countryCode: countryCode,
+                                      cardReaderModel: cardReaderModel)
     }
 
     func tapOrInsert(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {

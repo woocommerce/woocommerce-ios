@@ -51,6 +51,7 @@ struct AddEditCoupon: View {
                                 .subheadlineStyle()
                                 .padding(.horizontal, Constants.margin)
 
+                            //TODO: leading aligning for this button
                             Button {
                                 //TODO: handle action
                             } label: {

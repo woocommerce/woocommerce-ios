@@ -6,6 +6,7 @@
 - [*] In-Person Payments: Removed collecting L2/L3 data. [https://github.com/woocommerce/woocommerce-ios/pull/6519]
 - [*] Hub Menu: Multiple menu items can no longer be tapped simultaneously. [https://github.com/woocommerce/woocommerce-ios/pull/6484]
 - [*] Jetpack CP: Fixed crash when attempting to access WP-Admin with an invalid URL that has an unsupported scheme. [https://github.com/woocommerce/woocommerce-ios/pull/6502]
+- [internal] Loading screens are refactored to avoid duplicated code and a potential crash. Please quickly smoke test them to make sure that everything still works as before. [https://github.com/woocommerce/woocommerce-ios/pull/6535] [https://github.com/woocommerce/woocommerce-ios/pull/6544]
 
 8.8
 -----

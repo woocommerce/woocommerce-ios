@@ -245,8 +245,8 @@ private extension OrderListViewController {
                     self.hideTopBannerView()
                 case .error:
                     self.setErrorTopBanner()
-                case .simplePayments:
-                    self.setSimplePaymentsEnabledTopBanner()
+                case .orderCreation:
+                    self.setOrderCreationTopBanner()
                 }
             }
             .store(in: &cancellables)
@@ -660,15 +660,15 @@ private extension OrderListViewController {
         showTopBannerView()
     }
 
-    /// Sets the `topBannerView` property to a simple payments enabled banner.
+    /// Sets the `topBannerView` property to an orders banner.
     ///
-    func setSimplePaymentsEnabledTopBanner() {
-        topBannerView = SimplePaymentsTopBannerFactory.createFeatureEnabledBanner(onTopButtonPressed: { [weak self] in
+    func setOrderCreationTopBanner() {
+        topBannerView = OrdersTopBannerFactory.createOrdersBanner(onTopButtonPressed: { [weak self] in
             self?.tableView.updateHeaderHeight()
         }, onDismissButtonPressed: { [weak self] in
-            self?.viewModel.hideSimplePaymentsBanners = true
+            self?.viewModel.hideOrdersBanners = true
         }, onGiveFeedbackButtonPressed: { [weak self] in
-            let surveyNavigation = SurveyCoordinatingController(survey: .simplePaymentsPrototype)
+            let surveyNavigation = SurveyCoordinatingController(survey: .orderCreation)
             self?.present(surveyNavigation, animated: true, completion: nil)
         })
         showTopBannerView()

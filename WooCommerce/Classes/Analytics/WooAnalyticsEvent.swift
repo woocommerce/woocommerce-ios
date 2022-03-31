@@ -71,8 +71,8 @@ extension WooAnalyticsEvent {
         case shippingLabelsRelease3 = "shipping_labels_m3"
         /// Shown in beta feature banner for order add-ons.
         case addOnsI1 = "add-ons_i1"
-        /// Shown in beta feature banner for simple payments prototype.
-        case simplePaymentsPrototype = "simple_payments_prototype"
+        /// Shown in orders banner for order creation release.
+        case orderCreation = "order_creation"
         /// Shown in beta feature banner for coupon management.
         case couponManagement = "coupon_management"
     }

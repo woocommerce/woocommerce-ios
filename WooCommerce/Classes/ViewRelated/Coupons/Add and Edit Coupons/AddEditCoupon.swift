@@ -19,7 +19,6 @@ struct AddEditCoupon: View {
                 ScrollView {
                     VStack (alignment: .leading) {
                         ListHeaderView(text: Localization.headerCouponDetails.uppercased(), alignment: .left)
-                            .padding(.horizontal, insets: geometry.safeAreaInsets)
 
                         TitleAndTextFieldRow(title: Localization.couponAmountPercentage,
                                              placeholder: Localization.couponAmountPercentage,
@@ -27,12 +26,12 @@ struct AddEditCoupon: View {
                                              editable: false,
                                              fieldAlignment: .leading,
                                              keyboardType: .asciiCapableNumberPad)
-                            .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()
-                            .padding([.leading], insets: geometry.safeAreaInsets)
+                            .padding(.leading, Constants.margin)
+
                         Text(Localization.footerCouponAmountPercentage)
                             .subheadlineStyle()
-                            .padding(.horizontal, insets: geometry.safeAreaInsets)
+                            .padding(.horizontal, Constants.margin)
 
                         TitleAndTextFieldRow(title: Localization.couponCode,
                                              placeholder: Localization.couponCode,
@@ -40,15 +39,31 @@ struct AddEditCoupon: View {
                                              editable: false,
                                              fieldAlignment: .leading,
                                              keyboardType: .asciiCapableNumberPad)
-                            .padding(.horizontal, insets: geometry.safeAreaInsets)
+
                         Divider()
-                            .padding([.leading], insets: geometry.safeAreaInsets)
+                            .padding(.leading, Constants.margin)
+
                         Text(Localization.footerCouponCode)
                             .subheadlineStyle()
-                            .padding(.horizontal, insets: geometry.safeAreaInsets)
-                    }
+                            .padding(.horizontal, Constants.margin)
 
+                        Button {
+                            //TODO: handle action
+                        } label: {
+                            Text(Localization.regenerateCouponCodeButton)
+                        }.buttonStyle(LinkButtonStyle())
+                            .padding(.horizontal, Constants.margin)
+
+                        Button {
+                            //TODO: handle action
+                        } label: {
+                            Text(Localization.addDescriptionButton)
+                                .bodyStyle()
+                        }.buttonStyle(SecondaryButtonStyle())
+                            .padding(.horizontal, Constants.margin)
+                    }
                 }
+                .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
             }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -67,6 +82,11 @@ struct AddEditCoupon: View {
 // MARK: - Constants
 //
 private extension AddEditCoupon {
+
+    enum Constants {
+        static let margin: CGFloat = 16
+    }
+
     enum Localization {
         static let cancelButton = NSLocalizedString(
             "Cancel",
@@ -86,6 +106,12 @@ private extension AddEditCoupon {
         static let footerCouponCode = NSLocalizedString(
             "Customers need to enter this code to use the coupon.",
             comment: "The footer of the text field coupon code in the view for adding or editing a coupon.")
+        static let regenerateCouponCodeButton = NSLocalizedString(
+            "Regenerate Coupon Code",
+            comment: "Button in the view for adding or editing a coupon.")
+        static let addDescriptionButton = NSLocalizedString(
+            "+ Add Description (Optional)",
+            comment: "Button for adding a description to a coupon in the view for adding or editing a coupon.")
     }
 }
 

@@ -24,10 +24,6 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public let isViewAddOnsSwitchEnabled: Bool
 
-    /// The state(`true` or `false`) for the Order Creation feature switch.
-    ///
-    public let isOrderCreationSwitchEnabled: Bool
-
     /// The state for the In-Person Payments in Canada feature switch
     ///
     public let isCanadaInPersonPaymentsSwitchEnabled: Bool
@@ -55,7 +51,6 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     public init(installationDate: Date?,
                 feedbacks: [FeedbackType: FeedbackSettings],
                 isViewAddOnsSwitchEnabled: Bool,
-                isOrderCreationSwitchEnabled: Bool,
                 isCanadaInPersonPaymentsSwitchEnabled: Bool,
                 isProductSKUInputScannerSwitchEnabled: Bool,
                 isCouponManagementSwitchEnabled: Bool,
@@ -65,7 +60,6 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
         self.installationDate = installationDate
         self.feedbacks = feedbacks
         self.isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled
-        self.isOrderCreationSwitchEnabled = isOrderCreationSwitchEnabled
         self.isCanadaInPersonPaymentsSwitchEnabled = isCanadaInPersonPaymentsSwitchEnabled
         self.isProductSKUInputScannerSwitchEnabled = isProductSKUInputScannerSwitchEnabled
         self.isCouponManagementSwitchEnabled = isCouponManagementSwitchEnabled
@@ -95,7 +89,6 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             installationDate: installationDate,
             feedbacks: updatedFeedbacks,
             isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
-            isOrderCreationSwitchEnabled: isOrderCreationSwitchEnabled,
             isCanadaInPersonPaymentsSwitchEnabled: isCanadaInPersonPaymentsSwitchEnabled,
             isProductSKUInputScannerSwitchEnabled: isProductSKUInputScannerSwitchEnabled,
             isCouponManagementSwitchEnabled: isCouponManagementSwitchEnabled,
@@ -115,7 +108,6 @@ extension GeneralAppSettings {
         self.installationDate = try container.decodeIfPresent(Date.self, forKey: .installationDate)
         self.feedbacks = try container.decodeIfPresent([FeedbackType: FeedbackSettings].self, forKey: .feedbacks) ?? [:]
         self.isViewAddOnsSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isViewAddOnsSwitchEnabled) ?? false
-        self.isOrderCreationSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isOrderCreationSwitchEnabled) ?? false
         self.isCanadaInPersonPaymentsSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isCanadaInPersonPaymentsSwitchEnabled) ?? false
         self.isProductSKUInputScannerSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isProductSKUInputScannerSwitchEnabled) ?? false
         self.isCouponManagementSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isCouponManagementSwitchEnabled) ?? false

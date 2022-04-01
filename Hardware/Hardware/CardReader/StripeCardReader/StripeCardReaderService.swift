@@ -461,7 +461,12 @@ private extension StripeCardReaderService {
             Terminal.shared.processPayment(intent) { (intent, error) in
                 if let error = error {
                     let underlyingError = UnderlyingError(with: error)
-                    promise(.failure(CardReaderServiceError.paymentCapture(underlyingError: underlyingError)))
+                    if let paymentMethod = error.paymentIntent.map({ PaymentIntent(intent: $0) })?.paymentMethod() {
+                        promise(.failure(CardReaderServiceError.paymentCaptureWithPaymentMethod(underlyingError: underlyingError,
+                                                                                                paymentMethod: paymentMethod)))
+                    } else {
+                        promise(.failure(CardReaderServiceError.paymentCapture(underlyingError: underlyingError)))
+                    }
                 }
 
                 if let intent = intent {

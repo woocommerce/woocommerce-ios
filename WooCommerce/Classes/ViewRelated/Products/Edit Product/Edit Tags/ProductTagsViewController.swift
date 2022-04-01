@@ -4,12 +4,15 @@ import WordPressUI
 
 /// ProductTagsViewController: Displays the list of ProductTag associated to the active Site and to the specific product.
 ///
-final class ProductTagsViewController: UIViewController {
+final class ProductTagsViewController: UIViewController, GhostableViewController {
 
     @IBOutlet private weak var tableView: UITableView!
-    @IBOutlet private weak var ghostTableView: UITableView!
     @IBOutlet private weak var textView: UITextView!
     @IBOutlet private var separatorView: UIView!
+
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(displaysSectionHeader: false,
+                                                                                                cellClass: WooBasicTableViewCell.self,
+                                                                                                isScrollEnabled: false))
 
     private let product: Product
 
@@ -66,7 +69,6 @@ final class ProductTagsViewController: UIViewController {
         configureSeparator()
         registerTableViewCells()
         configureTableView()
-        configureGhostTableView()
         startListeningToNotifications()
 
         textView.text = normalizeInitialTags(tags: originalTagNames)
@@ -151,19 +153,10 @@ private extension ProductTagsViewController {
         tableView.removeLastCellSeparator()
     }
 
-    func configureGhostTableView() {
-        ghostTableView.translatesAutoresizingMaskIntoConstraints = false
-        ghostTableView.backgroundColor = .listBackground
-        ghostTableView.isScrollEnabled = false
-        ghostTableView.isHidden = true
-        ghostTableView.removeLastCellSeparator()
-    }
-
     /// Registers all of the available TableViewCells
     ///
     func registerTableViewCells() {
         tableView.registerNib(for: BasicTableViewCell.self)
-        ghostTableView.registerNib(for: WooBasicTableViewCell.self)
     }
 }
 
@@ -214,7 +207,7 @@ extension ProductTagsViewController: KeyboardScrollable {
 //
 private extension ProductTagsViewController {
     func loadTags() {
-        displayLoading()
+        displayGhostContent(over: tableView)
 
         let action = ProductTagAction.synchronizeAllProductTags(siteID: product.siteID) { [weak self] error in
             if let error = error {
@@ -233,7 +226,7 @@ private extension ProductTagsViewController {
     }
 
     func tagsLoaded(tags: [String]) {
-        hideLoading()
+        removeGhostContent()
         dataSource = SuggestionsDataSource(suggestions: tags,
                                            selectedTags: completeTags,
                                            searchQuery: partialTag)
@@ -263,23 +256,6 @@ private extension ProductTagsViewController {
         ServiceLocator.stores.dispatch(action)
     }
 
-}
-
-// MARK: Loading handling
-//
-private extension ProductTagsViewController {
-    func displayLoading() {
-        let options = GhostOptions(displaysSectionHeader: false,
-            reuseIdentifier: WooBasicTableViewCell.reuseIdentifier,
-            rowsPerSection: [3])
-        ghostTableView.displayGhostContent(options: options, style: .wooDefaultGhostStyle)
-        ghostTableView.isHidden = false
-    }
-
-    func hideLoading() {
-        ghostTableView.removeGhostContent()
-        ghostTableView.isHidden = true
-    }
 }
 
 // MARK: Error handling

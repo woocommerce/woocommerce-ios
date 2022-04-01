@@ -32,11 +32,6 @@ public struct PaymentIntentParameters {
     /// This can be useful for storing additional information about the object in a structured format.
     public let metadata: [AnyHashable: Any]?
 
-    /// A Stripe issued customer ID
-    /// See https://stripe.com/docs/api/customers
-    ///
-    public let customerID: String?
-
     /// Supported payment methods for this intent.
     ///
     /// Can be `card_present`, `interac_present`.
@@ -49,8 +44,7 @@ public struct PaymentIntentParameters {
                 statementDescription: String? = nil,
                 receiptEmail: String? = nil,
                 paymentMethodTypes: [String] = [],
-                metadata: [AnyHashable: Any]? = nil,
-                customerID: String? = nil) {
+                metadata: [AnyHashable: Any]? = nil) {
         self.amount = amount
         self.currency = currency
         self.receiptDescription = receiptDescription
@@ -58,6 +52,5 @@ public struct PaymentIntentParameters {
         self.receiptEmail = receiptEmail
         self.paymentMethodTypes = paymentMethodTypes
         self.metadata = metadata
-        self.customerID = customerID
     }
 }

@@ -85,9 +85,9 @@ private final class MockReviewsViewModel: ReviewsViewModelOutput, ReviewsViewMod
 
     // Empty methods for `ReviewsViewModelActionsHandler` conformance
     //
-    func displayPlaceholderReviews(tableView: UITableView) {}
+    func didDisplayPlaceholderReviews() {}
 
-    func removePlaceholderReviews(tableView: UITableView) {}
+    func didRemovePlaceholderReviews(tableView: UITableView) {}
 
     func configureResultsController(tableView: UITableView) {}
 

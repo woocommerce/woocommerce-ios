@@ -116,10 +116,10 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                 onCollect(result.map { _ in () }) // Transforms Result<CardPresentReceiptParameters, Error> to Result<Void, Error>
 
                 // Handle payment receipt
-                guard let receiptParameters = try? result.get() else {
+                guard let paymentData = try? result.get() else {
                     return
                 }
-                self?.presentReceiptAlert(receiptParameters: receiptParameters, backButtonTitle: backButtonTitle, onCompleted: onCompleted)
+                self?.presentReceiptAlert(receiptParameters: paymentData.receiptParameters, backButtonTitle: backButtonTitle, onCompleted: onCompleted)
             })
         }
     }
@@ -169,7 +169,7 @@ private extension CollectOrderPaymentUseCase {
 
     /// Attempts to collect payment for an order.
     ///
-    func attemptPayment(onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> ()) {
+    func attemptPayment(onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
         // Track tapped event
         analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentTapped(forGatewayID: paymentGatewayAccount.gatewayID,
                                                                                        countryCode: configurationLoader.configuration.countryCode))
@@ -198,8 +198,8 @@ private extension CollectOrderPaymentUseCase {
 
                }, onCompletion: { [weak self] result in
                    switch result {
-                   case .success(let receiptParameters):
-                       self?.handleSuccessfulPayment(receipt: receiptParameters, onCompletion: onCompletion)
+                   case .success(let capturedPaymentData):
+                       self?.handleSuccessfulPayment(capturedPaymentData: capturedPaymentData, onCompletion: onCompletion)
                    case .failure(let error):
                        self?.handlePaymentFailureAndRetryPayment(error, onCompletion: onCompletion)
                    }
@@ -209,18 +209,21 @@ private extension CollectOrderPaymentUseCase {
 
     /// Tracks the successful payments
     ///
-    func handleSuccessfulPayment(receipt: CardPresentReceiptParameters, onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> ()) {
+    func handleSuccessfulPayment(capturedPaymentData: CardPresentCapturedPaymentData,
+                                 onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
         // Record success
-        analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentSuccess(forGatewayID: paymentGatewayAccount.gatewayID,
-                                                                                        countryCode: configurationLoader.configuration.countryCode))
+        analytics.track(event: WooAnalyticsEvent.InPersonPayments
+                            .collectPaymentSuccess(forGatewayID: paymentGatewayAccount.gatewayID,
+                                                   countryCode: configurationLoader.configuration.countryCode,
+                                                   paymentMethod: capturedPaymentData.paymentMethod))
 
         // Success Callback
-        onCompletion(.success(receipt))
+        onCompletion(.success(capturedPaymentData))
     }
 
     /// Log the failure reason, cancel the current payment and retry it if possible.
     ///
-    func handlePaymentFailureAndRetryPayment(_ error: Error, onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> ()) {
+    func handlePaymentFailureAndRetryPayment(_ error: Error, onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
         // Record error
         analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentFailed(forGatewayID: paymentGatewayAccount.gatewayID,
                                                                                        error: error,

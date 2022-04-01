@@ -115,7 +115,7 @@ extension Coupon {
 
     /// Formatted amount for the coupon
     ///
-    private func formattedAmount(currencySettings: CurrencySettings) -> String {
+    func formattedAmount(currencySettings: CurrencySettings) -> String {
         var amountString: String = ""
         switch discountType {
         case .percent:

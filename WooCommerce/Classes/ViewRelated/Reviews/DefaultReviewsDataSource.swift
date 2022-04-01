@@ -240,7 +240,7 @@ extension DefaultReviewsDataSource: ReviewsInteractionDelegate {
 }
 
 
-private extension DefaultReviewsDataSource {
+extension DefaultReviewsDataSource {
     enum Settings {
         static let estimatedRowHeight = CGFloat(88)
     }

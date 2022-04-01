@@ -9,7 +9,7 @@ final class ProductReviewsViewController: UIViewController, GhostableViewControl
     private let viewModel: ProductReviewsViewModel
 
     lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: ProductReviewTableViewCell.self,
-                                                                                                estimatedRowHeight: ProductReviewsDataSource
+                                                                                                estimatedRowHeight: DefaultReviewsDataSource
                                                                                                                     .Settings
                                                                                                                     .estimatedRowHeight))
 

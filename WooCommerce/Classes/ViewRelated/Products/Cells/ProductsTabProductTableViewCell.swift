@@ -124,14 +124,17 @@ private extension ProductsTabProductTableViewCell {
         bottomBorderView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(stackView)
         contentView.addSubview(bottomBorderView)
-        contentView.pinSubviewToAllEdges(stackView, insets: UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16))
+        contentView.pinSubviewToAllEdges(stackView, insets: UIEdgeInsets(top: Constants.stackViewInset,
+                                                                         left: Constants.stackViewInset,
+                                                                         bottom: Constants.stackViewInset,
+                                                                         right: Constants.stackViewInset))
 
         // Not initially enabled, saved for possible compact icon case
         productImageViewFixedHeightConstraint = productImageView.heightAnchor.constraint(equalTo: stackView.heightAnchor)
 
         // Assigning a minimum default height to the labels might be helpful (e.g for the ghosting placeholder animation)
-        nameLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 20).isActive = true
-        detailsLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 16).isActive = true
+        nameLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.nameLabelDefaultMinimumHeight).isActive = true
+        detailsLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.detailsLabelDefaultMinimumHeight).isActive = true
 
         NSLayoutConstraint.activate([
             bottomBorderView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
@@ -225,6 +228,9 @@ private extension ProductsTabProductTableViewCell {
     enum Constants {
         static let cornerRadius = CGFloat(2.0)
         static let borderWidth = CGFloat(0.5)
+        static let stackViewInset = CGFloat(16)
+        static let nameLabelDefaultMinimumHeight = CGFloat(20)
+        static let detailsLabelDefaultMinimumHeight = CGFloat(16)
     }
 
     enum Colors {

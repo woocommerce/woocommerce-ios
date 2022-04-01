@@ -6,7 +6,7 @@ import Yosemite
 /// Default implementation of the ReviewsDataSource, dequeues and
 /// populates cells to render the Product Review list
 ///
-final class DefaultReviewsDataSource: NSObject, ReviewsDataSourceProtocol {
+final class ReviewsDataSource: NSObject, ReviewsDataSourceProtocol {
 
     // MARK: - Private properties
 
@@ -143,7 +143,7 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSourceProtocol {
 
 // MARK: - UITableViewDataSource Conformance
 //
-extension DefaultReviewsDataSource: UITableViewDataSource {
+extension ReviewsDataSource: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
         return reviewsResultsController.sections.count
@@ -168,7 +168,7 @@ extension DefaultReviewsDataSource: UITableViewDataSource {
 
 // MARK: - Cell Setup
 //
-private extension DefaultReviewsDataSource {
+private extension ReviewsDataSource {
 
     /// Initializes the Notifications Cell at the specified indexPath
     ///
@@ -202,7 +202,7 @@ private extension DefaultReviewsDataSource {
 
 // MARK: - Conformance to ReviewsInteractionDelegate & UITableViewDelegate
 //
-extension DefaultReviewsDataSource: ReviewsInteractionDelegate {
+extension ReviewsDataSource: ReviewsInteractionDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return UITableView.automaticDimension
     }
@@ -241,7 +241,7 @@ extension DefaultReviewsDataSource: ReviewsInteractionDelegate {
 }
 
 
-extension DefaultReviewsDataSource {
+extension ReviewsDataSource {
     enum Settings {
         static let estimatedRowHeight = CGFloat(88)
     }

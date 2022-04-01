@@ -9,7 +9,7 @@ final class ProductReviewsViewController: UIViewController, GhostableViewControl
     private let viewModel: ProductReviewsViewModel
 
     lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: ProductReviewTableViewCell.self,
-                                                                                                estimatedRowHeight: DefaultReviewsDataSource
+                                                                                                estimatedRowHeight: ReviewsDataSource
                                                                                                                     .Settings
                                                                                                                     .estimatedRowHeight))
 
@@ -61,7 +61,7 @@ final class ProductReviewsViewController: UIViewController, GhostableViewControl
     init(product: Product) {
         self.product = product
         viewModel = ProductReviewsViewModel(siteID: product.siteID,
-                                            data: DefaultReviewsDataSource(siteID: product.siteID,
+                                            data: ReviewsDataSource(siteID: product.siteID,
                                                                            delegate: ProductReviewsDataSourceCustomizing(product: product)))
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }

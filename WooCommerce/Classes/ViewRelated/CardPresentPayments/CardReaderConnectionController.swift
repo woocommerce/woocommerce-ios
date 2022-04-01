@@ -99,6 +99,10 @@ final class CardReaderConnectionController {
     ///
     private var candidateReader: CardReader?
 
+    /// Tracks analytics for card reader connection events
+    ///
+    private var analyticsTracker: CardReaderConnectionAnalyticsTracker?
+
     /// Since the number of readers can go greater than 1 and then back to 1, and we don't
     /// want to keep changing the UI from the several-readers-found list to a single prompt
     /// and back (as this would be visually quite annoying), this flag will tell us that we've
@@ -120,6 +124,7 @@ final class CardReaderConnectionController {
     private var gatewayID: String? {
         didSet {
             didSetGatewayID()
+            analyticsTracker?.setGatewayID(gatewayID: gatewayID)
         }
     }
 
@@ -484,24 +489,12 @@ private extension CardReaderConnectionController {
             return { [weak self] in
                 guard let self = self else { return }
                 self.state = .cancel
-                ServiceLocator.analytics.track(
-                    event: WooAnalyticsEvent.InPersonPayments.cardReaderSoftwareUpdateCancelTapped(
-                        forGatewayID: self.gatewayID,
-                        updateType: .required,
-                        countryCode: self.configuration.countryCode
-                    )
-                )
-                cancelable.cancel { result in
+                self.analyticsTracker?.softwareUpdateCancelTapped()
+                cancelable.cancel { [weak self] result in
                     if case .failure(let error) = result {
                         DDLogError("💳 Error: canceling software update \(error)")
                     } else {
-                        ServiceLocator.analytics.track(
-                            event: WooAnalyticsEvent.InPersonPayments.cardReaderSoftwareUpdateCanceled(
-                                forGatewayID: self.gatewayID,
-                                updateType: .required,
-                                countryCode: self.configuration.countryCode
-                            )
-                        )
+                        self?.analyticsTracker?.softwareUpdateCanceled()
                     }
                 }
             }
@@ -543,6 +536,12 @@ private extension CardReaderConnectionController {
         guard let from = fromController else {
             return
         }
+
+        let analyticsTracker = CardReaderConnectionAnalyticsTracker(candidateReader: candidateReader,
+                                                                    configuration: configuration,
+                                                                    gatewayID: gatewayID,
+                                                                    stores: stores)
+        self.analyticsTracker = analyticsTracker
 
         let softwareUpdateAction = CardPresentPaymentAction.observeCardReaderUpdateState { [weak self] softwareUpdateEvents in
             guard let self = self else { return }

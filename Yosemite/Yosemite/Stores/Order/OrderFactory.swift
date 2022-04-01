@@ -74,7 +74,7 @@ public enum OrderFactory {
     /// Creates a shipping line suitable to delete a shipping line already saved remotely in an order.
     ///
     public static func deletedShippingLine(_ shippingLine: ShippingLine) -> ShippingLine {
-        shippingLine.copy(methodID: .some(nil))
+        shippingLine.copy(methodID: .some(nil), total: "0")
     }
 
     /// References a new empty order with constants `Date` values.

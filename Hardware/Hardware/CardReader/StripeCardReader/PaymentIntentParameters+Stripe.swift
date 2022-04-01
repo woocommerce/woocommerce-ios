@@ -32,7 +32,6 @@ extension Hardware.PaymentIntentParameters {
             returnValue.statementDescriptor = descriptor
         }
 
-        returnValue.receiptEmail = receiptEmail
         returnValue.metadata = metadata
 
         return returnValue

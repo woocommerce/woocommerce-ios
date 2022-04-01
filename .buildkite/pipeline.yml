@@ -31,7 +31,7 @@ steps:
     command: ".buildkite/commands/installable-build.sh"
     env: *common_env
     plugins: *common_plugins
-    if: build.pull_request.id != null
+    if: "build.pull_request.id != null"
     notify:
       - github_commit_status:
           context: "Installable Build"

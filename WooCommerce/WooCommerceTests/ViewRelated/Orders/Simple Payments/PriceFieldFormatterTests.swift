@@ -126,4 +126,17 @@ final class PriceFieldFormatterTests: XCTestCase {
         _ = priceFieldFormatter.formatAmount("-hi:11.3030-")
         XCTAssertEqual(priceFieldFormatter.formattedAmount, "-$11.30")
     }
+
+    func test_formatter_disallows_negative_numbers_by_default() {
+        // Given
+        let priceFieldFormatter = PriceFieldFormatter(locale: usLocale, storeCurrencySettings: usStoreSettings)
+
+        // When & Then
+        _ = priceFieldFormatter.formatAmount("-12")
+        XCTAssertEqual(priceFieldFormatter.formattedAmount, "$12")
+
+        // When & Then
+        _ = priceFieldFormatter.formatAmount("-hi:11.3030-")
+        XCTAssertEqual(priceFieldFormatter.formattedAmount, "$11.30")
+    }
 }

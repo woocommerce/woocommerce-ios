@@ -22,7 +22,7 @@ protocol ReviewsDataSourceDelegate: AnyObject {
 }
 
 /// Abstracts the dataSource used to render the Product Review list
-protocol ReviewsDataSource: UITableViewDataSource, ReviewsInteractionDelegate {
+protocol ReviewsDataSourceProtocol: UITableViewDataSource, ReviewsInteractionDelegate {
     /// Boolean indicating if there are reviews
     ///
     var isEmpty: Bool { get }

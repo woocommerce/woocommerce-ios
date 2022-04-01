@@ -4,7 +4,7 @@ import XCTest
 @testable import Yosemite
 
 final class ProductReviewsViewModelTests: XCTestCase {
-    private var mockDataSource: ReviewsDataSource!
+    private var mockDataSource: ReviewsDataSourceProtocol!
     private var viewModel: ProductReviewsViewModel!
     private let productID: Int64 = 12345
 
@@ -80,7 +80,7 @@ final class ProductReviewsViewModelTests: XCTestCase {
 
 // MARK: - Mocks
 
-final class MockProductReviewsDataSource: NSObject, ReviewsDataSource {
+final class MockProductReviewsDataSource: NSObject, ReviewsDataSourceProtocol {
 
     private lazy var reviews: [ProductReview] = {
         return [.fake()]

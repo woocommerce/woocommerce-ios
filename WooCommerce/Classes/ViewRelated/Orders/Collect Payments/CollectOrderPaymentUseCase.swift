@@ -53,6 +53,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     ///
     private var readerSubscription: AnyCancellable?
 
+    /// Stores the connected card reader for analytics.
     private var connectedReader: CardReader?
 
     /// Closure to inform when the full flow has been completed, after receipt management.

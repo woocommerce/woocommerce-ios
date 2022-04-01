@@ -410,6 +410,50 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.optionalReaderUpdateAvailable)
     }
+
+    func test_when_connected_to_one_reader_it_sets_connectedReaderModel() {
+        XCTAssertEqual(viewModel.connectedReaderModel, MockCardReader.bbposChipper2XBT().readerType.model)
+    }
+
+    func test_when_connected_to_two_readers_it_sets_connectedReaderModel_from_the_first_reader() {
+        // Given
+        mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [MockCardReader.wisePad3(), MockCardReader.bbposChipper2XBT()],
+            discoveredReaders: [],
+            sessionManager: SessionManager.testingInstance
+        )
+        ServiceLocator.setStores(mockStoresManager)
+
+        analyticsProvider = MockAnalyticsProvider()
+        ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analyticsProvider))
+
+        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
+                                                         configuration: Mocks.configuration,
+                                                         delayToShowUpdateSuccessMessage: .milliseconds(1))
+
+        // Then
+        XCTAssertEqual(viewModel.connectedReaderModel, "WISEPAD_3")
+    }
+
+    func test_when_not_connected_to_any_readers_it_sets_connectedReaderModel_to_nil() {
+        // Given
+        mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [],
+            discoveredReaders: [],
+            sessionManager: SessionManager.testingInstance
+        )
+        ServiceLocator.setStores(mockStoresManager)
+
+        analyticsProvider = MockAnalyticsProvider()
+        ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analyticsProvider))
+
+        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
+                                                         configuration: Mocks.configuration,
+                                                         delayToShowUpdateSuccessMessage: .milliseconds(1))
+
+        // Then
+        XCTAssertNil(viewModel.connectedReaderModel)
+    }
 }
 
 private extension CardReaderSettingsConnectedViewModelTests {

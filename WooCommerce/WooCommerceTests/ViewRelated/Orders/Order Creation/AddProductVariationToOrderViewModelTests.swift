@@ -204,6 +204,24 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.notice, AddProductVariationToOrderViewModel.NoticeFactory.productVariationSyncNotice(retryAction: {}))
     }
+
+    func test_selectVariation_invokes_onVariationSelected_closure_for_existing_variation() {
+        // Given
+        var selectedVariationID: Int64?
+        let product = Product.fake().copy(productID: sampleProductID)
+        let productVariation = sampleProductVariation.copy(productVariationID: 1)
+        insert(productVariation)
+        let viewModel = AddProductVariationToOrderViewModel(siteID: sampleSiteID,
+                                                            product: product,
+                                                            storageManager: storageManager,
+                                                            onVariationSelected: { selectedVariationID = $0.productVariationID })
+
+        // When
+        viewModel.selectVariation(productVariation.productVariationID)
+
+        // Then
+        XCTAssertEqual(selectedVariationID, productVariation.productVariationID)
+    }
 }
 
 // MARK: - Utils

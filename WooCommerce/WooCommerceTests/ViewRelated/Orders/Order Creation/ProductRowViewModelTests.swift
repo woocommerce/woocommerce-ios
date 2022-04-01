@@ -268,4 +268,17 @@ class ProductRowViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(productRemoved)
     }
+
+    func test_productAccessibilityLabel_is_created_with_expected_details_from_product() {
+        // Given
+        let product = Product.fake().copy(name: "Test Product", sku: "123456", price: "10", stockStatusKey: "instock", variations: [1, 2])
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Defaults to US currency & format
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, currencyFormatter: currencyFormatter)
+
+        // Then
+        let expectedLabel = "Test Product. In stock. $10.00. 2 variations. SKU: 123456"
+        XCTAssertEqual(viewModel.productAccessibilityLabel, expectedLabel)
+    }
 }

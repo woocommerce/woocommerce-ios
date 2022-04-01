@@ -221,6 +221,24 @@ final class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows[safe: 1]?.quantity, 1)
     }
 
+    func test_product_is_selected_when_quantity_is_decremented_below_1() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // Product quantity is 1
+        viewModel.addProductViewModel.selectProduct(product.productID)
+        XCTAssertEqual(viewModel.productRows[0].quantity, 1)
+
+        // When
+        viewModel.productRows[0].decrementQuantity()
+
+        // Then
+        XCTAssertNotNil(viewModel.selectedProductViewModel)
+    }
+
     func test_selectOrderItem_selects_expected_order_item() throws {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)

@@ -1,3 +1,5 @@
-Ab sofort werden bei Rückerstattungen die Kreditkartendaten für persönliche Zahlungen angezeigt. So kannst du deinen Kunden genau mitteilen, wohin das Guthaben überwiesen wird!
+Dein Unternehmen verwendet individuelle Bestellstatus? Dann kannst du Bestellungen jetzt nach diesen Status filtern! Tippe in der Liste zum Sortieren auf den Button „Filtern“, um diese Option zu sehen.
 
-Einige neue Funktionen sind noch nicht für alle Nutzer verfügbar, du kannst sie dir aber schon vorab ansehen! Bestellungen erstellen, Gutscheine anzeigen und vieles mehr! Unter dem Tab „Menü“ > „Einstellungen“ > „Experimentelle Einstellungen“ kannst du sie aktivieren. Wir freuen uns auf dein Feedback zur App, vor allem zu den neuen Funktionen, an denen wir zurzeit arbeiten und auf die wir frühzeitigen Zugriff gewähren.
+Vielleicht hast du schon festgestellt, dass die Reihenfolge der Produkte in einer Bestellung nicht immer mit der im Internet übereinstimmt. Dieses Problem haben wir behoben!
+
+Wusstest du schon, dass wir an einer neuen Funktion zum Erstellen von Bestellungen arbeiten? Gehe zum Tab „Menü“, tippe auf das Einstellungs-Icon und scrolle zu den experimentellen Funktionen. In dieser Version haben wir einen Bereich für Versandmethoden und -kosten hinzugefügt. Außerdem gibt es eine neue Funktion für Gutscheine, die du für uns testen kannst! Wir freuen uns über Feedback darüber, was wir noch verbessern könnten.

@@ -47,14 +47,18 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
         optionalReaderUpdateAvailable ? .optional : .required
     }
 
+    private let analyticsTracker: CardReaderConnectionAnalyticsTracker
+
     init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?,
          knownReaderProvider: CardReaderSettingsKnownReaderProvider? = nil,
          configuration: CardPresentPaymentsConfiguration,
+         analyticsTracker: CardReaderConnectionAnalyticsTracker,
          delayToShowUpdateSuccessMessage: DispatchTimeInterval = .seconds(1)) {
         self.didChangeShouldShow = didChangeShouldShow
         self.knownReaderProvider = knownReaderProvider
         self.siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min
         self.configuration = configuration
+        self.analyticsTracker = analyticsTracker
         self.delayToShowUpdateSuccessMessage = delayToShowUpdateSuccessMessage
 
         configureResultsControllers()
@@ -194,12 +198,14 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
         }
         return { [weak self] in
             guard let self = self else { return }
+            self.analyticsTracker.softwareUpdateCancelTapped()
             self.softwareUpdateCancelable?.cancel(completion: { [weak self] result in
                 guard let self = self else { return }
 
                 if case .failure(let error) = result {
                     DDLogError("💳 Error: canceling software update \(error)")
                 } else {
+                    self.analyticsTracker.softwareUpdateCanceled()
                     self.completeCardReaderUpdate(success: false)
                 }
             })

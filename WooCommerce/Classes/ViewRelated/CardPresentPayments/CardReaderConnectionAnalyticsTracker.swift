@@ -8,14 +8,18 @@ final class CardReaderConnectionAnalyticsTracker {
     private var connectedReader: CardReader?
 
     /// The reader the user is trying to connect.
-    private let candidateReader: CardReader
+    private var candidateReader: CardReader?
 
     private var updateType: SoftwareUpdateTypeProperty {
         optionalReaderUpdateAvailable ? .optional : .required
     }
 
     private var cardReaderModel: String {
-        (connectedReader ?? candidateReader).readerType.model
+        (connectedReader ?? candidateReader)?.readerType.model ?? ""
+    }
+
+    private var countryCode: String {
+        configuration.countryCode
     }
 
     private(set) var optionalReaderUpdateAvailable: Bool = false
@@ -30,14 +34,10 @@ final class CardReaderConnectionAnalyticsTracker {
     private let stores: StoresManager
     private let analytics: Analytics
 
-    init(candidateReader: CardReader,
-         configuration: CardPresentPaymentsConfiguration,
-         gatewayID: String?,
+    init(configuration: CardPresentPaymentsConfiguration,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
-        self.candidateReader = candidateReader
         self.configuration = configuration
-        self.gatewayID = gatewayID
         self.stores = stores
         self.analytics = analytics
 
@@ -49,12 +49,16 @@ final class CardReaderConnectionAnalyticsTracker {
         self.gatewayID = gatewayID
     }
 
+    func setCandidateReader(_ reader: CardReader?) {
+        candidateReader = reader
+    }
+
     /// Called when the user taps to cancel card reader software update.
     func softwareUpdateCancelTapped() {
         analytics.track(event: WooAnalyticsEvent.InPersonPayments
             .cardReaderSoftwareUpdateCancelTapped(forGatewayID: gatewayID,
                                                   updateType: .required,
-                                                  countryCode: configuration.countryCode,
+                                                  countryCode: countryCode,
                                                   cardReaderModel: cardReaderModel))
     }
 
@@ -63,7 +67,7 @@ final class CardReaderConnectionAnalyticsTracker {
         analytics.track(event: WooAnalyticsEvent.InPersonPayments
             .cardReaderSoftwareUpdateCanceled(forGatewayID: gatewayID,
                                               updateType: .required,
-                                              countryCode: configuration.countryCode,
+                                              countryCode: countryCode,
                                               cardReaderModel: cardReaderModel))
     }
 }
@@ -89,7 +93,7 @@ private extension CardReaderConnectionAnalyticsTracker {
                             event: WooAnalyticsEvent.InPersonPayments
                                 .cardReaderSoftwareUpdateStarted(forGatewayID: self.gatewayID,
                                                                  updateType: self.updateType,
-                                                                 countryCode: self.configuration.countryCode,
+                                                                 countryCode: self.countryCode,
                                                                  cardReaderModel: self.cardReaderModel)
                         )
                     case .failed(error: let error):
@@ -102,14 +106,14 @@ private extension CardReaderConnectionAnalyticsTracker {
                             .cardReaderSoftwareUpdateFailed(forGatewayID: self.gatewayID,
                                                             updateType: self.updateType,
                                                             error: error,
-                                                            countryCode: self.configuration.countryCode,
+                                                            countryCode: self.countryCode,
                                                             cardReaderModel: self.cardReaderModel))
                     case .completed:
                         self.softwareUpdateCancelable = nil
                         self.analytics.track(event: WooAnalyticsEvent.InPersonPayments
                             .cardReaderSoftwareUpdateSuccess(forGatewayID: self.gatewayID,
                                                              updateType: self.updateType,
-                                                             countryCode: self.configuration.countryCode,
+                                                             countryCode: self.countryCode,
                                                              cardReaderModel: self.cardReaderModel))
                     case .available:
                         self.optionalReaderUpdateAvailable = true

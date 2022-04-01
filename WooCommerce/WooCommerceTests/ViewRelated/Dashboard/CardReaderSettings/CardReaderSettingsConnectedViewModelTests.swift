@@ -17,10 +17,14 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         ServiceLocator.setStores(mockStoresManager)
 
         analyticsProvider = MockAnalyticsProvider()
-        ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analyticsProvider))
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        ServiceLocator.setAnalytics(analytics)
 
         viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
                                                          configuration: Mocks.configuration,
+                                                         analyticsTracker: .init(configuration: Mocks.configuration,
+                                                                                 stores: mockStoresManager,
+                                                                                 analytics: analytics),
                                                          delayToShowUpdateSuccessMessage: .milliseconds(1))
     }
 
@@ -38,6 +42,8 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
             expectation.fulfill()
         },
                                                      configuration: Mocks.configuration,
+                                                     analyticsTracker: .init(configuration: Mocks.configuration,
+                                                                             stores: mockStoresManager),
                                                      delayToShowUpdateSuccessMessage: .milliseconds(1))
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
@@ -51,13 +57,18 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
             expectation.fulfill()
         },
                                                          configuration: Mocks.configuration,
+                                                         analyticsTracker: .init(configuration: Mocks.configuration,
+                                                                                 stores: mockStoresManager),
                                                          delayToShowUpdateSuccessMessage: .milliseconds(1))
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     func test_view_model_correctly_formats_connected_card_reader_battery_level() {
-        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil, configuration: Mocks.configuration)
+        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
+                                                         configuration: Mocks.configuration,
+                                                         analyticsTracker: .init(configuration: Mocks.configuration,
+                                                                                 stores: mockStoresManager))
         XCTAssertEqual(viewModel.connectedReaderBatteryLevel, "50% Battery")
     }
 
@@ -71,6 +82,8 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
 
         viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
                                                          configuration: Mocks.configuration,
+                                                         analyticsTracker: .init(configuration: Mocks.configuration,
+                                                                                 stores: mockStoresManager),
                                                          delayToShowUpdateSuccessMessage: .milliseconds(1))
         XCTAssertEqual(viewModel.connectedReaderBatteryLevel, "Unknown Battery Level")
     }
@@ -78,6 +91,8 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
     func test_view_model_correctly_formats_connected_card_reader_software_version() {
         let viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
                                                              configuration: Mocks.configuration,
+                                                             analyticsTracker: .init(configuration: Mocks.configuration,
+                                                                                     stores: mockStoresManager),
                                                              delayToShowUpdateSuccessMessage: .milliseconds(1))
         XCTAssertEqual(viewModel.connectedReaderSoftwareVersion, "Version: 1.00.03.34-SZZZ_Generic_v45-300001")
     }
@@ -92,6 +107,8 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
 
         viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
                                                          configuration: Mocks.configuration,
+                                                         analyticsTracker: .init(configuration: Mocks.configuration,
+                                                                                 stores: mockStoresManager),
                                                          delayToShowUpdateSuccessMessage: .milliseconds(1))
         XCTAssertEqual(viewModel.connectedReaderSoftwareVersion, "Unknown Software Version")
     }
@@ -138,6 +155,8 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
 
         viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
                                                          configuration: Mocks.configuration,
+                                                         analyticsTracker: .init(configuration: Mocks.configuration,
+                                                                                 stores: mockStoresManager),
                                                          delayToShowUpdateSuccessMessage: .milliseconds(1))
 
         var updateDidBegin = false
@@ -424,11 +443,10 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         )
         ServiceLocator.setStores(mockStoresManager)
 
-        analyticsProvider = MockAnalyticsProvider()
-        ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analyticsProvider))
-
         viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
                                                          configuration: Mocks.configuration,
+                                                         analyticsTracker: .init(configuration: Mocks.configuration,
+                                                                                 stores: mockStoresManager),
                                                          delayToShowUpdateSuccessMessage: .milliseconds(1))
 
         // Then
@@ -444,11 +462,10 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         )
         ServiceLocator.setStores(mockStoresManager)
 
-        analyticsProvider = MockAnalyticsProvider()
-        ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analyticsProvider))
-
         viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
                                                          configuration: Mocks.configuration,
+                                                         analyticsTracker: .init(configuration: Mocks.configuration,
+                                                                                 stores: mockStoresManager),
                                                          delayToShowUpdateSuccessMessage: .milliseconds(1))
 
         // Then

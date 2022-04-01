@@ -101,7 +101,7 @@ final class CardReaderConnectionController {
 
     /// Tracks analytics for card reader connection events
     ///
-    private var analyticsTracker: CardReaderConnectionAnalyticsTracker?
+    private let analyticsTracker: CardReaderConnectionAnalyticsTracker
 
     /// Since the number of readers can go greater than 1 and then back to 1, and we don't
     /// want to keep changing the UI from the several-readers-found list to a single prompt
@@ -124,7 +124,7 @@ final class CardReaderConnectionController {
     private var gatewayID: String? {
         didSet {
             didSetGatewayID()
-            analyticsTracker?.setGatewayID(gatewayID: gatewayID)
+            analyticsTracker.setGatewayID(gatewayID: gatewayID)
         }
     }
 
@@ -134,7 +134,8 @@ final class CardReaderConnectionController {
         stores: StoresManager = ServiceLocator.stores,
         knownReaderProvider: CardReaderSettingsKnownReaderProvider,
         alertsProvider: CardReaderSettingsAlertsProvider,
-        configuration: CardPresentPaymentsConfiguration
+        configuration: CardPresentPaymentsConfiguration,
+        analyticsTracker: CardReaderConnectionAnalyticsTracker
     ) {
         siteID = forSiteID
         self.storageManager = storageManager
@@ -146,6 +147,7 @@ final class CardReaderConnectionController {
         knownReaderID = nil
         skippedReaderIDs = []
         self.configuration = configuration
+        self.analyticsTracker = analyticsTracker
 
         configureResultsControllers()
         loadPaymentGatewayAccounts()
@@ -489,12 +491,12 @@ private extension CardReaderConnectionController {
             return { [weak self] in
                 guard let self = self else { return }
                 self.state = .cancel
-                self.analyticsTracker?.softwareUpdateCancelTapped()
+                self.analyticsTracker.softwareUpdateCancelTapped()
                 cancelable.cancel { [weak self] result in
                     if case .failure(let error) = result {
                         DDLogError("💳 Error: canceling software update \(error)")
                     } else {
-                        self?.analyticsTracker?.softwareUpdateCanceled()
+                        self?.analyticsTracker.softwareUpdateCanceled()
                     }
                 }
             }
@@ -537,11 +539,7 @@ private extension CardReaderConnectionController {
             return
         }
 
-        let analyticsTracker = CardReaderConnectionAnalyticsTracker(candidateReader: candidateReader,
-                                                                    configuration: configuration,
-                                                                    gatewayID: gatewayID,
-                                                                    stores: stores)
-        self.analyticsTracker = analyticsTracker
+        analyticsTracker.setCandidateReader(candidateReader)
 
         let softwareUpdateAction = CardPresentPaymentAction.observeCardReaderUpdateState { [weak self] softwareUpdateEvents in
             guard let self = self else { return }
@@ -568,9 +566,12 @@ private extension CardReaderConnectionController {
         stores.dispatch(softwareUpdateAction)
 
         let action = CardPresentPaymentAction.connect(reader: candidateReader) { [weak self] result in
+            guard let self = self else { return }
+
+            self.analyticsTracker.setCandidateReader(nil)
+
             switch result {
             case .success(let reader):
-                guard let self = self else { return }
                 self.knownCardReaderProvider.rememberCardReader(cardReaderID: reader.id)
                 ServiceLocator.analytics.track(
                     event: WooAnalyticsEvent.InPersonPayments
@@ -589,7 +590,6 @@ private extension CardReaderConnectionController {
                     self.returnSuccess(connected: true)
                 }
             case .failure(let error):
-                guard let self = self else { return }
                 ServiceLocator.analytics.track(
                     event: WooAnalyticsEvent.InPersonPayments.cardReaderConnectionFailed(forGatewayID: self.gatewayID,
                                                                                          error: error,

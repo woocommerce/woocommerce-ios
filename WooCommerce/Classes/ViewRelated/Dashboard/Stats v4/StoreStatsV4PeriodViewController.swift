@@ -485,7 +485,12 @@ extension StoreStatsV4PeriodViewController: IAxisValueFormatter {
         }
 
         if axis is XAxis {
-            return createOrderStatsIntervalLabels()[Int(value)]
+            let intervalLabels = createOrderStatsIntervalLabels()
+            let index = Int(value)
+            if index >= intervalLabels.count {
+                DDLogInfo("🔴 orderStatsIntervals count: \(orderStatsIntervals.count); value: \(value); index: \(index); interval labels: \(intervalLabels)")
+            }
+            return intervalLabels[index]
         } else {
             if value == 0.0 {
                 // Do not show the "0" label on the Y axis

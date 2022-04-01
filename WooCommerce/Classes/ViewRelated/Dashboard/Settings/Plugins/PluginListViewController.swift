@@ -3,15 +3,16 @@ import WordPressUI
 
 /// View Controller for the Plugin List Screen.
 ///
-final class PluginListViewController: UIViewController {
+final class PluginListViewController: UIViewController, GhostableViewController {
 
     private let viewModel: PluginListViewModel
 
     @IBOutlet private var tableView: UITableView!
 
-    /// Separate table view for ghost animation.
-    ///
-    private let ghostTableView = UITableView(frame: .zero, style: .grouped)
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(displaysSectionHeader: false,
+                                                                                                cellClass: HeadlineLabelTableViewCell.self,
+                                                                                                rowsPerSection: [10],
+                                                                                                isScrollEnabled: false))
 
     /// Pull To Refresh Support.
     ///
@@ -42,7 +43,6 @@ final class PluginListViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureTableView()
-        configureGhostTableView()
         configureViewModel()
     }
 }
@@ -63,30 +63,6 @@ private extension PluginListViewController {
         tableView.dataSource = self
     }
 
-    func configureGhostTableView() {
-        ghostTableView.registerNib(for: HeadlineLabelTableViewCell.self)
-        ghostTableView.translatesAutoresizingMaskIntoConstraints = false
-        ghostTableView.backgroundColor = .listBackground
-        ghostTableView.isScrollEnabled = false
-        ghostTableView.isHidden = true
-
-        view.addSubview(ghostTableView)
-        view.pinSubviewToAllEdges(ghostTableView)
-    }
-
-    func startGhostAnimation() {
-        let options = GhostOptions(reuseIdentifier: HeadlineLabelTableViewCell.reuseIdentifier, rowsPerSection: [10])
-        ghostTableView.displayGhostContent(options: options, style: .wooDefaultGhostStyle)
-        ghostTableView.startGhostAnimation()
-        ghostTableView.isHidden = false
-    }
-
-    func stopGhostAnimation() {
-        ghostTableView.isHidden = true
-        ghostTableView.stopGhostAnimation()
-        ghostTableView.removeGhostContent()
-    }
-
     func configureViewModel() {
         viewModel.observePlugins { [weak self] in
             self?.tableView.reloadData()
@@ -105,12 +81,12 @@ private extension PluginListViewController {
     @objc func syncPlugins() {
         removeErrorStateView()
         if viewModel.numberOfSections == 0 {
-            startGhostAnimation()
+            displayGhostContent()
         }
         viewModel.syncPlugins { [weak self] result in
             guard let self = self else { return }
             self.refreshControl.endRefreshing()
-            self.stopGhostAnimation()
+            self.removeGhostContent()
             if result.isFailure {
                 self.displayErrorStateView()
             }

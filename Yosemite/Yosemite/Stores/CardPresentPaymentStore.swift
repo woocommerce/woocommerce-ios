@@ -63,8 +63,6 @@ public final class CardPresentPaymentStore: Store {
         case .loadAccounts(let siteID, let onCompletion):
             loadAccounts(siteID: siteID,
                          onCompletion: onCompletion)
-        case .fetchOrderCustomer(let siteID, let orderID, let completion):
-            fetchOrderCustomer(siteID: siteID, orderID: orderID, completion: completion)
         case .captureOrderPayment(let siteID,
                                   let orderID,
                                   let paymentIntentID,
@@ -471,15 +469,6 @@ private extension CardPresentPaymentStore {
                 self.deleteStaleAccount(siteID: siteID, gatewayID: StripeAccount.gatewayID)
                 onCompletion(.failure(error))
             }
-        }
-    }
-
-    func fetchOrderCustomer(siteID: Int64, orderID: Int64, completion: @escaping (Result<WCPayCustomer, Error>) -> Void) {
-        switch usingBackend {
-        case .wcpay:
-            remote.fetchOrderCustomer(for: siteID, orderID: orderID, completion: completion)
-        case .stripe:
-            stripeRemote.fetchOrderCustomer(for: siteID, orderID: orderID, completion: completion)
         }
     }
 

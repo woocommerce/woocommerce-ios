@@ -26,9 +26,9 @@ protocol ReviewsViewModelOutput {
 /// Handles actions related to Reviews screen
 ///
 protocol ReviewsViewModelActionsHandler {
-    func displayPlaceholderReviews(tableView: UITableView)
+    func didDisplayPlaceholderReviews()
 
-    func removePlaceholderReviews(tableView: UITableView)
+    func didRemovePlaceholderReviews(tableView: UITableView)
 
     func configureResultsController(tableView: UITableView)
 
@@ -88,18 +88,13 @@ final class ReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHan
         self.stores = stores
     }
 
-    func displayPlaceholderReviews(tableView: UITableView) {
-        let options = GhostOptions(reuseIdentifier: ProductReviewTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
-        tableView.displayGhostContent(options: options,
-                                      style: .wooDefaultGhostStyle)
-
+    func didDisplayPlaceholderReviews() {
         data.stopForwardingEvents()
     }
 
-    /// Removes Placeholder Notes (and restores the ResultsController <> UITableView link).
+    /// Restores the ResultsController <> UITableView link after the placeholder was removed from the view.
     ///
-    func removePlaceholderReviews(tableView: UITableView) {
-        tableView.removeGhostContent()
+    func didRemovePlaceholderReviews(tableView: UITableView) {
         data.startForwardingEvents(to: tableView)
         tableView.reloadData()
     }
@@ -241,7 +236,6 @@ private extension ReviewsViewModel {
 
 private extension ReviewsViewModel {
     enum Settings {
-        static let placeholderRowsPerSection = [3]
         static let firstPage = 1
         static let pageSize = 25
     }

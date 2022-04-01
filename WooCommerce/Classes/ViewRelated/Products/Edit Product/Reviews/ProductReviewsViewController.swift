@@ -62,7 +62,7 @@ final class ProductReviewsViewController: UIViewController, GhostableViewControl
         self.product = product
         viewModel = ProductReviewsViewModel(siteID: product.siteID,
                                             data: DefaultReviewsDataSource(siteID: product.siteID,
-                                                                           delegate: ProductReviewsDataSourceDelegate(product: product)))
+                                                                           delegate: ProductReviewsDataSourceCustomizing(product: product)))
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 

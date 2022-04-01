@@ -118,7 +118,7 @@ final class ReviewsViewController: UIViewController, GhostableViewController {
     convenience init(siteID: Int64) {
         self.init(viewModel: ReviewsViewModel(siteID: siteID,
                                               data: DefaultReviewsDataSource(siteID: siteID,
-                                                                             delegate: SiteReviewsDataSourceDelegate())))
+                                                                             delegate: GlobalReviewsDataSourceCustomizing())))
     }
 
     init(viewModel: ViewModel) {

@@ -12,7 +12,8 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSourceProtocol {
 
     private let siteID: Int64
 
-    private let delegate: ReviewsDataSourceDelegate
+    /// This customizer adds an extra layer of customization depending on the case (e.g only reviews of a specific product, global site reviews...)
+    private let customizer: ReviewsDataSourceCustomizing
 
     /// Product Reviews
     ///
@@ -22,7 +23,7 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSourceProtocol {
 
         return ResultsController<StorageProductReview>(storageManager: storageManager,
                                                        sectionNameKeyPath: "normalizedAgeAsString",
-                                                       matching: delegate.reviewsFilterPredicate(with: sitePredicate()),
+                                                       matching: customizer.reviewsFilterPredicate(with: sitePredicate()),
                                                        sortedBy: [descriptor])
     }()
 
@@ -80,9 +81,9 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSourceProtocol {
         return reviewsResultsController.numberOfObjects
     }
 
-    init(siteID: Int64, delegate: ReviewsDataSourceDelegate) {
+    init(siteID: Int64, delegate: ReviewsDataSourceCustomizing) {
         self.siteID = siteID
-        self.delegate = delegate
+        self.customizer = delegate
         super.init()
         observeResults()
     }
@@ -134,7 +135,7 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSourceProtocol {
 
     func refreshDataObservers() {
         let sitePredicate = sitePredicate()
-        reviewsResultsController.predicate = delegate.reviewsFilterPredicate(with: sitePredicate)
+        reviewsResultsController.predicate = customizer.reviewsFilterPredicate(with: sitePredicate)
         productsResultsController.predicate = sitePredicate
     }
 }
@@ -182,7 +183,7 @@ private extension DefaultReviewsDataSource {
         let reviewProduct = product(id: review.productID)
         let note = notification(id: review.reviewID)
 
-        return ReviewViewModel(showProductTitle: delegate.shouldShowProductTitle, review: review, product: reviewProduct, notification: note)
+        return ReviewViewModel(showProductTitle: customizer.shouldShowProductTitleOnCells, review: review, product: reviewProduct, notification: note)
     }
 
     private func product(id productID: Int64) -> Product? {

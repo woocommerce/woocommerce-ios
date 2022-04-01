@@ -101,8 +101,9 @@ private extension ProductReviewsViewModel {
     }
 }
 
-final class ProductReviewsDataSourceDelegate: ReviewsDataSourceDelegate {
-    let shouldShowProductTitle = false
+/// Customizes the `ReviewsDataSource` for a product related reviews screen (only the reviews of the passed product)
+final class ProductReviewsDataSourceCustomizing: ReviewsDataSourceCustomizing {
+    let shouldShowProductTitleOnCells = false
     private let product: Product
 
     init(product: Product) {
@@ -115,6 +116,5 @@ final class ProductReviewsDataSourceDelegate: ReviewsDataSourceDelegate {
                                           product.productID)
 
         return  NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, statusPredicate])
-
     }
 }

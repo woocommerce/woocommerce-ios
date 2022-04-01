@@ -1,3 +1,5 @@
-Je zult merken dat je de creditcardgegevens van een fysieke betaling nu kunt zien wanneer je kosten terugbetaald. Zo weten je klanten precies waar het geld naartoe gaat!
+Je bedrijf maakt mogelijk gebruik van aangepaste bestelstatussen. Nu kun je bestellingen filteren op die statussen! Tik op de Filterknop in de lijst met bestellingen om deze optie te zien.
 
-We hebben een paar nieuwe functies ontwikkeld die nog niet klaar zijn voor algemeen gebruik, maar je kunt ze wel vroegtijdig uitproberen! Maak bestellingen aan, bekijk coupons en meer! Ga naar het tabblad ‘Menu’, ‘instellingen’ en dan ‘Experimentele instellingen’ om het in te schakelen. We horen graag je feedback over de app, en vooral over de nieuwe functies die we aan het ontwikkelen zijn en nu vroegtijdig toegankelijk zijn.
+Sommigen van jullie hebben arendsogen en merkten op dat de productsoort niet altijd overeenkomt met de productsoort op de website. We hebben dit probleem nu verholpen.
+
+Wist je dat we met een nieuwe functie voor het aanmaken van bestellingen bezig zijn? Ga naar het tabblad Menu, tik op het instellingenpictogram en scrol naar experimentele functies. In deze release hebben we gedeelten voor de verzendmethode en verzendkosten toegevoegd. Er is ook een nieuwe Coupons-functie die je kunt uitproberen! Laat het vooral weten als er dingen kunnen worden verbeterd.

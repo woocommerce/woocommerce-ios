@@ -1,3 +1,5 @@
-You’ll notice the credit card details for an in-person payment are now shown when making a refund. This will let you tell your customers exactly where the funds will go!
+ייתכן שהעסק שלך משתמש בסטטוסים מותאמים להזמנות – כעת אפשר לסנן הזמנות באמצעות הסטטוסים האלה! יש להקיש על הכפתור 'מסנן' ברשימת ההזמנות כדי לראות את האפשרות הזאת.
 
-A few new features aren’t quite ready for the mainstream, but you can check them out early! Create orders, view coupons, and more! Head to the Menu tab, settings, and Experimental settings to enable it. נשמח לשמוע מה דעתך על האפליקציה, במיוחד על האפשרויות החדשות שאנחנו מפתחים ונותנים אליהן גישה מוקדמת.
+חדי ההבחנה שמו לב שהמיון של המוצרים בהזמנה לא תמיד תואם לתצוגה שברשת. תיקנו את הבעיה הזאת!
+
+ידעת שאנחנו עובדים על אפשרות חדשה ליצירת הזמנות? אפשר לעבור ללשונית 'תפריט', להקיש על סמל ההגדרות ולגלול לאפשרויות הניסיונות. בגרסה הזאת, הוספנו מקטעים לשיטת המשלוח ולעמלות. יש גם אפשרות 'קופונים' חדשה שפתחנו להתנסות! נשמח לדעת אם נוכל לשפר שם משהו לדעתך.

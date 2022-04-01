@@ -1,3 +1,5 @@
-Detail kartu kredit untuk pembayaran langsung kini ditunjukkan saat pengembalian dana. Dengan demikian, pelanggan Anda tahu pasti ke mana dana dikirimkan.
+Bisnis Anda dapat menggunakan status pesanan kustom dan kini Anda dapat menyaring pesanan dengan status ini! Ketuk tombol Penyaring di daftar pesanan untuk melihat pilihan ini.
 
-Beberapa fitur baru belum siap untuk diluncurkan secara resmi, tetapi Anda dapat mencobanya lebih awal. Buat pesanan, lihat kupon, dan lain-lain. Arahkan kursor ke tab Menu, pengaturan, dan pengaturan Eksperimental untuk mengaktifkannya. Kami menyambut feedback Anda tentang aplikasi, terutama fitur baru yang sedang kami kerjakan dan dapat Anda akses lebih awal.
+Anda mungkin teliti dan mengetahui bahwa jenis produk yang dipesan tidak selalu sesuai dengan apa yang ditampilkan di situs. Kami telah memperbaikinya.
+
+Tahukah Anda bahwa kami sedang membuat fitur baru untuk membuat pesanan? Arahkan kursor ke tab Menu, ketuk ikon pengaturan, dan gulir ke fitur eksperimental. Dalam rilis ini, kami menambahkan bagian biaya dan metode pengiriman. Anda juga dapat membantu kami dengan mencoba fitur Kupon baru. Sampaikan saran perbaikan kepada kami.

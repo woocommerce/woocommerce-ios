@@ -100,3 +100,21 @@ private extension ProductReviewsViewModel {
         static let pageSize = 25
     }
 }
+
+final class ProductReviewsDataSourceDelegate: ReviewsDataSourceDelegate {
+    let shouldShowProductTitle = false
+    private let product: Product
+
+    init(product: Product) {
+        self.product = product
+    }
+
+    func reviewsFilterPredicate(with sitePredicate: NSPredicate) -> NSPredicate {
+        let statusPredicate = NSPredicate(format: "statusKey ==[c] %@ AND productID == %lld",
+                                          ProductReviewStatus.approved.rawValue,
+                                          product.productID)
+
+        return  NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, statusPredicate])
+
+    }
+}

@@ -15,10 +15,14 @@ protocol ReviewsInteractionDelegate: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath, with syncingCoordinator: SyncingCoordinator)
 }
 
+protocol ReviewsDataSourceDelegate: AnyObject {
+    var shouldShowProductTitle: Bool { get }
+
+    func reviewsFilterPredicate(with sitePredicate: NSPredicate) -> NSPredicate
+}
 
 /// Abstracts the dataSource used to render the Product Review list
 protocol ReviewsDataSource: UITableViewDataSource, ReviewsInteractionDelegate {
-
     /// Boolean indicating if there are reviews
     ///
     var isEmpty: Bool { get }

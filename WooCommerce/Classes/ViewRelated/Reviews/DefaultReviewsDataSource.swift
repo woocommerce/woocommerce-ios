@@ -12,6 +12,8 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
 
     private let siteID: Int64
 
+    private let delegate: ReviewsDataSourceDelegate
+
     /// Product Reviews
     ///
     private lazy var reviewsResultsController: ResultsController<StorageProductReview> = {
@@ -20,7 +22,7 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
 
         return ResultsController<StorageProductReview>(storageManager: storageManager,
                                                        sectionNameKeyPath: "normalizedAgeAsString",
-                                                       matching: filterPredicate(),
+                                                       matching: delegate.reviewsFilterPredicate(with: sitePredicate()),
                                                        sortedBy: [descriptor])
     }()
 
@@ -78,9 +80,9 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
         return reviewsResultsController.numberOfObjects
     }
 
-
-    init(siteID: Int64) {
+    init(siteID: Int64, delegate: ReviewsDataSourceDelegate) {
         self.siteID = siteID
+        self.delegate = delegate
         super.init()
         observeResults()
     }
@@ -131,8 +133,9 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
     }
 
     func refreshDataObservers() {
-        reviewsResultsController.predicate = filterPredicate()
-        productsResultsController.predicate = sitePredicate()
+        let sitePredicate = sitePredicate()
+        reviewsResultsController.predicate = delegate.reviewsFilterPredicate(with: sitePredicate)
+        productsResultsController.predicate = sitePredicate
     }
 }
 
@@ -179,7 +182,7 @@ private extension DefaultReviewsDataSource {
         let reviewProduct = product(id: review.productID)
         let note = notification(id: review.reviewID)
 
-        return ReviewViewModel(review: review, product: reviewProduct, notification: note)
+        return ReviewViewModel(showProductTitle: delegate.shouldShowProductTitle, review: review, product: reviewProduct, notification: note)
     }
 
     private func product(id productID: Int64) -> Product? {

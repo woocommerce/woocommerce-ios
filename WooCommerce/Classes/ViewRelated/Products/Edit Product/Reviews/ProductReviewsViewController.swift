@@ -60,7 +60,9 @@ final class ProductReviewsViewController: UIViewController, GhostableViewControl
     // MARK: - View Lifecycle
     init(product: Product) {
         self.product = product
-        viewModel = ProductReviewsViewModel(siteID: product.siteID, data: ProductReviewsDataSource(product: product))
+        viewModel = ProductReviewsViewModel(siteID: product.siteID,
+                                            data: DefaultReviewsDataSource(siteID: product.siteID,
+                                                                           delegate: ProductReviewsDataSourceDelegate(product: product)))
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 

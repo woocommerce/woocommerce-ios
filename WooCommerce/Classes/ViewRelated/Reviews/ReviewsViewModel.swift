@@ -244,3 +244,16 @@ private extension ReviewsViewModel {
         static let section = "notifications"
     }
 }
+
+final class SiteReviewsDataSourceDelegate: ReviewsDataSourceDelegate {
+    let shouldShowProductTitle = true
+
+    func reviewsFilterPredicate(with sitePredicate: NSPredicate) -> NSPredicate {
+        let statusPredicate = NSPredicate(format: "statusKey ==[c] %@ OR statusKey ==[c] %@",
+                                          ProductReviewStatus.approved.rawValue,
+                                          ProductReviewStatus.hold.rawValue)
+
+        return  NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, statusPredicate])
+
+    }
+}

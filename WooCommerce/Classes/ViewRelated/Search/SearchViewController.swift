@@ -70,7 +70,7 @@ where Cell.SearchModel == Command.CellViewModel {
     /// Returns the active Keyword
     ///
     private var keyword: String {
-        return searchBar.text ?? String()
+        return searchUICommand.sanitizeKeyword(searchBar.text ?? String())
     }
 
     /// UI Active State
@@ -205,7 +205,8 @@ where Cell.SearchModel == Command.CellViewModel {
     // MARK: - UISearchBarDelegate Conformance
     //
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        synchronizeSearchResults(with: searchText)
+        let sanitizedSearchText = searchUICommand.sanitizeKeyword(searchText)
+        synchronizeSearchResults(with: sanitizedSearchText)
     }
 
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {

@@ -70,7 +70,7 @@ where Cell.SearchModel == Command.CellViewModel {
     /// Returns the active Keyword
     ///
     private var keyword: String {
-        return searchUICommand.sanitizeKeyword(searchBar.text ?? String())
+        return searchBar.text ?? String()
     }
 
     /// UI Active State
@@ -205,8 +205,7 @@ where Cell.SearchModel == Command.CellViewModel {
     // MARK: - UISearchBarDelegate Conformance
     //
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        let sanitizedSearchText = searchUICommand.sanitizeKeyword(searchText)
-        synchronizeSearchResults(with: sanitizedSearchText)
+        synchronizeSearchResults(with: searchText)
     }
 
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
@@ -363,14 +362,14 @@ extension SearchViewController: SyncingCoordinatorDelegate {
     /// Synchronizes the models for the Default Store (if any).
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: ((Bool) -> Void)? = nil) {
-        let keyword = self.keyword
+        let keyword = searchUICommand.sanitizeKeyword(self.keyword)
         searchUICommand.synchronizeModels(siteID: storeID,
                                           keyword: keyword,
                                           pageNumber: pageNumber,
                                           pageSize: pageSize,
-                                        onCompletion: { [weak self] isCompleted in
+                                          onCompletion: { [weak self] isCompleted in
                                             // Disregard OPs that don't really match the latest keyword
-                                            if keyword == self?.keyword {
+                                            if keyword == self?.searchUICommand.sanitizeKeyword(self?.keyword ?? String()) {
                                                 self?.transitionToResultsUpdatedState()
                                             }
                                             onCompletion?(isCompleted)
@@ -388,6 +387,7 @@ private extension SearchViewController {
     ///
     func synchronizeSearchResults(with keyword: String) {
         // When the search query changes, also includes the original results predicate in addition to the search keyword.
+        let keyword = searchUICommand.sanitizeKeyword(keyword)
         let searchResultsPredicate = NSPredicate(format: "ANY searchResults.keyword = %@", keyword)
         let subpredicates = [resultsPredicate].compactMap { $0 } + [searchResultsPredicate]
         resultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: subpredicates)

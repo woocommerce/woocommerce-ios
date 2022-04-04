@@ -49,7 +49,7 @@ protocol ReviewsViewModelActionsHandler {
 final class ReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHandler {
     private let siteID: Int64
 
-    private let data: ReviewsDataSourceProtocol
+    private let data: ReviewsDataSource
     private let stores: StoresManager
 
     var isEmpty: Bool {
@@ -82,7 +82,7 @@ final class ReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHan
     ///
     var hasErrorLoadingData: Bool = false
 
-    init(siteID: Int64, data: ReviewsDataSourceProtocol, stores: StoresManager = ServiceLocator.stores) {
+    init(siteID: Int64, data: ReviewsDataSource, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.data = data
         self.stores = stores

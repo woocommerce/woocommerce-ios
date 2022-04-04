@@ -16,7 +16,7 @@ protocol ReviewsInteractionDelegate: UITableViewDelegate {
 }
 
 /// Implement this protocol to add an extra layer of customization to the the
-/// ReviewsDataSourceProtocol
+/// ReviewsDataSource
 protocol ReviewsDataSourceCustomizing: AnyObject {
     /// Whether it should show the product title on cell or not
     ///
@@ -30,7 +30,7 @@ protocol ReviewsDataSourceCustomizing: AnyObject {
 }
 
 /// Abstracts the dataSource used to render the Product Review list
-protocol ReviewsDataSourceProtocol: UITableViewDataSource, ReviewsInteractionDelegate {
+protocol ReviewsDataSource: UITableViewDataSource, ReviewsInteractionDelegate {
     /// Boolean indicating if there are reviews
     ///
     var isEmpty: Bool { get }

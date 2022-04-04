@@ -194,7 +194,7 @@ final class ReviewsViewModelTests: XCTestCase {
 
 // MARK: - Mocks
 
-final class MockReviewsDataSource: NSObject, ReviewsDataSourceProtocol {
+final class MockReviewsDataSource: NSObject, ReviewsDataSource {
 
     var reviews: [ProductReview] = []
 

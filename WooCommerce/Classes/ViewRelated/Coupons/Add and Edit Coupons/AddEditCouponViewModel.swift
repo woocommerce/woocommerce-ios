@@ -22,12 +22,7 @@ final class AddEditCouponViewModel: ObservableObject {
         }
     }
 
-    private var coupon: Coupon? {
-        didSet {
-            amountField = coupon?.amount ?? ""
-            codeField = coupon?.code ?? ""
-        }
-    }
+    private var coupon: Coupon?
 
     // Fields
     @Published var amountField = String()
@@ -49,6 +44,10 @@ final class AddEditCouponViewModel: ObservableObject {
         coupon = existingCoupon
         editingOption = .editing
         discountType = existingCoupon.discountType
+
+        // Populate fields
+        amountField = existingCoupon.amount
+        codeField = existingCoupon.code
     }
 
     private enum EditingOption {

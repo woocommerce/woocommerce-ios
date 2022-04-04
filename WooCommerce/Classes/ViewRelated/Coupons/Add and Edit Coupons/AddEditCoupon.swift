@@ -22,8 +22,8 @@ struct AddEditCoupon: View {
                             ListHeaderView(text: Localization.headerCouponDetails.uppercased(), alignment: .left)
 
                             Group {
-                                TitleAndTextFieldRow(title: Localization.couponAmountPercentage,
-                                                     placeholder: Localization.couponAmountPercentage,
+                                TitleAndTextFieldRow(title: viewModel.amountText,
+                                                     placeholder: Localization.couponAmountPlaceholder,
                                                      text: $viewModel.amountField,
                                                      editable: true,
                                                      fieldAlignment: .leading,
@@ -162,9 +162,9 @@ private extension AddEditCoupon {
         static let headerCouponDetails = NSLocalizedString(
             "Coupon details",
             comment: "Header of the coupon details in the view for adding or editing a coupon.")
-        static let couponAmountPercentage = NSLocalizedString(
-            "Amount (%)",
-            comment: "Text field Amount in percentage in the view for adding or editing a coupon.")
+        static let couponAmountPlaceholder = NSLocalizedString(
+            "Coupon amount",
+            comment: "Text field placeholder for the amount in the view for adding or editing a coupon.")
         static let footerCouponAmountPercentage = NSLocalizedString(
             "Set the percentage of the discount you want to offer.",
             comment: "The footer of the text field Amount in percentage in the view for adding or editing a coupon.")

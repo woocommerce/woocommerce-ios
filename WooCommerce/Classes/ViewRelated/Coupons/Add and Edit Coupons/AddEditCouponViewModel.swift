@@ -22,6 +22,15 @@ final class AddEditCouponViewModel: ObservableObject {
         }
     }
 
+    var amountText: String {
+        switch discountType {
+        case .percent:
+            return Localization.amountPercent
+        default:
+            return Localization.amountFixedDiscount
+        }
+    }
+
     private var coupon: Coupon?
 
     // Fields
@@ -53,5 +62,17 @@ final class AddEditCouponViewModel: ObservableObject {
     private enum EditingOption {
         case creation
         case editing
+    }
+}
+
+// MARK: - Constants
+//
+private extension AddEditCouponViewModel {
+
+    enum Localization {
+        static let amountPercent = NSLocalizedString("Amount (%)",
+                                                     comment: "Text field Amount in percentage in the view for adding or editing a coupon.")
+        static let amountFixedDiscount = NSLocalizedString("Amount (fixed discount)",
+                                                     comment: "Text field Amount with fixed discount in the view for adding or editing a coupon.")
     }
 }

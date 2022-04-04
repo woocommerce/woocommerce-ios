@@ -12,7 +12,7 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
 
     private let siteID: Int64
 
-    /// This customizer adds an extra layer of customization depending on the case (e.g only reviews of a specific product, global site reviews...)
+    /// Adds an extra layer of logic customization depending on the case (e.g only reviews of a specific product, global site reviews...)
     private let customizer: ReviewsDataSourceCustomizing
 
     /// Product Reviews
@@ -81,9 +81,9 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
         return reviewsResultsController.numberOfObjects
     }
 
-    init(siteID: Int64, delegate: ReviewsDataSourceCustomizing) {
+    init(siteID: Int64, customizer: ReviewsDataSourceCustomizing) {
         self.siteID = siteID
-        self.customizer = delegate
+        self.customizer = customizer
         super.init()
         observeResults()
     }

@@ -246,7 +246,7 @@ private extension ReviewsViewModel {
 }
 
 /// Customizes the `ReviewsDataSource` for a global reviews query (all of a site)
-final class GlobalReviewsDataSourceCustomizing: ReviewsDataSourceCustomizing {
+final class GlobalReviewsDataSourceCustomizer: ReviewsDataSourceCustomizing {
     let shouldShowProductTitleOnCells = true
 
     func reviewsFilterPredicate(with sitePredicate: NSPredicate) -> NSPredicate {

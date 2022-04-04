@@ -102,7 +102,7 @@ private extension ProductReviewsViewModel {
 }
 
 /// Customizes the `ReviewsDataSource` for a product related reviews screen (only the reviews of the passed product)
-final class ProductReviewsDataSourceCustomizing: ReviewsDataSourceCustomizing {
+final class ProductReviewsDataSourceCustomizer: ReviewsDataSourceCustomizing {
     let shouldShowProductTitleOnCells = false
     private let product: Product
 

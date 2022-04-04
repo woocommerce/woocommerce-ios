@@ -17,6 +17,7 @@ final class CardPresentModalReaderIsReadyTests: XCTestCase {
                                                   amount: Expectations.amount,
                                                   paymentGatewayAccountID: Expectations.paymentGatewayAccountID,
                                                   countryCode: Expectations.countryCode,
+                                                  cardReaderModel: Expectations.cardReaderModel,
                                                   analytics: analytics)
     }
 
@@ -92,6 +93,7 @@ final class CardPresentModalReaderIsReadyTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedEvents.first, "card_present_collect_payment_canceled")
 
         let firstPropertiesBatch = try XCTUnwrap(analyticsProvider.receivedProperties.first)
+        XCTAssertEqual(firstPropertiesBatch["card_reader_model"] as? String, Expectations.cardReaderModel)
         XCTAssertEqual(firstPropertiesBatch["country"] as? String, Expectations.countryCode)
         XCTAssertEqual(firstPropertiesBatch["plugin_slug"] as? String, Expectations.paymentGatewayAccountID)
     }
@@ -103,6 +105,7 @@ private extension CardPresentModalReaderIsReadyTests {
         static let name = "name"
         static let amount = "amount"
         static let image = UIImage.cardPresentImage
+        static let cardReaderModel = "WISEPAD_3"
         static let countryCode = "CA"
         static let paymentGatewayAccountID = "woocommerce-payments"
     }

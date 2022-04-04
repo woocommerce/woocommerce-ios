@@ -573,6 +573,7 @@ extension WooAnalyticsEvent {
 
         enum Keys {
             static let batteryLevel = "battery_level"
+            static let cardReaderModel = "card_reader_model"
             static let countryCode = "country"
             static let gatewayID = "plugin_slug"
             static let errorDescription = "error_description"
@@ -609,9 +610,14 @@ extension WooAnalyticsEvent {
         ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///   - batteryLevel: the battery level (if available) to be included in the event properties in Tracks, e.g. 0.75 = 75%.
         ///   - countryCode: the country code of the store.
+        ///   - cardReaderModel: the model type of the card reader.
         ///
-        static func cardReaderConnectionSuccess(forGatewayID: String?, batteryLevel: Float?, countryCode: String) -> WooAnalyticsEvent {
+        static func cardReaderConnectionSuccess(forGatewayID: String?,
+                                                batteryLevel: Float?,
+                                                countryCode: String,
+                                                cardReaderModel: String) -> WooAnalyticsEvent {
             var properties = [
+                Keys.cardReaderModel: cardReaderModel,
                 Keys.countryCode: countryCode,
                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
             ]
@@ -629,10 +635,12 @@ extension WooAnalyticsEvent {
         ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///   - error: the error to be included in the event properties.
         ///   - countryCode: the country code of the store.
+        ///   - cardReaderModel: the model type of the card reader.
         ///
-        static func cardReaderConnectionFailed(forGatewayID: String?, error: Error, countryCode: String) -> WooAnalyticsEvent {
+        static func cardReaderConnectionFailed(forGatewayID: String?, error: Error, countryCode: String, cardReaderModel: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderConnectionFailed,
                               properties: [
+                                Keys.cardReaderModel: cardReaderModel,
                                 Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.errorDescription: error.localizedDescription
@@ -646,10 +654,12 @@ extension WooAnalyticsEvent {
         /// - Parameters:
         ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///   - countryCode: the country code of the store.
+        ///   - cardReaderModel: the model type of the card reader.
         ///
-        static func cardReaderDisconnectTapped(forGatewayID: String?, countryCode: String) -> WooAnalyticsEvent {
+        static func cardReaderDisconnectTapped(forGatewayID: String?, countryCode: String, cardReaderModel: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderDisconnectTapped,
                               properties: [
+                                Keys.cardReaderModel: cardReaderModel,
                                 Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
                               ]
@@ -769,14 +779,15 @@ extension WooAnalyticsEvent {
         /// - Parameters:
         ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///   - countryCode: the country code of the store.
+        ///   - cardReaderModel: the model type of the card reader.
         ///
-        static func collectPaymentTapped(forGatewayID: String?, countryCode: String) -> WooAnalyticsEvent {
+        static func collectPaymentTapped(forGatewayID: String?, countryCode: String, cardReaderModel: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentTapped,
                               properties: [
+                                Keys.cardReaderModel: cardReaderModel,
                                 Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
-                              ]
-            )
+                              ])
         }
 
         /// Tracked when the payment collection fails
@@ -785,8 +796,9 @@ extension WooAnalyticsEvent {
         ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///   - error: the error to be included in the event properties.
         ///   - countryCode: the country code of the store.
+        ///   - cardReaderModel: the model type of the card reader, if available.
         ///
-        static func collectPaymentFailed(forGatewayID: String?, error: Error, countryCode: String) -> WooAnalyticsEvent {
+        static func collectPaymentFailed(forGatewayID: String?, error: Error, countryCode: String, cardReaderModel: String?) -> WooAnalyticsEvent {
             let paymentMethod: PaymentMethod? = {
                 guard case let CardReaderServiceError.paymentCaptureWithPaymentMethod(_, paymentMethod) = error else {
                     return nil
@@ -813,6 +825,7 @@ extension WooAnalyticsEvent {
                 }
             }()
             let properties: [String: WooAnalyticsEventPropertyType] = [
+                Keys.cardReaderModel: cardReaderModel,
                 Keys.countryCode: countryCode,
                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                 Keys.paymentMethodType: paymentMethod?.analyticsValue,
@@ -827,10 +840,12 @@ extension WooAnalyticsEvent {
         /// - Parameters:
         ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///   - countryCode: the country code of the store.
+        ///   - cardReaderModel: the model type of the card reader.
         ///
-        static func collectPaymentCanceled(forGatewayID: String?, countryCode: String) -> WooAnalyticsEvent {
+        static func collectPaymentCanceled(forGatewayID: String?, countryCode: String, cardReaderModel: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentCanceled,
                               properties: [
+                                Keys.cardReaderModel: cardReaderModel,
                                 Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
                               ]
@@ -843,10 +858,15 @@ extension WooAnalyticsEvent {
         ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///   - countryCode: the country code of the store.
         ///   - paymentMethod: the payment method of the captured payment.
+        ///   - cardReaderModel: the model type of the card reader.
         ///
-        static func collectPaymentSuccess(forGatewayID: String?, countryCode: String, paymentMethod: PaymentMethod) -> WooAnalyticsEvent {
+        static func collectPaymentSuccess(forGatewayID: String?,
+                                          countryCode: String,
+                                          paymentMethod: PaymentMethod,
+                                          cardReaderModel: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentSuccess,
                               properties: [
+                                Keys.cardReaderModel: cardReaderModel,
                                 Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.paymentMethodType: paymentMethod.analyticsValue

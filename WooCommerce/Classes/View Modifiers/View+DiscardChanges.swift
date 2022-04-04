@@ -22,8 +22,7 @@ struct DiscardChangesWrapper<Content: View>: UIViewControllerRepresentable {
     typealias UIViewControllerType = UIHostingController<Content>
 
     func makeUIViewController(context: Context) -> UIViewControllerType {
-        let viewController = UIHostingController(rootView: view)
-        return viewController
+        UIHostingController(rootView: view)
     }
 
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {

@@ -13,7 +13,7 @@ class ReceiptActionCoordinatorTests: XCTestCase {
         let params = CardPresentReceiptParameters.makeParams()
 
         // When
-        ReceiptActionCoordinator.printReceipt(for: order, params: params)
+        ReceiptActionCoordinator.printReceipt(for: order, params: params, countryCode: "CA")
 
         // Then
         let analytics = ServiceLocator.analytics.analyticsProvider as! MockAnalyticsProvider
@@ -35,7 +35,7 @@ class ReceiptActionCoordinatorTests: XCTestCase {
         assertEmpty(storesManager.receivedActions)
 
         // When
-        ReceiptActionCoordinator.printReceipt(for: order, params: params)
+        ReceiptActionCoordinator.printReceipt(for: order, params: params, countryCode: "CA")
 
         //Then
         XCTAssertEqual(storesManager.receivedActions.count, 1)
@@ -75,7 +75,7 @@ extension ReceiptActionCoordinatorTests {
         ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: MockAnalyticsProvider()))
 
         // When
-        ReceiptActionCoordinator.printReceipt(for: order, params: params)
+        ReceiptActionCoordinator.printReceipt(for: order, params: params, countryCode: "CA")
 
         //Then
         let action = try XCTUnwrap(storesManager.receivedActions.first as? ReceiptAction)

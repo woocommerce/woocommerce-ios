@@ -896,6 +896,84 @@ extension WooAnalyticsEvent {
                                 "reason": reason
                               ])
         }
+
+        /// Tracked when the user taps on the "See Receipt" button to view a receipt.
+        /// - Parameter countryCode: the country code of the store.
+        ///
+        static func receiptViewTapped(countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .receiptViewTapped,
+                              properties: [Keys.countryCode: countryCode])
+        }
+
+        /// Tracked when the user taps on the "Email receipt" button after successfully collecting a payment to email a receipt.
+        /// - Parameter countryCode: the country code of the store.
+        ///
+        static func receiptEmailTapped(countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .receiptEmailTapped,
+                              properties: [Keys.countryCode: countryCode])
+        }
+
+        /// Tracked when sending or saving the receipt email failed.
+        /// - Parameters:
+        ///   - error: the error to be included in the event properties.
+        ///   - countryCode: the country code of the store.
+        ///
+        static func receiptEmailFailed(error: Error, countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .receiptEmailFailed,
+                              properties: [Keys.countryCode: countryCode],
+                              error: error)
+        }
+
+        /// Tracked when the user canceled sending the receipt by email.
+        /// - Parameter countryCode: the country code of the store.
+        ///
+        static func receiptEmailCanceled(countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .receiptEmailCanceled,
+                              properties: [Keys.countryCode: countryCode])
+        }
+
+        /// Tracked when the receipt was sent by email.
+        /// - Parameter countryCode: the country code of the store.
+        ///
+        static func receiptEmailSuccess(countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .receiptEmailSuccess,
+                              properties: [Keys.countryCode: countryCode])
+        }
+
+        /// Tracked when the user tapped on the button to print a receipt.
+        /// - Parameter countryCode: the country code of the store.
+        ///
+        static func receiptPrintTapped(countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .receiptPrintTapped,
+                              properties: [Keys.countryCode: countryCode])
+        }
+
+        /// Tracked when printing the receipt failed.
+        /// - Parameters:
+        ///   - error: the error to be included in the event properties.
+        ///   - countryCode: the country code of the store.
+        ///
+        static func receiptPrintFailed(error: Error, countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .receiptPrintFailed,
+                              properties: [Keys.countryCode: countryCode],
+                              error: error)
+        }
+
+        /// Tracked when the user canceled printing the receipt.
+        /// - Parameter countryCode: the country code of the store.
+        ///
+        static func receiptPrintCanceled(countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .receiptPrintCanceled,
+                              properties: [Keys.countryCode: countryCode])
+        }
+
+        /// Tracked when the receipt was successfully sent to the printer. iOS won't guarantee that the receipt has actually printed.
+        /// - Parameter countryCode: the country code of the store.
+        ///
+        static func receiptPrintSuccess(countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .receiptPrintSuccess,
+                              properties: [Keys.countryCode: countryCode])
+        }
     }
 }
 

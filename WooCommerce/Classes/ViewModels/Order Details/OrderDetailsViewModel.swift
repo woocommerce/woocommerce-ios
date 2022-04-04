@@ -264,11 +264,12 @@ extension OrderDetailsViewModel {
             let billingInformationViewController = BillingInformationViewController(order: order, editingEnabled: true)
             viewController.navigationController?.pushViewController(billingInformationViewController, animated: true)
         case .seeReceipt:
-            ServiceLocator.analytics.track(.receiptViewTapped)
+            let countryCode = configurationLoader.configuration.countryCode
+            ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode))
             guard let receipt = receipt else {
                 return
             }
-            let viewModel = ReceiptViewModel(order: order, receipt: receipt)
+            let viewModel = ReceiptViewModel(order: order, receipt: receipt, countryCode: countryCode)
             let receiptViewController = ReceiptViewController(viewModel: viewModel)
             viewController.navigationController?.pushViewController(receiptViewController, animated: true)
         case .refund:

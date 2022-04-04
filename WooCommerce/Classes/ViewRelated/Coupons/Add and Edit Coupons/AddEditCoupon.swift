@@ -25,7 +25,7 @@ struct AddEditCoupon: View {
                                 TitleAndTextFieldRow(title: Localization.couponAmountPercentage,
                                                      placeholder: Localization.couponAmountPercentage,
                                                      text: $viewModel.amountField,
-                                                     editable: false,
+                                                     editable: true,
                                                      fieldAlignment: .leading,
                                                      keyboardType: .asciiCapableNumberPad)
                                 Divider()
@@ -40,9 +40,9 @@ struct AddEditCoupon: View {
                                 TitleAndTextFieldRow(title: Localization.couponCode,
                                                      placeholder: Localization.couponCode,
                                                      text: $viewModel.codeField,
-                                                     editable: false,
+                                                     editable: true,
                                                      fieldAlignment: .leading,
-                                                     keyboardType: .asciiCapableNumberPad)
+                                                     keyboardType: .default)
                                 Divider()
                                     .padding(.leading, Constants.margin)
                             }

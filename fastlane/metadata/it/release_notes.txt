@@ -1,3 +1,5 @@
-Noterai che i dettagli della carta di credito per un pagamento di persona vengono ora mostrati quando si effettua un rimborso. Questo permetterà di dire ai clienti esattamente dove andranno i fondi.
+La tua attività potrebbe usare stati dell'ordine personalizzati, con cui ora puoi filtrare gli ordini. Tocca il pulsante Filtra nell'elenco degli ordini per visualizzare questa opzione.
 
-Alcune nuove funzionalità non sono ancora pronte per la pubblicazione, ma puoi verificarle in anticipo. Crea ordini, visualizza coupon e altro ancora. Vai alla scheda Menu, alle impostazioni e a Impostazioni delle funzionalità sperimentali per attivarla. Riceviamo volentieri il tuo feedback sull'app, in particolare sulle nuove funzionalità su cui stiamo lavorando e a cui diamo l'accesso in anteprima.
+Alcuni utenti sono bravi osservatori e hanno notato che il tipo di prodotti in un ordine non sempre corrisponde al web. Abbiamo risolto il problema.
+
+Sapevi che stavamo lavorando su una nuova funzionalità per la creazione di ordini? Vai alla scheda Menu, tocca l'icona delle impostazioni e scorri verso le funzionalità sperimentali. In questo rilascio, abbiamo aggiunto un metodo di spedizione e la sezione delle commissioni. È anche presente una nuova funzionalità Codici promozionali che puoi aiutarci a provare. Facci sapere se trovi qualcosa che potrebbe essere migliorato.

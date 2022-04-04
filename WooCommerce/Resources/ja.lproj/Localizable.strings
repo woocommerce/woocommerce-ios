@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-03-10 09:54:13+0000 */
+/* Translation-Revision-Date: 2022-03-25 09:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -284,9 +284,6 @@
 /* Reads as 'AID'. Part of the mandatory data in receipts */
 "AID" = "AID";
 
-/* About this app (information page title) */
-"About" = "このサイトについて";
-
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "このアプリについて";
 
@@ -350,7 +347,8 @@
 /* Add New Package screen title in Shipping Label flow */
 "Add New Package" = "新しい荷物を追加";
 
-/* Title text of the button that adds a note when creating a simple payment */
+/* Title text of the button that adds a note when creating a simple payment
+   Title text of the button that adds customer note data when creating a new order */
 "Add Note" = "メモを追加";
 
 /* Action to add one photo on the Product images screen */
@@ -474,8 +472,14 @@
 /* Notice text after updating the shipping or billing address */
 "Address successfully updated." = "住所が正常に更新されました。";
 
+/* Accessibility hint for selecting a product in the Add Product screen */
+"Adds product to order." = "注文に商品を追加します。";
+
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "注文に追跡を追加";
+
+/* Accessibility hint for selecting a variation in a list of product variations */
+"Adds variation to order." = "注文にバリエーションを追加します。";
 
 /* Adult signature required in Shipping Labels > Carrier and Rates */
 "Adult signature required (+%1$@)" = "成人の方の署名が必要 (+%1$@)";
@@ -587,6 +591,9 @@
 /* Title of analytics as part of Jetpack benefits. */
 "Analytics" = "アナリティクス";
 
+/* Message when enabling analytics succeeds */
+"Analytics enabled successfully." = "分析が正常に有効化されました。";
+
 /* Case Any in Order Filters for Order Statuses
    Display label for all order statuses selected in Order Filters - Label for one of the filters in order date range - Product variation attribute description where the attribute is set to any value. - Title when there is no filter set. */
 "Any" = "任意";
@@ -691,6 +698,9 @@
 /* Subtitle of the cell in Product Price Settings > Schedule sale */
 "Automatically start and end a sale" = "セールを自動的に開始、終了する";
 
+/* Title of a button linking to the Automattic website */
+"Automattic family" = "Automattic ファミリー";
+
 /* A unit test string. It reads: Awaiting payment via <payment method title>.A payment method example is: 'Credit Card (Stripe)'
    Awaiting payment via (payment method title) */
 "Awaiting payment via %@" = "%@ による決済待ち";
@@ -737,6 +747,9 @@
 
 /* Accessibility label for block quote button on formatting toolbar. */
 "Block Quote" = "ブロック引用";
+
+/* Title of a button linking to the app's blog */
+"Blog" = "ブログ";
 
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
 "Bluetooth permission required" = "Bluetooth の権限が必要";
@@ -824,9 +837,6 @@
 /* Catalog Visibility label in Product Settings
    Product Catalog Visibility navigation title */
 "Catalog Visibility" = "カタログ表示";
-
-/* shown in promotional screens during first launch */
-"Catch up with your favorite sites and join the conversation anywhere, any time." = "お気に入りのサイトをいつでもチェックし、いつでもどこからでもコメントできます。";
 
 /* Edit product categories screen - Screen title
    Filter product categories screen - Screen title - Title of the Categories row on Product main screen - Title of the product form bottom sheet action for editing categories. */
@@ -993,6 +1003,9 @@
 /* Contact WooComerce Payments Support title */
 "Contact WooCommerce Payments Support" = "WooCommerce Payments サポートに連絡";
 
+/* Action button to contact support on enable analytics screen */
+"Contact support" = "サポートに問い合わせる";
+
 /* Title of a button to contact support in the error screen for In-Person payments */
 "Contact us" = "お問い合わせ";
 
@@ -1154,6 +1167,15 @@
 /* Cell title: the current date. */
 "Current" = "Current";
 
+/* Message in the footer of bulk price setting screen with the current price, when it is the same for all variations */
+"Current price is %@." = "現在の価格は %@です。";
+
+/* Message in the footer of bulk price setting screen, when none of the variations have price value. */
+"Current price is not set." = "現在の価格が設定されていません。";
+
+/* Message in the footer of bulk price setting screen, when variations have different price values. */
+"Current prices are mixed." = "現在、さまざまな価格が混在しています。";
+
 /* Name of the section for custom shipment tracking carriers */
 "Custom" = "カスタム";
 
@@ -1183,6 +1205,9 @@
 
 /* Title for the Shipping Address Form for Customer Details */
 "Customer Details" = "お客様の詳細";
+
+/* Title text of the section that shows the Order customer note when creating a new order */
+"Customer Note" = "注文メモ";
 
 /* Customer note row title
    Customer note section title - Title for the edit customer provided note screen - Title text of the row that holds the order note when creating a simple payment */
@@ -1290,6 +1315,9 @@
 /* Dismiss All button in Inbox Notes for dismissing all the notes. */
 "Dismiss All" = "すべて非表示";
 
+/* Title for dismiss the action when dragging the screen down. */
+"Dismiss Order" = "注文を非表示";
+
 /* Title of the alert for dismissing all the inbox notes. */
 "Dismiss all messages" = "メッセージをすべて非表示にする";
 
@@ -1381,7 +1409,7 @@
 "Easily identify your products with unique codes" = "一意のコードで商品を簡単に特定";
 
 /* Button to edit a customer on the New Order screen
-   Button to edit an order status on the New Order screen - Title text of the button that edits a note when creating a simple payment */
+   Button to edit an order status on the New Order screen - Button to edit the customer note on the New Order screen - Title text of the button that edits a note when creating a simple payment */
 "Edit" = "編集";
 
 /* Action to edit the address in Shipping Label Suggested screen */
@@ -1402,6 +1430,9 @@
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Edit and add new products from anywhere" = "どこからでも新しい商品を編集、追加";
+
+/* Accessibility label for the button to edit customer note on the New Order screen */
+"Edit customer note" = "注文メモを編集";
 
 /* Carrier eligible for free pickup in Shipping Labels > Carrier and Rates */
 "Eligible for free pickup" = "無料の受け取りを利用可能";
@@ -1438,8 +1469,20 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "空の URL";
 
+/* The action button on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
+"Enable Coupons" = "クーポンを有効化";
+
 /* Enable Reviews label in Product Settings */
 "Enable Reviews" = "レビューを有効にする";
+
+/* Description about WooCommerce Analytics on the enable analytics screen */
+"Enable WooCommerce Analytics to see missing stats for your store." = "WooCommerce Analytics を有効化してストアに不足している統計情報をご覧ください。";
+
+/* Title for the enable analytics screen */
+"Enable WooCommerce Analytics to see your stats" = "WooCommerce Analytics を有効化して統計情報をご覧ください";
+
+/* Action title to enable Analytics for a store */
+"Enable analytics" = "分析を有効化";
 
 /* Title of the status row on Product Variation main screen to enable/disable a variation */
 "Enabled" = "有効";
@@ -1538,13 +1581,16 @@
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "封筒";
 
+/* Error message when enabling analytics fails */
+"Error enabling analytics. Please try again." = "分析の有効化中にエラーが発生しました。 もう一度やり直してください。";
+
 /* Title for the error alert when fetching system status report fails */
 "Error fetching report" = "レポートを取得する際にエラーが発生しました";
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Apple Maps で住所の検索中に発生したエラー";
 
-/* Message displayed when fail to loading total discounted amount in Coupon Details screen */
+/* Message displayed on Coupon Details screen when loading total discounted amount fails */
 "Error loading data" = "データ読み込みエラー";
 
 /* Alert title when there is an error requesting shipping label document for printing */
@@ -1552,6 +1598,9 @@
 
 /* Notice displayed when the label purchase fails */
 "Error purchasing the label" = "ラベルの購入時にエラーが発生しました";
+
+/* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
+"Everyone loves a deal" = "誰もがお得な情報を求めています";
 
 /* Title for the exclude sale items row in coupon usage details screen. */
 "Exclude Sale Items" = "セール品を除外";
@@ -1658,9 +1707,6 @@
 
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "商品毎に割引";
-
-/* Shown in the prologue carousel (promotional screens) during first launch. */
-"Follow your favorite sites and discover new blogs." = "お気に入りのサイトをフォローして新しい読み物を発見しましょう。";
 
 /* User role badge */
 "Follower" = "フォロワー";
@@ -1813,6 +1859,9 @@
 /* Browse our help documentation website title */
 "Help Center" = "ヘルプセンター";
 
+/* Text used when sharing a link to the app with a friend. */
+"Hey! Here is a link to download the WooCommerce app. I'm really enjoying it and thought you might too." = "注目! このリンクから WooCommerce アプリをダウンロードできます。とても楽しく、どなたにも気に入ってもらえると思います。";
+
 /* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
    Display label for the product's catalog visibility */
 "Hidden" = "非表示";
@@ -1938,6 +1987,9 @@
 /* Message from the in-person payment card reader prompting user to insert or swipe their card */
 "Insert Or Swipe Card" = "カードを挿入またはスワイプしてください";
 
+/* Title of a button linking to the app's Instagram profile */
+"Instagram" = "Instagram";
+
 /* Navigates to Install Jetpack screen.
    Title of install action in the Jetpack benefits view. - Title of the Install Jetpack intro view - Title of the Install Jetpack view */
 "Install Jetpack" = "Jetpack をインストール";
@@ -2018,6 +2070,9 @@
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "このユーザー名またはパスワードは、このサイトに関連付けられていないようです。";
 
+/* Message on enable analytics screen to notify that the module is disabled for the store */
+"It looks like you have analytics disabled." = "分析が無効になっているようです。";
+
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "入力したパスワードが正しくないようです。もう一度試しますか ?";
 
@@ -2041,6 +2096,9 @@
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack は WordPress の無料のプラグインであり、ストアをモバイルでの最適な操作に必要なツール (プッシュ通知および統計を含む) と接続します。";
+
+/* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
+"Join from anywhere" = "どこからでも参加可能";
 
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "編集を続行";
@@ -2099,6 +2157,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "リーガル (8.5 x 14インチ)";
+
+/* Title of a button linking to a list of legal documents like privacy policy,terms of service, etc */
+"Legal and more" = "法的情報およびその他";
 
 /* Title for the row to enter the package length on the Add New Custom Package screen in Shipping Label flow
    Title of the cell in Product Shipping Settings > Length */
@@ -2216,9 +2277,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "在庫管理";
-
-/* shown in promotional screens during first launch */
-"Manage your Jetpack-powered site on the go — you've got WordPress in your pocket." = "Jetpack 搭載のサイトを外出先で管理 — WordPress をどこでも持ち歩けます。";
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Manage your store orders on the go " = "外出先でもストアを管理 ";
@@ -2362,6 +2420,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Text preceding the Contact Us button in the survey completed screen */
 "Need some help?" = "ヘルプが必要ですか ?";
 
+/* Message format on enable analytics screen for support. The %@ placeholder is a URL with more information. */
+"Need some help? %1$@" = "サポートが必要な場合: %1$@";
+
 /* The title for the net amount paid cell */
 "Net Payment" = "支払額 (正味)";
 
@@ -2430,6 +2491,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The text on the placeholder overlay when no products match the filter on the Products tab */
 "No matching products found" = "一致する商品が見つかりません";
 
+/* Message on the detail view of the Orders tab before any order is selected */
+"No order selected" = "注文が選択されていません";
+
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "価格未設定";
 
@@ -2468,7 +2532,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow - The description in product variations bulk update, of a value, that is missing from all variations - Value for fields in Coupon Usage Details screen when no value is set */
 "None" = "なし";
 
-/* Title of dismiss action in the Jetpack benefits view. */
+/* Action title to dismiss enabling Analytics for a store
+   Title of dismiss action in the Jetpack benefits view. */
 "Not now" = "後で";
 
 /* Instructions after a Magic Link was sent, but the email can't be found in their inbox. */
@@ -2548,6 +2613,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "利用可能なステータスのリストを開きます。";
+
+/* Accessibility hint for selecting a variable product in the Add Product screen */
+"Opens list of product variations." = "商品のバリエーション一覧を開きます。";
+
+/* Accessibility hint for selecting a product in a new order */
+"Opens product detail." = "商品の詳細を開きます。";
 
 /* Placeholder of cell presenting the title of the new attribute option. */
 "Option name" = "オプション名";
@@ -2929,10 +3000,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of in-progress modal when requesting document with multiple shipping labels for printing */
 "Printing Labels" = "ラベルを印刷中";
 
-/* Opens the California Privacy Policy web page */
+/* Title of button that displays the California Privacy Notice */
 "Privacy Notice for California Users" = "カリフォルニア州のユーザーへのプライバシー通知";
 
-/* Opens the Privacy Policy web page */
+/* Title of button that displays the App's privacy policy */
 "Privacy Policy" = "個人情報保護方針";
 
 /* Navigates to Privacy Settings screen
@@ -3028,9 +3099,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Publish Settings section on Product Settings screen */
 "Publish Settings" = "公開設定";
 
-/* shown in promotional screens during first launch */
-"Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "公園で投稿を公開。バスからブログに投稿。カフェでコメントを送信。WordPress をどこでも使えます。";
-
 /* Display label for the product's published status */
 "Published" = "公開済み";
 
@@ -3074,6 +3142,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Restriction type Quarantine for contents declared in the customs form for Shipping Label flow */
 "Quarantine" = "検疫";
+
+/* Title of button that allows the user to rate the app in the App Store */
+"Rate us" = "評価してください";
 
 /* Subtitle for Contact WooCommerce Payments Support */
 "Reach our happiness engineers who can help answer payments related questions" = "サポートスタッフにお問い合わせください。お支払いに関する質問にお答えします";
@@ -3246,7 +3317,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Retrieves a list of products that contain a given keyword." = "特定のキーワードを含む商品リストを検索します。";
 
 /* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
-   Action button to retry syncing the draft order - Button to retry when there was a network error checking In-Person Payments requirements - Retry Action - Retry the last action */
+   Action button to retry syncing the draft order - Button to retry when there was a network error checking In-Person Payments requirements - Retry Action - Retry action for an error notice - Retry the last action */
 "Retry" = "再度試す";
 
 /* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages.
@@ -3319,7 +3390,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Sanitary \/ Phytosanitary Inspection" = "検疫 \/ 植物検疫検査";
 
 /* Action for saving a Product remotely
-   Add Product Category. Save button title in navbar. - Add Product Tags. Save button title in navbar. */
+   Add Product Category. Save button title in navbar. - Add Product Tags. Save button title in navbar. - Button title that save the price selection for bulk variation update */
 "Save" = "保存";
 
 /* Button title to save a product as draft in Discard Changes Action Sheet */
@@ -3396,9 +3467,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Text on the button to see a saved receipt */
 "See Receipt" = "レシートを確認";
-
-/* Shown in the prologue carousel (promotional screens) during first launch. */
-"See comments and notifications in real time." = "コメントと通知をリアルタイムで表示します。";
 
 /* Link title to see all paper size options */
 "See layout and paper sizes options" = "レイアウトと用紙サイズのオプションを見る";
@@ -3488,6 +3556,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "WordPress.com アカウントへのログイン中のサービス利用の情報を分析ツールと共有してください。";
+
+/* Title for button allowing users to share information about the app with friends, such as via Messages */
+"Share with Friends" = "友達と共有";
 
 /* Shipping Label Address Validation navigation title
    Shipping Label Suggested Address navigation title - Title of origin address in shipping label details - Title of the cell Ship from inside Create Shipping Label form */
@@ -3702,6 +3773,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the card reader service experiences an unexpected internal service error. */
 "Sorry, this payment couldn’t be processed" = "支払いを処理できませんでした";
+
+/* Error message shown when a refund could not be canceled (likely because it had already completed) */
+"Sorry, this refund could not be canceled" = "この返金をキャンセルできませんでした";
 
 /* No comment provided by engineer. */
 "Sorry, usernames can only contain lowercase letters (a-z) and numbers." = "ユーザー名には半角英字の小文字 (a-z) と数字のみを使ってください。";
@@ -3933,9 +4007,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Tax label for the tax detail row. - Title on the refunds screen that lists the fees tax cost - Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
 "Tax" = "税";
 
-/* Tax percentage to be applied to the simple payments order. %1$@%% is a placeholder for the tax rate as a percentage */
-"Tax (%1$@%%)" = "税率 (%1$@%%)";
-
 /* Section header title for product tax settings */
 "Tax Settings" = "税設定";
 
@@ -3962,13 +4033,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Disclaimer in the simple payments summary screen about taxes. */
 "Taxes are automatically calculated based on your store address." = "税金は店舗の住所に基づいて自動的に計算されます。";
 
-/* Information about taxes and the order total when creating a new order */
-"Taxes will be automatically calculated based on your store settings." = "税金は店舗の設定に基づいて自動的に計算されます。";
-
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "%1$@ についてもう少しお聞かせください...";
 
-/* Opens the Terms of Service web page */
+/* Title of button that displays the App's terms of service */
 "Terms of Service" = "利用規約";
 
 /* Cell description on beta features screen to enable accepting in-person payments for stores in Canada */
@@ -4110,6 +4178,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "この商品の価格。編集可能。";
 
+/* Message in the footer of bulk price setting screen (singular). */
+"The price will be updated for %d variation." = "%d件のバリエーションの価格が更新されます。";
+
+/* Message in the footer of bulk price setting screen (plurar). */
+"The price will be updated for %d variations." = "%d件のバリエーションの価格が更新されます。";
+
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
 "The reader has a critically low battery. Please charge the reader or try a different reader." = "リーダーのバッテリー残量が非常に少なくなっています。 リーダーを充電するか、別のリーダーをお試しください。";
 
@@ -4212,6 +4286,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "返金の実行中にエラーが発生しました";
 
+/* Notice displayed when searching the list of products fails */
+"There was an error searching products" = "商品の検索中にエラーが発生しました";
+
+/* Notice displayed when syncing the list of product variations fails */
+"There was an error syncing product variations" = "商品のバリエーションを同期中にエラーが発生しました";
+
+/* Notice displayed when syncing the list of products fails */
+"There was an error syncing products" = "商品の同期中にエラーが発生しました";
+
 /* Notice text after failing to update a simple payments order.
    Notice text after failing to update the order successfully */
 "There was an error updating the order" = "注文の更新中にエラーが発生しました";
@@ -4222,8 +4305,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text when there is an unknown error while trying to collect payments */
 "There was an error while trying to collect the payment." = "支払いの受け取り中にエラーが発生しました。";
 
-/* Navigates to screen with third party software licenses
-   Software Licenses (information page title) */
+/* Software Licenses (information page title)
+   Title of button that displays information about the third party software libraries used in the creation of this app */
 "Third Party Licenses" = "サードパーティのライセンス";
 
 /* Tab selector title that shows the statistics for this month
@@ -4392,8 +4475,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Connect when the SSL certificate is invalid */
 "Trust" = "信用する";
 
-/* Button to retry a software update. Presented to users when updating the card reader software fails
-   Button to try again after connecting to a specific reader fails due to a critically low battery. - Button to try again. Presented to users after a failure occurs - Try Again button on the error alert when fetching system status report fails */
+/* Action displayed in the error prompt when loading total discounted amount in Coupon Details screen fails
+   Button to retry a software update. Presented to users when updating the card reader software fails - Button to try again after connecting to a specific reader fails due to a critically low battery. - Button to try again. Presented to users after a failure occurs - Try Again button on the error alert when fetching system status report fails */
 "Try Again" = "もう一度お試しください";
 
 /* Message from the in-person payment card reader prompting user to retry a payment using a different card */
@@ -4429,6 +4512,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Settings > Manage Card Reader > Connect > Hint to enable Bluetooth */
 "Turn mobile device Bluetooth on" = "モバイルデバイスの Bluetooth をオンに切り替える";
+
+/* Title of a button linking to the app's Twitter profile */
+"Twitter" = "Twitter";
 
 /* Placeholder for the Content Details row in Customs screen of Shipping Label flow */
 "Type of contents" = "中身の種類";
@@ -4539,6 +4625,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* An error message shown when failing to retrieve information about user roles, before letting the user in to manage the store. */
 "Unable to retrieve user roles." = "ユーザー権限グループを取得できません。";
 
+/* Unable to retrieve variations for bulk update screen */
+"Unable to retrieve variations" = "バリエーションを取得できません";
+
 /* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
 "Unable to save changes to the payment method" = "お支払い方法の変更を保存できませんでした";
 
@@ -4638,6 +4727,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Settings > Manage Card Reader > Connected Reader > A button to update the reader software */
 "Update Reader Software" = "Reader ソフトウェアを更新";
+
+/* Title that appears on top of the of bulk price setting screen */
+"Update Regular Price" = "通常価格を更新";
 
 /* Subtitle of the product form bottom sheet action for editing inventory settings. */
 "Update product inventory and SKU" = "商品在庫と SKU を更新";
@@ -4758,9 +4850,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network." = "お使いのプリンターと端末が **同じ WiFi ネットワーク** に接続されていることを確認してください。\n\nWi-Fi ネットワークとの接続の詳細については、プリンターのドキュメントを確認してください。";
 
-/* Displays the version of the App */
-"Version %@" = "バージョン %@";
-
 /* Displays the connected reader software version */
 "Version: %1$@" = "バージョン: %1$@";
 
@@ -4837,12 +4926,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* View title during the Google auth process. */
 "Waiting..." = "待機中";
 
-/* shown in promotional screens during first launch */
-"Watch readers from around the world read and interact with your site — in real time." = "サイトを訪れている世界中の読者の動向を、リアルタイムで確認できます。";
-
-/* Shown in the prologue carousel (promotional screens) during first launch. */
-"Watch your audience grow with in-depth analytics." = "詳細な分析により、オーディエンスの成長を見守れます。";
-
 /* Error message when the merchant's payment account has been rejected */
 "We are sorry but we can't support In-Person Payments for this store." = "このストアはオフラインでの支払いに対応していません。";
 
@@ -4879,6 +4962,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country */
 "We don’t support In-Person Payments with Stripe in your country" = "お住まいの国では Stripe によるオフラインでの支払いがサポートされていません";
+
+/* Message displayed in the error prompt when loading total discounted amount in Coupon Details screen fails */
+"We encountered a problem loading analytics" = "分析の読み込み中に問題が発生しました";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "入力された住所が一部修正されました。 正しい場合は、正確に配送できるように提案された住所を使用してください。";
@@ -4929,6 +5015,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "新しい WordPress.com アカウントを作成するための登録リンクをメールでお送りしました。 このデバイスでメールをチェックして、WordPress.com から届いたメールにあるリンクをタップしてください。";
 
+/* Title of a button linking to the app's website */
+"Website" = "サイト";
+
 /* Title of the cell in Product Shipping Settings > Weight */
 "Weight" = "重さ";
 
@@ -4940,9 +5029,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "重量 :%1$@%2$@";
-
-/* Shown in the prologue carousel (promotional screens) during first launch. */
-"Welcome to the world’s most popular website builder." = "世界で最も人気のサイト構築サービスへようこそ。";
 
 /* Content of the feedback banner on the coupon list screen */
 "We’ve been working on making it possible to view and edit coupons from your device!" = "デバイスからクーポンを表示、編集できる機能を開発中です !";
@@ -4982,9 +5068,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigates to WisePad 3 Card Reader manual */
 "WisePad 3 card reader manual" = "WisePad 3カードリーダーマニュアル";
 
-/* Shown in the prologue carousel (promotional screens) during first launch. */
-"With this powerful editor you can post on the go." = "この強力なエディターで、外出中も投稿できます。";
-
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";
 
@@ -4993,6 +5076,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Create Shipping Label form -> WooCommerce Discount label */
 "WooCommerce Discount" = "WooCommerce の割引";
+
+/* Subject line for when sharing the app with others through mail or any other activity types that support contains a subject field. */
+"WooCommerce Mobile App - Run your store from anywhere" = "WooCommerce モバイルアプリで、どこからでもストアを運営";
 
 /* Navigation title of the webview which used by the merchant to update their store address */
 "WooCommerce Settings" = "WooCommerce 設定";
@@ -5009,6 +5095,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %@ uses WordPress %@. We recommend to update to the latest version, or at least %@" = "WordPress バージョンが古すぎます。%1$@ のサイトは WordPress %2$@ を使用しています。最新バージョンか、最低でも %3$@ に更新することをおすすめします。";
+
+/* Title of a button linking to the Automattic Work With Us web page */
+"Work with us" = "求人情報";
 
 /* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
 "Wrong account?" = "アカウントが間違っていますか ?";
@@ -5053,6 +5142,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "ご指定のメールアドレスはアカウント登録にご利用いただけません。このメールプロバイダによって、こちらから送信するメールがブロックされる問題が発生することがあるためです。恐れ入りますが、他のメールプロバイダのアドレスをお使いください。";
 
+/* The description on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
+"You currently have Coupons disabled for this store. Enable coupons to get started." = "現在、このストアではクーポンが無効になっています。 開始するにはクーポンを有効にしてください。";
+
 /* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
 "You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "ご使用のアカウントに期限切れの要件があります。 オフラインでの支払いを再開するには、この要件を処理してください。";
 
@@ -5067,9 +5159,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "支払いを受け取るには、カードリーダーのソフトウェアを更新する必要があります。 キャンセルするとリーダーの接続がブロックされます。";
-
-/* shown in promotional screens during first launch */
-"Your notifications travel with you — see comments and likes as they happen." = "モバイルでも通知を受信し、コメントやいいねをリアルタイムで確認できます。";
 
 /* Title for the error screen when the merchant's In-Person Payments account is restricted because there are pending requirements */
 "Your payments account has pending requirements" = "お使いの支払いアカウントに保留中の要件があります";
@@ -5126,9 +5215,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} Google アカウントでログイン。";
-
-/* About View's Footer Text. The variable is the current year */
-"© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd." = "© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd.";
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 注文完了";

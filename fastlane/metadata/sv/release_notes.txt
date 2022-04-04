@@ -1,3 +1,5 @@
-Du kommer att märka att kreditkortsuppgifter för personliga betalningar nu visas när du gör en återbetalning. Detta meddelar dina kunder exakt vart pengarna tar vägen.
+Ditt företag kanske använder anpassade beställningsstatusar – nu kan du filtrera beställningar med hjälp av dessa statusar. Tryck på knappen Filtrera i beställningslistan för att visa detta alternativ.
 
-Vissa nya funktioner är inte helt redo för lansering än, men du kan testa dem i förväg. Skapa beställningar, visa rabattkoder med mera. Gå till fliken Meny, välj Inställningar och sedan Experimentella inställningar för att aktivera funktionen. Vi välkomnar feedback om appen, särskilt rörande de nya funktioner som vi arbetar med och tillhandahåller tidig åtkomst till.
+Vissa av er har korpögon och har noterat att typen av produkter i en beställning inte alltid matchar webben. Vi har löst det.
+
+Visste du att vi arbetar på en ny funktion för att skapa beställningar? Gå till fliken Meny, tryck på inställningsikonen och bläddra till Experimentella funktioner. I den här versionen har vi lagt till en sektion för fraktmetod och -avgifter. Det finns även en ny rabattkodsfunktion som du kan hjälpa oss att testa. Meddela oss om du hittar något som kan förbättras.

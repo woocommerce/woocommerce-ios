@@ -27,12 +27,12 @@ struct AddEditCoupon: View {
                                                      text: $viewModel.amountField,
                                                      editable: true,
                                                      fieldAlignment: .leading,
-                                                     keyboardType: .asciiCapableNumberPad)
+                                                     keyboardType: .decimalPad)
                                 Divider()
                                     .padding(.leading, Constants.margin)
                             }
 
-                            Text(Localization.footerCouponAmountPercentage)
+                            Text(viewModel.amountSubtitleText)
                                 .subheadlineStyle()
                                 .padding(.horizontal, Constants.margin)
 
@@ -165,9 +165,6 @@ private extension AddEditCoupon {
         static let couponAmountPlaceholder = NSLocalizedString(
             "Coupon amount",
             comment: "Text field placeholder for the amount in the view for adding or editing a coupon.")
-        static let footerCouponAmountPercentage = NSLocalizedString(
-            "Set the percentage of the discount you want to offer.",
-            comment: "The footer of the text field Amount in percentage in the view for adding or editing a coupon.")
         static let couponCode = NSLocalizedString(
             "Coupon Code",
             comment: "Text field coupon code in the view for adding or editing a coupon.")

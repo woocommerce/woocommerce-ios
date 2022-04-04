@@ -23,7 +23,6 @@
 		8FFAA245E257B9EB98E2FCBD /* Pods_SampleReceiptPrinter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AFA997D6786C67B0A061854 /* Pods_SampleReceiptPrinter.framework */; };
 		C5D2CB7D21CEE28FEBF18BF6 /* Pods_Hardware.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F0AC202B287C1221EA2C99 /* Pods_Hardware.framework */; platformFilter = ios; };
 		D80409A625FBE42B006F9BDA /* PaymentIntentParameters+Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80409A525FBE42B006F9BDA /* PaymentIntentParameters+Stripe.swift */; };
-		D80B464E260E18930092EDC0 /* Email.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80B464D260E18930092EDC0 /* Email.swift */; };
 		D80B4652260E19590092EDC0 /* PaymentIntentParametersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80B4651260E19590092EDC0 /* PaymentIntentParametersTests.swift */; };
 		D80B4656260E1B290092EDC0 /* CurrencyCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80B4655260E1B290092EDC0 /* CurrencyCode.swift */; };
 		D80B465A260E1E160092EDC0 /* StatementDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80B4659260E1E160092EDC0 /* StatementDescriptor.swift */; };
@@ -160,7 +159,6 @@
 		C61D1642BE09D1A1AD6AA9FA /* Pods-HardwareTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HardwareTests.release.xcconfig"; path = "Target Support Files/Pods-HardwareTests/Pods-HardwareTests.release.xcconfig"; sourceTree = "<group>"; };
 		C810BBAD03E7D4ECFD29D7AC /* Pods-SampleReceiptPrinter.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleReceiptPrinter.release-alpha.xcconfig"; path = "Target Support Files/Pods-SampleReceiptPrinter/Pods-SampleReceiptPrinter.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		D80409A525FBE42B006F9BDA /* PaymentIntentParameters+Stripe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PaymentIntentParameters+Stripe.swift"; sourceTree = "<group>"; };
-		D80B464D260E18930092EDC0 /* Email.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Email.swift; sourceTree = "<group>"; };
 		D80B4651260E19590092EDC0 /* PaymentIntentParametersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentIntentParametersTests.swift; sourceTree = "<group>"; };
 		D80B4655260E1B290092EDC0 /* CurrencyCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyCode.swift; sourceTree = "<group>"; };
 		D80B4659260E1E160092EDC0 /* StatementDescriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatementDescriptor.swift; sourceTree = "<group>"; };
@@ -420,7 +418,6 @@
 				D81AE86325E6B77F00D9CFD3 /* CardReaderServiceError.swift */,
 				03B440A92754DFC400759429 /* UnderlyingError.swift */,
 				D8EDFE2925EED21D003D2213 /* CardReaderConfigProvider.swift */,
-				D80B464D260E18930092EDC0 /* Email.swift */,
 				D80B4655260E1B290092EDC0 /* CurrencyCode.swift */,
 				D845BDB7262D97B300A3E40F /* ReceiptDetails.swift */,
 				D80B4659260E1E160092EDC0 /* StatementDescriptor.swift */,
@@ -807,7 +804,6 @@
 				D854FC22260A34B000A219CD /* UnderlyingError+Stripe.swift in Sources */,
 				D8652CB7262F389800350F37 /* ReceiptLineItem.swift in Sources */,
 				D88FDB2B25DD21B000CB0DBD /* CardReaderServiceStatus.swift in Sources */,
-				D80B464E260E18930092EDC0 /* Email.swift in Sources */,
 				D89B8F0225DDC7500001C726 /* PaymentIntentStatus.swift in Sources */,
 				D8652E2A2630520300350F37 /* CardPresentReceiptParameters.swift in Sources */,
 				D89B8F1E25DDCD3D0001C726 /* PaymentIntent+Stripe.swift in Sources */,

@@ -12,8 +12,9 @@ struct PrimaryButtonStyle: ButtonStyle {
 }
 
 struct SecondaryButtonStyle: ButtonStyle {
+    var labelFont: Font = .headline
     func makeBody(configuration: Configuration) -> some View {
-        SecondaryButton(configuration: configuration)
+        SecondaryButton(configuration: configuration, labelFont: labelFont)
     }
 }
 
@@ -136,11 +137,12 @@ private struct SecondaryButton: View {
     @Environment(\.isEnabled) var isEnabled
 
     let configuration: ButtonStyleConfiguration
+    let labelFont: Font
 
     var body: some View {
         BaseButton(configuration: configuration)
             .foregroundColor(Color(foregroundColor))
-            .font(.headline)
+            .font(labelFont)
             .background(
                 RoundedRectangle(cornerRadius: Style.defaultCornerRadius)
                     .fill(Color(backgroundColor))

@@ -1,3 +1,5 @@
-Ahora al realizar un reembolso, se muestran los datos de la tarjeta de crédito para el pago en persona. De esta forma, podrás indicar a tus clientes el destino exacto del reembolso.
+Es posible que tu empresa utilice estados de pedido personalizados. Si este es el caso, ahora puedes filtrar los pedidos en base a ellos. Para ver esta opción, pulsa sobre el botón "Filtro" en la lista de pedidos.
 
-Algunas de las nuevas funciones aún no están disponibles para el público en general, pero tú ya puedes echarles un vistazo. ¡Crea pedidos, visualiza cupones y mucho más! Ve a los ajustes de la pestaña Menú y actívalo en Ajustes experimentales. Agradecemos que nos envíes tus comentarios sobre la aplicación, especialmente los que tratan sobre las nuevas funciones en las que estamos trabajando y a las que te damos acceso anticipado.
+Los más atentos ya se han dado cuenta de que el tipo de productos de un pedido no siempre coincide con el sitio web. Ya lo hemos solucionado.
+
+¿Sabías que estamos trabajando en una nueva función para crear pedidos? Dirígete a la pestaña Menú, toca el icono de ajustes y desplázate hasta las funciones experimentales. En esta versión, hemos añadido una sección de métodos de envío y tarifas. También dispones de una nueva función denominada "Cupones", que puedes ayudarnos a probar. Envíanos tus comentarios si crees que hay algo que se puede mejorar.

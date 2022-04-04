@@ -27,18 +27,13 @@ final class ProductReviewsViewModel {
         self.data = data
     }
 
-    func displayPlaceholderReviews(tableView: UITableView) {
-        let options = GhostOptions(reuseIdentifier: ProductReviewTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
-        tableView.displayGhostContent(options: options,
-                                      style: .wooDefaultGhostStyle)
-
+    func didDisplayPlaceholderReviews() {
         data.stopForwardingEvents()
     }
 
     /// Removes Placeholder Notes (and restores the ResultsController <> UITableView link).
     ///
-    func removePlaceholderReviews(tableView: UITableView) {
-        tableView.removeGhostContent()
+    func didRemovePlaceholderReviews(tableView: UITableView) {
         data.startForwardingEvents(to: tableView)
     }
 
@@ -101,7 +96,6 @@ extension ProductReviewsViewModel {
 
 private extension ProductReviewsViewModel {
     enum Settings {
-        static let placeholderRowsPerSection = [3]
         static let firstPage = 1
         static let pageSize = 25
     }

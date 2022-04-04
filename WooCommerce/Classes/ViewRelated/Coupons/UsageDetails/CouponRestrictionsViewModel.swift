@@ -2,9 +2,9 @@ import Combine
 import Foundation
 import Yosemite
 
-/// View Model for `CouponUsageDetails`
+/// View Model for `CouponRestriction`
 ///
-final class CouponUsageDetailsViewModel: ObservableObject {
+final class CouponRestrictionsViewModel: ObservableObject {
     private let coupon: Coupon
 
     let currencySymbol: String

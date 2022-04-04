@@ -221,6 +221,24 @@ final class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows[safe: 1]?.quantity, 1)
     }
 
+    func test_product_is_selected_when_quantity_is_decremented_below_1() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // Product quantity is 1
+        viewModel.addProductViewModel.selectProduct(product.productID)
+        XCTAssertEqual(viewModel.productRows[0].quantity, 1)
+
+        // When
+        viewModel.productRows[0].decrementQuantity()
+
+        // Then
+        XCTAssertNotNil(viewModel.selectedProductViewModel)
+    }
+
     func test_selectOrderItem_selects_expected_order_item() throws {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
@@ -386,6 +404,8 @@ final class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(paymentDataViewModel.orderTotal, "£30.00")
     }
 
+    // MARK: - Payment Section Tests
+
     func test_payment_section_is_updated_when_products_update() {
         // Given
         let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
@@ -479,6 +499,129 @@ final class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 8.50)
     }
 
+    func test_payment_section_values_correct_when_shipping_line_is_negative() {
+        // Given
+        let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
+
+        // When
+        viewModel.addProductViewModel.selectProduct(product.productID)
+        let testShippingLine = ShippingLine(shippingID: 0,
+                                            methodTitle: "Flat Rate",
+                                            methodID: "other",
+                                            total: "-5",
+                                            totalTax: "",
+                                            taxes: [])
+        viewModel.saveShippingLine(testShippingLine)
+
+        // Then
+        XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowShippingTotal)
+        XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "-£5.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£3.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 3.50)
+
+        // When
+        viewModel.saveShippingLine(nil)
+
+        // Then
+        XCTAssertFalse(viewModel.paymentDataViewModel.shouldShowShippingTotal)
+        XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "£0.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£8.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 8.50)
+    }
+
+    func test_payment_section_values_correct_when_fee_line_is_negative() {
+        // Given
+        let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
+
+        // When
+        viewModel.addProductViewModel.selectProduct(product.productID)
+        let testFeeLine = OrderFeeLine(feeID: 0,
+                                       name: "Fee",
+                                       taxClass: "",
+                                       taxStatus: .none,
+                                       total: "-5",
+                                       totalTax: "",
+                                       taxes: [],
+                                       attributes: [])
+        viewModel.saveFeeLine(testFeeLine)
+
+        // Then
+        XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowFees)
+        XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.feesTotal, "-£5.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£3.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 8.50)
+
+        // When
+        viewModel.saveFeeLine(nil)
+
+        // Then
+        XCTAssertFalse(viewModel.paymentDataViewModel.shouldShowFees)
+        XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.feesTotal, "£0.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£8.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 8.50)
+    }
+
+    func test_payment_section_is_correct_when_shipping_line_and_fee_line_are_added() {
+        // Given
+        let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
+
+        // When
+        viewModel.addProductViewModel.selectProduct(product.productID)
+
+        let testShippingLine = ShippingLine(shippingID: 0,
+                                            methodTitle: "Flat Rate",
+                                            methodID: "other",
+                                            total: "-5",
+                                            totalTax: "",
+                                            taxes: [])
+        viewModel.saveShippingLine(testShippingLine)
+
+        let testFeeLine = OrderFeeLine(feeID: 0,
+                                       name: "Fee",
+                                       taxClass: "",
+                                       taxStatus: .none,
+                                       total: "10",
+                                       totalTax: "",
+                                       taxes: [],
+                                       attributes: [])
+        viewModel.saveFeeLine(testFeeLine)
+
+        // Then
+        XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowShippingTotal)
+        XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "-£5.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£13.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.feesTotal, "£10.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 3.50)
+
+        // When
+        viewModel.saveShippingLine(nil)
+
+        // Then
+        XCTAssertFalse(viewModel.paymentDataViewModel.shouldShowShippingTotal)
+        XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "£0.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£18.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.feesTotal, "£10.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 8.50)
+    }
+
     func test_payment_section_loading_indicator_is_enabled_while_order_syncs() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -533,19 +676,7 @@ final class NewOrderViewModelTests: XCTestCase {
 
     }
 
-    func test_customer_note_section_is_updated_when_note_is_added_to_order() {
-        // Given
-        let storageManager = MockStorageManager()
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
-        let expectedCustomerNote = "Test"
-
-        //When
-        viewModel.noteViewModel.newNote = expectedCustomerNote
-        viewModel.updateCustomerNote()
-
-        //Then
-        XCTAssertEqual(viewModel.customerNoteDataViewModel.customerNote, expectedCustomerNote)
-    }
+    // MARK: - hasChanges Tests
 
     func test_hasChanges_returns_false_initially() {
         // Given
@@ -611,6 +742,34 @@ final class NewOrderViewModelTests: XCTestCase {
         //Then
         XCTAssertTrue(viewModel.hasChanges)
     }
+
+    func test_hasChanges_returns_true_when_shipping_line_is_updated() {
+        // Given
+        let storageManager = MockStorageManager()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let shippingLine = ShippingLine.fake()
+
+        // When
+        viewModel.saveShippingLine(shippingLine)
+
+        // Then
+        XCTAssertTrue(viewModel.hasChanges)
+    }
+
+    func test_hasChanges_returns_true_when_fee_line_is_updated() {
+        // Given
+        let storageManager = MockStorageManager()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let feeLine = OrderFeeLine.fake()
+
+        // When
+        viewModel.saveFeeLine(feeLine)
+
+        // Then
+        XCTAssertTrue(viewModel.hasChanges)
+    }
+
+    // MARK: - Tracking Tests
 
     func test_shipping_method_tracked_when_added() throws {
         // Given
@@ -729,6 +888,22 @@ final class NewOrderViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(analytics.receivedEvents.isEmpty)
+    }
+
+    // MARK: -
+
+    func test_customer_note_section_is_updated_when_note_is_added_to_order() {
+        // Given
+        let storageManager = MockStorageManager()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let expectedCustomerNote = "Test"
+
+        //When
+        viewModel.noteViewModel.newNote = expectedCustomerNote
+        viewModel.updateCustomerNote()
+
+        //Then
+        XCTAssertEqual(viewModel.customerNoteDataViewModel.customerNote, expectedCustomerNote)
     }
 
     func test_discard_order_deletes_order_if_order_exists_remotely() {

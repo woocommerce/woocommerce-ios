@@ -1490,7 +1490,7 @@
 		D8C2A28823190B2300F503E9 /* StorageProductReview+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C2A28723190B2300F503E9 /* StorageProductReview+Woo.swift */; };
 		D8C2A28B231931D100F503E9 /* ReviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C2A28A231931D100F503E9 /* ReviewViewModel.swift */; };
 		D8C2A28F231BD00500F503E9 /* ReviewsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C2A28E231BD00500F503E9 /* ReviewsViewModel.swift */; };
-		D8C2A291231BD0FD00F503E9 /* ReviewsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C2A290231BD0FD00F503E9 /* ReviewsDataSource.swift */; };
+		D8C2A291231BD0FD00F503E9 /* DefaultReviewsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C2A290231BD0FD00F503E9 /* DefaultReviewsDataSource.swift */; };
 		D8CD0605258B384E00B52D63 /* oauth2_token-error.json in Resources */ = {isa = PBXBuildFile; fileRef = D8CD0604258B384E00B52D63 /* oauth2_token-error.json */; };
 		D8CD710F237A49DB007148B9 /* UIColor+SemanticColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CD710E237A49DB007148B9 /* UIColor+SemanticColors.swift */; };
 		D8D15F83230A17A000D48B3F /* ServiceLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D15F82230A17A000D48B3F /* ServiceLocator.swift */; };
@@ -3185,7 +3185,7 @@
 		D8C2A28723190B2300F503E9 /* StorageProductReview+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageProductReview+Woo.swift"; sourceTree = "<group>"; };
 		D8C2A28A231931D100F503E9 /* ReviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewViewModel.swift; sourceTree = "<group>"; };
 		D8C2A28E231BD00500F503E9 /* ReviewsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsViewModel.swift; sourceTree = "<group>"; };
-		D8C2A290231BD0FD00F503E9 /* ReviewsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsDataSource.swift; sourceTree = "<group>"; };
+		D8C2A290231BD0FD00F503E9 /* DefaultReviewsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultReviewsDataSource.swift; sourceTree = "<group>"; };
 		D8CD0604258B384E00B52D63 /* oauth2_token-error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "oauth2_token-error.json"; sourceTree = "<group>"; };
 		D8CD710E237A49DB007148B9 /* UIColor+SemanticColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+SemanticColors.swift"; sourceTree = "<group>"; };
 		D8D15F82230A17A000D48B3F /* ServiceLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocator.swift; sourceTree = "<group>"; };
@@ -6279,7 +6279,7 @@
 				B59D1EDD219072B8009D1978 /* Cells */,
 				D8C2A28A231931D100F503E9 /* ReviewViewModel.swift */,
 				D85136C0231E09C300DD0539 /* ReviewsDataSourceProtocol.swift */,
-				D8C2A290231BD0FD00F503E9 /* ReviewsDataSource.swift */,
+				D8C2A290231BD0FD00F503E9 /* DefaultReviewsDataSource.swift */,
 				D8C2A28E231BD00500F503E9 /* ReviewsViewModel.swift */,
 				B5F8B7DF2194759100DAB7E2 /* ReviewDetailsViewController.swift */,
 				B5F8B7E4219478FA00DAB7E2 /* ReviewDetailsViewController.xib */,
@@ -8983,7 +8983,7 @@
 				B58B4AB82108F14700076FDD /* NoticeNotificationInfo.swift in Sources */,
 				CE24BCD8212F25D4001CD12E /* StorageOrder+Woo.swift in Sources */,
 				02820F3422C257B700DE0D37 /* UITableView+HeaderFooterHelpers.swift in Sources */,
-				D8C2A291231BD0FD00F503E9 /* ReviewsDataSource.swift in Sources */,
+				D8C2A291231BD0FD00F503E9 /* DefaultReviewsDataSource.swift in Sources */,
 				CE855366209BA6A700938BDC /* CustomerInfoTableViewCell.swift in Sources */,
 				DE126D0B26CA2331007F901D /* ValidationErrorRow.swift in Sources */,
 				0286B27B23C7051F003D784B /* ProductImagesCollectionViewController.swift in Sources */,

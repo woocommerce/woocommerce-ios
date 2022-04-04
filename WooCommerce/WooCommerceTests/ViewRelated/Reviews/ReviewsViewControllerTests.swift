@@ -58,7 +58,7 @@ private final class MockReviewsViewModel: ReviewsViewModelOutput, ReviewsViewMod
     private let data: ReviewsDataSourceProtocol
 
     init(siteID: Int64) {
-        self.data = ReviewsDataSource(siteID: siteID, delegate: GlobalReviewsDataSourceCustomizing())
+        self.data = DefaultReviewsDataSource(siteID: siteID, delegate: GlobalReviewsDataSourceCustomizing())
     }
 
     // `ReviewsViewModelOutput` conformance

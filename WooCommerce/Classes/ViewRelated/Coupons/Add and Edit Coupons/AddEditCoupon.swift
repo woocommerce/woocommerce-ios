@@ -65,6 +65,7 @@ struct AddEditCoupon: View {
                                 .fixedSize()
                                 Spacer().frame(maxWidth: .infinity)
                             }
+                            .padding([.bottom], Constants.verticalSpacing)
 
                             Button {
                                 //TODO: handle action
@@ -83,6 +84,7 @@ struct AddEditCoupon: View {
                                 Divider()
                                     .padding(.leading, Constants.margin)
                             }
+                            .padding([.bottom], Constants.verticalSpacing)
 
                             Group {
                                 TitleAndToggleRow(title: Localization.includeFreeShipping, isOn: .constant(false))
@@ -90,10 +92,12 @@ struct AddEditCoupon: View {
                                 Divider()
                                     .padding(.leading, Constants.margin)
                             }
+                            .padding([.bottom], Constants.verticalSpacing)
                         }
 
                         Group {
                             ListHeaderView(text: Localization.headerApplyCouponTo.uppercased(), alignment: .left)
+                                .padding([.bottom], Constants.verticalSpacing)
 
                             Button {
                                 //TODO: handle action
@@ -106,6 +110,7 @@ struct AddEditCoupon: View {
                             }
                             .buttonStyle(SecondaryButtonStyle())
                             .padding(.horizontal, Constants.margin)
+                            .padding([.bottom], Constants.verticalSpacing)
 
                             Button {
                                 //TODO: handle action
@@ -120,6 +125,7 @@ struct AddEditCoupon: View {
                             .buttonStyle(SecondaryButtonStyle())
                             .padding(.horizontal, Constants.margin)
                         }
+                        .padding([.bottom], Constants.verticalSpacing)
 
                         Group {
                             ListHeaderView(text: Localization.headerUsageDetails.uppercased(), alignment: .left)
@@ -130,6 +136,7 @@ struct AddEditCoupon: View {
                             Divider()
                                 .padding(.leading, Constants.margin)
                         }
+                        .padding([.bottom], Constants.verticalSpacing)
 
                         Button {
                             //TODO: handle action
@@ -138,7 +145,7 @@ struct AddEditCoupon: View {
                         }
                         .buttonStyle(PrimaryButtonStyle())
                         .padding(.horizontal, Constants.margin)
-                        .padding(.top, Constants.verticalSpacing)
+                        .padding([.top, .bottom], Constants.verticalSpacing)
                     }
                 }
                 .ignoresSafeArea(.container, edges: [.horizontal, .bottom])

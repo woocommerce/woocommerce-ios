@@ -91,22 +91,27 @@ struct AddEditCoupon: View {
                         Group {
                             ListHeaderView(text: Localization.headerApplyCouponTo.uppercased(), alignment: .left)
 
-                            // TODO: add a new style with the icon on the left side
                             Button {
                                 //TODO: handle action
                             } label: {
-                                Text(Localization.editProductsButton)
-                                    .bodyStyle()
+                                HStack {
+                                    Image(uiImage: .pencilImage).colorMultiply(Color(.text))
+                                    Text(Localization.editProductsButton)
+                                        .bodyStyle()
+                                }
                             }
                             .buttonStyle(SecondaryButtonStyle())
                             .padding(.horizontal, Constants.margin)
 
-                            // TODO: add a new style with the icon on the left side
                             Button {
                                 //TODO: handle action
                             } label: {
-                                Text(Localization.editProductCategoriesButton)
-                                    .bodyStyle()
+                                HStack {
+                                    Image(uiImage: .pencilImage)
+                                        .colorMultiply(Color(.text))
+                                    Text(Localization.editProductCategoriesButton)
+                                        .bodyStyle()
+                                }
                             }
                             .buttonStyle(SecondaryButtonStyle())
                             .padding(.horizontal, Constants.margin)

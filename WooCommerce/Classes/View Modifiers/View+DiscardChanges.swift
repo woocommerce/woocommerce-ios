@@ -5,11 +5,21 @@ import SwiftUI
 struct DiscardChangesWrapper<Content: View>: UIViewControllerRepresentable {
     let view: Content
 
-    /// Method that creates and presents a discard changes action sheet.
+    /// Title for the discard changes action sheet.
     ///
-    /// Can inject a method from `UIAlertController+Helpers` or a custom action sheet, as needed.
+    let actionSheetTitle: String?
+
+    /// Message for the discard changes action sheet.
     ///
-    let presentActionSheet: (UIViewController) -> Void
+    let actionSheetMessage: String?
+
+    /// Title for the discard changes button on the action sheet.
+    ///
+    let discardButtonTitle: String
+
+    /// Title for the cancel button on the action sheet.
+    ///
+    let cancelButtonTitle: String
 
     /// Whether the view can be dismissed. When `false` the discard changes prompt is displayed.
     ///
@@ -46,7 +56,23 @@ struct DiscardChangesWrapper<Content: View>: UIViewControllerRepresentable {
         }
 
         func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
-            wrapper.presentActionSheet(presentationController.presentedViewController)
+            let viewController = presentationController.presentedViewController
+
+            let actionSheet = UIAlertController(title: wrapper.actionSheetTitle, message: wrapper.actionSheetMessage, preferredStyle: .actionSheet)
+            actionSheet.view.tintColor = .text
+            actionSheet.addDestructiveActionWithTitle(wrapper.discardButtonTitle) { [weak self] _ in
+                viewController.dismiss(animated: true, completion: nil)
+                self?.wrapper.didDismiss?()
+            }
+            actionSheet.addCancelActionWithTitle(wrapper.cancelButtonTitle)
+
+            if let popoverController = actionSheet.popoverPresentationController {
+                popoverController.sourceView = viewController.view
+                popoverController.sourceRect = viewController.view.bounds
+                popoverController.permittedArrowDirections = []
+            }
+
+            viewController.present(actionSheet, animated: true)
         }
 
         func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
@@ -58,12 +84,34 @@ struct DiscardChangesWrapper<Content: View>: UIViewControllerRepresentable {
 extension View {
     /// Adds a discard changes prompt on the dismiss drag gesture for the provided view.
     /// - Parameters:
-    ///   - presentActionSheet: Method that creates and presents a discard changes action sheet.
+    ///   - title: Optional title for the discard changes action sheet.
+    ///   - message: Optional message for the discard changes action sheet. Defaults to "Are you sure you want to discard these changes?"
+    ///   - discardButtonTitle: Title for the discard changes button on the action sheet. Defaults to "Discard changes".
+    ///   - cancelButtonTitle: Title for the cancel button on the action sheet. Defaults to "Cancel".
     ///   - canDismiss: Whether the view can be dismissed. When `false` the discard changes prompt is displayed.
     ///   - didDismiss: Optional method to be invoked when the view is dismissed.
-    func discardChangesPrompt(presentActionSheet: @escaping (UIViewController) -> Void,
+    func discardChangesPrompt(title: String? = nil,
+                              message: String? = Localization.message,
+                              discardButtonTitle: String = Localization.discard,
+                              cancelButtonTitle: String = Localization.cancel,
                               canDismiss: Bool,
                               didDismiss: (() -> Void)? = nil) -> some View {
-        DiscardChangesWrapper(view: self, presentActionSheet: presentActionSheet, canDismiss: canDismiss, didDismiss: didDismiss)
+        DiscardChangesWrapper(view: self,
+                              actionSheetTitle: title,
+                              actionSheetMessage: message,
+                              discardButtonTitle: discardButtonTitle,
+                              cancelButtonTitle: cancelButtonTitle,
+                              canDismiss: canDismiss,
+                              didDismiss: didDismiss)
     }
+}
+
+// MARK: Constants
+private enum Localization {
+    static let message = NSLocalizedString("Are you sure you want to discard these changes?",
+                                           comment: "Message title for Discard Changes Action Sheet")
+    static let discard = NSLocalizedString("Discard changes",
+                                          comment: "Button title Discard Changes in Discard Changes Action Sheet")
+    static let cancel = NSLocalizedString("Cancel",
+                                          comment: "Button title Cancel in Discard Changes Action Sheet")
 }

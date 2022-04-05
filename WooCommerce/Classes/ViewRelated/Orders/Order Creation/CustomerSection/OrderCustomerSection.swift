@@ -21,8 +21,7 @@ struct OrderCustomerSection: View {
                         showAddressForm.toggle()
                     }, viewModel: addressFormViewModel)
                 }
-                .discardChangesPrompt(presentActionSheet: addressFormViewModel.presentDiscardChangesActionSheet,
-                                      canDismiss: !addressFormViewModel.hasPendingChanges,
+                .discardChangesPrompt(canDismiss: !addressFormViewModel.hasPendingChanges,
                                       didDismiss: addressFormViewModel.userDidCancelFlow)
                 .onDisappear {
                     viewModel.addressFormViewModel = viewModel.createOrderAddressFormViewModel()

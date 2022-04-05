@@ -86,6 +86,7 @@ private extension AddEditCouponViewModel {
         static let amountPercentSubtitle = NSLocalizedString("Set the percentage of the discount you want to offer.",
                                                      comment: "The footer of the text field Amount in percentage in the view for adding or editing a coupon.")
         static let amountFixedDiscountSubtitle = NSLocalizedString("Set the fixed amount of the discount you want to offer.",
-                                                                   comment: "The footer of the text field Amount with fixed discount in the view for adding or editing a coupon.")
+                                                                   comment: "The footer of the text field Amount with fixed" +
+                                                                   "discount in the view for adding or editing a coupon.")
     }
 }

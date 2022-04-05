@@ -17,39 +17,43 @@ struct AddEditCoupon: View {
         NavigationView {
             GeometryReader { geometry in
                 ScrollView {
-                    VStack (alignment: .leading) {
+                    VStack (alignment: .leading, spacing: 0) {
                         Group {
                             ListHeaderView(text: Localization.headerCouponDetails.uppercased(), alignment: .left)
 
                             Group {
                                 TitleAndTextFieldRow(title: viewModel.amountText,
-                                                     placeholder: Localization.couponAmountPlaceholder,
+                                                     placeholder: "0",
                                                      text: $viewModel.amountField,
                                                      editable: true,
                                                      fieldAlignment: .leading,
                                                      keyboardType: .decimalPad)
                                 Divider()
                                     .padding(.leading, Constants.margin)
-                            }
 
-                            Text(viewModel.amountSubtitleText)
-                                .subheadlineStyle()
-                                .padding(.horizontal, Constants.margin)
+                                Text(viewModel.amountSubtitleText)
+                                    .subheadlineStyle()
+                                    .padding(.horizontal, Constants.margin)
+                            }
+                            .padding([.bottom], Constants.verticalSpacing)
+
 
                             Group {
                                 TitleAndTextFieldRow(title: Localization.couponCode,
-                                                     placeholder: Localization.couponCode,
+                                                     placeholder: couponCodePlaceholder,
                                                      text: $viewModel.codeField,
                                                      editable: true,
                                                      fieldAlignment: .leading,
                                                      keyboardType: .default)
                                 Divider()
                                     .padding(.leading, Constants.margin)
+                                    .padding([.bottom], Constants.verticalSpacing)
+                                Text(Localization.footerCouponCode)
+                                    .subheadlineStyle()
+                                    .padding(.horizontal, Constants.margin)
                             }
+                            .padding([.bottom], Constants.verticalSpacing)
 
-                            Text(Localization.footerCouponCode)
-                                .subheadlineStyle()
-                                .padding(.horizontal, Constants.margin)
 
                             HStack {
                                 Button {
@@ -169,12 +173,12 @@ private extension AddEditCoupon {
         static let headerCouponDetails = NSLocalizedString(
             "Coupon details",
             comment: "Header of the coupon details in the view for adding or editing a coupon.")
-        static let couponAmountPlaceholder = NSLocalizedString(
-            "Coupon amount",
-            comment: "Text field placeholder for the amount in the view for adding or editing a coupon.")
         static let couponCode = NSLocalizedString(
             "Coupon Code",
             comment: "Text field coupon code in the view for adding or editing a coupon.")
+        static let couponCodePlaceholder = NSLocalizedString(
+            "Enter a coupon",
+            comment: "Text field coupon code placeholder in the view for adding or editing a coupon.")
         static let footerCouponCode = NSLocalizedString(
             "Customers need to enter this code to use the coupon.",
             comment: "The footer of the text field coupon code in the view for adding or editing a coupon.")

@@ -15,10 +15,22 @@ protocol ReviewsInteractionDelegate: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath, with syncingCoordinator: SyncingCoordinator)
 }
 
+/// Implement this protocol to add an extra layer of customization to the the
+/// ReviewsDataSource
+protocol ReviewsDataSourceCustomizing: AnyObject {
+    /// Whether it should show the product title on cell or not
+    ///
+    var shouldShowProductTitleOnCells: Bool { get }
+
+    /// Implement this method to return the predicate that will provide reviews.
+    ///
+    /// - parameter sitePredicate: This predicate adds a site constraint. By composing your predicate with it you will retrieve only reviews of that site.
+    ///
+    func reviewsFilterPredicate(with sitePredicate: NSPredicate) -> NSPredicate
+}
 
 /// Abstracts the dataSource used to render the Product Review list
 protocol ReviewsDataSource: UITableViewDataSource, ReviewsInteractionDelegate {
-
     /// Boolean indicating if there are reviews
     ///
     var isEmpty: Bool { get }

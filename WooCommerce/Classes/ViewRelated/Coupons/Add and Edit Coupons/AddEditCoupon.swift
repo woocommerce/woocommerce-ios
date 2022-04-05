@@ -40,7 +40,7 @@ struct AddEditCoupon: View {
 
                             Group {
                                 TitleAndTextFieldRow(title: Localization.couponCode,
-                                                     placeholder: couponCodePlaceholder,
+                                                     placeholder: Localization.couponCodePlaceholder,
                                                      text: $viewModel.codeField,
                                                      editable: true,
                                                      fieldAlignment: .leading,

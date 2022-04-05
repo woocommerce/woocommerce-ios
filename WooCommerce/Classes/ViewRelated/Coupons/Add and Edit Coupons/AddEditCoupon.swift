@@ -51,14 +51,16 @@ struct AddEditCoupon: View {
                                 .subheadlineStyle()
                                 .padding(.horizontal, Constants.margin)
 
-                            //TODO: leading aligning for this button
-                            Button {
-                                //TODO: handle action
-                            } label: {
-                                Text(Localization.regenerateCouponCodeButton)
+                            HStack {
+                                Button {
+                                    //TODO: handle action
+                                } label: {
+                                    Text(Localization.regenerateCouponCodeButton)
+                                }
+                                .buttonStyle(LinkButtonStyle())
+                                .fixedSize()
+                                Spacer().frame(maxWidth: .infinity)
                             }
-                            .buttonStyle(LinkButtonStyle())
-                            .padding(.horizontal, Constants.margin)
 
                             Button {
                                 //TODO: handle action

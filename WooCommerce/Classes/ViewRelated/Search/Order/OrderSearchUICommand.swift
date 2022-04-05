@@ -86,10 +86,10 @@ final class OrderSearchUICommand: SearchUICommand {
     /// See https://github.com/woocommerce/woocommerce-ios/issues/2506
     ///
     func sanitizeKeyword(_ keyword: String) -> String {
-        guard keyword.starts(with: "#") else {
-            return keyword
+        if keyword.starts(with: "#") {
+            return keyword.removing(at: keyword.startIndex)
         }
-        return keyword.removing(at: keyword.startIndex)
+        return keyword
     }
 }
 

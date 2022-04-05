@@ -25,7 +25,7 @@ struct OrderCustomerSection: View {
                                       canDismiss: !addressFormViewModel.hasPendingChanges,
                                       didDismiss: addressFormViewModel.userDidCancelFlow)
                 .onDisappear {
-                    viewModel.resetAddressFormTrigger.send()
+                    viewModel.addressFormViewModel = viewModel.createOrderAddressFormViewModel()
                 }
             }
     }

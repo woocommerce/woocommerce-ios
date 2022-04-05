@@ -98,8 +98,7 @@ struct NewOrder: View {
 
                         Spacer(minLength: Layout.sectionSpacing)
 
-                        OrderCustomerSection(viewModel: viewModel,
-                                             addressFormViewModel: viewModel.addressFormViewModel ?? viewModel.createOrderAddressFormViewModel())
+                        OrderCustomerSection(viewModel: viewModel, addressFormViewModel: addressFormViewModel)
 
                         Spacer(minLength: Layout.sectionSpacing)
 
@@ -131,6 +130,16 @@ struct NewOrder: View {
         }
         .wooNavigationBarStyle()
         .notice($viewModel.notice, autoDismiss: false)
+    }
+
+    /// View model for Customer section address form.
+    ///
+    private var addressFormViewModel: CreateOrderAddressFormViewModel {
+        guard let addressFormViewModel = viewModel.addressFormViewModel else {
+            // Returns a newly created view model if one isn't set. This shouldn't be needed but handles the optional CreateOrderAddressFormViewModel.
+            return viewModel.createOrderAddressFormViewModel()
+        }
+        return addressFormViewModel
     }
 }
 

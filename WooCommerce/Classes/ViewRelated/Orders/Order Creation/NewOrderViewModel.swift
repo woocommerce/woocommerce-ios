@@ -134,10 +134,6 @@ final class NewOrderViewModel: ObservableObject {
     ///
     @Published var addressFormViewModel: CreateOrderAddressFormViewModel?
 
-    /// Trigger to reset the address form view model when changes are discarded.
-    ///
-    var resetAddressFormTrigger = PassthroughSubject<Void, Never>()
-
     // MARK: Customer note properties
 
     /// Representation of customer note data display properties.
@@ -577,16 +573,10 @@ private extension NewOrderViewModel {
             .assign(to: &$customerDataViewModel)
     }
 
-    /// Configures address form view model and updates it when the form is reset.
+    /// Configures the initial address form view model.
     ///
     func configureAddressFormViewModel() {
         addressFormViewModel = createOrderAddressFormViewModel()
-
-        resetAddressFormTrigger
-            .map { [weak self] _ in
-                self?.createOrderAddressFormViewModel()
-            }
-            .assign(to: &$addressFormViewModel)
     }
 
     /// Updates notes data viewmodel based on order customer notes.

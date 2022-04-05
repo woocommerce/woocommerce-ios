@@ -773,18 +773,6 @@ final class NewOrderViewModelTests: XCTestCase {
         // When
         viewModel.discardOrder()
     }
-
-    func test_resetAddressFormTrigger_resets_customer_details_address_form_fields() {
-        // Given
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID)
-        viewModel.addressFormViewModel?.fields.firstName = sampleAddress1().firstName
-
-        // When
-        viewModel.resetAddressFormTrigger.send()
-
-        // Then
-        XCTAssertEqual(viewModel.addressFormViewModel?.fields.firstName, "")
-    }
 }
 
 private extension MockStorageManager {

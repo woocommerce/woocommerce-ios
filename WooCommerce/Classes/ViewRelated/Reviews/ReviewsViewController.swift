@@ -168,8 +168,8 @@ final class ReviewsViewController: UIViewController, GhostableViewController {
         refreshControl.resetAnimation(in: tableView) { [unowned self] in
             // ghost animation is also removed after switching tabs
             // show make sure it's displayed again
-            self.removePlaceholderReviews()
-            self.displayPlaceholderReviews()
+            self.removeGhostContent()
+            self.displayGhostContent()
         }
     }
 
@@ -337,20 +337,6 @@ private extension ReviewsViewController {
 //
 private extension ReviewsViewController {
 
-    /// Renders Placeholder Reviews.
-    ///
-    func displayPlaceholderReviews() {
-        displayGhostContent()
-        viewModel.didDisplayPlaceholderReviews()
-    }
-
-    /// Removes Placeholder Reviews.
-    ///
-    func removePlaceholderReviews() {
-        removeGhostContent()
-        viewModel.didRemovePlaceholderReviews(tableView: tableView)
-    }
-
     /// Displays the EmptyStateViewController.
     ///
     func displayEmptyViewController() {
@@ -445,7 +431,7 @@ private extension ReviewsViewController {
         case .results:
             break
         case .placeholder:
-            displayPlaceholderReviews()
+            displayGhostContent()
         case .syncing(let pageNumber):
             if pageNumber != SyncingCoordinator.Defaults.pageFirstIndex {
                 ensureFooterSpinnerIsStarted()
@@ -462,10 +448,10 @@ private extension ReviewsViewController {
         case .results:
             break
         case .placeholder:
-            removePlaceholderReviews()
+            removeGhostContent()
         case .syncing:
             ensureFooterSpinnerIsStopped()
-            removePlaceholderReviews()
+            removeGhostContent()
         }
     }
 

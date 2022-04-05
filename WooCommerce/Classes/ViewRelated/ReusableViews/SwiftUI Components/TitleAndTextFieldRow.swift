@@ -9,6 +9,7 @@ struct TitleAndTextFieldRow: View {
     private let keyboardType: UIKeyboardType
     private let onEditingChanged: ((Bool) -> Void)?
     private let editable: Bool
+    private let fieldAlignment: TextAlignment
 
     @Binding private var text: String
 
@@ -17,6 +18,7 @@ struct TitleAndTextFieldRow: View {
          text: Binding<String>,
          symbol: String? = nil,
          editable: Bool = true,
+         fieldAlignment: TextAlignment = .trailing,
          keyboardType: UIKeyboardType = .default,
          onEditingChanged: ((Bool) -> Void)? = nil) {
         self.title = title
@@ -24,6 +26,7 @@ struct TitleAndTextFieldRow: View {
         self._text = text
         self.symbol = symbol
         self.editable = editable
+        self.fieldAlignment = fieldAlignment
         self.keyboardType = keyboardType
         self.onEditingChanged = onEditingChanged
     }
@@ -36,7 +39,7 @@ struct TitleAndTextFieldRow: View {
                 .fixedSize()
             HStack {
                 TextField(placeholder, text: $text, onEditingChanged: onEditingChanged ?? { _ in })
-                    .multilineTextAlignment(.trailing)
+                    .multilineTextAlignment(fieldAlignment)
                     .font(.body)
                     .keyboardType(keyboardType)
                     .disabled(!editable)
@@ -101,5 +104,14 @@ struct TitleAndTextFieldRow_Previews: PreviewProvider {
             .environment(\.sizeCategory, .accessibilityExtraLarge)
             .previewLayout(.fixed(width: 375, height: 150))
             .previewDisplayName("Dynamic Type: Large Font Size with symbol")
+
+        TitleAndTextFieldRow(title: "Total package weight",
+                             placeholder: "Value",
+                             text: .constant(""),
+                             symbol: "oz",
+                             fieldAlignment: .leading,
+                             keyboardType: .default)
+            .previewLayout(.fixed(width: 375, height: 150))
+            .previewDisplayName("With leading alignment")
     }
 }

@@ -233,15 +233,52 @@ class ProductRowViewModelTests: XCTestCase {
         // Given
         let product = Product.fake()
         let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
-
-        // Then
         XCTAssertEqual(viewModel.quantity, 1)
-        XCTAssertTrue(viewModel.shouldDisableQuantityDecrementer, "Quantity decrementer is not disabled at minimum value")
 
         // When
         viewModel.decrementQuantity()
 
         // Then
         XCTAssertEqual(viewModel.quantity, 1)
+    }
+
+    func test_cannot_decrement_quantity_below_zero() {
+        // Given
+        let product = Product.fake()
+        let viewModel = ProductRowViewModel(product: product, quantity: 0, canChangeQuantity: true)
+        XCTAssertEqual(viewModel.quantity, 0)
+
+        // When
+        viewModel.decrementQuantity()
+
+        // Then
+        XCTAssertEqual(viewModel.quantity, 0)
+        XCTAssertTrue(viewModel.shouldDisableQuantityDecrementer, "Quantity decrementer is not disabled")
+    }
+
+    func test_decrement_quantity_at_minimum_quantity_removes_product() {
+        // Given
+        let product = Product.fake()
+        var productRemoved = false
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true, removeProductIntent: { productRemoved = true })
+
+        // When
+        viewModel.decrementQuantity()
+
+        // Then
+        XCTAssertTrue(productRemoved)
+    }
+
+    func test_productAccessibilityLabel_is_created_with_expected_details_from_product() {
+        // Given
+        let product = Product.fake().copy(name: "Test Product", sku: "123456", price: "10", stockStatusKey: "instock", variations: [1, 2])
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Defaults to US currency & format
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, currencyFormatter: currencyFormatter)
+
+        // Then
+        let expectedLabel = "Test Product. In stock. $10.00. 2 variations. SKU: 123456"
+        XCTAssertEqual(viewModel.productAccessibilityLabel, expectedLabel)
     }
 }

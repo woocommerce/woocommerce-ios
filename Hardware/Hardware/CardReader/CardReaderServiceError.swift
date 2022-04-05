@@ -12,7 +12,7 @@ public enum CardReaderServiceError: Error {
     /// Error thrown while connecting to a reader
     case connection(underlyingError: UnderlyingError = .internalServiceError)
 
-    /// Error thrown while disonnecting from a reader
+    /// Error thrown while disconnecting from a reader
     case disconnection(underlyingError: UnderlyingError = .internalServiceError)
 
     /// Error thrown while creating a payment intent
@@ -24,8 +24,21 @@ public enum CardReaderServiceError: Error {
     /// Error thrown while capturing a payment
     case paymentCapture(underlyingError: UnderlyingError = .internalServiceError)
 
+    /// Error thrown when the order payment fails to be captured with a known payment method.
+    /// The payment method is currently used for analytics.
+    case paymentCaptureWithPaymentMethod(underlyingError: Error, paymentMethod: PaymentMethod)
+
     /// Error thrown while cancelling a payment
     case paymentCancellation(underlyingError: UnderlyingError = .internalServiceError)
+
+    /// Error thrown while setting up a refund
+    case refundCreation(underlyingError: UnderlyingError = .internalServiceError)
+
+    /// Error thrown while refunding a payment
+    case refundPayment(underlyingError: UnderlyingError = .internalServiceError)
+
+    /// Error thrown while cancelling a refund
+    case refundCancellation(underlyingError: UnderlyingError = .internalServiceError)
 
     /// Error thrown while updating the reader firmware
     case softwareUpdate(underlyingError: UnderlyingError = .internalServiceError, batteryLevel: Double?)
@@ -37,22 +50,20 @@ public enum CardReaderServiceError: Error {
 extension CardReaderServiceError: LocalizedError {
     public var errorDescription: String? {
         switch self {
-        case .connection(let underlyingError):
+        case .connection(let underlyingError),
+                .discovery(let underlyingError),
+                .disconnection(let underlyingError),
+                .intentCreation(let underlyingError),
+                .paymentMethodCollection(let underlyingError),
+                .paymentCapture(let underlyingError),
+                .paymentCancellation(let underlyingError),
+                .refundCreation(let underlyingError),
+                .refundPayment(let underlyingError),
+                .refundCancellation(let underlyingError),
+                .softwareUpdate(let underlyingError, _):
             return underlyingError.errorDescription
-        case .discovery(let underlyingError):
-            return underlyingError.errorDescription
-        case .disconnection(let underlyingError):
-            return underlyingError.errorDescription
-        case .intentCreation(let underlyingError):
-            return underlyingError.errorDescription
-        case .paymentMethodCollection(let underlyingError):
-            return underlyingError.errorDescription
-        case .paymentCapture(let underlyingError):
-            return underlyingError.errorDescription
-        case .paymentCancellation(let underlyingError):
-            return underlyingError.errorDescription
-        case .softwareUpdate(let underlyingError, _):
-            return underlyingError.errorDescription
+        case .paymentCaptureWithPaymentMethod(underlyingError: let underlyingError, paymentMethod: _):
+            return (underlyingError as? UnderlyingError)?.errorDescription ?? underlyingError.localizedDescription
         case .bluetoothDenied:
             return NSLocalizedString(
                 "This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this.",

@@ -238,6 +238,92 @@ class AddProductToOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.productRows.count, 2)
     }
+
+    func test_view_model_fires_error_notice_when_product_sync_fails() {
+        // Given
+        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, stores: stores)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
+                onCompletion(.failure(NSError(domain: "Error", code: 0)))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+
+        // When
+        viewModel.onLoadTrigger.send()
+
+        // Then
+        XCTAssertEqual(viewModel.notice, AddProductToOrderViewModel.NoticeFactory.productSyncNotice(retryAction: {}))
+    }
+
+    func test_view_model_fires_error_notice_when_product_search_fails() {
+        // Given
+        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, stores: stores)
+
+        // When
+        let notice: Notice? = waitFor { promise in
+            self.stores.whenReceivingAction(ofType: ProductAction.self) { action in
+                switch action {
+                case let .searchProducts(_, _, _, _, _, onCompletion):
+                    onCompletion(.failure(NSError(domain: "Error", code: 0)))
+                    promise(viewModel.notice)
+                default:
+                    XCTFail("Received unsupported action: \(action)")
+                }
+            }
+            viewModel.searchTerm = "shirt"
+        }
+
+        // Then
+        XCTAssertEqual(notice, AddProductToOrderViewModel.NoticeFactory.productSearchNotice(retryAction: {}))
+    }
+
+    func test_selectProduct_invokes_onProductSelected_closure_for_existing_product() {
+        // Given
+        var selectedProduct: Int64?
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
+        insert(product)
+        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID,
+                                                   storageManager: storageManager,
+                                                   onProductSelected: { selectedProduct = $0.productID })
+
+        // When
+        viewModel.selectProduct(product.productID)
+
+        // Then
+        XCTAssertEqual(selectedProduct, product.productID)
+    }
+
+    func test_getVariationsViewModel_returns_expected_view_model_for_variable_product() throws {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "Test Product", purchasable: true, variations: [1, 2])
+        insert(product)
+        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID,
+                                                   storageManager: storageManager)
+
+        // When
+        let variationsViewModel = viewModel.getVariationsViewModel(for: product.productID)
+
+        // Then
+        let actualViewModel = try XCTUnwrap(variationsViewModel)
+        XCTAssertEqual(actualViewModel.productName, product.name)
+    }
+
+    func test_getVariationsViewModel_returns_nil_for_simple_product() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "Test Product", purchasable: true)
+        insert(product)
+        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID,
+                                                   storageManager: storageManager)
+
+        // When
+        let variationsViewModel = viewModel.getVariationsViewModel(for: product.productID)
+
+        // Then
+        XCTAssertNil(variationsViewModel)
+    }
 }
 
 // MARK: - Utils

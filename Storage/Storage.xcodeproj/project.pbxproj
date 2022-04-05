@@ -1004,9 +1004,9 @@
 			buildConfigurationList = B54CA5AD20A4BBA600F38CD1 /* Build configuration list for PBXNativeTarget "Storage" */;
 			buildPhases = (
 				3A8FEF735A87B89A39A6FF95 /* [CP] Check Pods Manifest.lock */,
+				B54CA59620A4BBA500F38CD1 /* Headers */,
 				B54CA59420A4BBA500F38CD1 /* Sources */,
 				B54CA59520A4BBA500F38CD1 /* Frameworks */,
-				B54CA59620A4BBA500F38CD1 /* Headers */,
 				B54CA59720A4BBA500F38CD1 /* Resources */,
 				263E37D82641AD5100260D3B /* Embed Frameworks */,
 			);

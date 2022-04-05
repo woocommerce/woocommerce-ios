@@ -85,10 +85,10 @@ final class OrderListViewModel {
     ///
     @Published private(set) var topBanner: TopBanner = .none
 
-    /// If true, no simple payments banner will be shown as the user has told us that they are not interested in this information.
+    /// If true, no orders banner will be shown as the user has told us that they are not interested in this information.
     /// Resets with every session.
     ///
-    @Published var hideSimplePaymentsBanners: Bool = false
+    @Published var hideOrdersBanners: Bool = false
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
@@ -256,14 +256,14 @@ private extension OrderListViewModel {
     }
 }
 
-// MARK: Simple Payments
+// MARK: - Banners
 
 extension OrderListViewModel {
     /// Figures out what top banner should be shown based on the view model internal state.
     ///
     private func bindTopBannerState() {
         let errorState = $hasErrorLoadingData.removeDuplicates()
-        Publishers.CombineLatest(errorState, $hideSimplePaymentsBanners)
+        Publishers.CombineLatest(errorState, $hideOrdersBanners)
             .map { hasError, hasDismissedBanners -> TopBanner in
 
                 guard !hasError else {
@@ -274,7 +274,7 @@ extension OrderListViewModel {
                     return .none
                 }
 
-                return .simplePayments
+                return .orderCreation
             }
             .assign(to: &$topBanner)
     }
@@ -316,7 +316,7 @@ extension OrderListViewModel {
     ///
     enum TopBanner {
         case error
-        case simplePayments
+        case orderCreation
         case none
     }
 }

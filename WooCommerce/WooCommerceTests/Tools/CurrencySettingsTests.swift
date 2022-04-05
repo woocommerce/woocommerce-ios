@@ -154,7 +154,7 @@ final class CurrencySettingsTests: XCTestCase {
     ///
     func testCurrencySymbol() {
         moneyFormat = CurrencySettings()
-        let symbol = moneyFormat?.symbol(from: CurrencySettings.CurrencyCode.AED)
+        let symbol = moneyFormat?.symbol(from: CurrencyCode.AED)
         XCTAssertEqual("د.إ", symbol)
     }
 }

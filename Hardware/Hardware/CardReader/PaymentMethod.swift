@@ -1,5 +1,5 @@
 /// The type of the PaymentMethod.
-public enum PaymentMethod {
+public enum PaymentMethod: Equatable {
     /// A card payment method.
     case card
 

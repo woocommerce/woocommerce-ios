@@ -1,5 +1,4 @@
 import UIKit
-import SafariServices.SFSafariViewController
 
 /// A configurable view to display an "empty state".
 ///
@@ -119,8 +118,9 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
         ErrorTopBannerFactory.createTopBanner(isExpanded: false,
                                               expandedStateChangeHandler: {},
                                               onTroubleshootButtonPressed: { [weak self] in
-                                                let safariViewController = SFSafariViewController(url: WooConstants.URLs.troubleshootErrorLoadingData.asURL())
-                                                self?.present(safariViewController, animated: true, completion: nil)
+                                                guard let self = self else { return }
+
+                                                WebviewHelper.launch(WooConstants.URLs.troubleshootErrorLoadingData.asURL(), with: self)
                                               },
                                               onContactSupportButtonPressed: { [weak self] in
                                                 guard let self = self else { return }
@@ -177,6 +177,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     /// Configure the elements to be displayed.
     ///
     func configure(_ config: Config) {
+        _ = view // trigger loading view before configuring contents
         configuration = config
         messageLabel.attributedText = config.message
 

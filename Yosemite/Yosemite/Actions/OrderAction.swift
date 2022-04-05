@@ -67,7 +67,7 @@ public enum OrderAction: Action {
 
     /// Creates a simple payments order with a specific amount value and  tax status.
     ///
-    case createSimplePaymentsOrder(siteID: Int64, amount: String, taxable: Bool, onCompletion: (Result<Order, Error>) -> Void)
+    case createSimplePaymentsOrder(siteID: Int64, status: OrderStatusEnum, amount: String, taxable: Bool, onCompletion: (Result<Order, Error>) -> Void)
 
     /// Creates a manual order with the provided order details.
     ///
@@ -78,6 +78,7 @@ public enum OrderAction: Action {
     case updateSimplePaymentsOrder(siteID: Int64,
                                    orderID: Int64,
                                    feeID: Int64,
+                                   status: OrderStatusEnum,
                                    amount: String,
                                    taxable: Bool,
                                    orderNote: String?,

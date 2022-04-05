@@ -1,0 +1,5 @@
+Si votre entreprise utilise des états de commande personnalisés, sachez qu’il existe désormais une option pour les filtrer ! Appuyez sur le bouton de filtre dans la liste des commandes pour afficher l’option.
+
+Les plus observateurs d’entre vous ont remarqué que l’organisation des produits dans les commandes ne correspondait pas toujours à ce qui s’affichait sur le Web. Ce problème a été résolu !
+
+Saviez-vous que nous étions en train de développer une nouvelle fonctionnalité pour la création de commandes ? Sélectionnez l’icône des réglages dans l’onglet Menu et faites défiler l’écran jusqu’aux fonctionnalités expérimentales pour y accéder. Cette version offre une nouvelle méthode d’expédition ainsi qu’une section dédiés aux frais. Elle présente aussi une nouvelle fonctionnalité de codes promo. Nous vous invitons à la tester, cela nous sera d’une grande aide. Si vous avez des améliorations à proposez, n’hésitez pas !

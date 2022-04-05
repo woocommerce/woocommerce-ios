@@ -1,0 +1,5 @@
+İşletmeniz özel sipariş durumları kullanabilir ve artık siparişleri bu durumlara göre filtreleyebilirsiniz! Bu seçeneği görmek için sipariş listesindeki Filtre düğmesine dokunun.
+
+Bazılarınızın kartal gibi gözleri olduğundan bir siparişteki ürün sıralamasının her zaman web'le aynı olmadığını fark ediyordu. Bu sorunu çözdük.
+
+Sipariş oluşturma ile ilgili yeni bir özellik üzerinde çalıştığımızı biliyor muydunuz? Menü sekmesine gidin, ayarlar simgesine dokunup deneysel özelliklere gidin. Bu sürümde, bir gönderim yöntemi ve ücretler bölümü ekledik. Ayrıca denememize yardımcı olabileceğiniz yeni bir Kuponlar özelliği de var! Geliştirilebilecek bir şey bulursanız bize bildirin.

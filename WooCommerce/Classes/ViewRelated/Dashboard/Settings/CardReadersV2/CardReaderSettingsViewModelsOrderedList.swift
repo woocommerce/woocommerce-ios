@@ -1,4 +1,5 @@
 import Foundation
+import struct Yosemite.CardPresentPaymentsConfiguration
 
 /// Aggregates an ordered list of viewmodels, conforming to the viewmodel provider protocol. Priority is given to
 /// the first viewmodel in the list to return true for shouldShow
@@ -17,7 +18,7 @@ final class CardReaderSettingsViewModelsOrderedList: CardReaderSettingsPrioritiz
 
     private var knownReaderProvider: CardReaderSettingsKnownReaderProvider?
 
-    init() {
+    init(configuration: CardPresentPaymentsConfiguration) {
         /// Initialize dependencies for viewmodels first, then viewmodels
         ///
         knownReaderProvider = CardReaderSettingsKnownReaderStorage()
@@ -34,7 +35,8 @@ final class CardReaderSettingsViewModelsOrderedList: CardReaderSettingsPrioritiz
                     didChangeShouldShow: { [weak self] state in
                         self?.onDidChangeShouldShow(state)
                     },
-                    knownReaderProvider: knownReaderProvider
+                    knownReaderProvider: knownReaderProvider,
+                    configuration: configuration
                 ),
                 viewIdentifier: "CardReaderSettingsSearchingViewController"
             )
@@ -46,7 +48,8 @@ final class CardReaderSettingsViewModelsOrderedList: CardReaderSettingsPrioritiz
                     didChangeShouldShow: { [weak self] state in
                         self?.onDidChangeShouldShow(state)
                     },
-                    knownReaderProvider: knownReaderProvider
+                    knownReaderProvider: knownReaderProvider,
+                    configuration: configuration
                 ),
                 viewIdentifier: "CardReaderSettingsConnectedViewController"
             )

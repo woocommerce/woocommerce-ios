@@ -27,7 +27,7 @@ protocol OrderListViewControllerDelegate: AnyObject {
 
 /// OrderListViewController: Displays the list of Orders associated to the active Store / Account.
 ///
-final class OrderListViewController: UIViewController {
+final class OrderListViewController: UIViewController, GhostableViewController {
 
     weak var delegate: OrderListViewControllerDelegate?
 
@@ -35,7 +35,11 @@ final class OrderListViewController: UIViewController {
 
     /// Main TableView.
     ///
-    private lazy var tableView = UITableView(frame: .zero, style: .grouped)
+    private lazy var tableView: UITableView = {
+        let tableView = UITableView(frame: .zero, style: .grouped)
+        tableView.accessibilityIdentifier = "orders-table-view"
+        return tableView
+    }()
 
     /// The data source that is bound to `tableView`.
     private lazy var dataSource: UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID> = {
@@ -47,9 +51,11 @@ final class OrderListViewController: UIViewController {
         return dataSource
     }()
 
-    /// Ghostable TableView.
-    ///
-    private(set) var ghostableTableView = UITableView(frame: .zero, style: .grouped)
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(displaysSectionHeader: false,
+                                                                                                cellClass: OrderTableViewCell.self,
+                                                                                                estimatedRowHeight: Settings.estimatedRowHeight,
+                                                                                                tableViewStyle: .grouped,
+                                                                                                isScrollEnabled: false))
 
     /// Pull To Refresh Support.
     ///
@@ -104,6 +110,16 @@ final class OrderListViewController: UIViewController {
     ///
     private var topBannerView: TopBannerView?
 
+    /// Callback closure when an order is selected
+    ///
+    private var switchDetailsHandler: (OrderDetailsViewModel) -> Void
+
+    /// Currently selected index path in the table view
+    ///
+    private var selectedIndexPath: IndexPath?
+
+    private lazy var isSplitViewInOrdersTabEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
+
     // MARK: - View Lifecycle
 
     /// Designated initializer.
@@ -111,10 +127,12 @@ final class OrderListViewController: UIViewController {
     init(siteID: Int64,
          title: String,
          viewModel: OrderListViewModel,
-         emptyStateConfig: EmptyStateViewController.Config) {
+         emptyStateConfig: EmptyStateViewController.Config,
+         switchDetailsHandler: @escaping (OrderDetailsViewModel) -> Void) {
         self.siteID = siteID
         self.viewModel = viewModel
         self.emptyStateConfig = emptyStateConfig
+        self.switchDetailsHandler = switchDetailsHandler
 
         super.init(nibName: nil, bundle: nil)
 
@@ -136,7 +154,6 @@ final class OrderListViewController: UIViewController {
 
         registerTableViewHeadersAndCells()
         configureTableView()
-        configureGhostableTableView()
 
         configureViewModel()
         configureSyncingCoordinator()
@@ -158,8 +175,19 @@ final class OrderListViewController: UIViewController {
         //
         // We can remove this once we've replaced XLPagerTabStrip.
         tableView.reloadData()
+    }
 
-        restartPlaceholderAnimation()
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.updateHeaderHeight()
+    }
+
+    override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.willTransition(to: newCollection, with: coordinator)
+        if isSplitViewInOrdersTabEnabled, selectedIndexPath != nil {
+            // Reload table view to update selected state on the list when changing rotation
+            tableView.reloadData()
+        }
     }
 
     /// Returns a function that creates cells for `dataSource`.
@@ -217,8 +245,8 @@ private extension OrderListViewController {
                     self.hideTopBannerView()
                 case .error:
                     self.setErrorTopBanner()
-                case .simplePayments:
-                    self.setSimplePaymentsEnabledTopBanner()
+                case .orderCreation:
+                    self.setOrderCreationTopBanner()
                 }
             }
             .store(in: &cancellables)
@@ -251,30 +279,10 @@ private extension OrderListViewController {
         view.pinSubviewToAllEdges(tableView)
     }
 
-    /// Setup: Ghostable TableView
-    ///
-    func configureGhostableTableView() {
-        view.addSubview(ghostableTableView)
-        ghostableTableView.isHidden = true
-
-        ghostableTableView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            ghostableTableView.widthAnchor.constraint(equalTo: tableView.widthAnchor),
-            ghostableTableView.heightAnchor.constraint(equalTo: tableView.heightAnchor),
-            ghostableTableView.leadingAnchor.constraint(equalTo: tableView.leadingAnchor),
-            ghostableTableView.topAnchor.constraint(equalTo: tableView.topAnchor)
-        ])
-
-        view.backgroundColor = .listBackground
-        ghostableTableView.backgroundColor = .listBackground
-        ghostableTableView.isScrollEnabled = false
-    }
-
     /// Registers all of the available table view cells and headers
     ///
     func registerTableViewHeadersAndCells() {
         tableView.registerNib(for: OrderTableViewCell.self)
-        ghostableTableView.registerNib(for: OrderTableViewCell.self)
 
         let headerType = TwoColumnSectionHeaderView.self
         tableView.register(headerType.loadNib(), forHeaderFooterViewReuseIdentifier: headerType.reuseIdentifier)
@@ -350,7 +358,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
         // Configure header container view
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
         headerContainer.addSubview(topBannerView)
-        headerContainer.pinSubviewToSafeArea(topBannerView)
+        headerContainer.pinSubviewToAllEdges(topBannerView)
 
         tableView.tableHeaderView = headerContainer
         tableView.updateHeaderHeight()
@@ -361,6 +369,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
     private func hideTopBannerView() {
         topBannerView?.removeFromSuperview()
         tableView.tableHeaderView = nil
+        tableView.updateHeaderHeight()
     }
 }
 
@@ -396,6 +405,24 @@ extension OrderListViewController {
     }
 }
 
+// MARK: - Split view helpers
+//
+private extension OrderListViewController {
+    /// Highlights the selected row if any row has been selected and the split view is not collapsed.
+    /// Removes the selected state otherwise.
+    ///
+    func highlightSelectedRowIfNeeded() {
+        guard let selectedIndexPath = selectedIndexPath else {
+            return
+        }
+        if splitViewController?.isCollapsed == true {
+            tableView.deselectRow(at: selectedIndexPath, animated: false)
+        } else {
+            tableView.selectRow(at: selectedIndexPath, animated: false, scrollPosition: .none)
+        }
+    }
+}
+
 
 // MARK: - Placeholders & Ghostable Table
 //
@@ -404,33 +431,13 @@ private extension OrderListViewController {
     /// Renders the Placeholder Orders
     ///
     func displayPlaceholderOrders() {
-        let options = GhostOptions(displaysSectionHeader: false,
-                                   reuseIdentifier: OrderTableViewCell.reuseIdentifier,
-                                   rowsPerSection: Settings.placeholderRowsPerSection)
-
-        // If the ghostable table view gets stuck for any reason,
-        // let's reset the state before using it again
-        ghostableTableView.removeGhostContent()
-        ghostableTableView.displayGhostContent(options: options,
-                                               style: Constants.ghostStyle)
-        ghostableTableView.startGhostAnimation()
-        ghostableTableView.isHidden = false
+        displayGhostContent()
     }
 
     /// Removes the Placeholder Orders (and restores the ResultsController <> UITableView link).
     ///
     func removePlaceholderOrders() {
-        ghostableTableView.isHidden = true
-        ghostableTableView.stopGhostAnimation()
-        ghostableTableView.removeGhostContent()
-    }
-
-    /// After returning to the screen, `restartGhostAnimation` is required to resume ghost animation.
-    func restartPlaceholderAnimation() {
-        guard ghostableTableView.isHidden == false else {
-            return
-        }
-        ghostableTableView.restartGhostAnimation(style: Constants.ghostStyle)
+        removeGhostContent()
     }
 
     /// Shows the EmptyStateViewController
@@ -515,7 +522,9 @@ private extension OrderListViewController {
 extension OrderListViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+        if splitViewController?.isCollapsed == true || !isSplitViewInOrdersTabEnabled {
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
 
         guard state != .placeholder else {
             return
@@ -526,18 +535,17 @@ extension OrderListViewController: UITableViewDelegate {
                 return
         }
 
-        guard let orderDetailsVC = OrderDetailsViewController.instantiatedViewControllerFromStoryboard() else {
-            assertionFailure("Expected OrderDetailsViewController to be instantiated")
-            return
-        }
-
-        orderDetailsVC.viewModel = orderDetailsViewModel
-
+        selectedIndexPath = indexPath
         let order = orderDetailsViewModel.order
         ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": order.orderID,
                                                                     "status": order.status.rawValue])
 
-        navigationController?.pushViewController(orderDetailsVC, animated: true)
+        if isSplitViewInOrdersTabEnabled {
+            switchDetailsHandler(orderDetailsViewModel)
+        } else {
+            let viewController = OrderDetailsViewController(viewModel: orderDetailsViewModel)
+            navigationController?.pushViewController(viewController, animated: true)
+        }
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -546,6 +554,9 @@ extension OrderListViewController: UITableViewDelegate {
         }
 
         syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: itemIndex)
+        if isSplitViewInOrdersTabEnabled, indexPath == selectedIndexPath {
+            highlightSelectedRowIfNeeded()
+        }
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -638,8 +649,9 @@ private extension OrderListViewController {
             self?.tableView.updateHeaderHeight()
         },
         onTroubleshootButtonPressed: { [weak self] in
-            let safariViewController = SFSafariViewController(url: WooConstants.URLs.troubleshootErrorLoadingData.asURL())
-            self?.present(safariViewController, animated: true, completion: nil)
+            guard let self = self else { return }
+
+            WebviewHelper.launch(WooConstants.URLs.troubleshootErrorLoadingData.asURL(), with: self)
         },
         onContactSupportButtonPressed: { [weak self] in
             guard let self = self else { return }
@@ -648,15 +660,15 @@ private extension OrderListViewController {
         showTopBannerView()
     }
 
-    /// Sets the `topBannerView` property to a simple payments enabled banner.
+    /// Sets the `topBannerView` property to an orders banner.
     ///
-    func setSimplePaymentsEnabledTopBanner() {
-        topBannerView = SimplePaymentsTopBannerFactory.createFeatureEnabledBanner(onTopButtonPressed: { [weak self] in
+    func setOrderCreationTopBanner() {
+        topBannerView = OrdersTopBannerFactory.createOrdersBanner(onTopButtonPressed: { [weak self] in
             self?.tableView.updateHeaderHeight()
         }, onDismissButtonPressed: { [weak self] in
-            self?.viewModel.hideSimplePaymentsBanners = true
+            self?.viewModel.hideOrdersBanners = true
         }, onGiveFeedbackButtonPressed: { [weak self] in
-            let surveyNavigation = SurveyCoordinatingController(survey: .simplePaymentsPrototype)
+            let surveyNavigation = SurveyCoordinatingController(survey: .orderCreation)
             self?.present(surveyNavigation, animated: true, completion: nil)
         })
         showTopBannerView()
@@ -684,9 +696,5 @@ private extension OrderListViewController {
         case syncing
         case results
         case empty
-    }
-
-    enum Constants {
-        static let ghostStyle: GhostStyle = .wooDefaultGhostStyle
     }
 }

@@ -8,6 +8,7 @@ public final class StripeCardReaderService: NSObject {
 
     private var discoveryCancellable: StripeTerminal.Cancelable?
     private var paymentCancellable: StripeTerminal.Cancelable?
+    private var refundCancellable: StripeTerminal.Cancelable?
 
     private var discoveredReadersSubject = CurrentValueSubject<[CardReader], Error>([])
     private let connectedReadersSubject = CurrentValueSubject<[CardReader], Never>([])
@@ -68,6 +69,19 @@ extension StripeCardReaderService: CardReaderService {
             DDLogDebug("💳 [StripeTerminal] \(message)")
         }
         Terminal.shared.logLevel = terminalLogLevel
+
+        if shouldUseSimulatedCardReader {
+            // You can test with different reader software update scenarios.
+            // https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPSimulatorConfiguration.html#/c:objc(cs)SCPSimulatorConfiguration(py)availableReaderUpdate
+            Terminal.shared.simulatorConfiguration.availableReaderUpdate = .none
+
+            // You can use simulated test cards with a card type, or a card number with different brands and in various success
+            // and error cases: https://stripe.com/docs/terminal/references/testing#simulated-test-cards
+            // Example with `charge_declined` error:
+            // Terminal.shared.simulatorConfiguration.simulatedCard = .init(testCardNumber: "4000000000000002")
+            // https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPSimulatorConfiguration.html#/c:objc(cs)SCPSimulatorConfiguration(py)simulatedCard
+            Terminal.shared.simulatorConfiguration.simulatedCard = .init(type: .amex)
+        }
 
         let config = DiscoveryConfiguration(
             discoveryMethod: .bluetoothScan,
@@ -270,7 +284,7 @@ extension StripeCardReaderService: CardReaderService {
     }
 
     public func connect(_ reader: CardReader) -> AnyPublisher<CardReader, Error> {
-        guard let stripeReader = self.discoveredStripeReadersCache.reader(matching: reader) as? Reader else {
+        guard let stripeReader = discoveredStripeReadersCache.reader(matching: reader) as? Reader else {
             return Future() { promise in
                 promise(.failure(CardReaderServiceError.connection()))
             }.eraseToAnyPublisher()
@@ -447,7 +461,12 @@ private extension StripeCardReaderService {
             Terminal.shared.processPayment(intent) { (intent, error) in
                 if let error = error {
                     let underlyingError = UnderlyingError(with: error)
-                    promise(.failure(CardReaderServiceError.paymentCapture(underlyingError: underlyingError)))
+                    if let paymentMethod = error.paymentIntent.map({ PaymentIntent(intent: $0) })?.paymentMethod() {
+                        promise(.failure(CardReaderServiceError.paymentCaptureWithPaymentMethod(underlyingError: underlyingError,
+                                                                                                paymentMethod: paymentMethod)))
+                    } else {
+                        promise(.failure(CardReaderServiceError.paymentCapture(underlyingError: underlyingError)))
+                    }
                 }
 
                 if let intent = intent {
@@ -459,6 +478,95 @@ private extension StripeCardReaderService {
     }
 }
 
+// MARK: - Refunds
+extension StripeCardReaderService {
+    public func refundPayment(parameters: RefundParameters) -> AnyPublisher<String, Error> {
+        if isChipCardInserted {
+            sendReaderEvent(CardReaderEvent.make(displayMessage: .removeCard))
+        }
+        return waitForInsertedCardToBeRemoved()
+            .flatMap {
+                self.createRefundParameters(parameters: parameters)
+            }
+            .flatMap { refundParameters in
+                self.refund(refundParameters)
+            }
+            .map({ refund in
+                switch refund.status {
+                case .succeeded:
+                    return "success"
+                case .failed:
+                    return "failed"
+                case .pending:
+                    return "pending"
+                case .unknown:
+                    return "unknown"
+                @unknown default:
+                    fatalError()
+                }
+            })
+            .eraseToAnyPublisher()
+    }
+
+    func createRefundParameters(parameters: RefundParameters) -> Future<StripeTerminal.RefundParameters, Error> {
+        return Future() { promise in
+            guard let refundParameters = parameters.toStripe() else {
+                return promise(.failure(CardReaderServiceError.refundPayment(underlyingError: .internalServiceError)))
+            }
+            return promise(.success(refundParameters))
+        }
+    }
+
+    /// Calling any other SDK methods between collectRefundPaymentMethod and processRefund will result in undefined behavior.
+    /// We have a spinlock to prevent other SDK methods being used until processRefund is done. It will need a timeout.
+    ///
+    func refund(_ parameters: StripeTerminal.RefundParameters) -> Future<StripeTerminal.Refund, Error> {
+        return Future() { [weak self] promise in
+            self?.refundCancellable = Terminal.shared.collectRefundPaymentMethod(parameters) { collectError in
+                if let error = collectError {
+                    promise(.failure(CardReaderServiceError.refundPayment(underlyingError: UnderlyingError(with: error))))
+                } else {
+                    // Process refund
+                    Terminal.shared.processRefund { processedRefund, processError in
+                        if let error = processError {
+                            promise(.failure(CardReaderServiceError.refundPayment(underlyingError: UnderlyingError(with: error))))
+                        } else if let refund = processedRefund {
+                            switch refund.status {
+                                //TODO: Find out how best to handle pending and unknown. Succeed for now based on Stripe's sample code
+                            case .succeeded, .pending, .unknown:
+                                promise(.success(refund))
+                            case .failed:
+                                //TODO: Consider using `refund.failureReason` here
+                                promise(.failure(CardReaderServiceError.refundPayment(underlyingError: .internalServiceError)))
+                            @unknown default:
+                                break
+                            }
+                        } else {
+                            promise(.failure(CardReaderServiceError.refundPayment(underlyingError: .internalServiceError)))
+                            //TODO: check why we might have no refund and no error
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public func cancelRefund() -> AnyPublisher<Void, Error> {
+        return Future() { [weak self] promise in
+            guard let refundCancellable = self?.refundCancellable else {
+                return promise(.failure(CardReaderServiceError.refundCancellation(underlyingError: .noRefundInProgress)))
+            }
+
+            refundCancellable.cancel({ error in
+                if let error = error {
+                    promise(.failure(CardReaderServiceError.refundCancellation(underlyingError: UnderlyingError(with: error))))
+                }
+                promise(.success(()))
+            })
+            //TODO: handle timeout?
+        }.eraseToAnyPublisher()
+    }
+}
 
 // MARK: - DiscoveryDelegate.
 extension StripeCardReaderService: DiscoveryDelegate {

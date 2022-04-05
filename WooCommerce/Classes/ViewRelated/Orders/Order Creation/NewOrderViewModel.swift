@@ -12,6 +12,12 @@ final class NewOrderViewModel: ObservableObject {
 
     private var cancellables: Set<AnyCancellable> = []
 
+    /// Indicates whether user has made any changes
+    ///
+    var hasChanges: Bool {
+        orderSynchronizer.order != OrderFactory.emptyNewOrder
+    }
+
     /// Active navigation bar trailing item.
     /// Defaults to create button.
     ///
@@ -118,6 +124,22 @@ final class NewOrderViewModel: ObservableObject {
     ///
     @Published var selectedProductViewModel: ProductInOrderViewModel? = nil
 
+    // MARK: Customer data properties
+
+    /// Representation of customer data display properties.
+    ///
+    @Published private(set) var customerDataViewModel: CustomerDataViewModel = .init(billingAddress: nil, shippingAddress: nil)
+
+    // MARK: Customer note properties
+
+    /// Representation of customer note data display properties.
+    ///
+    @Published private(set) var customerNoteDataViewModel: CustomerNoteDataViewModel = .init(customerNote: "")
+
+    /// View model for the customer note section.
+    ///
+    lazy private(set) var noteViewModel = { NewOrderCustomerNoteViewModel(originalNote: "") }()
+
     // MARK: Payment properties
 
     /// Representation of payment data display properties
@@ -129,6 +151,10 @@ final class NewOrderViewModel: ObservableObject {
     /// - Parameter shippingLine: Optional shipping line object to save. `nil` will remove existing shipping line.
     func saveShippingLine(_ shippingLine: ShippingLine?) {
         orderSynchronizer.setShipping.send(shippingLine)
+
+        if shippingLine != nil {
+            analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodAdd(flow: .creation))
+        }
     }
 
     /// Saves a fee.
@@ -136,6 +162,10 @@ final class NewOrderViewModel: ObservableObject {
     /// - Parameter shippingLine: Optional shipping line object to save. `nil` will remove existing shipping line.
     func saveFeeLine(_ feeLine: OrderFeeLine?) {
         orderSynchronizer.setFee.send(feeLine)
+
+        if feeLine != nil {
+            analytics.track(event: WooAnalyticsEvent.Orders.orderFeeAdd(flow: .creation))
+        }
     }
 
     // MARK: -
@@ -158,15 +188,13 @@ final class NewOrderViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         analytics: Analytics = ServiceLocator.analytics,
-         enableRemoteSync: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreation)) {
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.analytics = analytics
-        self.orderSynchronizer = enableRemoteSync ? RemoteOrderSynchronizer(siteID: siteID, stores: stores)
-                                                  : LocalOrderSynchronizer(siteID: siteID, stores: stores, currencySettings: currencySettings)
+        self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, stores: stores, currencySettings: currencySettings)
 
         configureDisabledState()
         configureNavigationTrailingItem()
@@ -175,6 +203,7 @@ final class NewOrderViewModel: ObservableObject {
         configureProductRowViewModels()
         configureCustomerDataViewModel()
         configurePaymentDataViewModel()
+        configureCustomerNoteDataViewModel()
     }
 
     /// Selects an order item by setting the `selectedProductViewModel`.
@@ -207,17 +236,18 @@ final class NewOrderViewModel: ObservableObject {
                                        name: product.name,
                                        quantity: item.quantity,
                                        canChangeQuantity: canChangeQuantity,
-                                       displayMode: .attributes(attributes))
+                                       displayMode: .attributes(attributes),
+                                       removeProductIntent: { [weak self] in
+                self?.selectOrderItem(item.itemID) })
         } else {
-            return ProductRowViewModel(id: item.itemID, product: product, quantity: item.quantity, canChangeQuantity: canChangeQuantity)
+            return ProductRowViewModel(id: item.itemID,
+                                       product: product,
+                                       quantity: item.quantity,
+                                       canChangeQuantity: canChangeQuantity,
+                                       removeProductIntent: { [weak self] in
+                self?.selectOrderItem(item.itemID) })
         }
     }
-
-    // MARK: Customer data properties
-
-    /// Representation of customer data display properties.
-    ///
-    @Published private(set) var customerDataViewModel: CustomerDataViewModel = .init(billingAddress: nil, shippingAddress: nil)
 
     /// Creates a view model to be used in Address Form for customer address.
     ///
@@ -230,6 +260,13 @@ final class NewOrderViewModel: ObservableObject {
             self?.orderSynchronizer.setAddresses.send(input)
             self?.trackCustomerDetailsAdded()
         })
+    }
+
+    /// Updates the order creation draft with the current set customer note.
+    ///
+    func updateCustomerNote() {
+        orderSynchronizer.setNote.send(noteViewModel.newNote)
+        trackCustomerNoteAdded()
     }
 
     // MARK: - API Requests
@@ -265,6 +302,25 @@ final class NewOrderViewModel: ObservableObject {
         let oldStatus = orderSynchronizer.order.status
         orderSynchronizer.setStatus.send(newStatus)
         analytics.track(event: WooAnalyticsEvent.Orders.orderStatusChange(flow: .creation, orderID: nil, from: oldStatus, to: newStatus))
+    }
+
+    /// Deletes the order if it has been synced remotely, and removes it from local storage.
+    ///
+    func discardOrder() {
+        // Only continue if the order has been synced remotely.
+        guard orderSynchronizer.order.orderID != .zero else {
+            return
+        }
+
+        let action = OrderAction.deleteOrder(siteID: siteID, order: orderSynchronizer.order, deletePermanently: true) { result in
+            switch result {
+            case .success:
+                break
+            case .failure(let error):
+                DDLogError("⛔️ Error deleting new order: \(error)")
+            }
+        }
+        stores.dispatch(action)
     }
 }
 
@@ -398,6 +454,12 @@ extension NewOrderViewModel {
                                                             didSelectSave: saveFeeLineClosure)
         }
     }
+
+    /// Representation of order notes data display properties
+    ///
+    struct CustomerNoteDataViewModel {
+        let customerNote: String
+    }
 }
 
 // MARK: - Helpers
@@ -506,6 +568,17 @@ private extension NewOrderViewModel {
             .assign(to: &$customerDataViewModel)
     }
 
+    /// Updates notes data viewmodel based on order customer notes.
+    ///
+    func configureCustomerNoteDataViewModel() {
+        orderSynchronizer.orderPublisher
+                .map {
+                    CustomerNoteDataViewModel(customerNote: $0.customerNote ?? "")
+                }
+                .assign(to: &$customerNoteDataViewModel)
+    }
+
+
     /// Updates payment section view model based on items in the order and order sync state.
     ///
     func configurePaymentDataViewModel() {
@@ -529,10 +602,10 @@ private extension NewOrderViewModel {
                 }()
 
                 return PaymentDataViewModel(itemsTotal: orderTotals.itemsTotal.stringValue,
-                                            shouldShowShippingTotal: order.shippingLines.isNotEmpty,
+                                            shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
                                             shippingTotal: order.shippingTotal,
                                             shippingMethodTitle: shippingMethodTitle,
-                                            shouldShowFees: order.fees.isNotEmpty,
+                                            shouldShowFees: order.fees.filter { $0.name != nil }.isNotEmpty,
                                             feesBaseAmountForPercentage: orderTotals.feesBaseAmountForPercentage as Decimal,
                                             feesTotal: orderTotals.feesTotal.stringValue,
                                             shouldShowTaxes: order.totalTax.isNotEmpty,
@@ -549,6 +622,7 @@ private extension NewOrderViewModel {
     /// Tracks when customer details have been added
     ///
     func trackCustomerDetailsAdded() {
+        guard customerDataViewModel.isDataAvailable else { return }
         let areAddressesDifferent: Bool = {
             guard let billingAddress = orderSynchronizer.order.billingAddress, let shippingAddress = orderSynchronizer.order.shippingAddress else {
                 return false
@@ -558,6 +632,13 @@ private extension NewOrderViewModel {
         analytics.track(event: WooAnalyticsEvent.Orders.orderCustomerAdd(flow: .creation, hasDifferentShippingDetails: areAddressesDifferent))
     }
 
+    /// Tracks when customer note have been added
+    ///
+    func trackCustomerNoteAdded() {
+        guard customerNoteDataViewModel.customerNote.isNotEmpty else { return }
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCustomerNoteAdd(flow: .creation))
+    }
+
     /// Tracks when the create order button is tapped.
     ///
     /// Warning: This methods assume that `orderSynchronizer.order.items.count` is equal to the product count,
@@ -565,10 +646,12 @@ private extension NewOrderViewModel {
     /// or figure out a better way to get the product count.
     ///
     func trackCreateButtonTapped() {
-        let hasCustomerDetails = orderSynchronizer.order.billingAddress != nil || orderSynchronizer.order.shippingAddress != nil
+        let hasCustomerDetails = customerDataViewModel.isDataAvailable
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreateButtonTapped(status: orderSynchronizer.order.status,
                                                                                 productCount: orderSynchronizer.order.items.count,
-                                                                                hasCustomerDetails: hasCustomerDetails))
+                                                                                hasCustomerDetails: hasCustomerDetails,
+                                                                                hasFees: orderSynchronizer.order.fees.isNotEmpty,
+                                                                                hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty))
     }
 
     /// Tracks an order creation success

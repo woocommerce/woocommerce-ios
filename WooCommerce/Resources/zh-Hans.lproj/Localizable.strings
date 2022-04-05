@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-03-10 09:54:57+0000 */
+/* Translation-Revision-Date: 2022-03-25 09:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -41,7 +41,7 @@
 "%1$@ and %2$@" = "%1$@ 和 %2$@";
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
-"%1$@ card ending %2$@" = "%1$@ 银行卡， 尾号为 %2$@";
+"%1$@ card ending %2$@" = "尾号为 %2$@ 的 %1$@ 银行卡";
 
 /* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
 "%1$@ excl. %2$@" = "%1$@（%2$@ 除外）";
@@ -243,7 +243,7 @@
 "A customs form must be printed and included on this international shipment" = "必须打印报关单并随附在此国际配送中";
 
 /* Message when attempting to pay for a test transaction with a live card. */
-"A live card was used on a site in test mode. Use a test card instead." = "在站点处于测试模式下使用实时卡。 改用测试卡。";
+"A live card was used on a site in test mode. Use a test card instead." = "在站点处于测试模式下时使用了实际的银行卡， 请改用测试卡。";
 
 /* Error message when there was a network error checking In-Person Payments requirements */
 "A network error occurred. Please check your connection and try again." = "发生网络错误。 请检查您的连接，然后重试。";
@@ -284,14 +284,11 @@
 /* Reads as 'AID'. Part of the mandatory data in receipts */
 "AID" = "AID";
 
-/* About this app (information page title) */
-"About" = "关于";
-
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "关于该应用程序";
 
 /* Reads as 'Account Type'. Part of the mandatory data in receipts */
-"Account Type" = "帐户类型";
+"Account Type" = "账户类型";
 
 /* Title for the error screen when a Card Present Payments extension is installed but not activated */
 "Activate %1$@" = "启用 %1$@";
@@ -350,7 +347,8 @@
 /* Add New Package screen title in Shipping Label flow */
 "Add New Package" = "添加新包裹";
 
-/* Title text of the button that adds a note when creating a simple payment */
+/* Title text of the button that adds a note when creating a simple payment
+   Title text of the button that adds customer note data when creating a new order */
 "Add Note" = "添加备注";
 
 /* Action to add one photo on the Product images screen */
@@ -474,8 +472,14 @@
 /* Notice text after updating the shipping or billing address */
 "Address successfully updated." = "已成功更新地址。";
 
+/* Accessibility hint for selecting a product in the Add Product screen */
+"Adds product to order." = "将产品添加到订单。";
+
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "为订单添加跟踪信息。";
+
+/* Accessibility hint for selecting a variation in a list of product variations */
+"Adds variation to order." = "将变体添加到订单。";
 
 /* Adult signature required in Shipping Labels > Carrier and Rates */
 "Adult signature required (+%1$@)" = "必需由成年人签收 (+%1$@)";
@@ -555,7 +559,7 @@
 "An HTTP error code was returned." = "返回了 HTTP 错误代码。";
 
 /* Error message when Bluetooth is not enabled for this application. */
-"An error occurred accessing Bluetooth - please enable Bluetooth and try again" = "连接蓝牙时出现错误 - 请启用蓝牙并重试";
+"An error occurred accessing Bluetooth - please enable Bluetooth and try again" = "连接蓝牙时出现错误，请启用蓝牙并重试";
 
 /* An error description explaining that a Menu could not be created. */
 "An error occurred creating the Menu." = "创建菜单时出错。";
@@ -586,6 +590,9 @@
 
 /* Title of analytics as part of Jetpack benefits. */
 "Analytics" = "分析";
+
+/* Message when enabling analytics succeeds */
+"Analytics enabled successfully." = "已成功启用分析。";
 
 /* Case Any in Order Filters for Order Statuses
    Display label for all order statuses selected in Order Filters - Label for one of the filters in order date range - Product variation attribute description where the attribute is set to any value. - Title when there is no filter set. */
@@ -691,6 +698,9 @@
 /* Subtitle of the cell in Product Price Settings > Schedule sale */
 "Automatically start and end a sale" = "自动开始和结束销售";
 
+/* Title of a button linking to the Automattic website */
+"Automattic family" = "Automattic 系列";
+
 /* A unit test string. It reads: Awaiting payment via <payment method title>.A payment method example is: 'Credit Card (Stripe)'
    Awaiting payment via (payment method title) */
 "Awaiting payment via %@" = "等待通过 %@ 支付";
@@ -737,6 +747,9 @@
 
 /* Accessibility label for block quote button on formatting toolbar. */
 "Block Quote" = "区块引用";
+
+/* Title of a button linking to the app's blog */
+"Blog" = "博客";
 
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
 "Bluetooth permission required" = "所需蓝牙权限";
@@ -807,10 +820,10 @@
 "Card" = "卡片";
 
 /* Error message when a card is left in the reader and another transaction started. */
-"Card was left in reader - please remove and reinsert card" = "银行留在读卡器中 - 请取出并重新插入卡";
+"Card was left in reader - please remove and reinsert card" = "银行留在读卡器中，请取出并重新插入卡";
 
 /* Error message when the card is removed from the reader prematurely. */
-"Card was removed too soon - please try transaction again" = "银行卡拿出速度过快 - 请重新尝试交易";
+"Card was removed too soon - please try transaction again" = "银行卡取出速度过快，请重新尝试交易";
 
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "承运商和费率";
@@ -824,9 +837,6 @@
 /* Catalog Visibility label in Product Settings
    Product Catalog Visibility navigation title */
 "Catalog Visibility" = "目录可见性";
-
-/* shown in promotional screens during first launch */
-"Catch up with your favorite sites and join the conversation anywhere, any time." = "密切关注您喜爱的站点，并随时随地加入对话。";
 
 /* Edit product categories screen - Screen title
    Filter product categories screen - Screen title - Title of the Categories row on Product main screen - Title of the product form bottom sheet action for editing categories. */
@@ -969,7 +979,7 @@
 "Connecting to reader" = "正在连接阅读器";
 
 /* Error message when establishing a connection to the card reader times out. */
-"Connecting to the card reader timed out - ensure it is nearby and charged and then try again" = "连接读卡器时超时 - 请确保读卡器位于附近并且电量充足，然后重试";
+"Connecting to the card reader timed out - ensure it is nearby and charged and then try again" = "连接读卡器时超时，请确保读卡器位于附近并且电量充足，然后重试";
 
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "连接到您的帐户";
@@ -992,6 +1002,9 @@
 
 /* Contact WooComerce Payments Support title */
 "Contact WooCommerce Payments Support" = "联系 WooCommerce Payments 支持人员";
+
+/* Action button to contact support on enable analytics screen */
+"Contact support" = "联系支持";
 
 /* Title of a button to contact support in the error screen for In-Person payments */
 "Contact us" = "联系我们";
@@ -1154,6 +1167,15 @@
 /* Cell title: the current date. */
 "Current" = "当前";
 
+/* Message in the footer of bulk price setting screen with the current price, when it is the same for all variations */
+"Current price is %@." = "当前价格为 %@。";
+
+/* Message in the footer of bulk price setting screen, when none of the variations have price value. */
+"Current price is not set." = "当前价格未设置。";
+
+/* Message in the footer of bulk price setting screen, when variations have different price values. */
+"Current prices are mixed." = "当前价格参差不齐。";
+
 /* Name of the section for custom shipment tracking carriers */
 "Custom" = "自定义";
 
@@ -1183,6 +1205,9 @@
 
 /* Title for the Shipping Address Form for Customer Details */
 "Customer Details" = "客户详情";
+
+/* Title text of the section that shows the Order customer note when creating a new order */
+"Customer Note" = "客户备注";
 
 /* Customer note row title
    Customer note section title - Title for the edit customer provided note screen - Title text of the row that holds the order note when creating a simple payment */
@@ -1278,7 +1303,7 @@
 "Discount" = "折扣";
 
 /* Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s) */
-"Discount %1$@" = "%1$@ 折扣";
+"Discount %1$@" = "折扣 %1$@";
 
 /* Title of the Discounted Orders label on Coupon Details screen */
 "Discounted Orders" = "享受折扣的订单";
@@ -1289,6 +1314,9 @@
 
 /* Dismiss All button in Inbox Notes for dismissing all the notes. */
 "Dismiss All" = "全部忽略";
+
+/* Title for dismiss the action when dragging the screen down. */
+"Dismiss Order" = "忽略订单";
 
 /* Title of the alert for dismissing all the inbox notes. */
 "Dismiss all messages" = "忽略全部消息";
@@ -1381,7 +1409,7 @@
 "Easily identify your products with unique codes" = "使用唯一代码轻松识别您的产品";
 
 /* Button to edit a customer on the New Order screen
-   Button to edit an order status on the New Order screen - Title text of the button that edits a note when creating a simple payment */
+   Button to edit an order status on the New Order screen - Button to edit the customer note on the New Order screen - Title text of the button that edits a note when creating a simple payment */
 "Edit" = "编辑";
 
 /* Action to edit the address in Shipping Label Suggested screen */
@@ -1402,6 +1430,9 @@
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Edit and add new products from anywhere" = "从任何地方编辑和添加新产品";
+
+/* Accessibility label for the button to edit customer note on the New Order screen */
+"Edit customer note" = "编辑客户备注";
 
 /* Carrier eligible for free pickup in Shipping Labels > Carrier and Rates */
 "Eligible for free pickup" = "适用于免费自提";
@@ -1438,8 +1469,20 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "空 URL";
 
+/* The action button on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
+"Enable Coupons" = "启用优惠券";
+
 /* Enable Reviews label in Product Settings */
 "Enable Reviews" = "启用评论";
+
+/* Description about WooCommerce Analytics on the enable analytics screen */
+"Enable WooCommerce Analytics to see missing stats for your store." = "启用 WooCommerce 分析查看您的商店缺少的统计信息。";
+
+/* Title for the enable analytics screen */
+"Enable WooCommerce Analytics to see your stats" = "启用 WooCommerce 分析查看您的统计信息";
+
+/* Action title to enable Analytics for a store */
+"Enable analytics" = "启用分析";
 
 /* Title of the status row on Product Variation main screen to enable/disable a variation */
 "Enabled" = "启用";
@@ -1538,13 +1581,16 @@
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "信封";
 
+/* Error message when enabling analytics fails */
+"Error enabling analytics. Please try again." = "启用分析时出现错误。 请重试。";
+
 /* Title for the error alert when fetching system status report fails */
 "Error fetching report" = "获取报告时出错";
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "在 Apple Maps 上查找地址时出现错误";
 
-/* Message displayed when fail to loading total discounted amount in Coupon Details screen */
+/* Message displayed on Coupon Details screen when loading total discounted amount fails */
 "Error loading data" = "加载数据时出错";
 
 /* Alert title when there is an error requesting shipping label document for printing */
@@ -1552,6 +1598,9 @@
 
 /* Notice displayed when the label purchase fails */
 "Error purchasing the label" = "购买标签时出错";
+
+/* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
+"Everyone loves a deal" = "每个人都喜欢优惠";
 
 /* Title for the exclude sale items row in coupon usage details screen. */
 "Exclude Sale Items" = "不含促销商品";
@@ -1658,9 +1707,6 @@
 
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "固定的产品折扣";
-
-/* Shown in the prologue carousel (promotional screens) during first launch. */
-"Follow your favorite sites and discover new blogs." = "关注您喜欢的站点，发现新的阅读内容。";
 
 /* User role badge */
 "Follower" = "粉丝";
@@ -1813,6 +1859,9 @@
 /* Browse our help documentation website title */
 "Help Center" = "帮助中心";
 
+/* Text used when sharing a link to the app with a friend. */
+"Hey! Here is a link to download the WooCommerce app. I'm really enjoying it and thought you might too." = "您好！ 这是下载 WooCommerce 应用程序的链接。我非常喜欢这个应用，希望您也喜欢。";
+
 /* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
    Display label for the product's catalog visibility */
 "Hidden" = "已隐藏";
@@ -1938,6 +1987,9 @@
 /* Message from the in-person payment card reader prompting user to insert or swipe their card */
 "Insert Or Swipe Card" = "插卡或刷卡";
 
+/* Title of a button linking to the app's Instagram profile */
+"Instagram" = "Instagram";
+
 /* Navigates to Install Jetpack screen.
    Title of install action in the Jetpack benefits view. - Title of the Install Jetpack intro view - Title of the Install Jetpack view */
 "Install Jetpack" = "安装 Jetpack";
@@ -2018,6 +2070,9 @@
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "此用户名\/密码可能与该站点无关。";
 
+/* Message on enable analytics screen to notify that the module is disabled for the store */
+"It looks like you have analytics disabled." = "看起来您已禁用分析。";
+
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "您可能输入了错误的密码。是否想重试？";
 
@@ -2041,6 +2096,9 @@
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack 是一款免费的 WordPress 插件，它可以将您的商店与所需的工具连接起来，为您提供最佳移动体验，包括推送通知和统计数据";
+
+/* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
+"Join from anywhere" = "随时随地加入";
 
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "继续编辑";
@@ -2099,6 +2157,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "Legal（8.5 x 14 英寸）";
+
+/* Title of a button linking to a list of legal documents like privacy policy,terms of service, etc */
+"Legal and more" = "法律信息及更多信息";
 
 /* Title for the row to enter the package length on the Add New Custom Package screen in Shipping Label flow
    Title of the cell in Product Shipping Settings > Length */
@@ -2216,9 +2277,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "管理库存";
-
-/* shown in promotional screens during first launch */
-"Manage your Jetpack-powered site on the go — you've got WordPress in your pocket." = "随时随地管理由 Jetpack 提供支持的站点 - 将 WordPress 装进口袋中。";
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Manage your store orders on the go " = "随时随地管理您的商店订单 ";
@@ -2362,6 +2420,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Text preceding the Contact Us button in the survey completed screen */
 "Need some help?" = "需要一些帮助？";
 
+/* Message format on enable analytics screen for support. The %@ placeholder is a URL with more information. */
+"Need some help? %1$@" = "需要帮助？%1$@";
+
 /* The title for the net amount paid cell */
 "Net Payment" = "净付款";
 
@@ -2401,13 +2462,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No address specified." = "未指定地址。";
 
 /* Error message when a card reader was expected to already have been connected. */
-"No card reader is connected - connect a reader and try again" = "未连接读卡器 - 请连接读卡器并重试";
+"No card reader is connected - connect a reader and try again" = "未连接读卡器，请连接读卡器并重试";
 
 /* Title for the error screen when there was a network error checking In-Person Payments requirements. */
 "No connection" = "没有连接";
 
 /* Error message when there is no connection to the Internet. */
-"No connection to the Internet - please connect to the Internet and try again" = "未连接互联网 - 请连接到互联网并重试";
+"No connection to the Internet - please connect to the Internet and try again" = "未连接互联网，请连接到互联网并重试";
 
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
 "No coupons found" = "没有找到优惠券";
@@ -2429,6 +2490,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The text on the placeholder overlay when no products match the filter on the Products tab */
 "No matching products found" = "未找到匹配的产品";
+
+/* Message on the detail view of the Orders tab before any order is selected */
+"No order selected" = "没有选择任何订单";
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "未设置价格";
@@ -2468,7 +2532,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow - The description in product variations bulk update, of a value, that is missing from all variations - Value for fields in Coupon Usage Details screen when no value is set */
 "None" = "无";
 
-/* Title of dismiss action in the Jetpack benefits view. */
+/* Action title to dismiss enabling Analytics for a store
+   Title of dismiss action in the Jetpack benefits view. */
 "Not now" = "现在不行";
 
 /* Instructions after a Magic Link was sent, but the email can't be found in their inbox. */
@@ -2548,6 +2613,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "打开可用状态列表。";
+
+/* Accessibility hint for selecting a variable product in the Add Product screen */
+"Opens list of product variations." = "打开产品变体列表。";
+
+/* Accessibility hint for selecting a product in a new order */
+"Opens product detail." = "打开产品详细信息。";
 
 /* Placeholder of cell presenting the title of the new attribute option. */
 "Option name" = "选项名称";
@@ -2929,10 +3000,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of in-progress modal when requesting document with multiple shipping labels for printing */
 "Printing Labels" = "打印标签";
 
-/* Opens the California Privacy Policy web page */
+/* Title of button that displays the California Privacy Notice */
 "Privacy Notice for California Users" = "面向加州用户的隐私声明";
 
-/* Opens the Privacy Policy web page */
+/* Title of button that displays the App's privacy policy */
 "Privacy Policy" = "隐私政策";
 
 /* Navigates to Privacy Settings screen
@@ -3028,9 +3099,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Publish Settings section on Product Settings screen */
 "Publish Settings" = "发布设置";
 
-/* shown in promotional screens during first launch */
-"Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "在公园中发布文章，在公共汽车上写博客，在咖啡馆中发表评论，WordPress 永远都陪着您。";
-
 /* Display label for the product's published status */
 "Published" = "已发布";
 
@@ -3074,6 +3142,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Restriction type Quarantine for contents declared in the customs form for Shipping Label flow */
 "Quarantine" = "隔离";
+
+/* Title of button that allows the user to rate the app in the App Store */
+"Rate us" = "给我们评分";
 
 /* Subtitle for Contact WooCommerce Payments Support */
 "Reach our happiness engineers who can help answer payments related questions" = "请与我们快乐的工程师联系，他们可以帮助解答与付款相关的问题";
@@ -3246,7 +3317,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Retrieves a list of products that contain a given keyword." = "检索包含给定关键字的产品列表。";
 
 /* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
-   Action button to retry syncing the draft order - Button to retry when there was a network error checking In-Person Payments requirements - Retry Action - Retry the last action */
+   Action button to retry syncing the draft order - Button to retry when there was a network error checking In-Person Payments requirements - Retry Action - Retry action for an error notice - Retry the last action */
 "Retry" = "重试";
 
 /* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages.
@@ -3319,7 +3390,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Sanitary \/ Phytosanitary Inspection" = "卫生\/植物检疫检查";
 
 /* Action for saving a Product remotely
-   Add Product Category. Save button title in navbar. - Add Product Tags. Save button title in navbar. */
+   Add Product Category. Save button title in navbar. - Add Product Tags. Save button title in navbar. - Button title that save the price selection for bulk variation update */
 "Save" = "保存";
 
 /* Button title to save a product as draft in Discard Changes Action Sheet */
@@ -3396,9 +3467,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Text on the button to see a saved receipt */
 "See Receipt" = "查看收据";
-
-/* Shown in the prologue carousel (promotional screens) during first launch. */
-"See comments and notifications in real time." = "实时查看评论和通知。";
 
 /* Link title to see all paper size options */
 "See layout and paper sizes options" = "查看布局和纸张尺寸选项";
@@ -3488,6 +3556,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "登录到您的 WordPress.com 帐户时，使用分析工具共享关于您使用服务的信息。";
+
+/* Title for button allowing users to share information about the app with friends, such as via Messages */
+"Share with Friends" = "分享给朋友";
 
 /* Shipping Label Address Validation navigation title
    Shipping Label Suggested Address navigation title - Title of origin address in shipping label details - Title of the cell Ship from inside Create Shipping Label form */
@@ -3703,6 +3774,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the card reader service experiences an unexpected internal service error. */
 "Sorry, this payment couldn’t be processed" = "抱歉，我们无法处理本次付款";
 
+/* Error message shown when a refund could not be canceled (likely because it had already completed) */
+"Sorry, this refund could not be canceled" = "抱歉，此退款无法取消";
+
 /* No comment provided by engineer. */
 "Sorry, usernames can only contain lowercase letters (a-z) and numbers." = "抱歉，用户名只能包含小写字母和数字。";
 
@@ -3840,7 +3914,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "System status report copied to clipboard" = "已将系统状态报告复制到剪贴板";
 
 /* Message when attempting to pay for a live transaction with a test card. */
-"System test cards are not permitted for payment. Try another means of payment" = "禁止使用系统测试卡付款。 请尝试其他付款方式";
+"System test cards are not permitted for payment. Try another means of payment" = "不允许使用系统测试卡付款。 请尝试其他付款方式";
 
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags. - Title of the Tags row on Product main screen */
@@ -3933,9 +4007,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Tax label for the tax detail row. - Title on the refunds screen that lists the fees tax cost - Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
 "Tax" = "税费";
 
-/* Tax percentage to be applied to the simple payments order. %1$@%% is a placeholder for the tax rate as a percentage */
-"Tax (%1$@%%)" = "税费 (%1$@%%)";
-
 /* Section header title for product tax settings */
 "Tax Settings" = "税设置";
 
@@ -3962,13 +4033,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Disclaimer in the simple payments summary screen about taxes. */
 "Taxes are automatically calculated based on your store address." = "税款会根据您的店铺地址自动计算。";
 
-/* Information about taxes and the order total when creating a new order */
-"Taxes will be automatically calculated based on your store settings." = "系统会根据您的商店设置自动计算税费。";
-
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "告知我们更多有关 %1$@ 的信息…";
 
-/* Opens the Terms of Service web page */
+/* Title of button that displays the App's terms of service */
 "Terms of Service" = "服务条款";
 
 /* Cell description on beta features screen to enable accepting in-person payments for stores in Canada */
@@ -4048,43 +4116,43 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The card does not support this currency. Try another means of payment" = "银行卡不支持当前币种。 请尝试其他付款方式";
 
 /* Message when the card presented does not allow this type of purchase. */
-"The card does not support this type of purchase. Try another means of payment" = "银行卡不支持当前购买类型 请尝试其他付款方式";
+"The card does not support this type of purchase. Try another means of payment" = "银行卡不支持用于当前购买类型。 请尝试其他付款方式";
 
 /* Message when the presented card is past its expiration date. */
 "The card has expired. Try another means of payment" = "银行卡已过期。 请尝试其他付款方式";
 
 /* Message when payment is declined for a non specific reason. */
-"The card or card account is invalid. Try another means of payment" = "银行卡或银行卡账户无效 请尝试其他付款方式";
+"The card or card account is invalid. Try another means of payment" = "银行卡或银行卡账户无效。 请尝试其他付款方式";
 
 /* Error message when the card reader is busy executing another command. */
-"The card reader is busy executing another command - please try again" = "读卡器正忙于处理其他命令 - 请重试";
+"The card reader is busy executing another command - please try again" = "读卡器正在处理其他命令，请重试";
 
 /* Error message when the card reader is incompatible with the application. */
-"The card reader is not compatible with this application - please try updating the application or using a different reader" = "读卡器不兼容此应用程序 - 请尝试更新应用程序或使用其他读卡器";
+"The card reader is not compatible with this application - please try updating the application or using a different reader" = "读卡器不兼容此应用程序，请尝试更新应用程序或使用其他读卡器";
 
 /* Error message when the card reader session has timed out. */
-"The card reader session has expired - please disconnect and reconnect the card reader and then try again" = "读卡器会话已过期 - 请断开连接并重新连接读卡器，然后重试";
+"The card reader session has expired - please disconnect and reconnect the card reader and then try again" = "读卡器会话已过期，请断开连接并重新连接读卡器，然后重试";
 
 /* Error message when the card reader software is too far out of date to process payments. */
-"The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "读卡器软件已过时 - 请更新读卡器软件，然后再尝试处理付款";
+"The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "读卡器软件已过时，请更新读卡器软件，然后再尝试处理付款";
 
 /* Error message when the card reader software update fails due to a communication error. */
-"The card reader software update failed due to a communication error - please try again" = "由于通信错误，读卡器软件更新失败 - 请重试";
+"The card reader software update failed due to a communication error - please try again" = "由于通信错误，读卡器软件更新失败，请重试";
 
 /* Error message when the card reader software update fails due to a problem with the update server. */
-"The card reader software update failed due to a problem with the update server - please try again" = "由于更新服务器出现问题，读卡器软件更新失败 - 请重试";
+"The card reader software update failed due to a problem with the update server - please try again" = "由于更新服务器出现问题，读卡器软件更新失败，请重试";
 
 /* Error message when the card reader software update fails unexpectedly. */
-"The card reader software update failed unexpectedly - please try again" = "读卡器软件更新出现意外故障 - 请重试";
+"The card reader software update failed unexpectedly - please try again" = "读卡器软件更新出现意外故障，请重试";
 
 /* Error message when the card reader software update is interrupted. */
-"The card reader software update was interrupted before it could complete - please try again" = "读卡器软件更新在完成前中断 - 请重试";
+"The card reader software update was interrupted before it could complete - please try again" = "读卡器软件更新在完成前中断，请重试";
 
 /* Error message when the card reader itself declines the card. */
-"The card was declined by the card reader - please try another means of payment" = "读卡器已拒绝该卡 - 请尝试其他付款方式";
+"The card was declined by the card reader - please try another means of payment" = "读卡器已拒绝该卡，请尝试其他付款方式";
 
 /* Error message when the card processor declines the payment. */
-"The card was declined by the payment processor - please try another means of payment" = "付款处理器已拒绝该卡 - 请尝试其他付款方式";
+"The card was declined by the payment processor - please try another means of payment" = "付款处理器已拒绝该卡，请尝试其他付款方式";
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "此服务器的证书无效。您所连接的服务器伪装成了“%@”，这可能会给您的凭证信息带来危险。\n\n仍然信任此证书吗？";
@@ -4099,10 +4167,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The new service package name is not unique." = "新服务包裹名称不唯一。";
 
 /* Message when the presented card does not allow the purchase amount. */
-"The payment amount is not allowed for the card presented. Try another means of payment." = "当前银行卡不支持付款金额。 请尝试其他付款方式。";
+"The payment amount is not allowed for the card presented. Try another means of payment." = "当前银行卡不支持该付款金额。 请尝试其他付款方式。";
 
 /* Error message when the payment can not be processed (i.e. order amount is below the minimum amount allowed.) */
-"The payment can not be processed by the payment processor." = "付款处理器无法处理付款。";
+"The payment can not be processed by the payment processor." = "付款处理器无法处理该付款。";
 
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "电话号码无效或您没有致电来自此设备的客户。";
@@ -4110,11 +4178,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "该产品的价格。可编辑。";
 
+/* Message in the footer of bulk price setting screen (singular). */
+"The price will be updated for %d variation." = "%d 个变体的价格将更新。";
+
+/* Message in the footer of bulk price setting screen (plurar). */
+"The price will be updated for %d variations." = "%d 个变体的价格将更新。";
+
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
 "The reader has a critically low battery. Please charge the reader or try a different reader." = "读卡器电量严重不足。 请为读卡器充电或更换读卡器。";
 
 /* Error message when a request times out. */
-"The request timed out - please try again" = "请求超时 - 请重试";
+"The request timed out - please try again" = "请求超时，请重试";
 
 /* Product price error notice message, when the sale price is added but the regular price is not */
 "The sale price can't be added without the regular price." = "无法在未添加正常价格的情况下添加优惠价格。";
@@ -4168,13 +4242,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The store postal code is invalid or missing, please update it before continuing." = "商店邮政编码无效或缺失，请更新后再继续。";
 
 /* Error message when the system cancels a command. */
-"The system canceled the command unexpectedly - please try again" = "系统意外取消了命令 - 请重试";
+"The system canceled the command unexpectedly - please try again" = "系统意外取消了命令，请重试";
 
 /* Error message when the card reader service experiences an unexpected software error. */
 "The system experienced an unexpected software error" = "系统遇到了意外软件错误";
 
 /* Error message when the card reader service is busy executing another command. */
-"The system is busy executing another command - please try again" = "系统正忙于处理其他命令 - 请重试";
+"The system is busy executing another command - please try again" = "系统正在处理其他命令，请重试";
 
 /* Message for the error alert when fetching system status report fails */
 "The system status report for your site cannot be fetched at the moment. Please try again." = "目前无法获取您站点的系统状态报告。 请重试。";
@@ -4212,6 +4286,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "发放退款时出现错误";
 
+/* Notice displayed when searching the list of products fails */
+"There was an error searching products" = "搜索产品时出现错误";
+
+/* Notice displayed when syncing the list of product variations fails */
+"There was an error syncing product variations" = "同步产品变体时出现错误";
+
+/* Notice displayed when syncing the list of products fails */
+"There was an error syncing products" = "同步产品时出现错误";
+
 /* Notice text after failing to update a simple payments order.
    Notice text after failing to update the order successfully */
 "There was an error updating the order" = "更新订单时出错";
@@ -4222,8 +4305,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text when there is an unknown error while trying to collect payments */
 "There was an error while trying to collect the payment." = "收款时出错。";
 
-/* Navigates to screen with third party software licenses
-   Software Licenses (information page title) */
+/* Software Licenses (information page title)
+   Title of button that displays information about the third party software libraries used in the creation of this app */
 "Third Party Licenses" = "第三方许可证";
 
 /* Tab selector title that shows the statistics for this month
@@ -4242,7 +4325,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "This Year" = "今年";
 
 /* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
-"This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this." = "此应用程序需要获取蓝牙的访问权限，才可以连接到读卡器。如要允许此操作，请更改隐私设置。";
+"This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this." = "此应用程序需要获取蓝牙的访问权限才可以连接到读卡器。如要允许此操作，请更改隐私设置。";
 
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "此应用程序需要您在服务器上安装 WooCommerce 3.5，否则无法正常运行。请尽快更新以便继续使用此应用程序。";
@@ -4392,8 +4475,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Connect when the SSL certificate is invalid */
 "Trust" = "信任";
 
-/* Button to retry a software update. Presented to users when updating the card reader software fails
-   Button to try again after connecting to a specific reader fails due to a critically low battery. - Button to try again. Presented to users after a failure occurs - Try Again button on the error alert when fetching system status report fails */
+/* Action displayed in the error prompt when loading total discounted amount in Coupon Details screen fails
+   Button to retry a software update. Presented to users when updating the card reader software fails - Button to try again after connecting to a specific reader fails due to a critically low battery. - Button to try again. Presented to users after a failure occurs - Try Again button on the error alert when fetching system status report fails */
 "Try Again" = "重试";
 
 /* Message from the in-person payment card reader prompting user to retry a payment using a different card */
@@ -4430,6 +4513,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Settings > Manage Card Reader > Connect > Hint to enable Bluetooth */
 "Turn mobile device Bluetooth on" = "打开移动设备蓝牙";
 
+/* Title of a button linking to the app's Twitter profile */
+"Twitter" = "Twitter";
+
 /* Placeholder for the Content Details row in Customs screen of Shipping Label flow */
 "Type of contents" = "内容类型";
 
@@ -4444,10 +4530,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable To Connect" = "无法连接";
 
 /* Error message when Bluetooth is not enabled or available. */
-"Unable to access Bluetooth - please enable Bluetooth and try again" = "无法访问蓝牙 - 请启用蓝牙并重试";
+"Unable to access Bluetooth - please enable Bluetooth and try again" = "无法访问蓝牙，请启用蓝牙并重试";
 
 /* Error message when location services is not enabled for this application. */
-"Unable to access Location Services - please enable Location Services and try again" = "无法访问位置服务 - 请启用位置服务并重试";
+"Unable to access Location Services - please enable Location Services and try again" = "无法访问位置服务，请启用位置服务并重试";
 
 /* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number}. Parameters: %1$d - order number */
 "Unable to add note to order #%1$d" = "无法将备注添加到订单号 %1$d";
@@ -4459,19 +4545,19 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to change status of order #%1$d" = "无法更改订单号 %1$d 的状态";
 
 /* Error message when communication with the card reader is disrupted. */
-"Unable to communicate with reader - please try again" = "无法与读卡器通信 - 请重试";
+"Unable to communicate with reader - please try again" = "无法与读卡器通信，请重试";
 
 /* Error message when the card reader service attempts to connect to a reader without discovering it first. */
-"Unable to connect to card reader - card reader was not correctly discovered - please try again" = "无法连接到读卡器 - 未正确发现读卡器 - 请重试";
+"Unable to connect to card reader - card reader was not correctly discovered - please try again" = "无法连接到读卡器，未正确发现读卡器，请重试";
 
 /* Error message when attempting to connect to a card reader which is already in use. */
-"Unable to connect to card reader - the card reader is already in use" = "无法连接到读卡器 - 读卡器已在使用中";
+"Unable to connect to card reader - the card reader is already in use" = "无法连接到读卡器，读卡器已在使用中";
 
 /* Error message when a card reader is already connected and we were not expecting one. */
-"Unable to connect to reader - another reader is already connected" = "无法连接到读卡器 - 已连接另一个读卡器";
+"Unable to connect to reader - another reader is already connected" = "无法连接到读卡器，已连接另一个读卡器";
 
 /* Error message the card reader battery level is too low to connect to the phone or tablet. */
-"Unable to connect to reader - the reader has a critically low battery - charge the reader and try again." = "无法连接到读卡器 - 读卡器电量过低 - 请为读卡器充电并重试。";
+"Unable to connect to reader - the reader has a critically low battery - charge the reader and try again." = "无法连接到读卡器，读卡器电量过低，请为读卡器充电并重试。";
 
 /* Notice displayed when order creation fails */
 "Unable to create new order" = "无法创建新订单";
@@ -4507,13 +4593,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to mark review as %@" = "无法将评论标记为%@";
 
 /* Error message when the card reader cannot be used to perform the requested task. */
-"Unable to perform request with the connected reader - unsupported feature - please try again with another reader" = "无法执行已连接读卡器的请求 - 不支持的功能 - 请使用其他读卡器重试";
+"Unable to perform request with the connected reader - unsupported feature - please try again with another reader" = "无法执行已连接读卡器的请求，不支持的功能，请使用其他读卡器重试";
 
 /* Error message when the application is so out of date that the backend refuses to work with it. */
-"Unable to perform software request - please update this application and try again" = "无法执行软件请求 - 请更新此应用程序并重试";
+"Unable to perform software request - please update this application and try again" = "无法执行软件请求，请更新此应用程序并重试";
 
 /* Error message when the payment intent is invalid. */
-"Unable to process payment due to invalid data - please try again" = "由于无效数据，无法处理支付 - 请重试";
+"Unable to process payment due to invalid data - please try again" = "由于数据无效，无法处理支付，请重试";
 
 /* Error message when the order amount is below the minimum amount allowed. */
 "Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@" = "无法处理付款。 订单总金额低于您可以收取的最低金额，即 %1$@";
@@ -4522,13 +4608,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to process payment. Order total amount is not valid." = "无法处理付款。 订单总额无效。";
 
 /* Error message when the card reader times out while reading a card. */
-"Unable to read card - the system timed out - please try again" = "无法读取卡 - 系统超时 - 请重试";
+"Unable to read card - the system timed out - please try again" = "无法读取卡，系统超时，请重试";
 
 /* Error message when the card reader is unable to read any chip on the inserted card. */
-"Unable to read inserted card - please try removing and inserting card again" = "无法读取插入的卡 - 请尝试移除卡并重新插入";
+"Unable to read inserted card - please try removing and inserting card again" = "无法读取插入的卡，请尝试移除卡并重新插入";
 
 /* Error message when the card reader is unable to read a swiped card. */
-"Unable to read swiped card - please try swiping again" = "无法读取所刷的卡 - 请尝试重新刷卡";
+"Unable to read swiped card - please try swiping again" = "无法读取所刷的卡，请尝试重新刷卡";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "无法通过该 URL 读取 WordPress 站点。 轻点“需要更多帮助？”可查看常见问题解答。";
@@ -4539,14 +4625,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* An error message shown when failing to retrieve information about user roles, before letting the user in to manage the store. */
 "Unable to retrieve user roles." = "无法检索用户角色。";
 
+/* Unable to retrieve variations for bulk update screen */
+"Unable to retrieve variations" = "无法检索变体";
+
 /* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
 "Unable to save changes to the payment method" = "无法保存对付款方式的更改";
 
 /* Error message when Bluetooth Low Energy is not supported on the user device. */
-"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device" = "无法搜索读卡器 - 此设备不支持蓝牙低能耗模式 - 请使用其他设备";
+"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device" = "搜索不到读卡器，此设备不支持蓝牙低能耗模式，请使用其他设备";
 
 /* Error message when Bluetooth scan times out during reader discovery. */
-"Unable to search for card readers - Bluetooth timed out - please try again" = "无法搜索读卡器 - 蓝牙超时 - 请重试";
+"Unable to search for card readers - Bluetooth timed out - please try again" = "无法搜索读卡器，蓝牙超时，请重试";
 
 /* Error notice title when we fail to update an address in the edit address screen. */
 "Unable to update address." = "无法更新地址。";
@@ -4638,6 +4727,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Settings > Manage Card Reader > Connected Reader > A button to update the reader software */
 "Update Reader Software" = "更新读卡器软件";
+
+/* Title that appears on top of the of bulk price setting screen */
+"Update Regular Price" = "更新正常价格";
 
 /* Subtitle of the product form bottom sheet action for editing inventory settings. */
 "Update product inventory and SKU" = "更新产品库存和 SKU";
@@ -4758,9 +4850,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network." = "验证您的打印机和设备连接到**相同的 Wi-Fi 网络**。\n\n请查看您的打印机文档，了解有关连接到 Wi-Fi 网络的信息。";
 
-/* Displays the version of the App */
-"Version %@" = "版本 %@";
-
 /* Displays the connected reader software version */
 "Version: %1$@" = "版本：%1$@";
 
@@ -4837,12 +4926,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* View title during the Google auth process. */
 "Waiting..." = "正在等待…";
 
-/* shown in promotional screens during first launch */
-"Watch readers from around the world read and interact with your site — in real time." = "实时观看世界各地的读者阅读您的站点以及与您的站点交互。";
-
-/* Shown in the prologue carousel (promotional screens) during first launch. */
-"Watch your audience grow with in-depth analytics." = "通过深入分析观察您的受众增长。";
-
 /* Error message when the merchant's payment account has been rejected */
 "We are sorry but we can't support In-Person Payments for this store." = "抱歉，我们不能为这家商店提供现场付款支持。";
 
@@ -4875,10 +4958,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "We don’t support In-Person Payments in your country" = "在您的国家\/地区，我们不支持现场付款";
 
 /* Title for the error screen when In-Person Payments is not supported in a specific country */
-"We don’t support In-Person Payments with Stripe in %1$@" = "在 %1$@，我们不支持现场付款";
+"We don’t support In-Person Payments with Stripe in %1$@" = "在%1$@，我们不支持使用 Stripe 现场付款";
 
 /* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country */
 "We don’t support In-Person Payments with Stripe in your country" = "在您的国家\/地区，我们不支持使用 Stripe 现场付款";
+
+/* Message displayed in the error prompt when loading total discounted amount in Coupon Details screen fails */
+"We encountered a problem loading analytics" = "加载分析时遇到了问题";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "我们稍微修改了输入的地址。 如果正确，请使用推荐的地址，以确保准确交付。";
@@ -4929,6 +5015,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "我们已通过电子邮件向您发送了注册链接，供您创建新的 WordPress.com 帐户。 请在此设备上查看电子邮件，并轻点您从 WordPress.com 收到的电子邮件中的链接。";
 
+/* Title of a button linking to the app's website */
+"Website" = "网站";
+
 /* Title of the cell in Product Shipping Settings > Weight */
 "Weight" = "重量";
 
@@ -4940,9 +5029,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "重量：%1$@%2$@";
-
-/* Shown in the prologue carousel (promotional screens) during first launch. */
-"Welcome to the world’s most popular website builder." = "欢迎使用全球最热门的网站生成器。";
 
 /* Content of the feedback banner on the coupon list screen */
 "We’ve been working on making it possible to view and edit coupons from your device!" = "我们一直致力于不断改进，让您能够从设备上也可以查看并编辑优惠券！";
@@ -4982,9 +5068,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigates to WisePad 3 Card Reader manual */
 "WisePad 3 card reader manual" = "WisePad 3 读卡器手册";
 
-/* Shown in the prologue carousel (promotional screens) during first launch. */
-"With this powerful editor you can post on the go." = "有了这个功能强大的编辑器，您可以随时随地发表内容。";
-
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";
 
@@ -4993,6 +5076,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Create Shipping Label form -> WooCommerce Discount label */
 "WooCommerce Discount" = "WooCommerce 折扣";
+
+/* Subject line for when sharing the app with others through mail or any other activity types that support contains a subject field. */
+"WooCommerce Mobile App - Run your store from anywhere" = "WooCommerce 移动应用程序，随时随地经营商店";
 
 /* Navigation title of the webview which used by the merchant to update their store address */
 "WooCommerce Settings" = "WooCommerce 设置";
@@ -5009,6 +5095,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %@ uses WordPress %@. We recommend to update to the latest version, or at least %@" = "WordPress 版本过旧。%1$@ 上的站点采用 WordPress %2$@。我们建议更新至最新版本或至少更新为 %3$@";
+
+/* Title of a button linking to the Automattic Work With Us web page */
+"Work with us" = "与我们合作";
 
 /* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
 "Wrong account?" = "错误帐户？";
@@ -5053,6 +5142,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "这个 E-mail 地址不可用。我们发现这个 E-mail 提供商会屏蔽我们的邮件，请更换一个。";
 
+/* The description on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
+"You currently have Coupons disabled for this store. Enable coupons to get started." = "您目前已禁用此商店的优惠券。 启用优惠券以开始使用。";
+
 /* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
 "You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "您的帐户中至少有一项逾期要求。 请注意恢复现场付款。";
 
@@ -5067,9 +5159,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "您的读卡器软件需要更新才能收款。 取消将阻断您的读卡器连接。";
-
-/* shown in promotional screens during first launch */
-"Your notifications travel with you — see comments and likes as they happen." = "无论您走到哪里都能收到通知 - 及时看到他人的评论和点赞。";
 
 /* Title for the error screen when the merchant's In-Person Payments account is restricted because there are pending requirements */
 "Your payments account has pending requirements" = "您的付款账户中存在待处理的要求";
@@ -5126,9 +5215,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} 使用 Google 登录。";
-
-/* About View's Footer Text. The variable is the current year */
-"© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd." = "© %@ WooCommerce, Inc. 和 WooCommerce Ireland Ltd.";
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 订单已完成";

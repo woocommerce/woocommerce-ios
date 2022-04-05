@@ -24,6 +24,11 @@ final class AddProductToOrderViewModel: ObservableObject {
     ///
     let onLoadTrigger: PassthroughSubject<Void, Never> = PassthroughSubject()
 
+    /// Defines the current notice that should be shown.
+    /// Defaults to `nil`.
+    ///
+    @Published var notice: Notice?
+
     /// All products that can be added to an order.
     ///
     private var products: [Product] {
@@ -114,7 +119,7 @@ final class AddProductToOrderViewModel: ObservableObject {
     /// Get the view model for a list of product variations to add to the order
     ///
     func getVariationsViewModel(for productID: Int64) -> AddProductVariationToOrderViewModel? {
-        guard let variableProduct = products.first(where: { $0.productID == productID }) else {
+        guard let variableProduct = products.first(where: { $0.productID == productID }), variableProduct.variations.isNotEmpty else {
             return nil
         }
         return AddProductVariationToOrderViewModel(siteID: siteID, product: variableProduct, onVariationSelected: onVariationSelected)
@@ -159,6 +164,9 @@ extension AddProductToOrderViewModel: SyncingCoordinatorDelegate {
             case .success:
                 self.updateProductsResultsController()
             case .failure(let error):
+                self.notice = NoticeFactory.productSyncNotice() { [weak self] in
+                    self?.sync(pageNumber: pageNumber, pageSize: pageSize, onCompletion: nil)
+                }
                 DDLogError("⛔️ Error synchronizing products during order creation: \(error)")
             }
 
@@ -184,6 +192,9 @@ extension AddProductToOrderViewModel: SyncingCoordinatorDelegate {
             case .success:
                 self.updateProductsResultsController()
             case .failure(let error):
+                self.notice = NoticeFactory.productSearchNotice() { [weak self] in
+                    self?.searchProducts(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: nil)
+                }
                 DDLogError("⛔️ Error searching products during order creation: \(error)")
             }
 
@@ -214,6 +225,7 @@ private extension AddProductToOrderViewModel {
     ///
     func transitionToSyncingState() {
         shouldShowScrollIndicator = true
+        notice = nil
         if products.isEmpty {
             syncStatus = .firstPageSync
         }
@@ -311,5 +323,35 @@ extension AddProductToOrderViewModel {
                             manageStock: false,
                             canChangeQuantity: false,
                             imageURL: nil)
+    }
+
+    /// Add Product to Order notices
+    ///
+    enum NoticeFactory {
+        /// Returns a product sync error notice with a retry button.
+        ///
+        static func productSyncNotice(retryAction: @escaping () -> Void) -> Notice {
+            Notice(title: Localization.syncErrorMessage, feedbackType: .error, actionTitle: Localization.errorActionTitle) {
+                retryAction()
+            }
+        }
+
+        /// Returns a product search error notice with a retry button.
+        ///
+        static func productSearchNotice(retryAction: @escaping () -> Void) -> Notice {
+            Notice(title: Localization.searchErrorMessage, feedbackType: .error, actionTitle: Localization.errorActionTitle) {
+                retryAction()
+            }
+        }
+    }
+}
+
+private extension AddProductToOrderViewModel {
+    enum Localization {
+        static let syncErrorMessage = NSLocalizedString("There was an error syncing products",
+                                                        comment: "Notice displayed when syncing the list of products fails")
+        static let searchErrorMessage = NSLocalizedString("There was an error searching products",
+                                                          comment: "Notice displayed when searching the list of products fails")
+        static let errorActionTitle = NSLocalizedString("Retry", comment: "Retry action for an error notice")
     }
 }

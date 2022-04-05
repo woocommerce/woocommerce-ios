@@ -5,7 +5,7 @@ import Combine
 
 /// Displays a list of settings for the user to choose to bulk update them for all variations
 ///
-final class BulkUpdateViewController: UIViewController {
+final class BulkUpdateViewController: UIViewController, GhostableViewController {
 
     @IBOutlet private weak var tableView: UITableView!
 
@@ -13,9 +13,9 @@ final class BulkUpdateViewController: UIViewController {
 
     private var subscriptions = Set<AnyCancellable>()
 
-    /// A second tableview used to display the placeholder content when `displayGhostContent()` is called.
-    ///
-    private let ghostTableView = UITableView(frame: .zero, style: .plain)
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: ValueOneTableViewCell.self,
+                                                                                                rowsPerSection: Constants.placeholderRowsPerSection,
+                                                                                                isScrollEnabled: false))
 
     private var sections: [Section] = []
 
@@ -44,7 +44,6 @@ final class BulkUpdateViewController: UIViewController {
 
         configureNavigationBar()
         configureTableView()
-        configureGhostTableView()
         configureViewModel()
     }
 
@@ -86,19 +85,6 @@ final class BulkUpdateViewController: UIViewController {
         viewModel.syncVariations()
     }
 
-    /// Configures the ghost view: registers Nibs and table view settings
-    ///
-    private func configureGhostTableView() {
-        ghostTableView.registerNib(for: ValueOneTableViewCell.self)
-        ghostTableView.translatesAutoresizingMaskIntoConstraints = false
-        ghostTableView.backgroundColor = .listBackground
-        ghostTableView.isScrollEnabled = false
-        ghostTableView.isHidden = true
-
-        view.addSubview(ghostTableView)
-        view.pinSubviewToAllEdges(ghostTableView)
-    }
-
     /// Configures the table view: registers Nibs & setup datasource / delegate
     ///
     private func configureTableView() {
@@ -110,23 +96,6 @@ final class BulkUpdateViewController: UIViewController {
 
         tableView.dataSource = self
         tableView.delegate = self
-    }
-
-    /// Renders the Placeholder content.
-    ///
-    private func displayGhostContent() {
-        let options = GhostOptions(reuseIdentifier: ValueOneTableViewCell.reuseIdentifier, rowsPerSection: Constants.placeholderRowsPerSection)
-        ghostTableView.displayGhostContent(options: options, style: .wooDefaultGhostStyle)
-        ghostTableView.startGhostAnimation()
-        ghostTableView.isHidden = false
-    }
-
-    /// Hides the Placeholder content.
-    ///
-    private func removeGhostContent() {
-        ghostTableView.isHidden = true
-        ghostTableView.stopGhostAnimation()
-        ghostTableView.removeGhostContent()
     }
 
     private func registerTableViewHeaderSections() {

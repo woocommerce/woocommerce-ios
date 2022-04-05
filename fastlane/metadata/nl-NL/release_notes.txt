@@ -1,0 +1,5 @@
+Je bedrijf maakt mogelijk gebruik van aangepaste bestelstatussen. Nu kun je bestellingen filteren op die statussen! Tik op de Filterknop in de lijst met bestellingen om deze optie te zien.
+
+Sommigen van jullie hebben arendsogen en merkten op dat de productsoort niet altijd overeenkomt met de productsoort op de website. We hebben dit probleem nu verholpen.
+
+Wist je dat we met een nieuwe functie voor het aanmaken van bestellingen bezig zijn? Ga naar het tabblad Menu, tik op het instellingenpictogram en scrol naar experimentele functies. In deze release hebben we gedeelten voor de verzendmethode en verzendkosten toegevoegd. Er is ook een nieuwe Coupons-functie die je kunt uitproberen! Laat het vooral weten als er dingen kunnen worden verbeterd.

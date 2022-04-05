@@ -1,6 +1,8 @@
 import UIKit
 import Yosemite
 import Combine
+import protocol Storage.StorageManagerType
+import Experiments
 
 /// The root tab controller for Orders, which contains the `OrderListViewController` .
 ///
@@ -19,7 +21,8 @@ final class OrdersRootViewController: UIViewController {
         emptyStateConfig: .simple(
             message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
             image: .waitingForCustomersImage
-        )
+        ),
+        switchDetailsHandler: handleSwitchingDetails(viewModel:)
     )
 
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
@@ -51,18 +54,35 @@ final class OrdersRootViewController: UIViewController {
         }
     }
 
-    /// Stores status for order creation availability.
+    private let storageManager: StorageManagerType
+
+    /// Used for looking up the `OrderStatus` to show in the `Order Filters`.
     ///
-    private var isOrderCreationEnabled: Bool = false
+    /// The `OrderStatus` data is fetched from the API by `OrderListViewModel`.
+    ///
+    private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
+        let descriptor = NSSortDescriptor(key: "slug", ascending: true)
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+
+        return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
+    private let featureFlagService: FeatureFlagService
 
     // MARK: View Lifecycle
 
-    init(siteID: Int64) {
+    init(siteID: Int64,
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
+        self.storageManager = storageManager
+        self.featureFlagService = ServiceLocator.featureFlagService
         super.init(nibName: Self.nibName, bundle: nil)
 
         configureTitle()
-        configureTabBarItem()
+
+        if !featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            configureTabBarItem()
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -73,25 +93,29 @@ final class OrdersRootViewController: UIViewController {
         super.viewDidLoad()
         configureTitle()
         configureView()
+        configureNavigationButtons()
         configureFiltersBar()
         configureChildViewController()
 
         /// We sync the local order settings for configuring local statuses and date range filters.
         /// If there are some info stored when this screen is loaded, the data will be updated using the stored filters.
         ///
-        syncLocalOrdersSettings { _ in }
+        syncLocalOrdersSettings { [weak self] _ in
+            guard let self = self else { return }
+            self.configureStatusResultsController()
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        // Needed in ViewWillAppear because this View Controller is never recreated.
-        fetchExperimentalTogglesAndConfigureNavigationButtons()
-
         ServiceLocator.pushNotesManager.resetBadgeCount(type: .storeOrder)
     }
 
     override var shouldShowOfflineBanner: Bool {
+        if featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            return false
+        }
         return true
     }
 
@@ -116,7 +140,6 @@ final class OrdersRootViewController: UIViewController {
             DDLogError("## Notification with [\(note.noteID)] lacks its OrderID!")
             return
         }
-
         let loaderViewController = OrderLoaderViewController(note: note, orderID: Int64(orderID), siteID: Int64(siteID))
         navigationController?.pushViewController(loaderViewController, animated: true)
     }
@@ -125,7 +148,12 @@ final class OrdersRootViewController: UIViewController {
     ///
     private func filterButtonTapped() {
         ServiceLocator.analytics.track(.orderListViewFilterOptionsTapped)
-        let viewModel = FilterOrderListViewModel(filters: filters)
+
+        // Fetch stored statuses
+        try? statusResultsController.performFetch()
+        let allowedStatuses = statusResultsController.fetchedObjects.map { $0 }
+
+        let viewModel = FilterOrderListViewModel(filters: filters, allowedStatuses: allowedStatuses)
         let filterOrderListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
             self?.filters = filters
             let statuses = (filters.orderStatus ?? []).map { $0.rawValue }.joined(separator: ",")
@@ -137,6 +165,15 @@ final class OrdersRootViewController: UIViewController {
         }, onDismissAction: {
         })
         present(filterOrderListViewController, animated: true, completion: nil)
+    }
+
+    /// This is to update the order detail in split view
+    ///
+    private func handleSwitchingDetails(viewModel: OrderDetailsViewModel) {
+        let orderDetailsViewController = OrderDetailsViewController(viewModel: viewModel)
+        let orderDetailsNavigationController = WooNavigationController(rootViewController: orderDetailsViewController)
+
+        splitViewController?.showDetailViewController(orderDetailsNavigationController, sender: nil)
     }
 }
 
@@ -164,9 +201,9 @@ private extension OrdersRootViewController {
     /// Search: Is always present.
     /// Add: Always present.
     ///
-    func configureNavigationButtons(isOrderCreationExperimentalToggleEnabled: Bool) {
+    func configureNavigationButtons() {
         let buttons: [UIBarButtonItem] = [
-            createAddOrderItem(isOrderCreationEnabled: isOrderCreationExperimentalToggleEnabled),
+            createAddOrderItem(),
             createSearchBarButtonItem()
         ]
         navigationItem.rightBarButtonItems = buttons
@@ -175,7 +212,7 @@ private extension OrdersRootViewController {
     func configureFiltersBar() {
         // Display the filtered orders bar
         // if the feature flag is enabled
-        let isOrderListFiltersEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderListFilters)
+        let isOrderListFiltersEnabled = featureFlagService.isFeatureFlagEnabled(.orderListFilters)
         if isOrderListFiltersEnabled {
             stackView.addArrangedSubview(filtersBar)
         }
@@ -201,21 +238,28 @@ private extension OrdersRootViewController {
         ordersViewController.didMove(toParent: self)
     }
 
-    /// Fetches the latest values of order-related experimental feature toggles and re configures navigation buttons.
+    /// Connect hooks on `ResultsController` and query cached data.
+    /// This is useful for stay up to date with the remote statuses, resetting the filters if one of the local status filters was deleted remotely.
     ///
-    func fetchExperimentalTogglesAndConfigureNavigationButtons() {
-        let group = DispatchGroup()
-        var isOrderCreationEnabled = false
-
-        group.enter()
-        let orderCreationAction = AppSettingsAction.loadOrderCreationSwitchState { result in
-            isOrderCreationEnabled = (try? result.get()) ?? false
-            group.leave()
+    func configureStatusResultsController() {
+        statusResultsController.onDidChangeObject = { [weak self] (updatedOrdersStatus, _, _, _) in
+            guard let self = self else { return }
+            self.resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: self.statusResultsController.fetchedObjects)
         }
-        ServiceLocator.stores.dispatch(orderCreationAction)
 
-        group.notify(queue: .main) { [weak self] in
-            self?.configureNavigationButtons(isOrderCreationExperimentalToggleEnabled: isOrderCreationEnabled)
+        try? statusResultsController.performFetch()
+        resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: statusResultsController.fetchedObjects)
+    }
+
+    /// If the current applied status filters does not match the existing status filters fetched from API, we reset them.
+    ///
+    func resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: [OrderStatus]) {
+        guard let storedOrderFilters = filters.orderStatus else { return }
+        for storedOrderFilter in storedOrderFilters {
+            if !orderStatuses.map({$0.status}).contains(storedOrderFilter) {
+                clearFilters()
+                break
+            }
         }
     }
 }
@@ -245,9 +289,10 @@ private extension OrdersRootViewController {
                 self?.filters = FilterOrderListViewModel.Filters(orderStatus: settings.orderStatusesFilter,
                                                                  dateRange: settings.dateRangeFilter,
                                                                  numberOfActiveFilters: settings.numberOfActiveFilters())
-            case .failure:
-                break
+            case .failure(let error):
+                print("It was not possible to sync local orders settings: \(String(describing: error))")
             }
+            onCompletion(result)
         }
         ServiceLocator.stores.dispatch(action)
     }
@@ -285,22 +330,14 @@ private extension OrdersRootViewController {
 
     /// Create a `UIBarButtonItem` to be used as a way to create a new order.
     ///
-    func createAddOrderItem(isOrderCreationEnabled: Bool) -> UIBarButtonItem {
-        self.isOrderCreationEnabled = isOrderCreationEnabled
-
+    func createAddOrderItem() -> UIBarButtonItem {
         let button = UIBarButtonItem(image: .plusBarButtonItemImage,
                                      style: .plain,
                                      target: self,
                                      action: #selector(presentOrderCreationFlow(sender:)))
         button.accessibilityTraits = .button
-
-        if isOrderCreationEnabled {
-            button.accessibilityLabel = NSLocalizedString("Choose new order type", comment: "Opens action sheet to choose a type of a new order")
-            button.accessibilityIdentifier = "new-order-type-sheet-button"
-        } else {
-            button.accessibilityLabel = NSLocalizedString("Add simple payments order", comment: "Navigates to a screen to create a simple payments order")
-            button.accessibilityIdentifier = "simple-payments-add-button"
-        }
+        button.accessibilityLabel = NSLocalizedString("Choose new order type", comment: "Opens action sheet to choose a type of a new order")
+        button.accessibilityIdentifier = "new-order-type-sheet-button"
         return button
     }
 
@@ -312,7 +349,6 @@ private extension OrdersRootViewController {
         }
 
         let coordinatingController = AddOrderCoordinator(siteID: siteID,
-                                                         isOrderCreationEnabled: isOrderCreationEnabled,
                                                          sourceBarButtonItem: sender,
                                                          sourceNavigationController: navigationController)
         coordinatingController.onOrderCreated = { [weak self] order in
@@ -328,8 +364,8 @@ private extension OrdersRootViewController {
     /// Pushes an `OrderDetailsViewController` onto the navigation stack.
     ///
     private func navigateToOrderDetail(_ order: Order) {
-        guard let orderViewController = OrderDetailsViewController.instantiatedViewControllerFromStoryboard() else { return }
-        orderViewController.viewModel = OrderDetailsViewModel(order: order)
+        let viewModel = OrderDetailsViewModel(order: order)
+        let orderViewController = OrderDetailsViewController(viewModel: viewModel)
 
         // Cleanup navigation (remove new order flow views) before navigating to order details
         if let navigationController = navigationController, let indexOfSelf = navigationController.viewControllers.firstIndex(of: self) {

@@ -2,7 +2,7 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 
-class NewOrderViewModelTests: XCTestCase {
+final class NewOrderViewModelTests: XCTestCase {
 
     let sampleSiteID: Int64 = 123
     let sampleProductID: Int64 = 5
@@ -109,7 +109,7 @@ class NewOrderViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, enableRemoteSync: true)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
 
         // When
         waitForExpectation { expectation in
@@ -134,7 +134,7 @@ class NewOrderViewModelTests: XCTestCase {
     func test_view_model_clears_error_notice_when_order_is_syncing() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, enableRemoteSync: true)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
         viewModel.notice = NewOrderViewModel.NoticeFactory.createOrderErrorNotice()
 
         // When
@@ -219,6 +219,24 @@ class NewOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.productRows[safe: 0]?.quantity, 2)
         XCTAssertEqual(viewModel.productRows[safe: 1]?.quantity, 1)
+    }
+
+    func test_product_is_selected_when_quantity_is_decremented_below_1() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // Product quantity is 1
+        viewModel.addProductViewModel.selectProduct(product.productID)
+        XCTAssertEqual(viewModel.productRows[0].quantity, 1)
+
+        // When
+        viewModel.productRows[0].decrementQuantity()
+
+        // Then
+        XCTAssertNotNil(viewModel.selectedProductViewModel)
     }
 
     func test_selectOrderItem_selects_expected_order_item() throws {
@@ -386,6 +404,8 @@ class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(paymentDataViewModel.orderTotal, "£30.00")
     }
 
+    // MARK: - Payment Section Tests
+
     func test_payment_section_is_updated_when_products_update() {
         // Given
         let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
@@ -479,10 +499,133 @@ class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 8.50)
     }
 
+    func test_payment_section_values_correct_when_shipping_line_is_negative() {
+        // Given
+        let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
+
+        // When
+        viewModel.addProductViewModel.selectProduct(product.productID)
+        let testShippingLine = ShippingLine(shippingID: 0,
+                                            methodTitle: "Flat Rate",
+                                            methodID: "other",
+                                            total: "-5",
+                                            totalTax: "",
+                                            taxes: [])
+        viewModel.saveShippingLine(testShippingLine)
+
+        // Then
+        XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowShippingTotal)
+        XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "-£5.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£3.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 3.50)
+
+        // When
+        viewModel.saveShippingLine(nil)
+
+        // Then
+        XCTAssertFalse(viewModel.paymentDataViewModel.shouldShowShippingTotal)
+        XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "£0.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£8.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 8.50)
+    }
+
+    func test_payment_section_values_correct_when_fee_line_is_negative() {
+        // Given
+        let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
+
+        // When
+        viewModel.addProductViewModel.selectProduct(product.productID)
+        let testFeeLine = OrderFeeLine(feeID: 0,
+                                       name: "Fee",
+                                       taxClass: "",
+                                       taxStatus: .none,
+                                       total: "-5",
+                                       totalTax: "",
+                                       taxes: [],
+                                       attributes: [])
+        viewModel.saveFeeLine(testFeeLine)
+
+        // Then
+        XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowFees)
+        XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.feesTotal, "-£5.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£3.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 8.50)
+
+        // When
+        viewModel.saveFeeLine(nil)
+
+        // Then
+        XCTAssertFalse(viewModel.paymentDataViewModel.shouldShowFees)
+        XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.feesTotal, "£0.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£8.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 8.50)
+    }
+
+    func test_payment_section_is_correct_when_shipping_line_and_fee_line_are_added() {
+        // Given
+        let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
+
+        // When
+        viewModel.addProductViewModel.selectProduct(product.productID)
+
+        let testShippingLine = ShippingLine(shippingID: 0,
+                                            methodTitle: "Flat Rate",
+                                            methodID: "other",
+                                            total: "-5",
+                                            totalTax: "",
+                                            taxes: [])
+        viewModel.saveShippingLine(testShippingLine)
+
+        let testFeeLine = OrderFeeLine(feeID: 0,
+                                       name: "Fee",
+                                       taxClass: "",
+                                       taxStatus: .none,
+                                       total: "10",
+                                       totalTax: "",
+                                       taxes: [],
+                                       attributes: [])
+        viewModel.saveFeeLine(testFeeLine)
+
+        // Then
+        XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowShippingTotal)
+        XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "-£5.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£13.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.feesTotal, "£10.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 3.50)
+
+        // When
+        viewModel.saveShippingLine(nil)
+
+        // Then
+        XCTAssertFalse(viewModel.paymentDataViewModel.shouldShowShippingTotal)
+        XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "£0.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£18.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.feesTotal, "£10.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 8.50)
+    }
+
     func test_payment_section_loading_indicator_is_enabled_while_order_syncs() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, enableRemoteSync: true)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
 
         // When
         let isLoadingDuringSync: Bool = waitFor { promise in
@@ -509,7 +652,7 @@ class NewOrderViewModelTests: XCTestCase {
         let expectation = expectation(description: "Order with taxes is synced")
         let currencySettings = CurrencySettings()
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, currencySettings: currencySettings, enableRemoteSync: true)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, currencySettings: currencySettings)
 
         // When
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
@@ -531,6 +674,283 @@ class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentDataViewModel.taxesTotal, "$2.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 2.50)
 
+    }
+
+    // MARK: - hasChanges Tests
+
+    func test_hasChanges_returns_false_initially() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+
+        // When
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
+
+        // Then
+        XCTAssertFalse(viewModel.hasChanges)
+    }
+
+    func test_hasChanges_returns_true_when_product_quantity_changes() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // When
+        viewModel.addProductViewModel.selectProduct(product.productID)
+
+        // Then
+        XCTAssertTrue(viewModel.hasChanges)
+    }
+
+    func test_hasChanges_returns_true_when_order_status_is_updated() {
+        // Given
+        let storageManager = MockStorageManager()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // When
+        viewModel.updateOrderStatus(newStatus: .completed)
+
+        // Then
+        XCTAssertTrue(viewModel.hasChanges)
+    }
+
+    func test_hasChanges_returns_true_when_customer_information_is_updated() {
+        // Given
+        let storageManager = MockStorageManager()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let addressViewModel = viewModel.createOrderAddressFormViewModel()
+
+        // When
+        addressViewModel.fields.firstName = sampleAddress1().firstName
+        addressViewModel.fields.lastName = sampleAddress1().lastName
+        addressViewModel.saveAddress(onFinish: { _ in })
+
+        // Then
+        XCTAssertTrue(viewModel.hasChanges)
+    }
+
+    func test_hasChanges_returns_true_when_customer_note_is_updated() {
+        // Given
+        let storageManager = MockStorageManager()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        //When
+        viewModel.noteViewModel.newNote = "Test"
+        viewModel.updateCustomerNote()
+
+        //Then
+        XCTAssertTrue(viewModel.hasChanges)
+    }
+
+    func test_hasChanges_returns_true_when_shipping_line_is_updated() {
+        // Given
+        let storageManager = MockStorageManager()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let shippingLine = ShippingLine.fake()
+
+        // When
+        viewModel.saveShippingLine(shippingLine)
+
+        // Then
+        XCTAssertTrue(viewModel.hasChanges)
+    }
+
+    func test_hasChanges_returns_true_when_fee_line_is_updated() {
+        // Given
+        let storageManager = MockStorageManager()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let feeLine = OrderFeeLine.fake()
+
+        // When
+        viewModel.saveFeeLine(feeLine)
+
+        // Then
+        XCTAssertTrue(viewModel.hasChanges)
+    }
+
+    // MARK: - Tracking Tests
+
+    func test_shipping_method_tracked_when_added() throws {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+        let shippingLine = ShippingLine.fake()
+
+        // When
+        viewModel.saveShippingLine(shippingLine)
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderShippingMethodAdd.rawValue])
+
+        let properties = try XCTUnwrap(analytics.receivedProperties.first?["flow"] as? String)
+        XCTAssertEqual(properties, "creation")
+    }
+
+    func test_shipping_method_not_tracked_when_removed() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.saveShippingLine(nil)
+
+        // Then
+        XCTAssertTrue(analytics.receivedEvents.isEmpty)
+    }
+
+    func test_fee_line_tracked_when_added() throws {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+        let feeLine = OrderFeeLine.fake()
+
+        // When
+        viewModel.saveFeeLine(feeLine)
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderFeeAdd.rawValue])
+
+        let properties = try XCTUnwrap(analytics.receivedProperties.first?["flow"] as? String)
+        XCTAssertEqual(properties, "creation")
+    }
+
+    func test_fee_line_not_tracked_when_removed() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.saveFeeLine(nil)
+
+        // Then
+        XCTAssertTrue(analytics.receivedEvents.isEmpty)
+    }
+
+    func test_customer_details_tracked_when_added() throws {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+        let addressViewModel = viewModel.createOrderAddressFormViewModel()
+
+        // When
+        addressViewModel.fields.address1 = sampleAddress1().address1
+        addressViewModel.showDifferentAddressForm = true
+        addressViewModel.saveAddress(onFinish: { _ in })
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderCustomerAdd.rawValue])
+
+        let flowProperty = try XCTUnwrap(analytics.receivedProperties.first?["flow"] as? String)
+        let hasDifferentShippingDetailsProperty = try XCTUnwrap(analytics.receivedProperties.first?["has_different_shipping_details"] as? Bool)
+        XCTAssertEqual(flowProperty, "creation")
+        XCTAssertTrue(hasDifferentShippingDetailsProperty)
+    }
+
+    func test_customer_details_not_tracked_when_removed() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+        let addressViewModel = viewModel.createOrderAddressFormViewModel()
+
+        // When
+        addressViewModel.fields.address1 = ""
+        addressViewModel.saveAddress(onFinish: { _ in })
+
+        // Then
+        XCTAssertTrue(analytics.receivedEvents.isEmpty)
+    }
+
+    func test_customer_note_tracked_when_added() throws {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.noteViewModel.newNote = "Test"
+        viewModel.updateCustomerNote()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderNoteAdd.rawValue])
+
+        let properties = try XCTUnwrap(analytics.receivedProperties.first?["flow"] as? String)
+        XCTAssertEqual(properties, "creation")
+    }
+
+    func test_customer_note_not_tracked_when_removed() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.noteViewModel.newNote = ""
+        viewModel.updateCustomerNote()
+
+        // Then
+        XCTAssertTrue(analytics.receivedEvents.isEmpty)
+    }
+
+    // MARK: -
+
+    func test_customer_note_section_is_updated_when_note_is_added_to_order() {
+        // Given
+        let storageManager = MockStorageManager()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let expectedCustomerNote = "Test"
+
+        //When
+        viewModel.noteViewModel.newNote = expectedCustomerNote
+        viewModel.updateCustomerNote()
+
+        //Then
+        XCTAssertEqual(viewModel.customerNoteDataViewModel.customerNote, expectedCustomerNote)
+    }
+
+    func test_discard_order_deletes_order_if_order_exists_remotely() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
+        waitForExpectation { expectation in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .createOrder(_, let order, let completion):
+                    completion(.success(order.copy(orderID: 12)))
+                    expectation.fulfill()
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+            // Trigger remote sync
+            viewModel.saveShippingLine(ShippingLine.fake())
+        }
+
+        // When
+        let orderDeleted: Bool = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .deleteOrder:
+                    promise(true)
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+            viewModel.discardOrder()
+        }
+
+        // Then
+        XCTAssertTrue(orderDeleted)
+    }
+
+    func test_discard_order_skips_remote_deletion_for_local_order() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            XCTFail("Unexpected action: \(action)")
+        }
+
+        // When
+        viewModel.discardOrder()
     }
 }
 

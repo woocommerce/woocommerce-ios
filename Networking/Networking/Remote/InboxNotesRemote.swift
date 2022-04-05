@@ -59,7 +59,8 @@ public final class InboxNotesRemote: Remote, InboxNotesRemoteProtocol {
         var parameters = [
             ParameterKey.orderBy: orderBy.rawValue,
             ParameterKey.page: pageNumber,
-            ParameterKey.pageSize: pageSize
+            ParameterKey.pageSize: pageSize,
+            ParameterKey.fields: ParameterValue.noteFields
         ] as [String: Any]
 
         if let type = type {
@@ -99,7 +100,7 @@ public final class InboxNotesRemote: Remote, InboxNotesRemoteProtocol {
                                      method: .delete,
                                      siteID: siteID,
                                      path: Path.notes + "/delete/\(noteID)",
-                                     parameters: nil)
+                                     parameters: [ParameterKey.fields: ParameterValue.noteFields])
 
         let mapper = InboxNoteMapper(siteID: siteID)
 
@@ -130,7 +131,8 @@ public final class InboxNotesRemote: Remote, InboxNotesRemoteProtocol {
         var parameters = [
             ParameterKey.orderBy: orderBy.rawValue,
             ParameterKey.page: pageNumber,
-            ParameterKey.pageSize: pageSize
+            ParameterKey.pageSize: pageSize,
+            ParameterKey.fields: ParameterValue.noteFields
         ] as [String: Any]
 
         if let type = type {
@@ -173,7 +175,7 @@ public final class InboxNotesRemote: Remote, InboxNotesRemoteProtocol {
                                      method: .post,
                                      siteID: siteID,
                                      path: Path.notes + "/\(noteID)/action/\(actionID)",
-                                     parameters: nil)
+                                     parameters: [ParameterKey.fields: ParameterValue.noteFields])
 
         let mapper = InboxNoteMapper(siteID: siteID)
 
@@ -200,6 +202,12 @@ public extension InboxNotesRemote {
         static let pageSize = "per_page"
         static let type = "type"
         static let status = "status"
+        static let fields = "_fields"
+    }
+
+    private enum ParameterValue {
+        static let noteFields = ["id", "name", "type", "status", "actions", "title", "content", "is_deleted", "is_read", "date_created_gmt"]
+            .joined(separator: ",")
     }
 
     /// Order By parameter

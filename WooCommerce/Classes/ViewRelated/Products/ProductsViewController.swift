@@ -1,7 +1,6 @@
 import UIKit
 import WordPressUI
 import Yosemite
-import SafariServices.SFSafariViewController
 
 import class AutomatticTracks.CrashLogging
 
@@ -478,8 +477,9 @@ private extension ProductsViewController {
                 self?.tableView.updateHeaderHeight()
             },
             onTroubleshootButtonPressed: { [weak self] in
-                let safariViewController = SFSafariViewController(url: WooConstants.URLs.troubleshootErrorLoadingData.asURL())
-                self?.present(safariViewController, animated: true, completion: nil)
+                guard let self = self else { return }
+
+                WebviewHelper.launch(WooConstants.URLs.troubleshootErrorLoadingData.asURL(), with: self)
             },
             onContactSupportButtonPressed: { [weak self] in
                 guard let self = self else { return }

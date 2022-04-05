@@ -11,8 +11,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .jetpackConnectionPackageSupport:
             return true
-        case .orderCreation:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .hubMenu:
             return true
         case .systemStatusReport:
@@ -28,6 +26,10 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .bulkEditProductVariations:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .splitViewInOrdersTab:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .couponDeletion:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .couponEditing:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

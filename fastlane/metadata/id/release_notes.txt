@@ -1,0 +1,5 @@
+Bisnis Anda dapat menggunakan status pesanan kustom dan kini Anda dapat menyaring pesanan dengan status ini! Ketuk tombol Penyaring di daftar pesanan untuk melihat pilihan ini.
+
+Anda mungkin teliti dan mengetahui bahwa jenis produk yang dipesan tidak selalu sesuai dengan apa yang ditampilkan di situs. Kami telah memperbaikinya.
+
+Tahukah Anda bahwa kami sedang membuat fitur baru untuk membuat pesanan? Arahkan kursor ke tab Menu, ketuk ikon pengaturan, dan gulir ke fitur eksperimental. Dalam rilis ini, kami menambahkan bagian biaya dan metode pengiriman. Anda juga dapat membantu kami dengan mencoba fitur Kupon baru. Sampaikan saran perbaikan kepada kami.

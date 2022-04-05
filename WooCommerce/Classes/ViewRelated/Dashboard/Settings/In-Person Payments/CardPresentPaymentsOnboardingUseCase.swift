@@ -159,7 +159,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
             // have Stripe. In that case, we can tell them that IPP is not supported for Stripe in
             // their country yet.
             if stripeInstalledAndActive(stripe: stripe) {
-                return .countryNotSupportedStripe(countryCode: countryCode)
+                return .countryNotSupportedStripe(plugin: .stripe, countryCode: countryCode)
             } else {
                 return wcPayOnlyOnboardingState(plugin: wcPay)
             }
@@ -219,16 +219,16 @@ private extension CardPresentPaymentsOnboardingUseCase {
             return .pluginInTestModeWithLiveStripeAccount(plugin: plugin)
         }
         guard !isStripeAccountUnderReview(account: account) else {
-            return .stripeAccountUnderReview
+            return .stripeAccountUnderReview(plugin: plugin)
         }
         guard !isStripeAccountOverdueRequirements(account: account) else {
-            return .stripeAccountOverdueRequirement
+            return .stripeAccountOverdueRequirement(plugin: plugin)
         }
         guard !isStripeAccountPendingRequirements(account: account) else {
-            return .stripeAccountPendingRequirement(deadline: account.currentDeadline)
+            return .stripeAccountPendingRequirement(plugin: plugin, deadline: account.currentDeadline)
         }
         guard !isStripeAccountRejected(account: account) else {
-            return .stripeAccountRejected
+            return .stripeAccountRejected(plugin: plugin)
         }
         guard !isInUndefinedState(account: account) else {
             return .genericError

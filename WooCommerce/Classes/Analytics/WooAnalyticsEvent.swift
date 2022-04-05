@@ -39,8 +39,15 @@ import Yosemite
 /// ~~~
 ///
 public struct WooAnalyticsEvent {
+    init(statName: WooAnalyticsStat, properties: [String: WooAnalyticsEventPropertyType], error: Error? = nil) {
+        self.statName = statName
+        self.properties = properties
+        self.error = error
+    }
+
     let statName: WooAnalyticsStat
     let properties: [String: WooAnalyticsEventPropertyType]
+    let error: Error?
 }
 
 // MARK: - In-app Feedback and Survey
@@ -64,8 +71,8 @@ extension WooAnalyticsEvent {
         case shippingLabelsRelease3 = "shipping_labels_m3"
         /// Shown in beta feature banner for order add-ons.
         case addOnsI1 = "add-ons_i1"
-        /// Shown in beta feature banner for simple payments prototype.
-        case simplePaymentsPrototype = "simple_payments_prototype"
+        /// Shown in orders banner for order creation release.
+        case orderCreation = "order_creation"
         /// Shown in beta feature banner for coupon management.
         case couponManagement = "coupon_management"
     }
@@ -342,6 +349,8 @@ extension WooAnalyticsEvent {
             static let orderStatus = "order_status"
             static let productCount = "product_count"
             static let hasCustomerDetails = "has_customer_details"
+            static let hasFees = "has_fees"
+            static let hasShippingMethod = "has_shipping_method"
             static let errorContext = "error_context"
             static let errorDescription = "error_description"
             static let to = "to"
@@ -364,6 +373,18 @@ extension WooAnalyticsEvent {
             ])
         }
 
+        static func orderFeeAdd(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFeeAdd, properties: [Keys.flow: flow.rawValue])
+        }
+
+        static func orderShippingMethodAdd(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderShippingMethodAdd, properties: [Keys.flow: flow.rawValue])
+        }
+
+        static func orderCustomerNoteAdd(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderNoteAdd, properties: [Keys.flow: flow.rawValue])
+        }
+
         static func orderStatusChange(flow: Flow, orderID: Int64?, from oldStatus: OrderStatusEnum, to newStatus: OrderStatusEnum) -> WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType?] = [
                 Keys.flow: flow.rawValue,
@@ -376,11 +397,15 @@ extension WooAnalyticsEvent {
 
         static func orderCreateButtonTapped(status: OrderStatusEnum,
                                             productCount: Int,
-                                            hasCustomerDetails: Bool) -> WooAnalyticsEvent {
+                                            hasCustomerDetails: Bool,
+                                            hasFees: Bool,
+                                            hasShippingMethod: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderCreateButtonTapped, properties: [
                 Keys.orderStatus: status.rawValue,
                 Keys.productCount: Int64(productCount),
-                Keys.hasCustomerDetails: hasCustomerDetails
+                Keys.hasCustomerDetails: hasCustomerDetails,
+                Keys.hasFees: hasFees,
+                Keys.hasShippingMethod: hasShippingMethod
             ])
         }
 
@@ -548,8 +573,11 @@ extension WooAnalyticsEvent {
 
         enum Keys {
             static let batteryLevel = "battery_level"
+            static let cardReaderModel = "card_reader_model"
+            static let countryCode = "country"
             static let gatewayID = "plugin_slug"
             static let errorDescription = "error_description"
+            static let paymentMethodType = "payment_method_type"
             static let softwareUpdateType = "software_update_type"
         }
 
@@ -560,12 +588,16 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracked when card reader discovery fails
-        /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
-        /// `error` is the error to be included in the event properties.
         ///
-        static func cardReaderDiscoveryFailed(forGatewayID: String?, error: Error) -> WooAnalyticsEvent {
+        /// - Parameters:
+        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - error: the error to be included in the event properties.
+        ///   - countryCode: the country code of the store.
+        ///
+        static func cardReaderDiscoveryFailed(forGatewayID: String?, error: Error, countryCode: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderDiscoveryFailed,
                               properties: [
+                                Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.errorDescription: error.localizedDescription
                               ]
@@ -573,11 +605,20 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracked when connecting to a card reader
-        /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
-        /// `batteryLevel` is the battery level (if available) to be included in the event properties in Tracks, e.g. 0.75 = 75%.
         ///
-        static func cardReaderConnectionSuccess(forGatewayID: String?, batteryLevel: Float?) -> WooAnalyticsEvent {
+        /// - Parameters:
+        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - batteryLevel: the battery level (if available) to be included in the event properties in Tracks, e.g. 0.75 = 75%.
+        ///   - countryCode: the country code of the store.
+        ///   - cardReaderModel: the model type of the card reader.
+        ///
+        static func cardReaderConnectionSuccess(forGatewayID: String?,
+                                                batteryLevel: Float?,
+                                                countryCode: String,
+                                                cardReaderModel: String) -> WooAnalyticsEvent {
             var properties = [
+                Keys.cardReaderModel: cardReaderModel,
+                Keys.countryCode: countryCode,
                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
             ]
 
@@ -589,12 +630,18 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracked when connecting to a card reader fails
-        /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
-        /// `error` is the error to be included in the event properties.
         ///
-        static func cardReaderConnectionFailed(forGatewayID: String?, error: Error) -> WooAnalyticsEvent {
+        /// - Parameters:
+        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - error: the error to be included in the event properties.
+        ///   - countryCode: the country code of the store.
+        ///   - cardReaderModel: the model type of the card reader.
+        ///
+        static func cardReaderConnectionFailed(forGatewayID: String?, error: Error, countryCode: String, cardReaderModel: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderConnectionFailed,
                               properties: [
+                                Keys.cardReaderModel: cardReaderModel,
+                                Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.errorDescription: error.localizedDescription
                               ]
@@ -603,22 +650,33 @@ extension WooAnalyticsEvent {
 
 
         /// Tracked when disconnecting from a card reader
-        /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///
-        static func cardReaderDisconnectTapped(forGatewayID: String?) -> WooAnalyticsEvent {
+        /// - Parameters:
+        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - countryCode: the country code of the store.
+        ///   - cardReaderModel: the model type of the card reader.
+        ///
+        static func cardReaderDisconnectTapped(forGatewayID: String?, countryCode: String, cardReaderModel: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderDisconnectTapped,
                               properties: [
+                                Keys.cardReaderModel: cardReaderModel,
+                                Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
                               ]
             )
         }
-        /// Tracksed when a software update is initiated manually
-        /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
-        /// `updateType` is `.required` or `.optional`
+
+        /// Tracked when a software update is initiated manually
         ///
-        static func cardReaderSoftwareUpdateTapped(forGatewayID: String?, updateType: SoftwareUpdateTypeProperty) -> WooAnalyticsEvent {
+        /// - Parameters:
+        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - updateType: `.required` or `.optional`.
+        ///   - countryCode: the country code of the store.
+        ///
+        static func cardReaderSoftwareUpdateTapped(forGatewayID: String?, updateType: SoftwareUpdateTypeProperty, countryCode: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderSoftwareUpdateTapped,
                               properties: [
+                                Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.softwareUpdateType: updateType.rawValue
                               ]
@@ -626,12 +684,16 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracked when a card reader update starts
-        /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
-        /// `updateType` is `.required` or `.optional`
         ///
-        static func cardReaderSoftwareUpdateStarted(forGatewayID: String?, updateType: SoftwareUpdateTypeProperty) -> WooAnalyticsEvent {
+        /// - Parameters:
+        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - updateType: `.required` or `.optional`.
+        ///   - countryCode: the country code of the store.
+        ///
+        static func cardReaderSoftwareUpdateStarted(forGatewayID: String?, updateType: SoftwareUpdateTypeProperty, countryCode: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderSoftwareUpdateStarted,
                               properties: [
+                                Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.softwareUpdateType: updateType.rawValue
                               ]
@@ -639,15 +701,19 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracked when a card reader update fails
-        /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
-        /// `updateType` is `.required` or `.optional`
-        /// `error` is the error to be included in the event properties.
+        ///
+        /// - Parameters:
+        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - updateType: `.required` or `.optional`.
+        ///   - error: the error to be included in the event properties.
+        ///   - countryCode: the country code of the store.
         ///
         static func cardReaderSoftwareUpdateFailed(
-            forGatewayID: String?, updateType: SoftwareUpdateTypeProperty, error: Error
+            forGatewayID: String?, updateType: SoftwareUpdateTypeProperty, error: Error, countryCode: String
         ) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderSoftwareUpdateFailed,
                               properties: [
+                                Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.softwareUpdateType: updateType.rawValue,
                                 Keys.errorDescription: error.localizedDescription
@@ -655,13 +721,17 @@ extension WooAnalyticsEvent {
             )
         }
 
-        /// Tracksed when a software update completes successfully
-        /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
-        /// `updateType` is `.required` or `.optional`
+        /// Tracked when a software update completes successfully
         ///
-        static func cardReaderSoftwareUpdateSuccess(forGatewayID: String?, updateType: SoftwareUpdateTypeProperty) -> WooAnalyticsEvent {
+        /// - Parameters:
+        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - updateType: `.required` or `.optional`.
+        ///   - countryCode: the country code of the store.
+        ///
+        static func cardReaderSoftwareUpdateSuccess(forGatewayID: String?, updateType: SoftwareUpdateTypeProperty, countryCode: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderSoftwareUpdateSuccess,
                               properties: [
+                                Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.softwareUpdateType: updateType.rawValue
                               ]
@@ -669,11 +739,18 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracked when an update cancel button is tapped
-        /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///
-        static func cardReaderSoftwareUpdateCancelTapped(forGatewayID: String?, updateType: SoftwareUpdateTypeProperty) -> WooAnalyticsEvent {
+        /// - Parameters:
+        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - updateType: `.required` or `.optional`.
+        ///   - countryCode: the country code of the store.
+        ///
+        static func cardReaderSoftwareUpdateCancelTapped(forGatewayID: String?,
+                                                         updateType: SoftwareUpdateTypeProperty,
+                                                         countryCode: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderSoftwareUpdateCancelTapped,
                               properties: [
+                                Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.softwareUpdateType: updateType.rawValue
                               ]
@@ -681,11 +758,16 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracked when an update is cancelled
-        /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///
-        static func cardReaderSoftwareUpdateCanceled(forGatewayID: String?, updateType: SoftwareUpdateTypeProperty) -> WooAnalyticsEvent {
+        /// - Parameters:
+        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - updateType: `.required` or `.optional`.
+        ///   - countryCode: the country code of the store.
+        ///
+        static func cardReaderSoftwareUpdateCanceled(forGatewayID: String?, updateType: SoftwareUpdateTypeProperty, countryCode: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderSoftwareUpdateCanceled,
                               properties: [
+                                Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.softwareUpdateType: updateType.rawValue
                               ]
@@ -693,49 +775,217 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracked when the user taps to collect a payment
-        /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///
-        static func collectPaymentTapped(forGatewayID: String?) -> WooAnalyticsEvent {
+        /// - Parameters:
+        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - countryCode: the country code of the store.
+        ///   - cardReaderModel: the model type of the card reader.
+        ///
+        static func collectPaymentTapped(forGatewayID: String?, countryCode: String, cardReaderModel: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentTapped,
                               properties: [
+                                Keys.cardReaderModel: cardReaderModel,
+                                Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
-                              ]
-            )
+                              ])
         }
 
         /// Tracked when the payment collection fails
-        /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
-        /// `error` is the error to be included in the event properties.
         ///
-        static func collectPaymentFailed(forGatewayID: String?, error: Error) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .collectPaymentFailed,
-                              properties: [
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
-                                Keys.errorDescription: error.localizedDescription
-                              ]
-            )
+        /// - Parameters:
+        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - error: the error to be included in the event properties.
+        ///   - countryCode: the country code of the store.
+        ///   - cardReaderModel: the model type of the card reader, if available.
+        ///
+        static func collectPaymentFailed(forGatewayID: String?, error: Error, countryCode: String, cardReaderModel: String?) -> WooAnalyticsEvent {
+            let paymentMethod: PaymentMethod? = {
+                guard case let CardReaderServiceError.paymentCaptureWithPaymentMethod(_, paymentMethod) = error else {
+                    return nil
+                }
+                return paymentMethod
+            }()
+            let errorDescription: String? = {
+                guard case let CardReaderServiceError.paymentCaptureWithPaymentMethod(underlyingError, paymentMethod) = error else {
+                    return error.localizedDescription
+                }
+                switch paymentMethod {
+                case let .cardPresent(details):
+                    return [
+                        "underlyingError": underlyingError,
+                        "cardBrand": details.brand
+                    ].description
+                case let .interacPresent(details):
+                    return [
+                        "underlyingError": underlyingError,
+                        "cardBrand": details.brand
+                    ].description
+                default:
+                    return underlyingError.localizedDescription
+                }
+            }()
+            let properties: [String: WooAnalyticsEventPropertyType] = [
+                Keys.cardReaderModel: cardReaderModel,
+                Keys.countryCode: countryCode,
+                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                Keys.paymentMethodType: paymentMethod?.analyticsValue,
+                Keys.errorDescription: errorDescription
+            ].compactMapValues { $0 }
+            return WooAnalyticsEvent(statName: .collectPaymentFailed,
+                                     properties: properties)
         }
 
         /// Tracked when the payment collection is cancelled
-        /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///
-        static func collectPaymentCanceled(forGatewayID: String?) -> WooAnalyticsEvent {
+        /// - Parameters:
+        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - countryCode: the country code of the store.
+        ///   - cardReaderModel: the model type of the card reader.
+        ///
+        static func collectPaymentCanceled(forGatewayID: String?, countryCode: String, cardReaderModel: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentCanceled,
                               properties: [
+                                Keys.cardReaderModel: cardReaderModel,
+                                Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
                               ]
             )
         }
 
         /// Tracked when payment collection succeeds
-        /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///
-        static func collectPaymentSuccess(forGatewayID: String?) -> WooAnalyticsEvent {
+        /// - Parameters:
+        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - countryCode: the country code of the store.
+        ///   - paymentMethod: the payment method of the captured payment.
+        ///   - cardReaderModel: the model type of the card reader.
+        ///
+        static func collectPaymentSuccess(forGatewayID: String?,
+                                          countryCode: String,
+                                          paymentMethod: PaymentMethod,
+                                          cardReaderModel: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentSuccess,
                               properties: [
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
+                                Keys.cardReaderModel: cardReaderModel,
+                                Keys.countryCode: countryCode,
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                                Keys.paymentMethodType: paymentMethod.analyticsValue
                               ]
             )
+        }
+
+        /// Tracked when the "learn more" button in the In-Person Payments onboarding is tapped.
+        ///
+        /// - Parameter countryCode: the country code of the store.
+        ///
+        static func cardPresentOnboardingLearnMoreTapped(countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardPresentOnboardingLearnMoreTapped,
+                              properties: [Keys.countryCode: countryCode])
+        }
+
+        /// Tracked when the In-Person Payments onboarding cannot be completed for some reason.
+        ///
+        /// - Parameters:
+        ///   - reason: the reason why the onboarding is not completed.
+        ///   - countryCode: the country code of the store.
+        ///
+        static func cardPresentOnboardingNotCompleted(reason: String, countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardPresentOnboardingNotCompleted,
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                "reason": reason
+                              ])
+        }
+
+        /// Tracked when the user taps on the "See Receipt" button to view a receipt.
+        /// - Parameter countryCode: the country code of the store.
+        ///
+        static func receiptViewTapped(countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .receiptViewTapped,
+                              properties: [Keys.countryCode: countryCode])
+        }
+
+        /// Tracked when the user taps on the "Email receipt" button after successfully collecting a payment to email a receipt.
+        /// - Parameter countryCode: the country code of the store.
+        ///
+        static func receiptEmailTapped(countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .receiptEmailTapped,
+                              properties: [Keys.countryCode: countryCode])
+        }
+
+        /// Tracked when sending or saving the receipt email failed.
+        /// - Parameters:
+        ///   - error: the error to be included in the event properties.
+        ///   - countryCode: the country code of the store.
+        ///
+        static func receiptEmailFailed(error: Error, countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .receiptEmailFailed,
+                              properties: [Keys.countryCode: countryCode],
+                              error: error)
+        }
+
+        /// Tracked when the user canceled sending the receipt by email.
+        /// - Parameter countryCode: the country code of the store.
+        ///
+        static func receiptEmailCanceled(countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .receiptEmailCanceled,
+                              properties: [Keys.countryCode: countryCode])
+        }
+
+        /// Tracked when the receipt was sent by email.
+        /// - Parameter countryCode: the country code of the store.
+        ///
+        static func receiptEmailSuccess(countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .receiptEmailSuccess,
+                              properties: [Keys.countryCode: countryCode])
+        }
+
+        /// Tracked when the user tapped on the button to print a receipt.
+        /// - Parameter countryCode: the country code of the store.
+        ///
+        static func receiptPrintTapped(countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .receiptPrintTapped,
+                              properties: [Keys.countryCode: countryCode])
+        }
+
+        /// Tracked when printing the receipt failed.
+        /// - Parameters:
+        ///   - error: the error to be included in the event properties.
+        ///   - countryCode: the country code of the store.
+        ///
+        static func receiptPrintFailed(error: Error, countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .receiptPrintFailed,
+                              properties: [Keys.countryCode: countryCode],
+                              error: error)
+        }
+
+        /// Tracked when the user canceled printing the receipt.
+        /// - Parameter countryCode: the country code of the store.
+        ///
+        static func receiptPrintCanceled(countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .receiptPrintCanceled,
+                              properties: [Keys.countryCode: countryCode])
+        }
+
+        /// Tracked when the receipt was successfully sent to the printer. iOS won't guarantee that the receipt has actually printed.
+        /// - Parameter countryCode: the country code of the store.
+        ///
+        static func receiptPrintSuccess(countryCode: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .receiptPrintSuccess,
+                              properties: [Keys.countryCode: countryCode])
+        }
+    }
+}
+
+private extension PaymentMethod {
+    var analyticsValue: String {
+        switch self {
+        case .card, .cardPresent:
+            return "card"
+        case .interacPresent:
+            return "card_interac"
+        case .unknown:
+            return "unknown"
         }
     }
 }

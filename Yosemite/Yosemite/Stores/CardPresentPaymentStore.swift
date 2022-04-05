@@ -18,7 +18,7 @@ public final class CardPresentPaymentStore: Store {
     private let commonReaderConfigProvider: CommonReaderConfigProvider
 
     /// Which backend is the store using? Default to WCPay until told otherwise
-    private var usingBackend: CardPresentPaymentStoreBackend = .wcpay
+    private var usingBackend: CardPresentPaymentGatewayExtension = .wcpay
 
     private let remote: WCPayRemote
     private let stripeRemote: StripeRemote
@@ -58,11 +58,11 @@ public final class CardPresentPaymentStore: Store {
         switch action {
         case .use(let account):
             use(paymentGatewayAccount: account)
+        case .loadActivePaymentGatewayExtension(let completion):
+            loadActivePaymentGateway(onCompletion: completion)
         case .loadAccounts(let siteID, let onCompletion):
             loadAccounts(siteID: siteID,
                          onCompletion: onCompletion)
-        case .fetchOrderCustomer(let siteID, let orderID, let completion):
-            fetchOrderCustomer(siteID: siteID, orderID: orderID, completion: completion)
         case .captureOrderPayment(let siteID,
                                   let orderID,
                                   let paymentIntentID,
@@ -89,6 +89,10 @@ public final class CardPresentPaymentStore: Store {
                            onCompletion: completion)
         case .cancelPayment(let completion):
             cancelPayment(onCompletion: completion)
+        case .refundPayment(let parameters):
+            refundPayment(parameters: parameters)
+        case .cancelRefund:
+            cancelRefund()
         case .observeCardReaderUpdateState(onCompletion: let completion):
             observeCardReaderUpdateState(onCompletion: completion)
         case .startCardReaderUpdate:
@@ -107,19 +111,7 @@ public final class CardPresentPaymentStore: Store {
 // MARK: - Services
 //
 private extension CardPresentPaymentStore {
-    /// Which backend is the store to use? WCPay or Stripe?
-    ///
-    enum CardPresentPaymentStoreBackend {
-        /// Use WCPay as the backend
-        ///
-        case wcpay
-
-        /// Use Stripe as the backend
-        ///
-        case stripe
-    }
-
-    func startCardReaderDiscovery(siteID: Int64, onReaderDiscovered: @escaping (_ readers: [CardReader]) -> Void, onError: @escaping (Error) -> Void) {
+   func startCardReaderDiscovery(siteID: Int64, onReaderDiscovered: @escaping (_ readers: [CardReader]) -> Void, onError: @escaping (Error) -> Void) {
         do {
             switch usingBackend {
             case .wcpay:
@@ -249,6 +241,36 @@ private extension CardPresentPaymentStore {
         }))
     }
 
+    func refundPayment(parameters: RefundParameters) {
+        cardReaderService.refundPayment(parameters: parameters)
+            .sink { error in
+                switch error {
+                case .failure(let error):
+                    DDLogError("⛔️ Error during client-side refund: \(error.localizedDescription)")
+                case .finished:
+                    break
+                }
+            } receiveValue: { status in
+                DDLogInfo("💳 Refund Success: \(status)")
+            }
+            .store(in: &cancellables)
+    }
+
+    func cancelRefund() {
+        cardReaderService.cancelRefund()
+            .sink { error in
+                switch error {
+                case .failure(let error):
+                    DDLogError("⛔️ Error cancelling client-side refund: \(error.localizedDescription)")
+                case .finished:
+                    break
+                }
+            } receiveValue: {
+                DDLogInfo("🍁 Refund cancelled successfully!")
+            }
+            .store(in: &cancellables)
+    }
+
     func observeCardReaderUpdateState(onCompletion: (AnyPublisher<CardReaderSoftwareUpdateState, Never>) -> Void) {
         onCompletion(cardReaderService.softwareUpdateEvents)
     }
@@ -364,6 +386,10 @@ private extension CardPresentPaymentStore {
         usingBackend = .wcpay
     }
 
+    func loadActivePaymentGateway(onCompletion: (CardPresentPaymentGatewayExtension) -> Void) {
+        onCompletion(usingBackend)
+    }
+
     /// Loads the account corresponding to the currently selected backend. Deletes the other (if it exists).
     ///
     func loadAccounts(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
@@ -443,15 +469,6 @@ private extension CardPresentPaymentStore {
                 self.deleteStaleAccount(siteID: siteID, gatewayID: StripeAccount.gatewayID)
                 onCompletion(.failure(error))
             }
-        }
-    }
-
-    func fetchOrderCustomer(siteID: Int64, orderID: Int64, completion: @escaping (Result<WCPayCustomer, Error>) -> Void) {
-        switch usingBackend {
-        case .wcpay:
-            remote.fetchOrderCustomer(for: siteID, orderID: orderID, completion: completion)
-        case .stripe:
-            stripeRemote.fetchOrderCustomer(for: siteID, orderID: orderID, completion: completion)
         }
     }
 
@@ -555,7 +572,7 @@ private extension CardPresentPaymentStore {
         let storageWCPayCharge = existingOrNewWCPayCharge(siteID: readonlyCharge.siteID, chargeID: readonlyCharge.id, in: storage)
 
         switch readonlyCharge.paymentMethodDetails {
-        case .cardPresent(let details):
+        case .cardPresent(let details), .interacPresent(let details):
             upsertCardPresentDetails(details, for: storageWCPayCharge, in: storage)
         case .card(let details):
             upsertCardDetails(details, for: storageWCPayCharge, in: storage)

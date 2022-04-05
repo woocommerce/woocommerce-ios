@@ -63,7 +63,12 @@ final class StoreStatsV4PeriodViewController: UIViewController {
         return ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
     }
 
-    private var orderStatsIntervals: [OrderStatsV4Interval] = []
+    private var orderStatsIntervals: [OrderStatsV4Interval] = [] {
+        didSet {
+            orderStatsIntervalLabels = createOrderStatsIntervalLabels(orderStatsIntervals: orderStatsIntervals)
+        }
+    }
+    private var orderStatsIntervalLabels: [String] = []
 
     private var revenueItems: [Double] {
         orderStatsIntervals.map({ ($0.revenueValue as NSDecimalNumber).doubleValue })
@@ -114,6 +119,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     }
 
     private var cancellables: Set<AnyCancellable> = []
+    private let chartValueSelectedEventsSubject = PassthroughSubject<Void, Never>()
 
     // MARK: - Initialization
 
@@ -156,6 +162,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
         observeConversionStatsViewState()
         observeYAxisMaximum()
         observeYAxisMinimum()
+        observeChartValueSelectedEvents()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -446,7 +453,22 @@ extension StoreStatsV4PeriodViewController: ChartViewDelegate {
     func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
         let selectedIndex = Int(entry.x)
         updateUI(selectedBarIndex: selectedIndex)
-        usageTracksEventEmitter.interacted()
+
+        chartValueSelectedEventsSubject.send()
+    }
+
+    /// Observe `chartValueSelected` events and call `StoreStatsUsageTracksEventEmitter.interacted()` when
+    /// no similar events have been received after some time.
+    ///
+    /// We debounce it because there are just too many events received from `chartValueSelected()` when
+    /// the user holds and drags on the chart. Having too many events might skew the
+    /// `StoreStatsUsageTracksEventEmitter` algorithm.
+    private func observeChartValueSelectedEvents() {
+        chartValueSelectedEventsSubject
+            .debounce(for: .seconds(Constants.chartValueSelectedEventsDebounce), scheduler: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.usageTracksEventEmitter.interacted()
+            }.store(in: &cancellables)
     }
 }
 
@@ -468,7 +490,12 @@ extension StoreStatsV4PeriodViewController: IAxisValueFormatter {
         }
 
         if axis is XAxis {
-            return createOrderStatsIntervalLabels()[Int(value)]
+            let intervalLabels = orderStatsIntervalLabels
+            let index = Int(value)
+            if index >= intervalLabels.count {
+                DDLogInfo("🔴 orderStatsIntervals count: \(orderStatsIntervals.count); value: \(value); index: \(index); interval labels: \(intervalLabels)")
+            }
+            return intervalLabels[index]
         } else {
             if value == 0.0 {
                 // Do not show the "0" label on the Y axis
@@ -486,7 +513,7 @@ extension StoreStatsV4PeriodViewController: IAxisValueFormatter {
         }
     }
 
-    private func createOrderStatsIntervalLabels() -> [String] {
+    private func createOrderStatsIntervalLabels(orderStatsIntervals: [OrderStatsV4Interval]) -> [String] {
         let helper = StoreStatsV4ChartAxisHelper()
         let intervalDates = orderStatsIntervals.map({ $0.dateStart(timeZone: siteTimezone) })
         return helper.generateLabelText(for: intervalDates,
@@ -701,5 +728,8 @@ private extension StoreStatsV4PeriodViewController {
         static let headerComponentBackgroundColor: UIColor = .clear
 
         static let ghostStyle: GhostStyle = .wooDefaultGhostStyle
+
+        /// The wait time before the `StoreStatsUsageTracksEventEmitter.interacted()` is called.
+        static let chartValueSelectedEventsDebounce: TimeInterval = 1.0
     }
 }

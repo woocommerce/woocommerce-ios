@@ -35,7 +35,7 @@ final class TitleAndSubtitleAndStatusTableViewCell: UITableViewCell, SearchResul
 // MARK: - CellViewModel subtype
 //
 extension TitleAndSubtitleAndStatusTableViewCell {
-    struct ViewModel {
+    struct ViewModel: Hashable {
         let title: String
         let subtitle: String
         let accessibilityLabel: String

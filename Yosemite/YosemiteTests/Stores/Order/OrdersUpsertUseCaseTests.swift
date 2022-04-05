@@ -211,7 +211,7 @@ private extension OrdersUpsertUseCaseTests {
     }
 
     func makeOrder() -> Networking.Order {
-        Order.fake().copy(siteID: defaultSiteID, items: [])
+        Order.fake().copy(siteID: defaultSiteID, customerNote: "", items: [])
     }
 
     func makeOrderItem(itemID: Int64 = 76, attributes: [Networking.OrderItemAttribute] = []) -> Networking.OrderItem {

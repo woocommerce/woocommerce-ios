@@ -310,7 +310,8 @@ extension Order: Equatable {
             lhs.refunds.count == rhs.refunds.count &&
             lhs.refunds.sorted() == rhs.refunds.sorted() &&
             lhs.items.count == rhs.items.count &&
-            lhs.items.sorted() == rhs.items.sorted()
+            lhs.items.sorted() == rhs.items.sorted() &&
+            lhs.customerNote == rhs.customerNote
     }
 }
 

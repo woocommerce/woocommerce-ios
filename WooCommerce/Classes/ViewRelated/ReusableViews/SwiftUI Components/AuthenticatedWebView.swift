@@ -1,6 +1,7 @@
 import SwiftUI
 import WebKit
 import Alamofire
+import class Networking.UserAgent
 
 // Bridge UIKit `WKWebView` component to SwiftUI for URLs that need authentication on WPCom
 struct AuthenticatedWebView: UIViewRepresentable {
@@ -31,6 +32,7 @@ struct AuthenticatedWebView: UIViewRepresentable {
 
     func makeUIView(context: Context) -> WKWebView {
         let webview = WKWebView()
+        webview.customUserAgent = UserAgent.defaultUserAgent
         webview.navigationDelegate = context.coordinator
 
         configureForSandboxEnvironment(webview)

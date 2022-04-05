@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-03-08 11:32:22+0000 */
+/* Translation-Revision-Date: 2022-03-25 13:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -41,7 +41,7 @@
 "%1$@ and %2$@" = "%1$@ ve %2$@";
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
-"%1$@ card ending %2$@" = "%1$@ card ending %2$@";
+"%1$@ card ending %2$@" = "%2$@ ile biten %1$@ kartı";
 
 /* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
 "%1$@ excl. %2$@" = "%2$@ hariç, %1$@";
@@ -243,7 +243,7 @@
 "A customs form must be printed and included on this international shipment" = "Bu uluslararası gönderiye bir gümrük formu yazdırılmalı ve eklenmelidir.";
 
 /* Message when attempting to pay for a test transaction with a live card. */
-"A live card was used on a site in test mode. Use a test card instead." = "A live card was used on a site in test mode. Use a test card instead.";
+"A live card was used on a site in test mode. Use a test card instead." = "Test modunda bir sitede canlı kart kullanıldı. Bunun yerine bir test kartı kullanın.";
 
 /* Error message when there was a network error checking In-Person Payments requirements */
 "A network error occurred. Please check your connection and try again." = "Bir ağ sorunu meydana geldi. Lütfen bağlantınızı kontrol edip tekrar deneyin.";
@@ -282,16 +282,13 @@
 "ADDRESS" = "ADRES";
 
 /* Reads as 'AID'. Part of the mandatory data in receipts */
-"AID" = "AID";
-
-/* About this app (information page title) */
-"About" = "Hakkında";
+"AID" = "YARDIM";
 
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "Uygulama hakkında";
 
 /* Reads as 'Account Type'. Part of the mandatory data in receipts */
-"Account Type" = "Account Type";
+"Account Type" = "Hesap Türü";
 
 /* Title for the error screen when a Card Present Payments extension is installed but not activated */
 "Activate %1$@" = "Etkinleştir: %1$@";
@@ -336,7 +333,7 @@
 "Add Downloadable File" = "İndirilebilir Dosya Ekle";
 
 /* Title for the Fee screen during order creation */
-"Add Fee" = "Add Fee";
+"Add Fee" = "Ücret Ekle";
 
 /* Title text of the button that adds fees when creating a new order */
 "Add Fees" = "Ücret Ekle";
@@ -350,7 +347,8 @@
 /* Add New Package screen title in Shipping Label flow */
 "Add New Package" = "Yeni Paket Ekle";
 
-/* Title text of the button that adds a note when creating a simple payment */
+/* Title text of the button that adds a note when creating a simple payment
+   Title text of the button that adds customer note data when creating a new order */
 "Add Note" = "Not Ekle";
 
 /* Action to add one photo on the Product images screen */
@@ -407,7 +405,7 @@
 "Add a tracking" = "Bir takip ekle";
 
 /* Cell text in Add / Edit variation when there are no images. */
-"Add a variation image" = "Add a variation image";
+"Add a variation image" = "Varyasyon resmi ekle";
 
 /* Button title in the Shipping Label Payment Method screen if there is an existing payment method */
 "Add another credit card" = "Başka kredi kartı ekle";
@@ -474,8 +472,14 @@
 /* Notice text after updating the shipping or billing address */
 "Address successfully updated." = "Adres başarıyla güncellendi.";
 
+/* Accessibility hint for selecting a product in the Add Product screen */
+"Adds product to order." = "Siparişe ürün ekler.";
+
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "Bir siparişe takip ekler.";
+
+/* Accessibility hint for selecting a variation in a list of product variations */
+"Adds variation to order." = "Siparişe varyasyon ekler.";
 
 /* Adult signature required in Shipping Labels > Carrier and Rates */
 "Adult signature required (+%1$@)" = "Yetişkin imzası gerekli (+%1$@)";
@@ -539,23 +543,23 @@
 "Amount" = "Miktar";
 
 /* Title for the amount field on the Fee Details screen during order creationParameters: %1$@ - fee type (percent sign or currency symbol) */
-"Amount (%1$@)" = "Amount (%1$@)";
+"Amount (%1$@)" = "Tutar (%1$@)";
 
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
 "Amount Eligible For Refund" = "Geri Ödenebilecek Tutar";
 
 /* Line description for 'Amount Paid' cart total on the receipt
    Title of 'Amount Paid' section in the receipt */
-"Amount Paid" = "Amount Paid";
+"Amount Paid" = "Ödenen Miktar";
 
 /* A failure reason for when an error HTTP status code was returned from the site, with the specific error code. */
-"An HTTP error code %i was returned." = "An HTTP error code %i was returned.";
+"An HTTP error code %i was returned." = "%i HTTP hata kodu döndürüldü.";
 
 /* A failure reason for when an error HTTP status code was returned from the site. */
-"An HTTP error code was returned." = "An HTTP error code was returned.";
+"An HTTP error code was returned." = "Bir HTTP hata kodu döndürüldü.";
 
 /* Error message when Bluetooth is not enabled for this application. */
-"An error occurred accessing Bluetooth - please enable Bluetooth and try again" = "An error occurred accessing Bluetooth - please enable Bluetooth and try again";
+"An error occurred accessing Bluetooth - please enable Bluetooth and try again" = "Bluetooth'a erişimde bir hata oluştu - lütfen Bluetooth'u etkinleştirin ve tekrar deneyin";
 
 /* An error description explaining that a Menu could not be created. */
 "An error occurred creating the Menu." = "Menü oluşturulurken bir hata oluştu.";
@@ -573,19 +577,22 @@
 "An error occurred while processing your request: " = "İsteğiniz işlenirken bir hata oluştu: ";
 
 /* Message when it looks like a duplicate transaction is being attempted. */
-"An identical transaction was submitted recently. If you wish to continue, try another means of payment" = "An identical transaction was submitted recently. If you wish to continue, try another means of payment";
+"An identical transaction was submitted recently. If you wish to continue, try another means of payment" = "Yakın zamanda benzer bir işlem gönderildi. Devam etmek istiyorsanız başka bir ödeme yöntemi deneyin";
 
 /* Message when an incorrect PIN has been entered too many times. */
-"An incorrect PIN has been entered too many times. Try another means of payment" = "An incorrect PIN has been entered too many times. Try another means of payment";
+"An incorrect PIN has been entered too many times. Try another means of payment" = "Birçok kez yanlış PIN girildi. Başka bir ödeme yöntemi deneyin";
 
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "Satın alma işleminden sonra müşteriye göndermek için isteğe bağlı not";
 
 /* A failure reason for when the error that occured wasn't able to be determined. */
-"An unknown error occurred." = "An unknown error occurred.";
+"An unknown error occurred." = "Bilinmeyen bir hata oluştu.";
 
 /* Title of analytics as part of Jetpack benefits. */
 "Analytics" = "Analiz";
+
+/* Message when enabling analytics succeeds */
+"Analytics enabled successfully." = "Analytics başarıyla etkinleştirildi.";
 
 /* Case Any in Order Filters for Order Statuses
    Display label for all order statuses selected in Order Filters - Label for one of the filters in order date range - Product variation attribute description where the attribute is set to any value. - Title when there is no filter set. */
@@ -605,7 +612,7 @@
 "Application Logs" = "Uygulama Günlükleri";
 
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
-"Application Name" = "Application Name";
+"Application Name" = "Uygulama Adı";
 
 /* Change order status screen - button title to apply selection */
 "Apply" = "Uygula";
@@ -663,7 +670,7 @@
 "Are you sure you want to remove this variation?" = "Bu varyasyonu kaldırmak istediğinizden emin misiniz?";
 
 /* Message displayed in the alert for dismissing all the inbox notes. */
-"Are you sure? Inbox messages will be dismissed forever." = "Are you sure? Inbox messages will be dismissed forever.";
+"Are you sure? Inbox messages will be dismissed forever." = "Emin misiniz? Gelen kutusu mesajları artık her zaman kapatılacak.";
 
 /* Placeholder in the Attribute Name row on Rename Attributes screen. */
 "Attribute name" = "Nitelik ismi";
@@ -690,6 +697,9 @@
 
 /* Subtitle of the cell in Product Price Settings > Schedule sale */
 "Automatically start and end a sale" = "Bir satışı otomatik başlat ve durdur";
+
+/* Title of a button linking to the Automattic website */
+"Automattic family" = "Automattic ailesi";
 
 /* A unit test string. It reads: Awaiting payment via <payment method title>.A payment method example is: 'Credit Card (Stripe)'
    Awaiting payment via (payment method title) */
@@ -738,6 +748,9 @@
 /* Accessibility label for block quote button on formatting toolbar. */
 "Block Quote" = "Blok Alıntı";
 
+/* Title of a button linking to the app's blog */
+"Blog" = "Blog";
+
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
 "Bluetooth permission required" = "Bluetooth izni gerekli";
 
@@ -749,7 +762,7 @@
 
 /* Button title in the action sheet of product variatiosns that shows the bulk update
    Title that appears on top of the bulk update of product variations screen */
-"Bulk Update" = "Bulk Update";
+"Bulk Update" = "Toplu Güncelleme";
 
 /* Title of the text field for editing the button text for an external/affiliate product */
 "Button Text" = "Düğme Metni";
@@ -807,10 +820,10 @@
 "Card" = "Kart";
 
 /* Error message when a card is left in the reader and another transaction started. */
-"Card was left in reader - please remove and reinsert card" = "Card was left in reader - please remove and reinsert card";
+"Card was left in reader - please remove and reinsert card" = "Kart okuyucuda kaldı - lütfen kartı çıkarıp yeniden takın";
 
 /* Error message when the card is removed from the reader prematurely. */
-"Card was removed too soon - please try transaction again" = "Card was removed too soon - please try transaction again";
+"Card was removed too soon - please try transaction again" = "Kart çok erken çıkarıldı - lütfen işlemi tekrar deneyin";
 
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "Kargo Şirketi ve Ücretler";
@@ -824,9 +837,6 @@
 /* Catalog Visibility label in Product Settings
    Product Catalog Visibility navigation title */
 "Catalog Visibility" = "Katalog Görünürlüğü";
-
-/* shown in promotional screens during first launch */
-"Catch up with your favorite sites and join the conversation anywhere, any time." = "Her an, her yerde sevdiğiniz siteleri kontrol edip sohbetin bir parçası olun.";
 
 /* Edit product categories screen - Screen title
    Filter product categories screen - Screen title - Title of the Categories row on Product main screen - Title of the product form bottom sheet action for editing categories. */
@@ -969,7 +979,7 @@
 "Connecting to reader" = "Okuyucuya bağlanılıyor";
 
 /* Error message when establishing a connection to the card reader times out. */
-"Connecting to the card reader timed out - ensure it is nearby and charged and then try again" = "Connecting to the card reader timed out - ensure it is nearby and charged and then try again";
+"Connecting to the card reader timed out - ensure it is nearby and charged and then try again" = "Kart okuyucuya bağlanma işlemi zaman aşımına uğradı - yakında olduğundan ve şarj edildiğinden emin olduktan sonra tekrar deneyin";
 
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "Hesabınıza bağlanılıyor";
@@ -992,6 +1002,9 @@
 
 /* Contact WooComerce Payments Support title */
 "Contact WooCommerce Payments Support" = "WooCommerce Payments Desteği ile iletişime geçin";
+
+/* Action button to contact support on enable analytics screen */
+"Contact support" = "Destek ile iletişim kur";
 
 /* Title of a button to contact support in the error screen for In-Person payments */
 "Contact us" = "Bizimle iletişim kurun";
@@ -1154,6 +1167,15 @@
 /* Cell title: the current date. */
 "Current" = "Geçerli";
 
+/* Message in the footer of bulk price setting screen with the current price, when it is the same for all variations */
+"Current price is %@." = "Geçerli fiyat: %@.";
+
+/* Message in the footer of bulk price setting screen, when none of the variations have price value. */
+"Current price is not set." = "Geçerli fiyat belirlenmedi.";
+
+/* Message in the footer of bulk price setting screen, when variations have different price values. */
+"Current prices are mixed." = "Geçerli fiyatlar karışık.";
+
 /* Name of the section for custom shipment tracking carriers */
 "Custom" = "Özel";
 
@@ -1183,6 +1205,9 @@
 
 /* Title for the Shipping Address Form for Customer Details */
 "Customer Details" = "Müşteri Bilgileri";
+
+/* Title text of the section that shows the Order customer note when creating a new order */
+"Customer Note" = "Müşteri notu";
 
 /* Customer note row title
    Customer note section title - Title for the edit customer provided note screen - Title text of the row that holds the order note when creating a simple payment */
@@ -1215,7 +1240,7 @@
 "Date Range" = "Tarih aralığı";
 
 /* Title of 'Date Paid' section in the receipt */
-"Date paid" = "Date paid";
+"Date paid" = "Ödeme tarihi";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "Gönderim tarihi";
@@ -1278,7 +1303,7 @@
 "Discount" = "İndirim";
 
 /* Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s) */
-"Discount %1$@" = "Discount %1$@";
+"Discount %1$@" = "İndirim %1$@";
 
 /* Title of the Discounted Orders label on Coupon Details screen */
 "Discounted Orders" = "İndirimli siparişler";
@@ -1288,10 +1313,13 @@
 "Dismiss" = "Kapat";
 
 /* Dismiss All button in Inbox Notes for dismissing all the notes. */
-"Dismiss All" = "Dismiss All";
+"Dismiss All" = "Tümünü Kapat";
+
+/* Title for dismiss the action when dragging the screen down. */
+"Dismiss Order" = "Siparişi Yoksay";
 
 /* Title of the alert for dismissing all the inbox notes. */
-"Dismiss all messages" = "Dismiss all messages";
+"Dismiss all messages" = "Tüm mesajları önemseme";
 
 /* Display label for the product's inventory backorders setting option */
 "Do not allow" = "İzin verme";
@@ -1381,7 +1409,7 @@
 "Easily identify your products with unique codes" = "Ürünlerinizi benzersiz kodlarla kolayca tanımlayın";
 
 /* Button to edit a customer on the New Order screen
-   Button to edit an order status on the New Order screen - Title text of the button that edits a note when creating a simple payment */
+   Button to edit an order status on the New Order screen - Button to edit the customer note on the New Order screen - Title text of the button that edits a note when creating a simple payment */
 "Edit" = "Düzenle";
 
 /* Action to edit the address in Shipping Label Suggested screen */
@@ -1402,6 +1430,9 @@
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Edit and add new products from anywhere" = "Her yerden yeni ürünler ekleyin ve düzenleyin";
+
+/* Accessibility label for the button to edit customer note on the New Order screen */
+"Edit customer note" = "Müşteri notunu düzenle";
 
 /* Carrier eligible for free pickup in Shipping Labels > Carrier and Rates */
 "Eligible for free pickup" = "Ücretsiz teslim almaya uygun";
@@ -1438,8 +1469,20 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "Boş adres";
 
+/* The action button on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
+"Enable Coupons" = "Kuponları etkinleştir";
+
 /* Enable Reviews label in Product Settings */
 "Enable Reviews" = "Yorumları Etkinleştir";
+
+/* Description about WooCommerce Analytics on the enable analytics screen */
+"Enable WooCommerce Analytics to see missing stats for your store." = "Mağazanız için eksik istatistikleri görmek istiyorsanız WooCommerce Analytics'i etkinleştirin.";
+
+/* Title for the enable analytics screen */
+"Enable WooCommerce Analytics to see your stats" = "İstatistiklerinizi görmek için WooCommerce Analytics'i etkinleştirin";
+
+/* Action title to enable Analytics for a store */
+"Enable analytics" = "Analytics'i etkinleştir";
 
 /* Title of the status row on Product Variation main screen to enable/disable a variation */
 "Enabled" = "Etkin";
@@ -1538,20 +1581,26 @@
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "Zarf";
 
+/* Error message when enabling analytics fails */
+"Error enabling analytics. Please try again." = "Analytics etkinleştirilirken hata oluştu. Lütfen tekrar deneyin.";
+
 /* Title for the error alert when fetching system status report fails */
 "Error fetching report" = "Rapor alınırken hata oluştu";
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Apple Haritalar'da adres bulunurken hata oluştu";
 
-/* Message displayed when fail to loading total discounted amount in Coupon Details screen */
-"Error loading data" = "Error loading data";
+/* Message displayed on Coupon Details screen when loading total discounted amount fails */
+"Error loading data" = "Veriler yüklenirken hata oluştu";
 
 /* Alert title when there is an error requesting shipping label document for printing */
 "Error previewing shipping label" = "Kargo etiketi önizlenirken hata oluştu";
 
 /* Notice displayed when the label purchase fails */
 "Error purchasing the label" = "Etiket satın alınırken hata oluştu";
+
+/* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
+"Everyone loves a deal" = "Herkes iyi alışverişi sever";
 
 /* Title for the exclude sale items row in coupon usage details screen. */
 "Exclude Sale Items" = "Satılan Ürünler Hariç";
@@ -1588,7 +1637,7 @@
 "Featured Product" = "Öne çıkan ürün";
 
 /* Title for the Fee Details screen during order creation */
-"Fee" = "Fee";
+"Fee" = "Ücret";
 
 /* Title in the navigation bar when the survey is completed */
 "Feedback Sent!" = "Geri Bildirim Gönderildi";
@@ -1658,9 +1707,6 @@
 
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "Sabit Ürün İndirimi";
-
-/* Shown in the prologue carousel (promotional screens) during first launch. */
-"Follow your favorite sites and discover new blogs." = "Favori sitelerinizi takip edin ve yeni bloglar keşfedin.";
 
 /* User role badge */
 "Follower" = "Takipçi";
@@ -1813,6 +1859,9 @@
 /* Browse our help documentation website title */
 "Help Center" = "Yardım Merkezi";
 
+/* Text used when sharing a link to the app with a friend. */
+"Hey! Here is a link to download the WooCommerce app. I'm really enjoying it and thought you might too." = "Merhaba! İşte WooCommerce uygulamasını indirebileceğiniz bir bağlantı. Gerçekten çok hoşuma gitti, sizin de seveceğinizi düşündüm.";
+
 /* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
    Display label for the product's catalog visibility */
 "Hidden" = "Gizli";
@@ -1927,7 +1976,7 @@
 "Insert" = "Ekle";
 
 /* Message from the in-person payment card reader prompting user to insert their card */
-"Insert Card" = "Insert Card";
+"Insert Card" = "Kartı Takın";
 
 /* Accessibility label for insert horizontal ruler button on formatting toolbar. */
 "Insert Horizontal Ruler" = "Yatay Cetvel Yerleştir";
@@ -1936,7 +1985,10 @@
 "Insert Link" = "Bağlantı Ekle";
 
 /* Message from the in-person payment card reader prompting user to insert or swipe their card */
-"Insert Or Swipe Card" = "Insert Or Swipe Card";
+"Insert Or Swipe Card" = "Kartı Takın veya Geçirin";
+
+/* Title of a button linking to the app's Instagram profile */
+"Instagram" = "Instagram";
 
 /* Navigates to Install Jetpack screen.
    Title of install action in the Jetpack benefits view. - Title of the Install Jetpack intro view - Title of the Install Jetpack view */
@@ -2018,6 +2070,9 @@
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "Bu kullanıcı adı\/parola bu siteyle ilişkili değil gibi görünüyor.";
 
+/* Message on enable analytics screen to notify that the module is disabled for the store */
+"It looks like you have analytics disabled." = "Analytics'i devre dışı bıraktığınız anlaşılıyor.";
+
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "Yanış bir parola girmişsiniz gibi görünüyor. Yeniden denemek ister misiniz?";
 
@@ -2041,6 +2096,9 @@
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack, size en iyi mobil deneyimi sunmak için anında bildirimler ve istatistikler dahil olmak üzere gerekli araçlarla sizi mağazaya bağlayan ücretsiz bir WordPress eklentisidir.";
+
+/* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
+"Join from anywhere" = "İstediğiniz yerden katılın";
 
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "Düzenlemeye Devam Et";
@@ -2099,6 +2157,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "Legal (8,5 x 14 inç)";
+
+/* Title of a button linking to a list of legal documents like privacy policy,terms of service, etc */
+"Legal and more" = "Yasal bilgiler ve daha fazlası";
 
 /* Title for the row to enter the package length on the Add New Custom Package screen in Shipping Label flow
    Title of the cell in Product Shipping Settings > Length */
@@ -2217,9 +2278,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "Stok yönet";
 
-/* shown in promotional screens during first launch */
-"Manage your Jetpack-powered site on the go — you've got WordPress in your pocket." = "Jetpack tarafından desteklenen sitenizi hareket halindeyken yönetin; WordPress’iniz cebinizde.";
-
 /* Caption displayed in promotional screens shown during the login flow. */
 "Manage your store orders on the go " = "Mağaza siparişlerinizi hareket halindeyken yönetin ";
 
@@ -2292,7 +2350,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Minimum value %@, maximum value %@" = "Minimum değer %1$@, maksimum değer %2$@";
 
 /* The description in product variations bulk update, of a value, that is different acrossall variations */
-"Mixed" = "Mixed";
+"Mixed" = "Karışık";
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Monitor and approve your product reviews" = "Ürün incelemelerinizi izleyin ve onaylayın";
@@ -2324,7 +2382,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Moves the comment to Trash" = "Yorumu Çöp Kutusu'na taşır";
 
 /* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
-"Multiple Contactless Cards Detected" = "Multiple Contactless Cards Detected";
+"Multiple Contactless Cards Detected" = "Birden Fazla Temassız Kart Algılandı";
 
 /* Title of the hub menu view in case there is no title for the store */
 "My Store" = "Mağazam";
@@ -2361,6 +2419,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text preceding the Contact Us button in the error screen for In-Person payments
    Text preceding the Contact Us button in the survey completed screen */
 "Need some help?" = "Biraz yardıma mı ihtiyacınız var?";
+
+/* Message format on enable analytics screen for support. The %@ placeholder is a URL with more information. */
+"Need some help? %1$@" = "Biraz yardıma mı ihtiyacınız var? %1$@";
 
 /* The title for the net amount paid cell */
 "Net Payment" = "Net ödeme";
@@ -2401,16 +2462,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No address specified." = "Adres belirtilmedi.";
 
 /* Error message when a card reader was expected to already have been connected. */
-"No card reader is connected - connect a reader and try again" = "No card reader is connected - connect a reader and try again";
+"No card reader is connected - connect a reader and try again" = "Bağlı kart okuyucu yok - bir okuyucu bağlayın ve tekrar deneyin";
 
 /* Title for the error screen when there was a network error checking In-Person Payments requirements. */
 "No connection" = "Bağlantı yok";
 
 /* Error message when there is no connection to the Internet. */
-"No connection to the Internet - please connect to the Internet and try again" = "No connection to the Internet - please connect to the Internet and try again";
+"No connection to the Internet - please connect to the Internet and try again" = "İnternet bağlantısı yok - lütfen İnternete bağlanın ve tekrar deneyin";
 
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
-"No coupons found" = "No coupons found";
+"No coupons found" = "Kupon bulunamadı";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Veri bulunmuyor";
@@ -2429,6 +2490,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The text on the placeholder overlay when no products match the filter on the Products tab */
 "No matching products found" = "Eşleşen ürün bulunamadı";
+
+/* Message on the detail view of the Orders tab before any order is selected */
+"No order selected" = "Hiç sipariş seçilmedi";
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "Fiyat belirtilmemiş";
@@ -2468,7 +2532,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow - The description in product variations bulk update, of a value, that is missing from all variations - Value for fields in Coupon Usage Details screen when no value is set */
 "None" = "Hiçbiri";
 
-/* Title of dismiss action in the Jetpack benefits view. */
+/* Action title to dismiss enabling Analytics for a store
+   Title of dismiss action in the Jetpack benefits view. */
 "Not now" = "Şimdi değil";
 
 /* Instructions after a Magic Link was sent, but the email can't be found in their inbox. */
@@ -2548,6 +2613,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "Kullanılabilir durumların bir listesini açar.";
+
+/* Accessibility hint for selecting a variable product in the Add Product screen */
+"Opens list of product variations." = "Ürün varyasyonları listesini açar.";
+
+/* Accessibility hint for selecting a product in a new order */
+"Opens product detail." = "Ürün detayını açar.";
 
 /* Placeholder of cell presenting the title of the new attribute option. */
 "Option name" = "Seçenek adı";
@@ -2688,7 +2759,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Payment Method Selected" = "Ödeme Yöntemi Seçildi";
 
 /* Message when the presented card remaining credit or balance is insufficient for the purchase. */
-"Payment declined due to insufficient funds. Try another means of payment" = "Payment declined due to insufficient funds. Try another means of payment";
+"Payment declined due to insufficient funds. Try another means of payment" = "Ödeme yetersiz bakiye nedeniyle reddedildi. Başka bir ödeme yöntemi deneyin";
 
 /* Error message. Presented to users after a collecting a payment fails
    Error message. Presented to users after collecting a payment fails */
@@ -2705,10 +2776,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Payment successful" = "Ödeme başarılı";
 
 /* Message when we don't know exactly why the payment was declined. */
-"Payment was declined for an unknown reason. Try another means of payment" = "Payment was declined for an unknown reason. Try another means of payment";
+"Payment was declined for an unknown reason. Try another means of payment" = "Ödeme bilinmeyen bir nedenle reddedildi. Başka bir ödeme yöntemi deneyin";
 
 /* Message when payment is declined for a non specific reason. */
-"Payment was declined for an unspecified reason. Try another means of payment" = "Payment was declined for an unspecified reason. Try another means of payment";
+"Payment was declined for an unspecified reason. Try another means of payment" = "Ödeme belirtilmeyen bir nedenle reddedildi. Başka bir ödeme yöntemi deneyin";
 
 /* Display label for pending order status.
    Display label for the review's pending status */
@@ -2929,10 +3000,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of in-progress modal when requesting document with multiple shipping labels for printing */
 "Printing Labels" = "Etiketleri Yazdırma";
 
-/* Opens the California Privacy Policy web page */
+/* Title of button that displays the California Privacy Notice */
 "Privacy Notice for California Users" = "Kaliforniya'daki Kullanıcılar için Gizlilik Bildirimi";
 
-/* Opens the Privacy Policy web page */
+/* Title of button that displays the App's privacy policy */
 "Privacy Policy" = "Gizlilik Politikası";
 
 /* Navigates to Privacy Settings screen
@@ -3028,9 +3099,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Publish Settings section on Product Settings screen */
 "Publish Settings" = "Yayımlama ayarları";
 
-/* shown in promotional screens during first launch */
-"Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "Gönderinizi parktan yayımlayın. Otobüste blog yazısı hazırlayın. Kafeden yorum yapın. WordPress gittiğiniz her yere gelir.";
-
 /* Display label for the product's published status */
 "Published" = "Yayınlandı";
 
@@ -3074,6 +3142,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Restriction type Quarantine for contents declared in the customs form for Shipping Label flow */
 "Quarantine" = "Karantina";
+
+/* Title of button that allows the user to rate the app in the App Store */
+"Rate us" = "Bizi değerlendirin";
 
 /* Subtitle for Contact WooCommerce Payments Support */
 "Reach our happiness engineers who can help answer payments related questions" = "Ödemelerle ilgili sorularınızda size yardımcı olabilecek mutluluk mühendislerimize ulaşın";
@@ -3162,7 +3233,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Registered Domain" = "Kayıtlı alan adı";
 
 /* The label in the option of selecting to bulk update the regular price of a product variation */
-"Regular Price" = "Regular Price";
+"Regular Price" = "Normal Fiyat";
 
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Normal fiyat: %@";
@@ -3175,10 +3246,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Remove Attribute" = "Niteliği kaldır";
 
 /* Message from the in-person payment card reader prompting user to remove their card */
-"Remove Card" = "Remove Card";
+"Remove Card" = "Kartı Kaldır";
 
 /* Text for the button to remove a fee from the order during order creation */
-"Remove Fee from Order" = "Remove Fee from Order";
+"Remove Fee from Order" = "Ücreti Siparişten Kaldır";
 
 /* Title on the alert when the user taps to delete a Product image */
 "Remove Image" = "Görseli Kaldır";
@@ -3246,7 +3317,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Retrieves a list of products that contain a given keyword." = "Belirli bir anahtar sözcüğü içeren ürünlerin bir listesini alır.";
 
 /* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
-   Action button to retry syncing the draft order - Button to retry when there was a network error checking In-Person Payments requirements - Retry Action - Retry the last action */
+   Action button to retry syncing the draft order - Button to retry when there was a network error checking In-Person Payments requirements - Retry Action - Retry action for an error notice - Retry the last action */
 "Retry" = "Tekrar";
 
 /* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages.
@@ -3254,7 +3325,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Retry After Updating" = "Güncellemeden Sonra Tekrar Dene";
 
 /* Message from the in-person payment card reader prompting user to retry payment with their card */
-"Retry Card" = "Retry Card";
+"Retry Card" = "Kartı Yeniden Dene";
 
 /* Action button to check site's connection again. */
 "Retry Connection" = "Bağlantıyı Yeniden Dene";
@@ -3319,7 +3390,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Sanitary \/ Phytosanitary Inspection" = "Sağlık\/Bitki Sağlığı denetimi";
 
 /* Action for saving a Product remotely
-   Add Product Category. Save button title in navbar. - Add Product Tags. Save button title in navbar. */
+   Add Product Category. Save button title in navbar. - Add Product Tags. Save button title in navbar. - Button title that save the price selection for bulk variation update */
 "Save" = "Kaydet";
 
 /* Button title to save a product as draft in Discard Changes Action Sheet */
@@ -3396,9 +3467,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Text on the button to see a saved receipt */
 "See Receipt" = "Makbuzu Gör";
-
-/* Shown in the prologue carousel (promotional screens) during first launch. */
-"See comments and notifications in real time." = "Yorumları ve bildirimleri gerçek zamanlı olarak görün.";
 
 /* Link title to see all paper size options */
 "See layout and paper sizes options" = "Düzen ve kağıt boyutu seçeneklerine bakın";
@@ -3488,6 +3556,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "WordPress.com hesabınızda oturum açmış durumdayken hizmetlerini kullanımınız hakkında bilgileri analiz aracımızla paylaşın.";
+
+/* Title for button allowing users to share information about the app with friends, such as via Messages */
+"Share with Friends" = "Arkadaşlarla paylaş";
 
 /* Shipping Label Address Validation navigation title
    Shipping Label Suggested Address navigation title - Title of origin address in shipping label details - Title of the cell Ship from inside Create Shipping Label form */
@@ -3701,7 +3772,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Sorry, that username is unavailable." = "Üzgünüm, bu kullanıcı adı müsait değil.";
 
 /* Error message when the card reader service experiences an unexpected internal service error. */
-"Sorry, this payment couldn’t be processed" = "Sorry, this payment couldn’t be processed";
+"Sorry, this payment couldn’t be processed" = "Üzgünüz, ödemeniz işleme alınamadı";
+
+/* Error message shown when a refund could not be canceled (likely because it had already completed) */
+"Sorry, this refund could not be canceled" = "Maalesef bu geri ödeme iptal edilemedi";
 
 /* No comment provided by engineer. */
 "Sorry, usernames can only contain lowercase letters (a-z) and numbers." = "Üzgünüz, kullanıcı adı sadece küçük harfler (a-z) ve rakamlar içerebilir.";
@@ -3794,13 +3868,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Sum of products and package weight" = "Ürünlerin toplamı ve paket ağırlığı";
 
 /* Title of 'Summary' section in the receipt when the order number is unknown */
-"Summary" = "Summary";
+"Summary" = "Özet";
 
 /* Title of 'Summary' section in the receipt. %1$@ is the order number, e.g. 4920 */
-"Summary: Order #%1$@" = "Summary: Order #%1$@";
+"Summary: Order #%1$@" = "Özet: %1$@ numaralı sipariş";
 
 /* Message from the in-person payment card reader prompting user to swipe their card */
-"Swipe Card" = "Swipe Card";
+"Swipe Card" = "Kartı Geçirin";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "Mağaza Değiştir";
@@ -3840,7 +3914,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "System status report copied to clipboard" = "Sistem durum raporu panoya kopyalandı";
 
 /* Message when attempting to pay for a live transaction with a test card. */
-"System test cards are not permitted for payment. Try another means of payment" = "System test cards are not permitted for payment. Try another means of payment";
+"System test cards are not permitted for payment. Try another means of payment" = "Sistem test kartlarına ödeme yapılmasına izin verilmiyor. Başka bir ödeme yöntemi deneyin";
 
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags. - Title of the Tags row on Product main screen */
@@ -3851,7 +3925,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation bar title for the Simple Payments Methods screens. %1$@ is a placeholder for the total amount to collect
    Text of the button that creates a simple payment order. %1$@ is a placeholder for the total amount to collect */
-"Take Payment (%1$@)" = "Take Payment (%1$@)";
+"Take Payment (%1$@)" = "Ödeme Al (%1$@)";
 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "Fotoğraf çek";
@@ -3933,9 +4007,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Tax label for the tax detail row. - Title on the refunds screen that lists the fees tax cost - Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
 "Tax" = "Vergi";
 
-/* Tax percentage to be applied to the simple payments order. %1$@%% is a placeholder for the tax rate as a percentage */
-"Tax (%1$@%%)" = "Tax (%1$@%%)";
-
 /* Section header title for product tax settings */
 "Tax Settings" = "Vergi Ayarları";
 
@@ -3962,13 +4033,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Disclaimer in the simple payments summary screen about taxes. */
 "Taxes are automatically calculated based on your store address." = "Vergiler, mağaza adresinize göre otomatik olarak hesaplanır.";
 
-/* Information about taxes and the order total when creating a new order */
-"Taxes will be automatically calculated based on your store settings." = "Vergiler mağaza ayarlarınıza göre otomatik olarak hesaplanır.";
-
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "Bize %1$@ ile ilgili daha fazla bilgi verin...";
 
-/* Opens the Terms of Service web page */
+/* Title of button that displays the App's terms of service */
 "Terms of Service" = "Hizmet Koşulları";
 
 /* Cell description on beta features screen to enable accepting in-person payments for stores in Canada */
@@ -3994,7 +4062,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Thank you for sharing your thoughts with us" = "Düşüncelerinizi bizimle paylaştığınız için teşekkür ederiz";
 
 /* Confirmation message in Inbox Notes after responding to a survey. */
-"Thank you for your feedback!" = "Thank you for your feedback!";
+"Thank you for your feedback!" = "Geri bildiriminiz için teşekkürler!";
 
 /* Shown when a user pastes a code into the two factor field that contains letters or is the wrong length */
 "That doesn't appear to be a valid verification code." = "Bu geçerli bir doğrulama kodu gibi görünmüyor.";
@@ -4027,7 +4095,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "%1$@ uzantısı mağazanızda yüklü, ancak Şahsen Ödemeler için güncellenmesi gerekiyor. Lütfen en son sürüme güncelleyin.";
 
 /* Error message when the card reader loses its Bluetooth connection to the card reader. */
-"The Bluetooth connection to the card reader disconnected unexpectedly" = "The Bluetooth connection to the card reader disconnected unexpectedly";
+"The Bluetooth connection to the card reader disconnected unexpectedly" = "Kart okuyucuyla Bluetooth bağlantısı beklenmedik şekilde kesildi";
 
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "Google hesabı \"%@\" WordPress.com'daki hiçbir hesapla eşleşmiyor";
@@ -4045,46 +4113,46 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The attribute couldn't be saved." = "Özellik kaydedilemedi.";
 
 /* Message when the card presented does not support the order currency. */
-"The card does not support this currency. Try another means of payment" = "The card does not support this currency. Try another means of payment";
+"The card does not support this currency. Try another means of payment" = "Kart bu para birimini desteklemiyor. Başka bir ödeme yöntemi deneyin";
 
 /* Message when the card presented does not allow this type of purchase. */
-"The card does not support this type of purchase. Try another means of payment" = "The card does not support this type of purchase. Try another means of payment";
+"The card does not support this type of purchase. Try another means of payment" = "Kart bu satın alma türünü desteklemiyor. Başka bir ödeme yöntemi deneyin";
 
 /* Message when the presented card is past its expiration date. */
-"The card has expired. Try another means of payment" = "The card has expired. Try another means of payment";
+"The card has expired. Try another means of payment" = "Kartın süresi bitmiş. Başka bir ödeme yöntemi deneyin";
 
 /* Message when payment is declined for a non specific reason. */
-"The card or card account is invalid. Try another means of payment" = "The card or card account is invalid. Try another means of payment";
+"The card or card account is invalid. Try another means of payment" = "Kart veya kart hesabı geçersiz. Başka bir ödeme yöntemi deneyin";
 
 /* Error message when the card reader is busy executing another command. */
-"The card reader is busy executing another command - please try again" = "The card reader is busy executing another command - please try again";
+"The card reader is busy executing another command - please try again" = "Kart okuyucu başka bir komut yürütmekle meşgul - lütfen tekrar deneyin";
 
 /* Error message when the card reader is incompatible with the application. */
-"The card reader is not compatible with this application - please try updating the application or using a different reader" = "The card reader is not compatible with this application - please try updating the application or using a different reader";
+"The card reader is not compatible with this application - please try updating the application or using a different reader" = "Kart okuyucu bu uygulamayla uyumlu değil - lütfen uygulamayı güncellemeyi veya farklı bir okuyucu kullanmayı deneyin";
 
 /* Error message when the card reader session has timed out. */
-"The card reader session has expired - please disconnect and reconnect the card reader and then try again" = "The card reader session has expired - please disconnect and reconnect the card reader and then try again";
+"The card reader session has expired - please disconnect and reconnect the card reader and then try again" = "Kart okuyucu oturumunun süresi doldu - lütfen kart okuyucunun bağlantısını kesip yeniden bağlayın ve ardından tekrar deneyin";
 
 /* Error message when the card reader software is too far out of date to process payments. */
-"The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "The card reader software is out-of-date - please update the card reader software before attempting to process payments";
+"The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "Kart okuyucu yazılımı güncel değil - lütfen ödemeleri işleme koymadan önce kart okuyucu yazılımını güncelleyin";
 
 /* Error message when the card reader software update fails due to a communication error. */
-"The card reader software update failed due to a communication error - please try again" = "The card reader software update failed due to a communication error - please try again";
+"The card reader software update failed due to a communication error - please try again" = "Kart okuyucu yazılım güncellemesi bir iletişim hatası nedeniyle başarısız oldu - lütfen tekrar deneyin";
 
 /* Error message when the card reader software update fails due to a problem with the update server. */
-"The card reader software update failed due to a problem with the update server - please try again" = "The card reader software update failed due to a problem with the update server - please try again";
+"The card reader software update failed due to a problem with the update server - please try again" = "Güncelleme sunucusundaki bir sorun nedeniyle kart okuyucu yazılım güncellemesi başarısız oldu - lütfen tekrar deneyin";
 
 /* Error message when the card reader software update fails unexpectedly. */
-"The card reader software update failed unexpectedly - please try again" = "The card reader software update failed unexpectedly - please try again";
+"The card reader software update failed unexpectedly - please try again" = "Kart okuyucu yazılım güncellemesi beklenmedik bir şekilde başarısız oldu - lütfen tekrar deneyin";
 
 /* Error message when the card reader software update is interrupted. */
-"The card reader software update was interrupted before it could complete - please try again" = "The card reader software update was interrupted before it could complete - please try again";
+"The card reader software update was interrupted before it could complete - please try again" = "Kart okuyucu yazılım güncellemesi tamamlanamadan kesintiye uğradı - lütfen tekrar deneyin";
 
 /* Error message when the card reader itself declines the card. */
-"The card was declined by the card reader - please try another means of payment" = "The card was declined by the card reader - please try another means of payment";
+"The card was declined by the card reader - please try another means of payment" = "Kart, kart okuyucusu tarafından reddedildi - lütfen başka bir ödeme yöntemi deneyin";
 
 /* Error message when the card processor declines the payment. */
-"The card was declined by the payment processor - please try another means of payment" = "The card was declined by the payment processor - please try another means of payment";
+"The card was declined by the payment processor - please try another means of payment" = "Kart, ödeme işlemcisi tarafından reddedildi - lütfen başka bir ödeme yöntemi deneyin";
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Bu sunucunun sertifikası geçersiz. “%@” taklidi yapan bir siteye bağlanıyor olabilirsiniz ki bu kişisel bilgilerinizin ele geçirilebilmesi açısından büyük bir risktir.\n\nSertifikaya güvenip devam etmek istiyor musunuz?";
@@ -4099,10 +4167,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The new service package name is not unique." = "Yeni hizmet paketi adı benzersiz değil.";
 
 /* Message when the presented card does not allow the purchase amount. */
-"The payment amount is not allowed for the card presented. Try another means of payment." = "The payment amount is not allowed for the card presented. Try another means of payment.";
+"The payment amount is not allowed for the card presented. Try another means of payment." = "Belirtilen kart için ödeme tutarına izin verilmiyor Başka bir ödeme yöntemi deneyin.";
 
 /* Error message when the payment can not be processed (i.e. order amount is below the minimum amount allowed.) */
-"The payment can not be processed by the payment processor." = "The payment can not be processed by the payment processor.";
+"The payment can not be processed by the payment processor." = "Ödeme, ödeme işlemcisi tarafından işlenemiyor.";
 
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "Telefon numarası geçerli değil veya müşteriyi bu cihazdan arayamazsınız.";
@@ -4110,11 +4178,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "Bu ürünün fiyatı. Düzenlenebilir.";
 
+/* Message in the footer of bulk price setting screen (singular). */
+"The price will be updated for %d variation." = "%d varyasyon için fiyat güncellenecektir.";
+
+/* Message in the footer of bulk price setting screen (plurar). */
+"The price will be updated for %d variations." = "%d varyasyon için fiyat güncellenecektir.";
+
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
 "The reader has a critically low battery. Please charge the reader or try a different reader." = "Okuyucunun pili kritik düzeyde düşük. Lütfen okuyucuyu şarj edin veya farklı bir okuyucu deneyin.";
 
 /* Error message when a request times out. */
-"The request timed out - please try again" = "The request timed out - please try again";
+"The request timed out - please try again" = "İstek zaman aşımına uğradı - lütfen tekrar deneyin";
 
 /* Product price error notice message, when the sale price is added but the regular price is not */
 "The sale price can't be added without the regular price." = "Standart fiyat olmadan indirimli fiyat eklenemez.";
@@ -4126,10 +4200,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The sale price should be lower than the regular price." = "İndirim fiyatı, normal fiyattan daha düşük olmalıdır.";
 
 /* A failure reason for when the request couldn't be serialized. */
-"The serialization of the request failed." = "The serialization of the request failed.";
+"The serialization of the request failed." = "İsteğin serileştirilmesi başarısız oldu.";
 
 /* A failure reason for when the response couldn't be serialized. */
-"The serialization of the response failed." = "The serialization of the response failed.";
+"The serialization of the response failed." = "Yanıtın serileştirilmesi başarısız oldu.";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "Sunucu boş bir yanıt döndü. Bu genellikle sitenizin hafıza limitini arttırmanız gerektiği anlamına gelir.";
@@ -4162,25 +4236,25 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The stock quantity for this product. Editable." = "Bu ürünün stok miktarı Düzenlenebilir.";
 
 /* Error message when there is an issue with the store address preventing an action (e.g. reader connection.) */
-"The store address is incomplete or missing, please update it before continuing." = "The store address is incomplete or missing, please update it before continuing.";
+"The store address is incomplete or missing, please update it before continuing." = "Mağaza adresi eksik, lütfen devam etmeden önce güncelleyin.";
 
 /* Error message when there is an issue with the store postal code preventing an action (e.g. reader connection.) */
-"The store postal code is invalid or missing, please update it before continuing." = "The store postal code is invalid or missing, please update it before continuing.";
+"The store postal code is invalid or missing, please update it before continuing." = "Mağaza posta kodu geçersiz veya eksik, lütfen devam etmeden önce kodu güncelleyin.";
 
 /* Error message when the system cancels a command. */
-"The system canceled the command unexpectedly - please try again" = "The system canceled the command unexpectedly - please try again";
+"The system canceled the command unexpectedly - please try again" = "Sistem komutu beklenmedik bir şekilde iptal etti - lütfen tekrar deneyin";
 
 /* Error message when the card reader service experiences an unexpected software error. */
-"The system experienced an unexpected software error" = "The system experienced an unexpected software error";
+"The system experienced an unexpected software error" = "Sistem beklenmeyen bir yazılım hatasıyla karşılaştı";
 
 /* Error message when the card reader service is busy executing another command. */
-"The system is busy executing another command - please try again" = "The system is busy executing another command - please try again";
+"The system is busy executing another command - please try again" = "Sistem başka bir komut yürütmekle meşgul - lütfen tekrar deneyin";
 
 /* Message for the error alert when fetching system status report fails */
 "The system status report for your site cannot be fetched at the moment. Please try again." = "Sitenizin sistem durum raporu şu anda alınamıyor. Lütfen yeniden deneyin.";
 
 /* Message when the presented card postal code doesn't match the order postal code. */
-"The transaction postal code and card postal code do not match. Try another means of payment" = "The transaction postal code and card postal code do not match. Try another means of payment";
+"The transaction postal code and card postal code do not match. Try another means of payment" = "İşlem posta kodu ile kart posta kodu eşleşmiyor Başka bir ödeme yöntemi deneyin";
 
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "Varyasyon oluşturulamadı.";
@@ -4198,7 +4272,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "There was a problem blocking posts from the specified site." = "Belirlenen sitenin yazıları engellenirken hata oluştu.";
 
 /* A general error message shown to the user when there was an API communication failure. */
-"There was a problem communicating with the site." = "There was a problem communicating with the site.";
+"There was a problem communicating with the site." = "Siteyle iletişimde bir sorun oluştu.";
 
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "Belirtilen sitenin engeli kaldırılırken hata oluştu.";
@@ -4212,6 +4286,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "Geri ödeme yapılırken bir hata oluştu";
 
+/* Notice displayed when searching the list of products fails */
+"There was an error searching products" = "Ürünler aranırken bir hata oluştu";
+
+/* Notice displayed when syncing the list of product variations fails */
+"There was an error syncing product variations" = "Ürün varyasyonları senkronize edilirken bir hata oluştu";
+
+/* Notice displayed when syncing the list of products fails */
+"There was an error syncing products" = "Ürünler senkronize edilirken bir hata oluştu";
+
 /* Notice text after failing to update a simple payments order.
    Notice text after failing to update the order successfully */
 "There was an error updating the order" = "Sipariş güncellenirken bir hata oluştu";
@@ -4222,8 +4305,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text when there is an unknown error while trying to collect payments */
 "There was an error while trying to collect the payment." = "Ödeme tahsil edilmeye çalışılırken bir hata oluştu.";
 
-/* Navigates to screen with third party software licenses
-   Software Licenses (information page title) */
+/* Software Licenses (information page title)
+   Title of button that displays information about the third party software libraries used in the creation of this app */
 "Third Party Licenses" = "Üçüncü Taraf Lisansları";
 
 /* Tab selector title that shows the statistics for this month
@@ -4242,7 +4325,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "This Year" = "Bu Yıl";
 
 /* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
-"This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this." = "This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this.";
+"This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this." = "Bu uygulamanın bir kart okuyucuya bağlanmak için Bluetooth'a erişim iznine ihtiyacı var, buna izin vermek istiyorsanız lütfen gizlilik ayarlarını değiştirin.";
 
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "Bu uygulama için sunucunuza WooCommerce 3.5'i yüklemeniz gerekir; bu olmadan düzgün çalışmaz. Bu uygulamayı kullanmaya devam etmek için mümkün olan en kısa süre içinde güncelleyin.";
@@ -4251,7 +4334,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "Bu uygulama yalnızca Yönetici ve Mağaza Yöneticisi kullanıcı rollerini destekler. Rolünüzü yükseltmek için lütfen mağazanızın sahibiyle iletişime geçin.";
 
 /* Message when a card requires a PIN code and we have no means of entering such a code. */
-"This card requires a PIN code and thus cannot be processed. Try another means of payment" = "This card requires a PIN code and thus cannot be processed. Try another means of payment";
+"This card requires a PIN code and thus cannot be processed. Try another means of payment" = "Bu kart bir PIN kodu gerektirdiğinden işleme alınamıyor. Başka bir ödeme yöntemi deneyin";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "Bu e-posta adresi WordPress.com üzerinde kayıtlı değil.";
@@ -4392,15 +4475,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Güven";
 
-/* Button to retry a software update. Presented to users when updating the card reader software fails
-   Button to try again after connecting to a specific reader fails due to a critically low battery. - Button to try again. Presented to users after a failure occurs - Try Again button on the error alert when fetching system status report fails */
+/* Action displayed in the error prompt when loading total discounted amount in Coupon Details screen fails
+   Button to retry a software update. Presented to users when updating the card reader software fails - Button to try again after connecting to a specific reader fails due to a critically low battery. - Button to try again. Presented to users after a failure occurs - Try Again button on the error alert when fetching system status report fails */
 "Try Again" = "Tekrar deneyin";
 
 /* Message from the in-person payment card reader prompting user to retry a payment using a different card */
-"Try Another Card" = "Try Another Card";
+"Try Another Card" = "Başka Bir Kart Deneyin";
 
 /* Message from the in-person payment card reader prompting user to retry a payment using a different method, e.g. swipe, tap, insert */
-"Try Another Read Method" = "Try Another Read Method";
+"Try Another Read Method" = "Başka Bir Okuma Yöntemi Deneyin";
 
 /* Button to try to collect a payment again. Presented to users after a collecting a payment fails */
 "Try Collecting Again" = "Tekrar Almayı Deneyin";
@@ -4413,7 +4496,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try again" = "Tekrar deneyin";
 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
-"Try another means of payment" = "Try another means of payment";
+"Try another means of payment" = "Başka bir ödeme yöntemi deneyin";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Başka bir e-posta ile deneyin";
@@ -4422,13 +4505,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try with the site address" = "Site adresi ile deneyin";
 
 /* Message when a card is declined due to a potentially temporary problem. */
-"Trying again may succeed, or try another means of payment" = "Trying again may succeed, or try another means of payment";
+"Trying again may succeed, or try another means of payment" = "Tekrar denerseniz başarılı olabilir veya başka bir ödeme yöntemini deneyebilirsiniz";
 
 /* Settings > Manage Card Reader > Connect > Hint to power on reader */
 "Turn card reader on and place it next to mobile device" = "Kart okuyucuyu çalıştırın ve mobil cihazın yanına koyun";
 
 /* Settings > Manage Card Reader > Connect > Hint to enable Bluetooth */
 "Turn mobile device Bluetooth on" = "Mobil cihazda Bluetooth'u açın";
+
+/* Title of a button linking to the app's Twitter profile */
+"Twitter" = "Twitter";
 
 /* Placeholder for the Content Details row in Customs screen of Shipping Label flow */
 "Type of contents" = "İçerik türü";
@@ -4444,10 +4530,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable To Connect" = "Bağlanılamıyor";
 
 /* Error message when Bluetooth is not enabled or available. */
-"Unable to access Bluetooth - please enable Bluetooth and try again" = "Unable to access Bluetooth - please enable Bluetooth and try again";
+"Unable to access Bluetooth - please enable Bluetooth and try again" = "Bluetooth'a erişilemiyor - lütfen Bluetooth'u etkinleştirin ve tekrar deneyin";
 
 /* Error message when location services is not enabled for this application. */
-"Unable to access Location Services - please enable Location Services and try again" = "Unable to access Location Services - please enable Location Services and try again";
+"Unable to access Location Services - please enable Location Services and try again" = "Konum Hizmetlerine erişilemiyor - lütfen Konum Hizmetlerini etkinleştirin ve tekrar deneyin";
 
 /* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number}. Parameters: %1$d - order number */
 "Unable to add note to order #%1$d" = "Not %1$d numaralı siparişe eklenemedi";
@@ -4459,19 +4545,19 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to change status of order #%1$d" = "%1$d no'lu siparişin durumu değiştirilemiyor";
 
 /* Error message when communication with the card reader is disrupted. */
-"Unable to communicate with reader - please try again" = "Unable to communicate with reader - please try again";
+"Unable to communicate with reader - please try again" = "Okuyucuyla iletişim kurulamıyor - lütfen tekrar deneyin";
 
 /* Error message when the card reader service attempts to connect to a reader without discovering it first. */
-"Unable to connect to card reader - card reader was not correctly discovered - please try again" = "Unable to connect to card reader - card reader was not correctly discovered - please try again";
+"Unable to connect to card reader - card reader was not correctly discovered - please try again" = "Kart okuyucuya bağlanılamıyor - kart okuyucu doğru şekilde bulunamadı - lütfen tekrar deneyin";
 
 /* Error message when attempting to connect to a card reader which is already in use. */
-"Unable to connect to card reader - the card reader is already in use" = "Unable to connect to card reader - the card reader is already in use";
+"Unable to connect to card reader - the card reader is already in use" = "Kart okuyucuya bağlanılamıyor - kart okuyucu zaten kullanılıyor";
 
 /* Error message when a card reader is already connected and we were not expecting one. */
-"Unable to connect to reader - another reader is already connected" = "Unable to connect to reader - another reader is already connected";
+"Unable to connect to reader - another reader is already connected" = "Okuyucuya bağlanılamıyor - başka bir okuyucu zaten bağlı";
 
 /* Error message the card reader battery level is too low to connect to the phone or tablet. */
-"Unable to connect to reader - the reader has a critically low battery - charge the reader and try again." = "Unable to connect to reader - the reader has a critically low battery - charge the reader and try again.";
+"Unable to connect to reader - the reader has a critically low battery - charge the reader and try again." = "Okuyucuya bağlanılamıyor - okuyucunun pili kritik düzeyde - okuyucuyu şarj edin ve tekrar deneyin.";
 
 /* Notice displayed when order creation fails */
 "Unable to create new order" = "Yeni sipariş oluşturulamıyor";
@@ -4501,19 +4587,19 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to load product attributes" = "Ürün özellikleri yüklenemiyor";
 
 /* Notice displayed when taxes cannot be synced for new order */
-"Unable to load taxes for order" = "Unable to load taxes for order";
+"Unable to load taxes for order" = "Siparişle ilgili vergiler yüklenemiyor";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "%@ olarak işaretlenemedi";
 
 /* Error message when the card reader cannot be used to perform the requested task. */
-"Unable to perform request with the connected reader - unsupported feature - please try again with another reader" = "Unable to perform request with the connected reader - unsupported feature - please try again with another reader";
+"Unable to perform request with the connected reader - unsupported feature - please try again with another reader" = "Bağlı okuyucuyla ilgili istek gerçekleştirilemiyor - desteklenmeyen özellik - lütfen başka bir okuyucuyla tekrar deneyin";
 
 /* Error message when the application is so out of date that the backend refuses to work with it. */
-"Unable to perform software request - please update this application and try again" = "Unable to perform software request - please update this application and try again";
+"Unable to perform software request - please update this application and try again" = "Yazılım isteği gerçekleştirilemiyor - lütfen bu uygulamayı güncelleyin ve tekrar deneyin";
 
 /* Error message when the payment intent is invalid. */
-"Unable to process payment due to invalid data - please try again" = "Unable to process payment due to invalid data - please try again";
+"Unable to process payment due to invalid data - please try again" = "Geçersiz veriler nedeniyle ödeme işlenemiyor - lütfen tekrar deneyin";
 
 /* Error message when the order amount is below the minimum amount allowed. */
 "Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@" = "Ödeme işlenemiyor. Sipariş toplam tutarı, tahsil edebileceğiniz minimum tutarın altında (%1$@)";
@@ -4522,13 +4608,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to process payment. Order total amount is not valid." = "Ödeme işlenemiyor. Sipariş toplam tutarı geçerli değil.";
 
 /* Error message when the card reader times out while reading a card. */
-"Unable to read card - the system timed out - please try again" = "Unable to read card - the system timed out - please try again";
+"Unable to read card - the system timed out - please try again" = "Kart okunamıyor - sistem zaman aşımına uğradı - lütfen tekrar deneyin";
 
 /* Error message when the card reader is unable to read any chip on the inserted card. */
-"Unable to read inserted card - please try removing and inserting card again" = "Unable to read inserted card - please try removing and inserting card again";
+"Unable to read inserted card - please try removing and inserting card again" = "Takılan kart okunamıyor - lütfen kartı çıkarıp tekrar takmayı deneyin";
 
 /* Error message when the card reader is unable to read a swiped card. */
-"Unable to read swiped card - please try swiping again" = "Unable to read swiped card - please try swiping again";
+"Unable to read swiped card - please try swiping again" = "Kullanılan kart okunamıyor - lütfen kartı tekrar geçirmeyi deneyin";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "Bu URL'deki WordPress sitesi okunamıyor. SSS'yi görüntülemek için 'Yardıma mı ihtiyacınız var?' ifadesine dokunun.";
@@ -4539,20 +4625,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* An error message shown when failing to retrieve information about user roles, before letting the user in to manage the store. */
 "Unable to retrieve user roles." = "Kullanıcı rolleri alınamıyor.";
 
+/* Unable to retrieve variations for bulk update screen */
+"Unable to retrieve variations" = "Varyasyonlar alınamıyor";
+
 /* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
 "Unable to save changes to the payment method" = "Ödeme yöntemindeki değişiklikler kaydedilemiyor";
 
 /* Error message when Bluetooth Low Energy is not supported on the user device. */
-"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device" = "Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device";
+"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device" = "Kart okuyucular aranamıyor - Bluetooth Low Energy bu cihazda desteklenmiyor - lütfen farklı bir cihaz kullanın";
 
 /* Error message when Bluetooth scan times out during reader discovery. */
-"Unable to search for card readers - Bluetooth timed out - please try again" = "Unable to search for card readers - Bluetooth timed out - please try again";
+"Unable to search for card readers - Bluetooth timed out - please try again" = "Kart okuyucular aranamıyor - Bluetooth zaman aşımına uğradı - lütfen tekrar deneyin";
 
 /* Error notice title when we fail to update an address in the edit address screen. */
 "Unable to update address." = "Adres güncellenemiyor.";
 
 /* Error message when the card reader battery level is too low to safely perform a software update. */
-"Unable to update card reader software - the reader battery is too low" = "Unable to update card reader software - the reader battery is too low";
+"Unable to update card reader software - the reader battery is too low" = "Kart okuyucu yazılımı güncellenemiyor - Okuyucu pili çok düşük";
 
 /* Title for the error screen when In-Person Payments is unavailable */
 "Unable to verify In-Person Payments for this store" = "Bu mağaza için Şahsen Ödemeler doğrulanamıyor";
@@ -4638,6 +4727,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Settings > Manage Card Reader > Connected Reader > A button to update the reader software */
 "Update Reader Software" = "Okuyucu Yazılımını Güncelle";
+
+/* Title that appears on top of the of bulk price setting screen */
+"Update Regular Price" = "Normal Fiyatı Güncelle";
 
 /* Subtitle of the product form bottom sheet action for editing inventory settings. */
 "Update product inventory and SKU" = "Ürün envanterini ve SKU’sunu güncelleme";
@@ -4758,9 +4850,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network." = "Yazıcınızın ve cihazınızın **aynı WiFi ağına** bağlı olduğundan emin olun.\n\nWi-Fi ağınıza bağlama ile ilgili bilgi için yazıcınızın belgelerine bakın.";
 
-/* Displays the version of the App */
-"Version %@" = "Sürüm %@";
-
 /* Displays the connected reader software version */
 "Version: %1$@" = "Sürüm: %1$@";
 
@@ -4792,7 +4881,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "View add-ons from your device!" = "Eklentileri cihazınızdan görüntüleyin.";
 
 /* Title of the feedback banner on the coupon list screen */
-"View and edit coupons" = "View and edit coupons";
+"View and edit coupons" = "Kuponları görüntüle ve düzenle";
 
 /* The action to update downloadable files settings for a product */
 "View downloadable file settings" = "İndirilebilir dosya ayarlarını görüntüleyin";
@@ -4837,12 +4926,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* View title during the Google auth process. */
 "Waiting..." = "Bekliyor...";
 
-/* shown in promotional screens during first launch */
-"Watch readers from around the world read and interact with your site — in real time." = "Tüm dünyadan sitenizi okuyup onunla etkileşime geçen okuyucuları gerçek zamanlı olarak izleyin.";
-
-/* Shown in the prologue carousel (promotional screens) during first launch. */
-"Watch your audience grow with in-depth analytics." = "Kapsamlı analizlerle kitlenizin nasıl büyüdüğünü izleyin.";
-
 /* Error message when the merchant's payment account has been rejected */
 "We are sorry but we can't support In-Person Payments for this store." = "Maalesef bu mağaza için Şahsen Ödemeleri destekleyemiyoruz.";
 
@@ -4875,10 +4958,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "We don’t support In-Person Payments in your country" = "Ülkeniz için Şahsen Ödemeleri desteklemiyoruz";
 
 /* Title for the error screen when In-Person Payments is not supported in a specific country */
-"We don’t support In-Person Payments with Stripe in %1$@" = "We don’t support In-Person Payments with Stripe in %1$@";
+"We don’t support In-Person Payments with Stripe in %1$@" = "%1$@ için Stripe ile Şahsen Ödemeleri desteklemiyoruz";
 
 /* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country */
-"We don’t support In-Person Payments with Stripe in your country" = "We don’t support In-Person Payments with Stripe in your country";
+"We don’t support In-Person Payments with Stripe in your country" = "Ülkenizde Stripe ile Şahsen Ödemeleri desteklemiyoruz";
+
+/* Message displayed in the error prompt when loading total discounted amount in Coupon Details screen fails */
+"We encountered a problem loading analytics" = "Analytics yüklenirken bir sorunla karşılaşıldı";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "Girilen adresi biraz değiştirdik. Doğruysa, teslimatın doğru yapılması için lütfen önerilen adresi kullanın.";
@@ -4929,6 +5015,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Yeni WordPress.com hesabınızı oluşturmanız için size e-postayla bir kayıt bağlantısı gönderdik. Bu cihazda e-postanızı kontrol edin ve WordPress.com'dan aldığınız e-postadaki bağlantıya dokunun.";
 
+/* Title of a button linking to the app's website */
+"Website" = "Web sitesi";
+
 /* Title of the cell in Product Shipping Settings > Weight */
 "Weight" = "Ağırlık";
 
@@ -4941,11 +5030,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "Ağırlık: %1$@%2$@";
 
-/* Shown in the prologue carousel (promotional screens) during first launch. */
-"Welcome to the world’s most popular website builder." = "Dünyanın en popüler web sitesi oluşturucusuna hoş geldiniz.";
-
 /* Content of the feedback banner on the coupon list screen */
-"We’ve been working on making it possible to view and edit coupons from your device!" = "We’ve been working on making it possible to view and edit coupons from your device!";
+"We’ve been working on making it possible to view and edit coupons from your device!" = "Kuponları cihazınızdan görüntüleyip düzenleyebilmeniz için çalışıyoruz!";
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "Giriş yapmak için hangi e-postayı kullanmam gerek?";
@@ -4982,9 +5068,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigates to WisePad 3 Card Reader manual */
 "WisePad 3 card reader manual" = "WisePad 3 kart okuyucu kılavuzu";
 
-/* Shown in the prologue carousel (promotional screens) during first launch. */
-"With this powerful editor you can post on the go." = "Bu güçlü düzenleyici ile hareket halindeyken yazı gönderebilirsiniz.";
-
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";
 
@@ -4993,6 +5076,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Create Shipping Label form -> WooCommerce Discount label */
 "WooCommerce Discount" = "WooCommerce İndirimi";
+
+/* Subject line for when sharing the app with others through mail or any other activity types that support contains a subject field. */
+"WooCommerce Mobile App - Run your store from anywhere" = "WooCommerce Mobil Uygulaması - Mağazanızı her yerden işletin";
 
 /* Navigation title of the webview which used by the merchant to update their store address */
 "WooCommerce Settings" = "WooCommerce Ayarları";
@@ -5009,6 +5095,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %@ uses WordPress %@. We recommend to update to the latest version, or at least %@" = "WordPress sürümü çok eski. %1$@ WordPress %2$@ sürümünü kullanıyor. Son sürüme yükseltmenizi ya da en azından %3$@ sürümüne yükseltmenizi öneririz.";
+
+/* Title of a button linking to the Automattic Work With Us web page */
+"Work with us" = "Bizimle çalışın";
 
 /* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
 "Wrong account?" = "Hesap yanlış mı?";
@@ -5053,6 +5142,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "Bu e-posta adresini kayıt olmak için kullanamazsınız. Bazı e-postalarımızın engellenmesiyle ilgili problem yaşıyoruz. Farklı bir e-posta sağlayıcısı kullanın.";
 
+/* The description on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
+"You currently have Coupons disabled for this store. Enable coupons to get started." = "Şu anda bu mağaza için Kuponları devre dışı bıraktınız. Başlamak için kuponları etkinleştirin.";
+
 /* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
 "You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "Hesabınızda en az bir vadesi geçmiş gereksinim var. Şahsen Ödemeleri kullanmaya devam etmek için lütfen bu durumu giderin";
 
@@ -5067,9 +5159,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "Ödeme almak için kart okuyucu yazılımınızın güncellenmesi gerekiyor.  İptal ederseniz okuyucu bağlantınız engellenir.";
-
-/* shown in promotional screens during first launch */
-"Your notifications travel with you — see comments and likes as they happen." = "Bildirimleriniz sizinle birlikte geziyor; yorumları ve beğenileri gerçekleştikleri sırada görün.";
 
 /* Title for the error screen when the merchant's In-Person Payments account is restricted because there are pending requirements */
 "Your payments account has pending requirements" = "Ödeme hesabınızda bekleyen gereksinimler var";
@@ -5126,9 +5215,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} Google ile giriş yap.";
-
-/* About View's Footer Text. The variable is the current year */
-"© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd." = "© %@ WooCommerce, Inc. ve WooCommerce Ireland Ltd.";
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 Sipariş Tamamlandı";

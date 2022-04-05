@@ -2,18 +2,6 @@ import XCTest
 @testable import Hardware
 
 final class PaymentIntentParametersTests: XCTestCase {
-    func test_validEmail_is_saved() {
-        let params = PaymentIntentParameters(amount: 100, currency: "usd", receiptEmail: "validemail@validdomain.us", paymentMethodTypes: ["card_present"])
-
-        XCTAssertNotNil(params.receiptEmail)
-    }
-
-    func test_not_validEmail_is_ignored() {
-        let params = PaymentIntentParameters(amount: 100, currency: "usd", receiptEmail: "woocommerce", paymentMethodTypes: ["card_present"])
-
-        XCTAssertNil(params.receiptEmail)
-    }
-
     func test_currency_is_lowercased() {
         let params = PaymentIntentParameters(amount: 100, currency: "USD", paymentMethodTypes: ["card_present"])
 
@@ -97,20 +85,5 @@ final class PaymentIntentParametersTests: XCTestCase {
         let stripeParameters = params.toStripe()
 
         XCTAssertNil(stripeParameters?.statementDescriptor)
-    }
-
-    func test_customer_id_is_passed_to_stripe() {
-        let customerID = "customer_id"
-        let params = PaymentIntentParameters(
-            amount: 100,
-            currency: "usd",
-            statementDescription: "A DESCRIPTION",
-            paymentMethodTypes: ["card_present"],
-            customerID: customerID
-        )
-
-        let stripeParameters = params.toStripe()
-
-        XCTAssertEqual(stripeParameters?.customer, customerID)
     }
 }

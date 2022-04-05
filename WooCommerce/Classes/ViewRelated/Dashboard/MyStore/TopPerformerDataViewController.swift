@@ -7,7 +7,7 @@ import WordPressUI
 import class AutomatticTracks.CrashLogging
 
 
-final class TopPerformerDataViewController: UIViewController {
+final class TopPerformerDataViewController: UIViewController, GhostableViewController {
 
     // MARK: - Properties
 
@@ -25,7 +25,11 @@ final class TopPerformerDataViewController: UIViewController {
 
     /// A child view controller that is shown when `displayGhostContent()` is called.
     ///
-    private lazy var ghostTableViewController = GhostTableViewController()
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(displaysSectionHeader: false,
+                                                                                                cellClass: ProductTableViewCell.self,
+                                                                                                estimatedRowHeight: Constants.estimatedRowHeight,
+                                                                                                backgroundColor: .basicBackground,
+                                                                                                separatorStyle: .none))
 
     /// ResultsController: Loads TopEarnerStats for the current granularity from the Storage Layer
     ///
@@ -105,44 +109,6 @@ final class TopPerformerDataViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         trackChangedTabIfNeeded()
-    }
-}
-
-
-// MARK: - Public Interface
-//
-extension TopPerformerDataViewController {
-
-    /// Renders Placeholder Content.
-    ///
-    /// Why is this public? Because the `syncTopPerformers` method is actually called from TopPerformersViewController.
-    /// We coordinate multiple placeholder animations from that spot!
-    ///
-    func displayGhostContent() {
-        guard let ghostView = ghostTableViewController.view else {
-            return
-        }
-
-        ghostView.translatesAutoresizingMaskIntoConstraints = false
-        addChild(ghostTableViewController)
-        view.addSubview(ghostView)
-        view.pinSubviewToAllEdges(ghostView)
-        ghostTableViewController.didMove(toParent: self)
-    }
-
-    /// Removes the Placeholder Content.
-    ///
-    /// Why is this public? Because the `syncTopPerformers` method is actually called from TopPerformersViewController.
-    /// We coordinate multiple placeholder animations from that spot!
-    ///
-    func removeGhostContent() {
-        guard let ghostView = ghostTableViewController.view else {
-            return
-        }
-
-        ghostTableViewController.willMove(toParent: nil)
-        ghostView.removeFromSuperview()
-        ghostTableViewController.removeFromParent()
     }
 }
 
@@ -303,56 +269,6 @@ private extension TopPerformerDataViewController {
             return Constants.emptyStateRowCount
         }
         return itemCount
-    }
-}
-
-// MARK: - Ghost View
-
-private extension TopPerformerDataViewController {
-    final class GhostTableViewController: UITableViewController {
-
-        init() {
-            super.init(style: .plain)
-        }
-
-        required init?(coder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
-
-        override func viewDidLoad() {
-            super.viewDidLoad()
-
-            // Make sure that Ghost will not have any dataSource or delegate to _swap_. This is
-            // just to reduce the chance of having ”invalid number of rows” crashes because of
-            // delegate swapping.
-            tableView.dataSource = nil
-            tableView.delegate = nil
-
-            tableView.backgroundColor = TableViewStyle.backgroundColor
-            tableView.separatorStyle = .none
-            tableView.estimatedRowHeight = Constants.estimatedRowHeight
-            tableView.applyFooterViewForHidingExtraRowPlaceholders()
-            tableView.registerNib(for: ProductTableViewCell.self)
-        }
-
-        /// Activate the ghost if this view is added to the parent.
-        ///
-        override func viewWillAppear(_ animated: Bool) {
-            super.viewWillAppear(animated)
-
-            let options = GhostOptions(displaysSectionHeader: false,
-                                       reuseIdentifier: ProductTableViewCell.reuseIdentifier,
-                                       rowsPerSection: Constants.placeholderRowsPerSection)
-            tableView.displayGhostContent(options: options,
-                                          style: .wooDefaultGhostStyle)
-        }
-
-        /// Deactivate the ghost if this view is removed from the parent.
-        ///
-        override func viewWillDisappear(_ animated: Bool) {
-            super.viewWillDisappear(animated)
-            tableView.removeGhostContent()
-        }
     }
 }
 

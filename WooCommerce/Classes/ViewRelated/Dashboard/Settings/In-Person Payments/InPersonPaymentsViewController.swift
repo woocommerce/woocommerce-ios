@@ -31,13 +31,13 @@ struct InPersonPaymentsView: View {
                 InPersonPaymentsLoading()
             case .selectPlugin:
                 if viewModel.userIsAdministrator {
-                    InPersonPaymentsPluginConfictAdmin(onRefresh: viewModel.refresh)
+                    InPersonPaymentsPluginConflictAdmin(onRefresh: viewModel.refresh)
                 } else {
-                    InPersonPaymentsPluginConfictShopManager(onRefresh: viewModel.refresh)
+                    InPersonPaymentsPluginConflictShopManager(onRefresh: viewModel.refresh)
                 }
             case .countryNotSupported(let countryCode):
                 InPersonPaymentsCountryNotSupported(countryCode: countryCode)
-            case .countryNotSupportedStripe(let countryCode):
+            case .countryNotSupportedStripe(_, let countryCode):
                 InPersonPaymentsCountryNotSupportedStripe(countryCode: countryCode)
             case .pluginNotInstalled:
                 InPersonPaymentsPluginNotInstalled(onRefresh: viewModel.refresh)
@@ -52,10 +52,10 @@ struct InPersonPaymentsView: View {
                 InPersonPaymentsPluginNotSetup(plugin: plugin, onRefresh: viewModel.refresh)
             case .stripeAccountOverdueRequirement:
                 InPersonPaymentsStripeAccountOverdue()
-            case .stripeAccountPendingRequirement(let deadline):
+            case .stripeAccountPendingRequirement(_, let deadline):
                 InPersonPaymentsStripeAccountPending(deadline: deadline)
             case .stripeAccountUnderReview:
-                InPersonPaymentsStripeAcountReview()
+                InPersonPaymentsStripeAccountReview()
             case .stripeAccountRejected:
                 InPersonPaymentsStripeRejected()
             case .completed(let plugin):
@@ -70,6 +70,10 @@ struct InPersonPaymentsView: View {
             switch url {
             case InPersonPaymentsSupportLink.supportURL:
                 showSupport?()
+            case InPersonPaymentsLearnMore.learnMoreURL:
+                if let url = viewModel.learnMoreURL {
+                    showURL?(url)
+                }
             default:
                 showURL?(url)
             }

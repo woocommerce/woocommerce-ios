@@ -3,7 +3,7 @@ import UIKit
 import WordPressUI
 import class SwiftUI.UIHostingController
 
-final class CouponListViewController: UIViewController {
+final class CouponListViewController: UIViewController, GhostableViewController {
     @IBOutlet private weak var tableView: UITableView!
     private let viewModel: CouponListViewModel
     private let siteID: Int64
@@ -11,6 +11,12 @@ final class CouponListViewController: UIViewController {
     /// Set when an empty state view controller is displayed.
     ///
     private var emptyStateViewController: UIViewController?
+
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(displaysSectionHeader: false,
+                                                                                                cellClass: TitleAndSubtitleAndStatusTableViewCell.self,
+                                                                                                rowsPerSection: Constants.placeholderRowsPerSection,
+                                                                                                estimatedRowHeight: Constants.estimatedRowHeight,
+                                                                                                backgroundColor: .basicBackground))
 
     /// Pull To Refresh Support.
     ///
@@ -45,7 +51,14 @@ final class CouponListViewController: UIViewController {
 
     private var subscriptions: Set<AnyCancellable> = []
 
+    private lazy var dataSource: UITableViewDiffableDataSource<Section, CouponListViewModel.CellViewModel> = makeDataSource()
     private lazy var topBannerView: TopBannerView = createFeedbackBannerView()
+
+    private lazy var noticePresenter: DefaultNoticePresenter = {
+        let noticePresenter = DefaultNoticePresenter()
+        noticePresenter.presentingViewController = self
+        return noticePresenter
+    }()
 
     init(siteID: Int64) {
         self.siteID = siteID
@@ -73,10 +86,14 @@ final class CouponListViewController: UIViewController {
                 switch state {
                 case .empty:
                     self.displayNoResultsOverlay()
+                case .couponsDisabled:
+                    self.displayCouponsDisabledOverlay()
                 case .loading:
                     self.displayPlaceholderCoupons()
                 case .coupons:
-                    self.tableView.reloadData()
+                    // the table view is reloaded when coupon view models are updated
+                    // so there's no need to reload here
+                    break
                 case .refreshing:
                     self.refreshControl.beginRefreshing()
                 case .loadingNextPage:
@@ -113,6 +130,16 @@ final class CouponListViewController: UIViewController {
             .removeDuplicates()
             .sink { [weak self] hasData in
                 self?.configureNavigationBarItems(hasCoupons: hasData)
+            }
+            .store(in: &subscriptions)
+
+        viewModel.$couponViewModels
+            .sink { [weak self] viewModels in
+                guard let self = self else { return }
+                var snapshot = NSDiffableDataSourceSnapshot<Section, CouponListViewModel.CellViewModel>()
+                snapshot.appendSections([.main])
+                snapshot.appendItems(viewModels, toSection: Section.main)
+                self.dataSource.apply(snapshot)
             }
             .store(in: &subscriptions)
 
@@ -168,7 +195,12 @@ extension CouponListViewController: UITableViewDelegate {
             return
         }
         let detailsViewModel = CouponDetailsViewModel(coupon: coupon)
-        let hostingController = CouponDetailsHostingController(viewModel: detailsViewModel)
+        let hostingController = CouponDetailsHostingController(viewModel: detailsViewModel) { [weak self] in
+            guard let self = self else { return }
+            self.navigationController?.popViewController(animated: true)
+            let notice = Notice(title: Localization.couponDeleted, feedbackType: .success)
+            self.noticePresenter.enqueue(notice: notice)
+        }
         navigationController?.pushViewController(hostingController, animated: true)
     }
 }
@@ -187,7 +219,7 @@ private extension CouponListViewController {
 
     func configureTableView() {
         registerTableViewCells()
-        tableView.dataSource = self
+        tableView.dataSource = dataSource
         tableView.estimatedRowHeight = Constants.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.addSubview(refreshControl)
@@ -196,6 +228,20 @@ private extension CouponListViewController {
 
     func registerTableViewCells() {
         TitleAndSubtitleAndStatusTableViewCell.register(for: tableView)
+    }
+
+    func makeDataSource() -> UITableViewDiffableDataSource<Section, CouponListViewModel.CellViewModel> {
+        let reuseIdentifier = TitleAndSubtitleAndStatusTableViewCell.reuseIdentifier
+        return UITableViewDiffableDataSource(
+            tableView: tableView,
+            cellProvider: {  tableView, indexPath, cellViewModel in
+                let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
+                if let cell = cell as? TitleAndSubtitleAndStatusTableViewCell {
+                    cell.configureCell(viewModel: cellViewModel)
+                }
+                return cell
+            }
+        )
     }
 
     /// Shows `SearchViewController`.
@@ -253,33 +299,43 @@ extension CouponListViewController {
     /// Renders the Placeholder Coupons
     ///
     func displayPlaceholderCoupons() {
-        let options = GhostOptions(displaysSectionHeader: false,
-                                   reuseIdentifier: TitleAndSubtitleAndStatusTableViewCell.reuseIdentifier,
-                                   rowsPerSection: Constants.placeholderRowsPerSection)
-        tableView.displayGhostContent(options: options,
-                                       style: .wooDefaultGhostStyle)
+        displayGhostContent()
     }
 
     /// Removes the Placeholder Coupons
     ///
     func removePlaceholderCoupons() {
-        tableView.removeGhostContent()
+        removeGhostContent()
     }
 }
 
 
 // MARK: - Empty state view controller
 //
-extension CouponListViewController {
+private extension CouponListViewController {
     /// Displays the overlay when there are no results.
     ///
     func displayNoResultsOverlay() {
         let emptyStateViewController = EmptyStateViewController(style: .list)
-        let config = EmptyStateViewController.Config.simple(
+        let config: EmptyStateViewController.Config = .simple(
             message: .init(string: Localization.emptyStateMessage),
             image: .emptyCouponsImage
         )
 
+        displayEmptyStateViewController(emptyStateViewController)
+        emptyStateViewController.configure(config)
+    }
+
+    /// Displays the overlay when coupons are disabled for the store.
+    ///
+    func displayCouponsDisabledOverlay() {
+        let emptyStateViewController = EmptyStateViewController(style: .list)
+        let config: EmptyStateViewController.Config = .withButton(message: .init(string: Localization.couponsDisabledMessage),
+                                                                  image: .emptyCouponsImage,
+                                                                  details: Localization.couponsDisabledDetail,
+                                                                  buttonTitle: Localization.couponsDisabledAction) { [weak self] _ in
+            self?.viewModel.enableCoupons()
+        }
         displayEmptyStateViewController(emptyStateViewController)
         emptyStateViewController.configure(config)
     }
@@ -312,31 +368,16 @@ extension CouponListViewController {
 }
 
 
-// MARK: - TableView Data Source
-//
-extension CouponListViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        viewModel.couponViewModels.count
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: TitleAndSubtitleAndStatusTableViewCell.reuseIdentifier, for: indexPath)
-        if let cellViewModel = viewModel.couponViewModels[safe: indexPath.row],
-            let cell = cell as? TitleAndSubtitleAndStatusTableViewCell {
-            cell.configureCell(viewModel: cellViewModel)
-        }
-
-        return cell
-    }
-}
-
-
 // MARK: - Nested Types
 //
 private extension CouponListViewController {
     enum Constants {
         static let estimatedRowHeight = CGFloat(86)
         static let placeholderRowsPerSection = [3]
+    }
+
+    enum Section: Int {
+        case main
     }
 }
 
@@ -353,6 +394,19 @@ private extension CouponListViewController {
             "No coupons found",
             comment: "The title on the placeholder overlay when there are no coupons on the coupon list screen.")
 
+        static let couponsDisabledMessage = NSLocalizedString(
+            "Everyone loves a deal",
+            comment: "The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store."
+        )
+        static let couponsDisabledDetail = NSLocalizedString(
+            "You currently have Coupons disabled for this store. Enable coupons to get started.",
+            comment: "The description on the placeholder overlay on the coupon list screen when coupons are disabled for the store."
+        )
+        static let couponsDisabledAction = NSLocalizedString(
+            "Enable Coupons",
+            comment: "The action button on the placeholder overlay on the coupon list screen when coupons are disabled for the store."
+        )
+
         static let accessibilityLabelSearchCoupons = NSLocalizedString("Search coupons", comment: "Accessibility label for the Search Coupons button")
         static let accessibilityHintSearchCoupons = NSLocalizedString(
             "Retrieves a list of coupons that contain a given keyword.",
@@ -365,5 +419,6 @@ private extension CouponListViewController {
         )
         static let giveFeedbackAction = NSLocalizedString("Give Feedback", comment: "Title of the feedback action button on the coupon list screen")
         static let dismissAction = NSLocalizedString("Dismiss", comment: "Title of the dismiss action button on the coupon list screen")
+        static let couponDeleted = NSLocalizedString("Coupon deleted", comment: "Notice message after deleting coupon from the Coupon Details screen")
     }
 }

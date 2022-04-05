@@ -1,7 +1,22 @@
 import Foundation
 
-/// Note: If we ever change the algorithm in the future, we should probably consider renaming
-/// the Tracks event to avoid incorrect comparisons with old events.
+/// Accepts interaction events from the Analytics / My Store UI and decides whether the group of interactions can be
+/// considered as a _usage_ of the UI.
+///
+/// See p91TBi-6Cl-p2 for more information about the algorithm.
+///
+/// The UI should call `interacted` when these events happen:
+///
+/// - Scrolling
+/// - Pull-to-refresh
+/// - Tapping on the bars in the chart
+/// - Changing the tab
+/// - Navigating to the My Store tab
+/// - Tapping on a product in the Top Performers list
+///
+/// If we ever change the algorithm in the future, we should probably consider renaming the Tracks event to avoid
+/// incorrect comparisons with old events. We should also make sure to change the Android code if we're changing anything
+/// in here. Both platforms should have the same algorithm so we are able to compare both.
 final class StoreStatsUsageTracksEventEmitter {
 
     private let analytics: Analytics

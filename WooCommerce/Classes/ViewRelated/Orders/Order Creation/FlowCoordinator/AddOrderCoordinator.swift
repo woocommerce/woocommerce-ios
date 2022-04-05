@@ -6,7 +6,6 @@ final class AddOrderCoordinator: Coordinator {
     var navigationController: UINavigationController
 
     private let siteID: Int64
-    private let isOrderCreationEnabled: Bool
     private let sourceBarButtonItem: UIBarButtonItem?
     private let sourceView: UIView?
 
@@ -15,13 +14,20 @@ final class AddOrderCoordinator: Coordinator {
     var onOrderCreated: (Order) -> Void = { _ in }
 
     init(siteID: Int64,
-         isOrderCreationEnabled: Bool,
          sourceBarButtonItem: UIBarButtonItem,
          sourceNavigationController: UINavigationController) {
         self.siteID = siteID
-        self.isOrderCreationEnabled = isOrderCreationEnabled
         self.sourceBarButtonItem = sourceBarButtonItem
         self.sourceView = nil
+        self.navigationController = sourceNavigationController
+    }
+
+    init(siteID: Int64,
+         sourceView: UIView,
+         sourceNavigationController: UINavigationController) {
+        self.siteID = siteID
+        self.sourceBarButtonItem = nil
+        self.sourceView = sourceView
         self.navigationController = sourceNavigationController
     }
 
@@ -30,11 +36,7 @@ final class AddOrderCoordinator: Coordinator {
     }
 
     func start() {
-        if isOrderCreationEnabled {
-            presentOrderTypeBottomSheet()
-        } else {
-            presentOrderCreationFlow(bottomSheetOrderType: .simple)
-        }
+        presentOrderTypeBottomSheet()
     }
 }
 
@@ -80,8 +82,13 @@ private extension AddOrderCoordinator {
         viewModel.onOrderCreated = onOrderCreated
 
         let viewController = NewOrderHostingController(viewModel: viewModel)
-        viewController.hidesBottomBarWhenPushed = true
-        navigationController.pushViewController(viewController, animated: true)
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            let newOrderNC = WooNavigationController(rootViewController: viewController)
+            navigationController.present(newOrderNC, animated: true)
+        } else {
+            viewController.hidesBottomBarWhenPushed = true
+            navigationController.pushViewController(viewController, animated: true)
+        }
 
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderAddNew())
     }

@@ -13,5 +13,7 @@ public enum WCPayCardFunding: String, Codable, GeneratedCopiable, GeneratedFakea
     case credit
     case debit
     case prepaid
+    case checking
+    case savings
     case unknown
 }

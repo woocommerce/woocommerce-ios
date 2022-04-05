@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-03-08 11:32:22+0000 */
+/* Translation-Revision-Date: 2022-03-25 16:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -41,7 +41,7 @@
 "%1$@ and %2$@" = "%1$@ et %2$@";
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
-"%1$@ card ending %2$@" = "%1$@ card ending %2$@";
+"%1$@ card ending %2$@" = "Carte %1$@ se terminant %2$@";
 
 /* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
 "%1$@ excl. %2$@" = "%1$@ sauf %2$@";
@@ -243,7 +243,7 @@
 "A customs form must be printed and included on this international shipment" = "Un formulaire douanier doit être imprimé et inclus dans cet envoi international";
 
 /* Message when attempting to pay for a test transaction with a live card. */
-"A live card was used on a site in test mode. Use a test card instead." = "A live card was used on a site in test mode. Use a test card instead.";
+"A live card was used on a site in test mode. Use a test card instead." = "Une carte réelle a été utilisée sur un site en mode test. Utilisez plutôt une carte en mode test.";
 
 /* Error message when there was a network error checking In-Person Payments requirements */
 "A network error occurred. Please check your connection and try again." = "Une erreur réseau est survenue. Veuillez vérifier votre connexion et réessayer.";
@@ -284,14 +284,11 @@
 /* Reads as 'AID'. Part of the mandatory data in receipts */
 "AID" = "AID";
 
-/* About this app (information page title) */
-"About" = "À propos";
-
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "À propos de l’application";
 
 /* Reads as 'Account Type'. Part of the mandatory data in receipts */
-"Account Type" = "Account Type";
+"Account Type" = "Type de compte";
 
 /* Title for the error screen when a Card Present Payments extension is installed but not activated */
 "Activate %1$@" = "Activer %1$@";
@@ -336,7 +333,7 @@
 "Add Downloadable File" = "Ajouter un fichier téléchargeable";
 
 /* Title for the Fee screen during order creation */
-"Add Fee" = "Add Fee";
+"Add Fee" = "Ajouter frais";
 
 /* Title text of the button that adds fees when creating a new order */
 "Add Fees" = "Ajouter les frais";
@@ -350,7 +347,8 @@
 /* Add New Package screen title in Shipping Label flow */
 "Add New Package" = "Ajouter un nouveau colis";
 
-/* Title text of the button that adds a note when creating a simple payment */
+/* Title text of the button that adds a note when creating a simple payment
+   Title text of the button that adds customer note data when creating a new order */
 "Add Note" = "Ajouter une note";
 
 /* Action to add one photo on the Product images screen */
@@ -407,7 +405,7 @@
 "Add a tracking" = "Ajouter un suivi";
 
 /* Cell text in Add / Edit variation when there are no images. */
-"Add a variation image" = "Add a variation image";
+"Add a variation image" = "Ajouter une image de variante";
 
 /* Button title in the Shipping Label Payment Method screen if there is an existing payment method */
 "Add another credit card" = "Ajouter une autre carte de crédit";
@@ -474,8 +472,14 @@
 /* Notice text after updating the shipping or billing address */
 "Address successfully updated." = "L’adresse a été mise à jour.";
 
+/* Accessibility hint for selecting a product in the Add Product screen */
+"Adds product to order." = "Ajoute un produit à la commande.";
+
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "Ajoute un suivi à une commande.";
+
+/* Accessibility hint for selecting a variation in a list of product variations */
+"Adds variation to order." = "Ajoute une variante à la commande.";
 
 /* Adult signature required in Shipping Labels > Carrier and Rates */
 "Adult signature required (+%1$@)" = "Signature d’un adulte obligatoire (+%1$@)";
@@ -539,23 +543,23 @@
 "Amount" = "Montant";
 
 /* Title for the amount field on the Fee Details screen during order creationParameters: %1$@ - fee type (percent sign or currency symbol) */
-"Amount (%1$@)" = "Amount (%1$@)";
+"Amount (%1$@)" = "Montant (%1$@)";
 
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
 "Amount Eligible For Refund" = "Montant éligible au remboursement";
 
 /* Line description for 'Amount Paid' cart total on the receipt
    Title of 'Amount Paid' section in the receipt */
-"Amount Paid" = "Amount Paid";
+"Amount Paid" = "Montant payé";
 
 /* A failure reason for when an error HTTP status code was returned from the site, with the specific error code. */
-"An HTTP error code %i was returned." = "An HTTP error code %i was returned.";
+"An HTTP error code %i was returned." = "Un code d’erreur HTTP %i a été reçu.";
 
 /* A failure reason for when an error HTTP status code was returned from the site. */
-"An HTTP error code was returned." = "An HTTP error code was returned.";
+"An HTTP error code was returned." = "Un code d’erreur HTTP a été reçu.";
 
 /* Error message when Bluetooth is not enabled for this application. */
-"An error occurred accessing Bluetooth - please enable Bluetooth and try again" = "An error occurred accessing Bluetooth - please enable Bluetooth and try again";
+"An error occurred accessing Bluetooth - please enable Bluetooth and try again" = "Une erreur s’est produite lors de la tentative d’accès au Bluetooth. Activez le Bluetooth et réessayez";
 
 /* An error description explaining that a Menu could not be created. */
 "An error occurred creating the Menu." = "Un erreur est survenue lors de la création du menu.";
@@ -573,19 +577,22 @@
 "An error occurred while processing your request: " = "Une erreur est survenue lors de l’exécution de votre demande :";
 
 /* Message when it looks like a duplicate transaction is being attempted. */
-"An identical transaction was submitted recently. If you wish to continue, try another means of payment" = "An identical transaction was submitted recently. If you wish to continue, try another means of payment";
+"An identical transaction was submitted recently. If you wish to continue, try another means of payment" = "Une transaction identique a été soumise récemment. Si vous souhaitez poursuivre, essayez un autre moyen de paiement";
 
 /* Message when an incorrect PIN has been entered too many times. */
-"An incorrect PIN has been entered too many times. Try another means of payment" = "An incorrect PIN has been entered too many times. Try another means of payment";
+"An incorrect PIN has been entered too many times. Try another means of payment" = "Un code PIN incorrect a été saisi trop de fois. Essayez un autre moyen de paiement";
 
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "Note facultative à envoyer au client après l’achat";
 
 /* A failure reason for when the error that occured wasn't able to be determined. */
-"An unknown error occurred." = "An unknown error occurred.";
+"An unknown error occurred." = "Une erreur inconnue est survenue.";
 
 /* Title of analytics as part of Jetpack benefits. */
 "Analytics" = "Statistiques";
+
+/* Message when enabling analytics succeeds */
+"Analytics enabled successfully." = "Activation des statistiques réussie.";
 
 /* Case Any in Order Filters for Order Statuses
    Display label for all order statuses selected in Order Filters - Label for one of the filters in order date range - Product variation attribute description where the attribute is set to any value. - Title when there is no filter set. */
@@ -605,7 +612,7 @@
 "Application Logs" = "Journaux d'application";
 
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
-"Application Name" = "Application Name";
+"Application Name" = "Nom de l’application";
 
 /* Change order status screen - button title to apply selection */
 "Apply" = "Appliquer";
@@ -663,7 +670,7 @@
 "Are you sure you want to remove this variation?" = "Confirmez-vous la suppression de cette variante ?";
 
 /* Message displayed in the alert for dismissing all the inbox notes. */
-"Are you sure? Inbox messages will be dismissed forever." = "Are you sure? Inbox messages will be dismissed forever.";
+"Are you sure? Inbox messages will be dismissed forever." = "Confirmez-vous ? Les messages de la boîte de réception seront supprimés. Cette action est irréversible.";
 
 /* Placeholder in the Attribute Name row on Rename Attributes screen. */
 "Attribute name" = "Nom de l’attribut";
@@ -690,6 +697,9 @@
 
 /* Subtitle of the cell in Product Price Settings > Schedule sale */
 "Automatically start and end a sale" = "Commencer et terminer automatiquement une vente";
+
+/* Title of a button linking to the Automattic website */
+"Automattic family" = "Famille Automattic";
 
 /* A unit test string. It reads: Awaiting payment via <payment method title>.A payment method example is: 'Credit Card (Stripe)'
    Awaiting payment via (payment method title) */
@@ -738,6 +748,9 @@
 /* Accessibility label for block quote button on formatting toolbar. */
 "Block Quote" = "Bloquer les citations";
 
+/* Title of a button linking to the app's blog */
+"Blog" = "Blog";
+
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
 "Bluetooth permission required" = "Autorisation Bluetooth requise";
 
@@ -749,7 +762,7 @@
 
 /* Button title in the action sheet of product variatiosns that shows the bulk update
    Title that appears on top of the bulk update of product variations screen */
-"Bulk Update" = "Bulk Update";
+"Bulk Update" = "Mise à jour par lot";
 
 /* Title of the text field for editing the button text for an external/affiliate product */
 "Button Text" = "Libellé du bouton";
@@ -807,10 +820,10 @@
 "Card" = "Carte";
 
 /* Error message when a card is left in the reader and another transaction started. */
-"Card was left in reader - please remove and reinsert card" = "Card was left in reader - please remove and reinsert card";
+"Card was left in reader - please remove and reinsert card" = "La carte n’a pas été retirée du lecteur. Retirez-la, puis réinsérez-la";
 
 /* Error message when the card is removed from the reader prematurely. */
-"Card was removed too soon - please try transaction again" = "Card was removed too soon - please try transaction again";
+"Card was removed too soon - please try transaction again" = "La carte a été retirée trop tôt. Relancez la transaction";
 
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "Transporteur et frais de port";
@@ -824,9 +837,6 @@
 /* Catalog Visibility label in Product Settings
    Product Catalog Visibility navigation title */
 "Catalog Visibility" = "Visibilité du catalogue";
-
-/* shown in promotional screens during first launch */
-"Catch up with your favorite sites and join the conversation anywhere, any time." = "Suivez vos sites favoris et rejoignez la conversation n’importe où, n’importe quand.";
 
 /* Edit product categories screen - Screen title
    Filter product categories screen - Screen title - Title of the Categories row on Product main screen - Title of the product form bottom sheet action for editing categories. */
@@ -969,7 +979,7 @@
 "Connecting to reader" = "Connexion au lecteur";
 
 /* Error message when establishing a connection to the card reader times out. */
-"Connecting to the card reader timed out - ensure it is nearby and charged and then try again" = "Connecting to the card reader timed out - ensure it is nearby and charged and then try again";
+"Connecting to the card reader timed out - ensure it is nearby and charged and then try again" = "La connexion au lecteur de cartes a été interrompue après le délai. Assurez-vous qu’il est assez près et bien chargé, puis réessayez";
 
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "Connexion à votre compte";
@@ -992,6 +1002,9 @@
 
 /* Contact WooComerce Payments Support title */
 "Contact WooCommerce Payments Support" = "Contacter l’assistance de WooCommerce Payments";
+
+/* Action button to contact support on enable analytics screen */
+"Contact support" = "Contacter le service support";
 
 /* Title of a button to contact support in the error screen for In-Person payments */
 "Contact us" = "Nous contacter";
@@ -1154,6 +1167,15 @@
 /* Cell title: the current date. */
 "Current" = "Actuel";
 
+/* Message in the footer of bulk price setting screen with the current price, when it is the same for all variations */
+"Current price is %@." = "Le prix actuel est de %@.";
+
+/* Message in the footer of bulk price setting screen, when none of the variations have price value. */
+"Current price is not set." = "Le prix actuel n’est pas défini.";
+
+/* Message in the footer of bulk price setting screen, when variations have different price values. */
+"Current prices are mixed." = "Les prix actuels sont variables.";
+
 /* Name of the section for custom shipment tracking carriers */
 "Custom" = "Personnaliser";
 
@@ -1183,6 +1205,9 @@
 
 /* Title for the Shipping Address Form for Customer Details */
 "Customer Details" = "Détails du client";
+
+/* Title text of the section that shows the Order customer note when creating a new order */
+"Customer Note" = "Note client";
 
 /* Customer note row title
    Customer note section title - Title for the edit customer provided note screen - Title text of the row that holds the order note when creating a simple payment */
@@ -1215,7 +1240,7 @@
 "Date Range" = "Plage de dates";
 
 /* Title of 'Date Paid' section in the receipt */
-"Date paid" = "Date paid";
+"Date paid" = "Date du paiement";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "Date d'expédition";
@@ -1278,7 +1303,7 @@
 "Discount" = "Réduction";
 
 /* Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s) */
-"Discount %1$@" = "Discount %1$@";
+"Discount %1$@" = "Remise %1$@";
 
 /* Title of the Discounted Orders label on Coupon Details screen */
 "Discounted Orders" = "Commandes avec réduction";
@@ -1288,10 +1313,13 @@
 "Dismiss" = "Ignorer";
 
 /* Dismiss All button in Inbox Notes for dismissing all the notes. */
-"Dismiss All" = "Dismiss All";
+"Dismiss All" = "Ignorer tout";
+
+/* Title for dismiss the action when dragging the screen down. */
+"Dismiss Order" = "Ignorer la commande";
 
 /* Title of the alert for dismissing all the inbox notes. */
-"Dismiss all messages" = "Dismiss all messages";
+"Dismiss all messages" = "Ignorer tous les messages";
 
 /* Display label for the product's inventory backorders setting option */
 "Do not allow" = "Ne pas autoriser";
@@ -1381,7 +1409,7 @@
 "Easily identify your products with unique codes" = "Identifier facilement vos produits avec des codes uniques";
 
 /* Button to edit a customer on the New Order screen
-   Button to edit an order status on the New Order screen - Title text of the button that edits a note when creating a simple payment */
+   Button to edit an order status on the New Order screen - Button to edit the customer note on the New Order screen - Title text of the button that edits a note when creating a simple payment */
 "Edit" = "Modifier";
 
 /* Action to edit the address in Shipping Label Suggested screen */
@@ -1402,6 +1430,9 @@
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Edit and add new products from anywhere" = "Modifiez et ajoutez de nouveaux produits où que vous soyez";
+
+/* Accessibility label for the button to edit customer note on the New Order screen */
+"Edit customer note" = "Modifier une note client";
 
 /* Carrier eligible for free pickup in Shipping Labels > Carrier and Rates */
 "Eligible for free pickup" = "Éligible au point de vente";
@@ -1438,8 +1469,20 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "Adresse vide";
 
+/* The action button on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
+"Enable Coupons" = "Activer les codes promos";
+
 /* Enable Reviews label in Product Settings */
 "Enable Reviews" = "Activer les avis";
+
+/* Description about WooCommerce Analytics on the enable analytics screen */
+"Enable WooCommerce Analytics to see missing stats for your store." = "Activez WooCommerce Analytics pour voir les statistiques manquantes de votre boutique.";
+
+/* Title for the enable analytics screen */
+"Enable WooCommerce Analytics to see your stats" = "Activez WooCommerce Analytics pour voir vos statistiques";
+
+/* Action title to enable Analytics for a store */
+"Enable analytics" = "Activer les statistiques ";
 
 /* Title of the status row on Product Variation main screen to enable/disable a variation */
 "Enabled" = "Activé";
@@ -1538,20 +1581,26 @@
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "Enveloppe";
 
+/* Error message when enabling analytics fails */
+"Error enabling analytics. Please try again." = "Une erreur s’est produite lors de l’activation des statistiques. Veuillez réessayer.";
+
 /* Title for the error alert when fetching system status report fails */
 "Error fetching report" = "Une erreur est survenue lors de l’extraction du rapport";
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Erreur lors de la recherche de l’adresse dans Apple Maps";
 
-/* Message displayed when fail to loading total discounted amount in Coupon Details screen */
-"Error loading data" = "Error loading data";
+/* Message displayed on Coupon Details screen when loading total discounted amount fails */
+"Error loading data" = "Erreur lors du chargement des données";
 
 /* Alert title when there is an error requesting shipping label document for printing */
 "Error previewing shipping label" = "Erreur lors de l’aperçu de l’étiquette d’expédition";
 
 /* Notice displayed when the label purchase fails */
 "Error purchasing the label" = "Erreur lors de l’achat de l’étiquette";
+
+/* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
+"Everyone loves a deal" = "On ne dit jamais non aux bonnes affaires";
 
 /* Title for the exclude sale items row in coupon usage details screen. */
 "Exclude Sale Items" = "Exclure les articles en promo";
@@ -1588,7 +1637,7 @@
 "Featured Product" = "Produit mis en avant";
 
 /* Title for the Fee Details screen during order creation */
-"Fee" = "Fee";
+"Fee" = "Frais";
 
 /* Title in the navigation bar when the survey is completed */
 "Feedback Sent!" = "Commentaire envoyé !";
@@ -1658,9 +1707,6 @@
 
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "Remise produit fixe";
-
-/* Shown in the prologue carousel (promotional screens) during first launch. */
-"Follow your favorite sites and discover new blogs." = "Suivez vos sites préférés et découvrez de nouveaux blogs.";
 
 /* User role badge */
 "Follower" = "Abonné";
@@ -1813,6 +1859,9 @@
 /* Browse our help documentation website title */
 "Help Center" = "Centre d'aide";
 
+/* Text used when sharing a link to the app with a friend. */
+"Hey! Here is a link to download the WooCommerce app. I'm really enjoying it and thought you might too." = "Salut, Voici un lien pour télécharger l’application WooCommerce. Je la trouve super et je me suis dit qu’elle pourrait aussi te plaire.";
+
 /* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
    Display label for the product's catalog visibility */
 "Hidden" = "Caché";
@@ -1927,7 +1976,7 @@
 "Insert" = "Insérer";
 
 /* Message from the in-person payment card reader prompting user to insert their card */
-"Insert Card" = "Insert Card";
+"Insert Card" = "Insérer la carte";
 
 /* Accessibility label for insert horizontal ruler button on formatting toolbar. */
 "Insert Horizontal Ruler" = "Insérer une règle horizontale";
@@ -1936,7 +1985,10 @@
 "Insert Link" = "Insérer un lien";
 
 /* Message from the in-person payment card reader prompting user to insert or swipe their card */
-"Insert Or Swipe Card" = "Insert Or Swipe Card";
+"Insert Or Swipe Card" = "Insérer ou glisser la carte";
+
+/* Title of a button linking to the app's Instagram profile */
+"Instagram" = "Instagram";
 
 /* Navigates to Install Jetpack screen.
    Title of install action in the Jetpack benefits view. - Title of the Install Jetpack intro view - Title of the Install Jetpack view */
@@ -2018,6 +2070,9 @@
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "Il semblerait que cet identifiant\/mot de passe n’est pas associé à ce site.";
 
+/* Message on enable analytics screen to notify that the module is disabled for the store */
+"It looks like you have analytics disabled." = "Il semblerait que les statistiques soient désactivées.";
+
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "Il semblerait que vous avez saisi un mot de passe incorrect. Voulez-vous réessayer ?";
 
@@ -2041,6 +2096,9 @@
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack est une extension WordPress gratuite qui connecte votre boutique aux outils dont vous avez besoin pour vous offrir une expérience optimale, dont les notifications push et les statistiques";
+
+/* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
+"Join from anywhere" = "Rejoignez-nous, où que vous soyez";
 
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "Poursuivez la modification";
@@ -2099,6 +2157,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "Legal (8,5 x 14 po)";
+
+/* Title of a button linking to a list of legal documents like privacy policy,terms of service, etc */
+"Legal and more" = "Droit et divers";
 
 /* Title for the row to enter the package length on the Add New Custom Package screen in Shipping Label flow
    Title of the cell in Product Shipping Settings > Length */
@@ -2217,9 +2278,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "Gestion du stock";
 
-/* shown in promotional screens during first launch */
-"Manage your Jetpack-powered site on the go — you've got WordPress in your pocket." = "Gérez votre site hébergé par Jetpack où que vous soyez. Vous avez WordPress en poche.";
-
 /* Caption displayed in promotional screens shown during the login flow. */
 "Manage your store orders on the go " = "Gérez les commandes de votre boutique à la volée ";
 
@@ -2292,7 +2350,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Minimum value %@, maximum value %@" = "Valeur minimale de %1$@, valeur maximale de %2$@";
 
 /* The description in product variations bulk update, of a value, that is different acrossall variations */
-"Mixed" = "Mixed";
+"Mixed" = "Variable";
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Monitor and approve your product reviews" = "Surveillez et approuvez les avis sur vos produits";
@@ -2324,7 +2382,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Moves the comment to Trash" = "Déplace le commentaire dans la corbeille";
 
 /* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
-"Multiple Contactless Cards Detected" = "Multiple Contactless Cards Detected";
+"Multiple Contactless Cards Detected" = "Plusieurs cartes sans contact détectées";
 
 /* Title of the hub menu view in case there is no title for the store */
 "My Store" = "Ma boutique";
@@ -2361,6 +2419,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text preceding the Contact Us button in the error screen for In-Person payments
    Text preceding the Contact Us button in the survey completed screen */
 "Need some help?" = "Besoin d’aide ?";
+
+/* Message format on enable analytics screen for support. The %@ placeholder is a URL with more information. */
+"Need some help? %1$@" = "Besoin d’aide ? %1$@";
 
 /* The title for the net amount paid cell */
 "Net Payment" = "Paiement net";
@@ -2401,16 +2462,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No address specified." = "Aucune adresse spécifiée.";
 
 /* Error message when a card reader was expected to already have been connected. */
-"No card reader is connected - connect a reader and try again" = "No card reader is connected - connect a reader and try again";
+"No card reader is connected - connect a reader and try again" = "Aucun lecteur de cartes n’est connecté. Connectez un lecteur, puis réessayez";
 
 /* Title for the error screen when there was a network error checking In-Person Payments requirements. */
 "No connection" = "Aucune connexion";
 
 /* Error message when there is no connection to the Internet. */
-"No connection to the Internet - please connect to the Internet and try again" = "No connection to the Internet - please connect to the Internet and try again";
+"No connection to the Internet - please connect to the Internet and try again" = "Aucune connexion à Internet. Connectez-vous à Internet, puis réessayez";
 
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
-"No coupons found" = "No coupons found";
+"No coupons found" = "Aucun code promo trouvé";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Aucune donnée disponible";
@@ -2429,6 +2490,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The text on the placeholder overlay when no products match the filter on the Products tab */
 "No matching products found" = "Aucun produit correspondant trouvé";
+
+/* Message on the detail view of the Orders tab before any order is selected */
+"No order selected" = "Aucune commande sélectionnée";
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "Aucun prix défini";
@@ -2468,7 +2532,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow - The description in product variations bulk update, of a value, that is missing from all variations - Value for fields in Coupon Usage Details screen when no value is set */
 "None" = "Aucune";
 
-/* Title of dismiss action in the Jetpack benefits view. */
+/* Action title to dismiss enabling Analytics for a store
+   Title of dismiss action in the Jetpack benefits view. */
 "Not now" = "Pas maintenant";
 
 /* Instructions after a Magic Link was sent, but the email can't be found in their inbox. */
@@ -2548,6 +2613,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "Ouvre une liste des états disponibles.";
+
+/* Accessibility hint for selecting a variable product in the Add Product screen */
+"Opens list of product variations." = "Ouvre une liste de variantes du produit.";
+
+/* Accessibility hint for selecting a product in a new order */
+"Opens product detail." = "Ouvre les détails du produit.";
 
 /* Placeholder of cell presenting the title of the new attribute option. */
 "Option name" = "Nom de l’option";
@@ -2688,7 +2759,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Payment Method Selected" = "Moyen de paiement sélectionné";
 
 /* Message when the presented card remaining credit or balance is insufficient for the purchase. */
-"Payment declined due to insufficient funds. Try another means of payment" = "Payment declined due to insufficient funds. Try another means of payment";
+"Payment declined due to insufficient funds. Try another means of payment" = "Le paiement a été refusé en raison de fonds insuffisants. Essayez un autre moyen de paiement";
 
 /* Error message. Presented to users after a collecting a payment fails
    Error message. Presented to users after collecting a payment fails */
@@ -2705,10 +2776,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Payment successful" = "Paiement réussi";
 
 /* Message when we don't know exactly why the payment was declined. */
-"Payment was declined for an unknown reason. Try another means of payment" = "Payment was declined for an unknown reason. Try another means of payment";
+"Payment was declined for an unknown reason. Try another means of payment" = "Le paiement a été refusé pour une raison inconnue. Essayez un autre moyen de paiement";
 
 /* Message when payment is declined for a non specific reason. */
-"Payment was declined for an unspecified reason. Try another means of payment" = "Payment was declined for an unspecified reason. Try another means of payment";
+"Payment was declined for an unspecified reason. Try another means of payment" = "Le paiement a été refusé pour une raison non spécifiée. Essayez un autre moyen de paiement";
 
 /* Display label for pending order status.
    Display label for the review's pending status */
@@ -2929,10 +3000,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of in-progress modal when requesting document with multiple shipping labels for printing */
 "Printing Labels" = "Impression d’étiquettes";
 
-/* Opens the California Privacy Policy web page */
+/* Title of button that displays the California Privacy Notice */
 "Privacy Notice for California Users" = "Message de confidentialité pour les utilisateurs en Californie";
 
-/* Opens the Privacy Policy web page */
+/* Title of button that displays the App's privacy policy */
 "Privacy Policy" = "Politique de confidentialité";
 
 /* Navigates to Privacy Settings screen
@@ -3028,9 +3099,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Publish Settings section on Product Settings screen */
 "Publish Settings" = "Réglages de publication";
 
-/* shown in promotional screens during first launch */
-"Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "Publié depuis le parc. Bloguer depuis le bus. Commenter depuis un café. WordPress vous suit partout.";
-
 /* Display label for the product's published status */
 "Published" = "Publié";
 
@@ -3074,6 +3142,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Restriction type Quarantine for contents declared in the customs form for Shipping Label flow */
 "Quarantine" = "Quarantaine";
+
+/* Title of button that allows the user to rate the app in the App Store */
+"Rate us" = "Donnez-nous votre avis";
 
 /* Subtitle for Contact WooCommerce Payments Support */
 "Reach our happiness engineers who can help answer payments related questions" = "Contacter nos Happiness Engineers pour toutes les questions relatives aux paiements";
@@ -3162,7 +3233,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Registered Domain" = "Domaine enregistré";
 
 /* The label in the option of selecting to bulk update the regular price of a product variation */
-"Regular Price" = "Regular Price";
+"Regular Price" = "Tarif standard";
 
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Tarif standard : %@";
@@ -3175,10 +3246,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Remove Attribute" = "Supprimer l’attribut";
 
 /* Message from the in-person payment card reader prompting user to remove their card */
-"Remove Card" = "Remove Card";
+"Remove Card" = "Retirer la carte";
 
 /* Text for the button to remove a fee from the order during order creation */
-"Remove Fee from Order" = "Remove Fee from Order";
+"Remove Fee from Order" = "Supprimer les frais de la commande";
 
 /* Title on the alert when the user taps to delete a Product image */
 "Remove Image" = "Supprimer l'image";
@@ -3246,7 +3317,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Retrieves a list of products that contain a given keyword." = "Propose une liste de produits contenant un mot-clé donné.";
 
 /* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
-   Action button to retry syncing the draft order - Button to retry when there was a network error checking In-Person Payments requirements - Retry Action - Retry the last action */
+   Action button to retry syncing the draft order - Button to retry when there was a network error checking In-Person Payments requirements - Retry Action - Retry action for an error notice - Retry the last action */
 "Retry" = "Réessayer";
 
 /* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages.
@@ -3254,7 +3325,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Retry After Updating" = "Réessayer après la mise à jour";
 
 /* Message from the in-person payment card reader prompting user to retry payment with their card */
-"Retry Card" = "Retry Card";
+"Retry Card" = "Réessayer";
 
 /* Action button to check site's connection again. */
 "Retry Connection" = "Réessayer de se connecter";
@@ -3319,7 +3390,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Sanitary \/ Phytosanitary Inspection" = "Inspection sanitaire\/phytosanitaire";
 
 /* Action for saving a Product remotely
-   Add Product Category. Save button title in navbar. - Add Product Tags. Save button title in navbar. */
+   Add Product Category. Save button title in navbar. - Add Product Tags. Save button title in navbar. - Button title that save the price selection for bulk variation update */
 "Save" = "Enregistrer";
 
 /* Button title to save a product as draft in Discard Changes Action Sheet */
@@ -3396,9 +3467,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Text on the button to see a saved receipt */
 "See Receipt" = "Voir le reçu";
-
-/* Shown in the prologue carousel (promotional screens) during first launch. */
-"See comments and notifications in real time." = "Affichez les commentaires et les notifications en temps réel.";
 
 /* Link title to see all paper size options */
 "See layout and paper sizes options" = "Voir les options de mise en page et de format papier";
@@ -3488,6 +3556,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "Partager l’information avec notre outil d’analyse à propos de votre utilisation des services lorsque vous êtes connectés avec votre compte WordPress.com.";
+
+/* Title for button allowing users to share information about the app with friends, such as via Messages */
+"Share with Friends" = "Partager avec des amis";
 
 /* Shipping Label Address Validation navigation title
    Shipping Label Suggested Address navigation title - Title of origin address in shipping label details - Title of the cell Ship from inside Create Shipping Label form */
@@ -3701,7 +3772,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Sorry, that username is unavailable." = "Désolé, cet identifiant n’est pas disponible.";
 
 /* Error message when the card reader service experiences an unexpected internal service error. */
-"Sorry, this payment couldn’t be processed" = "Sorry, this payment couldn’t be processed";
+"Sorry, this payment couldn’t be processed" = "Désolé, impossible de traiter ce paiement";
+
+/* Error message shown when a refund could not be canceled (likely because it had already completed) */
+"Sorry, this refund could not be canceled" = "Veuillez nous excuser, nous n’avons pas pu annuler ce remboursement ";
 
 /* No comment provided by engineer. */
 "Sorry, usernames can only contain lowercase letters (a-z) and numbers." = "Les identifiants ne peuvent contenir que des lettres minuscules (a-z) et des chiffres.";
@@ -3794,13 +3868,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Sum of products and package weight" = "Somme des produits et poids du colis";
 
 /* Title of 'Summary' section in the receipt when the order number is unknown */
-"Summary" = "Summary";
+"Summary" = "Sommaire";
 
 /* Title of 'Summary' section in the receipt. %1$@ is the order number, e.g. 4920 */
-"Summary: Order #%1$@" = "Summary: Order #%1$@";
+"Summary: Order #%1$@" = "Résumé : Commande %1$@";
 
 /* Message from the in-person payment card reader prompting user to swipe their card */
-"Swipe Card" = "Swipe Card";
+"Swipe Card" = "Faire glisser la carte";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "Changer de boutique";
@@ -3840,7 +3914,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "System status report copied to clipboard" = "Le rapport sur l’état du système a été copié dans le presse-papiers.";
 
 /* Message when attempting to pay for a live transaction with a test card. */
-"System test cards are not permitted for payment. Try another means of payment" = "System test cards are not permitted for payment. Try another means of payment";
+"System test cards are not permitted for payment. Try another means of payment" = "Les cartes de test système ne sont pas autorisées pour le paiement. Essayez un autre moyen de paiement";
 
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags. - Title of the Tags row on Product main screen */
@@ -3851,7 +3925,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation bar title for the Simple Payments Methods screens. %1$@ is a placeholder for the total amount to collect
    Text of the button that creates a simple payment order. %1$@ is a placeholder for the total amount to collect */
-"Take Payment (%1$@)" = "Take Payment (%1$@)";
+"Take Payment (%1$@)" = "Accepter le paiement (%1$@)";
 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "Prendre une photo";
@@ -3933,9 +4007,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Tax label for the tax detail row. - Title on the refunds screen that lists the fees tax cost - Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
 "Tax" = "Taxe";
 
-/* Tax percentage to be applied to the simple payments order. %1$@%% is a placeholder for the tax rate as a percentage */
-"Tax (%1$@%%)" = "Tax (%1$@%%)";
-
 /* Section header title for product tax settings */
 "Tax Settings" = "Paramètres d'imposition";
 
@@ -3962,13 +4033,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Disclaimer in the simple payments summary screen about taxes. */
 "Taxes are automatically calculated based on your store address." = "Les taxes sont calculées automatiquement en fonction de l’adresse de votre boutique.";
 
-/* Information about taxes and the order total when creating a new order */
-"Taxes will be automatically calculated based on your store settings." = "Les taxes seront calculées automatiquement en fonction des réglages de votre boutique.";
-
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "Ajouter des informations sur %1$@...";
 
-/* Opens the Terms of Service web page */
+/* Title of button that displays the App's terms of service */
 "Terms of Service" = "Conditions d’utilisation";
 
 /* Cell description on beta features screen to enable accepting in-person payments for stores in Canada */
@@ -3994,7 +4062,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Thank you for sharing your thoughts with us" = "Nous vous remercions d’avoir partagé vos idées avec nous";
 
 /* Confirmation message in Inbox Notes after responding to a survey. */
-"Thank you for your feedback!" = "Thank you for your feedback!";
+"Thank you for your feedback!" = "Merci de votre retour !";
 
 /* Shown when a user pastes a code into the two factor field that contains letters or is the wrong length */
 "That doesn't appear to be a valid verification code." = "Cela ne semble pas être un code de vérification valide.";
@@ -4027,7 +4095,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "L’extension %1$@ est installée sur votre boutique, mais doit être mise à jour pour les paiements en personne. Veuillez la mettre à jour vers la version la plus récente.";
 
 /* Error message when the card reader loses its Bluetooth connection to the card reader. */
-"The Bluetooth connection to the card reader disconnected unexpectedly" = "The Bluetooth connection to the card reader disconnected unexpectedly";
+"The Bluetooth connection to the card reader disconnected unexpectedly" = "La connexion Bluetooth au lecteur de cartes a pris fin de façon inattendue";
 
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "Le compte Google « %@ » ne correspond pas avec le compte WordPress.com.";
@@ -4045,46 +4113,46 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The attribute couldn't be saved." = "Impossible d’enregistrer l’attribut.";
 
 /* Message when the card presented does not support the order currency. */
-"The card does not support this currency. Try another means of payment" = "The card does not support this currency. Try another means of payment";
+"The card does not support this currency. Try another means of payment" = "La carte ne prend pas en charge cette devise. Essayez un autre moyen de paiement";
 
 /* Message when the card presented does not allow this type of purchase. */
-"The card does not support this type of purchase. Try another means of payment" = "The card does not support this type of purchase. Try another means of payment";
+"The card does not support this type of purchase. Try another means of payment" = "La carte ne permet pas ce type d’achat. Essayez un autre moyen de paiement";
 
 /* Message when the presented card is past its expiration date. */
-"The card has expired. Try another means of payment" = "The card has expired. Try another means of payment";
+"The card has expired. Try another means of payment" = "La carte a expiré. Essayez un autre moyen de paiement";
 
 /* Message when payment is declined for a non specific reason. */
-"The card or card account is invalid. Try another means of payment" = "The card or card account is invalid. Try another means of payment";
+"The card or card account is invalid. Try another means of payment" = "La carte ou le compte de la carte n’est pas valide. Essayez un autre moyen de paiement";
 
 /* Error message when the card reader is busy executing another command. */
-"The card reader is busy executing another command - please try again" = "The card reader is busy executing another command - please try again";
+"The card reader is busy executing another command - please try again" = "Le lecteur de cartes est occupé à exécuter une autre commande. Veuillez réessayer";
 
 /* Error message when the card reader is incompatible with the application. */
-"The card reader is not compatible with this application - please try updating the application or using a different reader" = "The card reader is not compatible with this application - please try updating the application or using a different reader";
+"The card reader is not compatible with this application - please try updating the application or using a different reader" = "Le lecteur de cartes n’est pas compatible avec cette application. Réessayez de mettre à jour l’application ou utilisez un autre lecteur";
 
 /* Error message when the card reader session has timed out. */
-"The card reader session has expired - please disconnect and reconnect the card reader and then try again" = "The card reader session has expired - please disconnect and reconnect the card reader and then try again";
+"The card reader session has expired - please disconnect and reconnect the card reader and then try again" = "La session du lecteur de cartes a expiré. Déconnectez puis reconnectez le lecteur de cartes, et réessayez";
 
 /* Error message when the card reader software is too far out of date to process payments. */
-"The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "The card reader software is out-of-date - please update the card reader software before attempting to process payments";
+"The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "Le logiciel du lecteur de cartes est obsolète. Mettez à jour le logiciel du lecteur de cartes avant d’essayer de traiter les paiements";
 
 /* Error message when the card reader software update fails due to a communication error. */
-"The card reader software update failed due to a communication error - please try again" = "The card reader software update failed due to a communication error - please try again";
+"The card reader software update failed due to a communication error - please try again" = "La mise à jour du lecteur de cartes a échoué en raison d’une erreur de communication. Veuillez réessayer";
 
 /* Error message when the card reader software update fails due to a problem with the update server. */
-"The card reader software update failed due to a problem with the update server - please try again" = "The card reader software update failed due to a problem with the update server - please try again";
+"The card reader software update failed due to a problem with the update server - please try again" = "La mise à jour du lecteur de cartes a échoué en raison d’un problème avec le serveur de mise à jour. Veuillez réessayer";
 
 /* Error message when the card reader software update fails unexpectedly. */
-"The card reader software update failed unexpectedly - please try again" = "The card reader software update failed unexpectedly - please try again";
+"The card reader software update failed unexpectedly - please try again" = "Échec inattendu de la mise à jour du logiciel du lecteur de cartes. Veuillez réessayer";
 
 /* Error message when the card reader software update is interrupted. */
-"The card reader software update was interrupted before it could complete - please try again" = "The card reader software update was interrupted before it could complete - please try again";
+"The card reader software update was interrupted before it could complete - please try again" = "La mise à jour du logiciel du lecteur de cartes a été interrompue et n’a pas pu être terminée. Veuillez réessayer";
 
 /* Error message when the card reader itself declines the card. */
-"The card was declined by the card reader - please try another means of payment" = "The card was declined by the card reader - please try another means of payment";
+"The card was declined by the card reader - please try another means of payment" = "La carte a été refusée par le lecteur de cartes. Essayez un autre moyen de paiement";
 
 /* Error message when the card processor declines the payment. */
-"The card was declined by the payment processor - please try another means of payment" = "The card was declined by the payment processor - please try another means of payment";
+"The card was declined by the payment processor - please try another means of payment" = "La carte a été refusée par la plateforme de paiement. Essayez un autre moyen de paiement";
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Le certificat de ce serveur n’est pas valide. Le serveur auquel vous vous connectez prétend être « %@ », ce qui peut constituer un risque de sécurité pour vos données confidentielles.\n\nSouhaitez-vous faire confiance au certificat malgré tout ?";
@@ -4099,10 +4167,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The new service package name is not unique." = "Le nouveau nom d’ensemble de services n’est pas unique.";
 
 /* Message when the presented card does not allow the purchase amount. */
-"The payment amount is not allowed for the card presented. Try another means of payment." = "The payment amount is not allowed for the card presented. Try another means of payment.";
+"The payment amount is not allowed for the card presented. Try another means of payment." = "Le montant du paiement n’est pas autorisé pour la carte présentée. Essayez un autre moyen de paiement.";
 
 /* Error message when the payment can not be processed (i.e. order amount is below the minimum amount allowed.) */
-"The payment can not be processed by the payment processor." = "The payment can not be processed by the payment processor.";
+"The payment can not be processed by the payment processor." = "Le paiement n’a pas pu être traité par la plateforme de paiement.";
 
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "Le numéro de téléphone n’est pas valide ou ne pouvez pas appeler le client depuis cet appareil.";
@@ -4110,11 +4178,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "Prix de ce produit. Modifiable.";
 
+/* Message in the footer of bulk price setting screen (singular). */
+"The price will be updated for %d variation." = "Le prix sera mis à jour pour %d variante.";
+
+/* Message in the footer of bulk price setting screen (plurar). */
+"The price will be updated for %d variations." = "Le prix sera mis à jour pour %d variantes.";
+
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
 "The reader has a critically low battery. Please charge the reader or try a different reader." = "La batterie du lecteur est très faible. Veuillez le charger ou en utiliser un autre.";
 
 /* Error message when a request times out. */
-"The request timed out - please try again" = "The request timed out - please try again";
+"The request timed out - please try again" = "La demande a expiré. Veuillez réessayer";
 
 /* Product price error notice message, when the sale price is added but the regular price is not */
 "The sale price can't be added without the regular price." = "Impossible d'ajouter le prix de vente sans le prix standard.";
@@ -4126,10 +4200,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The sale price should be lower than the regular price." = "Le prix soldé doit être inférieur au prix normal.";
 
 /* A failure reason for when the request couldn't be serialized. */
-"The serialization of the request failed." = "The serialization of the request failed.";
+"The serialization of the request failed." = "La sérialisation de la requête a échoué.";
 
 /* A failure reason for when the response couldn't be serialized. */
-"The serialization of the response failed." = "The serialization of the response failed.";
+"The serialization of the response failed." = "La sérialisation de la réponse a échoué.";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "Le serveur a renvoyé une réponse vide. Cela signifie généralement que vous devez augmenter la limite mémoire de votre site.";
@@ -4162,25 +4236,25 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The stock quantity for this product. Editable." = "Quantité en stock de ce produit. Modifiable.";
 
 /* Error message when there is an issue with the store address preventing an action (e.g. reader connection.) */
-"The store address is incomplete or missing, please update it before continuing." = "The store address is incomplete or missing, please update it before continuing.";
+"The store address is incomplete or missing, please update it before continuing." = "L’adresse de la boutique est incomplète ou manquante. Mettez-la à jour avant de poursuivre.";
 
 /* Error message when there is an issue with the store postal code preventing an action (e.g. reader connection.) */
-"The store postal code is invalid or missing, please update it before continuing." = "The store postal code is invalid or missing, please update it before continuing.";
+"The store postal code is invalid or missing, please update it before continuing." = "Le code postal de la boutique est incorrect ou manquant. Mettez-le à jour avant de poursuivre.";
 
 /* Error message when the system cancels a command. */
-"The system canceled the command unexpectedly - please try again" = "The system canceled the command unexpectedly - please try again";
+"The system canceled the command unexpectedly - please try again" = "Le système a annulé la commande de façon inattendue. Veuillez réessayer";
 
 /* Error message when the card reader service experiences an unexpected software error. */
-"The system experienced an unexpected software error" = "The system experienced an unexpected software error";
+"The system experienced an unexpected software error" = "Le système a rencontré une erreur logicielle inattendue";
 
 /* Error message when the card reader service is busy executing another command. */
-"The system is busy executing another command - please try again" = "The system is busy executing another command - please try again";
+"The system is busy executing another command - please try again" = "Le système est occupé à exécuter une autre commande. Veuillez réessayer";
 
 /* Message for the error alert when fetching system status report fails */
 "The system status report for your site cannot be fetched at the moment. Please try again." = "Il est momentanément impossible d’extraire le rapport sur l’état du système pour votre site. Veuillez réessayer.";
 
 /* Message when the presented card postal code doesn't match the order postal code. */
-"The transaction postal code and card postal code do not match. Try another means of payment" = "The transaction postal code and card postal code do not match. Try another means of payment";
+"The transaction postal code and card postal code do not match. Try another means of payment" = "Les codes postaux de la transaction et de la carte ne correspondent pas. Essayez un autre moyen de paiement";
 
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "Impossible de générer la variante.";
@@ -4198,7 +4272,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "There was a problem blocking posts from the specified site." = "Un problème a bloqué les articles de ce site";
 
 /* A general error message shown to the user when there was an API communication failure. */
-"There was a problem communicating with the site." = "There was a problem communicating with the site.";
+"There was a problem communicating with the site." = "Un problème est survenu lors de la communication avec le site.";
 
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "Un problème est survenu lors de la suppression du bloc du site spécifié.";
@@ -4212,6 +4286,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "Une erreur est survenue lors de l’émission du remboursement";
 
+/* Notice displayed when searching the list of products fails */
+"There was an error searching products" = "Une erreur s’est produite lors de la recherche de produits";
+
+/* Notice displayed when syncing the list of product variations fails */
+"There was an error syncing product variations" = "Une erreur s’est produite lors de la synchronisation des variantes du produit";
+
+/* Notice displayed when syncing the list of products fails */
+"There was an error syncing products" = "Une erreur s’est produite lors de la synchronisation des produits";
+
 /* Notice text after failing to update a simple payments order.
    Notice text after failing to update the order successfully */
 "There was an error updating the order" = "Une erreur s’est produite lors de la mise à jour de la commande";
@@ -4222,8 +4305,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text when there is an unknown error while trying to collect payments */
 "There was an error while trying to collect the payment." = "Une erreur s’est produite, impossible de percevoir le paiement.";
 
-/* Navigates to screen with third party software licenses
-   Software Licenses (information page title) */
+/* Software Licenses (information page title)
+   Title of button that displays information about the third party software libraries used in the creation of this app */
 "Third Party Licenses" = "Licences tierces";
 
 /* Tab selector title that shows the statistics for this month
@@ -4242,7 +4325,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "This Year" = "Cette année";
 
 /* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
-"This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this." = "This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this.";
+"This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this." = "Cette application nécessite une autorisation pour accéder au Bluetooth afin de connecter un lecteur de cartes. Pour ce faire, veuillez modifier les paramètres de confidentialité.";
 
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "Cette application nécessite l'installation de WooCommerce 3.5 sur votre serveur et ne fonctionnera pas correctement sans. Exécutez la mise à jour dès que possible pour continuer d'utiliser cette application.";
@@ -4251,7 +4334,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "Cette application ne prend en charge que les rôles utilisateurs Administrateur et Gérant de boutique. Veuillez contacter le gérant de votre boutique pour mettre à niveau votre rôle.";
 
 /* Message when a card requires a PIN code and we have no means of entering such a code. */
-"This card requires a PIN code and thus cannot be processed. Try another means of payment" = "This card requires a PIN code and thus cannot be processed. Try another means of payment";
+"This card requires a PIN code and thus cannot be processed. Try another means of payment" = "Cette carte nécessite un code PIN et ne peut donc pas être traitée Essayez un autre moyen de paiement";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "Cette adresse e-mail n’est pas enregistrée sur WordPress.com.";
@@ -4392,15 +4475,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Faire confiance";
 
-/* Button to retry a software update. Presented to users when updating the card reader software fails
-   Button to try again after connecting to a specific reader fails due to a critically low battery. - Button to try again. Presented to users after a failure occurs - Try Again button on the error alert when fetching system status report fails */
+/* Action displayed in the error prompt when loading total discounted amount in Coupon Details screen fails
+   Button to retry a software update. Presented to users when updating the card reader software fails - Button to try again after connecting to a specific reader fails due to a critically low battery. - Button to try again. Presented to users after a failure occurs - Try Again button on the error alert when fetching system status report fails */
 "Try Again" = "Recommencez";
 
 /* Message from the in-person payment card reader prompting user to retry a payment using a different card */
-"Try Another Card" = "Try Another Card";
+"Try Another Card" = "Essayez avec une autre carte";
 
 /* Message from the in-person payment card reader prompting user to retry a payment using a different method, e.g. swipe, tap, insert */
-"Try Another Read Method" = "Try Another Read Method";
+"Try Another Read Method" = "Essayez une autre méthode de lecture";
 
 /* Button to try to collect a payment again. Presented to users after a collecting a payment fails */
 "Try Collecting Again" = "Réessayer de percevoir le paiement";
@@ -4413,7 +4496,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try again" = "Réessayez ";
 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
-"Try another means of payment" = "Try another means of payment";
+"Try another means of payment" = "Essayez un autre moyen de paiement";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Essayer avec une autre adresse de messagerie";
@@ -4422,13 +4505,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try with the site address" = "Essayer avec l’adresse du site";
 
 /* Message when a card is declined due to a potentially temporary problem. */
-"Trying again may succeed, or try another means of payment" = "Trying again may succeed, or try another means of payment";
+"Trying again may succeed, or try another means of payment" = "Réessayez l’opération, ou bien essayez avec un autre moyen de paiement";
 
 /* Settings > Manage Card Reader > Connect > Hint to power on reader */
 "Turn card reader on and place it next to mobile device" = "Allumez le lecteur de carte et placez-le à côté de l’appareil mobile";
 
 /* Settings > Manage Card Reader > Connect > Hint to enable Bluetooth */
 "Turn mobile device Bluetooth on" = "Activez le Bluetooth de l’appareil mobile";
+
+/* Title of a button linking to the app's Twitter profile */
+"Twitter" = "Twitter";
 
 /* Placeholder for the Content Details row in Customs screen of Shipping Label flow */
 "Type of contents" = "Type de contenu";
@@ -4444,10 +4530,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable To Connect" = "Impossible de connecter";
 
 /* Error message when Bluetooth is not enabled or available. */
-"Unable to access Bluetooth - please enable Bluetooth and try again" = "Unable to access Bluetooth - please enable Bluetooth and try again";
+"Unable to access Bluetooth - please enable Bluetooth and try again" = "Impossible d’accéder au Bluetooth. Activez le Bluetooth, puis réessayez";
 
 /* Error message when location services is not enabled for this application. */
-"Unable to access Location Services - please enable Location Services and try again" = "Unable to access Location Services - please enable Location Services and try again";
+"Unable to access Location Services - please enable Location Services and try again" = "Impossible d’accéder aux services de localisation. Activez les services de localisation, puis réessayez";
 
 /* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number}. Parameters: %1$d - order number */
 "Unable to add note to order #%1$d" = "Impossible d’ajouter une note à la commande n° %1$d";
@@ -4459,19 +4545,19 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to change status of order #%1$d" = "Impossible de modifier l’état de la commande n° %1$d";
 
 /* Error message when communication with the card reader is disrupted. */
-"Unable to communicate with reader - please try again" = "Unable to communicate with reader - please try again";
+"Unable to communicate with reader - please try again" = "Impossible de communiquer avec le lecteur. Veuillez réessayer";
 
 /* Error message when the card reader service attempts to connect to a reader without discovering it first. */
-"Unable to connect to card reader - card reader was not correctly discovered - please try again" = "Unable to connect to card reader - card reader was not correctly discovered - please try again";
+"Unable to connect to card reader - card reader was not correctly discovered - please try again" = "Impossible de se connecter au lecteur de cartes. Le lecteur de cartes n’a pas été détecté correctement. Veuillez réessayer";
 
 /* Error message when attempting to connect to a card reader which is already in use. */
-"Unable to connect to card reader - the card reader is already in use" = "Unable to connect to card reader - the card reader is already in use";
+"Unable to connect to card reader - the card reader is already in use" = "Impossible de se connecter au lecteur de cartes. Le lecteur de cartes est en cours d’utilisation";
 
 /* Error message when a card reader is already connected and we were not expecting one. */
-"Unable to connect to reader - another reader is already connected" = "Unable to connect to reader - another reader is already connected";
+"Unable to connect to reader - another reader is already connected" = "Impossible de se connecter au lecteur. Un autre lecteur est déjà connecté";
 
 /* Error message the card reader battery level is too low to connect to the phone or tablet. */
-"Unable to connect to reader - the reader has a critically low battery - charge the reader and try again." = "Unable to connect to reader - the reader has a critically low battery - charge the reader and try again.";
+"Unable to connect to reader - the reader has a critically low battery - charge the reader and try again." = "Impossible de se connecter au lecteur. La batterie du lecteur est très faible. Rechargez le lecteur et réessayez";
 
 /* Notice displayed when order creation fails */
 "Unable to create new order" = "Impossible de créer une nouvelle commande";
@@ -4501,19 +4587,19 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to load product attributes" = "Impossible de charger les attributs du produit";
 
 /* Notice displayed when taxes cannot be synced for new order */
-"Unable to load taxes for order" = "Unable to load taxes for order";
+"Unable to load taxes for order" = "Impossible de charger les taxes pour la commande";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "Impossible de marquer l'avis comme %@";
 
 /* Error message when the card reader cannot be used to perform the requested task. */
-"Unable to perform request with the connected reader - unsupported feature - please try again with another reader" = "Unable to perform request with the connected reader - unsupported feature - please try again with another reader";
+"Unable to perform request with the connected reader - unsupported feature - please try again with another reader" = "Impossible d’envoyer une demande avec le lecteur connecté. Fonctionnalité non prise en charge. Réessayez avec un autre lecteur";
 
 /* Error message when the application is so out of date that the backend refuses to work with it. */
-"Unable to perform software request - please update this application and try again" = "Unable to perform software request - please update this application and try again";
+"Unable to perform software request - please update this application and try again" = "Impossible d’envoyer une demande au logiciel. Mettez à jour l’application et réessayez";
 
 /* Error message when the payment intent is invalid. */
-"Unable to process payment due to invalid data - please try again" = "Unable to process payment due to invalid data - please try again";
+"Unable to process payment due to invalid data - please try again" = "Impossible de traiter le paiement. Données non valides. Veuillez réessayer";
 
 /* Error message when the order amount is below the minimum amount allowed. */
 "Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@" = "Impossible de traiter le paiement. Le montant total de la commande est inférieur au montant minimum que vous pouvez facturer, à savoir %1$@";
@@ -4522,13 +4608,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to process payment. Order total amount is not valid." = "Impossible de traiter le paiement. Le montant total de la commande n’est pas valide.";
 
 /* Error message when the card reader times out while reading a card. */
-"Unable to read card - the system timed out - please try again" = "Unable to read card - the system timed out - please try again";
+"Unable to read card - the system timed out - please try again" = "Impossible de lire la carte. Le système a été interrompu après le délai. Veuillez réessayer";
 
 /* Error message when the card reader is unable to read any chip on the inserted card. */
-"Unable to read inserted card - please try removing and inserting card again" = "Unable to read inserted card - please try removing and inserting card again";
+"Unable to read inserted card - please try removing and inserting card again" = "Impossible de lire la carte insérée. Retirez-la, puis réinsérez-la";
 
 /* Error message when the card reader is unable to read a swiped card. */
-"Unable to read swiped card - please try swiping again" = "Unable to read swiped card - please try swiping again";
+"Unable to read swiped card - please try swiping again" = "Impossible de lire la carte glissée. Réessayez de la glisser";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "Impossible de lire le site WordPress à cette URL. Appuyez sur « Besoin d’aide ? » pour afficher la FAQ.";
@@ -4539,20 +4625,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* An error message shown when failing to retrieve information about user roles, before letting the user in to manage the store. */
 "Unable to retrieve user roles." = "Impossible de récupérer les rôles utilisateurs.";
 
+/* Unable to retrieve variations for bulk update screen */
+"Unable to retrieve variations" = "Impossible de récupérer les variantes";
+
 /* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
 "Unable to save changes to the payment method" = "Impossible d’enregistrer les modifications apportées au moyen de paiement";
 
 /* Error message when Bluetooth Low Energy is not supported on the user device. */
-"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device" = "Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device";
+"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device" = "Impossible de détecter des lecteurs de cartes. Le Bluetooth à basse consommation n’est pas pris en charge par cet appareil. Utilisez un autre appareil";
 
 /* Error message when Bluetooth scan times out during reader discovery. */
-"Unable to search for card readers - Bluetooth timed out - please try again" = "Unable to search for card readers - Bluetooth timed out - please try again";
+"Unable to search for card readers - Bluetooth timed out - please try again" = "Impossible de détecter des lecteurs de cartes. Le Bluetooth a été déconnecté. Réessayez ultérieurement";
 
 /* Error notice title when we fail to update an address in the edit address screen. */
 "Unable to update address." = "Impossible de mettre à jour l’adresse.";
 
 /* Error message when the card reader battery level is too low to safely perform a software update. */
-"Unable to update card reader software - the reader battery is too low" = "Unable to update card reader software - the reader battery is too low";
+"Unable to update card reader software - the reader battery is too low" = "Impossible de mettre à jour le logiciel du lecteur de cartes. La batterie du lecteur est trop faible";
 
 /* Title for the error screen when In-Person Payments is unavailable */
 "Unable to verify In-Person Payments for this store" = "Impossible de vérifier les paiements en personne pour cette boutique";
@@ -4638,6 +4727,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Settings > Manage Card Reader > Connected Reader > A button to update the reader software */
 "Update Reader Software" = "Mettre à jour le logiciel du lecteur";
+
+/* Title that appears on top of the of bulk price setting screen */
+"Update Regular Price" = "Mettre à jour le tarif standard";
 
 /* Subtitle of the product form bottom sheet action for editing inventory settings. */
 "Update product inventory and SKU" = "Mettre à jour le stock de produits et les numéros de référence";
@@ -4758,9 +4850,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network." = "Vérifiez que votre imprimante et votre appareil sont connectés au **même réseau Wi-Fi**.\n\nConsultez la documentation de votre imprimante pour savoir comment la connecter à votre réseau Wi-Fi.";
 
-/* Displays the version of the App */
-"Version %@" = "Version %@";
-
 /* Displays the connected reader software version */
 "Version: %1$@" = "Version : %1$@";
 
@@ -4792,7 +4881,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "View add-ons from your device!" = "Affichez les modules de votre appareil !";
 
 /* Title of the feedback banner on the coupon list screen */
-"View and edit coupons" = "View and edit coupons";
+"View and edit coupons" = "Afficher et modifier les codes promo";
 
 /* The action to update downloadable files settings for a product */
 "View downloadable file settings" = "Afficher les réglages du fichier téléchargeable";
@@ -4837,12 +4926,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* View title during the Google auth process. */
 "Waiting..." = "En attente…";
 
-/* shown in promotional screens during first launch */
-"Watch readers from around the world read and interact with your site — in real time." = "Observez les lecteurs tout autour du monde lire et interagir avec votre site, en temps réel.";
-
-/* Shown in the prologue carousel (promotional screens) during first launch. */
-"Watch your audience grow with in-depth analytics." = "Regardez votre audience se développer grâce à l’analyse approfondie.";
-
 /* Error message when the merchant's payment account has been rejected */
 "We are sorry but we can't support In-Person Payments for this store." = "Malheureusement, nous ne pouvons pas prendre en charge les paiements en personne pour cette boutique.";
 
@@ -4875,10 +4958,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "We don’t support In-Person Payments in your country" = "Nous ne prenons pas en charge les paiements en personne dans votre pays";
 
 /* Title for the error screen when In-Person Payments is not supported in a specific country */
-"We don’t support In-Person Payments with Stripe in %1$@" = "We don’t support In-Person Payments with Stripe in %1$@";
+"We don’t support In-Person Payments with Stripe in %1$@" = "Nous ne prenons pas en charge les paiements en personne avec Stripe dans le pays suivant : %1$@";
 
 /* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country */
-"We don’t support In-Person Payments with Stripe in your country" = "We don’t support In-Person Payments with Stripe in your country";
+"We don’t support In-Person Payments with Stripe in your country" = "Nous ne prenons pas en charge les paiements en personne avec Stripe dans votre pays";
+
+/* Message displayed in the error prompt when loading total discounted amount in Coupon Details screen fails */
+"We encountered a problem loading analytics" = "Nous avons rencontré un problème lors du chargement des statistiques";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "Nous avons légèrement modifié l’adresse saisie. Si l’adresse suggérée est correcte, utilisez-la pour garantir la précision de la livraison.";
@@ -4929,6 +5015,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Nous vous avons envoyé un lien d’inscription pour créer votre nouveau compte WordPress.com. Consultez vos e-mails sur cet appareil et appuyez sur le lien dans l’e-mail que vous avez reçu de WordPress.com.";
 
+/* Title of a button linking to the app's website */
+"Website" = "Site Web";
+
 /* Title of the cell in Product Shipping Settings > Weight */
 "Weight" = "Poids";
 
@@ -4941,11 +5030,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "Poids : %1$@%2$@";
 
-/* Shown in the prologue carousel (promotional screens) during first launch. */
-"Welcome to the world’s most popular website builder." = "Bienvenue sur le créateur de site Web le plus populaire au monde.";
-
 /* Content of the feedback banner on the coupon list screen */
-"We’ve been working on making it possible to view and edit coupons from your device!" = "We’ve been working on making it possible to view and edit coupons from your device!";
+"We’ve been working on making it possible to view and edit coupons from your device!" = "Il sera bientôt possible d’afficher et de modifier les codes promo depuis votre appareil.";
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "Quelle adresse e-mail dois-je utiliser pour me connecter ?";
@@ -4982,9 +5068,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigates to WisePad 3 Card Reader manual */
 "WisePad 3 card reader manual" = "Manuel du lecteur de carte WisePad 3";
 
-/* Shown in the prologue carousel (promotional screens) during first launch. */
-"With this powerful editor you can post on the go." = "À l’aide de cet éditeur puissant, vos pouvez publier à la volée.";
-
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";
 
@@ -4993,6 +5076,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Create Shipping Label form -> WooCommerce Discount label */
 "WooCommerce Discount" = "WooCommerce Discount";
+
+/* Subject line for when sharing the app with others through mail or any other activity types that support contains a subject field. */
+"WooCommerce Mobile App - Run your store from anywhere" = "Application mobile WooCommerce : gérez votre boutique où que vous soyez";
 
 /* Navigation title of the webview which used by the merchant to update their store address */
 "WooCommerce Settings" = "Réglages WooCommerce";
@@ -5009,6 +5095,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %@ uses WordPress %@. We recommend to update to the latest version, or at least %@" = "Votre version de WordPress est trop ancienne. Le site sur %1$@ utilise WordPress %2$@. Nous vous recommandons de mettre à jour à la dernière version ou au moins %3$@.";
+
+/* Title of a button linking to the Automattic Work With Us web page */
+"Work with us" = "Nous rejoindre";
 
 /* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
 "Wrong account?" = "Mauvais compte ?";
@@ -5053,6 +5142,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "Vous ne pouvez pas utiliser cette adresse e-mail pour vous inscrire. Nous rencontrons des problèmes avec ce service qui bloque parfois nos e-mails. Veuillez utiliser un autre fournisseur d'e-mail.";
 
+/* The description on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
+"You currently have Coupons disabled for this store. Enable coupons to get started." = "Les codes promo sont actuellement désactivés pour cette boutique. Activez les codes promo pour commencer.";
+
 /* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
 "You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "Votre compte comporte au moins un prérequis en attente. Veuillez y remédier afin de reprendre les paiements en personne.";
 
@@ -5067,9 +5159,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "Le logiciel de votre lecteur de carte doit être mis à jour pour percevoir les paiements. L’annulation bloquera la connexion de votre lecteur.";
-
-/* shown in promotional screens during first launch */
-"Your notifications travel with you — see comments and likes as they happen." = "Vos notifications voyagent avec vous. Visualisez les commentaires et les réactions dès qu’ils arrivent.";
 
 /* Title for the error screen when the merchant's In-Person Payments account is restricted because there are pending requirements */
 "Your payments account has pending requirements" = "Il y a des prérequis en attente d’une action dans votre compte de paiement.";
@@ -5126,9 +5215,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} Connectez-vous avec Google.";
-
-/* About View's Footer Text. The variable is the current year */
-"© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd." = "© %@ WooCommerce, Inc. et WooCommerce Ireland Ltd.";
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 Commande terminée";

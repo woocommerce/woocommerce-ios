@@ -24,4 +24,10 @@ final class OrdersTests: XCTestCase {
             .goBackToOrdersScreen()
             .verifyOrdersScreenLoaded()
     }
+
+    func test_create_new_order() throws {
+        try TabNavComponent().goToOrdersScreen()
+            .startOrderCreation()
+            .createOrder()
+    }
 }

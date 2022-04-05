@@ -208,4 +208,31 @@ final class ShippingLineDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(savedShippingLine?.total, "11.30")
         XCTAssertNotEqual(savedShippingLine?.methodTitle, "") // "Shipping" placeholder string is localized -> not reliable for comparison here.
     }
+
+    func test_view_model_amount_placeholder_has_expected_value() {
+        // Given
+        let viewModel = ShippingLineDetailsViewModel(isExistingShippingLine: false,
+                                                     initialMethodTitle: "",
+                                                     shippingTotal: "",
+                                                     locale: usLocale,
+                                                     storeCurrencySettings: usStoreSettings,
+                                                     didSelectSave: { _ in })
+
+        // Then
+        XCTAssertEqual(viewModel.amountPlaceholder, "0")
+    }
+
+    func test_view_model_initializes_correctly_with_no_existing_shipping_line() {
+        // Given
+        let viewModel = ShippingLineDetailsViewModel(isExistingShippingLine: false,
+                                                     initialMethodTitle: "",
+                                                     shippingTotal: "",
+                                                     locale: usLocale,
+                                                     storeCurrencySettings: usStoreSettings,
+                                                     didSelectSave: { _ in })
+
+        // Then
+        XCTAssertFalse(viewModel.isExistingShippingLine)
+    }
+
 }

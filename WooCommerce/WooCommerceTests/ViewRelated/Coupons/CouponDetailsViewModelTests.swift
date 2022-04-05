@@ -4,121 +4,60 @@ import XCTest
 
 final class CouponDetailsViewModelTests: XCTestCase {
 
-    func test_coupon_details_are_correct_for_fixedProduct_discount_type() {
+    func test_amount_is_correct_for_fixedProduct_discount_type() {
         // Given
         let sampleCoupon = Coupon.fake().copy(
-            code: "AGK32FD",
             amount: "10.00",
-            discountType: .fixedProduct,
-            description: "Coupon description",
-            dateExpires: Date(timeIntervalSince1970: 1642755825), // GMT: January 21, 2022
-            productIds: []
+            discountType: .fixedProduct
         )
         let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, currencySettings: CurrencySettings())
 
         // Then
-        XCTAssertEqual(viewModel.couponCode, "AGK32FD")
         XCTAssertEqual(viewModel.amount, "$10.00")
-        XCTAssertEqual(viewModel.description, "Coupon description")
-        XCTAssertEqual(viewModel.expiryDate, "January 21, 2022")
     }
 
-    func test_coupon_details_are_correct_for_percentage_discount_type() {
+    func test_amount_is_correct_for_percentage_discount_type() {
         // Given
+        let sampleCoupon = Coupon.fake().copy(
+            amount: "10.00",
+            discountType: .percent
+        )
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon)
+
+        // Then
+        XCTAssertEqual(viewModel.amount, "10%")
+    }
+
+    func test_coupon_details_are_correct() {
         let sampleCoupon = Coupon.fake().copy(
             code: "AGK32FD",
             amount: "10.00",
             discountType: .percent,
             description: "Coupon description",
             dateExpires: Date(timeIntervalSince1970: 1642755825), // GMT: January 21, 2022
-            productIds: []
+            individualUse: true,
+            productIds: [],
+            usageLimitPerUser: 3,
+            freeShipping: true,
+            excludeSaleItems: false,
+            minimumAmount: "5.00",
+            emailRestrictions: ["*@a8c.com", "someone.else@example.com"]
         )
-        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon)
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, currencySettings: .init())
 
         // Then
         XCTAssertEqual(viewModel.couponCode, "AGK32FD")
         XCTAssertEqual(viewModel.amount, "10%")
         XCTAssertEqual(viewModel.description, "Coupon description")
         XCTAssertEqual(viewModel.expiryDate, "January 21, 2022")
-    }
-
-    func test_coupon_apply_rule_with_no_limit() {
-        // Given
-        let sampleCoupon = Coupon.fake().copy(productIds: [], excludedProductIds: [], productCategories: [], excludedProductCategories: [])
-        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon)
-
-        // Then
-        XCTAssertEqual(viewModel.productsAppliedTo, NSLocalizedString("All Products", comment: ""))
-    }
-
-    func test_coupon_apply_rule_with_one_productId() {
-        // Given
-        let sampleCoupon = Coupon.fake().copy(productIds: [12], excludedProductIds: [], productCategories: [], excludedProductCategories: [])
-        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon)
-
-        // Then
-        let appliedTo = String(format: NSLocalizedString("%d Product", comment: ""), 1)
-        XCTAssertEqual(viewModel.productsAppliedTo, appliedTo)
-    }
-
-    func test_coupon_apply_rule_with_multiple_productIds() {
-        // Given
-        let sampleCoupon = Coupon.fake().copy(productIds: [12, 23, 45], excludedProductIds: [], productCategories: [], excludedProductCategories: [])
-        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon)
-
-        // Then
-        let appliedTo = String(format: NSLocalizedString("%d Products", comment: ""), 3)
-        XCTAssertEqual(viewModel.productsAppliedTo, appliedTo)
-    }
-
-    func test_coupon_apply_rule_with_multiple_productIds_and_categories() {
-        // Given
-        let sampleCoupon = Coupon.fake().copy(productIds: [12, 23, 45], excludedProductIds: [], productCategories: [22, 33], excludedProductCategories: [])
-        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon)
-
-        // Then
-        let appliedTo = String(format: NSLocalizedString("%d Products and %d Categories", comment: ""), 3, 2)
-        XCTAssertEqual(viewModel.productsAppliedTo, appliedTo)
-    }
-
-    func test_coupon_apply_rule_with_productIds_and_excluded_categories() {
-        // Given
-        let sampleCoupon = Coupon.fake().copy(productIds: [12, 23, 45], excludedProductIds: [], productCategories: [], excludedProductCategories: [11])
-        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon)
-
-        // Then
-        let appliedTo = String(format: NSLocalizedString("%d Products excl. %d Category", comment: ""), 3, 1)
-        XCTAssertEqual(viewModel.productsAppliedTo, appliedTo)
-    }
-
-    func test_coupon_apply_rule_with_categories_and_excluded_products() {
-        // Given
-        let sampleCoupon = Coupon.fake().copy(productIds: [], excludedProductIds: [11, 22], productCategories: [1, 2, 3], excludedProductCategories: [])
-        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon)
-
-        // Then
-        let appliedTo = String(format: NSLocalizedString("%d Categories excl. %d Products", comment: ""), 3, 2)
-        XCTAssertEqual(viewModel.productsAppliedTo, appliedTo)
-    }
-
-    func test_coupon_apply_rule_with_excluded_products() {
-        // Given
-        let sampleCoupon = Coupon.fake().copy(productIds: [], excludedProductIds: [11, 22], productCategories: [], excludedProductCategories: [])
-        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon)
-
-        // Then
-        let appliedTo = String(format: NSLocalizedString("All excl. %d Products", comment: ""), 2)
-        XCTAssertEqual(viewModel.productsAppliedTo, appliedTo)
-    }
-
-    func test_coupon_apply_rule_with_excluded_categories() {
-        // Given
-        let sampleCoupon = Coupon.fake().copy(productIds: [], excludedProductIds: [], productCategories: [], excludedProductCategories: [11, 22])
-        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon)
-
-        // Then
-        let appliedTo = String(format: NSLocalizedString("All excl. %d Categories", comment: ""), 2)
-        XCTAssertEqual(viewModel.productsAppliedTo, appliedTo)
+        XCTAssertEqual(viewModel.discountType, NSLocalizedString("Percentage Discount", comment: ""))
+        XCTAssertFalse(viewModel.excludeSaleItems)
+        XCTAssertTrue(viewModel.allowsFreeShipping)
+        XCTAssertEqual(viewModel.usageLimitPerUser, 3)
+        XCTAssertEqual(viewModel.minimumAmount, "$5.00")
+        XCTAssertEqual(viewModel.maximumAmount, "")
+        XCTAssertEqual(viewModel.emailRestrictions, ["*@a8c.com", "someone.else@example.com"])
+        XCTAssertTrue(viewModel.individualUseOnly)
     }
 
     func test_coupon_is_updated_after_synchronizing() {
@@ -214,13 +153,14 @@ final class CouponDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.shareMessage, shareMessage)
     }
 
-    func test_hasErrorLoadingAmount_returns_false_initially() {
+    func test_hasErrorLoadingAmount_and_hasWCAnalyticsDisabled_return_false_initially() {
         // Given
         let sampleCoupon = Coupon.fake().copy(code: "TEST", amount: "10.00", discountType: .percent, productIds: [12, 23])
         let viewModel = CouponDetailsViewModel(coupon: sampleCoupon)
 
         // Then
         XCTAssertFalse(viewModel.hasErrorLoadingAmount)
+        XCTAssertFalse(viewModel.hasWCAnalyticsDisabled)
     }
 
     func test_hasErrorLoadingAmount_returns_false_if_loading_amount_succeeds() {
@@ -244,7 +184,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.hasErrorLoadingAmount)
     }
 
-    func test_hasErrorLoadingAmount_returns_true_if_loading_amount_fails() {
+    func test_hasErrorLoadingAmount_returns_true_if_loading_amount_fails_and_retrieveAnalyticsSetting_returns_true() {
         // Given
         let sampleCoupon = Coupon.fake().copy(code: "TEST", amount: "10.00", discountType: .percent, productIds: [12, 23])
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -260,9 +200,198 @@ final class CouponDetailsViewModelTests: XCTestCase {
                 break
             }
         }
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .retrieveAnalyticsSetting(_, onCompletion):
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
         viewModel.loadCouponReport()
 
         // Then
         XCTAssertTrue(viewModel.hasErrorLoadingAmount)
+        XCTAssertFalse(viewModel.hasWCAnalyticsDisabled)
+    }
+
+    func test_hasErrorLoadingAmount_returns_true_if_loading_amount_fails_and_retrieveAnalyticsSetting_returns_false() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(code: "TEST", amount: "10.00", discountType: .percent, productIds: [12, 23])
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, stores: stores)
+
+        // When
+        stores.whenReceivingAction(ofType: CouponAction.self) { action in
+            switch action {
+            case .loadCouponReport(_, _, _, let onCompletion):
+                let error = NSError(domain: "Test", code: 0, userInfo: [:])
+                onCompletion(.failure(error))
+            default:
+                break
+            }
+        }
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .retrieveAnalyticsSetting(_, onCompletion):
+                onCompletion(.success(false))
+            default:
+                break
+            }
+        }
+        viewModel.loadCouponReport()
+
+        // Then
+        XCTAssertFalse(viewModel.hasErrorLoadingAmount)
+        XCTAssertTrue(viewModel.hasWCAnalyticsDisabled)
+    }
+
+    func test_shouldShowErrorLoadingAmount_returns_false_if_usageCount_is_zero() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(code: "TEST", amount: "10.00", discountType: .percent, usageCount: 0, productIds: [12, 23])
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, stores: stores)
+
+        // When
+        stores.whenReceivingAction(ofType: CouponAction.self) { action in
+            switch action {
+            case .loadCouponReport(_, _, _, let onCompletion):
+                let error = NSError(domain: "Test", code: 0, userInfo: [:])
+                onCompletion(.failure(error))
+            default:
+                break
+            }
+        }
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .retrieveAnalyticsSetting(_, onCompletion):
+                onCompletion(.success(false))
+            default:
+                break
+            }
+        }
+        viewModel.loadCouponReport()
+
+        // Then
+        XCTAssertTrue(viewModel.hasWCAnalyticsDisabled) // Confidence check
+        XCTAssertFalse(viewModel.shouldShowErrorLoadingAmount)
+    }
+
+    func test_shouldShowErrorLoadingAmount_returns_true_if_usageCount_is_not_zero() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(code: "TEST", amount: "10.00", discountType: .percent, usageCount: 1, productIds: [12, 23])
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, stores: stores)
+
+        // When
+        stores.whenReceivingAction(ofType: CouponAction.self) { action in
+            switch action {
+            case .loadCouponReport(_, _, _, let onCompletion):
+                let error = NSError(domain: "Test", code: 0, userInfo: [:])
+                onCompletion(.failure(error))
+            default:
+                break
+            }
+        }
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .retrieveAnalyticsSetting(_, onCompletion):
+                onCompletion(.success(false))
+            default:
+                break
+            }
+        }
+        viewModel.loadCouponReport()
+
+        // Then
+        XCTAssertTrue(viewModel.hasWCAnalyticsDisabled) // Confidence check
+        XCTAssertTrue(viewModel.shouldShowErrorLoadingAmount)
+    }
+
+    func test_deleteCoupon_triggers_onSuccess_if_deletion_succeeds() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(siteID: 123, couponID: 456)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, stores: stores)
+        var onSuccessTriggered = false
+        var onFailureTriggered = false
+        let onSuccess: () -> Void = {
+            onSuccessTriggered = true
+        }
+        let onFailure: () -> Void = {
+            onFailureTriggered = true
+        }
+
+        // When
+        stores.whenReceivingAction(ofType: CouponAction.self) { action in
+            switch action {
+            case let .deleteCoupon(siteID, couponID, onCompletion):
+                // Confidence check
+                XCTAssertEqual(siteID, sampleCoupon.siteID)
+                XCTAssertEqual(couponID, sampleCoupon.couponID)
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+        viewModel.deleteCoupon(onSuccess: onSuccess, onFailure: onFailure)
+
+        // Then
+        XCTAssertTrue(onSuccessTriggered)
+        XCTAssertFalse(onFailureTriggered)
+    }
+
+    func test_deleteCoupon_triggers_onFailure_if_deletion_fails() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(siteID: 123, couponID: 456)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, stores: stores)
+        var onSuccessTriggered = false
+        var onFailureTriggered = false
+        let onSuccess: () -> Void = {
+            onSuccessTriggered = true
+        }
+        let onFailure: () -> Void = {
+            onFailureTriggered = true
+        }
+
+        // When
+        stores.whenReceivingAction(ofType: CouponAction.self) { action in
+            switch action {
+            case let .deleteCoupon(_, _, onCompletion):
+                let error = NSError(domain: "test", code: 400, userInfo: nil)
+                onCompletion(.failure(error))
+            default:
+                break
+            }
+        }
+        viewModel.deleteCoupon(onSuccess: onSuccess, onFailure: onFailure)
+
+        // Then
+        XCTAssertFalse(onSuccessTriggered)
+        XCTAssertTrue(onFailureTriggered)
+    }
+
+    func test_deleteCoupon_updates_isLoading_correctly() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(siteID: 123, couponID: 456)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, stores: stores)
+        XCTAssertFalse(viewModel.isDeletionInProgress)
+
+        // When
+        stores.whenReceivingAction(ofType: CouponAction.self) { action in
+            switch action {
+            case let .deleteCoupon(_, _, onCompletion):
+                XCTAssertTrue(viewModel.isDeletionInProgress)
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+        viewModel.deleteCoupon(onSuccess: {}, onFailure: {})
+
+        // Then
+        XCTAssertFalse(viewModel.isDeletionInProgress)
     }
 }

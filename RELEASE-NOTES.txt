@@ -1,9 +1,26 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+8.9
+-----
+- [*] Coupons: Fixed issue loading the coupon list from the local storage on initial load. [https://github.com/woocommerce/woocommerce-ios/pull/6463]
+- [*] Coupons: Update layout of the coupon details screen. [https://github.com/woocommerce/woocommerce-ios/pull/6522]
+- [*] In-Person Payments: Removed collecting L2/L3 data. [https://github.com/woocommerce/woocommerce-ios/pull/6519]
+- [*] Hub Menu: Multiple menu items can no longer be tapped simultaneously. [https://github.com/woocommerce/woocommerce-ios/pull/6484]
+- [*] Jetpack CP: Fixed crash when attempting to access WP-Admin with an invalid URL that has an unsupported scheme. [https://github.com/woocommerce/woocommerce-ios/pull/6502]
+- [***] Orders: Order Creation is now available to everyone! You can go to the Orders tab and tap the + button to create a new order. [https://github.com/woocommerce/woocommerce-ios/pull/6537]
+- [internal] Loading screens are refactored to avoid duplicated code and a potential crash. Please quickly smoke test them to make sure that everything still works as before. [https://github.com/woocommerce/woocommerce-ios/pull/6535] [https://github.com/woocommerce/woocommerce-ios/pull/6544]
+
 8.8
 -----
+- [*] Updates the app's About screen to be consistent with Automattic's other mobile apps. [https://github.com/woocommerce/woocommerce-ios/pull/6421]
+- [***] Experimental Feature: It's now possible to add custom shipping method and fees in order creation flow. Tax amount and Order total is now synced from backend. [https://github.com/woocommerce/woocommerce-ios/pull/6429]
+- [**] Now it's possible to filter orders by custom statuses. [https://github.com/woocommerce/woocommerce-ios/pull/6390]
+- [*] Fixed issue presenting Edit Customer Note screen as a modal on large screens. [https://github.com/woocommerce/woocommerce-ios/pull/6406]
 - [*] Products displayed in Order Detail now follow the same order of the web. [https://github.com/woocommerce/woocommerce-ios/pull/6401]
 - [*] Simple Payments now shows a detailed tax break up before taking the payment. [https://github.com/woocommerce/woocommerce-ios/pull/6412]
+- [*] Coupons list now shows an error view if coupons are disabled for the store. Coupons can be enabled again from this view. [https://github.com/woocommerce/woocommerce-ios/pull/6446]
+- [*] Coupon details screen now displays more informative error messages when loading the total discount amount fails. [https://github.com/woocommerce/woocommerce-ios/pull/6457]
+- [internal] Shipping Labels: the navigation bar in the web view for adding payments is now correctly hidden. [https://github.com/woocommerce/woocommerce-ios/pull/6435]
 
 8.7
 -----

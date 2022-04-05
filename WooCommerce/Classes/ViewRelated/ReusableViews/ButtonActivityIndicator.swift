@@ -15,6 +15,8 @@ final class ButtonActivityIndicator: UIButton {
             frm.origin.y = (frame.height - frm.height) / 2.0
             indicator.frame = frm.integral
         }
+
+        titleLabel?.isHidden = indicator.isAnimating
     }
 
     /// Display the loader indicator inside the button
@@ -25,11 +27,13 @@ final class ButtonActivityIndicator: UIButton {
         }
         indicator.isUserInteractionEnabled = false
         indicator.center = CGPoint(x: self.bounds.size.width/2, y: self.bounds.size.height/2)
+        indicator.hidesWhenStopped = true
+        // If `hideActivityIndicator()` is called immediately after this method, it will find the indicator and remove it
+        addSubview(indicator)
         UIView.transition(with: self, duration: Constants.animationDuration, options: .curveEaseOut, animations: { [weak self] in
             self?.titleLabel?.alpha = 0.0
         }) { [weak self] (_) in
             guard let self = self else { return }
-            self.addSubview(self.indicator)
             self.indicator.startAnimating()
         }
     }

@@ -1,0 +1,5 @@
+Sua empresa usa status de pedido personalizados? Agora você pode filtrar pedidos usando esses status! Toque no botão Filtrar na lista de pedidos para ver essa opção.
+
+Alguns de vocês têm olhos de águia e perceberam que a ordenação de produtos em um pedido nem sempre é igual na Web. Isso foi corrigido!
+
+Sabia que estamos trabalhando em uma nova funcionalidade para criar pedidos? Acesse a guia Menu, toque no ícone de configuração e role a tela até as funcionalidades experimentais. Nesta versão, adicionamos uma seção de taxas e método de envio. Há também uma nova funcionalidade que você pode nos ajudar a experimentar: Cupons. Avise-nos se você encontrar algo que possa ser aprimorado.

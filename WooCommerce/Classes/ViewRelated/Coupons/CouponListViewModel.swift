@@ -8,13 +8,14 @@ enum CouponListState {
     case initialized // ViewModel ready to receive actions
     case loading // View should show ghost cells
     case empty // View should display the empty state
+    case couponsDisabled // View should display the error state
     case coupons // View should display the contents of `couponViewModels`
     case refreshing // View should display the refresh control
     case loadingNextPage // View should display a bottom loading indicator and contents of `couponViewModels`
 
     var shouldShowTopBanner: Bool {
         switch self {
-        case .initialized, .loading, .empty:
+        case .initialized, .loading, .empty, .couponsDisabled:
             return false
         case .coupons, .refreshing, .loadingNextPage:
             return true
@@ -24,7 +25,7 @@ enum CouponListState {
 
 final class CouponListViewModel {
 
-    typealias CouponListCellViewModel = TitleAndSubtitleAndStatusTableViewCell.ViewModel
+    typealias CellViewModel = TitleAndSubtitleAndStatusTableViewCell.ViewModel
 
     /// Active state
     ///
@@ -36,7 +37,7 @@ final class CouponListViewModel {
 
     /// couponViewModels: ViewModels for the cells representing Coupons
     ///
-    @Published private(set) var couponViewModels: [CouponListCellViewModel] = []
+    @Published private(set) var couponViewModels: [CellViewModel] = []
 
     /// siteID: siteID of the currently active site, used for fetching and storing coupons
     ///
@@ -78,11 +79,11 @@ final class CouponListViewModel {
 
     func buildCouponViewModels() {
         couponViewModels = resultsController.fetchedObjects.map { coupon in
-            CouponListCellViewModel(title: coupon.code,
-                                    subtitle: coupon.discountType.localizedName, // to be updated after UI is finalized
-                                    accessibilityLabel: coupon.description.isEmpty ? coupon.description : coupon.code,
-                                    status: coupon.expiryStatus().localizedName,
-                                    statusBackgroundColor: coupon.expiryStatus().statusBackgroundColor)
+            CellViewModel(title: coupon.code,
+                          subtitle: coupon.summary(), // to be updated after UI is finalized
+                          accessibilityLabel: coupon.description.isEmpty ? coupon.description : coupon.code,
+                          status: coupon.expiryStatus().localizedName,
+                          statusBackgroundColor: coupon.expiryStatus().statusBackgroundColor)
         }
     }
 
@@ -119,9 +120,28 @@ final class CouponListViewModel {
         let action = AppSettingsAction.updateFeedbackStatus(type: .couponManagement,
                                                             status: .dismissed) { [weak self] result in
             if let error = result.failure {
-                DDLogError("⛔️ Error update feedback visibility for coupon management: \(error)")
+                DDLogError("⛔️ Error updating feedback visibility for coupon management: \(error)")
             }
             self?.isFeedbackBannerEnabledInAppSettings = false
+        }
+        storesManager.dispatch(action)
+    }
+
+    /// Enable coupons for the store
+    ///
+    func enableCoupons() {
+        ServiceLocator.analytics.track(.couponSettingEnabled)
+
+        state = .loading
+        let action = SettingAction.enableCouponSetting(siteID: siteID) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success:
+                self.syncingCoordinator.synchronizeFirstPage(reason: nil, onCompletion: nil)
+            case .failure(let error):
+                DDLogError("⛔️ Error enabling coupon setting: \(error)")
+                self.state = .couponsDisabled
+            }
         }
         storesManager.dispatch(action)
     }
@@ -148,6 +168,7 @@ private extension CouponListViewModel {
 
         do {
             try resultsController.performFetch()
+            buildCouponViewModels()
         } catch {
             ServiceLocator.crashLogging.logError(error)
         }
@@ -177,6 +198,18 @@ private extension CouponListViewModel {
                 self?.isFeedbackBannerEnabledInAppSettings = false
                 DDLogError("⛔️ Error load feedback visibility for coupon management: \(error)")
             }
+        }
+        storesManager.dispatch(action)
+    }
+
+    /// Check whether coupons are enabled for this store.
+    ///
+    func loadCouponSetting(completionHandler: @escaping ((Result<Bool, Error>) -> Void)) {
+        let action = SettingAction.retrieveCouponSetting(siteID: siteID) { result in
+            if let isEnabled = try? result.get(), !isEnabled {
+                ServiceLocator.analytics.track(.couponSettingDisabled)
+            }
+            completionHandler(result)
         }
         storesManager.dispatch(action)
     }
@@ -215,13 +248,25 @@ extension CouponListViewModel: SyncingCoordinatorDelegate {
             DDLogInfo("Synchronized coupons")
             ServiceLocator.analytics.track(.couponsLoaded,
                                            withProperties: ["is_loading_more": pageNumber != SyncingCoordinator.Defaults.pageFirstIndex])
-
+            transitionToResultsUpdatedState(hasData: couponViewModels.isNotEmpty)
         case .failure(let error):
             DDLogError("⛔️ Error synchronizing coupons: \(error)")
             ServiceLocator.analytics.track(.couponsLoadedFailed, withError: error)
+            loadCouponSetting { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let isEnabled):
+                    if isEnabled {
+                        self.transitionToResultsUpdatedState(hasData: self.couponViewModels.isNotEmpty)
+                    } else {
+                        self.state = .couponsDisabled
+                    }
+                case .failure(let error):
+                    DDLogError("⛔️ Error retrieving coupon setting: \(error)")
+                    self.transitionToResultsUpdatedState(hasData: self.couponViewModels.isNotEmpty)
+                }
+            }
         }
-
-        self.transitionToResultsUpdatedState(hasData: couponViewModels.isNotEmpty)
     }
 }
 

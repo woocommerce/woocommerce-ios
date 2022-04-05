@@ -1,16 +1,17 @@
 import UIKit
-import SafariServices.SFSafariViewController
-
 
 // MARK: - ReviewsViewController
 //
-final class ReviewsViewController: UIViewController {
+final class ReviewsViewController: UIViewController, GhostableViewController {
 
     typealias ViewModel = ReviewsViewModelOutput & ReviewsViewModelActionsHandler
 
     /// Main TableView.
     ///
     @IBOutlet private weak var tableView: UITableView!
+
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: ProductReviewTableViewCell.self,
+                                                                                                estimatedRowHeight: Settings.estimatedRowHeight))
 
     /// Mark all as read nav bar button
     ///
@@ -102,8 +103,9 @@ final class ReviewsViewController: UIViewController {
                                                 self?.tableView.updateHeaderHeight()
                                               },
                                               onTroubleshootButtonPressed: { [weak self] in
-                                                let safariViewController = SFSafariViewController(url: WooConstants.URLs.troubleshootErrorLoadingData.asURL())
-                                                self?.present(safariViewController, animated: true, completion: nil)
+                                                guard let self = self else { return }
+
+                                                WebviewHelper.launch(WooConstants.URLs.troubleshootErrorLoadingData.asURL(), with: self)
                                               },
                                               onContactSupportButtonPressed: { [weak self] in
                                                 guard let self = self else { return }
@@ -338,13 +340,15 @@ private extension ReviewsViewController {
     /// Renders Placeholder Reviews.
     ///
     func displayPlaceholderReviews() {
-        viewModel.displayPlaceholderReviews(tableView: tableView)
+        displayGhostContent()
+        viewModel.didDisplayPlaceholderReviews()
     }
 
     /// Removes Placeholder Reviews.
     ///
     func removePlaceholderReviews() {
-        viewModel.removePlaceholderReviews(tableView: tableView)
+        removeGhostContent()
+        viewModel.didRemovePlaceholderReviews(tableView: tableView)
     }
 
     /// Displays the EmptyStateViewController.

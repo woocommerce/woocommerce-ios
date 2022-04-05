@@ -25,8 +25,10 @@ final class MainTabBarControllerTests: XCTestCase {
         // Arrange
         // Sets mock `FeatureFlagService` before `MainTabBarController` is initialized so that the feature flags are set correctly.
         let isHubMenuFeatureFlagOn = false
-        ServiceLocator.setFeatureFlagService(MockFeatureFlagService(isHubMenuOn: isHubMenuFeatureFlagOn))
-        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController else {
+        let featureFlagService = MockFeatureFlagService(isHubMenuOn: isHubMenuFeatureFlagOn)
+        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
+            return MainTabBarController(coder: coder, featureFlagService: featureFlagService)
+        }) else {
             return
         }
 
@@ -53,9 +55,10 @@ final class MainTabBarControllerTests: XCTestCase {
         // Arrange
         // Sets mock `FeatureFlagService` before `MainTabBarController` is initialized so that the feature flags are set correctly.
         let isHubMenuFeatureFlagOn = true
-        ServiceLocator.setFeatureFlagService(MockFeatureFlagService(isHubMenuOn: isHubMenuFeatureFlagOn))
-
-        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController else {
+        let featureFlagService = MockFeatureFlagService(isHubMenuOn: isHubMenuFeatureFlagOn)
+        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
+            return MainTabBarController(coder: coder, featureFlagService: featureFlagService)
+        }) else {
             return
         }
 
@@ -72,6 +75,38 @@ final class MainTabBarControllerTests: XCTestCase {
                    isAnInstanceOf: DashboardViewController.self)
         assertThat(tabBarController.tabNavigationController(tab: .orders, isHubMenuFeatureFlagOn: isHubMenuFeatureFlagOn)?.topViewController,
                    isAnInstanceOf: OrdersRootViewController.self)
+        assertThat(tabBarController.tabNavigationController(tab: .products, isHubMenuFeatureFlagOn: isHubMenuFeatureFlagOn)?.topViewController,
+                   isAnInstanceOf: ProductsViewController.self)
+        assertThat(tabBarController.tabNavigationController(tab: .hubMenu, isHubMenuFeatureFlagOn: isHubMenuFeatureFlagOn)?.topViewController,
+                   isAnInstanceOf: HubMenuViewController.self)
+    }
+
+    func test_tab_view_controllers_returns_expected_values_with_hub_menu_and_split_view_in_orders_tab_enabled() {
+        // Arrange
+        // Sets mock `FeatureFlagService` before `MainTabBarController` is initialized so that the feature flags are set correctly.
+        let isSplitViewInOrdersTabOn = true
+        let isHubMenuFeatureFlagOn = true
+        let featureFlagService = MockFeatureFlagService(isHubMenuOn: isHubMenuFeatureFlagOn, isSplitViewInOrdersTabOn: isSplitViewInOrdersTabOn)
+
+        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
+            return MainTabBarController(coder: coder, featureFlagService: featureFlagService)
+        }) else {
+            return
+        }
+
+        // Trigger `viewDidLoad`
+        XCTAssertNotNil(tabBarController.view)
+
+        // Action
+        let siteID: Int64 = 134
+        stores.updateDefaultStore(storeID: siteID)
+
+        // Assert
+        XCTAssertEqual(tabBarController.viewControllers?.count, 4)
+        assertThat(tabBarController.tabNavigationController(tab: .myStore, isHubMenuFeatureFlagOn: isHubMenuFeatureFlagOn)?.topViewController,
+                   isAnInstanceOf: DashboardViewController.self)
+        assertThat(tabBarController.tabNavigationController(tab: .orders, isHubMenuFeatureFlagOn: isHubMenuFeatureFlagOn)?.topViewController,
+                   isAnInstanceOf: OrdersSplitViewWrapperController.self)
         assertThat(tabBarController.tabNavigationController(tab: .products, isHubMenuFeatureFlagOn: isHubMenuFeatureFlagOn)?.topViewController,
                    isAnInstanceOf: ProductsViewController.self)
         assertThat(tabBarController.tabNavigationController(tab: .hubMenu, isHubMenuFeatureFlagOn: isHubMenuFeatureFlagOn)?.topViewController,

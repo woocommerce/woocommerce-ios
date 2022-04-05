@@ -107,16 +107,16 @@ struct FeeLineDetails: View {
                 .bodyStyle()
                 .fixedSize()
 
-            Spacer()
-
-            BindableTextfield(viewModel.amountPlaceholder,
-                              text: $viewModel.amount,
-                              focus: $focusFixedAmountInput)
-                .keyboardType(.numbersAndPunctuation)
-                .addingCurrencySymbol(viewModel.currencySymbol, on: viewModel.currencyPosition)
-                .onTapGesture {
-                    focusFixedAmountInput = true
-                }
+            HStack {
+                Spacer()
+                BindableTextfield(viewModel.amountPlaceholder,
+                                  text: $viewModel.amount,
+                                  focus: $focusFixedAmountInput)
+                    .keyboardType(.numbersAndPunctuation)
+                    .onTapGesture {
+                        focusFixedAmountInput = true
+                    }
+            }
         }
         .frame(minHeight: Layout.rowHeight)
         .padding([.leading, .trailing], Layout.rowPadding)
@@ -128,15 +128,16 @@ struct FeeLineDetails: View {
                 .bodyStyle()
                 .fixedSize()
 
-            Spacer()
-
-            BindableTextfield("0",
-                              text: $viewModel.percentage,
-                              focus: $focusPercentageAmountInput)
-                .keyboardType(.numbersAndPunctuation)
-                .onTapGesture {
-                    focusPercentageAmountInput = true
-                }
+            HStack {
+                Spacer()
+                BindableTextfield("0",
+                                  text: $viewModel.percentage,
+                                  focus: $focusPercentageAmountInput)
+                    .keyboardType(.numbersAndPunctuation)
+                    .onTapGesture {
+                        focusPercentageAmountInput = true
+                    }
+            }
         }
         .frame(minHeight: Layout.rowHeight)
         .padding([.leading, .trailing], Layout.rowPadding)

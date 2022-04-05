@@ -7,14 +7,14 @@ public enum OrderFactory {
     /// Creates an order suitable to be used as a simple payments order.
     /// Under the hood it uses a fee line with or without taxes to create an order with the desired amount.
     ///
-    static func simplePaymentsOrder(amount: String, taxable: Bool) -> Order {
+    static func simplePaymentsOrder(status: OrderStatusEnum, amount: String, taxable: Bool) -> Order {
         Order(siteID: 0,
               orderID: 0,
               parentID: 0,
               customerID: 0,
               orderKey: "",
               number: "",
-              status: .pending,
+              status: status,
               currency: "",
               customerNote: "",
               dateCreated: Date(),
@@ -74,7 +74,7 @@ public enum OrderFactory {
     /// Creates a shipping line suitable to delete a shipping line already saved remotely in an order.
     ///
     public static func deletedShippingLine(_ shippingLine: ShippingLine) -> ShippingLine {
-        shippingLine.copy(methodID: .some(nil))
+        shippingLine.copy(methodID: .some(nil), total: "0")
     }
 
     /// References a new empty order with constants `Date` values.

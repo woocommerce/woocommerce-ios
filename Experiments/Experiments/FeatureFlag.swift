@@ -22,10 +22,6 @@ public enum FeatureFlag: Int {
     ///
     case jetpackConnectionPackageSupport
 
-    /// Allows new orders to be manually created
-    ///
-    case orderCreation
-
     /// Display the new tab "Menu" in the tab bar.
     ///
     case hubMenu
@@ -57,4 +53,12 @@ public enum FeatureFlag: Int {
     /// Displays the Orders tab in a split view
     ///
     case splitViewInOrdersTab
+
+    /// Displays the option to delete coupons
+    ///
+    case couponDeletion
+
+    /// Displays the option to edit a coupon
+    ///
+    case couponEditing
 }

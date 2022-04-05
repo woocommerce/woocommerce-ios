@@ -33,4 +33,15 @@ struct MockCardReader {
                    readerType: .chipper,
                    locationId: "st_simulated")
     }
+
+    static func wisePad3() -> CardReader {
+        CardReader(serial: "WPC323026000412",
+                   vendorIdentifier: "SIMULATOR",
+                   name: "Simulated WISEPAD 3",
+                   status: .init(connected: false, remembered: false),
+                   softwareVersion: nil,
+                   batteryLevel: 0.5,
+                   readerType: .wisepad3,
+                   locationId: nil)
+    }
 }

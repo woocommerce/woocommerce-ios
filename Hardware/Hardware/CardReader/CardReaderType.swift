@@ -14,7 +14,7 @@ public enum CardReaderType {
 extension CardReaderType {
     /// A human-readable model name for the reader.
     ///
-    var model: String {
+    public var model: String {
         /// This should match the Android SDK deviceName, to simplify Analytics use
         /// https://stripe.dev/stripe-terminal-android/external/external/com.stripe.stripeterminal.external.models/-device-type/index.html
         /// pbUcTB-r9-p2#comment-2164

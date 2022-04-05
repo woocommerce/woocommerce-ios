@@ -577,7 +577,8 @@ private extension CardReaderConnectionController {
                     event: WooAnalyticsEvent.InPersonPayments
                         .cardReaderConnectionSuccess(forGatewayID: self.gatewayID,
                                                      batteryLevel: reader.batteryLevel,
-                                                     countryCode: self.configuration.countryCode)
+                                                     countryCode: self.configuration.countryCode,
+                                                     cardReaderModel: reader.readerType.model)
                 )
                 // If we were installing a software update, introduce a small delay so the user can
                 // actually see a success message showing the installation was complete
@@ -593,7 +594,8 @@ private extension CardReaderConnectionController {
                 ServiceLocator.analytics.track(
                     event: WooAnalyticsEvent.InPersonPayments.cardReaderConnectionFailed(forGatewayID: self.gatewayID,
                                                                                          error: error,
-                                                                                         countryCode: self.configuration.countryCode)
+                                                                                         countryCode: self.configuration.countryCode,
+                                                                                         cardReaderModel: candidateReader.readerType.model)
                 )
                 self.state = .connectingFailed(error)
             }

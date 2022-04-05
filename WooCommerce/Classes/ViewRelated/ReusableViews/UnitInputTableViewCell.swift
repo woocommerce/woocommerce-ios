@@ -9,6 +9,13 @@ struct UnitInputViewModel {
         case none
     }
 
+    enum Style {
+        /// The default style with a title label in the left and the price input textfield in the right.
+        case primary
+        /// A style with the price input textfield in the left, it does not support title text.
+        case secondary
+    }
+
     let title: String
     let unit: String
     let value: String?
@@ -17,6 +24,7 @@ struct UnitInputViewModel {
     let unitPosition: UnitPosition
     let keyboardType: UIKeyboardType
     let inputFormatter: UnitInputFormatter
+    let style: Style
     let onInputChange: ((_ input: String?) -> Void)?
 }
 
@@ -27,6 +35,7 @@ final class UnitInputTableViewCell: UITableViewCell {
     @IBOutlet private weak var inputAndUnitStackView: UIStackView!
     @IBOutlet private weak var inputTextField: UITextField!
     @IBOutlet private weak var unitLabel: UILabel!
+    @IBOutlet private weak var inputAndUnitStackViewTotitleLabel: NSLayoutConstraint!
 
     private var inputFormatter: UnitInputFormatter?
     private var onInputChange: ((_ input: String?) -> Void)?
@@ -53,6 +62,8 @@ final class UnitInputTableViewCell: UITableViewCell {
         accessibilityHint = viewModel.accessibilityHint
         inputFormatter = viewModel.inputFormatter
         onInputChange = viewModel.onInputChange
+
+        configureStyle(viewModel.style)
 
         rearrangeInputAndUnitStackViewSubviews(using: viewModel.unitPosition)
     }
@@ -104,22 +115,36 @@ private extension UnitInputTableViewCell {
     func configureInputTextField() {
         inputTextField.borderStyle = .none
         inputTextField.applyBodyStyle()
-        if traitCollection.layoutDirection == .rightToLeft {
-            // swiftlint:disable:next natural_text_alignment
-            inputTextField.textAlignment = .left
-            // swiftlint:enable:next natural_text_alignment
-        } else {
-            // swiftlint:disable:next inverse_text_alignment
-            inputTextField.textAlignment = .right
-            // swiftlint:enable:next inverse_text_alignment
-        }
+
         inputTextField.delegate = self
         inputTextField.addTarget(self, action: #selector(textFieldDidChange(textField:)), for: .editingChanged)
 
-        inputTextField.setContentHuggingPriority(.required, for: .horizontal)
-
         // If auto font size adjustment is enabled, the text field does not know the appropriate width and the font size shrinks even though space is available.
         inputTextField.adjustsFontSizeToFitWidth = false
+    }
+
+    private func configureStyle(_ style: UnitInputViewModel.Style) {
+
+        if style == .primary {
+            inputAndUnitStackViewTotitleLabel.constant = Constants.inputAndUnitStackViewTotitleLabelSpacing
+            inputTextField.setContentHuggingPriority(.required, for: .horizontal)
+        } else {
+            // In secondary style we have no title do we need to remove the extra space between
+            // the title and the stackView
+            inputAndUnitStackViewTotitleLabel.constant = 0.0
+            // If the title label has higher hugging priority then this textfield will stretch take all the free space
+            inputTextField.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        }
+
+        if traitCollection.layoutDirection == .rightToLeft {
+            // swiftlint:disable:next inverse_text_alignment
+            inputTextField.textAlignment = style == .primary ? .left : .right
+            // swiftlint:enable:next natural_text_alignment
+        } else {
+            // swiftlint:disable:next inverse_text_alignment
+            inputTextField.textAlignment = style == .primary ? .right : .left
+            // swiftlint:enable:next inverse_text_alignment
+        }
     }
 
     func configureUnitLabel() {
@@ -166,6 +191,7 @@ private extension UnitInputTableViewCell {
 private extension UnitInputTableViewCell {
     enum Constants {
         static let stackViewSpacing: CGFloat = 6
+        static let inputAndUnitStackViewTotitleLabelSpacing: CGFloat = 16
     }
 }
 

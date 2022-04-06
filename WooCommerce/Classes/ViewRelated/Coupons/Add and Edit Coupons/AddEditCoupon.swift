@@ -22,7 +22,7 @@ struct AddEditCoupon: View {
                             ListHeaderView(text: Localization.headerCouponDetails.uppercased(), alignment: .left)
 
                             Group {
-                                TitleAndTextFieldRow(title: viewModel.amountText,
+                                TitleAndTextFieldRow(title: viewModel.amountLabel,
                                                      placeholder: "0",
                                                      text: $viewModel.amountField,
                                                      editable: true,
@@ -31,7 +31,7 @@ struct AddEditCoupon: View {
                                 Divider()
                                     .padding(.leading, Constants.margin)
 
-                                Text(viewModel.amountSubtitleText)
+                                Text(viewModel.amountSubtitleLabel)
                                     .subheadlineStyle()
                                     .padding(.horizontal, Constants.margin)
                             }

@@ -24,7 +24,7 @@ final class AddEditCouponViewModel: ObservableObject {
 
     /// Text representing the label of the amount field, localized based on discount type.
     ///
-    var amountText: String {
+    var amountLabel: String {
         switch discountType {
         case .percent:
             return Localization.amountPercent
@@ -35,7 +35,7 @@ final class AddEditCouponViewModel: ObservableObject {
 
     /// Text representing the label of the amount textfield subtitle, localized based on discount type.
     ///
-    var amountSubtitleText: String {
+    var amountSubtitleLabel: String {
         switch discountType {
         case .percent:
             return Localization.amountPercentSubtitle

@@ -84,13 +84,16 @@ private extension AddEditCouponViewModel {
 
     enum Localization {
         static let amountPercent = NSLocalizedString("Amount (%)",
-                                                     comment: "Text field Amount in percentage in the view for adding or editing a coupon.")
+                                                     comment: "Title of the Amount field in the Coupon Edit" +
+                                                     " or Creation screen for a percentage discount coupon.")
         static let amountFixedDiscount = NSLocalizedString("Amount (fixed discount)",
-                                                     comment: "Text field Amount with fixed discount in the view for adding or editing a coupon.")
+                                                           comment: "Title of the Amount field on the Coupon Edit" +
+                                                           " or Creation screen for a fixed amount discount coupon.")
         static let amountPercentSubtitle = NSLocalizedString("Set the percentage of the discount you want to offer.",
-                                                     comment: "The footer of the text field Amount in percentage in the view for adding or editing a coupon.")
+                                                             comment: "Subtitle of the Amount field in the Coupon Edit" +
+                                                             " or Creation screen for a percentage discount coupon.")
         static let amountFixedDiscountSubtitle = NSLocalizedString("Set the fixed amount of the discount you want to offer.",
-                                                                   comment: "The footer of the text field Amount with fixed" +
-                                                                   "discount in the view for adding or editing a coupon.")
+                                                                   comment: "Subtitle of the Amount field on the Coupon Edit" +
+                                                                   " or Creation screen for a fixed amount discount coupon.")
     }
 }

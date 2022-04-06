@@ -316,9 +316,9 @@ final class NewOrderViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.customerDataViewModel.isDataAvailable)
 
         // When
-        viewModel.addressFormViewModel?.fields.firstName = sampleAddress1().firstName
-        viewModel.addressFormViewModel?.fields.lastName = sampleAddress1().lastName
-        viewModel.addressFormViewModel?.saveAddress(onFinish: { _ in })
+        viewModel.addressFormViewModel.fields.firstName = sampleAddress1().firstName
+        viewModel.addressFormViewModel.fields.lastName = sampleAddress1().lastName
+        viewModel.addressFormViewModel.saveAddress(onFinish: { _ in })
 
         // Then
         XCTAssertTrue(viewModel.customerDataViewModel.isDataAvailable)
@@ -589,9 +589,9 @@ final class NewOrderViewModelTests: XCTestCase {
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
-        viewModel.addressFormViewModel?.fields.firstName = sampleAddress1().firstName
-        viewModel.addressFormViewModel?.fields.lastName = sampleAddress1().lastName
-        viewModel.addressFormViewModel?.saveAddress(onFinish: { _ in })
+        viewModel.addressFormViewModel.fields.firstName = sampleAddress1().firstName
+        viewModel.addressFormViewModel.fields.lastName = sampleAddress1().lastName
+        viewModel.addressFormViewModel.saveAddress(onFinish: { _ in })
 
         // Then
         XCTAssertTrue(viewModel.hasChanges)
@@ -672,9 +672,9 @@ final class NewOrderViewModelTests: XCTestCase {
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
-        viewModel.addressFormViewModel?.fields.address1 = sampleAddress1().address1
-        viewModel.addressFormViewModel?.showDifferentAddressForm = true
-        viewModel.addressFormViewModel?.saveAddress(onFinish: { _ in })
+        viewModel.addressFormViewModel.fields.address1 = sampleAddress1().address1
+        viewModel.addressFormViewModel.showDifferentAddressForm = true
+        viewModel.addressFormViewModel.saveAddress(onFinish: { _ in })
 
         // Then
         XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderCustomerAdd.rawValue])
@@ -691,8 +691,8 @@ final class NewOrderViewModelTests: XCTestCase {
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
-        viewModel.addressFormViewModel?.fields.address1 = ""
-        viewModel.addressFormViewModel?.saveAddress(onFinish: { _ in })
+        viewModel.addressFormViewModel.fields.address1 = ""
+        viewModel.addressFormViewModel.saveAddress(onFinish: { _ in })
 
         // Then
         XCTAssertTrue(analytics.receivedEvents.isEmpty)
@@ -772,6 +772,26 @@ final class NewOrderViewModelTests: XCTestCase {
 
         // When
         viewModel.discardOrder()
+    }
+
+    func test_resetAddressForm_discards_pending_address_field_changes() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
+
+        // Given there is a saved change and a pending change
+        viewModel.addressFormViewModel.fields.firstName = sampleAddress1().firstName
+        viewModel.addressFormViewModel.saveAddress(onFinish: { _ in })
+        viewModel.addressFormViewModel.fields.lastName = sampleAddress1().lastName
+
+        // When
+        viewModel.resetAddressForm()
+
+        // Then
+        XCTAssertEqual(viewModel.addressFormViewModel.fields.firstName, sampleAddress1().firstName,
+                       "Saved change was unexpectedly discarded when address form was reset")
+        XCTAssertEqual(viewModel.addressFormViewModel.fields.lastName, "",
+                       "Pending change was not discarded when address form was reset")
     }
 }
 

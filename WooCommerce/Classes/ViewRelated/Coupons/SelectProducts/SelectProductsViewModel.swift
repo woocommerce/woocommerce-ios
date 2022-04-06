@@ -6,6 +6,10 @@ final class SelectProductsViewModel: ObservableObject {
     /// Whether the view is for selecting or excluding products
     private var isExclusion: Bool
 
+    /// The query to search for products
+    @Published var searchQuery: String = ""
+
+    /// TODO: replace this with the real list of selected items
     @Published private(set) var selectedItemCount: Int = 0
 
     /// Title for the navigation bar of the Select Products screen

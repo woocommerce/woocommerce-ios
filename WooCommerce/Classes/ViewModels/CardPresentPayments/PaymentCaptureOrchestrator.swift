@@ -229,9 +229,32 @@ private extension PaymentCaptureOrchestrator {
                                  currency: order.currency,
                                  receiptDescription: receiptDescription(orderNumber: order.number),
                                  statementDescription: statementDescriptor,
-                                 receiptEmail: order.billingAddress?.email,
+                                 receiptEmail: receiptEmail(from: order),
                                  paymentMethodTypes: paymentMethodTypes,
                                  metadata: metadata)
+    }
+
+    private func receiptEmail(from order: Order) -> String? {
+        let paymentsPluginsInfoProvider = PaymentsPluginsInfoProvider(siteID: order.siteID)
+
+        let wcPay = paymentsPluginsInfoProvider.getWCPayPlugin()
+        let stripe = paymentsPluginsInfoProvider.getStripePlugin()
+
+        guard !paymentsPluginsInfoProvider.bothPluginsInstalledAndActive(wcPay: wcPay, stripe: stripe) else {
+            // This case should not happen, shall we fatal error here?
+            return nil
+        }
+
+        guard let wcPay = wcPay,
+              paymentsPluginsInfoProvider.wcPayInstalledAndActive(wcPay: wcPay) else {
+            return order.billingAddress?.email
+        }
+
+        return wcPayPluginSendsReceiptEmail(version: wcPay.version) ? nil : order.billingAddress?.email
+    }
+
+    private func wcPayPluginSendsReceiptEmail(version: String) -> Bool {
+        return VersionHelpers.compare(version, Constants.minimumWCPayPluginVersionThatSendsReceiptEmail) == .orderedAscending
     }
 
     func receiptDescription(orderNumber: String) -> String? {
@@ -261,6 +284,7 @@ private extension PaymentCaptureOrchestrator {
         /// Minimum order amount in USD:
         /// https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts
         static let minimumAmount = NSDecimalNumber(string: "0.5")
+        static let minimumWCPayPluginVersionThatSendsReceiptEmail = "4.0.0"
     }
 
     func isTotalAmountValid(order: Order) -> Bool {

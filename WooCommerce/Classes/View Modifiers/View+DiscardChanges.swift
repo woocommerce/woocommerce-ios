@@ -103,6 +103,7 @@ extension View {
                               cancelButtonTitle: cancelButtonTitle,
                               canDismiss: canDismiss,
                               didDismiss: didDismiss)
+            .ignoresSafeArea() // Removes extra safe area insets added by the wrapper
     }
 }
 

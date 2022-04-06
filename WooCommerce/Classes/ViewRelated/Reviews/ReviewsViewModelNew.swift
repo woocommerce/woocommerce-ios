@@ -27,7 +27,7 @@ final class ReviewsViewModelNew {
         return data
     }
 
-
+    private let reviewsSynchronizer: ReviewsSynchronizer
 
     private var unreadNotifications: [Note] {
         return data.notifications.filter { $0.read == false }
@@ -47,6 +47,7 @@ final class ReviewsViewModelNew {
         self.siteID = siteID
         self.data = data
         self.stores = stores
+        self.reviewsSynchronizer = reviewsSynchronizer
     }
 
     func configureResultsController(tableView: UITableView) {
@@ -83,7 +84,9 @@ final class ReviewsViewModelNew {
     func synchronizeReviews(pageNumber: Int,
                             pageSize: Int,
                             onCompletion: (() -> Void)?) {
-
+        reviewsSynchronizer.synchronizeReviews(pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion, onError: {[weak self] in
+            self?.hasErrorLoadingData = true
+        })
     }
 }
 
@@ -92,7 +95,7 @@ protocol ReviewsSynchronizer {
     func synchronizeReviews(pageNumber: Int,
                             pageSize: Int,
                             onCompletion: (() -> Void)?,
-                            onError: (() -> ()))
+                            onError: @escaping (() -> ()))
 }
 
 // MARK: - Fetching data
@@ -222,16 +225,20 @@ final class SiteReviewsSynchronizer: ReviewsSynchronizer {
     func synchronizeReviews(pageNumber: Int,
                             pageSize: Int,
                             onCompletion: (() -> Void)?,
-                            onError: (() -> ())) {
+                            onError:  @escaping (() -> ())) {
         let group = DispatchGroup()
 
         group.enter()
-        synchronizeAllReviews(pageNumber: pageNumber, pageSize: pageSize) { [weak self] reviews in
-            let productIDs = reviews.map { $0.productID }.uniqued()
-            self?.synchronizeProductsReviewed(reviewsProductIDs: productIDs) {
-                group.leave()
-            }
-        }
+
+
+        synchronizeAllReviews(pageNumber: pageNumber,
+                              pageSize: pageSize,
+                              onCompletion: { [weak self] reviews in
+                                let productIDs = reviews.map { $0.productID }.uniqued()
+                                self?.synchronizeProductsReviewed(reviewsProductIDs: productIDs,
+                                                                  onCompletion: { group.leave() },
+                                                                  onError: onError)
+        }, onError: onError)
 
         group.enter()
         synchronizeNotifications {
@@ -248,7 +255,7 @@ final class SiteReviewsSynchronizer: ReviewsSynchronizer {
     private func synchronizeAllReviews(pageNumber: Int,
                                        pageSize: Int,
                                        onCompletion: (([ProductReview]) -> Void)? = nil,
-                                       onError: (() -> ())) {
+                                       onError: @escaping (() -> ())) {
         let action = ProductReviewAction.synchronizeProductReviews(siteID: siteID,
                                                                    pageNumber: pageNumber,
                                                                    pageSize: pageSize) { result in
@@ -272,7 +279,7 @@ final class SiteReviewsSynchronizer: ReviewsSynchronizer {
 
     private func synchronizeProductsReviewed(reviewsProductIDs: [Int64],
                                              onCompletion: @escaping () -> Void,
-                                             onError: (() -> ())) {
+                                             onError: @escaping (() -> ())) {
         let action = ProductAction.retrieveProducts(siteID: siteID, productIDs: reviewsProductIDs) { result in
             switch result {
             case .failure(let error):
@@ -292,7 +299,8 @@ final class SiteReviewsSynchronizer: ReviewsSynchronizer {
 
     /// Synchronizes the Notifications associated to the active WordPress.com account.
     ///
-    private func synchronizeNotifications(onCompletion: (() -> Void)? = nil, onError: (() -> ())) {
+    private func synchronizeNotifications(onCompletion: (() -> Void)? = nil,
+                                          onError: @escaping (() -> ())) {
         let action = NotificationAction.synchronizeNotifications { error in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing notifications: \(error)")

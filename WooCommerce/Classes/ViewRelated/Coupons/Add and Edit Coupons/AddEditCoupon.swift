@@ -6,6 +6,7 @@ import Yosemite
 struct AddEditCoupon: View {
 
     @ObservedObject private var viewModel: AddEditCouponViewModel
+    @State private var showingCouponRestrictions: Bool = false
     @Environment(\.presentationMode) var presentation
 
     init(_ viewModel: AddEditCouponViewModel) {
@@ -134,7 +135,9 @@ struct AddEditCoupon: View {
 
                             TitleAndValueRow(title: Localization.usageRestrictions,
                                              value: .placeholder(""),
-                                             selectionStyle: .disclosure, action: { })
+                                             selectionStyle: .disclosure, action: {
+                                showingCouponRestrictions = true
+                            })
                             Divider()
                                 .padding(.leading, Constants.margin)
                         }
@@ -148,6 +151,13 @@ struct AddEditCoupon: View {
                         .buttonStyle(PrimaryButtonStyle())
                         .padding(.horizontal, Constants.margin)
                         .padding([.top, .bottom], Constants.verticalSpacing)
+
+                        if let coupon = viewModel.coupon {
+                            LazyNavigationLink(destination: CouponRestrictions(viewModel: CouponRestrictionsViewModel(coupon: coupon)),
+                                               isActive: $showingCouponRestrictions) {
+                                EmptyView()
+                            }
+                        }
                     }
                 }
             }

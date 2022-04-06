@@ -46,7 +46,7 @@ final class AddEditCouponViewModel: ObservableObject {
         }
     }
 
-    private var coupon: Coupon?
+    private(set) var coupon: Coupon?
 
     // Fields
     @Published var amountField = String()

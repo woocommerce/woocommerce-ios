@@ -30,4 +30,10 @@ final class OrdersTests: XCTestCase {
             .startOrderCreation()
             .createOrder()
     }
+
+    func test_cancel_order_creation() throws {
+        try TabNavComponent().goToOrdersScreen()
+            .startOrderCreation()
+            .cancelOrderCreation()
+    }
 }

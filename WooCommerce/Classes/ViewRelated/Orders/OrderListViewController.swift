@@ -261,6 +261,7 @@ private extension OrderListViewController {
         tableView.dataSource = dataSource
 
         view.backgroundColor = .listBackground
+        tableView.accessibilityIdentifier = "orders-table-view"
         tableView.backgroundColor = .listBackground
         tableView.refreshControl = refreshControl
         tableView.tableFooterView = footerSpinnerView

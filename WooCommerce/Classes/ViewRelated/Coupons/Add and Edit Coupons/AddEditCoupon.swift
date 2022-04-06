@@ -37,7 +37,6 @@ struct AddEditCoupon: View {
                             }
                             .padding(.bottom, Constants.verticalSpacing)
 
-
                             Group {
                                 TitleAndTextFieldRow(title: Localization.couponCode,
                                                      placeholder: Localization.couponCodePlaceholder,

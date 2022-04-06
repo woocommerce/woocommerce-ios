@@ -69,6 +69,7 @@ struct AddEditCoupon: View {
                             } label: {
                                 HStack {
                                     Image(uiImage: .plusImage)
+                                        .frame(width: Constants.iconSize, height: Constants.iconSize)
                                     Text(Localization.addDescriptionButton)
                                         .bodyStyle()
                                 }
@@ -104,6 +105,7 @@ struct AddEditCoupon: View {
                             } label: {
                                 HStack {
                                     Image(uiImage: .pencilImage).colorMultiply(Color(.text))
+                                        .frame(width: Constants.iconSize, height: Constants.iconSize)
                                     Text(Localization.editProductsButton)
                                         .bodyStyle()
                                 }
@@ -118,6 +120,7 @@ struct AddEditCoupon: View {
                                 HStack {
                                     Image(uiImage: .pencilImage)
                                         .colorMultiply(Color(.text))
+                                        .frame(width: Constants.iconSize, height: Constants.iconSize)
                                     Text(Localization.editProductCategoriesButton)
                                         .bodyStyle()
                                 }
@@ -171,6 +174,7 @@ private extension AddEditCoupon {
     enum Constants {
         static let margin: CGFloat = 16
         static let verticalSpacing: CGFloat = 8
+        static let iconSize: CGFloat = 16
     }
 
     enum Localization {

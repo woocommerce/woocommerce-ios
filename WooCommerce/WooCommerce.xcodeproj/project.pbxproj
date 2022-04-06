@@ -1511,6 +1511,7 @@
 		DE19BB1826C3B5C300AB70D9 /* ShippingLabelCustomsFormItemDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE19BB1726C3B5C300AB70D9 /* ShippingLabelCustomsFormItemDetails.swift */; };
 		DE19BB1A26C3B5DC00AB70D9 /* ShippingLabelCustomsFormItemDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE19BB1926C3B5DC00AB70D9 /* ShippingLabelCustomsFormItemDetailsViewModel.swift */; };
 		DE19BB1D26C6911900AB70D9 /* ShippingLabelCustomsFormListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE19BB1C26C6911900AB70D9 /* ShippingLabelCustomsFormListViewModelTests.swift */; };
+		DE1A2B4327FD7A6F000D2318 /* SelectProductsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1A2B4227FD7A6F000D2318 /* SelectProductsViewModelTests.swift */; };
 		DE1B030D268DD01A00804330 /* ReviewOrderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1B030B268DD01A00804330 /* ReviewOrderViewController.swift */; };
 		DE1B030E268DD01A00804330 /* ReviewOrderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DE1B030C268DD01A00804330 /* ReviewOrderViewController.xib */; };
 		DE1B0310268EB2FB00804330 /* ReviewOrderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1B030F268EB2FB00804330 /* ReviewOrderViewModel.swift */; };
@@ -3213,6 +3214,7 @@
 		DE19BB1726C3B5C300AB70D9 /* ShippingLabelCustomsFormItemDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormItemDetails.swift; sourceTree = "<group>"; };
 		DE19BB1926C3B5DC00AB70D9 /* ShippingLabelCustomsFormItemDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormItemDetailsViewModel.swift; sourceTree = "<group>"; };
 		DE19BB1C26C6911900AB70D9 /* ShippingLabelCustomsFormListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormListViewModelTests.swift; sourceTree = "<group>"; };
+		DE1A2B4227FD7A6F000D2318 /* SelectProductsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectProductsViewModelTests.swift; sourceTree = "<group>"; };
 		DE1B030B268DD01A00804330 /* ReviewOrderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewOrderViewController.swift; sourceTree = "<group>"; };
 		DE1B030C268DD01A00804330 /* ReviewOrderViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReviewOrderViewController.xib; sourceTree = "<group>"; };
 		DE1B030F268EB2FB00804330 /* ReviewOrderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewOrderViewModel.swift; sourceTree = "<group>"; };
@@ -4407,6 +4409,7 @@
 				DE69C54E27BCB4B6000BB888 /* CouponRestrictionsViewModelTests.swift */,
 				DE74F2A627E47F620002FE59 /* EnableAnalyticsViewModelTests.swift */,
 				4572641A27F1FDF2004E1F95 /* AddEditCouponViewModelTests.swift */,
+				DE1A2B4227FD7A6F000D2318 /* SelectProductsViewModelTests.swift */,
 			);
 			path = Coupons;
 			sourceTree = "<group>";
@@ -9778,6 +9781,7 @@
 				AEA622B727468790002A9B57 /* AddOrderCoordinatorTests.swift in Sources */,
 				D802549126552FE1001B2CC1 /* CardPresentModalScanningForReaderTests.swift in Sources */,
 				A655725D258B91AE008AE7CA /* OrderListCellViewModelTests.swift in Sources */,
+				DE1A2B4327FD7A6F000D2318 /* SelectProductsViewModelTests.swift in Sources */,
 				D83A6A7A23792B2400419D48 /* UIColor+Muriel-Tests.swift in Sources */,
 				2614EB1C24EB611200968D4B /* TopBannerViewTests.swift in Sources */,
 				B5DBF3C320E1484400B53AED /* StoresManagerTests.swift in Sources */,

@@ -29,7 +29,9 @@ final class AddEditCouponViewModel: ObservableObject {
         case .percent:
             return Localization.amountPercent
         default:
-            return Localization.amountFixedDiscount
+            let currencyCode = ServiceLocator.currencySettings.currencyCode
+            let unit = ServiceLocator.currencySettings.symbol(from: currencyCode)
+            return String.localizedStringWithFormat(Localization.amountFixedDiscount, unit)
         }
     }
 
@@ -86,9 +88,10 @@ private extension AddEditCouponViewModel {
         static let amountPercent = NSLocalizedString("Amount (%)",
                                                      comment: "Title of the Amount field in the Coupon Edit" +
                                                      " or Creation screen for a percentage discount coupon.")
-        static let amountFixedDiscount = NSLocalizedString("Amount (fixed discount)",
+        static let amountFixedDiscount = NSLocalizedString("Amount (%@)",
                                                            comment: "Title of the Amount field on the Coupon Edit" +
-                                                           " or Creation screen for a fixed amount discount coupon.")
+                                                           " or Creation screen for a fixed amount discount coupon." +
+                                                           "Reads like: Amount ($)")
         static let amountPercentSubtitle = NSLocalizedString("Set the percentage of the discount you want to offer.",
                                                              comment: "Subtitle of the Amount field in the Coupon Edit" +
                                                              " or Creation screen for a percentage discount coupon.")

@@ -172,21 +172,6 @@ extension ProductReviewsViewController: UITableViewDelegate {
 // MARK: - Placeholders
 //
 private extension ProductReviewsViewController {
-
-    /// Renders Placeholder Reviews.
-    ///
-    func displayPlaceholderReviews() {
-        displayGhostContent()
-        viewModel.didDisplayPlaceholderReviews()
-    }
-
-    /// Removes Placeholder Reviews.
-    ///
-    func removePlaceholderReviews() {
-        removeGhostContent()
-        viewModel.didRemovePlaceholderReviews(tableView: tableView)
-    }
-
     /// Displays the EmptyStateViewController.
     ///
     func displayEmptyViewController() {
@@ -250,7 +235,7 @@ private extension ProductReviewsViewController {
         case .results:
             break
         case .placeholder:
-            displayPlaceholderReviews()
+            displayGhostContent()
         case .syncing:
             ensureFooterSpinnerIsStarted()
         }
@@ -265,7 +250,7 @@ private extension ProductReviewsViewController {
         case .results:
             break
         case .placeholder:
-            removePlaceholderReviews()
+            removeGhostContent()
         case .syncing:
             ensureFooterSpinnerIsStopped()
         }

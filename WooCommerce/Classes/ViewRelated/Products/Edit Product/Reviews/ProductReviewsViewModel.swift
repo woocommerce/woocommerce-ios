@@ -27,16 +27,6 @@ final class ProductReviewsViewModel {
         self.data = data
     }
 
-    func didDisplayPlaceholderReviews() {
-        data.stopForwardingEvents()
-    }
-
-    /// Removes Placeholder Notes (and restores the ResultsController <> UITableView link).
-    ///
-    func didRemovePlaceholderReviews(tableView: UITableView) {
-        data.startForwardingEvents(to: tableView)
-    }
-
     func configureResultsController(tableView: UITableView) {
         data.startForwardingEvents(to: tableView)
 

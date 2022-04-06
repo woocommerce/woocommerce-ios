@@ -26,10 +26,6 @@ protocol ReviewsViewModelOutput {
 /// Handles actions related to Reviews screen
 ///
 protocol ReviewsViewModelActionsHandler {
-    func didDisplayPlaceholderReviews()
-
-    func didRemovePlaceholderReviews(tableView: UITableView)
-
     func configureResultsController(tableView: UITableView)
 
     func refreshResults()
@@ -86,17 +82,6 @@ final class ReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHan
         self.siteID = siteID
         self.data = data
         self.stores = stores
-    }
-
-    func didDisplayPlaceholderReviews() {
-        data.stopForwardingEvents()
-    }
-
-    /// Restores the ResultsController <> UITableView link after the placeholder was removed from the view.
-    ///
-    func didRemovePlaceholderReviews(tableView: UITableView) {
-        data.startForwardingEvents(to: tableView)
-        tableView.reloadData()
     }
 
     func configureResultsController(tableView: UITableView) {

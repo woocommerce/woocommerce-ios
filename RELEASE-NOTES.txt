@@ -4,6 +4,7 @@
 -----
 
 - [internal] Reviews lists on Products and Menu tabs are refactored to avoid duplicated code. Please quickly smoke test them to make sure that everything still works as before. [https://github.com/woocommerce/woocommerce-ios/pull/6553]
+- [*] Fixed issue that did not allow to merchants cancel the flow of creating a new order on landscape orientation. [https://github.com/woocommerce/woocommerce-ios/pull/6578]
 
 8.9
 -----

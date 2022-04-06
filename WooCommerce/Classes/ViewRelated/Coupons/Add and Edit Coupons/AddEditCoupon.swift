@@ -54,7 +54,6 @@ struct AddEditCoupon: View {
                             }
                             .padding([.bottom], Constants.verticalSpacing)
 
-
                             HStack {
                                 Button {
                                     //TODO: handle action

@@ -18,6 +18,7 @@ The following flows are covered/planned to be covered by UI tests. Tests that ar
     - [ ] Tap chart on stats
 3. [Orders](../WooCommerce/WooCommerceUITests/Tests/OrdersTests.swift)
     - [x] Orders list and single order screens load
+    - [x] Cancel the flow of creation of a new order
     - [ ] View product on single order screen
     - [ ] Add customer note
     - [ ] Add order note

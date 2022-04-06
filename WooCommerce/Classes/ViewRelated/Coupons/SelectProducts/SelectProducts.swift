@@ -3,7 +3,7 @@ import SwiftUI
 /// View to select products
 ///
 struct SelectProducts: View {
-    @State private var query: String = ""
+    @Environment(\.presentationMode) var presentation
     @ObservedObject private var viewModel: SelectProductsViewModel
 
     init(viewModel: SelectProductsViewModel) {
@@ -11,30 +11,42 @@ struct SelectProducts: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            SearchHeader(filterText: $query, filterPlaceholder: Localization.searchBarPlaceholder)
-            HStack {
-                Button(Localization.selectAll) {
-                    // TODO: select all item
+        NavigationView {
+            VStack(alignment: .leading, spacing: 0) {
+                SearchHeader(filterText: $viewModel.searchQuery, filterPlaceholder: Localization.searchBarPlaceholder)
+                HStack {
+                    Button(Localization.selectAll) {
+                        // TODO: select all item
+                    }
+                    .buttonStyle(LinkButtonStyle())
+                    .fixedSize()
+                    Spacer()
+                    Button(Localization.filter) {
+                        // TODO: show filter view
+                    }
+                    .buttonStyle(LinkButtonStyle())
+                    .fixedSize()
                 }
-                .buttonStyle(LinkButtonStyle())
-                .fixedSize()
+                // TODO: add list of products
                 Spacer()
-                Button(Localization.filter) {
-                    // TODO: show filter view
+                Button(viewModel.actionTitle) {
+                    // TODO: handle completion
                 }
-                .buttonStyle(LinkButtonStyle())
-                .fixedSize()
+                .buttonStyle(PrimaryButtonStyle())
+                .padding()
+                .renderedIf(viewModel.selectedItemCount > 0)
             }
-            Spacer()
-            Button(viewModel.actionTitle) {
-                // TODO: handle completion
+            .navigationTitle(viewModel.navigationTitle)
+            .navigationBarTitleDisplayMode(.large)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(Localization.cancel, action: {
+                        presentation.wrappedValue.dismiss()
+                    })
+                }
             }
-            .buttonStyle(PrimaryButtonStyle())
-            .padding()
-            .renderedIf(viewModel.selectedItemCount > 0)
+            .wooNavigationBarStyle()
         }
-        navigationTitle(viewModel.navigationTitle)
     }
 }
 
@@ -47,6 +59,7 @@ private extension SelectProducts {
         static let searchBarPlaceholder = NSLocalizedString("Search Products", comment: "Placeholder for the search bar in the Select Products screen")
         static let selectAll = NSLocalizedString("Select All", comment: "Action button on the Select Products screen to select all products in the list")
         static let filter = NSLocalizedString("Filter", comment: "Action button on the Select Products screen to filter items in the product list.")
+        static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss the Select Products screen")
     }
 }
 

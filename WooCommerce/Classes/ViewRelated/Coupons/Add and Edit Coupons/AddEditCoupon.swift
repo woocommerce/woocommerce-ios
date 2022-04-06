@@ -150,7 +150,6 @@ struct AddEditCoupon: View {
                         .padding([.top, .bottom], Constants.verticalSpacing)
                     }
                 }
-                .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
             }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -163,6 +162,7 @@ struct AddEditCoupon: View {
             .navigationBarTitleDisplayMode(.large)
             .wooNavigationBarStyle()
         }
+        .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
     }
 }
 

@@ -368,9 +368,10 @@ extension SearchViewController: SyncingCoordinatorDelegate {
                                           pageNumber: pageNumber,
                                           pageSize: pageSize,
                                           onCompletion: { [weak self] isCompleted in
+                                            guard let self = self else { return }
                                             // Disregard OPs that don't really match the latest keyword
-                                            if keyword == self?.searchUICommand.sanitizeKeyword(self?.keyword ?? String()) {
-                                                self?.transitionToResultsUpdatedState()
+                                            if keyword == self.searchUICommand.sanitizeKeyword(self.keyword) {
+                                                self.transitionToResultsUpdatedState()
                                             }
                                             onCompletion?(isCompleted)
         })

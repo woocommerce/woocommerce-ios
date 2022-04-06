@@ -1206,6 +1206,8 @@
 		CC07860526736B6500BA9AC1 /* ErrorTopBannerFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC07860426736B6500BA9AC1 /* ErrorTopBannerFactoryTests.swift */; };
 		CC13C0CB278E021300C0B5B5 /* AddProductVariationToOrderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC13C0CA278E021300C0B5B5 /* AddProductVariationToOrderViewModel.swift */; };
 		CC13C0CD278E086D00C0B5B5 /* AddProductVariationToOrderViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC13C0CC278E086D00C0B5B5 /* AddProductVariationToOrderViewModelTests.swift */; };
+		CC1AB56827FC5822003DEF43 /* OrderStatusScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC1AB56727FC5821003DEF43 /* OrderStatusScreen.swift */; };
+		CC1AB56A27FC60D1003DEF43 /* NewOrderFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC1AB56927FC60D1003DEF43 /* NewOrderFlow.swift */; };
 		CC200BB127847DE300EC5884 /* OrderPaymentSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC200BB027847DE300EC5884 /* OrderPaymentSection.swift */; };
 		CC254F2D26C17AB5005F3C82 /* BottomButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC254F2C26C17AB5005F3C82 /* BottomButtonView.swift */; };
 		CC254F3026C2A53D005F3C82 /* ShippingLabelAddNewPackage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC254F2F26C2A53D005F3C82 /* ShippingLabelAddNewPackage.swift */; };
@@ -2898,6 +2900,8 @@
 		CC07860426736B6500BA9AC1 /* ErrorTopBannerFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorTopBannerFactoryTests.swift; sourceTree = "<group>"; };
 		CC13C0CA278E021300C0B5B5 /* AddProductVariationToOrderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductVariationToOrderViewModel.swift; sourceTree = "<group>"; };
 		CC13C0CC278E086D00C0B5B5 /* AddProductVariationToOrderViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductVariationToOrderViewModelTests.swift; sourceTree = "<group>"; };
+		CC1AB56727FC5821003DEF43 /* OrderStatusScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusScreen.swift; sourceTree = "<group>"; };
+		CC1AB56927FC60D1003DEF43 /* NewOrderFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewOrderFlow.swift; sourceTree = "<group>"; };
 		CC200BB027847DE300EC5884 /* OrderPaymentSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderPaymentSection.swift; sourceTree = "<group>"; };
 		CC254F2C26C17AB5005F3C82 /* BottomButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomButtonView.swift; sourceTree = "<group>"; };
 		CC254F2F26C2A53D005F3C82 /* ShippingLabelAddNewPackage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddNewPackage.swift; sourceTree = "<group>"; };
@@ -5782,6 +5786,7 @@
 			children = (
 				80E6FC742763579D0086CD67 /* MockDataReader.swift */,
 				800A5B9D275623FC009DE2CD /* LoginFlow.swift */,
+				CC1AB56927FC60D1003DEF43 /* NewOrderFlow.swift */,
 			);
 			path = Flows;
 			sourceTree = "<group>";
@@ -7808,6 +7813,7 @@
 				CC5C278627EE19A600B25D2A /* NewOrderScreen.swift */,
 				F997173623DBF02400592D8E /* SingleOrderScreen.swift */,
 				F997173C23DBFBBF00592D8E /* OrderSearchScreen.swift */,
+				CC1AB56727FC5821003DEF43 /* OrderStatusScreen.swift */,
 			);
 			path = Orders;
 			sourceTree = "<group>";
@@ -8495,6 +8501,7 @@
 				3F0CF30D2704490A00EF3D71 /* LoginSiteAddressScreen.swift in Sources */,
 				80C3626B27704EE1005CEAD3 /* ProductDataStructs.swift in Sources */,
 				80C3627127745737005CEAD3 /* ReviewDataStructs.swift in Sources */,
+				CC1AB56827FC5822003DEF43 /* OrderStatusScreen.swift in Sources */,
 				3F0CF2FE270420DD00EF3D71 /* ScreenObject+Extension.swift in Sources */,
 				3FF314EA26FC751B0012E68E /* XCTest+Extensions.swift in Sources */,
 				3F0CF3002704490A00EF3D71 /* OrderSearchScreen.swift in Sources */,
@@ -9831,6 +9838,7 @@
 				800A5B58275483D6009DE2CD /* OrdersTests.swift in Sources */,
 				80AD2CA427858BAB00A63DE8 /* StatsTests.swift in Sources */,
 				800A5BCB2759CE4B009DE2CD /* ProductsTests.swift in Sources */,
+				CC1AB56A27FC60D1003DEF43 /* NewOrderFlow.swift in Sources */,
 				800A5B9E275623FC009DE2CD /* LoginFlow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

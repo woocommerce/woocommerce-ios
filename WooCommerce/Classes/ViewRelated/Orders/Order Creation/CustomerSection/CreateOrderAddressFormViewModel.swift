@@ -92,9 +92,7 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
 
     override func trackOnLoad() { }
 
-    func userDidCancelFlow() {
-        resetAddressForm()
-    }
+    func userDidCancelFlow() { }
 }
 
 private extension CreateOrderAddressFormViewModel {

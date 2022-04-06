@@ -132,16 +132,7 @@ final class NewOrderViewModel: ObservableObject {
 
     /// View model for the customer details address form.
     ///
-    var addressFormViewModel: CreateOrderAddressFormViewModel {
-        CreateOrderAddressFormViewModel(siteID: siteID,
-                                        addressData: .init(billingAddress: orderSynchronizer.order.billingAddress,
-                                                           shippingAddress: orderSynchronizer.order.shippingAddress),
-                                        onAddressUpdate: { [weak self] updatedAddressData in
-            let input = Self.createAddressesInput(from: updatedAddressData)
-            self?.orderSynchronizer.setAddresses.send(input)
-            self?.trackCustomerDetailsAdded()
-        })
-    }
+    @Published var addressFormViewModel: CreateOrderAddressFormViewModel?
 
     // MARK: Customer note properties
 
@@ -215,6 +206,7 @@ final class NewOrderViewModel: ObservableObject {
         configureStatusBadgeViewModel()
         configureProductRowViewModels()
         configureCustomerDataViewModel()
+        configureAddressFormViewModel()
         configurePaymentDataViewModel()
         configureCustomerNoteDataViewModel()
     }
@@ -260,6 +252,19 @@ final class NewOrderViewModel: ObservableObject {
                                        removeProductIntent: { [weak self] in
                 self?.selectOrderItem(item.itemID) })
         }
+    }
+
+    /// Creates a view model to be used in Address Form for customer address.
+    ///
+    func createOrderAddressFormViewModel() -> CreateOrderAddressFormViewModel {
+        CreateOrderAddressFormViewModel(siteID: siteID,
+                                        addressData: .init(billingAddress: orderSynchronizer.order.billingAddress,
+                                                           shippingAddress: orderSynchronizer.order.shippingAddress),
+                                        onAddressUpdate: { [weak self] updatedAddressData in
+            let input = Self.createAddressesInput(from: updatedAddressData)
+            self?.orderSynchronizer.setAddresses.send(input)
+            self?.trackCustomerDetailsAdded()
+        })
     }
 
     /// Updates the order creation draft with the current set customer note.
@@ -566,6 +571,12 @@ private extension NewOrderViewModel {
                 CustomerDataViewModel(billingAddress: $0.billingAddress, shippingAddress: $0.shippingAddress)
             }
             .assign(to: &$customerDataViewModel)
+    }
+
+    /// Configures the initial address form view model.
+    ///
+    func configureAddressFormViewModel() {
+        addressFormViewModel = createOrderAddressFormViewModel()
     }
 
     /// Updates notes data viewmodel based on order customer notes.

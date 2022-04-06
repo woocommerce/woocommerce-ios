@@ -45,9 +45,7 @@ final class NewOrderHostingController: UIHostingController<NewOrder> {
 extension NewOrderHostingController {
     override func shouldPopOnBackButton() -> Bool {
         guard !viewModel.hasChanges else {
-            presentDiscardChangesActionSheet(onDiscard: { [weak self] in
-                self?.discardOrderAndPop()
-            })
+            presentDiscardChangesActionSheet(onDiscard: discardOrderAndPop)
             return false
         }
         return true
@@ -66,9 +64,7 @@ extension NewOrderHostingController: UIAdaptivePresentationControllerDelegate {
     }
 
     func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
-        presentDiscardChangesActionSheet(onDiscard: { [weak self] in
-            self?.discardOrderAndDismiss()
-        })
+        presentDiscardChangesActionSheet(onDiscard: discardOrderAndDismiss)
     }
 }
 
@@ -77,16 +73,14 @@ extension NewOrderHostingController: UIAdaptivePresentationControllerDelegate {
 private extension NewOrderHostingController {
     func checkUnsavedChangesAndDismissIfPossible() {
         guard !viewModel.hasChanges else {
-            presentDiscardChangesActionSheet(onDiscard: { [weak self] in
-                self?.discardOrderAndDismiss()
-            })
+            presentDiscardChangesActionSheet(onDiscard: discardOrderAndDismiss)
             return
         }
 
         self.dismiss(animated: true)
     }
 
-    func presentDiscardChangesActionSheet(onDiscard: @escaping () -> Void) {
+    func presentDiscardChangesActionSheet(onDiscard: (() -> Void)?) {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: onDiscard)
     }
 

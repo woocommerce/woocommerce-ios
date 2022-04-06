@@ -69,8 +69,11 @@ struct AddEditCoupon: View {
                             Button {
                                 //TODO: handle action
                             } label: {
-                                Text(Localization.addDescriptionButton)
-                                    .bodyStyle()
+                                HStack {
+                                    Image(uiImage: .plusImage)
+                                    Text(Localization.addDescriptionButton)
+                                        .bodyStyle()
+                                }
                             }
                             .buttonStyle(SecondaryButtonStyle())
                             .padding(.horizontal, Constants.margin)
@@ -192,7 +195,7 @@ private extension AddEditCoupon {
             "Regenerate Coupon Code",
             comment: "Button in the view for adding or editing a coupon.")
         static let addDescriptionButton = NSLocalizedString(
-            "+ Add Description (Optional)",
+            "Add Description (Optional)",
             comment: "Button for adding a description to a coupon in the view for adding or editing a coupon.")
         static let couponExpiryDate = NSLocalizedString(
             "Coupon Expiry Date",

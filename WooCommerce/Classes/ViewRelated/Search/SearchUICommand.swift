@@ -84,12 +84,23 @@ protocol SearchUICommand {
 
     /// The Accessibility Identifier for the cancel button
     var cancelButtonAccessibilityIdentifier: String { get }
+
+    /// Optionally sanitizes the search keyword.
+    ///
+    /// - Parameter keyword: user-entered search keyword.
+    /// - Returns: sanitized search keyword.
+    func sanitizeKeyword(_ keyword: String) -> String
 }
 
 // MARK: - Default implementation
 extension SearchUICommand {
     func configureActionButton(_ button: UIButton, onDismiss: @escaping () -> Void) {
         // If not implemented, keeps the default cancel UI/UX
+    }
+
+    func sanitizeKeyword(_ keyword: String) -> String {
+        // If not implemented, returns the keyword as entered
+        return keyword
     }
 }
 

@@ -1119,6 +1119,37 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(try targetContext.count(entityName: "OrderItem"), 3)
         XCTAssertEqual(migratedOrder.value(forKey: "items") as? NSOrderedSet, NSOrderedSet(array: [orderItem1, orderItem3, orderItem2]))
     }
+
+    func test_migrating_from_66_to_67_adds_paymentURL_field() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 66")
+        let sourceContext = sourceContainer.viewContext
+
+        let _ = insertOrder(to: sourceContext)
+
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "Order"), 1)
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 67")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+
+        XCTAssertEqual(try targetContext.count(entityName: "Order"), 1)
+        let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
+
+        // Creates an `OrderItem` and adds it to `Order`.
+        XCTAssertNil(migratedOrder.value(forKey: "paymentURL"))
+
+        // Set a random URL
+        let url = NSURL(string: "www.automattic.com") ?? NSURL()
+        migratedOrder.setValue(url, forKey: "paymentURL")
+
+        // Check URL is correctly set.
+        XCTAssertEqual(migratedOrder.value(forKey: "paymentURL") as? NSURL, url)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

@@ -398,6 +398,23 @@ final class CreateOrderAddressFormViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(notice, AddressFormViewModel.NoticeFactory.createInvalidEmailNotice())
     }
+
+    func test_userDidCancelFlow_resets_address_form_fields() {
+        // Given
+        let address1 = sampleAddress()
+        let viewModel = CreateOrderAddressFormViewModel(siteID: sampleSiteID,
+                                                        addressData: .init(billingAddress: address1, shippingAddress: nil),
+                                                        onAddressUpdate: { _ in })
+
+        // When
+        viewModel.fields.firstName = "Tester"
+        viewModel.secondaryFields.firstName = "Johnny"
+        viewModel.userDidCancelFlow()
+
+        // Then
+        XCTAssertEqual(viewModel.fields.toAddress(), address1)
+        XCTAssertEqual(viewModel.secondaryFields.toAddress(), .empty)
+    }
 }
 
 private extension CreateOrderAddressFormViewModelTests {

@@ -393,6 +393,13 @@ open class AddressFormViewModel: ObservableObject {
         let secondaryEmailIsValid = secondaryFields.email.isEmpty || EmailFormatValidator.validate(string: fields.email)
         return primaryEmailIsValid && secondaryEmailIsValid
     }
+
+    /// Discards pending changes by resetting the address fields to their original values.
+    ///
+    func resetAddressForm() {
+        fields = .init(with: originalAddress)
+        secondaryFields = .init(with: secondaryOriginalAddress)
+    }
 }
 
 extension AddressFormViewModel {

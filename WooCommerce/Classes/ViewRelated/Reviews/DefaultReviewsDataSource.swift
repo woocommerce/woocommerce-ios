@@ -12,6 +12,9 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
 
     private let siteID: Int64
 
+    /// Adds an extra layer of logic customization depending on the case (e.g only reviews of a specific product, global site reviews...)
+    private let customizer: ReviewsDataSourceCustomizing
+
     /// Product Reviews
     ///
     private lazy var reviewsResultsController: ResultsController<StorageProductReview> = {
@@ -20,7 +23,7 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
 
         return ResultsController<StorageProductReview>(storageManager: storageManager,
                                                        sectionNameKeyPath: "normalizedAgeAsString",
-                                                       matching: filterPredicate(),
+                                                       matching: customizer.reviewsFilterPredicate(with: sitePredicate()),
                                                        sortedBy: [descriptor])
     }()
 
@@ -78,9 +81,9 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
         return reviewsResultsController.numberOfObjects
     }
 
-
-    init(siteID: Int64) {
+    init(siteID: Int64, customizer: ReviewsDataSourceCustomizing) {
         self.siteID = siteID
+        self.customizer = customizer
         super.init()
         observeResults()
     }
@@ -131,8 +134,9 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
     }
 
     func refreshDataObservers() {
-        reviewsResultsController.predicate = filterPredicate()
-        productsResultsController.predicate = sitePredicate()
+        let sitePredicate = sitePredicate()
+        reviewsResultsController.predicate = customizer.reviewsFilterPredicate(with: sitePredicate)
+        productsResultsController.predicate = sitePredicate
     }
 }
 
@@ -179,7 +183,7 @@ private extension DefaultReviewsDataSource {
         let reviewProduct = product(id: review.productID)
         let note = notification(id: review.reviewID)
 
-        return ReviewViewModel(review: review, product: reviewProduct, notification: note)
+        return ReviewViewModel(showProductTitle: customizer.shouldShowProductTitleOnCells, review: review, product: reviewProduct, notification: note)
     }
 
     private func product(id productID: Int64) -> Product? {
@@ -237,7 +241,7 @@ extension DefaultReviewsDataSource: ReviewsInteractionDelegate {
 }
 
 
-private extension DefaultReviewsDataSource {
+extension DefaultReviewsDataSource {
     enum Settings {
         static let estimatedRowHeight = CGFloat(88)
     }

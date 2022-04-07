@@ -1236,6 +1236,7 @@
 		CC593A6B26EA640800EF0E04 /* PackageCreationError+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC593A6A26EA640800EF0E04 /* PackageCreationError+UI.swift */; };
 		CC5C278727EE19A700B25D2A /* NewOrderScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5C278627EE19A600B25D2A /* NewOrderScreen.swift */; };
 		CC5C278B27EE314F00B25D2A /* orders_create.json in Resources */ = {isa = PBXBuildFile; fileRef = CC5C278A27EE314E00B25D2A /* orders_create.json */; };
+		CC666F2427F329DC0045AF1E /* View+DiscardChanges.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC666F2327F329DC0045AF1E /* View+DiscardChanges.swift */; };
 		CC666F2627F359590045AF1E /* OrdersTopBannerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC666F2527F359590045AF1E /* OrdersTopBannerFactory.swift */; };
 		CC69236226010946002FB669 /* LoginProloguePages.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC69236126010946002FB669 /* LoginProloguePages.swift */; };
 		CC6923AC26010D8D002FB669 /* LoginProloguePageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6923AB26010D8D002FB669 /* LoginProloguePageViewController.swift */; };
@@ -2932,6 +2933,7 @@
 		CC593A6A26EA640800EF0E04 /* PackageCreationError+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PackageCreationError+UI.swift"; sourceTree = "<group>"; };
 		CC5C278627EE19A600B25D2A /* NewOrderScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewOrderScreen.swift; sourceTree = "<group>"; };
 		CC5C278A27EE314E00B25D2A /* orders_create.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = orders_create.json; sourceTree = "<group>"; };
+		CC666F2327F329DC0045AF1E /* View+DiscardChanges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+DiscardChanges.swift"; sourceTree = "<group>"; };
 		CC666F2527F359590045AF1E /* OrdersTopBannerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersTopBannerFactory.swift; sourceTree = "<group>"; };
 		CC69236126010946002FB669 /* LoginProloguePages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginProloguePages.swift; sourceTree = "<group>"; };
 		CC6923AB26010D8D002FB669 /* LoginProloguePageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginProloguePageViewController.swift; sourceTree = "<group>"; };
@@ -4527,6 +4529,7 @@
 				26281775278F0B0100C836D3 /* View+NoticesModifier.swift */,
 				AE77EA4F27A47C99006A21BD /* View+AddingDividers.swift */,
 				AED089F127C794BC0020AE10 /* View+CurrencySymbol.swift */,
+				CC666F2327F329DC0045AF1E /* View+DiscardChanges.swift */,
 			);
 			path = "View Modifiers";
 			sourceTree = "<group>";
@@ -8700,6 +8703,7 @@
 				459DB7D52673721300E2CAD2 /* TopLoaderView.swift in Sources */,
 				02BC5AA024D27D8E00C43326 /* ProductVariationFormViewModel.swift in Sources */,
 				7E7C5F832719A93C00315B61 /* ProductCategoryListViewModel.swift in Sources */,
+				CC666F2427F329DC0045AF1E /* View+DiscardChanges.swift in Sources */,
 				0282DD94233C9465006A5FDB /* SearchUICommand.swift in Sources */,
 				028BAC4722F3B550008BB4AF /* StatsTimeRangeV4+UI.swift in Sources */,
 				024DF32123744798006658FE /* AztecFormatBarCommandCoordinator.swift in Sources */,

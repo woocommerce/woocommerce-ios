@@ -697,7 +697,7 @@ private extension ProductVariationsViewController {
         case .noResultsPlaceholder:
             break
         case .syncing(let pageNumber):
-            if pageNumber == SyncingCoordinator.Defaults.pageFirstIndex {
+            if pageNumber == syncingCoordinator.pageFirstIndex {
                 displayPlaceholderProducts()
             } else {
                 ensureFooterSpinnerIsStarted()
@@ -750,7 +750,7 @@ extension ProductVariationsViewController {
             return false
         }
 
-        return highestPageBeingSynced * SyncingCoordinator.Defaults.pageSize > resultsController.numberOfObjects
+        return highestPageBeingSynced * syncingCoordinator.pageSize > resultsController.numberOfObjects
     }
 
     /// Stops animating the Footer Spinner.

@@ -15,7 +15,7 @@ final class NewOrderHostingController: UIHostingController<NewOrder> {
         super.init(rootView: NewOrder(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
-        rootView.dismiss = { [weak self] in
+        rootView.dismissHandler = { [weak self] in
             self?.checkUnsavedChangesAndDismissIfPossible()
         }
     }
@@ -100,7 +100,7 @@ private extension NewOrderHostingController {
 struct NewOrder: View {
     /// Set this closure with UIKit dismiss code. Needed because we need access to the UIHostingController `dismiss` method.
     ///
-    var dismiss: (() -> Void) = {}
+    var dismissHandler: (() -> Void) = {}
 
     @ObservedObject var viewModel: NewOrderViewModel
 
@@ -141,7 +141,7 @@ struct NewOrder: View {
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 Button(Localization.cancelButton) {
-                    dismiss()
+                    dismissHandler()
                 }
                 .accessibilityIdentifier(Accessibility.cancelButtonIdentifier)
                 .renderedIf(ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab))

@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import UIKit
 
 /// View model for `AddEditCoupon` view
 ///
@@ -44,6 +45,24 @@ final class AddEditCouponViewModel: ObservableObject {
         default:
             return Localization.amountFixedDiscountSubtitle
         }
+    }
+
+    /// Icon of the button for editing a coupon description, based on the field (populated or not).
+    ///
+    var editDescriptionIcon: UIImage {
+        if let coupon = coupon, coupon.description.isNotEmpty {
+            return .pencilImage
+        }
+        return .plusImage
+    }
+
+    /// Label of the button for editing a coupon description, based on the field (populated or not).
+    ///
+    var editDescriptionLabel: String {
+        if let coupon = coupon, coupon.description.isNotEmpty {
+            return Localization.editDescriptionButton
+        }
+        return Localization.addDescriptionButton
     }
 
     private(set) var coupon: Coupon?
@@ -98,5 +117,9 @@ private extension AddEditCouponViewModel {
         static let amountFixedDiscountSubtitle = NSLocalizedString("Set the fixed amount of the discount you want to offer.",
                                                                    comment: "Subtitle of the Amount field on the Coupon Edit" +
                                                                    " or Creation screen for a fixed amount discount coupon.")
+        static let addDescriptionButton = NSLocalizedString("Add Description (Optional)",
+                                                            comment: "Button for adding a description to a coupon in the view for adding or editing a coupon.")
+        static let editDescriptionButton = NSLocalizedString("Edit Description",
+                                                            comment: "Button for editing the description of a coupon in the view for adding or editing a coupon.")
     }
 }

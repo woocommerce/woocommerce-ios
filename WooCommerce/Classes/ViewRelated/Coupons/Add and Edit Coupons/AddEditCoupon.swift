@@ -7,6 +7,7 @@ struct AddEditCoupon: View {
 
     @ObservedObject private var viewModel: AddEditCouponViewModel
     @State private var showingCouponRestrictions: Bool = false
+    @State private var showingEditDescription: Bool = false
     @Environment(\.presentationMode) var presentation
 
     init(_ viewModel: AddEditCouponViewModel) {
@@ -65,12 +66,13 @@ struct AddEditCoupon: View {
                             .padding(.bottom, Constants.verticalSpacing)
 
                             Button {
-                                //TODO: handle action
+                                showingEditDescription = true
                             } label: {
                                 HStack {
-                                    Image(uiImage: .plusImage)
+                                    Image(uiImage: viewModel.editDescriptionIcon)
+                                        .colorMultiply(Color(.text))
                                         .frame(width: Constants.iconSize, height: Constants.iconSize)
-                                    Text(Localization.addDescriptionButton)
+                                    Text(viewModel.editDescriptionLabel)
                                         .bodyStyle()
                                 }
                             }
@@ -205,9 +207,6 @@ private extension AddEditCoupon {
         static let regenerateCouponCodeButton = NSLocalizedString(
             "Regenerate Coupon Code",
             comment: "Button in the view for adding or editing a coupon.")
-        static let addDescriptionButton = NSLocalizedString(
-            "Add Description (Optional)",
-            comment: "Button for adding a description to a coupon in the view for adding or editing a coupon.")
         static let couponExpiryDate = NSLocalizedString(
             "Coupon Expiry Date",
             comment: "Field in the view for adding or editing a coupon.")

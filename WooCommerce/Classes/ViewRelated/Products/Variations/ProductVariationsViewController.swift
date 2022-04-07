@@ -189,6 +189,15 @@ private extension ProductVariationsViewController {
         navigationItem.rightBarButtonItem = nil
     }
 
+    /// Shows the "more" navigation bar button.
+    ///
+    func showMoreActionsNavigationBarButton() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: .moreImage,
+                                                            style: .plain,
+                                                            target: self,
+                                                            action: #selector(presentMoreActionSheet(_:)))
+    }
+
     /// Apply Woo styles.
     ///
     func configureMainView() {

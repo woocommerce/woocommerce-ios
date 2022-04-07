@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 67 (Release 8.9.0.0)
+- @ecarrion 2022-04-06
+    - Update `Order` entity to include the `paymentURL` property.
+
 ## Model 66 (Release 8.8.0.0)
 - @pmusolino 2022-03-09
     - Update `Order`'s `items` relationship to be ordered.

@@ -26,11 +26,12 @@ struct FullScreenTextView: View {
             ZStack(alignment: .leading) {
                 TextEditor(text: $text)
                     .bodyStyle()
-                    .frame(minHeight: geometry.size.height, alignment: .leading)
+                    .frame(minHeight: geometry.size.height-Constants.verticalSpacing, alignment: .leading)
                     .padding(.horizontal, Constants.margin)
                     .padding(.horizontal, insets: geometry.safeAreaInsets)
+                    .keyboardType(.default)
                     .onAppear {
-                        // Remove the placeholder text when keyboard appears
+                         // Remove the placeholder text when keyboard appears
                         NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillShowNotification,
                                                                object: nil, queue: .main) { _ in
                             withAnimation {
@@ -47,8 +48,7 @@ struct FullScreenTextView: View {
                         }
                     }
 
-                /// We use a text editor as a placeholder view for mantaining the same internal configuration of the Text Editor (eg: leading distance).
-                ///
+                // We use a text editor as a placeholder view for mantaining the same internal configuration of the Text Editor (eg: leading distance).
                 TextEditor(text: .constant(placeholder))
                     .foregroundColor(Color(.gray(.shade30)))
                     .bodyStyle()
@@ -56,9 +56,8 @@ struct FullScreenTextView: View {
                     .opacity(displayPlaceholder  ? 1 : 0)
                     .padding(.horizontal, Constants.margin)
                     .padding(.horizontal, insets: geometry.safeAreaInsets)
-                Spacer()
             }
-            .padding([.top, .bottom], Constants.topSpacing)
+            .padding([.top, .bottom], Constants.verticalSpacing)
             .ignoresSafeArea(.container, edges: [.horizontal])
         }
         .navigationTitle(title)
@@ -69,7 +68,7 @@ struct FullScreenTextView: View {
 private extension FullScreenTextView {
     enum Constants {
         static let margin: CGFloat = 16
-        static let topSpacing: CGFloat = 24
+        static let verticalSpacing: CGFloat = 24
     }
 }
 

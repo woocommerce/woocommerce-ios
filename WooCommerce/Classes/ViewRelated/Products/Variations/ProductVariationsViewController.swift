@@ -177,10 +177,7 @@ private extension ProductVariationsViewController {
             return
         }
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: .moreImage,
-                                                            style: .plain,
-                                                            target: self,
-                                                            action: #selector(presentMoreActionSheet(_:)))
+        showMoreActionsNavigationBarButton()
     }
 
     /// Hides the "more" navigation bar button.

@@ -690,6 +690,7 @@ private extension ProductVariationsViewController {
             } else {
                 ensureFooterSpinnerIsStarted()
             }
+            updateNavigationBarButtons()
         case .results:
             break
         }
@@ -700,6 +701,7 @@ private extension ProductVariationsViewController {
         case .syncing:
             ensureFooterSpinnerIsStopped()
             removePlaceholderProducts()
+            updateNavigationBarButtons()
         case .noResultsPlaceholder, .results:
             break
         }

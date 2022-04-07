@@ -35,11 +35,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
     /// Main TableView.
     ///
-    private lazy var tableView: UITableView = {
-        let tableView = UITableView(frame: .zero, style: .grouped)
-        tableView.accessibilityIdentifier = "orders-table-view"
-        return tableView
-    }()
+    @IBOutlet weak var tableView: UITableView!
 
     /// The data source that is bound to `tableView`.
     private lazy var dataSource: UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID> = {
@@ -134,7 +130,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         self.emptyStateConfig = emptyStateConfig
         self.switchDetailsHandler = switchDetailsHandler
 
-        super.init(nibName: nil, bundle: nil)
+        super.init(nibName: type(of: self).nibName, bundle: nil)
 
         self.title = title
     }
@@ -265,6 +261,7 @@ private extension OrderListViewController {
         tableView.dataSource = dataSource
 
         view.backgroundColor = .listBackground
+        tableView.accessibilityIdentifier = "orders-table-view"
         tableView.backgroundColor = .listBackground
         tableView.refreshControl = refreshControl
         tableView.tableFooterView = footerSpinnerView
@@ -273,10 +270,6 @@ private extension OrderListViewController {
         tableView.sectionFooterHeight = .leastNonzeroMagnitude
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = UITableView.automaticDimension
-
-        view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        view.pinSubviewToAllEdges(tableView)
     }
 
     /// Registers all of the available table view cells and headers

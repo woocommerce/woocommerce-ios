@@ -11,7 +11,7 @@ final class ProductListSelectorViewController: UIViewController {
     private var productIDs: [Int64] = [] {
         didSet {
             if productIDs != oldValue {
-                // TODO: update bottom button
+                updateActionButton(productIDs: productIDs)
                 updateNavigationRightBarButtonItem(productIDs: productIDs)
             }
         }
@@ -124,6 +124,13 @@ private extension ProductListSelectorViewController {
         } else {
             navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
         }
+    }
+
+    func updateActionButton(productIDs: [Int64]) {
+        let itemCount = String.pluralize(productIDs.count, singular: Localization.singleProduct, plural: Localization.multipleProducts)
+        let format = isExclusion ? Localization.exclusionActionTitle : Localization.selectionActionTitle
+        let title = String.localizedStringWithFormat(format, itemCount)
+        // TODO: set button title or hide the button
     }
 }
 

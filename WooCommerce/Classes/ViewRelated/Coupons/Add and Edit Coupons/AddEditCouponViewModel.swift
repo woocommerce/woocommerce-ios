@@ -50,26 +50,27 @@ final class AddEditCouponViewModel: ObservableObject {
     /// Icon of the button for editing a coupon description, based on the field (populated or not).
     ///
     var editDescriptionIcon: UIImage {
-        if let coupon = coupon, coupon.description.isNotEmpty {
-            return .pencilImage
+        if descriptionField.isEmpty {
+            return .plusImage
         }
-        return .plusImage
+        return .pencilImage
     }
 
     /// Label of the button for editing a coupon description, based on the field (populated or not).
     ///
     var editDescriptionLabel: String {
-        if let coupon = coupon, coupon.description.isNotEmpty {
-            return Localization.editDescriptionButton
+        if descriptionField.isEmpty {
+            return Localization.addDescriptionButton
         }
-        return Localization.addDescriptionButton
+        return Localization.editDescriptionButton
     }
 
     private(set) var coupon: Coupon?
 
     // Fields
-    @Published var amountField = String()
-    @Published var codeField = String()
+    @Published var amountField: String
+    @Published var codeField: String
+    @Published var descriptionField: String
 
     /// Init method for coupon creation
     ///
@@ -78,6 +79,10 @@ final class AddEditCouponViewModel: ObservableObject {
         self.siteID = siteID
         editingOption = .creation
         self.discountType = discountType
+
+        amountField = String()
+        codeField = String()
+        descriptionField = String()
     }
 
     /// Init method for coupon editing
@@ -91,6 +96,7 @@ final class AddEditCouponViewModel: ObservableObject {
         // Populate fields
         amountField = existingCoupon.amount
         codeField = existingCoupon.code
+        descriptionField = existingCoupon.description
     }
 
     private enum EditingOption {
@@ -120,6 +126,7 @@ private extension AddEditCouponViewModel {
         static let addDescriptionButton = NSLocalizedString("Add Description (Optional)",
                                                             comment: "Button for adding a description to a coupon in the view for adding or editing a coupon.")
         static let editDescriptionButton = NSLocalizedString("Edit Description",
-                                                            comment: "Button for editing the description of a coupon in the view for adding or editing a coupon.")
+                                                             comment: "Button for editing the description of a coupon in the" +
+                                                             " view for adding or editing a coupon.")
     }
 }

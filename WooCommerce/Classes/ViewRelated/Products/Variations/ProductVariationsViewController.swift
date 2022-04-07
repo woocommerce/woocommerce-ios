@@ -605,7 +605,6 @@ private extension ProductVariationsViewController {
     ///
     func removePlaceholderProducts() {
         tableView.removeGhostContent()
-        resultsController.startForwardingEvents(to: tableView)
         configureResultsControllerEventHandling(resultsController)
         tableView.reloadData()
     }

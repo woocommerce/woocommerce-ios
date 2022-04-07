@@ -173,7 +173,7 @@ private extension ProductVariationsViewController {
     func showOrHideMoreActionsNavigationBarButton() {
         guard featureFlagService.isFeatureFlagEnabled(.bulkEditProductVariations) && resultsController.fetchedObjects.isNotEmpty else {
             // Do not display the "more" button with the bulk update option if we do not have any variations
-            navigationItem.rightBarButtonItem = nil
+            hideMoreActionsNavigationBarButton()
             return
         }
 

@@ -1140,7 +1140,7 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(try targetContext.count(entityName: "Order"), 1)
         let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
 
-        // Creates an `OrderItem` and adds it to `Order`.
+        // Checks for nil URL value.
         XCTAssertNil(migratedOrder.value(forKey: "paymentURL"))
 
         // Set a random URL

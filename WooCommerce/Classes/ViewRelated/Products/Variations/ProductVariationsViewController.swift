@@ -137,7 +137,6 @@ final class ProductVariationsViewController: UIViewController {
         super.viewDidLoad()
 
         configureNavigationBarTitle()
-        updateNavigationBarButtons()
         configureMainView()
         configureTableView()
         configureSyncingCoordinator()

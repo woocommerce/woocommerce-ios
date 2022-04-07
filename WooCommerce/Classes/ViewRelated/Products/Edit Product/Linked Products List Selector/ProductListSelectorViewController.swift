@@ -3,7 +3,7 @@ import UIKit
 import Yosemite
 
 /// Displays a paginated list of products where the user can select.
-final class ProductListSelectorViewController: UIViewController {
+final class LegacyProductListSelectorViewController: UIViewController {
     private let excludedProductIDs: [Int64]
     private var productIDs: [Int64] = [] {
         didSet {
@@ -56,7 +56,7 @@ final class ProductListSelectorViewController: UIViewController {
 }
 
 // MARK: - Actions
-private extension ProductListSelectorViewController {
+private extension LegacyProductListSelectorViewController {
     @objc func doneButtonTapped() {
         completeUpdating()
     }
@@ -84,7 +84,7 @@ private extension ProductListSelectorViewController {
 
 // MARK: - Navigation actions handling
 //
-extension ProductListSelectorViewController {
+extension LegacyProductListSelectorViewController {
     override func shouldPopOnBackButton() -> Bool {
         if hasUnsavedChanges() {
             presentBackNavigationActionSheet()
@@ -113,7 +113,7 @@ extension ProductListSelectorViewController {
 }
 
 // MARK: - UI updates
-private extension ProductListSelectorViewController {
+private extension LegacyProductListSelectorViewController {
     func updateNavigationRightBarButtonItem(productIDs: [Int64]) {
         if productIDs.isEmpty {
             navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(searchButtonTapped))
@@ -138,7 +138,7 @@ private extension ProductListSelectorViewController {
 
 // MARK: - UI configurations
 //
-private extension ProductListSelectorViewController {
+private extension LegacyProductListSelectorViewController {
     func configureMainView() {
         view.backgroundColor = .basicBackground
     }
@@ -168,7 +168,7 @@ private extension ProductListSelectorViewController {
 
 // MARK: - Constants
 //
-private extension ProductListSelectorViewController {
+private extension LegacyProductListSelectorViewController {
     enum Localization {
         static let noResultsPlaceholder = NSLocalizedString("No products yet",
                                                                 comment: "Placeholder text when there are no products on the product list selector")

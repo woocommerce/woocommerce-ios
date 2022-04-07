@@ -76,7 +76,7 @@ private extension LinkedProductsListSelectorViewController {
         ServiceLocator.analytics.track(.connectedProductsList, withProperties: ["action": "add_tapped", "context": viewConfiguration.trackingContext])
 
         let excludedProductIDs = dataSource.linkedProductIDs + [productID]
-        let listSelector = ProductListSelectorViewController(excludedProductIDs: excludedProductIDs,
+        let listSelector = LegacyProductListSelectorViewController(excludedProductIDs: excludedProductIDs,
                                                              siteID: siteID) { [weak self] selectedProductIDs in
                                                                 if selectedProductIDs.isNotEmpty,
                                                                    let context = self?.viewConfiguration.trackingContext {

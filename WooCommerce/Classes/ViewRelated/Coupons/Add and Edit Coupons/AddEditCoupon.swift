@@ -240,7 +240,8 @@ private extension AddEditCoupon {
             comment: "Field in the view for adding or editing a coupon.")
         static let saveButton = NSLocalizedString("Save", comment: "Action for saving a Coupon remotely")
         static let addDescriptionPlaceholder = NSLocalizedString("Add the description of the coupon.",
-                                                                 comment: "Placeholder text that will be shown in the view for adding the description of a coupon.")
+                                                                 comment: "Placeholder text that will be shown in the view" +
+                                                                 " for adding the description of a coupon.")
     }
 }
 

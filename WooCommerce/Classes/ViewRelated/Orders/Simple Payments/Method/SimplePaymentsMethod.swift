@@ -40,7 +40,7 @@ struct SimplePaymentsMethod: View {
             Divider()
 
             Group {
-                MethodRow(icon: .priceImage, title: Localization.cash, showBetaAnnotation: false) {
+                MethodRow(icon: .priceImage, title: Localization.cash) {
                     showingCashAlert = true
                     viewModel.trackCollectByCash()
                 }
@@ -48,7 +48,7 @@ struct SimplePaymentsMethod: View {
                 if viewModel.showPayWithCardRow {
                     Divider()
 
-                    MethodRow(icon: .creditCardImage, title: Localization.card, showBetaAnnotation: false) {
+                    MethodRow(icon: .creditCardImage, title: Localization.card) {
                         viewModel.collectPayment(on: rootViewController, onSuccess: dismiss)
                     }
                 }
@@ -56,7 +56,7 @@ struct SimplePaymentsMethod: View {
                 if viewModel.showPaymentLinkRow {
                     Divider()
 
-                    MethodRow(icon: .linkImage, title: Localization.link, showBetaAnnotation: true) {
+                    MethodRow(icon: .linkImage, title: Localization.link) {
                         sharingPaymentLink = true
                         viewModel.trackCollectByPaymentLink()
                     }
@@ -114,10 +114,6 @@ private struct MethodRow: View {
     ///
     let title: String
 
-    /// Defines if the beta tag should be shown.
-    ///
-    let showBetaAnnotation: Bool
-
     /// Action when the row is selected
     ///
     let action: () -> ()
@@ -141,44 +137,15 @@ private struct MethodRow: View {
                     .foregroundColor(Color(.systemGray))
                     .accessibility(hidden: true)
 
-                HStack {
-                    Text(title)
-                        .bodyStyle()
-
-                    BetaTag()
-                        .renderedIf(showBetaAnnotation)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
+                Text(title)
+                    .bodyStyle()
+                    .frame(maxWidth: .infinity, alignment: .leading)
 
                 DisclosureIndicator()
             }
             .padding(.vertical, SimplePaymentsMethod.Layout.verticalPadding)
             .padding(.horizontal, insets: safeAreaInsets)
         }
-    }
-}
-
-/// Represents a Beta annotation tag
-///
-private struct BetaTag: View {
-    /// Constants
-    ///
-    enum Localization {
-        static let beta = NSLocalizedString("Beta", comment: "Beta annotation for sharing a payment link")
-    }
-
-    enum Layout {
-        static let padding: CGFloat = 5
-        static let cornerRadius: CGFloat = 7
-    }
-
-    var body: some View {
-        Text(Localization.beta)
-            .font(.caption)
-            .foregroundColor(Color(.textInverted))
-            .padding(Layout.padding)
-            .background(Color(.accent))
-            .cornerRadius(Layout.cornerRadius)
     }
 }
 

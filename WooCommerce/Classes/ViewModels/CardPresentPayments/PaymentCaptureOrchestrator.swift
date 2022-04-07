@@ -233,7 +233,7 @@ private extension PaymentCaptureOrchestrator {
                                  currency: order.currency,
                                  receiptDescription: receiptDescription(orderNumber: order.number),
                                  statementDescription: statementDescriptor,
-                                 receiptEmail: receiptEmail(from: order),
+                                 receiptEmail: provideReceiptEmailIfNecessary(from: order),
                                  paymentMethodTypes: paymentMethodTypes,
                                  metadata: metadata)
     }
@@ -253,7 +253,9 @@ private extension PaymentCaptureOrchestrator {
             })
     }
 
-    private func receiptEmail(from order: Order) -> String? {
+    /// We do not need to set the receipt email if WCPay is installed and active
+    /// and its version is higher or equal than 4.0.0, as it does itself in that case.
+    private func provideReceiptEmailIfNecessary(from order: Order) -> String? {
         let paymentsPluginsDataProvider = PaymentsPluginsDataProvider()
 
         let wcPay = paymentsPluginsDataProvider.getWCPayPlugin()
@@ -273,7 +275,9 @@ private extension PaymentCaptureOrchestrator {
     }
 
     private func wcPayPluginSendsReceiptEmail(version: String) -> Bool {
-        return VersionHelpers.compare(version, Constants.minimumWCPayPluginVersionThatSendsReceiptEmail) == .orderedAscending
+        let comparisonResult = VersionHelpers.compare(version, Constants.minimumWCPayPluginVersionThatSendsReceiptEmail)
+
+        return comparisonResult == .orderedDescending || comparisonResult == .orderedSame
     }
 
     func receiptDescription(orderNumber: String) -> String? {

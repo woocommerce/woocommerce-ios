@@ -143,7 +143,7 @@ struct NewOrder: View {
                 Button(Localization.cancelButton) {
                     dismiss()
                 }
-                .accessibilityIdentifier(NewOrder.Accessibility.cancelButtonIdentifier)
+.accessibilityIdentifier(Accessibility.cancelButtonIdentifier)
             }
             ToolbarItem(placement: .confirmationAction) {
                 switch viewModel.navigationTrailingItem {

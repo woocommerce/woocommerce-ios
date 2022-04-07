@@ -45,47 +45,49 @@ final class PaymentCaptureOrchestrator {
 
         ServiceLocator.stores.dispatch(setAccount)
 
-        guard let parameters = paymentParameters(
-                order: order,
-                statementDescriptor: paymentGatewayAccount.statementDescriptor,
-                paymentMethodTypes: paymentMethodTypes
-        ) else {
-            DDLogError("Error: failed to create payment parameters for an order")
-            onCompletion(.failure(CardReaderServiceError.paymentCapture()))
-            return
-        }
-
-        /// Briefly suppress pass (wallet) presentation so that the merchant doesn't attempt to pay for the buyer's order when the
-        /// reader begins to collect payment.
-        ///
-        suppressPassPresentation()
-
-        let paymentAction = CardPresentPaymentAction.collectPayment(
-            siteID: order.siteID,
-            orderID: order.orderID,
-            parameters: parameters,
-            onCardReaderMessage: { (event) in
-                switch event {
-                case .waitingForInput:
-                    onWaitingForInput()
-                case .displayMessage(let message):
-                    onDisplayMessage(message)
-                default:
-                    break
-                }
-            },
-            onCompletion: { [weak self] result in
-                self?.allowPassPresentation()
-                onProcessingMessage()
-                self?.completePaymentIntentCapture(
-                    order: order,
-                    captureResult: result,
-                    onCompletion: onCompletion
+        Task {
+            do {
+                let parameters = try await paymentParameters(
+                        order: order,
+                        statementDescriptor: paymentGatewayAccount.statementDescriptor,
+                        paymentMethodTypes: paymentMethodTypes
                 )
-            }
-        )
 
-        ServiceLocator.stores.dispatch(paymentAction)
+                /// Briefly suppress pass (wallet) presentation so that the merchant doesn't attempt to pay for the buyer's order when the
+                /// reader begins to collect payment.
+                ///
+                suppressPassPresentation()
+
+                let paymentAction = CardPresentPaymentAction.collectPayment(
+                    siteID: order.siteID,
+                    orderID: order.orderID,
+                    parameters: parameters,
+                    onCardReaderMessage: { (event) in
+                        switch event {
+                        case .waitingForInput:
+                            onWaitingForInput()
+                        case .displayMessage(let message):
+                            onDisplayMessage(message)
+                        default:
+                            break
+                        }
+                    },
+                    onCompletion: { [weak self] result in
+                        self?.allowPassPresentation()
+                        onProcessingMessage()
+                        self?.completePaymentIntentCapture(
+                            order: order,
+                            captureResult: result,
+                            onCompletion: onCompletion
+                        )
+                    }
+                )
+
+                ServiceLocator.stores.dispatch(paymentAction)
+            } catch {
+                onCompletion(.failure(CardReaderServiceError.paymentCapture()))
+            }
+        }
     }
 
     func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
@@ -210,11 +212,13 @@ private extension PaymentCaptureOrchestrator {
         ServiceLocator.stores.dispatch(action)
     }
 
-    func paymentParameters(order: Order, statementDescriptor: String?, paymentMethodTypes: [String]) -> PaymentParameters? {
+    func paymentParameters(order: Order, statementDescriptor: String?, paymentMethodTypes: [String]) async throws -> PaymentParameters {
         guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
             DDLogError("Error: attempted to collect payment for an order without a valid total.")
-            return nil
+            throw NotValidAmountError.other
         }
+
+        try await synchronizePlugins(from: order.siteID)
 
         let metadata = PaymentIntent.initMetadata(
             store: ServiceLocator.stores.sessionManager.defaultSite?.name,
@@ -234,19 +238,34 @@ private extension PaymentCaptureOrchestrator {
                                  metadata: metadata)
     }
 
+    private func synchronizePlugins(from siteID: Int64) async throws {
+        return try await withCheckedThrowingContinuation({
+                (continuation: CheckedContinuation<(), Error>) in
+            let systemPluginsAction = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID) { result in
+                if case let .failure(error) = result {
+                    DDLogError("[PaymentCaptureOrchestrator] Error syncing system plugins: \(error)")
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: ())
+                }
+            }
+            ServiceLocator.stores.dispatch(systemPluginsAction)
+            })
+    }
+
     private func receiptEmail(from order: Order) -> String? {
-        let paymentsPluginsInfoProvider = PaymentsPluginsInfoProvider(siteID: order.siteID)
+        let paymentsPluginsDataProvider = PaymentsPluginsDataProvider()
 
-        let wcPay = paymentsPluginsInfoProvider.getWCPayPlugin()
-        let stripe = paymentsPluginsInfoProvider.getStripePlugin()
+        let wcPay = paymentsPluginsDataProvider.getWCPayPlugin()
+        let stripe = paymentsPluginsDataProvider.getStripePlugin()
 
-        guard !paymentsPluginsInfoProvider.bothPluginsInstalledAndActive(wcPay: wcPay, stripe: stripe) else {
+        guard !paymentsPluginsDataProvider.bothPluginsInstalledAndActive(wcPay: wcPay, stripe: stripe) else {
             // This case should not happen, shall we fatal error here?
             return nil
         }
 
         guard let wcPay = wcPay,
-              paymentsPluginsInfoProvider.wcPayInstalledAndActive(wcPay: wcPay) else {
+              paymentsPluginsDataProvider.wcPayInstalledAndActive(wcPay: wcPay) else {
             return order.billingAddress?.email
         }
 

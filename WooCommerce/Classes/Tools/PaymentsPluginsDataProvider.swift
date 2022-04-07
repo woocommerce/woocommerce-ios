@@ -2,16 +2,24 @@ import Yosemite
 import Foundation
 import Storage
 
-struct PaymentsPluginsInfoProvider {
+/// This helper struct provides data and helper methods related to the Payments Plugins (WCPay, Stripe).
+/// It extracts the information from the provided `StorageManagerType`, but please notice that it does not
+/// take care of syncing the data, so it should be done beforehand.
+///
+struct PaymentsPluginsDataProvider {
     let storageManager: StorageManagerType
-    let siteID: Int64?
+    let stores: StoresManager
 
     init(
         storageManager: StorageManagerType = ServiceLocator.storageManager,
-        siteID: Int64?
+        stores: StoresManager = ServiceLocator.stores
     ) {
         self.storageManager = storageManager
-        self.siteID = siteID
+        self.stores = stores
+    }
+
+    var siteID: Int64? {
+        stores.sessionManager.defaultStoreID
     }
 
     func getWCPayPlugin() -> Yosemite.SystemPlugin? {
@@ -57,7 +65,6 @@ struct PaymentsPluginsInfoProvider {
 
         return stripe.active
     }
-
 
     func isWCPayVersionSupported(plugin: Yosemite.SystemPlugin) -> Bool {
         VersionHelpers.isVersionSupported(version: plugin.version, minimumRequired: CardPresentPaymentsPlugins.wcPay.minimumSupportedPluginVersion)

@@ -154,6 +154,13 @@ struct AddEditCoupon: View {
                         .padding(.horizontal, Constants.margin)
                         .padding([.top, .bottom], Constants.verticalSpacing)
 
+                        LazyNavigationLink(destination: FullScreenTextView(title: viewModel.editDescriptionLabel,
+                                                                           text: $viewModel.descriptionField,
+                                                                           placeholder: Localization.addDescriptionPlaceholder),
+                                           isActive: $showingEditDescription) {
+                            EmptyView()
+                        }
+
                         if let coupon = viewModel.coupon {
                             LazyNavigationLink(destination: CouponRestrictions(viewModel: CouponRestrictionsViewModel(coupon: coupon)),
                                                isActive: $showingCouponRestrictions) {
@@ -232,6 +239,8 @@ private extension AddEditCoupon {
             "Usage Restrictions",
             comment: "Field in the view for adding or editing a coupon.")
         static let saveButton = NSLocalizedString("Save", comment: "Action for saving a Coupon remotely")
+        static let addDescriptionPlaceholder = NSLocalizedString("Add the description of the coupon.",
+                                                                 comment: "Placeholder text that will be shown in the view for adding the description of a coupon.")
     }
 }
 

@@ -26,6 +26,7 @@ enum ShippingLabelSampleData {
                      totalTax: "1.20",
                      paymentMethodID: "stripe",
                      paymentMethodTitle: "Credit Card (Stripe)",
+                     paymentURL: nil,
                      chargeID: nil,
                      items: sampleItems(),
                      billingAddress: sampleAddress(),

@@ -42,8 +42,6 @@ public class SettingStore: Store {
             synchronizeAdvancedSiteSettings(siteID: siteID, onCompletion: onCompletion)
         case .retrieveSiteAPI(let siteID, let onCompletion):
             retrieveSiteAPI(siteID: siteID, onCompletion: onCompletion)
-        case let .getPaymentsPagePath(siteID, onCompletion):
-            getPaymentsPagePath(siteID: siteID, onCompletion: onCompletion)
         case let .retrieveCouponSetting(siteID, onCompletion):
             retrieveCouponSetting(siteID: siteID, onCompletion: onCompletion)
         case let .enableCouponSetting(siteID, onCompletion):
@@ -111,17 +109,6 @@ private extension SettingStore {
     ///
     func retrieveSiteAPI(siteID: Int64, onCompletion: @escaping (Result<SiteAPI, Error>) -> Void) {
         siteAPIRemote.loadAPIInformation(for: siteID, completion: onCompletion)
-    }
-
-    /// Retrieves the store payments page path.
-    ///
-    func getPaymentsPagePath(siteID: Int64, onCompletion: @escaping (Result<String, SettingStore.SettingError>) -> Void) {
-        guard let paymentPageSettings = sharedDerivedStorage.loadSiteSetting(siteID: siteID, settingID: SettingKeys.paymentsPage),
-              let paymentPagePath = paymentPageSettings.value else {
-                  return onCompletion(.failure(SettingError.paymentsPageNotFound))
-              }
-
-        onCompletion(.success(paymentPagePath))
     }
 
     /// Retrieves the setting for whether coupons are enabled for the specified store
@@ -283,18 +270,9 @@ extension SettingStore {
 
 // MARK: Definitions
 extension SettingStore {
-    /// Possible store errors.
-    ///
-    public enum SettingError: Swift.Error {
-        /// Payment page path was not found
-        ///
-        case paymentsPageNotFound
-    }
-
     /// Settings keys.
     ///
     private enum SettingKeys {
-        static let paymentsPage = "woocommerce_checkout_pay_endpoint"
         static let coupons = "woocommerce_enable_coupons"
         static let analytics = "woocommerce_analytics_enabled"
     }

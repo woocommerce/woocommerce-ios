@@ -596,41 +596,6 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
-    func test_getPaymentsPagePath_returns_page_when_setting_is_stored() throws {
-        // Given
-        storageManager.insertSampleSiteSetting(readOnlySiteSetting: sampleAdvancedSiteSetting())
-        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-
-        // When
-        let result: Result<String, SettingStore.SettingError> = waitFor { promise in
-            let action = SettingAction.getPaymentsPagePath(siteID: self.sampleSiteID) { result in
-                promise(result)
-            }
-            store.onAction(action)
-        }
-
-        // Then
-        let paymentPath = try result.get()
-        XCTAssertEqual(paymentPath, sampleAdvancedSiteSetting().value)
-    }
-
-    func test_getPaymentsPagePath_returns_error_when_setting_is_not_stored() throws {
-        // Given
-        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-
-        // When
-        let result: Result<String, SettingStore.SettingError> = waitFor { promise in
-            let action = SettingAction.getPaymentsPagePath(siteID: self.sampleSiteID) { result in
-                promise(result)
-            }
-            store.onAction(action)
-        }
-
-        // Then
-        let error = try XCTUnwrap(result.failure)
-        XCTAssertEqual(error, .paymentsPageNotFound)
-    }
-
     func test_retrieveCouponSetting_returns_correct_setting() throws {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)

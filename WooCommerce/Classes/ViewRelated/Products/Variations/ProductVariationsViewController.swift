@@ -168,9 +168,9 @@ private extension ProductVariationsViewController {
         )
     }
 
-    /// Shows or hides the navigation bar buttons.
+    /// Shows or hides the "more" navigation bar button.
     ///
-    func updateNavigationBarButtons() {
+    func showOrHideMoreActionsNavigationBarButton() {
         guard featureFlagService.isFeatureFlagEnabled(.bulkEditProductVariations) && resultsController.fetchedObjects.isNotEmpty else {
             // Do not display the "more" button with the bulk update option if we do not have any variations
             navigationItem.rightBarButtonItem = nil
@@ -366,7 +366,7 @@ private extension ProductVariationsViewController {
     func configureResultsControllerEventHandling(_ resultsController: ResultsController<StorageProductVariation>) {
         let onReload = { [weak self] in
             self?.tableView.reloadData()
-            self?.updateNavigationBarButtons()
+            self?.showOrHideMoreActionsNavigationBarButton()
         }
 
         resultsController.onDidChangeContent = { [weak tableView] in
@@ -706,7 +706,7 @@ private extension ProductVariationsViewController {
         case .syncing:
             ensureFooterSpinnerIsStopped()
             removePlaceholderProducts()
-            updateNavigationBarButtons()
+            showOrHideMoreActionsNavigationBarButton()
         case .noResultsPlaceholder, .results:
             break
         }

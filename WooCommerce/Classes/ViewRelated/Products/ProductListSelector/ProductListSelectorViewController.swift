@@ -165,5 +165,17 @@ private extension ProductListSelectorViewController {
                                                                 comment: "Placeholder text when there are no products on the product list selector")
         static let selectionTitle = NSLocalizedString("Select products", comment: "Title for the Select Products screen")
         static let exclusionTitle = NSLocalizedString("Exclude products", comment: "Title of the Exclude Products screen")
+        static let selectionActionTitle = NSLocalizedString(
+            "Select %1$@",
+            comment: "Title of the action button on the Select Products screen" +
+            "Reads like: Select 1 Product"
+        )
+        static let exclusionActionTitle = NSLocalizedString(
+            "Exclude %1$@",
+            comment: "Title of the action button on the Exclude Products screen" +
+            "Reads like: Exclude 1 Product"
+        )
+        static let singleProduct = NSLocalizedString("%1$d Product", comment: "Count of one product")
+        static let multipleProducts = NSLocalizedString("%1$d Products", comment: "Count of several products, reads like: 2 Products")
     }
 }

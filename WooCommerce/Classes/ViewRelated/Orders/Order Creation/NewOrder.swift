@@ -144,7 +144,7 @@ struct NewOrder: View {
                     dismissHandler()
                 }
                 .accessibilityIdentifier(Accessibility.cancelButtonIdentifier)
-                .renderedIf(ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab))
+                .renderedIf(viewModel.shouldShowCancelButton)
             }
             ToolbarItem(placement: .confirmationAction) {
                 switch viewModel.navigationTrailingItem {

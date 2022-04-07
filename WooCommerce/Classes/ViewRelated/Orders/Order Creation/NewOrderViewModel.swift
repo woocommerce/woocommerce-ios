@@ -18,6 +18,12 @@ final class NewOrderViewModel: ObservableObject {
         orderSynchronizer.order != OrderFactory.emptyNewOrder
     }
 
+    /// Indicates whether the cancel button is visible.
+    ///
+    var shouldShowCancelButton: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
+    }
+
     /// Active navigation bar trailing item.
     /// Defaults to create button.
     ///

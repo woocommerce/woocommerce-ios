@@ -744,7 +744,10 @@ extension WooAnalyticsEvent {
         ///   - countryCode: the country code of the store.
         ///   - cardReaderModel: the model type of the card reader.
         ///
-        static func cardReaderSoftwareUpdateSuccess(forGatewayID: String?, updateType: SoftwareUpdateTypeProperty, countryCode: String, cardReaderModel: String) -> WooAnalyticsEvent {
+        static func cardReaderSoftwareUpdateSuccess(forGatewayID: String?,
+                                                    updateType: SoftwareUpdateTypeProperty,
+                                                    countryCode: String,
+                                                    cardReaderModel: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderSoftwareUpdateSuccess,
                               properties: [
                                 Keys.cardReaderModel: cardReaderModel,
@@ -785,7 +788,10 @@ extension WooAnalyticsEvent {
         ///   - countryCode: the country code of the store.
         ///   - cardReaderModel: the model type of the card reader.
         ///
-        static func cardReaderSoftwareUpdateCanceled(forGatewayID: String?, updateType: SoftwareUpdateTypeProperty, countryCode: String, cardReaderModel: String) -> WooAnalyticsEvent {
+        static func cardReaderSoftwareUpdateCanceled(forGatewayID: String?,
+                                                     updateType: SoftwareUpdateTypeProperty,
+                                                     countryCode: String,
+                                                     cardReaderModel: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderSoftwareUpdateCanceled,
                               properties: [
                                 Keys.cardReaderModel: cardReaderModel,

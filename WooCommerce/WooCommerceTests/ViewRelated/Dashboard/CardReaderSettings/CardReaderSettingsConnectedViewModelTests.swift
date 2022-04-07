@@ -5,6 +5,7 @@ import XCTest
 final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
     private var mockStoresManager: MockCardPresentPaymentsStoresManager!
     private var analyticsProvider: MockAnalyticsProvider!
+    private var analyticsTracker: CardReaderConnectionAnalyticsTracker!
 
     private var viewModel: CardReaderSettingsConnectedViewModel!
 
@@ -20,11 +21,14 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         ServiceLocator.setAnalytics(analytics)
 
+        analyticsTracker = CardReaderConnectionAnalyticsTracker(configuration: Mocks.configuration,
+                                                                stores: mockStoresManager,
+                                                                analytics: analytics)
+        analyticsTracker.setCandidateReader(MockCardReader.wisePad3())
+
         viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
                                                          configuration: Mocks.configuration,
-                                                         analyticsTracker: .init(configuration: Mocks.configuration,
-                                                                                 stores: mockStoresManager,
-                                                                                 analytics: analytics),
+                                                         analyticsTracker: analyticsTracker,
                                                          delayToShowUpdateSuccessMessage: .milliseconds(1))
     }
 
@@ -182,7 +186,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    func test_startCardReaderUpdate_viewModel_logs_tracks_event_cardReaderSoftwareUpdateTapped() {
+    func test_startCardReaderUpdate_viewModel_logs_tracks_event_cardReaderSoftwareUpdateTapped() throws {
         // Given
 
         // When
@@ -190,13 +194,14 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
 
         // Then
         XCTAssert(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateTapped.rawValue))
-        XCTAssertEqual(
-            analyticsProvider.receivedProperties.first?[WooAnalyticsEvent.InPersonPayments.Keys.gatewayID] as? String,
-            WooAnalyticsEvent.InPersonPayments.unknownGatewayID
-        )
+        let firstPropertiesBatch = try XCTUnwrap(analyticsProvider.receivedProperties.first)
+        XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.gatewayID] as? String, WooAnalyticsEvent.InPersonPayments.unknownGatewayID)
+        XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.countryCode] as? String, "US")
+        XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.cardReaderModel] as? String,
+                       MockCardReader.bbposChipper2XBT().readerType.model)
     }
 
-    func test_card_reader_update_starts_viewModel_logs_tracks_event_cardReaderSoftwareUpdateStarted() {
+    func test_starting_card_reader_update_logs_cardReaderSoftwareUpdate_event_after_setting_candidateCardReader() throws {
         // Given
         // .available not sent
 
@@ -205,16 +210,15 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
 
         // Then
         XCTAssert(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateStarted.rawValue))
-        XCTAssert(analyticsProvider.receivedProperties.contains(where: {
-            $0["software_update_type"] as? String == "Required"
-        }))
-        XCTAssertEqual(
-            analyticsProvider.receivedProperties.first?[WooAnalyticsEvent.InPersonPayments.Keys.gatewayID] as? String,
-            WooAnalyticsEvent.InPersonPayments.unknownGatewayID
-        )
+        let firstPropertiesBatch = try XCTUnwrap(analyticsProvider.receivedProperties.first)
+        XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.gatewayID] as? String, WooAnalyticsEvent.InPersonPayments.unknownGatewayID)
+        XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.countryCode] as? String, "US")
+        XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.cardReaderModel] as? String,
+                       MockCardReader.bbposChipper2XBT().readerType.model)
+        XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.softwareUpdateType] as? String, "Required")
     }
 
-    func test_optional_card_reader_update_starts_viewModel_logs_tracks_event_cardReaderSoftwareUpdateStarted_with_optional() {
+    func test_optional_card_reader_update_starts_viewModel_logs_cardReaderSoftwareUpdateStarted_event_with_optional_update_type() throws {
         // Given
         mockStoresManager.simulateOptionalUpdateAvailable()
 
@@ -223,16 +227,15 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
 
         // Then
         XCTAssert(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateStarted.rawValue))
-        XCTAssert(analyticsProvider.receivedProperties.contains(where: {
-            $0["software_update_type"] as? String == "Optional"
-        }))
-        XCTAssertEqual(
-            analyticsProvider.receivedProperties.first?[WooAnalyticsEvent.InPersonPayments.Keys.gatewayID] as? String,
-            WooAnalyticsEvent.InPersonPayments.unknownGatewayID
-        )
+        let firstPropertiesBatch = try XCTUnwrap(analyticsProvider.receivedProperties.first)
+        XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.gatewayID] as? String, WooAnalyticsEvent.InPersonPayments.unknownGatewayID)
+        XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.countryCode] as? String, "US")
+        XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.cardReaderModel] as? String,
+                       MockCardReader.bbposChipper2XBT().readerType.model)
+        XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.softwareUpdateType] as? String, "Optional")
     }
 
-    func test_when_store_sends_update_complete_viewModel_logs_tracks_event_cardReaderSoftwareUpdateSuccess() {
+    func test_when_store_sends_update_complete_viewModel_logs_tracks_event_cardReaderSoftwareUpdateSuccess() throws {
         // Given
 
         // When
@@ -240,13 +243,14 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
 
         // Then
         XCTAssert(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateSuccess.rawValue))
-        XCTAssertEqual(
-            analyticsProvider.receivedProperties.first?[WooAnalyticsEvent.InPersonPayments.Keys.gatewayID] as? String,
-            WooAnalyticsEvent.InPersonPayments.unknownGatewayID
-        )
+        let firstPropertiesBatch = try XCTUnwrap(analyticsProvider.receivedProperties.first)
+        XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.gatewayID] as? String, WooAnalyticsEvent.InPersonPayments.unknownGatewayID)
+        XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.countryCode] as? String, "US")
+        XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.cardReaderModel] as? String,
+                       MockCardReader.bbposChipper2XBT().readerType.model)
     }
 
-    func test_when_store_sends_update_failed_viewModel_logs_tracks_event_cardReaderSoftwareUpdateFailed() {
+    func test_when_store_sends_update_failed_viewModel_logs_tracks_event_cardReaderSoftwareUpdateFailed() throws {
         // Given
         // .available not sent
 
@@ -256,21 +260,18 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         mockStoresManager.simulateFailedUpdate(error: expectedError)
 
         // Then
-        let expectedErrorDescription = "Unable to update card reader software - the reader battery is too low"
         XCTAssert(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateFailed.rawValue))
-        XCTAssert(analyticsProvider.receivedProperties.contains(where: {
-            $0["software_update_type"] as? String == "Required"
-        }))
-        XCTAssert(analyticsProvider.receivedProperties.contains(where: {
-            $0[MockAnalyticsProvider.WooAnalyticsKeys.errorKeyDescription] as? String == expectedErrorDescription
-        }))
-        XCTAssertEqual(
-            analyticsProvider.receivedProperties.first?[WooAnalyticsEvent.InPersonPayments.Keys.gatewayID] as? String,
-            WooAnalyticsEvent.InPersonPayments.unknownGatewayID
-        )
+        let firstPropertiesBatch = try XCTUnwrap(analyticsProvider.receivedProperties.first)
+        XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.gatewayID] as? String, WooAnalyticsEvent.InPersonPayments.unknownGatewayID)
+        XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.countryCode] as? String, "US")
+        XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.cardReaderModel] as? String,
+                       MockCardReader.bbposChipper2XBT().readerType.model)
+        XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.softwareUpdateType] as? String, "Required")
+        let expectedErrorDescription = "Unable to update card reader software - the reader battery is too low"
+        XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.errorDescription] as? String, expectedErrorDescription)
     }
 
-    func test_when_user_cancels_update_viewModel_logs_tracks_event_cardReaderSoftwareUpdateCancelTapped() {
+    func test_when_user_cancels_update_viewModel_logs_tracks_event_cardReaderSoftwareUpdateCancelTapped() throws {
         // Given
         mockStoresManager.simulateCancelableUpdate(onCancel: {})
 
@@ -279,13 +280,14 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
 
         // Then
         XCTAssert(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateCancelTapped.rawValue))
-        XCTAssertEqual(
-            analyticsProvider.receivedProperties.first?[WooAnalyticsEvent.InPersonPayments.Keys.gatewayID] as? String,
-            WooAnalyticsEvent.InPersonPayments.unknownGatewayID
-        )
+        let firstPropertiesBatch = try XCTUnwrap(analyticsProvider.receivedProperties.first)
+        XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.gatewayID] as? String, WooAnalyticsEvent.InPersonPayments.unknownGatewayID)
+        XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.countryCode] as? String, "US")
+        XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.cardReaderModel] as? String,
+                       MockCardReader.bbposChipper2XBT().readerType.model)
     }
 
-    func test_when_update_is_successfully_canceled_viewModel_logs_tracks_event_cardReaderSoftwareUpdateCanceled() {
+    func test_when_update_is_successfully_canceled_viewModel_logs_tracks_event_cardReaderSoftwareUpdateCanceled() throws {
         // Given
         let expectation = self.expectation(description: #function)
 
@@ -299,10 +301,11 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         // Then
         wait(for: [expectation], timeout: Constants.expectationTimeout)
         XCTAssert(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateCanceled.rawValue))
-        XCTAssertEqual(
-            analyticsProvider.receivedProperties.first?[WooAnalyticsEvent.InPersonPayments.Keys.gatewayID] as? String,
-            WooAnalyticsEvent.InPersonPayments.unknownGatewayID
-        )
+        let firstPropertiesBatch = try XCTUnwrap(analyticsProvider.receivedProperties.first)
+        XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.gatewayID] as? String, WooAnalyticsEvent.InPersonPayments.unknownGatewayID)
+        XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.countryCode] as? String, "US")
+        XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.cardReaderModel] as? String,
+                       MockCardReader.bbposChipper2XBT().readerType.model)
     }
 
     func test_when_update_is_successfully_canceled_viewModel_does_not_log_tracks_event_cardReaderSoftwareUpdateFailed() {
@@ -319,6 +322,19 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         // Then
         wait(for: [expectation], timeout: Constants.expectationTimeout)
         XCTAssertFalse(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateFailed.rawValue))
+    }
+
+    func test_starting_card_reader_update_does_not_log_cardReaderSoftwareUpdateStarted_event_without_candidateCardReader() throws {
+        // Given
+        // .available not sent.
+        analyticsTracker.setCandidateReader(nil)
+
+        // When
+        mockStoresManager.simulateUpdateStarted()
+        viewModel.cancelCardReaderUpdate?()
+
+        // Then
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateStarted.rawValue))
     }
 
     func test_when_update_reaches_100_percent_viewModel_does_not_provide_cancel_handler_so_cancel_button_is_not_shown() {

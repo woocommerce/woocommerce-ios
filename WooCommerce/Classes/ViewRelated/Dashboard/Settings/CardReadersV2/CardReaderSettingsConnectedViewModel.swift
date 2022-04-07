@@ -43,10 +43,6 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
         return CardReaderSettingsDataSource(siteID: siteID)
     }()
 
-    private var updateType: SoftwareUpdateTypeProperty {
-        optionalReaderUpdateAvailable ? .optional : .required
-    }
-
     private let analyticsTracker: CardReaderConnectionAnalyticsTracker
 
     init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?,
@@ -179,14 +175,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     /// Allows the view controller to kick off a card reader update
     ///
     func startCardReaderUpdate() {
-        ServiceLocator.analytics.track(
-            event: WooAnalyticsEvent.InPersonPayments.cardReaderSoftwareUpdateTapped(
-                forGatewayID: connectedGatewayID,
-                updateType: updateType,
-                countryCode: configuration.countryCode,
-                cardReaderModel: connectedReaderModel ?? ""
-            )
-        )
+        analyticsTracker.cardReaderSoftwareUpdateTapped()
         let action = CardPresentPaymentAction.startCardReaderUpdate
         ServiceLocator.stores.dispatch(action)
     }
@@ -198,14 +187,14 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
         }
         return { [weak self] in
             guard let self = self else { return }
-            self.analyticsTracker.softwareUpdateCancelTapped()
+            self.analyticsTracker.cardReaderSoftwareUpdateCancelTapped()
             self.softwareUpdateCancelable?.cancel(completion: { [weak self] result in
                 guard let self = self else { return }
 
                 if case .failure(let error) = result {
                     DDLogError("💳 Error: canceling software update \(error)")
                 } else {
-                    self.analyticsTracker.softwareUpdateCanceled()
+                    self.analyticsTracker.cardReaderSoftwareUpdateCanceled()
                     self.completeCardReaderUpdate(success: false)
                 }
             })
@@ -227,13 +216,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     /// Dispatch a request to disconnect from a reader
     ///
     func disconnectReader() {
-        ServiceLocator.analytics.track(
-            event: WooAnalyticsEvent.InPersonPayments.cardReaderDisconnectTapped(
-                forGatewayID: connectedGatewayID,
-                countryCode: configuration.countryCode,
-                cardReaderModel: connectedReaderModel ?? ""
-            )
-        )
+        analyticsTracker.cardReaderDisconnectTapped()
 
         self.readerDisconnectInProgress = true
         self.didUpdate?()

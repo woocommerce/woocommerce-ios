@@ -27,8 +27,7 @@ final class CardReaderConnectionAnalyticsTracker {
     /// Gateway ID to include in tracks events, which could be set in initialization and/or externally.
     private var gatewayID: String?
 
-    private var softwareUpdateCancelable: FallibleCancelable? = nil
-    private var subscriptions = Set<AnyCancellable>()
+    private var softwareUpdateCancelable: AnyCancellable?
 
     private let configuration: CardPresentPaymentsConfiguration
     private let stores: StoresManager
@@ -41,7 +40,7 @@ final class CardReaderConnectionAnalyticsTracker {
         self.stores = stores
         self.analytics = analytics
 
-        observeConnectedReaderAndSoftwareUpdate()
+        observeConnectedReader()
     }
 
     /// Since gateway ID could be fetched asynchronously, this can also be set externally in addition to the initializer.
@@ -51,10 +50,24 @@ final class CardReaderConnectionAnalyticsTracker {
 
     func setCandidateReader(_ reader: CardReader?) {
         candidateReader = reader
+        if reader != nil {
+            observeSoftwareUpdateState()
+        } else {
+            softwareUpdateCancelable?.cancel()
+        }
+    }
+
+    /// Called when the user taps to update card reader software when it is available.
+    func cardReaderSoftwareUpdateTapped() {
+        analytics.track(event: WooAnalyticsEvent.InPersonPayments
+            .cardReaderSoftwareUpdateTapped(forGatewayID: gatewayID,
+                                            updateType: updateType,
+                                            countryCode: configuration.countryCode,
+                                            cardReaderModel: cardReaderModel))
     }
 
     /// Called when the user taps to cancel card reader software update.
-    func softwareUpdateCancelTapped() {
+    func cardReaderSoftwareUpdateCancelTapped() {
         analytics.track(event: WooAnalyticsEvent.InPersonPayments
             .cardReaderSoftwareUpdateCancelTapped(forGatewayID: gatewayID,
                                                   updateType: .required,
@@ -63,32 +76,41 @@ final class CardReaderConnectionAnalyticsTracker {
     }
 
     /// Called after the card reader software update is canceled.
-    func softwareUpdateCanceled() {
+    func cardReaderSoftwareUpdateCanceled() {
+        softwareUpdateCancelable?.cancel()
         analytics.track(event: WooAnalyticsEvent.InPersonPayments
             .cardReaderSoftwareUpdateCanceled(forGatewayID: gatewayID,
                                               updateType: .required,
                                               countryCode: countryCode,
                                               cardReaderModel: cardReaderModel))
+        completeCardReaderUpdate(success: false)
+    }
+
+    /// Called when the user taps to disconnect card reader.
+    func cardReaderDisconnectTapped() {
+        analytics.track(event: WooAnalyticsEvent.InPersonPayments
+            .cardReaderDisconnectTapped(forGatewayID: gatewayID,
+                                        countryCode: configuration.countryCode,
+                                        cardReaderModel: cardReaderModel))
     }
 }
 
 private extension CardReaderConnectionAnalyticsTracker {
-    /// Dispatches actions to the CardPresentPaymentStore so that we can monitor changes to the list of
-    /// connected readers and software update states.
-    func observeConnectedReaderAndSoftwareUpdate() {
+    func observeConnectedReader() {
         let action = CardPresentPaymentAction.observeConnectedReaders() { [weak self] readers in
             self?.connectedReader = readers.first
         }
         stores.dispatch(action)
+    }
 
-        let softwareUpdateAction = CardPresentPaymentAction.observeCardReaderUpdateState { softwareUpdateEvents in
-            softwareUpdateEvents
+    func observeSoftwareUpdateState() {
+        let softwareUpdateAction = CardPresentPaymentAction.observeCardReaderUpdateState { [weak self] softwareUpdateEvents in
+            guard let self = self else { return }
+            self.softwareUpdateCancelable = softwareUpdateEvents
                 .sink { [weak self] state in
                     guard let self = self else { return }
-
                     switch state {
-                    case .started(cancelable: let cancelable):
-                        self.softwareUpdateCancelable = cancelable
+                    case .started:
                         self.analytics.track(
                             event: WooAnalyticsEvent.InPersonPayments
                                 .cardReaderSoftwareUpdateStarted(forGatewayID: self.gatewayID,
@@ -108,13 +130,15 @@ private extension CardReaderConnectionAnalyticsTracker {
                                                             error: error,
                                                             countryCode: self.countryCode,
                                                             cardReaderModel: self.cardReaderModel))
+                        self.completeCardReaderUpdate(success: false)
                     case .completed:
-                        self.softwareUpdateCancelable = nil
+                        self.softwareUpdateCancelable?.cancel()
                         self.analytics.track(event: WooAnalyticsEvent.InPersonPayments
                             .cardReaderSoftwareUpdateSuccess(forGatewayID: self.gatewayID,
                                                              updateType: self.updateType,
                                                              countryCode: self.countryCode,
                                                              cardReaderModel: self.cardReaderModel))
+                        self.completeCardReaderUpdate(success: true)
                     case .available:
                         self.optionalReaderUpdateAvailable = true
                     case .none:
@@ -123,8 +147,12 @@ private extension CardReaderConnectionAnalyticsTracker {
                         break
                     }
                 }
-                .store(in: &self.subscriptions)
         }
         stores.dispatch(softwareUpdateAction)
+    }
+
+    func completeCardReaderUpdate(success: Bool) {
+        // Avoids a failed mandatory reader update being shown as optional
+        optionalReaderUpdateAvailable = optionalReaderUpdateAvailable && !success
     }
 }

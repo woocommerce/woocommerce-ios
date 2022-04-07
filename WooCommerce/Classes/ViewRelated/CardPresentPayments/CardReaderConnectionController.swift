@@ -491,12 +491,12 @@ private extension CardReaderConnectionController {
             return { [weak self] in
                 guard let self = self else { return }
                 self.state = .cancel
-                self.analyticsTracker.softwareUpdateCancelTapped()
+                self.analyticsTracker.cardReaderSoftwareUpdateCancelTapped()
                 cancelable.cancel { [weak self] result in
                     if case .failure(let error) = result {
                         DDLogError("💳 Error: canceling software update \(error)")
                     } else {
-                        self?.analyticsTracker.softwareUpdateCanceled()
+                        self?.analyticsTracker.cardReaderSoftwareUpdateCanceled()
                     }
                 }
             }
@@ -544,7 +544,9 @@ private extension CardReaderConnectionController {
         let softwareUpdateAction = CardPresentPaymentAction.observeCardReaderUpdateState { [weak self] softwareUpdateEvents in
             guard let self = self else { return }
 
-            softwareUpdateEvents.sink { event in
+            softwareUpdateEvents.sink { [weak self] event in
+                guard let self = self else { return }
+
                 switch event {
                 case .started(cancelable: let cancelable):
                     self.softwareUpdateCancelable = cancelable

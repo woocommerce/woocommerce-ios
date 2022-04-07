@@ -183,6 +183,12 @@ private extension ProductVariationsViewController {
                                                             action: #selector(presentMoreActionSheet(_:)))
     }
 
+    /// Hides the "more" navigation bar button.
+    ///
+    func hideMoreActionsNavigationBarButton() {
+        navigationItem.rightBarButtonItem = nil
+    }
+
     /// Apply Woo styles.
     ///
     func configureMainView() {
@@ -689,7 +695,7 @@ private extension ProductVariationsViewController {
             } else {
                 ensureFooterSpinnerIsStarted()
             }
-            updateNavigationBarButtons()
+            hideMoreActionsNavigationBarButton()
         case .results:
             break
         }

@@ -11,7 +11,7 @@ final class ProductListSelectorViewController: UIViewController {
     private var productIDs: [Int64] = [] {
         didSet {
             if productIDs != oldValue {
-                updateNavigationTitle(productIDs: productIDs)
+                // TODO: update bottom button
                 updateNavigationRightBarButtonItem(productIDs: productIDs)
             }
         }
@@ -125,19 +125,6 @@ private extension ProductListSelectorViewController {
             navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
         }
     }
-
-    func updateNavigationTitle(productIDs: [Int64]) {
-        let title: String
-        switch productIDs.count {
-        case 0:
-            title = Localization.titleWithoutSelectedProducts
-        case 1:
-            title = Localization.titleWithOneSelectedProduct
-        default:
-            title = String.localizedStringWithFormat(Localization.titleWithMultipleSelectedProductsFormat, productIDs.count)
-        }
-        navigationItem.title = title
-    }
 }
 
 // MARK: - UI configurations
@@ -148,7 +135,7 @@ private extension ProductListSelectorViewController {
     }
 
     func configureNavigation() {
-        updateNavigationTitle(productIDs: productIDs)
+        navigationItem.title = isExclusion ? Localization.exclusionTitle : Localization.selectionTitle
         updateNavigationRightBarButtonItem(productIDs: productIDs)
     }
 
@@ -176,12 +163,7 @@ private extension ProductListSelectorViewController {
     enum Localization {
         static let noResultsPlaceholder = NSLocalizedString("No products yet",
                                                                 comment: "Placeholder text when there are no products on the product list selector")
-        static let titleWithoutSelectedProducts = NSLocalizedString("Add Products", comment: "Navigation bar title for selecting multiple products.")
-        static let titleWithOneSelectedProduct =
-            NSLocalizedString("1 Product Selected",
-                              comment: "Navigation bar title for selecting multiple products when one product has been selected.")
-        static let titleWithMultipleSelectedProductsFormat =
-            NSLocalizedString("%ld Products Selected",
-                              comment: "Navigation bar title for selecting multiple products when more multiple products have been selected.")
+        static let selectionTitle = NSLocalizedString("Select products", comment: "Title for the Select Products screen")
+        static let exclusionTitle = NSLocalizedString("Exclude products", comment: "Title of the Exclude Products screen")
     }
 }

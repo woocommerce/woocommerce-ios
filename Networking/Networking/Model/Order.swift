@@ -146,7 +146,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         let paymentMethodID = try container.decode(String.self, forKey: .paymentMethodID)
         let paymentMethodTitle = try container.decode(String.self, forKey: .paymentMethodTitle)
 
-        // "payment_url" is only available on stores stores with version >= 8.4.
+        // "payment_url" is only available on stores stores with version >= 6.4
         let paymentURL = try container.decodeIfPresent(URL.self, forKey: .paymentURL)
 
         let allOrderMetaData = try? container.decode([OrderMetaData].self, forKey: .metadata)

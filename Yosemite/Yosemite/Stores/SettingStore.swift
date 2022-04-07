@@ -38,8 +38,6 @@ public class SettingStore: Store {
             synchronizeGeneralSiteSettings(siteID: siteID, onCompletion: onCompletion)
         case .synchronizeProductSiteSettings(let siteID, let onCompletion):
             synchronizeProductSiteSettings(siteID: siteID, onCompletion: onCompletion)
-        case let .synchronizeAdvancedSiteSettings(siteID, onCompletion):
-            synchronizeAdvancedSiteSettings(siteID: siteID, onCompletion: onCompletion)
         case .retrieveSiteAPI(let siteID, let onCompletion):
             retrieveSiteAPI(siteID: siteID, onCompletion: onCompletion)
         case let .retrieveCouponSetting(siteID, onCompletion):
@@ -85,21 +83,6 @@ private extension SettingStore {
 
             self?.upsertStoredProductSettingsInBackground(siteID: siteID, readOnlySiteSettings: settings) {
                 onCompletion(nil)
-            }
-        }
-    }
-
-    /// Synchronizes the advanced site settings associated with the provided Site ID (if any!).
-    ///
-    func synchronizeAdvancedSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
-        siteSettingsRemote.loadAdvancedSettings(for: siteID) { [weak self] result in
-            switch result {
-            case .success(let settings):
-                self?.upsertStoredAdvancedSettingsInBackground(siteID: siteID, readOnlySiteSettings: settings) {
-                    onCompletion(nil)
-                }
-            case .failure(let error):
-                onCompletion(error)
             }
         }
     }

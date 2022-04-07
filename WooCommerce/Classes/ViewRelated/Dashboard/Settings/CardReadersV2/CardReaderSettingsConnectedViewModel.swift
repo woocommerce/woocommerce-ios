@@ -8,7 +8,11 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     var didUpdate: (() -> Void)?
 
     private var didGetConnectedReaders: Bool = false
-    private var connectedReaders = [CardReader]()
+    private var connectedReaders = [CardReader]() {
+        didSet {
+            analyticsTracker.setCandidateReader(connectedReaders.first)
+        }
+    }
     private let knownReaderProvider: CardReaderSettingsKnownReaderProvider?
     private let configuration: CardPresentPaymentsConfiguration
     private(set) var siteID: Int64

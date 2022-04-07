@@ -46,12 +46,6 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
                    analytics: analytics)
     }
 
-    /// Returns `true` if there are changes pending to commit. `False` otherwise.
-    ///
-    func hasPendingChanges() -> Bool {
-        return navigationTrailingItem == .done(enabled: true)
-    }
-
     // MARK: - Protocol conformance
 
     var showEmailField: Bool {

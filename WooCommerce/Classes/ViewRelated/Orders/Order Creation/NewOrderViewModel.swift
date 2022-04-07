@@ -136,6 +136,10 @@ final class NewOrderViewModel: ObservableObject {
     ///
     @Published private(set) var customerDataViewModel: CustomerDataViewModel = .init(billingAddress: nil, shippingAddress: nil)
 
+    /// View model for the customer details address form.
+    ///
+    @Published private(set) var addressFormViewModel: CreateOrderAddressFormViewModel
+
     // MARK: Customer note properties
 
     /// Representation of customer note data display properties.
@@ -202,6 +206,10 @@ final class NewOrderViewModel: ObservableObject {
         self.analytics = analytics
         self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, stores: stores, currencySettings: currencySettings)
 
+        // Set a temporary initial view model, as a workaround to avoid making it optional.
+        // Needs to be reset before the view model is used.
+        self.addressFormViewModel = .init(siteID: siteID, addressData: .init(billingAddress: nil, shippingAddress: nil), onAddressUpdate: nil)
+
         configureDisabledState()
         configureNavigationTrailingItem()
         configureSyncErrors()
@@ -210,6 +218,7 @@ final class NewOrderViewModel: ObservableObject {
         configureCustomerDataViewModel()
         configurePaymentDataViewModel()
         configureCustomerNoteDataViewModel()
+        resetAddressForm()
     }
 
     /// Selects an order item by setting the `selectedProductViewModel`.
@@ -255,13 +264,15 @@ final class NewOrderViewModel: ObservableObject {
         }
     }
 
-    /// Creates a view model to be used in Address Form for customer address.
+    /// Resets the view model for the customer details address form based on the order addresses.
     ///
-    func createOrderAddressFormViewModel() -> CreateOrderAddressFormViewModel {
-        CreateOrderAddressFormViewModel(siteID: siteID,
-                                        addressData: .init(billingAddress: orderSynchronizer.order.billingAddress,
-                                                           shippingAddress: orderSynchronizer.order.shippingAddress),
-                                        onAddressUpdate: { [weak self] updatedAddressData in
+    /// Can be used to configure the address form for first use or discard pending changes.
+    ///
+    func resetAddressForm() {
+        addressFormViewModel = CreateOrderAddressFormViewModel(siteID: siteID,
+                                                               addressData: .init(billingAddress: orderSynchronizer.order.billingAddress,
+                                                                                  shippingAddress: orderSynchronizer.order.shippingAddress),
+                                                               onAddressUpdate: { [weak self] updatedAddressData in
             let input = Self.createAddressesInput(from: updatedAddressData)
             self?.orderSynchronizer.setAddresses.send(input)
             self?.trackCustomerDetailsAdded()

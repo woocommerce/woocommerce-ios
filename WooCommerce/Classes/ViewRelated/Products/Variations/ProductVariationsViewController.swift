@@ -699,10 +699,10 @@ private extension ProductVariationsViewController {
         case .syncing(let pageNumber):
             if pageNumber == syncingCoordinator.pageFirstIndex {
                 displayPlaceholderProducts()
+                hideMoreActionsNavigationBarButton()
             } else {
                 ensureFooterSpinnerIsStarted()
             }
-            hideMoreActionsNavigationBarButton()
         case .results:
             break
         }

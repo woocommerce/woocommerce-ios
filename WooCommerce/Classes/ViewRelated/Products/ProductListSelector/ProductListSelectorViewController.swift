@@ -4,6 +4,9 @@ import Yosemite
 
 /// Displays a paginated list of products where the user can select.
 final class ProductListSelectorViewController: UIViewController {
+    /// Whether the view is for selecting or excluding products
+    private let isExclusion: Bool
+
     private let excludedProductIDs: [Int64]
     private var productIDs: [Int64] = [] {
         didSet {
@@ -35,9 +38,10 @@ final class ProductListSelectorViewController: UIViewController {
     typealias Completion = (_ selectedProductIDs: [Int64]) -> Void
     private let onCompletion: Completion
 
-    init(excludedProductIDs: [Int64], siteID: Int64, onCompletion: @escaping Completion) {
+    init(excludedProductIDs: [Int64], siteID: Int64, isExclusion: Bool = false, onCompletion: @escaping Completion) {
         self.excludedProductIDs = excludedProductIDs
         self.siteID = siteID
+        self.isExclusion = isExclusion
         self.onCompletion = onCompletion
         super.init(nibName: nil, bundle: nil)
     }

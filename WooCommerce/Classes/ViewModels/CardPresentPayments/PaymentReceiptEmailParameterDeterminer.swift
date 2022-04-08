@@ -51,7 +51,7 @@ struct PaymentReceiptEmailParameterDeterminer {
     private func synchronizePlugins(from siteID: Int64, onCompletion: @escaping ((Result<Void, Error>) -> Void)) {
         let systemPluginsAction = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID) { result in
             if case let .failure(error) = result {
-                DDLogError("[PaymentCaptureOrchestrator] Error syncing system plugins: \(error)")
+                DDLogError("[PaymentReceiptEmailParameterDeterminer] Error syncing system plugins: \(error)")
                 onCompletion(Result.failure(error))
             } else {
                 onCompletion(Result.success(()))

@@ -76,16 +76,22 @@ private extension LinkedProductsListSelectorViewController {
         ServiceLocator.analytics.track(.connectedProductsList, withProperties: ["action": "add_tapped", "context": viewConfiguration.trackingContext])
 
         let excludedProductIDs = dataSource.linkedProductIDs + [productID]
-        let listSelector = ProductListSelectorViewController(excludedProductIDs: excludedProductIDs,
-                                                             siteID: siteID) { [weak self] selectedProductIDs in
-                                                                if selectedProductIDs.isNotEmpty,
-                                                                   let context = self?.viewConfiguration.trackingContext {
-                                                                    ServiceLocator.analytics.track(.connectedProductsList,
-                                                                                                   withProperties: ["action": "added", "context": context])
-                                                                }
-                                                                self?.dataSource.addProducts(selectedProductIDs)
-                                                                self?.navigationController?.popViewController(animated: true)
+        let selectorCompletion: (_ selectedProductIDs: [Int64]) -> Void = { [weak self] selectedProductIDs in
+            if selectedProductIDs.isNotEmpty,
+               let context = self?.viewConfiguration.trackingContext {
+                ServiceLocator.analytics.track(.connectedProductsList,
+                                               withProperties: ["action": "added", "context": context])
+            }
+            self?.dataSource.addProducts(selectedProductIDs)
+            self?.navigationController?.popViewController(animated: true)
         }
+        let listSelector: UIViewController = {
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.couponEditing) {
+                return ProductListSelectorViewController(excludedProductIDs: excludedProductIDs, siteID: siteID, onCompletion: selectorCompletion)
+            } else {
+                return LegacyProductListSelectorViewController(excludedProductIDs: excludedProductIDs, siteID: siteID, onCompletion: selectorCompletion)
+            }
+        }()
         show(listSelector, sender: self)
     }
 

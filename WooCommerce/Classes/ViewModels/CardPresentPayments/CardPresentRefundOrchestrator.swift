@@ -7,11 +7,7 @@ import PassKit
 /// 3. Refund payment in-person with a card reader.
 /// Steps 1 and 2 are the same as the payments flow in `PaymentCaptureOrchestrator`.
 final class CardPresentRefundOrchestrator {
-    private let personNameComponentsFormatter = PersonNameComponentsFormatter()
-
-    private let celebration = PaymentCaptureCelebration()
     private let stores: StoresManager
-
     private var walletSuppressionRequestToken: PKSuppressionRequestToken?
 
     init(stores: StoresManager) {

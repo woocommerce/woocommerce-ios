@@ -3,6 +3,8 @@ import UIKit
 import Yosemite
 
 /// Displays a paginated list of products where the user can select.
+/// This uses the old design for the product list selector,
+/// and should be removed once updates for `ProductListSelectorViewController` are complete.
 final class LegacyProductListSelectorViewController: UIViewController {
     private let excludedProductIDs: [Int64]
     private var productIDs: [Int64] = [] {

@@ -11,7 +11,7 @@ final class ProductListSelectorViewController: UIViewController {
     private var productIDs: [Int64] = [] {
         didSet {
             if productIDs != oldValue {
-                updateActionButton(productIDs: productIDs)
+                updateDoneButton(productIDs: productIDs)
                 updateNavigationRightBarButtonItem(productIDs: productIDs)
             }
         }
@@ -31,6 +31,29 @@ final class ProductListSelectorViewController: UIViewController {
                                                                      tableViewStyle: .plain,
                                                                      separatorStyle: .none)
             return PaginatedListSelectorViewController(viewProperties: viewProperties, dataSource: dataSource, onDismiss: { _ in })
+    }()
+
+    private lazy var contentStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [])
+        stackView.axis = .vertical
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+
+    private lazy var doneButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
+        button.applyPrimaryButtonStyle()
+        return button
+    }()
+
+    private lazy var doneButtonContainer: UIView = {
+        let buttonContainer = UIView(frame: .zero)
+        buttonContainer.translatesAutoresizingMaskIntoConstraints = false
+        buttonContainer.addSubview(doneButton)
+        buttonContainer.pinSubviewToSafeArea(doneButton, insets: .init(top: 16, left: 16, bottom: 0, right: 16))
+        return buttonContainer
     }()
 
     // Completion callback
@@ -55,7 +78,7 @@ final class ProductListSelectorViewController: UIViewController {
 
         configureMainView()
         configureNavigation()
-        configurePaginatedProductListSelectorChildViewController()
+        configureContentStackView()
     }
 }
 
@@ -126,11 +149,12 @@ private extension ProductListSelectorViewController {
         }
     }
 
-    func updateActionButton(productIDs: [Int64]) {
+    func updateDoneButton(productIDs: [Int64]) {
         let itemCount = String.pluralize(productIDs.count, singular: Localization.singleProduct, plural: Localization.multipleProducts)
         let format = isExclusion ? Localization.exclusionActionTitle : Localization.selectionActionTitle
         let title = String.localizedStringWithFormat(format, itemCount)
-        // TODO: set button title or hide the button
+        doneButton.setTitle(title, for: .normal)
+        doneButtonContainer.isHidden = productIDs.isEmpty
     }
 }
 
@@ -146,15 +170,19 @@ private extension ProductListSelectorViewController {
         updateNavigationRightBarButtonItem(productIDs: productIDs)
     }
 
-    func configurePaginatedProductListSelectorChildViewController() {
+    func configureContentStackView() {
         observeSelectedProductIDs(observableProductIDs: dataSource.productIDs)
 
         addChild(paginatedListSelector)
         paginatedListSelector.view.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(paginatedListSelector.view)
+        contentStackView.addArrangedSubview(paginatedListSelector.view)
         paginatedListSelector.didMove(toParent: self)
 
-        view.pinSubviewToAllEdges(paginatedListSelector.view)
+        contentStackView.addArrangedSubview(doneButtonContainer)
+        doneButtonContainer.isHidden = true // Hide the button initially since no product is selected yet.
+
+        view.addSubview(contentStackView)
+        view.pinSubviewToAllEdges(contentStackView)
     }
 
     func observeSelectedProductIDs(observableProductIDs: AnyPublisher<[Int64], Never>) {

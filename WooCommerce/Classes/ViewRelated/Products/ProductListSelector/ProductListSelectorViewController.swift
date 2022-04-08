@@ -51,7 +51,7 @@ final class ProductListSelectorViewController: UIViewController {
         let buttonContainer = UIView(frame: .zero)
         buttonContainer.translatesAutoresizingMaskIntoConstraints = false
         buttonContainer.addSubview(doneButton)
-        buttonContainer.pinSubviewToSafeArea(doneButton, insets: .init(top: 16, left: 16, bottom: 0, right: 16))
+        buttonContainer.pinSubviewToSafeArea(doneButton, insets: Constants.doneButtonInsets)
         return buttonContainer
     }()
 
@@ -187,6 +187,10 @@ private extension ProductListSelectorViewController {
 // MARK: - Constants
 //
 private extension ProductListSelectorViewController {
+    enum Constants {
+        static let doneButtonInsets = UIEdgeInsets(top: 16, left: 16, bottom: 0, right: 16)
+    }
+
     enum Localization {
         static let noResultsPlaceholder = NSLocalizedString("No products yet",
                                                                 comment: "Placeholder text when there are no products on the product list selector")

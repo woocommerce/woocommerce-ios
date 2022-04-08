@@ -71,6 +71,7 @@ final class AddEditCouponViewModel: ObservableObject {
     @Published var amountField: String
     @Published var codeField: String
     @Published var descriptionField: String
+    @Published var expiryDateField: Date?
 
     /// Init method for coupon creation
     ///
@@ -83,6 +84,7 @@ final class AddEditCouponViewModel: ObservableObject {
         amountField = String()
         codeField = String()
         descriptionField = String()
+        expiryDateField = nil
     }
 
     /// Init method for coupon editing
@@ -97,6 +99,7 @@ final class AddEditCouponViewModel: ObservableObject {
         amountField = existingCoupon.amount
         codeField = existingCoupon.code
         descriptionField = existingCoupon.description
+        expiryDateField = existingCoupon.dateExpires
     }
 
     private enum EditingOption {

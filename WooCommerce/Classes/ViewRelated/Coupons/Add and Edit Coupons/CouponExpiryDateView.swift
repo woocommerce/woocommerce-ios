@@ -6,24 +6,18 @@ import WordPressAuthenticator
 struct CouponExpiryDateView: View {
 
     @State var date: Date = Date()
+    let completion: ((Date) -> Void)
 
     var body: some View {
         NavigationView {
             GeometryReader { geometry in
                 ScrollView {
                     VStack {
-                        DatePicker("Date picker", selection: $date, in: Date()..., displayedComponents: .date)
+                        DatePicker("Date picker", selection: $date, displayedComponents: .date)
                             .datePickerStyle(GraphicalDatePickerStyle())
-
-                        Button {
-                            //TODO: handle action
-                        } label: {
-                            Text(Localization.resetButton)
-                        }
-                        .buttonStyle(LinkButtonStyle())
-                        .fixedSize()
-                        .padding(.bottom, Constants.verticalSpacing)
-
+                            .onChange(of: date) { newDate in
+                                completion(newDate)
+                            }
                         Spacer().frame(maxHeight: .infinity)
                     }
                 }
@@ -56,6 +50,6 @@ private extension CouponExpiryDateView {
 
 struct CouponExpiryDateView_Previews: PreviewProvider {
     static var previews: some View {
-        CouponExpiryDateView(date: Date())
+        CouponExpiryDateView(date: Date(), completion: { _ in })
     }
 }

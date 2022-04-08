@@ -6,7 +6,17 @@ import Storage
 /// It extracts the information from the provided `StorageManagerType`, but please notice that it does not
 /// take care of syncing the data, so it should be done beforehand.
 ///
-struct PaymentsPluginsDataProvider {
+protocol PaymentsPluginsDataProviderProtocol {
+    func getWCPayPlugin() -> Yosemite.SystemPlugin?
+    func getStripePlugin() -> Yosemite.SystemPlugin?
+    func bothPluginsInstalledAndActive(wcPay: Yosemite.SystemPlugin?, stripe: Yosemite.SystemPlugin?) -> Bool
+    func wcPayInstalledAndActive(wcPay: Yosemite.SystemPlugin?) -> Bool
+    func stripeInstalledAndActive(stripe: Yosemite.SystemPlugin?) -> Bool
+    func isWCPayVersionSupported(plugin: Yosemite.SystemPlugin) -> Bool
+    func isStripeVersionSupported(plugin: Yosemite.SystemPlugin) -> Bool
+}
+
+struct PaymentsPluginsDataProvider: PaymentsPluginsDataProviderProtocol {
     let storageManager: StorageManagerType
     let stores: StoresManager
 

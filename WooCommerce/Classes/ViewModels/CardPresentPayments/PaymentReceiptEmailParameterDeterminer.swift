@@ -4,6 +4,14 @@ import Yosemite
 /// Determines the email to be set (if any) on a payment receipt depending on the current payment plugins (WCPay, Stripe) configuration
 /// 
 struct PaymentReceiptEmailParameterDeterminer {
+    private let paymentsPluginsDataProvider: PaymentsPluginsDataProviderProtocol
+    private let stores: StoresManager
+
+    init(paymentsPluginsDataProvider: PaymentsPluginsDataProviderProtocol = PaymentsPluginsDataProvider(),
+         stores: StoresManager = ServiceLocator.stores) {
+        self.paymentsPluginsDataProvider = paymentsPluginsDataProvider
+        self.stores = stores
+    }
 
     /// We do not need to set the receipt email if WCPay is installed and active
     /// and its version is higher or equal than 4.0.0, as it does it itself in that case.
@@ -24,8 +32,6 @@ struct PaymentReceiptEmailParameterDeterminer {
     }
 
     private func receiptEmail(from order: Order) -> String? {
-        let paymentsPluginsDataProvider = PaymentsPluginsDataProvider()
-
         let wcPay = paymentsPluginsDataProvider.getWCPayPlugin()
         let stripe = paymentsPluginsDataProvider.getStripePlugin()
 
@@ -52,7 +58,7 @@ struct PaymentReceiptEmailParameterDeterminer {
             }
         }
 
-        ServiceLocator.stores.dispatch(systemPluginsAction)
+        stores.dispatch(systemPluginsAction)
     }
 
     private func wcPayPluginSendsReceiptEmail(version: String) -> Bool {

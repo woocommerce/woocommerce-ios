@@ -16,7 +16,7 @@ final class NewOrderHostingController: UIHostingController<NewOrder> {
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
         rootView.dismissHandler = { [weak self] in
-            self?.checkUnsavedChangesAndDismissIfPossible()
+            self?.dismiss(animated: true)
         }
     }
 
@@ -75,17 +75,6 @@ extension NewOrderHostingController: UIAdaptivePresentationControllerDelegate {
 /// Private methods
 ///
 private extension NewOrderHostingController {
-    func checkUnsavedChangesAndDismissIfPossible() {
-        guard !viewModel.hasChanges else {
-            presentDiscardChangesActionSheet(onDiscard: { [weak self] in
-                self?.discardOrderAndDismiss()
-            })
-            return
-        }
-
-        dismiss(animated: true)
-    }
-
     func presentDiscardChangesActionSheet(onDiscard: @escaping () -> Void) {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: onDiscard)
     }

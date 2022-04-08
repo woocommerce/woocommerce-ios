@@ -101,7 +101,9 @@ final class RefundConfirmationViewModel {
         let submissionUseCase = RefundSubmissionUseCase(siteID: details.order.siteID,
                                                         details: details,
                                                         rootViewController: rootViewController,
-                                                        currencyFormatter: currencyFormatter)
+                                                        currencyFormatter: currencyFormatter,
+                                                        stores: actionProcessor,
+                                                        analytics: analytics)
         self.submissionUseCase = submissionUseCase
         submissionUseCase.submitRefund(refund,
                                        details: details,

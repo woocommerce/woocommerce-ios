@@ -119,7 +119,7 @@ struct AddEditCoupon: View {
 
                             Group {
                                 TitleAndValueRow(title: Localization.couponExpiryDate,
-                                                 value: .placeholder(Localization.couponExpiryDatePlaceholder),
+                                                 value: viewModel.expiryDateValue,
                                                  selectionStyle: .disclosure, action: {
                                     showingCouponExpiryActionSheet = true
                                 })
@@ -263,9 +263,6 @@ private extension AddEditCoupon {
         static let couponExpiryDate = NSLocalizedString(
             "Coupon Expiry Date",
             comment: "Field in the view for adding or editing a coupon.")
-        static let couponExpiryDatePlaceholder = NSLocalizedString(
-            "None",
-            comment: "Coupon expiry date placeholder in the view for adding or editing a coupon")
         static let includeFreeShipping = NSLocalizedString(
             "Include Free Shipping?",
             comment: "Toggle field in the view for adding or editing a coupon.")

@@ -65,6 +65,16 @@ final class AddEditCouponViewModel: ObservableObject {
         return Localization.editDescriptionButton
     }
 
+    /// The value for populating the coupon expiry date field based on the `expiryDateField`.
+    ///
+    var expiryDateValue: TitleAndValueRow.Value {
+        guard expiryDateField == nil else {
+            return .content(expiryDateField?.toString(dateStyle: .long, timeStyle: .none) ?? "")
+        }
+
+        return .placeholder(Localization.couponExpiryDatePlaceholder)
+    }
+
     private(set) var coupon: Coupon?
 
     // Fields
@@ -131,5 +141,8 @@ private extension AddEditCouponViewModel {
         static let editDescriptionButton = NSLocalizedString("Edit Description",
                                                              comment: "Button for editing the description of a coupon in the" +
                                                              " view for adding or editing a coupon.")
+        static let couponExpiryDatePlaceholder = NSLocalizedString(
+            "None",
+            comment: "Coupon expiry date placeholder in the view for adding or editing a coupon")
     }
 }

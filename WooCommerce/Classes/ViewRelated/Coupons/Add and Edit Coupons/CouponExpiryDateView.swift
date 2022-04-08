@@ -9,36 +9,27 @@ struct CouponExpiryDateView: View {
     let completion: ((Date) -> Void)
 
     var body: some View {
-        NavigationView {
-            GeometryReader { geometry in
-                ScrollView {
-                    VStack {
-                        DatePicker("Date picker", selection: $date, displayedComponents: .date)
-                            .datePickerStyle(GraphicalDatePickerStyle())
-                            .onChange(of: date) { newDate in
-                                completion(newDate)
-                            }
-                        Spacer().frame(maxHeight: .infinity)
-                    }
+        // NavigationView {
+        GeometryReader { geometry in
+            ScrollView {
+                VStack {
+                    DatePicker("Date picker", selection: $date, displayedComponents: .date)
+                        .datePickerStyle(GraphicalDatePickerStyle())
+                        .onChange(of: date) { newDate in
+                            completion(newDate)
+                        }
+                    Spacer()
                 }
             }
-            .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
         }
+        .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
         .navigationTitle(Localization.title)
-        .navigationBarTitleDisplayMode(.automatic)
-        .wooNavigationBarStyle()
     }
 }
 
 // MARK: - Constants
 //
 private extension CouponExpiryDateView {
-
-    enum Constants {
-        static let margin: CGFloat = 16
-        static let verticalSpacing: CGFloat = 8
-        static let iconSize: CGFloat = 16
-    }
 
     enum Localization {
         static let title = NSLocalizedString("Select an expiry date",

@@ -2,7 +2,7 @@ import Yosemite
 import Foundation
 import Storage
 
-/// This helper struct provides data and helper methods related to the Payments Plugins (WCPay, Stripe).
+/// Provides data and helper methods related to the Payments Plugins (WCPay, Stripe).
 /// It extracts the information from the provided `StorageManagerType`, but please notice that it does not
 /// take care of syncing the data, so it should be done beforehand.
 ///

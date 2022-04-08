@@ -6,8 +6,9 @@ import Yosemite
 struct AddEditCoupon: View {
 
     @ObservedObject private var viewModel: AddEditCouponViewModel
-    @State private var showingCouponRestrictions: Bool = false
     @State private var showingEditDescription: Bool = false
+    @State private var showingCouponExpiryDate: Bool = false
+    @State private var showingCouponRestrictions: Bool = false
     @Environment(\.presentationMode) var presentation
 
     init(_ viewModel: AddEditCouponViewModel) {
@@ -83,7 +84,9 @@ struct AddEditCoupon: View {
                             Group {
                                 TitleAndValueRow(title: Localization.couponExpiryDate,
                                                  value: .placeholder(Localization.couponExpiryDatePlaceholder),
-                                                 selectionStyle: .disclosure, action: { })
+                                                 selectionStyle: .disclosure, action: {
+                                    showingCouponExpiryDate = true
+                                })
                                 Divider()
                                     .padding(.leading, Constants.margin)
                             }
@@ -158,6 +161,11 @@ struct AddEditCoupon: View {
                                                                            text: $viewModel.descriptionField,
                                                                            placeholder: Localization.addDescriptionPlaceholder),
                                            isActive: $showingEditDescription) {
+                            EmptyView()
+                        }
+
+                        LazyNavigationLink(destination: CouponExpiryDateView(),
+                                           isActive: $showingCouponExpiryDate) {
                             EmptyView()
                         }
 

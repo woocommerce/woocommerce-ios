@@ -19,6 +19,7 @@ struct CardPresentCapturedPaymentData {
 final class PaymentCaptureOrchestrator {
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
     private let personNameComponentsFormatter = PersonNameComponentsFormatter()
+    private let paymentReceiptEmailParameterDeterminer = PaymentReceiptEmailParameterDeterminer()
 
     private let celebration = PaymentCaptureCelebration()
 
@@ -224,72 +225,31 @@ private extension PaymentCaptureOrchestrator {
             return
         }
 
-        synchronizePlugins(from: order.siteID) { [weak self] result in
-            guard let self = self else { return }
-
-            if case let .failure(error) = result {
-                onCompletion(Result.failure(error))
-            } else {
-                let metadata = PaymentIntent.initMetadata(
-                    store: ServiceLocator.stores.sessionManager.defaultSite?.name,
-                    customerName: self.buildCustomerNameFromBillingAddress(order.billingAddress),
-                    customerEmail: order.billingAddress?.email,
-                    siteURL: ServiceLocator.stores.sessionManager.defaultSite?.url,
-                    orderID: order.orderID,
-                    paymentType: PaymentIntent.PaymentTypes.single
-                )
-
-                let parameters = PaymentParameters(amount: orderTotal as Decimal,
-                                                   currency: order.currency,
-                                                   receiptDescription: self.receiptDescription(orderNumber: order.number),
-                                                   statementDescription: statementDescriptor,
-                                                   receiptEmail: self.provideReceiptEmailIfNecessary(from: order),
-                                                   paymentMethodTypes: paymentMethodTypes,
-                                                   metadata: metadata)
-
-                onCompletion(Result.success(parameters))
+        paymentReceiptEmailParameterDeterminer.receiptEmail(from: order) { result in
+            var receiptEmail: String?
+            if case let .success(email) = result {
+                receiptEmail = email
             }
+
+            let metadata = PaymentIntent.initMetadata(
+                store: ServiceLocator.stores.sessionManager.defaultSite?.name,
+                customerName: self.buildCustomerNameFromBillingAddress(order.billingAddress),
+                customerEmail: order.billingAddress?.email,
+                siteURL: ServiceLocator.stores.sessionManager.defaultSite?.url,
+                orderID: order.orderID,
+                paymentType: PaymentIntent.PaymentTypes.single
+            )
+
+            let parameters = PaymentParameters(amount: orderTotal as Decimal,
+                                               currency: order.currency,
+                                               receiptDescription: self.receiptDescription(orderNumber: order.number),
+                                               statementDescription: statementDescriptor,
+                                               receiptEmail: receiptEmail,
+                                               paymentMethodTypes: paymentMethodTypes,
+                                               metadata: metadata)
+
+            onCompletion(Result.success(parameters))
         }
-    }
-
-    private func synchronizePlugins(from siteID: Int64, onCompletion: @escaping ((Result<Void, Error>) -> Void)) {
-        let systemPluginsAction = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID) { result in
-            if case let .failure(error) = result {
-                DDLogError("[PaymentCaptureOrchestrator] Error syncing system plugins: \(error)")
-                onCompletion(Result.failure(error))
-            } else {
-                onCompletion(Result.success(()))
-            }
-        }
-
-        ServiceLocator.stores.dispatch(systemPluginsAction)
-    }
-
-    /// We do not need to set the receipt email if WCPay is installed and active
-    /// and its version is higher or equal than 4.0.0, as it does it itself in that case.
-    private func provideReceiptEmailIfNecessary(from order: Order) -> String? {
-        let paymentsPluginsDataProvider = PaymentsPluginsDataProvider()
-
-        let wcPay = paymentsPluginsDataProvider.getWCPayPlugin()
-        let stripe = paymentsPluginsDataProvider.getStripePlugin()
-
-        guard !paymentsPluginsDataProvider.bothPluginsInstalledAndActive(wcPay: wcPay, stripe: stripe) else {
-            // This case should not happen, shall we fatal error here?
-            return nil
-        }
-
-        guard let wcPay = wcPay,
-              paymentsPluginsDataProvider.wcPayInstalledAndActive(wcPay: wcPay) else {
-            return order.billingAddress?.email
-        }
-
-        return wcPayPluginSendsReceiptEmail(version: wcPay.version) ? nil : order.billingAddress?.email
-    }
-
-    private func wcPayPluginSendsReceiptEmail(version: String) -> Bool {
-        let comparisonResult = VersionHelpers.compare(version, Constants.minimumWCPayPluginVersionThatSendsReceiptEmail)
-
-        return comparisonResult == .orderedDescending || comparisonResult == .orderedSame
     }
 
     func receiptDescription(orderNumber: String) -> String? {
@@ -319,7 +279,6 @@ private extension PaymentCaptureOrchestrator {
         /// Minimum order amount in USD:
         /// https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts
         static let minimumAmount = NSDecimalNumber(string: "0.5")
-        static let minimumWCPayPluginVersionThatSendsReceiptEmail = "4.0.0"
     }
 
     func isTotalAmountValid(order: Order) -> Bool {

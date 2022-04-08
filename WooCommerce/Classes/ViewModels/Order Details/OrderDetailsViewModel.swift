@@ -149,7 +149,7 @@ final class OrderDetailsViewModel {
     /// Conditions copied from:
     /// https://github.com/woocommerce/woocommerce/blob/3611d4643791bad87a0d3e6e73e031bb80447417/plugins/woocommerce/includes/class-wc-order.php#L1520-L1523
     ///
-    var needsPayment: Bool {
+    private var needsPayment: Bool {
         guard let total = Double(order.total) else {
             return false
         }

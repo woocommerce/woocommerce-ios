@@ -45,18 +45,19 @@ final class PaymentCaptureOrchestrator {
 
         ServiceLocator.stores.dispatch(setAccount)
 
-        Task {
-            do {
-                let parameters = try await paymentParameters(
-                        order: order,
-                        statementDescriptor: paymentGatewayAccount.statementDescriptor,
-                        paymentMethodTypes: paymentMethodTypes
-                )
+        paymentParameters(
+                order: order,
+                statementDescriptor: paymentGatewayAccount.statementDescriptor,
+                paymentMethodTypes: paymentMethodTypes
+        ) { [weak self] result in
+            guard let self = self else { return }
 
+            switch result {
+            case let .success(parameters):
                 /// Briefly suppress pass (wallet) presentation so that the merchant doesn't attempt to pay for the buyer's order when the
                 /// reader begins to collect payment.
                 ///
-                suppressPassPresentation()
+                self.suppressPassPresentation()
 
                 let paymentAction = CardPresentPaymentAction.collectPayment(
                     siteID: order.siteID,
@@ -84,9 +85,9 @@ final class PaymentCaptureOrchestrator {
                 )
 
                 ServiceLocator.stores.dispatch(paymentAction)
-            } catch {
-                onCompletion(.failure(CardReaderServiceError.paymentCapture()))
-            }
+            case let .failure(error):
+                onCompletion(Result.failure(error))
+             }
         }
     }
 
@@ -212,49 +213,60 @@ private extension PaymentCaptureOrchestrator {
         ServiceLocator.stores.dispatch(action)
     }
 
-    func paymentParameters(order: Order, statementDescriptor: String?, paymentMethodTypes: [String]) async throws -> PaymentParameters {
+    func paymentParameters(order: Order,
+                           statementDescriptor: String?,
+                           paymentMethodTypes: [String],
+                           onCompletion: @escaping ((Result<PaymentParameters, Error>) -> Void)) {
         guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
             DDLogError("Error: attempted to collect payment for an order without a valid total.")
-            throw NotValidAmountError.other
+            onCompletion(Result.failure(NotValidAmountError.other))
+
+            return
         }
 
-        try await synchronizePlugins(from: order.siteID)
+        synchronizePlugins(from: order.siteID) { [weak self] result in
+            guard let self = self else { return }
 
-        let metadata = PaymentIntent.initMetadata(
-            store: ServiceLocator.stores.sessionManager.defaultSite?.name,
-            customerName: buildCustomerNameFromBillingAddress(order.billingAddress),
-            customerEmail: order.billingAddress?.email,
-            siteURL: ServiceLocator.stores.sessionManager.defaultSite?.url,
-            orderID: order.orderID,
-            paymentType: PaymentIntent.PaymentTypes.single
-        )
+            if case let .failure(error) = result {
+                onCompletion(Result.failure(error))
+            } else {
+                let metadata = PaymentIntent.initMetadata(
+                    store: ServiceLocator.stores.sessionManager.defaultSite?.name,
+                    customerName: self.buildCustomerNameFromBillingAddress(order.billingAddress),
+                    customerEmail: order.billingAddress?.email,
+                    siteURL: ServiceLocator.stores.sessionManager.defaultSite?.url,
+                    orderID: order.orderID,
+                    paymentType: PaymentIntent.PaymentTypes.single
+                )
 
-        return PaymentParameters(amount: orderTotal as Decimal,
-                                 currency: order.currency,
-                                 receiptDescription: receiptDescription(orderNumber: order.number),
-                                 statementDescription: statementDescriptor,
-                                 receiptEmail: provideReceiptEmailIfNecessary(from: order),
-                                 paymentMethodTypes: paymentMethodTypes,
-                                 metadata: metadata)
+                let parameters = PaymentParameters(amount: orderTotal as Decimal,
+                                                   currency: order.currency,
+                                                   receiptDescription: self.receiptDescription(orderNumber: order.number),
+                                                   statementDescription: statementDescriptor,
+                                                   receiptEmail: self.provideReceiptEmailIfNecessary(from: order),
+                                                   paymentMethodTypes: paymentMethodTypes,
+                                                   metadata: metadata)
+
+                onCompletion(Result.success(parameters))
+            }
+        }
     }
 
-    private func synchronizePlugins(from siteID: Int64) async throws {
-        return try await withCheckedThrowingContinuation({
-                (continuation: CheckedContinuation<(), Error>) in
-            let systemPluginsAction = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID) { result in
-                if case let .failure(error) = result {
-                    DDLogError("[PaymentCaptureOrchestrator] Error syncing system plugins: \(error)")
-                    continuation.resume(throwing: error)
-                } else {
-                    continuation.resume(returning: ())
-                }
+    private func synchronizePlugins(from siteID: Int64, onCompletion: @escaping ((Result<Void, Error>) -> Void)) {
+        let systemPluginsAction = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID) { result in
+            if case let .failure(error) = result {
+                DDLogError("[PaymentCaptureOrchestrator] Error syncing system plugins: \(error)")
+                onCompletion(Result.failure(error))
+            } else {
+                onCompletion(Result.success(()))
             }
-            ServiceLocator.stores.dispatch(systemPluginsAction)
-            })
+        }
+
+        ServiceLocator.stores.dispatch(systemPluginsAction)
     }
 
     /// We do not need to set the receipt email if WCPay is installed and active
-    /// and its version is higher or equal than 4.0.0, as it does itself in that case.
+    /// and its version is higher or equal than 4.0.0, as it does it itself in that case.
     private func provideReceiptEmailIfNecessary(from order: Order) -> String? {
         let paymentsPluginsDataProvider = PaymentsPluginsDataProvider()
 

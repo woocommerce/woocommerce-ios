@@ -99,14 +99,15 @@ final class RefundConfirmationViewModel {
 
         // Submits refund.
         let submissionUseCase = RefundSubmissionUseCase(siteID: details.order.siteID,
-                                                        details: details,
+                                                        details: .init(order: details.order,
+                                                                       charge: details.charge,
+                                                                       amount: details.amount),
                                                         rootViewController: rootViewController,
                                                         currencyFormatter: currencyFormatter,
                                                         stores: actionProcessor,
                                                         analytics: analytics)
         self.submissionUseCase = submissionUseCase
         submissionUseCase.submitRefund(refund,
-                                       details: details,
                                        showInProgressUI: showInProgressUI,
                                        onCompletion: { [weak self] result in
             guard let self = self else { return }

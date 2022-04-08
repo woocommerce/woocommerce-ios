@@ -1,7 +1,6 @@
 import Foundation
 import Combine
 import Yosemite
-import MessageUI
 import protocol Storage.StorageManagerType
 
 /// Protocol to abstract the `CollectOrderPaymentUseCase`.
@@ -11,14 +10,12 @@ protocol RefundSubmissionProtocol {
     /// Starts the refund submission flow.
     ///
     /// - Parameter refund: the refund to submit.
-    /// - Parameter details: details about the refund.
     /// - Parameter showInProgressUI: called when the in-progress UI should be shown during refund submission.
     /// - Parameter onCompletion: called when the refund completes.
-    func submitRefund(_ refund: Refund, details: RefundDetails, showInProgressUI: @escaping (() -> Void), onCompletion: @escaping (Result<Void, Error>) -> Void)
+    func submitRefund(_ refund: Refund,
+                      showInProgressUI: @escaping (() -> Void),
+                      onCompletion: @escaping (Result<Void, Error>) -> Void)
 }
-
-// TODO: rename or create a new struct with necessary info
-typealias RefundDetails = RefundConfirmationViewModel.Details
 
 /// Use case to submit a refund for an order.
 /// If in-person refund is required for the payment method (e.g. Interac in Canada), orchestrates reader connection, refund, UI alerts,
@@ -29,7 +26,7 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
     private let siteID: Int64
 
     /// Refund details.
-    private let details: RefundDetails
+    private let details: Details
 
     /// Order of the refund.
     private var order: Order {
@@ -87,7 +84,7 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
     }
 
     init(siteID: Int64,
-         details: RefundDetails,
+         details: Details,
          rootViewController: UIViewController,
          currencyFormatter: CurrencyFormatter,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
@@ -120,11 +117,9 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
     ///
     /// - Parameters:
     ///   - refund: the refund to submit.
-    ///   - details: details about the refund.
     ///   - showInProgressUI: called when the in-progress UI should be shown during refund submission.
     ///   - onCompletion: called when the refund completes.
     func submitRefund(_ refund: Refund,
-                      details: RefundDetails,
                       showInProgressUI: @escaping (() -> Void),
                       onCompletion: @escaping (Result<Void, Error>) -> Void) {
         if let charge = details.charge, shouldRefundWithCardReader(details: details) {
@@ -149,12 +144,27 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
     }
 }
 
+// MARK: Refund Details
+extension RefundSubmissionUseCase {
+    /// Details about a refund for submission.
+    struct Details {
+        /// Order to refund.
+        let order: Order
+
+        /// Charge of original payment.
+        let charge: WCPayCharge?
+
+        /// Total amount to refund.
+        let amount: String
+    }
+}
+
 // MARK: Private functions
 private extension RefundSubmissionUseCase {
     /// Determines if in-person refund is required. Currently, only Interac payment method requires in-person refunds.
     /// - Parameter details: details about the refund.
     /// - Returns: whether the refund should be in-person with a card reader.
-    func shouldRefundWithCardReader(details: RefundDetails) -> Bool {
+    func shouldRefundWithCardReader(details: Details) -> Bool {
         let isInterac: Bool = {
             switch details.charge?.paymentMethodDetails {
             case .some(.interacPresent):

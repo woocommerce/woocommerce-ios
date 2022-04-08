@@ -24,7 +24,9 @@ final class CardReaderSettingsSearchingViewModelTests: XCTestCase {
             XCTAssertTrue(shouldShow == .isTrue)
             expectation.fulfill()
         }, knownReaderProvider: mockKnownReaderProvider,
-                                                     configuration: TestConstants.mockConfiguration)
+                                                     configuration: TestConstants.mockConfiguration,
+                                                     cardReaderConnectionAnalyticsTracker: .init(configuration: TestConstants.mockConfiguration,
+                                                                                                 stores: mockStoresManager))
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
@@ -45,7 +47,9 @@ final class CardReaderSettingsSearchingViewModelTests: XCTestCase {
             XCTAssertTrue(shouldShow == .isFalse)
             expectation.fulfill()
         }, knownReaderProvider: mockKnownReaderProvider,
-                                                     configuration: TestConstants.mockConfiguration)
+                                                     configuration: TestConstants.mockConfiguration,
+                                                     cardReaderConnectionAnalyticsTracker: .init(configuration: TestConstants.mockConfiguration,
+                                                                                                 stores: mockStoresManager))
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }

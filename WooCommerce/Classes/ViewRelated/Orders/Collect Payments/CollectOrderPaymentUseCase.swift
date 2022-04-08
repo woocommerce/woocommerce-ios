@@ -78,7 +78,8 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         CardReaderConnectionController(forSiteID: siteID,
                                        knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
                                        alertsProvider: CardReaderSettingsAlerts(),
-                                       configuration: configurationLoader.configuration)
+                                       configuration: configurationLoader.configuration,
+                                       analyticsTracker: CardReaderConnectionAnalyticsTracker(configuration: configurationLoader.configuration))
     }()
 
     /// IPP Configuration loader

@@ -49,7 +49,9 @@ class CardReaderConnectionControllerTests: XCTestCase {
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts,
-            configuration: Mocks.configuration
+            configuration: Mocks.configuration,
+            analyticsTracker: .init(configuration: Mocks.configuration,
+                                    stores: mockStoresManager)
         )
 
         // When
@@ -84,7 +86,9 @@ class CardReaderConnectionControllerTests: XCTestCase {
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts,
-            configuration: Mocks.configuration
+            configuration: Mocks.configuration,
+            analyticsTracker: .init(configuration: Mocks.configuration,
+                                    stores: mockStoresManager)
         )
 
         // When
@@ -127,7 +131,9 @@ class CardReaderConnectionControllerTests: XCTestCase {
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts,
-            configuration: Mocks.configuration
+            configuration: Mocks.configuration,
+            analyticsTracker: .init(configuration: Mocks.configuration,
+                                    stores: mockStoresManager)
         )
 
         // When
@@ -163,7 +169,9 @@ class CardReaderConnectionControllerTests: XCTestCase {
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts,
-            configuration: Mocks.configuration
+            configuration: Mocks.configuration,
+            analyticsTracker: .init(configuration: Mocks.configuration,
+                                    stores: mockStoresManager)
         )
 
         // When
@@ -200,7 +208,9 @@ class CardReaderConnectionControllerTests: XCTestCase {
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts,
-            configuration: Mocks.configuration
+            configuration: Mocks.configuration,
+            analyticsTracker: .init(configuration: Mocks.configuration,
+                                    stores: mockStoresManager)
         )
 
         // When
@@ -239,7 +249,9 @@ class CardReaderConnectionControllerTests: XCTestCase {
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts,
-            configuration: Mocks.configuration
+            configuration: Mocks.configuration,
+            analyticsTracker: .init(configuration: Mocks.configuration,
+                                    stores: mockStoresManager)
         )
 
         // When
@@ -282,7 +294,9 @@ class CardReaderConnectionControllerTests: XCTestCase {
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts,
-            configuration: Mocks.configuration
+            configuration: Mocks.configuration,
+            analyticsTracker: .init(configuration: Mocks.configuration,
+                                    stores: mockStoresManager)
         )
 
         // When
@@ -318,7 +332,9 @@ class CardReaderConnectionControllerTests: XCTestCase {
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts,
-            configuration: Mocks.configuration
+            configuration: Mocks.configuration,
+            analyticsTracker: .init(configuration: Mocks.configuration,
+                                    stores: mockStoresManager)
         )
 
         // When
@@ -357,7 +373,9 @@ class CardReaderConnectionControllerTests: XCTestCase {
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts,
-            configuration: Mocks.configuration
+            configuration: Mocks.configuration,
+            analyticsTracker: .init(configuration: Mocks.configuration,
+                                    stores: mockStoresManager)
         )
 
         // When
@@ -396,7 +414,9 @@ class CardReaderConnectionControllerTests: XCTestCase {
             storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts,
-            configuration: Mocks.configuration
+            configuration: Mocks.configuration,
+            analyticsTracker: .init(configuration: Mocks.configuration,
+                                    stores: mockStoresManager)
         )
 
         // When

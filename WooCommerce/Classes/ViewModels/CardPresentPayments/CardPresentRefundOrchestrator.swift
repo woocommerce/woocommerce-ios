@@ -59,7 +59,7 @@ final class CardPresentRefundOrchestrator {
     /// Cancels the current refund.
     /// - Parameter onCompletion: called when the cancellation completes.
     func cancelRefund(onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        let action = CardPresentPaymentAction.cancelRefund() { [weak self] result in
+        let action = CardPresentPaymentAction.cancelRefund { [weak self] result in
             self?.allowPassPresentation()
             onCompletion(result)
         }

@@ -252,7 +252,7 @@ private extension RefundSubmissionUseCase {
     /// Logs the failure reason, cancels the current refund, and offers retry if possible.
     func handleRefundFailureAndRetryRefund(_ error: Error, refundAmount: Decimal, charge: WCPayCharge, onCompletion: @escaping (Result<Void, Error>) -> ()) {
         // TODO: 5984 - tracks in-person refund error
-        DDLogError("Failed to collect payment: \(error.localizedDescription)")
+        DDLogError("Failed to refund: \(error.localizedDescription)")
         // Informs about the error.
         alerts?.error(error: error) { [weak self] in
             // Cancels current payment.

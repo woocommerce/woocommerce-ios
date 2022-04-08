@@ -3,8 +3,8 @@ import Combine
 import Yosemite
 import protocol Storage.StorageManagerType
 
-/// Protocol to abstract the `CollectOrderPaymentUseCase`.
-/// Currently only used to facilitate unit tests.
+/// Protocol to abstract the `RefundSubmissionUseCase`.
+/// TODO: 5983 - Use this to facilitate unit tests.
 ///
 protocol RefundSubmissionProtocol {
     /// Starts the refund submission flow.

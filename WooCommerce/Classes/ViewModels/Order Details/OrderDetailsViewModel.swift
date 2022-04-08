@@ -138,6 +138,31 @@ final class OrderDetailsViewModel {
 
     private var receipt: CardPresentReceiptParameters? = nil
 
+    /// Defines if the actions menu item should be shown.
+    /// Currently the only action should be to share a payment link.
+    ///
+    var shouldShowActionsMenuItem: Bool {
+        needsPayment && paymentLink != nil
+    }
+
+    /// This check is temporary, we are working on knowing if an order needs payment directly from the API.
+    /// Conditions copied from:
+    /// https://github.com/woocommerce/woocommerce/blob/3611d4643791bad87a0d3e6e73e031bb80447417/plugins/woocommerce/includes/class-wc-order.php#L1520-L1523
+    ///
+    var needsPayment: Bool {
+        guard let total = Double(order.total) else {
+            return false
+        }
+        return total > .zero && (order.status == .pending || order.status == .failed)
+    }
+
+    /// Returns the order payment link.
+    /// Should exists on `6.4+` stores.
+    ///
+    var paymentLink: URL? {
+        return order.paymentURL
+    }
+
     /// Helpers
     ///
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {

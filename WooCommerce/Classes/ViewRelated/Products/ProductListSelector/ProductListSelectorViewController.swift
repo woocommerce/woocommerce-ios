@@ -55,6 +55,37 @@ final class ProductListSelectorViewController: UIViewController {
         return buttonContainer
     }()
 
+    private lazy var topBarContainer: UIView = {
+        let container = UIView(frame: .zero)
+        container.translatesAutoresizingMaskIntoConstraints = false
+
+        let selectAllButton = UIButton()
+        selectAllButton.setTitle(Localization.selectAll, for: .normal)
+        selectAllButton.translatesAutoresizingMaskIntoConstraints = false
+        selectAllButton.addTarget(self, action: #selector(selectAllProducts), for: .touchUpInside)
+        selectAllButton.applyLinkButtonStyle()
+        selectAllButton.contentEdgeInsets = .zero
+        container.addSubview(selectAllButton)
+
+        let filterButton = UIButton()
+        filterButton.setTitle(Localization.filter, for: .normal)
+        filterButton.translatesAutoresizingMaskIntoConstraints = false
+        filterButton.addTarget(self, action: #selector(filterProducts), for: .touchUpInside)
+        filterButton.applyLinkButtonStyle()
+        filterButton.contentEdgeInsets = .zero
+        container.addSubview(filterButton)
+
+        NSLayoutConstraint.activate([
+            container.heightAnchor.constraint(equalToConstant: Constants.topBarHeight),
+            selectAllButton.leadingAnchor.constraint(equalTo: container.safeLeadingAnchor, constant: Constants.topBarMargin),
+            selectAllButton.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+            container.safeTrailingAnchor.constraint(equalTo: filterButton.trailingAnchor, constant: Constants.topBarMargin),
+            filterButton.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+        ])
+
+        return container
+    }()
+
     // Completion callback
     //
     typealias Completion = (_ selectedProductIDs: [Int64]) -> Void
@@ -83,6 +114,14 @@ final class ProductListSelectorViewController: UIViewController {
 
 // MARK: - Actions
 private extension ProductListSelectorViewController {
+    @objc func selectAllProducts() {
+        // TODO
+    }
+
+    @objc func filterProducts() {
+        // TODO
+    }
+
     @objc func doneButtonTapped() {
         completeUpdating()
     }
@@ -163,8 +202,9 @@ private extension ProductListSelectorViewController {
     }
 
     func configureContentStackView() {
-        observeSelectedProductIDs(observableProductIDs: dataSource.productIDs)
+        contentStackView.addArrangedSubview(topBarContainer)
 
+        observeSelectedProductIDs(observableProductIDs: dataSource.productIDs)
         addChild(paginatedListSelector)
         paginatedListSelector.view.translatesAutoresizingMaskIntoConstraints = false
         contentStackView.addArrangedSubview(paginatedListSelector.view)
@@ -174,7 +214,12 @@ private extension ProductListSelectorViewController {
         doneButtonContainer.isHidden = true // Hide the button initially since no product is selected yet.
 
         view.addSubview(contentStackView)
-        view.pinSubviewToAllEdges(contentStackView)
+        NSLayoutConstraint.activate([
+            view.leadingAnchor.constraint(equalTo: contentStackView.leadingAnchor),
+            view.trailingAnchor.constraint(equalTo: contentStackView.trailingAnchor),
+            view.safeTopAnchor.constraint(equalTo: contentStackView.safeTopAnchor),
+            view.safeBottomAnchor.constraint(equalTo: contentStackView.safeBottomAnchor)
+        ])
     }
 
     func observeSelectedProductIDs(observableProductIDs: AnyPublisher<[Int64], Never>) {
@@ -189,6 +234,8 @@ private extension ProductListSelectorViewController {
 private extension ProductListSelectorViewController {
     enum Constants {
         static let doneButtonInsets = UIEdgeInsets(top: 16, left: 16, bottom: 0, right: 16)
+        static let topBarMargin: CGFloat = 16
+        static let topBarHeight: CGFloat = 46
     }
 
     enum Localization {
@@ -208,5 +255,7 @@ private extension ProductListSelectorViewController {
         )
         static let singleProduct = NSLocalizedString("%1$d Product", comment: "Count of one product")
         static let multipleProducts = NSLocalizedString("%1$d Products", comment: "Count of several products, reads like: 2 Products")
+        static let selectAll = NSLocalizedString("Select All", comment: "Button to select all products on the product list selector")
+        static let filter = NSLocalizedString("Filter", comment: "Button to filter products on the product list selector")
     }
 }

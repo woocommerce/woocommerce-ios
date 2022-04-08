@@ -12,7 +12,6 @@ final class ProductListSelectorViewController: UIViewController {
         didSet {
             if productIDs != oldValue {
                 updateDoneButton(productIDs: productIDs)
-                updateNavigationRightBarButtonItem(productIDs: productIDs)
             }
         }
     }
@@ -141,13 +140,6 @@ extension ProductListSelectorViewController {
 
 // MARK: - UI updates
 private extension ProductListSelectorViewController {
-    func updateNavigationRightBarButtonItem(productIDs: [Int64]) {
-        if productIDs.isEmpty {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(searchButtonTapped))
-        } else {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
-        }
-    }
 
     func updateDoneButton(productIDs: [Int64]) {
         let itemCount = String.pluralize(productIDs.count, singular: Localization.singleProduct, plural: Localization.multipleProducts)
@@ -167,7 +159,7 @@ private extension ProductListSelectorViewController {
 
     func configureNavigation() {
         navigationItem.title = isExclusion ? Localization.exclusionTitle : Localization.selectionTitle
-        updateNavigationRightBarButtonItem(productIDs: productIDs)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(searchButtonTapped))
     }
 
     func configureContentStackView() {

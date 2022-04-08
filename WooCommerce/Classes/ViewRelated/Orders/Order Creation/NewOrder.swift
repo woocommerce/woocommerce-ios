@@ -83,7 +83,7 @@ private extension NewOrderHostingController {
             return
         }
 
-        self.dismiss(animated: true)
+        dismiss(animated: true)
     }
 
     func presentDiscardChangesActionSheet(onDiscard: @escaping () -> Void) {

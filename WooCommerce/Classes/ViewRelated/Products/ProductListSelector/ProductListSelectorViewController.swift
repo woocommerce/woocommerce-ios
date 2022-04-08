@@ -18,6 +18,7 @@ final class ProductListSelectorViewController: UIViewController {
 
     private let siteID: Int64
     private var selectedProductIDsSubscription: AnyCancellable?
+    private var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters()
 
     private lazy var dataSource = ProductListMultiSelectorDataSource(siteID: siteID, excludedProductIDs: excludedProductIDs)
 
@@ -70,7 +71,7 @@ final class ProductListSelectorViewController: UIViewController {
         let filterButton = UIButton()
         filterButton.setTitle(Localization.filter, for: .normal)
         filterButton.translatesAutoresizingMaskIntoConstraints = false
-        filterButton.addTarget(self, action: #selector(filterProducts), for: .touchUpInside)
+        filterButton.addTarget(self, action: #selector(showFilter), for: .touchUpInside)
         filterButton.applyLinkButtonStyle()
         filterButton.contentEdgeInsets = .zero
         container.addSubview(filterButton)
@@ -118,8 +119,17 @@ private extension ProductListSelectorViewController {
         // TODO
     }
 
-    @objc func filterProducts() {
-        // TODO
+    @objc func showFilter() {
+        let viewModel = FilterProductListViewModel(filters: filters, siteID: siteID)
+        let filterProductListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
+            ServiceLocator.analytics.track(.productFilterListShowProductsButtonTapped, withProperties: ["filters": filters.analyticsDescription])
+            self?.filters = filters
+        }, onClearAction: {
+            ServiceLocator.analytics.track(.productFilterListClearMenuButtonTapped)
+        }, onDismissAction: {
+            ServiceLocator.analytics.track(.productFilterListDismissButtonTapped)
+        })
+        present(filterProductListViewController, animated: true, completion: nil)
     }
 
     @objc func doneButtonTapped() {

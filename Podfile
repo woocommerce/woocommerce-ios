@@ -47,7 +47,7 @@ target 'WooCommerce' do
 
   pod 'WordPressShared', '~> 1.15'
 
-  pod 'WordPressUI', '~> 1.12.5-beta.1'
+  pod 'WordPressUI', '~> 1.12.5'
   # pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => ''
 
   aztec

@@ -32,6 +32,7 @@ extension Storage.Order: ReadOnlyConvertible {
         totalTax = order.totalTax
         paymentMethodID = order.paymentMethodID
         paymentMethodTitle = order.paymentMethodTitle
+        paymentURL = order.paymentURL as NSURL?
         chargeID = order.chargeID
 
         if let billingAddress = order.billingAddress {
@@ -93,6 +94,7 @@ extension Storage.Order: ReadOnlyConvertible {
                      totalTax: totalTax ?? "",
                      paymentMethodID: paymentMethodID ?? "",
                      paymentMethodTitle: paymentMethodTitle ?? "",
+                     paymentURL: paymentURL as URL?,
                      chargeID: chargeID,
                      items: orderItems,
                      billingAddress: createReadOnlyBillingAddress(),

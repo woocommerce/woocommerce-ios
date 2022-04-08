@@ -114,9 +114,10 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     private let orderID: Int64
 
-    /// Order Key. Needed to generate the payment link in `PaymentMethodViewModel`
+    /// Order payment URL.
+    /// Optional because older stores `(< 6.4)` don't provide this information.
     ///
-    private let orderKey: String
+    private let paymentLink: URL?
 
     /// Fee ID to update.
     ///
@@ -144,7 +145,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
          noteContent: String? = nil,
          siteID: Int64 = 0,
          orderID: Int64 = 0,
-         orderKey: String = "",
+         paymentLink: URL? = nil,
          feeID: Int64 = 0,
          presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
@@ -152,7 +153,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.orderID = orderID
-        self.orderKey = orderKey
+        self.paymentLink = paymentLink
         self.feeID = feeID
         self.presentNoticeSubject = presentNoticeSubject
         self.currencyFormatter = currencyFormatter
@@ -194,7 +195,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
                   taxLines: taxLines,
                   siteID: order.siteID,
                   orderID: order.orderID,
-                  orderKey: order.orderKey,
+                  paymentLink: order.paymentURL,
                   feeID: order.fees.first?.feeID ?? 0,
                   presentNoticeSubject: presentNoticeSubject,
                   currencyFormatter: currencyFormatter,
@@ -249,7 +250,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     func createMethodsViewModel() -> SimplePaymentsMethodsViewModel {
         SimplePaymentsMethodsViewModel(siteID: siteID,
                                        orderID: orderID,
-                                       orderKey: orderKey,
+                                       paymentLink: paymentLink,
                                        formattedTotal: total,
                                        presentNoticeSubject: presentNoticeSubject,
                                        stores: stores)

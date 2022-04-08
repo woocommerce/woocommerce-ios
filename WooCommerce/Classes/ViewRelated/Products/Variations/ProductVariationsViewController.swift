@@ -137,7 +137,6 @@ final class ProductVariationsViewController: UIViewController {
         super.viewDidLoad()
 
         configureNavigationBarTitle()
-        configureNavigationBarButtons()
         configureMainView()
         configureTableView()
         configureSyncingCoordinator()
@@ -169,15 +168,27 @@ private extension ProductVariationsViewController {
         )
     }
 
-    /// Sets the navigation bar buttons
+    /// Shows or hides the "more" navigation bar button.
     ///
-    func configureNavigationBarButtons() {
+    func showOrHideMoreActionsNavigationBarButton() {
         guard featureFlagService.isFeatureFlagEnabled(.bulkEditProductVariations) && resultsController.fetchedObjects.isNotEmpty else {
             // Do not display the "more" button with the bulk update option if we do not have any variations
-            navigationItem.rightBarButtonItem = nil
+            hideMoreActionsNavigationBarButton()
             return
         }
 
+        showMoreActionsNavigationBarButton()
+    }
+
+    /// Hides the "more" navigation bar button.
+    ///
+    func hideMoreActionsNavigationBarButton() {
+        navigationItem.rightBarButtonItem = nil
+    }
+
+    /// Shows the "more" navigation bar button.
+    ///
+    func showMoreActionsNavigationBarButton() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: .moreImage,
                                                             style: .plain,
                                                             target: self,
@@ -361,7 +372,7 @@ private extension ProductVariationsViewController {
     func configureResultsControllerEventHandling(_ resultsController: ResultsController<StorageProductVariation>) {
         let onReload = { [weak self] in
             self?.tableView.reloadData()
-            self?.configureNavigationBarButtons()
+            self?.showOrHideMoreActionsNavigationBarButton()
         }
 
         resultsController.onDidChangeContent = { [weak tableView] in
@@ -686,8 +697,9 @@ private extension ProductVariationsViewController {
         case .noResultsPlaceholder:
             break
         case .syncing(let pageNumber):
-            if pageNumber == SyncingCoordinator.Defaults.pageFirstIndex {
+            if pageNumber == syncingCoordinator.pageFirstIndex {
                 displayPlaceholderProducts()
+                hideMoreActionsNavigationBarButton()
             } else {
                 ensureFooterSpinnerIsStarted()
             }
@@ -701,6 +713,7 @@ private extension ProductVariationsViewController {
         case .syncing:
             ensureFooterSpinnerIsStopped()
             removePlaceholderProducts()
+            showOrHideMoreActionsNavigationBarButton()
         case .noResultsPlaceholder, .results:
             break
         }
@@ -737,7 +750,7 @@ extension ProductVariationsViewController {
             return false
         }
 
-        return highestPageBeingSynced * SyncingCoordinator.Defaults.pageSize > resultsController.numberOfObjects
+        return highestPageBeingSynced * syncingCoordinator.pageSize > resultsController.numberOfObjects
     }
 
     /// Stops animating the Footer Spinner.

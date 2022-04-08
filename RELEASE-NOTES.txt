@@ -1,5 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+9.0
+-----
+
+- [internal] Reviews lists on Products and Menu tabs are refactored to avoid duplicated code. Please quickly smoke test them to make sure that everything still works as before. [https://github.com/woocommerce/woocommerce-ios/pull/6553]
+
 8.9
 -----
 - [*] Coupons: Fixed issue loading the coupon list from the local storage on initial load. [https://github.com/woocommerce/woocommerce-ios/pull/6463]

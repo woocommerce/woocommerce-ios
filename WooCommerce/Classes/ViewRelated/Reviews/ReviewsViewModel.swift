@@ -26,10 +26,6 @@ protocol ReviewsViewModelOutput {
 /// Handles actions related to Reviews screen
 ///
 protocol ReviewsViewModelActionsHandler {
-    func didDisplayPlaceholderReviews()
-
-    func didRemovePlaceholderReviews(tableView: UITableView)
-
     func configureResultsController(tableView: UITableView)
 
     func refreshResults()
@@ -86,17 +82,6 @@ final class ReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHan
         self.siteID = siteID
         self.data = data
         self.stores = stores
-    }
-
-    func didDisplayPlaceholderReviews() {
-        data.stopForwardingEvents()
-    }
-
-    /// Restores the ResultsController <> UITableView link after the placeholder was removed from the view.
-    ///
-    func didRemovePlaceholderReviews(tableView: UITableView) {
-        data.startForwardingEvents(to: tableView)
-        tableView.reloadData()
     }
 
     func configureResultsController(tableView: UITableView) {
@@ -242,5 +227,19 @@ private extension ReviewsViewModel {
 
     struct Constants {
         static let section = "notifications"
+    }
+}
+
+/// Customizes the `ReviewsDataSource` for a global reviews query (all of a site)
+final class GlobalReviewsDataSourceCustomizer: ReviewsDataSourceCustomizing {
+    let shouldShowProductTitleOnCells = true
+
+    func reviewsFilterPredicate(with sitePredicate: NSPredicate) -> NSPredicate {
+        let statusPredicate = NSPredicate(format: "statusKey ==[c] %@ OR statusKey ==[c] %@",
+                                          ProductReviewStatus.approved.rawValue,
+                                          ProductReviewStatus.hold.rawValue)
+
+        return  NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, statusPredicate])
+
     }
 }

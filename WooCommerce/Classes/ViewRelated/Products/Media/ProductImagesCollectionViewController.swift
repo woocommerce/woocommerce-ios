@@ -135,11 +135,27 @@ extension ProductImagesCollectionViewController {
     }
 }
 
+/// Drag support
+///
+extension ProductImagesCollectionViewController: UICollectionViewDragDelegate {
+    func collectionView(_ collectionView: UICollectionView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
+        let item = productImageStatuses[indexPath.row]
+        let dragItem = dragItem(for: item)
+        return [dragItem]
+    }
+
+    private func dragItem(for productImageStatus: ProductImageStatus) -> UIDragItem {
+        let itemProvider = NSItemProvider(object: NSString(string: productImageStatus.dragItemIdentifier))
+        return UIDragItem(itemProvider: itemProvider)
+    }
+}
+
 /// View configuration
 ///
 private extension ProductImagesCollectionViewController {
     func configureCollectionView() {
         collectionView.backgroundColor = .basicBackground
+        collectionView.dragDelegate = self
 
         registerCollectionViewCells()
     }

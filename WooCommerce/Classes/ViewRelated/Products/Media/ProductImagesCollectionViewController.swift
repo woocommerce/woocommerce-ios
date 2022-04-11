@@ -36,11 +36,7 @@ final class ProductImagesCollectionViewController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        collectionView.backgroundColor = .basicBackground
-
-        collectionView.register(ProductImageCollectionViewCell.loadNib(), forCellWithReuseIdentifier: ProductImageCollectionViewCell.reuseIdentifier)
-        collectionView.register(InProgressProductImageCollectionViewCell.loadNib(),
-                                forCellWithReuseIdentifier: InProgressProductImageCollectionViewCell.reuseIdentifier)
+        configureCollectionView()
 
         collectionView.reloadData()
     }
@@ -136,5 +132,22 @@ extension ProductImagesCollectionViewController {
                                                                                         self?.onDeletion(productImage)
         }
         navigationController?.show(productImagesGalleryViewController, sender: self)
+    }
+}
+
+/// View configuration
+///
+private extension ProductImagesCollectionViewController {
+    func configureCollectionView() {
+        collectionView.backgroundColor = .basicBackground
+
+        registerCollectionViewCells()
+    }
+
+    func registerCollectionViewCells() {
+        collectionView.register(ProductImageCollectionViewCell.loadNib(),
+                                forCellWithReuseIdentifier: ProductImageCollectionViewCell.reuseIdentifier)
+        collectionView.register(InProgressProductImageCollectionViewCell.loadNib(),
+                                forCellWithReuseIdentifier: InProgressProductImageCollectionViewCell.reuseIdentifier)
     }
 }

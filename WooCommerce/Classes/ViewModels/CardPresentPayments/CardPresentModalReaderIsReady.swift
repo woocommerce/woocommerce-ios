@@ -41,23 +41,15 @@ final class CardPresentModalReaderIsReady: CardPresentPaymentsModalViewModel {
         return topTitle + bottomTitle
     }
 
-    private let paymentGatewayAccountID: String?
-    private let countryCode: String
-    private let cardReaderModel: String
-    private let analytics: Analytics
+    /// Closure to execute when cancel button is tapped
+    private let cancelAction: () -> Void
 
     init(name: String,
          amount: String,
-         paymentGatewayAccountID: String?,
-         countryCode: String,
-         cardReaderModel: String,
-         analytics: Analytics = ServiceLocator.analytics) {
+         cancelAction: @escaping () -> Void) {
         self.name = name
         self.amount = amount
-        self.paymentGatewayAccountID = paymentGatewayAccountID
-        self.countryCode = countryCode
-        self.cardReaderModel = cardReaderModel
-        self.analytics = analytics
+        self.cancelAction = cancelAction
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
@@ -65,15 +57,7 @@ final class CardPresentModalReaderIsReady: CardPresentPaymentsModalViewModel {
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
-        analytics.track(event: WooAnalyticsEvent.InPersonPayments
-                                        .collectPaymentCanceled(forGatewayID: paymentGatewayAccountID,
-                                                                countryCode: countryCode,
-                                                                cardReaderModel: cardReaderModel))
-
-        let action = CardPresentPaymentAction.cancelPayment(onCompletion: nil)
-
-        ServiceLocator.stores.dispatch(action)
-
+        cancelAction()
         viewController?.dismiss(animated: true, completion: nil)
     }
 

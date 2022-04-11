@@ -63,7 +63,8 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
 
     /// Alert manager to inform merchants about reader & card actions.
     ///
-    private lazy var alerts = OrderDetailsPaymentAlerts(presentingController: rootViewController,
+    private lazy var alerts = OrderDetailsPaymentAlerts(transactionType: .collectPayment,
+                                                        presentingController: rootViewController,
                                                         paymentGatewayAccountID: paymentGatewayAccount.gatewayID,
                                                         countryCode: configurationLoader.configuration.countryCode,
                                                         cardReaderModel: connectedReader?.readerType.model ?? "")
@@ -182,7 +183,11 @@ private extension CollectOrderPaymentUseCase {
                                                                                        cardReaderModel: connectedReader?.readerType.model ?? ""))
 
         // Show reader ready alert
-        alerts.readerIsReady(title: Localization.collectPaymentTitle(username: order.billingAddress?.firstName), amount: formattedAmount)
+        alerts.readerIsReady(title: Localization.collectPaymentTitle(username: order.billingAddress?.firstName),
+                             amount: formattedAmount,
+                             onCancel: { [weak self] in
+            self?.cancelPayment()
+        })
 
         // Start collect payment process
         paymentOrchestrator.collectPayment(

@@ -228,14 +228,19 @@ private extension RefundSubmissionUseCase {
         }
 
         // Instantiates the alerts coordinator.
-        let alerts = OrderDetailsPaymentAlerts(presentingController: rootViewController,
+        let alerts = OrderDetailsPaymentAlerts(transactionType: .refund,
+                                               presentingController: rootViewController,
                                                paymentGatewayAccountID: paymentGatewayAccount.gatewayID,
                                                countryCode: cardPresentConfigurationLoader.configuration.countryCode,
                                                cardReaderModel: connectedReader?.readerType.model ?? "")
         self.alerts = alerts
 
         // Shows reader ready alert.
-        alerts.readerIsReady(title: Localization.refundPaymentTitle(username: order.billingAddress?.firstName), amount: formattedAmount)
+        alerts.readerIsReady(title: Localization.refundPaymentTitle(username: order.billingAddress?.firstName),
+                             amount: formattedAmount,
+                             onCancel: { [weak self] in
+            self?.cancelRefund()
+        })
 
         // Starts refund process.
         cardPresentRefundOrchestrator.refund(amount: refundAmount,

@@ -15,7 +15,7 @@ final class OrderDetailsPaymentAlerts {
         if let controller = _modalController {
             return controller
         } else {
-            let controller = CardPresentPaymentsModalViewController(viewModel: readerIsReady())
+            let controller = CardPresentPaymentsModalViewController(viewModel: readerIsReady(onCancel: {}))
             _modalController = controller
             return controller
         }
@@ -24,11 +24,17 @@ final class OrderDetailsPaymentAlerts {
     private var name: String = ""
     private var amount: String = ""
 
+    private let transactionType: CardPresentTransactionType
     private let paymentGatewayAccountID: String?
     private let countryCode: String
     private let cardReaderModel: String
 
-    init(presentingController: UIViewController, paymentGatewayAccountID: String?, countryCode: String, cardReaderModel: String) {
+    init(transactionType: CardPresentTransactionType,
+         presentingController: UIViewController,
+         paymentGatewayAccountID: String?,
+         countryCode: String,
+         cardReaderModel: String) {
+        self.transactionType = transactionType
         self.presentingController = presentingController
         self.paymentGatewayAccountID = paymentGatewayAccountID
         self.countryCode = countryCode
@@ -45,13 +51,13 @@ final class OrderDetailsPaymentAlerts {
         }
     }
 
-    func readerIsReady(title: String, amount: String) {
+    func readerIsReady(title: String, amount: String, onCancel: @escaping () -> Void) {
         self.name = title
         self.amount = amount
 
         // Initial presentation of the modal view controller. We need to provide
         // a customer name and an amount.
-        let viewModel = readerIsReady()
+        let viewModel = readerIsReady(onCancel: onCancel)
         presentViewModel(viewModel: viewModel)
     }
 
@@ -95,12 +101,10 @@ final class OrderDetailsPaymentAlerts {
 }
 
 private extension OrderDetailsPaymentAlerts {
-    func readerIsReady() -> CardPresentPaymentsModalViewModel {
+    func readerIsReady(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalReaderIsReady(name: name,
                                       amount: amount,
-                                      paymentGatewayAccountID: paymentGatewayAccountID,
-                                      countryCode: countryCode,
-                                      cardReaderModel: cardReaderModel)
+                                      cancelAction: onCancel)
     }
 
     func tapOrInsert(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
@@ -112,7 +116,7 @@ private extension OrderDetailsPaymentAlerts {
     }
 
     func processing() -> CardPresentPaymentsModalViewModel {
-        CardPresentModalProcessing(name: name, amount: amount)
+        CardPresentModalProcessing(name: name, amount: amount, transactionType: transactionType)
     }
 
     func successViewModel(printReceipt: @escaping () -> Void,
@@ -130,7 +134,7 @@ private extension OrderDetailsPaymentAlerts {
     }
 
     func errorViewModel(error: Error, tryAgain: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalError(error: error, primaryAction: tryAgain)
+        CardPresentModalError(error: error, transactionType: transactionType, primaryAction: tryAgain)
     }
 
     func retryableErrorViewModel(tryAgain: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {

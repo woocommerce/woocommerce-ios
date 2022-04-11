@@ -150,13 +150,14 @@ extension ProductImagesCollectionViewController: UICollectionViewDragDelegate, U
         return [dragItem]
     }
 
+    func collectionView(_ collectionView: UICollectionView, dragSessionIsRestrictedToDraggingApplication session: UIDragSession) -> Bool {
+        // Dropping photos from external apps is not allowed yet.
+        return false
+    }
+
     func collectionView(_ collectionView: UICollectionView,
                         dropSessionDidUpdate session: UIDropSession,
                         withDestinationIndexPath destinationIndexPath: IndexPath?) -> UICollectionViewDropProposal {
-        // Dropping photos from external apps is not allowed yet.
-        guard session.localDragSession != nil else {
-            return UICollectionViewDropProposal(operation: .forbidden)
-        }
         return UICollectionViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
     }
 

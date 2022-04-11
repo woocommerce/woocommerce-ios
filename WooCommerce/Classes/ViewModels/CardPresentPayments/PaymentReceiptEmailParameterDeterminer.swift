@@ -36,7 +36,6 @@ struct PaymentReceiptEmailParameterDeterminer {
         let stripe = paymentsPluginsDataProvider.getStripePlugin()
 
         guard !paymentsPluginsDataProvider.bothPluginsInstalledAndActive(wcPay: wcPay, stripe: stripe) else {
-            // This case should not happen, shall we fatal error here?
             return nil
         }
 

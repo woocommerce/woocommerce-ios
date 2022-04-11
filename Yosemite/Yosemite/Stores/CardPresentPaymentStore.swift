@@ -251,8 +251,8 @@ private extension CardPresentPaymentStore {
         }
 
         refundCancellable = cardReaderService.refundPayment(parameters: parameters)
-            .sink { [weak readerEventsSubscription] error in
-                readerEventsSubscription?.cancel()
+            .sink { error in
+                readerEventsSubscription.cancel()
                 switch error {
                 case .failure(let error):
                     DDLogError("⛔️ Error during client-side refund: \(error.localizedDescription)")

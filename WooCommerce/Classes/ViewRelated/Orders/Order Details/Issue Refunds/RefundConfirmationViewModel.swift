@@ -48,6 +48,10 @@ final class RefundConfirmationViewModel {
         )
     ]
 
+    /// Retains the use-case so it can perform all of its async tasks.
+    ///
+    private var submissionUseCase: RefundSubmissionProtocol?
+
     private let analytics: Analytics
 
     init(details: Details,
@@ -62,37 +66,62 @@ final class RefundConfirmationViewModel {
 
     /// Submit the refund.
     ///
-    func submit(onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        // Create refund object
+    /// - Parameters:
+    ///   - rootViewController: view controller used to present in-person refund alerts if needed.
+    ///   - showInProgressUI: called when in-progress UI should be shown during refund submission. In-person refund submission does not show in-progress UI.
+    ///   - onCompletion: called when the refund submission completes.
+    func submit(rootViewController: UIViewController,
+                showInProgressUI: @escaping (() -> Void),
+                onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        // TODO: 6601 - remove Interac workaround when the API support is shipped.
+        let isInterac: Bool = {
+            switch details.charge?.paymentMethodDetails {
+            case .some(.interacPresent):
+                return true
+            default:
+                return false
+            }
+        }()
+        let automaticallyRefundsPayment = isInterac && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.canadaInPersonPayments) ?
+        false: gatewaySupportsAutomaticRefunds()
+
+        // Creates refund object.
         let shippingLine = details.refundsShipping ? details.order.shippingLines.first : nil
         let fees = details.refundsFees ? details.order.fees : []
         let useCase = RefundCreationUseCase(amount: details.amount,
                                             reason: reasonForRefundCellViewModel.value,
-                                            automaticallyRefundsPayment: gatewaySupportsAutomaticRefunds(),
+                                            automaticallyRefundsPayment: automaticallyRefundsPayment,
                                             items: details.items,
                                             shippingLine: shippingLine,
                                             fees: fees,
                                             currencyFormatter: currencyFormatter)
         let refund = useCase.createRefund()
 
-        // Submit it
-        let action = RefundAction.createRefund(siteID: details.order.siteID, orderID: details.order.orderID, refund: refund) { [weak self] _, error  in
+        // Submits refund.
+        let submissionUseCase = RefundSubmissionUseCase(siteID: details.order.siteID,
+                                                        details: .init(order: details.order,
+                                                                       charge: details.charge,
+                                                                       amount: details.amount),
+                                                        rootViewController: rootViewController,
+                                                        currencyFormatter: currencyFormatter,
+                                                        stores: actionProcessor,
+                                                        analytics: analytics)
+        self.submissionUseCase = submissionUseCase
+        submissionUseCase.submitRefund(refund,
+                                       showInProgressUI: showInProgressUI,
+                                       onCompletion: { [weak self] result in
             guard let self = self else { return }
-            if let error = error {
-                DDLogError("Error creating refund: \(refund)\nWith Error: \(error)")
-                self.trackCreateRefundRequestFailed(error: error)
-                return onCompletion(.failure(error))
-            }
 
-            // We don't care if the "update order" fails. We return .success() as the refund creation already succeeded.
-            self.updateOrder { _ in
-                onCompletion(.success(()))
+            switch result {
+            case .success:
+                // We don't care if the "update order" fails. We return .success() as the refund creation already succeeded.
+                self.updateOrder { _ in
+                    onCompletion(.success(()))
+                }
+            default:
+                onCompletion(result)
             }
-            self.trackCreateRefundRequestSuccess()
-        }
-
-        actionProcessor.dispatch(action)
-        trackCreateRefundRequest()
+        })
     }
 
     /// Updates the order associated with the refund to reflect the latest refund status.
@@ -191,28 +220,6 @@ extension RefundConfirmationViewModel {
     ///
     func trackSummaryButtonTapped() {
         analytics.track(event: WooAnalyticsEvent.IssueRefund.summaryButtonTapped(orderID: details.order.orderID))
-    }
-
-    /// Tracks when the create refund request is made.
-    ///
-    private func trackCreateRefundRequest() {
-        analytics.track(event: WooAnalyticsEvent.IssueRefund.createRefund(orderID: details.order.orderID,
-                                                                          fullyRefunded: details.amount == details.order.total,
-                                                                          method: .items,
-                                                                          gateway: details.order.paymentMethodID,
-                                                                          amount: details.amount))
-    }
-
-    /// Tracks when the create refund request succeeds.
-    ///
-    private func trackCreateRefundRequestSuccess() {
-        analytics.track(event: WooAnalyticsEvent.IssueRefund.createRefundSuccess(orderID: details.order.orderID))
-    }
-
-    /// Tracks when the create refund request fails.
-    ///
-    private func trackCreateRefundRequestFailed(error: Error) {
-        analytics.track(event: WooAnalyticsEvent.IssueRefund.createRefundFailed(orderID: details.order.orderID, error: error))
     }
 }
 

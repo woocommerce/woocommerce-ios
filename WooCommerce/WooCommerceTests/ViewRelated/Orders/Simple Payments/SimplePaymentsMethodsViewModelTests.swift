@@ -325,43 +325,19 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.showPayWithCardRow)
     }
 
-    func test_paymentLinkRow_is_hidden_if_payment_path_is_not_available() {
+    func test_paymentLinkRow_is_hidden_if_payment_link_is_not_available() {
         // Given
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        stores.whenReceivingAction(ofType: SettingAction.self) { action in
-            switch action {
-            case let .getPaymentsPagePath(_, onCompletion):
-                onCompletion(.failure(.paymentsPageNotFound))
-            default:
-                XCTFail("Unexpected action: \(action)")
-            }
-        }
-
-        // When
-        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", stores: stores)
+        let viewModel = SimplePaymentsMethodsViewModel(paymentLink: nil, formattedTotal: "$12.00")
 
         // Then
         XCTAssertFalse(viewModel.showPaymentLinkRow)
         XCTAssertNil(viewModel.paymentLink)
     }
 
-    func test_paymentLinkRow_is_shown_if_payment_path_is_available() {
+    func test_paymentLinkRow_is_shown_if_payment_link_is_available() {
         // Given
-        let session = SessionManager.testingInstance
-        session.defaultSite = .fake().copy(url: "https://www.test-store.com")
-
-        let stores = MockStoresManager(sessionManager: session)
-        stores.whenReceivingAction(ofType: SettingAction.self) { action in
-            switch action {
-            case let .getPaymentsPagePath(_, onCompletion):
-                onCompletion(.success("order-pay"))
-            default:
-                XCTFail("Unexpected action: \(action)")
-            }
-        }
-
-        // When
-        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", stores: stores)
+        let paymentURL = URL(string: "http://www.automattic.com")
+        let viewModel = SimplePaymentsMethodsViewModel(paymentLink: paymentURL, formattedTotal: "$12.00")
 
         // Then
         XCTAssertTrue(viewModel.showPaymentLinkRow)

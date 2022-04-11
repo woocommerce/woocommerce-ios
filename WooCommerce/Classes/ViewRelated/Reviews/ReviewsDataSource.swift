@@ -125,10 +125,6 @@ final class ReviewsDataSource: NSObject, ReviewsDataSourceProtocol {
         try reviewsResultsController.performFetch()
     }
 
-    func stopForwardingEvents() {
-        reviewsResultsController.stopForwardingEvents()
-    }
-
     func startForwardingEvents(to tableView: UITableView) {
         reviewsResultsController.startForwardingEvents(to: tableView)
     }

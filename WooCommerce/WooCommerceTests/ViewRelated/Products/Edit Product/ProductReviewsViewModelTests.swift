@@ -34,23 +34,6 @@ final class ProductReviewsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.isEmpty, mockDataSource.isEmpty)
     }
 
-    func test_did_display_placeHolder_reviews_stops_forwarding_events_in_dataSource() {
-        let ds = mockDataSource as! MockProductReviewsDataSource
-
-        viewModel.didDisplayPlaceholderReviews()
-
-        XCTAssertTrue(ds.stopsForwardingEventsWasHit)
-    }
-
-    func test_did_remove_placeHolder_reviews_starts_forwarding_events_in_dataSource() {
-        let table = UITableView()
-        let ds = mockDataSource as! MockProductReviewsDataSource
-
-        viewModel.didRemovePlaceholderReviews(tableView: table)
-
-        XCTAssertTrue(ds.startForwardingEventsWasHit)
-    }
-
     func test_configure_resultsController_starts_forwarding_events_and_starts_observing_reviews_in_dataSource() {
         let table = UITableView()
         let ds = mockDataSource as! MockProductReviewsDataSource

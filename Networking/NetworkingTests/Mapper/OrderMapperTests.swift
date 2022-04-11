@@ -40,6 +40,7 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(order.shippingTax, "0.00")
         XCTAssertEqual(order.total, "31.20")
         XCTAssertEqual(order.totalTax, "1.20")
+        XCTAssertEqual(order.paymentURL, URL(string: "http://www.automattic.com"))
     }
 
     /// Verifies that all of the Order Address fields are parsed correctly.

@@ -40,29 +40,6 @@ final class ReviewsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.isEmpty, mockDataSource.isEmpty)
     }
 
-    func testDisplayPlaceHolderReviewsStopsForWardingEventsInDataSource() {
-        // Given
-        let mockDataSource = MockReviewsDataSource()
-        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource)
-        viewModel.didDisplayPlaceholderReviews()
-
-        // Then
-        XCTAssertTrue(mockDataSource.stopsForwardingEventsWasHit)
-    }
-
-    func testRemovePlaceHolderReviewsStartsForWardingEventsInDataSource() {
-        // Given
-        let table = UITableView()
-        let mockDataSource = MockReviewsDataSource()
-        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource)
-
-        // When
-        viewModel.didRemovePlaceholderReviews(tableView: table)
-
-        // Then
-        XCTAssertTrue(mockDataSource.startForwardingEventsWasHit)
-    }
-
     func testConfigureResultsControllerStartsForWardingEventsAndStartsObservingReviewsInDataSource() {
         // Given
         let table = UITableView()

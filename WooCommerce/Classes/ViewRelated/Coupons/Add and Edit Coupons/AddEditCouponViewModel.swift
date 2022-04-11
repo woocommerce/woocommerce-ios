@@ -83,6 +83,7 @@ final class AddEditCouponViewModel: ObservableObject {
     @Published var descriptionField: String
     @Published var expiryDateField: Date?
     @Published var freeShipping: Bool
+    @Published var couponRestrictionsViewModel: CouponRestrictionsViewModel
 
     /// Init method for coupon creation
     ///
@@ -97,6 +98,7 @@ final class AddEditCouponViewModel: ObservableObject {
         descriptionField = String()
         expiryDateField = nil
         freeShipping = false
+        couponRestrictionsViewModel = CouponRestrictionsViewModel()
     }
 
     /// Init method for coupon editing
@@ -113,6 +115,7 @@ final class AddEditCouponViewModel: ObservableObject {
         descriptionField = existingCoupon.description
         expiryDateField = existingCoupon.dateExpires
         freeShipping = existingCoupon.freeShipping
+        couponRestrictionsViewModel = CouponRestrictionsViewModel(coupon: existingCoupon)
     }
 
     /// The method will generate a code in the same way as the existing admin website code does.

@@ -231,7 +231,7 @@ private extension RefundSubmissionUseCase {
         self.alerts = alerts
 
         // Shows reader ready alert.
-        alerts.readerIsReady(title: Localization.collectPaymentTitle(username: order.billingAddress?.firstName), amount: formattedAmount)
+        alerts.readerIsReady(title: Localization.refundPaymentTitle(username: order.billingAddress?.firstName), amount: formattedAmount)
 
         // Starts refund process.
         cardPresentRefundOrchestrator.refund(amount: refundAmount,
@@ -351,15 +351,15 @@ private extension RefundSubmissionUseCase {
     }
 
     enum Localization {
-        private static let collectPaymentWithoutName = NSLocalizedString("Refund payment",
-                                                                         comment: "Alert title when starting the in-person refund flow without a user name.")
-        private static let collectPaymentWithName = NSLocalizedString("Refund payment from %1$@",
-                                                                      comment: "Alert title when starting the in-person refund flow with a user name.")
-        static func collectPaymentTitle(username: String?) -> String {
+        private static let refundPaymentWithoutName = NSLocalizedString("Refund payment",
+                                                                        comment: "Alert title when starting the in-person refund flow without a user name.")
+        private static let refundPaymentWithName = NSLocalizedString("Refund payment from %1$@",
+                                                                     comment: "Alert title when starting the in-person refund flow with a user name.")
+        static func refundPaymentTitle(username: String?) -> String {
             guard let username = username, username.isNotEmpty else {
-                return collectPaymentWithoutName
+                return refundPaymentWithoutName
             }
-            return .localizedStringWithFormat(collectPaymentWithName, username)
+            return .localizedStringWithFormat(refundPaymentWithName, username)
         }
     }
 }

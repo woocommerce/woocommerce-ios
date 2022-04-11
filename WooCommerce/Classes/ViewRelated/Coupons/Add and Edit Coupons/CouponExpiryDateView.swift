@@ -9,7 +9,6 @@ struct CouponExpiryDateView: View {
     let completion: ((Date) -> Void)
 
     var body: some View {
-        // NavigationView {
         GeometryReader { geometry in
             ScrollView {
                 VStack {

@@ -35,7 +35,7 @@ target 'WooCommerce' do
   #
 
   #pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => 'add/build-configuration'
-  pod 'Automattic-Tracks-iOS', '~> 0.9.1'
+  pod 'Automattic-Tracks-iOS', '~> 0.11.1'
 
   pod 'Gridicons', '~> 1.2.0'
 
@@ -86,7 +86,7 @@ def yosemite_pods
   pod 'CocoaLumberjack/Swift', '~> 3.5'
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  pod 'WordPressKit', '~> 4.46.0'
+  pod 'WordPressKit', '~> 4.49.0'
   # pod 'WordPressKit', :git => 'https://github.com/wordpress-mobile/WordPressKit-iOS.git', :branch => ''
 
   aztec
@@ -202,7 +202,7 @@ end
 # ==================
 #
 def experiments_pods
-  pod 'Automattic-Tracks-iOS', '~> 0.9.1'
+  pod 'Automattic-Tracks-iOS', '~> 0.11.1'
   pod 'CocoaLumberjack', '~> 3.5'
   pod 'CocoaLumberjack/Swift', '~> 3.5'
 end

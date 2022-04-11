@@ -24,6 +24,7 @@ struct FullScreenTextView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack(alignment: .leading) {
+                // The real text editor, where the user will input the text.
                 TextEditor(text: $text)
                     .bodyStyle()
                     .frame(minHeight: geometry.size.height-Constants.verticalSpacing, alignment: .leading)
@@ -48,12 +49,11 @@ struct FullScreenTextView: View {
                         }
                     }
 
-                // We use a text editor as a placeholder view for mantaining the same internal configuration of the Text Editor (eg: leading distance).
+                // We use a fake text editor for the placeholder text for mantaining the same internal configuration of the Text Editor (eg: leading distance).
                 TextEditor(text: .constant(placeholder))
-                    .foregroundColor(Color(.gray(.shade30)))
                     .bodyStyle()
                     .disabled(true)
-                    .opacity(displayPlaceholder  ? 1 : 0)
+                    .opacity(displayPlaceholder  ? 0.5 : 0)
                     .padding(.horizontal, Constants.margin)
                     .padding(.horizontal, insets: geometry.safeAreaInsets)
             }

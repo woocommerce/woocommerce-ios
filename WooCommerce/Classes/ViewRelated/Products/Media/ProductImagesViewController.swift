@@ -48,7 +48,8 @@ final class ProductImagesViewController: UIViewController {
             productUIImageLoader: productUIImageLoader,
             onDeletion: { [weak self] productImage in
                 self?.onDeletion(productImage: productImage)
-            }, onReorder: { [weak self] productImageStatuses in
+            },
+            reorderHandler: { [weak self] productImageStatuses in
                 self?.handleProductImageStatusesReordering(productImageStatuses)
             })
         return viewController

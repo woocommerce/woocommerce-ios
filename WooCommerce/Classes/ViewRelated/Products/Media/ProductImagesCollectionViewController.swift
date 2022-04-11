@@ -50,6 +50,7 @@ final class ProductImagesCollectionViewController: UICollectionViewController {
         self.productImageStatuses = productImageStatuses
 
         collectionView.reloadData()
+        updateDragAndDropSupport()
     }
 }
 
@@ -167,6 +168,18 @@ extension ProductImagesCollectionViewController: UICollectionViewDragDelegate, U
         coordinator.items.forEach { dropItem in
             reorder(dropItem, to: destinationIndexPath, with: coordinator)
         }
+    }
+
+    /// Indicates whether the collection view supports moving items.
+    ///
+    private var isReorderingEnabled: Bool {
+        productImageStatuses.containsMoreThanOne
+    }
+
+    /// Enables/disables collection view drag interaction.
+    ///
+    private func updateDragAndDropSupport() {
+        collectionView.dragInteractionEnabled = isReorderingEnabled
     }
 
     /// Returns a `UIDragItem` from a given product image.

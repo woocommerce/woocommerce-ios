@@ -335,6 +335,8 @@
 		02C0CD2A23B5BB1C00F880B1 /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C0CD2923B5BB1C00F880B1 /* ImageService.swift */; };
 		02C0CD2C23B5BC9600F880B1 /* DefaultImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C0CD2B23B5BC9600F880B1 /* DefaultImageService.swift */; };
 		02C0CD2E23B5E3AE00F880B1 /* DefaultImageServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C0CD2D23B5E3AE00F880B1 /* DefaultImageServiceTests.swift */; };
+		02C1853B27FF0D9C00ABD764 /* RefundSubmissionUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C1853A27FF0D9C00ABD764 /* RefundSubmissionUseCase.swift */; };
+		02C1853D27FF153A00ABD764 /* CardPresentRefundOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C1853C27FF153A00ABD764 /* CardPresentRefundOrchestrator.swift */; };
 		02C2756824F4E77F00286C04 /* ProductShippingSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C2756724F4E77F00286C04 /* ProductShippingSettingsViewModel.swift */; };
 		02C2756D24F4EEBF00286C04 /* ProductShippingSettingsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C2756C24F4EEBF00286C04 /* ProductShippingSettingsViewModelTests.swift */; };
 		02C2756F24F5F5EE00286C04 /* ProductShippingSettingsViewModel+ProductVariationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C2756E24F5F5EE00286C04 /* ProductShippingSettingsViewModel+ProductVariationTests.swift */; };
@@ -2034,6 +2036,8 @@
 		02C0CD2923B5BB1C00F880B1 /* ImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageService.swift; sourceTree = "<group>"; };
 		02C0CD2B23B5BC9600F880B1 /* DefaultImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultImageService.swift; sourceTree = "<group>"; };
 		02C0CD2D23B5E3AE00F880B1 /* DefaultImageServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultImageServiceTests.swift; sourceTree = "<group>"; };
+		02C1853A27FF0D9C00ABD764 /* RefundSubmissionUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundSubmissionUseCase.swift; sourceTree = "<group>"; };
+		02C1853C27FF153A00ABD764 /* CardPresentRefundOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentRefundOrchestrator.swift; sourceTree = "<group>"; };
 		02C2756724F4E77F00286C04 /* ProductShippingSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductShippingSettingsViewModel.swift; sourceTree = "<group>"; };
 		02C2756C24F4EEBF00286C04 /* ProductShippingSettingsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductShippingSettingsViewModelTests.swift; sourceTree = "<group>"; };
 		02C2756E24F5F5EE00286C04 /* ProductShippingSettingsViewModel+ProductVariationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductShippingSettingsViewModel+ProductVariationTests.swift"; sourceTree = "<group>"; };
@@ -4214,6 +4218,14 @@
 				02EA6BF92435E92600FFF90A /* KingfisherImageDownloader+ImageDownloadable.swift */,
 			);
 			path = ImageService;
+			sourceTree = "<group>";
+		};
+		02C1853927FED8BE00ABD764 /* Refund */ = {
+			isa = PBXGroup;
+			children = (
+				02C1853A27FF0D9C00ABD764 /* RefundSubmissionUseCase.swift */,
+			);
+			path = Refund;
 			sourceTree = "<group>";
 		};
 		02C2756924F4EE6F00286C04 /* Edit Price */ = {
@@ -6811,6 +6823,7 @@
 				CEE006022077D0F80079161F /* Cells */,
 				268FD44827580A92008FDF9B /* Collect Payments */,
 				CE35F1092343E482007B2A6B /* Order Details */,
+				02C1853927FED8BE00ABD764 /* Refund */,
 				2678897A270E6E3C00BD249E /* Simple Payments */,
 				CCFC50532743BBBF001E505F /* Order Creation */,
 				0206483923FA4160008441BB /* OrdersRootViewController.swift */,
@@ -7467,6 +7480,7 @@
 				D8EE9697264D3CCB0033B2F9 /* ReceiptViewModel.swift */,
 				D8752EF6265E60F4008ACC80 /* PaymentCaptureCelebration.swift */,
 				03AA165D2719B7EF005CCB7B /* ReceiptActionCoordinator.swift */,
+				02C1853C27FF153A00ABD764 /* CardPresentRefundOrchestrator.swift */,
 			);
 			path = CardPresentPayments;
 			sourceTree = "<group>";
@@ -8943,6 +8957,7 @@
 				74334F36214AB130006D6AC5 /* ProductTableViewCell.swift in Sources */,
 				D8610D762570AE1F00A5DF27 /* NotWPErrorViewModel.swift in Sources */,
 				0245465B24EE7637004F531C /* ProductFormEventLoggerProtocol.swift in Sources */,
+				02C1853D27FF153A00ABD764 /* CardPresentRefundOrchestrator.swift in Sources */,
 				AEC95D432774D07B001571F5 /* CreateOrderAddressFormViewModel.swift in Sources */,
 				024DF31B23742E1C006658FE /* FormatBarItemViewProperties.swift in Sources */,
 				26B119BB24D0B62E00FED5C7 /* SurveyViewController.swift in Sources */,
@@ -9298,6 +9313,7 @@
 				0259D5F92581F0E6003B1CD6 /* ShippingLabelPaperSizeOptionView.swift in Sources */,
 				D81F2D37225F0D160084BF9C /* EmptyListMessageWithActionView.swift in Sources */,
 				575472812452185300A94C3C /* PushNotification.swift in Sources */,
+				02C1853B27FF0D9C00ABD764 /* RefundSubmissionUseCase.swift in Sources */,
 				E10BD16D27CF890800CE6449 /* InPersonPaymentsCountryNotSupportedStripe.swift in Sources */,
 				26F94E26267A559300DB6CCF /* ProductAddOn.swift in Sources */,
 				4541D88A270718F6005A9E30 /* ShippingLabelCarriersSectionViewModel.swift in Sources */,

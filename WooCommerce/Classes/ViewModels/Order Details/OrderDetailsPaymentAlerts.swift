@@ -25,20 +25,11 @@ final class OrderDetailsPaymentAlerts {
     private var amount: String = ""
 
     private let transactionType: CardPresentTransactionType
-    private let paymentGatewayAccountID: String?
-    private let countryCode: String
-    private let cardReaderModel: String
 
     init(transactionType: CardPresentTransactionType,
-         presentingController: UIViewController,
-         paymentGatewayAccountID: String?,
-         countryCode: String,
-         cardReaderModel: String) {
+         presentingController: UIViewController) {
         self.transactionType = transactionType
         self.presentingController = presentingController
-        self.paymentGatewayAccountID = paymentGatewayAccountID
-        self.countryCode = countryCode
-        self.cardReaderModel = cardReaderModel
     }
 
     func presentViewModel(viewModel: CardPresentPaymentsModalViewModel) {

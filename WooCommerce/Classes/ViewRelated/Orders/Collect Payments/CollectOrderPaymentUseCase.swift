@@ -64,10 +64,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     /// Alert manager to inform merchants about reader & card actions.
     ///
     private lazy var alerts = OrderDetailsPaymentAlerts(transactionType: .collectPayment,
-                                                        presentingController: rootViewController,
-                                                        paymentGatewayAccountID: paymentGatewayAccount.gatewayID,
-                                                        countryCode: configurationLoader.configuration.countryCode,
-                                                        cardReaderModel: connectedReader?.readerType.model ?? "")
+                                                        presentingController: rootViewController)
 
     /// IPP payments collector.
     ///

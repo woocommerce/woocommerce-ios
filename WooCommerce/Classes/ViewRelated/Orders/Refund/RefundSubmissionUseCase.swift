@@ -229,10 +229,7 @@ private extension RefundSubmissionUseCase {
 
         // Instantiates the alerts coordinator.
         let alerts = OrderDetailsPaymentAlerts(transactionType: .refund,
-                                               presentingController: rootViewController,
-                                               paymentGatewayAccountID: paymentGatewayAccount.gatewayID,
-                                               countryCode: cardPresentConfigurationLoader.configuration.countryCode,
-                                               cardReaderModel: connectedReader?.readerType.model ?? "")
+                                               presentingController: rootViewController)
         self.alerts = alerts
 
         // Shows reader ready alert.

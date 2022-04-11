@@ -210,10 +210,22 @@ extension ProductImagesCollectionViewController: UICollectionViewDragDelegate, U
         collectionView.performBatchUpdates({
             collectionView.deleteItems(at: [sourceIndexPath])
             collectionView.insertItems(at: [destinationIndexPath])
+        }, completion: { [weak self] _ in
+            // [Workaround] Reload the collection view if there are more than
+            // one type of cells, for example, when there are any pending upload.
+            self?.reloadCollectionViewIfNeeded()
         })
 
         coordinator.drop(item.dragItem, toItemAt: destinationIndexPath)
         onReorder(productImageStatuses)
+    }
+
+    /// Reloads collection view only if there is any pending upload.
+    ///
+    private func reloadCollectionViewIfNeeded() {
+        if productImageStatuses.hasPendingUpload {
+            collectionView.reloadData()
+        }
     }
 }
 

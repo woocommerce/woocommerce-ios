@@ -67,6 +67,7 @@ final class ProductImagesViewController: UIViewController {
     }()
 
     private var hasDeletedAnyImages: Bool = false
+    private var hasMovedAnyImages: Bool = false
 
     private let onCompletion: Completion
 
@@ -213,6 +214,7 @@ private extension ProductImagesViewController {
     }
 
     func handleProductImageStatusesReordering(_ productImageStatuses: [ProductImageStatus]) {
+        hasMovedAnyImages = true
         productImageActionHandler.updateProductImageStatusesAfterReordering(productImageStatuses)
     }
 }
@@ -244,7 +246,7 @@ extension ProductImagesViewController {
     }
 
     private func hasOutstandingChanges() -> Bool {
-        return hasDeletedAnyImages
+        return hasDeletedAnyImages || hasMovedAnyImages
     }
 }
 

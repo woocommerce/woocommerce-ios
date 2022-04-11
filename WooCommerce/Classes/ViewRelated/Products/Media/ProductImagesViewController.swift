@@ -42,12 +42,15 @@ final class ProductImagesViewController: UIViewController {
     // Child view controller.
     private lazy var imagesViewController: ProductImagesCollectionViewController = {
         let isDeletionEnabled = product.isImageDeletionEnabled()
-        let viewController = ProductImagesCollectionViewController(imageStatuses: productImageStatuses,
-                                                                   isDeletionEnabled: isDeletionEnabled,
-                                                                   productUIImageLoader: productUIImageLoader,
-                                                                   onDeletion: { [weak self] productImage in
-                                                                    self?.onDeletion(productImage: productImage)
-        })
+        let viewController = ProductImagesCollectionViewController(
+            imageStatuses: productImageStatuses,
+            isDeletionEnabled: isDeletionEnabled,
+            productUIImageLoader: productUIImageLoader,
+            onDeletion: { [weak self] productImage in
+                self?.onDeletion(productImage: productImage)
+            }, onReorder: { _ in
+                print("Products reordered!")
+            })
         return viewController
     }()
 

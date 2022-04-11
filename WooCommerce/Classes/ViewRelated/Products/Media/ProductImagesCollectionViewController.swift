@@ -6,20 +6,25 @@ import Yosemite
 ///
 final class ProductImagesCollectionViewController: UICollectionViewController {
 
+    typealias ReorderingHandler = (_ productImageStatuses: [ProductImageStatus]) -> Void
+
     private var productImageStatuses: [ProductImageStatus]
 
     private let isDeletionEnabled: Bool
     private let productUIImageLoader: ProductUIImageLoader
     private let onDeletion: ProductImagesGalleryViewController.Deletion
+    private let onReorder: ReorderingHandler
 
     init(imageStatuses: [ProductImageStatus],
          isDeletionEnabled: Bool,
          productUIImageLoader: ProductUIImageLoader,
-         onDeletion: @escaping ProductImagesGalleryViewController.Deletion) {
+         onDeletion: @escaping ProductImagesGalleryViewController.Deletion,
+         onReorder: @escaping ReorderingHandler) {
         self.productImageStatuses = imageStatuses
         self.isDeletionEnabled = isDeletionEnabled
         self.productUIImageLoader = productUIImageLoader
         self.onDeletion = onDeletion
+        self.onReorder = onReorder
         let columnLayout = ColumnFlowLayout(
             cellsPerRow: 2,
             minimumInteritemSpacing: 16,
@@ -195,6 +200,7 @@ extension ProductImagesCollectionViewController: UICollectionViewDragDelegate, U
         })
 
         coordinator.drop(item.dragItem, toItemAt: destinationIndexPath)
+        onReorder(productImageStatuses)
     }
 }
 

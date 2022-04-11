@@ -206,6 +206,18 @@ final class ProductImageActionHandler {
     func resetProductImages(to product: ProductFormDataModel) {
         allStatuses = (productImageStatuses: product.imageStatuses, error: nil)
     }
+
+    /// Updates the product images with the given ones.
+    ///
+    func updateProductImageStatusesAfterReordering(_ productImageStatuses: [ProductImageStatus]) {
+        queue.async { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            self.allStatuses = (productImageStatuses: productImageStatuses, error: nil)
+        }
+    }
 }
 
 private extension ProductImageActionHandler {

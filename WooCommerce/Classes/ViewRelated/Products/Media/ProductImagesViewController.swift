@@ -48,8 +48,8 @@ final class ProductImagesViewController: UIViewController {
             productUIImageLoader: productUIImageLoader,
             onDeletion: { [weak self] productImage in
                 self?.onDeletion(productImage: productImage)
-            }, onReorder: { _ in
-                print("Products reordered!")
+            }, onReorder: { [weak self] productImageStatuses in
+                self?.handleProductImageStatusesReordering(productImageStatuses)
             })
         return viewController
     }()
@@ -210,6 +210,10 @@ private extension ProductImagesViewController {
     func onDeletion(productImage: ProductImage) {
         hasDeletedAnyImages = true
         productImageActionHandler.deleteProductImage(productImage)
+    }
+
+    func handleProductImageStatusesReordering(_ productImageStatuses: [ProductImageStatus]) {
+        productImageActionHandler.updateProductImageStatusesAfterReordering(productImageStatuses)
     }
 }
 

@@ -129,7 +129,7 @@ struct AddEditCoupon: View {
                             .padding(.bottom, Constants.verticalSpacing)
 
                             Group {
-                                TitleAndToggleRow(title: Localization.includeFreeShipping, isOn: .constant(false))
+                                TitleAndToggleRow(title: Localization.includeFreeShipping, isOn: $viewModel.freeShipping)
                                     .padding(.horizontal, Constants.margin)
                                 Divider()
                                     .padding(.leading, Constants.margin)

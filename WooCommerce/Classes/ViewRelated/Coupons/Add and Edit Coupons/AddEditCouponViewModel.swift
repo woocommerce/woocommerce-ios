@@ -82,6 +82,7 @@ final class AddEditCouponViewModel: ObservableObject {
     @Published var codeField: String
     @Published var descriptionField: String
     @Published var expiryDateField: Date?
+    @Published var freeShipping: Bool
 
     /// Init method for coupon creation
     ///
@@ -95,6 +96,7 @@ final class AddEditCouponViewModel: ObservableObject {
         codeField = String()
         descriptionField = String()
         expiryDateField = nil
+        freeShipping = false
     }
 
     /// Init method for coupon editing
@@ -110,6 +112,7 @@ final class AddEditCouponViewModel: ObservableObject {
         codeField = existingCoupon.code
         descriptionField = existingCoupon.description
         expiryDateField = existingCoupon.dateExpires
+        freeShipping = existingCoupon.freeShipping
     }
 
     private enum EditingOption {

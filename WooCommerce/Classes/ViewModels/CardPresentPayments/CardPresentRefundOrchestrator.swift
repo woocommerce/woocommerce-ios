@@ -30,10 +30,6 @@ final class CardPresentRefundOrchestrator {
                 onProcessingMessage: @escaping () -> Void,
                 onDisplayMessage: @escaping (String) -> Void,
                 onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        /// Sets the state of `CardPresentPaymentStore`.
-        let setAccount = CardPresentPaymentAction.use(paymentGatewayAccount: paymentGatewayAccount)
-        stores.dispatch(setAccount)
-
         /// Briefly suppresses pass (wallet) presentation so that the merchant doesn't attempt to pay for the buyer's order when the
         /// reader begins to collect payment.
         suppressPassPresentation()

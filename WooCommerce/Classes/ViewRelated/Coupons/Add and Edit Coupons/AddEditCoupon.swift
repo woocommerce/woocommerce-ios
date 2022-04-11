@@ -207,11 +207,9 @@ struct AddEditCoupon: View {
                             EmptyView()
                         }
 
-                        if let coupon = viewModel.coupon {
-                            LazyNavigationLink(destination: CouponRestrictions(viewModel: CouponRestrictionsViewModel(coupon: coupon)),
-                                               isActive: $showingCouponRestrictions) {
-                                EmptyView()
-                            }
+                        LazyNavigationLink(destination: CouponRestrictions(viewModel: viewModel.couponRestrictionsViewModel),
+                                           isActive: $showingCouponRestrictions) {
+                            EmptyView()
                         }
                     }
                 }

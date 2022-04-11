@@ -47,6 +47,7 @@ final class CardPresentRefundOrchestrator {
                 break
             }
         }, onCompletion: { result in
+            onProcessingMessage()
             onCompletion(result)
         })
         stores.dispatch(refundAction)

@@ -115,6 +115,23 @@ final class AddEditCouponViewModel: ObservableObject {
         freeShipping = existingCoupon.freeShipping
     }
 
+    /// The method will generate a code in the same way as the existing admin website code does.
+    /// https://github.com/woocommerce/woocommerce/blob/23710744c01ded649d6a94a4eaea8745e543159f/assets/js/admin/meta-boxes-coupon.js#L53
+    /// We will loop to select 8 characters from the set `ABCDEFGHJKMNPQRSTUVWXYZ23456789` at random using `arc4random_uniform` for randomness.
+    /// https://github.com/woocommerce/woocommerce/blob/2e60d47a019a6e35f066f3ef43a56c0e761fc8e3/includes/admin/class-wc-admin-assets.php#L295
+    ///
+    func generateRandomCouponCode() {
+        let dictionary: [String] = "ABCDEFGHJKMNPQRSTUVWXYZ23456789".map { String($0) }
+        let generatedCodeLength = 8
+
+        var code: String = ""
+        for _ in 0 ..< generatedCodeLength {
+            code += dictionary.randomElement() ?? ""
+        }
+
+        codeField = code
+    }
+
     private enum EditingOption {
         case creation
         case editing

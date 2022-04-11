@@ -93,7 +93,7 @@ struct AddEditCoupon: View {
                             .padding(.bottom, Constants.verticalSpacing)
 
                             Button {
-                                //TODO: handle action
+                                viewModel.generateRandomCouponCode()
                             } label: {
                                 Text(Localization.regenerateCouponCodeButton)
                             }

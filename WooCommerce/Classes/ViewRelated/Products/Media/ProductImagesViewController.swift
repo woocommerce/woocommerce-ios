@@ -144,10 +144,10 @@ private extension ProductImagesViewController {
     /// there is no help text to show.
     ///
     func getAppropiateHelpText() -> String? {
-        if !(allowsMultipleImages || product.productType != .variable) {
-            return Localization.variableProductHelperText
-        } else if productImageStatuses.containsMoreThanOne {
+        if productImageStatuses.containsMoreThanOne {
             return Localization.dragAndDropHelperText
+        } else if !(allowsMultipleImages || product.productType != .variable) {
+            return Localization.variableProductHelperText
         }
 
         return nil

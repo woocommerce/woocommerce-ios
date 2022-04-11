@@ -28,6 +28,7 @@ public enum OrderFactory {
               totalTax: "",
               paymentMethodID: "",
               paymentMethodTitle: "",
+              paymentURL: nil,
               chargeID: nil,
               items: [],
               billingAddress: nil,

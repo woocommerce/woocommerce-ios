@@ -74,6 +74,7 @@ final class OrderStatusListViewController: UIViewController {
     func configureTableView() {
         view.backgroundColor = .listBackground
         tableView.backgroundColor = .listBackground
+        tableView.accessibilityIdentifier = "order-status-list"
         tableView.dataSource = self
         tableView.delegate = self
     }
@@ -110,6 +111,7 @@ extension OrderStatusListViewController {
                                              target: self,
                                              action: #selector(applyButtonTapped))
         navigationItem.setRightBarButton(rightBarButton, animated: false)
+        navigationItem.rightBarButtonItem?.accessibilityIdentifier = "order-status-list-apply-button"
         deActivateApplyButton()
     }
 

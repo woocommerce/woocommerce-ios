@@ -79,6 +79,18 @@ final class OrderSearchUICommand: SearchUICommand {
 
         viewController.navigationController?.pushViewController(detailsViewController, animated: true)
     }
+
+    /// Removes the `#` from the start of the search keyword, if present.
+    ///
+    /// This allows searching for an order with `#123` and getting the results for order `123`.
+    /// See https://github.com/woocommerce/woocommerce-ios/issues/2506
+    ///
+    func sanitizeKeyword(_ keyword: String) -> String {
+        if keyword.starts(with: "#") {
+            return keyword.removing(at: keyword.startIndex)
+        }
+        return keyword
+    }
 }
 
 private extension OrderSearchUICommand {

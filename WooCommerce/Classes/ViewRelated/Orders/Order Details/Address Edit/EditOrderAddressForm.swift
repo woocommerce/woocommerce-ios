@@ -60,7 +60,7 @@ final class EditOrderAddressHostingController: UIHostingController<EditOrderAddr
 ///
 extension EditOrderAddressHostingController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
-        !rootView.viewModel.hasPendingChanges()
+        !rootView.viewModel.hasPendingChanges
     }
 
     func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
@@ -391,6 +391,7 @@ struct EditAddressForm_Previews: PreviewProvider {
                                    totalTax: "1.20",
                                    paymentMethodID: "stripe",
                                    paymentMethodTitle: "Credit Card (Stripe)",
+                                   paymentURL: nil,
                                    chargeID: nil,
                                    items: [],
                                    billingAddress: sampleAddress,

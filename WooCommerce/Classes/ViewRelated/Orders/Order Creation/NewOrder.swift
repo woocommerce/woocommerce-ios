@@ -13,6 +13,11 @@ final class NewOrderHostingController: UIHostingController<NewOrder> {
     init(viewModel: NewOrderViewModel) {
         self.viewModel = viewModel
         super.init(rootView: NewOrder(viewModel: viewModel))
+
+        // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
+        rootView.dismissHandler = { [weak self] in
+            self?.dismiss(animated: true)
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -40,7 +45,9 @@ final class NewOrderHostingController: UIHostingController<NewOrder> {
 extension NewOrderHostingController {
     override func shouldPopOnBackButton() -> Bool {
         guard !viewModel.hasChanges else {
-            presentDiscardChangesActionSheet()
+            presentDiscardChangesActionSheet(onDiscard: { [weak self] in
+                self?.discardOrderAndPop()
+            })
             return false
         }
         return true
@@ -48,13 +55,6 @@ extension NewOrderHostingController {
 
     override func shouldPopOnSwipeBack() -> Bool {
         return shouldPopOnBackButton()
-    }
-
-    private func presentDiscardChangesActionSheet() {
-        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
-            self?.viewModel.discardOrder()
-            self?.navigationController?.popViewController(animated: true)
-        })
     }
 }
 
@@ -66,16 +66,37 @@ extension NewOrderHostingController: UIAdaptivePresentationControllerDelegate {
     }
 
     func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
-        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
-            self?.viewModel.discardOrder()
-            self?.dismiss(animated: true, completion: nil)
+        presentDiscardChangesActionSheet(onDiscard: { [weak self] in
+            self?.discardOrderAndDismiss()
         })
+    }
+}
+
+/// Private methods
+///
+private extension NewOrderHostingController {
+    func presentDiscardChangesActionSheet(onDiscard: @escaping () -> Void) {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: onDiscard)
+    }
+
+    func discardOrderAndDismiss() {
+        viewModel.discardOrder()
+        dismiss(animated: true)
+    }
+
+    func discardOrderAndPop() {
+        viewModel.discardOrder()
+        navigationController?.popViewController(animated: true)
     }
 }
 
 /// View to create a new manual order
 ///
 struct NewOrder: View {
+    /// Set this closure with UIKit dismiss code. Needed because we need access to the UIHostingController `dismiss` method.
+    ///
+    var dismissHandler: (() -> Void) = {}
+
     @ObservedObject var viewModel: NewOrderViewModel
 
     /// Fix for breaking navbar button
@@ -98,7 +119,7 @@ struct NewOrder: View {
 
                         Spacer(minLength: Layout.sectionSpacing)
 
-                        OrderCustomerSection(viewModel: viewModel)
+                        OrderCustomerSection(viewModel: viewModel, addressFormViewModel: viewModel.addressFormViewModel)
 
                         Spacer(minLength: Layout.sectionSpacing)
 
@@ -113,6 +134,13 @@ struct NewOrder: View {
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button(Localization.cancelButton) {
+                    dismissHandler()
+                }
+                .accessibilityIdentifier(Accessibility.cancelButtonIdentifier)
+                .renderedIf(viewModel.shouldShowCancelButton)
+            }
             ToolbarItem(placement: .confirmationAction) {
                 switch viewModel.navigationTrailingItem {
                 case .create:
@@ -120,7 +148,7 @@ struct NewOrder: View {
                         viewModel.createOrder()
                     }
                     .id(navigationButtonID)
-                    .accessibilityIdentifier("new-order-create-button")
+                    .accessibilityIdentifier(Accessibility.createButtonIdentifier)
                     .disabled(viewModel.disabled)
 
                 case .loading:
@@ -213,10 +241,16 @@ private extension NewOrder {
     enum Localization {
         static let title = NSLocalizedString("New Order", comment: "Title for the order creation screen")
         static let createButton = NSLocalizedString("Create", comment: "Button to create an order on the New Order screen")
+        static let cancelButton = NSLocalizedString("Cancel", comment: "Button to cancel the creation of an order on the New Order screen")
         static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating a new order")
         static let addProduct = NSLocalizedString("Add Product", comment: "Title text of the button that adds a product when creating a new order")
         static let productRowAccessibilityHint = NSLocalizedString("Opens product detail.",
                                                                    comment: "Accessibility hint for selecting a product in a new order")
+    }
+
+    enum Accessibility {
+        static let createButtonIdentifier = "new-order-create-button"
+        static let cancelButtonIdentifier = "new-order-cancel-button"
     }
 }
 

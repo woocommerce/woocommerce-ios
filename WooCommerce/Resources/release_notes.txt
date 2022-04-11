@@ -1,8 +1,3 @@
-- [*] Coupons: Fixed issue loading the coupon list from the local storage on initial load. [https://github.com/woocommerce/woocommerce-ios/pull/6463]
-- [*] Coupons: Update layout of the coupon details screen. [https://github.com/woocommerce/woocommerce-ios/pull/6522]
-- [*] In-Person Payments: Removed collecting L2/L3 data. [https://github.com/woocommerce/woocommerce-ios/pull/6519]
-- [*] Hub Menu: Multiple menu items can no longer be tapped simultaneously. [https://github.com/woocommerce/woocommerce-ios/pull/6484]
-- [*] Jetpack CP: Fixed crash when attempting to access WP-Admin with an invalid URL that has an unsupported scheme. [https://github.com/woocommerce/woocommerce-ios/pull/6502]
-- [***] Orders: Order Creation is now available to everyone! You can go to the Orders tab and tap the + button to create a new order. [https://github.com/woocommerce/woocommerce-ios/pull/6537]
-- [internal] Loading screens are refactored to avoid duplicated code and a potential crash. Please quickly smoke test them to make sure that everything still works as before. [https://github.com/woocommerce/woocommerce-ios/pull/6535] [https://github.com/woocommerce/woocommerce-ios/pull/6544]
+Create orders on the go with products, shipping & billing information, and fees! You can quickly take an in-person credit card payment right after or send a link to a customer to pay for that order on their own device. You’ve asked for it, and now it’s here!
 
+We’re also making progress on our coupon management feature. Get a sneak peek of it by turning it on in the More tab > Settings > Experimental Features.

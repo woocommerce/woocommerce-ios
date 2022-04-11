@@ -135,13 +135,33 @@ extension ProductImagesCollectionViewController {
     }
 }
 
-/// Drag support
+/// Drag & Drop support
 ///
-extension ProductImagesCollectionViewController: UICollectionViewDragDelegate {
+extension ProductImagesCollectionViewController: UICollectionViewDragDelegate, UICollectionViewDropDelegate {
     func collectionView(_ collectionView: UICollectionView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
         let item = productImageStatuses[indexPath.row]
         let dragItem = dragItem(for: item)
         return [dragItem]
+    }
+
+    func collectionView(_ collectionView: UICollectionView,
+                        dropSessionDidUpdate session: UIDropSession,
+                        withDestinationIndexPath destinationIndexPath: IndexPath?) -> UICollectionViewDropProposal {
+        // Dropping photos from external apps is not allowed yet.
+        guard session.localDragSession != nil else {
+            return UICollectionViewDropProposal(operation: .forbidden)
+        }
+        return UICollectionViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, performDropWith coordinator: UICollectionViewDropCoordinator) {
+        guard let destinationIndexPath = coordinator.destinationIndexPath else {
+            return
+        }
+
+        coordinator.items.forEach { dropItem in
+            print("Drop item \(dropItem) at \(destinationIndexPath)")
+        }
     }
 
     private func dragItem(for productImageStatus: ProductImageStatus) -> UIDragItem {
@@ -155,7 +175,9 @@ extension ProductImagesCollectionViewController: UICollectionViewDragDelegate {
 private extension ProductImagesCollectionViewController {
     func configureCollectionView() {
         collectionView.backgroundColor = .basicBackground
+
         collectionView.dragDelegate = self
+        collectionView.dropDelegate = self
 
         registerCollectionViewCells()
     }

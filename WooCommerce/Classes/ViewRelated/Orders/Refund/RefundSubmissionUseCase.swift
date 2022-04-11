@@ -64,10 +64,14 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
     private lazy var cardPresentRefundOrchestrator = CardPresentRefundOrchestrator(stores: stores)
 
     /// Controller to connect a card reader for in-person refund.
-    private lazy var cardReaderConnectionController = CardReaderConnectionController(forSiteID: siteID,
-                                                                                     knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
-                                                                                     alertsProvider: CardReaderSettingsAlerts(),
-                                                                                     configuration: cardPresentConfigurationLoader.configuration)
+    private lazy var cardReaderConnectionController =
+    CardReaderConnectionController(forSiteID: siteID,
+                                   knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
+                                   alertsProvider: CardReaderSettingsAlerts(),
+                                   configuration: cardPresentConfigurationLoader.configuration,
+                                   analyticsTracker: .init(configuration: cardPresentConfigurationLoader.configuration,
+                                                           stores: stores,
+                                                           analytics: analytics))
 
     /// IPP Configuration loader.
     private lazy var cardPresentConfigurationLoader = CardPresentConfigurationLoader(stores: stores)

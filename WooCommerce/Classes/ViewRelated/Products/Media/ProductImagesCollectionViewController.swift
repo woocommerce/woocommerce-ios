@@ -160,13 +160,41 @@ extension ProductImagesCollectionViewController: UICollectionViewDragDelegate, U
         }
 
         coordinator.items.forEach { dropItem in
-            print("Drop item \(dropItem) at \(destinationIndexPath)")
+            reorder(dropItem, to: destinationIndexPath, with: coordinator)
         }
     }
 
+    /// Returns a `UIDragItem` from a given product image.
+    ///
     private func dragItem(for productImageStatus: ProductImageStatus) -> UIDragItem {
         let itemProvider = NSItemProvider(object: NSString(string: productImageStatus.dragItemIdentifier))
         return UIDragItem(itemProvider: itemProvider)
+    }
+
+    /// Removes the product image at the given source index and inserts it
+    /// at the given destination index.
+    ///
+    private func moveProductImageStatus(from sourceIndex: Int, to destinationIndex: Int) {
+        let imageStatus = productImageStatuses[sourceIndex]
+        productImageStatuses.remove(at: sourceIndex)
+        productImageStatuses.insert(imageStatus, at: destinationIndex)
+    }
+
+    /// Moves an item (`ProductImageStatus`) in the collection view from one index path to another index path.
+    ///
+    private func reorder(_ item: UICollectionViewDropItem, to destinationIndexPath: IndexPath, with coordinator: UICollectionViewDropCoordinator) {
+        guard let sourceIndexPath = item.sourceIndexPath else {
+            return
+        }
+
+        moveProductImageStatus(from: sourceIndexPath.item, to: destinationIndexPath.item)
+
+        collectionView.performBatchUpdates({
+            collectionView.deleteItems(at: [sourceIndexPath])
+            collectionView.insertItems(at: [destinationIndexPath])
+        })
+
+        coordinator.drop(item.dragItem, toItemAt: destinationIndexPath)
     }
 }
 

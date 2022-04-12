@@ -250,7 +250,7 @@ private extension ProductImagesViewController {
     /// Check if the given product images are in the same order as the original ones.
     ///
     func validateIfAnyImagesHasMovedAfterReordering(_ reorderedItems: [ProductImageStatus]) -> Bool {
-        let zippedProductImages = zip(reorderedItems, self.productImageStatuses)
+        let zippedProductImages = zip(reorderedItems, self.product.imageStatuses)
         return zippedProductImages.contains(where: { reordered, original -> Bool in
             reordered.dragItemIdentifier != original.dragItemIdentifier
         })

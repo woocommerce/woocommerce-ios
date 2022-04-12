@@ -239,7 +239,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
     // MARK: - `updateProductImageStatusesAfterReordering
 
-    func testUpdatingProductImageStatusesAfterReordering() {
+    func test_productImageStatuses_are_updated_correctly_after_reordering() {
         // Given
         let mockProduct = Product.fake().copy(images: [])
         let model = EditableProductModel(product: mockProduct)

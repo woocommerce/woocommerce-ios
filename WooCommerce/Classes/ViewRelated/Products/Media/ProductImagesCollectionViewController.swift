@@ -13,18 +13,18 @@ final class ProductImagesCollectionViewController: UICollectionViewController {
     private let isDeletionEnabled: Bool
     private let productUIImageLoader: ProductUIImageLoader
     private let onDeletion: ProductImagesGalleryViewController.Deletion
-    private let reorderHandler: ReorderingHandler
+    private let onReordering: ReorderingHandler
 
     init(imageStatuses: [ProductImageStatus],
          isDeletionEnabled: Bool,
          productUIImageLoader: ProductUIImageLoader,
          onDeletion: @escaping ProductImagesGalleryViewController.Deletion,
-         reorderHandler: @escaping ReorderingHandler) {
+         onReordering: @escaping ReorderingHandler) {
         self.productImageStatuses = imageStatuses
         self.isDeletionEnabled = isDeletionEnabled
         self.productUIImageLoader = productUIImageLoader
         self.onDeletion = onDeletion
-        self.reorderHandler = reorderHandler
+        self.onReordering = onReordering
         let columnLayout = ColumnFlowLayout(
             cellsPerRow: 2,
             minimumInteritemSpacing: 16,
@@ -220,7 +220,7 @@ extension ProductImagesCollectionViewController: UICollectionViewDragDelegate, U
         })
 
         coordinator.drop(item.dragItem, toItemAt: destinationIndexPath)
-        reorderHandler(productImageStatuses)
+        onReordering(productImageStatuses)
     }
 
     /// Reloads collection view only if there is any pending upload.

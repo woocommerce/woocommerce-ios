@@ -58,6 +58,7 @@ struct FullScreenTextView: View {
                     .padding(.horizontal, insets: geometry.safeAreaInsets)
             }
             .padding([.top, .bottom], Constants.verticalSpacing)
+            .navigationBarTitleDisplayMode(.inline)
             .ignoresSafeArea(.container, edges: [.horizontal])
         }
         .navigationTitle(title)

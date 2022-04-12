@@ -16,9 +16,9 @@ struct FullScreenTextView: View {
     ///
     let placeholder: String
 
-    @State private var isTextEditorFirstResponded = false
+    @State private var isTextEditorFocused = false
     private var displayPlaceholder: Bool {
-        return !isTextEditorFirstResponded && text.isEmpty
+        return !isTextEditorFocused && text.isEmpty
     }
 
     var body: some View {
@@ -36,7 +36,7 @@ struct FullScreenTextView: View {
                         NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillShowNotification,
                                                                object: nil, queue: .main) { _ in
                             withAnimation {
-                                isTextEditorFirstResponded = true
+                                isTextEditorFocused = true
                             }
                         }
 
@@ -44,7 +44,7 @@ struct FullScreenTextView: View {
                         NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillHideNotification,
                                                                object: nil, queue: .main) { _ in
                             withAnimation {
-                                isTextEditorFirstResponded = false
+                                isTextEditorFocused = false
                             }
                         }
                     }

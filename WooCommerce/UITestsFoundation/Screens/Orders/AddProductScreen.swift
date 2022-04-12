@@ -14,4 +14,12 @@ public final class AddProductScreen: ScreenObject {
             app: app
         )
     }
+
+    /// Selects a product from the list.
+    /// - Returns: New Order screen object.
+    @discardableResult
+    public func selectProduct(byName name: String) throws -> NewOrderScreen {
+        app.buttons.staticTexts[name].tap()
+        return try NewOrderScreen()
+    }
 }

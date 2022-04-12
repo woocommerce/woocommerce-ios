@@ -15,6 +15,10 @@ public final class NewOrderScreen: ScreenObject {
         $0.buttons["order-status-section-edit-button"]
     }
 
+    private let addProductButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["add-product-button"]
+    }
+
     private var createButton: XCUIElement { createButtonGetter(app) }
 
     /// Cancel button in the Navigation bar.
@@ -24,6 +28,10 @@ public final class NewOrderScreen: ScreenObject {
     /// Edit button in the Order Status section.
     ///
     private var orderStatusEditButton: XCUIElement { orderStatusEditButtonGetter(app) }
+
+    /// Add Product button in Product section.
+    ///
+    private var addProductButton: XCUIElement { addProductButtonGetter(app) }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(

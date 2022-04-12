@@ -210,6 +210,7 @@ private struct ProductsSection: View {
                     showAddProduct.toggle()
                 }
                 .id(addProductButton)
+                .accessibilityIdentifier(Accessibility.addProductButtonIdentifier)
                 .buttonStyle(PlusButtonStyle())
                 .sheet(isPresented: $showAddProduct, onDismiss: {
                     scroll.scrollTo(addProductButton)
@@ -251,6 +252,7 @@ private extension NewOrder {
     enum Accessibility {
         static let createButtonIdentifier = "new-order-create-button"
         static let cancelButtonIdentifier = "new-order-cancel-button"
+        static let addProductButtonIdentifier = "add-product-button"
     }
 }
 

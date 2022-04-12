@@ -108,11 +108,13 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                                  analytics: analytics)
 
         // When
+        // Mocks card reader connection success since the minimum amount is only checked after reader connection success.
         mockCardPresentPaymentActions()
         let result: Result<Void, Error> = waitFor { promise in
             useCase.collectPayment(backButtonTitle: "", onCollect: { result in
                 promise(result)
             }, onCompleted: {})
+            // Dismisses error to complete the payment flow for `onCollect` to be triggered.
             self.alerts.dismissError?(UIViewController())
         }
 

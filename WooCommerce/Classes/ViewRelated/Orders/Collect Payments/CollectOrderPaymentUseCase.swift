@@ -128,7 +128,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
 
                     // Handle payment receipt
                     guard let paymentData = try? result.get() else {
-                        return
+                        return onCompleted()
                     }
                     self?.presentReceiptAlert(receiptParameters: paymentData.receiptParameters, backButtonTitle: backButtonTitle, onCompleted: onCompleted)
                 })
@@ -184,7 +184,7 @@ private extension CollectOrderPaymentUseCase {
                         case let .success(isConnected):
                             if isConnected == false {
                                 self.readerSubscription = nil
-                                onCompletion(.failure(CardReaderConnectionError()))
+                                onCompletion(.failure(CollectOrderPaymentUseCaseError.cardReaderDisconnected))
                             }
                         case .failure(let error):
                             self.readerSubscription = nil
@@ -389,7 +389,9 @@ private extension CollectOrderPaymentUseCase {
     /// Mailing a receipt failed but the SDK didn't return a more specific error
     ///
     struct UnknownEmailError: Error {}
-    struct CardReaderConnectionError: Error {}
+    enum CollectOrderPaymentUseCaseError: Error {
+        case cardReaderDisconnected
+    }
 
     enum Localization {
         private static let emailSubjectWithStoreName = NSLocalizedString("Your receipt from %1$@",

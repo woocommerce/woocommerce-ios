@@ -118,17 +118,23 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     func collectPayment(backButtonTitle: String, onCollect: @escaping (Result<Void, Error>) -> (), onCompleted: @escaping () -> ()) {
         configureBackend()
         observeConnectedReadersForAnalytics()
-        connectReader { [weak self] in
-            self?.attemptPayment(onCompletion: { [weak self] result in
-                // Inform about the collect payment state
-                onCollect(result.map { _ in () }) // Transforms Result<CardPresentReceiptParameters, Error> to Result<Void, Error>
+        connectReader { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success:
+                self.attemptPayment(onCompletion: { [weak self] result in
+                    // Inform about the collect payment state
+                    onCollect(result.map { _ in () }) // Transforms Result<CardPresentReceiptParameters, Error> to Result<Void, Error>
 
-                // Handle payment receipt
-                guard let paymentData = try? result.get() else {
-                    return
-                }
-                self?.presentReceiptAlert(receiptParameters: paymentData.receiptParameters, backButtonTitle: backButtonTitle, onCompleted: onCompleted)
-            })
+                    // Handle payment receipt
+                    guard let paymentData = try? result.get() else {
+                        return
+                    }
+                    self?.presentReceiptAlert(receiptParameters: paymentData.receiptParameters, backButtonTitle: backButtonTitle, onCompleted: onCompleted)
+                })
+            case .failure:
+                onCompleted()
+            }
         }
     }
 }
@@ -143,9 +149,9 @@ private extension CollectOrderPaymentUseCase {
     }
 
     /// Attempts to connect to a reader.
-    /// Finishes immediately if a reader is already connected.
+    /// Finishes with success immediately if a reader is already connected.
     ///
-    func connectReader(onCompletion: @escaping () -> ()) {
+    func connectReader(onCompletion: @escaping (Result<Void, Error>) -> ()) {
         // `checkCardReaderConnected` action will return a publisher that:
         // - Sends one value if there is no reader connected.
         // - Completes when a reader is connected.
@@ -153,24 +159,38 @@ private extension CollectOrderPaymentUseCase {
             guard let self = self else { return }
             self.readerSubscription = connectPublisher
                 .sink(receiveCompletion: { [weak self] _ in
+                    guard let self = self else { return }
+
                     // Dismiss the current connection alert before notifying the completion.
                     // If no presented controller is found(because the reader was already connected), just notify the completion.
-                    if let connectionController = self?.rootViewController.presentedViewController {
+                    if let connectionController = self.rootViewController.presentedViewController {
                         connectionController.dismiss(animated: true) {
-                            onCompletion()
+                            onCompletion(.success(()))
                         }
                     } else {
-                        onCompletion()
+                        onCompletion(.success(()))
                     }
 
                     // Nil the subscription since we are done with the connection.
-                    self?.readerSubscription = nil
+                    self.readerSubscription = nil
 
                 }, receiveValue: { [weak self] _ in
                     guard let self = self else { return }
 
                     // Attempt reader connection
-                    self.connectionController.searchAndConnect(from: self.rootViewController) { _ in }
+                    self.connectionController.searchAndConnect(from: self.rootViewController) { [weak self] result in
+                        guard let self = self else { return }
+                        switch result {
+                        case let .success(isConnected):
+                            if isConnected == false {
+                                self.readerSubscription = nil
+                                onCompletion(.failure(CardReaderConnectionError()))
+                            }
+                        case .failure(let error):
+                            self.readerSubscription = nil
+                            onCompletion(.failure(error))
+                        }
+                    }
                 })
         }
         stores.dispatch(readerConnected)
@@ -247,7 +267,8 @@ private extension CollectOrderPaymentUseCase {
         DDLogError("Failed to collect payment: \(error.localizedDescription)")
 
         // Inform about the error
-        alerts.error(error: error) { [weak self] in
+        alerts.error(error: error,
+                     tryAgain: { [weak self] in
 
             // Cancel current payment
             self?.paymentOrchestrator.cancelPayment { [weak self] result in
@@ -264,7 +285,10 @@ private extension CollectOrderPaymentUseCase {
                     onCompletion(.failure(error))
                 }
             }
-        }
+        }, dismissError: { viewController in
+            viewController?.dismiss(animated: true)
+            onCompletion(.failure(error))
+        })
     }
 
     /// Cancels payment and record analytics.
@@ -365,6 +389,7 @@ private extension CollectOrderPaymentUseCase {
     /// Mailing a receipt failed but the SDK didn't return a more specific error
     ///
     struct UnknownEmailError: Error {}
+    struct CardReaderConnectionError: Error {}
 
     enum Localization {
         private static let emailSubjectWithStoreName = NSLocalizedString("Your receipt from %1$@",

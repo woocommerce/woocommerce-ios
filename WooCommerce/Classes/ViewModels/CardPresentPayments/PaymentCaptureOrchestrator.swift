@@ -296,21 +296,21 @@ private extension PaymentCaptureOrchestrator {
     }
 }
 
-private extension PaymentCaptureOrchestrator {
-    private enum NotValidAmountError: Error, LocalizedError {
+extension PaymentCaptureOrchestrator {
+    enum NotValidAmountError: Error, LocalizedError {
         case belowMinimumAmount(amount: String)
         case other
 
-        public var errorDescription: String? {
+        var errorDescription: String? {
             switch self {
             case .belowMinimumAmount(let amount):
-                return String.localizedStringWithFormat(Localizations.belowMinimumAmount, amount)
+                return String.localizedStringWithFormat(Localization.belowMinimumAmount, amount)
             case .other:
-                return Localizations.defaultMessage
+                return Localization.defaultMessage
             }
         }
 
-        enum Localizations {
+        private enum Localization {
             static let defaultMessage = NSLocalizedString(
                 "Unable to process payment. Order total amount is not valid.",
                 comment: "Error message when the order amount is not valid."

@@ -8,6 +8,8 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
     private var stores: MockStoresManager!
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
+    private var alerts: MockOrderDetailsPaymentAlerts!
+    private var useCase: CollectOrderPaymentUseCase!
 
     override func setUp() {
         super.setUp()
@@ -15,54 +17,65 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         stores.reset()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+
+        alerts = MockOrderDetailsPaymentAlerts()
+        useCase = CollectOrderPaymentUseCase(siteID: 122,
+                                             order: .fake().copy(total: "1.5"),
+                                             formattedAmount: "1.5",
+                                             paymentGatewayAccount: .fake().copy(gatewayID: Mocks.paymentGatewayAccount),
+                                             rootViewController: .init(),
+                                             alerts: alerts,
+                                             configuration: Mocks.configuration,
+                                             stores: stores,
+                                             analytics: analytics)
     }
 
     override func tearDown() {
+        useCase = nil
+        alerts = nil
         analytics = nil
         analyticsProvider = nil
         stores = nil
         super.tearDown()
     }
 
-    func test_cancelling_readerIsReady_tracks_collectPaymentCanceled_event() throws {
-        // Given
-        let alerts = MockOrderDetailsPaymentAlerts()
-        let useCase = CollectOrderPaymentUseCase(siteID: 122,
-                                                 order: .fake().copy(total: "1.5"),
-                                                 formattedAmount: "1.5",
-                                                 paymentGatewayAccount: .fake().copy(gatewayID: Mocks.paymentGatewayAccount),
-                                                 rootViewController: .init(),
-                                                 alerts: alerts,
-                                                 configuration: Mocks.configuration,
-                                                 stores: stores,
-                                                 analytics: analytics)
+    func test_collectPayment_without_reader_connection_does_not_track_collectPaymentTapped_event() {
+        // When
+        useCase.collectPayment(backButtonTitle: "", onCollect: { _ in }, onCompleted: {})
 
+        // Then
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("card_present_collect_payment_tapped"))
+    }
+
+    func test_collectPayment_collectPaymentTapped_event() throws {
+        // When
+        mockCardPresentPaymentActions()
+        useCase.collectPayment(backButtonTitle: "", onCollect: { _ in }, onCompleted: {})
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "card_present_collect_payment_tapped"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["card_reader_model"] as? String, Mocks.cardReaderModel)
+        XCTAssertEqual(eventProperties["country"] as? String, "US")
+        XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayAccount)
+    }
+
+    func test_cancelling_readerIsReady_tracks_collectPaymentCanceled_event() throws {
         // When
         mockCardPresentPaymentActions()
         useCase.collectPayment(backButtonTitle: "", onCollect: { _ in }, onCompleted: {})
         alerts.cancelReaderIsReadyAlert?()
 
         // Then
-        XCTAssertTrue(analyticsProvider.receivedEvents.contains("card_present_collect_payment_canceled"))
-
-        let firstPropertiesBatch = try XCTUnwrap(analyticsProvider.receivedProperties.first)
-        XCTAssertEqual(firstPropertiesBatch["card_reader_model"] as? String, Mocks.cardReaderModel)
-        XCTAssertEqual(firstPropertiesBatch["country"] as? String, "US")
-        XCTAssertEqual(firstPropertiesBatch["plugin_slug"] as? String, Mocks.paymentGatewayAccount)
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "card_present_collect_payment_canceled"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["card_reader_model"] as? String, Mocks.cardReaderModel)
+        XCTAssertEqual(eventProperties["country"] as? String, "US")
+        XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayAccount)
     }
 
     func test_cancelling_readerIsReady_dispatches_cancel_action() throws {
         // Given
-        let alerts = MockOrderDetailsPaymentAlerts()
-        let useCase = CollectOrderPaymentUseCase(siteID: 122,
-                                                 order: .fake(),
-                                                 formattedAmount: "1.5",
-                                                 paymentGatewayAccount: .fake().copy(gatewayID: Mocks.paymentGatewayAccount),
-                                                 rootViewController: .init(),
-                                                 alerts: alerts,
-                                                 configuration: Mocks.configuration,
-                                                 stores: stores,
-                                                 analytics: analytics)
         assertEmpty(stores.receivedActions)
 
         // When
@@ -78,6 +91,40 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         default:
             XCTFail("Primary button failed to dispatch .cancelPayment action")
         }
+    }
+
+    // MARK: - Failure cases
+
+    func test_collectPayment_with_below_minimum_amount_results_in_failure_and_tracks_collectPaymentFailed_event() throws {
+        // Given
+        let useCase = CollectOrderPaymentUseCase(siteID: 122,
+                                                 order: .fake().copy(total: "0.49"),
+                                                 formattedAmount: "0.49",
+                                                 paymentGatewayAccount: .fake().copy(gatewayID: Mocks.paymentGatewayAccount),
+                                                 rootViewController: .init(),
+                                                 alerts: alerts,
+                                                 configuration: Mocks.configuration,
+                                                 stores: stores,
+                                                 analytics: analytics)
+
+        // When
+        mockCardPresentPaymentActions()
+        let result: Result<Void, Error> = waitFor { promise in
+            useCase.collectPayment(backButtonTitle: "", onCollect: { result in
+                promise(result)
+            }, onCompleted: {})
+            self.alerts.dismissError?(UIViewController())
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertNotNil(result.failure as? PaymentCaptureOrchestrator.NotValidAmountError)
+
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "card_present_collect_payment_failed"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["card_reader_model"] as? String, Mocks.cardReaderModel)
+        XCTAssertEqual(eventProperties["country"] as? String, "US")
+        XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayAccount)
     }
 }
 

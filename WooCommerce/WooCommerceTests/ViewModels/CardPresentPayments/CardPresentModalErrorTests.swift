@@ -8,7 +8,10 @@ final class CardPresentModalErrorTests: XCTestCase {
     override func setUp() {
         super.setUp()
         closures = Closures()
-        viewModel = CardPresentModalError(error: Expectations.error, transactionType: .collectPayment, primaryAction: closures.primaryAction())
+        viewModel = CardPresentModalError(error: Expectations.error,
+                                          transactionType: .collectPayment,
+                                          primaryAction: closures.primaryAction(),
+                                          secondaryAction: closures.secondaryAction())
     }
 
     override func tearDown() {
@@ -63,10 +66,17 @@ private extension CardPresentModalErrorTests {
 
 private final class Closures {
     var didTapPrimary = false
+    var didTapSecondary = false
 
     func primaryAction() -> () -> Void {
         return {[weak self] in
             self?.didTapPrimary = true
+        }
+    }
+
+    func secondaryAction() -> (UIViewController?) -> Void {
+        return { [weak self] _ in
+            self?.didTapSecondary = true
         }
     }
 }

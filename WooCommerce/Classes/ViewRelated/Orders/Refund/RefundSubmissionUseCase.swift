@@ -270,7 +270,7 @@ private extension RefundSubmissionUseCase {
         // TODO: 5984 - tracks in-person refund error
         DDLogError("Failed to refund: \(error.localizedDescription)")
         // Informs about the error.
-        alerts?.error(error: error) { [weak self] in
+        alerts?.error(error: error, tryAgain: { [weak self] in
             // Cancels current payment.
             self?.cardPresentRefundOrchestrator.cancelRefund { [weak self] result in
                 guard let self = self else { return }
@@ -285,7 +285,10 @@ private extension RefundSubmissionUseCase {
                     onCompletion(.failure(error))
                 }
             }
-        }
+        }, dismissError: { viewController in
+            viewController?.dismiss(animated: true)
+            onCompletion(.failure(error))
+        })
     }
 
     /// Cancels refund and records analytics.

@@ -14,7 +14,7 @@ protocol OrderDetailsPaymentAlertsProtocol {
 
     func success(printReceipt: @escaping () -> Void, emailReceipt: @escaping () -> Void, noReceiptTitle: String, noReceiptAction: @escaping () -> Void)
 
-    func error(error: Error, tryAgain: @escaping () -> Void)
+    func error(error: Error, tryAgain: @escaping () -> Void, dismissError: @escaping (_ viewController: UIViewController?) -> Void)
 
     func nonRetryableError(from: UIViewController?, error: Error)
 

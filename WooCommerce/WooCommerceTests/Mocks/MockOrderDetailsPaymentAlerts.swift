@@ -5,6 +5,10 @@ import UIKit
 final class MockOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
     var cancelReaderIsReadyAlert: (() -> Void)?
 
+    var error: Error?
+    var retryFromError: (() -> Void)?
+    var dismissError: ((UIViewController?) -> Void)?
+
     func presentViewModel(viewModel: CardPresentPaymentsModalViewModel) {
         // no-op
     }
@@ -29,8 +33,10 @@ final class MockOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
         // no-op
     }
 
-    func error(error: Error, tryAgain: @escaping () -> Void) {
-        // no-op
+    func error(error: Error, tryAgain: @escaping () -> Void, dismissError: @escaping (UIViewController?) -> Void) {
+        self.error = error
+        retryFromError = tryAgain
+        self.dismissError = dismissError
     }
 
     func nonRetryableError(from: UIViewController?, error: Error) {

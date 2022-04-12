@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import UIKit
 
 /// View model for `AddEditCoupon` view
 ///
@@ -46,11 +47,41 @@ final class AddEditCouponViewModel: ObservableObject {
         }
     }
 
-    private var coupon: Coupon?
+    /// Icon of the button for editing a coupon description, based on the field (populated or not).
+    ///
+    var editDescriptionIcon: UIImage {
+        if descriptionField.isEmpty {
+            return .plusImage
+        }
+        return .pencilImage
+    }
+
+    /// Label of the button for editing a coupon description, based on the field (populated or not).
+    ///
+    var editDescriptionLabel: String {
+        if descriptionField.isEmpty {
+            return Localization.addDescriptionButton
+        }
+        return Localization.editDescriptionButton
+    }
+
+    /// The value for populating the coupon expiry date field based on the `expiryDateField`.
+    ///
+    var expiryDateValue: TitleAndValueRow.Value {
+        guard expiryDateField == nil else {
+            return .content(expiryDateField?.toString(dateStyle: .long, timeStyle: .none) ?? "")
+        }
+
+        return .placeholder(Localization.couponExpiryDatePlaceholder)
+    }
+
+    private(set) var coupon: Coupon?
 
     // Fields
-    @Published var amountField = String()
-    @Published var codeField = String()
+    @Published var amountField: String
+    @Published var codeField: String
+    @Published var descriptionField: String
+    @Published var expiryDateField: Date?
 
     /// Init method for coupon creation
     ///
@@ -59,6 +90,11 @@ final class AddEditCouponViewModel: ObservableObject {
         self.siteID = siteID
         editingOption = .creation
         self.discountType = discountType
+
+        amountField = String()
+        codeField = String()
+        descriptionField = String()
+        expiryDateField = nil
     }
 
     /// Init method for coupon editing
@@ -72,6 +108,8 @@ final class AddEditCouponViewModel: ObservableObject {
         // Populate fields
         amountField = existingCoupon.amount
         codeField = existingCoupon.code
+        descriptionField = existingCoupon.description
+        expiryDateField = existingCoupon.dateExpires
     }
 
     private enum EditingOption {
@@ -98,5 +136,13 @@ private extension AddEditCouponViewModel {
         static let amountFixedDiscountSubtitle = NSLocalizedString("Set the fixed amount of the discount you want to offer.",
                                                                    comment: "Subtitle of the Amount field on the Coupon Edit" +
                                                                    " or Creation screen for a fixed amount discount coupon.")
+        static let addDescriptionButton = NSLocalizedString("Add Description (Optional)",
+                                                            comment: "Button for adding a description to a coupon in the view for adding or editing a coupon.")
+        static let editDescriptionButton = NSLocalizedString("Edit Description",
+                                                             comment: "Button for editing the description of a coupon in the" +
+                                                             " view for adding or editing a coupon.")
+        static let couponExpiryDatePlaceholder = NSLocalizedString(
+            "None",
+            comment: "Coupon expiry date placeholder in the view for adding or editing a coupon")
     }
 }

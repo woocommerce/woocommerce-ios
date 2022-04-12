@@ -145,7 +145,9 @@ extension ProductImagesCollectionViewController {
 ///
 extension ProductImagesCollectionViewController: UICollectionViewDragDelegate, UICollectionViewDropDelegate {
     func collectionView(_ collectionView: UICollectionView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
-        let item = productImageStatuses[indexPath.row]
+        guard let item = productImageStatuses[safe: indexPath.row] else {
+            return []
+        }
         let dragItem = dragItem(for: item)
         return [dragItem]
     }

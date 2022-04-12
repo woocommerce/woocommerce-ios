@@ -191,7 +191,7 @@ struct AddEditCoupon: View {
                         .padding(.horizontal, Constants.margin)
                         .padding([.top, .bottom], Constants.verticalSpacing)
 
-                        LazyNavigationLink(destination: FullScreenTextView(title: viewModel.editDescriptionLabel,
+                        LazyNavigationLink(destination: FullScreenTextView(title: Localization.titleEditDescriptionView,
                                                                            text: $viewModel.descriptionField,
                                                                            placeholder: Localization.addDescriptionPlaceholder),
                                            isActive: $showingEditDescription) {
@@ -291,6 +291,8 @@ private extension AddEditCoupon {
                                                                      comment: "Button in the action sheet for deleting the expiration date of a coupon.")
         static let actionSheetAddExpirationDate = NSLocalizedString("Add expiration date",
                                                                      comment: "Button in the action sheet for adding the expiration date for a coupon.")
+        static let titleEditDescriptionView = NSLocalizedString("Coupon Description",
+                                                                comment: "Title of the view for editing the coupon description.")
     }
 }
 

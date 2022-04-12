@@ -240,20 +240,8 @@ private extension ProductImagesViewController {
     }
 
     func handleProductImageStatusesReordering(_ reorderedProductImageStatuses: [ProductImageStatus]) {
-        // We have to validate if the order of the product images has been changed.
-        // The user can make some changes but the list may end up with the old order.
-        hasMovedAnyImages = validateIfAnyImagesHasMovedAfterReordering(reorderedProductImageStatuses)
-
+        hasMovedAnyImages = true
         productImageActionHandler.updateProductImageStatusesAfterReordering(reorderedProductImageStatuses)
-    }
-
-    /// Check if the given product images are in the same order as the original ones.
-    ///
-    func validateIfAnyImagesHasMovedAfterReordering(_ reorderedItems: [ProductImageStatus]) -> Bool {
-        let zippedProductImages = zip(reorderedItems, self.product.imageStatuses)
-        return zippedProductImages.contains(where: { reordered, original -> Bool in
-            reordered.dragItemIdentifier != original.dragItemIdentifier
-        })
     }
 }
 

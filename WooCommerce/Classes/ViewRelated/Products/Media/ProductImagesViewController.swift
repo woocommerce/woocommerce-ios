@@ -244,7 +244,7 @@ private extension ProductImagesViewController {
         // The user can make some changes but the list may end up with the old order.
         hasMovedAnyImages = validateIfAnyImagesHasMovedAfterReordering(reorderedProductImageStatuses)
 
-        productImageActionHandler.updateProductImageStatusesAfterReordering(productImageStatuses)
+        productImageActionHandler.updateProductImageStatusesAfterReordering(reorderedProductImageStatuses)
     }
 
     /// Check if the given product images are in the same order as the original ones.

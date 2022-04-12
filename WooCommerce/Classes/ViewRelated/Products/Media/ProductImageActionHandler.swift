@@ -204,7 +204,13 @@ final class ProductImageActionHandler {
     /// Resets the product images to the ones from the given Product.
     ///
     func resetProductImages(to product: ProductFormDataModel) {
-        allStatuses = (productImageStatuses: product.imageStatuses, error: nil)
+        queue.async { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            self.allStatuses = (productImageStatuses: product.imageStatuses, error: nil)
+        }
     }
 
     /// Updates the product images with the given ones.

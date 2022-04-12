@@ -146,7 +146,7 @@ private extension ProductImagesViewController {
     func getAppropiateHelpText() -> String? {
         if productImageStatuses.containsMoreThanOne {
             return Localization.dragAndDropHelperText
-        } else if !(allowsMultipleImages || product.productType != .variable) {
+        } else if !allowsMultipleImages && product.productType == .variable {
             return Localization.variableProductHelperText
         }
 

@@ -170,12 +170,7 @@ private extension CollectOrderPaymentUseCase {
                     guard let self = self else { return }
 
                     // Attempt reader connection
-                    self.connectionController.searchAndConnect(from: self.rootViewController) { result in
-                        if case let .failure = result {
-                            self.readerSubscription = nil
-                            return
-                        }
-                    }
+                    self.connectionController.searchAndConnect(from: self.rootViewController) { _ in }
                 })
         }
         stores.dispatch(readerConnected)

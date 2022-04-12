@@ -31,7 +31,7 @@ final class CardPresentModalReaderIsReady: CardPresentPaymentsModalViewModel {
 
     let bottomTitle: String? = Localization.readerIsReady
 
-    let bottomSubtitle: String? = Localization.tapInsertOrSwipe
+    let bottomSubtitle: String?
 
     var accessibilityLabel: String? {
         guard let bottomTitle = bottomTitle else {
@@ -46,9 +46,11 @@ final class CardPresentModalReaderIsReady: CardPresentPaymentsModalViewModel {
 
     init(name: String,
          amount: String,
+         transactionType: CardPresentTransactionType,
          cancelAction: @escaping () -> Void) {
         self.name = name
         self.amount = amount
+        self.bottomSubtitle = Localization.tapInsertOrSwipe(transactionType: transactionType)
         self.cancelAction = cancelAction
     }
 
@@ -70,17 +72,27 @@ private extension CardPresentModalReaderIsReady {
     enum Localization {
         static let readerIsReady = NSLocalizedString(
             "Reader is ready",
-            comment: "Indicates the status of a card reader. Presented to users when payment collection starts"
+            comment: "Indicates the status of a card reader. Presented to users when in-person payment collection or refund starts"
         )
 
-        static let tapInsertOrSwipe = NSLocalizedString(
-            "Tap, insert or swipe to pay",
-            comment: "Indicates the action expected from a user. Presented to users when payment collection starts"
-        )
+        static func tapInsertOrSwipe(transactionType: CardPresentTransactionType) -> String {
+            switch transactionType {
+            case .collectPayment:
+                return NSLocalizedString(
+                    "Tap, insert or swipe to pay",
+                    comment: "Indicates the action expected from a user. Presented to users when payment collection starts"
+                )
+            case .refund:
+                return NSLocalizedString(
+                    "Tap, insert or swipe to refund",
+                    comment: "Indicates the action expected from a user. Presented to users when in-person refund starts"
+                )
+            }
+        }
 
         static let cancel = NSLocalizedString(
             "Cancel",
-            comment: "Button to cancel a payment"
+            comment: "Button to cancel an in-person payment or refund"
         )
     }
 }

@@ -95,11 +95,12 @@ private extension OrderDetailsPaymentAlerts {
     func readerIsReady(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalReaderIsReady(name: name,
                                       amount: amount,
+                                      transactionType: transactionType,
                                       cancelAction: onCancel)
     }
 
     func tapOrInsert(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalTapCard(name: name, amount: amount, onCancel: onCancel)
+        CardPresentModalTapCard(name: name, amount: amount, transactionType: transactionType, onCancel: onCancel)
     }
 
     func displayMessage(message: String) -> CardPresentPaymentsModalViewModel {

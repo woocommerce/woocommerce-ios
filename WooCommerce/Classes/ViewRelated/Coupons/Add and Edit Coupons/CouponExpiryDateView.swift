@@ -22,6 +22,7 @@ struct CouponExpiryDateView: View {
             }
         }
         .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
+        .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(Localization.title)
     }
 }
@@ -31,10 +32,8 @@ struct CouponExpiryDateView: View {
 private extension CouponExpiryDateView {
 
     enum Localization {
-        static let title = NSLocalizedString("Select an expiry date",
+        static let title = NSLocalizedString("Coupon expiry date",
                                              comment: "Title of the view for selecting an expiry date for a coupon.")
-        static let resetButton = NSLocalizedString("Reset",
-                                                   comment: "Reset button in the view for selecting an expiry date for a coupon.")
     }
 }
 

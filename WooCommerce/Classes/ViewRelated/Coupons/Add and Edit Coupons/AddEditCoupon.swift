@@ -48,14 +48,6 @@ struct AddEditCoupon: View {
             GeometryReader { geometry in
                 ScrollView {
                     VStack (alignment: .leading, spacing: 0) {
-                        // Anchor the action sheet at the top to be able to show the popover on iPad in the most appropriate position
-                        Divider()
-                            .actionSheet(isPresented: $showingCouponExpiryActionSheet) {
-                                ActionSheet(
-                                    title: Text(Localization.expiryDateActionSheetTitle),
-                                    buttons: expiryDateActionSheetButtons
-                                )
-                            }
 
                         Group {
                             ListHeaderView(text: Localization.headerCouponDetails.uppercased(), alignment: .left)
@@ -123,6 +115,12 @@ struct AddEditCoupon: View {
                                                  selectionStyle: .disclosure, action: {
                                     showingCouponExpiryActionSheet = true
                                 })
+                                    .actionSheet(isPresented: $showingCouponExpiryActionSheet) {
+                                        ActionSheet(
+                                            title: Text(Localization.expiryDateActionSheetTitle),
+                                            buttons: expiryDateActionSheetButtons
+                                        )
+                                    }
                                 Divider()
                                     .padding(.leading, Constants.margin)
                             }
@@ -193,7 +191,7 @@ struct AddEditCoupon: View {
                         .padding(.horizontal, Constants.margin)
                         .padding([.top, .bottom], Constants.verticalSpacing)
 
-                        LazyNavigationLink(destination: FullScreenTextView(title: viewModel.editDescriptionLabel,
+                        LazyNavigationLink(destination: FullScreenTextView(title: Localization.titleEditDescriptionView,
                                                                            text: $viewModel.descriptionField,
                                                                            placeholder: Localization.addDescriptionPlaceholder),
                                            isActive: $showingEditDescription) {
@@ -225,7 +223,6 @@ struct AddEditCoupon: View {
             .navigationBarTitleDisplayMode(.large)
             .wooNavigationBarStyle()
         }
-        .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
     }
 }
 
@@ -291,6 +288,8 @@ private extension AddEditCoupon {
                                                                      comment: "Button in the action sheet for deleting the expiration date of a coupon.")
         static let actionSheetAddExpirationDate = NSLocalizedString("Add expiration date",
                                                                      comment: "Button in the action sheet for adding the expiration date for a coupon.")
+        static let titleEditDescriptionView = NSLocalizedString("Coupon Description",
+                                                                comment: "Title of the view for editing the coupon description.")
     }
 }
 

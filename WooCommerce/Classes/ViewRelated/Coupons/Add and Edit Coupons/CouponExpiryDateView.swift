@@ -22,6 +22,7 @@ struct CouponExpiryDateView: View {
             }
         }
         .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
+        .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(Localization.title)
     }
 }

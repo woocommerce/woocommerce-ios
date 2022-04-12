@@ -225,7 +225,6 @@ struct AddEditCoupon: View {
             .navigationBarTitleDisplayMode(.large)
             .wooNavigationBarStyle()
         }
-        .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
     }
 }
 

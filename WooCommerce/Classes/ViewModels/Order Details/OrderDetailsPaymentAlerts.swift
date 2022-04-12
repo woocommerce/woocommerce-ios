@@ -1,6 +1,8 @@
 import MessageUI
 import UIKit
 import WordPressUI
+import enum Hardware.CardReaderServiceError
+import enum Hardware.UnderlyingError
 
 /// A layer of indirection between OrderDetailsViewController and the modal alerts
 /// presented to provide user-facing feedback about the progress
@@ -95,11 +97,12 @@ private extension OrderDetailsPaymentAlerts {
     func readerIsReady(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalReaderIsReady(name: name,
                                       amount: amount,
+                                      transactionType: transactionType,
                                       cancelAction: onCancel)
     }
 
     func tapOrInsert(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalTapCard(name: name, amount: amount, onCancel: onCancel)
+        CardPresentModalTapCard(name: name, amount: amount, transactionType: transactionType, onCancel: onCancel)
     }
 
     func displayMessage(message: String) -> CardPresentPaymentsModalViewModel {
@@ -127,7 +130,31 @@ private extension OrderDetailsPaymentAlerts {
     func errorViewModel(error: Error,
                         tryAgain: @escaping () -> Void,
                         dismissError: @escaping (_ viewController: UIViewController?) -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalError(error: error, transactionType: transactionType, primaryAction: tryAgain, secondaryAction: dismissError)
+        let errorDescription: String?
+        if let error = error as? CardReaderServiceError {
+            switch error {
+            case .connection(let underlyingError),
+                    .discovery(let underlyingError),
+                    .disconnection(let underlyingError),
+                    .intentCreation(let underlyingError),
+                    .paymentMethodCollection(let underlyingError),
+                    .paymentCapture(let underlyingError),
+                    .paymentCancellation(let underlyingError),
+                    .refundCreation(let underlyingError),
+                    .refundPayment(let underlyingError),
+                    .refundCancellation(let underlyingError),
+                    .softwareUpdate(let underlyingError, _):
+                errorDescription = Localization.errorDescription(underlyingError: underlyingError, transactionType: transactionType)
+            default:
+                errorDescription = error.errorDescription
+            }
+        } else {
+            errorDescription = error.localizedDescription
+        }
+        return CardPresentModalError(errorDescription: errorDescription,
+                                     transactionType: transactionType,
+                                     primaryAction: tryAgain,
+                                     secondaryAction: dismissError)
     }
 
     func retryableErrorViewModel(tryAgain: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
@@ -136,5 +163,64 @@ private extension OrderDetailsPaymentAlerts {
 
     func nonRetryableErrorViewModel(amount: String, error: Error) -> CardPresentPaymentsModalViewModel {
         CardPresentModalNonRetryableError(amount: amount, error: error)
+    }
+}
+
+private extension OrderDetailsPaymentAlerts {
+    enum Localization {
+        static func errorDescription(underlyingError: UnderlyingError, transactionType: CardPresentTransactionType) -> String? {
+            switch underlyingError {
+            case .unsupportedReaderVersion:
+                switch transactionType {
+                case .collectPayment:
+                    return NSLocalizedString(
+                        "The card reader software is out-of-date - please update the card reader software before attempting to process payments",
+                        comment: "Error message when the card reader software is too far out of date to process payments."
+                    )
+                case .refund:
+                    return NSLocalizedString(
+                        "The card reader software is out-of-date - please update the card reader software before attempting to process refunds",
+                        comment: "Error message when the card reader software is too far out of date to process in-person refunds."
+                    )
+                }
+            case .paymentDeclinedByCardReader:
+                switch transactionType {
+                case .collectPayment:
+                    return NSLocalizedString("The card was declined by the card reader - please try another means of payment",
+                                             comment: "Error message when the card reader itself declines the card.")
+                case .refund:
+                    return NSLocalizedString("The card was declined by the card reader - please try another means of refund",
+                                             comment: "Error message when the card reader itself declines the card.")
+                }
+            case .processorAPIError:
+                switch transactionType {
+                case .collectPayment:
+                    return NSLocalizedString(
+                        "The payment can not be processed by the payment processor.",
+                        comment: "Error message when the payment can not be processed (i.e. order amount is below the minimum amount allowed.)"
+                    )
+                case .refund:
+                    return NSLocalizedString(
+                        "The refund can not be processed by the payment processor.",
+                        comment: "Error message when the in-person refund can not be processed (i.e. order amount is below the minimum amount allowed.)"
+                    )
+                }
+            case .internalServiceError:
+                switch transactionType {
+                case .collectPayment:
+                    return NSLocalizedString(
+                        "Sorry, this payment couldn’t be processed",
+                        comment: "Error message when the card reader service experiences an unexpected internal service error."
+                    )
+                case .refund:
+                    return NSLocalizedString(
+                        "Sorry, this refund couldn’t be processed",
+                        comment: "Error message when the card reader service experiences an unexpected internal service error."
+                    )
+                }
+            default:
+                return underlyingError.errorDescription
+            }
+        }
     }
 }

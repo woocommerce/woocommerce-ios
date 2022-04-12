@@ -136,8 +136,13 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
             connectReader { [weak self] in
                 self?.attemptCardPresentRefund(refundAmount: refundAmount as Decimal, charge: charge, onCompletion: { [weak self] result in
                     guard let self = self else { return }
-                    self.submitRefundToSite(refund: refund) { result in
-                        onCompletion(result)
+                    switch result {
+                    case .success:
+                        self.submitRefundToSite(refund: refund) { result in
+                            onCompletion(result)
+                        }
+                    case .failure(let error):
+                        onCompletion(.failure(error))
                     }
                 })
             }

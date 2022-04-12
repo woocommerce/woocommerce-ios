@@ -61,4 +61,12 @@ public final class NewOrderScreen: ScreenObject {
         orderStatusEditButton.tap()
         return try OrderStatusScreen()
     }
+
+    /// Opens the Add Product screen (to add a new product).
+    /// - Returns: Add Product screen object.
+    @discardableResult
+    public func openAddProductScreen() throws -> AddProductScreen {
+        addProductButton.tap()
+        return try AddProductScreen()
+    }
 }

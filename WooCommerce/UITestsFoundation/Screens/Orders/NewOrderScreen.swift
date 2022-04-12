@@ -16,7 +16,7 @@ public final class NewOrderScreen: ScreenObject {
     }
 
     private let addProductButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["add-product-button"]
+        $0.buttons["new-order-add-product-button"]
     }
 
     private var createButton: XCUIElement { createButtonGetter(app) }

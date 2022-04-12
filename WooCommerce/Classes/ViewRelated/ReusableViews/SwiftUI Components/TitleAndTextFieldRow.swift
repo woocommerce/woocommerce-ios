@@ -37,6 +37,7 @@ struct TitleAndTextFieldRow: View {
                 .bodyStyle()
                 .lineLimit(1)
                 .fixedSize()
+                .modifier(MaxWidthModifier())
             HStack {
                 TextField(placeholder, text: $text, onEditingChanged: onEditingChanged ?? { _ in })
                     .multilineTextAlignment(fieldAlignment)
@@ -58,6 +59,32 @@ private extension TitleAndTextFieldRow {
     enum Constants {
         static let height: CGFloat = 44
         static let padding: CGFloat = 16
+    }
+}
+
+/// PreferenceKey to store max title width among the fields.
+///
+struct MaxWidthPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat? = nil
+
+    static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
+        if let nv = nextValue(), nv > value ?? .zero {
+            value = nv
+        }
+    }
+}
+
+private struct MaxWidthModifier: ViewModifier {
+    private var sizeView: some View {
+        GeometryReader { geometry in
+            Color.clear
+                .preference(key: MaxWidthPreferenceKey.self,
+                            value: geometry.size.width)
+        }
+    }
+
+    func body(content: Content) -> some View {
+        content.background(sizeView)
     }
 }
 

@@ -63,7 +63,7 @@ final class ProductImageStatus_HelpersTests: XCTestCase {
         XCTAssertEqual(obtainedIdentifier, expectedIdentifier)
     }
 
-    func testDragItemIdentifierForUploadingAsset() {
+    func test_dragItemIdentifier_is_correct_for_uploading_asset() {
         // Given
         let asset = PHAsset()
         let status = ProductImageStatus.uploading(asset: asset)

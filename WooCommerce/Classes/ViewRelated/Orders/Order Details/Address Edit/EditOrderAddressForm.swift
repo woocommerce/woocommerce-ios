@@ -194,31 +194,51 @@ struct SingleAddressForm: View {
     ///
     @State private var showStateSelector = false
 
+    /// Stores shared value derived from max title width among all the fields.
+    ///
+    @State private var titleWidth: CGFloat? = nil
+
     var body: some View {
+        content
+            .onPreferenceChange(MaxWidthPreferenceKey.self) { value in
+                if let value = value {
+                    titleWidth = value
+                }
+            }
+    }
+
+    @ViewBuilder
+    var content: some View {
         ListHeaderView(text: Localization.detailsSection, alignment: .left)
             .padding(.horizontal, insets: safeAreaInsets)
             .accessibility(addTraits: .isHeader)
         VStack(spacing: 0) {
             TitleAndTextFieldRow(title: Localization.firstNameField,
+                                 titleWidth: $titleWidth,
                                  placeholder: "",
                                  text: $fields.firstName,
                                  symbol: nil,
+                                 fieldAlignment: .leading,
                                  keyboardType: .default)
             Divider()
                 .padding(.leading, Constants.dividerPadding)
             TitleAndTextFieldRow(title: Localization.lastNameField,
+                                 titleWidth: $titleWidth,
                                  placeholder: "",
                                  text: $fields.lastName,
                                  symbol: nil,
+                                 fieldAlignment: .leading,
                                  keyboardType: .default)
             Divider()
                 .padding(.leading, Constants.dividerPadding)
 
             if showEmailField {
                 TitleAndTextFieldRow(title: Localization.emailField,
+                                     titleWidth: $titleWidth,
                                      placeholder: "",
                                      text: $fields.email,
                                      symbol: nil,
+                                     fieldAlignment: .leading,
                                      keyboardType: .emailAddress)
                     .autocapitalization(.none)
                 Divider()
@@ -227,9 +247,11 @@ struct SingleAddressForm: View {
             }
 
             TitleAndTextFieldRow(title: Localization.phoneField,
+                                 titleWidth: $titleWidth,
                                  placeholder: "",
                                  text: $fields.phone,
                                  symbol: nil,
+                                 fieldAlignment: .leading,
                                  keyboardType: .phonePad)
         }
         .padding(.horizontal, insets: safeAreaInsets)
@@ -242,37 +264,47 @@ struct SingleAddressForm: View {
         VStack(spacing: 0) {
             Group {
                 TitleAndTextFieldRow(title: Localization.companyField,
+                                     titleWidth: $titleWidth,
                                      placeholder: Localization.placeholderOptional,
                                      text: $fields.company,
                                      symbol: nil,
+                                     fieldAlignment: .leading,
                                      keyboardType: .default)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
                 TitleAndTextFieldRow(title: Localization.address1Field,
+                                     titleWidth: $titleWidth,
                                      placeholder: "",
                                      text: $fields.address1,
                                      symbol: nil,
+                                     fieldAlignment: .leading,
                                      keyboardType: .default)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
                 TitleAndTextFieldRow(title: Localization.address2Field,
+                                     titleWidth: $titleWidth,
                                      placeholder: Localization.placeholderOptional,
                                      text: $fields.address2,
                                      symbol: nil,
+                                     fieldAlignment: .leading,
                                      keyboardType: .default)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
                 TitleAndTextFieldRow(title: Localization.cityField,
+                                     titleWidth: $titleWidth,
                                      placeholder: "",
                                      text: $fields.city,
                                      symbol: nil,
+                                     fieldAlignment: .leading,
                                      keyboardType: .default)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
                 TitleAndTextFieldRow(title: Localization.postcodeField,
+                                     titleWidth: $titleWidth,
                                      placeholder: "",
                                      text: $fields.postcode,
                                      symbol: nil,
+                                     fieldAlignment: .leading,
                                      keyboardType: .default)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
@@ -326,9 +358,11 @@ struct SingleAddressForm: View {
             }
         } else {
             TitleAndTextFieldRow(title: Localization.stateField,
+                                 titleWidth: $titleWidth,
                                  placeholder: "",
                                  text: $fields.state,
                                  symbol: nil,
+                                 fieldAlignment: .leading,
                                  keyboardType: .default)
         }
     }

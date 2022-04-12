@@ -2,10 +2,6 @@ import UIKit
 
 /// Modal presented on error
 final class CardPresentModalError: CardPresentPaymentsModalViewModel {
-
-    /// The error returned by the stack
-    private let error: Error
-
     /// A closure to execute when the primary button is tapped
     private let primaryAction: () -> Void
 
@@ -24,9 +20,7 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
 
     let auxiliaryButtonTitle: String? = nil
 
-    var bottomTitle: String? {
-        error.localizedDescription
-    }
+    let bottomTitle: String?
 
     let bottomSubtitle: String? = nil
 
@@ -37,9 +31,9 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
         return topTitle + bottomTitle
     }
 
-    init(error: Error, transactionType: CardPresentTransactionType, primaryAction: @escaping () -> Void) {
-        self.error = error
+    init(errorDescription: String?, transactionType: CardPresentTransactionType, primaryAction: @escaping () -> Void) {
         self.topTitle = Localization.paymentFailed(transactionType: transactionType)
+        self.bottomTitle = errorDescription
         self.primaryButtonTitle = Localization.tryAgain(transactionType: transactionType)
         self.secondaryButtonTitle = Localization.noThanks(transactionType: transactionType)
         self.primaryAction = primaryAction

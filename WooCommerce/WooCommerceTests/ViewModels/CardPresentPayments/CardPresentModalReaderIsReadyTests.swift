@@ -10,6 +10,7 @@ final class CardPresentModalReaderIsReadyTests: XCTestCase {
         super.setUp()
         viewModel = CardPresentModalReaderIsReady(name: Expectations.name,
                                                   amount: Expectations.amount,
+                                                  transactionType: .collectPayment,
                                                   cancelAction: {})
     }
 

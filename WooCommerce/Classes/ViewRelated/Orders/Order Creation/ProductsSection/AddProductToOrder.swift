@@ -20,6 +20,7 @@ struct AddProductToOrder: View {
             VStack {
                 SearchHeader(filterText: $viewModel.searchTerm, filterPlaceholder: Localization.searchPlaceholder)
                     .padding(.horizontal, insets: safeAreaInsets)
+                    .accessibilityIdentifier("new-order-add-product-search-bar")
                 switch viewModel.syncStatus {
                 case .results:
                     InfiniteScrollList(isLoading: viewModel.shouldShowScrollIndicator,
@@ -32,7 +33,6 @@ struct AddProductToOrder: View {
                         }
                         .padding(.horizontal, insets: safeAreaInsets)
                         .background(Color(.listForeground).ignoresSafeArea())
-                        .accessibilityIdentifier("new-order-add-product-list")
                     }
                 case .empty:
                     EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)

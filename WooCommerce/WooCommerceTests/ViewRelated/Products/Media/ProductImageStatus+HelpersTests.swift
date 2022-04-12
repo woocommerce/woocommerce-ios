@@ -50,7 +50,7 @@ final class ProductImageStatus_HelpersTests: XCTestCase {
 
     // MARK: - `dragItemIdentifier`
 
-    func testDragItemIdentifierForRemoteImage() {
+    func test_dragItemIdentifier_is_correct_for_remote_image() {
         // Given
         let productImage = ProductImage(imageID: 17, dateCreated: Date(), dateModified: Date(), src: "", name: nil, alt: nil)
         let status = ProductImageStatus.remote(image: productImage)

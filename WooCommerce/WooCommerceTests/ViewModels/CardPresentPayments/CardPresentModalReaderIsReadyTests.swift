@@ -49,7 +49,6 @@ final class CardPresentModalReaderIsReadyTests: XCTestCase {
     func test_bottom_subTitle_is_not_nil() {
         XCTAssertNotNil(viewModel.bottomSubtitle)
     }
-
 }
 
 

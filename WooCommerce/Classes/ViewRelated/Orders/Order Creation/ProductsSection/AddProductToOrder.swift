@@ -32,6 +32,7 @@ struct AddProductToOrder: View {
                         }
                         .padding(.horizontal, insets: safeAreaInsets)
                         .background(Color(.listForeground).ignoresSafeArea())
+                        .accessibilityIdentifier("new-order-add-product-list")
                     }
                 case .empty:
                     EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)

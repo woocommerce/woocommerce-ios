@@ -210,7 +210,7 @@ private struct ProductsSection: View {
                     showAddProduct.toggle()
                 }
                 .id(addProductButton)
-                .accessibilityIdentifier(Accessibility.addProductButtonIdentifier)
+                .accessibilityIdentifier(NewOrder.Accessibility.addProductButtonIdentifier)
                 .buttonStyle(PlusButtonStyle())
                 .sheet(isPresented: $showAddProduct, onDismiss: {
                     scroll.scrollTo(addProductButton)

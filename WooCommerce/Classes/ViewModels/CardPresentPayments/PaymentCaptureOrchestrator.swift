@@ -24,6 +24,12 @@ final class PaymentCaptureOrchestrator {
 
     private var walletSuppressionRequestToken: PKSuppressionRequestToken?
 
+    private let stores: StoresManager
+
+    init(stores: StoresManager = ServiceLocator.stores) {
+        self.stores = stores
+    }
+
     func collectPayment(for order: Order,
                         paymentGatewayAccount: PaymentGatewayAccount,
                         paymentMethodTypes: [String],
@@ -43,7 +49,7 @@ final class PaymentCaptureOrchestrator {
         ///
         let setAccount = CardPresentPaymentAction.use(paymentGatewayAccount: paymentGatewayAccount)
 
-        ServiceLocator.stores.dispatch(setAccount)
+        stores.dispatch(setAccount)
 
         guard let parameters = paymentParameters(
                 order: order,
@@ -85,7 +91,7 @@ final class PaymentCaptureOrchestrator {
             }
         )
 
-        ServiceLocator.stores.dispatch(paymentAction)
+        stores.dispatch(paymentAction)
     }
 
     func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
@@ -93,7 +99,7 @@ final class PaymentCaptureOrchestrator {
             self?.allowPassPresentation()
             onCompletion(result)
         }
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     func emailReceipt(for order: Order, params: CardPresentReceiptParameters, onContent: @escaping (String) -> Void) {
@@ -101,13 +107,13 @@ final class PaymentCaptureOrchestrator {
             onContent(emailContent)
         }
 
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     func saveReceipt(for order: Order, params: CardPresentReceiptParameters) {
         let action = ReceiptAction.saveReceipt(order: order, parameters: params)
 
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 }
 
@@ -207,7 +213,7 @@ private extension PaymentCaptureOrchestrator {
             }
         }
 
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     func paymentParameters(order: Order, statementDescriptor: String?, paymentMethodTypes: [String]) -> PaymentParameters? {
@@ -217,10 +223,10 @@ private extension PaymentCaptureOrchestrator {
         }
 
         let metadata = PaymentIntent.initMetadata(
-            store: ServiceLocator.stores.sessionManager.defaultSite?.name,
+            store: stores.sessionManager.defaultSite?.name,
             customerName: buildCustomerNameFromBillingAddress(order.billingAddress),
             customerEmail: order.billingAddress?.email,
-            siteURL: ServiceLocator.stores.sessionManager.defaultSite?.url,
+            siteURL: stores.sessionManager.defaultSite?.url,
             orderID: order.orderID,
             paymentType: PaymentIntent.PaymentTypes.single
         )
@@ -234,7 +240,7 @@ private extension PaymentCaptureOrchestrator {
     }
 
     func receiptDescription(orderNumber: String) -> String? {
-        guard let storeName = ServiceLocator.stores.sessionManager.defaultSite?.name else {
+        guard let storeName = stores.sessionManager.defaultSite?.name else {
             return nil
         }
 

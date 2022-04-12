@@ -63,12 +63,15 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
 
     /// Alert manager to inform merchants about reader & card actions.
     ///
-    private lazy var alerts = OrderDetailsPaymentAlerts(transactionType: .collectPayment,
-                                                        presentingController: rootViewController)
+    private let alerts: OrderDetailsPaymentAlertsProtocol
+
+    /// IPP Configuration.
+    ///
+    private let configuration: CardPresentPaymentsConfiguration
 
     /// IPP payments collector.
     ///
-    private lazy var paymentOrchestrator = PaymentCaptureOrchestrator()
+    private lazy var paymentOrchestrator = PaymentCaptureOrchestrator(stores: stores)
 
     /// Controller to connect a card reader.
     ///
@@ -76,13 +79,10 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         CardReaderConnectionController(forSiteID: siteID,
                                        knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
                                        alertsProvider: CardReaderSettingsAlerts(),
-                                       configuration: configurationLoader.configuration,
-                                       analyticsTracker: CardReaderConnectionAnalyticsTracker(configuration: configurationLoader.configuration))
-    }()
-
-    /// IPP Configuration loader
-    private lazy var configurationLoader = {
-        CardPresentConfigurationLoader(stores: stores)
+                                       configuration: configuration,
+                                       analyticsTracker: CardReaderConnectionAnalyticsTracker(configuration: configuration,
+                                                                                              stores: stores,
+                                                                                              analytics: analytics))
     }()
 
     init(siteID: Int64,
@@ -90,6 +90,8 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
          formattedAmount: String,
          paymentGatewayAccount: PaymentGatewayAccount,
          rootViewController: UIViewController,
+         alerts: OrderDetailsPaymentAlertsProtocol,
+         configuration: CardPresentPaymentsConfiguration,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
@@ -97,6 +99,8 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         self.formattedAmount = formattedAmount
         self.paymentGatewayAccount = paymentGatewayAccount
         self.rootViewController = rootViewController
+        self.alerts = alerts
+        self.configuration = configuration
         self.stores = stores
         self.analytics = analytics
     }
@@ -145,7 +149,8 @@ private extension CollectOrderPaymentUseCase {
         // `checkCardReaderConnected` action will return a publisher that:
         // - Sends one value if there is no reader connected.
         // - Completes when a reader is connected.
-        let readerConnected = CardPresentPaymentAction.checkCardReaderConnected { connectPublisher in
+        let readerConnected = CardPresentPaymentAction.checkCardReaderConnected { [weak self] connectPublisher in
+            guard let self = self else { return }
             self.readerSubscription = connectPublisher
                 .sink(receiveCompletion: { [weak self] _ in
                     // Dismiss the current connection alert before notifying the completion.
@@ -165,7 +170,12 @@ private extension CollectOrderPaymentUseCase {
                     guard let self = self else { return }
 
                     // Attempt reader connection
-                    self.connectionController.searchAndConnect(from: self.rootViewController) { _ in }
+                    self.connectionController.searchAndConnect(from: self.rootViewController) { result in
+                        if case let .failure = result {
+                            self.readerSubscription = nil
+                            return
+                        }
+                    }
                 })
         }
         stores.dispatch(readerConnected)
@@ -176,7 +186,7 @@ private extension CollectOrderPaymentUseCase {
     func attemptPayment(onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
         // Track tapped event
         analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentTapped(forGatewayID: paymentGatewayAccount.gatewayID,
-                                                                                       countryCode: configurationLoader.configuration.countryCode,
+                                                                                       countryCode: configuration.countryCode,
                                                                                        cardReaderModel: connectedReader?.readerType.model ?? ""))
 
         // Show reader ready alert
@@ -190,10 +200,10 @@ private extension CollectOrderPaymentUseCase {
         paymentOrchestrator.collectPayment(
             for: order,
                paymentGatewayAccount: paymentGatewayAccount,
-               paymentMethodTypes: configurationLoader.configuration.paymentMethods.map(\.rawValue),
+               paymentMethodTypes: configuration.paymentMethods.map(\.rawValue),
                onWaitingForInput: { [weak self] in
                    // Request card input
-                   self?.alerts.tapOrInsertCard(onCancel: {
+                   self?.alerts.tapOrInsertCard(onCancel: { [weak self] in
                        self?.cancelPayment()
                    })
 
@@ -223,7 +233,7 @@ private extension CollectOrderPaymentUseCase {
         // Record success
         analytics.track(event: WooAnalyticsEvent.InPersonPayments
                             .collectPaymentSuccess(forGatewayID: paymentGatewayAccount.gatewayID,
-                                                   countryCode: configurationLoader.configuration.countryCode,
+                                                   countryCode: configuration.countryCode,
                                                    paymentMethod: capturedPaymentData.paymentMethod,
                                                    cardReaderModel: connectedReader?.readerType.model ?? ""))
 
@@ -237,7 +247,7 @@ private extension CollectOrderPaymentUseCase {
         // Record error
         analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentFailed(forGatewayID: paymentGatewayAccount.gatewayID,
                                                                                        error: error,
-                                                                                       countryCode: configurationLoader.configuration.countryCode,
+                                                                                       countryCode: configuration.countryCode,
                                                                                        cardReaderModel: connectedReader?.readerType.model))
         DDLogError("Failed to collect payment: \(error.localizedDescription)")
 
@@ -268,7 +278,7 @@ private extension CollectOrderPaymentUseCase {
         paymentOrchestrator.cancelPayment { [weak self, analytics] _ in
             guard let self = self else { return }
             analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentCanceled(forGatewayID: self.paymentGatewayAccount.gatewayID,
-                                                                                             countryCode: self.configurationLoader.configuration.countryCode,
+                                                                                             countryCode: self.configuration.countryCode,
                                                                                              cardReaderModel: self.connectedReader?.readerType.model ?? ""))
         }
     }
@@ -277,16 +287,16 @@ private extension CollectOrderPaymentUseCase {
     ///
     func presentReceiptAlert(receiptParameters: CardPresentReceiptParameters, backButtonTitle: String, onCompleted: @escaping () -> ()) {
         // Present receipt alert
-        alerts.success(printReceipt: { [order, configurationLoader] in
+        alerts.success(printReceipt: { [order, configuration] in
             // Inform about flow completion.
             onCompleted()
 
             // Delegate print action
-            ReceiptActionCoordinator.printReceipt(for: order, params: receiptParameters, countryCode: configurationLoader.configuration.countryCode)
+            ReceiptActionCoordinator.printReceipt(for: order, params: receiptParameters, countryCode: configuration.countryCode)
 
-        }, emailReceipt: { [order, analytics, paymentOrchestrator, configurationLoader] in
+        }, emailReceipt: { [order, analytics, paymentOrchestrator, configuration] in
             // Record button tapped
-            analytics.track(event: .InPersonPayments.receiptEmailTapped(countryCode: configurationLoader.configuration.countryCode))
+            analytics.track(event: .InPersonPayments.receiptEmailTapped(countryCode: configuration.countryCode))
 
             // Request & present email
             paymentOrchestrator.emailReceipt(for: order, params: receiptParameters) { [weak self] emailContent in
@@ -336,13 +346,13 @@ extension CollectOrderPaymentUseCase: MFMailComposeViewControllerDelegate {
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
         switch result {
         case .cancelled:
-            analytics.track(event: .InPersonPayments.receiptEmailCanceled(countryCode: configurationLoader.configuration.countryCode))
+            analytics.track(event: .InPersonPayments.receiptEmailCanceled(countryCode: configuration.countryCode))
         case .sent, .saved:
-            analytics.track(event: .InPersonPayments.receiptEmailSuccess(countryCode: configurationLoader.configuration.countryCode))
+            analytics.track(event: .InPersonPayments.receiptEmailSuccess(countryCode: configuration.countryCode))
         case .failed:
             analytics.track(event: .InPersonPayments
                 .receiptEmailFailed(error: error ?? UnknownEmailError(),
-                                    countryCode: configurationLoader.configuration.countryCode))
+                                    countryCode: configuration.countryCode))
         @unknown default:
             assertionFailure("MFMailComposeViewController finished with an unknown result type")
         }

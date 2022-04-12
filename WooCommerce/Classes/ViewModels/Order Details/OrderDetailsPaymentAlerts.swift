@@ -5,7 +5,7 @@ import WordPressUI
 /// A layer of indirection between OrderDetailsViewController and the modal alerts
 /// presented to provide user-facing feedback about the progress
 /// of the payment collection process
-final class OrderDetailsPaymentAlerts {
+final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
     private weak var presentingController: UIViewController?
 
     // Storing this as a weak variable means that iOS should automatically set this to nil

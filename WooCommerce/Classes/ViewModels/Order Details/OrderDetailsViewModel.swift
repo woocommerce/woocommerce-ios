@@ -513,7 +513,10 @@ extension OrderDetailsViewModel {
                                                             order: order,
                                                             formattedAmount: formattedTotal,
                                                             paymentGatewayAccount: paymentGateway,
-                                                            rootViewController: rootViewController)
+                                                            rootViewController: rootViewController,
+                                                            alerts: OrderDetailsPaymentAlerts(transactionType: .collectPayment,
+                                                                                              presentingController: rootViewController),
+                                                            configuration: configurationLoader.configuration)
         collectPaymentsUseCase?.collectPayment(backButtonTitle: backButtonTitle, onCollect: onCollect, onCompleted: { [weak self] in
             // Make sure we free all the resources
             self?.collectPaymentsUseCase = nil

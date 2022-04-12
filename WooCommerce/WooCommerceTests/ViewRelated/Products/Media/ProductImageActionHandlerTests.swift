@@ -222,18 +222,32 @@ final class ProductImageActionHandlerTests: XCTestCase {
         let model = EditableProductModel(product: mockProduct)
         let productImageActionHandler = ProductImageActionHandler(siteID: 123,
                                                                   product: model)
-
-        // Action
         let mockProductImages = [
             ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: ""),
             ProductImage(imageID: 2, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
         ]
         let anotherMockProduct = Product.fake().copy(images: mockProductImages)
         let anotherModel = EditableProductModel(product: anotherMockProduct)
+
+        let expectedProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }
+
+        let expectation = self.expectation(description: "Wait for reset product images")
+        expectation.expectedFulfillmentCount = 1
+
+        var observedProductImageStatusChanges: [[ProductImageStatus]] = []
+        productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { (productImageStatuses, error) in
+            XCTAssertTrue(Thread.current.isMainThread)
+            observedProductImageStatusChanges.append(productImageStatuses)
+            if observedProductImageStatusChanges.count >= expectedProductImageStatuses.count {
+                expectation.fulfill()
+            }
+        }
+
+        // Action
         productImageActionHandler.resetProductImages(to: anotherModel)
 
         // Assert
-        let expectedProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
         XCTAssertEqual(productImageActionHandler.productImageStatuses, expectedProductImageStatuses)
     }
 

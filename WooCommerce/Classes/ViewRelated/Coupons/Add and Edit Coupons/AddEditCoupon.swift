@@ -48,14 +48,6 @@ struct AddEditCoupon: View {
             GeometryReader { geometry in
                 ScrollView {
                     VStack (alignment: .leading, spacing: 0) {
-                        // Anchor the action sheet at the top to be able to show the popover on iPad in the most appropriate position
-                        Divider()
-                            .actionSheet(isPresented: $showingCouponExpiryActionSheet) {
-                                ActionSheet(
-                                    title: Text(Localization.expiryDateActionSheetTitle),
-                                    buttons: expiryDateActionSheetButtons
-                                )
-                            }
 
                         Group {
                             ListHeaderView(text: Localization.headerCouponDetails.uppercased(), alignment: .left)
@@ -123,6 +115,12 @@ struct AddEditCoupon: View {
                                                  selectionStyle: .disclosure, action: {
                                     showingCouponExpiryActionSheet = true
                                 })
+                                    .actionSheet(isPresented: $showingCouponExpiryActionSheet) {
+                                        ActionSheet(
+                                            title: Text(Localization.expiryDateActionSheetTitle),
+                                            buttons: expiryDateActionSheetButtons
+                                        )
+                                    }
                                 Divider()
                                     .padding(.leading, Constants.margin)
                             }

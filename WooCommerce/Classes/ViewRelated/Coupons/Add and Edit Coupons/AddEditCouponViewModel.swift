@@ -14,6 +14,10 @@ final class AddEditCouponViewModel: ObservableObject {
 
     private let discountType: Coupon.DiscountType
 
+    private let stores: StoresManager
+
+    var onCompletion: ((Result<Coupon, Error>) -> Void)?
+
     var title: String {
         switch editingOption {
         case .creation:
@@ -88,10 +92,12 @@ final class AddEditCouponViewModel: ObservableObject {
     /// Init method for coupon creation
     ///
     init(siteID: Int64,
-         discountType: Coupon.DiscountType) {
+         discountType: Coupon.DiscountType,
+         stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         editingOption = .creation
         self.discountType = discountType
+        self.stores = stores
 
         amountField = String()
         codeField = String()
@@ -103,11 +109,13 @@ final class AddEditCouponViewModel: ObservableObject {
 
     /// Init method for coupon editing
     ///
-    init(existingCoupon: Coupon) {
+    init(existingCoupon: Coupon,
+         stores: StoresManager = ServiceLocator.stores) {
         siteID = existingCoupon.siteID
         coupon = existingCoupon
         editingOption = .editing
         discountType = existingCoupon.discountType
+        self.stores = stores
 
         // Populate fields
         amountField = existingCoupon.amount
@@ -133,6 +141,20 @@ final class AddEditCouponViewModel: ObservableObject {
         }
 
         codeField = code
+    }
+
+    func updateCoupon(coupon: Coupon) {
+        let action = CouponAction.updateCoupon(coupon) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(_):
+                break
+            case .failure(let error):
+                DDLogError("⛔️ Error updating the coupon: \(error)")
+            }
+            self.onCompletion?(result)
+        }
+        stores.dispatch(action)
     }
 
     private enum EditingOption {

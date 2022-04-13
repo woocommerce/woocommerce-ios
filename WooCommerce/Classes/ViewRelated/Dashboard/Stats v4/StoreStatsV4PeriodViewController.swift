@@ -13,6 +13,7 @@ enum SiteVisitStatsMode {
 }
 
 
+
 /// Shows the store stats with v4 API for a time range.
 ///
 final class StoreStatsV4PeriodViewController: UIViewController {

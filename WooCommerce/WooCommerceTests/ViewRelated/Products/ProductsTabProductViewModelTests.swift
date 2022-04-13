@@ -93,16 +93,42 @@ final class ProductsTabProductViewModelTests: XCTestCase {
         XCTAssertTrue(detailsText.contains(expectedStockDetail))
     }
 
+    func test_skuString_is_not_nil_when_product_has_sku() throws {
+        // Given
+        let product = productMock(sku: "1324")
+
+        // When
+        let viewModel = ProductsTabProductViewModel(product: product)
+
+        // Then
+        let expectedSKU = String.localizedStringWithFormat(NSLocalizedString("SKU: %1$@", comment: ""), try XCTUnwrap(product.sku))
+        XCTAssertEqual(viewModel.skuString, expectedSKU)
+    }
+
+    func test_detailsString_contains_product_price_if_price_is_not_empty() {
+        // Given
+        let product = productMock(price: "10.00")
+
+        // When
+        let viewModel = ProductsTabProductViewModel(product: product)
+
+        // Then
+        XCTAssertTrue(viewModel.detailsString.contains(product.price))
+    }
 }
 
 extension ProductsTabProductViewModelTests {
     func productMock(name: String = "Hogsmeade",
+                     price: String = "",
                      stockQuantity: Decimal? = nil,
                      stockStatus: ProductStockStatus = .inStock,
                      variations: [Int64] = [],
-                     images: [ProductImage] = []) -> Product {
+                     images: [ProductImage] = [],
+                     sku: String? = nil) -> Product {
 
         return Product.fake().copy(name: name,
+                                   sku: sku,
+                                   price: price,
                                    stockQuantity: stockQuantity,
                                    stockStatusKey: stockStatus.rawValue,
                                    images: images,

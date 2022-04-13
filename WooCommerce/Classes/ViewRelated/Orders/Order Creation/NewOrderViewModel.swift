@@ -1,6 +1,7 @@
 import Yosemite
 import Combine
 import protocol Storage.StorageManagerType
+import Experiments
 
 /// View model for `NewOrder`.
 ///
@@ -9,6 +10,7 @@ final class NewOrderViewModel: ObservableObject {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let currencyFormatter: CurrencyFormatter
+    private let featureFlagService: FeatureFlagService
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -16,6 +18,12 @@ final class NewOrderViewModel: ObservableObject {
     ///
     var hasChanges: Bool {
         orderSynchronizer.order != OrderFactory.emptyNewOrder
+    }
+
+    /// Indicates whether the cancel button is visible.
+    ///
+    var shouldShowCancelButton: Bool {
+        featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
     }
 
     /// Active navigation bar trailing item.
@@ -192,13 +200,15 @@ final class NewOrderViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.analytics = analytics
         self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, stores: stores, currencySettings: currencySettings)
+        self.featureFlagService = featureFlagService
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.
         // Needs to be reset before the view model is used.

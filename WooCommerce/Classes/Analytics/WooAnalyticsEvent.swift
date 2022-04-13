@@ -452,6 +452,10 @@ extension WooAnalyticsEvent {
         static func orderDetailEditFlowCanceled(subject: Subject) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderDetailEditFlowCanceled, properties: [Subject.key: subject.rawValue])
         }
+
+        static func orderDetailPaymentLinkShared() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderDetailPaymentLinkShared, properties: [:])
+        }
     }
 }
 

@@ -563,7 +563,7 @@ extension StripeCardReaderService {
                 }
                 promise(.success(()))
             })
-            //TODO: handle timeout?
+            //TODO: 5983 - handle timeout when called from retry after refund failure
         }.eraseToAnyPublisher()
     }
 }

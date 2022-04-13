@@ -3,6 +3,7 @@ import AutomatticTracks
 import Experiments
 import Storage
 import Yosemite
+import Sentry
 
 /// A wrapper around the logging stack – provides shared initialization and configuration for Tracks Crash and Event Logging
 struct WooCrashLoggingStack: CrashLoggingStack {

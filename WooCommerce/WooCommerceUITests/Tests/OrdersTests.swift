@@ -32,4 +32,10 @@ final class OrdersTests: XCTestCase {
         try NewOrderFlow.editOrderStatus()
             .createOrder()
     }
+
+    func test_cancel_order_creation() throws {
+        try TabNavComponent().goToOrdersScreen()
+            .startOrderCreation()
+            .cancelOrderCreation()
+    }
 }

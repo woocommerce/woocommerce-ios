@@ -58,7 +58,7 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
     private var connectedReader: CardReader?
 
     /// Alert manager to inform merchants about reader & card actions.
-    private var alerts: OrderDetailsPaymentAlerts?
+    private let alerts: OrderDetailsPaymentAlertsProtocol
 
     /// In-person refund orchestrator.
     private lazy var cardPresentRefundOrchestrator = CardPresentRefundOrchestrator(stores: stores)
@@ -90,6 +90,7 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
     init(siteID: Int64,
          details: Details,
          rootViewController: UIViewController,
+         alerts: OrderDetailsPaymentAlertsProtocol,
          currencyFormatter: CurrencyFormatter,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          stores: StoresManager = ServiceLocator.stores,
@@ -103,6 +104,7 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
             return currencyFormatter.formatAmount(details.amount, with: unit) ?? ""
         }()
         self.rootViewController = rootViewController
+        self.alerts = alerts
         self.currencyFormatter = currencyFormatter
         self.stores = stores
         self.storageManager = storageManager
@@ -133,18 +135,24 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
                 return
             }
             observeConnectedReadersForAnalytics()
-            connectReader { [weak self] in
-                self?.attemptCardPresentRefund(refundAmount: refundAmount as Decimal, charge: charge, onCompletion: { [weak self] result in
-                    guard let self = self else { return }
-                    switch result {
-                    case .success:
-                        self.submitRefundToSite(refund: refund) { result in
-                            onCompletion(result)
+            connectReader { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success:
+                    self.attemptCardPresentRefund(refundAmount: refundAmount as Decimal, charge: charge) { [weak self] result in
+                        guard let self = self else { return }
+                        switch result {
+                        case .success:
+                            self.submitRefundToSite(refund: refund) { result in
+                                onCompletion(result)
+                            }
+                        case .failure(let error):
+                            onCompletion(.failure(error))
                         }
-                    case .failure(let error):
-                        onCompletion(.failure(error))
                     }
-                })
+                case .failure:
+                    onCompletion(result)
+                }
             }
         } else {
             showInProgressUI()
@@ -186,8 +194,8 @@ private extension RefundSubmissionUseCase {
     }
 
     /// Attempts to connect to a reader.
-    /// Finishes immediately if a reader is already connected.
-    func connectReader(onCompletion: @escaping () -> ()) {
+    /// Finishes with success immediately if a reader is already connected.
+    func connectReader(onCompletion: @escaping (Result<Void, Error>) -> ()) {
         // `checkCardReaderConnected` action will return a publisher that:
         // - Sends one value if there is no reader connected.
         // - Completes when a reader is connected.
@@ -199,10 +207,10 @@ private extension RefundSubmissionUseCase {
                     // If no presented controller is found(because the reader was already connected), just notify the completion.
                     if let connectionController = self?.rootViewController.presentedViewController {
                         connectionController.dismiss(animated: true) {
-                            onCompletion()
+                            onCompletion(.success(()))
                         }
                     } else {
-                        onCompletion()
+                        onCompletion(.success(()))
                     }
 
                     // Nil the subscription since we are done with the connection.
@@ -232,11 +240,6 @@ private extension RefundSubmissionUseCase {
             return
         }
 
-        // Instantiates the alerts coordinator.
-        let alerts = OrderDetailsPaymentAlerts(transactionType: .refund,
-                                               presentingController: rootViewController)
-        self.alerts = alerts
-
         // Shows reader ready alert.
         alerts.readerIsReady(title: Localization.refundPaymentTitle(username: order.billingAddress?.firstName),
                              amount: formattedAmount,
@@ -250,15 +253,15 @@ private extension RefundSubmissionUseCase {
                                              paymentGatewayAccount: paymentGatewayAccount,
                                              onWaitingForInput: { [weak self] in
             // Requests card input.
-            self?.alerts?.tapOrInsertCard(onCancel: {
+            self?.alerts.tapOrInsertCard(onCancel: {
                 self?.cancelRefund()
             })
         }, onProcessingMessage: { [weak self] in
             // Shows waiting message.
-            self?.alerts?.processingPayment()
+            self?.alerts.processingPayment()
         }, onDisplayMessage: { [weak self] message in
             // Shows reader messages (e.g. Remove Card).
-            self?.alerts?.displayReaderMessage(message: message)
+            self?.alerts.displayReaderMessage(message: message)
         }, onCompletion: { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -275,7 +278,7 @@ private extension RefundSubmissionUseCase {
         // TODO: 5984 - tracks in-person refund error
         DDLogError("Failed to refund: \(error.localizedDescription)")
         // Informs about the error.
-        alerts?.error(error: error, tryAgain: { [weak self] in
+        alerts.error(error: error, tryAgain: { [weak self] in
             // Cancels current payment.
             self?.cardPresentRefundOrchestrator.cancelRefund { [weak self] result in
                 guard let self = self else { return }
@@ -286,7 +289,7 @@ private extension RefundSubmissionUseCase {
                     self.attemptCardPresentRefund(refundAmount: refundAmount, charge: charge, onCompletion: onCompletion)
                 case .failure(let cancelError):
                     // Informs that payment can't be retried.
-                    self.alerts?.nonRetryableError(from: self.rootViewController, error: cancelError)
+                    self.alerts.nonRetryableError(from: self.rootViewController, error: cancelError)
                     onCompletion(.failure(error))
                 }
             }

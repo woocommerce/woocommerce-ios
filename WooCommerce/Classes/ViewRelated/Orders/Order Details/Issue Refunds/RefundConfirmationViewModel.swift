@@ -103,6 +103,8 @@ final class RefundConfirmationViewModel {
                                                                        charge: details.charge,
                                                                        amount: details.amount),
                                                         rootViewController: rootViewController,
+                                                        alerts: OrderDetailsPaymentAlerts(transactionType: .refund,
+                                                                                          presentingController: rootViewController),
                                                         currencyFormatter: currencyFormatter,
                                                         stores: actionProcessor,
                                                         analytics: analytics)

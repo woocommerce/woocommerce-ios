@@ -49,7 +49,7 @@ final class PaymentReceiptEmailParameterDeterminerTests: XCTestCase {
         XCTAssertNil(email)
     }
 
-    func test_when_only_WCPay_is_active_and_version_is_equal_than_minimum_that_sends_email_then_returns_nil() {
+    func test_when_only_WCPay_is_active_and_version_is_equal_to_minimum_that_sends_email_then_returns_nil() {
         // Given
         let wcPayPlugin = SystemPlugin.fake().copy(version: "4.0.0")
         let cardPresentPluginsDataProvider = MockCardPresentPluginsDataProvider(wcPayPlugin: wcPayPlugin,

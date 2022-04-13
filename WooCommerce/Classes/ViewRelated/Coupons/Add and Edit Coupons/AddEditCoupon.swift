@@ -85,7 +85,7 @@ struct AddEditCoupon: View {
                             .padding(.bottom, Constants.verticalSpacing)
 
                             Button {
-                                //TODO: handle action
+                                viewModel.generateRandomCouponCode()
                             } label: {
                                 Text(Localization.regenerateCouponCodeButton)
                             }
@@ -127,7 +127,7 @@ struct AddEditCoupon: View {
                             .padding(.bottom, Constants.verticalSpacing)
 
                             Group {
-                                TitleAndToggleRow(title: Localization.includeFreeShipping, isOn: .constant(false))
+                                TitleAndToggleRow(title: Localization.includeFreeShipping, isOn: $viewModel.freeShipping)
                                     .padding(.horizontal, Constants.margin)
                                 Divider()
                                     .padding(.leading, Constants.margin)
@@ -205,11 +205,9 @@ struct AddEditCoupon: View {
                             EmptyView()
                         }
 
-                        if let coupon = viewModel.coupon {
-                            LazyNavigationLink(destination: CouponRestrictions(viewModel: CouponRestrictionsViewModel(coupon: coupon)),
-                                               isActive: $showingCouponRestrictions) {
-                                EmptyView()
-                            }
+                        LazyNavigationLink(destination: CouponRestrictions(viewModel: viewModel.couponRestrictionsViewModel),
+                                           isActive: $showingCouponRestrictions) {
+                            EmptyView()
                         }
                     }
                 }

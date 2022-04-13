@@ -7608,8 +7608,8 @@
 		DE69C54B27BB7163000BB888 /* UsageDetails */ = {
 			isa = PBXGroup;
 			children = (
-				DE69C54927BB715D000BB888 /* CouponRestrictionsViewModel.swift */,
 				DE69C54C27BB719A000BB888 /* CouponRestrictions.swift */,
+				DE69C54927BB715D000BB888 /* CouponRestrictionsViewModel.swift */,
 				DEC1508127F450AC00F4487C /* CouponAllowedEmails.swift */,
 			);
 			path = UsageDetails;

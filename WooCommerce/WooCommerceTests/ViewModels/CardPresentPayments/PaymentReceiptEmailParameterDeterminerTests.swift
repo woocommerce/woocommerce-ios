@@ -51,6 +51,8 @@ final class PaymentReceiptEmailParameterDeterminerTests: XCTestCase {
 
     func test_when_only_WCPay_is_active_and_version_is_equal_to_minimum_that_sends_email_then_returns_nil() {
         // Given
+        let receiptEmail = "test@test.com"
+        let billingAddress = Address.fake().copy(email: receiptEmail)
         let wcPayPlugin = SystemPlugin.fake().copy(version: "4.0.0")
         let cardPresentPluginsDataProvider = MockCardPresentPluginsDataProvider(wcPayPlugin: wcPayPlugin,
                                                                       bothPluginsInstalledAndActive: false,
@@ -59,7 +61,7 @@ final class PaymentReceiptEmailParameterDeterminerTests: XCTestCase {
 
         // When
         let result: Result<String?, Error> = waitFor { promise in
-            sut.receiptEmail(from: Order.fake()) { result in
+            sut.receiptEmail(from: Order.fake().copy(billingAddress: billingAddress)) { result in
                 promise(result)
             }
         }
@@ -101,12 +103,14 @@ final class PaymentReceiptEmailParameterDeterminerTests: XCTestCase {
 
     func test_when_WCPay_and_Stripe_are_both_installed_and_active_then_returns_nil() {
         // Given
-        let cardPresentPluginsDataProvider = MockCardPresentPluginsDataProvider(bothPluginsInstalledAndActive: false)
+        let receiptEmail = "test@test.com"
+        let billingAddress = Address.fake().copy(email: receiptEmail)
+        let cardPresentPluginsDataProvider = MockCardPresentPluginsDataProvider(bothPluginsInstalledAndActive: true)
         let sut = PaymentReceiptEmailParameterDeterminer(cardPresentPluginsDataProvider: cardPresentPluginsDataProvider, stores: stores)
 
         // When
         let result: Result<String?, Error> = waitFor { promise in
-            sut.receiptEmail(from: Order.fake()) { result in
+            sut.receiptEmail(from: Order.fake().copy(billingAddress: billingAddress)) { result in
                 promise(result)
             }
         }

@@ -157,6 +157,50 @@ final class AddEditCouponViewModel: ObservableObject {
         stores.dispatch(action)
     }
 
+    var populatedCoupon: Coupon {
+        // TODO: Fill all the missing data
+        coupon?.copy(code: codeField,
+                     amount: amountField,
+                     dateModified: Date(),
+                     discountType: discountType,
+                     description: descriptionField,
+                     dateExpires: expiryDateField,
+                     usageCount: 0,
+                     individualUse: couponRestrictionsViewModel.individualUseOnly,
+                     usageLimit: Int64(couponRestrictionsViewModel.usageLimitPerCoupon),
+                     usageLimitPerUser: Int64(couponRestrictionsViewModel.usageLimitPerUser),
+                     limitUsageToXItems: Int64(couponRestrictionsViewModel.limitUsageToXItems),
+                     freeShipping: freeShipping,
+                     excludeSaleItems: couponRestrictionsViewModel.excludeSaleItems,
+                     minimumAmount: couponRestrictionsViewModel.minimumSpend,
+                     maximumAmount: couponRestrictionsViewModel.maximumSpend,
+                     emailRestrictions: [couponRestrictionsViewModel.allowedEmails]) ??
+        Coupon(siteID: siteID,
+               couponID: -1,
+               code: codeField,
+               amount: amountField,
+               dateCreated: Date(),
+               dateModified: Date(),
+               discountType: discountType,
+               description: descriptionField,
+               dateExpires: expiryDateField,
+               usageCount: 0,
+               individualUse: couponRestrictionsViewModel.individualUseOnly,
+               productIds: [],
+               excludedProductIds: [],
+               usageLimit: Int64(couponRestrictionsViewModel.usageLimitPerCoupon),
+               usageLimitPerUser: Int64(couponRestrictionsViewModel.usageLimitPerUser),
+               limitUsageToXItems: Int64(couponRestrictionsViewModel.limitUsageToXItems),
+               freeShipping: freeShipping,
+               productCategories: [],
+               excludedProductCategories: [],
+               excludeSaleItems: couponRestrictionsViewModel.excludeSaleItems,
+               minimumAmount: couponRestrictionsViewModel.minimumSpend,
+               maximumAmount: couponRestrictionsViewModel.maximumSpend,
+               emailRestrictions: [couponRestrictionsViewModel.allowedEmails],
+               usedBy: [])
+    }
+
     private enum EditingOption {
         case creation
         case editing

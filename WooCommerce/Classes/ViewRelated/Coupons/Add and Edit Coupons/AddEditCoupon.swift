@@ -40,6 +40,7 @@ struct AddEditCoupon: View {
 
     init(_ viewModel: AddEditCouponViewModel) {
         self.viewModel = viewModel
+        viewModel.onCompletion = { result in }
         //TODO: add analytics
     }
 
@@ -184,6 +185,7 @@ struct AddEditCoupon: View {
 
                         Button {
                             //TODO: handle action
+                            viewModel.updateCoupon(coupon: viewModel.populatedCoupon)
                         } label: {
                             Text(Localization.saveButton)
                         }

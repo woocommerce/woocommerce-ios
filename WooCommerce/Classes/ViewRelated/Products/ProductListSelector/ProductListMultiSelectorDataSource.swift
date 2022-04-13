@@ -56,6 +56,7 @@ final class ProductListMultiSelectorDataSource: PaginatedListSelectorDataSource 
 
         let viewModel = ProductsTabProductViewModel(product: model, isSelected: isSelected(model: model))
         cell.update(viewModel: viewModel, imageService: imageService)
+        cell.accessoryType = model.variations.isNotEmpty ? .disclosureIndicator : .none
     }
 
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Result<Bool, Error>) -> Void)?) {

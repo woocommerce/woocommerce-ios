@@ -42,12 +42,16 @@ final class ProductImagesViewController: UIViewController {
     // Child view controller.
     private lazy var imagesViewController: ProductImagesCollectionViewController = {
         let isDeletionEnabled = product.isImageDeletionEnabled()
-        let viewController = ProductImagesCollectionViewController(imageStatuses: productImageStatuses,
-                                                                   isDeletionEnabled: isDeletionEnabled,
-                                                                   productUIImageLoader: productUIImageLoader,
-                                                                   onDeletion: { [weak self] productImage in
-                                                                    self?.onDeletion(productImage: productImage)
-        })
+        let viewController = ProductImagesCollectionViewController(
+            imageStatuses: productImageStatuses,
+            isDeletionEnabled: isDeletionEnabled,
+            productUIImageLoader: productUIImageLoader,
+            onDeletion: { [weak self] productImage in
+                self?.onDeletion(productImage: productImage)
+            },
+            onReordering: { [weak self] productImageStatuses in
+                self?.handleProductImageStatusesReordering(productImageStatuses)
+            })
         return viewController
     }()
 
@@ -64,6 +68,7 @@ final class ProductImagesViewController: UIViewController {
     }()
 
     private var hasDeletedAnyImages: Bool = false
+    private var hasMovedAnyImages: Bool = false
 
     private let onCompletion: Completion
 
@@ -127,9 +132,25 @@ private extension ProductImagesViewController {
     }
 
     func configureHelperViews() {
-        helperContainerView.isHidden = allowsMultipleImages || product.productType != .variable
         helperLabel.applySecondaryFootnoteStyle()
-        helperLabel.text = Localization.variableProductHelperText
+        updateHelperViews()
+    }
+
+    var shouldShowHelperViews: Bool {
+        return getAppropiateHelpText() != nil
+    }
+
+    /// Returns the appropiate localizable help text or `nil` when
+    /// there is no help text to show.
+    ///
+    func getAppropiateHelpText() -> String? {
+        if productImageStatuses.containsMoreThanOne {
+            return Localization.dragAndDropHelperText
+        } else if !allowsMultipleImages && product.productType == .variable {
+            return Localization.variableProductHelperText
+        }
+
+        return nil
     }
 
     func configureImagesContainerView() {
@@ -155,6 +176,7 @@ private extension ProductImagesViewController {
                 self.displayErrorAlert(error: error)
             }
 
+            self.updateHelperViews()
             self.updateAddButtonTitle(numberOfImages: productImageStatuses.count)
 
             self.imagesViewController.updateProductImageStatuses(productImageStatuses)
@@ -173,6 +195,14 @@ private extension ProductImagesViewController {
             title = numberOfImages == 0 ? Localization.addPhoto: Localization.replacePhoto
         }
         addButton.setTitle(title, for: .normal)
+    }
+
+    /// Shows/Hides the helper container view and update the helper label
+    /// with the appropiate localizable text.
+    ///
+    func updateHelperViews() {
+        helperContainerView.isHidden = !shouldShowHelperViews
+        helperLabel.text = getAppropiateHelpText()
     }
 }
 
@@ -208,6 +238,11 @@ private extension ProductImagesViewController {
         hasDeletedAnyImages = true
         productImageActionHandler.deleteProductImage(productImage)
     }
+
+    func handleProductImageStatusesReordering(_ reorderedProductImageStatuses: [ProductImageStatus]) {
+        hasMovedAnyImages = true
+        productImageActionHandler.updateProductImageStatusesAfterReordering(reorderedProductImageStatuses)
+    }
 }
 
 // MARK: - Navigation actions handling
@@ -237,7 +272,7 @@ extension ProductImagesViewController {
     }
 
     private func hasOutstandingChanges() -> Bool {
-        return hasDeletedAnyImages
+        return hasDeletedAnyImages || hasMovedAnyImages
     }
 }
 
@@ -323,5 +358,7 @@ private extension ProductImagesViewController {
         static let replacePhoto = NSLocalizedString("Replace Photo", comment: "Action to replace one photo on the Product images screen")
         static let variableProductHelperText = NSLocalizedString("Only one photo can be displayed by variation",
                                                                  comment: "Helper text above photo list in Product images screen")
+        static let dragAndDropHelperText = NSLocalizedString("Drag and drop to re-order photos",
+                                                             comment: "Drag and drop helper text above photo list in Product images screen")
     }
 }

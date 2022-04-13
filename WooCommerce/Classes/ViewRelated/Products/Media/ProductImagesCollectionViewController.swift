@@ -6,20 +6,25 @@ import Yosemite
 ///
 final class ProductImagesCollectionViewController: UICollectionViewController {
 
+    typealias ReorderingHandler = (_ productImageStatuses: [ProductImageStatus]) -> Void
+
     private var productImageStatuses: [ProductImageStatus]
 
     private let isDeletionEnabled: Bool
     private let productUIImageLoader: ProductUIImageLoader
     private let onDeletion: ProductImagesGalleryViewController.Deletion
+    private let onReordering: ReorderingHandler
 
     init(imageStatuses: [ProductImageStatus],
          isDeletionEnabled: Bool,
          productUIImageLoader: ProductUIImageLoader,
-         onDeletion: @escaping ProductImagesGalleryViewController.Deletion) {
+         onDeletion: @escaping ProductImagesGalleryViewController.Deletion,
+         onReordering: @escaping ReorderingHandler) {
         self.productImageStatuses = imageStatuses
         self.isDeletionEnabled = isDeletionEnabled
         self.productUIImageLoader = productUIImageLoader
         self.onDeletion = onDeletion
+        self.onReordering = onReordering
         let columnLayout = ColumnFlowLayout(
             cellsPerRow: 2,
             minimumInteritemSpacing: 16,
@@ -36,11 +41,7 @@ final class ProductImagesCollectionViewController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        collectionView.backgroundColor = .basicBackground
-
-        collectionView.register(ProductImageCollectionViewCell.loadNib(), forCellWithReuseIdentifier: ProductImageCollectionViewCell.reuseIdentifier)
-        collectionView.register(InProgressProductImageCollectionViewCell.loadNib(),
-                                forCellWithReuseIdentifier: InProgressProductImageCollectionViewCell.reuseIdentifier)
+        configureCollectionView()
 
         collectionView.reloadData()
     }
@@ -49,6 +50,7 @@ final class ProductImagesCollectionViewController: UICollectionViewController {
         self.productImageStatuses = productImageStatuses
 
         collectionView.reloadData()
+        updateDragAndDropSupport()
     }
 }
 
@@ -136,5 +138,118 @@ extension ProductImagesCollectionViewController {
                                                                                         self?.onDeletion(productImage)
         }
         navigationController?.show(productImagesGalleryViewController, sender: self)
+    }
+}
+
+/// Drag & Drop support
+///
+extension ProductImagesCollectionViewController: UICollectionViewDragDelegate, UICollectionViewDropDelegate {
+    func collectionView(_ collectionView: UICollectionView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
+        guard let item = productImageStatuses[safe: indexPath.row] else {
+            return []
+        }
+        let dragItem = dragItem(for: item)
+        return [dragItem]
+    }
+
+    func collectionView(_ collectionView: UICollectionView, dragSessionIsRestrictedToDraggingApplication session: UIDragSession) -> Bool {
+        // Dropping photos from external apps is not allowed yet.
+        return true
+    }
+
+    func collectionView(_ collectionView: UICollectionView,
+                        dropSessionDidUpdate session: UIDropSession,
+                        withDestinationIndexPath destinationIndexPath: IndexPath?) -> UICollectionViewDropProposal {
+        return UICollectionViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, performDropWith coordinator: UICollectionViewDropCoordinator) {
+        guard let destinationIndexPath = coordinator.destinationIndexPath else {
+            return
+        }
+
+        coordinator.items.forEach { dropItem in
+            reorder(dropItem, to: destinationIndexPath, with: coordinator)
+        }
+    }
+
+    /// Indicates whether the collection view supports moving items.
+    ///
+    private var isReorderingEnabled: Bool {
+        productImageStatuses.containsMoreThanOne
+    }
+
+    /// Enables/disables collection view drag interaction.
+    ///
+    private func updateDragAndDropSupport() {
+        collectionView.dragInteractionEnabled = isReorderingEnabled
+    }
+
+    /// Returns a `UIDragItem` from a given product image.
+    ///
+    private func dragItem(for productImageStatus: ProductImageStatus) -> UIDragItem {
+        let itemProvider = NSItemProvider(object: NSString(string: productImageStatus.dragItemIdentifier))
+        return UIDragItem(itemProvider: itemProvider)
+    }
+
+    /// Removes the product image at the given source index and inserts it
+    /// at the given destination index.
+    ///
+    private func moveProductImageStatus(from sourceIndex: Int, to destinationIndex: Int) {
+        let imageStatus = productImageStatuses[sourceIndex]
+        productImageStatuses.remove(at: sourceIndex)
+        productImageStatuses.insert(imageStatus, at: destinationIndex)
+    }
+
+    /// Moves an item (`ProductImageStatus`) in the collection view from one index path to another index path.
+    ///
+    private func reorder(_ item: UICollectionViewDropItem, to destinationIndexPath: IndexPath, with coordinator: UICollectionViewDropCoordinator) {
+        guard let sourceIndexPath = item.sourceIndexPath else {
+            return
+        }
+
+        moveProductImageStatus(from: sourceIndexPath.item, to: destinationIndexPath.item)
+
+        collectionView.performBatchUpdates({
+            collectionView.deleteItems(at: [sourceIndexPath])
+            collectionView.insertItems(at: [destinationIndexPath])
+        }, completion: { [weak self] _ in
+            // [Workaround] Reload the collection view if there are more than
+            // one type of cells, for example, when there are any pending upload.
+            self?.reloadCollectionViewIfNeeded()
+        })
+
+        coordinator.drop(item.dragItem, toItemAt: destinationIndexPath)
+        onReordering(productImageStatuses)
+    }
+
+    /// Reloads collection view only if there is any pending upload.
+    /// This makes sure that cells for pending uploads are reloaded properly 
+    /// to remove their overlays after uploading is done. 
+    ///
+    private func reloadCollectionViewIfNeeded() {
+        if productImageStatuses.hasPendingUpload {
+            collectionView.reloadData()
+        }
+    }
+}
+
+/// View configuration
+///
+private extension ProductImagesCollectionViewController {
+    func configureCollectionView() {
+        collectionView.backgroundColor = .basicBackground
+
+        collectionView.dragDelegate = self
+        collectionView.dropDelegate = self
+
+        registerCollectionViewCells()
+    }
+
+    func registerCollectionViewCells() {
+        collectionView.register(ProductImageCollectionViewCell.loadNib(),
+                                forCellWithReuseIdentifier: ProductImageCollectionViewCell.reuseIdentifier)
+        collectionView.register(InProgressProductImageCollectionViewCell.loadNib(),
+                                forCellWithReuseIdentifier: InProgressProductImageCollectionViewCell.reuseIdentifier)
     }
 }

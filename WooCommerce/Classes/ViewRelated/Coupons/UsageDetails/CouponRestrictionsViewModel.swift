@@ -5,7 +5,6 @@ import Yosemite
 /// View Model for `CouponRestriction`
 ///
 final class CouponRestrictionsViewModel: ObservableObject {
-    private let coupon: Coupon
 
     let currencySymbol: String
 
@@ -27,36 +26,47 @@ final class CouponRestrictionsViewModel: ObservableObject {
 
     init(coupon: Coupon,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
-        self.coupon = coupon
-        self.currencySymbol = currencySettings.symbol(from: currencySettings.currencyCode)
+        currencySymbol = currencySettings.symbol(from: currencySettings.currencyCode)
 
-        self.minimumSpend = coupon.minimumAmount
-        self.maximumSpend = coupon.maximumAmount
+        minimumSpend = coupon.minimumAmount
+        maximumSpend = coupon.maximumAmount
         if let perCoupon = coupon.usageLimit {
-            self.usageLimitPerCoupon = "\(perCoupon)"
+            usageLimitPerCoupon = "\(perCoupon)"
         } else {
-            self.usageLimitPerCoupon = ""
+            usageLimitPerCoupon = ""
         }
 
         if let perUser = coupon.usageLimitPerUser {
-            self.usageLimitPerUser = "\(perUser)"
+            usageLimitPerUser = "\(perUser)"
         } else {
-            self.usageLimitPerUser = ""
+            usageLimitPerUser = ""
         }
 
         if let limitUsageItemCount = coupon.limitUsageToXItems {
-            self.limitUsageToXItems = "\(limitUsageItemCount)"
+            limitUsageToXItems = "\(limitUsageItemCount)"
         } else {
-            self.limitUsageToXItems = ""
+            limitUsageToXItems = ""
         }
 
         if coupon.emailRestrictions.isNotEmpty {
-            self.allowedEmails = coupon.emailRestrictions.joined(separator: ", ")
+            allowedEmails = coupon.emailRestrictions.joined(separator: ", ")
         } else {
-            self.allowedEmails = ""
+            allowedEmails = ""
         }
 
-        self.individualUseOnly = coupon.individualUse
-        self.excludeSaleItems = coupon.excludeSaleItems
+        individualUseOnly = coupon.individualUse
+        excludeSaleItems = coupon.excludeSaleItems
+    }
+
+    init(currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+        currencySymbol = currencySettings.symbol(from: currencySettings.currencyCode)
+        minimumSpend = ""
+        maximumSpend = ""
+        usageLimitPerCoupon = ""
+        usageLimitPerUser = ""
+        limitUsageToXItems = ""
+        allowedEmails = ""
+        individualUseOnly = false
+        excludeSaleItems = false
     }
 }

@@ -6,7 +6,37 @@ import Yosemite
 struct AddEditCoupon: View {
 
     @ObservedObject private var viewModel: AddEditCouponViewModel
+    @State private var showingEditDescription: Bool = false
+    @State private var showingCouponExpiryActionSheet: Bool = false
+    @State private var showingCouponExpiryDate: Bool = false
+    @State private var showingCouponRestrictions: Bool = false
     @Environment(\.presentationMode) var presentation
+
+    private var expiryDateActionSheetButtons: [Alert.Button] {
+        var buttons: [Alert.Button] = []
+
+        if viewModel.expiryDateField != nil {
+            buttons = [
+                .default(Text(Localization.actionSheetEditExpirationDate), action: {
+                    showingCouponExpiryDate = true
+                }),
+                .destructive(Text(Localization.actionSheetDeleteExpirationDate), action: {
+                    viewModel.expiryDateField = nil
+                })
+            ]
+        }
+        else {
+            buttons = [
+                .default(Text(Localization.actionSheetAddExpirationDate), action: {
+                    showingCouponExpiryDate = true
+                })
+            ]
+        }
+
+        buttons.append(.cancel())
+
+        return buttons
+    }
 
     init(_ viewModel: AddEditCouponViewModel) {
         self.viewModel = viewModel
@@ -18,6 +48,7 @@ struct AddEditCoupon: View {
             GeometryReader { geometry in
                 ScrollView {
                     VStack (alignment: .leading, spacing: 0) {
+
                         Group {
                             ListHeaderView(text: Localization.headerCouponDetails.uppercased(), alignment: .left)
 
@@ -54,7 +85,7 @@ struct AddEditCoupon: View {
                             .padding(.bottom, Constants.verticalSpacing)
 
                             Button {
-                                //TODO: handle action
+                                viewModel.generateRandomCouponCode()
                             } label: {
                                 Text(Localization.regenerateCouponCodeButton)
                             }
@@ -64,12 +95,13 @@ struct AddEditCoupon: View {
                             .padding(.bottom, Constants.verticalSpacing)
 
                             Button {
-                                //TODO: handle action
+                                showingEditDescription = true
                             } label: {
                                 HStack {
-                                    Image(uiImage: .plusImage)
+                                    Image(uiImage: viewModel.editDescriptionIcon)
+                                        .colorMultiply(Color(.text))
                                         .frame(width: Constants.iconSize, height: Constants.iconSize)
-                                    Text(Localization.addDescriptionButton)
+                                    Text(viewModel.editDescriptionLabel)
                                         .bodyStyle()
                                 }
                             }
@@ -79,15 +111,23 @@ struct AddEditCoupon: View {
 
                             Group {
                                 TitleAndValueRow(title: Localization.couponExpiryDate,
-                                                 value: .placeholder(Localization.couponExpiryDatePlaceholder),
-                                                 selectionStyle: .disclosure, action: { })
+                                                 value: viewModel.expiryDateValue,
+                                                 selectionStyle: .disclosure, action: {
+                                    showingCouponExpiryActionSheet = true
+                                })
+                                    .actionSheet(isPresented: $showingCouponExpiryActionSheet) {
+                                        ActionSheet(
+                                            title: Text(Localization.expiryDateActionSheetTitle),
+                                            buttons: expiryDateActionSheetButtons
+                                        )
+                                    }
                                 Divider()
                                     .padding(.leading, Constants.margin)
                             }
                             .padding(.bottom, Constants.verticalSpacing)
 
                             Group {
-                                TitleAndToggleRow(title: Localization.includeFreeShipping, isOn: .constant(false))
+                                TitleAndToggleRow(title: Localization.includeFreeShipping, isOn: $viewModel.freeShipping)
                                     .padding(.horizontal, Constants.margin)
                                 Divider()
                                     .padding(.leading, Constants.margin)
@@ -134,7 +174,9 @@ struct AddEditCoupon: View {
 
                             TitleAndValueRow(title: Localization.usageRestrictions,
                                              value: .placeholder(""),
-                                             selectionStyle: .disclosure, action: { })
+                                             selectionStyle: .disclosure, action: {
+                                showingCouponRestrictions = true
+                            })
                             Divider()
                                 .padding(.leading, Constants.margin)
                         }
@@ -148,9 +190,27 @@ struct AddEditCoupon: View {
                         .buttonStyle(PrimaryButtonStyle())
                         .padding(.horizontal, Constants.margin)
                         .padding([.top, .bottom], Constants.verticalSpacing)
+
+                        LazyNavigationLink(destination: FullScreenTextView(title: Localization.titleEditDescriptionView,
+                                                                           text: $viewModel.descriptionField,
+                                                                           placeholder: Localization.addDescriptionPlaceholder),
+                                           isActive: $showingEditDescription) {
+                            EmptyView()
+                        }
+
+                        LazyNavigationLink(destination: CouponExpiryDateView(date: viewModel.expiryDateField ?? Date(), completion: { updatedExpiryDate in
+                            viewModel.expiryDateField = updatedExpiryDate
+                        }),
+                                           isActive: $showingCouponExpiryDate) {
+                            EmptyView()
+                        }
+
+                        LazyNavigationLink(destination: CouponRestrictions(viewModel: viewModel.couponRestrictionsViewModel),
+                                           isActive: $showingCouponRestrictions) {
+                            EmptyView()
+                        }
                     }
                 }
-                .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
             }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -195,15 +255,9 @@ private extension AddEditCoupon {
         static let regenerateCouponCodeButton = NSLocalizedString(
             "Regenerate Coupon Code",
             comment: "Button in the view for adding or editing a coupon.")
-        static let addDescriptionButton = NSLocalizedString(
-            "Add Description (Optional)",
-            comment: "Button for adding a description to a coupon in the view for adding or editing a coupon.")
         static let couponExpiryDate = NSLocalizedString(
             "Coupon Expiry Date",
             comment: "Field in the view for adding or editing a coupon.")
-        static let couponExpiryDatePlaceholder = NSLocalizedString(
-            "None",
-            comment: "Coupon expiry date placeholder in the view for adding or editing a coupon")
         static let includeFreeShipping = NSLocalizedString(
             "Include Free Shipping?",
             comment: "Toggle field in the view for adding or editing a coupon.")
@@ -223,6 +277,19 @@ private extension AddEditCoupon {
             "Usage Restrictions",
             comment: "Field in the view for adding or editing a coupon.")
         static let saveButton = NSLocalizedString("Save", comment: "Action for saving a Coupon remotely")
+        static let addDescriptionPlaceholder = NSLocalizedString("Add the description of the coupon.",
+                                                                 comment: "Placeholder text that will be shown in the view" +
+                                                                 " for adding the description of a coupon.")
+        static let expiryDateActionSheetTitle = NSLocalizedString("Set an expiry date for this coupon",
+                                                                  comment: "Title of the action sheet for setting an expiry date for a coupon.")
+        static let actionSheetEditExpirationDate = NSLocalizedString("Edit expiration date",
+                                                                     comment: "Button in the action sheet for editing the expiration date of a coupon.")
+        static let actionSheetDeleteExpirationDate = NSLocalizedString("Delete expiration date",
+                                                                     comment: "Button in the action sheet for deleting the expiration date of a coupon.")
+        static let actionSheetAddExpirationDate = NSLocalizedString("Add expiration date",
+                                                                     comment: "Button in the action sheet for adding the expiration date for a coupon.")
+        static let titleEditDescriptionView = NSLocalizedString("Coupon Description",
+                                                                comment: "Title of the view for editing the coupon description.")
     }
 }
 

@@ -64,7 +64,7 @@ final class OrderDetailsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureNavigationBarTitle()
+        configureNavigationBar()
         configureTopLoaderView()
         configureTableView()
         registerTableViewCells()
@@ -126,9 +126,18 @@ private extension OrderDetailsViewController {
 
     /// Setup: Navigation
     ///
-    func configureNavigationBarTitle() {
+    func configureNavigationBar() {
+        // Title
         let titleFormat = NSLocalizedString("Order #%1$@", comment: "Order number title. Parameters: %1$@ - order number")
         title = String.localizedStringWithFormat(titleFormat, viewModel.order.number)
+
+        // Actions menu
+        if viewModel.shouldShowActionsMenuItem {
+            navigationItem.rightBarButtonItem = UIBarButtonItem(image: .moreImage,
+                                                                style: .plain,
+                                                                target: self,
+                                                                action: #selector(presentActionMenuSheet(_:)))
+        }
     }
 
     /// Setup: EntityListener
@@ -292,6 +301,34 @@ private extension OrderDetailsViewController {
             NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
             self?.refreshControl.endRefreshing()
         }
+    }
+
+    /// Actions Menu Sheet.
+    ///
+    @objc func presentActionMenuSheet(_ sender: UIBarButtonItem) {
+        let sheetTitle = "#" + viewModel.order.number
+        guard let paymentLink = viewModel.paymentLink else {
+            return DDLogError("⛔️ No payment link for order: \(sheetTitle)")
+        }
+
+        // Configure share sheet
+        let actionSheet = UIAlertController(title: nil, message: sheetTitle, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
+        actionSheet.addCancelActionWithTitle(Localization.ActionsMenu.cancelAction)
+        actionSheet.addDefaultActionWithTitle(Localization.ActionsMenu.paymentLink) { [weak self] _ in
+            guard let self = self else { return }
+
+            SharingHelper.shareURL(url: paymentLink, title: nil, from: self.view, in: self) { _, completed, _, _ in
+                if completed {
+                    ServiceLocator.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailPaymentLinkShared())
+                }
+            }
+        }
+
+        // Handle sheet presentation
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.barButtonItem = sender
+        present(actionSheet, animated: true)
     }
 }
 
@@ -940,6 +977,11 @@ private extension OrderDetailsViewController {
         enum Payments {
             static let backToOrder = NSLocalizedString("Back to Order",
                                                        comment: "Button to dismiss modal overlay and go back to the order after a sucessful payment")
+        }
+
+        enum ActionsMenu {
+            static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel the main more actions menu sheet.")
+            static let paymentLink = NSLocalizedString("Share Payment Link", comment: "Title to share an order payment link.")
         }
     }
 

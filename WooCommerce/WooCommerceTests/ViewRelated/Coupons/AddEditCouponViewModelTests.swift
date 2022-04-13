@@ -32,6 +32,21 @@ final class AddEditCouponViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel4.title, Localization.titleEditGenericDiscount)
     }
 
+    func test_generateRandomCouponCode_populate_correctly_the_codeField() {
+        // Given
+        let viewModel = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(code: ""))
+        XCTAssertEqual(viewModel.codeField, "")
+
+        // When
+        viewModel.generateRandomCouponCode()
+
+        // Then
+        let dictionary = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"
+        XCTAssertEqual(viewModel.codeField.count, 8)
+        XCTAssertTrue(viewModel.codeField.allSatisfy(dictionary.contains))
+
+    }
+
     private enum Localization {
         static let titleCreatePercentageDiscount = NSLocalizedString(
             "Create percentage discount",

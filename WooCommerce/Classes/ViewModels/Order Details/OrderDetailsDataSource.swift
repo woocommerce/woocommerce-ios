@@ -53,6 +53,18 @@ final class OrderDetailsDataSource: NSObject {
             !orderContainsAnySubscription()
     }
 
+    var isEligibleForRefund: Bool {
+        guard order.refunds.count == 0,
+              let orderTotal = Double(order.total),
+              orderTotal > 0,
+              !isRefundedStatus,
+              !isEligibleForCardPresentPayment else {
+            return false
+        }
+
+        return true
+    }
+
     /// Whether the button to create shipping labels should be visible.
     ///
     var shouldShowShippingLabelCreation: Bool {
@@ -1027,9 +1039,8 @@ extension OrderDetailsDataSource {
             if shouldShowReceipts {
                 rows.append(.seeReceipt)
             }
-            let orderTotal = Double(order.total) ?? 0
-            let isEligibleForRefund = orderTotal > 0
-            if !isRefundedStatus && !isEligibleForCardPresentPayment && isEligibleForRefund {
+
+            if isEligibleForRefund {
                 rows.append(.issueRefundButton)
             }
 

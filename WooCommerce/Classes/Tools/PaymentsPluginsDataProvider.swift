@@ -17,8 +17,8 @@ protocol CardPresentPluginsDataProviderProtocol {
 }
 
 struct CardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol {
-    let storageManager: StorageManagerType
-    let stores: StoresManager
+    private let storageManager: StorageManagerType
+    private let stores: StoresManager
 
     init(
         storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -28,7 +28,7 @@ struct CardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol {
         self.stores = stores
     }
 
-    var siteID: Int64? {
+    private var siteID: Int64? {
         stores.sessionManager.defaultStoreID
     }
 

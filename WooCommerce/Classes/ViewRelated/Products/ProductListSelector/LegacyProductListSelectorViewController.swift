@@ -19,10 +19,10 @@ final class LegacyProductListSelectorViewController: UIViewController {
     private let siteID: Int64
     private var selectedProductIDsSubscription: AnyCancellable?
 
-    private lazy var dataSource = ProductListMultiSelectorDataSource(siteID: siteID, excludedProductIDs: excludedProductIDs)
+    private lazy var dataSource = LegacyProductListMultiSelectorDataSource(siteID: siteID, excludedProductIDs: excludedProductIDs)
 
     private lazy var paginatedListSelector: PaginatedListSelectorViewController
-        <ProductListMultiSelectorDataSource, Product, StorageProduct, ProductsTabProductTableViewCell> = {
+        <LegacyProductListMultiSelectorDataSource, Product, StorageProduct, ProductsTabProductTableViewCell> = {
             let viewProperties = PaginatedListSelectorViewProperties(navigationBarTitle: nil,
                                                                      noResultsPlaceholderText: Localization.noResultsPlaceholder,
                                                                      noResultsPlaceholderImage: .emptyProductsImage,

@@ -11,6 +11,8 @@ extension ProductsTabProductViewModel {
         imageService = ServiceLocator.imageService
         isSelected = false
         isDraggable = false
+        detailsString = productVariationModel.createDetailsString(currencySettings: currencySettings)
+        skuString = productVariationModel.createSKUString()
     }
 }
 
@@ -66,6 +68,26 @@ private extension EditableProductVariationModel {
     func createPriceText(currency: String, currencySettings: CurrencySettings) -> String {
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         return currencyFormatter.formatAmount(productVariation.price, with: currency) ?? ""
+    }
+
+    func createDetailsString(currencySettings: CurrencySettings) -> String {
+        let currencyCode = currencySettings.currencyCode
+        let currency = currencySettings.symbol(from: currencyCode)
+        let stockText = createStockText()
+        let priceText = createPriceText(currency: currency, currencySettings: currencySettings)
+
+        return [stockText, priceText]
+            .compactMap({ $0 })
+            .joined(separator: " • ")
+    }
+
+    func createSKUString() -> String? {
+        if let sku = sku, sku.isNotEmpty {
+            let format = NSLocalizedString("SKU: %1$@", comment: "SKU number for a product, reads like: SKU: 32425")
+            return String.localizedStringWithFormat(format, sku)
+        } else {
+            return nil
+        }
     }
 }
 

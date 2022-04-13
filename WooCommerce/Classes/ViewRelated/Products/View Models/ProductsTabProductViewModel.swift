@@ -15,7 +15,7 @@ private extension ProductStatus {
     }
 }
 
-/// Converts the input product model to properties ready to be shown on `ProductsTabProductTableViewCell`.
+/// Converts the input product model to properties ready to be shown on `ProductsTabProductTableViewCell` and `ProductListSelectorTableViewCell`.
 struct ProductsTabProductViewModel {
     let imageUrl: String?
     let name: String
@@ -24,23 +24,33 @@ struct ProductsTabProductViewModel {
     let isSelected: Bool
     let isDraggable: Bool
 
-    // Dependency for configuring the view.
+    /// Stock status and variation count or price
+    let detailsString: String
+
+    /// SKU for the product if any
+    let skuString: String?
+
+    /// Dependency for configuring the view.
     let imageService: ImageService
 
     init(product: Product,
          productVariation: ProductVariation? = nil,
          isSelected: Bool = false,
          isDraggable: Bool = false,
-         imageService: ImageService = ServiceLocator.imageService) {
+         imageService: ImageService = ServiceLocator.imageService,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
 
         imageUrl = product.images.first?.src
         name = product.name.isEmpty ? Localization.noTitle : product.name
         self.productVariation = productVariation
         self.isSelected = isSelected
         self.isDraggable = isDraggable
-        detailsAttributedString = EditableProductModel(product: product).createDetailsAttributedString()
-
         self.imageService = imageService
+
+        let editableProductModel = EditableProductModel(product: product)
+        detailsAttributedString = editableProductModel.createDetailsAttributedString()
+        detailsString = editableProductModel.createDetailsString(currencySettings: currencySettings)
+        skuString = editableProductModel.createSKUString()
     }
 
     /// Variation will show product variation ID within the title,
@@ -78,6 +88,25 @@ private extension EditableProductModel {
         return attributedString
     }
 
+    func createDetailsString(currencySettings: CurrencySettings) -> String {
+        let stockText = createStockText()
+        let variationsText = createVariationsText()
+        let priceText = createRegularPriceText(currencySettings: currencySettings)
+
+        return [stockText, variationsText, priceText]
+            .compactMap({ $0 })
+            .joined(separator: " • ")
+    }
+
+    func createRegularPriceText(currencySettings: CurrencySettings) -> String? {
+        guard product.price.isNotEmpty else {
+            return nil
+        }
+        let currency = currencySettings.symbol(from: currencySettings.currencyCode)
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        return currencyFormatter.formatAmount(product.price, with: currency)
+    }
+
     func createStatusText() -> String? {
         switch status {
         case .pending, .draft:
@@ -97,12 +126,21 @@ private extension EditableProductModel {
                                       plural: Localization.VariationCount.plural)
         return String.localizedStringWithFormat(format, numberOfVariations)
     }
+
+    func createSKUString() -> String? {
+        if let sku = sku, sku.isNotEmpty {
+            return String.localizedStringWithFormat(Localization.skuText, sku)
+        } else {
+            return nil
+        }
+    }
 }
 
 // MARK: Localization
 //
 private extension EditableProductModel {
     enum Localization {
+        static let skuText = NSLocalizedString("SKU: %1$@", comment: "SKU number for a product, reads like: SKU: 32425")
         enum VariationCount {
             static let singular = NSLocalizedString("%1$ld variation",
                                                     comment: "Label about one product variation shown on Products tab. Reads, `1 variation`")

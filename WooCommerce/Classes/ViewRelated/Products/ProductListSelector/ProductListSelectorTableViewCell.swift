@@ -48,7 +48,8 @@ final class ProductListSelectorTableViewCell: UITableViewCell {
 extension ProductListSelectorTableViewCell {
     func update(viewModel: ProductsTabProductViewModel, imageService: ImageService) {
         nameLabel.text = viewModel.createNameLabel()
-        detailsLabel.attributedText = viewModel.detailsAttributedString
+        detailsLabel.text = viewModel.detailsString
+        skuLabel.text = viewModel.skuString
         accessibilityIdentifier = viewModel.createNameLabel()
 
         productImageView.contentMode = .center
@@ -93,7 +94,6 @@ private extension ProductListSelectorTableViewCell {
         let contentStackView = UIStackView(arrangedSubviews: [nameLabel, detailsLabel, skuLabel])
         contentStackView.translatesAutoresizingMaskIntoConstraints = false
         contentStackView.axis = .vertical
-        contentStackView.spacing = 4
         return contentStackView
     }
 
@@ -113,11 +113,13 @@ private extension ProductListSelectorTableViewCell {
     func configureDetailsLabel() {
         detailsLabel.numberOfLines = 0
         detailsLabel.applySubheadlineStyle()
+        detailsLabel.textColor = .secondaryLabel
     }
 
     func configureSkuLabel() {
         skuLabel.numberOfLines = 0
         skuLabel.applySubheadlineStyle()
+        skuLabel.textColor = .secondaryLabel
     }
 
     func configureProductImageView() {

@@ -30,10 +30,8 @@ final class OrdersTests: XCTestCase {
 
         try TabNavComponent().goToOrdersScreen()
             .startOrderCreation()
-            .openAddProductScreen()
-            .selectProduct(byName: products[0].name)
 
-//        try NewOrderFlow.addProduct()
+        try NewOrderFlow.addProduct()
 
         try NewOrderFlow.editOrderStatus()
             .createOrder()

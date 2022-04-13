@@ -1,5 +1,3 @@
-Je bedrijf maakt mogelijk gebruik van aangepaste bestelstatussen. Nu kun je bestellingen filteren op die statussen! Tik op de Filterknop in de lijst met bestellingen om deze optie te zien.
+Maak bestellingen onderweg aan met producten, verzendings- en factuurgegevens en toeslagen! Je kunt direct na aankoop snel een fysieke creditcardbetaling aannemen of de klant een betaallink naar hun apparaat sturen. Jullie vroegen ernaar en nu is de mogelijkheid er!
 
-Sommigen van jullie hebben arendsogen en merkten op dat de productsoort niet altijd overeenkomt met de productsoort op de website. We hebben dit probleem nu verholpen.
-
-Wist je dat we met een nieuwe functie voor het aanmaken van bestellingen bezig zijn? Ga naar het tabblad Menu, tik op het instellingenpictogram en scrol naar experimentele functies. In deze release hebben we gedeelten voor de verzendmethode en verzendkosten toegevoegd. Er is ook een nieuwe Coupons-functie die je kunt uitproberen! Laat het vooral weten als er dingen kunnen worden verbeterd.
+We zijn ook bezig met onze functie voor couponbeheer. Krijg een voorproefje van de functie door deze in te schakelen via het tabblad Meer > Instellingen > Experimentele functies.

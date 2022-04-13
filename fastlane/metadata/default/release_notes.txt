@@ -1,5 +1,3 @@
-Your business might use custom order statuses – and now you can filter orders with those statuses! Tap on the Filter button in the order list to see this option.
+Create orders on the go with products, shipping & billing information, and fees! You can quickly take an in-person credit card payment right after or send a link to a customer to pay for that order on their own device. You’ve asked for it, and now it’s here!
 
-Some of you have eagle eyes and noticed that the sort of products in an order doesn’t always match the web. We fixed it!
-
-Did you know we’re working on a new feature for creating orders? Head to the Menu tab, tap the settings icon, and scroll to experimental features. In this release, we’ve added a shipping method and fees section. There is also a new Coupons feature that you can help us try out! Let us know if you find anything that could be improved.
+We’re also making progress on our coupon management feature. Get a sneak peek of it by turning it on in the More tab > Settings > Experimental Features.

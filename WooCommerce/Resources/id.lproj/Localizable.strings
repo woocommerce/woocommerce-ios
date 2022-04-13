@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-03-25 09:54:03+0000 */
+/* Translation-Revision-Date: 2022-04-13 09:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -37,9 +37,6 @@
 %1$@ is a placeholder that always replaced with \"Learn more\" string, - which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@ tentang penerimaan pembayaran dengan perangkat seluler dan pemesanan pembaca kartu";
 
-/* Combined rule for a coupon. Reads like: 2 Products and 1 Category */
-"%1$@ and %2$@" = "%1$@ dan %2$@";
-
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "Kartu %1$@ dengan 4 digit terakhir %2$@";
 
@@ -59,6 +56,9 @@
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ memberikan ulasan tentang %2$@";
 
+/* Summary line for a coupon, with the discounted amount and number of products and categories that the coupon is limited to. Reads like: '10% off all products' or '$15 off 2 Product 1 Category' */
+"%1$@ off %2$@" = "%1$@ dari %2$@";
+
 /* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
 "%1$@ refund requested (%2$@)" = "%1$@ diminta pengembalian dananya (%2$@)";
 
@@ -76,6 +76,9 @@
 
 /* Card reader battery level as an integer percentage */
 "%1$@%% Battery" = "%1$@%% Daya Baterai";
+
+/* Combined rule for a coupon. Reads like: 2 Products, 1 Category */
+"%1$@, %2$@" = "%1$@, %2$@";
 
 /* In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and weight. For example, “purple, has logo・1lbs”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the weight with the unit. */
 "%1$@・%2$@" = "%1$@・%2$@";
@@ -113,6 +116,12 @@
 /* Number of rates selected in Shipping Labels > Carrier and Rates */
 "%1$d rates selected" = "%1$d tarif dipilih";
 
+/* The singular limit of time for each user to apply a coupon, reads like: 1 use per user */
+"%1$d use per user" = "%1$d kali penggunaan per pengguna";
+
+/* The plural limit of time for each user to apply a coupon, reads like: 10 uses per user */
+"%1$d uses per user" = "%1$d kali penggunaan per pengguna";
+
 /* Format for the variations detail row in singular form. Reads, `1 variation`
    Label about one product variation shown on Products tab. Reads, `1 variation` */
 "%1$ld variation" = "%1$ld variasi";
@@ -146,10 +155,10 @@
 "%d Products" = "%d Produk";
 
 /* No comment provided by engineer. */
-"%d Products and %d Categories" = "%1$d Produk dan %2$d Kategori";
+"%d Products excl. %d Category" = "%1$d Produk tidak termasuk %2$d Kategori";
 
 /* No comment provided by engineer. */
-"%d Products excl. %d Category" = "%1$d Produk tidak termasuk %2$d Kategori";
+"%d Products, %d Categories" = "%1$d Produk, %2$d Kategori";
 
 /* For example: `1 item` in Aggregated Product List */
 "%d item" = "%d barang";
@@ -493,26 +502,26 @@
 /* Header bar label on top of order list when no filters are applied */
 "All Orders" = "Semua Pesanan";
 
-/* The text to be displayed in when the coupon is not limit to any specific product */
+/* Text indicating that there's no limit to the number of products that a coupon can be applied for. Displayed on coupon list items and details screen */
 "All Products" = "Semua Produk";
 
+/* Exception rule for a coupon. Reads like: All Products excl. 2 Products */
+"All Products excl. %1$@" = "Semua Produk kecuali %1$@";
+
+/* No comment provided by engineer. */
+"All Products excl. %d Categories" = "Semua Produk kecuali %d Kategori";
+
+/* No comment provided by engineer. */
+"All Products excl. %d Products" = "Semua Produk kecuali %d Produk";
+
 /* Value for the limit usage to X items row in Coupon Usage Details screen when no limit is set */
-"All Qualifying in Cart" = "Semua Item yang Memenuhi Syarat di Keranjang";
+"All Qualifying" = "Semua Produk yang Memenuhi Syarat";
 
 /* Message displayed when there are no packages to display in the Add New Service Package screen in Shipping Label flow */
 "All available packages have been activated" = "Semua paket yang tersedia telah diaktifkan";
 
 /* Name of final step in Install Jetpack flow. */
 "All done" = "Semua selesai";
-
-/* Exception rule for a coupon. Reads like: All excl. 2 Products */
-"All excl. %1$@" = "Semua tidak termasuk %1$@";
-
-/* No comment provided by engineer. */
-"All excl. %d Categories" = "Semua tidak termasuk %d Kategori";
-
-/* No comment provided by engineer. */
-"All excl. %d Products" = "Semua tidak termasuk %d Produk";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "Semua ulasan ditandai sudah dibaca";
@@ -529,8 +538,12 @@
 /* Display label for the product's inventory backorders setting option */
 "Allow, but notify customer" = "Izinkan, tetapi beri tahu pelanggan";
 
-/* Title for the allowed email row in coupon usage details screen. */
+/* Title for the allowed email row in coupon usage details screen.
+   Title for the Allowed Emails screen */
 "Allowed Emails" = "Email yang Diizinkan";
+
+/* Text on Coupon Details screen to indicate that the coupon allows free shipping */
+"Allows free shipping" = "Menerima pengiriman gratis";
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "Hampir selesai! Masukkan kode verifikasi dari aplikasi pengautentikasi.";
@@ -538,11 +551,11 @@
 /* String displayed before offering alternative login methods */
 "Alternatively:" = "Atau:";
 
-/* Title for the amount field on the Shipping Line Details screen during order creation
-   Title of the Amount label on Coupon Details screen */
+/* Title of the Amount label on Coupon Details screen */
 "Amount" = "Jumlah";
 
-/* Title for the amount field on the Fee Details screen during order creationParameters: %1$@ - fee type (percent sign or currency symbol) */
+/* Title for the amount field on the Fee Details screen during order creationParameters: %1$@ - fee type (percent sign or currency symbol)
+   Title for the amount field on the Shipping Details screen during order creationParameters: %1$@ - currency symbol */
 "Amount (%1$@)" = "Jumlah (%1$@)";
 
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
@@ -629,9 +642,6 @@
 /* No comment provided by engineer. */
 "Apply %@ off to some products with the promo code “%@”." = "Terapkan diskon %1$@ untuk beberapa produk dengan kode promo “%2$@”.";
 
-/* Title of the Apply To row in Coupon Details screen */
-"Apply To" = "Terapkan Untuk";
-
 /* Approve a comment */
 "Approve" = "Setujui";
 
@@ -644,6 +654,9 @@
 
 /* Title of the alert when a user is changing the product type */
 "Are you sure you want to change the product type?" = "Apakah Anda yakin ingin mengubah jenis produk?";
+
+/* Confirm message for deleting coupon on the Coupon Details screen */
+"Are you sure you want to delete this coupon?" = "Anda yakin hendak menghapus kupon ini?";
 
 /* Message title for Discard Changes Action Sheet */
 "Are you sure you want to discard these changes?" = "Anda yakin ingin mengabaikan perubahan ini?";
@@ -789,7 +802,7 @@
 "Can Not Request Link" = "Tidak Dapat Meminta Tautan";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title that closes the action sheet in product variations - Button title that closes the presented screen - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
+   Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title that closes the action sheet in product variations - Button title that closes the presented screen - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button in the navigation bar of the view for adding or editing a coupon. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
 "Cancel" = "Batalkan";
 
 /* Display label for cancelled order status. */
@@ -803,6 +816,9 @@
 
 /* The title of the alert when there is a generic error adding the package */
 "Cannot add package" = "Tidak dapat menambahkan paket";
+
+/* Error message when no URL to WP-Admin page is found during Jetpack install flow */
+"Cannot find information about your site's WP-Admin. Please try again." = "Informasi tentang WP-Admin situs Anda tidak dapat ditemukan. Mohon ulangi.";
 
 /* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
    The title of the alert when there is an error updating the product */
@@ -1095,23 +1111,17 @@
 /* Description for the Origin Country row in Customs screen of Shipping Label flow */
 "Country where the product was manufactured or assembled" = "Negara tempat pembuatan atau perakitan produk";
 
-/* Title of Coupon Details screen */
-"Coupon" = "Kupon";
-
-/* Title of the Coupon Code row in Coupon Details screen */
-"Coupon Code" = "Kode Kupon";
-
-/* Title of Details section in Coupon Details screen */
-"Coupon Details" = "Detail Kupon";
-
-/* Title of the Coupon Expiry Date row in Coupon Details screen */
-"Coupon Expiry Date" = "Tanggal Kedaluwarsa Kupon";
-
 /* Cell title on beta features screen to enable coupon management */
 "Coupon Management" = "Manajemen Kupon";
 
+/* Title of Summary section in Coupon Details screen */
+"Coupon Summary" = "Ringkasan Kupon";
+
 /* Notice message displayed when a coupon code is copied from the Coupon Details screen */
 "Coupon copied" = "Kupon disalin";
+
+/* Notice message after deleting coupon from the Coupon Details screen */
+"Coupon deleted" = "Kupon Telah Dihapus";
 
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
@@ -1139,11 +1149,26 @@
 /* Description of the Action sheet option when the user wants to create Simple Payments order */
 "Create an order with minimal information" = "Buat pesanan dengan informasi minimal";
 
+/* Title of the view for creating a coupon with generic discount. */
+"Create discount" = "Buat diskon";
+
+/* Title of the view for creating a coupon with fixed card discount. */
+"Create fixed card discount" = "Buat diskon kartu tetap";
+
+/* Title of the view for creating a coupon with fixed product discount. */
+"Create fixed product discount" = "Buat diskon produk tetap";
+
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "Buat paket baru";
 
 /* Action sheet option when the user wants to create full manual order */
 "Create order" = "Buat pesanan";
+
+/* Title of the banner notice in the Orders tab */
+"Create orders and take payments!" = "Siapkan pesanan dan terima pembayaran!";
+
+/* Title of the view for creating a coupon with percentage discount. */
+"Create percentage discount" = "Buat persentase diskon";
 
 /* The title of the shipping labels top banner in order details */
 "Create shipping labels from your device!" = "Buat label pengiriman dari perangkat Anda!";
@@ -1255,8 +1280,11 @@
 "Default" = "Asal";
 
 /* Button title Delete in Downloadable File Options Action Sheet
-   Button title Delete in Edit Product More Options Action Sheet */
+   Button title Delete in Edit Product More Options Action Sheet - Title for the action button on the confirm alert for deleting coupon on the Coupon Details screen */
 "Delete" = "Hapus";
+
+/* Action title for deleting coupon on the Coupon Details screen */
+"Delete Coupon" = "Hapus kupon";
 
 /* Delete tracking button title */
 "Delete Tracking" = "Hapus Pelacakan";
@@ -1268,7 +1296,7 @@
 "Describe your product to your future customers..." = "Jelaskan produk Anda ke calon pelanggan...";
 
 /* The navigation bar title of the Aztec editor screen.
-   Title in the Product description row on Product form screen when the description is non-empty. - Title of Description row of item details in Customs screen of Shipping Label flow - Title of the Description row in Coupon Details screen */
+   Title in the Product description row on Product form screen when the description is non-empty. - Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "Deskripsi";
 
 /* Footer text in Product Menu order screen */
@@ -1298,8 +1326,7 @@
 /* Settings > Manage Card Reader > Connected Reader > A button to disconnect the reader */
 "Disconnect Reader" = "Putus Sambungan Pembaca";
 
-/* Discount label for payment view
-   Title of the Discount row in Coupon Details screen */
+/* Discount label for payment view */
 "Discount" = "Diskon";
 
 /* Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s) */
@@ -1309,7 +1336,7 @@
 "Discounted Orders" = "Pesanan yang Didiskon";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Button to dismiss the alert presented when finding a reader to connect to fails - Button to dismiss. Presented to users after collecting a payment fails - Button to dismiss. Presented to users when updating the card reader software fails - Dismiss button in inbox note row. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab - The title of the button to dismiss the SimplePayments top banner - Title of the button to dismiss the banner notice in the add-ons view - Title of the dismiss action button on the coupon list screen */
+   Accessibility label for button to dismiss a bottom sheet - Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Button to dismiss the alert presented when finding a reader to connect to fails - Button to dismiss. Presented to users after collecting a payment fails - Button to dismiss. Presented to users when updating the card reader software fails - Dismiss button in inbox note row. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab - The title of the button to dismiss the Orders top banner - Title of the button to dismiss the banner notice in the add-ons view - Title of the dismiss action button on the coupon list screen */
 "Dismiss" = "Hentikan";
 
 /* Dismiss All button in Inbox Notes for dismissing all the notes. */
@@ -1419,6 +1446,9 @@
    Navigation title for the Product Attributes screen */
 "Edit Attributes" = "Sunting Atribut";
 
+/* Action title for editing a coupon from the Coupon Details screen */
+"Edit Coupon" = "Sunting Kupon";
+
 /* Accessibility label for the button to edit customer details on the New Order screen */
 "Edit Customer Details" = "Sunting Detail Pelanggan";
 
@@ -1433,6 +1463,18 @@
 
 /* Accessibility label for the button to edit customer note on the New Order screen */
 "Edit customer note" = "Sunting catatan pelanggan";
+
+/* Title of the view for editing a coupon with generic discount. */
+"Edit discount" = "Sunting diskon";
+
+/* Title of the view for editing a coupon with fixed card discount. */
+"Edit fixed card discount" = "Sunting diskon kartu tetap";
+
+/* Title of the view for editing a coupon with fixed product discount. */
+"Edit fixed product discount" = "Sunting diskon produk tetap";
+
+/* Title of the view for editing a coupon with percentage discount. */
+"Edit percentage discount" = "Sunting persentase diskon";
 
 /* Carrier eligible for free pickup in Shipping Labels > Carrier and Rates */
 "Eligible for free pickup" = "Memenuhi syarat untuk penjemputan gratis";
@@ -1602,8 +1644,20 @@
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
 "Everyone loves a deal" = "Semua orang suka promo";
 
+/* Title of the action button to add product categories to the exclusion list in Coupon Usage Details screen */
+"Exclude Product Categories" = "Kecualikan Kategori Produk";
+
+/* Title of the action button to add products to the exclusion list in Coupon Usage Details screen */
+"Exclude Products" = "Kecualikan Produk";
+
 /* Title for the exclude sale items row in coupon usage details screen. */
 "Exclude Sale Items" = "Kecualikan Barang Obral";
+
+/* Text on Coupon Details screen to indicate that the coupon can not be applied to sale items */
+"Excludes sale items" = "Mengecualikan barang obral";
+
+/* Title of the exclusions section in Coupon Usage Details screen */
+"Exclusions" = "Pengecualian";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -1611,6 +1665,9 @@
 
 /* Status of coupons that are expired */
 "Expired" = "Sudah Berakhir";
+
+/* Formatted content for coupon expiry date, reads like: Expires August 4, 2022 */
+"Expires %1$@" = "Kedaluwarsa %1$@";
 
 /* Action sheet option when the user wants to change the Product type to external product */
 "External product" = "Produk eksternal";
@@ -1620,6 +1677,9 @@
 
 /* Display label for failed order status. */
 "Failed" = "Gagal";
+
+/* Error message on the Coupon Details screen when deleting coupon fails */
+"Failed to delete coupon. Please try again." = "Gagal menghapus kupon. Mohon ulangi.";
 
 /* An error message shown when failing to retrieve information to present a view for a review push notification. */
 "Failed to retrieve the review notification details." = "Gagal mengambil detail pemberitahuan ulasan.";
@@ -1765,7 +1825,7 @@
 "Give Feedback" = "Berikan Masukan";
 
 /* The title of the button to give feedback about products beta features on the banner on the products tab
-   The title of the button to give feedback about shipping labels features on the banner in order details - Title of the button to give feedback about the add-ons feature - Title of the button to give feedback about the Simple Payments feature - Title on the navigation bar for the products feedback survey */
+   The title of the button to give feedback about shipping labels features on the banner in order details - Title of the button to give feedback about the add-ons feature - Title of the button to give feedback about the Orders features - Title on the navigation bar for the products feedback survey */
 "Give feedback" = "Berikan masukan";
 
 /* Option to select the Gmail app when logging in with magic links */
@@ -1968,6 +2028,9 @@
 
 /* Title for the individual use only row in coupon usage details screen. */
 "Individual Use Only" = "Hanya untuk penggunaan individu";
+
+/* Text on Coupon Details screen to indicate that the coupon can not be applied in conjunction with other coupons */
+"Individual use only" = "Hanya untuk penggunaan individu";
 
 /* Description for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Individually shipped item" = "Item yang dikirim terpisah";
@@ -2194,8 +2257,14 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the product form bottom sheet action for editing linked products. */
 "Linked products" = "Produk ditautkan";
 
+/* Description of the allowed emails field for coupons */
+"List of allowed billing emails to check against when an order is placed. Separate email addresses with commas. You can also use an asterisk (*) to match parts of an email. For example \"*@gmail.com\" would match all gmail addresses." = "Daftar email penagihan yang diizinkan untuk pencocokan saat pesanan dilakukan. Pisahkan alamat email dengan koma. Anda juga dapat menggunakan tanda bintang (*) untuk mencocokkan bagian-bagian dari email. Misalnya \"*@gmail.com\" akan cocok dengan semua alamat gmail.";
+
 /* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
 "List of images of the product" = "Daftar gambar produk";
+
+/* Accessibility label for loading indicator (spinner) at the bottom of a list */
+"Loading" = "Sedang memuat";
 
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "Memuat Pesanan";
@@ -2205,6 +2274,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Text of the loading banner in Order Detail when loaded for the first time */
 "Loading content" = "Memuat konten";
+
+/* Accessibility label for placeholder rows while product variations are loading */
+"Loading product variations" = "Memuat variasi produk";
+
+/* Accessibility label for placeholder rows while products are loading */
+"Loading products" = "Memuat produk";
 
 /* Button title.  Tapping takes the user to the login form.
    Log In button label. - View title during the log in process. */
@@ -2315,8 +2390,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "Tandai pesanan ini selesai dan kirim pemberitahuan ke pelanggan";
 
-/* Title for the maximum spend row on coupon usage details screen with currency symbol within the brackets. Reads like: Maximum Spend ($) */
-"Maximum Spend (%1$@)" = "Belanja Maksimum (%1$@)";
+/* Title for the maximum spend row on coupon usage details screen with currency symbol within the brackets. Reads like: Max. Spend ($) */
+"Max. Spend (%1$@)" = "Maks. Belanja %1$@";
+
+/* The maximum limit of spending allowed for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
+"Maximum spend of %1$@" = "Belanja maksimum %1$@";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "Media tidak memiliki file yang dikaitkan untuk diunggah.";
@@ -2343,8 +2421,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Option to select the Microsft Outlook app when logging in with magic links */
 "Microsoft Outlook" = "Microsoft Outlook";
 
-/* Title for the minimum spend row on coupon usage details screen with currency symbol within the brackets. Reads like: Minimum Spend ($) */
-"Minimum Spend (%1$@)" = "Belanja Minimum (%1$@)";
+/* Title for the minimum spend row on coupon usage details screen with currency symbol within the brackets. Reads like: Min. Spend ($) */
+"Min. Spend (%1$@)" = "Min. Belanja %1$@";
+
+/* The minimum limit of spending required for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
+"Minimum spend of %1$@" = "Belanja minimum %1$@";
 
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
 "Minimum value %@, maximum value %@" = "Nilai minimum %1$@, nilai maksimum %2$@";
@@ -2447,9 +2528,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action navigate to the variation creation screen
    Next nav bar button title in Add Product Attribute Options screen - Next nav bar button title in Add Product Attribute screen - Title for the button to confirm the amount in the simple payments screen - Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
 "Next" = "Selanjutnya";
-
-/* Value for the individual use only row or the exclude sale items row in Coupon Usage Details screen when the value is false */
-"No" = "Tidak";
 
 /* Value for the allowed emails row in Coupon Usage Details screen when no restriction is set */
 "No Restrictions" = "Tidak Ada Pembatasan";
@@ -2645,9 +2723,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Add a note screen - title. Example: Order #15. Parameters: %1$@ - order number
    Order number title. Parameters: %1$@ - order number */
 "Order #%1$@" = "Pesanan #%1$@";
-
-/* Cell title on the beta features screen to enable creating new orders */
-"Order Creation" = "Pembuatan Pesanan";
 
 /* Order notes section title */
 "Order Notes" = "Catatan Pesanan";
@@ -3301,6 +3376,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "Reset kata sandi";
 
+/* Restriction for customers with specified emails to use a coupon, reads like: Restricted to customers with emails: *@a8c.com, *@vip.com */
+"Restricted to customers with emails: %1$@" = "Hanya untuk pelanggan dengan email: %1$@";
+
 /* Title for the Restriction Details row in Customs screen of Shipping Label flow */
 "Restriction Details" = "Detail Datasan";
 
@@ -3930,9 +4008,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "Ambil foto";
 
-/* Title of the banner notice in the Simple Payments feature */
-"Take payments from your device!" = "Terima pembayaran dari perangkat Anda!";
-
 /* Accessibility hint for the More button on formatting toolbar. */
 "Tap for more formatting options" = "Ketuk untuk melihat opsi pemformatan lainnya";
 
@@ -4041,9 +4116,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Cell description on beta features screen to enable accepting in-person payments for stores in Canada */
 "Test out In-Person Payments in Canada" = "Uji Pembayaran Langsung di Kanada";
-
-/* Cell description on the beta features screen to enable creating new orders */
-"Test out creating new manual orders as we get ready to launch" = "Coba buat pesanan manual baru sembari kami bersiap untuk meluncurkan";
 
 /* Cell description on beta features screen to enable coupon management */
 "Test out managing coupons as we get ready to launch" = "Coba kelola kupon selagi kami menyiapkan peluncuran";
@@ -4513,6 +4585,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Settings > Manage Card Reader > Connect > Hint to enable Bluetooth */
 "Turn mobile device Bluetooth on" = "Aktifkan Bluetooth perangkat seluler";
 
+/* Description for the individual use only row in coupon usage details screen. */
+"Turn this on if the coupon cannot be used in conjunction with other coupons." = "Aktifkan ini jika kupon tidak dapat digunakan bersamaan dengan kupon lainnya.";
+
+/* Description for the exclude sale items row in coupon usage details screen. */
+"Turn this on if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale." = "Aktifkan ini jika kupon tidak berlaku untuk barang obral. Kupon per item hanya dapat digunakan jika barang tidak diobral. Kupon per keranjang hanya dapat digunakan jika ada barang di keranjang yang tidak diobral.";
+
 /* Title of a button linking to the app's Twitter profile */
 "Twitter" = "Twitter";
 
@@ -4776,17 +4854,11 @@ This part is the link to the website, and forms part of a longer sentence which 
    Navigation bar title for editing linked products for upsell products */
 "Upsells" = "Upsell";
 
-/* Navigation title for usage details screen */
-"Usage Details" = "Detail Penggunaan";
-
 /* Title for the usage limit per coupon row in coupon usage details screen. */
 "Usage Limit Per Coupon" = "Batas Penggunaan per Kupon";
 
 /* Title for the usage limit per user row in coupon usage details screen. */
 "Usage Limit Per User" = "Batas Penggunaan per Pengguna";
-
-/* Title for the usage limits section on coupon usage details screen */
-"Usage Limits" = "Batas penggunaan";
 
 /* Title for the usage restrictions section on coupon usage details screen */
 "Usage Restrictions" = "Pembatasan Penggunaan";
@@ -4932,9 +5004,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "Kami berusaha agar Anda bisa lebih mudah melihat add-on produk dari perangkat Anda! Untuk sekarang, Anda akan dapat melihat add-on untuk pesanan Anda. Anda dapat membuat dan menyunting add-on ini pada dasbor web Anda.";
 
-/* Content of the banner notice in the Simple Payments view */
-"We are working on making it easier for you to take payments from your device! For now, tap on the \"+\" button and you’ll be able to create an order with the amount you want to collect" = "Kami berupaya untuk lebih memudahkan Anda menerima pembayaran dari perangkat! Untuk sekarang, ketuk tombol \"+\" dan Anda akan dapat membuat pesanan dengan jumlah yang diinginkan";
-
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "Kami tidak dapat menampilkan analisis toko Anda";
 
@@ -5011,6 +5080,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Generic error message when In-Person Payments is unavailable */
 "We're sorry, we were unable to verify In-Person Payments for this store." = "Maaf, kami tidak dapat memverifikasi Pembayaran Langsung untuk toko ini.";
+
+/* Content of the banner notice in the Orders tab */
+"We've been working on making it possible to create orders and take payments from your device! You can try these features out by tapping on the \"+\" icon" = "Kami telah berupaya agar Anda dapat menyiapkan pesanan dan menerima pembayaran dari perangkat Anda! Anda dapat mecoba fitur ini dengan mengetuk ikon \"+\"";
 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Kami telah mengirimi Anda email berisi tautan pendaftaran untuk membuat akun WordPress.com baru. Periksa email Anda di perangkat ini, dan ketuk tautan dalam email yang Anda terima dari WordPress.com";
@@ -5104,9 +5176,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "Yahoo Mail";
-
-/* Value for the individual use only row or the exclude sale items row in Coupon Usage Details screen when the value is true */
-"Yes" = "Ya";
 
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "Ya, ubah";

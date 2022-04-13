@@ -41,8 +41,8 @@ struct TitleAndTextFieldRow: View {
                 .bodyStyle()
                 .lineLimit(1)
                 .fixedSize()
-                .frame(width: titleWidth, alignment: .leading)
                 .modifier(MaxWidthModifier())
+                .frame(width: titleWidth, alignment: .leading)
             HStack {
                 TextField(placeholder, text: $text, onEditingChanged: onEditingChanged ?? { _ in })
                     .multilineTextAlignment(fieldAlignment)

@@ -18,7 +18,7 @@ struct PaymentReceiptEmailParameterDeterminer {
     ///
     /// - Parameters:
     ///   - order: the order associated with the payment
-    ///   - onCompletion: closure invoked with the result of the inquiry, containg the email (if any) or error
+    ///   - onCompletion: closure invoked with the result of the inquiry, containing the email (if any) or error
     ///
     func receiptEmail(from order: Order, onCompletion: @escaping ((Result<String?, Error>) -> Void)) {
         synchronizePlugins(from: order.siteID) { result in

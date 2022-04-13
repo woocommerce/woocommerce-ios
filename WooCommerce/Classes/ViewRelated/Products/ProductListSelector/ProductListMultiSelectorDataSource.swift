@@ -51,7 +51,7 @@ final class ProductListMultiSelectorDataSource: PaginatedListSelectorDataSource 
         return isProductSelected(model)
     }
 
-    func configureCell(cell: ProductsTabProductTableViewCell, model: Product) {
+    func configureCell(cell: ProductListSelectorTableViewCell, model: Product) {
         cell.selectionStyle = .default
 
         let viewModel = ProductsTabProductViewModel(product: model, isSelected: isSelected(model: model))

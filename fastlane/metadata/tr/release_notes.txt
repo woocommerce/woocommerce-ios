@@ -1,5 +1,3 @@
-İşletmeniz özel sipariş durumları kullanabilir ve artık siparişleri bu durumlara göre filtreleyebilirsiniz! Bu seçeneği görmek için sipariş listesindeki Filtre düğmesine dokunun.
+Hareket halindeyken; ürünler, nakliye, fatura bilgileri ve ücretleri kullanarak siparişler oluşturun! Hemen ardından yüz yüze kredi kartı ödemesini hızlı bir şekilde alabilir veya müşteriye ilgili siparişin ödemesini kendi cihazında yapması için bir bağlantı gönderebilirsiniz. Siz istediniz, biz de yaptık!
 
-Bazılarınızın kartal gibi gözleri olduğundan bir siparişteki ürün sıralamasının her zaman web'le aynı olmadığını fark ediyordu. Bu sorunu çözdük.
-
-Sipariş oluşturma ile ilgili yeni bir özellik üzerinde çalıştığımızı biliyor muydunuz? Menü sekmesine gidin, ayarlar simgesine dokunup deneysel özelliklere gidin. Bu sürümde, bir gönderim yöntemi ve ücretler bölümü ekledik. Ayrıca denememize yardımcı olabileceğiniz yeni bir Kuponlar özelliği de var! Geliştirilebilecek bir şey bulursanız bize bildirin.
+Kupon yönetimi özelliğimizde de ilerleme kaydediyoruz. Diğer sekmesi > Ayarlar > Deneysel Özellikler bölümünden etkinleştirerek bir göz atın.

@@ -136,8 +136,13 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
             connectReader { [weak self] in
                 self?.attemptCardPresentRefund(refundAmount: refundAmount as Decimal, charge: charge, onCompletion: { [weak self] result in
                     guard let self = self else { return }
-                    self.submitRefundToSite(refund: refund) { result in
-                        onCompletion(result)
+                    switch result {
+                    case .success:
+                        self.submitRefundToSite(refund: refund) { result in
+                            onCompletion(result)
+                        }
+                    case .failure(let error):
+                        onCompletion(.failure(error))
                     }
                 })
             }
@@ -228,14 +233,16 @@ private extension RefundSubmissionUseCase {
         }
 
         // Instantiates the alerts coordinator.
-        let alerts = OrderDetailsPaymentAlerts(presentingController: rootViewController,
-                                               paymentGatewayAccountID: paymentGatewayAccount.gatewayID,
-                                               countryCode: cardPresentConfigurationLoader.configuration.countryCode,
-                                               cardReaderModel: connectedReader?.readerType.model ?? "")
+        let alerts = OrderDetailsPaymentAlerts(transactionType: .refund,
+                                               presentingController: rootViewController)
         self.alerts = alerts
 
         // Shows reader ready alert.
-        alerts.readerIsReady(title: Localization.refundPaymentTitle(username: order.billingAddress?.firstName), amount: formattedAmount)
+        alerts.readerIsReady(title: Localization.refundPaymentTitle(username: order.billingAddress?.firstName),
+                             amount: formattedAmount,
+                             onCancel: { [weak self] in
+            self?.cancelRefund()
+        })
 
         // Starts refund process.
         cardPresentRefundOrchestrator.refund(amount: refundAmount,

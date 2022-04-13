@@ -31,7 +31,7 @@ final class CardPresentModalReaderIsReady: CardPresentPaymentsModalViewModel {
 
     let bottomTitle: String? = Localization.readerIsReady
 
-    let bottomSubtitle: String? = Localization.tapInsertOrSwipe
+    let bottomSubtitle: String?
 
     var accessibilityLabel: String? {
         guard let bottomTitle = bottomTitle else {
@@ -41,23 +41,17 @@ final class CardPresentModalReaderIsReady: CardPresentPaymentsModalViewModel {
         return topTitle + bottomTitle
     }
 
-    private let paymentGatewayAccountID: String?
-    private let countryCode: String
-    private let cardReaderModel: String
-    private let analytics: Analytics
+    /// Closure to execute when cancel button is tapped
+    private let cancelAction: () -> Void
 
     init(name: String,
          amount: String,
-         paymentGatewayAccountID: String?,
-         countryCode: String,
-         cardReaderModel: String,
-         analytics: Analytics = ServiceLocator.analytics) {
+         transactionType: CardPresentTransactionType,
+         cancelAction: @escaping () -> Void) {
         self.name = name
         self.amount = amount
-        self.paymentGatewayAccountID = paymentGatewayAccountID
-        self.countryCode = countryCode
-        self.cardReaderModel = cardReaderModel
-        self.analytics = analytics
+        self.bottomSubtitle = Localization.tapInsertOrSwipe(transactionType: transactionType)
+        self.cancelAction = cancelAction
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
@@ -65,15 +59,7 @@ final class CardPresentModalReaderIsReady: CardPresentPaymentsModalViewModel {
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
-        analytics.track(event: WooAnalyticsEvent.InPersonPayments
-                                        .collectPaymentCanceled(forGatewayID: paymentGatewayAccountID,
-                                                                countryCode: countryCode,
-                                                                cardReaderModel: cardReaderModel))
-
-        let action = CardPresentPaymentAction.cancelPayment(onCompletion: nil)
-
-        ServiceLocator.stores.dispatch(action)
-
+        cancelAction()
         viewController?.dismiss(animated: true, completion: nil)
     }
 
@@ -86,17 +72,27 @@ private extension CardPresentModalReaderIsReady {
     enum Localization {
         static let readerIsReady = NSLocalizedString(
             "Reader is ready",
-            comment: "Indicates the status of a card reader. Presented to users when payment collection starts"
+            comment: "Indicates the status of a card reader. Presented to users when in-person payment collection or refund starts"
         )
 
-        static let tapInsertOrSwipe = NSLocalizedString(
-            "Tap, insert or swipe to pay",
-            comment: "Indicates the action expected from a user. Presented to users when payment collection starts"
-        )
+        static func tapInsertOrSwipe(transactionType: CardPresentTransactionType) -> String {
+            switch transactionType {
+            case .collectPayment:
+                return NSLocalizedString(
+                    "Tap, insert or swipe to pay",
+                    comment: "Indicates the action expected from a user. Presented to users when payment collection starts"
+                )
+            case .refund:
+                return NSLocalizedString(
+                    "Tap, insert or swipe to refund",
+                    comment: "Indicates the action expected from a user. Presented to users when in-person refund starts"
+                )
+            }
+        }
 
         static let cancel = NSLocalizedString(
             "Cancel",
-            comment: "Button to cancel a payment"
+            comment: "Button to cancel an in-person payment or refund"
         )
     }
 }

@@ -4,12 +4,12 @@ import Yosemite
 /// Determines the email to be set (if any) on a payment receipt depending on the current payment plugins (WCPay, Stripe) configuration
 /// 
 struct PaymentReceiptEmailParameterDeterminer {
-    private let paymentsPluginsDataProvider: PaymentsPluginsDataProviderProtocol
+    private let cardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol
     private let stores: StoresManager
 
-    init(paymentsPluginsDataProvider: PaymentsPluginsDataProviderProtocol = PaymentsPluginsDataProvider(),
+    init(cardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol = CardPresentPluginsDataProvider(),
          stores: StoresManager = ServiceLocator.stores) {
-        self.paymentsPluginsDataProvider = paymentsPluginsDataProvider
+        self.cardPresentPluginsDataProvider = cardPresentPluginsDataProvider
         self.stores = stores
     }
 
@@ -32,15 +32,15 @@ struct PaymentReceiptEmailParameterDeterminer {
     }
 
     private func receiptEmail(from order: Order) -> String? {
-        let wcPay = paymentsPluginsDataProvider.getWCPayPlugin()
-        let stripe = paymentsPluginsDataProvider.getStripePlugin()
+        let wcPay = cardPresentPluginsDataProvider.getWCPayPlugin()
+        let stripe = cardPresentPluginsDataProvider.getStripePlugin()
 
-        guard !paymentsPluginsDataProvider.bothPluginsInstalledAndActive(wcPay: wcPay, stripe: stripe) else {
+        guard !cardPresentPluginsDataProvider.bothPluginsInstalledAndActive(wcPay: wcPay, stripe: stripe) else {
             return nil
         }
 
         guard let wcPay = wcPay,
-              paymentsPluginsDataProvider.wcPayInstalledAndActive(wcPay: wcPay) else {
+              cardPresentPluginsDataProvider.wcPayInstalledAndActive(wcPay: wcPay) else {
             return order.billingAddress?.email
         }
 

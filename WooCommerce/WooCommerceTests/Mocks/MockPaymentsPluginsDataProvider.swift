@@ -3,7 +3,7 @@ import Foundation
 import Yosemite
 @testable import WooCommerce
 
-final class MockPaymentsPluginsDataProvider: PaymentsPluginsDataProviderProtocol {
+final class MockCardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol {
     private let wcPayPlugin: SystemPlugin?
     private let stripePlugin: SystemPlugin?
     private let bothPluginsInstalledAndActive: Bool

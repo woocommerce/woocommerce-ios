@@ -28,6 +28,9 @@ public final class CardPresentPaymentStore: Store {
     /// We need to be able to cancel the process of collecting a payment.
     private var paymentCancellable: AnyCancellable? = nil
 
+    /// We need to be able to cancel the process of refunding a payment.
+    private var refundCancellable: AnyCancellable? = nil
+
     public init(
         dispatcher: Dispatcher,
         storageManager: StorageManagerType,
@@ -89,10 +92,10 @@ public final class CardPresentPaymentStore: Store {
                            onCompletion: completion)
         case .cancelPayment(let completion):
             cancelPayment(onCompletion: completion)
-        case .refundPayment(let parameters):
-            refundPayment(parameters: parameters)
-        case .cancelRefund:
-            cancelRefund()
+        case .refundPayment(let parameters, let onCardReaderMessage, let completion):
+            refundPayment(parameters: parameters, onCardReaderMessage: onCardReaderMessage, onCompletion: completion)
+        case .cancelRefund(let completion):
+            cancelRefund(onCompletion: completion)
         case .observeCardReaderUpdateState(onCompletion: let completion):
             observeCardReaderUpdateState(onCompletion: completion)
         case .startCardReaderUpdate:
@@ -241,32 +244,44 @@ private extension CardPresentPaymentStore {
         }))
     }
 
-    func refundPayment(parameters: RefundParameters) {
-        cardReaderService.refundPayment(parameters: parameters)
+    func refundPayment(parameters: RefundParameters, onCardReaderMessage: @escaping (CardReaderEvent) -> Void, onCompletion: ((Result<Void, Error>) -> Void)?) {
+        // Observes status events fired by the card reader.
+        let readerEventsSubscription = cardReaderService.readerEvents.sink { event in
+            onCardReaderMessage(event)
+        }
+
+        refundCancellable = cardReaderService.refundPayment(parameters: parameters)
             .sink { error in
+                readerEventsSubscription.cancel()
                 switch error {
                 case .failure(let error):
                     DDLogError("⛔️ Error during client-side refund: \(error.localizedDescription)")
+                    onCompletion?(.failure(error))
                 case .finished:
                     break
                 }
             } receiveValue: { status in
                 DDLogInfo("💳 Refund Success: \(status)")
+                onCompletion?(.success(()))
             }
-            .store(in: &cancellables)
     }
 
-    func cancelRefund() {
+    func cancelRefund(onCompletion: ((Result<Void, Error>) -> Void)?) {
+        refundCancellable?.cancel()
+        refundCancellable = nil
+
         cardReaderService.cancelRefund()
             .sink { error in
                 switch error {
                 case .failure(let error):
                     DDLogError("⛔️ Error cancelling client-side refund: \(error.localizedDescription)")
+                    onCompletion?(.failure(error))
                 case .finished:
                     break
                 }
             } receiveValue: {
                 DDLogInfo("🍁 Refund cancelled successfully!")
+                onCompletion?(.success(()))
             }
             .store(in: &cancellables)
     }

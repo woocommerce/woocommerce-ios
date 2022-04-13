@@ -222,18 +222,67 @@ final class ProductImageActionHandlerTests: XCTestCase {
         let model = EditableProductModel(product: mockProduct)
         let productImageActionHandler = ProductImageActionHandler(siteID: 123,
                                                                   product: model)
-
-        // Action
         let mockProductImages = [
             ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: ""),
             ProductImage(imageID: 2, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
         ]
         let anotherMockProduct = Product.fake().copy(images: mockProductImages)
         let anotherModel = EditableProductModel(product: anotherMockProduct)
+
+        let expectedProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }
+
+        let expectation = self.expectation(description: "Wait for reset product images")
+        expectation.expectedFulfillmentCount = 1
+
+        var observedProductImageStatusChanges: [[ProductImageStatus]] = []
+        productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { (productImageStatuses, error) in
+            XCTAssertTrue(Thread.current.isMainThread)
+            observedProductImageStatusChanges.append(productImageStatuses)
+            if observedProductImageStatusChanges.count >= expectedProductImageStatuses.count {
+                expectation.fulfill()
+            }
+        }
+
+        // Action
         productImageActionHandler.resetProductImages(to: anotherModel)
 
         // Assert
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+        XCTAssertEqual(productImageActionHandler.productImageStatuses, expectedProductImageStatuses)
+    }
+
+    // MARK: - `updateProductImageStatusesAfterReordering
+
+    func test_productImageStatuses_are_updated_correctly_after_reordering() {
+        // Given
+        let mockProduct = Product.fake().copy(images: [])
+        let model = EditableProductModel(product: mockProduct)
+        let productImageActionHandler = ProductImageActionHandler(siteID: 123,
+                                                                  product: model)
+        let mockProductImages = [
+            ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: ""),
+            ProductImage(imageID: 2, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
+        ]
+        let anotherMockProduct = Product.fake().copy(images: mockProductImages)
         let expectedProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }
+
+        let expectation = self.expectation(description: "Wait for update product images")
+        expectation.expectedFulfillmentCount = 1
+
+        var observedProductImageStatusChanges: [[ProductImageStatus]] = []
+        productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { (productImageStatuses, error) in
+            XCTAssertTrue(Thread.current.isMainThread)
+            observedProductImageStatusChanges.append(productImageStatuses)
+            if observedProductImageStatusChanges.count >= expectedProductImageStatuses.count {
+                expectation.fulfill()
+            }
+        }
+
+        // When
+        productImageActionHandler.updateProductImageStatusesAfterReordering(anotherMockProduct.imageStatuses)
+
+        // Then
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
         XCTAssertEqual(productImageActionHandler.productImageStatuses, expectedProductImageStatuses)
     }
 }

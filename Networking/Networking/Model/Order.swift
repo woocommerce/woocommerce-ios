@@ -31,6 +31,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
     public let totalTax: String
     public let paymentMethodID: String
     public let paymentMethodTitle: String
+    public let paymentURL: URL?
     public let chargeID: String?
 
     public let items: [OrderItem]
@@ -64,6 +65,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                 totalTax: String,
                 paymentMethodID: String,
                 paymentMethodTitle: String,
+                paymentURL: URL?,
                 chargeID: String?,
                 items: [OrderItem]?,
                 billingAddress: Address?,
@@ -97,6 +99,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         self.totalTax = totalTax
         self.paymentMethodID = paymentMethodID
         self.paymentMethodTitle = paymentMethodTitle
+        self.paymentURL = paymentURL
         self.chargeID = chargeID
 
         self.items = items ?? []
@@ -142,6 +145,9 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         let totalTax = try container.decode(String.self, forKey: .totalTax)
         let paymentMethodID = try container.decode(String.self, forKey: .paymentMethodID)
         let paymentMethodTitle = try container.decode(String.self, forKey: .paymentMethodTitle)
+
+        // "payment_url" is only available on stores stores with version >= 6.4
+        let paymentURL = try container.decodeIfPresent(URL.self, forKey: .paymentURL)
 
         let allOrderMetaData = try? container.decode([OrderMetaData].self, forKey: .metadata)
         var chargeID: String? = nil
@@ -192,6 +198,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                   totalTax: totalTax,
                   paymentMethodID: paymentMethodID,
                   paymentMethodTitle: paymentMethodTitle,
+                  paymentURL: paymentURL,
                   chargeID: chargeID,
                   items: items,
                   billingAddress: billingAddress,
@@ -224,6 +231,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                   totalTax: "",
                   paymentMethodID: "",
                   paymentMethodTitle: "",
+                  paymentURL: nil,
                   chargeID: nil,
                   items: [],
                   billingAddress: nil,
@@ -264,6 +272,7 @@ internal extension Order {
         case totalTax           = "total_tax"
         case paymentMethodID    = "payment_method"
         case paymentMethodTitle = "payment_method_title"
+        case paymentURL         = "payment_url"
 
         case items              = "line_items"
         case shippingAddress    = "shipping"
@@ -301,6 +310,7 @@ extension Order: Equatable {
             lhs.totalTax == rhs.totalTax &&
             lhs.paymentMethodID == rhs.paymentMethodID &&
             lhs.paymentMethodTitle == rhs.paymentMethodTitle &&
+            lhs.paymentURL == rhs.paymentURL &&
             lhs.billingAddress == rhs.billingAddress &&
             lhs.shippingAddress == rhs.shippingAddress &&
             lhs.shippingLines.count == rhs.shippingLines.count &&

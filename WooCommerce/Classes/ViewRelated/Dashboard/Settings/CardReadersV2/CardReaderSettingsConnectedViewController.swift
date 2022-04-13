@@ -19,14 +19,6 @@ final class CardReaderSettingsConnectedViewController: UIViewController, CardRea
     ///
     private var sections = [Section]()
 
-    /// Card Present Payments alerts
-    private lazy var paymentAlerts: OrderDetailsPaymentAlerts = {
-        OrderDetailsPaymentAlerts(presentingController: self,
-                                  paymentGatewayAccountID: viewModel?.dataSource.cardPresentPaymentGatewayID(),
-                                  countryCode: CardPresentConfigurationLoader().configuration.countryCode,
-                                  cardReaderModel: viewModel?.connectedReaderModel ?? "")
-    }()
-
     private let settingsAlerts = CardReaderSettingsAlerts()
 
     /// Accept our viewmodel

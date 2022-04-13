@@ -35,7 +35,7 @@ target 'WooCommerce' do
   #
 
   #pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => 'add/build-configuration'
-  pod 'Automattic-Tracks-iOS', '~> 0.9.1'
+  pod 'Automattic-Tracks-iOS', '~> 0.11.1'
 
   pod 'Gridicons', '~> 1.2.0'
 
@@ -64,7 +64,7 @@ target 'WooCommerce' do
   pod 'XLPagerTabStrip', '~> 9.0'
   pod 'Charts', '~> 3.6.0'
   pod 'ZendeskSupportSDK', '~> 5.0'
-  pod 'StripeTerminal', '~> 2.6'
+  pod 'StripeTerminal', '~> 2.7'
   pod 'Kingfisher', '~> 6.0.0'
   pod 'Wormholy', '~> 1.6.5', configurations: ['Debug']
 
@@ -81,12 +81,12 @@ end
 #
 def yosemite_pods
   pod 'Alamofire', '~> 4.8'
-  pod 'StripeTerminal', '~> 2.6'
+  pod 'StripeTerminal', '~> 2.7'
   pod 'CocoaLumberjack', '~> 3.5'
   pod 'CocoaLumberjack/Swift', '~> 3.5'
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  pod 'WordPressKit', '~> 4.46.0'
+  pod 'WordPressKit', '~> 4.49.0'
   # pod 'WordPressKit', :git => 'https://github.com/wordpress-mobile/WordPressKit-iOS.git', :branch => ''
 
   aztec
@@ -169,7 +169,7 @@ end
 # =================
 #
 def hardware_pods
-  pod 'StripeTerminal', '~> 2.6'
+  pod 'StripeTerminal', '~> 2.7'
   pod 'CocoaLumberjack', '~> 3.5'
   pod 'CocoaLumberjack/Swift', '~> 3.5'
 end
@@ -202,7 +202,7 @@ end
 # ==================
 #
 def experiments_pods
-  pod 'Automattic-Tracks-iOS', '~> 0.9.1'
+  pod 'Automattic-Tracks-iOS', '~> 0.11.1'
   pod 'CocoaLumberjack', '~> 3.5'
   pod 'CocoaLumberjack/Swift', '~> 3.5'
 end

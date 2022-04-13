@@ -3,6 +3,9 @@
 9.0
 -----
 
+- [*] Share payment links from the order details screen. [https://github.com/woocommerce/woocommerce-ios/pull/6609]
+- [internal] Reviews lists on Products and Menu tabs are refactored to avoid duplicated code. Please quickly smoke test them to make sure that everything still works as before. [https://github.com/woocommerce/woocommerce-ios/pull/6553]
+- [**] Now it's possible to change the order of the product images. [https://github.com/woocommerce/woocommerce-ios/pull/6620]
 
 8.9
 -----

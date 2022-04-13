@@ -21,7 +21,8 @@ final class CardReaderSettingsSearchingViewController: UIHostingController<CardR
             forSiteID: viewModel.siteID,
             knownReaderProvider: knownReaderProvider,
             alertsProvider: CardReaderSettingsAlerts(),
-            configuration: viewModel.configuration
+            configuration: viewModel.configuration,
+            analyticsTracker: viewModel.cardReaderConnectionAnalyticsTracker
         )
     }()
 

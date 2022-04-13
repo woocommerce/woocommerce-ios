@@ -47,4 +47,32 @@ final class ProductImageStatus_HelpersTests: XCTestCase {
         ]
         XCTAssertTrue(statuses.hasPendingUpload)
     }
+
+    // MARK: - `dragItemIdentifier`
+
+    func test_dragItemIdentifier_is_correct_for_remote_image() {
+        // Given
+        let productImage = ProductImage(imageID: 17, dateCreated: Date(), dateModified: Date(), src: "", name: nil, alt: nil)
+        let status = ProductImageStatus.remote(image: productImage)
+        let expectedIdentifier = "\(17)"
+
+        // When
+        let obtainedIdentifier = status.dragItemIdentifier
+
+        // Then
+        XCTAssertEqual(obtainedIdentifier, expectedIdentifier)
+    }
+
+    func test_dragItemIdentifier_is_correct_for_uploading_asset() {
+        // Given
+        let asset = PHAsset()
+        let status = ProductImageStatus.uploading(asset: asset)
+        let expectedIdentifier = asset.identifier()
+
+        // When
+        let obtainedIdentifier = status.dragItemIdentifier
+
+        // Then
+        XCTAssertEqual(obtainedIdentifier, expectedIdentifier)
+    }
 }

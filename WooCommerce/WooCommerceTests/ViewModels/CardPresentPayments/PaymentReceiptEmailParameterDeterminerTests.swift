@@ -21,6 +21,7 @@ final class PaymentReceiptEmailParameterDeterminerTests: XCTestCase {
 
     override func tearDown() {
         stores = nil
+        super.tearDown()
     }
 
     func test_when_only_WCPay_is_active_and_version_is_higher_than_minimum_that_sends_email_then_returns_nil() {

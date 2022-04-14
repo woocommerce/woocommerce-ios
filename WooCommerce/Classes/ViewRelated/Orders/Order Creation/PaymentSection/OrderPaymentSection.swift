@@ -78,7 +78,7 @@ struct OrderPaymentSection: View {
                 shouldShowFeeLineDetails = true
             }
         } else {
-            Button(Localization.addFees) {
+            Button(Localization.addFee) {
                 shouldShowFeeLineDetails = true
             }
             .buttonStyle(PlusButtonStyle())
@@ -95,7 +95,7 @@ private extension OrderPaymentSection {
         static let orderTotal = NSLocalizedString("Order Total", comment: "Label for the the row showing the total cost of the order")
         static let addShipping = NSLocalizedString("Add Shipping", comment: "Title text of the button that adds shipping line when creating a new order")
         static let shippingTotal = NSLocalizedString("Shipping", comment: "Label for the row showing the cost of shipping in the order")
-        static let addFees = NSLocalizedString("Add Fees", comment: "Title text of the button that adds fees when creating a new order")
+        static let addFee = NSLocalizedString("Add Fee", comment: "Title text of the button that adds a fee when creating a new order")
         static let feesTotal = NSLocalizedString("Fees", comment: "Label for the row showing the cost of fees in the order")
         static let taxesTotal = NSLocalizedString("Taxes", comment: "Label for the row showing the taxes in the order")
     }

@@ -1,5 +1,8 @@
 import SwiftUI
 
+/// PreferenceKey to store max value.
+/// Used in `MaxWidthModifier` to calculate max title width among multiple fields/rows.
+///
 struct MaxWidthPreferenceKey: PreferenceKey {
     static var defaultValue: CGFloat? = nil
 
@@ -10,6 +13,9 @@ struct MaxWidthPreferenceKey: PreferenceKey {
     }
 }
 
+/// Modifier to calculate view width and store it in `MaxWidthPreferenceKey`.
+/// Used to calculate max frame and then align multiple fields/rows.
+///
 struct MaxWidthModifier: ViewModifier {
     private var sizeView: some View {
         GeometryReader { geometry in

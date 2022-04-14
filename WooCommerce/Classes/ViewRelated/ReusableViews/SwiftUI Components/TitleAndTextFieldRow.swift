@@ -13,6 +13,9 @@ struct TitleAndTextFieldRow: View {
 
     @Binding private var text: String
 
+    /// Static width for title label. Used to align values between different rows.
+    /// If `nil` - title will have intrinsic size.
+    ///
     @Binding private var titleWidth: CGFloat?
 
     init(title: String,

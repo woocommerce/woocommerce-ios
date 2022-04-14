@@ -17,8 +17,13 @@ struct TitleAndValueRow: View {
     private let selectionStyle: SelectionStyle
     private let action: () -> Void
 
+    /// Static width for title label. Used to align values between different rows.
+    /// If `nil` - title will have intrinsic size.
+    ///
     @Binding private var titleWidth: CGFloat?
 
+    /// Value frame alignment derived from its text alignment
+    ///
     private var valueFrameAligment: Alignment {
         switch valueTextAlignment {
         case .trailing:

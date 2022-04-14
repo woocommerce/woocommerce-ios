@@ -7,6 +7,8 @@ import WordPressUI
 ///
 class SharingHelper {
 
+    typealias Completion = (UIActivity.ActivityType?, Bool, [Any]?, Error?) -> Void
+
     /// Private: NO-OP
     ///
     private init() { }
@@ -20,8 +22,12 @@ class SharingHelper {
     ///   - anchorView: View that the share popover should be displayed from (needed for iPad support)
     ///   - viewController: VC presenting the share VC (UIActivityViewController)
     ///
-    static func shareURL(url: URL, title: String? = nil, from anchorView: UIView, in viewController: UIViewController) {
-        guard let avc = createActivityVC(title: title, url: url) else {
+    static func shareURL(url: URL,
+                         title: String? = nil,
+                         from anchorView: UIView,
+                         in viewController: UIViewController,
+                         onCompletion: Completion? = nil) {
+        guard let avc = createActivityVC(title: title, url: url, onCompletion: onCompletion) else {
             return
         }
 
@@ -69,7 +75,7 @@ class SharingHelper {
 //
 private extension SharingHelper {
 
-    static func createActivityVC(title: String? = nil, url: URL? = nil) -> UIActivityViewController? {
+    static func createActivityVC(title: String? = nil, url: URL? = nil, onCompletion: Completion?) -> UIActivityViewController? {
         guard title != nil || url != nil else {
             DDLogWarn("⚠ Cannot create sharing activity — both title AND URL are nil.")
             return nil
@@ -84,6 +90,8 @@ private extension SharingHelper {
             items.append(url)
         }
 
-        return UIActivityViewController(activityItems: items, applicationActivities: nil)
+        let activityController = UIActivityViewController(activityItems: items, applicationActivities: nil)
+        activityController.completionWithItemsHandler = onCompletion
+        return activityController
     }
 }

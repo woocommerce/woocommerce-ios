@@ -34,15 +34,15 @@ final class CardPresentModalTapCard: CardPresentPaymentsModalViewModel {
 
     let bottomTitle: String? = Localization.readerIsReady
 
-    let bottomSubtitle: String? = Localization.tapInsertOrSwipe
+    let bottomSubtitle: String?
 
-    var accessibilityLabel: String? {
-        return Localization.readerIsReady + Localization.tapInsertOrSwipe
-    }
+    let accessibilityLabel: String?
 
-    init(name: String, amount: String, onCancel: @escaping () -> Void) {
+    init(name: String, amount: String, transactionType: CardPresentTransactionType, onCancel: @escaping () -> Void) {
         self.name = name
         self.amount = amount
+        self.bottomSubtitle = Localization.tapInsertOrSwipe(transactionType: transactionType)
+        self.accessibilityLabel = Localization.readerIsReady + Localization.tapInsertOrSwipe(transactionType: transactionType)
         self.onCancel = onCancel
     }
 
@@ -68,10 +68,20 @@ private extension CardPresentModalTapCard {
             comment: "Indicates the status of a card reader. Presented to users when payment collection starts"
         )
 
-        static let tapInsertOrSwipe = NSLocalizedString(
-            "Tap, insert or swipe to pay",
-            comment: "Label asking users to present a card. Presented to users when a payment is going to be collected"
-        )
+        static func tapInsertOrSwipe(transactionType: CardPresentTransactionType) -> String {
+            switch transactionType {
+            case .collectPayment:
+                return NSLocalizedString(
+                    "Tap, insert or swipe to pay",
+                    comment: "Label asking users to present a card. Presented to users when a payment is going to be collected"
+                )
+            case .refund:
+                return NSLocalizedString(
+                    "Tap, insert or swipe to refund",
+                    comment: "Label asking users to present a card. Presented to users when an in-person refund is going to be executed"
+                )
+            }
+        }
 
         static let cancel = NSLocalizedString(
             "Cancel",

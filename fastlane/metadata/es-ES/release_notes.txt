@@ -1,5 +1,3 @@
-Es posible que tu empresa utilice estados de pedido personalizados. Si este es el caso, ahora puedes filtrar los pedidos en base a ellos. Para ver esta opción, pulsa sobre el botón "Filtro" en la lista de pedidos.
+Crea pedidos sobre la marcha con productos, información de envío y facturación, y tarifas. Puedes aceptar un pago en persona mediante tarjeta de crédito de manera rápida y al momento o bien, enviar un enlace a un cliente para que pague el pedido desde su dispositivo. Lo habías pedido y aquí lo tienes.
 
-Los más atentos ya se han dado cuenta de que el tipo de productos de un pedido no siempre coincide con el sitio web. Ya lo hemos solucionado.
-
-¿Sabías que estamos trabajando en una nueva función para crear pedidos? Dirígete a la pestaña Menú, toca el icono de ajustes y desplázate hasta las funciones experimentales. En esta versión, hemos añadido una sección de métodos de envío y tarifas. También dispones de una nueva función denominada "Cupones", que puedes ayudarnos a probar. Envíanos tus comentarios si crees que hay algo que se puede mejorar.
+También estamos avanzando con la función de gestión de cupones. Para ver un adelanto, activa la opción en la pestaña Más > Ajustes > Funciones experimentales.

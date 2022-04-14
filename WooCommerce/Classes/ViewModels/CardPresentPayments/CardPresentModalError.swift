@@ -2,31 +2,25 @@ import UIKit
 
 /// Modal presented on error
 final class CardPresentModalError: CardPresentPaymentsModalViewModel {
-
-    /// The error returned by the stack
-    private let error: Error
-
     /// A closure to execute when the primary button is tapped
     private let primaryAction: () -> Void
 
     let textMode: PaymentsModalTextMode = .reducedBottomInfo
     let actionsMode: PaymentsModalActionsMode = .twoAction
 
-    let topTitle: String = Localization.paymentFailed
+    let topTitle: String
 
     var topSubtitle: String? = nil
 
     let image: UIImage = .paymentErrorImage
 
-    let primaryButtonTitle: String? = Localization.tryAgain
+    let primaryButtonTitle: String?
 
-    let secondaryButtonTitle: String? = Localization.noThanks
+    let secondaryButtonTitle: String?
 
     let auxiliaryButtonTitle: String? = nil
 
-    var bottomTitle: String? {
-        error.localizedDescription
-    }
+    let bottomTitle: String?
 
     let bottomSubtitle: String? = nil
 
@@ -37,8 +31,11 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
         return topTitle + bottomTitle
     }
 
-    init(error: Error, primaryAction: @escaping () -> Void) {
-        self.error = error
+    init(errorDescription: String?, transactionType: CardPresentTransactionType, primaryAction: @escaping () -> Void) {
+        self.topTitle = Localization.paymentFailed(transactionType: transactionType)
+        self.bottomTitle = errorDescription
+        self.primaryButtonTitle = Localization.tryAgain(transactionType: transactionType)
+        self.secondaryButtonTitle = Localization.noThanks(transactionType: transactionType)
         self.primaryAction = primaryAction
     }
 
@@ -55,19 +52,49 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
 
 private extension CardPresentModalError {
     enum Localization {
-        static let paymentFailed = NSLocalizedString(
-            "Payment failed",
-            comment: "Error message. Presented to users after a collecting a payment fails"
-        )
+        static func paymentFailed(transactionType: CardPresentTransactionType) -> String {
+            switch transactionType {
+            case .collectPayment:
+                return NSLocalizedString(
+                    "Payment failed",
+                    comment: "Error message. Presented to users after collecting a payment fails"
+                )
+            case .refund:
+                return NSLocalizedString(
+                    "Refund failed",
+                    comment: "Error message. Presented to users after an in-person refund fails"
+                )
+            }
+        }
 
-        static let tryAgain = NSLocalizedString(
-            "Try Collecting Again",
-            comment: "Button to try to collect a payment again. Presented to users after a collecting a payment fails"
-        )
+        static func tryAgain(transactionType: CardPresentTransactionType) -> String {
+            switch transactionType {
+            case .collectPayment:
+                return NSLocalizedString(
+                    "Try Collecting Again",
+                    comment: "Button to try to collect a payment again. Presented to users after collecting a payment fails"
+                )
+            case .refund:
+                return NSLocalizedString(
+                    "Try Again",
+                    comment: "Button to try to refund a payment again. Presented to users after refunding a payment fails"
+                )
+            }
+        }
 
-        static let noThanks = NSLocalizedString(
-            "Back to Order",
-            comment: "Button to dismiss modal overlay. Presented to users after collecting a payment fails"
-        )
+        static func noThanks(transactionType: CardPresentTransactionType) -> String {
+            switch transactionType {
+            case .collectPayment:
+                return NSLocalizedString(
+                    "Back to Order",
+                    comment: "Button to dismiss modal overlay. Presented to users after collecting a payment fails"
+                )
+            case .refund:
+                return NSLocalizedString(
+                    "Close",
+                    comment: "Button to dismiss modal overlay. Presented to users after refunding a payment fails"
+                )
+            }
+        }
     }
 }

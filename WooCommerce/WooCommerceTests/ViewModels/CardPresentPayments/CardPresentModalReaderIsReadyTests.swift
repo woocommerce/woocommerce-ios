@@ -6,25 +6,16 @@ import TestKit
 final class CardPresentModalReaderIsReadyTests: XCTestCase {
     private var viewModel: CardPresentModalReaderIsReady!
 
-    private var analyticsProvider: MockAnalyticsProvider!
-    private var analytics: WooAnalytics!
-
     override func setUp() {
         super.setUp()
-        analyticsProvider = MockAnalyticsProvider()
-        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         viewModel = CardPresentModalReaderIsReady(name: Expectations.name,
                                                   amount: Expectations.amount,
-                                                  paymentGatewayAccountID: Expectations.paymentGatewayAccountID,
-                                                  countryCode: Expectations.countryCode,
-                                                  cardReaderModel: Expectations.cardReaderModel,
-                                                  analytics: analytics)
+                                                  transactionType: .collectPayment,
+                                                  cancelAction: {})
     }
 
     override func tearDown() {
         viewModel = nil
-        analytics = nil
-        analyticsProvider = nil
         super.tearDown()
     }
 
@@ -58,44 +49,6 @@ final class CardPresentModalReaderIsReadyTests: XCTestCase {
 
     func test_bottom_subTitle_is_not_nil() {
         XCTAssertNotNil(viewModel.bottomSubtitle)
-    }
-
-    func test_secondary_button_dispatched_cancel_action() throws {
-        let storesManager = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
-        storesManager.reset()
-
-        ServiceLocator.setStores(storesManager)
-
-        assertEmpty(storesManager.receivedActions)
-
-        viewModel.didTapSecondaryButton(in: nil)
-
-        XCTAssertEqual(storesManager.receivedActions.count, 1)
-
-        let action = try XCTUnwrap(storesManager.receivedActions.first as? CardPresentPaymentAction)
-        switch action {
-        case .cancelPayment(onCompletion: _):
-            XCTAssertTrue(true)
-        default:
-            XCTFail("Primary button failed to dispatch .cancelPayment action")
-        }
-    }
-
-    func test_tapping_secondary_button_tracks_cancel_event() throws {
-        // Given
-        assertEmpty(analyticsProvider.receivedEvents)
-
-        // When
-        viewModel.didTapSecondaryButton(in: nil)
-
-        // Then
-        XCTAssertEqual(analyticsProvider.receivedEvents.count, 1)
-        XCTAssertEqual(analyticsProvider.receivedEvents.first, "card_present_collect_payment_canceled")
-
-        let firstPropertiesBatch = try XCTUnwrap(analyticsProvider.receivedProperties.first)
-        XCTAssertEqual(firstPropertiesBatch["card_reader_model"] as? String, Expectations.cardReaderModel)
-        XCTAssertEqual(firstPropertiesBatch["country"] as? String, Expectations.countryCode)
-        XCTAssertEqual(firstPropertiesBatch["plugin_slug"] as? String, Expectations.paymentGatewayAccountID)
     }
 }
 

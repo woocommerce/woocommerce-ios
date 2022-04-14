@@ -8,7 +8,9 @@ final class CardPresentModalErrorTests: XCTestCase {
     override func setUp() {
         super.setUp()
         closures = Closures()
-        viewModel = CardPresentModalError(error: Expectations.error, primaryAction: closures.primaryAction())
+        viewModel = CardPresentModalError(errorDescription: Expectations.error.localizedDescription,
+                                          transactionType: .collectPayment,
+                                          primaryAction: closures.primaryAction())
     }
 
     override func tearDown() {

@@ -81,6 +81,10 @@ final class AddEditCouponViewModel: ObservableObject {
 
     private(set) var coupon: Coupon?
 
+    /// When the view is updating or creating a new Coupon remotely.
+    ///
+    @Published var isLoading: Bool = false
+
     // Fields
     @Published var amountField: String
     @Published var codeField: String
@@ -144,6 +148,7 @@ final class AddEditCouponViewModel: ObservableObject {
     }
 
     func updateCoupon(coupon: Coupon) {
+        isLoading = true
         let action = CouponAction.updateCoupon(coupon) { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -152,13 +157,14 @@ final class AddEditCouponViewModel: ObservableObject {
             case .failure(let error):
                 DDLogError("⛔️ Error updating the coupon: \(error)")
             }
+            self.isLoading = false
             self.onCompletion?(result)
         }
         stores.dispatch(action)
     }
 
     var populatedCoupon: Coupon {
-        // TODO: Fill all the missing data
+        // TODO: Fill all the missing data (like `productIds`)
         coupon?.copy(code: codeField,
                      amount: amountField,
                      dateModified: Date(),

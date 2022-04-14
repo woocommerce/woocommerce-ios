@@ -40,7 +40,7 @@ struct AddEditCoupon: View {
 
     init(_ viewModel: AddEditCouponViewModel) {
         self.viewModel = viewModel
-        viewModel.onCompletion = { result in }
+        viewModel.onCompletion = { _ in }
         //TODO: add analytics
     }
 
@@ -184,12 +184,11 @@ struct AddEditCoupon: View {
                         .padding(.bottom, Constants.verticalSpacing)
 
                         Button {
-                            //TODO: handle action
                             viewModel.updateCoupon(coupon: viewModel.populatedCoupon)
                         } label: {
                             Text(Localization.saveButton)
                         }
-                        .buttonStyle(PrimaryButtonStyle())
+                        .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoading))
                         .padding(.horizontal, Constants.margin)
                         .padding([.top, .bottom], Constants.verticalSpacing)
 

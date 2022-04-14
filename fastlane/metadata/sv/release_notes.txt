@@ -1,5 +1,3 @@
-Ditt företag kanske använder anpassade beställningsstatusar – nu kan du filtrera beställningar med hjälp av dessa statusar. Tryck på knappen Filtrera i beställningslistan för att visa detta alternativ.
+Skapa beställningar i farten med produkter, frakt- och faktureringsinformation samt avgifter. Du kan snabbt ta emot en personlig kreditkortsbetalning direkt efteråt eller skicka en länk till en kund som kunden kan använda för att betala den aktuella beställningen på sin egen enhet. Ni har önskat det, nu är det här.
 
-Vissa av er har korpögon och har noterat att typen av produkter i en beställning inte alltid matchar webben. Vi har löst det.
-
-Visste du att vi arbetar på en ny funktion för att skapa beställningar? Gå till fliken Meny, tryck på inställningsikonen och bläddra till Experimentella funktioner. I den här versionen har vi lagt till en sektion för fraktmetod och -avgifter. Det finns även en ny rabattkodsfunktion som du kan hjälpa oss att testa. Meddela oss om du hittar något som kan förbättras.
+Vi har också förbättrat vår funktion för hantering av rabattkoder. Ta en tjuvtitt på den genom att aktivera den via fliken Mer > Inställningar > Experimentella funktioner.

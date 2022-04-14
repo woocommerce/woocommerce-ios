@@ -19,6 +19,7 @@ struct CardPresentCapturedPaymentData {
 final class PaymentCaptureOrchestrator {
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
     private let personNameComponentsFormatter = PersonNameComponentsFormatter()
+    private let paymentReceiptEmailParameterDeterminer = PaymentReceiptEmailParameterDeterminer()
 
     private let celebration = PaymentCaptureCelebration()
 
@@ -51,47 +52,50 @@ final class PaymentCaptureOrchestrator {
 
         stores.dispatch(setAccount)
 
-        guard let parameters = paymentParameters(
+        paymentParameters(
                 order: order,
                 statementDescriptor: paymentGatewayAccount.statementDescriptor,
                 paymentMethodTypes: paymentMethodTypes
-        ) else {
-            DDLogError("Error: failed to create payment parameters for an order")
-            onCompletion(.failure(CardReaderServiceError.paymentCapture()))
-            return
-        }
+        ) { [weak self] result in
+            guard let self = self else { return }
 
-        /// Briefly suppress pass (wallet) presentation so that the merchant doesn't attempt to pay for the buyer's order when the
-        /// reader begins to collect payment.
-        ///
-        suppressPassPresentation()
+            switch result {
+            case let .success(parameters):
+                /// Briefly suppress pass (wallet) presentation so that the merchant doesn't attempt to pay for the buyer's order when the
+                /// reader begins to collect payment.
+                ///
+                self.suppressPassPresentation()
 
-        let paymentAction = CardPresentPaymentAction.collectPayment(
-            siteID: order.siteID,
-            orderID: order.orderID,
-            parameters: parameters,
-            onCardReaderMessage: { (event) in
-                switch event {
-                case .waitingForInput:
-                    onWaitingForInput()
-                case .displayMessage(let message):
-                    onDisplayMessage(message)
-                default:
-                    break
-                }
-            },
-            onCompletion: { [weak self] result in
-                self?.allowPassPresentation()
-                onProcessingMessage()
-                self?.completePaymentIntentCapture(
-                    order: order,
-                    captureResult: result,
-                    onCompletion: onCompletion
+                let paymentAction = CardPresentPaymentAction.collectPayment(
+                    siteID: order.siteID,
+                    orderID: order.orderID,
+                    parameters: parameters,
+                    onCardReaderMessage: { (event) in
+                        switch event {
+                        case .waitingForInput:
+                            onWaitingForInput()
+                        case .displayMessage(let message):
+                            onDisplayMessage(message)
+                        default:
+                            break
+                        }
+                    },
+                    onCompletion: { [weak self] result in
+                        self?.allowPassPresentation()
+                        onProcessingMessage()
+                        self?.completePaymentIntentCapture(
+                            order: order,
+                            captureResult: result,
+                            onCompletion: onCompletion
+                        )
+                    }
                 )
-            }
-        )
 
-        stores.dispatch(paymentAction)
+                self.stores.dispatch(paymentAction)
+            case let .failure(error):
+                onCompletion(Result.failure(error))
+             }
+        }
     }
 
     func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
@@ -216,27 +220,44 @@ private extension PaymentCaptureOrchestrator {
         stores.dispatch(action)
     }
 
-    func paymentParameters(order: Order, statementDescriptor: String?, paymentMethodTypes: [String]) -> PaymentParameters? {
+    func paymentParameters(order: Order,
+                           statementDescriptor: String?,
+                           paymentMethodTypes: [String],
+                           onCompletion: @escaping ((Result<PaymentParameters, Error>) -> Void)) {
         guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
             DDLogError("Error: attempted to collect payment for an order without a valid total.")
-            return nil
+            onCompletion(Result.failure(NotValidAmountError.other))
+
+            return
         }
 
-        let metadata = PaymentIntent.initMetadata(
-            store: stores.sessionManager.defaultSite?.name,
-            customerName: buildCustomerNameFromBillingAddress(order.billingAddress),
-            customerEmail: order.billingAddress?.email,
-            siteURL: stores.sessionManager.defaultSite?.url,
-            orderID: order.orderID,
-            paymentType: PaymentIntent.PaymentTypes.single
-        )
+        paymentReceiptEmailParameterDeterminer.receiptEmail(from: order) { [weak self] result in
+            guard let self = self else { return }
 
-        return PaymentParameters(amount: orderTotal as Decimal,
-                                 currency: order.currency,
-                                 receiptDescription: receiptDescription(orderNumber: order.number),
-                                 statementDescription: statementDescriptor,
-                                 paymentMethodTypes: paymentMethodTypes,
-                                 metadata: metadata)
+            var receiptEmail: String?
+            if case let .success(email) = result {
+                receiptEmail = email
+            }
+
+            let metadata = PaymentIntent.initMetadata(
+                store: self.stores.sessionManager.defaultSite?.name,
+                customerName: self.buildCustomerNameFromBillingAddress(order.billingAddress),
+                customerEmail: order.billingAddress?.email,
+                siteURL: self.stores.sessionManager.defaultSite?.url,
+                orderID: order.orderID,
+                paymentType: PaymentIntent.PaymentTypes.single
+            )
+
+            let parameters = PaymentParameters(amount: orderTotal as Decimal,
+                                               currency: order.currency,
+                                               receiptDescription: self.receiptDescription(orderNumber: order.number),
+                                               statementDescription: statementDescriptor,
+                                               receiptEmail: receiptEmail,
+                                               paymentMethodTypes: paymentMethodTypes,
+                                               metadata: metadata)
+
+            onCompletion(Result.success(parameters))
+        }
     }
 
     func receiptDescription(orderNumber: String) -> String? {

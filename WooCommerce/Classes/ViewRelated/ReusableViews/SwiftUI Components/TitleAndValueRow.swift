@@ -51,7 +51,7 @@ struct TitleAndValueRow: View {
             action()
         }, label: {
             HStack {
-                AdaptiveStack(horizontalAlignment: .leading) {
+                AdaptiveStack(horizontalAlignment: .leading, spacing: Constants.spacing) {
                     Text(title)
                         .style(bold: bold, highlighted: selectionStyle == .highlight)
                         .multilineTextAlignment(.leading)
@@ -132,6 +132,7 @@ private extension TitleAndValueRow {
         static let maxHeight: CGFloat = 136
         static let horizontalPadding: CGFloat = 16
         static let verticalPadding: CGFloat = 12
+        static let spacing: CGFloat = 20
     }
 }
 

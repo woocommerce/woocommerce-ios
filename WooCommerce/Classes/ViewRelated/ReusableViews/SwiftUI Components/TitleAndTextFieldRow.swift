@@ -68,32 +68,6 @@ private extension TitleAndTextFieldRow {
     }
 }
 
-/// PreferenceKey to store max title width among the fields.
-///
-struct MaxWidthPreferenceKey: PreferenceKey {
-    static var defaultValue: CGFloat? = nil
-
-    static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
-        if let nv = nextValue(), nv > value ?? .zero {
-            value = nv
-        }
-    }
-}
-
-private struct MaxWidthModifier: ViewModifier {
-    private var sizeView: some View {
-        GeometryReader { geometry in
-            Color.clear
-                .preference(key: MaxWidthPreferenceKey.self,
-                            value: geometry.size.width)
-        }
-    }
-
-    func body(content: Content) -> some View {
-        content.background(sizeView)
-    }
-}
-
 struct TitleAndTextFieldRow_Previews: PreviewProvider {
     static var previews: some View {
         TitleAndTextFieldRow(title: "Add your text",

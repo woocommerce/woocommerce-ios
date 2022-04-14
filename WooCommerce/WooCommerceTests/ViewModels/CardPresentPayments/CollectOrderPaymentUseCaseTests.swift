@@ -110,17 +110,19 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         // When
         // Mocks card reader connection success since the minimum amount is only checked after reader connection success.
         mockCardPresentPaymentActions()
-        let result: Result<Void, Error> = waitFor { promise in
-            useCase.collectPayment(backButtonTitle: "", onCollect: { result in
-                promise(result)
-            }, onCompleted: {})
+        var result: Result<Void, Error>? = nil
+        let _: Void = waitFor { [weak self] promise in
+            useCase.collectPayment(backButtonTitle: "", onCollect: { collectPaymentResult in
+                result = collectPaymentResult
+            }, onCompleted: {
+                promise(())
+            })
             // Dismisses error to complete the payment flow for `onCollect` to be triggered.
-            self.alerts.dismissError?(UIViewController())
+            self?.alerts.dismissError?(UIViewController())
         }
 
         // Then
-        XCTAssertTrue(result.isFailure)
-        XCTAssertNotNil(result.failure as? PaymentCaptureOrchestrator.NotValidAmountError)
+        XCTAssertNotNil(result?.failure as? PaymentCaptureOrchestrator.NotValidAmountError)
 
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "card_present_collect_payment_failed"}))
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])

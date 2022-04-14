@@ -52,7 +52,7 @@ class ShippingLineDetailsViewModel: ObservableObject {
     /// Returns true when there are no valid pending changes.
     ///
     var shouldDisableDoneButton: Bool {
-        guard let amountDecimal = priceFieldFormatter.amountDecimal, amountDecimal != .zero else {
+        guard let amountDecimal = priceFieldFormatter.amountDecimal, amountDecimal >= .zero else {
             return true
         }
 

@@ -107,6 +107,11 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
         self.stores = stores
         self.storageManager = storageManager
         self.analytics = analytics
+
+        // Instantiates the alerts coordinator.
+        let alerts = OrderDetailsPaymentAlerts(transactionType: .refund,
+                                               presentingController: rootViewController)
+        self.alerts = alerts
     }
 
     /// Starts the refund submission flow.
@@ -232,13 +237,8 @@ private extension RefundSubmissionUseCase {
             return
         }
 
-        // Instantiates the alerts coordinator.
-        let alerts = OrderDetailsPaymentAlerts(transactionType: .refund,
-                                               presentingController: rootViewController)
-        self.alerts = alerts
-
         // Shows reader ready alert.
-        alerts.readerIsReady(title: Localization.refundPaymentTitle(username: order.billingAddress?.firstName),
+        self.alerts?.readerIsReady(title: Localization.refundPaymentTitle(username: order.billingAddress?.firstName),
                              amount: formattedAmount,
                              onCancel: { [weak self] in
             self?.cancelRefund()
@@ -275,20 +275,12 @@ private extension RefundSubmissionUseCase {
         // TODO: 5984 - tracks in-person refund error
         DDLogError("Failed to refund: \(error.localizedDescription)")
         // Informs about the error.
+        //TODO: Check which refund errors can't be retried, and use that to call nonRetryableError(from: self.rootViewController, error: cancelError)
         alerts?.error(error: error) { [weak self] in
-            // Cancels current payment.
-            self?.cardPresentRefundOrchestrator.cancelRefund { [weak self] result in
-                guard let self = self else { return }
-
-                switch result {
-                case .success:
-                    // Retries refund.
-                    self.attemptCardPresentRefund(refundAmount: refundAmount, charge: charge, onCompletion: onCompletion)
-                case .failure(let cancelError):
-                    // Informs that payment can't be retried.
-                    self.alerts?.nonRetryableError(from: self.rootViewController, error: cancelError)
-                    onCompletion(.failure(error))
-                }
+            // Cancels current refund, if possible.
+            self?.cardPresentRefundOrchestrator.cancelRefund { [weak self] _ in
+                // Regardless of whether the refund could be cancelled (e.g. it completed but failed), retry the refund.
+                self?.attemptCardPresentRefund(refundAmount: refundAmount, charge: charge, onCompletion: onCompletion)
             }
         }
     }

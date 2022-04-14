@@ -518,10 +518,12 @@ extension StripeCardReaderService {
         return Future() { [weak self] promise in
             self?.refundCancellable = Terminal.shared.collectRefundPaymentMethod(parameters) { collectError in
                 if let error = collectError {
+                    self?.refundCancellable = nil
                     promise(.failure(CardReaderServiceError.refundPayment(underlyingError: UnderlyingError(with: error))))
                 } else {
                     // Process refund
                     Terminal.shared.processRefund { processedRefund, processError in
+                        self?.refundCancellable = nil
                         if let error = processError {
                             promise(.failure(CardReaderServiceError.refundPayment(underlyingError: UnderlyingError(with: error))))
                         } else if let refund = processedRefund {

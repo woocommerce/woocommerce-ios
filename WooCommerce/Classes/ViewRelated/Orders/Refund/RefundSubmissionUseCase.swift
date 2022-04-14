@@ -220,7 +220,19 @@ private extension RefundSubmissionUseCase {
                     guard let self = self else { return }
 
                     // Attempts reader connection
-                    self.cardReaderConnectionController.searchAndConnect(from: self.rootViewController) { _ in }
+                    self.cardReaderConnectionController.searchAndConnect(from: self.rootViewController) { [weak self] result in
+                        guard let self = self else { return }
+                        switch result {
+                        case let .success(isConnected):
+                            if isConnected == false {
+                                self.readerSubscription = nil
+                                onCompletion(.failure(RefundSubmissionError.cardReaderDisconnected))
+                            }
+                        case .failure(let error):
+                            self.readerSubscription = nil
+                            onCompletion(.failure(error))
+                        }
+                    }
                 })
         }
         stores.dispatch(readerConnected)
@@ -363,6 +375,7 @@ private extension RefundSubmissionUseCase {
     /// Mailing a receipt failed but the SDK didn't return a more specific error
     ///
     enum RefundSubmissionError: Error {
+        case cardReaderDisconnected
         case invalidRefundAmount
         case unknownPaymentGatewayAccount
     }

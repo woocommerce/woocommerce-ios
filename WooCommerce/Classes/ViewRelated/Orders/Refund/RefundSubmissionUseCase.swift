@@ -265,7 +265,7 @@ private extension RefundSubmissionUseCase {
                                              paymentGatewayAccount: paymentGatewayAccount,
                                              onWaitingForInput: { [weak self] in
             // Requests card input.
-            self?.alerts.tapOrInsertCard(onCancel: {
+            self?.alerts.tapOrInsertCard(onCancel: { [weak self] in
                 self?.cancelRefund()
             })
         }, onProcessingMessage: { [weak self] in

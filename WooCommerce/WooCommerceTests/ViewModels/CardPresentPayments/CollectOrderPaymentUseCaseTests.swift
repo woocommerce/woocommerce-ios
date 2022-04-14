@@ -60,11 +60,18 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayAccount)
     }
 
-    func test_cancelling_readerIsReady_alert_tracks_collectPaymentCanceled_event() throws {
+    func test_cancelling_readerIsReady_alert_triggers_onCompleted_and_tracks_collectPaymentCanceled_event_and_dispatches_cancel_action() throws {
+        // Given
+        assertEmpty(stores.receivedActions)
+
         // When
         mockCardPresentPaymentActions()
-        useCase.collectPayment(backButtonTitle: "", onCollect: { _ in }, onCompleted: {})
-        alerts.cancelReaderIsReadyAlert?()
+        let _: Void = waitFor { promise in
+            self.useCase.collectPayment(backButtonTitle: "", onCollect: { _ in }, onCompleted: {
+                promise(())
+            })
+            self.alerts.cancelReaderIsReadyAlert?()
+        }
 
         // Then
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "card_present_collect_payment_canceled"}))
@@ -72,18 +79,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         XCTAssertEqual(eventProperties["card_reader_model"] as? String, Mocks.cardReaderModel)
         XCTAssertEqual(eventProperties["country"] as? String, "US")
         XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayAccount)
-    }
 
-    func test_cancelling_readerIsReady_alert_dispatches_cancel_action() throws {
-        // Given
-        assertEmpty(stores.receivedActions)
-
-        // When
-        mockCardPresentPaymentActions()
-        useCase.collectPayment(backButtonTitle: "", onCollect: { _ in }, onCompleted: {})
-        alerts.cancelReaderIsReadyAlert?()
-
-        // Then
         let action = try XCTUnwrap(stores.receivedActions.last as? CardPresentPaymentAction)
         switch action {
         case .cancelPayment(onCompletion: _):

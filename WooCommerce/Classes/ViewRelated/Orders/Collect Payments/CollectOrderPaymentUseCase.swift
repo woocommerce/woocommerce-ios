@@ -208,7 +208,9 @@ private extension CollectOrderPaymentUseCase {
         alerts.readerIsReady(title: Localization.collectPaymentTitle(username: order.billingAddress?.firstName),
                              amount: formattedAmount,
                              onCancel: { [weak self] in
-            self?.cancelPayment()
+            self?.cancelPayment {
+                onCompletion(.failure(CollectOrderPaymentUseCaseError.cancelled))
+            }
         })
 
         // Start collect payment process
@@ -219,7 +221,9 @@ private extension CollectOrderPaymentUseCase {
                onWaitingForInput: { [weak self] in
                    // Request card input
                    self?.alerts.tapOrInsertCard(onCancel: { [weak self] in
-                       self?.cancelPayment()
+                       self?.cancelPayment {
+                           onCompletion(.failure(CollectOrderPaymentUseCaseError.cancelled))
+                       }
                    })
 
                }, onProcessingMessage: { [weak self] in
@@ -293,12 +297,13 @@ private extension CollectOrderPaymentUseCase {
 
     /// Cancels payment and record analytics.
     ///
-    func cancelPayment() {
+    func cancelPayment(onCompleted: @escaping () -> ()) {
         paymentOrchestrator.cancelPayment { [weak self, analytics] _ in
             guard let self = self else { return }
             analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentCanceled(forGatewayID: self.paymentGatewayAccount.gatewayID,
                                                                                              countryCode: self.configuration.countryCode,
                                                                                              cardReaderModel: self.connectedReader?.readerType.model ?? ""))
+            onCompleted()
         }
     }
 
@@ -391,6 +396,7 @@ private extension CollectOrderPaymentUseCase {
     struct UnknownEmailError: Error {}
     enum CollectOrderPaymentUseCaseError: Error {
         case cardReaderDisconnected
+        case cancelled
     }
 
     enum Localization {

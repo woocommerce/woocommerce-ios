@@ -12,13 +12,35 @@ struct TitleAndValueRow: View {
 
     private let title: String
     private let value: Value
+    private let valueTextAlignment: TextAlignment
     private let bold: Bool
     private let selectionStyle: SelectionStyle
     private let action: () -> Void
 
-    init(title: String, value: Value, bold: Bool = false, selectionStyle: SelectionStyle = .none, action: @escaping () -> Void = {}) {
+    @Binding private var titleWidth: CGFloat?
+
+    private var valueFrameAligment: Alignment {
+        switch valueTextAlignment {
+        case .trailing:
+            return .trailing
+        case .leading:
+            return .leading
+        default:
+            return .center
+        }
+    }
+
+    init(title: String,
+         titleWidth: Binding<CGFloat?> = .constant(nil),
+         value: Value,
+         valueTextAlignment: TextAlignment = .trailing,
+         bold: Bool = false,
+         selectionStyle: SelectionStyle = .none,
+         action: @escaping () -> Void = {}) {
         self.title = title
+        self._titleWidth = titleWidth
         self.value = value
+        self.valueTextAlignment = valueTextAlignment
         self.bold = bold
         self.selectionStyle = selectionStyle
         self.action = action
@@ -33,11 +55,13 @@ struct TitleAndValueRow: View {
                     Text(title)
                         .style(bold: bold, highlighted: selectionStyle == .highlight)
                         .multilineTextAlignment(.leading)
+                        .modifier(MaxWidthModifier())
+                        .frame(width: titleWidth, alignment: .leading)
 
                     Text(value.text)
                         .style(for: value, bold: bold, highlighted: false)
-                        .multilineTextAlignment(.trailing)
-                        .frame(maxWidth: .infinity, alignment: .trailing)
+                        .multilineTextAlignment(valueTextAlignment)
+                        .frame(maxWidth: .infinity, alignment: valueFrameAligment)
                         .padding(.vertical, Constants.verticalPadding)
                 }
 

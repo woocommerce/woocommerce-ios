@@ -333,7 +333,9 @@ struct SingleAddressForm: View {
                 }
 
                 TitleAndValueRow(title: Localization.countryField,
+                                 titleWidth: $titleWidth,
                                  value: .init(placeHolder: Localization.placeholderSelectOption, content: fields.country),
+                                 valueTextAlignment: .leading,
                                  selectionStyle: .disclosure) {
                     showCountrySelector = true
                 }
@@ -352,7 +354,9 @@ struct SingleAddressForm: View {
     @ViewBuilder private func stateRow() -> some View {
         if showStateFieldAsSelector {
             TitleAndValueRow(title: Localization.stateField,
+                             titleWidth: $titleWidth,
                              value: .init(placeHolder: Localization.placeholderSelectOption, content: fields.state),
+                             valueTextAlignment: .leading,
                              selectionStyle: .disclosure) {
                 showStateSelector = true
             }

@@ -47,7 +47,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         XCTAssertFalse(analyticsProvider.receivedEvents.contains("card_present_collect_payment_tapped"))
     }
 
-    func test_collectPayment_collectPaymentTapped_event() throws {
+    func test_collectPayment_tracks_collectPaymentTapped_event() throws {
         // When
         mockCardPresentPaymentActions()
         useCase.collectPayment(backButtonTitle: "", onCollect: { _ in }, onCompleted: {})
@@ -60,7 +60,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayAccount)
     }
 
-    func test_cancelling_readerIsReady_tracks_collectPaymentCanceled_event() throws {
+    func test_cancelling_readerIsReady_alert_tracks_collectPaymentCanceled_event() throws {
         // When
         mockCardPresentPaymentActions()
         useCase.collectPayment(backButtonTitle: "", onCollect: { _ in }, onCompleted: {})
@@ -74,7 +74,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayAccount)
     }
 
-    func test_cancelling_readerIsReady_dispatches_cancel_action() throws {
+    func test_cancelling_readerIsReady_alert_dispatches_cancel_action() throws {
         // Given
         assertEmpty(stores.receivedActions)
 

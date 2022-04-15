@@ -119,7 +119,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
     func test_onboarding_does_not_return_plugin_unsupported_version_for_canada_when_version_is_supported() {
         // Given
         setupCountry(country: .ca)
-        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersionCanada)
+        setupWCPayPlugin(status: .active, version: .minimumSupportedVersionCanada)
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)

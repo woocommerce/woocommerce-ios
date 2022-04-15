@@ -90,10 +90,10 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .countryNotSupportedStripe(plugin: .stripe, countryCode: "CA"))
     }
 
-    func test_onboarding_does_not_return_country_unsupported_with_canada_for_wcpay() {
+    func test_onboarding_does_not_return_country_unsupported_with_canada_for_wcpay_even_when_version_unsupported() {
         // Given
         setupCountry(country: .ca)
-        setupWCPayPlugin(status: .active, version: .minimumSupportedVersion)
+        setupWCPayPlugin(status: .active, version: .unsupportedVersionCanada)
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
@@ -101,6 +101,32 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // Then
         XCTAssertNotEqual(state, .countryNotSupported(countryCode: "CA"))
+    }
+
+    func test_onboarding_returns_wcpay_plugin_unsupported_version_for_canada_when_version_unsupported() {
+        // Given
+        setupCountry(country: .ca)
+        setupWCPayPlugin(status: .active, version: .unsupportedVersionCanada)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.state
+
+        // Then
+        XCTAssertEqual(state, .pluginUnsupportedVersion(plugin: .wcPay))
+    }
+
+    func test_onboarding_does_not_return_plugin_unsupported_version_for_canada_when_version_is_supported() {
+        // Given
+        setupCountry(country: .ca)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersionCanada)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.state
+
+        // Then
+        XCTAssertNotEqual(state, .pluginUnsupportedVersion(plugin: .wcPay))
     }
 
     func test_onboarding_returns_country_unsupported_with_canada_for_stripe() {
@@ -669,13 +695,15 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
     enum WCPayPluginVersion: String {
         case unsupportedVersionWithPatch = "2.4.2"
         case unsupportedVersionWithoutPatch = "3.2"
-        case minimumSupportedVersion = "3.2.1" // Should match `CardPresentPaymentOnboardingState` `minimumSupportedPluginVersion`
+        case unsupportedVersionCanada = "3.9.0"
+        case minimumSupportedVersion = "3.2.1" // Should match `CardPresentPaymentsConfiguration` `minimumSupportedPluginVersion` for the US
+        case minimumSupportedVersionCanada = "4.0.0" // Should match `CardPresentPaymentsConfiguration` `minimumSupportedPluginVersion` for Canada
         case supportedVersionWithPatch = "3.2.5"
         case supportedVersionWithoutPatch = "3.3"
     }
 
     enum StripePluginVersion: String {
-        case minimumSupportedVersion = "6.2.0" // Should match `CardPresentPaymentOnboardingState` `minimumSupportedPluginVersion`
+        case minimumSupportedVersion = "6.2.0" // Should match `CardPresentPaymentsConfiguration` `minimumSupportedPluginVersion`
         case unsupportedVersion = "6.1.0"
     }
 

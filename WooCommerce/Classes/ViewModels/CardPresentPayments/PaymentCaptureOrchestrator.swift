@@ -25,6 +25,12 @@ final class PaymentCaptureOrchestrator {
 
     private var walletSuppressionRequestToken: PKSuppressionRequestToken?
 
+    private let stores: StoresManager
+
+    init(stores: StoresManager = ServiceLocator.stores) {
+        self.stores = stores
+    }
+
     func collectPayment(for order: Order,
                         paymentGatewayAccount: PaymentGatewayAccount,
                         paymentMethodTypes: [String],
@@ -44,7 +50,7 @@ final class PaymentCaptureOrchestrator {
         ///
         let setAccount = CardPresentPaymentAction.use(paymentGatewayAccount: paymentGatewayAccount)
 
-        ServiceLocator.stores.dispatch(setAccount)
+        stores.dispatch(setAccount)
 
         paymentParameters(
                 order: order,
@@ -85,7 +91,7 @@ final class PaymentCaptureOrchestrator {
                     }
                 )
 
-                ServiceLocator.stores.dispatch(paymentAction)
+                self.stores.dispatch(paymentAction)
             case let .failure(error):
                 onCompletion(Result.failure(error))
              }
@@ -97,7 +103,7 @@ final class PaymentCaptureOrchestrator {
             self?.allowPassPresentation()
             onCompletion(result)
         }
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     func emailReceipt(for order: Order, params: CardPresentReceiptParameters, onContent: @escaping (String) -> Void) {
@@ -105,13 +111,13 @@ final class PaymentCaptureOrchestrator {
             onContent(emailContent)
         }
 
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     func saveReceipt(for order: Order, params: CardPresentReceiptParameters) {
         let action = ReceiptAction.saveReceipt(order: order, parameters: params)
 
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 }
 
@@ -211,7 +217,7 @@ private extension PaymentCaptureOrchestrator {
             }
         }
 
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     func paymentParameters(order: Order,
@@ -225,17 +231,19 @@ private extension PaymentCaptureOrchestrator {
             return
         }
 
-        paymentReceiptEmailParameterDeterminer.receiptEmail(from: order) { result in
+        paymentReceiptEmailParameterDeterminer.receiptEmail(from: order) { [weak self] result in
+            guard let self = self else { return }
+
             var receiptEmail: String?
             if case let .success(email) = result {
                 receiptEmail = email
             }
 
             let metadata = PaymentIntent.initMetadata(
-                store: ServiceLocator.stores.sessionManager.defaultSite?.name,
+                store: self.stores.sessionManager.defaultSite?.name,
                 customerName: self.buildCustomerNameFromBillingAddress(order.billingAddress),
                 customerEmail: order.billingAddress?.email,
-                siteURL: ServiceLocator.stores.sessionManager.defaultSite?.url,
+                siteURL: self.stores.sessionManager.defaultSite?.url,
                 orderID: order.orderID,
                 paymentType: PaymentIntent.PaymentTypes.single
             )
@@ -253,7 +261,7 @@ private extension PaymentCaptureOrchestrator {
     }
 
     func receiptDescription(orderNumber: String) -> String? {
-        guard let storeName = ServiceLocator.stores.sessionManager.defaultSite?.name else {
+        guard let storeName = stores.sessionManager.defaultSite?.name else {
             return nil
         }
 
@@ -309,21 +317,21 @@ private extension PaymentCaptureOrchestrator {
     }
 }
 
-private extension PaymentCaptureOrchestrator {
-    private enum NotValidAmountError: Error, LocalizedError {
+extension PaymentCaptureOrchestrator {
+    enum NotValidAmountError: Error, LocalizedError {
         case belowMinimumAmount(amount: String)
         case other
 
-        public var errorDescription: String? {
+        var errorDescription: String? {
             switch self {
             case .belowMinimumAmount(let amount):
-                return String.localizedStringWithFormat(Localizations.belowMinimumAmount, amount)
+                return String.localizedStringWithFormat(Localization.belowMinimumAmount, amount)
             case .other:
-                return Localizations.defaultMessage
+                return Localization.defaultMessage
             }
         }
 
-        enum Localizations {
+        private enum Localization {
             static let defaultMessage = NSLocalizedString(
                 "Unable to process payment. Order total amount is not valid.",
                 comment: "Error message when the order amount is not valid."

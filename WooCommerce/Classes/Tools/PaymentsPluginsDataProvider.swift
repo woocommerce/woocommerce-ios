@@ -89,12 +89,12 @@ struct CardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol {
 
     private func isPluginVersionSupported(plugin: Yosemite.SystemPlugin,
                                           paymentPlugin: CardPresentPaymentsPlugins) -> Bool {
-        guard let pluginSupported = configuration.supportedPluginVersions.first(where: { (key: CardPresentPaymentsPlugins, _) in
-            key == paymentPlugin
+        guard let pluginSupport = configuration.supportedPluginVersions.first(where: { support in
+            support.plugin == paymentPlugin
         }) else {
             return false
         }
         return VersionHelpers.isVersionSupported(version: plugin.version,
-                                                 minimumRequired: pluginSupported.value)
+                                                 minimumRequired: pluginSupport.minimumVersion)
     }
 }

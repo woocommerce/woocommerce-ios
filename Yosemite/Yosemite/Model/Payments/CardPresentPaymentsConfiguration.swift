@@ -8,7 +8,7 @@ public struct CardPresentPaymentsConfiguration {
     public let currencies: [CurrencyCode]
     public let paymentGateways: [String]
     public let supportedReaders: [CardReaderType]
-    public let supportedPluginVersions: [CardPresentPaymentsPlugins: String]
+    public let supportedPluginVersions: [PaymentPluginVersionSupport]
 
     init(countryCode: String,
          stripeTerminalforCanadaEnabled: Bool,
@@ -16,7 +16,7 @@ public struct CardPresentPaymentsConfiguration {
          currencies: [CurrencyCode],
          paymentGateways: [String],
          supportedReaders: [CardReaderType],
-         supportedPluginVersions: [CardPresentPaymentsPlugins: String]) {
+         supportedPluginVersions: [PaymentPluginVersionSupport]) {
         self.countryCode = countryCode
         self.stripeTerminalforCanadaEnabled = stripeTerminalforCanadaEnabled
         self.paymentMethods = paymentMethods
@@ -37,7 +37,10 @@ public struct CardPresentPaymentsConfiguration {
                 currencies: [.USD],
                 paymentGateways: [WCPayAccount.gatewayID, StripeAccount.gatewayID],
                 supportedReaders: [.chipper, .stripeM2],
-                supportedPluginVersions: [.wcPay: "3.2.1", .stripe: "6.2.0"]
+                supportedPluginVersions: [
+                    .init(plugin: .wcPay, minimumVersion: "3.2.1"),
+                    .init(plugin: .stripe, minimumVersion: "6.2.0")
+                ]
             )
         case "CA" where canadaEnabled == true:
             self.init(
@@ -47,7 +50,7 @@ public struct CardPresentPaymentsConfiguration {
                 currencies: [.CAD],
                 paymentGateways: [WCPayAccount.gatewayID],
                 supportedReaders: [.wisepad3],
-                supportedPluginVersions: [.wcPay: "4.0.0"]
+                supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.0.0")]
             )
         default:
             self.init(
@@ -57,7 +60,7 @@ public struct CardPresentPaymentsConfiguration {
                 currencies: [],
                 paymentGateways: [],
                 supportedReaders: [],
-                supportedPluginVersions: [:]
+                supportedPluginVersions: []
             )
         }
     }

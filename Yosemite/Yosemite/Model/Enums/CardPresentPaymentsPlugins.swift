@@ -13,3 +13,8 @@ public enum CardPresentPaymentsPlugins: Equatable, CaseIterable {
         }
     }
 }
+
+public struct PaymentPluginVersionSupport {
+    public let plugin: CardPresentPaymentsPlugins
+    public let minimumVersion: String
+}

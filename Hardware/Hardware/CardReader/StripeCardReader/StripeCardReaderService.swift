@@ -481,13 +481,7 @@ private extension StripeCardReaderService {
 // MARK: - Refunds
 extension StripeCardReaderService {
     public func refundPayment(parameters: RefundParameters) -> AnyPublisher<String, Error> {
-        if isChipCardInserted {
-            sendReaderEvent(CardReaderEvent.make(displayMessage: .removeCard))
-        }
-        return waitForInsertedCardToBeRemoved()
-            .flatMap {
-                self.createRefundParameters(parameters: parameters)
-            }
+        return createRefundParameters(parameters: parameters)
             .flatMap { refundParameters in
                 self.refund(refundParameters)
             }

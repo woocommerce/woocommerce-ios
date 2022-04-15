@@ -30,6 +30,7 @@ extension UIViewController {
         }
         else {
             navigationItem.leftBarButtonItem = UIBarButtonItem(image: .closeButton, style: .plain, target: target, action: action)
+            navigationItem.leftBarButtonItem?.accessibilityLabel = Localization.close
         }
     }
 
@@ -43,5 +44,12 @@ private extension UIViewController {
     ///
     @objc func dismissVC() {
         dismiss(animated: true, completion: nil)
+    }
+}
+
+// MARK: Constants
+private extension UIViewController {
+    enum Localization {
+        static let close = NSLocalizedString("Close", comment: "Accessibility label for the close button")
     }
 }

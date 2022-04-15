@@ -77,8 +77,8 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
         presentViewModel(viewModel: viewModel)
     }
 
-    func error(error: Error, tryAgain: @escaping () -> Void, dismissError: @escaping (UIViewController?) -> Void) {
-        let viewModel = errorViewModel(error: error, tryAgain: tryAgain, dismissError: dismissError)
+    func error(error: Error, tryAgain: @escaping () -> Void, dismissCompletion: @escaping () -> Void) {
+        let viewModel = errorViewModel(error: error, tryAgain: tryAgain, dismissCompletion: dismissCompletion)
         presentViewModel(viewModel: viewModel)
     }
 
@@ -129,7 +129,7 @@ private extension OrderDetailsPaymentAlerts {
 
     func errorViewModel(error: Error,
                         tryAgain: @escaping () -> Void,
-                        dismissError: @escaping (_ viewController: UIViewController?) -> Void) -> CardPresentPaymentsModalViewModel {
+                        dismissCompletion: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         let errorDescription: String?
         if let error = error as? CardReaderServiceError {
             switch error {
@@ -154,7 +154,7 @@ private extension OrderDetailsPaymentAlerts {
         return CardPresentModalError(errorDescription: errorDescription,
                                      transactionType: transactionType,
                                      primaryAction: tryAgain,
-                                     secondaryAction: dismissError)
+                                     dismissCompletion: dismissCompletion)
     }
 
     func retryableErrorViewModel(tryAgain: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {

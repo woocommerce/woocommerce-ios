@@ -305,8 +305,7 @@ private extension RefundSubmissionUseCase {
                     onCompletion(.failure(error))
                 }
             }
-        }, dismissError: { viewController in
-            viewController?.dismiss(animated: true)
+        }, dismissCompletion: {
             onCompletion(.failure(error))
         })
     }

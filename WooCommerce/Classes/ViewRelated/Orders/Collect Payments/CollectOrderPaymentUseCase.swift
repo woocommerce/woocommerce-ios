@@ -289,8 +289,7 @@ private extension CollectOrderPaymentUseCase {
                     onCompletion(.failure(error))
                 }
             }
-        }, dismissError: { viewController in
-            viewController?.dismiss(animated: true)
+        }, dismissCompletion: {
             onCompletion(.failure(error))
         })
     }

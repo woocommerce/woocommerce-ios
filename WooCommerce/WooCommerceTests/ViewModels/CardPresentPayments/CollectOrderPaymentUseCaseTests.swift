@@ -114,7 +114,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                 promise(())
             })
             // Dismisses error to complete the payment flow for `onCollect` to be triggered.
-            self?.alerts.dismissError?(UIViewController())
+            self?.alerts.dismissErrorCompletion?()
         }
 
         // Then

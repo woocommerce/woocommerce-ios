@@ -188,7 +188,8 @@ private extension CardPresentPaymentsOnboardingUseCase {
         guard let plugin = plugin else {
             return .pluginNotInstalled
         }
-        guard cardPresentPluginsDataProvider.isWCPayVersionSupported(plugin: plugin) else {
+        guard cardPresentPluginsDataProvider.isWCPayVersionSupported(plugin: plugin)
+        else {
             return .pluginUnsupportedVersion(plugin: .wcPay)
         }
         guard plugin.active else {
@@ -200,7 +201,8 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func stripeGatewayOnlyOnboardingState(plugin: SystemPlugin) -> CardPresentPaymentOnboardingState {
-        guard cardPresentPluginsDataProvider.isStripeVersionSupported(plugin: plugin) else {
+        guard cardPresentPluginsDataProvider.isStripeVersionSupported(plugin: plugin)
+        else {
             return .pluginUnsupportedVersion(plugin: .stripe)
         }
         guard plugin.active else {

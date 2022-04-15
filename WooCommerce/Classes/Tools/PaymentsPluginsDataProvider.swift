@@ -19,13 +19,16 @@ protocol CardPresentPluginsDataProviderProtocol {
 struct CardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol {
     private let storageManager: StorageManagerType
     private let stores: StoresManager
+    private let configuration: CardPresentPaymentsConfiguration
 
     init(
         storageManager: StorageManagerType = ServiceLocator.storageManager,
-        stores: StoresManager = ServiceLocator.stores
+        stores: StoresManager = ServiceLocator.stores,
+        configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader(stores: ServiceLocator.stores).configuration
     ) {
         self.storageManager = storageManager
         self.stores = stores
+        self.configuration = configuration
     }
 
     private var siteID: Int64? {
@@ -77,10 +80,21 @@ struct CardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol {
     }
 
     func isWCPayVersionSupported(plugin: Yosemite.SystemPlugin) -> Bool {
-        VersionHelpers.isVersionSupported(version: plugin.version, minimumRequired: CardPresentPaymentsPlugins.wcPay.minimumSupportedPluginVersion)
+        isPluginVersionSupported(plugin: plugin, paymentPlugin: .wcPay)
     }
 
     func isStripeVersionSupported(plugin: Yosemite.SystemPlugin) -> Bool {
-        VersionHelpers.isVersionSupported(version: plugin.version, minimumRequired: CardPresentPaymentsPlugins.stripe.minimumSupportedPluginVersion)
+        isPluginVersionSupported(plugin: plugin, paymentPlugin: .stripe)
+    }
+
+    private func isPluginVersionSupported(plugin: Yosemite.SystemPlugin,
+                                          paymentPlugin: CardPresentPaymentsPlugins) -> Bool {
+        guard let pluginSupported = configuration.supportedPluginVersions.first(where: { (key: CardPresentPaymentsPlugins, _) in
+            key == paymentPlugin
+        }) else {
+            return false
+        }
+        return VersionHelpers.isVersionSupported(version: plugin.version,
+                                                 minimumRequired: pluginSupported.value)
     }
 }

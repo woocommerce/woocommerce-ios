@@ -24,7 +24,7 @@ struct CardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol {
     init(
         storageManager: StorageManagerType = ServiceLocator.storageManager,
         stores: StoresManager = ServiceLocator.stores,
-        configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader(stores: ServiceLocator.stores).configuration
+        configuration: CardPresentPaymentsConfiguration
     ) {
         self.storageManager = storageManager
         self.stores = stores

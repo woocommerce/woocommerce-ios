@@ -46,7 +46,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         self.storageManager = storageManager
         self.stores = stores
         self.configurationLoader = .init(stores: stores)
-        self.cardPresentPluginsDataProvider = .init(storageManager: storageManager, stores: stores)
+        self.cardPresentPluginsDataProvider = .init(storageManager: storageManager, stores: stores, configuration: configurationLoader.configuration)
 
 
         // At the time of writing, actions are dispatched and processed synchronously, so the completion blocks for

@@ -141,7 +141,7 @@ private extension OrderDetailsPaymentAlerts {
                     .paymentCapture(let underlyingError),
                     .paymentCancellation(let underlyingError),
                     .refundCreation(let underlyingError),
-                    .refundPayment(let underlyingError),
+                    .refundPayment(let underlyingError, _),
                     .refundCancellation(let underlyingError),
                     .softwareUpdate(let underlyingError, _):
                 errorDescription = Localization.errorDescription(underlyingError: underlyingError, transactionType: transactionType)

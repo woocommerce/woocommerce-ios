@@ -291,15 +291,21 @@ private extension RefundSubmissionUseCase {
         DDLogError("Failed to refund: \(error.localizedDescription)")
         // Informs about the error.
         //TODO: Check which refund errors can't be retried, and use that to call nonRetryableError(from: self.rootViewController, error: cancelError)
-        alerts.error(error: error, tryAgain: { [weak self] in
-            // Cancels current refund, if possible.
-            self?.cardPresentRefundOrchestrator.cancelRefund { [weak self] _ in
-                // Regardless of whether the refund could be cancelled (e.g. it completed but failed), retry the refund.
-                self?.attemptCardPresentRefund(refundAmount: refundAmount, charge: charge, onCompletion: onCompletion)
-            }
-        }, dismissCompletion: {
-            onCompletion(.failure(error))
-        })
+        if let cardReaderError = error as? CardReaderServiceError,
+           case .refundPayment(_, let shouldRetry) = cardReaderError,
+           shouldRetry == false {
+            alerts.nonRetryableError(from: self.rootViewController, error: error)
+        } else {
+            alerts.error(error: error, tryAgain: { [weak self] in
+                // Cancels current refund, if possible.
+                self?.cardPresentRefundOrchestrator.cancelRefund { [weak self] _ in
+                    // Regardless of whether the refund could be cancelled (e.g. it completed but failed), retry the refund.
+                    self?.attemptCardPresentRefund(refundAmount: refundAmount, charge: charge, onCompletion: onCompletion)
+                }
+            }, dismissCompletion: {
+                onCompletion(.failure(error))
+            })
+        }
     }
 
     /// Cancels refund and records analytics.

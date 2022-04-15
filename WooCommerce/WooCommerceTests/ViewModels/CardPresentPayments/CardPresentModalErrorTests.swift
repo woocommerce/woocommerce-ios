@@ -10,7 +10,8 @@ final class CardPresentModalErrorTests: XCTestCase {
         closures = Closures()
         viewModel = CardPresentModalError(errorDescription: Expectations.error.localizedDescription,
                                           transactionType: .collectPayment,
-                                          primaryAction: closures.primaryAction())
+                                          primaryAction: closures.primaryAction(),
+                                          dismissCompletion: closures.dismissCompletion())
     }
 
     override func tearDown() {
@@ -65,10 +66,17 @@ private extension CardPresentModalErrorTests {
 
 private final class Closures {
     var didTapPrimary = false
+    var didDismiss = false
 
     func primaryAction() -> () -> Void {
         return {[weak self] in
             self?.didTapPrimary = true
+        }
+    }
+
+    func dismissCompletion() -> () -> Void {
+        return { [weak self] in
+            self?.didDismiss = true
         }
     }
 }

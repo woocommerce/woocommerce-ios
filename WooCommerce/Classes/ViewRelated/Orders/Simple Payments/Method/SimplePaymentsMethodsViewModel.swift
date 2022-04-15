@@ -174,7 +174,10 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
                                                                        order: order,
                                                                        formattedAmount: formattedTotal,
                                                                        paymentGatewayAccount: paymentGateway,
-                                                                       rootViewController: rootViewController)
+                                                                       rootViewController: rootViewController,
+                                                                       alerts: OrderDetailsPaymentAlerts(transactionType: .collectPayment,
+                                                                                                         presentingController: rootViewController),
+                                                                       configuration: CardPresentConfigurationLoader().configuration)
         collectPaymentsUseCase?.collectPayment(backButtonTitle: Localization.continueToOrders, onCollect: { [weak self] result in
             if result.isFailure {
                 self?.trackFlowFailed()

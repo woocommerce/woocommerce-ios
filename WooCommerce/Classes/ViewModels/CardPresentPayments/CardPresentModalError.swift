@@ -5,7 +5,7 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
     /// A closure to execute when the primary button is tapped
     private let primaryAction: () -> Void
 
-    /// A closure to execute when the secondary button is tapped to dismiss the modal
+    /// A closure to execute after the secondary button is tapped to dismiss the modal
     private let dismissCompletion: () -> Void
 
     let textMode: PaymentsModalTextMode = .reducedBottomInfo

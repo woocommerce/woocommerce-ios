@@ -24,7 +24,7 @@ struct TitleAndValueRow: View {
 
     /// Value frame alignment derived from its text alignment
     ///
-    private var valueFrameAligment: Alignment {
+    private var valueFrameAlignment: Alignment {
         switch valueTextAlignment {
         case .trailing:
             return .trailing
@@ -66,7 +66,7 @@ struct TitleAndValueRow: View {
                     Text(value.text)
                         .style(for: value, bold: bold, highlighted: false)
                         .multilineTextAlignment(valueTextAlignment)
-                        .frame(maxWidth: .infinity, alignment: valueFrameAligment)
+                        .frame(maxWidth: .infinity, alignment: valueFrameAlignment)
                         .padding(.vertical, Constants.verticalPadding)
                 }
 

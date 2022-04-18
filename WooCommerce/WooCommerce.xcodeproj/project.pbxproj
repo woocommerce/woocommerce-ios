@@ -1041,6 +1041,7 @@
 		AE7C957B27C3D5DA007E8E12 /* FeeLineDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7C957A27C3D5DA007E8E12 /* FeeLineDetails.swift */; };
 		AE7C957D27C3F187007E8E12 /* FeeLineDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7C957C27C3F187007E8E12 /* FeeLineDetailsViewModel.swift */; };
 		AE7C957F27C417FA007E8E12 /* FeeLineDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7C957E27C417FA007E8E12 /* FeeLineDetailsViewModelTests.swift */; };
+		AE8AEA8628084EC90054BDA2 /* MaxWidthPreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8AEA8528084EC90054BDA2 /* MaxWidthPreference.swift */; };
 		AE90475C27A99D6000073E1D /* CreateOrderAddressFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE90475B27A99D6000073E1D /* CreateOrderAddressFormViewModelTests.swift */; };
 		AE9E04752776213E003FA09E /* OrderCustomerSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9E04742776213E003FA09E /* OrderCustomerSection.swift */; };
 		AEA3F90D27BE76B300B9F555 /* ShippingLineDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA3F90C27BE76B300B9F555 /* ShippingLineDetails.swift */; };
@@ -2726,6 +2727,7 @@
 		AE7C957A27C3D5DA007E8E12 /* FeeLineDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeeLineDetails.swift; sourceTree = "<group>"; };
 		AE7C957C27C3F187007E8E12 /* FeeLineDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeeLineDetailsViewModel.swift; sourceTree = "<group>"; };
 		AE7C957E27C417FA007E8E12 /* FeeLineDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeeLineDetailsViewModelTests.swift; sourceTree = "<group>"; };
+		AE8AEA8528084EC90054BDA2 /* MaxWidthPreference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaxWidthPreference.swift; sourceTree = "<group>"; };
 		AE90475B27A99D6000073E1D /* CreateOrderAddressFormViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOrderAddressFormViewModelTests.swift; sourceTree = "<group>"; };
 		AE9E04742776213E003FA09E /* OrderCustomerSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCustomerSection.swift; sourceTree = "<group>"; };
 		AEA3F90C27BE76B300B9F555 /* ShippingLineDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLineDetails.swift; sourceTree = "<group>"; };
@@ -5300,6 +5302,7 @@
 				45DB703F261209B10064A6CF /* ItemToFulfillRow.swift */,
 				45DB704926121F3C0064A6CF /* TitleAndValueRow.swift */,
 				45DB705926124C710064A6CF /* TitleAndTextFieldRow.swift */,
+				AE8AEA8528084EC90054BDA2 /* MaxWidthPreference.swift */,
 				CC4A4FF026557D0E00B75DCD /* TitleAndToggleRow.swift */,
 				DE77889726FCA39B008DFF44 /* TitleAndSubtitleRow.swift */,
 				4521396D27FEE55200964ED3 /* FullScreenTextView.swift */,
@@ -9353,6 +9356,7 @@
 				4541D88A270718F6005A9E30 /* ShippingLabelCarriersSectionViewModel.swift in Sources */,
 				77E53EBF2510C153003D385F /* ProductDownloadListViewModel.swift in Sources */,
 				B910686027F1F28F00AD0575 /* GhostableViewController.swift in Sources */,
+				AE8AEA8628084EC90054BDA2 /* MaxWidthPreference.swift in Sources */,
 				DE19BB1A26C3B5DC00AB70D9 /* ShippingLabelCustomsFormItemDetailsViewModel.swift in Sources */,
 				2667BFE52530DCF4008099D4 /* RefundItemsValuesCalculationUseCase.swift in Sources */,
 				B55BC1F121A878A30011A0C0 /* String+HTML.swift in Sources */,

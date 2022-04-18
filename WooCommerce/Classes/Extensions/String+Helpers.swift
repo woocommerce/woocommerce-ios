@@ -64,6 +64,21 @@ extension String {
         return newText
     }
 
+    /// Returns the given string minus the last character if that is a whitespace,
+    /// or a copy of the string otherwise.
+    ///
+    /// - Parameters:
+    ///   - string: the string to process
+    /// - Returns: a string with the last characted removed, if that is a whitespace.
+    /// 
+    static func removeLastCharacterIfWhitespace(from string: String) -> String {
+        guard string.last == " " else {
+            return string
+        }
+
+        return String(string.dropLast())
+    }
+
     /// A Boolean value indicating whether a string has characters.
     var isNotEmpty: Bool {
         return !isEmpty

@@ -278,8 +278,10 @@ private extension RefundSubmissionUseCase {
             guard let self = self else { return }
             switch result {
             case .success:
+                self.trackClientSideRefundRequestSuccess(charge: charge)
                 onCompletion(.success(()))
             case .failure(let error):
+                self.trackClientSideRefundRequestFailed(charge: charge, error: error)
                 self.handleRefundFailureAndRetryRefund(error, refundAmount: refundAmount, charge: charge, onCompletion: onCompletion)
             }
         })
@@ -348,6 +350,35 @@ private extension RefundSubmissionUseCase {
     /// Tracks when the create refund request fails.
     func trackCreateRefundRequestFailed(error: Error) {
         analytics.track(event: WooAnalyticsEvent.IssueRefund.createRefundFailed(orderID: details.order.orderID, error: error))
+    }
+
+    /// Tracks when the refund request succeeds on the client-side before submitting to the site.
+    func trackClientSideRefundRequestSuccess(charge: WCPayCharge) {
+        switch charge.paymentMethodDetails {
+        case .interacPresent:
+            analytics.track(event: WooAnalyticsEvent.InPersonPayments
+                .interacRefundSuccess(gatewayID: paymentGatewayAccounts.first?.gatewayID,
+                                      countryCode: cardPresentConfigurationLoader.configuration.countryCode,
+                                      cardReaderModel: connectedReader?.readerType.model ?? ""))
+        default:
+            // Tracks refund success events with other payment methods if needed.
+            return
+        }
+    }
+
+    /// Tracks when the refund request fails on the client-side before submitting to the site.
+    func trackClientSideRefundRequestFailed(charge: WCPayCharge, error: Error) {
+        switch charge.paymentMethodDetails {
+        case .interacPresent:
+            analytics.track(event: WooAnalyticsEvent.InPersonPayments
+                .interacRefundFailed(error: error,
+                                     gatewayID: paymentGatewayAccounts.first?.gatewayID,
+                                     countryCode: cardPresentConfigurationLoader.configuration.countryCode,
+                                     cardReaderModel: connectedReader?.readerType.model ?? ""))
+        default:
+            // Tracks refund failure events with other payment methods if needed.
+            return
+        }
     }
 }
 

@@ -48,6 +48,7 @@ final class CountrySelectorCommand: ObservableListSelectorCommand {
             return data = countries
         }
 
+        // iOS predictive text on keyboard adds an empty space after the word, what makes the term not being found
         let normalizedString = String.removeLastCharacterIfWhitespace(from: term)
         data = countries.filter { $0.name.localizedCaseInsensitiveContains(normalizedString) }
     }

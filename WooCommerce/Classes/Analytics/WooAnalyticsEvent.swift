@@ -906,6 +906,66 @@ extension WooAnalyticsEvent {
             )
         }
 
+        /// Tracked when an Interac payment collection succeeds after processing on the client side
+        ///
+        /// - Parameters:
+        ///   - gatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - countryCode: the country code of the store.
+        ///   - paymentMethod: the payment method of the captured payment.
+        ///   - cardReaderModel: the model type of the card reader.
+        ///
+        static func collectInteracPaymentSuccess(gatewayID: String?,
+                                                 countryCode: String,
+                                                 paymentMethod: PaymentMethod,
+                                                 cardReaderModel: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .collectInteracPaymentSuccess,
+                              properties: [
+                                Keys.cardReaderModel: cardReaderModel,
+                                Keys.countryCode: countryCode,
+                                Keys.gatewayID: self.gatewayID(forGatewayID: gatewayID),
+                                Keys.paymentMethodType: paymentMethod.analyticsValue
+                              ])
+        }
+
+        /// Tracked when an Interac client-side refund succeeds
+        ///
+        /// - Parameters:
+        ///   - gatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - countryCode: the country code of the store.
+        ///   - cardReaderModel: the model type of the card reader.
+        ///
+        static func interacRefundSuccess(gatewayID: String?,
+                                         countryCode: String,
+                                         cardReaderModel: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .interacRefundSuccess,
+                              properties: [
+                                Keys.cardReaderModel: cardReaderModel,
+                                Keys.countryCode: countryCode,
+                                Keys.gatewayID: self.gatewayID(forGatewayID: gatewayID)
+                              ])
+        }
+
+        /// Tracked when an Interac client-side refund fails
+        ///
+        /// - Parameters:
+        ///   - error: the error to be included in the event properties.
+        ///   - gatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - countryCode: the country code of the store.
+        ///   - cardReaderModel: the model type of the card reader.
+        ///
+        static func interacRefundFailed(error: Error,
+                                        gatewayID: String?,
+                                        countryCode: String,
+                                        cardReaderModel: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .interacRefundFailed,
+                              properties: [
+                                Keys.cardReaderModel: cardReaderModel,
+                                Keys.countryCode: countryCode,
+                                Keys.gatewayID: self.gatewayID(forGatewayID: gatewayID)
+                              ],
+                              error: error)
+        }
+
         /// Tracked when the "learn more" button in the In-Person Payments onboarding is tapped.
         ///
         /// - Parameter countryCode: the country code of the store.

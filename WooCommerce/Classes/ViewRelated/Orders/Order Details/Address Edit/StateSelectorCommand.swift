@@ -48,6 +48,7 @@ final class StateSelectorCommand: ObservableListSelectorCommand {
             return data = states
         }
 
-        data = states.filter { $0.name.localizedCaseInsensitiveContains(term) }
+        let normalizedString = String.removeLastCharacterIfWhitespace(from: term)
+        data = states.filter { $0.name.localizedCaseInsensitiveContains(normalizedString) }
     }
 }

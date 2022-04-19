@@ -25,7 +25,7 @@ final class RefundConfirmationViewController: UIViewController {
 
     /// Closure to be invoked when the refund button is pressed.
     ///
-    var onRefundButtonAction: (() -> Void)?
+    var onRefundButtonAction: ((RefundConfirmationViewController) -> Void)?
 
     /// Closure to be invoked when the refund is about to be issued.
     ///
@@ -120,7 +120,7 @@ private extension RefundConfirmationViewController {
     func configureButtonTableFooterView() {
         tableView.tableFooterView = ButtonTableFooterView(frame: .zero, title: Localization.refund) { [weak self] in
             guard let self = self else { return }
-            self.onRefundButtonAction?()
+            self.onRefundButtonAction?(self)
             self.viewModel.trackSummaryButtonTapped()
         }
         tableView.updateFooterHeight()

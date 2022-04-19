@@ -446,7 +446,7 @@ private extension StripeCardReaderService {
                 return
             }
 
-            // If there is no chip card inserted, it is ok to immediatedly return. The payment method may have been swipe or tap.
+            // If there is no chip card inserted, it is ok to immediately return. The payment method may have been swipe or tap.
             if !self.isChipCardInserted {
                 return promise(.success(()))
             }

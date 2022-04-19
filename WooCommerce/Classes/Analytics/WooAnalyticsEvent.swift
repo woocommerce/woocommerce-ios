@@ -911,19 +911,16 @@ extension WooAnalyticsEvent {
         /// - Parameters:
         ///   - gatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///   - countryCode: the country code of the store.
-        ///   - paymentMethod: the payment method of the captured payment.
         ///   - cardReaderModel: the model type of the card reader.
         ///
         static func collectInteracPaymentSuccess(gatewayID: String?,
                                                  countryCode: String,
-                                                 paymentMethod: PaymentMethod,
                                                  cardReaderModel: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectInteracPaymentSuccess,
                               properties: [
                                 Keys.cardReaderModel: cardReaderModel,
                                 Keys.countryCode: countryCode,
                                 Keys.gatewayID: self.gatewayID(forGatewayID: gatewayID),
-                                Keys.paymentMethodType: paymentMethod.analyticsValue
                               ])
         }
 

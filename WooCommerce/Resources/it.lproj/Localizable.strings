@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-04-13 15:54:03+0000 */
+/* Translation-Revision-Date: 2022-04-14 09:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
@@ -2391,7 +2391,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Mark this order as complete and notify the customer" = "Contrassegna questo ordine come completato e invia una notifica al cliente";
 
 /* Title for the maximum spend row on coupon usage details screen with currency symbol within the brackets. Reads like: Max. Spend ($) */
-"Max. Spend (%1$@)" = "Massima Spesa (%1$@)";
+"Max. Spend (%1$@)" = "Spesa massima (%1$@)";
 
 /* The maximum limit of spending allowed for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
 "Maximum spend of %1$@" = "Spesa massima di %1$@";
@@ -2422,7 +2422,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Microsoft Outlook" = "Microsoft Outlook";
 
 /* Title for the minimum spend row on coupon usage details screen with currency symbol within the brackets. Reads like: Min. Spend ($) */
-"Min. Spend (%1$@)" = "Minima Spesa (%1$@)";
+"Min. Spend (%1$@)" = "Spesa minima (%1$@)";
 
 /* The minimum limit of spending required for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
 "Minimum spend of %1$@" = "Spesa minima di %1$@";

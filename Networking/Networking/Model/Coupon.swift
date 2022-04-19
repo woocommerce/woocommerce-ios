@@ -137,39 +137,60 @@ public struct Coupon {
         self.emailRestrictions = emailRestrictions
         self.usedBy = usedBy
     }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(code, forKey: .code)
+        try container.encode(amount, forKey: .amount)
+        try container.encode(discountType, forKey: .discountType)
+        try container.encode(description, forKey: .description)
+        try container.encode(dateExpires, forKey: .dateExpires)
+        try container.encode(productIds, forKey: .productIds)
+        try container.encode(excludedProductIds, forKey: .excludedProductIds)
+        try container.encode(usageLimit, forKey: .usageLimit)
+        try container.encode(usageLimitPerUser, forKey: .usageLimitPerUser)
+        try container.encode(limitUsageToXItems, forKey: .limitUsageToXItems)
+        try container.encode(freeShipping, forKey: .freeShipping)
+        try container.encode(productCategories, forKey: .productCategories)
+        try container.encode(excludedProductCategories, forKey: .excludedProductCategories)
+        try container.encode(minimumAmount, forKey: .minimumAmount)
+        try container.encode(maximumAmount, forKey: .maximumAmount)
+        try container.encode(emailRestrictions, forKey: .emailRestrictions)
+    }
+
 }
 
 
 // MARK: - Codable Conformance
 
 /// Defines all of the Coupon CodingKeys
-/// The model is intended to be decoded with`JSONDecoder.KeyDecodingStrategy.convertFromSnakeCase`
-/// so any specific `CodingKeys` provided here should be in camel case.
+///
 extension Coupon: Codable {
     enum CodingKeys: String, CodingKey {
         case couponID = "id"
         case code
         case amount
-        case dateCreated = "dateCreatedGmt"
-        case dateModified = "dateModifiedGmt"
-        case discountType
+        case dateCreated = "date_created_gmt"
+        case dateModified = "date_modified_gmt"
+        case discountType = "discount_type"
         case description
-        case dateExpires = "dateExpiresGmt"
-        case usageCount
-        case individualUse
-        case productIds
-        case excludedProductIds
-        case usageLimit
-        case usageLimitPerUser
-        case limitUsageToXItems
-        case freeShipping
-        case productCategories
-        case excludedProductCategories
-        case excludeSaleItems
-        case minimumAmount
-        case maximumAmount
-        case emailRestrictions
-        case usedBy
+        case dateExpires = "date_expires_gmt"
+        case usageCount = "usage_count"
+        case individualUse = "individual_use"
+        case productIds = "product_ids"
+        case excludedProductIds = "excluded_product_ids"
+        case usageLimit = "usage_limit"
+        case usageLimitPerUser = "usage_limit_per_user"
+        case limitUsageToXItems = "limit_usage_to_x_items"
+        case freeShipping = "free_shipping"
+        case productCategories = "product_categories"
+        case excludedProductCategories = "excluded_product_categories"
+        case excludeSaleItems = "exclude_sale_items"
+        case minimumAmount = "minimum_amount"
+        case maximumAmount = "maximum_amount"
+        case emailRestrictions = "email_restrictions"
+        case usedBy = "used_by"
     }
 }
 

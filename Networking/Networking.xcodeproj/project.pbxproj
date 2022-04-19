@@ -101,7 +101,6 @@
 		03DCB77E262738E300C8953D /* coupon.json in Resources */ = {isa = PBXBuildFile; fileRef = 03DCB77D262738E200C8953D /* coupon.json */; };
 		03DCB7822627394500C8953D /* CouponMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DCB7812627394500C8953D /* CouponMapperTests.swift */; };
 		03DCB786262739D200C8953D /* CouponMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DCB785262739D200C8953D /* CouponMapper.swift */; };
-		03DCB796262741E000C8953D /* Coupon+Decoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DCB795262741E000C8953D /* Coupon+Decoder.swift */; };
 		03E6676927E0F62B00890E6F /* wcpay-charge-interac-present.json in Resources */ = {isa = PBXBuildFile; fileRef = 03E6676827E0F62B00890E6F /* wcpay-charge-interac-present.json */; };
 		03E8FEC427B40E3F00F5FC7D /* wcpay-charge-card-present-minimal.json in Resources */ = {isa = PBXBuildFile; fileRef = 03E8FEC327B40E3F00F5FC7D /* wcpay-charge-card-present-minimal.json */; };
 		077F39C8269F2C7E00ABEADC /* SystemPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39C7269F2C7E00ABEADC /* SystemPlugin.swift */; };
@@ -778,7 +777,6 @@
 		03DCB77D262738E200C8953D /* coupon.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = coupon.json; sourceTree = "<group>"; };
 		03DCB7812627394500C8953D /* CouponMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponMapperTests.swift; sourceTree = "<group>"; };
 		03DCB785262739D200C8953D /* CouponMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponMapper.swift; sourceTree = "<group>"; };
-		03DCB795262741E000C8953D /* Coupon+Decoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Coupon+Decoder.swift"; sourceTree = "<group>"; };
 		03E6676827E0F62B00890E6F /* wcpay-charge-interac-present.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-charge-interac-present.json"; sourceTree = "<group>"; };
 		03E8FEC327B40E3F00F5FC7D /* wcpay-charge-card-present-minimal.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-charge-card-present-minimal.json"; sourceTree = "<group>"; };
 		077F39C7269F2C7E00ABEADC /* SystemPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPlugin.swift; sourceTree = "<group>"; };
@@ -2153,7 +2151,6 @@
 		B5BB1D0A20A204F400112D92 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				03DCB795262741E000C8953D /* Coupon+Decoder.swift */,
 				CE6D666B2379E19D007835A1 /* Array+Woo.swift */,
 				B58E5BE920FFB3D0003C986E /* CodingUserInfoKey+Woo.swift */,
 				B5BB1D0B20A2050300112D92 /* DateFormatter+Woo.swift */,
@@ -2976,7 +2973,6 @@
 				45E3EEBB237009CF00A826AC /* ShippingLine.swift in Sources */,
 				CE6BFEEA2236E191005C79FB /* ProductType.swift in Sources */,
 				CE6D666C2379E19D007835A1 /* Array+Woo.swift in Sources */,
-				03DCB796262741E000C8953D /* Coupon+Decoder.swift in Sources */,
 				CCF48B1E26288FEC0034EA83 /* ShippingLabelPaymentMethod.swift in Sources */,
 				DEC51AE927687AAF009F3DF4 /* SystemPluginMapper.swift in Sources */,
 				B557DA0B20975D7E005962F4 /* WooAPIVersion.swift in Sources */,

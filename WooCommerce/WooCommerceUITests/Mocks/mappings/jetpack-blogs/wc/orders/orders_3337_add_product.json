@@ -11,7 +11,7 @@
                         "product_id": 2129
                     }],
                     "customer_note": "",
-                    "status": "pending",
+                    "status": "auto-draft",
                     "fee_lines": [],
                     "shipping_lines": []
                 }
@@ -23,7 +23,7 @@
             "data": {
                 "id": 3337,
                 "parent_id": 0,
-                "status": "pending",
+                "status": "auto-draft",
                 "currency": "USD",
                 "version": "6.3.1",
                 "prices_include_tax": true,

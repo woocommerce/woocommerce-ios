@@ -48,6 +48,7 @@ final class CountrySelectorCommand: ObservableListSelectorCommand {
             return data = countries
         }
 
+        // Trim the search term to remove newlines or whitespaces (e.g added from the keyboard predictive text) from both ends
         data = countries.filter { $0.name.localizedCaseInsensitiveContains(term.trim()) }
     }
 }

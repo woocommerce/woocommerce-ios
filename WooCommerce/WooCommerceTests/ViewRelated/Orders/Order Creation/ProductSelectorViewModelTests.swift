@@ -3,7 +3,7 @@ import Yosemite
 @testable import WooCommerce
 @testable import Storage
 
-class AddProductToOrderViewModelTests: XCTestCase {
+final class ProductSelectorViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 123
     private var storageManager: StorageManagerType!
@@ -327,7 +327,7 @@ class AddProductToOrderViewModelTests: XCTestCase {
 }
 
 // MARK: - Utils
-private extension AddProductToOrderViewModelTests {
+private extension ProductSelectorViewModelTests {
     func insert(_ readOnlyProduct: Yosemite.Product) {
         let product = storage.insertNewObject(ofType: StorageProduct.self)
         product.update(with: readOnlyProduct)

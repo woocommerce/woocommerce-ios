@@ -3,7 +3,7 @@ import Yosemite
 @testable import WooCommerce
 @testable import Storage
 
-class AddProductVariationToOrderViewModelTests: XCTestCase {
+final class ProductVariationSelectorViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 123
     private let sampleProductID: Int64 = 12
@@ -225,7 +225,7 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
 }
 
 // MARK: - Utils
-private extension AddProductVariationToOrderViewModelTests {
+private extension ProductVariationSelectorViewModelTests {
     /// Insert a `ProductVariation` into storage
     func insert(_ readOnlyVariation: Yosemite.ProductVariation) {
         let productVariation = storage.insertNewObject(ofType: StorageProductVariation.self)

@@ -1217,7 +1217,7 @@
 		CC078531266E706300BA9AC1 /* ErrorTopBannerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC078530266E706300BA9AC1 /* ErrorTopBannerFactory.swift */; };
 		CC07860526736B6500BA9AC1 /* ErrorTopBannerFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC07860426736B6500BA9AC1 /* ErrorTopBannerFactoryTests.swift */; };
 		CC13C0CB278E021300C0B5B5 /* ProductVariationSelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC13C0CA278E021300C0B5B5 /* ProductVariationSelectorViewModel.swift */; };
-		CC13C0CD278E086D00C0B5B5 /* AddProductVariationToOrderViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC13C0CC278E086D00C0B5B5 /* AddProductVariationToOrderViewModelTests.swift */; };
+		CC13C0CD278E086D00C0B5B5 /* ProductVariationSelectorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC13C0CC278E086D00C0B5B5 /* ProductVariationSelectorViewModelTests.swift */; };
 		CC1AB56827FC5822003DEF43 /* OrderStatusScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC1AB56727FC5821003DEF43 /* OrderStatusScreen.swift */; };
 		CC1AB56A27FC60D1003DEF43 /* NewOrderFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC1AB56927FC60D1003DEF43 /* NewOrderFlow.swift */; };
 		CC200BB127847DE300EC5884 /* OrderPaymentSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC200BB027847DE300EC5884 /* OrderPaymentSection.swift */; };
@@ -1241,7 +1241,7 @@
 		CC53FB3A275697B000C4CA4F /* ProductRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC53FB39275697B000C4CA4F /* ProductRowViewModel.swift */; };
 		CC53FB3C2757EC7200C4CA4F /* ProductSelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC53FB3B2757EC7200C4CA4F /* ProductSelectorViewModel.swift */; };
 		CC53FB3E2758E2D500C4CA4F /* ProductRowViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC53FB3D2758E2D500C4CA4F /* ProductRowViewModelTests.swift */; };
-		CC53FB402759042600C4CA4F /* AddProductToOrderViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC53FB3F2759042600C4CA4F /* AddProductToOrderViewModelTests.swift */; };
+		CC53FB402759042600C4CA4F /* ProductSelectorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC53FB3F2759042600C4CA4F /* ProductSelectorViewModelTests.swift */; };
 		CC593A6726EA116300EF0E04 /* ShippingLabelAddNewPackageViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC593A6626EA116300EF0E04 /* ShippingLabelAddNewPackageViewModelTests.swift */; };
 		CC593A6B26EA640800EF0E04 /* PackageCreationError+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC593A6A26EA640800EF0E04 /* PackageCreationError+UI.swift */; };
 		CC5C278727EE19A700B25D2A /* NewOrderScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5C278627EE19A600B25D2A /* NewOrderScreen.swift */; };
@@ -2925,7 +2925,7 @@
 		CC078530266E706300BA9AC1 /* ErrorTopBannerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorTopBannerFactory.swift; sourceTree = "<group>"; };
 		CC07860426736B6500BA9AC1 /* ErrorTopBannerFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorTopBannerFactoryTests.swift; sourceTree = "<group>"; };
 		CC13C0CA278E021300C0B5B5 /* ProductVariationSelectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationSelectorViewModel.swift; sourceTree = "<group>"; };
-		CC13C0CC278E086D00C0B5B5 /* AddProductVariationToOrderViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductVariationToOrderViewModelTests.swift; sourceTree = "<group>"; };
+		CC13C0CC278E086D00C0B5B5 /* ProductVariationSelectorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationSelectorViewModelTests.swift; sourceTree = "<group>"; };
 		CC1AB56727FC5821003DEF43 /* OrderStatusScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusScreen.swift; sourceTree = "<group>"; };
 		CC1AB56927FC60D1003DEF43 /* NewOrderFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewOrderFlow.swift; sourceTree = "<group>"; };
 		CC200BB027847DE300EC5884 /* OrderPaymentSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderPaymentSection.swift; sourceTree = "<group>"; };
@@ -2949,7 +2949,7 @@
 		CC53FB39275697B000C4CA4F /* ProductRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductRowViewModel.swift; sourceTree = "<group>"; };
 		CC53FB3B2757EC7200C4CA4F /* ProductSelectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSelectorViewModel.swift; sourceTree = "<group>"; };
 		CC53FB3D2758E2D500C4CA4F /* ProductRowViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductRowViewModelTests.swift; sourceTree = "<group>"; };
-		CC53FB3F2759042600C4CA4F /* AddProductToOrderViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductToOrderViewModelTests.swift; sourceTree = "<group>"; };
+		CC53FB3F2759042600C4CA4F /* ProductSelectorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSelectorViewModelTests.swift; sourceTree = "<group>"; };
 		CC593A6626EA116300EF0E04 /* ShippingLabelAddNewPackageViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddNewPackageViewModelTests.swift; sourceTree = "<group>"; };
 		CC593A6A26EA640800EF0E04 /* PackageCreationError+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PackageCreationError+UI.swift"; sourceTree = "<group>"; };
 		CC5C278627EE19A600B25D2A /* NewOrderScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewOrderScreen.swift; sourceTree = "<group>"; };
@@ -6560,8 +6560,8 @@
 				CCB366AE274518EC007D437A /* NewOrderViewModelTests.swift */,
 				AEA622B627468790002A9B57 /* AddOrderCoordinatorTests.swift */,
 				CC53FB3D2758E2D500C4CA4F /* ProductRowViewModelTests.swift */,
-				CC53FB3F2759042600C4CA4F /* AddProductToOrderViewModelTests.swift */,
-				CC13C0CC278E086D00C0B5B5 /* AddProductVariationToOrderViewModelTests.swift */,
+				CC53FB3F2759042600C4CA4F /* ProductSelectorViewModelTests.swift */,
+				CC13C0CC278E086D00C0B5B5 /* ProductVariationSelectorViewModelTests.swift */,
 				AE90475B27A99D6000073E1D /* CreateOrderAddressFormViewModelTests.swift */,
 				AEA3F91227BEC40A00B9F555 /* ShippingLineDetailsViewModelTests.swift */,
 				AE7C957E27C417FA007E8E12 /* FeeLineDetailsViewModelTests.swift */,
@@ -9577,7 +9577,7 @@
 				26FE09E124DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift in Sources */,
 				0277AEAB256CAA5300F45C4A /* MockShippingLabelAddress.swift in Sources */,
 				D83F593D225B4B5000626E75 /* ManualTrackingViewControllerTests.swift in Sources */,
-				CC53FB402759042600C4CA4F /* AddProductToOrderViewModelTests.swift in Sources */,
+				CC53FB402759042600C4CA4F /* ProductSelectorViewModelTests.swift in Sources */,
 				03AA16602719B83D005CCB7B /* ReceiptActionCoordinatorTests.swift in Sources */,
 				CEEC9B6621E7C5200055EEF0 /* AppRatingManagerTests.swift in Sources */,
 				263EB409242C58EA00F3A15F /* ProductFormActionsFactoryTests.swift in Sources */,
@@ -9769,7 +9769,7 @@
 				A650BE872578E76600C655E0 /* MockStorageManager.swift in Sources */,
 				029700EF24FE38F000D242F8 /* ScrollWatcherTests.swift in Sources */,
 				0236BCA425087B660043EB43 /* ProductFormRemoteActionUseCaseTests.swift in Sources */,
-				CC13C0CD278E086D00C0B5B5 /* AddProductVariationToOrderViewModelTests.swift in Sources */,
+				CC13C0CD278E086D00C0B5B5 /* ProductVariationSelectorViewModelTests.swift in Sources */,
 				DE26B5292775C76C00A2EA0A /* MockSyncingCoordinator.swift in Sources */,
 				0968B80C27CFB2EF0021210A /* BulkUpdateOptionsModelTests.swift in Sources */,
 				DE126D0F26CA71E8007F901D /* ShippingLabelCustomsFormInputViewModelTests.swift in Sources */,

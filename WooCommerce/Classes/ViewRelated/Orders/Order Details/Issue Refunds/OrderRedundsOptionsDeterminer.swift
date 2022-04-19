@@ -3,14 +3,21 @@ import Yosemite
 
 protocol OrderRefundsOptionsDeterminerProtocol {
     func determineRefundableOrderItems(from order: Order, with refunds: [Refund]) -> [RefundableOrderItem]
+    func isAnythingToRefund(from order: Order, with refunds: [Refund], currencyFormatter: CurrencyFormatter) -> Bool
 }
 
 final class OrderRefundsOptionsDeterminer: OrderRefundsOptionsDeterminerProtocol {
 
     func isAnythingToRefund(from order: Order, with refunds: [Refund], currencyFormatter: CurrencyFormatter) -> Bool {
-        isAnyFeeAvailableForRefund(from: order) ||
+        var shippingLineCanBeRefunded = false
+        if let shippingLine = order.shippingLines.first {
+            shippingLineCanBeRefunded = shippingLineIsRefundable(shippingLine, currencyFormatter: currencyFormatter)
+
+        }
+
+        return isAnyFeeAvailableForRefund(from: order) ||
         hasShippingBeenRefunded(from: refunds) == false ||
-        shippingLineIsRefundable() ||
+        shippingLineCanBeRefunded ||
         determineRefundableOrderItems(from: order, with: refunds).count > 0
     }
 

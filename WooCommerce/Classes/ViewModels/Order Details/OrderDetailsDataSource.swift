@@ -54,9 +54,7 @@ final class OrderDetailsDataSource: NSObject {
     }
 
     var isEligibleForRefund: Bool {
-        let refundableOrderItems = refundableOrderItemsDeterminer.determineRefundableOrderItems(from: order, with: refunds)
-
-        guard refundableOrderItems.count > 0,
+        guard refundableOrderItemsDeterminer.isAnythingToRefund(from: order, with: refunds, currencyFormatter: currencyFormatter),
               let orderTotal = Double(order.total),
               orderTotal > 0,
               !isRefundedStatus,

@@ -7,7 +7,7 @@ import enum Hardware.UnderlyingError
 /// A layer of indirection between OrderDetailsViewController and the modal alerts
 /// presented to provide user-facing feedback about the progress
 /// of the payment collection process
-final class OrderDetailsPaymentAlerts {
+final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
     private weak var presentingController: UIViewController?
 
     // Storing this as a weak variable means that iOS should automatically set this to nil
@@ -77,8 +77,8 @@ final class OrderDetailsPaymentAlerts {
         presentViewModel(viewModel: viewModel)
     }
 
-    func error(error: Error, tryAgain: @escaping () -> Void) {
-        let viewModel = errorViewModel(error: error, tryAgain: tryAgain)
+    func error(error: Error, tryAgain: @escaping () -> Void, dismissCompletion: @escaping () -> Void) {
+        let viewModel = errorViewModel(error: error, tryAgain: tryAgain, dismissCompletion: dismissCompletion)
         presentViewModel(viewModel: viewModel)
     }
 
@@ -127,7 +127,9 @@ private extension OrderDetailsPaymentAlerts {
         }
     }
 
-    func errorViewModel(error: Error, tryAgain: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+    func errorViewModel(error: Error,
+                        tryAgain: @escaping () -> Void,
+                        dismissCompletion: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         let errorDescription: String?
         if let error = error as? CardReaderServiceError {
             switch error {
@@ -149,7 +151,10 @@ private extension OrderDetailsPaymentAlerts {
         } else {
             errorDescription = error.localizedDescription
         }
-        return CardPresentModalError(errorDescription: errorDescription, transactionType: transactionType, primaryAction: tryAgain)
+        return CardPresentModalError(errorDescription: errorDescription,
+                                     transactionType: transactionType,
+                                     primaryAction: tryAgain,
+                                     dismissCompletion: dismissCompletion)
     }
 
     func retryableErrorViewModel(tryAgain: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {

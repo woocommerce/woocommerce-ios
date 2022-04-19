@@ -92,10 +92,12 @@ final class MockCardReaderService: CardReaderService {
 
     func clear() { }
 
-    func capturePayment(_ parameters: PaymentIntentParameters) -> AnyPublisher<PaymentIntent, Error> {
-        Just(MockPaymentIntent.mock())
+    func capturePayment(_ parameters: PaymentIntentParameters) ->
+    (future: AnyPublisher<PaymentIntent, Error>, processingCompleted: AnyPublisher<PaymentIntent, Never>) {
+        (future: Just(MockPaymentIntent.mock())
             .setFailureType(to: Error.self)
-            .eraseToAnyPublisher()
+            .eraseToAnyPublisher(),
+         processingCompleted: Empty<PaymentIntent, Never>().eraseToAnyPublisher())
     }
 
     func cancelPaymentIntent() -> Future<Void, Error> {

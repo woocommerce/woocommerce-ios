@@ -5697,6 +5697,7 @@
 		74EC34A3225FE1F3004BBC2E /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				DE4FB771280E758D003D20D6 /* ProductSelector */,
 				0279F0DD252DC1060098D7DE /* Product Loader */,
 				02ECD1E224FF5DDD00735BE5 /* Add Product */,
 				0235595724496D31004BE2B8 /* BottomSheetListSelector */,
@@ -6547,7 +6548,6 @@
 		CC53FB3627551A8700C4CA4F /* ProductsSection */ = {
 			isa = PBXGroup;
 			children = (
-				DE4FB771280E758D003D20D6 /* ProductSelector */,
 				CCC284102768C18500F6CC8B /* ProductInOrder.swift */,
 				CC440E1D2770C6AF0074C264 /* ProductInOrderViewModel.swift */,
 			);

@@ -17,7 +17,7 @@
             "data": {
                 "id": 3337,
                 "parent_id": 0,
-                "status": "pending",
+                "status": "processing",
                 "currency": "USD",
                 "version": "6.3.1",
                 "prices_include_tax": true,

@@ -54,7 +54,9 @@ final class OrderDetailsDataSource: NSObject {
     }
 
     var isEligibleForRefund: Bool {
-        guard order.refunds.count == 0,
+        let refundableOrderItems = refundableOrderItemsDeterminer.determineRefundableOrderItems(from: order, with: refunds)
+
+        guard refundableOrderItems.count > 0,
               let orderTotal = Double(order.total),
               orderTotal > 0,
               !isRefundedStatus,
@@ -220,13 +222,17 @@ final class OrderDetailsDataSource: NSObject {
     /// IPP Configuration
     private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
+    private let refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol
+
     init(order: Order,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration) {
+         cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
+         refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol = OrderRefundsOptionsDeterminer()) {
         self.storageManager = storageManager
         self.order = order
         self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
         self.couponLines = order.coupons
+        self.refundableOrderItemsDeterminer = refundableOrderItemsDeterminer
 
         super.init()
     }

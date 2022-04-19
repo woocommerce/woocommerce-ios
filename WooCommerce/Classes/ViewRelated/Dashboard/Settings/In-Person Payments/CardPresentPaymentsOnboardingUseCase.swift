@@ -212,7 +212,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
         return accountChecks(plugin: .stripe)
     }
 
-    func accountChecks(plugin: CardPresentPaymentsPlugins) -> CardPresentPaymentOnboardingState {
+    func accountChecks(plugin: CardPresentPaymentsPlugin) -> CardPresentPaymentOnboardingState {
         guard let account = getPaymentGatewayAccount() else {
             /// Active plugin but unable to fetch an account? Prompt the merchant to finish setting it up.
             return .pluginSetupNotCompleted(plugin: plugin)

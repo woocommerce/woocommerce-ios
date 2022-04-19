@@ -3,11 +3,11 @@ import SwiftUI
 import Yosemite
 
 final class InPersonPaymentsMenuViewController: UITableViewController {
-    private let plugin: CardPresentPaymentsPlugins
+    private let plugin: CardPresentPaymentsPlugin
     private var rows = [Row]()
     private let configurationLoader: CardPresentConfigurationLoader
 
-    init(plugin: CardPresentPaymentsPlugins) {
+    init(plugin: CardPresentPaymentsPlugin) {
         self.plugin = plugin
         configurationLoader = CardPresentConfigurationLoader()
         super.init(style: .grouped)
@@ -259,7 +259,7 @@ private enum Constants {
 /// SwiftUI wrapper for CardReaderSettingsPresentingViewController
 ///
 struct InPersonPaymentsMenu: UIViewControllerRepresentable {
-    let plugin: CardPresentPaymentsPlugins
+    let plugin: CardPresentPaymentsPlugin
 
     func makeUIViewController(context: Context) -> some UIViewController {
         InPersonPaymentsMenuViewController(plugin: plugin)

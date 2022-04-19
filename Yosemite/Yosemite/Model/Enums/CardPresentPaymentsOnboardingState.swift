@@ -6,7 +6,7 @@ public enum CardPresentPaymentOnboardingState: Equatable {
 
     /// All the requirements are met and the feature is ready to use
     ///
-    case completed(plugin: CardPresentPaymentsPlugins)
+    case completed(plugin: CardPresentPaymentsPlugin)
 
     /// There is more than one plugin installed and activated. The user must deactivate one.
     /// 
@@ -18,7 +18,7 @@ public enum CardPresentPaymentOnboardingState: Equatable {
 
     /// Store is not located in one of the supported countries for Stripe (but it is for WCPay).
     ///
-    case countryNotSupportedStripe(plugin: CardPresentPaymentsPlugins, countryCode: String)
+    case countryNotSupportedStripe(plugin: CardPresentPaymentsPlugin, countryCode: String)
 
     /// No CPP plugin is installed on the store.
     ///
@@ -26,38 +26,38 @@ public enum CardPresentPaymentOnboardingState: Equatable {
 
     /// CPP plugin is installed on the store, but the version is out-dated and doesn't contain required APIs for card present payments.
     ///
-    case pluginUnsupportedVersion(plugin: CardPresentPaymentsPlugins)
+    case pluginUnsupportedVersion(plugin: CardPresentPaymentsPlugin)
 
     /// CPP plugin is installed on the store but is not activated.
     ///
-    case pluginNotActivated(plugin: CardPresentPaymentsPlugins)
+    case pluginNotActivated(plugin: CardPresentPaymentsPlugin)
 
     /// CPP plugin is installed and activated but requires to be setup first.
     ///
-    case pluginSetupNotCompleted(plugin: CardPresentPaymentsPlugins)
+    case pluginSetupNotCompleted(plugin: CardPresentPaymentsPlugin)
 
     /// This is a bit special case: The plugin is set to test mode but the connected Stripe account is a real (live) account.
     /// Connecting to a reader or accepting payments is not supported in this state.
     ///
-    case pluginInTestModeWithLiveStripeAccount(plugin: CardPresentPaymentsPlugins)
+    case pluginInTestModeWithLiveStripeAccount(plugin: CardPresentPaymentsPlugin)
 
     /// The connected Stripe account has not been reviewed by Stripe yet. This is a temporary state and the user needs to wait.
     ///
-    case stripeAccountUnderReview(plugin: CardPresentPaymentsPlugins)
+    case stripeAccountUnderReview(plugin: CardPresentPaymentsPlugin)
 
     /// There are some pending requirements on the connected Stripe account. The merchant still has some time before the deadline to fix them expires.
     /// In-person payments should work without issues.
     ///
-    case stripeAccountPendingRequirement(plugin: CardPresentPaymentsPlugins, deadline: Date?)
+    case stripeAccountPendingRequirement(plugin: CardPresentPaymentsPlugin, deadline: Date?)
 
     /// There are some overdue requirements on the connected Stripe account. Connecting to a reader or accepting payments is not supported in this state.
     ///
-    case stripeAccountOverdueRequirement(plugin: CardPresentPaymentsPlugins)
+    case stripeAccountOverdueRequirement(plugin: CardPresentPaymentsPlugin)
 
     /// The Stripe account was rejected by Stripe.
     /// This can happen for example when the account is flagged as fraudulent or the merchant violates the terms of service.
     ///
-    case stripeAccountRejected(plugin: CardPresentPaymentsPlugins)
+    case stripeAccountRejected(plugin: CardPresentPaymentsPlugin)
 
     /// Generic error - for example, one of the requests failed.
     ///

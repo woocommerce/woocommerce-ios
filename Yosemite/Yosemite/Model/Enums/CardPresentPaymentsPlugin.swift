@@ -1,6 +1,6 @@
 import Foundation
 
-public enum CardPresentPaymentsPlugins: Equatable, CaseIterable {
+public enum CardPresentPaymentsPlugin: Equatable, CaseIterable {
     case wcPay
     case stripe
 
@@ -15,6 +15,6 @@ public enum CardPresentPaymentsPlugins: Equatable, CaseIterable {
 }
 
 public struct PaymentPluginVersionSupport {
-    public let plugin: CardPresentPaymentsPlugins
+    public let plugin: CardPresentPaymentsPlugin
     public let minimumVersion: String
 }

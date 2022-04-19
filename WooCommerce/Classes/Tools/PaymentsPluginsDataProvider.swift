@@ -40,7 +40,7 @@ struct CardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol {
             return nil
         }
         return storageManager.viewStorage
-            .loadSystemPlugin(siteID: siteID, name: CardPresentPaymentsPlugins.wcPay.pluginName)?
+            .loadSystemPlugin(siteID: siteID, name: CardPresentPaymentsPlugin.wcPay.pluginName)?
             .toReadOnly()
     }
 
@@ -49,7 +49,7 @@ struct CardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol {
             return nil
         }
         return storageManager.viewStorage
-            .loadSystemPlugin(siteID: siteID, name: CardPresentPaymentsPlugins.stripe.pluginName)?
+            .loadSystemPlugin(siteID: siteID, name: CardPresentPaymentsPlugin.stripe.pluginName)?
             .toReadOnly()
     }
 
@@ -88,7 +88,7 @@ struct CardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol {
     }
 
     private func isPluginVersionSupported(plugin: Yosemite.SystemPlugin,
-                                          paymentPlugin: CardPresentPaymentsPlugins) -> Bool {
+                                          paymentPlugin: CardPresentPaymentsPlugin) -> Bool {
         guard let pluginSupport = configuration.supportedPluginVersions.first(where: { support in
             support.plugin == paymentPlugin
         }) else {

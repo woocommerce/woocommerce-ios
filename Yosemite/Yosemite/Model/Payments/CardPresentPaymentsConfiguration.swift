@@ -72,7 +72,7 @@ public struct CardPresentPaymentsConfiguration {
     /// Given a two character country code and the active plugin, returns a URL
     /// where the merchant can purchase a card reader
     ///
-    public func purchaseCardReaderUrl(for plugin: CardPresentPaymentsPlugins) -> URL {
+    public func purchaseCardReaderUrl(for plugin: CardPresentPaymentsPlugin) -> URL {
         if case .stripe = plugin {
             return Constants.stripeReaderPurchaseUrl
         }

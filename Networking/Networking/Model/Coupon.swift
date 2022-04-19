@@ -159,38 +159,48 @@ public struct Coupon {
         try container.encode(emailRestrictions, forKey: .emailRestrictions)
     }
 
+    /// JSON decoder appropriate for `Coupon` responses.
+    ///
+    static let decoder: JSONDecoder = {
+        let couponDecoder = JSONDecoder()
+        couponDecoder.keyDecodingStrategy = .convertFromSnakeCase
+        couponDecoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
+        return couponDecoder
+    }()
+
 }
 
 
 // MARK: - Codable Conformance
 
 /// Defines all of the Coupon CodingKeys
-///
+/// The model is intended to be decoded with`JSONDecoder.KeyDecodingStrategy.convertFromSnakeCase`
+/// so any specific `CodingKeys` provided here should be in camel case.
 extension Coupon: Codable {
     enum CodingKeys: String, CodingKey {
         case couponID = "id"
         case code
         case amount
-        case dateCreated = "date_created_gmt"
-        case dateModified = "date_modified_gmt"
-        case discountType = "discount_type"
+        case dateCreated = "dateCreatedGmt"
+        case dateModified = "dateModifiedGmt"
+        case discountType
         case description
-        case dateExpires = "date_expires_gmt"
-        case usageCount = "usage_count"
-        case individualUse = "individual_use"
-        case productIds = "product_ids"
-        case excludedProductIds = "excluded_product_ids"
-        case usageLimit = "usage_limit"
-        case usageLimitPerUser = "usage_limit_per_user"
-        case limitUsageToXItems = "limit_usage_to_x_items"
-        case freeShipping = "free_shipping"
-        case productCategories = "product_categories"
-        case excludedProductCategories = "excluded_product_categories"
-        case excludeSaleItems = "exclude_sale_items"
-        case minimumAmount = "minimum_amount"
-        case maximumAmount = "maximum_amount"
-        case emailRestrictions = "email_restrictions"
-        case usedBy = "used_by"
+        case dateExpires = "dateExpiresGmt"
+        case usageCount
+        case individualUse
+        case productIds
+        case excludedProductIds
+        case usageLimit
+        case usageLimitPerUser
+        case limitUsageToXItems
+        case freeShipping
+        case productCategories
+        case excludedProductCategories
+        case excludeSaleItems
+        case minimumAmount
+        case maximumAmount
+        case emailRestrictions
+        case usedBy
     }
 }
 

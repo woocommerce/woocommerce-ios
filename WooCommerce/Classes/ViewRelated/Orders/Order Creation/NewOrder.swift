@@ -214,7 +214,7 @@ private struct ProductsSection: View {
                 .sheet(isPresented: $showAddProduct, onDismiss: {
                     scroll.scrollTo(addProductButton)
                 }, content: {
-                    AddProductToOrder(isPresented: $showAddProduct, viewModel: viewModel.addProductViewModel)
+                    ProductSelector(isPresented: $showAddProduct, viewModel: viewModel.addProductViewModel)
                         .onDisappear {
                             viewModel.addProductViewModel.clearSearch()
                             navigationButtonID = UUID()

@@ -29,7 +29,7 @@ class AddProductToOrderViewModelTests: XCTestCase {
         insert(product)
 
         // When
-        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // Then
         XCTAssertEqual(viewModel.productRows.count, 1)
@@ -40,7 +40,7 @@ class AddProductToOrderViewModelTests: XCTestCase {
 
     func test_scrolling_indicator_appears_only_during_sync() {
         // Given
-        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
         XCTAssertFalse(viewModel.shouldShowScrollIndicator, "Scroll indicator is not disabled at start")
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
@@ -61,7 +61,7 @@ class AddProductToOrderViewModelTests: XCTestCase {
 
     func test_sync_status_updates_as_expected_for_empty_product_list() {
         // Given
-        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
@@ -81,7 +81,7 @@ class AddProductToOrderViewModelTests: XCTestCase {
 
     func test_sync_status_updates_as_expected_when_products_are_synced() {
         // Given
-        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
@@ -106,7 +106,7 @@ class AddProductToOrderViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: self.sampleSiteID, purchasable: true)
         insert(product)
 
-        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
@@ -126,7 +126,7 @@ class AddProductToOrderViewModelTests: XCTestCase {
 
     func test_onLoadTrigger_triggers_initial_product_sync() {
         // Given
-        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
         var timesSynced = 0
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
@@ -147,7 +147,7 @@ class AddProductToOrderViewModelTests: XCTestCase {
 
     func test_entering_search_term_performs_remote_product_search() {
         // Given
-        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
         let expectation = expectation(description: "Completed product search")
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
@@ -175,7 +175,7 @@ class AddProductToOrderViewModelTests: XCTestCase {
         let shirt = Product.fake().copy(siteID: sampleSiteID, productID: 2, name: "T-shirt", purchasable: true)
         insert([hoodie, shirt])
 
-        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
         let expectation = expectation(description: "Completed product search")
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
@@ -201,7 +201,7 @@ class AddProductToOrderViewModelTests: XCTestCase {
 
     func test_clearSearch_resets_searchTerm() {
         // Given
-        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID)
 
         // When
         viewModel.searchTerm = "shirt"
@@ -213,7 +213,7 @@ class AddProductToOrderViewModelTests: XCTestCase {
 
     func test_clearing_search_returns_full_product_list() {
         // Given
-        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
         let expectation = expectation(description: "Cleared product search")
         let product = Product.fake().copy(siteID: sampleSiteID, purchasable: true)
         insert([product.copy(name: "T-shirt"), product.copy(name: "Hoodie")])
@@ -241,7 +241,7 @@ class AddProductToOrderViewModelTests: XCTestCase {
 
     func test_view_model_fires_error_notice_when_product_sync_fails() {
         // Given
-        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, stores: stores)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
@@ -255,12 +255,12 @@ class AddProductToOrderViewModelTests: XCTestCase {
         viewModel.onLoadTrigger.send()
 
         // Then
-        XCTAssertEqual(viewModel.notice, AddProductToOrderViewModel.NoticeFactory.productSyncNotice(retryAction: {}))
+        XCTAssertEqual(viewModel.notice, ProductSelectorViewModel.NoticeFactory.productSyncNotice(retryAction: {}))
     }
 
     func test_view_model_fires_error_notice_when_product_search_fails() {
         // Given
-        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, stores: stores)
 
         // When
         let notice: Notice? = waitFor { promise in
@@ -277,7 +277,7 @@ class AddProductToOrderViewModelTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(notice, AddProductToOrderViewModel.NoticeFactory.productSearchNotice(retryAction: {}))
+        XCTAssertEqual(notice, ProductSelectorViewModel.NoticeFactory.productSearchNotice(retryAction: {}))
     }
 
     func test_selectProduct_invokes_onProductSelected_closure_for_existing_product() {
@@ -285,7 +285,7 @@ class AddProductToOrderViewModelTests: XCTestCase {
         var selectedProduct: Int64?
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
         insert(product)
-        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID,
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                    storageManager: storageManager,
                                                    onProductSelected: { selectedProduct = $0.productID })
 
@@ -300,7 +300,7 @@ class AddProductToOrderViewModelTests: XCTestCase {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "Test Product", purchasable: true, variations: [1, 2])
         insert(product)
-        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID,
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                    storageManager: storageManager)
 
         // When
@@ -315,7 +315,7 @@ class AddProductToOrderViewModelTests: XCTestCase {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "Test Product", purchasable: true)
         insert(product)
-        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID,
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                    storageManager: storageManager)
 
         // When

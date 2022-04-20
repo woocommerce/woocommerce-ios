@@ -252,6 +252,7 @@ struct CouponRestrictions_Previews: PreviewProvider {
 private extension ProductSelector.Configuration {
     static let excludedProductsForCoupons: Self =
         .init(multipleSelectionsEnabled: true,
+              doneButtonTitleFormat: Localization.doneButton,
               title: Localization.title,
               cancelButtonTitle: Localization.cancel,
               productRowAccessibilityHint: Localization.productRowAccessibilityHint,
@@ -265,6 +266,11 @@ private extension ProductSelector.Configuration {
         static let variableProductRowAccessibilityHint = NSLocalizedString(
             "Opens list of product variations.",
             comment: "Accessibility hint for excluding a variable product in the Exclude Products screen"
+        )
+        static let doneButton = NSLocalizedString(
+            "Exclude %1$d Products",
+            comment: "Title of the action button at the bottom of the Exclude Products screen, " +
+            "reads like: Exclude 5 Products"
         )
     }
 }

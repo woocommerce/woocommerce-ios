@@ -38,7 +38,7 @@ struct ProductSelector: View {
                             .background(Color(.listForeground).ignoresSafeArea())
                         }
                         if viewModel.selectedItemsCount > 0 {
-                            Button("Select \(viewModel.selectedItemsCount) Products") {
+                            Button(String.localizedStringWithFormat(configuration.doneButtonTitleFormat, viewModel.selectedItemsCount)) {
                                 // TODO
                             }
                             .buttonStyle(PrimaryButtonStyle())
@@ -117,6 +117,7 @@ extension ProductSelector {
         var multipleSelectionsEnabled: Bool = false
         var searchHeaderBackgroundColor: UIColor = .listForeground
         var prefersLargeTitle: Bool = true
+        var doneButtonTitleFormat: String = ""
         let title: String
         let cancelButtonTitle: String
         let productRowAccessibilityHint: String

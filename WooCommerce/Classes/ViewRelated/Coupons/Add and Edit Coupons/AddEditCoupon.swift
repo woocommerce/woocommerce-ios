@@ -317,6 +317,7 @@ struct AddEditCoupon_Previews: PreviewProvider {
 private extension ProductSelector.Configuration {
     static let productsForCoupons: Self =
         .init(multipleSelectionsEnabled: true,
+              doneButtonTitleFormat: Localization.doneButton,
               title: Localization.title,
               cancelButtonTitle: Localization.cancel,
               productRowAccessibilityHint: Localization.productRowAccessibilityHint,
@@ -330,6 +331,11 @@ private extension ProductSelector.Configuration {
         static let variableProductRowAccessibilityHint = NSLocalizedString(
             "Opens list of product variations.",
             comment: "Accessibility hint for selecting a variable product in the Select Products screen"
+        )
+        static let doneButton = NSLocalizedString(
+            "Select %1$d Products",
+            comment: "Title of the action button at the bottom of the Select Products screen, " +
+            "reads like: Select 5 Products"
         )
     }
 }

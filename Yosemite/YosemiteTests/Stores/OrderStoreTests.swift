@@ -613,7 +613,7 @@ final class OrderStoreTests: XCTestCase {
         /// Insert Order [Shipping Phone == "333-333-3334"]
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated2(), in: viewStorage)
 
-        // Update: Expected Customer note is actually coming from `order.json` (Shipping Phone == "333-333-3333")
+        // Update: Expected Shipping phone is actually coming from `order.json` (Shipping Phone == "333-333-3333")
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
 
         let action = OrderAction.optimisticUpdateOrder(siteID: sampleSiteID, order: sampleOrder(), fields: [.shippingAddress]) { result in
@@ -656,7 +656,7 @@ final class OrderStoreTests: XCTestCase {
         /// Insert Order [Shipping and Billing Phone == "333-333-3334"]
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated3(), in: viewStorage)
 
-        // Update: Expected Customer note is actually coming from `order.json` (Shipping and Billing Phone == "333-333-3333")
+        // Update: Expected Shipping and Billing phone are actually coming from `order.json` (Shipping and Billing Phone == "333-333-3333")
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
 
         let action = OrderAction.optimisticUpdateOrder(siteID: sampleSiteID, order: sampleOrder(), fields: [.shippingAddress, .billingAddress]) { result in

@@ -40,6 +40,8 @@ public final class NewOrderScreen: ScreenObject {
         )
     }
 
+// MARK: - Order Creation Navigation actions
+
     /// Creates a remote order with all of the entered order data.
     /// - Returns: Single Order Detail screen object.
     @discardableResult
@@ -68,5 +70,24 @@ public final class NewOrderScreen: ScreenObject {
     public func openAddProductScreen() throws -> AddProductScreen {
         addProductButton.tap()
         return try AddProductScreen()
+    }
+
+// MARK: - High-level Order Creation actions
+
+    /// Changes the new order status to the second status in the Order Status list.
+    /// - Returns: New Order screen object.
+    @discardableResult
+    public func editOrderStatus() throws -> NewOrderScreen {
+      return try openOrderStatusScreen()
+            .selectOrderStatus(atIndex: 1)
+            .confirmSelectedOrderStatus()
+    }
+
+    /// Select the first product from the addProductScreen
+    /// - Returns: New Order screen object.
+    @discardableResult
+    public func addProduct(byName name: String) throws -> NewOrderScreen {
+        return try openAddProductScreen()
+            .selectProduct(byName: name)
     }
 }

@@ -33,12 +33,6 @@ final class OrdersTests: XCTestCase {
             .editOrderStatus()
             .addProduct(byName: products[0].name)
             .createOrder()
-
-
-//        try NewOrderFlow.addProduct()
-//
-//        try NewOrderFlow.editOrderStatus()
-//            .createOrder()
     }
 
     func test_cancel_order_creation() throws {

@@ -180,7 +180,7 @@ final class AddEditCouponViewModel: ObservableObject {
                      excludeSaleItems: couponRestrictionsViewModel.excludeSaleItems,
                      minimumAmount: couponRestrictionsViewModel.minimumSpend,
                      maximumAmount: couponRestrictionsViewModel.maximumSpend,
-                     emailRestrictions: couponRestrictionsViewModel.allowedEmails.split(separator: ",").map(String.init)) ??
+                     emailRestrictions: couponRestrictionsViewModel.allowedEmails.split(separator: ", ").map(String.init)) ??
         Coupon(siteID: siteID,
                couponID: -1,
                code: codeField,
@@ -203,7 +203,7 @@ final class AddEditCouponViewModel: ObservableObject {
                excludeSaleItems: couponRestrictionsViewModel.excludeSaleItems,
                minimumAmount: couponRestrictionsViewModel.minimumSpend,
                maximumAmount: couponRestrictionsViewModel.maximumSpend,
-               emailRestrictions: couponRestrictionsViewModel.allowedEmails.split(separator: ",").map(String.init),
+               emailRestrictions: couponRestrictionsViewModel.allowedEmails.split(separator: ", ").map(String.init),
                usedBy: [])
     }
 

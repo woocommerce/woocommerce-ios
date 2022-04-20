@@ -3,6 +3,9 @@ import SwiftUI
 /// View showing a list of products to select.
 ///
 struct ProductSelector: View {
+
+    let configuration: Configuration
+
     /// Defines whether the view is presented.
     ///
     @Binding var isPresented: Bool
@@ -50,13 +53,13 @@ struct ProductSelector: View {
                     EmptyView()
                 }
             }
-            .background(Color(.listBackground).ignoresSafeArea())
+            .background(Color(configuration.searchHeaderBackgroundColor).ignoresSafeArea())
             .ignoresSafeArea(.container, edges: .horizontal)
-            .navigationTitle(Localization.title)
+            .navigationTitle(configuration.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(Localization.close) {
+                    Button(configuration.cancelButtonTitle) {
                         isPresented.toggle()
                     }
                 }
@@ -81,15 +84,25 @@ struct ProductSelector: View {
                     DisclosureIndicator()
                 }
             }
-            .accessibilityHint(Localization.variableProductRowAccessibilityHint)
+            .accessibilityHint(configuration.variableProductRowAccessibilityHint)
         } else {
             ProductRow(viewModel: rowViewModel)
-                .accessibilityHint(Localization.productRowAccessibilityHint)
+                .accessibilityHint(configuration.productRowAccessibilityHint)
                 .onTapGesture {
                     viewModel.selectProduct(rowViewModel.productOrVariationID)
                     isPresented.toggle()
                 }
         }
+    }
+}
+
+extension ProductSelector {
+    struct Configuration {
+        var searchHeaderBackgroundColor: UIColor = .listForeground
+        let title: String
+        let cancelButtonTitle: String
+        let productRowAccessibilityHint: String
+        let variableProductRowAccessibilityHint: String
     }
 }
 
@@ -100,17 +113,9 @@ private extension ProductSelector {
     }
 
     enum Localization {
-        static let title = NSLocalizedString("Add Product", comment: "Title for the screen to add a product to an order")
-        static let close = NSLocalizedString("Close", comment: "Text for the close button in the Add Product screen")
         static let emptyStateMessage = NSLocalizedString("No products found",
-                                                         comment: "Message displayed if there are no products to display in the Add Product screen")
+                                                         comment: "Message displayed if there are no products to display in the Select Product screen")
         static let searchPlaceholder = NSLocalizedString("Search Products", comment: "Placeholder on the search field to search for a specific product")
-        static let productRowAccessibilityHint = NSLocalizedString("Adds product to order.",
-                                                                   comment: "Accessibility hint for selecting a product in the Add Product screen")
-        static let variableProductRowAccessibilityHint = NSLocalizedString(
-            "Opens list of product variations.",
-            comment: "Accessibility hint for selecting a variable product in the Add Product screen"
-        )
         static let loadingRowsAccessibilityLabel = NSLocalizedString("Loading products",
                                                                      comment: "Accessibility label for placeholder rows while products are loading")
     }
@@ -119,7 +124,7 @@ private extension ProductSelector {
 struct AddProduct_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = ProductSelectorViewModel(siteID: 123)
-
-        ProductSelector(isPresented: .constant(true), viewModel: viewModel)
+        let configuration = ProductSelector.Configuration.addProductToOrder
+        ProductSelector(configuration: configuration, isPresented: .constant(true), viewModel: viewModel)
     }
 }

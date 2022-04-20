@@ -61,7 +61,8 @@ public class OrderStore: Store {
 
         case let .updateOrder(siteID, order, fields, onCompletion):
             updateOrder(siteID: siteID, order: order, fields: fields, onCompletion: onCompletion)
-
+        case let .optimisticUpdateOrder(siteID, order, fields, onCompletion):
+            optimisticUpdateOrder(siteID: siteID, order: order, fields: fields, onCompletion: onCompletion)
         case let .createSimplePaymentsOrder(siteID, status, amount, taxable, onCompletion):
             createSimplePaymentsOrder(siteID: siteID, status: status, amount: amount, taxable: taxable, onCompletion: onCompletion)
         case let .createOrder(siteID, order, onCompletion):
@@ -382,6 +383,14 @@ private extension OrderStore {
                 onCompletion(result)
             }
         }
+    }
+
+    /// Optimistic updates the specified fields from an order.
+    ///
+    /// Updates will be reverted in case of failure.
+    ///
+    func optimisticUpdateOrder(siteID: Int64, order: Order, fields: [OrderUpdateField], onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        print("\(siteID) - \(order.orderID) - fields: \(fields)")
     }
 
     /// Deletes a given order.

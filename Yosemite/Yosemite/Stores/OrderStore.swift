@@ -474,18 +474,18 @@ extension OrderStore {
 // MARK: - Storage: Search Results
 //
 private extension OrderStore {
-    /// Updates (OR Inserts) the specified ReadOnly Order Entities.
+    /// Updates (OR Inserts) the specified ReadOnly Order Entity.
     ///
-    /// - Returns: An array of the updated orders, prior to performing the update operation.
+    /// - Returns: The updated order, prior to performing the update operation.
     ///
     @discardableResult
-    func upsertStoredOrders(readOnlyOrders: [Networking.Order]) -> [StorageOrder] {
-        let storageOrders = readOnlyOrders.compactMap { readOnlyOrder in
-            storageManager.viewStorage.loadOrder(siteID: readOnlyOrder.siteID, orderID: readOnlyOrder.orderID)
+    func upsertStoredOrder(readOnlyOrder: Networking.Order) -> Networking.Order {
+        guard let storageOrder = storageManager.viewStorage.loadOrder(siteID: readOnlyOrder.siteID, orderID: readOnlyOrder.orderID) else {
+            return readOnlyOrder
         }
 
-        upsertStoredOrders(readOnlyOrders: readOnlyOrders, in: storageManager.viewStorage)
-        return storageOrders
+        upsertStoredOrders(readOnlyOrders: [readOnlyOrder], in: storageManager.viewStorage)
+        return storageOrder.toReadOnly()
     }
 
     /// Upserts the Orders, and associates them to the SearchResults Entity (in Background)
@@ -554,7 +554,7 @@ private extension OrderStore {
     @discardableResult
     private func upsertStoredOrders(readOnlyOrders: [Networking.Order],
                                     insertingSearchResults: Bool = false,
-                                    in storage: StorageType) -> [StorageOrder]{
+                                    in storage: StorageType) -> [StorageOrder] {
         let useCase = OrdersUpsertUseCase(storage: storage)
         return useCase.upsert(readOnlyOrders, insertingSearchResults: insertingSearchResults)
     }

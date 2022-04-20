@@ -284,7 +284,7 @@ struct NewOrder_Previews: PreviewProvider {
     }
 }
 
-extension ProductSelector.Configuration {
+private extension ProductSelector.Configuration {
     static let addProductToOrder: Self =
         .init(searchHeaderBackgroundColor: .listBackground,
               title: Localization.title,
@@ -292,7 +292,7 @@ extension ProductSelector.Configuration {
               productRowAccessibilityHint: Localization.productRowAccessibilityHint,
               variableProductRowAccessibilityHint: Localization.variableProductRowAccessibilityHint)
 
-    private enum Localization {
+    enum Localization {
         static let title = NSLocalizedString("Add Product", comment: "Title for the screen to add a product to an order")
         static let close = NSLocalizedString("Close", comment: "Text for the close button in the Add Product screen")
         static let productRowAccessibilityHint = NSLocalizedString("Adds product to order.",

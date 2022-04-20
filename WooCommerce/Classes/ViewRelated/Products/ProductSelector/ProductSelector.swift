@@ -67,6 +67,9 @@ struct ProductSelector: View {
             .onAppear {
                 viewModel.onLoadTrigger.send()
             }
+            .onDisappear {
+                viewModel.clearSearch()
+            }
             .notice($viewModel.notice, autoDismiss: false)
         }
         .wooNavigationBarStyle()
@@ -124,7 +127,11 @@ private extension ProductSelector {
 struct AddProduct_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = ProductSelectorViewModel(siteID: 123)
-        let configuration = ProductSelector.Configuration.addProductToOrder
+        let configuration = ProductSelector.Configuration(
+            title: "Add Product",
+            cancelButtonTitle: "Close",
+            productRowAccessibilityHint: "Add product to order",
+            variableProductRowAccessibilityHint: "Open variation list")
         ProductSelector(configuration: configuration, isPresented: .constant(true), viewModel: viewModel)
     }
 }

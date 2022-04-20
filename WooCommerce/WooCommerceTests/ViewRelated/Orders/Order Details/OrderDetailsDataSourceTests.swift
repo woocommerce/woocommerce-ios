@@ -84,10 +84,14 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(issueRefundRow)
     }
 
-    func test_refund_button_is_not_visible_when_the_order_is_refunded_but_the_status_is_not_refunded() throws {
+    func test_refund_button_is_not_visible_when_the_status_is_other_than_refunded_but_the_order_is_not_refundable() throws {
         // Given
         let order = Order.fake().copy(status: .processing, items: [makeOrderItem()], refunds: [OrderRefundCondensed.fake()])
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let orderRefundsOptionsDeterminer = MockOrderRefundsOptionsDeterminer(isAnythingToRefund: false)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                refundableOrderItemsDeterminer: orderRefundsOptionsDeterminer)
 
         // When
         dataSource.reloadSections()

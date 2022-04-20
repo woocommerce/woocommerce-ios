@@ -251,7 +251,8 @@ struct CouponRestrictions_Previews: PreviewProvider {
 
 private extension ProductSelector.Configuration {
     static let excludedProductsForCoupons: Self =
-        .init(title: Localization.title,
+        .init(multipleSelectionsEnabled: true,
+              title: Localization.title,
               cancelButtonTitle: Localization.cancel,
               productRowAccessibilityHint: Localization.productRowAccessibilityHint,
               variableProductRowAccessibilityHint: Localization.variableProductRowAccessibilityHint)

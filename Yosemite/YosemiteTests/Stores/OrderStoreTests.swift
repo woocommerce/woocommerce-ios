@@ -563,6 +563,114 @@ final class OrderStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    func test_optimistic_update_order_customer_note_correctly() {
+        let expectation = self.expectation(description: "Update Order Customer note")
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        /// Insert Order [Customer note == "Updated!"]
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated2(), in: viewStorage)
+
+        // Update: Expected Customer note is actually coming from `order.json` (Customer note == "")
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
+
+        let action = OrderAction.optimisticUpdateOrder(siteID: sampleSiteID, order: sampleOrder(), fields: [.customerNote]) { result in
+            let storageOrder = self.storageManager.viewStorage.loadOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID)
+            XCTAssert(storageOrder?.customerNote == "")
+
+            expectation.fulfill()
+        }
+
+        orderStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    func test_optimistic_update_order_customer_note_reverts_upon_failure() {
+        let expectation = self.expectation(description: "Optimistic Update Recovery")
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        /// Insert Order [Customer note == ""]
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder(), in: viewStorage)
+
+        network.removeAllSimulatedResponses()
+
+        let action = OrderAction.optimisticUpdateOrder(siteID: sampleSiteID,
+                                                       order: sampleOrderMutated2(),
+                                                       fields: [.customerNote]) { result in
+            let storageOrder = self.storageManager.viewStorage.loadOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID)
+            XCTAssert(storageOrder?.customerNote == "")
+
+            expectation.fulfill()
+        }
+
+        orderStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    func test_optimistic_update_order_shipping_phone_correctly() {
+        let expectation = self.expectation(description: "Update Order Shipping Phone")
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        /// Insert Order [Shipping Phone == "333-333-3334"]
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated2(), in: viewStorage)
+
+        // Update: Expected Customer note is actually coming from `order.json` (Shipping Phone == "333-333-3333")
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
+
+        let action = OrderAction.optimisticUpdateOrder(siteID: sampleSiteID, order: sampleOrder(), fields: [.shippingAddress]) { result in
+            let storageOrder = self.storageManager.viewStorage.loadOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID)
+            XCTAssert(storageOrder?.shippingPhone == "333-333-3333")
+
+            expectation.fulfill()
+        }
+
+        orderStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    func test_optimistic_update_order_shipping_phone_reverts_upon_failure() {
+        let expectation = self.expectation(description: "Optimistic Update Recovery")
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        /// Insert Order [Shipping Phone == "333-333-3333"]
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder(), in: viewStorage)
+
+        network.removeAllSimulatedResponses()
+
+        let action = OrderAction.optimisticUpdateOrder(siteID: sampleSiteID,
+                                                       order: sampleOrderMutated2(),
+                                                       fields: [.shippingAddress]) { result in
+            let storageOrder = self.storageManager.viewStorage.loadOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID)
+            XCTAssert(storageOrder?.shippingPhone == "333-333-3333")
+
+            expectation.fulfill()
+        }
+
+        orderStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    func test_optimistic_update_order_shipping_and_billing_phone_correctly() {
+        let expectation = self.expectation(description: "Update Order Shipping and Billing Phone")
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        /// Insert Order [Shipping and Billing Phone == "333-333-3334"]
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated3(), in: viewStorage)
+
+        // Update: Expected Customer note is actually coming from `order.json` (Shipping and Billing Phone == "333-333-3333")
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
+
+        let action = OrderAction.optimisticUpdateOrder(siteID: sampleSiteID, order: sampleOrder(), fields: [.shippingAddress, .billingAddress]) { result in
+            let storageOrder = self.storageManager.viewStorage.loadOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID)
+            XCTAssert(storageOrder?.shippingPhone == "333-333-3333")
+            XCTAssert(storageOrder?.billingPhone == "333-333-3333")
+
+            expectation.fulfill()
+        }
+
+        orderStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
 
     // MARK: - OrderAction.resetStoredOrders
 
@@ -953,9 +1061,23 @@ private extension OrderStoreTests {
 
     func sampleOrderMutated2() -> Networking.Order {
         return sampleOrder().copy(status: .completed,
+                                  customerNote: "Updated!",
                                   discountTotal: "40.00",
                                   total: "41.20",
                                   items: sampleItemsMutated2(),
+                                  shippingAddress: sampleAddressMutated(),
+                                  coupons: [],
+                                  taxes: [])
+    }
+
+    func sampleOrderMutated3() -> Networking.Order {
+        return sampleOrder().copy(status: .completed,
+                                  customerNote: "Updated!",
+                                  discountTotal: "40.00",
+                                  total: "41.20",
+                                  items: sampleItemsMutated2(),
+                                  billingAddress: sampleAddressMutated(),
+                                  shippingAddress: sampleAddressMutated(),
                                   coupons: [],
                                   taxes: [])
     }
@@ -971,6 +1093,20 @@ private extension OrderStoreTests {
                        postcode: "14304",
                        country: "US",
                        phone: "333-333-3333",
+                       email: "scrambled@scrambled.com")
+    }
+
+    func sampleAddressMutated() -> Networking.Address {
+        return Address(firstName: "Johnny",
+                       lastName: "Appleseed",
+                       company: "",
+                       address1: "234 70th Street",
+                       address2: "",
+                       city: "Niagara Falls",
+                       state: "NY",
+                       postcode: "14304",
+                       country: "US",
+                       phone: "333-333-3334",
                        email: "scrambled@scrambled.com")
     }
 

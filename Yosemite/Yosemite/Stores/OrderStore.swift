@@ -562,7 +562,7 @@ private extension OrderStore {
     ///     - readOnlyOrders: Remote Orders to be persisted.
     ///     - insertingSearchResults: Indicates if the "Newly Inserted Entities" should be marked as "Search Results Only"
     ///     - storage: Where we should save all the things!
-    /// 
+    ///
     private func upsertStoredOrders(readOnlyOrders: [Networking.Order],
                                     insertingSearchResults: Bool = false,
                                     in storage: StorageType) {

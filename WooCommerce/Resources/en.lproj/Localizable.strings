@@ -1,4 +1,4 @@
-﻿/* Variation ID. Parameters: %1$@ - Product variation ID */
+/* Variation ID. Parameters: %1$@ - Product variation ID */
 "#%1$@" = "#%1$@";
 
 /* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
@@ -1189,7 +1189,7 @@
 "Create order" = "Create order";
 
 /* Title of the banner notice in the Orders tab */
-"Create orders and take payments!" = "Create orders and take payments!";
+"Create orders & take payments!" = "Create orders & take payments!";
 
 /* Title of the view for creating a coupon with percentage discount. */
 "Create percentage discount" = "Create percentage discount";

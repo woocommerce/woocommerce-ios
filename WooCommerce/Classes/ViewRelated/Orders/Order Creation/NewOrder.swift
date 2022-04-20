@@ -287,6 +287,7 @@ struct NewOrder_Previews: PreviewProvider {
 private extension ProductSelector.Configuration {
     static let addProductToOrder: Self =
         .init(searchHeaderBackgroundColor: .listBackground,
+              prefersLargeTitle: false,
               title: Localization.title,
               cancelButtonTitle: Localization.close,
               productRowAccessibilityHint: Localization.productRowAccessibilityHint,

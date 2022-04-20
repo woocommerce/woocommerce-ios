@@ -56,7 +56,7 @@ struct ProductSelector: View {
             .background(Color(configuration.searchHeaderBackgroundColor).ignoresSafeArea())
             .ignoresSafeArea(.container, edges: .horizontal)
             .navigationTitle(configuration.title)
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayMode(configuration.prefersLargeTitle ? .large : .inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(configuration.cancelButtonTitle) {
@@ -102,6 +102,7 @@ struct ProductSelector: View {
 extension ProductSelector {
     struct Configuration {
         var searchHeaderBackgroundColor: UIColor = .listForeground
+        var prefersLargeTitle: Bool = true
         let title: String
         let cancelButtonTitle: String
         let productRowAccessibilityHint: String

@@ -3,6 +3,7 @@ import SwiftUI
 struct CouponRestrictions: View {
 
     @State private var showingAllowedEmails: Bool = false
+    @State private var showingExcludeProducts: Bool = false
     @ObservedObject private var viewModel: CouponRestrictionsViewModel
 
     // Tracks the scale of the view due to accessibility changes
@@ -111,7 +112,7 @@ struct CouponRestrictions: View {
                     Text(Localization.exclusions.uppercased())
                         .footnoteStyle()
                     Button(action: {
-                        // TODO: show product selection
+                        showingExcludeProducts = true
                     }) {
                         HStack {
                             Image(uiImage: UIImage.plusImage)
@@ -141,6 +142,11 @@ struct CouponRestrictions: View {
             }
             .background(Color(.listForeground))
             .ignoresSafeArea(.container, edges: [.horizontal])
+            .sheet(isPresented: $showingExcludeProducts) {
+                ProductSelector(configuration: ProductSelector.Configuration.excludedProductsForCoupons,
+                                isPresented: $showingExcludeProducts,
+                                viewModel: viewModel.productSelectorViewModel)
+            }
 
             LazyNavigationLink(destination: CouponAllowedEmails(emailFormats: $viewModel.allowedEmails), isActive: $showingAllowedEmails) {
                 EmptyView()
@@ -239,3 +245,22 @@ struct CouponRestrictions_Previews: PreviewProvider {
     }
 }
 #endif
+
+private extension ProductSelector.Configuration {
+    static let excludedProductsForCoupons: Self =
+        .init(title: Localization.title,
+              cancelButtonTitle: Localization.cancel,
+              productRowAccessibilityHint: Localization.productRowAccessibilityHint,
+              variableProductRowAccessibilityHint: Localization.variableProductRowAccessibilityHint)
+
+    enum Localization {
+        static let title = NSLocalizedString("Exclude Products", comment: "Title for the screen to exclude products for a coupon")
+        static let cancel = NSLocalizedString("Cancel", comment: "Text for the cancel button in the Exclude Products screen")
+        static let productRowAccessibilityHint = NSLocalizedString("Toggles selection to exclude this product in a coupon.",
+                                                                   comment: "Accessibility hint for excluding a product in the Exclude Products screen")
+        static let variableProductRowAccessibilityHint = NSLocalizedString(
+            "Opens list of product variations.",
+            comment: "Accessibility hint for excluding a variable product in the Exclude Products screen"
+        )
+    }
+}

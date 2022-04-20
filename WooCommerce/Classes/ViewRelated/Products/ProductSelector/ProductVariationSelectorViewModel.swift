@@ -2,9 +2,9 @@ import Yosemite
 import protocol Storage.StorageManagerType
 import Combine
 
-/// View model for `AddProductVariationToOrder`.
+/// View model for `ProductVariationSelector`.
 ///
-final class AddProductVariationToOrderViewModel: ObservableObject {
+final class ProductVariationSelectorViewModel: ObservableObject {
     private let siteID: Int64
 
     /// Storage to fetch product variation list
@@ -140,7 +140,7 @@ final class AddProductVariationToOrderViewModel: ObservableObject {
 }
 
 // MARK: - SyncingCoordinatorDelegate & Sync Methods
-extension AddProductVariationToOrderViewModel: SyncingCoordinatorDelegate {
+extension ProductVariationSelectorViewModel: SyncingCoordinatorDelegate {
     /// Sync product variations from remote.
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)?) {
@@ -181,7 +181,7 @@ extension AddProductVariationToOrderViewModel: SyncingCoordinatorDelegate {
 }
 
 // MARK: - Finite State Machine Management
-private extension AddProductVariationToOrderViewModel {
+private extension ProductVariationSelectorViewModel {
     /// Update state for sync from remote.
     ///
     func transitionToSyncingState() {
@@ -200,7 +200,7 @@ private extension AddProductVariationToOrderViewModel {
 }
 
 // MARK: - Configuration
-private extension AddProductVariationToOrderViewModel {
+private extension ProductVariationSelectorViewModel {
     /// Performs initial fetch from storage and updates sync status accordingly.
     ///
     func configureProductVariationsResultsController() {
@@ -238,7 +238,7 @@ private extension AddProductVariationToOrderViewModel {
 }
 
 // MARK: - Utils
-extension AddProductVariationToOrderViewModel {
+extension ProductVariationSelectorViewModel {
     /// Represents possible statuses for syncing product variations
     ///
     enum SyncStatus {
@@ -274,7 +274,7 @@ extension AddProductVariationToOrderViewModel {
     }
 }
 
-private extension AddProductVariationToOrderViewModel {
+private extension ProductVariationSelectorViewModel {
     enum Localization {
         static let errorMessage = NSLocalizedString("There was an error syncing product variations",
                                                     comment: "Notice displayed when syncing the list of product variations fails")

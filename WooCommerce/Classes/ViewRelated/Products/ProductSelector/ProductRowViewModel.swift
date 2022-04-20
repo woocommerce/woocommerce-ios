@@ -111,6 +111,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             .joined(separator: ". ")
     }
 
+    /// Whether this row is currently selected if multiple selections are enabled.
+    ///
+    @Published var isSelected: Bool = false
+
     /// Quantity of product in the order
     ///
     @Published private(set) var quantity: Decimal

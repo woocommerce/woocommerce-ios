@@ -4,6 +4,10 @@ import Kingfisher
 /// Represent a single product or variation row in the Product section of a New Order or in the ProductSelector
 ///
 struct ProductRow: View {
+    /// Whether more than one row can be selected.
+    ///
+    private let multipleSelectionsEnabled: Bool
+
     /// View model to drive the view.
     ///
     @ObservedObject var viewModel: ProductRowViewModel
@@ -17,6 +21,7 @@ struct ProductRow: View {
     let accessibilityHint: String
 
     /// Image processor to resize images in a background thread to avoid blocking the UI
+    /// 
     ///
     private var imageProcessor: ImageProcessor {
         ResizingImageProcessor(
@@ -24,7 +29,8 @@ struct ProductRow: View {
             mode: .aspectFill)
     }
 
-    init(viewModel: ProductRowViewModel, accessibilityHint: String = "") {
+    init(multipleSelectionsEnabled: Bool = false, viewModel: ProductRowViewModel, accessibilityHint: String = "") {
+        self.multipleSelectionsEnabled = multipleSelectionsEnabled
         self.viewModel = viewModel
         self.accessibilityHint = accessibilityHint
     }
@@ -32,7 +38,13 @@ struct ProductRow: View {
     var body: some View {
         VStack {
             AdaptiveStack(horizontalAlignment: .leading) {
-                HStack(alignment: .top) {
+                HStack(alignment: .center) {
+                    if multipleSelectionsEnabled {
+                        Image(uiImage: viewModel.isSelected ? .checkCircleImage.withRenderingMode(.alwaysTemplate) : .checkEmptyCircleImage)
+                            .frame(width: Layout.checkImageSize * scale, height: Layout.checkImageSize * scale)
+                            .foregroundColor(.init(UIColor.brand))
+                    }
+
                     // Product image
                     KFImage.url(viewModel.imageURL)
                         .placeholder {
@@ -132,13 +144,14 @@ private struct ProductStepper: View {
 }
 
 private enum Layout {
-    static let productImageSize: CGFloat = 44.0
+    static let productImageSize: CGFloat = 48.0
     static let cornerRadius: CGFloat = 4.0
     static let stepperBorderWidth: CGFloat = 1.0
     static let stepperBorderRadius: CGFloat = 4.0
     static let stepperButtonSize: CGFloat = 22.0
     static let stepperPadding: CGFloat = 11.0
     static let stepperWidth: CGFloat = 112.0
+    static let checkImageSize: CGFloat = 24.0
 }
 
 private enum Localization {
@@ -172,6 +185,10 @@ struct ProductRow_Previews: PreviewProvider {
 
         ProductRow(viewModel: viewModelWithoutStepper)
             .previewDisplayName("ProductRow without stepper")
+            .previewLayout(.sizeThatFits)
+
+        ProductRow(multipleSelectionsEnabled: true, viewModel: viewModelWithoutStepper)
+            .previewDisplayName("ProductRow without stepper and with multiple selection")
             .previewLayout(.sizeThatFits)
     }
 }

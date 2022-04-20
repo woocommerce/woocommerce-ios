@@ -480,7 +480,12 @@ private extension OrderStore {
     ///
     @discardableResult
     func upsertStoredOrders(readOnlyOrders: [Networking.Order]) -> [StorageOrder] {
+        let storageOrders = readOnlyOrders.compactMap { readOnlyOrder in
+            storageManager.viewStorage.loadOrder(siteID: readOnlyOrder.siteID, orderID: readOnlyOrder.orderID)
+        }
+
         upsertStoredOrders(readOnlyOrders: readOnlyOrders, in: storageManager.viewStorage)
+        return storageOrders
     }
 
     /// Upserts the Orders, and associates them to the SearchResults Entity (in Background)

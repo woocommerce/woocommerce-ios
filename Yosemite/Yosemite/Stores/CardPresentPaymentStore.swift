@@ -216,17 +216,25 @@ private extension CardPresentPaymentStore {
             onCardReaderMessage(event)
         }
 
-        cardReaderService.capturePayment(parameters).sink { error in
-            readerEventsSubscription.cancel()
-            switch error {
-            case .failure(let error):
-                onCompletion(.failure(error))
-            default:
-                break
+        cardReaderService.capturePayment(parameters)
+            .handleEvents(receiveOutput: { intent in
+                onProcessingCompletion(intent)
+            })
+            .flatMap { intent in
+                self.cardReaderService.waitForInsertedCardToBeRemoved()
+                    .map { intent }
             }
-        } receiveValue: { intent in
-            onCompletion(.success(intent))
-        }.store(in: &paymentSubscriptions)
+            .sink { error in
+                readerEventsSubscription.cancel()
+                switch error {
+                case .failure(let error):
+                    onCompletion(.failure(error))
+                default:
+                    break
+                }
+            } receiveValue: { intent in
+                onCompletion(.success(intent))
+            }.store(in: &paymentSubscriptions)
     }
 
     func cancelPayment(onCompletion: ((Result<Void, Error>) -> Void)?) {

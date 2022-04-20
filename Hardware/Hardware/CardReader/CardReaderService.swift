@@ -23,14 +23,17 @@ public protocol CardReaderService {
     func start(_ configProvider: CardReaderConfigProvider) throws
 
     /// Cancels the discovery process.
-    func cancelDiscovery() -> Future <Void, Error>
+    func cancelDiscovery() -> Future<Void, Error>
 
     /// Connects to a card reader
     /// - Parameter reader: The card reader we want to connect to.
-    func connect(_ reader: CardReader) -> AnyPublisher <CardReader, Error>
+    func connect(_ reader: CardReader) -> AnyPublisher<CardReader, Error>
 
     /// Disconnects from the currently connected reader
     func disconnect() -> Future <Void, Error>
+
+    /// Waits for the inserted card to be removed as a requirement after client-side processing.
+    func waitForInsertedCardToBeRemoved() -> Future<Void, Error>
 
     /// Clears and resets internal state.
     /// We need to call this method when switching accounts or stores

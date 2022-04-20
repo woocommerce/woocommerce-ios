@@ -474,12 +474,12 @@ extension OrderStore {
 // MARK: - Storage: Search Results
 //
 private extension OrderStore {
-    /// Updates (OR Inserts) the specified ReadOnly Order Entity.
+    /// Updates the specified ReadOnly Order Entity.
     ///
     /// - Returns: The updated order, prior to performing the update operation.
     ///
     @discardableResult
-    func upsertStoredOrder(readOnlyOrder: Networking.Order) -> Networking.Order {
+    func updateStoredOrder(readOnlyOrder: Networking.Order) -> Networking.Order {
         guard let storageOrder = storageManager.viewStorage.loadOrder(siteID: readOnlyOrder.siteID, orderID: readOnlyOrder.orderID) else {
             return readOnlyOrder
         }

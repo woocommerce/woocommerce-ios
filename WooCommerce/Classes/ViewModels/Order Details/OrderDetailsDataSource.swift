@@ -54,11 +54,9 @@ final class OrderDetailsDataSource: NSObject {
     }
 
     var isEligibleForRefund: Bool {
-        guard refundableOrderItemsDeterminer.isAnythingToRefund(from: order, with: refunds, currencyFormatter: currencyFormatter),
-              let orderTotal = Double(order.total),
-              orderTotal > 0,
-              !isRefundedStatus,
-              !isEligibleForCardPresentPayment else {
+        guard !isRefundedStatus,
+              !isEligibleForCardPresentPayment,
+              refundableOrderItemsDeterminer.isAnythingToRefund(from: order, with: refunds, currencyFormatter: currencyFormatter) else {
             return false
         }
 

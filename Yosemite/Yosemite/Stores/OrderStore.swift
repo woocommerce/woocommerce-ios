@@ -476,7 +476,7 @@ extension OrderStore {
 private extension OrderStore {
     /// Updates (OR Inserts) the specified ReadOnly Order Entities.
     ///
-    /// - Returns: An array of the updated or inserted orders.
+    /// - Returns: An array of the updated orders, prior to performing the update operation.
     ///
     @discardableResult
     func upsertStoredOrders(readOnlyOrders: [Networking.Order]) -> [StorageOrder] {

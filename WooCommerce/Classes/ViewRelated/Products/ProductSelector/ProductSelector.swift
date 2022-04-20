@@ -25,17 +25,27 @@ struct ProductSelector: View {
                     .padding(.horizontal, insets: safeAreaInsets)
                 switch viewModel.syncStatus {
                 case .results:
-                    InfiniteScrollList(isLoading: viewModel.shouldShowScrollIndicator,
-                                       loadAction: viewModel.syncNextPage) {
-                        ForEach(viewModel.productRows) { rowViewModel in
-                            createProductRow(rowViewModel: rowViewModel)
-                                .padding(Constants.defaultPadding)
-                            Divider().frame(height: Constants.dividerHeight)
-                                .padding(.leading, Constants.defaultPadding)
+                    VStack(spacing: 0) {
+                        InfiniteScrollList(isLoading: viewModel.shouldShowScrollIndicator,
+                                           loadAction: viewModel.syncNextPage) {
+                            ForEach(viewModel.productRows) { rowViewModel in
+                                createProductRow(rowViewModel: rowViewModel)
+                                    .padding(Constants.defaultPadding)
+                                Divider().frame(height: Constants.dividerHeight)
+                                    .padding(.leading, Constants.defaultPadding)
+                            }
+                            .padding(.horizontal, insets: safeAreaInsets)
+                            .background(Color(.listForeground).ignoresSafeArea())
                         }
-                        .padding(.horizontal, insets: safeAreaInsets)
-                        .background(Color(.listForeground).ignoresSafeArea())
+                        if viewModel.selectedItemsCount > 0 {
+                            Button("Select \(viewModel.selectedItemsCount) Products") {
+                                // TODO
+                            }
+                            .buttonStyle(PrimaryButtonStyle())
+                            .padding(Constants.defaultPadding)
+                        }
                     }
+
                 case .empty:
                     EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
                         .frame(maxHeight: .infinity)
@@ -78,7 +88,8 @@ struct ProductSelector: View {
         if let addVariationToOrderVM = viewModel.getVariationsViewModel(for: rowViewModel.productOrVariationID) {
             LazyNavigationLink(destination: ProductVariationSelector(isPresented: $isPresented, viewModel: addVariationToOrderVM)) {
                 HStack {
-                    ProductRow(viewModel: rowViewModel)
+                    ProductRow(multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
+                               viewModel: rowViewModel)
                         .frame(maxWidth: .infinity, alignment: .leading)
 
                     DisclosureIndicator()
@@ -86,11 +97,16 @@ struct ProductSelector: View {
             }
             .accessibilityHint(configuration.variableProductRowAccessibilityHint)
         } else {
-            ProductRow(viewModel: rowViewModel)
+            ProductRow(multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
+                       viewModel: rowViewModel)
                 .accessibilityHint(configuration.productRowAccessibilityHint)
                 .onTapGesture {
-                    viewModel.selectProduct(rowViewModel.productOrVariationID)
-                    isPresented.toggle()
+                    if configuration.multipleSelectionsEnabled {
+                        rowViewModel.isSelected.toggle()
+                    } else {
+                        viewModel.selectProduct(rowViewModel.productOrVariationID)
+                        isPresented.toggle()
+                    }
                 }
         }
     }
@@ -98,6 +114,7 @@ struct ProductSelector: View {
 
 extension ProductSelector {
     struct Configuration {
+        var multipleSelectionsEnabled: Bool = false
         var searchHeaderBackgroundColor: UIColor = .listForeground
         var prefersLargeTitle: Bool = true
         let title: String
@@ -126,6 +143,7 @@ struct AddProduct_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = ProductSelectorViewModel(siteID: 123)
         let configuration = ProductSelector.Configuration(
+            multipleSelectionsEnabled: true,
             title: "Add Product",
             cancelButtonTitle: "Close",
             productRowAccessibilityHint: "Add product to order",

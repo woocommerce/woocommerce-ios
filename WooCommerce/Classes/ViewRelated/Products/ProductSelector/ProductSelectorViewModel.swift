@@ -37,9 +37,7 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// View models for each product row
     ///
-    var productRows: [ProductRowViewModel] {
-        products.map { .init(product: $0, canChangeQuantity: false) }
-    }
+    @Published var productRows: [ProductRowViewModel] = []
 
     /// Closure to be invoked when a product is selected
     ///
@@ -89,6 +87,18 @@ final class ProductSelectorViewModel: ObservableObject {
     /// Current search term entered by the user.
     /// Each update will trigger a remote product search and sync.
     @Published var searchTerm: String = ""
+
+    /// Total number of selected products and variations.
+    ///
+    @Published var selectedItemsCount: Int = 0
+
+    /// Selection states of all items by ID.
+    ///
+    private var itemSelectedStates: [Int64: Bool] = [:] {
+        didSet {
+            selectedItemsCount = (itemSelectedStates.values.filter { $0 }).count
+        }
+    }
 
     init(siteID: Int64,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -253,6 +263,8 @@ private extension ProductSelectorViewModel {
     func updateProductsResultsController() {
         do {
             try productsResultsController.performFetch()
+            productRows = products.map { .init(product: $0, canChangeQuantity: false) }
+            observeProductRows()
         } catch {
             DDLogError("⛔️ Error fetching products for new order: \(error)")
         }
@@ -298,6 +310,16 @@ private extension ProductSelectorViewModel {
 
                 self.syncingCoordinator.resynchronize()
             }.store(in: &subscriptions)
+    }
+
+    func observeProductRows() {
+        productRows.forEach { item in
+            item.$isSelected
+                .sink { [weak self] isSelected in
+                    self?.itemSelectedStates[item.id] = isSelected
+                }
+                .store(in: &subscriptions)
+        }
     }
 }
 

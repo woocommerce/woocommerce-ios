@@ -216,12 +216,9 @@ private extension CardPresentPaymentStore {
             onCardReaderMessage(event)
         }
 
-        let (future, processPaymentCompleted) = cardReaderService.capturePayment(parameters)
-
-        future
-            .sink { result in
+        cardReaderService.capturePayment(parameters).sink { error in
             readerEventsSubscription.cancel()
-            switch result {
+            switch error {
             case .failure(let error):
                 onCompletion(.failure(error))
             default:
@@ -229,10 +226,6 @@ private extension CardPresentPaymentStore {
             }
         } receiveValue: { intent in
             onCompletion(.success(intent))
-        }.store(in: &paymentSubscriptions)
-
-        processPaymentCompleted.sink { intent in
-            onProcessingCompletion(intent)
         }.store(in: &paymentSubscriptions)
     }
 

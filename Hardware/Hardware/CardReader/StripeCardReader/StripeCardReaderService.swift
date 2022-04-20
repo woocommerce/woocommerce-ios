@@ -220,9 +220,7 @@ extension StripeCardReaderService: CardReaderService {
         Terminal.shared.clearCachedCredentials()
     }
 
-    public func capturePayment(_ parameters: PaymentIntentParameters) ->
-    (future: AnyPublisher<PaymentIntent, Error>,
-     processingCompleted: AnyPublisher<PaymentIntent, Never>) {
+    public func capturePayment(_ parameters: PaymentIntentParameters) -> AnyPublisher<PaymentIntent, Error> {
         // The documentation for this protocol method promises that this will produce either
         // a single value or it will fail.
         // This isn't enforced by the type system, but it is guaranteed as long as all the
@@ -235,24 +233,19 @@ extension StripeCardReaderService: CardReaderService {
         if isChipCardInserted {
             sendReaderEvent(CardReaderEvent.make(displayMessage: .removeCard))
         }
-        let processPaymentCompleted = PassthroughSubject<PaymentIntent, Never>()
-        let future = waitForInsertedCardToBeRemoved()
+        return waitForInsertedCardToBeRemoved()
             .flatMap {
                 self.createPaymentIntent(parameters)
             }.flatMap { intent in
                 self.collectPaymentMethod(intent: intent)
             }.flatMap { intent in
                 self.processPayment(intent: intent)
-            }.handleEvents(receiveOutput: {
-                processPaymentCompleted.send(PaymentIntent.init(intent: $0))
-            }).flatMap { intent in
+            }.flatMap { intent in
                 self.waitForInsertedCardToBeRemoved()
                     .map { intent }
             }
             .map(PaymentIntent.init(intent:))
             .eraseToAnyPublisher()
-
-        return (future: future, processingCompleted: processPaymentCompleted.eraseToAnyPublisher())
     }
 
     public func cancelPaymentIntent() -> Future<Void, Error> {

@@ -16,6 +16,14 @@ struct ProductRow: View {
     ///
     let accessibilityHint: String
 
+    /// Image processor to resize images in a background thread to avoid blocking the UI
+    ///
+    private var imageProcessor: ImageProcessor {
+        ResizingImageProcessor(
+            referenceSize: .init(width: Layout.productImageSize * scale, height: Layout.productImageSize * scale),
+            mode: .aspectFill)
+    }
+
     init(viewModel: ProductRowViewModel, accessibilityHint: String = "") {
         self.viewModel = viewModel
         self.accessibilityHint = accessibilityHint
@@ -30,6 +38,7 @@ struct ProductRow: View {
                         .placeholder {
                             Image(uiImage: .productPlaceholderImage)
                         }
+                        .setProcessor(imageProcessor)
                         .resizable()
                         .scaledToFill()
                         .frame(width: Layout.productImageSize * scale, height: Layout.productImageSize * scale)

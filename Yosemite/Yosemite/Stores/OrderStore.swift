@@ -474,12 +474,12 @@ extension OrderStore {
 // MARK: - Storage: Search Results
 //
 private extension OrderStore {
-    /// Updates (OR Inserts) the specified ReadOnly Order Entities *in the main thread*
+    /// Updates (OR Inserts) the specified ReadOnly Order Entities.
     ///
     /// - Returns: An array of the updated or inserted orders.
     ///
     @discardableResult
-    func upsertStoredOrdersInMainThread(readOnlyOrders: [Networking.Order]) -> [StorageOrder] {
+    func upsertStoredOrders(readOnlyOrders: [Networking.Order]) -> [StorageOrder] {
         upsertStoredOrders(readOnlyOrders: readOnlyOrders, in: storageManager.viewStorage)
     }
 

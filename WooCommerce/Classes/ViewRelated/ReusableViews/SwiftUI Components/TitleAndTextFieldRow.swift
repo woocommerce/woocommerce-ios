@@ -13,7 +13,13 @@ struct TitleAndTextFieldRow: View {
 
     @Binding private var text: String
 
+    /// Static width for title label. Used to align values between different rows.
+    /// If `nil` - title will have intrinsic size.
+    ///
+    @Binding private var titleWidth: CGFloat?
+
     init(title: String,
+         titleWidth: Binding<CGFloat?> = .constant(nil),
          placeholder: String,
          text: Binding<String>,
          symbol: String? = nil,
@@ -22,6 +28,7 @@ struct TitleAndTextFieldRow: View {
          keyboardType: UIKeyboardType = .default,
          onEditingChanged: ((Bool) -> Void)? = nil) {
         self.title = title
+        self._titleWidth = titleWidth
         self.placeholder = placeholder
         self._text = text
         self.symbol = symbol
@@ -32,11 +39,13 @@ struct TitleAndTextFieldRow: View {
     }
 
     var body: some View {
-        AdaptiveStack(horizontalAlignment: .leading) {
+        AdaptiveStack(horizontalAlignment: .leading, spacing: Constants.spacing) {
             Text(title)
                 .bodyStyle()
                 .lineLimit(1)
                 .fixedSize()
+                .modifier(MaxWidthModifier())
+                .frame(width: titleWidth, alignment: .leading)
             HStack {
                 TextField(placeholder, text: $text, onEditingChanged: onEditingChanged ?? { _ in })
                     .multilineTextAlignment(fieldAlignment)
@@ -58,6 +67,7 @@ private extension TitleAndTextFieldRow {
     enum Constants {
         static let height: CGFloat = 44
         static let padding: CGFloat = 16
+        static let spacing: CGFloat = 20
     }
 }
 

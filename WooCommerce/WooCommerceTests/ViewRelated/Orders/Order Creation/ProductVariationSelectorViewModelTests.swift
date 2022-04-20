@@ -3,7 +3,7 @@ import Yosemite
 @testable import WooCommerce
 @testable import Storage
 
-class AddProductVariationToOrderViewModelTests: XCTestCase {
+final class ProductVariationSelectorViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 123
     private let sampleProductID: Int64 = 12
@@ -33,7 +33,7 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
         insert(productVariation)
 
         // When
-        let viewModel = AddProductVariationToOrderViewModel(siteID: sampleSiteID, product: product, storageManager: storageManager)
+        let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID, product: product, storageManager: storageManager)
 
         // Then
         XCTAssertEqual(viewModel.productVariationRows.count, 1)
@@ -52,7 +52,7 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
         insert([purchasableProductVariation, nonPurchasableProductVariation])
 
         // When
-        let viewModel = AddProductVariationToOrderViewModel(siteID: sampleSiteID, product: product, storageManager: storageManager)
+        let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID, product: product, storageManager: storageManager)
 
         // Then
         XCTAssertTrue(viewModel.productVariationRows.contains(where: { $0.productOrVariationID == 1 }),
@@ -64,7 +64,7 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
     func test_scrolling_indicator_appears_only_during_sync() {
         // Given
         let product = Product.fake()
-        let viewModel = AddProductVariationToOrderViewModel(siteID: sampleSiteID, product: product, storageManager: storageManager, stores: stores)
+        let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID, product: product, storageManager: storageManager, stores: stores)
         XCTAssertFalse(viewModel.shouldShowScrollIndicator, "Scroll indicator is not disabled at start")
         stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
@@ -86,7 +86,7 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
     func test_sync_status_updates_as_expected_for_empty_product_variation_list() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
-        let viewModel = AddProductVariationToOrderViewModel(siteID: sampleSiteID, product: product, storageManager: storageManager, stores: stores)
+        let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID, product: product, storageManager: storageManager, stores: stores)
         stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
             case let .synchronizeProductVariations(_, _, _, _, onCompletion):
@@ -107,7 +107,7 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
     func test_sync_status_updates_as_expected_when_product_variations_are_synced() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
-        let viewModel = AddProductVariationToOrderViewModel(siteID: sampleSiteID, product: product, storageManager: storageManager, stores: stores)
+        let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID, product: product, storageManager: storageManager, stores: stores)
         stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
             case let .synchronizeProductVariations(_, _, _, _, onCompletion):
@@ -131,7 +131,7 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
         let product = Product.fake().copy(productID: sampleProductID)
         insert(sampleProductVariation)
 
-        let viewModel = AddProductVariationToOrderViewModel(siteID: sampleSiteID, product: product, storageManager: storageManager, stores: stores)
+        let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID, product: product, storageManager: storageManager, stores: stores)
         stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
             case let .synchronizeProductVariations(_, _, _, _, onCompletion):
@@ -151,7 +151,7 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
 
     func test_onLoadTrigger_triggers_initial_product_variation_sync() {
         // Given
-        let viewModel = AddProductVariationToOrderViewModel(siteID: sampleSiteID, product: Product.fake(), storageManager: storageManager, stores: stores)
+        let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID, product: Product.fake(), storageManager: storageManager, stores: stores)
         var timesSynced = 0
         stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
@@ -179,7 +179,7 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
         insert([variation1, variation2, variation3])
 
         // When
-        let viewModel = AddProductVariationToOrderViewModel(siteID: sampleSiteID, product: product, storageManager: storageManager, stores: stores)
+        let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID, product: product, storageManager: storageManager, stores: stores)
 
         // Then
         let sortedProductVariationIDs = viewModel.productVariationRows.map { $0.productOrVariationID }
@@ -188,7 +188,7 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
 
     func test_view_model_fires_error_notice_when_product_variation_sync_fails() {
         // Given
-        let viewModel = AddProductVariationToOrderViewModel(siteID: sampleSiteID, product: Product.fake(), stores: stores)
+        let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID, product: Product.fake(), stores: stores)
         stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
             case let .synchronizeProductVariations(_, _, _, _, onCompletion):
@@ -202,7 +202,7 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
         viewModel.onLoadTrigger.send()
 
         // Then
-        XCTAssertEqual(viewModel.notice, AddProductVariationToOrderViewModel.NoticeFactory.productVariationSyncNotice(retryAction: {}))
+        XCTAssertEqual(viewModel.notice, ProductVariationSelectorViewModel.NoticeFactory.productVariationSyncNotice(retryAction: {}))
     }
 
     func test_selectVariation_invokes_onVariationSelected_closure_for_existing_variation() {
@@ -211,7 +211,7 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
         let product = Product.fake().copy(productID: sampleProductID)
         let productVariation = sampleProductVariation.copy(productVariationID: 1)
         insert(productVariation)
-        let viewModel = AddProductVariationToOrderViewModel(siteID: sampleSiteID,
+        let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID,
                                                             product: product,
                                                             storageManager: storageManager,
                                                             onVariationSelected: { selectedVariationID = $0.productVariationID })
@@ -225,7 +225,7 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
 }
 
 // MARK: - Utils
-private extension AddProductVariationToOrderViewModelTests {
+private extension ProductVariationSelectorViewModelTests {
     /// Insert a `ProductVariation` into storage
     func insert(_ readOnlyVariation: Yosemite.ProductVariation) {
         let productVariation = storage.insertNewObject(ofType: StorageProductVariation.self)

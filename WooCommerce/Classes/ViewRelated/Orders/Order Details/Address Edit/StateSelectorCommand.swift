@@ -48,6 +48,7 @@ final class StateSelectorCommand: ObservableListSelectorCommand {
             return data = states
         }
 
-        data = states.filter { $0.name.localizedCaseInsensitiveContains(term) }
+        // Trim the search term to remove newlines or whitespaces (e.g added from the keyboard predictive text) from both ends
+        data = states.filter { $0.name.localizedCaseInsensitiveContains(term.trim()) }
     }
 }

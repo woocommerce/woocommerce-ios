@@ -1,15 +1,15 @@
 import SwiftUI
 
-/// View showing a list of products to add to an order.
+/// View showing a list of products to select.
 ///
-struct AddProductToOrder: View {
+struct ProductSelector: View {
     /// Defines whether the view is presented.
     ///
     @Binding var isPresented: Bool
 
     /// View model to drive the view.
     ///
-    @ObservedObject var viewModel: AddProductToOrderViewModel
+    @ObservedObject var viewModel: ProductSelectorViewModel
 
     ///   Environment safe areas
     ///
@@ -73,7 +73,7 @@ struct AddProductToOrder: View {
     ///
     @ViewBuilder private func createProductRow(rowViewModel: ProductRowViewModel) -> some View {
         if let addVariationToOrderVM = viewModel.getVariationsViewModel(for: rowViewModel.productOrVariationID) {
-            LazyNavigationLink(destination: AddProductVariationToOrder(isPresented: $isPresented, viewModel: addVariationToOrderVM)) {
+            LazyNavigationLink(destination: ProductVariationSelector(isPresented: $isPresented, viewModel: addVariationToOrderVM)) {
                 HStack {
                     ProductRow(viewModel: rowViewModel)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -93,7 +93,7 @@ struct AddProductToOrder: View {
     }
 }
 
-private extension AddProductToOrder {
+private extension ProductSelector {
     enum Constants {
         static let dividerHeight: CGFloat = 1
         static let defaultPadding: CGFloat = 16
@@ -118,8 +118,8 @@ private extension AddProductToOrder {
 
 struct AddProduct_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = AddProductToOrderViewModel(siteID: 123)
+        let viewModel = ProductSelectorViewModel(siteID: 123)
 
-        AddProductToOrder(isPresented: .constant(true), viewModel: viewModel)
+        ProductSelector(isPresented: .constant(true), viewModel: viewModel)
     }
 }

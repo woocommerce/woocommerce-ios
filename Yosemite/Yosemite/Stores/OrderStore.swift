@@ -479,10 +479,10 @@ private extension OrderStore {
     func upsertStoredOrdersInMainThread(readOnlyOrders: [Networking.Order]) {
         upsertStoredOrders(readOnlyOrders: readOnlyOrders, in: storageManager.viewStorage)
     }
-    
+
     /// Upserts the Orders, and associates them to the SearchResults Entity (in Background)
     ///
-    private func upsertSearchResultsInBackground(keyword: String, readOnlyOrders: [Networking.Order], onCompletion: @escaping () -> Void) {
+    func upsertSearchResultsInBackground(keyword: String, readOnlyOrders: [Networking.Order], onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform { [weak self] in
             guard let self = self else {
@@ -499,7 +499,7 @@ private extension OrderStore {
 
     /// Upserts the Orders, and associates them to the Search Results Entity (in the specified Storage)
     ///
-    private func upsertStoredResults(keyword: String, readOnlyOrders: [Networking.Order], in storage: StorageType) {
+    func upsertStoredResults(keyword: String, readOnlyOrders: [Networking.Order], in storage: StorageType) {
         let searchResults = storage.loadOrderSearchResults(keyword: keyword) ?? storage.insertNewObject(ofType: Storage.OrderSearchResults.self)
         searchResults.keyword = keyword
 

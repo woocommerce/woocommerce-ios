@@ -476,7 +476,10 @@ extension OrderStore {
 private extension OrderStore {
     /// Updates (OR Inserts) the specified ReadOnly Order Entities *in the main thread*
     ///
-    func upsertStoredOrdersInMainThread(readOnlyOrders: [Networking.Order]) {
+    /// - Returns: An array of the updated or inserted orders.
+    ///
+    @discardableResult
+    func upsertStoredOrdersInMainThread(readOnlyOrders: [Networking.Order]) -> [StorageOrder] {
         upsertStoredOrders(readOnlyOrders: readOnlyOrders, in: storageManager.viewStorage)
     }
 
@@ -541,11 +544,13 @@ private extension OrderStore {
     ///     - readOnlyOrders: Remote Orders to be persisted.
     ///     - insertingSearchResults: Indicates if the "Newly Inserted Entities" should be marked as "Search Results Only"
     ///     - storage: Where we should save all the things!
+    /// - Returns: An array of the updated or inserted orders.
     ///
+    @discardableResult
     private func upsertStoredOrders(readOnlyOrders: [Networking.Order],
                                     insertingSearchResults: Bool = false,
-                                    in storage: StorageType) {
+                                    in storage: StorageType) -> [StorageOrder]{
         let useCase = OrdersUpsertUseCase(storage: storage)
-        useCase.upsert(readOnlyOrders, insertingSearchResults: insertingSearchResults)
+        return useCase.upsert(readOnlyOrders, insertingSearchResults: insertingSearchResults)
     }
 }

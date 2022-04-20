@@ -390,7 +390,19 @@ private extension OrderStore {
     /// Updates will be reverted in case of failure.
     ///
     func optimisticUpdateOrder(siteID: Int64, order: Order, fields: [OrderUpdateField], onCompletion: @escaping (Result<Order, Error>) -> Void) {
-        print("\(siteID) - \(order.orderID) - fields: \(fields)")
+        // Optimistically update the stored order.
+        let backupOrder = updateStoredOrder(readOnlyOrder: order)
+
+        remote.updateOrder(from: siteID, order: order, fields: fields) { [weak self] result in
+            guard case .failure = result else {
+                onCompletion(.success(order))
+                return
+            }
+
+            // Revert optimistic update.
+            self?.updateStoredOrder(readOnlyOrder: backupOrder)
+            onCompletion(result)
+        }
     }
 
     /// Deletes a given order.

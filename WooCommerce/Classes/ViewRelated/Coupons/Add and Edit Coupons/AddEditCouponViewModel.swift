@@ -164,14 +164,12 @@ final class AddEditCouponViewModel: ObservableObject {
     }
 
     var populatedCoupon: Coupon {
-        // TODO: Fill all the missing data (like `productIds`)
+        // TODO: Fill all the missing data (like `productIds`, `excludedProductIds`, `productCategories`, `excludedProductCategories`)
         coupon?.copy(code: codeField,
                      amount: amountField,
-                     dateModified: Date(),
                      discountType: discountType,
                      description: descriptionField,
                      dateExpires: expiryDateField,
-                     usageCount: 0,
                      individualUse: couponRestrictionsViewModel.individualUseOnly,
                      usageLimit: Int64(couponRestrictionsViewModel.usageLimitPerCoupon),
                      usageLimitPerUser: Int64(couponRestrictionsViewModel.usageLimitPerUser),

@@ -67,9 +67,6 @@ struct ProductSelector: View {
             .onAppear {
                 viewModel.onLoadTrigger.send()
             }
-            .onDisappear {
-                viewModel.clearSearch()
-            }
             .notice($viewModel.notice, autoDismiss: false)
         }
         .wooNavigationBarStyle()

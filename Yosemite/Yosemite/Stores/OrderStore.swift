@@ -496,8 +496,9 @@ private extension OrderStore {
             return readOnlyOrder
         }
 
+        let oldReadOnlyOrder = storageOrder.toReadOnly()
         upsertStoredOrders(readOnlyOrders: [readOnlyOrder], in: storageManager.viewStorage)
-        return storageOrder.toReadOnly()
+        return oldReadOnlyOrder
     }
 
     /// Upserts the Orders, and associates them to the SearchResults Entity (in Background)

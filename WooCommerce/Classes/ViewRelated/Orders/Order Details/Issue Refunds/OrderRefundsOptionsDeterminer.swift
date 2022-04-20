@@ -1,24 +1,45 @@
 import Foundation
 import Yosemite
 
+/// Encapsulates the logic related with the refunding options of an Order
+///
 protocol OrderRefundsOptionsDeterminerProtocol {
+    /// Provides an array of refundable items linked to the order parameter
+    ///
+    /// - Parameters:
+    ///   - order: the order to be analyzed
+    ///   - refunds: the previously issued refunds linked to that order
+    ///
+    /// - Returns: An array of `RefundableOrderItem`
+    ///
     func determineRefundableOrderItems(from order: Order, with refunds: [Refund]) -> [RefundableOrderItem]
+
+    /// Determines whether there is something to be refunded from that order (e.g items, fees, shippings, taxes ...)
+    ///
+    /// - Parameters:
+    ///   - order: the order to be analyzed
+    ///   - refunds: the previously issued refunds linked to that order
+    ///   - currencyFormatter: the formatter to parse the order or refunds model amount
+    ///
+    /// - Returns: A boolean indicating whether there is still something to be refunded from that order
+    ///
     func isAnythingToRefund(from order: Order, with refunds: [Refund], currencyFormatter: CurrencyFormatter) -> Bool
 }
 
 final class OrderRefundsOptionsDeterminer: OrderRefundsOptionsDeterminerProtocol {
-
     func isAnythingToRefund(from order: Order, with refunds: [Refund], currencyFormatter: CurrencyFormatter) -> Bool {
-        var shippingLineCanBeRefunded = false
-        if let shippingLine = order.shippingLines.first {
-            shippingLineCanBeRefunded = shippingLineIsRefundable(shippingLine, currencyFormatter: currencyFormatter)
+        let alreadyRefundedTotal = refunds
+            .map {
+                (currencyFormatter.convertToDecimal(from: $0.amount) ?? 0) as Decimal
+            }
+            .reduce(Decimal(0), +)
 
-        }
+        let orderTotal = (currencyFormatter.convertToDecimal(from: order.total) ?? 0) as Decimal
 
-        return isAnyFeeAvailableForRefund(from: order) ||
-        hasShippingBeenRefunded(from: refunds) == false ||
-        shippingLineCanBeRefunded ||
-        determineRefundableOrderItems(from: order, with: refunds).count > 0
+        let thereIsSomeAmountToRefund = orderTotal - alreadyRefundedTotal > 0
+        let thereAreItemsToRefund = determineRefundableOrderItems(from: order, with: refunds).count > 0
+
+        return thereIsSomeAmountToRefund || thereAreItemsToRefund
     }
 
     /// Return an array of `RefundableOrderItems` by taking out all previously refunded items
@@ -49,30 +70,5 @@ final class OrderRefundsOptionsDeterminer: OrderRefundsOptionsDeterminerProtocol
             // Return the item with the updated quantity to refund
             return RefundableOrderItem(item: item, quantity: quantityLeftToRefund)
         }
-    }
-
-    func isAnyFeeAvailableForRefund(from order: Order) -> Bool {
-        return order.fees.isNotEmpty
-    }
-
-    func hasShippingBeenRefunded(from refunds: [Refund]) -> Bool? {
-        // Return false if there are no refunds.
-        guard refunds.isNotEmpty else {
-            return false
-        }
-
-        // Return nil if we can't get shipping line refunds information
-        guard refunds.first?.shippingLines != nil else {
-            return nil
-        }
-
-        // Return true if there is any non-empty shipping refund
-        return refunds.first { $0.shippingLines?.isNotEmpty ?? false } != nil
-    }
-
-    func shippingLineIsRefundable(_ shippingLine: ShippingLine, currencyFormatter: CurrencyFormatter) -> Bool {
-        let shippingValues = RefundShippingCalculationUseCase(shippingLine: shippingLine, currencyFormatter: currencyFormatter)
-
-        return shippingValues.calculateRefundValue() > 0
     }
 }

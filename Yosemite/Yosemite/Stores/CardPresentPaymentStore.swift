@@ -25,8 +25,8 @@ public final class CardPresentPaymentStore: Store {
 
     private var cancellables: Set<AnyCancellable> = []
 
-    /// We need to be able to cancel subscriptions during the process of collecting a payment.
-    private var paymentSubscriptions: Set<AnyCancellable> = []
+    /// We need to be able to cancel the process of collecting a payment.
+    private var paymentCancellable: AnyCancellable? = nil
 
     /// We need to be able to cancel the process of refunding a payment.
     private var refundCancellable: AnyCancellable? = nil
@@ -216,7 +216,7 @@ private extension CardPresentPaymentStore {
             onCardReaderMessage(event)
         }
 
-        cardReaderService.capturePayment(parameters)
+        paymentCancellable = cardReaderService.capturePayment(parameters)
             .handleEvents(receiveOutput: { intent in
                 onProcessingCompletion(intent)
             })
@@ -234,11 +234,12 @@ private extension CardPresentPaymentStore {
                 }
             } receiveValue: { intent in
                 onCompletion(.success(intent))
-            }.store(in: &paymentSubscriptions)
+            }
     }
 
     func cancelPayment(onCompletion: ((Result<Void, Error>) -> Void)?) {
-        paymentSubscriptions.removeAll()
+        paymentCancellable?.cancel()
+        paymentCancellable = nil
 
         cardReaderService.cancelPaymentIntent()
             .subscribe(Subscribers.Sink(receiveCompletion: { value in

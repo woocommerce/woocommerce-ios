@@ -40,7 +40,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         let update: (order: Order, fields: [OrderUpdateField]) = waitFor { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateOrder(_, order, fields, _):
+                case let .updateOrderOptimistically(_, order, fields, _):
                     promise((order, fields))
                 default:
                     XCTFail("Unsupported Action")
@@ -60,7 +60,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         let viewModel = EditCustomerNoteViewModel(order: order, stores: stores)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, order, _, onCompletion):
+            case let .updateOrderOptimistically(_, order, _, onCompletion):
                 onCompletion(.success(order))
             default:
                 XCTFail("Unsupported Action")
@@ -84,7 +84,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         let viewModel = EditCustomerNoteViewModel(order: order, stores: stores)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, _, _, onCompletion):
+            case let .updateOrderOptimistically(_, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "Error", code: 0, userInfo: nil)))
             default:
                 XCTFail("Unsupported Action")
@@ -109,7 +109,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         let viewModel = EditCustomerNoteViewModel(order: order, stores: stores, analytics: WooAnalytics(analyticsProvider: analyticsProvider))
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, order, _, onCompletion):
+            case let .updateOrderOptimistically(_, order, _, onCompletion):
                 onCompletion(.success(order))
             default:
                 XCTFail("Unsupported Action")
@@ -135,7 +135,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         let viewModel = EditCustomerNoteViewModel(order: order, stores: stores, analytics: WooAnalytics(analyticsProvider: analyticsProvider))
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, _, _, onCompletion):
+            case let .updateOrderOptimistically(_, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "Error", code: 0, userInfo: nil)))
             default:
                 XCTFail("Unsupported Action")

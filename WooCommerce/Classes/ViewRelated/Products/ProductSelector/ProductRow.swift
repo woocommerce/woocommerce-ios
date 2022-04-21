@@ -29,7 +29,9 @@ struct ProductRow: View {
             mode: .aspectFill)
     }
 
-    init(multipleSelectionsEnabled: Bool = false, viewModel: ProductRowViewModel, accessibilityHint: String = "") {
+    init(multipleSelectionsEnabled: Bool = false,
+         viewModel: ProductRowViewModel,
+         accessibilityHint: String = "") {
         self.multipleSelectionsEnabled = multipleSelectionsEnabled
         self.viewModel = viewModel
         self.accessibilityHint = accessibilityHint
@@ -40,7 +42,7 @@ struct ProductRow: View {
             AdaptiveStack(horizontalAlignment: .leading) {
                 HStack(alignment: .center) {
                     if multipleSelectionsEnabled {
-                        Image(uiImage: viewModel.isSelected ? .checkCircleImage.withRenderingMode(.alwaysTemplate) : .checkEmptyCircleImage)
+                        Image(uiImage: viewModel.selectedState.image)
                             .frame(width: Layout.checkImageSize * scale, height: Layout.checkImageSize * scale)
                             .foregroundColor(.init(UIColor.brand))
                     }
@@ -77,6 +79,27 @@ struct ProductRow: View {
 
                 ProductStepper(viewModel: viewModel)
                     .renderedIf(viewModel.canChangeQuantity)
+            }
+        }
+    }
+}
+
+/// Subtype: SelectedState
+///
+extension ProductRow {
+    enum SelectedState {
+        case notSelected
+        case partiallySelected
+        case selected
+
+        var image: UIImage {
+            switch self {
+            case .notSelected:
+                return .checkEmptyCircleImage
+            case .selected:
+                return .checkCircleImage.withRenderingMode(.alwaysTemplate)
+            case .partiallySelected:
+                return .checkPartialCircleImage.withRenderingMode(.alwaysTemplate)
             }
         }
     }

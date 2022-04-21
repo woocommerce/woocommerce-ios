@@ -110,7 +110,13 @@ private extension ProductVariationSelector {
 
 struct AddProductVariationToOrder_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = ProductVariationSelectorViewModel(siteID: 1, productID: 2, productName: "Monstera Plant", productAttributes: [])
+        let viewModel = ProductVariationSelectorViewModel(
+            siteID: 1,
+            productID: 2,
+            productName: "Monstera Plant",
+            productAttributes: [],
+            selectedProductVariationIDs: []
+        )
 
         ProductVariationSelector(isPresented: .constant(true), viewModel: viewModel, multipleSelectionsEnabled: true)
     }

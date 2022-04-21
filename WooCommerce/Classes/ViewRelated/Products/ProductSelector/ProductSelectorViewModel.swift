@@ -92,11 +92,11 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// All selected products if the selector supports multiple selections.
     ///
-    @Published var selectedProductIDs: [Int64]
+    @Published private var selectedProductIDs: [Int64]
 
     /// All selected product variations if the selector supports multiple selections.
     ///
-    @Published var selectedProductVariationIDs: [Int64]
+    @Published private var selectedProductVariationIDs: [Int64]
 
     var totalSelectedItemsCount: Int {
         selectedProductIDs.count + selectedProductVariationIDs.count
@@ -166,7 +166,9 @@ final class ProductSelectorViewModel: ObservableObject {
         guard let variableProduct = products.first(where: { $0.productID == productID }), variableProduct.variations.isNotEmpty else {
             return nil
         }
-        let model = ProductVariationSelectorViewModel(siteID: siteID, product: variableProduct) { [weak self] productVariation in
+        let model = ProductVariationSelectorViewModel(siteID: siteID,
+                                                      product: variableProduct,
+                                                      selectedProductVariationIDs: selectedProductVariationIDs) { [weak self] productVariation in
             guard let self = self else { return }
             if let onVariationSelected = self.onVariationSelected {
                 onVariationSelected(productVariation)

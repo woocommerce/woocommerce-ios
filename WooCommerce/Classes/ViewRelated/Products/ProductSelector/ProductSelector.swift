@@ -37,9 +37,10 @@ struct ProductSelector: View {
                             .padding(.horizontal, insets: safeAreaInsets)
                             .background(Color(.listForeground).ignoresSafeArea())
                         }
-                        if viewModel.selectedItemsCount > 0 {
-                            Button(String.localizedStringWithFormat(configuration.doneButtonTitleFormat, viewModel.selectedItemsCount)) {
-                                // TODO
+                        if viewModel.totalSelectedItemsCount > 0 {
+                            Button(String.localizedStringWithFormat(configuration.doneButtonTitleFormat, viewModel.totalSelectedItemsCount)) {
+                                viewModel.completeMultipleSelection()
+                                isPresented.toggle()
                             }
                             .buttonStyle(PrimaryButtonStyle())
                             .padding(Constants.defaultPadding)
@@ -105,10 +106,8 @@ struct ProductSelector: View {
                        viewModel: rowViewModel)
                 .accessibilityHint(configuration.productRowAccessibilityHint)
                 .onTapGesture {
-                    if configuration.multipleSelectionsEnabled {
-                        rowViewModel.isSelected.toggle()
-                    } else {
-                        viewModel.selectProduct(rowViewModel.productOrVariationID)
+                    viewModel.selectProduct(rowViewModel.productOrVariationID)
+                    if !configuration.multipleSelectionsEnabled {
                         isPresented.toggle()
                     }
                 }

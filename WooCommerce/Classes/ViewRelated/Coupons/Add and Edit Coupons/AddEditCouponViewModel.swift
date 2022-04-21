@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import UIKit
+import protocol Storage.StorageManagerType
 
 /// View model for `AddEditCoupon` view
 ///
@@ -13,8 +14,6 @@ final class AddEditCouponViewModel: ObservableObject {
     private let editingOption: EditingOption
 
     private let discountType: Coupon.DiscountType
-
-    private let stores: StoresManager
 
     var onCompletion: ((Result<Coupon, Error>) -> Void)?
 
@@ -79,7 +78,19 @@ final class AddEditCouponViewModel: ObservableObject {
         return .placeholder(Localization.couponExpiryDatePlaceholder)
     }
 
+    /// View model for the product selector
+    ///
+    lazy var productSelectorViewModel = {
+        ProductSelectorViewModel(siteID: siteID, storageManager: storageManager, stores: stores) { _ in
+            // TODO
+        } onVariationSelected: { _ in
+            // TODO
+        }
+    }()
+
     private(set) var coupon: Coupon?
+    private let stores: StoresManager
+    private let storageManager: StorageManagerType
 
     /// When the view is updating or creating a new Coupon remotely.
     ///
@@ -97,29 +108,31 @@ final class AddEditCouponViewModel: ObservableObject {
     ///
     init(siteID: Int64,
          discountType: Coupon.DiscountType,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
         editingOption = .creation
         self.discountType = discountType
         self.stores = stores
+        self.storageManager = storageManager
 
         amountField = String()
         codeField = String()
         descriptionField = String()
         expiryDateField = nil
         freeShipping = false
-        couponRestrictionsViewModel = CouponRestrictionsViewModel()
+        couponRestrictionsViewModel = CouponRestrictionsViewModel(siteID: siteID)
     }
 
     /// Init method for coupon editing
     ///
     init(existingCoupon: Coupon,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
         siteID = existingCoupon.siteID
         coupon = existingCoupon
         editingOption = .editing
         discountType = existingCoupon.discountType
-        self.stores = stores
 
         // Populate fields
         amountField = existingCoupon.amount
@@ -128,6 +141,8 @@ final class AddEditCouponViewModel: ObservableObject {
         expiryDateField = existingCoupon.dateExpires
         freeShipping = existingCoupon.freeShipping
         couponRestrictionsViewModel = CouponRestrictionsViewModel(coupon: existingCoupon)
+        self.stores = stores
+        self.storageManager = storageManager
     }
 
     /// The method will generate a code in the same way as the existing admin website code does.

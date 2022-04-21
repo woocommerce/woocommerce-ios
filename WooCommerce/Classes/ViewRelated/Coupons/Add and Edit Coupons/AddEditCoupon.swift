@@ -10,6 +10,7 @@ struct AddEditCoupon: View {
     @State private var showingCouponExpiryActionSheet: Bool = false
     @State private var showingCouponExpiryDate: Bool = false
     @State private var showingCouponRestrictions: Bool = false
+    @State private var showingSelectProducts: Bool = false
     @Environment(\.presentationMode) var presentation
 
     private var expiryDateActionSheetButtons: [Alert.Button] {
@@ -143,7 +144,7 @@ struct AddEditCoupon: View {
                                 .padding(.bottom, Constants.verticalSpacing)
 
                             Button {
-                                //TODO: handle action
+                                showingSelectProducts = true
                             } label: {
                                 HStack {
                                     Image(uiImage: .pencilImage).colorMultiply(Color(.text))
@@ -214,6 +215,14 @@ struct AddEditCoupon: View {
                         }
                     }
                 }
+            }
+            .sheet(isPresented: $showingSelectProducts) {
+                ProductSelector(configuration: ProductSelector.Configuration.productsForCoupons,
+                                isPresented: $showingSelectProducts,
+                                viewModel: viewModel.productSelectorViewModel)
+                    .onDisappear {
+                        viewModel.productSelectorViewModel.clearSearch()
+                    }
             }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -307,3 +316,22 @@ struct AddEditCoupon_Previews: PreviewProvider {
     }
 }
 #endif
+
+private extension ProductSelector.Configuration {
+    static let productsForCoupons: Self =
+        .init(title: Localization.title,
+              cancelButtonTitle: Localization.cancel,
+              productRowAccessibilityHint: Localization.productRowAccessibilityHint,
+              variableProductRowAccessibilityHint: Localization.variableProductRowAccessibilityHint)
+
+    enum Localization {
+        static let title = NSLocalizedString("Select Products", comment: "Title for the screen to select products for a coupon")
+        static let cancel = NSLocalizedString("Cancel", comment: "Text for the cancel button in the Select Products screen")
+        static let productRowAccessibilityHint = NSLocalizedString("Toggles selection for this product in a coupon.",
+                                                                   comment: "Accessibility hint for selecting a product in the Select Products screen")
+        static let variableProductRowAccessibilityHint = NSLocalizedString(
+            "Opens list of product variations.",
+            comment: "Accessibility hint for selecting a variable product in the Select Products screen"
+        )
+    }
+}

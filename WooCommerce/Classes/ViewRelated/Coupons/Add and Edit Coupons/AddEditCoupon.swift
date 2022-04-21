@@ -40,7 +40,9 @@ struct AddEditCoupon: View {
 
     init(_ viewModel: AddEditCouponViewModel) {
         self.viewModel = viewModel
-        viewModel.onCompletion = { _ in }
+        viewModel.onCompletion = { _ in
+            // TODO: handle the new coupon or the error, refreshing the coupon detail and dismissing this view.
+        }
         //TODO: add analytics
     }
 

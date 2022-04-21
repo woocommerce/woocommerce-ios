@@ -613,7 +613,7 @@ final class OrderStoreTests: XCTestCase {
         // Then
         XCTAssertFalse(result.isSuccess)
         let storageOrder = storageManager.viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderID)
-        XCTAssertEqual(storageOrder?.customerNote, expectedCustomerNote)
+        XCTAssertEqual(storageOrder?.customerNote, originalOrder.customerNote)
     }
 
     func test_optimistic_update_order_shipping_phone_correctly() {

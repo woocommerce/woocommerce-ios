@@ -457,12 +457,21 @@ platform :ios do
       dsym_path: './build/WooCommerce.app.dSYM.zip'
     )
 
+    UI.message("Successfully built and uploaded installable build `#{build_number}` to App Center.")
+
     return if ENV['BUILDKITE_PULL_REQUEST'].nil?
 
-    UI.message("Successfully built and uploaded installable build `#{build_number}` to App Center.")
     install_url = 'https://install.appcenter.ms/orgs/automattic/apps/WooCommerce-Installable-Builds'
+    qr_code_url = "https://chart.googleapis.com/chart?chs=500x500&cht=qr&chl=#{CGI.escape(install_url)}&choe=UTF-8"
 
-    comment_body = "You can test the changes on this Pull Request by downloading it from App Center <a href='#{install_url}'>here</a> with build number: <code>#{build_number}</code>. If you need access to this, you can ask a maintainer to add you."
+    comment_body = <<~COMMENT_BODY
+      You can test the changes from this Pull Request by:<ul>
+        <li><a href='#{install_url}'>Clicking here</a> or scanning the QR code below to access App Center</li>
+        <li>Then installing the build number <code>#{build_number}</code> on your iPhone</li>
+      </ul>
+      <img src='#{qr_code_url}' width='150' height='150' /><br />
+      If you need access to App Center, please ask a maintainer to add you.
+    COMMENT_BODY
 
     comment_on_pr(
       project: 'woocommerce/woocommerce-ios',

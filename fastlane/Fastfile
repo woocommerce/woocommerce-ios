@@ -144,8 +144,7 @@ platform :ios do
   #####################################################################################
   desc 'Updates the AppStoreStrings.pot file with the latest data'
   lane :update_appstore_strings do |options|
-    project_root = File.dirname(File.expand_path(__dir__))
-    source_metadata_folder = File.join(project_root, 'fastlane', 'appstoreres', 'metadata', 'source')
+    source_metadata_folder = File.join(PROJECT_ROOT_FOLDER, 'fastlane', 'appstoreres', 'metadata', 'source')
 
     files = {
       whats_new: File.join(RESOURCES_FOLDER, 'release_notes.txt'),

@@ -84,13 +84,10 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
 private extension EditCustomerNoteViewModel {
     /// Calculates what navigation trailing item should be shown depending on our internal state.
     ///
-    private func bindNavigationTrailingItemPublisher() {
-        Publishers.CombineLatest($newNote, performingNetworkRequest)
-            .map { [order] newNote, performingNetworkRequest -> EditCustomerNoteNavigationItem in
-                guard !performingNetworkRequest else {
-                    return .loading
-                }
-                return .done(enabled: order.customerNote != newNote)
+    func bindNavigationTrailingItemPublisher() {
+        $newNote
+            .map { [weak self] editedContent -> EditCustomerNoteNavigationItem in
+                .done(enabled: editedContent != self?.order.customerNote)
             }
             .assign(to: &$navigationTrailingItem)
     }

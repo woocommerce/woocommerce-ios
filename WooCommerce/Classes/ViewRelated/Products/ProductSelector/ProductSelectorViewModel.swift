@@ -166,23 +166,33 @@ final class ProductSelectorViewModel: ObservableObject {
         guard let variableProduct = products.first(where: { $0.productID == productID }), variableProduct.variations.isNotEmpty else {
             return nil
         }
-        let model = ProductVariationSelectorViewModel(siteID: siteID,
-                                                      product: variableProduct,
-                                                      selectedProductVariationIDs: selectedProductVariationIDs) { [weak self] productVariation in
-            guard let self = self else { return }
-            if let onVariationSelected = self.onVariationSelected {
-                onVariationSelected(productVariation)
-            } else {
-                self.toggleSelection(productVariationID: productVariation.productVariationID)
-            }
-        }
-        return model
+        return ProductVariationSelectorViewModel(siteID: siteID,
+                                                 product: variableProduct,
+                                                 selectedProductVariationIDs: selectedProductVariationIDs,
+                                                 onVariationSelected: onVariationSelected)
     }
 
     /// Clears the current search term to display the full product list.
     ///
     func clearSearch() {
         searchTerm = ""
+    }
+
+    /// Updates selected variation list based on the new selected IDs
+    ///
+    func updateSelectedVariations(productID: Int64, selectedVariationIDs: [Int64]) {
+        guard let variableProduct = products.first(where: { $0.productID == productID }),
+              variableProduct.variations.isNotEmpty else {
+            return
+        }
+        // remove all previous selected variations
+        selectedProductVariationIDs.removeAll(where: { variableProduct.variations.contains($0) })
+        // append new selected IDs
+        selectedProductVariationIDs.append(contentsOf: selectedVariationIDs)
+        // update product rows
+        productRows = generateProductRows(products: products,
+                                          selectedProductIDs: selectedProductIDs,
+                                          selectedProductVariationIDs: selectedProductVariationIDs)
     }
 
     /// Triggers completion closure when the multiple selection completes.
@@ -366,7 +376,7 @@ private extension ProductSelectorViewModel {
 
 // MARK: - Multiple selection support
 private extension ProductSelectorViewModel {
-    /// Toggle the selection of the specified product.
+    /// Toggles the selection of the specified product.
     ///
     func toggleSelection(productID: Int64) {
         if selectedProductIDs.contains(productID) {
@@ -376,37 +386,38 @@ private extension ProductSelectorViewModel {
         }
     }
 
-    /// Toggle the selection of the specified product variation.
-    ///
-    func toggleSelection(productVariationID: Int64) {
-        if selectedProductVariationIDs.contains(productVariationID) {
-            selectedProductVariationIDs.removeAll(where: { $0 == productVariationID })
-        } else {
-            selectedProductVariationIDs.append(productVariationID)
-        }
-    }
-
-    /// Observe changes in selections to update product rows
+    /// Observes changes in selections to update product rows
     ///
     func observeSelections() {
-        $products.combineLatest($selectedProductIDs, $selectedProductVariationIDs) { products, productIDs, variationIDs -> [ProductRowViewModel] in
-            return products.map { product in
-                var selectedState: ProductRow.SelectedState
-                if product.variations.isEmpty {
-                    selectedState = productIDs.contains(product.productID) ? .selected : .notSelected
-                } else {
-                    let intersection = Set(product.variations).intersection(Set(variationIDs))
-                    if intersection.isEmpty {
-                        selectedState = .notSelected
-                    } else if intersection.count == product.variations.count {
-                        selectedState = .selected
-                    } else {
-                        selectedState = .partiallySelected
-                    }
-                }
-                return ProductRowViewModel(product: product, canChangeQuantity: false, selectedState: selectedState)
+        $products.combineLatest($selectedProductIDs) { [weak self] products, selectedProductIDs -> [ProductRowViewModel] in
+            guard let self = self else {
+                return []
             }
+            return self.generateProductRows(products: products,
+                                            selectedProductIDs: selectedProductIDs,
+                                            selectedProductVariationIDs: self.selectedProductVariationIDs)
         }.assign(to: &$productRows)
+    }
+
+    /// Generates product rows based on products and selected product/variation IDs
+    ///
+    func generateProductRows(products: [Product], selectedProductIDs: [Int64], selectedProductVariationIDs: [Int64]) -> [ProductRowViewModel] {
+        return products.map { product in
+            var selectedState: ProductRow.SelectedState
+            if product.variations.isEmpty {
+                selectedState = selectedProductIDs.contains(product.productID) ? .selected : .notSelected
+            } else {
+                let intersection = Set(product.variations).intersection(Set(selectedProductVariationIDs))
+                if intersection.isEmpty {
+                    selectedState = .notSelected
+                } else if intersection.count == product.variations.count {
+                    selectedState = .selected
+                } else {
+                    selectedState = .partiallySelected
+                }
+            }
+            return ProductRowViewModel(product: product, canChangeQuantity: false, selectedState: selectedState)
+        }
     }
 }
 

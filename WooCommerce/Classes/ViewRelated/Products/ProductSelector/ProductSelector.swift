@@ -90,8 +90,10 @@ struct ProductSelector: View {
             LazyNavigationLink(destination: ProductVariationSelector(
                 isPresented: $isPresented,
                 viewModel: addVariationToOrderVM,
-                multipleSelectionsEnabled: configuration.multipleSelectionsEnabled
-            )) {
+                multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
+                onMultipleSelections: { selectedIDs in
+                    viewModel.updateSelectedVariations(productID: rowViewModel.productOrVariationID, selectedVariationIDs: selectedIDs)
+                })) {
                 HStack {
                     ProductRow(multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
                                viewModel: rowViewModel)

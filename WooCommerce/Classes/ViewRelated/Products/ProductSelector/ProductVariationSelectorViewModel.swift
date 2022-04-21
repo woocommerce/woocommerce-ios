@@ -54,7 +54,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
 
     /// All selected product variations if the selector supports multiple selections.
     ///
-    @Published private var selectedProductVariationIDs: [Int64]
+    @Published private(set) var selectedProductVariationIDs: [Int64]
 
     // MARK: Sync & Storage properties
 
@@ -134,7 +134,11 @@ final class ProductVariationSelectorViewModel: ObservableObject {
         guard let selectedVariation = productVariations.first(where: { $0.productVariationID == variationID }) else {
             return
         }
-        onVariationSelected?(selectedVariation)
+        if let onVariationSelected = onVariationSelected {
+            onVariationSelected(selectedVariation)
+        } else {
+            toggleSelection(productVariationID: variationID)
+        }
     }
 }
 

@@ -17,14 +17,20 @@ struct ProductVariationSelector: View {
     ///
     private let multipleSelectionsEnabled: Bool
 
+    private let onMultipleSelections: (([Int64]) -> Void)?
+
     ///   Environment safe areas
     ///
     @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
 
-    init(isPresented: Binding<Bool>, viewModel: ProductVariationSelectorViewModel, multipleSelectionsEnabled: Bool) {
+    init(isPresented: Binding<Bool>,
+         viewModel: ProductVariationSelectorViewModel,
+         multipleSelectionsEnabled: Bool = false,
+         onMultipleSelections: (([Int64]) -> Void)? = nil) {
         self._isPresented = isPresented
         self.viewModel = viewModel
         self.multipleSelectionsEnabled = multipleSelectionsEnabled
+        self.onMultipleSelections = onMultipleSelections
     }
 
     var body: some View {
@@ -85,6 +91,12 @@ struct ProductVariationSelector: View {
         }
         .onAppear {
             viewModel.onLoadTrigger.send()
+        }
+        .onDisappear {
+            guard multipleSelectionsEnabled else {
+                return
+            }
+            onMultipleSelections?(viewModel.selectedProductVariationIDs)
         }
         .notice($viewModel.notice, autoDismiss: false)
     }

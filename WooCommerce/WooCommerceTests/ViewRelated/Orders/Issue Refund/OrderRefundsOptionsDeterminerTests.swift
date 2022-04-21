@@ -63,7 +63,7 @@ final class OrderRefundsOptionsDeterminerTests: XCTestCase {
         XCTAssertTrue(result)
     }
 
-    func test_isAnythingToRefund_when_all_items_are_not_refunded_but_amount_is_returns_true() {
+    func test_isAnythingToRefund_when_not_all_items_are_refunded_but_amount_is_returns_true() {
         // Given
         let orderTotal = "23"
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())

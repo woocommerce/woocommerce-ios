@@ -546,8 +546,8 @@ private extension OrderDetailsDataSource {
 
     private func configureCollectPaymentButton(cell: ButtonTableViewCell, at indexPath: IndexPath) {
         cell.configure(style: .primary,
-                       title: Titles.collectPayment) {
-            self.onCellAction?(.collectPayment, indexPath)
+                       title: Titles.collectPayment) { [weak self] in
+            self?.onCellAction?(.collectPayment, indexPath)
         }
         cell.hideSeparator()
     }

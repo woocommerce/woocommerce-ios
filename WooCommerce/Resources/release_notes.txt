@@ -1,3 +1,6 @@
-Create orders on the go with products, shipping & billing information, and fees! You can quickly take an in-person credit card payment right after or send a link to a customer to pay for that order on their own device. You’ve asked for it, and now it’s here!
 
-We’re also making progress on our coupon management feature. Get a sneak peek of it by turning it on in the More tab > Settings > Experimental Features.
+- [*] Share payment links from the order details screen. [https://github.com/woocommerce/woocommerce-ios/pull/6609]
+- [internal] Reviews lists on Products and Menu tabs are refactored to avoid duplicated code. Please quickly smoke test them to make sure that everything still works as before. [https://github.com/woocommerce/woocommerce-ios/pull/6553]
+- [**] Now it's possible to change the order of the product images. [https://github.com/woocommerce/woocommerce-ios/pull/6620]
+- [*] Improved accessibility for the error banner and info banner displayed in Orders and Products. [https://github.com/woocommerce/woocommerce-ios/pull/6633]
+

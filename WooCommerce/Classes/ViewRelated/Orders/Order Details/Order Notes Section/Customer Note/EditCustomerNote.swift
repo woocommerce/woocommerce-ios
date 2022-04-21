@@ -77,8 +77,6 @@ struct EditCustomerNote<ViewModel: EditCustomerNoteViewModelProtocol>: View {
                 })
             }
             .disabled(!enabled)
-        case .loading:
-            ProgressView()
         }
     }
 }

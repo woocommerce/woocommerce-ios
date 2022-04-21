@@ -24,6 +24,10 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
         $presentNotice
     }
 
+    /// Presents either a success or an error notice in the tab bar context after the update operation is done.
+    ///
+    private let systemNoticePresenter: NoticePresenter
+
     /// Order to be edited.
     ///
     private let order: Order
@@ -37,11 +41,15 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
     ///
     private let analytics: Analytics
 
-    init(order: Order, stores: StoresManager = ServiceLocator.stores, analytics: Analytics = ServiceLocator.analytics) {
+    init(order: Order,
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics,
+         systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         self.order = order
         self.newNote = order.customerNote ?? ""
         self.stores = stores
         self.analytics = analytics
+        self.systemNoticePresenter = systemNoticePresenter
         bindNavigationTrailingItemPublisher()
     }
 

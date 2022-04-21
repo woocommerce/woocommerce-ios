@@ -29,7 +29,7 @@ SCREENSHOT_DEVICES = [
 # Fastlane mutates these internally, see
 # https://github.com/fastlane/fastlane/blob/b817148d4967ab6e38b8f1a8b81d1b3e60d6e645/match/lib/match/runner.rb#L84-L86
 MAIN_BUNDLE_IDENTIFIERS = %w[com.automattic.woocommerce]        # Registered in our main account, for development and AppStore
-ALPHA_BUNDLE_IDENTIFIERS = %w[com.automattic.alpha.woocommerce] # Registered in our Enterprise account, for AppCenter / Installable Builds
+ALPHA_BUNDLE_IDENTIFIERS = %w[com.automattic.alpha.woocommerce] # Registered in our Enterprise account, for App Center / Installable Builds
 # rubocop:enable Style/MutableConstant
 
 # Use this instead of getting values from ENV directly
@@ -462,7 +462,7 @@ platform :ios do
     UI.message("Successfully built and uploaded installable build `#{build_number}` to App Center.")
     install_url = 'https://install.appcenter.ms/orgs/automattic/apps/WooCommerce-Installable-Builds'
 
-    comment_body = "You can test the changes on this Pull Request by downloading it from AppCenter <a href='#{install_url}'>here</a> with build number: <code>#{build_number}</code>. If you need access to this, you can ask a maintainer to add you."
+    comment_body = "You can test the changes on this Pull Request by downloading it from App Center <a href='#{install_url}'>here</a> with build number: <code>#{build_number}</code>. If you need access to this, you can ask a maintainer to add you."
 
     comment_on_pr(
       project: 'woocommerce/woocommerce-ios',

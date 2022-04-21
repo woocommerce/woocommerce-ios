@@ -564,29 +564,26 @@ final class OrderStoreTests: XCTestCase {
     }
 
     func test_optimistic_update_order_customer_note_correctly() {
-        let expectation = self.expectation(description: "Update Order Customer note")
+        // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         /// Insert Order [Customer note == "Updated!"]
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated2(), in: viewStorage)
 
-        // Update: Expected Customer note is actually coming from `order.json` (Customer note == "")
+        /// Update: Expected Customer note is actually coming from `order.json` (Customer note == "")
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
 
         // When
-        let result: Result<Order, Error> = waitFor { promise in
-            let action = OrderAction.updateOrderOptimistically(siteID: sampleSiteID, order: updatedOrder, fields: [.customerNote]) { result in
+        let result: Result<Networking.Order, Error> = waitFor { promise in
+            let action = OrderAction.updateOrderOptimistically(siteID: self.sampleSiteID, order: self.sampleOrder(), fields: [.customerNote]) { result in
                 promise(result)
             }
-            self.store.onAction(action)
+            orderStore.onAction(action)
         }
         // Then
         XCTAssertTrue(result.isSuccess)
         let storageOrder = self.storageManager.viewStorage.loadOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID)
         XCTAssert(storageOrder?.customerNote == "")
-
-        orderStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     func test_optimistic_update_order_customer_note_reverts_upon_failure() {

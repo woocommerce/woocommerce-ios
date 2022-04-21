@@ -390,7 +390,7 @@ platform :ios do
     sh('cd .. && rm WooCommerce.app.dSYM.zip')
 
     if options[:create_release]
-      archive_zip_path = "#{File.dirname(Dir.pwd)}/WooCommerce.xarchive.zip"
+      archive_zip_path = File.join(File.dirname(Dir.pwd), 'WooCommerce.xarchive.zip')
       zip(path: lane_context[SharedValues::XCODEBUILD_ARCHIVE], output_path: archive_zip_path)
 
       version = options[:beta_release] ? ios_get_build_version : ios_get_app_version

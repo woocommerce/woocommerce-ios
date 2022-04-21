@@ -587,7 +587,7 @@ final class OrderStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isSuccess)
         let storageOrder = storageManager.viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderID)
-        XCTAssertEqual(storageOrder?.customerNote, expectedCustomerNote)
+       XCTAssertEqual(storageOrder?.customerNote, updatedOrder.customerNote)
     }
 
     func test_optimistic_update_order_customer_note_reverts_upon_failure() {

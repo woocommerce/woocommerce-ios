@@ -62,10 +62,10 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
 
             switch result {
             case .success:
-                self.presentNotice = .success
+                self.systemNoticePresenter.enqueue(notice: .init(title: Localization.success, feedbackType: .success))
                 self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCompleted(subject: .customerNote))
             case .failure(let error):
-                self.presentNotice = .error
+                self.systemNoticePresenter.enqueue(notice: .init(title: Localization.error, feedbackType: .error))
                 self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowFailed(subject: .customerNote))
                 DDLogError("⛔️ Unable to update the order: \(error)")
             }
@@ -93,5 +93,13 @@ private extension EditCustomerNoteViewModel {
                 .done(enabled: editedContent != self?.order.customerNote)
             }
             .assign(to: &$navigationTrailingItem)
+    }
+}
+
+// MARK: Localization
+private extension EditCustomerNoteViewModel {
+    enum Localization {
+        static let success = NSLocalizedString("Successfully updated", comment: "Notice text after updating the order successfully")
+        static let error = NSLocalizedString("There was an error updating the order", comment: "Notice text after failing to update the order successfully")
     }
 }

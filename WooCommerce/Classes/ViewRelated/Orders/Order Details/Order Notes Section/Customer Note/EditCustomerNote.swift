@@ -32,26 +32,6 @@ final class EditCustomerNoteHostingController<ViewModel: EditCustomerNoteViewMod
             self?.dismiss(animated: true, completion: nil)
         }
 
-        // Observe the present notice intent and set it back after presented.
-        viewModel.presentNoticePublisher
-            .compactMap { $0 }
-            .sink { [weak self] notice in
-
-                // To prevent keyboard to hide the notice
-                self?.view.endEditing(true)
-
-                switch notice {
-                case .success:
-                    self?.systemNoticePresenter.enqueue(notice: .init(title: Localization.success, feedbackType: .success))
-                case .error:
-                    self?.modalNoticePresenter.enqueue(notice: .init(title: Localization.error, feedbackType: .error))
-                }
-
-                // Nullify the presentation intent.
-                viewModel.presentNotice = nil
-            }
-            .store(in: &subscriptions)
-
         // Set presentation delegate to track the user dismiss flow event
         presentationController?.delegate = self
     }
@@ -126,6 +106,4 @@ private enum Localization {
     static let title = NSLocalizedString("Customer Provided Note", comment: "Title for the edit customer provided note screen")
     static let done = NSLocalizedString("Done", comment: "Text for the done button in the edit customer provided note screen")
     static let cancel = NSLocalizedString("Cancel", comment: "Text for the cancel button in the edit customer provided note screen")
-    static let success = NSLocalizedString("Successfully updated", comment: "Notice text after updating the order successfully")
-    static let error = NSLocalizedString("There was an error updating the order", comment: "Notice text after failing to update the order successfully")
 }

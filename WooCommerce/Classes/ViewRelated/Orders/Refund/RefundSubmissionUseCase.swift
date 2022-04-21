@@ -393,15 +393,17 @@ private extension RefundSubmissionUseCase {
 }
 
 // MARK: Definitions
-private extension RefundSubmissionUseCase {
+extension RefundSubmissionUseCase {
     /// Mailing a receipt failed but the SDK didn't return a more specific error
     ///
-    enum RefundSubmissionError: Error {
+    enum RefundSubmissionError: Error, Equatable {
         case cardReaderDisconnected
         case invalidRefundAmount
         case unknownPaymentGatewayAccount
     }
+}
 
+private extension RefundSubmissionUseCase {
     enum Localization {
         private static let refundPaymentWithoutName = NSLocalizedString("Refund payment",
                                                                         comment: "Alert title when starting the in-person refund flow without a user name.")

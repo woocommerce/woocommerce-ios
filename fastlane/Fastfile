@@ -124,7 +124,7 @@ platform :ios do
   desc 'Creates a new release branch from the current trunk'
   lane :complete_code_freeze do |options|
     ios_completecodefreeze_prechecks(options)
-    ios_localize_project
+    update_localization
     version = ios_get_app_version
     trigger_beta_build(branch_to_build: "release/#{version}")
   end

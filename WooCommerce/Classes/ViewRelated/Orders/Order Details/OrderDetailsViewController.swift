@@ -704,9 +704,8 @@ private extension OrderDetailsViewController {
     }
 
     func editCustomerNoteTapped() {
-        let viewModel = EditCustomerNoteViewModel(order: viewModel.order)
-        let editNoteViewController = EditCustomerNoteHostingController(viewModel: viewModel)
-        present(editNoteViewController, animated: true, completion: nil)
+        let editNoteViewController = EditCustomerNoteHostingController(viewModel: viewModel.editNoteViewModel)
+        present(editNoteViewController, animated: true)
 
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowStarted(subject: .customerNote))
     }

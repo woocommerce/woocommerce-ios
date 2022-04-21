@@ -651,10 +651,13 @@ platform :ios do
     fastlane_require 'snapshot'
 
     # Provide enough information to bootstrap the configuration and generate the HTML report
-    Snapshot.config = FastlaneCore::Configuration.create(Snapshot::Options.available_options, {
-                                                           "workspace": '../WooCommerce.xcworkspace',
-                                                           "scheme": 'WooCommerceScreenshots'
-                                                         })
+    Snapshot.config = FastlaneCore::Configuration.create(
+      Snapshot::Options.available_options,
+      {
+        workspace: '../WooCommerce.xcworkspace',
+        scheme: 'WooCommerceScreenshots'
+      }
+    )
 
     Snapshot::ReportsGenerator.new.generate
   end

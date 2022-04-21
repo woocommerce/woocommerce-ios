@@ -94,7 +94,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
          productID: Int64,
          productName: String,
          productAttributes: [ProductAttribute],
-         selectedProductVariationIDs: [Int64],
+         selectedProductVariationIDs: [Int64] = [],
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          onVariationSelected: ((ProductVariation) -> Void)? = nil) {
@@ -114,7 +114,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
 
     convenience init(siteID: Int64,
                      product: Product,
-                     selectedProductVariationIDs: [Int64],
+                     selectedProductVariationIDs: [Int64] = [],
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
                      stores: StoresManager = ServiceLocator.stores,
                      onVariationSelected: ((ProductVariation) -> Void)? = nil) {

@@ -55,10 +55,10 @@ private extension ReviewsViewController {
 //
 private final class MockReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHandler {
 
-    private let data: ReviewsDataSource
+    private let data: ReviewsDataSourceProtocol
 
     init(siteID: Int64) {
-        self.data = DefaultReviewsDataSource(siteID: siteID)
+        self.data = ReviewsDataSource(siteID: siteID, customizer: GlobalReviewsDataSourceCustomizer())
     }
 
     // `ReviewsViewModelOutput` conformance

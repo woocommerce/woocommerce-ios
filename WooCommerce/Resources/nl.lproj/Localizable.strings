@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-03-18 23:00:01+0000 */
+/* Translation-Revision-Date: 2022-04-13 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -37,9 +37,6 @@
 %1$@ is a placeholder that always replaced with \"Learn more\" string, - which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@ over het aannemen van betalingen met je mobiele apparaat en het bestellen van kaartlezers";
 
-/* Combined rule for a coupon. Reads like: 2 Products and 1 Category */
-"%1$@ and %2$@" = "%1$@ en %2$@";
-
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "%1$@ eindigt op %2$@";
 
@@ -59,6 +56,9 @@
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ heeft een beoordeling geplaatst over %2$@";
 
+/* Summary line for a coupon, with the discounted amount and number of products and categories that the coupon is limited to. Reads like: '10% off all products' or '$15 off 2 Product 1 Category' */
+"%1$@ off %2$@" = "%1$@ korting %2$@";
+
 /* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
 "%1$@ refund requested (%2$@)" = "%1$@ terugbetaling aangevraagd (%2$@)";
 
@@ -76,6 +76,9 @@
 
 /* Card reader battery level as an integer percentage */
 "%1$@%% Battery" = "%1$@%% batterij";
+
+/* Combined rule for a coupon. Reads like: 2 Products, 1 Category */
+"%1$@, %2$@" = "%1$@, %2$@";
 
 /* In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and weight. For example, “purple, has logo・1lbs”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the weight with the unit. */
 "%1$@・%2$@" = "%1$@・%2$@";
@@ -113,6 +116,12 @@
 /* Number of rates selected in Shipping Labels > Carrier and Rates */
 "%1$d rates selected" = "%1$d tarieven geselecteerd";
 
+/* The singular limit of time for each user to apply a coupon, reads like: 1 use per user */
+"%1$d use per user" = "%1$d keer gebruiken per gebruiker";
+
+/* The plural limit of time for each user to apply a coupon, reads like: 10 uses per user */
+"%1$d uses per user" = "%1$d keer gebruiken per gebruiker";
+
 /* Format for the variations detail row in singular form. Reads, `1 variation`
    Label about one product variation shown on Products tab. Reads, `1 variation` */
 "%1$ld variation" = "%1$ld variatie";
@@ -146,10 +155,10 @@
 "%d Products" = "%d Producten";
 
 /* No comment provided by engineer. */
-"%d Products and %d Categories" = "%1$d Producten en %2$d categorieën";
+"%d Products excl. %d Category" = "%1$d Producten excl. %2$d categorie";
 
 /* No comment provided by engineer. */
-"%d Products excl. %d Category" = "%1$d Producten excl. %2$d categorie";
+"%d Products, %d Categories" = "%1$d Producten, %2$d categorieën";
 
 /* For example: `1 item` in Aggregated Product List */
 "%d item" = "%d artikel";
@@ -284,9 +293,6 @@
 /* Reads as 'AID'. Part of the mandatory data in receipts */
 "AID" = "AID";
 
-/* About this app (information page title) */
-"About" = "Over";
-
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "Over de app";
 
@@ -350,7 +356,8 @@
 /* Add New Package screen title in Shipping Label flow */
 "Add New Package" = "Nieuw pakket toevoegen";
 
-/* Title text of the button that adds a note when creating a simple payment */
+/* Title text of the button that adds a note when creating a simple payment
+   Title text of the button that adds customer note data when creating a new order */
 "Add Note" = "Opmerking toevoegen";
 
 /* Action to add one photo on the Product images screen */
@@ -474,8 +481,14 @@
 /* Notice text after updating the shipping or billing address */
 "Address successfully updated." = "Adres is bijgewerkt.";
 
+/* Accessibility hint for selecting a product in the Add Product screen */
+"Adds product to order." = "Voegt product toe aan bestelling.";
+
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "Voegt tracking toe aan een bestelling.";
+
+/* Accessibility hint for selecting a variation in a list of product variations */
+"Adds variation to order." = "Voegt variatie toe aan bestelling.";
 
 /* Adult signature required in Shipping Labels > Carrier and Rates */
 "Adult signature required (+%1$@)" = "Handtekening volwassene vereist (+%1$@)";
@@ -489,26 +502,26 @@
 /* Header bar label on top of order list when no filters are applied */
 "All Orders" = "Alle bestellingen";
 
-/* The text to be displayed in when the coupon is not limit to any specific product */
+/* Text indicating that there's no limit to the number of products that a coupon can be applied for. Displayed on coupon list items and details screen */
 "All Products" = "Alle producten";
 
+/* Exception rule for a coupon. Reads like: All Products excl. 2 Products */
+"All Products excl. %1$@" = "Alle producten excl. %1$@";
+
+/* No comment provided by engineer. */
+"All Products excl. %d Categories" = "Alle producten excl. %d categorieën";
+
+/* No comment provided by engineer. */
+"All Products excl. %d Products" = "Alle producten excl. %d producten";
+
 /* Value for the limit usage to X items row in Coupon Usage Details screen when no limit is set */
-"All Qualifying in Cart" = "Alle deelnemende producten in winkelwagen";
+"All Qualifying" = "Alle die voldoen";
 
 /* Message displayed when there are no packages to display in the Add New Service Package screen in Shipping Label flow */
 "All available packages have been activated" = "Alle beschikbare pakketten zijn geactiveerd";
 
 /* Name of final step in Install Jetpack flow. */
 "All done" = "Klaar";
-
-/* Exception rule for a coupon. Reads like: All excl. 2 Products */
-"All excl. %1$@" = "Alles excl. %1$@";
-
-/* No comment provided by engineer. */
-"All excl. %d Categories" = "Alles excl. %d categorieën";
-
-/* No comment provided by engineer. */
-"All excl. %d Products" = "Alles excl. %d producten";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "Alle beoordelingen zijn gemarkeerd als gelezen";
@@ -525,8 +538,12 @@
 /* Display label for the product's inventory backorders setting option */
 "Allow, but notify customer" = "Toestaan, maar melden bij klant";
 
-/* Title for the allowed email row in coupon usage details screen. */
+/* Title for the allowed email row in coupon usage details screen.
+   Title for the Allowed Emails screen */
 "Allowed Emails" = "Toegestane e-mailadressen";
+
+/* Text on Coupon Details screen to indicate that the coupon allows free shipping */
+"Allows free shipping" = "Staat gratis verzending toe";
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "Bijna klaar. Voer de verificatiecode in van je authenticatie-app.";
@@ -534,11 +551,11 @@
 /* String displayed before offering alternative login methods */
 "Alternatively:" = "Anders:";
 
-/* Title for the amount field on the Shipping Line Details screen during order creation
-   Title of the Amount label on Coupon Details screen */
+/* Title of the Amount label on Coupon Details screen */
 "Amount" = "Bedrag";
 
-/* Title for the amount field on the Fee Details screen during order creationParameters: %1$@ - fee type (percent sign or currency symbol) */
+/* Title for the amount field on the Fee Details screen during order creationParameters: %1$@ - fee type (percent sign or currency symbol)
+   Title for the amount field on the Shipping Details screen during order creationParameters: %1$@ - currency symbol */
 "Amount (%1$@)" = "Bedrag (%1$@)";
 
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
@@ -587,6 +604,9 @@
 /* Title of analytics as part of Jetpack benefits. */
 "Analytics" = "Analytische gegevens";
 
+/* Message when enabling analytics succeeds */
+"Analytics enabled successfully." = "Gelukt: analyses ingeschakeld.";
+
 /* Case Any in Order Filters for Order Statuses
    Display label for all order statuses selected in Order Filters - Label for one of the filters in order date range - Product variation attribute description where the attribute is set to any value. - Title when there is no filter set. */
 "Any" = "Alle";
@@ -622,9 +642,6 @@
 /* No comment provided by engineer. */
 "Apply %@ off to some products with the promo code “%@”." = "Krijg %1$@ korting op sommige producten met de promotiecode ‘%2$@’.";
 
-/* Title of the Apply To row in Coupon Details screen */
-"Apply To" = "Toepassen op";
-
 /* Approve a comment */
 "Approve" = "Goedkeuren";
 
@@ -637,6 +654,9 @@
 
 /* Title of the alert when a user is changing the product type */
 "Are you sure you want to change the product type?" = "Weet je zeker dat je het producttype wilt wijzigen?";
+
+/* Confirm message for deleting coupon on the Coupon Details screen */
+"Are you sure you want to delete this coupon?" = "Weet je zeker dat je deze coupon wilt verwijderen?";
 
 /* Message title for Discard Changes Action Sheet */
 "Are you sure you want to discard these changes?" = "Weet je zeker dat je deze wijzigingen wilt annuleren?";
@@ -691,6 +711,9 @@
 /* Subtitle of the cell in Product Price Settings > Schedule sale */
 "Automatically start and end a sale" = "Verkoop automatisch beginnen en beëindigen";
 
+/* Title of a button linking to the Automattic website */
+"Automattic family" = "Automattic Family";
+
 /* A unit test string. It reads: Awaiting payment via <payment method title>.A payment method example is: 'Credit Card (Stripe)'
    Awaiting payment via (payment method title) */
 "Awaiting payment via %@" = "Wachten op betaling via %@";
@@ -738,6 +761,9 @@
 /* Accessibility label for block quote button on formatting toolbar. */
 "Block Quote" = "Citaat blokkeren";
 
+/* Title of a button linking to the app's blog */
+"Blog" = "Blog";
+
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
 "Bluetooth permission required" = "Bluetooth-machtiging vereist";
 
@@ -776,7 +802,7 @@
 "Can Not Request Link" = "Kan link niet aanvragen";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title that closes the action sheet in product variations - Button title that closes the presented screen - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
+   Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title that closes the action sheet in product variations - Button title that closes the presented screen - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button in the navigation bar of the view for adding or editing a coupon. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
 "Cancel" = "Annuleren";
 
 /* Display label for cancelled order status. */
@@ -790,6 +816,9 @@
 
 /* The title of the alert when there is a generic error adding the package */
 "Cannot add package" = "Kan pakket niet toevoegen";
+
+/* Error message when no URL to WP-Admin page is found during Jetpack install flow */
+"Cannot find information about your site's WP-Admin. Please try again." = "Kan geen informatie over het WP-Admin van je site vinden. Probeer het nog eens.";
 
 /* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
    The title of the alert when there is an error updating the product */
@@ -824,9 +853,6 @@
 /* Catalog Visibility label in Product Settings
    Product Catalog Visibility navigation title */
 "Catalog Visibility" = "Zichtbaarheid van de catalogus";
-
-/* shown in promotional screens during first launch */
-"Catch up with your favorite sites and join the conversation anywhere, any time." = "Volg je favoriete sites en neem altijd en overal deel aan het gesprek.";
 
 /* Edit product categories screen - Screen title
    Filter product categories screen - Screen title - Title of the Categories row on Product main screen - Title of the product form bottom sheet action for editing categories. */
@@ -993,6 +1019,9 @@
 /* Contact WooComerce Payments Support title */
 "Contact WooCommerce Payments Support" = "Contact opnemen met de ondersteuning van WooCommerce Payments";
 
+/* Action button to contact support on enable analytics screen */
+"Contact support" = "Neem contact op met support";
+
 /* Title of a button to contact support in the error screen for In-Person payments */
 "Contact us" = "Neem contact op";
 
@@ -1082,23 +1111,17 @@
 /* Description for the Origin Country row in Customs screen of Shipping Label flow */
 "Country where the product was manufactured or assembled" = "Land waarin het product is geproduceerd of samengesteld";
 
-/* Title of Coupon Details screen */
-"Coupon" = "Coupon";
-
-/* Title of the Coupon Code row in Coupon Details screen */
-"Coupon Code" = "Couponcode";
-
-/* Title of Details section in Coupon Details screen */
-"Coupon Details" = "Gegevens coupon";
-
-/* Title of the Coupon Expiry Date row in Coupon Details screen */
-"Coupon Expiry Date" = "Vervaldatum coupon";
-
 /* Cell title on beta features screen to enable coupon management */
 "Coupon Management" = "Couponbeheer";
 
+/* Title of Summary section in Coupon Details screen */
+"Coupon Summary" = "Couponoverzicht";
+
 /* Notice message displayed when a coupon code is copied from the Coupon Details screen */
 "Coupon copied" = "Gekopieerde coupon";
+
+/* Notice message after deleting coupon from the Coupon Details screen */
+"Coupon deleted" = "Coupon verwijderd";
 
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
@@ -1126,11 +1149,26 @@
 /* Description of the Action sheet option when the user wants to create Simple Payments order */
 "Create an order with minimal information" = "Maak een bestelling met de minimaal vereiste gegevens aan";
 
+/* Title of the view for creating a coupon with generic discount. */
+"Create discount" = "Korting aanmaken";
+
+/* Title of the view for creating a coupon with fixed card discount. */
+"Create fixed card discount" = "Vaste paskorting aanmaken";
+
+/* Title of the view for creating a coupon with fixed product discount. */
+"Create fixed product discount" = "Vaste productkorting aanmaken";
+
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "Nieuw pakket aanmaken";
 
 /* Action sheet option when the user wants to create full manual order */
 "Create order" = "Bestelling aanmaken";
+
+/* Title of the banner notice in the Orders tab */
+"Create orders and take payments!" = "Maak bestellingen aan en neem betalingen aan!";
+
+/* Title of the view for creating a coupon with percentage discount. */
+"Create percentage discount" = "Procentuele korting aanmaken";
 
 /* The title of the shipping labels top banner in order details */
 "Create shipping labels from your device!" = "Maak verzendlabels vanaf je apparaat!";
@@ -1153,6 +1191,15 @@
 
 /* Cell title: the current date. */
 "Current" = "Huidig";
+
+/* Message in the footer of bulk price setting screen with the current price, when it is the same for all variations */
+"Current price is %@." = "Huidige prijs is %@.";
+
+/* Message in the footer of bulk price setting screen, when none of the variations have price value. */
+"Current price is not set." = "Huidige prijs is niet ingesteld.";
+
+/* Message in the footer of bulk price setting screen, when variations have different price values. */
+"Current prices are mixed." = "Huidige prijzen verschillen.";
 
 /* Name of the section for custom shipment tracking carriers */
 "Custom" = "Aangepast";
@@ -1183,6 +1230,9 @@
 
 /* Title for the Shipping Address Form for Customer Details */
 "Customer Details" = "Klantgegevens";
+
+/* Title text of the section that shows the Order customer note when creating a new order */
+"Customer Note" = "Klantnotitie";
 
 /* Customer note row title
    Customer note section title - Title for the edit customer provided note screen - Title text of the row that holds the order note when creating a simple payment */
@@ -1230,8 +1280,11 @@
 "Default" = "Standaard";
 
 /* Button title Delete in Downloadable File Options Action Sheet
-   Button title Delete in Edit Product More Options Action Sheet */
+   Button title Delete in Edit Product More Options Action Sheet - Title for the action button on the confirm alert for deleting coupon on the Coupon Details screen */
 "Delete" = "Verwijderen";
+
+/* Action title for deleting coupon on the Coupon Details screen */
+"Delete Coupon" = "Coupon verwijderen";
 
 /* Delete tracking button title */
 "Delete Tracking" = "Tracking verwijderen";
@@ -1243,7 +1296,7 @@
 "Describe your product to your future customers..." = "Beschrijf je product voor je toekomstige klanten...";
 
 /* The navigation bar title of the Aztec editor screen.
-   Title in the Product description row on Product form screen when the description is non-empty. - Title of Description row of item details in Customs screen of Shipping Label flow - Title of the Description row in Coupon Details screen */
+   Title in the Product description row on Product form screen when the description is non-empty. - Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "Beschrijving";
 
 /* Footer text in Product Menu order screen */
@@ -1273,8 +1326,7 @@
 /* Settings > Manage Card Reader > Connected Reader > A button to disconnect the reader */
 "Disconnect Reader" = "Lezer loskoppelen";
 
-/* Discount label for payment view
-   Title of the Discount row in Coupon Details screen */
+/* Discount label for payment view */
 "Discount" = "Korting";
 
 /* Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s) */
@@ -1284,11 +1336,14 @@
 "Discounted Orders" = "Bestellingen met korting";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Button to dismiss the alert presented when finding a reader to connect to fails - Button to dismiss. Presented to users after collecting a payment fails - Button to dismiss. Presented to users when updating the card reader software fails - Dismiss button in inbox note row. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab - The title of the button to dismiss the SimplePayments top banner - Title of the button to dismiss the banner notice in the add-ons view - Title of the dismiss action button on the coupon list screen */
+   Accessibility label for button to dismiss a bottom sheet - Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Button to dismiss the alert presented when finding a reader to connect to fails - Button to dismiss. Presented to users after collecting a payment fails - Button to dismiss. Presented to users when updating the card reader software fails - Dismiss button in inbox note row. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab - The title of the button to dismiss the Orders top banner - Title of the button to dismiss the banner notice in the add-ons view - Title of the dismiss action button on the coupon list screen */
 "Dismiss" = "Afbreken";
 
 /* Dismiss All button in Inbox Notes for dismissing all the notes. */
 "Dismiss All" = "Alles negeren";
+
+/* Title for dismiss the action when dragging the screen down. */
+"Dismiss Order" = "Bestelling negeren";
 
 /* Title of the alert for dismissing all the inbox notes. */
 "Dismiss all messages" = "Alle meldingen negeren";
@@ -1381,7 +1436,7 @@
 "Easily identify your products with unique codes" = "Identificeer je producten eenvoudig met unieke codes";
 
 /* Button to edit a customer on the New Order screen
-   Button to edit an order status on the New Order screen - Title text of the button that edits a note when creating a simple payment */
+   Button to edit an order status on the New Order screen - Button to edit the customer note on the New Order screen - Title text of the button that edits a note when creating a simple payment */
 "Edit" = "Bewerken";
 
 /* Action to edit the address in Shipping Label Suggested screen */
@@ -1390,6 +1445,9 @@
 /* Action to edit the attributes and options used for variations
    Navigation title for the Product Attributes screen */
 "Edit Attributes" = "Wijzig eigenschappen";
+
+/* Action title for editing a coupon from the Coupon Details screen */
+"Edit Coupon" = "Coupon bewerken";
 
 /* Accessibility label for the button to edit customer details on the New Order screen */
 "Edit Customer Details" = "Klantgegevens bewerken";
@@ -1402,6 +1460,21 @@
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Edit and add new products from anywhere" = "Bewerk en voeg nieuwe producten toe ongeacht waar je bent";
+
+/* Accessibility label for the button to edit customer note on the New Order screen */
+"Edit customer note" = "Notitie voor klant bewerken";
+
+/* Title of the view for editing a coupon with generic discount. */
+"Edit discount" = "Korting bewerken";
+
+/* Title of the view for editing a coupon with fixed card discount. */
+"Edit fixed card discount" = "Vaste paskorting bewerken";
+
+/* Title of the view for editing a coupon with fixed product discount. */
+"Edit fixed product discount" = "Vaste productkorting bewerken";
+
+/* Title of the view for editing a coupon with percentage discount. */
+"Edit percentage discount" = "Procentuele korting bewerken";
 
 /* Carrier eligible for free pickup in Shipping Labels > Carrier and Rates */
 "Eligible for free pickup" = "Geschikt voor gratis afhalen";
@@ -1438,8 +1511,20 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "Lege URL";
 
+/* The action button on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
+"Enable Coupons" = "Coupons inschakelen";
+
 /* Enable Reviews label in Product Settings */
 "Enable Reviews" = "Beoordelingen inschakelen";
+
+/* Description about WooCommerce Analytics on the enable analytics screen */
+"Enable WooCommerce Analytics to see missing stats for your store." = "Schakelt WooCommerce Analytics in om ontbrekende statistieken voor je winkel te zien.";
+
+/* Title for the enable analytics screen */
+"Enable WooCommerce Analytics to see your stats" = "Schakel WooCommerce Analytics in om je statistieken te zien";
+
+/* Action title to enable Analytics for a store */
+"Enable analytics" = "Analyses inschakelen";
 
 /* Title of the status row on Product Variation main screen to enable/disable a variation */
 "Enabled" = "Geactiveerd";
@@ -1538,13 +1623,16 @@
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "Envelop";
 
+/* Error message when enabling analytics fails */
+"Error enabling analytics. Please try again." = "Fout bij inschakelen analyses. Probeer het opnieuw.";
+
 /* Title for the error alert when fetching system status report fails */
 "Error fetching report" = "Fout bij ophalen rapport";
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Er is een fout opgetreden bij het vinden van het adres op Apple Maps";
 
-/* Message displayed when fail to loading total discounted amount in Coupon Details screen */
+/* Message displayed on Coupon Details screen when loading total discounted amount fails */
 "Error loading data" = "Fout bij laden gegevens";
 
 /* Alert title when there is an error requesting shipping label document for printing */
@@ -1553,8 +1641,23 @@
 /* Notice displayed when the label purchase fails */
 "Error purchasing the label" = "Fout tijdens het aanschaffen van het label";
 
+/* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
+"Everyone loves a deal" = "Iedereen houdt van een goede deal";
+
+/* Title of the action button to add product categories to the exclusion list in Coupon Usage Details screen */
+"Exclude Product Categories" = "Uitsluiten van productcategorieën";
+
+/* Title of the action button to add products to the exclusion list in Coupon Usage Details screen */
+"Exclude Products" = "Uitsluiten van producten";
+
 /* Title for the exclude sale items row in coupon usage details screen. */
 "Exclude Sale Items" = "Items in de uitverkoop uitsluiten";
+
+/* Text on Coupon Details screen to indicate that the coupon can not be applied to sale items */
+"Excludes sale items" = "Uitsluiten van afgeprijsde artikelen";
+
+/* Title of the exclusions section in Coupon Usage Details screen */
+"Exclusions" = "Uitsluitingen";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -1562,6 +1665,9 @@
 
 /* Status of coupons that are expired */
 "Expired" = "Verlopen";
+
+/* Formatted content for coupon expiry date, reads like: Expires August 4, 2022 */
+"Expires %1$@" = "Verloopt %1$@";
 
 /* Action sheet option when the user wants to change the Product type to external product */
 "External product" = "Extern product";
@@ -1571,6 +1677,9 @@
 
 /* Display label for failed order status. */
 "Failed" = "Mislukt";
+
+/* Error message on the Coupon Details screen when deleting coupon fails */
+"Failed to delete coupon. Please try again." = "Verwijderen van coupon mislukt. Probeer het nog eens.";
 
 /* An error message shown when failing to retrieve information to present a view for a review push notification. */
 "Failed to retrieve the review notification details." = "Ophalen van gegevens controlemelding mislukt.";
@@ -1659,9 +1768,6 @@
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "Vaste productkorting";
 
-/* Shown in the prologue carousel (promotional screens) during first launch. */
-"Follow your favorite sites and discover new blogs." = "Volg je favoriete sites en ontdek nieuwe blogs.";
-
 /* User role badge */
 "Follower" = "Volger";
 
@@ -1719,7 +1825,7 @@
 "Give Feedback" = "Geef feedback";
 
 /* The title of the button to give feedback about products beta features on the banner on the products tab
-   The title of the button to give feedback about shipping labels features on the banner in order details - Title of the button to give feedback about the add-ons feature - Title of the button to give feedback about the Simple Payments feature - Title on the navigation bar for the products feedback survey */
+   The title of the button to give feedback about shipping labels features on the banner in order details - Title of the button to give feedback about the add-ons feature - Title of the button to give feedback about the Orders features - Title on the navigation bar for the products feedback survey */
 "Give feedback" = "Geef feedback";
 
 /* Option to select the Gmail app when logging in with magic links */
@@ -1812,6 +1918,9 @@
 
 /* Browse our help documentation website title */
 "Help Center" = "Help Center";
+
+/* Text used when sharing a link to the app with a friend. */
+"Hey! Here is a link to download the WooCommerce app. I'm really enjoying it and thought you might too." = "Hallo! Alsjeblieft, een downloadlink voor de WooCommerce-app. Ik vind hem geweldig en ik dacht, jij vast ook.";
 
 /* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
    Display label for the product's catalog visibility */
@@ -1920,6 +2029,9 @@
 /* Title for the individual use only row in coupon usage details screen. */
 "Individual Use Only" = "Alleen voor individueel gebruik";
 
+/* Text on Coupon Details screen to indicate that the coupon can not be applied in conjunction with other coupons */
+"Individual use only" = "Enkel individueel gebruik";
+
 /* Description for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Individually shipped item" = "Individueel verzonden artikel";
 
@@ -1937,6 +2049,9 @@
 
 /* Message from the in-person payment card reader prompting user to insert or swipe their card */
 "Insert Or Swipe Card" = "Veeg een kaart of voer er een in";
+
+/* Title of a button linking to the app's Instagram profile */
+"Instagram" = "Instagram";
 
 /* Navigates to Install Jetpack screen.
    Title of install action in the Jetpack benefits view. - Title of the Install Jetpack intro view - Title of the Install Jetpack view */
@@ -2018,6 +2133,9 @@
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "Het lijkt erop dat deze gebruikersnaam\/dit wachtwoord niet aan deze site is gekoppeld.";
 
+/* Message on enable analytics screen to notify that the module is disabled for the store */
+"It looks like you have analytics disabled." = "Het lijkt erop dat je analyses hebt uitgeschakeld.";
+
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "Het lijkt erop dat je een onjuist wachtwoord hebt ingevoerd. Wil je het nog eens proberen?";
 
@@ -2041,6 +2159,9 @@
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack is een gratis WordPress-plugin die aan je winkel wordt gekoppeld en tools voor de beste mobiele ervaring biedt, waaronder pushmeldingen en statistieken";
+
+/* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
+"Join from anywhere" = "Deelnemen vanaf elke locatie";
 
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "Doorgaan met bewerken";
@@ -2100,6 +2221,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "Legal (8,5 x 14 inch)";
 
+/* Title of a button linking to a list of legal documents like privacy policy,terms of service, etc */
+"Legal and more" = "Juridisch en meer";
+
 /* Title for the row to enter the package length on the Add New Custom Package screen in Shipping Label flow
    Title of the cell in Product Shipping Settings > Length */
 "Length" = "Lengte";
@@ -2133,8 +2257,14 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the product form bottom sheet action for editing linked products. */
 "Linked products" = "Gekoppelde producten";
 
+/* Description of the allowed emails field for coupons */
+"List of allowed billing emails to check against when an order is placed. Separate email addresses with commas. You can also use an asterisk (*) to match parts of an email. For example \"*@gmail.com\" would match all gmail addresses." = "Lijst met toegestane factuure-mails waarmee vergeleken moet worden bij het plaatsen van een bestelling. E-mailadressen scheiden met komma's. Je kunt ook een asterisk (*) gebruiken om delen van een e-mailadres overeen te laten komen. Met '*@gmail.com' worden bijvoorbeeld alle Gmail-adressen afgestemd.";
+
 /* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
 "List of images of the product" = "Lijst met afbeeldingen van het product";
+
+/* Accessibility label for loading indicator (spinner) at the bottom of a list */
+"Loading" = "Bezig met laden";
 
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "Bestelling wordt geladen";
@@ -2144,6 +2274,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Text of the loading banner in Order Detail when loaded for the first time */
 "Loading content" = "Content laden";
+
+/* Accessibility label for placeholder rows while product variations are loading */
+"Loading product variations" = "Productvariaties worden geladen";
+
+/* Accessibility label for placeholder rows while products are loading */
+"Loading products" = "Producten worden geladen";
 
 /* Button title.  Tapping takes the user to the login form.
    Log In button label. - View title during the log in process. */
@@ -2217,9 +2353,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "Voorraad beheren";
 
-/* shown in promotional screens during first launch */
-"Manage your Jetpack-powered site on the go — you've got WordPress in your pocket." = "Beheer je Jetpack-site waar je ook bent. Je draagt WordPress altijd met je mee.";
-
 /* Caption displayed in promotional screens shown during the login flow. */
 "Manage your store orders on the go " = "Beheer je winkelbestellingen onderweg ";
 
@@ -2257,8 +2390,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "Markeer deze bestelling als voltooid en informeer de klant";
 
-/* Title for the maximum spend row on coupon usage details screen with currency symbol within the brackets. Reads like: Maximum Spend ($) */
-"Maximum Spend (%1$@)" = "Maximale bestelbedrag (%1$@)";
+/* Title for the maximum spend row on coupon usage details screen with currency symbol within the brackets. Reads like: Max. Spend ($) */
+"Max. Spend (%1$@)" = "Max. bestelbedrag (%1$@)";
+
+/* The maximum limit of spending allowed for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
+"Maximum spend of %1$@" = "Maximaal bestelbedrag van %1$@";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "Media heeft geen geassocieerd bestand om te uploaden.";
@@ -2285,8 +2421,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Option to select the Microsft Outlook app when logging in with magic links */
 "Microsoft Outlook" = "Microsoft Outlook";
 
-/* Title for the minimum spend row on coupon usage details screen with currency symbol within the brackets. Reads like: Minimum Spend ($) */
-"Minimum Spend (%1$@)" = "Minimale bestelbedrag (%1$@)";
+/* Title for the minimum spend row on coupon usage details screen with currency symbol within the brackets. Reads like: Min. Spend ($) */
+"Min. Spend (%1$@)" = "Min. bestelbedrag (%1$@)";
+
+/* The minimum limit of spending required for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
+"Minimum spend of %1$@" = "Minimaal bestelbedrag van%1$@";
 
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
 "Minimum value %@, maximum value %@" = "Minimale waarde %1$@, maximale waarde %2$@";
@@ -2362,6 +2501,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Text preceding the Contact Us button in the survey completed screen */
 "Need some help?" = "Hulp nodig?";
 
+/* Message format on enable analytics screen for support. The %@ placeholder is a URL with more information. */
+"Need some help? %1$@" = "Hulp nodig? %1$@";
+
 /* The title for the net amount paid cell */
 "Net Payment" = "Netto betaling";
 
@@ -2386,9 +2528,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action navigate to the variation creation screen
    Next nav bar button title in Add Product Attribute Options screen - Next nav bar button title in Add Product Attribute screen - Title for the button to confirm the amount in the simple payments screen - Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
 "Next" = "Volgende";
-
-/* Value for the individual use only row or the exclude sale items row in Coupon Usage Details screen when the value is false */
-"No" = "Nee";
 
 /* Value for the allowed emails row in Coupon Usage Details screen when no restriction is set */
 "No Restrictions" = "Geen beperkingen";
@@ -2430,6 +2569,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The text on the placeholder overlay when no products match the filter on the Products tab */
 "No matching products found" = "Geen overeenkomende producten gevonden";
 
+/* Message on the detail view of the Orders tab before any order is selected */
+"No order selected" = "Geen bestelling geselecteerd";
+
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "Geen prijs ingesteld";
 
@@ -2468,7 +2610,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow - The description in product variations bulk update, of a value, that is missing from all variations - Value for fields in Coupon Usage Details screen when no value is set */
 "None" = "Geen";
 
-/* Title of dismiss action in the Jetpack benefits view. */
+/* Action title to dismiss enabling Analytics for a store
+   Title of dismiss action in the Jetpack benefits view. */
 "Not now" = "Niet nu";
 
 /* Instructions after a Magic Link was sent, but the email can't be found in their inbox. */
@@ -2549,6 +2692,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "Opent een lijst met beschikbare statussen.";
 
+/* Accessibility hint for selecting a variable product in the Add Product screen */
+"Opens list of product variations." = "Opent lijst met productvariaties.";
+
+/* Accessibility hint for selecting a product in a new order */
+"Opens product detail." = "Opent productgegevens.";
+
 /* Placeholder of cell presenting the title of the new attribute option. */
 "Option name" = "Naam van optie";
 
@@ -2574,9 +2723,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Add a note screen - title. Example: Order #15. Parameters: %1$@ - order number
    Order number title. Parameters: %1$@ - order number */
 "Order #%1$@" = "Bestelnr. %1$@";
-
-/* Cell title on the beta features screen to enable creating new orders */
-"Order Creation" = "Aanmaken van bestellingen";
 
 /* Order notes section title */
 "Order Notes" = "Berichten van bestelling";
@@ -2929,10 +3075,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of in-progress modal when requesting document with multiple shipping labels for printing */
 "Printing Labels" = "Labels worden afgedrukt";
 
-/* Opens the California Privacy Policy web page */
+/* Title of button that displays the California Privacy Notice */
 "Privacy Notice for California Users" = "Privacyverklaring voor gebruikers in Californië";
 
-/* Opens the Privacy Policy web page */
+/* Title of button that displays the App's privacy policy */
 "Privacy Policy" = "Privacybeleid";
 
 /* Navigates to Privacy Settings screen
@@ -3028,9 +3174,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Publish Settings section on Product Settings screen */
 "Publish Settings" = "Publicatie-instellingen";
 
-/* shown in promotional screens during first launch */
-"Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "Publiceren in het park. Bloggen in de bus. Reageren in het restaurant. WordPress gaat altijd met je mee.";
-
 /* Display label for the product's published status */
 "Published" = "Gepubliceerd";
 
@@ -3074,6 +3217,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Restriction type Quarantine for contents declared in the customs form for Shipping Label flow */
 "Quarantine" = "Quarantaine";
+
+/* Title of button that allows the user to rate the app in the App Store */
+"Rate us" = "Beoordeel ons";
 
 /* Subtitle for Contact WooCommerce Payments Support */
 "Reach our happiness engineers who can help answer payments related questions" = "Neem contact op met onze Happiness Engineers, die alle lastige vragen met betrekking tot betalingen kunnen beantwoorden";
@@ -3230,6 +3376,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "Je wachtwoord opnieuw instellen.";
 
+/* Restriction for customers with specified emails to use a coupon, reads like: Restricted to customers with emails: *@a8c.com, *@vip.com */
+"Restricted to customers with emails: %1$@" = "Beperkt tot klanten met e-mails: %1$@";
+
 /* Title for the Restriction Details row in Customs screen of Shipping Label flow */
 "Restriction Details" = "Gegevens beperking";
 
@@ -3246,7 +3395,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Retrieves a list of products that contain a given keyword." = "Haalt een lijst op met producten die een bepaald trefwoord bevatten.";
 
 /* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
-   Action button to retry syncing the draft order - Button to retry when there was a network error checking In-Person Payments requirements - Retry Action - Retry the last action */
+   Action button to retry syncing the draft order - Button to retry when there was a network error checking In-Person Payments requirements - Retry Action - Retry action for an error notice - Retry the last action */
 "Retry" = "Opnieuw";
 
 /* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages.
@@ -3319,7 +3468,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Sanitary \/ Phytosanitary Inspection" = "Sanitaire\/fytosanitaire inspectie";
 
 /* Action for saving a Product remotely
-   Add Product Category. Save button title in navbar. - Add Product Tags. Save button title in navbar. */
+   Add Product Category. Save button title in navbar. - Add Product Tags. Save button title in navbar. - Button title that save the price selection for bulk variation update */
 "Save" = "Opslaan";
 
 /* Button title to save a product as draft in Discard Changes Action Sheet */
@@ -3396,9 +3545,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Text on the button to see a saved receipt */
 "See Receipt" = "Bekijk kwitantie";
-
-/* Shown in the prologue carousel (promotional screens) during first launch. */
-"See comments and notifications in real time." = "Lees opmerkingen en ontvang meldingen in realtime.";
 
 /* Link title to see all paper size options */
 "See layout and paper sizes options" = "Zie opties voor lay-out en papierformaat";
@@ -3488,6 +3634,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "Deel informatie met onze analysetool over hoe je services gebruikt terwijl je bent ingelogd op je WordPress.com-account.";
+
+/* Title for button allowing users to share information about the app with friends, such as via Messages */
+"Share with Friends" = "Deel met vrienden";
 
 /* Shipping Label Address Validation navigation title
    Shipping Label Suggested Address navigation title - Title of origin address in shipping label details - Title of the cell Ship from inside Create Shipping Label form */
@@ -3703,6 +3852,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the card reader service experiences an unexpected internal service error. */
 "Sorry, this payment couldn’t be processed" = "Deze betaling kon niet worden verwerkt";
 
+/* Error message shown when a refund could not be canceled (likely because it had already completed) */
+"Sorry, this refund could not be canceled" = "Deze restitutie kon helaas niet worden geannuleerd";
+
 /* No comment provided by engineer. */
 "Sorry, usernames can only contain lowercase letters (a-z) and numbers." = "Sorry, gebruikersnamen kunnen alleen kleine letters (a-z) en nummers bevatten.";
 
@@ -3856,9 +4008,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "Een foto maken";
 
-/* Title of the banner notice in the Simple Payments feature */
-"Take payments from your device!" = "Ontvang betalingen vanaf je apparaat!";
-
 /* Accessibility hint for the More button on formatting toolbar. */
 "Tap for more formatting options" = "Tik voor meer formatteringsopties";
 
@@ -3933,9 +4082,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Tax label for the tax detail row. - Title on the refunds screen that lists the fees tax cost - Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
 "Tax" = "Belasting";
 
-/* Tax percentage to be applied to the simple payments order. %1$@%% is a placeholder for the tax rate as a percentage */
-"Tax (%1$@%%)" = "Btw (%1$@%%)";
-
 /* Section header title for product tax settings */
 "Tax Settings" = "Belastinginstellingen";
 
@@ -3962,20 +4108,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Disclaimer in the simple payments summary screen about taxes. */
 "Taxes are automatically calculated based on your store address." = "Belastingen worden automatisch berekend op basis van je winkeladres.";
 
-/* Information about taxes and the order total when creating a new order */
-"Taxes will be automatically calculated based on your store settings." = "Btw wordt automatisch berekend op basis van je winkelinstellingen.";
-
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "Vertel ons meer over %1$@...";
 
-/* Opens the Terms of Service web page */
+/* Title of button that displays the App's terms of service */
 "Terms of Service" = "Servicevoorwaarden";
 
 /* Cell description on beta features screen to enable accepting in-person payments for stores in Canada */
 "Test out In-Person Payments in Canada" = "Test fysieke betalingen in Canada";
-
-/* Cell description on the beta features screen to enable creating new orders */
-"Test out creating new manual orders as we get ready to launch" = "Probeer eens wat nieuwe handmatige bestellingen aan te maken terwijl wij ons voorbereiden op het uitbrengen van de versie";
 
 /* Cell description on beta features screen to enable coupon management */
 "Test out managing coupons as we get ready to launch" = "Probeer het beheren van coupons uit terwijl we ons voorbereiden op het uitbrengen van de versie";
@@ -4110,6 +4250,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "De prijs van dit product. Bewerkbaar.";
 
+/* Message in the footer of bulk price setting screen (singular). */
+"The price will be updated for %d variation." = "De prijs wordt bijgewerkt voor %d variatie.";
+
+/* Message in the footer of bulk price setting screen (plurar). */
+"The price will be updated for %d variations." = "De prijs wordt bijgewerkt voor %d variaties.";
+
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
 "The reader has a critically low battery. Please charge the reader or try a different reader." = "De batterij van de reader is bijna leeg. Laad de reader op of probeer een andere reader.";
 
@@ -4212,6 +4358,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "Er is een fout opgetreden tijdens de terugbetaling";
 
+/* Notice displayed when searching the list of products fails */
+"There was an error searching products" = "Er is een fout opgetreden bij het zoeken naar producten";
+
+/* Notice displayed when syncing the list of product variations fails */
+"There was an error syncing product variations" = "Er is een fout opgetreden bij de synchronisatie van productvariaties";
+
+/* Notice displayed when syncing the list of products fails */
+"There was an error syncing products" = "Er is een fout opgetreden bij de synchronisatie van producten";
+
 /* Notice text after failing to update a simple payments order.
    Notice text after failing to update the order successfully */
 "There was an error updating the order" = "Er is een fout opgetreden bij het bijwerken van de bestelling";
@@ -4222,8 +4377,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text when there is an unknown error while trying to collect payments */
 "There was an error while trying to collect the payment." = "Er is een fout opgetreden bij het innen van de betaling.";
 
-/* Navigates to screen with third party software licenses
-   Software Licenses (information page title) */
+/* Software Licenses (information page title)
+   Title of button that displays information about the third party software libraries used in the creation of this app */
 "Third Party Licenses" = "Licenties van derden";
 
 /* Tab selector title that shows the statistics for this month
@@ -4392,8 +4547,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Vertrouw";
 
-/* Button to retry a software update. Presented to users when updating the card reader software fails
-   Button to try again after connecting to a specific reader fails due to a critically low battery. - Button to try again. Presented to users after a failure occurs - Try Again button on the error alert when fetching system status report fails */
+/* Action displayed in the error prompt when loading total discounted amount in Coupon Details screen fails
+   Button to retry a software update. Presented to users when updating the card reader software fails - Button to try again after connecting to a specific reader fails due to a critically low battery. - Button to try again. Presented to users after a failure occurs - Try Again button on the error alert when fetching system status report fails */
 "Try Again" = "Probeer opnieuw";
 
 /* Message from the in-person payment card reader prompting user to retry a payment using a different card */
@@ -4429,6 +4584,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Settings > Manage Card Reader > Connect > Hint to enable Bluetooth */
 "Turn mobile device Bluetooth on" = "Zet de Bluetooth aan op je mobiele apparaat";
+
+/* Description for the individual use only row in coupon usage details screen. */
+"Turn this on if the coupon cannot be used in conjunction with other coupons." = "Schakel deze optie in als de coupon samen met andere coupons mag worden gebruikt.";
+
+/* Description for the exclude sale items row in coupon usage details screen. */
+"Turn this on if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale." = "Schakel deze optie in als de coupon niet van toepassing is op afgeprijsde artikelen. Artikel-specifieke coupons werken alleen als het artikel niet is afgeprijsd. Winkelwagen-specifieke coupons werken alleen wanneer er geen afgeprijsde artikelen in de winkelwagen staan.";
+
+/* Title of a button linking to the app's Twitter profile */
+"Twitter" = "Twitter";
 
 /* Placeholder for the Content Details row in Customs screen of Shipping Label flow */
 "Type of contents" = "Type inhoud";
@@ -4539,6 +4703,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* An error message shown when failing to retrieve information about user roles, before letting the user in to manage the store. */
 "Unable to retrieve user roles." = "Kon gebruikersrollen niet ophalen.";
 
+/* Unable to retrieve variations for bulk update screen */
+"Unable to retrieve variations" = "Kan variaties niet ophalen";
+
 /* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
 "Unable to save changes to the payment method" = "Kan wijzigingen aan de betalingsmethode niet opslaan";
 
@@ -4639,6 +4806,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Settings > Manage Card Reader > Connected Reader > A button to update the reader software */
 "Update Reader Software" = "Lezersoftware bijwerken";
 
+/* Title that appears on top of the of bulk price setting screen */
+"Update Regular Price" = "Reguliere prijs bijwerken";
+
 /* Subtitle of the product form bottom sheet action for editing inventory settings. */
 "Update product inventory and SKU" = "Productvoorraad en SKU bijwerken";
 
@@ -4684,17 +4854,11 @@ This part is the link to the website, and forms part of a longer sentence which 
    Navigation bar title for editing linked products for upsell products */
 "Upsells" = "Upsells";
 
-/* Navigation title for usage details screen */
-"Usage Details" = "Gebruiksgegevens";
-
 /* Title for the usage limit per coupon row in coupon usage details screen. */
 "Usage Limit Per Coupon" = "Gebruikslimiet per coupon";
 
 /* Title for the usage limit per user row in coupon usage details screen. */
 "Usage Limit Per User" = "Gebruikslimiet per gebruiker";
-
-/* Title for the usage limits section on coupon usage details screen */
-"Usage Limits" = "Gebruikslimieten";
 
 /* Title for the usage restrictions section on coupon usage details screen */
 "Usage Restrictions" = "Gebruiksbeperkingen";
@@ -4757,9 +4921,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network." = "Controleer of je printer en apparaat met **hetzelfde wifinetwerk** zijn verbonden.\n\nControleer de documentatie van je printer voor informatie over hoe je deze verbindt met je wifinetwerk.";
-
-/* Displays the version of the App */
-"Version %@" = "Versie %@";
 
 /* Displays the connected reader software version */
 "Version: %1$@" = "Versie: %1$@";
@@ -4837,20 +4998,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* View title during the Google auth process. */
 "Waiting..." = "Wachten …";
 
-/* shown in promotional screens during first launch */
-"Watch readers from around the world read and interact with your site — in real time." = "Kijk in realtime hoe lezers overal ter wereld je site lezen en bekijken.";
-
-/* Shown in the prologue carousel (promotional screens) during first launch. */
-"Watch your audience grow with in-depth analytics." = "Zie hoe je publiek groeit met uitgebreide statistieken.";
-
 /* Error message when the merchant's payment account has been rejected */
 "We are sorry but we can't support In-Person Payments for this store." = "We kunnen helaas fysieke betalingen niet voor deze winkel ondersteunen.";
 
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "We zijn bezig om het eenvoudiger voor je te maken om extra opties voor je product vanaf je apparaat te bekijken! Voor nu kun je de extra opties voor je bestellingen weergeven. Je kunt deze extra opties maken en bewerken vanaf je webdashboard.";
-
-/* Content of the banner notice in the Simple Payments view */
-"We are working on making it easier for you to take payments from your device! For now, tap on the \"+\" button and you’ll be able to create an order with the amount you want to collect" = "We zijn bezig om het eenvoudiger voor je te maken om betalingen te ontvangen voor je product vanaf je apparaat! Vooralsnog tik je op de '+'-knop om een bestelling aan te maken met het bedrag dat je wilt ontvangen";
 
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "We kunnen de analyses van je winkel niet weergeven";
@@ -4879,6 +5031,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country */
 "We don’t support In-Person Payments with Stripe in your country" = "We ondersteunen fysieke betalingen met Stripe niet in je land";
+
+/* Message displayed in the error prompt when loading total discounted amount in Coupon Details screen fails */
+"We encountered a problem loading analytics" = "Er heeft zich een probleem voorgedaan bij het laden van de analyses";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "We hebben het adres dat is ingevoerd een beetje aangepast. Indien het juist is, gebruik dan het voorgestelde adres om zeker te zijn van een nauwkeurige levering.";
@@ -4926,8 +5081,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Generic error message when In-Person Payments is unavailable */
 "We're sorry, we were unable to verify In-Person Payments for this store." = "We kunnen fysieke betalingen helaas niet verifiëren voor deze winkel.";
 
+/* Content of the banner notice in the Orders tab */
+"We've been working on making it possible to create orders and take payments from your device! You can try these features out by tapping on the \"+\" icon" = "We hebben hard gewerkt zodat je bestellingen kunt aanmaken en betalingen kunt aannemen vanaf je apparaat! Je kunt deze functies uitproberen door op de '+'-knop te klikken";
+
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "We hebben je een aanmeldlink toegestuurd om je nieuwe WordPress.com-account aan te maken. Controleer je e-mail op dit apparaat en tik op de link in de e-mail die je van WordPress.com ontvangt.";
+
+/* Title of a button linking to the app's website */
+"Website" = "Website";
 
 /* Title of the cell in Product Shipping Settings > Weight */
 "Weight" = "Gewicht";
@@ -4940,9 +5101,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "Gewicht: %1$@%2$@";
-
-/* Shown in the prologue carousel (promotional screens) during first launch. */
-"Welcome to the world’s most popular website builder." = "Welkom bij de meest populaire websitebouwer ter wereld.";
 
 /* Content of the feedback banner on the coupon list screen */
 "We’ve been working on making it possible to view and edit coupons from your device!" = "We hebben hard gewerkt zodat jij coupons vanuit je apparaat kunt bekijken en bewerken!";
@@ -4982,9 +5140,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigates to WisePad 3 Card Reader manual */
 "WisePad 3 card reader manual" = "Handleiding WisePad3-kaartlezer";
 
-/* Shown in the prologue carousel (promotional screens) during first launch. */
-"With this powerful editor you can post on the go." = "Met deze krachtige editor kan je onderweg berichten plaatsen.";
-
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";
 
@@ -4993,6 +5148,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Create Shipping Label form -> WooCommerce Discount label */
 "WooCommerce Discount" = "Kortingen binnen WooCommerce";
+
+/* Subject line for when sharing the app with others through mail or any other activity types that support contains a subject field. */
+"WooCommerce Mobile App - Run your store from anywhere" = "WooCommerce mobiele app: run je winkel waar je ook bent";
 
 /* Navigation title of the webview which used by the merchant to update their store address */
 "WooCommerce Settings" = "WooCommerce instellingen";
@@ -5010,14 +5168,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %@ uses WordPress %@. We recommend to update to the latest version, or at least %@" = "WordPress versie te oud. De site op %1$@ gebruikt WordPress %2$@. We raden aan bij te werken naar de nieuwste versie of minimaal %3$@";
 
+/* Title of a button linking to the Automattic Work With Us web page */
+"Work with us" = "Met ons samenwerken";
+
 /* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
 "Wrong account?" = "Verkeerde account?";
 
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "Yahoo Mail";
-
-/* Value for the individual use only row or the exclude sale items row in Coupon Usage Details screen when the value is true */
-"Yes" = "Ja";
 
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "Ja, wijzigen";
@@ -5053,6 +5211,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "Je kan dat e-mailadres niet gebruiken om je aan te melden. We hebben problemen met het blokkeren van sommige e-mailadressen. Probeer een andere e-mail provider.";
 
+/* The description on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
+"You currently have Coupons disabled for this store. Enable coupons to get started." = "Je hebt momenteel coupons voor deze winkel uitgeschakeld. Schakel coupons in om te beginnen.";
+
 /* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
 "You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "Je hebt ten minste openstaande verplichting op je account. Rond de verplichting af om fysieke betalingen te blijven ontvangen";
 
@@ -5067,9 +5228,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "De software van je kaartlezer moet worden bijgewerkt om betalingen te innen. Door te annuleren wordt de verbinding van je lezer geblokkeerd.";
-
-/* shown in promotional screens during first launch */
-"Your notifications travel with you — see comments and likes as they happen." = "Je meldingen reizen met je mee. Bekijk reacties en likes wanneer ze binnenkomen.";
 
 /* Title for the error screen when the merchant's In-Person Payments account is restricted because there are pending requirements */
 "Your payments account has pending requirements" = "Het account voor je betalingen heeft verplichtingen open staan";
@@ -5126,9 +5284,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} Inloggen met Google.";
-
-/* About View's Footer Text. The variable is the current year */
-"© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd." = "© %@ WooCommerce, Inc. en WooCommerce Ireland Ltd.";
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 Bestelling voltooid";

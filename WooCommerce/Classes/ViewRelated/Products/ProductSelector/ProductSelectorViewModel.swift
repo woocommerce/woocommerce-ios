@@ -3,9 +3,9 @@ import protocol Storage.StorageManagerType
 import Combine
 import Foundation
 
-/// View model for `AddProductToOrder`.
+/// View model for `ProductSelector`.
 ///
-final class AddProductToOrderViewModel: ObservableObject {
+final class ProductSelectorViewModel: ObservableObject {
     private let siteID: Int64
 
     /// Storage to fetch product list
@@ -118,11 +118,11 @@ final class AddProductToOrderViewModel: ObservableObject {
 
     /// Get the view model for a list of product variations to add to the order
     ///
-    func getVariationsViewModel(for productID: Int64) -> AddProductVariationToOrderViewModel? {
-        guard let variableProduct = products.first(where: { $0.productID == productID }) else {
+    func getVariationsViewModel(for productID: Int64) -> ProductVariationSelectorViewModel? {
+        guard let variableProduct = products.first(where: { $0.productID == productID }), variableProduct.variations.isNotEmpty else {
             return nil
         }
-        return AddProductVariationToOrderViewModel(siteID: siteID, product: variableProduct, onVariationSelected: onVariationSelected)
+        return ProductVariationSelectorViewModel(siteID: siteID, product: variableProduct, onVariationSelected: onVariationSelected)
     }
 
     /// Clears the current search term to display the full product list.
@@ -133,7 +133,7 @@ final class AddProductToOrderViewModel: ObservableObject {
 }
 
 // MARK: - SyncingCoordinatorDelegate & Sync Methods
-extension AddProductToOrderViewModel: SyncingCoordinatorDelegate {
+extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
     /// Sync products from remote.
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)?) {
@@ -220,7 +220,7 @@ extension AddProductToOrderViewModel: SyncingCoordinatorDelegate {
 }
 
 // MARK: - Finite State Machine Management
-private extension AddProductToOrderViewModel {
+private extension ProductSelectorViewModel {
     /// Update state for sync from remote.
     ///
     func transitionToSyncingState() {
@@ -240,7 +240,7 @@ private extension AddProductToOrderViewModel {
 }
 
 // MARK: - Configuration
-private extension AddProductToOrderViewModel {
+private extension ProductSelectorViewModel {
     /// Performs initial fetch from storage and updates sync status accordingly.
     ///
     func configureProductsResultsController() {
@@ -302,7 +302,7 @@ private extension AddProductToOrderViewModel {
 }
 
 // MARK: - Utils
-extension AddProductToOrderViewModel {
+extension ProductSelectorViewModel {
     /// Represents possible statuses for syncing products
     ///
     enum SyncStatus {
@@ -346,7 +346,7 @@ extension AddProductToOrderViewModel {
     }
 }
 
-private extension AddProductToOrderViewModel {
+private extension ProductSelectorViewModel {
     enum Localization {
         static let syncErrorMessage = NSLocalizedString("There was an error syncing products",
                                                         comment: "Notice displayed when syncing the list of products fails")

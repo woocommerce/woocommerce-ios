@@ -138,6 +138,31 @@ final class OrderDetailsViewModel {
 
     private var receipt: CardPresentReceiptParameters? = nil
 
+    /// Defines if the actions menu item should be shown.
+    /// Currently the only action should be to share a payment link.
+    ///
+    var shouldShowActionsMenuItem: Bool {
+        needsPayment && paymentLink != nil
+    }
+
+    /// This check is temporary, we are working on knowing if an order needs payment directly from the API.
+    /// Conditions copied from:
+    /// https://github.com/woocommerce/woocommerce/blob/3611d4643791bad87a0d3e6e73e031bb80447417/plugins/woocommerce/includes/class-wc-order.php#L1520-L1523
+    ///
+    private var needsPayment: Bool {
+        guard let total = Double(order.total) else {
+            return false
+        }
+        return total > .zero && (order.status == .pending || order.status == .failed)
+    }
+
+    /// Returns the order payment link.
+    /// Should exists on `6.4+` stores.
+    ///
+    var paymentLink: URL? {
+        return order.paymentURL
+    }
+
     /// Helpers
     ///
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
@@ -264,11 +289,12 @@ extension OrderDetailsViewModel {
             let billingInformationViewController = BillingInformationViewController(order: order, editingEnabled: true)
             viewController.navigationController?.pushViewController(billingInformationViewController, animated: true)
         case .seeReceipt:
-            ServiceLocator.analytics.track(.receiptViewTapped)
+            let countryCode = configurationLoader.configuration.countryCode
+            ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode))
             guard let receipt = receipt else {
                 return
             }
-            let viewModel = ReceiptViewModel(order: order, receipt: receipt)
+            let viewModel = ReceiptViewModel(order: order, receipt: receipt, countryCode: countryCode)
             let receiptViewController = ReceiptViewController(viewModel: viewModel)
             viewController.navigationController?.pushViewController(receiptViewController, animated: true)
         case .refund:
@@ -512,7 +538,10 @@ extension OrderDetailsViewModel {
                                                             order: order,
                                                             formattedAmount: formattedTotal,
                                                             paymentGatewayAccount: paymentGateway,
-                                                            rootViewController: rootViewController)
+                                                            rootViewController: rootViewController,
+                                                            alerts: OrderDetailsPaymentAlerts(transactionType: .collectPayment,
+                                                                                              presentingController: rootViewController),
+                                                            configuration: configurationLoader.configuration)
         collectPaymentsUseCase?.collectPayment(backButtonTitle: backButtonTitle, onCollect: onCollect, onCompleted: { [weak self] in
             // Make sure we free all the resources
             self?.collectPaymentsUseCase = nil

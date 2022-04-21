@@ -21,14 +21,10 @@ public final class OrderStatsRemoteV4: Remote {
                                completion: @escaping (Result<OrderStatsV4, Error>) -> Void) {
         let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
 
-        // Workaround for #1183: random number between 31-100 for `num_page` param.
-        // Replace `randomQuantity` with `quantity` in `num_page` param when API issue is fixed.
-        let randomQuantity = arc4random_uniform(70) + 31
-
         let parameters = [ParameterKeys.interval: unit.rawValue,
                           ParameterKeys.after: dateFormatter.string(from: earliestDateToInclude),
                           ParameterKeys.before: dateFormatter.string(from: latestDateToInclude),
-                          ParameterKeys.quantity: String(randomQuantity)]
+                          ParameterKeys.quantity: String(quantity)]
 
         let request = JetpackRequest(wooApiVersion: .wcAnalytics, method: .get, siteID: siteID, path: Constants.orderStatsPath, parameters: parameters)
         let mapper = OrderStatsV4Mapper(siteID: siteID, granularity: unit)

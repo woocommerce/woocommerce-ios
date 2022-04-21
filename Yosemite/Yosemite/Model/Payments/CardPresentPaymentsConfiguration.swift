@@ -59,26 +59,14 @@ public struct CardPresentPaymentsConfiguration {
         paymentMethods.isEmpty == false && currencies.isEmpty == false && paymentGateways.isEmpty == false && supportedReaders.isEmpty == false
     }
 
-    /// Given a two character country code and the active plugin, returns a URL
-    /// where the merchant can purchase a card reader
+    /// Given a two character country code, returns a URL where the merchant can purchase a card reader.
     ///
-    public func purchaseCardReaderUrl(for plugin: CardPresentPaymentsPlugins) -> URL {
-        if case .stripe = plugin {
-            return Constants.stripeReaderPurchaseUrl
-        }
-
-        // TODO when https://woocommerce.com/products/hardware/US and
-        // https://woocommerce.com/products/hardware/CA are live, return the
-        // following instead
-        // URL(string: Constants.purchaseReaderForCountryUrlBase + self.countryCode) ?? Constants.fallbackInPersonPaymentsUrl
-
-        return Constants.purchaseM2ReaderUrl
+    public func purchaseCardReaderUrl() -> URL {
+        URL(string: Constants.purchaseReaderForCountryUrlBase + countryCode) ?? Constants.fallbackInPersonPaymentsUrl
     }
 }
 
 private enum Constants {
-    static let purchaseM2ReaderUrl = URL(string: "https://woocommerce.com/products/m2-card-reader/")!
     static let fallbackInPersonPaymentsUrl = URL(string: "https://woocommerce.com/in-person-payments/")!
     static let purchaseReaderForCountryUrlBase = "https://woocommerce.com/products/hardware/"
-    static let stripeReaderPurchaseUrl = URL(string: "https://stripe.com/terminal/stripe-reader")!
 }

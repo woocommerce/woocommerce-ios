@@ -232,6 +232,102 @@ class OrderNoteStoreTests: XCTestCase {
         orderNoteStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    /// Verifies that `OrderNoteAction.addOrderNote` returns the expected OrderNote.
+    ///
+    func test_add_order_note_returns_expected_note() {
+        // Given
+        let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/notes", filename: "new-order-note")
+
+        // When
+        let (orderNote, error): (Networking.OrderNote?, Error?) = waitFor { promise in
+            let action = OrderNoteAction.addOrderNote(siteID: self.sampleSiteID,
+                                                      orderID: self.sampleOrderID,
+                                                      isCustomerNote: true,
+                                                      note: "This order would be so much better with ketchup.") { (orderNote, error) in
+                promise((orderNote, error))
+            }
+            orderNoteStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertNotNil(orderNote)
+        XCTAssertEqual(orderNote, self.sampleNewNote())
+        XCTAssertNil(error)
+    }
+
+    /// Verifies that `OrderNoteAction.addOrderNote` effectively persists the new order note.
+    ///
+    func test_add_order_note_effectively_persists_new_order_note() {
+        // Given
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder(), in: viewStorage)
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/notes", filename: "new-order-note")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderNote.self), 0)
+
+        // When
+        let (orderNote, error): (Networking.OrderNote?, Error?) = waitFor { promise in
+            let action = OrderNoteAction.addOrderNote(siteID: self.sampleSiteID,
+                                                      orderID: self.sampleOrderID,
+                                                      isCustomerNote: true,
+                                                      note: "") { (orderNote, error) in
+                promise((orderNote, error))
+            }
+            orderNoteStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertNotNil(orderNote)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderNote.self), 1)
+        XCTAssertNil(error)
+    }
+
+    /// Verifies that `OrderNoteAction.addOrderNote` returns an error whenever there is an error response from the backend.
+    ///
+    func test_add_order_note_returns_error_upon_response_error() {
+        // Given
+        let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/notes", filename: "generic_error")
+
+        // When
+        let (orderNote, error): (Networking.OrderNote?, Error?) = waitFor { promise in
+            let action = OrderNoteAction.addOrderNote(siteID: self.sampleSiteID,
+                                                      orderID: self.sampleOrderID,
+                                                      isCustomerNote: true,
+                                                      note: "") { (orderNote, error) in
+                promise((orderNote, error))
+            }
+            orderNoteStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertNotNil(error)
+        XCTAssertNil(orderNote)
+    }
+
+    /// Verifies that `OrderNoteAction.addOrderNote` returns an error whenever there is no backend response.
+    ///
+    func test_add_order_note_returns_error_upon_empty_response() {
+        // Given
+        let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let (orderNote, error): (Networking.OrderNote?, Error?) = waitFor { promise in
+            let action = OrderNoteAction.addOrderNote(siteID: self.sampleSiteID,
+                                                      orderID: self.sampleOrderID,
+                                                      isCustomerNote: true,
+                                                      note: "") { (orderNote, error) in
+                promise((orderNote, error))
+            }
+            orderNoteStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertNotNil(error)
+        XCTAssertNil(orderNote)
+    }
 }
 
 // MARK: - Private Methods
@@ -267,6 +363,14 @@ private extension OrderNoteStoreTests {
                          note: "Order status changed from Completed to Processing.",
                          isCustomerNote: false,
                          author: sampleSystemAuthor)
+    }
+
+    func sampleNewNote() -> Networking.OrderNote {
+        return OrderNote(noteID: 2235,
+                         dateCreated: date(with: "2018-06-22T15:36:20"),
+                         note: "This order would be so much better with ketchup.",
+                         isCustomerNote: true,
+                         author: sampleAdminAuthor)
     }
 
     func sampleOrder() -> Networking.Order {

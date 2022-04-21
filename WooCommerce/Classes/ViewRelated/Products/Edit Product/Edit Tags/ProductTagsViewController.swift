@@ -130,6 +130,7 @@ private extension ProductTagsViewController {
         textView.autocorrectionType = .yes
         textView.autocapitalizationType = .none
         textView.font = .body
+        textView.adjustsFontForContentSizeCategory = true
         textView.textColor = .text
         textView.isScrollEnabled = false
         // Padding already provided by readable margins

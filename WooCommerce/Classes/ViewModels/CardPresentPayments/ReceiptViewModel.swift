@@ -4,15 +4,18 @@ import Yosemite
 final class ReceiptViewModel {
     private let order: Order
     private let receipt: CardPresentReceiptParameters
+    private let countryCode: String
 
 
     /// Initializer
     /// - Parameters:
-    ///   - order: The order associated with the receipt
+    ///   - order: the order associated with the receipt
     ///   - receipt: the receipt metadata
-    init(order: Order, receipt: CardPresentReceiptParameters) {
+    ///   - countryCode: the country code of the store
+    init(order: Order, receipt: CardPresentReceiptParameters, countryCode: String) {
         self.order = order
         self.receipt = receipt
+        self.countryCode = countryCode
     }
 
 
@@ -29,6 +32,6 @@ final class ReceiptViewModel {
 
     /// Prints the receipt
     func printReceipt() {
-        ReceiptActionCoordinator.printReceipt(for: order, params: receipt)
+        ReceiptActionCoordinator.printReceipt(for: order, params: receipt, countryCode: countryCode)
     }
 }

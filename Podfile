@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'cocoapods-catalyst-support'
 
 # For security reasons, please always keep the wordpress-mobile source first and the CDN second.
@@ -34,8 +36,8 @@ target 'WooCommerce' do
   # ====================
   #
 
-  #pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => 'add/build-configuration'
-  pod 'Automattic-Tracks-iOS', '~> 0.9.1'
+  # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => ''
+  pod 'Automattic-Tracks-iOS', '~> 0.11.1'
 
   pod 'Gridicons', '~> 1.2.0'
 
@@ -47,7 +49,7 @@ target 'WooCommerce' do
 
   pod 'WordPressShared', '~> 1.15'
 
-  pod 'WordPressUI', '~> 1.12.5-beta.1'
+  pod 'WordPressUI', '~> 1.12.5'
   # pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => ''
 
   aztec
@@ -64,7 +66,7 @@ target 'WooCommerce' do
   pod 'XLPagerTabStrip', '~> 9.0'
   pod 'Charts', '~> 3.6.0'
   pod 'ZendeskSupportSDK', '~> 5.0'
-  pod 'StripeTerminal', '~> 2.6'
+  pod 'StripeTerminal', '~> 2.7'
   pod 'Kingfisher', '~> 6.0.0'
   pod 'Wormholy', '~> 1.6.5', configurations: ['Debug']
 
@@ -81,12 +83,12 @@ end
 #
 def yosemite_pods
   pod 'Alamofire', '~> 4.8'
-  pod 'StripeTerminal', '~> 2.6'
+  pod 'StripeTerminal', '~> 2.7'
   pod 'CocoaLumberjack', '~> 3.5'
   pod 'CocoaLumberjack/Swift', '~> 3.5'
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  pod 'WordPressKit', '~> 4.46.0'
+  pod 'WordPressKit', '~> 4.49.0'
   # pod 'WordPressKit', :git => 'https://github.com/wordpress-mobile/WordPressKit-iOS.git', :branch => ''
 
   aztec
@@ -169,7 +171,7 @@ end
 # =================
 #
 def hardware_pods
-  pod 'StripeTerminal', '~> 2.6'
+  pod 'StripeTerminal', '~> 2.7'
   pod 'CocoaLumberjack', '~> 3.5'
   pod 'CocoaLumberjack/Swift', '~> 3.5'
 end
@@ -202,7 +204,7 @@ end
 # ==================
 #
 def experiments_pods
-  pod 'Automattic-Tracks-iOS', '~> 0.9.1'
+  pod 'Automattic-Tracks-iOS', '~> 0.11.1'
   pod 'CocoaLumberjack', '~> 3.5'
   pod 'CocoaLumberjack/Swift', '~> 3.5'
 end
@@ -248,19 +250,18 @@ pre_install do |installer|
     end
     static << pod
     def pod.static_framework?
-    true
+      true
+    end
+  end
+
+  puts "Installing #{static.count} pods as static frameworks"
+  puts "Installing #{dynamic.count} pods as dynamic frameworks"
+
+  # Force CocoaLumberjack Swift version
+  installer.analysis_result.specifications.each do |s|
+    s.swift_version = '5.0' if s.name == 'CocoaLumberjack'
   end
 end
-
-puts "Installing #{static.count} pods as static frameworks"
-puts "Installing #{dynamic.count} pods as dynamic frameworks"
-
-# Force CocoaLumberjack Swift version
-installer.analysis_result.specifications.each do |s|
-  s.swift_version = '5.0' if s.name == 'CocoaLumberjack'
-end
-end
-
 
 # Configure your macCatalyst dependencies
 catalyst_configuration do
@@ -273,9 +274,7 @@ catalyst_configuration do
   # macos '<pod_name>' # This dependency will only be available for macOS
 end
 
-
 post_install do |installer|
-
   installer.configure_catalyst
   # Workaround: Drop 32 Bit Architectures
   # =====================================
@@ -290,7 +289,7 @@ post_install do |installer|
   #
   installer.pods_project.targets.each do |target|
     # Fix bundle targets' 'Signing Certificate' to 'Sign to Run Locally'
-    if target.respond_to?(:product_type) and target.product_type == "com.apple.product-type.bundle"
+    if target.respond_to?(:product_type) && (target.product_type == 'com.apple.product-type.bundle')
       target.build_configurations.each do |config|
         config.build_settings['CODE_SIGN_IDENTITY[sdk=macosx*]'] = '-'
       end
@@ -306,9 +305,11 @@ post_install do |installer|
   # Flag Alpha builds for Tracks
   # ============================
   installer.pods_project.targets.each do |target|
-    next unless target.name == "Automattic-Tracks-iOS"
+    next unless target.name == 'Automattic-Tracks-iOS'
+
     target.build_configurations.each do |config|
-      next unless config.name == "Release-Alpha"
+      next unless config.name == 'Release-Alpha'
+
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', 'ALPHA=1']
     end
   end

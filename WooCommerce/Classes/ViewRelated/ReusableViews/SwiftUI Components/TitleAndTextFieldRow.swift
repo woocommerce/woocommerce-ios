@@ -9,34 +9,46 @@ struct TitleAndTextFieldRow: View {
     private let keyboardType: UIKeyboardType
     private let onEditingChanged: ((Bool) -> Void)?
     private let editable: Bool
+    private let fieldAlignment: TextAlignment
 
     @Binding private var text: String
 
+    /// Static width for title label. Used to align values between different rows.
+    /// If `nil` - title will have intrinsic size.
+    ///
+    @Binding private var titleWidth: CGFloat?
+
     init(title: String,
+         titleWidth: Binding<CGFloat?> = .constant(nil),
          placeholder: String,
          text: Binding<String>,
          symbol: String? = nil,
          editable: Bool = true,
+         fieldAlignment: TextAlignment = .trailing,
          keyboardType: UIKeyboardType = .default,
          onEditingChanged: ((Bool) -> Void)? = nil) {
         self.title = title
+        self._titleWidth = titleWidth
         self.placeholder = placeholder
         self._text = text
         self.symbol = symbol
         self.editable = editable
+        self.fieldAlignment = fieldAlignment
         self.keyboardType = keyboardType
         self.onEditingChanged = onEditingChanged
     }
 
     var body: some View {
-        AdaptiveStack(horizontalAlignment: .leading) {
+        AdaptiveStack(horizontalAlignment: .leading, spacing: Constants.spacing) {
             Text(title)
                 .bodyStyle()
                 .lineLimit(1)
                 .fixedSize()
+                .modifier(MaxWidthModifier())
+                .frame(width: titleWidth, alignment: .leading)
             HStack {
                 TextField(placeholder, text: $text, onEditingChanged: onEditingChanged ?? { _ in })
-                    .multilineTextAlignment(.trailing)
+                    .multilineTextAlignment(fieldAlignment)
                     .font(.body)
                     .keyboardType(keyboardType)
                     .disabled(!editable)
@@ -55,6 +67,7 @@ private extension TitleAndTextFieldRow {
     enum Constants {
         static let height: CGFloat = 44
         static let padding: CGFloat = 16
+        static let spacing: CGFloat = 20
     }
 }
 
@@ -101,5 +114,14 @@ struct TitleAndTextFieldRow_Previews: PreviewProvider {
             .environment(\.sizeCategory, .accessibilityExtraLarge)
             .previewLayout(.fixed(width: 375, height: 150))
             .previewDisplayName("Dynamic Type: Large Font Size with symbol")
+
+        TitleAndTextFieldRow(title: "Total package weight",
+                             placeholder: "Value",
+                             text: .constant(""),
+                             symbol: "oz",
+                             fieldAlignment: .leading,
+                             keyboardType: .default)
+            .previewLayout(.fixed(width: 375, height: 150))
+            .previewDisplayName("With leading alignment")
     }
 }

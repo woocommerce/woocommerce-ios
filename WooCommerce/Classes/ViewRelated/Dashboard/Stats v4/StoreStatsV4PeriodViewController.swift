@@ -63,7 +63,12 @@ final class StoreStatsV4PeriodViewController: UIViewController {
         return ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
     }
 
-    private var orderStatsIntervals: [OrderStatsV4Interval] = []
+    private var orderStatsIntervals: [OrderStatsV4Interval] = [] {
+        didSet {
+            orderStatsIntervalLabels = createOrderStatsIntervalLabels(orderStatsIntervals: orderStatsIntervals)
+        }
+    }
+    private var orderStatsIntervalLabels: [String] = []
 
     private var revenueItems: [Double] {
         orderStatsIntervals.map({ ($0.revenueValue as NSDecimalNumber).doubleValue })
@@ -485,7 +490,12 @@ extension StoreStatsV4PeriodViewController: IAxisValueFormatter {
         }
 
         if axis is XAxis {
-            return createOrderStatsIntervalLabels()[Int(value)]
+            let intervalLabels = orderStatsIntervalLabels
+            let index = Int(value)
+            if index >= intervalLabels.count {
+                DDLogInfo("🔴 orderStatsIntervals count: \(orderStatsIntervals.count); value: \(value); index: \(index); interval labels: \(intervalLabels)")
+            }
+            return intervalLabels[index]
         } else {
             if value == 0.0 {
                 // Do not show the "0" label on the Y axis
@@ -503,7 +513,7 @@ extension StoreStatsV4PeriodViewController: IAxisValueFormatter {
         }
     }
 
-    private func createOrderStatsIntervalLabels() -> [String] {
+    private func createOrderStatsIntervalLabels(orderStatsIntervals: [OrderStatsV4Interval]) -> [String] {
         let helper = StoreStatsV4ChartAxisHelper()
         let intervalDates = orderStatsIntervals.map({ $0.dateStart(timeZone: siteTimezone) })
         return helper.generateLabelText(for: intervalDates,

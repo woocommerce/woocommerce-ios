@@ -69,13 +69,15 @@ extension RefundConfirmationViewController {
     /// Submits the refund and dismisses the flow upon successful completion.
     ///
     func submitRefund() {
-        onRefundCreationAction?()
-        viewModel.submit { [weak self] result in
+        viewModel.submit(rootViewController: self,
+                         showInProgressUI: { [weak self] in
+            self?.onRefundCreationAction?()
+        }, onCompletion: { [weak self] result in
             if let error = result.failure {
                 self?.displayNotice(with: error)
             }
             self?.onRefundCompletion?(result.failure)
-        }
+        })
     }
 }
 

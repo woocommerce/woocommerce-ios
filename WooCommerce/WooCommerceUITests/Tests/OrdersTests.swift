@@ -28,6 +28,14 @@ final class OrdersTests: XCTestCase {
     func test_create_new_order() throws {
         try TabNavComponent().goToOrdersScreen()
             .startOrderCreation()
+
+        try NewOrderFlow.editOrderStatus()
             .createOrder()
+    }
+
+    func test_cancel_order_creation() throws {
+        try TabNavComponent().goToOrdersScreen()
+            .startOrderCreation()
+            .cancelOrderCreation()
     }
 }

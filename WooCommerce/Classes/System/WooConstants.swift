@@ -135,10 +135,12 @@ extension WooConstants {
         ///
         case inPersonPaymentsLearnMoreStripe = "https://docs.woocommerce.com/document/stripe/accept-in-person-payments-with-stripe/"
 
+        /// URL for the order creation feedback survey (full order creation and simple payments)
+        ///
 #if DEBUG
-        case simplePaymentsPrototypeFeedback = "https://automattic.survey.fm/woo-app-quick-order-testing"
+        case orderCreationFeedback = "https://automattic.survey.fm/woo-app-order-creation-testing"
 #else
-        case simplePaymentsPrototypeFeedback = "https://automattic.survey.fm/woo-app-quick-order-production"
+        case orderCreationFeedback = "https://automattic.survey.fm/woo-app-order-creation-production"
 #endif
 
 #if DEBUG
@@ -146,6 +148,7 @@ extension WooConstants {
 #else
         case couponManagementFeedback = "https://automattic.survey.fm/woo-app-coupon-management-production"
 #endif
+
         /// Returns the URL version of the receiver
         ///
         func asURL() -> URL {

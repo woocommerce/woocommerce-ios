@@ -362,15 +362,16 @@ extension SearchViewController: SyncingCoordinatorDelegate {
     /// Synchronizes the models for the Default Store (if any).
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: ((Bool) -> Void)? = nil) {
-        let keyword = self.keyword
+        let keyword = searchUICommand.sanitizeKeyword(self.keyword)
         searchUICommand.synchronizeModels(siteID: storeID,
                                           keyword: keyword,
                                           pageNumber: pageNumber,
                                           pageSize: pageSize,
-                                        onCompletion: { [weak self] isCompleted in
+                                          onCompletion: { [weak self] isCompleted in
+                                            guard let self = self else { return }
                                             // Disregard OPs that don't really match the latest keyword
-                                            if keyword == self?.keyword {
-                                                self?.transitionToResultsUpdatedState()
+                                            if keyword == self.searchUICommand.sanitizeKeyword(self.keyword) {
+                                                self.transitionToResultsUpdatedState()
                                             }
                                             onCompletion?(isCompleted)
         })
@@ -387,6 +388,7 @@ private extension SearchViewController {
     ///
     func synchronizeSearchResults(with keyword: String) {
         // When the search query changes, also includes the original results predicate in addition to the search keyword.
+        let keyword = searchUICommand.sanitizeKeyword(keyword)
         let searchResultsPredicate = NSPredicate(format: "ANY searchResults.keyword = %@", keyword)
         let subpredicates = [resultsPredicate].compactMap { $0 } + [searchResultsPredicate]
         resultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: subpredicates)

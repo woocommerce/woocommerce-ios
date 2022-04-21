@@ -178,6 +178,7 @@ struct HubMenu: View {
                             }
                         }
                     }
+                    .accessibilityLabel(Localization.settings)
                     .accessibilityIdentifier("dashboard-settings-button")
                     Spacer()
                 }
@@ -206,6 +207,7 @@ struct HubMenu: View {
     private enum Localization {
         static let switchStore = NSLocalizedString("Switch store",
                                                    comment: "Switch store option in the hub menu")
+        static let settings = NSLocalizedString("Settings", comment: "Settings button in the hub menu")
     }
 }
 

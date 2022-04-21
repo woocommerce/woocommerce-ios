@@ -11,10 +11,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     /// Main TableView
     ///
-    private lazy var tableView: UITableView = {
-        let tableView = UITableView(frame: .zero, style: .plain)
-        return tableView
-    }()
+    @IBOutlet weak var tableView: UITableView!
 
     lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(sectionHeaderVerticalSpace: .medium,
                                                                                                 cellClass: ProductsTabProductTableViewCell.self,
@@ -161,7 +158,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     init(siteID: Int64) {
         self.siteID = siteID
-        super.init(nibName: nil, bundle: nil)
+        super.init(nibName: type(of: self).nibName, bundle: nil)
 
         configureTabBarItem()
     }
@@ -341,10 +338,6 @@ private extension ProductsViewController {
     /// Configure common table properties.
     ///
     func configureTableView() {
-        view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        view.pinSubviewToAllEdges(tableView)
-
         tableView.dataSource = self
         tableView.delegate = self
 

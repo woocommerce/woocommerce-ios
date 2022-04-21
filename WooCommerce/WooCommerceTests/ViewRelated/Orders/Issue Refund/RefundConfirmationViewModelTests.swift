@@ -183,7 +183,8 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         // When
         let viewModel = RefundConfirmationViewModel(details: details, actionProcessor: dispatcher)
         let result = waitFor { promise in
-            viewModel.submit { result in
+            viewModel.submit(rootViewController: .init(),
+                             showInProgressUI: {}) { result in
                 promise(result)
             }
         }
@@ -224,7 +225,9 @@ final class RefundConfirmationViewModelTests: XCTestCase {
 
             // Submit refund
             let viewModel = RefundConfirmationViewModel(details: details, actionProcessor: dispatcher)
-            viewModel.submit(onCompletion: { _ in })
+            viewModel.submit(rootViewController: .init(),
+                             showInProgressUI: {},
+                             onCompletion: { _ in })
         }
 
         // Then
@@ -252,7 +255,9 @@ final class RefundConfirmationViewModelTests: XCTestCase {
                     promise(refund)
                 }
             }
-            viewModel.submit(onCompletion: { _ in })
+            viewModel.submit(rootViewController: .init(),
+                             showInProgressUI: {},
+                             onCompletion: { _ in })
         }
 
 
@@ -282,7 +287,9 @@ final class RefundConfirmationViewModelTests: XCTestCase {
                     promise(refund)
                 }
             }
-            viewModel.submit(onCompletion: { _ in })
+            viewModel.submit(rootViewController: .init(),
+                             showInProgressUI: {},
+                             onCompletion: { _ in })
         }
 
         // Then
@@ -319,7 +326,8 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         // When
         let viewModel = RefundConfirmationViewModel(details: details, actionProcessor: dispatcher)
         let result = waitFor { promise in
-            viewModel.submit { result in
+            viewModel.submit(rootViewController: .init(),
+                             showInProgressUI: {}) { result in
                 promise(result)
             }
         }
@@ -363,7 +371,9 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         let viewModel = RefundConfirmationViewModel(details: details, analytics: analytics)
 
         // When
-        viewModel.submit(onCompletion: { _ in })
+        viewModel.submit(rootViewController: .init(),
+                         showInProgressUI: {},
+                         onCompletion: { _ in })
 
         // Then
         XCTAssertEqual(analyticsProvider.receivedEvents.first, WooAnalyticsStat.refundCreate.rawValue)
@@ -388,7 +398,9 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         let viewModel = RefundConfirmationViewModel(details: details, analytics: analytics)
 
         // When
-        viewModel.submit(onCompletion: { _ in })
+        viewModel.submit(rootViewController: .init(),
+                         showInProgressUI: {},
+                         onCompletion: { _ in })
 
         // Then
         XCTAssertEqual(analyticsProvider.receivedEvents.first, WooAnalyticsStat.refundCreate.rawValue)
@@ -423,7 +435,8 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         // When
         let viewModel = RefundConfirmationViewModel(details: details, actionProcessor: dispatcher, analytics: analytics)
         let result = waitFor { promise in
-            viewModel.submit { result in
+            viewModel.submit(rootViewController: .init(),
+                             showInProgressUI: {}) { result in
                 promise(result)
             }
         }
@@ -462,7 +475,8 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         // When
         let viewModel = RefundConfirmationViewModel(details: details, actionProcessor: dispatcher, analytics: analytics)
         waitForExpectation { exp in
-            viewModel.submit { _ in
+            viewModel.submit(rootViewController: .init(),
+                             showInProgressUI: {}) { result in
                 exp.fulfill()
             }
         }

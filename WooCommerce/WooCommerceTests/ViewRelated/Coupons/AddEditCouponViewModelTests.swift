@@ -9,7 +9,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel1.title, Localization.titleCreatePercentageDiscount)
 
         let viewModel2 = AddEditCouponViewModel(siteID: 123, discountType: .fixedCart)
-        XCTAssertEqual(viewModel2.title, Localization.titleCreateFixedCardDiscount)
+        XCTAssertEqual(viewModel2.title, Localization.titleCreateFixedCartDiscount)
 
         let viewModel3 = AddEditCouponViewModel(siteID: 123, discountType: .fixedProduct)
         XCTAssertEqual(viewModel3.title, Localization.titleCreateFixedProductDiscount)
@@ -23,7 +23,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel1.title, Localization.titleEditPercentageDiscount)
 
         let viewModel2 = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(discountType: .fixedCart))
-        XCTAssertEqual(viewModel2.title, Localization.titleEditFixedCardDiscount)
+        XCTAssertEqual(viewModel2.title, Localization.titleEditFixedCartDiscount)
 
         let viewModel3 = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(discountType: .fixedProduct))
         XCTAssertEqual(viewModel3.title, Localization.titleEditFixedProductDiscount)
@@ -32,13 +32,70 @@ final class AddEditCouponViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel4.title, Localization.titleEditGenericDiscount)
     }
 
+    func test_generateRandomCouponCode_populate_correctly_the_codeField() {
+        // Given
+        let viewModel = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(code: ""))
+        XCTAssertEqual(viewModel.codeField, "")
+
+        // When
+        viewModel.generateRandomCouponCode()
+
+        // Then
+        let dictionary = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"
+        XCTAssertEqual(viewModel.codeField.count, 8)
+        XCTAssertTrue(viewModel.codeField.allSatisfy(dictionary.contains))
+
+    }
+
+    func test_populatedCoupon_return_expected_coupon_during_editing() {
+        // Given
+        let viewModel = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(discountType: .percent))
+        XCTAssertEqual(viewModel.populatedCoupon, Coupon.sampleCoupon.copy(discountType: .percent))
+
+        // When
+        viewModel.amountField = "24.23"
+        viewModel.codeField = "TEST"
+        viewModel.descriptionField = "This is a test description"
+        viewModel.expiryDateField = Date().endOfDay(timezone: TimeZone.current)
+        viewModel.freeShipping = true
+        viewModel.couponRestrictionsViewModel.minimumSpend = "10"
+        viewModel.couponRestrictionsViewModel.maximumSpend = "50"
+        viewModel.couponRestrictionsViewModel.usageLimitPerCoupon = "40"
+        viewModel.couponRestrictionsViewModel.usageLimitPerUser = "1"
+        viewModel.couponRestrictionsViewModel.limitUsageToXItems = "10"
+        viewModel.couponRestrictionsViewModel.allowedEmails = "*@gmail.com, *@wordpress.com"
+        viewModel.couponRestrictionsViewModel.individualUseOnly = true
+        viewModel.couponRestrictionsViewModel.excludeSaleItems = true
+
+
+        // Then
+        XCTAssertEqual(viewModel.populatedCoupon, Coupon.sampleCoupon.copy(code: "TEST",
+                                                                           amount: "24.23",
+                                                                           discountType: .percent,
+                                                                           description: "This is a test description",
+                                                                           dateExpires: Date().endOfDay(timezone: TimeZone.current),
+                                                                           individualUse: true,
+                                                                           usageLimit: 40,
+                                                                           usageLimitPerUser: 1,
+                                                                           limitUsageToXItems: 10,
+                                                                           freeShipping: true,
+                                                                           excludeSaleItems: true,
+                                                                           minimumAmount: "10",
+                                                                           maximumAmount: "50",
+                                                                           emailRestrictions: ["*@gmail.com", "*@wordpress.com"]))
+    }
+
+    func test_populatedCoupon_return_expected_coupon_during_creation() {
+        //TODO: implement this test method in the implementation of coupon creation (M3)
+    }
+
     private enum Localization {
         static let titleCreatePercentageDiscount = NSLocalizedString(
             "Create percentage discount",
             comment: "Title of the view for creating a coupon with percentage discount.")
-        static let titleCreateFixedCardDiscount = NSLocalizedString(
-            "Create fixed card discount",
-            comment: "Title of the view for creating a coupon with fixed card discount.")
+        static let titleCreateFixedCartDiscount = NSLocalizedString(
+            "Create fixed cart discount",
+            comment: "Title of the view for creating a coupon with fixed cart discount.")
         static let titleCreateFixedProductDiscount = NSLocalizedString(
             "Create fixed product discount",
             comment: "Title of the view for creating a coupon with fixed product discount.")
@@ -48,9 +105,9 @@ final class AddEditCouponViewModelTests: XCTestCase {
         static let titleEditPercentageDiscount = NSLocalizedString(
             "Edit percentage discount",
             comment: "Title of the view for editing a coupon with percentage discount.")
-        static let titleEditFixedCardDiscount = NSLocalizedString(
-            "Edit fixed card discount",
-            comment: "Title of the view for editing a coupon with fixed card discount.")
+        static let titleEditFixedCartDiscount = NSLocalizedString(
+            "Edit fixed cart discount",
+            comment: "Title of the view for editing a coupon with fixed cart discount.")
         static let titleEditFixedProductDiscount = NSLocalizedString(
             "Edit fixed product discount",
             comment: "Title of the view for editing a coupon with fixed product discount.")

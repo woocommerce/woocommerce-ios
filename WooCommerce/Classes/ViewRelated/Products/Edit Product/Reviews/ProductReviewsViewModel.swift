@@ -6,7 +6,7 @@ import class AutomatticTracks.CrashLogging
 
 /// The Product Reviews view model used in ProductReviewsViewController
 final class ProductReviewsViewModel {
-    private let data: ReviewsDataSource
+    private let data: ReviewsDataSourceProtocol
 
     var isEmpty: Bool {
         return data.isEmpty
@@ -22,19 +22,9 @@ final class ProductReviewsViewModel {
 
     private let siteID: Int64
 
-    init(siteID: Int64, data: ReviewsDataSource) {
+    init(siteID: Int64, data: ReviewsDataSourceProtocol) {
         self.siteID = siteID
         self.data = data
-    }
-
-    func didDisplayPlaceholderReviews() {
-        data.stopForwardingEvents()
-    }
-
-    /// Removes Placeholder Notes (and restores the ResultsController <> UITableView link).
-    ///
-    func didRemovePlaceholderReviews(tableView: UITableView) {
-        data.startForwardingEvents(to: tableView)
     }
 
     func configureResultsController(tableView: UITableView) {
@@ -98,5 +88,23 @@ private extension ProductReviewsViewModel {
     enum Settings {
         static let firstPage = 1
         static let pageSize = 25
+    }
+}
+
+/// Customizes the `ReviewsDataSource` for a product related reviews screen (only the reviews of the passed product)
+final class ProductReviewsDataSourceCustomizer: ReviewsDataSourceCustomizing {
+    let shouldShowProductTitleOnCells = false
+    private let product: Product
+
+    init(product: Product) {
+        self.product = product
+    }
+
+    func reviewsFilterPredicate(with sitePredicate: NSPredicate) -> NSPredicate {
+        let statusPredicate = NSPredicate(format: "statusKey ==[c] %@ AND productID == %lld",
+                                          ProductReviewStatus.approved.rawValue,
+                                          product.productID)
+
+        return  NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, statusPredicate])
     }
 }

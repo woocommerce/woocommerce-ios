@@ -28,10 +28,3 @@ enum EditCustomerNoteNavigationItem: Equatable {
     case done(enabled: Bool)
     case loading
 }
-
-/// Representation of possible notices that can be displayed
-///
-enum EditCustomerNoteNotice: Equatable {
-    case success
-    case error
-}

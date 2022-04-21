@@ -11,11 +11,21 @@ struct ProductVariationSelector: View {
 
     /// View model to drive the view.
     ///
-    @ObservedObject var viewModel: ProductVariationSelectorViewModel
+    @ObservedObject private var viewModel: ProductVariationSelectorViewModel
+
+    /// Whether more than one row can be selected.
+    ///
+    private let multipleSelectionsEnabled: Bool
 
     ///   Environment safe areas
     ///
     @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
+
+    init(isPresented: Binding<Bool>, viewModel: ProductVariationSelectorViewModel, multipleSelectionsEnabled: Bool) {
+        self._isPresented = isPresented
+        self.viewModel = viewModel
+        self.multipleSelectionsEnabled = multipleSelectionsEnabled
+    }
 
     var body: some View {
         Group {
@@ -24,12 +34,17 @@ struct ProductVariationSelector: View {
                 InfiniteScrollList(isLoading: viewModel.shouldShowScrollIndicator,
                                    loadAction: viewModel.syncNextPage) {
                     ForEach(viewModel.productVariationRows) { rowViewModel in
-                        ProductRow(viewModel: rowViewModel)
+                        ProductRow(multipleSelectionsEnabled: multipleSelectionsEnabled,
+                                   viewModel: rowViewModel)
                             .accessibilityHint(Localization.productRowAccessibilityHint)
                             .padding(Constants.defaultPadding)
                             .onTapGesture {
-                                viewModel.selectVariation(rowViewModel.productOrVariationID)
-                                isPresented.toggle()
+                                if multipleSelectionsEnabled {
+                                    rowViewModel.isSelected.toggle()
+                                } else {
+                                    viewModel.selectVariation(rowViewModel.productOrVariationID)
+                                    isPresented.toggle()
+                                }
                             }
                         Divider().frame(height: Constants.dividerHeight)
                             .padding(.leading, Constants.defaultPadding)
@@ -99,6 +114,6 @@ struct AddProductVariationToOrder_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = ProductVariationSelectorViewModel(siteID: 1, productID: 2, productName: "Monstera Plant", productAttributes: [])
 
-        ProductVariationSelector(isPresented: .constant(true), viewModel: viewModel)
+        ProductVariationSelector(isPresented: .constant(true), viewModel: viewModel, multipleSelectionsEnabled: true)
     }
 }

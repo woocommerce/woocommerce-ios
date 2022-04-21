@@ -86,7 +86,11 @@ struct ProductSelector: View {
     ///
     @ViewBuilder private func createProductRow(rowViewModel: ProductRowViewModel) -> some View {
         if let addVariationToOrderVM = viewModel.getVariationsViewModel(for: rowViewModel.productOrVariationID) {
-            LazyNavigationLink(destination: ProductVariationSelector(isPresented: $isPresented, viewModel: addVariationToOrderVM)) {
+            LazyNavigationLink(destination: ProductVariationSelector(
+                isPresented: $isPresented,
+                viewModel: addVariationToOrderVM,
+                multipleSelectionsEnabled: configuration.multipleSelectionsEnabled
+            )) {
                 HStack {
                     ProductRow(multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
                                viewModel: rowViewModel)

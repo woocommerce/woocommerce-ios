@@ -46,7 +46,7 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
     /// Update the note remotely and invoke a completion block when finished
     ///
     func updateNote(onFinish: @escaping (Bool) -> Void) {
-        performOptimisticUpdateOrder(customerNote: newNote, onFinish: onFinish)
+        performUpdateOrderOptimistically(customerNote: newNote, onFinish: onFinish)
     }
 
     /// Track the flow cancel scenario.
@@ -70,30 +70,36 @@ private extension EditCustomerNoteViewModel {
 
     /// Dispatches the action to update the order optimistically.
     /// - Parameters:
-    ///   - customerNote: New note to update the order.
+    ///   - customerNote: Given new customer note to update the order.
     ///   - onFinish: Callback to notify when the action has finished.
     ///
-    func performOptimisticUpdateOrder(customerNote: String?, onFinish: ((Bool) -> Void)? = nil) {
-        let modifiedOrder = order.copy(customerNote: customerNote)
-        let action = OrderAction.updateOrderOptimistically(siteID: order.siteID, order: modifiedOrder, fields: [.customerNote]) { [weak self] result in
-            guard let self = self else {
+    func performUpdateOrderOptimistically(customerNote: String?, onFinish: ((Bool) -> Void)? = nil) {
+        let updateAction = makeUpdateCustomerNoteAction(withNote: customerNote, onFinish: onFinish)
+        stores.dispatch(updateAction)
+    }
+
+    /// Makes an `updateOrderOptimistically` action from a given customer note.
+    /// - Parameters:
+    ///   - note: Given new customer note to update the order.
+    ///   - onFinish: Callback to notify when the action has finished.
+    /// - Returns: A new `updateOrderOptimistically` action using the given parameters.
+    ///
+    func makeUpdateCustomerNoteAction(withNote note: String?, onFinish: ((Bool) -> Void)? = nil) -> Action {
+        let orderID = order.orderID
+        let modifiedOrder = order.copy(customerNote: note)
+        return OrderAction.updateOrderOptimistically(siteID: order.siteID, order: modifiedOrder, fields: [.customerNote]) { [weak self] result in
+            guard case let .failure(error) = result else {
+                self?.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCompleted(subject: .customerNote))
+                onFinish?(true)
                 return
             }
 
-            switch result {
-            case .success:
-                self.systemNoticePresenter.enqueue(notice: .init(title: Localization.success, feedbackType: .success))
-                self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCompleted(subject: .customerNote))
-            case .failure(let error):
-                self.systemNoticePresenter.enqueue(notice: .init(title: Localization.error, feedbackType: .error))
-                self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowFailed(subject: .customerNote))
-                DDLogError("⛔️ Unable to update the order: \(error)")
-            }
+            DDLogError("⛔️ Order Update Failure: [\(orderID).customerNote = \(note ?? "")]. Error: \(error)")
 
-            onFinish?(result.isSuccess)
+            self?.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowFailed(subject: .customerNote))
+            self?.displayUpdateErrorNotice(customerNote: note)
+            onFinish?(false)
         }
-
-        stores.dispatch(action)
     }
 
     /// Enqueues the `Order Updated` Notice. Whenever the `Undo` button gets pressed, we'll execute the `onUndoAction` closure.
@@ -112,7 +118,7 @@ private extension EditCustomerNoteViewModel {
         let notice = Notice(title: Localization.error,
                             feedbackType: .error,
                             actionTitle: Localization.retry) { [weak self] in
-            self?.performOptimisticUpdateOrder(customerNote: customerNote)
+            self?.performUpdateOrderOptimistically(customerNote: customerNote)
         }
 
         systemNoticePresenter.enqueue(notice: notice)

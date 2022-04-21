@@ -82,6 +82,10 @@ final class OrderDetailsViewModel {
                                       cardPresentPaymentsConfiguration: configurationLoader.configuration)
     }()
 
+    private(set) lazy var editNoteViewModel: EditCustomerNoteViewModel = {
+        return EditCustomerNoteViewModel(order: order)
+    }()
+
     /// Order Notes
     ///
     var orderNotes: [OrderNote] = [] {

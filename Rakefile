@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 SWIFTLINT_VERSION = '0.27.0'
 XCODE_WORKSPACE = 'WooCommerce.xcworkspace'
 XCODE_SCHEME = 'WooCommerce'
@@ -216,7 +218,7 @@ end
 
 def podfile_locked?
   podfile_checksum = Digest::SHA1.file('Podfile')
-  lockfile_checksum = YAML.load(File.read('Podfile.lock'))['PODFILE CHECKSUM']
+  lockfile_checksum = YAML.safe_load(File.read('Podfile.lock'))['PODFILE CHECKSUM']
 
   podfile_checksum == lockfile_checksum
 end

@@ -28,9 +28,6 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
     ///
     private let order: Order
 
-    /// Tracks if a network request is being performed.
-    ///
-    private let performingNetworkRequest: CurrentValueSubject<Bool, Never> = .init(false)
 
     /// Action dispatcher
     ///
@@ -55,7 +52,6 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
         let action = OrderAction.updateOrder(siteID: order.siteID, order: modifiedOrder, fields: [.customerNote]) { [weak self] result in
             guard let self = self else { return }
 
-            self.performingNetworkRequest.send(false)
             switch result {
             case .success:
                 self.presentNotice = .success
@@ -69,7 +65,6 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
             onFinish(result.isSuccess)
         }
 
-        performingNetworkRequest.send(true)
         stores.dispatch(action)
     }
 

@@ -391,7 +391,7 @@ private extension OrderStore {
     ///
     func updateOrderOptimistically(siteID: Int64, order: Order, fields: [OrderUpdateField], onCompletion: @escaping (Result<Order, Error>) -> Void) {
         // Optimistically update the stored order.
-        let backupOrder = updateStoredOrder(readOnlyOrder: order)
+        let backupOrder = upsertStoredOrder(readOnlyOrder: order)
 
         remote.updateOrder(from: siteID, order: order, fields: fields) { [weak self] result in
             guard case .failure = result else {
@@ -399,8 +399,16 @@ private extension OrderStore {
                 return
             }
 
-            // Revert optimistic update.
-            self?.updateStoredOrder(readOnlyOrder: backupOrder)
+            /// Revert optimistic update.
+            ///
+            /// If the backup order is equal to the given order means that the order
+            /// didn't exist locally. So, we have to delete the stored order as workaround.
+            /// Otherwise, we have to revert the updated fields.
+            if order == backupOrder {
+                self?.deleteStoredOrder(siteID: siteID, orderID: order.orderID)
+            } else {
+                self?.upsertStoredOrder(readOnlyOrder: backupOrder)
+            }
             onCompletion(result)
         }
     }
@@ -486,19 +494,23 @@ extension OrderStore {
 // MARK: - Storage: Search Results
 //
 private extension OrderStore {
-    /// Updates the specified ReadOnly Order Entity.
+    /// Updates or inserts the specified ReadOnly Order Entity.
     ///
-    /// - Returns: The updated order, prior to performing the update operation.
+    /// - Returns: The updated order, prior to performing the update operation or the given order when
+    /// the order doesn't exist locally.
     ///
     @discardableResult
-    func updateStoredOrder(readOnlyOrder: Networking.Order) -> Networking.Order {
-        guard let storageOrder = storageManager.viewStorage.loadOrder(siteID: readOnlyOrder.siteID, orderID: readOnlyOrder.orderID) else {
-            return readOnlyOrder
+    func upsertStoredOrder(readOnlyOrder: Networking.Order) -> Networking.Order {
+        let storageOrder = storageManager.viewStorage.loadOrder(siteID: readOnlyOrder.siteID, orderID: readOnlyOrder.orderID)
+        let oldReadOnlyOrder = storageOrder?.toReadOnly()
+
+        upsertStoredOrders(readOnlyOrders: [readOnlyOrder], in: storageManager.viewStorage)
+
+        if storageOrder == nil {
+            DDLogWarn("⚠️ Unable to retrieve stored order with ID \(readOnlyOrder.orderID) to be updated - A new order has been stored as a workaround")
         }
 
-        let oldReadOnlyOrder = storageOrder.toReadOnly()
-        upsertStoredOrders(readOnlyOrders: [readOnlyOrder], in: storageManager.viewStorage)
-        return oldReadOnlyOrder
+        return oldReadOnlyOrder ?? readOnlyOrder
     }
 
     /// Upserts the Orders, and associates them to the SearchResults Entity (in Background)

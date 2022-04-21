@@ -62,7 +62,7 @@ public class OrderStore: Store {
         case let .updateOrder(siteID, order, fields, onCompletion):
             updateOrder(siteID: siteID, order: order, fields: fields, onCompletion: onCompletion)
         case let .updateOrderOptimistically(siteID, order, fields, onCompletion):
-            optimisticUpdateOrder(siteID: siteID, order: order, fields: fields, onCompletion: onCompletion)
+            updateOrderOptimistically(siteID: siteID, order: order, fields: fields, onCompletion: onCompletion)
         case let .createSimplePaymentsOrder(siteID, status, amount, taxable, onCompletion):
             createSimplePaymentsOrder(siteID: siteID, status: status, amount: amount, taxable: taxable, onCompletion: onCompletion)
         case let .createOrder(siteID, order, onCompletion):
@@ -385,11 +385,11 @@ private extension OrderStore {
         }
     }
 
-    /// Optimistic updates the specified fields from an order.
+    /// Updates the specified fields from an order optimistically.
     ///
     /// Updates will be reverted in case of failure.
     ///
-    func optimisticUpdateOrder(siteID: Int64, order: Order, fields: [OrderUpdateField], onCompletion: @escaping (Result<Order, Error>) -> Void) {
+    func updateOrderOptimistically(siteID: Int64, order: Order, fields: [OrderUpdateField], onCompletion: @escaping (Result<Order, Error>) -> Void) {
         // Optimistically update the stored order.
         let backupOrder = updateStoredOrder(readOnlyOrder: order)
 

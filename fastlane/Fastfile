@@ -417,7 +417,7 @@ platform :ios do
   # bundle exec fastlane build_and_upload_installable_build build_number:123
   #####################################################################################
   desc 'Builds and uploads an installable build'
-  lane :build_and_upload_installable_build do |_options|
+  lane :build_and_upload_installable_build do
     ensure_sentry_installed
 
     alpha_code_signing
@@ -660,7 +660,7 @@ platform :ios do
   end
 
   desc 'Download App Store Translations'
-  lane :download_app_store_translations do |_options|
+  lane :download_app_store_translations do
     files = {
 
       # Metadata fields
@@ -768,7 +768,7 @@ platform :ios do
   # Example:
   # bundle exec fastlane update_certs_and_profiles
   #####################################################################################
-  lane :update_certs_and_profiles do |_options|
+  lane :update_certs_and_profiles do
     alpha_code_signing
     appstore_code_signing
   end
@@ -776,7 +776,7 @@ platform :ios do
   ########################################################################
   # Fastlane match code signing
   ########################################################################
-  private_lane :alpha_code_signing do |_options|
+  private_lane :alpha_code_signing do
     match(
       type: 'enterprise',
       team_id: get_required_env('INT_EXPORT_TEAM_ID'),
@@ -785,7 +785,7 @@ platform :ios do
     )
   end
 
-  private_lane :appstore_code_signing do |_options|
+  private_lane :appstore_code_signing do
     match(
       type: 'appstore',
       team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
@@ -799,12 +799,12 @@ platform :ios do
   # Helper Lanes
   ########################################################################
   desc 'Run release preflight checks'
-  lane :release_preflight do |_options|
+  lane :release_preflight do
     configure_validate
   end
 
   desc 'Run localization only'
-  lane :update_localization do |_options|
+  lane :update_localization do
     ios_localize_project
   end
 

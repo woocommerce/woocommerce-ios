@@ -190,8 +190,8 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         refreshControl.resetAnimation(in: tableView) { [unowned self] in
             // ghost animation is also removed after switching tabs
             // show make sure it's displayed again
-            self.removePlaceholderProducts()
-            self.displayPlaceholderProducts()
+            self.removeGhostContent()
+            self.displayGhostContent(over: tableView)
         }
     }
 
@@ -715,26 +715,6 @@ private extension ProductsViewController {
 //
 private extension ProductsViewController {
 
-    /// Triggers the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
-    ///
-    func displayPlaceholderProducts() {
-        displayGhostContent(over: tableView)
-        resultsController.stopForwardingEvents()
-    }
-
-    /// Removes the Placeholder Products (and restores the ResultsController <> UITableView link).
-    ///
-    func removePlaceholderProducts() {
-        removeGhostContent()
-
-       // Assign again the original closure
-        setClosuresToResultController(resultsController, onReload: { [weak self] in
-            self?.reloadTableAndView()
-        })
-
-        tableView.reloadData()
-    }
-
     /// Displays the overlay when there are no results.
     ///
     func displayNoResultsOverlay() {
@@ -949,7 +929,7 @@ private extension ProductsViewController {
         case .syncing(let pageNumber):
             let isFirstPage = pageNumber == SyncingCoordinator.Defaults.pageFirstIndex
             if isFirstPage && resultsController.isEmpty {
-                displayPlaceholderProducts()
+                displayGhostContent(over: tableView)
             } else if !isFirstPage {
                 ensureFooterSpinnerIsStarted()
             }
@@ -968,7 +948,7 @@ private extension ProductsViewController {
             removeAllOverlays()
         case .syncing:
             ensureFooterSpinnerIsStopped()
-            removePlaceholderProducts()
+            removeGhostContent()
             showTopBannerViewIfNeeded()
             showOrHideToolBar()
         case .results:

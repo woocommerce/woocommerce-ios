@@ -28,11 +28,7 @@ final class CouponRestrictionsViewModel: ObservableObject {
     /// View model for the product selector
     ///
     lazy var productSelectorViewModel = {
-        ProductSelectorViewModel(siteID: siteID, storageManager: storageManager, stores: stores) { _ in
-            // TODO
-        } onVariationSelected: { _ in
-            // TODO
-        }
+        ProductSelectorViewModel(siteID: siteID, storageManager: storageManager, stores: stores)
     }()
 
     private let siteID: Int64

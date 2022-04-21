@@ -79,11 +79,7 @@ final class AddEditCouponViewModel: ObservableObject {
     /// View model for the product selector
     ///
     lazy var productSelectorViewModel = {
-        ProductSelectorViewModel(siteID: siteID, storageManager: storageManager, stores: stores) { _ in
-            // TODO
-        } onVariationSelected: { _ in
-            // TODO
-        }
+        ProductSelectorViewModel(siteID: siteID, storageManager: storageManager, stores: stores)
     }()
 
     private(set) var coupon: Coupon?

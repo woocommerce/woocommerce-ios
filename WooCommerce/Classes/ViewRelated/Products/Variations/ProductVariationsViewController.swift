@@ -20,10 +20,6 @@ final class ProductVariationsViewController: UIViewController, GhostableViewCont
                                                                                                 separatorStyle: .none,
                                                                                                 isScrollEnabled: false))
 
-    /// Whether the placeholder view should be shown when reloading the data
-    ///
-    private var shouldShowPlaceholderView = false
-
     @IBOutlet private weak var tableView: UITableView!
 
     /// Pull To Refresh Support.
@@ -401,34 +397,27 @@ private extension ProductVariationsViewController {
 extension ProductVariationsViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return shouldShowPlaceholderView ? 1 : resultsController.sections.count
+        resultsController.sections.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return shouldShowPlaceholderView ? 1 : resultsController.sections[section].numberOfObjects
+        resultsController.sections[section].numberOfObjects
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if shouldShowPlaceholderView {
-            let cell = tableView.dequeueReusableCell(UITableViewCell.self, for: indexPath)
-            displayGhostContent(over: cell.contentView)
+        let cell = tableView.dequeueReusableCell(ProductsTabProductTableViewCell.self, for: indexPath)
 
-            return cell
-        } else {
-            let cell = tableView.dequeueReusableCell(ProductsTabProductTableViewCell.self, for: indexPath)
+        let productVariation = resultsController.object(at: indexPath)
+        let model = EditableProductVariationModel(productVariation: productVariation,
+                                                  allAttributes: allAttributes,
+                                                  parentProductSKU: parentProductSKU)
 
-            let productVariation = resultsController.object(at: indexPath)
-            let model = EditableProductVariationModel(productVariation: productVariation,
-                                                      allAttributes: allAttributes,
-                                                      parentProductSKU: parentProductSKU)
+        let viewModel = ProductsTabProductViewModel(productVariationModel: model)
+        cell.update(viewModel: viewModel, imageService: imageService)
+        cell.selectionStyle = .none
+        cell.accessoryType = .disclosureIndicator
 
-            let viewModel = ProductsTabProductViewModel(productVariationModel: model)
-            cell.update(viewModel: viewModel, imageService: imageService)
-            cell.selectionStyle = .none
-            cell.accessoryType = .disclosureIndicator
-
-            return cell
-        }
+        return cell
     }
 }
 
@@ -442,13 +431,7 @@ extension ProductVariationsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return shouldShowPlaceholderView ? placeholderViewHeight() : UITableView.automaticDimension
-    }
-
-    private func placeholderViewHeight() -> CGFloat {
-        let placeholderRowsPerSection = Settings.placeholderRowsPerSection.first ?? 3
-
-        return Settings.estimatedRowHeight * CGFloat(placeholderRowsPerSection)
+        UITableView.automaticDimension
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -626,25 +609,6 @@ private extension ProductVariationsViewController {
 //
 private extension ProductVariationsViewController {
 
-    /// Renders the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
-    ///
-    func displayPlaceholderProducts() {
-        shouldShowPlaceholderView = true
-        resultsController.stopForwardingEvents()
-        tableView.reloadData()
-    }
-
-    /// Removes the Placeholder Products (and restores the ResultsController <> UITableView link).
-    ///
-    func removePlaceholderProducts() {
-        shouldShowPlaceholderView = false
-        removeGhostContent()
-
-        resultsController.startForwardingEvents(to: tableView)
-        configureResultsControllerEventHandling(resultsController)
-        tableView.reloadData()
-    }
-
     /// Displays the Error Notice.
     ///
     func displaySyncingErrorNotice(pageNumber: Int, pageSize: Int) {
@@ -722,7 +686,7 @@ private extension ProductVariationsViewController {
             break
         case .syncing(let pageNumber):
             if pageNumber == syncingCoordinator.pageFirstIndex {
-                displayPlaceholderProducts()
+                displayGhostContent()
                 hideMoreActionsNavigationBarButton()
             } else {
                 ensureFooterSpinnerIsStarted()
@@ -736,7 +700,7 @@ private extension ProductVariationsViewController {
         switch state {
         case .syncing:
             ensureFooterSpinnerIsStopped()
-            removePlaceholderProducts()
+            removeGhostContent()
             showOrHideMoreActionsNavigationBarButton()
         case .noResultsPlaceholder, .results:
             break

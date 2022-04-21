@@ -20,7 +20,11 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
 
     /// Order to be edited.
     ///
-    private let order: Order
+    private var order: Order {
+        didSet {
+            syncNewNoteAfterUpdatingOrder()
+        }
+    }
 
 
     /// Action dispatcher
@@ -41,6 +45,10 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
         self.analytics = analytics
         self.systemNoticePresenter = systemNoticePresenter
         bindNavigationTrailingItemPublisher()
+    }
+
+    func update(order: Order) {
+        self.order = order
     }
 
     /// Update the note remotely and invoke a completion block when finished
@@ -66,6 +74,12 @@ private extension EditCustomerNoteViewModel {
                 .done(enabled: editedContent != self?.order.customerNote)
             }
             .assign(to: &$navigationTrailingItem)
+    }
+
+    /// Updates the temporal note after updating the order.
+    ///
+    func syncNewNoteAfterUpdatingOrder() {
+        newNote = order.customerNote ?? ""
     }
 
     /// Dispatches the action to update the order optimistically.

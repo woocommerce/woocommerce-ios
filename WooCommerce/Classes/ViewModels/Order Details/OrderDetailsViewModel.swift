@@ -27,6 +27,7 @@ final class OrderDetailsViewModel {
     func update(order newOrder: Order) {
         self.order = newOrder
         dataSource.update(order: order)
+        editNoteViewModel.update(order: order)
     }
 
     let productLeftTitle = NSLocalizedString("PRODUCT", comment: "Product section title")

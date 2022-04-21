@@ -16,7 +16,7 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
 
     /// Presents either a success or an error notice in the tab bar context after the update operation is done.
     ///
-    private let systemNoticePresenter: NoticePresenter
+    private let noticePresenter: NoticePresenter
 
     /// Order to be edited.
     ///
@@ -38,12 +38,12 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
     init(order: Order,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
+         noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         self.order = order
         self.newNote = order.customerNote ?? ""
         self.stores = stores
         self.analytics = analytics
-        self.systemNoticePresenter = systemNoticePresenter
+        self.noticePresenter = noticePresenter
         bindNavigationTrailingItemPublisher()
     }
 
@@ -130,7 +130,7 @@ private extension EditCustomerNoteViewModel {
                             feedbackType: .success,
                             actionTitle: Localization.undo,
                             actionHandler: onUndoAction)
-        systemNoticePresenter.enqueue(notice: notice)
+        noticePresenter.enqueue(notice: notice)
     }
 
     /// Enqueues the `Unable to Change Customer Note of Order` Notice.
@@ -142,7 +142,7 @@ private extension EditCustomerNoteViewModel {
             self?.performUpdateOrderOptimistically(customerNote: customerNote)
         }
 
-        systemNoticePresenter.enqueue(notice: notice)
+        noticePresenter.enqueue(notice: notice)
     }
 }
 

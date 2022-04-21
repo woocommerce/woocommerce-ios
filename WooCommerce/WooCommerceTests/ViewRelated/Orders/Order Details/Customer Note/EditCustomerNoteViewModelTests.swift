@@ -82,7 +82,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let noticePresenter = MockNoticePresenter()
-        let viewModel = EditCustomerNoteViewModel(order: order, stores: stores, systemNoticePresenter: noticePresenter)
+        let viewModel = EditCustomerNoteViewModel(order: order, stores: stores, noticePresenter: noticePresenter)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case let .updateOrderOptimistically(_, order, _, onCompletion):
@@ -103,7 +103,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let noticePresenter = MockNoticePresenter()
-        let viewModel = EditCustomerNoteViewModel(order: order, stores: stores, systemNoticePresenter: noticePresenter)
+        let viewModel = EditCustomerNoteViewModel(order: order, stores: stores, noticePresenter: noticePresenter)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case let .updateOrderOptimistically(_, _, _, onCompletion):

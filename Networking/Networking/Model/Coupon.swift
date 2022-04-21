@@ -138,6 +138,36 @@ public struct Coupon {
         self.usedBy = usedBy
     }
 
+    /// We need a custom decoding because we are going to not store the `date_expires` property, but only its GMT version `date_expires_gmt`.
+    ///
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        couponID = try container.decode(Int64.self, forKey: .couponID)
+        code = try container.decode(String.self, forKey: .code)
+        amount = try container.decode(String.self, forKey: .amount)
+        dateCreated = try container.decode(Date.self, forKey: .dateCreated)
+        dateModified = try container.decode(Date.self, forKey: .dateModified)
+        discountType = try container.decode(DiscountType.self, forKey: .discountType)
+        description = try container.decode(String.self, forKey: .description)
+        dateExpires = try container.decodeIfPresent(Date.self, forKey: .dateExpires)
+        usageCount = try container.decode(Int64.self, forKey: .usageCount)
+        individualUse = try container.decode(Bool.self, forKey: .individualUse)
+        productIds = try container.decode([Int64].self, forKey: .productIds)
+        excludedProductIds = try container.decode([Int64].self, forKey: .excludedProductIds)
+        usageLimit = try container.decodeIfPresent(Int64.self, forKey: .usageLimit)
+        usageLimitPerUser = try container.decodeIfPresent(Int64.self, forKey: .usageLimitPerUser)
+        limitUsageToXItems = try container.decodeIfPresent(Int64.self, forKey: .limitUsageToXItems)
+        freeShipping = try container.decode(Bool.self, forKey: .freeShipping)
+        productCategories = try container.decode([Int64].self, forKey: .productCategories)
+        excludedProductCategories = try container.decode([Int64].self, forKey: .excludedProductCategories)
+        excludeSaleItems = try container.decode(Bool.self, forKey: .excludeSaleItems)
+        minimumAmount = try container.decode(String.self, forKey: .minimumAmount)
+        maximumAmount = try container.decode(String.self, forKey: .maximumAmount)
+        emailRestrictions = try container.decode([String].self, forKey: .emailRestrictions)
+        usedBy = try container.decode([String].self, forKey: .usedBy)
+    }
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
@@ -145,7 +175,7 @@ public struct Coupon {
         try container.encode(amount, forKey: .amount)
         try container.encode(discountType, forKey: .discountType)
         try container.encode(description, forKey: .description)
-        try container.encode(dateExpires, forKey: .dateExpires)
+        try container.encode(dateExpires, forKey: .dateExpiresNotGmt)
         try container.encode(productIds, forKey: .productIds)
         try container.encode(excludedProductIds, forKey: .excludedProductIds)
         try container.encode(usageLimit, forKey: .usageLimit)
@@ -201,6 +231,9 @@ extension Coupon: Codable {
         case maximumAmount
         case emailRestrictions
         case usedBy
+
+        // We are going to use this coding key because during the update/creation of a coupon, the `dateExpiresGmt` doesn't work.
+        case dateExpiresNotGmt = "dateExpires"
     }
 }
 

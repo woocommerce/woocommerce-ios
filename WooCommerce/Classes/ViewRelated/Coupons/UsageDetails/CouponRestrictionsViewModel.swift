@@ -28,7 +28,10 @@ final class CouponRestrictionsViewModel: ObservableObject {
     /// View model for the product selector
     ///
     lazy var productSelectorViewModel = {
-        ProductSelectorViewModel(siteID: siteID, storageManager: storageManager, stores: stores)
+        ProductSelectorViewModel(siteID: siteID, storageManager: storageManager, stores: stores, onMultipleSelectionCompleted: { ids in
+            // TODO: save the selected product and variation IDs
+            print(ids)
+        })
     }()
 
     private let siteID: Int64

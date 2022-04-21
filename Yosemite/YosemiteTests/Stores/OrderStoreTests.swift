@@ -573,12 +573,17 @@ final class OrderStoreTests: XCTestCase {
         // Update: Expected Customer note is actually coming from `order.json` (Customer note == "")
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
 
-        let action = OrderAction.optimisticUpdateOrder(siteID: sampleSiteID, order: sampleOrder(), fields: [.customerNote]) { result in
-            let storageOrder = self.storageManager.viewStorage.loadOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID)
-            XCTAssert(storageOrder?.customerNote == "")
-
-            expectation.fulfill()
+        // When
+        let result: Result<Order, Error> = waitFor { promise in
+            let action = OrderAction.optimisticUpdateOrder(siteID: sampleSiteID, order: updatedOrder, fields: [.customerNote]) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
         }
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let storageOrder = self.storageManager.viewStorage.loadOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID)
+        XCTAssert(storageOrder?.customerNote == "")
 
         orderStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)

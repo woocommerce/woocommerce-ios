@@ -12,13 +12,40 @@ struct TitleAndValueRow: View {
 
     private let title: String
     private let value: Value
+    private let valueTextAlignment: TextAlignment
     private let bold: Bool
     private let selectionStyle: SelectionStyle
     private let action: () -> Void
 
-    init(title: String, value: Value, bold: Bool = false, selectionStyle: SelectionStyle = .none, action: @escaping () -> Void = {}) {
+    /// Static width for title label. Used to align values between different rows.
+    /// If `nil` - title will have intrinsic size.
+    ///
+    @Binding private var titleWidth: CGFloat?
+
+    /// Value frame alignment derived from its text alignment
+    ///
+    private var valueFrameAlignment: Alignment {
+        switch valueTextAlignment {
+        case .trailing:
+            return .trailing
+        case .leading:
+            return .leading
+        default:
+            return .center
+        }
+    }
+
+    init(title: String,
+         titleWidth: Binding<CGFloat?> = .constant(nil),
+         value: Value,
+         valueTextAlignment: TextAlignment = .trailing,
+         bold: Bool = false,
+         selectionStyle: SelectionStyle = .none,
+         action: @escaping () -> Void = {}) {
         self.title = title
+        self._titleWidth = titleWidth
         self.value = value
+        self.valueTextAlignment = valueTextAlignment
         self.bold = bold
         self.selectionStyle = selectionStyle
         self.action = action
@@ -29,15 +56,17 @@ struct TitleAndValueRow: View {
             action()
         }, label: {
             HStack {
-                AdaptiveStack(horizontalAlignment: .leading) {
+                AdaptiveStack(horizontalAlignment: .leading, spacing: Constants.spacing) {
                     Text(title)
                         .style(bold: bold, highlighted: selectionStyle == .highlight)
                         .multilineTextAlignment(.leading)
+                        .modifier(MaxWidthModifier())
+                        .frame(width: titleWidth, alignment: .leading)
 
                     Text(value.text)
                         .style(for: value, bold: bold, highlighted: false)
-                        .multilineTextAlignment(.trailing)
-                        .frame(maxWidth: .infinity, alignment: .trailing)
+                        .multilineTextAlignment(valueTextAlignment)
+                        .frame(maxWidth: .infinity, alignment: valueFrameAlignment)
                         .padding(.vertical, Constants.verticalPadding)
                 }
 
@@ -108,6 +137,7 @@ private extension TitleAndValueRow {
         static let maxHeight: CGFloat = 136
         static let horizontalPadding: CGFloat = 16
         static let verticalPadding: CGFloat = 12
+        static let spacing: CGFloat = 20
     }
 }
 

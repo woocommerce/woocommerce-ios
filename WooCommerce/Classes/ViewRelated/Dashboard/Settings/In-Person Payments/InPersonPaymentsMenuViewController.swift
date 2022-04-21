@@ -132,7 +132,7 @@ private extension InPersonPaymentsMenuViewController {
 //
 extension InPersonPaymentsMenuViewController {
     func orderCardReaderWasPressed() {
-        WebviewHelper.launch(configurationLoader.configuration.purchaseCardReaderUrl(for: plugin), with: self)
+        WebviewHelper.launch(configurationLoader.configuration.purchaseCardReaderUrl(), with: self)
     }
 
     func manageCardReaderWasPressed() {
@@ -147,7 +147,7 @@ extension InPersonPaymentsMenuViewController {
     }
 
     func bbposChipper2XBTManualWasPressed() {
-            WebviewHelper.launch(Constants.bbposChipper2XBTManualURL, with: self)
+        WebviewHelper.launch(Constants.bbposChipper2XBTManualURL, with: self)
     }
 
     func stripeM2ManualWasPressed() {

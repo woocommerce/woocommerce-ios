@@ -566,10 +566,9 @@ final class OrderStoreTests: XCTestCase {
     func test_optimistic_update_order_customer_note_correctly() {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let expectedCustomerNote = ""
 
-        let originalOrder = sampleOrder().copy(customerNote: "Updated!")
-        let updatedOrder = originalOrder.copy(customerNote: expectedCustomerNote)
+        let originalOrder = sampleOrder()
+        let updatedOrder = originalOrder.copy(customerNote: "Updated!")
 
         orderStore.upsertStoredOrder(readOnlyOrder: originalOrder, in: viewStorage)
 
@@ -593,7 +592,6 @@ final class OrderStoreTests: XCTestCase {
     func test_optimistic_update_order_customer_note_reverts_upon_failure() {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let expectedCustomerNote = ""
 
         let originalOrder = sampleOrder() // (Customer note == "")
         let updatedOrder = originalOrder.copy(customerNote: "Updated!")
@@ -619,10 +617,10 @@ final class OrderStoreTests: XCTestCase {
     func test_optimistic_update_order_shipping_phone_correctly() {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let expectedShippingPhone = "333-333-3333"
 
-        let originalOrder = sampleOrder().copy(shippingAddress: sampleAddressMutated()) // [Shipping Phone == "333-333-3334"]
-        let updatedOrder = originalOrder.copy(shippingAddress: sampleAddress()) // [Shipping Phone == "333-333-3333"]
+        let originalOrder = sampleOrder() // [Shipping Phone == "333-333-3333"]
+        let newAddress = Address.fake().copy(phone: "333-333-3334")
+        let updatedOrder = originalOrder.copy(shippingAddress: newAddress) // [Shipping Phone == "333-333-3334"]
 
         orderStore.upsertStoredOrder(readOnlyOrder: originalOrder, in: viewStorage)
 
@@ -640,16 +638,16 @@ final class OrderStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isSuccess)
         let storageOrder = storageManager.viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderID)
-        XCTAssertEqual(storageOrder?.shippingPhone, expectedShippingPhone)
+        XCTAssertEqual(storageOrder?.shippingPhone, updatedOrder.shippingAddress?.phone)
     }
 
     func test_optimistic_update_order_shipping_phone_reverts_upon_failure() {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let expectedShippingPhone = "333-333-3333"
 
         let originalOrder = sampleOrder() // [Shipping Phone == "333-333-3333"]
-        let updatedOrder = originalOrder.copy(shippingAddress: sampleAddressMutated()) // [Shipping Phone == "333-333-3334"]
+        let newAddress = Address.fake().copy(phone: "333-333-3334")
+        let updatedOrder = originalOrder.copy(shippingAddress: newAddress) // [Shipping Phone == "333-333-3334"]
 
         orderStore.upsertStoredOrder(readOnlyOrder: originalOrder, in: viewStorage)
 
@@ -666,17 +664,16 @@ final class OrderStoreTests: XCTestCase {
         // Then
         XCTAssertFalse(result.isSuccess)
         let storageOrder = storageManager.viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderID)
-        XCTAssertEqual(storageOrder?.shippingPhone, expectedShippingPhone)
+        XCTAssertEqual(storageOrder?.shippingPhone, originalOrder.shippingAddress?.phone)
     }
 
     func test_optimistic_update_order_shipping_and_billing_phone_correctly() {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let expectedShippingPhone = "333-333-3333"
-        let expectedBillingPhone = "333-333-3333"
 
-        let originalOrder = sampleOrder().copy(shippingAddress: sampleAddressMutated()) // [Shipping & Biling Phone == "333-333-3334"]
-        let updatedOrder = originalOrder.copy(shippingAddress: sampleAddress()) // [Shipping & Biling == "333-333-3333"]
+        let originalOrder = sampleOrder() // [Shipping & Biling Phone == "333-333-3333"]
+        let newAddress = Address.fake().copy(phone: "333-333-3334")
+        let updatedOrder = originalOrder.copy(billingAddress: newAddress, shippingAddress: newAddress) // [Shipping & Biling == "333-333-3334"]
 
         orderStore.upsertStoredOrder(readOnlyOrder: originalOrder, in: viewStorage)
 
@@ -696,8 +693,8 @@ final class OrderStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isSuccess)
         let storageOrder = storageManager.viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderID)
-        XCTAssertEqual(storageOrder?.shippingPhone, expectedShippingPhone)
-        XCTAssertEqual(storageOrder?.billingPhone, expectedBillingPhone)
+        XCTAssertEqual(storageOrder?.shippingPhone, updatedOrder.shippingAddress?.phone)
+        XCTAssertEqual(storageOrder?.billingPhone, updatedOrder.billingAddress?.phone)
     }
 
 
@@ -1094,19 +1091,7 @@ private extension OrderStoreTests {
                                   discountTotal: "40.00",
                                   total: "41.20",
                                   items: sampleItemsMutated2(),
-                                  shippingAddress: sampleAddressMutated(),
-                                  coupons: [],
-                                  taxes: [])
-    }
-
-    func sampleOrderMutated3() -> Networking.Order {
-        return sampleOrder().copy(status: .completed,
-                                  customerNote: "Updated!",
-                                  discountTotal: "40.00",
-                                  total: "41.20",
-                                  items: sampleItemsMutated2(),
-                                  billingAddress: sampleAddressMutated(),
-                                  shippingAddress: sampleAddressMutated(),
+                                  shippingAddress: sampleAddress(),
                                   coupons: [],
                                   taxes: [])
     }
@@ -1123,10 +1108,6 @@ private extension OrderStoreTests {
                        country: "US",
                        phone: "333-333-3333",
                        email: "scrambled@scrambled.com")
-    }
-
-    func sampleAddressMutated() -> Networking.Address {
-        Address.fake().copy(phone: "333-333-3334")
     }
 
     func sampleShippingLines() -> [Networking.ShippingLine] {

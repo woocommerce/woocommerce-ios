@@ -1110,11 +1110,9 @@ private extension OrderStoreTests {
 
     func sampleOrderMutated2() -> Networking.Order {
         return sampleOrder().copy(status: .completed,
-                                  customerNote: "Updated!",
                                   discountTotal: "40.00",
                                   total: "41.20",
                                   items: sampleItemsMutated2(),
-                                  shippingAddress: sampleAddress(),
                                   coupons: [],
                                   taxes: [])
     }

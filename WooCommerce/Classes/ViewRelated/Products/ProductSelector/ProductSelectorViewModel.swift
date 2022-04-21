@@ -92,15 +92,19 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// All selected products if the selector supports multiple selections.
     ///
-    @Published private var selectedProductIDs: [Int64]
+    @Published private var selectedProductIDs: [Int64] = []
 
     /// All selected product variations if the selector supports multiple selections.
     ///
-    @Published private var selectedProductVariationIDs: [Int64]
+    @Published private var selectedProductVariationIDs: [Int64] = []
 
     var totalSelectedItemsCount: Int {
         selectedProductIDs.count + selectedProductVariationIDs.count
     }
+
+    /// IDs of selected products and variations from initializer.
+    ///
+    private let initialSelectedItems: [Int64]
 
     /// Initializer for single selection
     ///
@@ -114,9 +118,8 @@ final class ProductSelectorViewModel: ObservableObject {
         self.stores = stores
         self.onProductSelected = onProductSelected
         self.onVariationSelected = onVariationSelected
-        self.selectedProductIDs = []
-        self.selectedProductVariationIDs = []
         self.onMultipleSelectionCompleted = nil
+        self.initialSelectedItems = []
 
         configureSyncingCoordinator()
         configureProductsResultsController()
@@ -127,8 +130,7 @@ final class ProductSelectorViewModel: ObservableObject {
     /// Initializer for multiple selections
     ///
     init(siteID: Int64,
-         selectedProductIDs: [Int64] = [],
-         selectedProductVariationIDs: [Int64] = [],
+         selectedItemIDs: [Int64],
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil) {
@@ -137,9 +139,8 @@ final class ProductSelectorViewModel: ObservableObject {
         self.stores = stores
         self.onProductSelected = nil
         self.onVariationSelected = nil
-        self.selectedProductIDs = selectedProductIDs
-        self.selectedProductVariationIDs = selectedProductVariationIDs
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
+        self.initialSelectedItems = selectedItemIDs
 
         configureSyncingCoordinator()
         configureProductsResultsController()
@@ -325,6 +326,7 @@ private extension ProductSelectorViewModel {
         do {
             try productsResultsController.performFetch()
             products = productsResultsController.fetchedObjects.filter { $0.purchasable }
+            updateSelectionsFromInitialSelectedItems()
             observeSelections()
         } catch {
             DDLogError("⛔️ Error fetching products for new order: \(error)")
@@ -383,6 +385,21 @@ private extension ProductSelectorViewModel {
             selectedProductIDs.removeAll(where: { $0 == productID })
         } else {
             selectedProductIDs.append(productID)
+        }
+    }
+
+    /// Update selected product and variation IDs from initial selected items
+    ///
+    func updateSelectionsFromInitialSelectedItems() {
+        guard initialSelectedItems.isNotEmpty else {
+            return
+        }
+        for id in initialSelectedItems {
+            if products.contains(where: { $0.productID == id }) {
+                selectedProductIDs.append(id)
+            } else {
+                selectedProductVariationIDs.append(id)
+            }
         }
     }
 

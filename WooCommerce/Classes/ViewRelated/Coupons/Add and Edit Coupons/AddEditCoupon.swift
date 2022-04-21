@@ -144,10 +144,15 @@ struct AddEditCoupon: View {
                                 showingSelectProducts = true
                             } label: {
                                 HStack {
-                                    Image(uiImage: .pencilImage).colorMultiply(Color(.text))
-                                        .frame(width: Constants.iconSize, height: Constants.iconSize)
-                                    Text(Localization.editProductsButton)
-                                        .bodyStyle()
+                                    if viewModel.productOrVariationIDs.isNotEmpty {
+                                        Image(uiImage: .pencilImage).colorMultiply(Color(.text))
+                                            .frame(width: Constants.iconSize, height: Constants.iconSize)
+                                        Text(String.localizedStringWithFormat(Localization.editProductsButton, viewModel.productOrVariationIDs.count))
+                                            .bodyStyle()
+                                    } else {
+                                        Text(Localization.allProductsButton)
+                                            .bodyStyle()
+                                    }
                                 }
                             }
                             .buttonStyle(SecondaryButtonStyle())
@@ -273,9 +278,13 @@ private extension AddEditCoupon {
         static let headerApplyCouponTo = NSLocalizedString(
             "Apply this coupon to",
             comment: "Header of the section for applying a coupon to specific products or categories in the view for adding or editing a coupon.")
+        static let allProductsButton = NSLocalizedString(
+            "All Products",
+            comment: "Button indicating that coupon can be applied to all products in the view for adding or editing a coupon.")
         static let editProductsButton = NSLocalizedString(
-            "Edit Products",
-            comment: "Button for specify the products where a coupon can be applied in the view for adding or editing a coupon.")
+            "Edit Products (%1$d)",
+            comment: "Button specifying the number of products applicable to a coupon in the view for adding or editing a coupon. " +
+            "Reads like: Edit Products (2)")
         static let editProductCategoriesButton = NSLocalizedString(
             "Edit Product Categories",
             comment: "Button for specify the product categories where a coupon can be applied in the view for adding or editing a coupon.")

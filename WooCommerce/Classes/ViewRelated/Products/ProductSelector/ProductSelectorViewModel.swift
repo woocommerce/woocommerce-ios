@@ -31,9 +31,7 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// All products that can be added to an order.
     ///
-    private var products: [Product] {
-        productsResultsController.fetchedObjects.filter { $0.purchasable }
-    }
+    @Published private var products: [Product] = []
 
     /// View models for each product row
     ///
@@ -314,7 +312,8 @@ private extension ProductSelectorViewModel {
     func updateProductsResultsController() {
         do {
             try productsResultsController.performFetch()
-            productRows = products.map { .init(product: $0, canChangeQuantity: false) }
+            products = productsResultsController.fetchedObjects.filter { $0.purchasable }
+            observeSelections()
         } catch {
             DDLogError("⛔️ Error fetching products for new order: \(error)")
         }
@@ -369,7 +368,7 @@ private extension ProductSelectorViewModel {
     ///
     func toggleSelection(productID: Int64) {
         if selectedProductIDs.contains(productID) {
-            selectedProductIDs = selectedProductIDs.filter { $0 == productID }
+            selectedProductIDs.removeAll(where: { $0 == productID })
         } else {
             selectedProductIDs.append(productID)
         }
@@ -379,10 +378,33 @@ private extension ProductSelectorViewModel {
     ///
     func toggleSelection(productVariationID: Int64) {
         if selectedProductVariationIDs.contains(productVariationID) {
-            selectedProductVariationIDs = selectedProductVariationIDs.filter { $0 == productVariationID }
+            selectedProductVariationIDs.removeAll(where: { $0 == productVariationID })
         } else {
             selectedProductVariationIDs.append(productVariationID)
         }
+    }
+
+    /// Observe changes in selections to update product rows
+    ///
+    func observeSelections() {
+        $products.combineLatest($selectedProductIDs, $selectedProductVariationIDs) { products, productIDs, variationIDs -> [ProductRowViewModel] in
+            return products.map { product in
+                var selectedState: ProductRow.SelectedState
+                if product.variations.isEmpty {
+                    selectedState = productIDs.contains(product.productID) ? .selected : .notSelected
+                } else {
+                    let intersection = Set(product.variations).intersection(Set(variationIDs))
+                    if intersection.isEmpty {
+                        selectedState = .notSelected
+                    } else if intersection.count == product.variations.count {
+                        selectedState = .selected
+                    } else {
+                        selectedState = .partiallySelected
+                    }
+                }
+                return ProductRowViewModel(product: product, canChangeQuantity: false, selectedState: selectedState)
+            }
+        }.assign(to: &$productRows)
     }
 }
 

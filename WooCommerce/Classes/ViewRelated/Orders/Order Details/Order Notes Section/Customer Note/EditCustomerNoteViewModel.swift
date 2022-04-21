@@ -31,21 +31,15 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
     ///
     private let analytics: Analytics
 
-    /// Unit Testing Helper: Update operation callback
-    ///
-    private let onUpdate: ((Bool) -> Void)?
-
     init(order: Order,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
-         onUpdate: ((Bool) -> Void)? = nil) {
+         systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         self.order = order
         self.newNote = order.customerNote ?? ""
         self.stores = stores
         self.analytics = analytics
         self.systemNoticePresenter = systemNoticePresenter
-        self.onUpdate = onUpdate
         bindNavigationTrailingItemPublisher()
     }
 
@@ -66,7 +60,7 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
                 DDLogError("⛔️ Unable to update the order: \(error)")
             }
 
-            self.onUpdate?(result.isSuccess)
+            onFinish(result.isSuccess)
         }
 
         stores.dispatch(action)

@@ -65,9 +65,9 @@ public enum OrderAction: Action {
     ///
     case updateOrder(siteID: Int64, order: Order, fields: [OrderUpdateField], onCompletion: (Result<Order, Error>) -> Void)
 
-    /// Optimistic updates the specified fields from an order.
+    /// Updates the specified fields from an order **optimistically**.
     ///
-    case optimisticUpdateOrder(siteID: Int64, order: Order, fields: [OrderUpdateField], onCompletion: (Result<Order, Error>) -> Void)
+    case updateOrderOptimistically(siteID: Int64, order: Order, fields: [OrderUpdateField], onCompletion: (Result<Order, Error>) -> Void)
 
     /// Creates a simple payments order with a specific amount value and  tax status.
     ///

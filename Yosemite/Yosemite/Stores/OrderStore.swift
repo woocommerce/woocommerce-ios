@@ -61,7 +61,7 @@ public class OrderStore: Store {
 
         case let .updateOrder(siteID, order, fields, onCompletion):
             updateOrder(siteID: siteID, order: order, fields: fields, onCompletion: onCompletion)
-        case let .optimisticUpdateOrder(siteID, order, fields, onCompletion):
+        case let .updateOrderOptimistically(siteID, order, fields, onCompletion):
             optimisticUpdateOrder(siteID: siteID, order: order, fields: fields, onCompletion: onCompletion)
         case let .createSimplePaymentsOrder(siteID, status, amount, taxable, onCompletion):
             createSimplePaymentsOrder(siteID: siteID, status: status, amount: amount, taxable: taxable, onCompletion: onCompletion)

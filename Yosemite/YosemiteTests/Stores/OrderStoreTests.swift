@@ -575,7 +575,7 @@ final class OrderStoreTests: XCTestCase {
 
         // When
         let result: Result<Order, Error> = waitFor { promise in
-            let action = OrderAction.optimisticUpdateOrder(siteID: sampleSiteID, order: updatedOrder, fields: [.customerNote]) { result in
+            let action = OrderAction.updateOrderOptimistically(siteID: sampleSiteID, order: updatedOrder, fields: [.customerNote]) { result in
                 promise(result)
             }
             self.store.onAction(action)
@@ -598,9 +598,9 @@ final class OrderStoreTests: XCTestCase {
 
         network.removeAllSimulatedResponses()
 
-        let action = OrderAction.optimisticUpdateOrder(siteID: sampleSiteID,
-                                                       order: sampleOrderMutated2(),
-                                                       fields: [.customerNote]) { result in
+        let action = OrderAction.updateOrderOptimistically(siteID: sampleSiteID,
+                                                           order: sampleOrderMutated2(),
+                                                           fields: [.customerNote]) { result in
             let storageOrder = self.storageManager.viewStorage.loadOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID)
             XCTAssert(storageOrder?.customerNote == "")
 
@@ -621,7 +621,7 @@ final class OrderStoreTests: XCTestCase {
         // Update: Expected Shipping phone is actually coming from `order.json` (Shipping Phone == "333-333-3333")
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
 
-        let action = OrderAction.optimisticUpdateOrder(siteID: sampleSiteID, order: sampleOrder(), fields: [.shippingAddress]) { result in
+        let action = OrderAction.updateOrderOptimistically(siteID: sampleSiteID, order: sampleOrder(), fields: [.shippingAddress]) { result in
             let storageOrder = self.storageManager.viewStorage.loadOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID)
             XCTAssert(storageOrder?.shippingPhone == "333-333-3333")
 
@@ -641,9 +641,9 @@ final class OrderStoreTests: XCTestCase {
 
         network.removeAllSimulatedResponses()
 
-        let action = OrderAction.optimisticUpdateOrder(siteID: sampleSiteID,
-                                                       order: sampleOrderMutated2(),
-                                                       fields: [.shippingAddress]) { result in
+        let action = OrderAction.updateOrderOptimistically(siteID: sampleSiteID,
+                                                           order: sampleOrderMutated2(),
+                                                           fields: [.shippingAddress]) { result in
             let storageOrder = self.storageManager.viewStorage.loadOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID)
             XCTAssert(storageOrder?.shippingPhone == "333-333-3333")
 
@@ -664,7 +664,7 @@ final class OrderStoreTests: XCTestCase {
         // Update: Expected Shipping and Billing phone are actually coming from `order.json` (Shipping and Billing Phone == "333-333-3333")
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
 
-        let action = OrderAction.optimisticUpdateOrder(siteID: sampleSiteID, order: sampleOrder(), fields: [.shippingAddress, .billingAddress]) { result in
+        let action = OrderAction.updateOrderOptimistically(siteID: sampleSiteID, order: sampleOrder(), fields: [.shippingAddress, .billingAddress]) { result in
             let storageOrder = self.storageManager.viewStorage.loadOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID)
             XCTAssert(storageOrder?.shippingPhone == "333-333-3333")
             XCTAssert(storageOrder?.billingPhone == "333-333-3333")

@@ -21,7 +21,6 @@ struct ProductRow: View {
     let accessibilityHint: String
 
     /// Image processor to resize images in a background thread to avoid blocking the UI
-    /// 
     ///
     private var imageProcessor: ImageProcessor {
         ResizingImageProcessor(

@@ -6,25 +6,7 @@ import SwiftUI
 ///
 final class EditCustomerNoteHostingController<ViewModel: EditCustomerNoteViewModelProtocol>: UIHostingController<EditCustomerNote<ViewModel>>,
                                                                                              UIAdaptivePresentationControllerDelegate {
-
-    /// References to keep the Combine subscriptions alive within the lifecycle of the object.
-    ///
-    private var subscriptions: Set<AnyCancellable> = []
-
-    /// Presents an error notice in the current modal presentation context
-    ///
-    private lazy var modalNoticePresenter: NoticePresenter = {
-        let presenter = DefaultNoticePresenter()
-        presenter.presentingViewController = self
-        return presenter
-    }()
-
-    /// Presents a success notice in the tab bar context after this `self` is dismissed.
-    ///
-    private let systemNoticePresenter: NoticePresenter
-
-    init(viewModel: ViewModel, systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
-        self.systemNoticePresenter = systemNoticePresenter
+    init(viewModel: ViewModel) {
         super.init(rootView: EditCustomerNote(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController

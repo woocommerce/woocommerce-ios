@@ -74,8 +74,15 @@ private extension EditCustomerNoteViewModel {
     ///   - onFinish: Callback to notify when the action has finished.
     ///
     func performUpdateOrderOptimistically(customerNote: String?, onFinish: ((Bool) -> Void)? = nil) {
-        let updateAction = makeUpdateCustomerNoteAction(withNote: customerNote, onFinish: onFinish)
+        let currentCustomerNote = order.customerNote
+        let updateAction = makeUpdateCustomerNoteAction(withNote: newNote, onFinish: onFinish)
+        let undoAction = makeUpdateCustomerNoteAction(withNote: currentCustomerNote)
+
         stores.dispatch(updateAction)
+
+        displayCustomerNoteUpdatedNotice { [weak self] in
+            self?.stores.dispatch(undoAction)
+        }
     }
 
     /// Makes an `updateOrderOptimistically` action from a given customer note.

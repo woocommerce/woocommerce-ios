@@ -46,24 +46,7 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
     /// Update the note remotely and invoke a completion block when finished
     ///
     func updateNote(onFinish: @escaping (Bool) -> Void) {
-        let modifiedOrder = order.copy(customerNote: newNote)
-        let action = OrderAction.updateOrder(siteID: order.siteID, order: modifiedOrder, fields: [.customerNote]) { [weak self] result in
-            guard let self = self else { return }
-
-            switch result {
-            case .success:
-                self.systemNoticePresenter.enqueue(notice: .init(title: Localization.success, feedbackType: .success))
-                self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCompleted(subject: .customerNote))
-            case .failure(let error):
-                self.systemNoticePresenter.enqueue(notice: .init(title: Localization.error, feedbackType: .error))
-                self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowFailed(subject: .customerNote))
-                DDLogError("⛔️ Unable to update the order: \(error)")
-            }
-
-            onFinish(result.isSuccess)
-        }
-
-        stores.dispatch(action)
+        performOptimisticUpdateOrder(customerNote: newNote, onFinish: onFinish)
     }
 
     /// Track the flow cancel scenario.
@@ -83,6 +66,29 @@ private extension EditCustomerNoteViewModel {
                 .done(enabled: editedContent != self?.order.customerNote)
             }
             .assign(to: &$navigationTrailingItem)
+    }
+
+    func performOptimisticUpdateOrder(customerNote: String?, onFinish: ((Bool) -> Void)? = nil) {
+        let modifiedOrder = order.copy(customerNote: customerNote)
+        let action = OrderAction.updateOrderOptimistically(siteID: order.siteID, order: modifiedOrder, fields: [.customerNote]) { [weak self] result in
+            guard let self = self else {
+                return
+            }
+
+            switch result {
+            case .success:
+                self.systemNoticePresenter.enqueue(notice: .init(title: Localization.success, feedbackType: .success))
+                self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCompleted(subject: .customerNote))
+            case .failure(let error):
+                self.systemNoticePresenter.enqueue(notice: .init(title: Localization.error, feedbackType: .error))
+                self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowFailed(subject: .customerNote))
+                DDLogError("⛔️ Unable to update the order: \(error)")
+            }
+
+            onFinish?(result.isSuccess)
+        }
+
+        stores.dispatch(action)
     }
 }
 

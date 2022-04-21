@@ -614,6 +614,29 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(storageOrder?.customerNote, originalOrder.customerNote)
     }
 
+    func test_optimistic_update_order_customer_note_delete_upon_failure_and_not_exist_locally() {
+        // Given
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let originalOrder = sampleOrder() // (Customer note == "")
+        let updatedOrder = originalOrder.copy(customerNote: "Updated!")
+
+        network.removeAllSimulatedResponses()
+
+        // When
+        let result: Result<Networking.Order, Error> = waitFor { promise in
+            let action = OrderAction.updateOrderOptimistically(siteID: self.sampleSiteID, order: updatedOrder, fields: [.customerNote]) { result in
+                promise(result)
+            }
+            orderStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertFalse(result.isSuccess)
+        let storageOrder = storageManager.viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderID)
+        XCTAssertNil(storageOrder)
+    }
+
     func test_optimistic_update_order_shipping_phone_correctly() {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)

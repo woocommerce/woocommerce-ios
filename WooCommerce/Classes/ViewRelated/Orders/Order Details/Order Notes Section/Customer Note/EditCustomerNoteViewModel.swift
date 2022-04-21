@@ -14,16 +14,6 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
     ///
     @Published private(set) var navigationTrailingItem: EditCustomerNoteNavigationItem = .done(enabled: false)
 
-    /// Defaults to `nil`.
-    ///
-    @Published var presentNotice: EditCustomerNoteNotice?
-
-    /// Publisher accessor for `presentNotice`. Needed for the protocol conformance.
-    ///
-    var presentNoticePublisher: Published<EditCustomerNoteNotice?>.Publisher {
-        $presentNotice
-    }
-
     /// Presents either a success or an error notice in the tab bar context after the update operation is done.
     ///
     private let systemNoticePresenter: NoticePresenter

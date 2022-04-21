@@ -68,6 +68,11 @@ private extension EditCustomerNoteViewModel {
             .assign(to: &$navigationTrailingItem)
     }
 
+    /// Dispatches the action to update the order optimistically.
+    /// - Parameters:
+    ///   - customerNote: New note to update the order.
+    ///   - onFinish: Callback to notify when the action has finished.
+    ///
     func performOptimisticUpdateOrder(customerNote: String?, onFinish: ((Bool) -> Void)? = nil) {
         let modifiedOrder = order.copy(customerNote: customerNote)
         let action = OrderAction.updateOrderOptimistically(siteID: order.siteID, order: modifiedOrder, fields: [.customerNote]) { [weak self] result in
@@ -90,6 +95,28 @@ private extension EditCustomerNoteViewModel {
 
         stores.dispatch(action)
     }
+
+    /// Enqueues the `Order Updated` Notice. Whenever the `Undo` button gets pressed, we'll execute the `onUndoAction` closure.
+    ///
+    func displayCustomerNoteUpdatedNotice(onUndoAction: @escaping () -> Void) {
+        let notice = Notice(title: Localization.success,
+                            feedbackType: .success,
+                            actionTitle: Localization.undo,
+                            actionHandler: onUndoAction)
+        systemNoticePresenter.enqueue(notice: notice)
+    }
+
+    /// Enqueues the `Unable to Change Customer Note of Order` Notice.
+    ///
+    func displayUpdateErrorNotice(customerNote: String?) {
+        let notice = Notice(title: Localization.error,
+                            feedbackType: .error,
+                            actionTitle: Localization.retry) { [weak self] in
+            self?.performOptimisticUpdateOrder(customerNote: customerNote)
+        }
+
+        systemNoticePresenter.enqueue(notice: notice)
+    }
 }
 
 // MARK: Localization
@@ -97,5 +124,7 @@ private extension EditCustomerNoteViewModel {
     enum Localization {
         static let success = NSLocalizedString("Successfully updated", comment: "Notice text after updating the order successfully")
         static let error = NSLocalizedString("There was an error updating the order", comment: "Notice text after failing to update the order successfully")
+        static let retry = NSLocalizedString("Retry", comment: "Retry Action")
+        static let undo = NSLocalizedString("Undo", comment: "Undo Action")
     }
 }

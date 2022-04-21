@@ -231,7 +231,7 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertFalse(resynchronizeRequested)
     }
 
-    func test_when_having_no_error_shows_simple_payments_banner() {
+    func test_when_having_no_error_shows_orders_banner() {
         // Given
         let viewModel = OrderListViewModel(siteID: siteID, filters: nil)
 
@@ -240,7 +240,7 @@ final class OrderListViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            viewModel.topBanner == .simplePayments
+            viewModel.topBanner == .orderCreation
         }
     }
 
@@ -258,14 +258,14 @@ final class OrderListViewModelTests: XCTestCase {
         }
     }
 
-    func test_dismissing_simple_payments_banners_does_not_show_banners() {
+    func test_dismissing_orders_banners_does_not_show_banners() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
 
         // When
         viewModel.activate()
-        viewModel.hideSimplePaymentsBanners = true
+        viewModel.hideOrdersBanners = true
 
         // Then
         waitUntil {
@@ -273,14 +273,14 @@ final class OrderListViewModelTests: XCTestCase {
         }
     }
 
-    func test_hiding_simplePayments_banners_still_shows_error_banner() {
+    func test_hiding_orders_banners_still_shows_error_banner() {
         // Given
         let viewModel = OrderListViewModel(siteID: siteID, filters: nil)
 
         // When
         viewModel.activate()
         viewModel.hasErrorLoadingData = true
-        viewModel.hideSimplePaymentsBanners = true
+        viewModel.hideOrdersBanners = true
 
         // Then
         waitUntil {

@@ -31,15 +31,18 @@ final class CardReaderSettingsSearchingViewModel: CardReaderSettingsPresentedVie
     }
 
     let configuration: CardPresentPaymentsConfiguration
+    let cardReaderConnectionAnalyticsTracker: CardReaderConnectionAnalyticsTracker
 
     init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?,
          knownReaderProvider: CardReaderSettingsKnownReaderProvider? = nil,
          stores: StoresManager = ServiceLocator.stores,
-         configuration: CardPresentPaymentsConfiguration) {
+         configuration: CardPresentPaymentsConfiguration,
+         cardReaderConnectionAnalyticsTracker: CardReaderConnectionAnalyticsTracker) {
         self.didChangeShouldShow = didChangeShouldShow
         self.siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min
         self.knownReaderProvider = knownReaderProvider
         self.configuration = configuration
+        self.cardReaderConnectionAnalyticsTracker = cardReaderConnectionAnalyticsTracker
 
         beginKnownReaderObservation()
         beginConnectedReaderObservation()

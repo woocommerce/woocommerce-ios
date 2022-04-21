@@ -25,8 +25,6 @@ struct MockAppSettingsActionHandler: MockActionHandler {
             onCompletion(.failure(AppSettingsStoreErrors.noEligibilityErrorInfo))
         case .loadJetpackBenefitsBannerVisibility(_, _, let onCompletion):
             onCompletion(false)
-        case .loadOrderCreationSwitchState(let onCompletion):
-            onCompletion(.success(true))
         case .resetEligibilityErrorInfo, .setTelemetryAvailability, .loadOrdersSettings, .upsertProductsSettings:
             break
         default: unimplementedAction(action: action)

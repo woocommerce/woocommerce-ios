@@ -2,11 +2,16 @@ import UIKit
 import Yosemite
 
 /// The UI that shows the approved Reviews related to a specific product.
-final class ProductReviewsViewController: UIViewController {
+final class ProductReviewsViewController: UIViewController, GhostableViewController {
 
     private let product: Product
 
     private let viewModel: ProductReviewsViewModel
+
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: ProductReviewTableViewCell.self,
+                                                                                                estimatedRowHeight: ReviewsDataSource
+                                                                                                                    .Settings
+                                                                                                                    .estimatedRowHeight))
 
     /// Pull To Refresh Support.
     ///
@@ -55,7 +60,9 @@ final class ProductReviewsViewController: UIViewController {
     // MARK: - View Lifecycle
     init(product: Product) {
         self.product = product
-        viewModel = ProductReviewsViewModel(siteID: product.siteID, data: ProductReviewsDataSource(product: product))
+        viewModel = ProductReviewsViewModel(siteID: product.siteID,
+                                            data: ReviewsDataSource(siteID: product.siteID,
+                                                                           customizer: ProductReviewsDataSourceCustomizer(product: product)))
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -108,7 +115,6 @@ private extension ProductReviewsViewController {
         tableView.delegate = self
         tableView.tableFooterView = footerSpinnerView
         tableView.sectionFooterHeight = .leastNonzeroMagnitude
-        tableView.allowsSelection = false
     }
 
     /// Setup: ResultsController
@@ -166,19 +172,6 @@ extension ProductReviewsViewController: UITableViewDelegate {
 // MARK: - Placeholders
 //
 private extension ProductReviewsViewController {
-
-    /// Renders Placeholder Reviews.
-    ///
-    func displayPlaceholderReviews() {
-        viewModel.displayPlaceholderReviews(tableView: tableView)
-    }
-
-    /// Removes Placeholder Reviews.
-    ///
-    func removePlaceholderReviews() {
-        viewModel.removePlaceholderReviews(tableView: tableView)
-    }
-
     /// Displays the EmptyStateViewController.
     ///
     func displayEmptyViewController() {
@@ -242,7 +235,7 @@ private extension ProductReviewsViewController {
         case .results:
             break
         case .placeholder:
-            displayPlaceholderReviews()
+            displayGhostContent()
         case .syncing:
             ensureFooterSpinnerIsStarted()
         }
@@ -257,7 +250,7 @@ private extension ProductReviewsViewController {
         case .results:
             break
         case .placeholder:
-            removePlaceholderReviews()
+            removeGhostContent()
         case .syncing:
             ensureFooterSpinnerIsStopped()
         }

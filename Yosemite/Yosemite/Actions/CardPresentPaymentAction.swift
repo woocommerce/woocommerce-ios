@@ -19,10 +19,6 @@ public enum CardPresentPaymentAction: Action {
     ///
     case loadAccounts(siteID: Int64, onCompletion: (Result<Void, Error>) -> Void)
 
-    /// Get a Stripe Customer for an order.
-    ///
-    case fetchOrderCustomer(siteID: Int64, orderID: Int64, onCompletion: (Result<WCPayCustomer, Error>) -> Void)
-
     /// Captures a payment intent ID, associated to an order and site
     case captureOrderPayment(siteID: Int64,
                              orderID: Int64,
@@ -64,10 +60,10 @@ public enum CardPresentPaymentAction: Action {
 
     /// Refund payment of an order, client side. Only for use on Interac payments
     ///
-    case refundPayment(parameters: RefundParameters)
+    case refundPayment(parameters: RefundParameters, onCardReaderMessage: (CardReaderEvent) -> Void, onCompletion: ((Result<Void, Error>) -> Void)?)
 
     /// Cancels a refund, if one is in progress
-    case cancelRefund
+    case cancelRefund(onCompletion: ((Result<Void, Error>) -> Void)?)
 
     /// Check the state of available software updates.
     case observeCardReaderUpdateState(onCompletion: (AnyPublisher<CardReaderSoftwareUpdateState, Never>) -> Void)

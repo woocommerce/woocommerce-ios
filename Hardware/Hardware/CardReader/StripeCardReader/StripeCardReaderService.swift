@@ -461,7 +461,12 @@ private extension StripeCardReaderService {
             Terminal.shared.processPayment(intent) { (intent, error) in
                 if let error = error {
                     let underlyingError = UnderlyingError(with: error)
-                    promise(.failure(CardReaderServiceError.paymentCapture(underlyingError: underlyingError)))
+                    if let paymentMethod = error.paymentIntent.map({ PaymentIntent(intent: $0) })?.paymentMethod() {
+                        promise(.failure(CardReaderServiceError.paymentCaptureWithPaymentMethod(underlyingError: underlyingError,
+                                                                                                paymentMethod: paymentMethod)))
+                    } else {
+                        promise(.failure(CardReaderServiceError.paymentCapture(underlyingError: underlyingError)))
+                    }
                 }
 
                 if let intent = intent {
@@ -476,13 +481,7 @@ private extension StripeCardReaderService {
 // MARK: - Refunds
 extension StripeCardReaderService {
     public func refundPayment(parameters: RefundParameters) -> AnyPublisher<String, Error> {
-        if isChipCardInserted {
-            sendReaderEvent(CardReaderEvent.make(displayMessage: .removeCard))
-        }
-        return waitForInsertedCardToBeRemoved()
-            .flatMap {
-                self.createRefundParameters(parameters: parameters)
-            }
+        return createRefundParameters(parameters: parameters)
             .flatMap { refundParameters in
                 self.refund(refundParameters)
             }
@@ -519,10 +518,12 @@ extension StripeCardReaderService {
         return Future() { [weak self] promise in
             self?.refundCancellable = Terminal.shared.collectRefundPaymentMethod(parameters) { collectError in
                 if let error = collectError {
+                    self?.refundCancellable = nil
                     promise(.failure(CardReaderServiceError.refundPayment(underlyingError: UnderlyingError(with: error))))
                 } else {
                     // Process refund
                     Terminal.shared.processRefund { processedRefund, processError in
+                        self?.refundCancellable = nil
                         if let error = processError {
                             promise(.failure(CardReaderServiceError.refundPayment(underlyingError: UnderlyingError(with: error))))
                         } else if let refund = processedRefund {
@@ -558,7 +559,7 @@ extension StripeCardReaderService {
                 }
                 promise(.success(()))
             })
-            //TODO: handle timeout?
+            //TODO: 5983 - handle timeout when called from retry after refund failure
         }.eraseToAnyPublisher()
     }
 }

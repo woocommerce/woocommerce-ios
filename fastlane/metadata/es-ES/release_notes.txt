@@ -1,3 +1,3 @@
-Ahora al realizar un reembolso, se muestran los datos de la tarjeta de crédito para el pago en persona. De esta forma, podrás indicar a tus clientes el destino exacto del reembolso.
+Crea pedidos sobre la marcha con productos, información de envío y facturación, y tarifas. Puedes aceptar un pago en persona mediante tarjeta de crédito de manera rápida y al momento o bien, enviar un enlace a un cliente para que pague el pedido desde su dispositivo. Lo habías pedido y aquí lo tienes.
 
-Algunas de las nuevas funciones aún no están disponibles para el público en general, pero tú ya puedes echarles un vistazo. ¡Crea pedidos, visualiza cupones y mucho más! Ve a los ajustes de la pestaña Menú y actívalo en Ajustes experimentales. Agradecemos que nos envíes tus comentarios sobre la aplicación, especialmente los que tratan sobre las nuevas funciones en las que estamos trabajando y a las que te damos acceso anticipado.
+También estamos avanzando con la función de gestión de cupones. Para ver un adelanto, activa la opción en la pestaña Más > Ajustes > Funciones experimentales.

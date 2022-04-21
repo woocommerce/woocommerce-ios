@@ -203,6 +203,7 @@ public enum WooAnalyticsStat: String {
     case orderDetailEditFlowCompleted = "order_detail_edit_flow_completed"
     case orderDetailEditFlowCanceled = "order_detail_edit_flow_canceled"
     case orderDetailEditFlowFailed = "order_detail_edit_flow_failed"
+    case orderDetailPaymentLinkShared = "order_detail_payment_link_shared"
 
     // MARK: Order Data/Action Events
     //

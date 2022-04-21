@@ -933,6 +933,7 @@ private extension OrderStoreTests {
                                  totalTax: "1.20",
                                  paymentMethodID: "stripe",
                                  paymentMethodTitle: "Credit Card (Stripe)",
+                                 paymentURL: URL(string: "http://www.automattic.com"),
                                  items: sampleItems(),
                                  billingAddress: sampleAddress(),
                                  shippingAddress: sampleAddress(),

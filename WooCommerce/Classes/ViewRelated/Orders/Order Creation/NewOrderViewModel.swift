@@ -1,6 +1,7 @@
 import Yosemite
 import Combine
 import protocol Storage.StorageManagerType
+import Experiments
 
 /// View model for `NewOrder`.
 ///
@@ -9,6 +10,7 @@ final class NewOrderViewModel: ObservableObject {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let currencyFormatter: CurrencyFormatter
+    private let featureFlagService: FeatureFlagService
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -16,6 +18,12 @@ final class NewOrderViewModel: ObservableObject {
     ///
     var hasChanges: Bool {
         orderSynchronizer.order != OrderFactory.emptyNewOrder
+    }
+
+    /// Indicates whether the cancel button is visible.
+    ///
+    var shouldShowCancelButton: Bool {
+        featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
     }
 
     /// Active navigation bar trailing item.
@@ -106,7 +114,7 @@ final class NewOrderViewModel: ObservableObject {
     /// View model for the product list
     ///
     lazy var addProductViewModel = {
-        AddProductToOrderViewModel(siteID: siteID, storageManager: storageManager, stores: stores) { [weak self] product in
+        ProductSelectorViewModel(siteID: siteID, storageManager: storageManager, stores: stores) { [weak self] product in
             guard let self = self else { return }
             self.addProductToOrder(product)
         } onVariationSelected: { [weak self] variation in
@@ -129,6 +137,10 @@ final class NewOrderViewModel: ObservableObject {
     /// Representation of customer data display properties.
     ///
     @Published private(set) var customerDataViewModel: CustomerDataViewModel = .init(billingAddress: nil, shippingAddress: nil)
+
+    /// View model for the customer details address form.
+    ///
+    @Published private(set) var addressFormViewModel: CreateOrderAddressFormViewModel
 
     // MARK: Customer note properties
 
@@ -188,13 +200,19 @@ final class NewOrderViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.analytics = analytics
         self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, stores: stores, currencySettings: currencySettings)
+        self.featureFlagService = featureFlagService
+
+        // Set a temporary initial view model, as a workaround to avoid making it optional.
+        // Needs to be reset before the view model is used.
+        self.addressFormViewModel = .init(siteID: siteID, addressData: .init(billingAddress: nil, shippingAddress: nil), onAddressUpdate: nil)
 
         configureDisabledState()
         configureNavigationTrailingItem()
@@ -204,6 +222,7 @@ final class NewOrderViewModel: ObservableObject {
         configureCustomerDataViewModel()
         configurePaymentDataViewModel()
         configureCustomerNoteDataViewModel()
+        resetAddressForm()
     }
 
     /// Selects an order item by setting the `selectedProductViewModel`.
@@ -249,13 +268,15 @@ final class NewOrderViewModel: ObservableObject {
         }
     }
 
-    /// Creates a view model to be used in Address Form for customer address.
+    /// Resets the view model for the customer details address form based on the order addresses.
     ///
-    func createOrderAddressFormViewModel() -> CreateOrderAddressFormViewModel {
-        CreateOrderAddressFormViewModel(siteID: siteID,
-                                        addressData: .init(billingAddress: orderSynchronizer.order.billingAddress,
-                                                           shippingAddress: orderSynchronizer.order.shippingAddress),
-                                        onAddressUpdate: { [weak self] updatedAddressData in
+    /// Can be used to configure the address form for first use or discard pending changes.
+    ///
+    func resetAddressForm() {
+        addressFormViewModel = CreateOrderAddressFormViewModel(siteID: siteID,
+                                                               addressData: .init(billingAddress: orderSynchronizer.order.billingAddress,
+                                                                                  shippingAddress: orderSynchronizer.order.shippingAddress),
+                                                               onAddressUpdate: { [weak self] updatedAddressData in
             let input = Self.createAddressesInput(from: updatedAddressData)
             self?.orderSynchronizer.setAddresses.send(input)
             self?.trackCustomerDetailsAdded()

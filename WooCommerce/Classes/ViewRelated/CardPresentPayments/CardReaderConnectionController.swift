@@ -99,6 +99,10 @@ final class CardReaderConnectionController {
     ///
     private var candidateReader: CardReader?
 
+    /// Tracks analytics for card reader connection events
+    ///
+    private let analyticsTracker: CardReaderConnectionAnalyticsTracker
+
     /// Since the number of readers can go greater than 1 and then back to 1, and we don't
     /// want to keep changing the UI from the several-readers-found list to a single prompt
     /// and back (as this would be visually quite annoying), this flag will tell us that we've
@@ -120,6 +124,7 @@ final class CardReaderConnectionController {
     private var gatewayID: String? {
         didSet {
             didSetGatewayID()
+            analyticsTracker.setGatewayID(gatewayID: gatewayID)
         }
     }
 
@@ -129,7 +134,8 @@ final class CardReaderConnectionController {
         stores: StoresManager = ServiceLocator.stores,
         knownReaderProvider: CardReaderSettingsKnownReaderProvider,
         alertsProvider: CardReaderSettingsAlertsProvider,
-        configuration: CardPresentPaymentsConfiguration
+        configuration: CardPresentPaymentsConfiguration,
+        analyticsTracker: CardReaderConnectionAnalyticsTracker
     ) {
         siteID = forSiteID
         self.storageManager = storageManager
@@ -141,6 +147,7 @@ final class CardReaderConnectionController {
         knownReaderID = nil
         skippedReaderIDs = []
         self.configuration = configuration
+        self.analyticsTracker = analyticsTracker
 
         configureResultsControllers()
         loadPaymentGatewayAccounts()
@@ -484,24 +491,12 @@ private extension CardReaderConnectionController {
             return { [weak self] in
                 guard let self = self else { return }
                 self.state = .cancel
-                ServiceLocator.analytics.track(
-                    event: WooAnalyticsEvent.InPersonPayments.cardReaderSoftwareUpdateCancelTapped(
-                        forGatewayID: self.gatewayID,
-                        updateType: .required,
-                        countryCode: self.configuration.countryCode
-                    )
-                )
-                cancelable.cancel { result in
+                self.analyticsTracker.cardReaderSoftwareUpdateCancelTapped()
+                cancelable.cancel { [weak self] result in
                     if case .failure(let error) = result {
                         DDLogError("💳 Error: canceling software update \(error)")
                     } else {
-                        ServiceLocator.analytics.track(
-                            event: WooAnalyticsEvent.InPersonPayments.cardReaderSoftwareUpdateCanceled(
-                                forGatewayID: self.gatewayID,
-                                updateType: .required,
-                                countryCode: self.configuration.countryCode
-                            )
-                        )
+                        self?.analyticsTracker.cardReaderSoftwareUpdateCanceled()
                     }
                 }
             }
@@ -544,10 +539,14 @@ private extension CardReaderConnectionController {
             return
         }
 
+        analyticsTracker.setCandidateReader(candidateReader)
+
         let softwareUpdateAction = CardPresentPaymentAction.observeCardReaderUpdateState { [weak self] softwareUpdateEvents in
             guard let self = self else { return }
 
-            softwareUpdateEvents.sink { event in
+            softwareUpdateEvents.sink { [weak self] event in
+                guard let self = self else { return }
+
                 switch event {
                 case .started(cancelable: let cancelable):
                     self.softwareUpdateCancelable = cancelable
@@ -569,15 +568,19 @@ private extension CardReaderConnectionController {
         stores.dispatch(softwareUpdateAction)
 
         let action = CardPresentPaymentAction.connect(reader: candidateReader) { [weak self] result in
+            guard let self = self else { return }
+
+            self.analyticsTracker.setCandidateReader(nil)
+
             switch result {
             case .success(let reader):
-                guard let self = self else { return }
                 self.knownCardReaderProvider.rememberCardReader(cardReaderID: reader.id)
                 ServiceLocator.analytics.track(
                     event: WooAnalyticsEvent.InPersonPayments
                         .cardReaderConnectionSuccess(forGatewayID: self.gatewayID,
                                                      batteryLevel: reader.batteryLevel,
-                                                     countryCode: self.configuration.countryCode)
+                                                     countryCode: self.configuration.countryCode,
+                                                     cardReaderModel: reader.readerType.model)
                 )
                 // If we were installing a software update, introduce a small delay so the user can
                 // actually see a success message showing the installation was complete
@@ -589,11 +592,11 @@ private extension CardReaderConnectionController {
                     self.returnSuccess(connected: true)
                 }
             case .failure(let error):
-                guard let self = self else { return }
                 ServiceLocator.analytics.track(
                     event: WooAnalyticsEvent.InPersonPayments.cardReaderConnectionFailed(forGatewayID: self.gatewayID,
                                                                                          error: error,
-                                                                                         countryCode: self.configuration.countryCode)
+                                                                                         countryCode: self.configuration.countryCode,
+                                                                                         cardReaderModel: candidateReader.readerType.model)
                 )
                 self.state = .connectingFailed(error)
             }

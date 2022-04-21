@@ -16,11 +16,4 @@ final class ProductInOrderViewModel: Identifiable {
         self.productRowViewModel = productRowViewModel
         self.onRemoveProduct = onRemoveProduct
     }
-
-    convenience init(product: Product,
-         onRemoveProduct: @escaping () -> Void) {
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false)
-        self.init(productRowViewModel: viewModel,
-                  onRemoveProduct: onRemoveProduct)
-    }
 }

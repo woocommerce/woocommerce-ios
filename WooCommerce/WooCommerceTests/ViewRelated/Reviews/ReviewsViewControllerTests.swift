@@ -55,10 +55,10 @@ private extension ReviewsViewController {
 //
 private final class MockReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHandler {
 
-    private let data: ReviewsDataSource
+    private let data: ReviewsDataSourceProtocol
 
     init(siteID: Int64) {
-        self.data = DefaultReviewsDataSource(siteID: siteID)
+        self.data = ReviewsDataSource(siteID: siteID, customizer: GlobalReviewsDataSourceCustomizer())
     }
 
     // `ReviewsViewModelOutput` conformance
@@ -85,9 +85,9 @@ private final class MockReviewsViewModel: ReviewsViewModelOutput, ReviewsViewMod
 
     // Empty methods for `ReviewsViewModelActionsHandler` conformance
     //
-    func displayPlaceholderReviews(tableView: UITableView) {}
+    func didDisplayPlaceholderReviews() {}
 
-    func removePlaceholderReviews(tableView: UITableView) {}
+    func didRemovePlaceholderReviews(tableView: UITableView) {}
 
     func configureResultsController(tableView: UITableView) {}
 

@@ -1,5 +1,6 @@
-Your business might use custom order statuses – and now you can filter orders with those statuses! Tap on the Filter button in the order list to see this option.
 
-Some of you have eagle eyes and noticed that the sort of products in an order doesn’t always match the web. We fixed it!
+- [*] Share payment links from the order details screen. [https://github.com/woocommerce/woocommerce-ios/pull/6609]
+- [internal] Reviews lists on Products and Menu tabs are refactored to avoid duplicated code. Please quickly smoke test them to make sure that everything still works as before. [https://github.com/woocommerce/woocommerce-ios/pull/6553]
+- [**] Now it's possible to change the order of the product images. [https://github.com/woocommerce/woocommerce-ios/pull/6620]
+- [*] Improved accessibility for the error banner and info banner displayed in Orders and Products. [https://github.com/woocommerce/woocommerce-ios/pull/6633]
 
-Did you know we’re working on a new feature for creating orders? Head to the Menu tab, tap the settings icon, and scroll to experimental features. In this release, we’ve added a shipping method and fees section. There is also a new Coupons feature that you can help us try out! Let us know if you find anything that could be improved.

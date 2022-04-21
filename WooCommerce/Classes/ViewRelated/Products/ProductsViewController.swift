@@ -11,10 +11,7 @@ final class ProductsViewController: UIViewController {
 
     /// Main TableView
     ///
-    private lazy var tableView: UITableView = {
-        let tableView = UITableView(frame: .zero, style: .plain)
-        return tableView
-    }()
+    @IBOutlet weak var tableView: UITableView!
 
     /// Pull To Refresh Support.
     ///
@@ -150,7 +147,7 @@ final class ProductsViewController: UIViewController {
 
     init(siteID: Int64) {
         self.siteID = siteID
-        super.init(nibName: nil, bundle: nil)
+        super.init(nibName: type(of: self).nibName, bundle: nil)
 
         configureTabBarItem()
     }
@@ -330,10 +327,6 @@ private extension ProductsViewController {
     /// Configure common table properties.
     ///
     func configureTableView() {
-        view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        view.pinSubviewToAllEdges(tableView)
-
         tableView.dataSource = self
         tableView.delegate = self
 

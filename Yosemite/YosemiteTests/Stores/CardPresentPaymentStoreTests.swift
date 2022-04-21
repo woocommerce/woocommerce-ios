@@ -358,50 +358,6 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that the store hits the network when fetching a customer for an order, and propagates success.
-    ///
-    func test_fetchOrderCustomer_returns_expected_data() {
-        let store = CardPresentPaymentStore(dispatcher: dispatcher,
-                                            storageManager: storageManager,
-                                            network: network,
-                                            cardReaderService: mockCardReaderService)
-        let expectation = self.expectation(description: #function)
-        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/create_customer",
-                                 filename: "wcpay-customer")
-        let action = CardPresentPaymentAction.fetchOrderCustomer(siteID: sampleSiteID,
-                                                                    orderID: sampleOrderID,
-                                                                    onCompletion: { result in
-                                                                        XCTAssertTrue(result.isSuccess)
-                                                                        if case .success(let customer) = result {
-                                                                            XCTAssertEqual(customer.id, "cus_0123456789abcd")
-                                                                            expectation.fulfill()
-                                                                        }
-                                                                    })
-        store.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
-    }
-
-    /// Verifies that the store hits the network when fetching a customer for an order, and propagates errors.
-    ///
-    func test_fetchOrderCustomer_returns_error_on_failure() {
-        let store = CardPresentPaymentStore(dispatcher: dispatcher,
-                                            storageManager: storageManager,
-                                            network: network,
-                                            cardReaderService: mockCardReaderService)
-        let expectation = self.expectation(description: #function)
-        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/create_customer",
-                                 filename: "wcpay-customer-error")
-        let action = CardPresentPaymentAction.fetchOrderCustomer(siteID: sampleSiteID,
-                                                                    orderID: sampleOrderID,
-                                                                    onCompletion: { result in
-                                                                        XCTAssertTrue(result.isFailure)
-                                                                        expectation.fulfill()
-                                                                    })
-
-        store.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
-    }
-
     /// Verifies that the store hits the network when fetching a charge, and propagates success.
     ///
     func test_fetchWCPayCharge_returns_expected_data() throws {

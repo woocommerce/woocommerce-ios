@@ -1,3 +1,3 @@
-Je zult merken dat je de creditcardgegevens van een fysieke betaling nu kunt zien wanneer je kosten terugbetaald. Zo weten je klanten precies waar het geld naartoe gaat!
+Maak bestellingen onderweg aan met producten, verzendings- en factuurgegevens en toeslagen! Je kunt direct na aankoop snel een fysieke creditcardbetaling aannemen of de klant een betaallink naar hun apparaat sturen. Jullie vroegen ernaar en nu is de mogelijkheid er!
 
-We hebben een paar nieuwe functies ontwikkeld die nog niet klaar zijn voor algemeen gebruik, maar je kunt ze wel vroegtijdig uitproberen! Maak bestellingen aan, bekijk coupons en meer! Ga naar het tabblad ‘Menu’, ‘instellingen’ en dan ‘Experimentele instellingen’ om het in te schakelen. We horen graag je feedback over de app, en vooral over de nieuwe functies die we aan het ontwikkelen zijn en nu vroegtijdig toegankelijk zijn.
+We zijn ook bezig met onze functie voor couponbeheer. Krijg een voorproefje van de functie door deze in te schakelen via het tabblad Meer > Instellingen > Experimentele functies.

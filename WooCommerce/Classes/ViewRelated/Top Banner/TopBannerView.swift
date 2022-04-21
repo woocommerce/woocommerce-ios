@@ -44,6 +44,12 @@ final class TopBannerView: UIView {
         return stackView
     }()
 
+    private let titleStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        return stackView
+    }()
+
     // StackView to hold the action buttons. Needed to change the axis on larger accessibility traits
     private let buttonsStackView = UIStackView()
 
@@ -126,6 +132,7 @@ private extension TopBannerView {
             dismissButton.setImage(UIImage.gridicon(.cross, size: CGSize(width: 24, height: 24)), for: .normal)
             dismissButton.tintColor = .textSubtle
             dismissButton.addTarget(self, action: #selector(onDismissButtonTapped), for: .touchUpInside)
+            titleStackView.accessibilityHint = Localization.dismissHint
 
         case .none:
             break
@@ -162,9 +169,12 @@ private extension TopBannerView {
 
     func createInformationStackView(with viewModel: TopBannerViewModel) -> UIStackView {
         let topActionButton = topButton(for: viewModel.topButton)
-        let titleStackView = UIStackView(arrangedSubviews: [titleLabel, topActionButton].compactMap { $0 })
-        titleStackView.axis = .horizontal
+        titleStackView.addArrangedSubviews([titleLabel, topActionButton].compactMap { $0 })
         titleStackView.spacing = 16
+        titleStackView.isAccessibilityElement = true
+        titleStackView.accessibilityTraits = .button
+        titleStackView.accessibilityLabel = viewModel.title
+        titleStackView.accessibilityIdentifier = topActionButton?.accessibilityIdentifier
 
         // titleStackView will hidden if there is no title
         titleStackView.isHidden = viewModel.title == nil || viewModel.title?.isEmpty == true
@@ -287,8 +297,22 @@ private extension TopBannerView {
         if isActionEnabled {
             actionStackView.isHidden = !isExpanded
         }
+        titleStackView.accessibilityHint = isExpanded ? Localization.collapseHint : Localization.expandHint
+        titleStackView.accessibilityValue = isExpanded ? Localization.expanded : Localization.collapsed
 
         let accessibleView = isExpanded ? infoLabel : nil
         UIAccessibility.post(notification: .layoutChanged, argument: accessibleView)
+    }
+}
+
+// MARK: Constants
+//
+private extension TopBannerView {
+    enum Localization {
+        static let expanded = NSLocalizedString("Expanded", comment: "Accessibility value when a banner is expanded")
+        static let collapsed = NSLocalizedString("Collapsed", comment: "Accessibility value when a banner is collapsed")
+        static let expandHint = NSLocalizedString("Double-tap for more information", comment: "Accessibility hint to expand a banner")
+        static let collapseHint = NSLocalizedString("Double-tap to collapse", comment: "Accessibility hint to collapse a banner")
+        static let dismissHint = NSLocalizedString("Double-tap to dismiss", comment: "Accessibility hint to dismiss a banner")
     }
 }

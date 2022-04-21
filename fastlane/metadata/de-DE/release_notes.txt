@@ -1,3 +1,3 @@
-Ab sofort werden bei Rückerstattungen die Kreditkartendaten für persönliche Zahlungen angezeigt. So kannst du deinen Kunden genau mitteilen, wohin das Guthaben überwiesen wird!
+Erstelle unterwegs Bestellungen mit Produkten, Versand- und Rechnungsinformationen! Du kannst direkt im Anschluss eine persönliche Kreditkartenzahlung annehmen oder einen Link an einen Kunden senden, damit dieser die Bestellung auf seinem eigenen Gerät bezahlen kann. Du hast es dir gewünscht und wir haben diesen Wunsch erfüllt!
 
-Einige neue Funktionen sind noch nicht für alle Nutzer verfügbar, du kannst sie dir aber schon vorab ansehen! Bestellungen erstellen, Gutscheine anzeigen und vieles mehr! Unter dem Tab „Menü“ > „Einstellungen“ > „Experimentelle Einstellungen“ kannst du sie aktivieren. Wir freuen uns auf dein Feedback zur App, vor allem zu den neuen Funktionen, an denen wir zurzeit arbeiten und auf die wir frühzeitigen Zugriff gewähren.
+Auch bei der Funktion zur Verwaltung von Gutscheinen machen wir Fortschritte. Auf dem Tab „Mehr“ unter „Einstellungen“ > „Experimentelle Funktionen“ kannst du sie aktivieren und sie dir genauer ansehen.

@@ -1,3 +1,3 @@
-Agora os dados de cartão de crédito em pagamentos presenciais são exibidos quando você faz um reembolso. Assim, você pode informar aos clientes exatamente aonde eles receberão o estorno.
+Crie pedidos de onde estiver com informações de cobrança, envio e produtos, além de taxas! Você pode receber pagamentos com cartão de crédito presenciais logo em seguida ou enviar um link para o cliente pagar o pedido em seu próprio dispositivo. Vocês pediram, nós atendemos.
 
-Algumas funcionalidades novas ainda não estão prontas para o público geral, mas você pode experimentá-las antecipadamente. Crie pedidos, visualize cupons e muito mais! Acesse a guia Menu > Configurações > Configurações experimentais para ativá-las. Adoraríamos receber seu feedback no aplicativo, em especial sobre as novas funcionalidades em desenvolvimento e com acesso antecipado.
+Além disso, estamos avançando no desenvolvimento da funcionalidade de gerenciamento de cupons. Ative-a na guia Mais > Configurações > Funcionalidades experimentais para ver em primeira mão.

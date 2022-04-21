@@ -1,3 +1,3 @@
-Noterai che i dettagli della carta di credito per un pagamento di persona vengono ora mostrati quando si effettua un rimborso. Questo permetterà di dire ai clienti esattamente dove andranno i fondi.
+Crea ordini in movimento con prodotti, informazioni su spedizione e di fatturazione e commissioni. Puoi accettare rapidamente un pagamento con carta di credito di persona o inviare un link a un cliente per pagare quell'ordine sul proprio dispositivo. Lo hai richiesto e ora è qui.
 
-Alcune nuove funzionalità non sono ancora pronte per la pubblicazione, ma puoi verificarle in anticipo. Crea ordini, visualizza coupon e altro ancora. Vai alla scheda Menu, alle impostazioni e a Impostazioni delle funzionalità sperimentali per attivarla. Riceviamo volentieri il tuo feedback sull'app, in particolare sulle nuove funzionalità su cui stiamo lavorando e a cui diamo l'accesso in anteprima.
+Stiamo anche migliorando la nostra funzionalità di gestione dei codici promozionali. Dai un'occhiata attivandola nella scheda Altro > Impostazioni > Funzionalità sperimentali.

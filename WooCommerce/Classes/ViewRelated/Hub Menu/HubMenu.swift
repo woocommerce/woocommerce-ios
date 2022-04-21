@@ -13,6 +13,14 @@ struct HubMenu: View {
     @State private var showingReviews = false
     @State private var showingCoupons = false
 
+    /// State to disable multiple taps on menu items
+    /// Make sure to reset the value to false after dismissing sub-flows
+    @State private var shouldDisableItemTaps = false
+
+    /// A timer used as a fallback method for resetting disabled state of the menu
+    ///
+    private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+
     init(siteID: Int64, navigationController: UINavigationController? = nil) {
         viewModel = HubMenuViewModel(siteID: siteID, navigationController: navigationController)
     }
@@ -36,7 +44,12 @@ struct HubMenu: View {
                         // AppDelegate’s `application(_:didReceiveRemoteNotification:fetchCompletionHandler:)`
                         // can be called twice for the same push notification when receiving it
                         // and tapping on it to open the app. This means that some push notifications are incrementing the badge number by 2, and some by 1.
-                        HubMenuElement(image: menu.icon, imageColor: menu.iconColor, text: menu.title, badge: 0, onTapGesture: {
+                        HubMenuElement(image: menu.icon,
+                                       imageColor: menu.iconColor,
+                                       text: menu.title,
+                                       badge: 0,
+                                       isDisabled: $shouldDisableItemTaps,
+                                       onTapGesture: {
                             switch menu {
                             case .woocommerceAdmin:
                                 ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "admin_menu"])
@@ -63,8 +76,12 @@ struct HubMenu: View {
                 .padding(Constants.padding)
                 .background(Color(.listBackground))
             }
-            .safariSheet(isPresented: $showingWooCommerceAdmin, url: viewModel.woocommerceAdminURL)
-            .safariSheet(isPresented: $showingViewStore, url: viewModel.storeURL)
+            .safariSheet(isPresented: $showingWooCommerceAdmin,
+                         url: viewModel.woocommerceAdminURL,
+                         onDismiss: enableMenuItemTaps)
+            .safariSheet(isPresented: $showingViewStore,
+                         url: viewModel.storeURL,
+                         onDismiss: enableMenuItemTaps)
             NavigationLink(destination:
                             Inbox(viewModel: .init(siteID: viewModel.siteID)),
                            isActive: $showingInbox) {
@@ -86,11 +103,21 @@ struct HubMenu: View {
         .background(Color(.listBackground).edgesIgnoringSafeArea(.all))
         .onAppear {
             viewModel.setupMenuElements()
+            enableMenuItemTaps()
+        }
+        .onReceive(timer) { _ in
+            // fall back method in case menu disabled state is not reset properly
+            enableMenuItemTaps()
         }
     }
 
     func pushReviewDetailsView(using parcel: ProductReviewFromNoteParcel) {
         viewModel.showReviewDetails(using: parcel)
+    }
+
+    /// Reset state to make the menu items tappable
+    private func enableMenuItemTaps() {
+        shouldDisableItemTaps = false
     }
 
     private struct TopBar: View {
@@ -151,6 +178,7 @@ struct HubMenu: View {
                             }
                         }
                     }
+                    .accessibilityLabel(Localization.settings)
                     .accessibilityIdentifier("dashboard-settings-button")
                     Spacer()
                 }
@@ -179,6 +207,7 @@ struct HubMenu: View {
     private enum Localization {
         static let switchStore = NSLocalizedString("Switch store",
                                                    comment: "Switch store option in the hub menu")
+        static let settings = NSLocalizedString("Settings", comment: "Settings button in the hub menu")
     }
 }
 

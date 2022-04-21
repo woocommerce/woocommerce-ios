@@ -24,7 +24,7 @@ extension Coupon.DiscountType {
         case .percent:
             return Localization.titleCreatePercentageDiscount
         case .fixedCart:
-            return Localization.titleCreateFixedCardDiscount
+            return Localization.titleCreateFixedCartDiscount
         case .fixedProduct:
             return Localization.titleCreateFixedProductDiscount
         default:
@@ -39,7 +39,7 @@ extension Coupon.DiscountType {
         case .percent:
             return Localization.titleEditPercentageDiscount
         case .fixedCart:
-            return Localization.titleEditFixedCardDiscount
+            return Localization.titleEditFixedCartDiscount
         case .fixedProduct:
             return Localization.titleEditFixedProductDiscount
         default:
@@ -55,9 +55,9 @@ extension Coupon.DiscountType {
         static let titleEditPercentageDiscount = NSLocalizedString(
             "Edit percentage discount",
             comment: "Title of the view for editing a coupon with percentage discount.")
-        static let titleEditFixedCardDiscount = NSLocalizedString(
-            "Edit fixed card discount",
-            comment: "Title of the view for editing a coupon with fixed card discount.")
+        static let titleEditFixedCartDiscount = NSLocalizedString(
+            "Edit fixed cart discount",
+            comment: "Title of the view for editing a coupon with fixed cart discount.")
         static let titleEditFixedProductDiscount = NSLocalizedString(
             "Edit fixed product discount",
             comment: "Title of the view for editing a coupon with fixed product discount.")
@@ -67,9 +67,9 @@ extension Coupon.DiscountType {
         static let titleCreatePercentageDiscount = NSLocalizedString(
             "Create percentage discount",
             comment: "Title of the view for creating a coupon with percentage discount.")
-        static let titleCreateFixedCardDiscount = NSLocalizedString(
-            "Create fixed card discount",
-            comment: "Title of the view for creating a coupon with fixed card discount.")
+        static let titleCreateFixedCartDiscount = NSLocalizedString(
+            "Create fixed cart discount",
+            comment: "Title of the view for creating a coupon with fixed cart discount.")
         static let titleCreateFixedProductDiscount = NSLocalizedString(
             "Create fixed product discount",
             comment: "Title of the view for creating a coupon with fixed product discount.")
@@ -115,7 +115,7 @@ extension Coupon {
 
     /// Formatted amount for the coupon
     ///
-    private func formattedAmount(currencySettings: CurrencySettings) -> String {
+    func formattedAmount(currencySettings: CurrencySettings) -> String {
         var amountString: String = ""
         switch discountType {
         case .percent:

@@ -26,10 +26,6 @@ protocol ReviewsViewModelOutput {
 /// Handles actions related to Reviews screen
 ///
 protocol ReviewsViewModelActionsHandler {
-    func displayPlaceholderReviews(tableView: UITableView)
-
-    func removePlaceholderReviews(tableView: UITableView)
-
     func configureResultsController(tableView: UITableView)
 
     func refreshResults()
@@ -49,7 +45,7 @@ protocol ReviewsViewModelActionsHandler {
 final class ReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHandler {
     private let siteID: Int64
 
-    private let data: ReviewsDataSource
+    private let data: ReviewsDataSourceProtocol
     private let stores: StoresManager
 
     var isEmpty: Bool {
@@ -82,26 +78,10 @@ final class ReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHan
     ///
     var hasErrorLoadingData: Bool = false
 
-    init(siteID: Int64, data: ReviewsDataSource, stores: StoresManager = ServiceLocator.stores) {
+    init(siteID: Int64, data: ReviewsDataSourceProtocol, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.data = data
         self.stores = stores
-    }
-
-    func displayPlaceholderReviews(tableView: UITableView) {
-        let options = GhostOptions(reuseIdentifier: ProductReviewTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
-        tableView.displayGhostContent(options: options,
-                                      style: .wooDefaultGhostStyle)
-
-        data.stopForwardingEvents()
-    }
-
-    /// Removes Placeholder Notes (and restores the ResultsController <> UITableView link).
-    ///
-    func removePlaceholderReviews(tableView: UITableView) {
-        tableView.removeGhostContent()
-        data.startForwardingEvents(to: tableView)
-        tableView.reloadData()
     }
 
     func configureResultsController(tableView: UITableView) {
@@ -241,12 +221,25 @@ private extension ReviewsViewModel {
 
 private extension ReviewsViewModel {
     enum Settings {
-        static let placeholderRowsPerSection = [3]
         static let firstPage = 1
         static let pageSize = 25
     }
 
     struct Constants {
         static let section = "notifications"
+    }
+}
+
+/// Customizes the `ReviewsDataSource` for a global reviews query (all of a site)
+final class GlobalReviewsDataSourceCustomizer: ReviewsDataSourceCustomizing {
+    let shouldShowProductTitleOnCells = true
+
+    func reviewsFilterPredicate(with sitePredicate: NSPredicate) -> NSPredicate {
+        let statusPredicate = NSPredicate(format: "statusKey ==[c] %@ OR statusKey ==[c] %@",
+                                          ProductReviewStatus.approved.rawValue,
+                                          ProductReviewStatus.hold.rawValue)
+
+        return  NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, statusPredicate])
+
     }
 }

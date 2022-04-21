@@ -6,10 +6,12 @@ import WordPressUI
 /// Please note that this class cannot be used as is, since there is not configuration for navigation.
 /// Instead, it shall be embedded through view controller containment by adding it as a child to other view controllers.
 ///
-final class ProductCategoryListViewController: UIViewController {
+final class ProductCategoryListViewController: UIViewController, GhostableViewController {
 
     @IBOutlet private var tableView: UITableView!
-    private let ghostTableView = UITableView()
+
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(displaysSectionHeader: false,
+                                                                                                cellClass: ProductCategoryTableViewCell.self))
 
     let viewModel: ProductCategoryListViewModel
 
@@ -28,7 +30,6 @@ final class ProductCategoryListViewController: UIViewController {
 
         registerTableViewCells()
         configureTableView()
-        configureGhostTableView()
         configureViewModel()
         handleSwipeBackGesture()
     }
@@ -39,7 +40,6 @@ final class ProductCategoryListViewController: UIViewController {
 private extension ProductCategoryListViewController {
     func registerTableViewCells() {
         tableView.registerNib(for: ProductCategoryTableViewCell.self)
-        ghostTableView.registerNib(for: ProductCategoryTableViewCell.self)
     }
 
     func configureTableView() {
@@ -48,15 +48,6 @@ private extension ProductCategoryListViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.removeLastCellSeparator()
-    }
-
-    func configureGhostTableView() {
-        view.addSubview(ghostTableView)
-        ghostTableView.isHidden = true
-        ghostTableView.translatesAutoresizingMaskIntoConstraints = false
-        ghostTableView.pinSubviewToAllEdges(view)
-        ghostTableView.backgroundColor = .listBackground
-        ghostTableView.removeLastCellSeparator()
     }
 }
 
@@ -73,12 +64,13 @@ private extension ProductCategoryListViewController {
             case .initialized:
                 break
             case .syncing:
-                self?.displayGhostTableView()
+                self?.displayGhostContent()
             case let .failed(retryToken):
-                self?.removeGhostTableView()
+                self?.removeGhostContent()
                 self?.displaySyncingErrorNotice(retryToken: retryToken)
             case .synced:
-                self?.removeGhostTableView()
+                self?.tableView.reloadData()
+                self?.removeGhostContent()
             }
         }
     }
@@ -87,26 +79,6 @@ private extension ProductCategoryListViewController {
 // MARK: - Placeholders & Errors
 //
 private extension ProductCategoryListViewController {
-
-    /// Renders ghost placeholder categories.
-    ///
-    func displayGhostTableView() {
-        let placeholderCategoriesPerSection = [3]
-        let options = GhostOptions(displaysSectionHeader: false,
-                                   reuseIdentifier: ProductCategoryTableViewCell.reuseIdentifier,
-                                   rowsPerSection: placeholderCategoriesPerSection)
-        ghostTableView.displayGhostContent(options: options,
-                                           style: .wooDefaultGhostStyle)
-        ghostTableView.isHidden = false
-    }
-
-    /// Removes ghost  placeholder categories.
-    ///
-    func removeGhostTableView() {
-        tableView.reloadData()
-        ghostTableView.removeGhostContent()
-        ghostTableView.isHidden = true
-    }
 
     /// Displays the Sync Error Notice.
     ///

@@ -38,12 +38,8 @@ public class SettingStore: Store {
             synchronizeGeneralSiteSettings(siteID: siteID, onCompletion: onCompletion)
         case .synchronizeProductSiteSettings(let siteID, let onCompletion):
             synchronizeProductSiteSettings(siteID: siteID, onCompletion: onCompletion)
-        case let .synchronizeAdvancedSiteSettings(siteID, onCompletion):
-            synchronizeAdvancedSiteSettings(siteID: siteID, onCompletion: onCompletion)
         case .retrieveSiteAPI(let siteID, let onCompletion):
             retrieveSiteAPI(siteID: siteID, onCompletion: onCompletion)
-        case let .getPaymentsPagePath(siteID, onCompletion):
-            getPaymentsPagePath(siteID: siteID, onCompletion: onCompletion)
         case let .retrieveCouponSetting(siteID, onCompletion):
             retrieveCouponSetting(siteID: siteID, onCompletion: onCompletion)
         case let .enableCouponSetting(siteID, onCompletion):
@@ -91,37 +87,11 @@ private extension SettingStore {
         }
     }
 
-    /// Synchronizes the advanced site settings associated with the provided Site ID (if any!).
-    ///
-    func synchronizeAdvancedSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
-        siteSettingsRemote.loadAdvancedSettings(for: siteID) { [weak self] result in
-            switch result {
-            case .success(let settings):
-                self?.upsertStoredAdvancedSettingsInBackground(siteID: siteID, readOnlySiteSettings: settings) {
-                    onCompletion(nil)
-                }
-            case .failure(let error):
-                onCompletion(error)
-            }
-        }
-    }
-
     /// Retrieves the site API information associated with the provided Site ID (if any!).
     /// This call does NOT persist returned data into the Storage layer.
     ///
     func retrieveSiteAPI(siteID: Int64, onCompletion: @escaping (Result<SiteAPI, Error>) -> Void) {
         siteAPIRemote.loadAPIInformation(for: siteID, completion: onCompletion)
-    }
-
-    /// Retrieves the store payments page path.
-    ///
-    func getPaymentsPagePath(siteID: Int64, onCompletion: @escaping (Result<String, SettingStore.SettingError>) -> Void) {
-        guard let paymentPageSettings = sharedDerivedStorage.loadSiteSetting(siteID: siteID, settingID: SettingKeys.paymentsPage),
-              let paymentPagePath = paymentPageSettings.value else {
-                  return onCompletion(.failure(SettingError.paymentsPageNotFound))
-              }
-
-        onCompletion(.success(paymentPagePath))
     }
 
     /// Retrieves the setting for whether coupons are enabled for the specified store
@@ -283,18 +253,9 @@ extension SettingStore {
 
 // MARK: Definitions
 extension SettingStore {
-    /// Possible store errors.
-    ///
-    public enum SettingError: Swift.Error {
-        /// Payment page path was not found
-        ///
-        case paymentsPageNotFound
-    }
-
     /// Settings keys.
     ///
     private enum SettingKeys {
-        static let paymentsPage = "woocommerce_checkout_pay_endpoint"
         static let coupons = "woocommerce_enable_coupons"
         static let analytics = "woocommerce_analytics_enabled"
     }

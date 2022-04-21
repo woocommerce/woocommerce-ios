@@ -8,7 +8,10 @@ final class CardPresentModalReaderIsReadyTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        viewModel = CardPresentModalReaderIsReady(name: Expectations.name, amount: Expectations.amount)
+        viewModel = CardPresentModalReaderIsReady(name: Expectations.name,
+                                                  amount: Expectations.amount,
+                                                  transactionType: .collectPayment,
+                                                  cancelAction: {})
     }
 
     override func tearDown() {
@@ -47,34 +50,16 @@ final class CardPresentModalReaderIsReadyTests: XCTestCase {
     func test_bottom_subTitle_is_not_nil() {
         XCTAssertNotNil(viewModel.bottomSubtitle)
     }
-
-    func test_secondary_button_dispatched_cancel_action() throws {
-        let storesManager = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
-        storesManager.reset()
-
-        ServiceLocator.setStores(storesManager)
-
-        assertEmpty(storesManager.receivedActions)
-
-        viewModel.didTapSecondaryButton(in: nil)
-
-        XCTAssertEqual(storesManager.receivedActions.count, 1)
-
-        let action = try XCTUnwrap(storesManager.receivedActions.first as? CardPresentPaymentAction)
-        switch action {
-        case .cancelPayment(onCompletion: _):
-            XCTAssertTrue(true)
-        default:
-            XCTFail("Primary button failed to dispatch .cancelPayment action")
-        }
-    }
 }
 
 
 private extension CardPresentModalReaderIsReadyTests {
     enum Expectations {
-        static var name = "name"
-        static var amount = "amount"
-        static var image = UIImage.cardPresentImage
+        static let name = "name"
+        static let amount = "amount"
+        static let image = UIImage.cardPresentImage
+        static let cardReaderModel = "WISEPAD_3"
+        static let countryCode = "CA"
+        static let paymentGatewayAccountID = "woocommerce-payments"
     }
 }

@@ -33,7 +33,6 @@ extension Hardware.PaymentIntentParameters {
         }
 
         returnValue.receiptEmail = receiptEmail
-        returnValue.customer = customerID
         returnValue.metadata = metadata
 
         return returnValue

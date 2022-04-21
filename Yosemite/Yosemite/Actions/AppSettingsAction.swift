@@ -120,14 +120,6 @@ public enum AppSettingsAction: Action {
     ///
     case loadOrderAddOnsSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
 
-    /// Loads the most recent state for the Order Creation beta feature switch
-    ///
-    case loadOrderCreationSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
-
-    /// Sets the state for the Order Creation beta feature switch.
-    ///
-    case setOrderCreationFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
-
     /// Loads the most recent state for the In-Person Payments in Canada beta feature switch
     ///
     case loadCanadaInPersonPaymentsSwitchState(onCompletion: (Result<Bool, Error>) -> Void)

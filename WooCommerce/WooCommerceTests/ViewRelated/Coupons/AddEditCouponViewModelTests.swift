@@ -47,6 +47,48 @@ final class AddEditCouponViewModelTests: XCTestCase {
 
     }
 
+    func test_populatedCoupon_return_expected_coupon_during_editing() {
+        // Given
+        let viewModel = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(discountType: .percent))
+        XCTAssertEqual(viewModel.populatedCoupon, Coupon.sampleCoupon.copy(discountType: .percent))
+
+        // When
+        viewModel.amountField = "24.23"
+        viewModel.codeField = "TEST"
+        viewModel.descriptionField = "This is a test description"
+        viewModel.expiryDateField = Date().endOfDay(timezone: TimeZone.current)
+        viewModel.freeShipping = true
+        viewModel.couponRestrictionsViewModel.minimumSpend = "10"
+        viewModel.couponRestrictionsViewModel.maximumSpend = "50"
+        viewModel.couponRestrictionsViewModel.usageLimitPerCoupon = "40"
+        viewModel.couponRestrictionsViewModel.usageLimitPerUser = "1"
+        viewModel.couponRestrictionsViewModel.limitUsageToXItems = "10"
+        viewModel.couponRestrictionsViewModel.allowedEmails = "*@gmail.com, *@wordpress.com"
+        viewModel.couponRestrictionsViewModel.individualUseOnly = true
+        viewModel.couponRestrictionsViewModel.excludeSaleItems = true
+
+
+        // Then
+        XCTAssertEqual(viewModel.populatedCoupon, Coupon.sampleCoupon.copy(code: "TEST",
+                                                                           amount: "24.23",
+                                                                           discountType: .percent,
+                                                                           description: "This is a test description",
+                                                                           dateExpires: Date().endOfDay(timezone: TimeZone.current),
+                                                                           individualUse: true,
+                                                                           usageLimit: 40,
+                                                                           usageLimitPerUser: 1,
+                                                                           limitUsageToXItems: 10,
+                                                                           freeShipping: true,
+                                                                           excludeSaleItems: true,
+                                                                           minimumAmount: "10",
+                                                                           maximumAmount: "50",
+                                                                           emailRestrictions: ["*@gmail.com", "*@wordpress.com"]))
+    }
+
+    func test_populatedCoupon_return_expected_coupon_during_creation() {
+        //TODO: implement this test method in the implementation of coupon creation (M3)
+    }
+
     private enum Localization {
         static let titleCreatePercentageDiscount = NSLocalizedString(
             "Create percentage discount",

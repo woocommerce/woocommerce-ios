@@ -14,6 +14,10 @@ final class AddEditCouponViewModel: ObservableObject {
 
     private let discountType: Coupon.DiscountType
 
+    private let stores: StoresManager
+
+    var onCompletion: ((Result<Coupon, Error>) -> Void)?
+
     var title: String {
         switch editingOption {
         case .creation:
@@ -77,6 +81,10 @@ final class AddEditCouponViewModel: ObservableObject {
 
     private(set) var coupon: Coupon?
 
+    /// When the view is updating or creating a new Coupon remotely.
+    ///
+    @Published var isLoading: Bool = false
+
     // Fields
     @Published var amountField: String
     @Published var codeField: String
@@ -88,10 +96,12 @@ final class AddEditCouponViewModel: ObservableObject {
     /// Init method for coupon creation
     ///
     init(siteID: Int64,
-         discountType: Coupon.DiscountType) {
+         discountType: Coupon.DiscountType,
+         stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         editingOption = .creation
         self.discountType = discountType
+        self.stores = stores
 
         amountField = String()
         codeField = String()
@@ -103,11 +113,13 @@ final class AddEditCouponViewModel: ObservableObject {
 
     /// Init method for coupon editing
     ///
-    init(existingCoupon: Coupon) {
+    init(existingCoupon: Coupon,
+         stores: StoresManager = ServiceLocator.stores) {
         siteID = existingCoupon.siteID
         coupon = existingCoupon
         editingOption = .editing
         discountType = existingCoupon.discountType
+        self.stores = stores
 
         // Populate fields
         amountField = existingCoupon.amount
@@ -133,6 +145,64 @@ final class AddEditCouponViewModel: ObservableObject {
         }
 
         codeField = code
+    }
+
+    func updateCoupon(coupon: Coupon) {
+        isLoading = true
+        let action = CouponAction.updateCoupon(coupon) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(_):
+                break
+            case .failure(let error):
+                DDLogError("⛔️ Error updating the coupon: \(error)")
+            }
+            self.isLoading = false
+            self.onCompletion?(result)
+        }
+        stores.dispatch(action)
+    }
+
+    var populatedCoupon: Coupon {
+        // TODO: Fill all the missing data (like `productIds`, `excludedProductIds`, `productCategories`, `excludedProductCategories`)
+        coupon?.copy(code: codeField,
+                     amount: amountField,
+                     discountType: discountType,
+                     description: descriptionField,
+                     dateExpires: expiryDateField,
+                     individualUse: couponRestrictionsViewModel.individualUseOnly,
+                     usageLimit: Int64(couponRestrictionsViewModel.usageLimitPerCoupon),
+                     usageLimitPerUser: Int64(couponRestrictionsViewModel.usageLimitPerUser),
+                     limitUsageToXItems: Int64(couponRestrictionsViewModel.limitUsageToXItems),
+                     freeShipping: freeShipping,
+                     excludeSaleItems: couponRestrictionsViewModel.excludeSaleItems,
+                     minimumAmount: couponRestrictionsViewModel.minimumSpend,
+                     maximumAmount: couponRestrictionsViewModel.maximumSpend,
+                     emailRestrictions: couponRestrictionsViewModel.allowedEmails.components(separatedBy: ", ")) ??
+        Coupon(siteID: siteID,
+               couponID: -1,
+               code: codeField,
+               amount: amountField,
+               dateCreated: Date(),
+               dateModified: Date(),
+               discountType: discountType,
+               description: descriptionField,
+               dateExpires: expiryDateField,
+               usageCount: 0,
+               individualUse: couponRestrictionsViewModel.individualUseOnly,
+               productIds: [],
+               excludedProductIds: [],
+               usageLimit: Int64(couponRestrictionsViewModel.usageLimitPerCoupon),
+               usageLimitPerUser: Int64(couponRestrictionsViewModel.usageLimitPerUser),
+               limitUsageToXItems: Int64(couponRestrictionsViewModel.limitUsageToXItems),
+               freeShipping: freeShipping,
+               productCategories: [],
+               excludedProductCategories: [],
+               excludeSaleItems: couponRestrictionsViewModel.excludeSaleItems,
+               minimumAmount: couponRestrictionsViewModel.minimumSpend,
+               maximumAmount: couponRestrictionsViewModel.maximumSpend,
+               emailRestrictions: couponRestrictionsViewModel.allowedEmails.components(separatedBy: ", "),
+               usedBy: [])
     }
 
     private enum EditingOption {

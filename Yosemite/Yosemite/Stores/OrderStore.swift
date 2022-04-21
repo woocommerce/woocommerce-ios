@@ -506,6 +506,10 @@ private extension OrderStore {
 
         upsertStoredOrders(readOnlyOrders: [readOnlyOrder], in: storageManager.viewStorage)
 
+        if storageOrder == nil {
+            DDLogWarn("⚠️ Unable to retrieve stored order with ID \(readOnlyOrder.orderID) to be updated - A new order has been stored as a workaround")
+        }
+
         return oldReadOnlyOrder ?? readOnlyOrder
     }
 

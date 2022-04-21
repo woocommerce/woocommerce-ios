@@ -47,6 +47,9 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         return stackView
     }()
 
+    /// Whether the placeholder view should be shown when reloading the data
+    ///
+    private var shouldShowPlaceholderView = false
 
     /// Top toolbar that shows the sort and filter CTAs.
     ///
@@ -581,20 +584,27 @@ private extension ProductsViewController {
 extension ProductsViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        resultsController.sections.count
+        return shouldShowPlaceholderView ? 1 : resultsController.sections.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        resultsController.sections[section].numberOfObjects
+        return shouldShowPlaceholderView ? 1 : resultsController.sections[section].numberOfObjects
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(ProductsTabProductTableViewCell.self, for: indexPath)
-        let product = resultsController.object(at: indexPath)
-        let viewModel = ProductsTabProductViewModel(product: product)
-        cell.update(viewModel: viewModel, imageService: imageService)
+        if shouldShowPlaceholderView {
+            let cell = tableView.dequeueReusableCell(UITableViewCell.self, for: indexPath)
+            displayGhostContent(over: cell.contentView)
 
-        return cell
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCell(ProductsTabProductTableViewCell.self, for: indexPath)
+            let product = resultsController.object(at: indexPath)
+            let viewModel = ProductsTabProductViewModel(product: product)
+            cell.update(viewModel: viewModel, imageService: imageService)
+
+            return cell
+        }
     }
 }
 
@@ -607,7 +617,13 @@ extension ProductsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        UITableView.automaticDimension
+        return shouldShowPlaceholderView ? placeholderViewHeight() : UITableView.automaticDimension
+    }
+
+    private func placeholderViewHeight() -> CGFloat {
+        let placeholderRowsPerSection = Constants.placeholderRowsPerSection.first ?? 3
+
+        return Constants.estimatedRowHeight * CGFloat(placeholderRowsPerSection)
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -718,13 +734,15 @@ private extension ProductsViewController {
     /// Triggers the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
     ///
     func displayPlaceholderProducts() {
-        displayGhostContent(over: tableView)
+        shouldShowPlaceholderView = true
         resultsController.stopForwardingEvents()
+        tableView.reloadData()
     }
 
     /// Removes the Placeholder Products (and restores the ResultsController <> UITableView link).
     ///
     func removePlaceholderProducts() {
+        shouldShowPlaceholderView = false
         removeGhostContent()
 
        // Assign again the original closure

@@ -1099,17 +1099,7 @@ private extension OrderStoreTests {
     }
 
     func sampleAddressMutated() -> Networking.Address {
-        return Address(firstName: "Johnny",
-                       lastName: "Appleseed",
-                       company: "",
-                       address1: "234 70th Street",
-                       address2: "",
-                       city: "Niagara Falls",
-                       state: "NY",
-                       postcode: "14304",
-                       country: "US",
-                       phone: "333-333-3334",
-                       email: "scrambled@scrambled.com")
+        Address.fake().copy(phone: "333-333-3334")
     }
 
     func sampleShippingLines() -> [Networking.ShippingLine] {

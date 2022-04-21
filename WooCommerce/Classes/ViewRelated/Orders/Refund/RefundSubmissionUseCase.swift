@@ -68,13 +68,13 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
     CardReaderConnectionController(forSiteID: siteID,
                                    knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
                                    alertsProvider: CardReaderSettingsAlerts(),
-                                   configuration: cardPresentConfigurationLoader.configuration,
-                                   analyticsTracker: .init(configuration: cardPresentConfigurationLoader.configuration,
+                                   configuration: cardPresentConfiguration,
+                                   analyticsTracker: .init(configuration: cardPresentConfiguration,
                                                            stores: stores,
                                                            analytics: analytics))
 
-    /// IPP Configuration loader.
-    private lazy var cardPresentConfigurationLoader = CardPresentConfigurationLoader(stores: stores)
+    /// IPP Configuration.
+    private let cardPresentConfiguration: CardPresentPaymentsConfiguration
 
     /// PaymentGatewayAccount Results Controller.
     private lazy var paymentGatewayAccountResultsController: ResultsController<StoragePaymentGatewayAccount> = {
@@ -93,6 +93,7 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
          alerts: OrderDetailsPaymentAlertsProtocol,
          currencyFormatter: CurrencyFormatter,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         cardPresentConfiguration: CardPresentPaymentsConfiguration,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics) {
@@ -106,6 +107,7 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
         self.rootViewController = rootViewController
         self.alerts = alerts
         self.currencyFormatter = currencyFormatter
+        self.cardPresentConfiguration = cardPresentConfiguration
         self.stores = stores
         self.storageManager = storageManager
         self.analytics = analytics
@@ -358,7 +360,7 @@ private extension RefundSubmissionUseCase {
         case .interacPresent:
             analytics.track(event: WooAnalyticsEvent.InPersonPayments
                 .interacRefundSuccess(gatewayID: paymentGatewayAccounts.first?.gatewayID,
-                                      countryCode: cardPresentConfigurationLoader.configuration.countryCode,
+                                      countryCode: cardPresentConfiguration.countryCode,
                                       cardReaderModel: connectedReader?.readerType.model ?? ""))
         default:
             // Tracks refund success events with other payment methods if needed.
@@ -373,7 +375,7 @@ private extension RefundSubmissionUseCase {
             analytics.track(event: WooAnalyticsEvent.InPersonPayments
                 .interacRefundFailed(error: error,
                                      gatewayID: paymentGatewayAccounts.first?.gatewayID,
-                                     countryCode: cardPresentConfigurationLoader.configuration.countryCode,
+                                     countryCode: cardPresentConfiguration.countryCode,
                                      cardReaderModel: connectedReader?.readerType.model ?? ""))
         default:
             // Tracks refund failure events with other payment methods if needed.

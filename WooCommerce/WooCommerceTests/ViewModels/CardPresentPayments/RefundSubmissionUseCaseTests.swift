@@ -279,6 +279,7 @@ private extension RefundSubmissionUseCaseTests {
                                 alerts: alerts,
                                 currencyFormatter: CurrencyFormatter(currencySettings: .init()),
                                 currencySettings: .init(),
+                                cardPresentConfiguration: Mocks.configuration,
                                 stores: stores,
                                 storageManager: storageManager,
                                 analytics: analytics)

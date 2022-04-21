@@ -89,7 +89,7 @@ private extension EditCustomerNoteViewModel {
     ///
     func performUpdateOrderOptimistically(customerNote: String?, onFinish: ((Bool) -> Void)? = nil) {
         let currentCustomerNote = order.customerNote
-        let updateAction = makeUpdateCustomerNoteAction(withNote: newNote, onFinish: onFinish)
+        let updateAction = makeUpdateCustomerNoteAction(withNote: customerNote, onFinish: onFinish)
         let undoAction = makeUpdateCustomerNoteAction(withNote: currentCustomerNote)
 
         stores.dispatch(updateAction)

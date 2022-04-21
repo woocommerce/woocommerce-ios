@@ -15,8 +15,6 @@ final class AddEditCouponViewModel: ObservableObject {
 
     private let discountType: Coupon.DiscountType
 
-    private let stores: StoresManager
-
     var onCompletion: ((Result<Coupon, Error>) -> Void)?
 
     var title: String {
@@ -135,7 +133,6 @@ final class AddEditCouponViewModel: ObservableObject {
         coupon = existingCoupon
         editingOption = .editing
         discountType = existingCoupon.discountType
-        self.stores = stores
 
         // Populate fields
         amountField = existingCoupon.amount

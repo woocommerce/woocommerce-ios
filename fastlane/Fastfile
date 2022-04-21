@@ -17,7 +17,6 @@ FASTLANE_DIR = __dir__
 DERIVED_DATA_DIR = File.join(FASTLANE_DIR, 'DerivedData')
 SCREENSHOTS_DIR =  File.join(FASTLANE_DIR, 'screenshots')
 IOS_LOCALES = %w[ar de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant].freeze
-GLOTPRESS_LOCALES = %w[ar de es fr he id it ja ko nl pt-br ru sv tr zh-cn zh-tw].freeze
 SIMULATOR_VERSION = '14.3' # For screenshots
 SCREENSHOT_DEVICES = [
   'iPhone 11 Pro Max',
@@ -29,8 +28,45 @@ SCREENSHOT_DEVICES = [
 MAIN_BUNDLE_IDENTIFIERS = %w[com.automattic.woocommerce].freeze        # Registered in our main account, for development and AppStore
 ALPHA_BUNDLE_IDENTIFIERS = %w[com.automattic.alpha.woocommerce].freeze # Registered in our Enterprise account, for App Center / Installable Builds
 
+# List of `.strings` files manually maintained by developers (as opposed to being automatically extracted from the code)
+# which we will merge into the main `Localizable.strings` file imported by GlotPress, then extract back once we download the translations.
+#
+# Each `.strings` file to be merged/extracted is associated with a prefix to add the the keys being used to avoid conflicts and differentiate.
+#
+# See calls to `ios_merge_strings_files` and `ios_extract_keys_from_strings_files` for usage.
+#
+# Note that, yes, we currently have only one file, but it's still worth defining this constant because it's used across more than one lane, as describe above.
+#
+MANUALLY_MAINTAINED_STRINGS_FILES = {
+  File.join(RESOURCES_FOLDER, 'en.lproj', 'InfoPlist.strings') => 'infoplist.'
+}.freeze
+
+# URL of the GlotPress project containing the strings used in the app
+GLOTPRESS_APP_STRINGS_URL = 'https://translate.wordpress.com/projects/woocommerce/woocommerce-ios/'
 # URL of the GlotPress project containing App Store Connect metadata
 GLOTPRESS_METADATA_PROJECT_URL = 'https://translate.wordpress.com/projects/woocommerce/woocommerce-ios/release-notes/'
+
+# List of locales used for the app strings (GlotPress code => `*.lproj` folder name`)
+#
+# TODO: Replace with `LocaleHelper` once provided by release toolkit (https://github.com/wordpress-mobile/release-toolkit/pull/296)
+GLOTPRESS_TO_LPROJ_APP_LOCALE_CODES = {
+  'ar' => 'ar',         # Arabic
+  'de' => 'de',         # German
+  'es' => 'es',         # Spanish
+  'fr' => 'fr',         # French
+  'he' => 'he',         # Hebrew
+  'id' => 'id',         # Indonesian
+  'it' => 'it',         # Italian
+  'ja' => 'ja',         # Japanese
+  'ko' => 'ko',         # Korean
+  'nl' => 'nl',         # Dutch
+  'pt-br' => 'pt-BR',   # Portuguese (Brazil)
+  'ru' => 'ru',         # Russian
+  'sv' => 'sv',         # Swedish
+  'tr' => 'tr',         # Turkish
+  'zh-cn' => 'zh-Hans', # Chinese (China)
+  'zh-tw' => 'zh-Hant'  # Chinese (Taiwan)
+}.freeze
 
 # Mapping of all locales which can be used for AppStore metadata (Glotpress code => AppStore Connect code)
 #
@@ -699,15 +735,26 @@ platform :ios do
 
   desc 'Downloads localized `.strings` from GlotPress'
   lane :download_localized_strings_from_glotpress do
-    # FIXME: This is a copy of what the release toolkit `ios_update_metadata` action does.
-    # We'll soon replace this with the new `ios_download_strings_files_from_glotpress`-based workflow.
-    sh("cd #{PROJECT_ROOT_FOLDER} && ./Scripts/update-translations.rb")
-
-    files_to_commit = Dir.glob(File.join(RESOURCES_FOLDER, '**', '*.strings'))
-    git_add(path: files_to_commit, shell_escape: false)
+    ios_download_strings_files_from_glotpress(
+      project_url: GLOTPRESS_APP_STRINGS_URL,
+      locales: GLOTPRESS_TO_LPROJ_APP_LOCALE_CODES,
+      download_dir: RESOURCES_FOLDER
+    )
     git_commit(
-      path: files_to_commit,
-      message: 'Update translations',
+      path: File.join(RESOURCES_FOLDER, '*.lproj', 'Localizable.strings'),
+      message: 'Update app translations – `Localizable.strings`',
+      allow_nothing_to_commit: true
+    )
+
+    # Redispatch the appropriate subset of translations back to the manually-maintained `.strings`
+    # files that we merged at the `complete_code_freeze` time via `ios_merge_strings_files`
+    modified_files = ios_extract_keys_from_strings_files(
+      source_parent_dir: RESOURCES_FOLDER,
+      target_original_files: MANUALLY_MAINTAINED_STRINGS_FILES
+    )
+    git_commit(
+      path: modified_files,
+      message: 'Update app translations – Other `.strings`',
       allow_nothing_to_commit: true
     )
   end
@@ -785,7 +832,7 @@ platform :ios do
       'app_store_screenshot-5' => { desc: 'app_store_screenshot_5.txt' }
     }
 
-    metadata_locales = GLOTPRESS_LOCALES
+    metadata_locales = GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES
 
     gp_downloadmetadata(project_url: 'https://translate.wordpress.com/projects/woocommerce%2Fwoocommerce-ios%2Frelease-notes/',
                         target_files: files,
@@ -912,7 +959,37 @@ platform :ios do
 
   desc 'Run localization only'
   lane :update_localization do
-    ios_localize_project
+    cocoapods
+
+    en_lproj_path = File.join(RESOURCES_FOLDER, 'en.lproj')
+    ios_generate_strings_file_from_code(
+      paths: [
+        'WooCommerce/',
+        'Pods/WordPress*/',
+        'Storage/Storage/',
+        'Networking/Networking/',
+        'Hardware/Hardware/',
+      ],
+      exclude: [
+        '*Vendor*',
+        'WooCommerce/WooCommerceTests/**', # Some unit tests include localized strings
+      ],
+      output_dir: en_lproj_path
+    )
+
+    # Merge various manually-maintained `.strings` files into the previously generated `Localizable.strings` so their extra keys are also imported in GlotPress.
+    #
+    # Note: We will re-extract the translations back during `TODO` (via a call to `ios_extract_keys_from_strings_files`)
+    ios_merge_strings_files(
+      paths_to_merge: MANUALLY_MAINTAINED_STRINGS_FILES,
+      destination: File.join(en_lproj_path, 'Localizable.strings')
+    )
+
+    git_commit(
+      path: en_lproj_path,
+      message: 'Update strings for localization',
+      allow_nothing_to_commit: true
+    )
   end
 
   def write_file(path, contents)

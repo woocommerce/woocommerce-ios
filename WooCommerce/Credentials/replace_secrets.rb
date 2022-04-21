@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 ##
 ## This Script loads a collection of (JSON Encoded) secrets, and performs replacement operations
 ## over a given Template.

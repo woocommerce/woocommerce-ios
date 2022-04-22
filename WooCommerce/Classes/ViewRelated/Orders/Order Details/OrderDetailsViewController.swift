@@ -705,6 +705,13 @@ private extension OrderDetailsViewController {
 
     func editCustomerNoteTapped() {
         let editNoteViewController = EditCustomerNoteHostingController(viewModel: viewModel.editNoteViewModel)
+
+        /// This notice presenter is needed because if optimistic updates are not
+        /// enabled the modal is not dismissed upon failure.
+        let errorNoticePresenter = DefaultNoticePresenter()
+        errorNoticePresenter.presentingViewController = editNoteViewController
+        viewModel.editNoteViewModel.modalNoticePresenter = errorNoticePresenter
+
         present(editNoteViewController, animated: true)
 
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowStarted(subject: .customerNote))

@@ -25,6 +25,11 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
     ///
     private let noticePresenter: NoticePresenter
 
+    /// Presents an error notice in the current modal presentation context.
+    /// It's only needed when optimistic updates are not enabled.
+    ///
+    var modalNoticePresenter: NoticePresenter?
+
     /// Order to be edited.
     ///
     private var order: Order {
@@ -170,7 +175,13 @@ private extension EditCustomerNoteViewModel {
             self?.dispatchUpdateOrderOptimisticallyAction(withNote: customerNote)
         }
 
-        noticePresenter.enqueue(notice: notice)
+        if areOptimisticUpdatesEnabled {
+            noticePresenter.enqueue(notice: notice)
+        } else {
+            /// If optimistic updates are not enabled the modal is not dismissed
+            /// upon failure, so we have to use notice presenter for this modal.
+            modalNoticePresenter?.enqueue(notice: notice)
+        }
     }
 }
 

@@ -22,7 +22,7 @@ struct ProductSelector: View {
 
     var body: some View {
         NavigationView {
-            VStack {
+            VStack(spacing: 0) {
                 SearchHeader(filterText: $viewModel.searchTerm, filterPlaceholder: Localization.searchPlaceholder)
                     .padding(.horizontal, insets: safeAreaInsets)
                 HStack {
@@ -42,6 +42,7 @@ struct ProductSelector: View {
                     .fixedSize()
                     .renderedIf(configuration.showsFilter)
                 }
+
                 switch viewModel.syncStatus {
                 case .results:
                     VStack(spacing: 0) {

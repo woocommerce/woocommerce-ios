@@ -15,6 +15,12 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
     ///
     @Published private(set) var navigationTrailingItem: EditCustomerNoteNavigationItem = .done(enabled: false)
 
+    /// Indicates whether we must wait for the request before dismiss.
+    ///
+    var shouldWaitForRequestIsFinishedToDismiss: Bool {
+        !featureFlagService.isFeatureFlagEnabled(.updateOrderOptimistically)
+    }
+
     /// Presents an error notice in the tab bar context after the update operation fails.
     ///
     private let noticePresenter: NoticePresenter

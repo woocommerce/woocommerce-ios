@@ -3,6 +3,7 @@
 9.1
 -----
 
+- [*] Product name field in product form - Remove scroll behaviour and increase field height to fully display long product names. [https://github.com/woocommerce/woocommerce-ios/pull/6681]
 
 9.0
 -----

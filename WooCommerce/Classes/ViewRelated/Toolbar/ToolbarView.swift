@@ -18,8 +18,8 @@ final class ToolbarView: UIView {
         pinSubviewToAllEdges(stackView)
     }
 
-    required init(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    required convenience init(coder: NSCoder) {
+        self.init()
     }
 
     func setSubviews(leftViews: [UIView], rightViews: [UIView]) {

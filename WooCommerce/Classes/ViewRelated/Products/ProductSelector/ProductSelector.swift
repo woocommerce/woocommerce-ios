@@ -26,6 +26,21 @@ struct ProductSelector: View {
                 switch viewModel.syncStatus {
                 case .results:
                     VStack(spacing: 0) {
+                        HStack {
+                            Button(Localization.selectAllButton) {
+                                // TODO: handle selecting all
+                            }
+                            .buttonStyle(LinkButtonStyle())
+                            .fixedSize()
+                            .renderedIf(configuration.multipleSelectionsEnabled)
+                            Spacer()
+                            Button(Localization.filterButton) {
+                                // TODO: handle filter
+                            }
+                            .buttonStyle(LinkButtonStyle())
+                            .fixedSize()
+                            .renderedIf(configuration.showsFilter)
+                        }
                         InfiniteScrollList(isLoading: viewModel.shouldShowScrollIndicator,
                                            loadAction: viewModel.syncNextPage) {
                             ForEach(viewModel.productRows) { rowViewModel in
@@ -119,6 +134,7 @@ struct ProductSelector: View {
 
 extension ProductSelector {
     struct Configuration {
+        var showsFilter: Bool = false
         var multipleSelectionsEnabled: Bool = false
         var searchHeaderBackgroundColor: UIColor = .listForeground
         var prefersLargeTitle: Bool = true
@@ -142,6 +158,9 @@ private extension ProductSelector {
         static let searchPlaceholder = NSLocalizedString("Search Products", comment: "Placeholder on the search field to search for a specific product")
         static let loadingRowsAccessibilityLabel = NSLocalizedString("Loading products",
                                                                      comment: "Accessibility label for placeholder rows while products are loading")
+        static let selectAllButton = NSLocalizedString("Select All", comment: "Title of the button to select all products in the Select Product screen")
+        static let unSelectAllButton = NSLocalizedString("Unselect All", comment: "Title of the Button to unselect all products in the Select Product screen")
+        static let filterButton = NSLocalizedString("Filter", comment: "Title of the button to select all products in the Select Product screen")
     }
 }
 
@@ -149,6 +168,7 @@ struct AddProduct_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = ProductSelectorViewModel(siteID: 123)
         let configuration = ProductSelector.Configuration(
+            showsFilter: true,
             multipleSelectionsEnabled: true,
             title: "Add Product",
             cancelButtonTitle: "Close",

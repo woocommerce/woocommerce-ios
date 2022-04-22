@@ -18,7 +18,7 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
     /// Indicates whether we must wait for the request before dismiss.
     ///
     var shouldWaitForRequestIsFinishedToDismiss: Bool {
-        !featureFlagService.isFeatureFlagEnabled(.updateOrderOptimistically)
+        !areOptimisticUpdatesEnabled
     }
 
     /// Presents an error notice in the tab bar context after the update operation fails.
@@ -87,13 +87,19 @@ private extension EditCustomerNoteViewModel {
     func bindNavigationTrailingItemPublisher() {
         Publishers.CombineLatest($newNote, performingNetworkRequest)
             .map { [weak self] newNote, performingNetworkRequest -> EditCustomerNoteNavigationItem in
-                let optimisticUpdatesEnabled = self?.featureFlagService.isFeatureFlagEnabled(.updateOrderOptimistically) ?? false
+                let optimisticUpdatesEnabled = self?.areOptimisticUpdatesEnabled ?? false
                 guard optimisticUpdatesEnabled || !performingNetworkRequest else {
                     return .loading
                 }
                 return .done(enabled: self?.order.customerNote != newNote)
             }
             .assign(to: &$navigationTrailingItem)
+    }
+
+    /// Indicates whether the optimistic updates are enabled.
+    ///
+    var areOptimisticUpdatesEnabled: Bool {
+        featureFlagService.isFeatureFlagEnabled(.updateOrderOptimistically)
     }
 
     /// Updates the temporal note after updating the order.

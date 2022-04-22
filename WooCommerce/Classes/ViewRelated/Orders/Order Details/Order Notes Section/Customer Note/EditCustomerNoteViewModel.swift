@@ -29,7 +29,7 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
     ///
     private var order: Order {
         didSet {
-            syncNewNoteAfterUpdatingOrder()
+            syncNewNoteWithOrder()
         }
     }
 
@@ -76,6 +76,9 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
     /// Track the flow cancel scenario.
     ///
     func userDidCancelFlow() {
+        // We need to set the original value.
+        syncNewNoteWithOrder()
+
         analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCanceled(subject: .customerNote))
     }
 }
@@ -104,7 +107,7 @@ private extension EditCustomerNoteViewModel {
 
     /// Updates the temporal note after updating the order.
     ///
-    func syncNewNoteAfterUpdatingOrder() {
+    func syncNewNoteWithOrder() {
         newNote = order.customerNote ?? ""
     }
 

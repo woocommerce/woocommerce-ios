@@ -32,27 +32,29 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// Selected filter for the product list
     ///
-    private var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters() {
+    var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters() {
         didSet {
-//            let contentIsNotSyncedYet = syncingCoordinator.highestPageBeingSynced ?? 0 == 0
-//            if filters != oldValue ||
-//                contentIsNotSyncedYet {
-//                updateLocalProductSettings(sort: sortOrder,
-//                                           filters: filters)
-//                updateFilterButtonTitle(filters: filters)
-//
-//                resultsController.updatePredicate(siteID: siteID,
-//                                                  stockStatus: filters.stockStatus,
-//                                                  productStatus: filters.productStatus,
-//                                                  productType: filters.productType)
-//
-//                /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
-//                tableView.reloadData()
-//
-//                syncingCoordinator.resynchronize {}
-//            }
+            let contentIsNotSyncedYet = syncingCoordinator.highestPageBeingSynced ?? 0 == 0
+            if filters != oldValue || contentIsNotSyncedYet {
+                updateFilterButtonTitle()
+                productsResultsController.updatePredicate(siteID: siteID,
+                                                          stockStatus: filters.stockStatus,
+                                                          productStatus: filters.productStatus,
+                                                          productType: filters.productType)
+
+                syncingCoordinator.resynchronize {}
+            }
         }
     }
+
+    /// Title of the Select All button. If all products are selected,
+    /// this should be updated to Unselect all.
+    ///
+    @Published var selectAllButtonTitle: String = Localization.selectAllButton
+
+    /// Title of the filter button, should be updated with number of active filters.
+    ///
+    @Published var filterButtonTitle: String = Localization.filterButtonWithoutActiveFilters
 
     /// Defines the current notice that should be shown.
     /// Defaults to `nil`.
@@ -404,6 +406,15 @@ private extension ProductSelectorViewModel {
                 self.syncingCoordinator.resynchronize()
             }.store(in: &subscriptions)
     }
+
+    func updateFilterButtonTitle() {
+        let activeFiltersCount = filters.numberOfActiveFilters
+        if activeFiltersCount == 0 {
+            filterButtonTitle = Localization.filterButtonWithoutActiveFilters
+        } else {
+            filterButtonTitle = String.localizedStringWithFormat(Localization.filterButtonWithActiveFilters, activeFiltersCount)
+        }
+    }
 }
 
 // MARK: - Multiple selection support
@@ -520,5 +531,15 @@ private extension ProductSelectorViewModel {
         static let searchErrorMessage = NSLocalizedString("There was an error searching products",
                                                           comment: "Notice displayed when searching the list of products fails")
         static let errorActionTitle = NSLocalizedString("Retry", comment: "Retry action for an error notice")
+        static let selectAllButton = NSLocalizedString("Select All", comment: "Title of the button to select all products on the Select Product screen")
+        static let unSelectAllButton = NSLocalizedString("Unselect All", comment: "Title of the Button to unselect all products on the Select Product screen")
+        static let filterButtonWithoutActiveFilters = NSLocalizedString(
+            "Filter",
+            comment: "Title of the button to select all products on the Select Product screen"
+        )
+        static let filterButtonWithActiveFilters = NSLocalizedString(
+                "Filter (%ld)",
+                comment: "Title of the button to filter products with filters applied on the Select Product screen"
+        )
     }
 }

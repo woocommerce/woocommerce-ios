@@ -25,26 +25,26 @@ struct ProductSelector: View {
             VStack {
                 SearchHeader(filterText: $viewModel.searchTerm, filterPlaceholder: Localization.searchPlaceholder)
                     .padding(.horizontal, insets: safeAreaInsets)
+                HStack {
+                    Button(viewModel.selectAllButtonTitle) {
+                        // TODO: handle selecting all
+                    }
+                    .buttonStyle(LinkButtonStyle())
+                    .fixedSize()
+                    .renderedIf(configuration.multipleSelectionsEnabled && viewModel.syncStatus == .results)
+
+                    Spacer()
+
+                    Button(viewModel.filterButtonTitle) {
+                        showingFilter.toggle()
+                    }
+                    .buttonStyle(LinkButtonStyle())
+                    .fixedSize()
+                    .renderedIf(configuration.showsFilter)
+                }
                 switch viewModel.syncStatus {
                 case .results:
                     VStack(spacing: 0) {
-                        HStack {
-                            Button(Localization.selectAllButton) {
-                                // TODO: handle selecting all
-                            }
-                            .buttonStyle(LinkButtonStyle())
-                            .fixedSize()
-                            .renderedIf(configuration.multipleSelectionsEnabled)
-
-                            Spacer()
-
-                            Button(Localization.filterButton) {
-                                showingFilter.toggle()
-                            }
-                            .buttonStyle(LinkButtonStyle())
-                            .fixedSize()
-                            .renderedIf(configuration.showsFilter)
-                        }
                         InfiniteScrollList(isLoading: viewModel.shouldShowScrollIndicator,
                                            loadAction: viewModel.syncNextPage) {
                             ForEach(viewModel.productRows) { rowViewModel in
@@ -99,12 +99,12 @@ struct ProductSelector: View {
             }
             .notice($viewModel.notice, autoDismiss: false)
             .sheet(isPresented: $showingFilter) {
-                FilterListView(viewModel: viewModel.filterListViewModel) { _ in
-                    // TODO
+                FilterListView(viewModel: viewModel.filterListViewModel) { filters in
+                    viewModel.filters = filters
                 } onClearAction: {
-                    // TODO
+                    // no-op
                 } onDismissAction: {
-                    // TODO
+                    // no-op
                 }
             }
         }
@@ -171,9 +171,6 @@ private extension ProductSelector {
         static let searchPlaceholder = NSLocalizedString("Search Products", comment: "Placeholder on the search field to search for a specific product")
         static let loadingRowsAccessibilityLabel = NSLocalizedString("Loading products",
                                                                      comment: "Accessibility label for placeholder rows while products are loading")
-        static let selectAllButton = NSLocalizedString("Select All", comment: "Title of the button to select all products in the Select Product screen")
-        static let unSelectAllButton = NSLocalizedString("Unselect All", comment: "Title of the Button to unselect all products in the Select Product screen")
-        static let filterButton = NSLocalizedString("Filter", comment: "Title of the button to select all products in the Select Product screen")
     }
 }
 

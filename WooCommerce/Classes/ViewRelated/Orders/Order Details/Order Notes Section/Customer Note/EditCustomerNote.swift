@@ -70,12 +70,27 @@ struct EditCustomerNote<ViewModel: EditCustomerNoteViewModelProtocol>: View {
         switch viewModel.navigationTrailingItem {
         case .done(let enabled):
             Button(Localization.done) {
-                viewModel.updateNote(onFinish: { _ in })
-                dismiss()
+                handleButtonDoneTap()
             }
             .disabled(!enabled)
         case .loading:
             ProgressView()
+        }
+    }
+}
+
+// MARK: Helper methods
+private extension EditCustomerNote {
+    func handleButtonDoneTap() {
+        if viewModel.shouldWaitForRequestIsFinishedToDismiss {
+            viewModel.updateNote(onFinish: { success in
+                if success {
+                    dismiss()
+                }
+            })
+        } else {
+            viewModel.updateNote(onFinish: { _ in })
+            dismiss()
         }
     }
 }

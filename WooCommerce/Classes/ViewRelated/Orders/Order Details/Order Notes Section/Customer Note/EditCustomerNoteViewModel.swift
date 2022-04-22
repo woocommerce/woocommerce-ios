@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import Combine
+import Experiments
 
 /// View Model for the Edit Customer Note screen
 ///
@@ -38,15 +39,21 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
     ///
     private let analytics: Analytics
 
+    /// Service to check if a feature flag is enabled.
+    ///
+    private let featureFlagService: FeatureFlagService
+
     init(order: Order,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
+         noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.order = order
         self.newNote = order.customerNote ?? ""
         self.stores = stores
         self.analytics = analytics
         self.noticePresenter = noticePresenter
+        self.featureFlagService = featureFlagService
         bindNavigationTrailingItemPublisher()
     }
 

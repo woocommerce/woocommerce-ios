@@ -158,7 +158,12 @@ final class BulkUpdateViewModelTests: XCTestCase {
                 XCTFail("Unsupported Action")
             }
         }
-        let viewModel = BulkUpdateViewModel(siteID: 1, productID: 1, onCancelButtonTapped: {}, storageManager: storageManager, storesManager: storesManager)
+        let viewModel = BulkUpdateViewModel(siteID: 1,
+                                            productID: 1,
+                                            onCancelButtonTapped: {},
+                                            storageManager: storageManager,
+                                            storesManager: storesManager,
+                                            currencySettings: CurrencySettings())
 
         // When
         viewModel.syncVariations()

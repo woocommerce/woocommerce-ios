@@ -61,6 +61,32 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         let viewModel = EditCustomerNoteViewModel(order: order, stores: stores)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
+            case let .updateOrder(_, order, _, onCompletion):
+                onCompletion(.success(order))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        let obtainedResult = waitFor { promise in
+            viewModel.updateNote(onFinish: { success in
+                promise(success)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(obtainedResult)
+    }
+
+    func test_view_model_dispatches_optimistic_order_update_when_feature_flag_is_enabled() {
+        // Given
+        givenOptimisticUpdatesEnabled()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let noticePresenter = MockNoticePresenter()
+        let viewModel = EditCustomerNoteViewModel(order: order, stores: stores, noticePresenter: noticePresenter)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
             case let .updateOrderOptimistically(_, order, _, onCompletion):
                 onCompletion(.success(order))
             default:
@@ -79,8 +105,79 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         XCTAssertTrue(obtainedResult)
     }
 
-    func test_view_model_fires_error_notice_after_order_update_fails() {
+    func test_view_model_dispatches_non_optimistic_order_update_when_feature_flag_is_disabled() {
         // Given
+        givenOptimisticUpdatesDisabled()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let noticePresenter = MockNoticePresenter()
+        let viewModel = EditCustomerNoteViewModel(order: order, stores: stores, noticePresenter: noticePresenter)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrder(_, order, _, onCompletion):
+                onCompletion(.success(order))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        let obtainedResult = waitFor { promise in
+            viewModel.updateNote(onFinish: { success in
+                promise(success)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(obtainedResult)
+    }
+
+    func test_view_model_does_not_fire_success_notice_after_updating_order_optimistically_successfully() {
+        // Given
+        givenOptimisticUpdatesEnabled()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let noticePresenter = MockNoticePresenter()
+        let viewModel = EditCustomerNoteViewModel(order: order, stores: stores, noticePresenter: noticePresenter)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrderOptimistically(_, order, _, onCompletion):
+                onCompletion(.success(order))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        viewModel.updateNote(onFinish: { _ in })
+
+        // Then
+        assertEmpty(noticePresenter.queuedNotices)
+    }
+
+    func test_view_model_fires_success_notice_after_updating_order_no_optimistically_successfully() {
+        // Given
+        givenOptimisticUpdatesDisabled()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let noticePresenter = MockNoticePresenter()
+        let viewModel = EditCustomerNoteViewModel(order: order, stores: stores, noticePresenter: noticePresenter)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrder(_, order, _, onCompletion):
+                onCompletion(.success(order))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        viewModel.updateNote(onFinish: { _ in })
+
+        // Then
+        assertEqual(.success, noticePresenter.queuedNotices.first?.feedbackType)
+    }
+
+    func test_view_model_fires_error_notice_after_order_update_optimistically_fails_using_default_notice_presenter() {
+        // Given
+        givenOptimisticUpdatesEnabled()
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let noticePresenter = MockNoticePresenter()
         let viewModel = EditCustomerNoteViewModel(order: order, stores: stores, noticePresenter: noticePresenter)
@@ -102,6 +199,35 @@ class EditCustomerNoteViewModelTests: XCTestCase {
 
         // Then
         assertEqual(.error, noticePresenter.queuedNotices.first?.feedbackType)
+    }
+
+    func test_view_model_fires_error_notice_after_order_non_optimistic_update_fails_using_modal_notice_presenter() {
+        // Given
+        givenOptimisticUpdatesDisabled()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let noticePresenter = MockNoticePresenter()
+        let modalNoticePresenter = MockNoticePresenter()
+        let viewModel = EditCustomerNoteViewModel(order: order, stores: stores, noticePresenter: noticePresenter)
+        viewModel.modalNoticePresenter = modalNoticePresenter
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrder(_, _, _, onCompletion):
+                onCompletion(.failure(NSError(domain: "Error", code: 0, userInfo: nil)))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        _ = waitFor { promise in
+            viewModel.updateNote(onFinish: { _ in
+                promise(true)
+            })
+        }
+
+        // Then
+        assertEqual(.error, modalNoticePresenter.queuedNotices.first?.feedbackType)
+        assertEmpty(noticePresenter.queuedNotices)
     }
 
     func test_view_model_returns_no_success_after_order_update_fails() {
@@ -208,5 +334,18 @@ class EditCustomerNoteViewModelTests: XCTestCase {
 
         // Then
         assertEqual(order.customerNote, viewModel.newNote)
+    }
+}
+
+// MARK: Private methods
+private extension EditCustomerNoteViewModelTests {
+    func givenOptimisticUpdatesEnabled() {
+        let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: true)
+        ServiceLocator.setFeatureFlagService(featureFlagService)
+    }
+
+    func givenOptimisticUpdatesDisabled() {
+        let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: false)
+        ServiceLocator.setFeatureFlagService(featureFlagService)
     }
 }

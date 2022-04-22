@@ -54,7 +54,7 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
     /// Update the note remotely and invoke a completion block when finished
     ///
     func updateNote(onFinish: @escaping (Bool) -> Void) {
-        performUpdateOrderOptimistically(customerNote: newNote, onFinish: onFinish)
+        dispatchUpdateOrderOptimisticallyAction(withNote: newNote, onFinish: onFinish)
     }
 
     /// Track the flow cancel scenario.
@@ -87,7 +87,7 @@ private extension EditCustomerNoteViewModel {
     ///   - customerNote: Given new customer note to update the order.
     ///   - onFinish: Callback to notify when the action has finished.
     ///
-    func performUpdateOrderOptimistically(customerNote: String?, onFinish: ((Bool) -> Void)? = nil) {
+    func dispatchUpdateOrderOptimisticallyAction(withNote customerNote: String?, onFinish: ((Bool) -> Void)? = nil) {
         let orderID = order.orderID
         let modifiedOrder = order.copy(customerNote: customerNote)
 
@@ -114,7 +114,7 @@ private extension EditCustomerNoteViewModel {
         let notice = Notice(title: Localization.error,
                             feedbackType: .error,
                             actionTitle: Localization.retry) { [weak self] in
-            self?.performUpdateOrderOptimistically(customerNote: customerNote)
+            self?.dispatchUpdateOrderOptimisticallyAction(withNote: customerNote)
         }
 
         noticePresenter.enqueue(notice: notice)

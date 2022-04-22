@@ -26,6 +26,9 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
         }
     }
 
+    /// Tracks if a network request is being performed.
+    ///
+    private let performingNetworkRequest: CurrentValueSubject<Bool, Never> = .init(false)
 
     /// Action dispatcher
     ///
@@ -92,6 +95,8 @@ private extension EditCustomerNoteViewModel {
         let modifiedOrder = order.copy(customerNote: customerNote)
 
         let updateAction = OrderAction.updateOrderOptimistically(siteID: order.siteID, order: modifiedOrder, fields: [.customerNote]) { [weak self] result in
+            self?.performingNetworkRequest.send(false)
+
             guard case let .failure(error) = result else {
                 self?.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCompleted(subject: .customerNote))
                 onFinish?(true)
@@ -105,6 +110,7 @@ private extension EditCustomerNoteViewModel {
             onFinish?(false)
         }
 
+        performingNetworkRequest.send(true)
         stores.dispatch(updateAction)
     }
 

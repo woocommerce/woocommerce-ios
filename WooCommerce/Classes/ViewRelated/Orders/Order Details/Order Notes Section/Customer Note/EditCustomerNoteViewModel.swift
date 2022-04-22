@@ -88,49 +88,24 @@ private extension EditCustomerNoteViewModel {
     ///   - onFinish: Callback to notify when the action has finished.
     ///
     func performUpdateOrderOptimistically(customerNote: String?, onFinish: ((Bool) -> Void)? = nil) {
-        let currentCustomerNote = order.customerNote
-        let updateAction = makeUpdateCustomerNoteAction(withNote: customerNote, onFinish: onFinish)
-        let undoAction = makeUpdateCustomerNoteAction(withNote: currentCustomerNote)
-
-        stores.dispatch(updateAction)
-
-        displayCustomerNoteUpdatedNotice { [weak self] in
-            self?.stores.dispatch(undoAction)
-        }
-    }
-
-    /// Makes an `updateOrderOptimistically` action from a given customer note.
-    /// - Parameters:
-    ///   - note: Given new customer note to update the order.
-    ///   - onFinish: Callback to notify when the action has finished.
-    /// - Returns: A new `updateOrderOptimistically` action using the given parameters.
-    ///
-    func makeUpdateCustomerNoteAction(withNote note: String?, onFinish: ((Bool) -> Void)? = nil) -> Action {
         let orderID = order.orderID
-        let modifiedOrder = order.copy(customerNote: note)
-        return OrderAction.updateOrderOptimistically(siteID: order.siteID, order: modifiedOrder, fields: [.customerNote]) { [weak self] result in
+        let modifiedOrder = order.copy(customerNote: customerNote)
+
+        let updateAction = OrderAction.updateOrderOptimistically(siteID: order.siteID, order: modifiedOrder, fields: [.customerNote]) { [weak self] result in
             guard case let .failure(error) = result else {
                 self?.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCompleted(subject: .customerNote))
                 onFinish?(true)
                 return
             }
 
-            DDLogError("⛔️ Order Update Failure: [\(orderID).customerNote = \(note ?? "")]. Error: \(error)")
+            DDLogError("⛔️ Order Update Failure: [\(orderID).customerNote = \(customerNote ?? "")]. Error: \(error)")
 
             self?.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowFailed(subject: .customerNote))
-            self?.displayUpdateErrorNotice(customerNote: note)
+            self?.displayUpdateErrorNotice(customerNote: customerNote)
             onFinish?(false)
         }
-    }
 
-    /// Enqueues the `Order Updated` Notice. Whenever the `Undo` button gets pressed, we'll execute the `onUndoAction` closure.
-    ///
-    func displayCustomerNoteUpdatedNotice(onUndoAction: @escaping () -> Void) {
-        let notice = Notice(title: Localization.success,
-                            feedbackType: .success,
-                            actionTitle: Localization.undo,
-                            actionHandler: onUndoAction)
-        noticePresenter.enqueue(notice: notice)
+        stores.dispatch(updateAction)
     }
 
     /// Enqueues the `Unable to Change Customer Note of Order` Notice.
@@ -152,6 +127,5 @@ private extension EditCustomerNoteViewModel {
         static let success = NSLocalizedString("Successfully updated", comment: "Notice text after updating the order successfully")
         static let error = NSLocalizedString("There was an error updating the order", comment: "Notice text after failing to update the order successfully")
         static let retry = NSLocalizedString("Retry", comment: "Retry Action")
-        static let undo = NSLocalizedString("Undo", comment: "Undo Action")
     }
 }

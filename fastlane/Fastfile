@@ -12,6 +12,7 @@ PROJECT_ENV_FILE_PATH = File.join(SECRETS_DIR, 'project.env')
 
 # Constants
 PROJECT_ROOT_FOLDER = File.dirname(File.expand_path(__dir__))
+RESOURCES_FOLDER = File.join(PROJECT_ROOT_FOLDER, 'WooCommerce', 'Resources')
 FASTLANE_DIR = __dir__
 DERIVED_DATA_DIR = File.join(FASTLANE_DIR, 'DerivedData')
 SCREENSHOTS_DIR =  File.join(FASTLANE_DIR, 'screenshots')
@@ -25,12 +26,8 @@ SCREENSHOT_DEVICES = [
   'iPad Pro (12.9-inch) (3rd generation)'
 ].freeze
 
-# rubocop:disable Style/MutableConstant
-# Fastlane mutates these internally, see
-# https://github.com/fastlane/fastlane/blob/b817148d4967ab6e38b8f1a8b81d1b3e60d6e645/match/lib/match/runner.rb#L84-L86
-MAIN_BUNDLE_IDENTIFIERS = %w[com.automattic.woocommerce]        # Registered in our main account, for development and AppStore
-ALPHA_BUNDLE_IDENTIFIERS = %w[com.automattic.alpha.woocommerce] # Registered in our Enterprise account, for AppCenter / Installable Builds
-# rubocop:enable Style/MutableConstant
+MAIN_BUNDLE_IDENTIFIERS = %w[com.automattic.woocommerce].freeze        # Registered in our main account, for development and AppStore
+ALPHA_BUNDLE_IDENTIFIERS = %w[com.automattic.alpha.woocommerce].freeze # Registered in our Enterprise account, for App Center / Installable Builds
 
 # Use this instead of getting values from ENV directly
 # It will throw an error if the requested value is missing
@@ -101,7 +98,7 @@ platform :ios do
     extract_release_notes_for_version(
       version: new_version,
       release_notes_file_path: 'RELEASE-NOTES.txt',
-      extracted_notes_file_path: File.join('WooCommerce', 'Resources', 'release_notes.txt')
+      extracted_notes_file_path: File.join(RESOURCES_FOLDER, 'release_notes.txt')
     )
     ios_update_release_notes(new_version: new_version)
     setbranchprotection(repository: GHHELPER_REPO, branch: "release/#{new_version}")
@@ -124,7 +121,7 @@ platform :ios do
   desc 'Creates a new release branch from the current trunk'
   lane :complete_code_freeze do |options|
     ios_completecodefreeze_prechecks(options)
-    ios_localize_project
+    update_localization
     version = ios_get_app_version
     trigger_beta_build(branch_to_build: "release/#{version}")
   end
@@ -143,11 +140,10 @@ platform :ios do
   #####################################################################################
   desc 'Updates the AppStoreStrings.pot file with the latest data'
   lane :update_appstore_strings do |options|
-    project_root = File.dirname(File.expand_path(__dir__))
-    source_metadata_folder = File.join(project_root, 'fastlane', 'appstoreres', 'metadata', 'source')
+    source_metadata_folder = File.join(PROJECT_ROOT_FOLDER, 'fastlane', 'appstoreres', 'metadata', 'source')
 
     files = {
-      whats_new: File.join(project_root, 'WooCommerce', 'Resources', 'release_notes.txt'),
+      whats_new: File.join(RESOURCES_FOLDER, 'release_notes.txt'),
       app_store_subtitle: File.join(source_metadata_folder, 'subtitle.txt'),
       app_store_desc: File.join(source_metadata_folder, 'description.txt'),
       app_store_keywords: File.join(source_metadata_folder, 'keywords.txt'),
@@ -160,7 +156,7 @@ platform :ios do
     }
 
     ios_update_metadata_source(
-      po_file_path: File.join(project_root, 'WooCommerce', 'Resources', 'AppStoreStrings.pot'),
+      po_file_path: File.join(RESOURCES_FOLDER, 'AppStoreStrings.pot'),
       source_files: files,
       release_version: options[:version]
     )
@@ -457,13 +453,21 @@ platform :ios do
       dsym_path: './build/WooCommerce.app.dSYM.zip'
     )
 
+    UI.message("Successfully built and uploaded installable build `#{build_number}` to App Center.")
+
     return if ENV['BUILDKITE_PULL_REQUEST'].nil?
 
-    download_url = Actions.lane_context[SharedValues::APPCENTER_DOWNLOAD_LINK]
-    UI.message("Successfully built and uploaded installable build here: #{download_url}")
     install_url = 'https://install.appcenter.ms/orgs/automattic/apps/WooCommerce-Installable-Builds'
+    qr_code_url = "https://chart.googleapis.com/chart?chs=500x500&cht=qr&chl=#{CGI.escape(install_url)}&choe=UTF-8"
 
-    comment_body = "You can test the changes on this Pull Request by downloading it from AppCenter <a href='#{install_url}'>here</a> with build number: <code>#{build_number}</code>. IPA is available <a href='#{download_url}'>here</a>. If you need access to this, you can ask a maintainer to add you."
+    comment_body = <<~COMMENT_BODY
+      You can test the changes from this Pull Request by:<ul>
+        <li><a href='#{install_url}'>Clicking here</a> or scanning the QR code below to access App Center</li>
+        <li>Then installing the build number <code>#{build_number}</code> on your iPhone</li>
+      </ul>
+      <img src='#{qr_code_url}' width='150' height='150' />
+      If you need access to App Center, please ask a maintainer to add you.
+    COMMENT_BODY
 
     comment_on_pr(
       project: 'woocommerce/woocommerce-ios',

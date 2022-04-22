@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import Yosemite
+import protocol Storage.StorageManagerType
 
 /// View Model for `CouponRestriction`
 ///
@@ -24,9 +25,28 @@ final class CouponRestrictionsViewModel: ObservableObject {
 
     @Published var excludeSaleItems: Bool
 
+    /// View model for the product selector
+    ///
+    lazy var productSelectorViewModel = {
+        ProductSelectorViewModel(siteID: siteID, storageManager: storageManager, stores: stores) { _ in
+            // TODO
+        } onVariationSelected: { _ in
+            // TODO
+        }
+    }()
+
+    private let siteID: Int64
+    private let stores: StoresManager
+    private let storageManager: StorageManagerType
+
     init(coupon: Coupon,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
         currencySymbol = currencySettings.symbol(from: currencySettings.currencyCode)
+        siteID = coupon.siteID
+        self.stores = stores
+        self.storageManager = storageManager
 
         minimumSpend = coupon.minimumAmount
         maximumSpend = coupon.maximumAmount
@@ -58,7 +78,10 @@ final class CouponRestrictionsViewModel: ObservableObject {
         excludeSaleItems = coupon.excludeSaleItems
     }
 
-    init(currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+    init(siteID: Int64,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
         currencySymbol = currencySettings.symbol(from: currencySettings.currencyCode)
         minimumSpend = ""
         maximumSpend = ""
@@ -68,5 +91,8 @@ final class CouponRestrictionsViewModel: ObservableObject {
         allowedEmails = ""
         individualUseOnly = false
         excludeSaleItems = false
+        self.siteID = siteID
+        self.stores = stores
+        self.storageManager = storageManager
     }
 }

@@ -238,6 +238,9 @@ private extension ProductVariationsViewController {
     ///
     func registerTableViewCells() {
         tableView.register(ProductsTabProductTableViewCell.self)
+
+        // Register a simple one as the container for the placeholder ghost view
+        tableView.register(UITableViewCell.self)
     }
 
     /// Shows or hides the empty state screen.

@@ -419,6 +419,9 @@ private extension ProductsViewController {
     ///
     func registerTableViewCells() {
         tableView.register(ProductsTabProductTableViewCell.self)
+
+        // Register a simple one as the container for the placeholder ghost view
+        tableView.register(UITableViewCell.self)
     }
 
     /// Show or hide the toolbar based on number of products

@@ -614,7 +614,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(storageOrder?.customerNote, originalOrder.customerNote)
     }
 
-    func test_optimistic_update_order_customer_note_delete_upon_failure_and_not_exist_locally() {
+    func test_optimistic_update_deletes_order_from_storage_upon_failure_if_it_does_not_exist_locally() {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 

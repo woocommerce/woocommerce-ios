@@ -24,6 +24,36 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     let onLoadTrigger: PassthroughSubject<Void, Never> = PassthroughSubject()
 
+    /// View model for the filter list.
+    ///
+    var filterListViewModel: FilterProductListViewModel {
+        FilterProductListViewModel(filters: filters, siteID: siteID)
+    }
+
+    /// Selected filter for the product list
+    ///
+    private var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters() {
+        didSet {
+//            let contentIsNotSyncedYet = syncingCoordinator.highestPageBeingSynced ?? 0 == 0
+//            if filters != oldValue ||
+//                contentIsNotSyncedYet {
+//                updateLocalProductSettings(sort: sortOrder,
+//                                           filters: filters)
+//                updateFilterButtonTitle(filters: filters)
+//
+//                resultsController.updatePredicate(siteID: siteID,
+//                                                  stockStatus: filters.stockStatus,
+//                                                  productStatus: filters.productStatus,
+//                                                  productType: filters.productType)
+//
+//                /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
+//                tableView.reloadData()
+//
+//                syncingCoordinator.resynchronize {}
+//            }
+        }
+    }
+
     /// Defines the current notice that should be shown.
     /// Defaults to `nil`.
     ///

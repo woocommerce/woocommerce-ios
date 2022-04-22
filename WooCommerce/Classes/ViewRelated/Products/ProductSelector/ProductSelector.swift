@@ -18,6 +18,8 @@ struct ProductSelector: View {
     ///
     @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
 
+    @State private var showingFilter: Bool = false
+
     var body: some View {
         NavigationView {
             VStack {
@@ -33,9 +35,11 @@ struct ProductSelector: View {
                             .buttonStyle(LinkButtonStyle())
                             .fixedSize()
                             .renderedIf(configuration.multipleSelectionsEnabled)
+
                             Spacer()
+
                             Button(Localization.filterButton) {
-                                // TODO: handle filter
+                                showingFilter.toggle()
                             }
                             .buttonStyle(LinkButtonStyle())
                             .fixedSize()
@@ -94,6 +98,15 @@ struct ProductSelector: View {
                 viewModel.onLoadTrigger.send()
             }
             .notice($viewModel.notice, autoDismiss: false)
+            .sheet(isPresented: $showingFilter) {
+                FilterListView(viewModel: viewModel.filterListViewModel) { _ in
+                    // TODO
+                } onClearAction: {
+                    // TODO
+                } onDismissAction: {
+                    // TODO
+                }
+            }
         }
         .wooNavigationBarStyle()
     }

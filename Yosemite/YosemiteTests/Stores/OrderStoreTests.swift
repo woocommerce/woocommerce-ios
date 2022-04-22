@@ -572,7 +572,8 @@ final class OrderStoreTests: XCTestCase {
 
         orderStore.upsertStoredOrder(readOnlyOrder: originalOrder, in: viewStorage)
 
-        /// Update: Expected Customer note is actually coming from `order.json` (Customer note == "")
+        /// As we're updating the order optimistically, the response from the API will be ignored.
+        /// It's only to simulate the successful path.
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
 
         // When
@@ -586,7 +587,7 @@ final class OrderStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isSuccess)
         let storageOrder = storageManager.viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderID)
-       XCTAssertEqual(storageOrder?.customerNote, updatedOrder.customerNote)
+        XCTAssertEqual(storageOrder?.customerNote, updatedOrder.customerNote)
     }
 
     func test_optimistic_update_order_customer_note_reverts_upon_failure() {
@@ -614,7 +615,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(storageOrder?.customerNote, originalOrder.customerNote)
     }
 
-    func test_optimistic_update_order_customer_note_delete_upon_failure_and_not_exist_locally() {
+    func test_optimistic_update_deletes_order_from_storage_upon_failure_if_it_does_not_exist_locally() {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -647,7 +648,8 @@ final class OrderStoreTests: XCTestCase {
 
         orderStore.upsertStoredOrder(readOnlyOrder: originalOrder, in: viewStorage)
 
-        /// Update: Expected Shipping phone is actually coming from `order.json` (Shipping Phone == "333-333-3333")
+        /// As we're updating the order optimistically, the response from the API will be ignored.
+        /// It's only to simulate the successful path.
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
 
         // When
@@ -700,7 +702,8 @@ final class OrderStoreTests: XCTestCase {
 
         orderStore.upsertStoredOrder(readOnlyOrder: originalOrder, in: viewStorage)
 
-        /// Update: Expected Shipping & Biling Phone are actually coming from `order.json` (Shipping & Biling Phone == "333-333-3333")
+        /// As we're updating the order optimistically, the response from the API will be ignored.
+        /// It's only to simulate the successful path.
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
 
         // When

@@ -143,7 +143,7 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
     ///
     public func updateCoupon(_ coupon: Coupon, completion: @escaping (Result<Coupon, Error>) -> Void) {
         do {
-            let parameters = try coupon.toDictionary()
+            let parameters = try coupon.toDictionary(keyEncodingStrategy: .convertToSnakeCase)
             let couponID = coupon.couponID
             let siteID = coupon.siteID
             let path = Path.coupons + "/\(couponID)"

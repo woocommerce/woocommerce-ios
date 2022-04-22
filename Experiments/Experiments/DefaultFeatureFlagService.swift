@@ -32,8 +32,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .couponEditing:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .updateOrderOptimistically:
-            return false
-//            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

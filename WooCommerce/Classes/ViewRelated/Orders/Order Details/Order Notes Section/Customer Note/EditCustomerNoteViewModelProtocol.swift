@@ -26,4 +26,5 @@ protocol EditCustomerNoteViewModelProtocol: ObservableObject {
 ///
 enum EditCustomerNoteNavigationItem: Equatable {
     case done(enabled: Bool)
+    case loading
 }

@@ -6,8 +6,9 @@ import Yosemite
 struct PaymentReceiptEmailParameterDeterminer {
     private let cardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol
     private let stores: StoresManager
+    private static let defaultConfiguration = CardPresentConfigurationLoader(stores: ServiceLocator.stores).configuration
 
-    init(cardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol = CardPresentPluginsDataProvider(),
+    init(cardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol = CardPresentPluginsDataProvider(configuration: Self.defaultConfiguration),
          stores: StoresManager = ServiceLocator.stores) {
         self.cardPresentPluginsDataProvider = cardPresentPluginsDataProvider
         self.stores = stores

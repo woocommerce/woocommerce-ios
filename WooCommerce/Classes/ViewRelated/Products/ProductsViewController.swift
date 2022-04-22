@@ -39,7 +39,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     /// Top stack view that is shown above the table view as the table header view.
     ///
     private lazy var topStackView: UIStackView = {
-        let subviews = [topBannerContainerView, toolbar]
+        let subviews = [topBannerContainerView]
         let stackView = UIStackView(arrangedSubviews: subviews)
         stackView.axis = .vertical
         stackView.spacing = Constants.headerViewSpacing
@@ -50,9 +50,10 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     /// Top toolbar that shows the sort and filter CTAs.
     ///
-    private lazy var toolbar: UIView = {
-        return createToolbar()
-    }()
+    @IBOutlet weak var toolbar: ToolbarView!
+
+    // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
+    private let hiddenScrollView = UIScrollView()
 
     /// The filter CTA in the top toolbar.
     private lazy var filterButton: UIButton = UIButton(frame: .zero)
@@ -170,7 +171,8 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         configureNavigationBar()
         configureMainView()
         configureTableView()
-        configureToolBarView()
+        configureHiddenScrollView()
+        configureToolbar()
         configureSyncingCoordinator()
         registerTableViewCells()
 
@@ -368,13 +370,24 @@ private extension ProductsViewController {
         stateCoordinator.transitionToResultsUpdatedState(hasData: !isEmpty)
     }
 
-    /// Configure toolbar view by number of products
-    ///
-    func configureToolBarView() {
-        showOrHideToolBar()
+    private func configureHiddenScrollView() {
+        // Configure large title using the `hiddenScrollView` trick.
+        hiddenScrollView.configureForLargeTitleWorkaround()
+        // Adds the "hidden" scroll view to the root of the UIViewController for large title workaround.
+        view.addSubview(hiddenScrollView)
+        view.sendSubviewToBack(hiddenScrollView)
+        hiddenScrollView.translatesAutoresizingMaskIntoConstraints = false
+        view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
     }
 
-    func createToolbar() -> ToolbarView {
+    /// Configure toolbar view by number of products
+    ///
+    private func configureToolbar() {
+        setupToolbar()
+        showOrHideToolbar()
+    }
+
+    private func setupToolbar() {
         let sortTitle = NSLocalizedString("Sort by", comment: "Title of the toolbar button to sort products in different ways.")
         let sortButton = UIButton(frame: .zero)
         sortButton.setTitle(sortTitle, for: .normal)
@@ -389,11 +402,8 @@ private extension ProductsViewController {
             $0.contentEdgeInsets = Constants.toolbarButtonInsets
         }
 
-        let toolbar = ToolbarView()
         toolbar.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
         toolbar.setSubviews(leftViews: [sortButton], rightViews: [filterButton])
-
-        return toolbar
     }
 
     /// Setup: Sync'ing Coordinator
@@ -416,7 +426,7 @@ private extension ProductsViewController {
     /// If there is 0 products, toolbar will be hidden
     /// if there is 1 or more products, toolbar will be visible
     ///
-    func showOrHideToolBar() {
+    func showOrHideToolbar() {
         toolbar.isHidden = filters.numberOfActiveFilters == 0 ? isEmpty : false
     }
 }
@@ -545,7 +555,7 @@ private extension ProductsViewController {
     /// Manages view components and reload tableview
     ///
     func reloadTableAndView() {
-        showOrHideToolBar()
+        showOrHideToolbar()
         addOrRemoveOverlay()
         tableView.reloadData()
     }
@@ -630,6 +640,10 @@ extension ProductsViewController: UITableViewDelegate {
         // the actual value. AKA no flicker!
         //
         estimatedRowHeights[indexPath] = cell.frame.height
+    }
+
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
     }
 }
 
@@ -950,7 +964,7 @@ private extension ProductsViewController {
             ensureFooterSpinnerIsStopped()
             removeGhostContent()
             showTopBannerViewIfNeeded()
-            showOrHideToolBar()
+            showOrHideToolbar()
         case .results:
             break
         }

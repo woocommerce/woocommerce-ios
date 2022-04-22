@@ -192,4 +192,17 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         assertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.orderDetailEditFlowCanceled.rawValue])
         assertEqual(analyticsProvider.receivedProperties.first?["subject"] as? String, "customer_note")
     }
+
+    func test_view_model_reset_new_note_when_cancel_flow() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = EditCustomerNoteViewModel(order: order, stores: stores)
+        viewModel.newNote = "Edited"
+
+        // When
+        viewModel.userDidCancelFlow()
+
+        // Then
+        assertEqual(order.customerNote, viewModel.newNote)
+    }
 }

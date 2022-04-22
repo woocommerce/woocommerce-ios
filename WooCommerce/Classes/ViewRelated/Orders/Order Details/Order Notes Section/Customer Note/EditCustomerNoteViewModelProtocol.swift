@@ -20,6 +20,19 @@ protocol EditCustomerNoteViewModelProtocol: ObservableObject {
     /// Call it when the user cancels the flow.
     ///
     func userDidCancelFlow()
+
+    /// Indicates whether we must wait for the request before dismiss. Default: **false**
+    ///
+    var shouldWaitForRequestIsFinishedToDismiss: Bool { get }
+}
+
+extension EditCustomerNoteViewModelProtocol {
+    /// By default we haven't to wait for the request is finished
+    /// to dismiss the view.
+    ///
+    var shouldWaitForRequestIsFinishedToDismiss: Bool {
+        return false
+    }
 }
 
 /// Representation of possible navigation bar trailing buttons

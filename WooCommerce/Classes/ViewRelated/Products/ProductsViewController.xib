@@ -12,6 +12,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProductsViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
                 <outlet property="tableView" destination="1mE-SE-uK9" id="ogX-nu-l5x"/>
+                <outlet property="toolbar" destination="9eA-hc-k15" id="V2c-iT-WpM"/>
                 <outlet property="view" destination="iN0-l3-epB" id="Jh9-wF-LZg"/>
             </connections>
         </placeholder>
@@ -26,16 +27,26 @@
                         <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="orders-table-view"/>
                     </userDefinedRuntimeAttributes>
                 </tableView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9eA-hc-k15" userLabel="Filter Bar" customClass="ToolbarView" customModule="WooCommerce" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="44" width="414" height="0.0"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <constraints>
+                        <constraint firstAttribute="height" id="sEi-OR-bvb"/>
+                    </constraints>
+                </view>
             </subviews>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="9eA-hc-k15" secondAttribute="trailing" id="7Oz-dR-GwR"/>
                 <constraint firstItem="1mE-SE-uK9" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="8hS-PH-Szg"/>
+                <constraint firstItem="1mE-SE-uK9" firstAttribute="top" secondItem="9eA-hc-k15" secondAttribute="bottom" id="CKX-Om-8xR"/>
+                <constraint firstItem="9eA-hc-k15" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="EMu-rn-qlD"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="1mE-SE-uK9" secondAttribute="bottom" id="Xci-eH-29p"/>
-                <constraint firstItem="1mE-SE-uK9" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="ZjI-Dc-KKp"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="1mE-SE-uK9" secondAttribute="trailing" id="h1p-cR-5re"/>
+                <constraint firstItem="9eA-hc-k15" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="w8G-wM-Nhh"/>
             </constraints>
-            <point key="canvasLocation" x="101" y="49"/>
+            <point key="canvasLocation" x="100.00000000000001" y="48.883928571428569"/>
         </view>
     </objects>
     <resources>

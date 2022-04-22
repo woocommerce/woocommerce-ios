@@ -117,7 +117,7 @@ private extension EditCustomerNoteViewModel {
         let orderID = order.orderID
         let modifiedOrder = order.copy(customerNote: customerNote)
 
-        let updateAction = OrderAction.updateOrderOptimistically(siteID: order.siteID, order: modifiedOrder, fields: [.customerNote]) { [weak self] result in
+        let updateAction = makeUpdateAction(order: modifiedOrder) { [weak self] result in
             self?.performingNetworkRequest.send(false)
 
             guard case let .failure(error) = result else {
@@ -135,6 +135,16 @@ private extension EditCustomerNoteViewModel {
 
         performingNetworkRequest.send(true)
         stores.dispatch(updateAction)
+    }
+
+    /// Returns the update action based on the value of the `updateOrderOptimistically` feature flag.
+    ///
+    func makeUpdateAction(order: Order, onCompletion: @escaping (Result<Order, Error>) -> Void) -> Action {
+        if areOptimisticUpdatesEnabled {
+            return OrderAction.updateOrderOptimistically(siteID: order.siteID, order: order, fields: [.customerNote], onCompletion: onCompletion)
+        } else {
+            return OrderAction.updateOrder(siteID: order.siteID, order: order, fields: [.customerNote], onCompletion: onCompletion)
+        }
     }
 
     /// Enqueues the `Unable to Change Customer Note of Order` Notice.

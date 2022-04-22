@@ -55,10 +55,6 @@ final class CardPresentRefundOrchestrator {
         stores.dispatch(refundAction)
     }
 
-    deinit {
-        allowPassPresentation()
-    }
-
     /// Cancels the current refund.
     /// - Parameter onCompletion: called when the cancellation completes.
     func cancelRefund(onCompletion: @escaping (Result<Void, Error>) -> Void) {

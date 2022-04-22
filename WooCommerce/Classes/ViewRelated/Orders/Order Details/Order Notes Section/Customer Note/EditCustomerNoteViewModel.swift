@@ -125,6 +125,7 @@ private extension EditCustomerNoteViewModel {
 
             guard case let .failure(error) = result else {
                 self?.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCompleted(subject: .customerNote))
+                self?.displayCustomerNoteUpdatedNoticeIfNeeded()
                 onFinish?(true)
                 return
             }
@@ -148,6 +149,16 @@ private extension EditCustomerNoteViewModel {
         } else {
             return OrderAction.updateOrder(siteID: order.siteID, order: order, fields: [.customerNote], onCompletion: onCompletion)
         }
+    }
+
+    /// Enqueues the `Order Updated` Notice if the optimistic updates are not enabled.
+    ///
+    func displayCustomerNoteUpdatedNoticeIfNeeded() {
+        guard !areOptimisticUpdatesEnabled else {
+            return
+        }
+
+        noticePresenter.enqueue(notice: Notice(title: Localization.success, feedbackType: .success))
     }
 
     /// Enqueues the `Unable to Change Customer Note of Order` Notice.

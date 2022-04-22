@@ -78,27 +78,6 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         XCTAssertTrue(obtainedResult)
     }
 
-    func test_view_model_fires_success_notice_after_updating_order_successfully() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        let noticePresenter = MockNoticePresenter()
-        let viewModel = EditCustomerNoteViewModel(order: order, stores: stores, noticePresenter: noticePresenter)
-        stores.whenReceivingAction(ofType: OrderAction.self) { action in
-            switch action {
-            case let .updateOrderOptimistically(_, order, _, onCompletion):
-                onCompletion(.success(order))
-            default:
-                XCTFail("Unsupported Action")
-            }
-        }
-
-        // When
-        viewModel.updateNote(onFinish: { _ in })
-
-        // Then
-        assertEqual(.success, noticePresenter.queuedNotices.last?.feedbackType)
-    }
-
     func test_view_model_fires_error_notice_after_order_update_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)

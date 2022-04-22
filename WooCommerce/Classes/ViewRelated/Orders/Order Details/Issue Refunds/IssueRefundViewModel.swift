@@ -131,11 +131,12 @@ final class IssueRefundViewModel {
          currencySettings: CurrencySettings,
          analytics: Analytics = ServiceLocator.analytics,
          stores: StoresManager = ServiceLocator.stores,
-         storage: StorageManagerType = ServiceLocator.storageManager) {
+         storage: StorageManagerType = ServiceLocator.storageManager,
+         refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol = OrderRefundsOptionsDeterminer()) {
         self.analytics = analytics
         self.stores = stores
         self.storage = storage
-        let items = Self.filterItems(from: order, with: refunds)
+        let items = refundableOrderItemsDeterminer.determineRefundableOrderItems(from: order, with: refunds)
         state = State(order: order, refunds: refunds, itemsToRefund: items, currencySettings: currencySettings, charge: nil)
         sections = createSections()
         title = calculateTitle()
@@ -358,7 +359,8 @@ extension IssueRefundViewModel {
     ///
     private func createShippingSection() -> Section? {
         // If there is no shipping cost to refund or shipping has already been refunded, then hide the section.
-        guard let shippingLine = state.order.shippingLines.first, hasShippingBeenRefunded() == false else {
+        guard let shippingLine = state.order.shippingLines.first,
+                hasShippingBeenRefunded() == false else {
             return nil
         }
 
@@ -481,36 +483,6 @@ extension IssueRefundViewModel {
     private func isAnyFeeAvailableForRefund() -> Bool {
         // Return false if there are no fees left to be refunded.
         return state.order.fees.isNotEmpty
-    }
-
-    /// Return an array of `RefundableOrderItems` by taking out all previously refunded items
-    ///
-    private static func filterItems(from order: Order, with refunds: [Refund]) -> [RefundableOrderItem] {
-        // Flattened array with all items refunded
-        let allRefundedItems = refunds.flatMap { $0.items }
-
-        // Transform `order.items` by subtracting the quantity left to refund and evicting those who were fully refunded.
-        return order.items.compactMap { item -> RefundableOrderItem? in
-
-            // Calculate how many times an item has been refunded. This number is negative.
-            let timesRefunded = allRefundedItems.reduce(0) { timesRefunded, refundedItem -> Decimal in
-
-                // Only keep accumulating if the refunded item product and the original item product match
-                guard refundedItem.productOrVariationID == item.productOrVariationID else {
-                    return timesRefunded
-                }
-                return timesRefunded + refundedItem.quantity
-            }
-
-            // If there is no more items to refund, evict it from the resulting array
-            let quantityLeftToRefund = item.quantity + timesRefunded
-            guard quantityLeftToRefund > 0 else {
-                return nil
-            }
-
-            // Return the item with the updated quantity to refund
-            return RefundableOrderItem(item: item, quantity: quantityLeftToRefund)
-        }
     }
 }
 

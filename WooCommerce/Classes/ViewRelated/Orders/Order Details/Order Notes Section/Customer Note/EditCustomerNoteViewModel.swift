@@ -79,9 +79,13 @@ private extension EditCustomerNoteViewModel {
     /// Calculates what navigation trailing item should be shown depending on our internal state.
     ///
     func bindNavigationTrailingItemPublisher() {
-        $newNote
-            .map { [weak self] editedContent -> EditCustomerNoteNavigationItem in
-                .done(enabled: editedContent != self?.order.customerNote)
+        Publishers.CombineLatest($newNote, performingNetworkRequest)
+            .map { [weak self] newNote, performingNetworkRequest -> EditCustomerNoteNavigationItem in
+                let optimisticUpdatesEnabled = self?.featureFlagService.isFeatureFlagEnabled(.updateOrderOptimistically) ?? false
+                guard optimisticUpdatesEnabled || !performingNetworkRequest else {
+                    return .loading
+                }
+                return .done(enabled: self?.order.customerNote != newNote)
             }
             .assign(to: &$navigationTrailingItem)
     }

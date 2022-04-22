@@ -68,6 +68,7 @@ struct HubMenu: View {
                                 showingCoupons = true
                             }
                         })
+                            .accessibilityIdentifier(menu.accessibilityIdentifier)
                     }
                     .background(Color(.listForeground))
                     .cornerRadius(Constants.cornerRadius)

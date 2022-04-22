@@ -176,6 +176,21 @@ extension HubMenuViewModel {
                 return .primary
             }
         }
+
+        var accessibilityIdentifier: String {
+            switch self {
+            case .woocommerceAdmin:
+                return "menu-woocommerce-admin"
+            case .viewStore:
+                return "menu-view-store"
+            case .inbox:
+                return "menu-inbox"
+            case .coupons:
+                return "menu-coupons"
+            case .reviews:
+                return "menu-reviews"
+            }
+        }
     }
 
     private enum Localization {

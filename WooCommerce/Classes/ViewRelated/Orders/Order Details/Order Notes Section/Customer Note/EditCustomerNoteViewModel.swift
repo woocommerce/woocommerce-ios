@@ -14,7 +14,7 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
     ///
     @Published private(set) var navigationTrailingItem: EditCustomerNoteNavigationItem = .done(enabled: false)
 
-    /// Presents either a success or an error notice in the tab bar context after the update operation is done.
+    /// Presents an error notice in the tab bar context after the update operation fails.
     ///
     private let noticePresenter: NoticePresenter
 

@@ -46,7 +46,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         self.storageManager = storageManager
         self.stores = stores
         self.configurationLoader = .init(stores: stores)
-        self.cardPresentPluginsDataProvider = .init(storageManager: storageManager, stores: stores)
+        self.cardPresentPluginsDataProvider = .init(storageManager: storageManager, stores: stores, configuration: configurationLoader.configuration)
 
 
         // At the time of writing, actions are dispatched and processed synchronously, so the completion blocks for
@@ -188,7 +188,8 @@ private extension CardPresentPaymentsOnboardingUseCase {
         guard let plugin = plugin else {
             return .pluginNotInstalled
         }
-        guard cardPresentPluginsDataProvider.isWCPayVersionSupported(plugin: plugin) else {
+        guard cardPresentPluginsDataProvider.isWCPayVersionSupported(plugin: plugin)
+        else {
             return .pluginUnsupportedVersion(plugin: .wcPay)
         }
         guard plugin.active else {
@@ -200,7 +201,8 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func stripeGatewayOnlyOnboardingState(plugin: SystemPlugin) -> CardPresentPaymentOnboardingState {
-        guard cardPresentPluginsDataProvider.isStripeVersionSupported(plugin: plugin) else {
+        guard cardPresentPluginsDataProvider.isStripeVersionSupported(plugin: plugin)
+        else {
             return .pluginUnsupportedVersion(plugin: .stripe)
         }
         guard plugin.active else {
@@ -210,7 +212,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
         return accountChecks(plugin: .stripe)
     }
 
-    func accountChecks(plugin: CardPresentPaymentsPlugins) -> CardPresentPaymentOnboardingState {
+    func accountChecks(plugin: CardPresentPaymentsPlugin) -> CardPresentPaymentOnboardingState {
         guard let account = getPaymentGatewayAccount() else {
             /// Active plugin but unable to fetch an account? Prompt the merchant to finish setting it up.
             return .pluginSetupNotCompleted(plugin: plugin)

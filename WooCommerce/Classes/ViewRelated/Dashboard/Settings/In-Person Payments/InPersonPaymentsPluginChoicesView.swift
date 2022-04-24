@@ -12,7 +12,7 @@ struct InPersonPaymentsPluginChoicesView: View {
 
     var body: some View {
         VStack {
-            ForEach(CardPresentPaymentsPlugins.allCases, id: \.self) { plugin in
+            ForEach(CardPresentPaymentsPlugin.allCases, id: \.self) { plugin in
                 Text(plugin.pluginName)
                     .font(.callout)
                     .bold()

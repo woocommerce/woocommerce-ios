@@ -2,7 +2,7 @@ import SwiftUI
 import Yosemite
 
 struct InPersonPaymentsPluginNotSetup: View {
-    let plugin: CardPresentPaymentsPlugins
+    let plugin: CardPresentPaymentsPlugin
     let onRefresh: () -> Void
     @State var presentedSetupURL: URL? = nil
 

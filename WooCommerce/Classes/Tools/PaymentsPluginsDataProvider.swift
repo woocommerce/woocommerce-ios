@@ -19,13 +19,16 @@ protocol CardPresentPluginsDataProviderProtocol {
 struct CardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol {
     private let storageManager: StorageManagerType
     private let stores: StoresManager
+    private let configuration: CardPresentPaymentsConfiguration
 
     init(
         storageManager: StorageManagerType = ServiceLocator.storageManager,
-        stores: StoresManager = ServiceLocator.stores
+        stores: StoresManager = ServiceLocator.stores,
+        configuration: CardPresentPaymentsConfiguration
     ) {
         self.storageManager = storageManager
         self.stores = stores
+        self.configuration = configuration
     }
 
     private var siteID: Int64? {
@@ -37,7 +40,7 @@ struct CardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol {
             return nil
         }
         return storageManager.viewStorage
-            .loadSystemPlugin(siteID: siteID, name: CardPresentPaymentsPlugins.wcPay.pluginName)?
+            .loadSystemPlugin(siteID: siteID, name: CardPresentPaymentsPlugin.wcPay.pluginName)?
             .toReadOnly()
     }
 
@@ -46,7 +49,7 @@ struct CardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol {
             return nil
         }
         return storageManager.viewStorage
-            .loadSystemPlugin(siteID: siteID, name: CardPresentPaymentsPlugins.stripe.pluginName)?
+            .loadSystemPlugin(siteID: siteID, name: CardPresentPaymentsPlugin.stripe.pluginName)?
             .toReadOnly()
     }
 
@@ -77,10 +80,21 @@ struct CardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol {
     }
 
     func isWCPayVersionSupported(plugin: Yosemite.SystemPlugin) -> Bool {
-        VersionHelpers.isVersionSupported(version: plugin.version, minimumRequired: CardPresentPaymentsPlugins.wcPay.minimumSupportedPluginVersion)
+        isPluginVersionSupported(plugin: plugin, paymentPlugin: .wcPay)
     }
 
     func isStripeVersionSupported(plugin: Yosemite.SystemPlugin) -> Bool {
-        VersionHelpers.isVersionSupported(version: plugin.version, minimumRequired: CardPresentPaymentsPlugins.stripe.minimumSupportedPluginVersion)
+        isPluginVersionSupported(plugin: plugin, paymentPlugin: .stripe)
+    }
+
+    private func isPluginVersionSupported(plugin: Yosemite.SystemPlugin,
+                                          paymentPlugin: CardPresentPaymentsPlugin) -> Bool {
+        guard let pluginSupport = configuration.supportedPluginVersions.first(where: { support in
+            support.plugin == paymentPlugin
+        }) else {
+            return false
+        }
+        return VersionHelpers.isVersionSupported(version: plugin.version,
+                                                 minimumRequired: pluginSupport.minimumVersion)
     }
 }

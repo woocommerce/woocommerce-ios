@@ -85,7 +85,8 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
                                                                    receipt: .init(accountType: .credit,
                                                                                   applicationPreferredName: "Stripe Credit",
                                                                                   dedicatedFileName: "A000000003101001")))),
-                                                   amount: "2.28"))
+                                                   amount: "2.28"),
+                                    paymentGatewayAccount: nil)
         mockSuccessfulCardReaderConnection(clientSideRefundResult: .success(()))
 
         // When
@@ -113,7 +114,6 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
                                                                                   dedicatedFileName: "A000000003101001")))),
                                                    amount: "2.28"))
         mockSuccessfulCardReaderConnection(clientSideRefundResult: .success(()))
-        insertSamplePaymentGateway(siteID: siteID)
         mockServerSideRefund(result: .success(()))
 
         // When
@@ -130,7 +130,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
         XCTAssertEqual(eventProperties["card_reader_model"] as? String, Mocks.cardReaderModel)
         XCTAssertEqual(eventProperties["country"] as? String, "US")
-        XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayAccount)
+        XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayID)
     }
 
     func test_submitRefund_successfully_does_not_track_interacRefundSuccess_event_when_payment_method_is_not_interac() throws {
@@ -141,7 +141,6 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
                                                    charge: .fake().copy(paymentMethodDetails: .unknown),
                                                    amount: "2.28"))
         mockSuccessfulCardReaderConnection(clientSideRefundResult: .success(()))
-        insertSamplePaymentGateway(siteID: siteID)
         mockServerSideRefund(result: .success(()))
 
         // When
@@ -171,7 +170,6 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
                                                                                   dedicatedFileName: "A000000003101001")))),
                                                    amount: "2.28"))
         mockSuccessfulCardReaderConnection(clientSideRefundResult: .success(()))
-        insertSamplePaymentGateway(siteID: siteID)
         mockServerSideRefund(result: .failure(RefundSubmissionUseCase.RefundSubmissionError.cardReaderDisconnected))
 
         // When
@@ -189,7 +187,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
         XCTAssertEqual(eventProperties["card_reader_model"] as? String, Mocks.cardReaderModel)
         XCTAssertEqual(eventProperties["country"] as? String, "US")
-        XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayAccount)
+        XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayID)
     }
 
     func test_submitRefund_with_client_side_failure_tracks_interacRefundFailed_event_when_payment_method_is_interac() throws {
@@ -206,7 +204,6 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
                                                                                   dedicatedFileName: "A000000003101001")))),
                                                    amount: "2.28"))
         mockSuccessfulCardReaderConnection(clientSideRefundResult: .failure(RefundSubmissionUseCase.RefundSubmissionError.cardReaderDisconnected))
-        insertSamplePaymentGateway(siteID: siteID)
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
@@ -224,7 +221,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
         XCTAssertEqual(eventProperties["card_reader_model"] as? String, Mocks.cardReaderModel)
         XCTAssertEqual(eventProperties["country"] as? String, "US")
-        XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayAccount)
+        XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayID)
     }
 }
 
@@ -254,25 +251,9 @@ private extension RefundSubmissionUseCaseTests {
         }
     }
 
-    func insertSamplePaymentGateway(siteID: Int64) {
-        let paymentGatewayAccount = PaymentGatewayAccount
-            .fake()
-            .copy(
-                siteID: siteID,
-                gatewayID: Mocks.paymentGatewayAccount,
-                status: "complete",
-                hasPendingRequirements: false,
-                hasOverdueRequirements: false,
-                isCardPresentEligible: true,
-                isLive: true,
-                isInTestMode: false
-            )
-        storageManager.reset()
-        let newAccount = storageManager.viewStorage.insertNewObject(ofType: StoragePaymentGatewayAccount.self)
-        newAccount.update(with: paymentGatewayAccount)
-    }
-
-    func createUseCase(siteID: Int64 = 322, details: RefundSubmissionUseCase.Details) -> RefundSubmissionUseCase {
+    func createUseCase(siteID: Int64 = Mocks.siteID,
+                       details: RefundSubmissionUseCase.Details,
+                       paymentGatewayAccount: PaymentGatewayAccount? = Mocks.paymentGatewayAccount(siteID: Mocks.siteID)) -> RefundSubmissionUseCase {
         RefundSubmissionUseCase(siteID: siteID,
                                 details: details,
                                 rootViewController: .init(),
@@ -280,8 +261,8 @@ private extension RefundSubmissionUseCaseTests {
                                 currencyFormatter: CurrencyFormatter(currencySettings: .init()),
                                 currencySettings: .init(),
                                 cardPresentConfiguration: Mocks.configuration,
+                                paymentGatewayAccount: paymentGatewayAccount,
                                 stores: stores,
-                                storageManager: storageManager,
                                 analytics: analytics)
     }
 }
@@ -290,6 +271,21 @@ private extension RefundSubmissionUseCaseTests {
     enum Mocks {
         static let configuration = CardPresentPaymentsConfiguration(country: "US", canadaEnabled: true)
         static let cardReaderModel: String = "WISEPAD_3"
-        static let paymentGatewayAccount: String = "woocommerce-payments"
+        static let paymentGatewayID: String = "woocommerce-payments"
+        static let siteID: Int64 = 322
+
+        static func paymentGatewayAccount(siteID: Int64) -> PaymentGatewayAccount {
+            .fake()
+            .copy(
+                siteID: siteID,
+                gatewayID: Mocks.paymentGatewayID,
+                status: "complete",
+                hasPendingRequirements: false,
+                hasOverdueRequirements: false,
+                isCardPresentEligible: true,
+                isLive: true,
+                isInTestMode: false
+            )
+        }
     }
 }

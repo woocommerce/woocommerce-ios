@@ -107,6 +107,7 @@ final class RefundConfirmationViewModel {
                                                                                           presentingController: rootViewController),
                                                         currencyFormatter: currencyFormatter,
                                                         cardPresentConfiguration: CardPresentConfigurationLoader(stores: actionProcessor).configuration,
+                                                        paymentGatewayAccount: details.paymentGatewayAccount,
                                                         stores: actionProcessor,
                                                         analytics: analytics)
         self.submissionUseCase = submissionUseCase
@@ -171,6 +172,10 @@ extension RefundConfirmationViewModel {
         /// Payment gateway used with the order
         ///
         let paymentGateway: PaymentGateway?
+
+        /// Payment gateway account of the site (e.g. WCPay or Stripe extension)
+        ///
+        let paymentGatewayAccount: PaymentGatewayAccount?
     }
 }
 

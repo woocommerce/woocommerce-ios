@@ -14,6 +14,12 @@ final class EditCustomerNoteHostingController<ViewModel: EditCustomerNoteViewMod
             self?.dismiss(animated: true, completion: nil)
         }
 
+        // This notice presenter is needed because if optimistic updates are not
+        // enabled the modal is not dismissed upon failure.
+        let errorNoticePresenter = DefaultNoticePresenter()
+        errorNoticePresenter.presentingViewController = self
+        (viewModel as? EditCustomerNoteViewModel)?.modalNoticePresenter = errorNoticePresenter
+
         // Set presentation delegate to track the user dismiss flow event
         presentationController?.delegate = self
     }

@@ -53,6 +53,7 @@ public enum CardPresentPaymentAction: Action {
                         orderID: Int64,
                         parameters: PaymentParameters,
                         onCardReaderMessage: (CardReaderEvent) -> Void,
+                        onProcessingCompletion: (PaymentIntent) -> Void,
                         onCompletion: (Result<PaymentIntent, Error>) -> Void)
 
     /// Cancels an active attempt to collect a payment.

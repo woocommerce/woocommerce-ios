@@ -222,6 +222,24 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(selectedVariationID, productVariation.productVariationID)
     }
+
+    func test_selecting_a_variation_set_its_row_to_selected() {
+        // Given
+        let product = Product.fake().copy(productID: sampleProductID)
+        let productVariation = sampleProductVariation.copy(productVariationID: 1)
+        insert(productVariation)
+        let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID,
+                                                          product: product,
+                                                          storageManager: storageManager)
+
+        // When
+        viewModel.selectVariation(productVariation.productVariationID)
+
+        // Then
+        let row = viewModel.productVariationRows.first(where: { $0.productOrVariationID == productVariation.productVariationID })
+        XCTAssertNotNil(row)
+        XCTAssertEqual(row?.selectedState, .selected)
+    }
 }
 
 // MARK: - Utils

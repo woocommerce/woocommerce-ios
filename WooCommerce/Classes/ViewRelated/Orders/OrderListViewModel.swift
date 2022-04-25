@@ -86,9 +86,9 @@ final class OrderListViewModel {
     @Published private(set) var topBanner: TopBanner = .none
 
     /// If true, no orders banner will be shown as the user has told us that they are not interested in this information.
-    /// Resets with every session.
+    /// It is persisted through app sessions.
     ///
-    @Published var hideOrdersBanners: Bool = false
+    @Published var hideOrdersBanners: Bool = true
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
@@ -124,6 +124,7 @@ final class OrderListViewModel {
 
         observeForegroundRemoteNotifications()
         bindTopBannerState()
+        loadOrdersBannerVisibility()
     }
 
     func dismissOrdersBanner() {
@@ -146,6 +147,20 @@ final class OrderListViewModel {
         } catch {
             ServiceLocator.crashLogging.logError(error)
         }
+    }
+
+    private func loadOrdersBannerVisibility() {
+        let action = AppSettingsAction.loadFeedbackVisibility(type: .ordersCreation) { [weak self] result in
+            switch result {
+            case .success(let visible):
+                self?.hideOrdersBanners = !visible
+            case.failure(let error):
+                self?.hideOrdersBanners = true
+                ServiceLocator.crashLogging.logError(error)
+            }
+        }
+        
+        ServiceLocator.stores.dispatch(action)
     }
 
     @objc private func handleAppDeactivation() {

@@ -40,6 +40,10 @@ final class IssueRefundViewModel {
         /// Charge to be refunded
         ///
         var charge: WCPayCharge?
+
+        /// Error from fetching refund charge.
+        ///
+        var fetchChargeError: FetchChargeError?
     }
 
     /// Current ViewModel state
@@ -294,9 +298,14 @@ private extension IssueRefundViewModel {
     }
 
     func fetchCharge() {
-        guard let chargeID = state.order.chargeID, let paymentGatewayAccount = paymentGatewayAccounts.first else {
+        guard let chargeID = state.order.chargeID else {
             return
         }
+        guard let paymentGatewayAccount = paymentGatewayAccounts.first else {
+            return state.fetchChargeError = .unknownPaymentGatewayAccount
+        }
+
+        state.fetchChargeError = nil
 
         let setPaymentGatewayAccountAction = CardPresentPaymentAction.use(paymentGatewayAccount: paymentGatewayAccount)
         stores.dispatch(setPaymentGatewayAccountAction)
@@ -462,8 +471,8 @@ extension IssueRefundViewModel {
     /// Calculates whether the next button should be animating or not
     ///
     private func calculateNextButtonAnimatingState() -> Bool {
-        // When we have a chargeID, we need to wait until we fetch the charge.
-        state.charge == nil && !state.order.chargeID.isNilOrEmpty
+        // When we have a chargeID, we need to wait until we fetch the charge unless there is an error fetching the charge.
+        state.charge == nil && !state.order.chargeID.isNilOrEmpty && state.fetchChargeError == nil
     }
 
     /// Calculates whether there are pending changes to commit
@@ -501,6 +510,14 @@ extension IssueRefundViewModel {
     private func isAnyFeeAvailableForRefund() -> Bool {
         // Return false if there are no fees left to be refunded.
         return state.order.fees.isNotEmpty
+    }
+}
+
+// MARK: Definitions
+extension IssueRefundViewModel {
+    /// Error from fetching refund charge details.
+    enum FetchChargeError: Error, Equatable {
+        case unknownPaymentGatewayAccount
     }
 }
 

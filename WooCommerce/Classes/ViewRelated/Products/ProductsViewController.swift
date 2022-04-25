@@ -50,7 +50,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     /// Top toolbar that shows the sort and filter CTAs.
     ///
-    @IBOutlet weak var toolbar: ToolbarView!
+    @IBOutlet private weak var toolbar: ToolbarView!
 
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
     private let hiddenScrollView = UIScrollView()

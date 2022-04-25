@@ -57,8 +57,9 @@ class EditCustomerNoteViewModelTests: XCTestCase {
 
     func test_view_model_returns_success_after_updating_order_successfully() {
         // Given
+        let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: false)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = EditCustomerNoteViewModel(order: order, stores: stores)
+        let viewModel = EditCustomerNoteViewModel(order: order, stores: stores, featureFlagService: featureFlagService)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case let .updateOrder(_, order, _, onCompletion):
@@ -81,9 +82,9 @@ class EditCustomerNoteViewModelTests: XCTestCase {
 
     func test_view_model_dispatches_optimistic_order_update_when_feature_flag_is_enabled() {
         // Given
-        givenOptimisticUpdatesEnabled()
+        let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: true)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = EditCustomerNoteViewModel(order: order, stores: stores)
+        let viewModel = EditCustomerNoteViewModel(order: order, stores: stores, featureFlagService: featureFlagService)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case let .updateOrderOptimistically(_, order, _, onCompletion):
@@ -106,9 +107,9 @@ class EditCustomerNoteViewModelTests: XCTestCase {
 
     func test_view_model_dispatches_non_optimistic_order_update_when_feature_flag_is_disabled() {
         // Given
-        givenOptimisticUpdatesDisabled()
+        let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: false)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = EditCustomerNoteViewModel(order: order, stores: stores)
+        let viewModel = EditCustomerNoteViewModel(order: order, stores: stores, featureFlagService: featureFlagService)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case let .updateOrder(_, order, _, onCompletion):
@@ -131,10 +132,13 @@ class EditCustomerNoteViewModelTests: XCTestCase {
 
     func test_view_model_does_not_fire_success_notice_after_updating_order_optimistically_successfully() {
         // Given
-        givenOptimisticUpdatesEnabled()
+        let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: true)
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let noticePresenter = MockNoticePresenter()
-        let viewModel = EditCustomerNoteViewModel(order: order, stores: stores, noticePresenter: noticePresenter)
+        let viewModel = EditCustomerNoteViewModel(order: order,
+                                                  stores: stores,
+                                                  noticePresenter: noticePresenter,
+                                                  featureFlagService: featureFlagService)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case let .updateOrderOptimistically(_, order, _, onCompletion):
@@ -153,10 +157,13 @@ class EditCustomerNoteViewModelTests: XCTestCase {
 
     func test_view_model_fires_success_notice_after_updating_order_no_optimistically_successfully() {
         // Given
-        givenOptimisticUpdatesDisabled()
+        let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: false)
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let noticePresenter = MockNoticePresenter()
-        let viewModel = EditCustomerNoteViewModel(order: order, stores: stores, noticePresenter: noticePresenter)
+        let viewModel = EditCustomerNoteViewModel(order: order,
+                                                  stores: stores,
+                                                  noticePresenter: noticePresenter,
+                                                  featureFlagService: featureFlagService)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case let .updateOrder(_, order, _, onCompletion):
@@ -175,10 +182,13 @@ class EditCustomerNoteViewModelTests: XCTestCase {
 
     func test_view_model_fires_error_notice_after_order_update_optimistically_fails_using_default_notice_presenter() {
         // Given
-        givenOptimisticUpdatesEnabled()
+        let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: true)
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let noticePresenter = MockNoticePresenter()
-        let viewModel = EditCustomerNoteViewModel(order: order, stores: stores, noticePresenter: noticePresenter)
+        let viewModel = EditCustomerNoteViewModel(order: order,
+                                                  stores: stores,
+                                                  noticePresenter: noticePresenter,
+                                                  featureFlagService: featureFlagService)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case let .updateOrderOptimistically(_, _, _, onCompletion):
@@ -201,11 +211,14 @@ class EditCustomerNoteViewModelTests: XCTestCase {
 
     func test_view_model_fires_error_notice_after_order_non_optimistic_update_fails_using_modal_notice_presenter() {
         // Given
-        givenOptimisticUpdatesDisabled()
+        let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: false)
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let noticePresenter = MockNoticePresenter()
         let modalNoticePresenter = MockNoticePresenter()
-        let viewModel = EditCustomerNoteViewModel(order: order, stores: stores, noticePresenter: noticePresenter)
+        let viewModel = EditCustomerNoteViewModel(order: order,
+                                                  stores: stores,
+                                                  noticePresenter: noticePresenter,
+                                                  featureFlagService: featureFlagService)
         viewModel.modalNoticePresenter = modalNoticePresenter
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
@@ -332,18 +345,5 @@ class EditCustomerNoteViewModelTests: XCTestCase {
 
         // Then
         assertEqual(order.customerNote, viewModel.newNote)
-    }
-}
-
-// MARK: Private methods
-private extension EditCustomerNoteViewModelTests {
-    func givenOptimisticUpdatesEnabled() {
-        let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: true)
-        ServiceLocator.setFeatureFlagService(featureFlagService)
-    }
-
-    func givenOptimisticUpdatesDisabled() {
-        let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: false)
-        ServiceLocator.setFeatureFlagService(featureFlagService)
     }
 }

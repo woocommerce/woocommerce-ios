@@ -137,7 +137,7 @@ final class OrderListViewModel {
             self?.hideOrdersBanners = true
         }
 
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     /// Starts the snapshotsProvider, logging any errors.
@@ -159,8 +159,8 @@ final class OrderListViewModel {
                 ServiceLocator.crashLogging.logError(error)
             }
         }
-        
-        ServiceLocator.stores.dispatch(action)
+
+        stores.dispatch(action)
     }
 
     @objc private func handleAppDeactivation() {

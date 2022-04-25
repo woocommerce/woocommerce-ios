@@ -17,7 +17,7 @@ public enum FeedbackType: String, Codable {
     ///
     case couponManagement
 
-    /// Identifier for the orders creation release feedback
+    /// Identifier for the orders creation feedback survey
     ///
     case ordersCreation
 }

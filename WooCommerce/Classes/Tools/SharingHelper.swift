@@ -47,6 +47,28 @@ class SharingHelper {
         viewController.present(avc, animated: true)
     }
 
+    /// Share a URL using the iOS share sheet.
+    ///
+    /// - Parameters:
+    ///   - url: URL you want to share.
+    ///   - title: Optional descriptive title for the url.
+    ///   - item: Item that the share action sheet should be displayed from.
+    ///   - viewController: VC presenting the share VC (UIActivityViewController).
+    ///
+    static func shareURL(url: URL,
+                         title: String? = nil,
+                         from item: UIBarButtonItem,
+                         in viewController: UIViewController,
+                         onCompletion: Completion? = nil) {
+        guard let avc = createActivityVC(title: title, url: url, onCompletion: onCompletion) else {
+            return
+        }
+
+        let popoverController = avc.popoverPresentationController
+        popoverController?.barButtonItem = item
+        viewController.present(avc, animated: true)
+    }
+
     /// List all activity types.
     /// UIActivity.ActivityType is not CaseIterable. :sadface:
     ///

@@ -395,9 +395,12 @@ private extension ProductSelectorViewModel {
             return
         }
         for id in initialSelectedItems {
-            if !selectedProductIDs.contains(id), products.contains(where: { $0.productID == id }) {
+            guard !selectedProductIDs.contains(id) && !selectedProductVariationIDs.contains(id) else {
+                continue
+            }
+            if products.contains(where: { $0.productID == id }) {
                 selectedProductIDs.append(id)
-            } else if !selectedProductVariationIDs.contains(id) {
+            } else {
                 selectedProductVariationIDs.append(id)
             }
         }

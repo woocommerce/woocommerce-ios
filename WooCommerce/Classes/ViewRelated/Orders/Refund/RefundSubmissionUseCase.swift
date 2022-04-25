@@ -21,9 +21,6 @@ protocol RefundSubmissionProtocol {
 /// submit refund to the site, and analytics.
 /// Otherwise, it submits the refund to the site directly with analytics.
 final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
-    /// Store's ID.
-    private let siteID: Int64
-
     /// Refund details.
     private let details: Details
 
@@ -61,7 +58,7 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
 
     /// Controller to connect a card reader for in-person refund.
     private lazy var cardReaderConnectionController =
-    CardReaderConnectionController(forSiteID: siteID,
+    CardReaderConnectionController(forSiteID: order.siteID,
                                    knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
                                    alertsProvider: CardReaderSettingsAlerts(),
                                    configuration: cardPresentConfiguration,
@@ -72,20 +69,14 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
     /// IPP Configuration.
     private let cardPresentConfiguration: CardPresentPaymentsConfiguration
 
-    /// Payment Gateway Account for the site (i.e. that can be used to refund).
-    private let paymentGatewayAccount: PaymentGatewayAccount?
-
-    init(siteID: Int64,
-         details: Details,
+    init(details: Details,
          rootViewController: UIViewController,
          alerts: OrderDetailsPaymentAlertsProtocol,
          currencyFormatter: CurrencyFormatter,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          cardPresentConfiguration: CardPresentPaymentsConfiguration,
-         paymentGatewayAccount: PaymentGatewayAccount?,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
-        self.siteID = siteID
         self.details = details
         self.formattedAmount = {
             let currencyCode = currencySettings.currencyCode
@@ -96,7 +87,6 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
         self.alerts = alerts
         self.currencyFormatter = currencyFormatter
         self.cardPresentConfiguration = cardPresentConfiguration
-        self.paymentGatewayAccount = paymentGatewayAccount
         self.stores = stores
         self.analytics = analytics
     }
@@ -124,7 +114,7 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
                 return onCompletion(.failure(RefundSubmissionError.invalidRefundAmount))
             }
 
-            guard let paymentGatewayAccount = paymentGatewayAccount else {
+            guard let paymentGatewayAccount = details.paymentGatewayAccount else {
                 return onCompletion(.failure(RefundSubmissionError.unknownPaymentGatewayAccount))
             }
 
@@ -169,6 +159,9 @@ extension RefundSubmissionUseCase {
 
         /// Total amount to refund.
         let amount: String
+
+        /// Payment Gateway Account for the site (i.e. that can be used to refund).
+        let paymentGatewayAccount: PaymentGatewayAccount?
     }
 }
 

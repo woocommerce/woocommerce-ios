@@ -98,16 +98,15 @@ final class RefundConfirmationViewModel {
         let refund = useCase.createRefund()
 
         // Submits refund.
-        let submissionUseCase = RefundSubmissionUseCase(siteID: details.order.siteID,
-                                                        details: .init(order: details.order,
+        let submissionUseCase = RefundSubmissionUseCase(details: .init(order: details.order,
                                                                        charge: details.charge,
-                                                                       amount: details.amount),
+                                                                       amount: details.amount,
+                                                                       paymentGatewayAccount: details.paymentGatewayAccount),
                                                         rootViewController: rootViewController,
                                                         alerts: OrderDetailsPaymentAlerts(transactionType: .refund,
                                                                                           presentingController: rootViewController),
                                                         currencyFormatter: currencyFormatter,
                                                         cardPresentConfiguration: CardPresentConfigurationLoader(stores: actionProcessor).configuration,
-                                                        paymentGatewayAccount: details.paymentGatewayAccount,
                                                         stores: actionProcessor,
                                                         analytics: analytics)
         self.submissionUseCase = submissionUseCase

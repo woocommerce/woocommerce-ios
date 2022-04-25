@@ -15,12 +15,6 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
     ///
     @Published private(set) var navigationTrailingItem: EditCustomerNoteNavigationItem = .done(enabled: false)
 
-    /// Indicates whether we must wait for the request before dismiss.
-    ///
-    var shouldWaitForRequestIsFinishedToDismiss: Bool {
-        !areOptimisticUpdatesEnabled
-    }
-
     /// Presents an error notice in the tab bar context after the update operation fails.
     ///
     private let noticePresenter: NoticePresenter
@@ -74,8 +68,13 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
 
     /// Update the note remotely and invoke a completion block when finished
     ///
-    func updateNote(onFinish: @escaping (Bool) -> Void) {
-        handleOrderUpdate(withNote: newNote, onFinish: onFinish)
+    func handleButtonDoneTap(onCompletion: @escaping (Bool) -> Void) {
+        if areOptimisticUpdatesEnabled {
+            handleOrderUpdate(withNote: newNote)
+            onCompletion(true)
+        } else {
+            handleOrderUpdate(withNote: newNote, onFinish: onCompletion)
+        }
     }
 
     /// Track the flow cancel scenario.

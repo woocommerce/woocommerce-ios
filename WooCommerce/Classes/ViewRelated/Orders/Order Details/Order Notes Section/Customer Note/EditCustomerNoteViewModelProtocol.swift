@@ -13,26 +13,16 @@ protocol EditCustomerNoteViewModelProtocol: ObservableObject {
     ///
     var navigationTrailingItem: EditCustomerNoteNavigationItem { get }
 
-    /// Update when you need to update the note (remotely or locally) and invoke a completion block when finished
+    /// Call it when the user taps on the button Done.
     ///
-    func updateNote(onFinish: @escaping (Bool) -> Void)
+    /// Use this method when you need to update the note (remotely or locally) and invoke a
+    /// completion block when finished
+    ///
+    func handleButtonDoneTap(onCompletion: @escaping (Bool) -> Void)
 
     /// Call it when the user cancels the flow.
     ///
     func userDidCancelFlow()
-
-    /// Indicates whether we must wait for the request before dismiss. Default: **false**
-    ///
-    var shouldWaitForRequestIsFinishedToDismiss: Bool { get }
-}
-
-extension EditCustomerNoteViewModelProtocol {
-    /// By default we haven't to wait for the request is finished
-    /// to dismiss the view.
-    ///
-    var shouldWaitForRequestIsFinishedToDismiss: Bool {
-        return false
-    }
 }
 
 /// Representation of possible navigation bar trailing buttons

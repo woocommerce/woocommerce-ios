@@ -13,9 +13,9 @@ final class SimplePaymentsNoteViewModel: EditCustomerNoteViewModelProtocol {
 
     /// Commit the original note.
     ///
-    func updateNote(onFinish: @escaping (Bool) -> Void) {
+    func handleButtonDoneTap(onCompletion: @escaping (Bool) -> Void) {
         originalNote = newNote
-        onFinish(true)
+        onCompletion(true)
 
         analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowNoteAdded())
     }

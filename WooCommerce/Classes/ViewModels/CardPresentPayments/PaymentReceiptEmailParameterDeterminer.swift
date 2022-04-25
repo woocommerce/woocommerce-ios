@@ -35,13 +35,14 @@ struct PaymentReceiptEmailParameterDeterminer {
     private func receiptEmail(from order: Order) -> String? {
         let wcPay = cardPresentPluginsDataProvider.getWCPayPlugin()
         let stripe = cardPresentPluginsDataProvider.getStripePlugin()
+        let paymentPluginsInstalledAndActiveStatus = cardPresentPluginsDataProvider.paymentPluginsInstalledAndActiveStatus(wcPay: wcPay, stripe: stripe)
 
-        guard !cardPresentPluginsDataProvider.bothPluginsInstalledAndActive(wcPay: wcPay, stripe: stripe) else {
+        guard paymentPluginsInstalledAndActiveStatus != .bothAreInstalledAndActive else {
             return nil
         }
 
         guard let wcPay = wcPay,
-              cardPresentPluginsDataProvider.wcPayInstalledAndActive(wcPay: wcPay) else {
+              paymentPluginsInstalledAndActiveStatus == .onlyWCPayIsInstalledAndActive else {
             return order.billingAddress?.email
         }
 

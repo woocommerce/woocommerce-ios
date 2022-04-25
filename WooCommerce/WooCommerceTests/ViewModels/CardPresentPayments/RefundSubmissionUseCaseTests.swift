@@ -1,13 +1,17 @@
+import Combine
 import TestKit
 import XCTest
 import Yosemite
 @testable import WooCommerce
+import protocol Storage.StorageManagerType
+import protocol Storage.StorageType
 
 final class RefundSubmissionUseCaseTests: XCTestCase {
     private var stores: MockStoresManager!
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
     private var alerts: MockOrderDetailsPaymentAlerts!
+    private var storageManager: MockStorageManager!
 
     override func setUp() {
         super.setUp()
@@ -16,9 +20,11 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         alerts = MockOrderDetailsPaymentAlerts()
+        storageManager = MockStorageManager()
     }
 
     override func tearDown() {
+        storageManager = nil
         alerts = nil
         analytics = nil
         analyticsProvider = nil
@@ -28,23 +34,16 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 
     func test_submitRefund_with_non_interac_payment_method_does_not_dispatch_CardPresentPaymentActions() throws {
         // Given
-        let useCase = RefundSubmissionUseCase(siteID: 322,
-                                              details: .init(order: .fake().copy(total: "2.28"),
-                                                             charge: .fake().copy(paymentMethodDetails: .cardPresent(
-                                                                details: .init(brand: .visa,
-                                                                               last4: "9969",
-                                                                               funding: .credit,
-                                                                               receipt: .init(accountType: .credit,
-                                                                                              applicationPreferredName: "Stripe Credit",
-                                                                                              dedicatedFileName: "A000000003101001")))),
-                                                             amount: "2.28"),
-                                              rootViewController: .init(),
-                                              alerts: alerts,
-                                              currencyFormatter: CurrencyFormatter(currencySettings: .init()),
-                                              currencySettings: .init(),
-                                              stores: stores,
-                                              analytics: analytics)
-        mockCreateRefundAction(result: .success(()))
+        let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
+                                                   charge: .fake().copy(paymentMethodDetails: .cardPresent(
+                                                    details: .init(brand: .visa,
+                                                                   last4: "9969",
+                                                                   funding: .credit,
+                                                                   receipt: .init(accountType: .credit,
+                                                                                  applicationPreferredName: "Stripe Credit",
+                                                                                  dedicatedFileName: "A000000003101001")))),
+                                                   amount: "2.28"))
+        mockServerSideRefund(result: .success(()))
 
         // When
         waitFor { promise in
@@ -59,22 +58,15 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 
     func test_submitRefund_with_interac_payment_method_dispatches_CardPresentPaymentActions() throws {
         // Given
-        let useCase = RefundSubmissionUseCase(siteID: 322,
-                                              details: .init(order: .fake().copy(total: "2.28"),
-                                                             charge: .fake().copy(paymentMethodDetails: .interacPresent(
-                                                                details: .init(brand: .visa,
-                                                                               last4: "9969",
-                                                                               funding: .credit,
-                                                                               receipt: .init(accountType: .credit,
-                                                                                              applicationPreferredName: "Stripe Credit",
-                                                                                              dedicatedFileName: "A000000003101001")))),
-                                                             amount: "2.28"),
-                                              rootViewController: .init(),
-                                              alerts: alerts,
-                                              currencyFormatter: CurrencyFormatter(currencySettings: .init()),
-                                              currencySettings: .init(),
-                                              stores: stores,
-                                              analytics: analytics)
+        let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
+                                                   charge: .fake().copy(paymentMethodDetails: .interacPresent(
+                                                    details: .init(brand: .visa,
+                                                                   last4: "9969",
+                                                                   funding: .credit,
+                                                                   receipt: .init(accountType: .credit,
+                                                                                  applicationPreferredName: "Stripe Credit",
+                                                                                  dedicatedFileName: "A000000003101001")))),
+                                                   amount: "2.28"))
 
         // When
         useCase.submitRefund(.fake(), showInProgressUI: {}, onCompletion: { _ in })
@@ -82,10 +74,162 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         // Then
         XCTAssertTrue(stores.receivedActions.contains(where: { $0 is CardPresentPaymentAction }))
     }
+
+    func test_submitRefund_without_a_paymentGatewayAccount_in_storage_returns_failure() {
+        // Given
+        let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
+                                                   charge: .fake().copy(paymentMethodDetails: .interacPresent(
+                                                    details: .init(brand: .visa,
+                                                                   last4: "9969",
+                                                                   funding: .credit,
+                                                                   receipt: .init(accountType: .credit,
+                                                                                  applicationPreferredName: "Stripe Credit",
+                                                                                  dedicatedFileName: "A000000003101001")))),
+                                                   amount: "2.28"))
+        mockSuccessfulCardReaderConnection(clientSideRefundResult: .success(()))
+
+        // When
+        let result = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}, onCompletion: { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertEqual(result.failure as? RefundSubmissionUseCase.RefundSubmissionError, .unknownPaymentGatewayAccount)
+    }
+
+    func test_submitRefund_successfully_tracks_interacRefundSuccess_event_when_payment_method_is_interac() throws {
+        // Given
+        let siteID: Int64 = 322
+        let useCase = createUseCase(siteID: siteID,
+                                    details: .init(order: .fake().copy(total: "2.28"),
+                                                   charge: .fake().copy(paymentMethodDetails: .interacPresent(
+                                                    details: .init(brand: .visa,
+                                                                   last4: "9969",
+                                                                   funding: .credit,
+                                                                   receipt: .init(accountType: .credit,
+                                                                                  applicationPreferredName: "Stripe Credit",
+                                                                                  dedicatedFileName: "A000000003101001")))),
+                                                   amount: "2.28"))
+        mockSuccessfulCardReaderConnection(clientSideRefundResult: .success(()))
+        insertSamplePaymentGateway(siteID: siteID)
+        mockServerSideRefund(result: .success(()))
+
+        // When
+        let result = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}, onCompletion: { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "interac_refund_success"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["card_reader_model"] as? String, Mocks.cardReaderModel)
+        XCTAssertEqual(eventProperties["country"] as? String, "US")
+        XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayAccount)
+    }
+
+    func test_submitRefund_successfully_does_not_track_interacRefundSuccess_event_when_payment_method_is_not_interac() throws {
+        // Given
+        let siteID: Int64 = 322
+        let useCase = createUseCase(siteID: siteID,
+                                    details: .init(order: .fake().copy(total: "2.28"),
+                                                   charge: .fake().copy(paymentMethodDetails: .unknown),
+                                                   amount: "2.28"))
+        mockSuccessfulCardReaderConnection(clientSideRefundResult: .success(()))
+        insertSamplePaymentGateway(siteID: siteID)
+        mockServerSideRefund(result: .success(()))
+
+        // When
+        let result = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}, onCompletion: { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("interac_refund_success"))
+    }
+
+    func test_submitRefund_with_client_side_success_and_server_side_failure_tracks_interacRefundSuccess_event_when_payment_method_is_interac() throws {
+        // Given
+        let siteID: Int64 = 322
+        let useCase = createUseCase(siteID: siteID,
+                                    details: .init(order: .fake().copy(total: "2.28"),
+                                                   charge: .fake().copy(paymentMethodDetails: .interacPresent(
+                                                    details: .init(brand: .visa,
+                                                                   last4: "9969",
+                                                                   funding: .credit,
+                                                                   receipt: .init(accountType: .credit,
+                                                                                  applicationPreferredName: "Stripe Credit",
+                                                                                  dedicatedFileName: "A000000003101001")))),
+                                                   amount: "2.28"))
+        mockSuccessfulCardReaderConnection(clientSideRefundResult: .success(()))
+        insertSamplePaymentGateway(siteID: siteID)
+        mockServerSideRefund(result: .failure(RefundSubmissionUseCase.RefundSubmissionError.cardReaderDisconnected))
+
+        // When
+        let result = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}, onCompletion: { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? RefundSubmissionUseCase.RefundSubmissionError, .cardReaderDisconnected)
+
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "interac_refund_success"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["card_reader_model"] as? String, Mocks.cardReaderModel)
+        XCTAssertEqual(eventProperties["country"] as? String, "US")
+        XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayAccount)
+    }
+
+    func test_submitRefund_with_client_side_failure_tracks_interacRefundFailed_event_when_payment_method_is_interac() throws {
+        // Given
+        let siteID: Int64 = 322
+        let useCase = createUseCase(siteID: siteID,
+                                    details: .init(order: .fake().copy(total: "2.28"),
+                                                   charge: .fake().copy(paymentMethodDetails: .interacPresent(
+                                                    details: .init(brand: .visa,
+                                                                   last4: "9969",
+                                                                   funding: .credit,
+                                                                   receipt: .init(accountType: .credit,
+                                                                                  applicationPreferredName: "Stripe Credit",
+                                                                                  dedicatedFileName: "A000000003101001")))),
+                                                   amount: "2.28"))
+        mockSuccessfulCardReaderConnection(clientSideRefundResult: .failure(RefundSubmissionUseCase.RefundSubmissionError.cardReaderDisconnected))
+        insertSamplePaymentGateway(siteID: siteID)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}, onCompletion: { result in
+                promise(result)
+            })
+            self.alerts.dismissErrorCompletion?()
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? RefundSubmissionUseCase.RefundSubmissionError, .cardReaderDisconnected)
+
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "interac_refund_failed"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["card_reader_model"] as? String, Mocks.cardReaderModel)
+        XCTAssertEqual(eventProperties["country"] as? String, "US")
+        XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayAccount)
+    }
 }
 
 private extension RefundSubmissionUseCaseTests {
-    func mockCreateRefundAction(result: Result<Void, Error>) {
+    func mockServerSideRefund(result: Result<Void, Error>) {
         stores.whenReceivingAction(ofType: RefundAction.self) { action in
             if case let .createRefund(_, _, _, completion) = action {
                 switch result {
@@ -96,6 +240,49 @@ private extension RefundSubmissionUseCaseTests {
                 }
             }
         }
+    }
+
+    func mockSuccessfulCardReaderConnection(clientSideRefundResult: Result<Void, Error>) {
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case let .checkCardReaderConnected(completion) = action {
+                completion(Just<[CardReader]>([MockCardReader.wisePad3()]).eraseToAnyPublisher())
+            } else if case let .observeConnectedReaders(completion) = action {
+                completion([MockCardReader.wisePad3()])
+            } else if case let .refundPayment(_, _, completion) = action {
+                completion?(clientSideRefundResult)
+            }
+        }
+    }
+
+    func insertSamplePaymentGateway(siteID: Int64) {
+        let paymentGatewayAccount = PaymentGatewayAccount
+            .fake()
+            .copy(
+                siteID: siteID,
+                gatewayID: Mocks.paymentGatewayAccount,
+                status: "complete",
+                hasPendingRequirements: false,
+                hasOverdueRequirements: false,
+                isCardPresentEligible: true,
+                isLive: true,
+                isInTestMode: false
+            )
+        storageManager.reset()
+        let newAccount = storageManager.viewStorage.insertNewObject(ofType: StoragePaymentGatewayAccount.self)
+        newAccount.update(with: paymentGatewayAccount)
+    }
+
+    func createUseCase(siteID: Int64 = 322, details: RefundSubmissionUseCase.Details) -> RefundSubmissionUseCase {
+        RefundSubmissionUseCase(siteID: siteID,
+                                details: details,
+                                rootViewController: .init(),
+                                alerts: alerts,
+                                currencyFormatter: CurrencyFormatter(currencySettings: .init()),
+                                currencySettings: .init(),
+                                cardPresentConfiguration: Mocks.configuration,
+                                stores: stores,
+                                storageManager: storageManager,
+                                analytics: analytics)
     }
 }
 

@@ -106,6 +106,7 @@ final class RefundConfirmationViewModel {
                                                         alerts: OrderDetailsPaymentAlerts(transactionType: .refund,
                                                                                           presentingController: rootViewController),
                                                         currencyFormatter: currencyFormatter,
+                                                        cardPresentConfiguration: CardPresentConfigurationLoader(stores: actionProcessor).configuration,
                                                         stores: actionProcessor,
                                                         analytics: analytics)
         self.submissionUseCase = submissionUseCase

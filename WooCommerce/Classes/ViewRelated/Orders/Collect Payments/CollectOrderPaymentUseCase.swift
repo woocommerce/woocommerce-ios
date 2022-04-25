@@ -234,6 +234,8 @@ private extension CollectOrderPaymentUseCase {
                    // Reader messages. EG: Remove Card
                    self?.alerts.displayReaderMessage(message: message)
 
+               }, onProcessingCompletion: { [weak self] intent in
+                   self?.trackProcessingCompletion(intent: intent)
                }, onCompletion: { [weak self] result in
                    switch result {
                    case .success(let capturedPaymentData):
@@ -354,13 +356,28 @@ private extension CollectOrderPaymentUseCase {
     }
 }
 
-// MARK: Connected Card Readers
+// MARK: Analytics
 private extension CollectOrderPaymentUseCase {
     func observeConnectedReadersForAnalytics() {
         let action = CardPresentPaymentAction.observeConnectedReaders() { [weak self] readers in
             self?.connectedReader = readers.first
         }
         stores.dispatch(action)
+    }
+
+    func trackProcessingCompletion(intent: PaymentIntent) {
+        guard let paymentMethod = intent.paymentMethod() else {
+            return
+        }
+        switch paymentMethod {
+        case .interacPresent:
+            analytics.track(event: .InPersonPayments
+                .collectInteracPaymentSuccess(gatewayID: paymentGatewayAccount.gatewayID,
+                                              countryCode: configuration.countryCode,
+                                              cardReaderModel: connectedReader?.readerType.model ?? ""))
+        default:
+            return
+        }
     }
 }
 

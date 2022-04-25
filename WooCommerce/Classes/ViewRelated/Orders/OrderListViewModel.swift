@@ -126,6 +126,19 @@ final class OrderListViewModel {
         bindTopBannerState()
     }
 
+    func dismissOrdersBanner() {
+        let action = AppSettingsAction.updateFeedbackStatus(type: .ordersCreation,
+                                               status: .dismissed) { [weak self] result in
+            if let error = result.failure {
+                ServiceLocator.crashLogging.logError(error)
+            }
+
+            self?.hideOrdersBanners = true
+        }
+
+        ServiceLocator.stores.dispatch(action)
+    }
+
     /// Starts the snapshotsProvider, logging any errors.
     private func startReceivingSnapshots() {
         do {

@@ -18,6 +18,14 @@ struct ProductSelector: View {
     ///
     @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
 
+    /// Title for the multi-selection button
+    ///
+    private var doneButtonTitle: String {
+        String.pluralize(viewModel.totalSelectedItemsCount,
+                         singular: configuration.doneButtonTitleSingularFormat,
+                         plural: configuration.doneButtonTitlePluralFormat)
+    }
+
     var body: some View {
         NavigationView {
             VStack {
@@ -36,7 +44,7 @@ struct ProductSelector: View {
                             }
                         }
                         if viewModel.totalSelectedItemsCount > 0 {
-                            Button(String.localizedStringWithFormat(configuration.doneButtonTitleFormat, viewModel.totalSelectedItemsCount)) {
+                            Button(doneButtonTitle) {
                                 viewModel.completeMultipleSelection()
                                 isPresented.toggle()
                             }
@@ -122,7 +130,8 @@ extension ProductSelector {
         var multipleSelectionsEnabled: Bool = false
         var searchHeaderBackgroundColor: UIColor = .listForeground
         var prefersLargeTitle: Bool = true
-        var doneButtonTitleFormat: String = ""
+        var doneButtonTitleSingularFormat: String = ""
+        var doneButtonTitlePluralFormat: String = ""
         let title: String
         let cancelButtonTitle: String
         let productRowAccessibilityHint: String

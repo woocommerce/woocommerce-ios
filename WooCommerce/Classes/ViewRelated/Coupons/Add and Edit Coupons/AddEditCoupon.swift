@@ -329,7 +329,8 @@ struct AddEditCoupon_Previews: PreviewProvider {
 private extension ProductSelector.Configuration {
     static let productsForCoupons: Self =
         .init(multipleSelectionsEnabled: true,
-              doneButtonTitleFormat: Localization.doneButton,
+              doneButtonTitleSingularFormat: Localization.doneButtonSingular,
+              doneButtonTitlePluralFormat: Localization.doneButtonPlural,
               title: Localization.title,
               cancelButtonTitle: Localization.cancel,
               productRowAccessibilityHint: Localization.productRowAccessibilityHint,
@@ -344,10 +345,14 @@ private extension ProductSelector.Configuration {
             "Opens list of product variations.",
             comment: "Accessibility hint for selecting a variable product in the Select Products screen"
         )
-        static let doneButton = NSLocalizedString(
+        static let doneButtonSingular = NSLocalizedString(
+            "Select 1 Product",
+            comment: "Title of the action button at the bottom of the Select Products screen when one product is selected"
+        )
+        static let doneButtonPlural = NSLocalizedString(
             "Select %1$d Products",
-            comment: "Title of the action button at the bottom of the Select Products screen, " +
-            "reads like: Select 5 Products"
+            comment: "Title of the action button at the bottom of the Select Products screen " +
+            "when more than 1 item is selected, reads like: Select 5 Products"
         )
     }
 }

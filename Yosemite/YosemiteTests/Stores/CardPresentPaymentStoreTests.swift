@@ -590,7 +590,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         mockCardReaderService.whenCapturingPayment(thenReturn: Just(intent)
             .setFailureType(to: Error.self)
             .eraseToAnyPublisher())
-        mockCardReaderService.whenWaitForInsertedCardToBeRemoved(thenReturn: Future<Void, Error> { promise in
+        mockCardReaderService.whenWaitForInsertedCardToBeRemoved(thenReturn: Future<Void, Never> { promise in
             // Card is not removed.
         })
 
@@ -626,7 +626,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         mockCardReaderService.whenCapturingPayment(thenReturn: Just(intent)
             .setFailureType(to: Error.self)
             .eraseToAnyPublisher())
-        mockCardReaderService.whenWaitForInsertedCardToBeRemoved(thenReturn: Future<Void, Error> { promise in
+        mockCardReaderService.whenWaitForInsertedCardToBeRemoved(thenReturn: Future<Void, Never> { promise in
             promise(.success(()))
         })
 
@@ -661,7 +661,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         let error = UnderlyingError.readerBusy
         mockCardReaderService.whenCapturingPayment(thenReturn: Fail<PaymentIntent, Error>(error: error)
             .eraseToAnyPublisher())
-        mockCardReaderService.whenWaitForInsertedCardToBeRemoved(thenReturn: Future<Void, Error> { promise in
+        mockCardReaderService.whenWaitForInsertedCardToBeRemoved(thenReturn: Future<Void, Never> { promise in
             // Card is not removed.
         })
 

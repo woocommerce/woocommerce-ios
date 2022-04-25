@@ -104,7 +104,7 @@ final class MockCardReaderService: CardReaderService {
         return waitForInsertedCardToBeRemovedFuture ??
         Future() { promise in
             DispatchQueue.main.async {
-                promise(Result.success(()))
+                promise(.success(()))
             }
         }
     }
@@ -150,7 +150,7 @@ extension MockCardReaderService {
     }
 
     /// Set the return value if `waitForInsertedCardToBeRemoved` is called.
-    func whenWaitForInsertedCardToBeRemoved(thenReturn future: Future<Void, Error>) {
+    func whenWaitForInsertedCardToBeRemoved(thenReturn future: Future<Void, Never>) {
         waitForInsertedCardToBeRemovedFuture = future
     }
 }

@@ -34,8 +34,6 @@ struct ProductSelector: View {
                                 Divider().frame(height: Constants.dividerHeight)
                                     .padding(.leading, Constants.defaultPadding)
                             }
-                            .padding(.horizontal, insets: safeAreaInsets)
-                            .background(Color(.listForeground).ignoresSafeArea())
                         }
                         if viewModel.totalSelectedItemsCount > 0 {
                             Button(String.localizedStringWithFormat(configuration.doneButtonTitleFormat, viewModel.totalSelectedItemsCount)) {
@@ -46,6 +44,8 @@ struct ProductSelector: View {
                             .padding(Constants.defaultPadding)
                         }
                     }
+                    .padding(.horizontal, insets: safeAreaInsets)
+                    .background(Color(.listForeground).ignoresSafeArea())
 
                 case .empty:
                     EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)

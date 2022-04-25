@@ -107,7 +107,9 @@ final class IssueRefundViewModel {
     /// PaymentGatewayAccount Results Controller.
     private lazy var paymentGatewayAccountResultsController: ResultsController<StoragePaymentGatewayAccount> = {
         let predicate = NSPredicate(format: "siteID = %ld", state.order.siteID)
-        return ResultsController<StoragePaymentGatewayAccount>(storageManager: storage, matching: predicate, sortedBy: [])
+        let resultsController = ResultsController<StoragePaymentGatewayAccount>(storageManager: storage, matching: predicate, sortedBy: [])
+        try? resultsController.performFetch()
+        return resultsController
     }()
 
     /// Payment Gateway Accounts for the site (i.e. that can be used to refund)

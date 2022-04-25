@@ -61,7 +61,8 @@ public class OrderStore: Store {
 
         case let .updateOrder(siteID, order, fields, onCompletion):
             updateOrder(siteID: siteID, order: order, fields: fields, onCompletion: onCompletion)
-
+        case let .updateOrderOptimistically(siteID, order, fields, onCompletion):
+            updateOrderOptimistically(siteID: siteID, order: order, fields: fields, onCompletion: onCompletion)
         case let .createSimplePaymentsOrder(siteID, status, amount, taxable, onCompletion):
             createSimplePaymentsOrder(siteID: siteID, status: status, amount: amount, taxable: taxable, onCompletion: onCompletion)
         case let .createOrder(siteID, order, onCompletion):
@@ -384,6 +385,34 @@ private extension OrderStore {
         }
     }
 
+    /// Updates the specified fields from an order optimistically.
+    ///
+    /// Updates will be reverted in case of failure.
+    ///
+    func updateOrderOptimistically(siteID: Int64, order: Order, fields: [OrderUpdateField], onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        // Optimistically update the stored order.
+        let backupOrder = upsertStoredOrder(readOnlyOrder: order)
+
+        remote.updateOrder(from: siteID, order: order, fields: fields) { [weak self] result in
+            guard case .failure = result else {
+                onCompletion(.success(order))
+                return
+            }
+
+            /// Revert optimistic update.
+            ///
+            /// If the backup order is equal to the given order means that the order
+            /// didn't exist locally. So, we have to delete the stored order as workaround.
+            /// Otherwise, we have to revert the updated fields.
+            if order == backupOrder {
+                self?.deleteStoredOrder(siteID: siteID, orderID: order.orderID)
+            } else {
+                self?.upsertStoredOrder(readOnlyOrder: backupOrder)
+            }
+            onCompletion(result)
+        }
+    }
+
     /// Deletes a given order.
     ///
     func deleteOrder(siteID: Int64, order: Order, deletePermanently: Bool, onCompletion: @escaping (Result<Order, Error>) -> Void) {
@@ -465,10 +494,28 @@ extension OrderStore {
 // MARK: - Storage: Search Results
 //
 private extension OrderStore {
+    /// Updates or inserts the specified ReadOnly Order Entity.
+    ///
+    /// - Returns: The updated order, prior to performing the update operation or the given order when
+    /// the order doesn't exist locally.
+    ///
+    @discardableResult
+    func upsertStoredOrder(readOnlyOrder: Networking.Order) -> Networking.Order {
+        let storageOrder = storageManager.viewStorage.loadOrder(siteID: readOnlyOrder.siteID, orderID: readOnlyOrder.orderID)
+        let oldReadOnlyOrder = storageOrder?.toReadOnly()
+
+        upsertStoredOrders(readOnlyOrders: [readOnlyOrder], in: storageManager.viewStorage)
+
+        if storageOrder == nil {
+            DDLogWarn("⚠️ Unable to retrieve stored order with ID \(readOnlyOrder.orderID) to be updated - A new order has been stored as a workaround")
+        }
+
+        return oldReadOnlyOrder ?? readOnlyOrder
+    }
 
     /// Upserts the Orders, and associates them to the SearchResults Entity (in Background)
     ///
-    private func upsertSearchResultsInBackground(keyword: String, readOnlyOrders: [Networking.Order], onCompletion: @escaping () -> Void) {
+    func upsertSearchResultsInBackground(keyword: String, readOnlyOrders: [Networking.Order], onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform { [weak self] in
             guard let self = self else {
@@ -485,7 +532,7 @@ private extension OrderStore {
 
     /// Upserts the Orders, and associates them to the Search Results Entity (in the specified Storage)
     ///
-    private func upsertStoredResults(keyword: String, readOnlyOrders: [Networking.Order], in storage: StorageType) {
+    func upsertStoredResults(keyword: String, readOnlyOrders: [Networking.Order], in storage: StorageType) {
         let searchResults = storage.loadOrderSearchResults(keyword: keyword) ?? storage.insertNewObject(ofType: Storage.OrderSearchResults.self)
         searchResults.keyword = keyword
 

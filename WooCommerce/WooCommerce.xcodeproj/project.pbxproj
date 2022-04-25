@@ -1206,6 +1206,9 @@
 		B910686027F1F28F00AD0575 /* GhostableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B910685F27F1F28F00AD0575 /* GhostableViewController.swift */; };
 		B92FF9AE27FC7217005C34E3 /* OrderListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B92FF9AD27FC7217005C34E3 /* OrderListViewController.xib */; };
 		B92FF9B027FC7821005C34E3 /* ProductsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B92FF9AF27FC7821005C34E3 /* ProductsViewController.xib */; };
+		B9DA153C280EC7D700FC67DD /* OrderRefundsOptionsDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DA153B280EC7D700FC67DD /* OrderRefundsOptionsDeterminer.swift */; };
+		B9DA153E28101BE100FC67DD /* MockOrderRefundsOptionsDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DA153D28101BE100FC67DD /* MockOrderRefundsOptionsDeterminer.swift */; };
+		B9DA154028103ABE00FC67DD /* OrderRefundsOptionsDeterminerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DA153F28103ABE00FC67DD /* OrderRefundsOptionsDeterminerTests.swift */; };
 		B9C4AB2527FDE4B6007008B8 /* PaymentsPluginsDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C4AB2427FDE4B6007008B8 /* PaymentsPluginsDataProvider.swift */; };
 		B9C4AB2728002AF3007008B8 /* PaymentReceiptEmailParameterDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C4AB2628002AF3007008B8 /* PaymentReceiptEmailParameterDeterminer.swift */; };
 		B9C4AB29280031AB007008B8 /* PaymentReceiptEmailParameterDeterminerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C4AB28280031AB007008B8 /* PaymentReceiptEmailParameterDeterminerTests.swift */; };
@@ -2914,6 +2917,9 @@
 		B910685F27F1F28F00AD0575 /* GhostableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostableViewController.swift; sourceTree = "<group>"; };
 		B92FF9AD27FC7217005C34E3 /* OrderListViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderListViewController.xib; sourceTree = "<group>"; };
 		B92FF9AF27FC7821005C34E3 /* ProductsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProductsViewController.xib; sourceTree = "<group>"; };
+		B9DA153B280EC7D700FC67DD /* OrderRefundsOptionsDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderRefundsOptionsDeterminer.swift; sourceTree = "<group>"; };
+		B9DA153D28101BE100FC67DD /* MockOrderRefundsOptionsDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockOrderRefundsOptionsDeterminer.swift; sourceTree = "<group>"; };
+		B9DA153F28103ABE00FC67DD /* OrderRefundsOptionsDeterminerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderRefundsOptionsDeterminerTests.swift; sourceTree = "<group>"; };
 		B9C4AB2427FDE4B6007008B8 /* PaymentsPluginsDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsPluginsDataProvider.swift; sourceTree = "<group>"; };
 		B9C4AB2628002AF3007008B8 /* PaymentReceiptEmailParameterDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentReceiptEmailParameterDeterminer.swift; sourceTree = "<group>"; };
 		B9C4AB28280031AB007008B8 /* PaymentReceiptEmailParameterDeterminerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentReceiptEmailParameterDeterminerTests.swift; sourceTree = "<group>"; };
@@ -4648,6 +4654,7 @@
 				2667BFEC25360681008099D4 /* RefundShippingCalculationUseCaseTests.swift */,
 				26A630F2253F3CFE00CBC3B1 /* RefundCreationUseCaseTests.swift */,
 				5750BEE72764006F00388BE6 /* RefundFeesDetailsViewModelTests.swift */,
+				B9DA153F28103ABE00FC67DD /* OrderRefundsOptionsDeterminerTests.swift */,
 			);
 			path = "Issue Refund";
 			sourceTree = "<group>";
@@ -4788,6 +4795,7 @@
 				260C31612524EEB200157BC2 /* IssueRefundViewController.xib */,
 				26A630FD253F63C300CBC3B1 /* RefundableOrderItem.swift */,
 				26A630F8253F62AD00CBC3B1 /* UseCases */,
+				B9DA153B280EC7D700FC67DD /* OrderRefundsOptionsDeterminer.swift */,
 			);
 			path = "Issue Refunds";
 			sourceTree = "<group>";
@@ -5668,6 +5676,7 @@
 				FE3E427626A8545B00C596CE /* MockRoleEligibilityUseCase.swift */,
 				02E4AF7026FC4F16002AD9F4 /* ProductReviewFromNoteParcelFactory.swift */,
 				02CE43082769953D0006EAEF /* MockCaptureDevicePermissionChecker.swift */,
+				B9DA153D28101BE100FC67DD /* MockOrderRefundsOptionsDeterminer.swift */,
 				028E19B928053443001C36E0 /* MockOrderDetailsPaymentAlerts.swift */,
 				B9C4AB2A28003481007008B8 /* MockPaymentsPluginsDataProvider.swift */,
 				026043EC281031F60095186B /* MockPaymentIntent.swift */,
@@ -9301,6 +9310,7 @@
 				DE279BA626E9C582002BA963 /* ShippingLabelPackagesFormViewModel.swift in Sources */,
 				CECC758C23D2227000486676 /* ProductDetailsCellViewModel.swift in Sources */,
 				DEC1508227F450AC00F4487C /* CouponAllowedEmails.swift in Sources */,
+				B9DA153C280EC7D700FC67DD /* OrderRefundsOptionsDeterminer.swift in Sources */,
 				453227B723C4D6EC00D816B3 /* TimeZone+Woo.swift in Sources */,
 				CC53FB3527551A6E00C4CA4F /* ProductRow.swift in Sources */,
 				2662D90A26E16B3600E25611 /* FilterListSelector.swift in Sources */,
@@ -9892,6 +9902,7 @@
 				02E4FD812306AA890049610C /* StatsTimeRangeBarViewModelTests.swift in Sources */,
 				02645D8A27BA2EDB0065DC68 /* NSAttributedString+AttributesTests.swift in Sources */,
 				6856D2A5C2076F5BF14F2C11 /* KeyboardStateProviderTests.swift in Sources */,
+				B9DA153E28101BE100FC67DD /* MockOrderRefundsOptionsDeterminer.swift in Sources */,
 				09C6A26227C01166001FAD73 /* BulkUpdateViewModelTests.swift in Sources */,
 				6856D806DE7DB61522D54044 /* NSMutableAttributedStringHelperTests.swift in Sources */,
 				023D69442588C6BD00F7DA72 /* ShippingLabelPaperSizeListSelectorCommandTests.swift in Sources */,
@@ -9906,6 +9917,7 @@
 				CC4D1E7925EE415D00B6E4E7 /* RenameAttributesViewModelTests.swift in Sources */,
 				4520A1612722D495001FA573 /* FilterOrderListViewModelTests.swift in Sources */,
 				02E4AF7126FC4F16002AD9F4 /* ProductReviewFromNoteParcelFactory.swift in Sources */,
+				B9DA154028103ABE00FC67DD /* OrderRefundsOptionsDeterminerTests.swift in Sources */,
 				B9C4AB2B28003481007008B8 /* MockPaymentsPluginsDataProvider.swift in Sources */,
 				57F42E40253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift in Sources */,
 			);

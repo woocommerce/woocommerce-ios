@@ -124,6 +124,7 @@ final class RefundConfirmationViewModel {
             default:
                 onCompletion(result)
             }
+            self.submissionUseCase = nil
         })
     }
 

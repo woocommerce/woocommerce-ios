@@ -11,7 +11,7 @@ public final class OrdersScreen: ScreenObject {
     }
 
     private let filterButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["Filter"]
+        $0.buttons["orders-filter-button"]
     }
 
     private let createButtonGetter: (XCUIApplication) -> XCUIElement = {

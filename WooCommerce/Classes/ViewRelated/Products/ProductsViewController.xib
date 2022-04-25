@@ -21,30 +21,41 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="1mE-SE-uK9">
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="tDW-j0-dUT">
                     <rect key="frame" x="0.0" y="44" width="414" height="818"/>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="orders-table-view"/>
-                    </userDefinedRuntimeAttributes>
-                </tableView>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9eA-hc-k15" userLabel="Filter Bar" customClass="ToolbarView" customModule="WooCommerce" customModuleProvider="target">
-                    <rect key="frame" x="0.0" y="44" width="414" height="0.0"/>
-                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9eA-hc-k15" userLabel="Filter Bar" customClass="ToolbarView" customModule="WooCommerce" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="0.0"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            <constraints>
+                                <constraint firstAttribute="height" id="sEi-OR-bvb"/>
+                            </constraints>
+                        </view>
+                        <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="1mE-SE-uK9">
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="818"/>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="orders-table-view"/>
+                            </userDefinedRuntimeAttributes>
+                        </tableView>
+                    </subviews>
                     <constraints>
-                        <constraint firstAttribute="height" id="sEi-OR-bvb"/>
+                        <constraint firstItem="9eA-hc-k15" firstAttribute="leading" secondItem="tDW-j0-dUT" secondAttribute="leading" id="2Md-DN-FrJ"/>
+                        <constraint firstItem="1mE-SE-uK9" firstAttribute="top" secondItem="9eA-hc-k15" secondAttribute="bottom" id="CRj-o0-2WZ"/>
+                        <constraint firstAttribute="trailing" secondItem="9eA-hc-k15" secondAttribute="trailing" id="Qcx-pF-i9M"/>
+                        <constraint firstItem="1mE-SE-uK9" firstAttribute="trailing" secondItem="9eA-hc-k15" secondAttribute="trailing" id="g0z-q4-rFD"/>
+                        <constraint firstItem="1mE-SE-uK9" firstAttribute="leading" secondItem="9eA-hc-k15" secondAttribute="leading" id="i2H-MX-SoN"/>
+                        <constraint firstItem="9eA-hc-k15" firstAttribute="top" secondItem="tDW-j0-dUT" secondAttribute="top" id="ilw-mJ-v1G"/>
+                        <constraint firstAttribute="bottom" secondItem="1mE-SE-uK9" secondAttribute="bottom" id="jCv-iK-SJb"/>
                     </constraints>
-                </view>
+                </stackView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="9eA-hc-k15" secondAttribute="trailing" id="7Oz-dR-GwR"/>
-                <constraint firstItem="1mE-SE-uK9" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="8hS-PH-Szg"/>
-                <constraint firstItem="1mE-SE-uK9" firstAttribute="top" secondItem="9eA-hc-k15" secondAttribute="bottom" id="CKX-Om-8xR"/>
-                <constraint firstItem="9eA-hc-k15" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="EMu-rn-qlD"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="1mE-SE-uK9" secondAttribute="bottom" id="Xci-eH-29p"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="1mE-SE-uK9" secondAttribute="trailing" id="h1p-cR-5re"/>
-                <constraint firstItem="9eA-hc-k15" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="w8G-wM-Nhh"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="tDW-j0-dUT" secondAttribute="trailing" id="3MC-6D-nnm"/>
+                <constraint firstItem="tDW-j0-dUT" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="9UK-Qy-FXd"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="tDW-j0-dUT" secondAttribute="bottom" id="AQF-qF-3wt"/>
+                <constraint firstItem="tDW-j0-dUT" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="KSv-iL-NFv"/>
             </constraints>
             <point key="canvasLocation" x="100.00000000000001" y="48.883928571428569"/>
         </view>

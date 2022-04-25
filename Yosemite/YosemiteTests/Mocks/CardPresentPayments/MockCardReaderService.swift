@@ -48,7 +48,7 @@ final class MockCardReaderService: CardReaderService {
     private var capturePaymentPublisher: AnyPublisher<PaymentIntent, Error>?
 
     /// The future to return in `waitForInsertedCardToBeRemoved`.
-    private var waitForInsertedCardToBeRemovedFuture: Future<Void, Error>?
+    private var waitForInsertedCardToBeRemovedFuture: Future<Void, Never>?
 
     private let connectedReadersSubject = CurrentValueSubject<[CardReader], Never>([])
     private let discoveryStatusSubject = CurrentValueSubject<CardReaderServiceDiscoveryStatus, Never>(.idle)
@@ -99,7 +99,7 @@ final class MockCardReaderService: CardReaderService {
         }
     }
 
-    func waitForInsertedCardToBeRemoved() -> Future<Void, Error> {
+    func waitForInsertedCardToBeRemoved() -> Future<Void, Never> {
         didHitWaitForInsertedCardToBeRemoved = true
         return waitForInsertedCardToBeRemovedFuture ??
         Future() { promise in

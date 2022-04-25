@@ -207,14 +207,14 @@ extension StripeCardReaderService: CardReaderService {
         }
     }
 
-    public func waitForInsertedCardToBeRemoved() -> Future<Void, Error> {
+    public func waitForInsertedCardToBeRemoved() -> Future<Void, Never> {
         return Future() { [weak self] promise in
             guard let self = self else {
                 return
             }
 
             // If there is no chip card inserted, it is ok to immediately return. The payment method may have been swipe or tap.
-            if !self.isChipCardInserted {
+            guard self.isChipCardInserted else {
                 return promise(.success(()))
             }
 

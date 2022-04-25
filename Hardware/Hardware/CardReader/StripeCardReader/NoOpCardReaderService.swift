@@ -46,9 +46,9 @@ public struct NoOpCardReaderService: CardReaderService {
         }
     }
 
-    public func waitForInsertedCardToBeRemoved() -> Future<Void, Error> {
+    public func waitForInsertedCardToBeRemoved() -> Future<Void, Never> {
         Future() { promise in
-            promise(.failure(NSError.init(domain: "noopcardreader", code: 0, userInfo: nil)))
+            promise(.success(()))
         }
     }
 

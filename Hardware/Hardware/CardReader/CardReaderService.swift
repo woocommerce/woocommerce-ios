@@ -33,7 +33,7 @@ public protocol CardReaderService {
     func disconnect() -> Future <Void, Error>
 
     /// Waits for the inserted card to be removed as a requirement after client-side processing.
-    func waitForInsertedCardToBeRemoved() -> Future<Void, Error>
+    func waitForInsertedCardToBeRemoved() -> Future<Void, Never>
 
     /// Clears and resets internal state.
     /// We need to call this method when switching accounts or stores

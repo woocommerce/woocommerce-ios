@@ -31,23 +31,23 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// All products that can be added to an order.
     ///
-    private var products: [Product] {
-        productsResultsController.fetchedObjects.filter { $0.purchasable }
-    }
+    @Published private var products: [Product] = []
 
     /// View models for each product row
     ///
-    var productRows: [ProductRowViewModel] {
-        products.map { .init(product: $0, canChangeQuantity: false) }
-    }
+    @Published private(set) var productRows: [ProductRowViewModel] = []
 
     /// Closure to be invoked when a product is selected
     ///
-    let onProductSelected: ((Product) -> Void)?
+    private let onProductSelected: ((Product) -> Void)?
 
     /// Closure to be invoked when a product variation is selected
     ///
-    let onVariationSelected: ((ProductVariation) -> Void)?
+    private let onVariationSelected: ((ProductVariation) -> Void)?
+
+    /// Closure to be invoked when multiple selection is completed
+    ///
+    private let onMultipleSelectionCompleted: (([Int64]) -> Void)?
 
     // MARK: Sync & Storage properties
 
@@ -90,6 +90,24 @@ final class ProductSelectorViewModel: ObservableObject {
     /// Each update will trigger a remote product search and sync.
     @Published var searchTerm: String = ""
 
+    /// All selected products if the selector supports multiple selections.
+    ///
+    @Published private var selectedProductIDs: [Int64] = []
+
+    /// All selected product variations if the selector supports multiple selections.
+    ///
+    @Published private var selectedProductVariationIDs: [Int64] = []
+
+    var totalSelectedItemsCount: Int {
+        selectedProductIDs.count + selectedProductVariationIDs.count
+    }
+
+    /// IDs of selected products and variations from initializer.
+    ///
+    private let initialSelectedItems: [Int64]
+
+    /// Initializer for single selection
+    ///
     init(siteID: Int64,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
@@ -100,6 +118,29 @@ final class ProductSelectorViewModel: ObservableObject {
         self.stores = stores
         self.onProductSelected = onProductSelected
         self.onVariationSelected = onVariationSelected
+        self.onMultipleSelectionCompleted = nil
+        self.initialSelectedItems = []
+
+        configureSyncingCoordinator()
+        configureProductsResultsController()
+        configureFirstPageLoad()
+        configureProductSearch()
+    }
+
+    /// Initializer for multiple selections
+    ///
+    init(siteID: Int64,
+         selectedItemIDs: [Int64],
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         stores: StoresManager = ServiceLocator.stores,
+         onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil) {
+        self.siteID = siteID
+        self.storageManager = storageManager
+        self.stores = stores
+        self.onProductSelected = nil
+        self.onVariationSelected = nil
+        self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
+        self.initialSelectedItems = selectedItemIDs
 
         configureSyncingCoordinator()
         configureProductsResultsController()
@@ -113,7 +154,11 @@ final class ProductSelectorViewModel: ObservableObject {
         guard let selectedProduct = products.first(where: { $0.productID == productID }) else {
             return
         }
-        onProductSelected?(selectedProduct)
+        if let onProductSelected = onProductSelected {
+            onProductSelected(selectedProduct)
+        } else {
+            toggleSelection(productID: productID)
+        }
     }
 
     /// Get the view model for a list of product variations to add to the order
@@ -122,13 +167,40 @@ final class ProductSelectorViewModel: ObservableObject {
         guard let variableProduct = products.first(where: { $0.productID == productID }), variableProduct.variations.isNotEmpty else {
             return nil
         }
-        return ProductVariationSelectorViewModel(siteID: siteID, product: variableProduct, onVariationSelected: onVariationSelected)
+        return ProductVariationSelectorViewModel(siteID: siteID,
+                                                 product: variableProduct,
+                                                 selectedProductVariationIDs: selectedProductVariationIDs,
+                                                 onVariationSelected: onVariationSelected)
     }
 
     /// Clears the current search term to display the full product list.
     ///
     func clearSearch() {
         searchTerm = ""
+    }
+
+    /// Updates selected variation list based on the new selected IDs
+    ///
+    func updateSelectedVariations(productID: Int64, selectedVariationIDs: [Int64]) {
+        guard let variableProduct = products.first(where: { $0.productID == productID }),
+              variableProduct.variations.isNotEmpty else {
+            return
+        }
+        // remove all previous selected variations
+        selectedProductVariationIDs.removeAll(where: { variableProduct.variations.contains($0) })
+        // append new selected IDs
+        selectedProductVariationIDs.append(contentsOf: selectedVariationIDs)
+        // update product rows
+        productRows = generateProductRows(products: products,
+                                          selectedProductIDs: selectedProductIDs,
+                                          selectedProductVariationIDs: selectedProductVariationIDs)
+    }
+
+    /// Triggers completion closure when the multiple selection completes.
+    ///
+    func completeMultipleSelection() {
+        let allIDs = selectedProductIDs + selectedProductVariationIDs
+        onMultipleSelectionCompleted?(allIDs)
     }
 }
 
@@ -253,6 +325,9 @@ private extension ProductSelectorViewModel {
     func updateProductsResultsController() {
         do {
             try productsResultsController.performFetch()
+            products = productsResultsController.fetchedObjects.filter { $0.purchasable }
+            updateSelectionsFromInitialSelectedItems()
+            observeSelections()
         } catch {
             DDLogError("⛔️ Error fetching products for new order: \(error)")
         }
@@ -298,6 +373,71 @@ private extension ProductSelectorViewModel {
 
                 self.syncingCoordinator.resynchronize()
             }.store(in: &subscriptions)
+    }
+}
+
+// MARK: - Multiple selection support
+private extension ProductSelectorViewModel {
+    /// Toggles the selection of the specified product.
+    ///
+    func toggleSelection(productID: Int64) {
+        if selectedProductIDs.contains(productID) {
+            selectedProductIDs.removeAll(where: { $0 == productID })
+        } else {
+            selectedProductIDs.append(productID)
+        }
+    }
+
+    /// Update selected product and variation IDs from initial selected items
+    ///
+    func updateSelectionsFromInitialSelectedItems() {
+        guard initialSelectedItems.isNotEmpty else {
+            return
+        }
+        for id in initialSelectedItems {
+            guard !selectedProductIDs.contains(id) && !selectedProductVariationIDs.contains(id) else {
+                continue
+            }
+            if products.contains(where: { $0.productID == id }) {
+                selectedProductIDs.append(id)
+            } else {
+                selectedProductVariationIDs.append(id)
+            }
+        }
+    }
+
+    /// Observes changes in selections to update product rows
+    ///
+    func observeSelections() {
+        $products.combineLatest($selectedProductIDs) { [weak self] products, selectedProductIDs -> [ProductRowViewModel] in
+            guard let self = self else {
+                return []
+            }
+            return self.generateProductRows(products: products,
+                                            selectedProductIDs: selectedProductIDs,
+                                            selectedProductVariationIDs: self.selectedProductVariationIDs)
+        }.assign(to: &$productRows)
+    }
+
+    /// Generates product rows based on products and selected product/variation IDs
+    ///
+    func generateProductRows(products: [Product], selectedProductIDs: [Int64], selectedProductVariationIDs: [Int64]) -> [ProductRowViewModel] {
+        return products.map { product in
+            var selectedState: ProductRow.SelectedState
+            if product.variations.isEmpty {
+                selectedState = selectedProductIDs.contains(product.productID) ? .selected : .notSelected
+            } else {
+                let intersection = Set(product.variations).intersection(Set(selectedProductVariationIDs))
+                if intersection.isEmpty {
+                    selectedState = .notSelected
+                } else if intersection.count == product.variations.count {
+                    selectedState = .selected
+                } else {
+                    selectedState = .partiallySelected
+                }
+            }
+            return ProductRowViewModel(product: product, canChangeQuantity: false, selectedState: selectedState)
+        }
     }
 }
 

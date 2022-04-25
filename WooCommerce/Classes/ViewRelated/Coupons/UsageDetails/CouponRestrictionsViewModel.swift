@@ -25,14 +25,14 @@ final class CouponRestrictionsViewModel: ObservableObject {
 
     @Published var excludeSaleItems: Bool
 
+    @Published var excludedProductOrVariationIDs: [Int64]
+
     /// View model for the product selector
     ///
     lazy var productSelectorViewModel = {
-        ProductSelectorViewModel(siteID: siteID, storageManager: storageManager, stores: stores) { _ in
-            // TODO
-        } onVariationSelected: { _ in
-            // TODO
-        }
+        ProductSelectorViewModel(siteID: siteID, selectedItemIDs: excludedProductOrVariationIDs, onMultipleSelectionCompleted: { [weak self] ids in
+            self?.excludedProductOrVariationIDs = ids
+        })
     }()
 
     private let siteID: Int64
@@ -76,6 +76,7 @@ final class CouponRestrictionsViewModel: ObservableObject {
 
         individualUseOnly = coupon.individualUse
         excludeSaleItems = coupon.excludeSaleItems
+        excludedProductOrVariationIDs = coupon.excludedProductIds
     }
 
     init(siteID: Int64,
@@ -91,6 +92,7 @@ final class CouponRestrictionsViewModel: ObservableObject {
         allowedEmails = ""
         individualUseOnly = false
         excludeSaleItems = false
+        excludedProductOrVariationIDs = []
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager

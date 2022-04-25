@@ -114,6 +114,10 @@ extension UIImage {
         return UIImage(named: "check-circle-empty")!
     }
 
+    static var checkPartialCircleImage: UIImage {
+        return UIImage(named: "check-circle-partial")!
+    }
+
     /// WooCommerce Styled Checkmark
     ///
     static var checkmarkStyledImage: UIImage {

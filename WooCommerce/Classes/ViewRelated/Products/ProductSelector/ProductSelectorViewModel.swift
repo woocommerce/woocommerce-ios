@@ -317,7 +317,6 @@ private extension ProductSelectorViewModel {
     ///
     func configureProductsResultsController() {
         updateProductsResultsController()
-        updateSelectionsFromInitialSelectedItems()
         transitionToResultsUpdatedState()
     }
 
@@ -327,6 +326,7 @@ private extension ProductSelectorViewModel {
         do {
             try productsResultsController.performFetch()
             products = productsResultsController.fetchedObjects.filter { $0.purchasable }
+            updateSelectionsFromInitialSelectedItems()
             observeSelections()
         } catch {
             DDLogError("⛔️ Error fetching products for new order: \(error)")
@@ -395,7 +395,7 @@ private extension ProductSelectorViewModel {
             return
         }
         for id in initialSelectedItems {
-            if products.contains(where: { $0.productID == id }), !selectedProductIDs.contains(id) {
+            if !selectedProductIDs.contains(id), products.contains(where: { $0.productID == id }) {
                 selectedProductIDs.append(id)
             } else if !selectedProductVariationIDs.contains(id) {
                 selectedProductVariationIDs.append(id)

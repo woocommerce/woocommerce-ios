@@ -415,6 +415,47 @@ final class ProductSelectorViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(selectedItems, [simpleProduct.productID, 12])
     }
+
+    func test_filter_button_title_shows_correct_number_of_active_filters() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID)
+        // confidence check
+        XCTAssertEqual(viewModel.filterButtonTitle, NSLocalizedString("Filter", comment: ""))
+
+        // When
+        viewModel.filters = FilterProductListViewModel.Filters(
+            stockStatus: ProductStockStatus.outOfStock,
+            productStatus: ProductStatus.draft,
+            productType: ProductType.simple,
+            productCategory: nil,
+            numberOfActiveFilters: 3
+        )
+
+        // Then
+        XCTAssertEqual(viewModel.filterButtonTitle, String.localizedStringWithFormat(NSLocalizedString("Filter (%ld)", comment: ""), 3))
+    }
+
+    func test_productRows_are_updated_correctly_when_filters_are_applied() {
+        // Given
+        let simpleProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, productTypeKey: ProductType.simple.rawValue, purchasable: true)
+        let variableProduct = Product.fake().copy(siteID: sampleSiteID, productID: 10, productTypeKey: ProductType.variable.rawValue, purchasable: true)
+        insert(variableProduct)
+        insert(simpleProduct)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // When
+        viewModel.filters = FilterProductListViewModel.Filters(
+            stockStatus: nil,
+            productStatus: nil,
+            productType: ProductType.simple,
+            productCategory: nil,
+            numberOfActiveFilters: 1
+        )
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.count, 1)
+        XCTAssertEqual(viewModel.productRows.first?.productOrVariationID, simpleProduct.productID)
+    }
 }
 
 // MARK: - Utils

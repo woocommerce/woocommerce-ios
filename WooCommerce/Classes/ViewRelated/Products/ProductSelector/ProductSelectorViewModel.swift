@@ -41,7 +41,7 @@ final class ProductSelectorViewModel: ObservableObject {
                                                           stockStatus: filters.stockStatus,
                                                           productStatus: filters.productStatus,
                                                           productType: filters.productType)
-
+                updateProductsResultsController()
                 syncingCoordinator.resynchronize {}
             }
         }

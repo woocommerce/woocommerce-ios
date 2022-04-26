@@ -2,6 +2,23 @@ import Yosemite
 import Foundation
 import Storage
 
+/// Provides information about which of the payment plugins (WCPay and Stripe) are installed and active
+///
+enum PaymentPluginsInstalledAndActiveStatus {
+    // None is neither installed nor active
+    case noneAreInstalledAndActive
+    // Only WCPay is installed and active simultaneously
+    case onlyWCPayIsInstalledAndActive
+    // Only Stripe is installed and active simultaneously
+    case onlyStripeIsInstalledAndActive
+    // Both are installed and active
+    case bothAreInstalledAndActive
+
+    var stripeIsInstalledAndActive: Bool {
+        self == .onlyStripeIsInstalledAndActive || self == .bothAreInstalledAndActive
+    }
+}
+
 /// Provides data and helper methods related to the Payments Plugins (WCPay, Stripe).
 /// It extracts the information from the provided `StorageManagerType`, but please notice that it does not
 /// take care of syncing the data, so it should be done beforehand.
@@ -9,9 +26,7 @@ import Storage
 protocol CardPresentPluginsDataProviderProtocol {
     func getWCPayPlugin() -> Yosemite.SystemPlugin?
     func getStripePlugin() -> Yosemite.SystemPlugin?
-    func bothPluginsInstalledAndActive(wcPay: Yosemite.SystemPlugin?, stripe: Yosemite.SystemPlugin?) -> Bool
-    func wcPayInstalledAndActive(wcPay: Yosemite.SystemPlugin?) -> Bool
-    func stripeInstalledAndActive(stripe: Yosemite.SystemPlugin?) -> Bool
+    func paymentPluginsInstalledAndActiveStatus(wcPay: Yosemite.SystemPlugin?, stripe: Yosemite.SystemPlugin?) -> PaymentPluginsInstalledAndActiveStatus
     func isWCPayVersionSupported(plugin: Yosemite.SystemPlugin) -> Bool
     func isStripeVersionSupported(plugin: Yosemite.SystemPlugin) -> Bool
 }
@@ -53,30 +68,20 @@ struct CardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol {
             .toReadOnly()
     }
 
-    func bothPluginsInstalledAndActive(wcPay: Yosemite.SystemPlugin?, stripe: Yosemite.SystemPlugin?) -> Bool {
-        guard let wcPay = wcPay, let stripe = stripe else {
-            return false
+    func paymentPluginsInstalledAndActiveStatus(wcPay: Yosemite.SystemPlugin?, stripe: Yosemite.SystemPlugin?) -> PaymentPluginsInstalledAndActiveStatus {
+        let wcPayInstalledAndActive = wcPay?.active ?? false
+        let stripeInstalledAndActive = stripe?.active ?? false
+
+        switch (wcPayInstalledAndActive, stripeInstalledAndActive) {
+        case (false, false):
+            return .noneAreInstalledAndActive
+        case (false, true):
+            return .onlyStripeIsInstalledAndActive
+        case (true, false):
+            return .onlyWCPayIsInstalledAndActive
+        case (true, true):
+            return .bothAreInstalledAndActive
         }
-
-        return wcPay.active && stripe.active
-    }
-
-    func wcPayInstalledAndActive(wcPay: Yosemite.SystemPlugin?) -> Bool {
-        // If the WCPay plugin is not installed, immediately return false
-        guard let wcPay = wcPay else {
-            return false
-        }
-
-        return wcPay.active
-    }
-
-    func stripeInstalledAndActive(stripe: Yosemite.SystemPlugin?) -> Bool {
-        // If the Stripe plugin is not installed, immediately return false
-        guard let stripe = stripe else {
-            return false
-        }
-
-        return stripe.active
     }
 
     func isWCPayVersionSupported(plugin: Yosemite.SystemPlugin) -> Bool {

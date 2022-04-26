@@ -658,7 +658,7 @@ private extension OrderListViewController {
         topBannerView = OrdersTopBannerFactory.createOrdersBanner(onTopButtonPressed: { [weak self] in
             self?.tableView.updateHeaderHeight()
         }, onDismissButtonPressed: { [weak self] in
-            self?.viewModel.hideOrdersBanners = true
+            self?.viewModel.dismissOrdersBanner()
         }, onGiveFeedbackButtonPressed: { [weak self] in
             let surveyNavigation = SurveyCoordinatingController(survey: .orderCreation)
             self?.present(surveyNavigation, animated: true, completion: nil)

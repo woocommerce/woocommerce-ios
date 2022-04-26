@@ -147,10 +147,15 @@ struct AddEditCoupon: View {
                                 showingSelectProducts = true
                             } label: {
                                 HStack {
-                                    Image(uiImage: .pencilImage).colorMultiply(Color(.text))
-                                        .frame(width: Constants.iconSize, height: Constants.iconSize)
-                                    Text(Localization.editProductsButton)
-                                        .bodyStyle()
+                                    if viewModel.productOrVariationIDs.isNotEmpty {
+                                        Image(uiImage: .pencilImage).colorMultiply(Color(.text))
+                                            .frame(width: Constants.iconSize, height: Constants.iconSize)
+                                        Text(String.localizedStringWithFormat(Localization.editProductsButton, viewModel.productOrVariationIDs.count))
+                                            .bodyStyle()
+                                    } else {
+                                        Text(Localization.allProductsButton)
+                                            .bodyStyle()
+                                    }
                                 }
                             }
                             .buttonStyle(SecondaryButtonStyle())
@@ -276,9 +281,13 @@ private extension AddEditCoupon {
         static let headerApplyCouponTo = NSLocalizedString(
             "Apply this coupon to",
             comment: "Header of the section for applying a coupon to specific products or categories in the view for adding or editing a coupon.")
+        static let allProductsButton = NSLocalizedString(
+            "All Products",
+            comment: "Button indicating that coupon can be applied to all products in the view for adding or editing a coupon.")
         static let editProductsButton = NSLocalizedString(
-            "Edit Products",
-            comment: "Button for specify the products where a coupon can be applied in the view for adding or editing a coupon.")
+            "Edit Products (%1$d)",
+            comment: "Button specifying the number of products applicable to a coupon in the view for adding or editing a coupon. " +
+            "Reads like: Edit Products (2)")
         static let editProductCategoriesButton = NSLocalizedString(
             "Edit Product Categories",
             comment: "Button for specify the product categories where a coupon can be applied in the view for adding or editing a coupon.")
@@ -319,7 +328,10 @@ struct AddEditCoupon_Previews: PreviewProvider {
 
 private extension ProductSelector.Configuration {
     static let productsForCoupons: Self =
-        .init(title: Localization.title,
+        .init(multipleSelectionsEnabled: true,
+              doneButtonTitleSingularFormat: Localization.doneButtonSingular,
+              doneButtonTitlePluralFormat: Localization.doneButtonPlural,
+              title: Localization.title,
               cancelButtonTitle: Localization.cancel,
               productRowAccessibilityHint: Localization.productRowAccessibilityHint,
               variableProductRowAccessibilityHint: Localization.variableProductRowAccessibilityHint)
@@ -332,6 +344,15 @@ private extension ProductSelector.Configuration {
         static let variableProductRowAccessibilityHint = NSLocalizedString(
             "Opens list of product variations.",
             comment: "Accessibility hint for selecting a variable product in the Select Products screen"
+        )
+        static let doneButtonSingular = NSLocalizedString(
+            "Select 1 Product",
+            comment: "Title of the action button at the bottom of the Select Products screen when one product is selected"
+        )
+        static let doneButtonPlural = NSLocalizedString(
+            "Select %1$d Products",
+            comment: "Title of the action button at the bottom of the Select Products screen " +
+            "when more than 1 item is selected, reads like: Select 5 Products"
         )
     }
 }

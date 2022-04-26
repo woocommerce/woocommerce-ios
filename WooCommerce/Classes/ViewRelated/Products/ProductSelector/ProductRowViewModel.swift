@@ -133,6 +133,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     let numberOfVariations: Int
 
+    /// Whether this row is currently selected
+    ///
+    let selectedState: ProductRow.SelectedState
+
     init(id: Int64? = nil,
          productOrVariationID: Int64,
          name: String,
@@ -146,9 +150,11 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          imageURL: URL?,
          numberOfVariations: Int = 0,
          variationDisplayMode: VariationDisplayMode? = nil,
+         selectedState: ProductRow.SelectedState = .notSelected,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          removeProductIntent: @escaping (() -> Void) = {}) {
         self.id = id ?? Int64(UUID().uuidString.hashValue)
+        self.selectedState = selectedState
         self.productOrVariationID = productOrVariationID
         self.name = name
         self.sku = sku
@@ -171,6 +177,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      product: Product,
                      quantity: Decimal = 1,
                      canChangeQuantity: Bool,
+                     selectedState: ProductRow.SelectedState = .notSelected,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      removeProductIntent: @escaping (() -> Void) = {}) {
         // Don't show any price for variable products; price will be shown for each product variation.
@@ -193,6 +200,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   canChangeQuantity: canChangeQuantity,
                   imageURL: product.imageURL,
                   numberOfVariations: product.variations.count,
+                  selectedState: selectedState,
                   currencyFormatter: currencyFormatter,
                   removeProductIntent: removeProductIntent)
     }
@@ -205,6 +213,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      quantity: Decimal = 1,
                      canChangeQuantity: Bool,
                      displayMode: VariationDisplayMode,
+                     selectedState: ProductRow.SelectedState = .notSelected,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      removeProductIntent: @escaping (() -> Void) = {}) {
         let imageURL: URL?
@@ -226,6 +235,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   canChangeQuantity: canChangeQuantity,
                   imageURL: imageURL,
                   variationDisplayMode: displayMode,
+                  selectedState: selectedState,
                   currencyFormatter: currencyFormatter,
                   removeProductIntent: removeProductIntent)
     }

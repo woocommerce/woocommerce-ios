@@ -67,7 +67,7 @@ struct HubMenu: View {
                                 ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "coupons"])
                                 showingCoupons = true
                             }
-                        })
+                        }).accessibilityIdentifier(menu.accessibilityIdentifier)
                     }
                     .background(Color(.listForeground))
                     .cornerRadius(Constants.cornerRadius)

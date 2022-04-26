@@ -37,12 +37,8 @@ struct InAppFeedbackCardVisibilityUseCase {
         switch feedbackType {
         case .general:
             return try shouldGeneralFeedbackBeVisible(currentDate: currentDate)
-        case .productsVariations:
-            return shouldProductsFeedbackBeVisible()
-        case .shippingLabelsRelease3:
-            return shouldShippingLabelsRelease3FeedbackBeVisible()
-        case .couponManagement:
-            return shouldCouponManagementFeedbackBeVisible()
+        case .productsVariations, .shippingLabelsRelease3, .couponManagement, .ordersCreation:
+            return settings.feedbackStatus(of: feedbackType) == .pending
         }
     }
 
@@ -66,24 +62,6 @@ struct InAppFeedbackCardVisibilityUseCase {
         }
 
         return true
-    }
-
-    /// Returns whether the products feedback request should be displayed
-    ///
-    private func shouldProductsFeedbackBeVisible() -> Bool {
-        return settings.feedbackStatus(of: feedbackType) == .pending
-    }
-
-    /// Returns whether the shippingLabelsRelease3 feedback request should be displayed
-    ///
-    private func shouldShippingLabelsRelease3FeedbackBeVisible() -> Bool {
-        return settings.feedbackStatus(of: feedbackType) == .pending
-    }
-
-    /// Returns whether the couponManagement feedback request should be displayed
-    ///
-    private func shouldCouponManagementFeedbackBeVisible() -> Bool {
-        return settings.feedbackStatus(of: feedbackType) == .pending
     }
 
     /// Returns the total number of days between `from` and `to`.

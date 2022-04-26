@@ -141,12 +141,12 @@ private extension String {
     // Localizes the weight and shipping dimensions
     //
     func localizedNumber() -> String? {
-        NumberFormatter.localizedString(from: self, from: usLocale, to: .current)
+        NumberFormatter.localizedString(using: self, from: usLocale, to: .current)
     }
 
     // Formats the weight and shipping dimensions to the API preferred locale (US locale)
     //
     func formattedForAPI() -> String? {
-        NumberFormatter.localizedString(from: self, from: .current, to: usLocale)
+        NumberFormatter.localizedString(using: self, from: .current, to: usLocale)
     }
 }

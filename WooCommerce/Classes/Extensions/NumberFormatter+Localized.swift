@@ -32,7 +32,7 @@ extension NumberFormatter {
 
     /// Converts string value from the specified source locale to target locale
     ///
-    static func localizedString(from string: String,
+    static func localizedString(using string: String,
                                 from sourceLocale: Locale,
                                 to targetLocale: Locale) -> String? {
         let formatter = NumberFormatter()

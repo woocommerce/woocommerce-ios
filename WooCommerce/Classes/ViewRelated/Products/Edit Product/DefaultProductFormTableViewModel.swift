@@ -261,7 +261,7 @@ private extension DefaultProductFormTableViewModel {
         func localizedNumber(_ string: String) -> String? {
             // API uses US locale for weight and shipping dimensions
             let usLocale = Locale(identifier: "en_US")
-            return NumberFormatter.localizedString(from: string, from: usLocale, to: .current)
+            return NumberFormatter.localizedString(using: string, from: usLocale, to: .current)
         }
 
         let icon = UIImage.shippingImage

@@ -30,6 +30,12 @@ final class BillingInformationViewController: UIViewController {
         }
     }()
 
+    /// EntityListener: Update / Deletion Notifications.
+    ///
+    private lazy var entityListener: EntityListener<Order> = {
+        return EntityListener(storageManager: ServiceLocator.storageManager, readOnlyEntity: order)
+    }()
+
     /// Designated Initializer
     ///
     init(order: Order, editingEnabled: Bool) {
@@ -51,6 +57,7 @@ final class BillingInformationViewController: UIViewController {
         setupMainView()
         registerTableViewCells()
         registerTableViewHeaderFooters()
+        configureEntityListener()
         reloadSections()
     }
 
@@ -99,6 +106,20 @@ private extension BillingInformationViewController {
 
         for kind in headersAndFooters {
             tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
+        }
+    }
+
+    /// Setup: EntityListener
+    ///
+    func configureEntityListener() {
+        entityListener.onUpsert = { [weak self] updatedOrder in
+            guard let self = self else {
+                return
+            }
+            self.order = updatedOrder
+            self.editBillingAddressViewModel.update(order: updatedOrder)
+            self.reloadSections()
+            self.tableView.reloadData()
         }
     }
 

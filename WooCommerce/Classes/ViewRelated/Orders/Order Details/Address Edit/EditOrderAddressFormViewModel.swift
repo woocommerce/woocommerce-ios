@@ -12,7 +12,7 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
 
     /// Order to be edited.
     ///
-    private let order: Yosemite.Order
+    private var order: Yosemite.Order
 
     /// Type of order address to edit
     ///
@@ -103,6 +103,10 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
 
     var differentAddressToggleTitle: String? {
         nil
+    }
+
+    func update(order: Order) {
+        self.order = order
     }
 
     /// Update the address remotely and invoke a completion block when finished

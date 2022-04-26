@@ -159,7 +159,7 @@ private extension EditOrderAddressFormViewModel {
     ///   - onFinish: Callback to notify when the action has finished.
     ///
     func handleOrderUpdate(_ modifiedOrder: Yosemite.Order, fields: [OrderUpdateField], updatedAddress: Address, onFinish: ((Bool) -> Void)? = nil) {
-        let updateAction = OrderAction.updateOrder(siteID: order.siteID, order: modifiedOrder, fields: fields) { [weak self] result in
+        let updateAction = makeUpdateAction(order: modifiedOrder, fields: fields) { [weak self] result in
             guard let self = self else { return }
 
             self.performingNetworkRequest.send(false)

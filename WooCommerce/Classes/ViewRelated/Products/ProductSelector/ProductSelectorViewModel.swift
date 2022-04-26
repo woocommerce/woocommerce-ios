@@ -47,11 +47,6 @@ final class ProductSelectorViewModel: ObservableObject {
         }
     }
 
-    /// Title of the Select All button. If all products are selected,
-    /// this should be updated to Unselect all.
-    ///
-    @Published var selectAllButtonTitle: String = Localization.selectAllButton
-
     /// Title of the filter button, should be updated with number of active filters.
     ///
     @Published var filterButtonTitle: String = Localization.filterButtonWithoutActiveFilters
@@ -222,10 +217,6 @@ final class ProductSelectorViewModel: ObservableObject {
         selectedProductVariationIDs.removeAll(where: { variableProduct.variations.contains($0) })
         // append new selected IDs
         selectedProductVariationIDs.append(contentsOf: selectedVariationIDs)
-        // update product rows
-        productRows = generateProductRows(products: products,
-                                          selectedProductIDs: selectedProductIDs,
-                                          selectedProductVariationIDs: selectedProductVariationIDs)
     }
 
     /// Triggers completion closure when the multiple selection completes.
@@ -233,6 +224,13 @@ final class ProductSelectorViewModel: ObservableObject {
     func completeMultipleSelection() {
         let allIDs = selectedProductIDs + selectedProductVariationIDs
         onMultipleSelectionCompleted?(allIDs)
+    }
+
+    /// Unselect all items.
+    ///
+    func clearSelection() {
+        selectedProductIDs = []
+        selectedProductVariationIDs = []
     }
 }
 
@@ -447,13 +445,14 @@ private extension ProductSelectorViewModel {
     /// Observes changes in selections to update product rows
     ///
     func observeSelections() {
-        $products.combineLatest($selectedProductIDs) { [weak self] products, selectedProductIDs -> [ProductRowViewModel] in
+        $products.combineLatest($selectedProductIDs, $selectedProductVariationIDs) {
+            [weak self] products, selectedProductIDs, selectedVariationIDs -> [ProductRowViewModel] in
             guard let self = self else {
                 return []
             }
             return self.generateProductRows(products: products,
                                             selectedProductIDs: selectedProductIDs,
-                                            selectedProductVariationIDs: self.selectedProductVariationIDs)
+                                            selectedProductVariationIDs: selectedVariationIDs)
         }.assign(to: &$productRows)
     }
 
@@ -531,8 +530,6 @@ private extension ProductSelectorViewModel {
         static let searchErrorMessage = NSLocalizedString("There was an error searching products",
                                                           comment: "Notice displayed when searching the list of products fails")
         static let errorActionTitle = NSLocalizedString("Retry", comment: "Retry action for an error notice")
-        static let selectAllButton = NSLocalizedString("Select All", comment: "Title of the button to select all products on the Select Product screen")
-        static let unSelectAllButton = NSLocalizedString("Unselect All", comment: "Title of the Button to unselect all products on the Select Product screen")
         static let filterButtonWithoutActiveFilters = NSLocalizedString(
             "Filter",
             comment: "Title of the button to select all products on the Select Product screen"

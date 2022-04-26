@@ -110,7 +110,6 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
 
         let updatedAddress = fields.toAddress()
         let orderFields: [OrderUpdateField]
-
         let modifiedOrder: Yosemite.Order
         switch type {
         case .shipping where fields.useAsToggle:
@@ -129,7 +128,33 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
             orderFields = [.billingAddress]
         }
 
-        let action = OrderAction.updateOrder(siteID: order.siteID, order: modifiedOrder, fields: orderFields) { [weak self] result in
+        if areOptimisticUpdatesEnabled {
+            handleOrderUpdate(modifiedOrder, fields: orderFields, updatedAddress: updatedAddress)
+            onFinish(true)
+        } else {
+            handleOrderUpdate(modifiedOrder, fields: orderFields, updatedAddress: updatedAddress, onFinish: onFinish)
+        }
+    }
+
+    override func trackOnLoad() {
+        analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowStarted(subject: self.analyticsFlowType()))
+    }
+
+    func userDidCancelFlow() {
+        analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCanceled(subject: self.analyticsFlowType()))
+    }
+}
+
+private extension EditOrderAddressFormViewModel {
+    /// Handles the action to update the order.
+    /// - Parameters:
+    ///   - modifiedOrder: Given modified order to be updated.
+    ///   - fields: The fields that should be updated.
+    ///   - updatedAddress: The address that has been updated.
+    ///   - onFinish: Callback to notify when the action has finished.
+    ///
+    func handleOrderUpdate(_ modifiedOrder: Yosemite.Order, fields: [OrderUpdateField], updatedAddress: Address, onFinish: ((Bool) -> Void)? = nil) {
+        let updateAction = OrderAction.updateOrder(siteID: order.siteID, order: modifiedOrder, fields: fields) { [weak self] result in
             guard let self = self else { return }
 
             self.performingNetworkRequest.send(false)
@@ -147,23 +172,22 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
                 self.displayUpdateErrorNotice { }
                 self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowFailed(subject: self.analyticsFlowType()))
             }
-            onFinish(result.isSuccess)
+            onFinish?(result.isSuccess)
         }
 
         performingNetworkRequest.send(true)
-        stores.dispatch(action)
+        stores.dispatch(updateAction)
     }
 
-    override func trackOnLoad() {
-        analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowStarted(subject: self.analyticsFlowType()))
+    /// Returns the update action based on the value of the `updateOrderOptimistically` feature flag.
+    ///
+    func makeUpdateAction(order: Order, fields: [OrderUpdateField], onCompletion: @escaping (Result<Order, Error>) -> Void) -> Action {
+        if areOptimisticUpdatesEnabled {
+            return OrderAction.updateOrderOptimistically(siteID: order.siteID, order: order, fields: fields, onCompletion: onCompletion)
+        } else {
+            return OrderAction.updateOrder(siteID: order.siteID, order: order, fields: fields, onCompletion: onCompletion)
+        }
     }
-
-    func userDidCancelFlow() {
-        analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCanceled(subject: self.analyticsFlowType()))
-    }
-}
-
-private extension EditOrderAddressFormViewModel {
 
     /// Returns the correct analytics subject for the current address form type.
     ///

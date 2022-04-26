@@ -666,7 +666,7 @@ private extension ProductVariationsViewController {
             break
         case .syncing(let pageNumber):
             if pageNumber == syncingCoordinator.pageFirstIndex {
-                displayGhostContent()
+                displayGhostContent(over: tableView)
                 hideMoreActionsNavigationBarButton()
             } else {
                 ensureFooterSpinnerIsStarted()

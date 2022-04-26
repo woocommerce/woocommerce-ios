@@ -169,7 +169,9 @@ private extension EditOrderAddressFormViewModel {
                 if self.type == .billing, updatedAddress.hasEmailAddress == false {
                     DDLogError("⛔️ Email is nil in address. It won't work in WC < 5.9.0 (https://git.io/J68Gl)")
                 }
-                self.displayUpdateErrorNotice { }
+                self.displayUpdateErrorNotice(modifiedOrder: modifiedOrder,
+                                              fields: fields,
+                                              updatedAddress: updatedAddress)
                 self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowFailed(subject: self.analyticsFlowType()))
             }
             onFinish?(result.isSuccess)
@@ -186,6 +188,14 @@ private extension EditOrderAddressFormViewModel {
             return OrderAction.updateOrderOptimistically(siteID: order.siteID, order: order, fields: fields, onCompletion: onCompletion)
         } else {
             return OrderAction.updateOrder(siteID: order.siteID, order: order, fields: fields, onCompletion: onCompletion)
+        }
+    }
+
+    /// Enqueues the `Unable to Update Order` Notice.
+    ///
+    func displayUpdateErrorNotice(modifiedOrder: Yosemite.Order, fields: [OrderUpdateField], updatedAddress: Address) {
+        displayRetriableUpdateErrorNotice { [weak self] in
+            self?.handleOrderUpdate(modifiedOrder, fields: fields, updatedAddress: updatedAddress)
         }
     }
 

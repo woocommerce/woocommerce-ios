@@ -426,7 +426,7 @@ open class AddressFormViewModel: ObservableObject {
 
     /// Enqueues the `Unable to Update Address` Notice.
     ///
-    func displayUpdateErrorNotice(retryAction: @escaping () -> Void) {
+    func displayRetriableUpdateErrorNotice(retryAction: @escaping () -> Void) {
         let noticeIdentifier = UUID().uuidString
         let errorNotice = NoticeFactory.createErrorNotice(from: .unableToUpdateAddress,
                                                           info: NoticeNotificationInfo(identifier: noticeIdentifier),

@@ -5,6 +5,7 @@
 
 - [*] Product name field in product form - Remove scroll behaviour and increase field height to fully display long product names. [https://github.com/woocommerce/woocommerce-ios/pull/6681]
 - [*] Filter toolbar in Products list tab - Filter toolbar is pinned outside of the products list. [https://github.com/woocommerce/woocommerce-ios/pull/6698]
+- [*] Shipping settings - Shipping information like weight and shipping package dimensions, now use comma as decimal seprator separator, based on device region setting. Also, decimal point information is no longer lost upon saving a product, while using comma as a decimal separator. [https://github.com/woocommerce/woocommerce-ios/pull/6721]
 
 9.0
 -----

@@ -45,6 +45,8 @@ final class ProductShippingSettingsViewModel: ProductShippingSettingsViewModelOu
     let sections: [Section]
     let product: ProductFormDataModel
 
+    private let locale: Locale
+
     // Editable data
     //
     private(set) var weight: String?
@@ -58,12 +60,14 @@ final class ProductShippingSettingsViewModel: ProductShippingSettingsViewModelOu
     private(set) var shippingClass: ProductShippingClass?
     private var originalShippingClass: ProductShippingClass?
 
-    init(product: ProductFormDataModel) {
+    init(product: ProductFormDataModel,
+         locale: Locale = .current) {
         self.product = product
-        weight = product.weight?.localizedNumber()
-        length = product.dimensions.length.localizedNumber()
-        width = product.dimensions.width.localizedNumber()
-        height = product.dimensions.height.localizedNumber()
+        self.locale = locale
+        weight = product.weight?.localized(toLocale: locale)
+        length = product.dimensions.length.localized(toLocale: locale)
+        width = product.dimensions.width.localized(toLocale: locale)
+        height = product.dimensions.height.localized(toLocale: locale)
         shippingClassSlug = product.shippingClass
         shippingClassID = product.shippingClassID
 
@@ -113,10 +117,10 @@ extension ProductShippingSettingsViewModel: ProductShippingSettingsActionHandler
     }
 
     func completeUpdating(onCompletion: ProductShippingSettingsViewController.Completion) {
-        let dimensions = ProductDimensions(length: length?.formattedForAPI() ?? "",
-                                           width: width?.formattedForAPI() ?? "",
-                                           height: height?.formattedForAPI() ?? "")
-        onCompletion(weight?.formattedForAPI(),
+        let dimensions = ProductDimensions(length: length?.formattedForAPI(fromLocale: locale) ?? "",
+                                           width: width?.formattedForAPI(fromLocale: locale) ?? "",
+                                           height: height?.formattedForAPI(fromLocale: locale) ?? "")
+        onCompletion(weight?.formattedForAPI(fromLocale: locale),
                      dimensions,
                      shippingClassSlug,
                      shippingClassID,
@@ -140,13 +144,13 @@ private extension String {
 
     // Localizes the weight and shipping dimensions
     //
-    func localizedNumber() -> String? {
-        NumberFormatter.localizedString(using: self, from: usLocale, to: .current)
+    func localized(toLocale: Locale) -> String {
+        NumberFormatter.localizedString(using: self, from: usLocale, to: toLocale) ?? self
     }
 
     // Formats the weight and shipping dimensions to the API preferred locale (US locale)
     //
-    func formattedForAPI() -> String? {
-        NumberFormatter.localizedString(using: self, from: .current, to: usLocale)
+    func formattedForAPI(fromLocale: Locale) -> String? {
+        NumberFormatter.localizedString(using: self, from: fromLocale, to: usLocale)
     }
 }

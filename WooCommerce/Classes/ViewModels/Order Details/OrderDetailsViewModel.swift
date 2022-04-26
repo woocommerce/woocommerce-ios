@@ -87,6 +87,10 @@ final class OrderDetailsViewModel {
         return EditCustomerNoteViewModel(order: order)
     }()
 
+    private(set) lazy var editShippingAddressViewModel: EditOrderAddressFormViewModel = {
+        return EditOrderAddressFormViewModel(order: order, type: .shipping)
+    }()
+
     /// Order Notes
     ///
     var orderNotes: [OrderNote] = [] {

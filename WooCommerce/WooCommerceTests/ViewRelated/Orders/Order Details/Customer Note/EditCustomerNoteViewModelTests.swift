@@ -47,7 +47,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
                     XCTFail("Unsupported Action")
                 }
             }
-            viewModel.handleButtonDoneTap { _ in }
+            viewModel.updateNote { _ in }
         }
 
         // Then
@@ -71,7 +71,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
 
         // When
         let obtainedResult = waitFor { promise in
-            viewModel.handleButtonDoneTap(onCompletion: { success in
+            viewModel.updateNote(onCompletion: { success in
                 promise(success)
             })
         }
@@ -96,7 +96,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
 
         // When
         let obtainedResult = waitFor { promise in
-            viewModel.handleButtonDoneTap(onCompletion: { success in
+            viewModel.updateNote(onCompletion: { success in
                 promise(success)
             })
         }
@@ -121,7 +121,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
 
         // When
         let obtainedResult = waitFor { promise in
-            viewModel.handleButtonDoneTap(onCompletion: { success in
+            viewModel.updateNote(onCompletion: { success in
                 promise(success)
             })
         }
@@ -149,7 +149,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         }
 
         // When
-        viewModel.handleButtonDoneTap(onCompletion: { _ in })
+        viewModel.updateNote(onCompletion: { _ in })
 
         // Then
         assertEmpty(noticePresenter.queuedNotices)
@@ -174,7 +174,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         }
 
         // When
-        viewModel.handleButtonDoneTap(onCompletion: { _ in })
+        viewModel.updateNote(onCompletion: { _ in })
 
         // Then
         assertEqual(.success, noticePresenter.queuedNotices.first?.feedbackType)
@@ -200,7 +200,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
 
         // When
         _ = waitFor { promise in
-            viewModel.handleButtonDoneTap(onCompletion: { _ in
+            viewModel.updateNote(onCompletion: { _ in
                 promise(true)
             })
         }
@@ -231,7 +231,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
 
         // When
         _ = waitFor { promise in
-            viewModel.handleButtonDoneTap(onCompletion: { _ in
+            viewModel.updateNote(onCompletion: { _ in
                 promise(true)
             })
         }
@@ -257,7 +257,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
 
         // When
         let obtainedResult = waitFor { promise in
-            viewModel.handleButtonDoneTap(onCompletion: { success in
+            viewModel.updateNote(onCompletion: { success in
                 promise(success)
             })
         }
@@ -283,7 +283,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
 
         // When
         _ = waitFor { promise in
-            viewModel.handleButtonDoneTap(onCompletion: { _ in
+            viewModel.updateNote(onCompletion: { _ in
                 promise(true)
             })
         }
@@ -310,7 +310,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
 
         // When
         _ = waitFor { promise in
-            viewModel.handleButtonDoneTap(onCompletion: { _ in
+            viewModel.updateNote(onCompletion: { _ in
                 promise(true)
             })
         }

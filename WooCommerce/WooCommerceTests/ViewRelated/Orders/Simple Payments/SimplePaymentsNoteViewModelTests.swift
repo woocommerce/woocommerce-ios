@@ -50,7 +50,7 @@ final class SimplePaymentsNoteViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: true))
 
         // When
-        viewModel.handleButtonDoneTap(onCompletion: { _ in })
+        viewModel.updateNote(onCompletion: { _ in })
 
         // Then
         XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))

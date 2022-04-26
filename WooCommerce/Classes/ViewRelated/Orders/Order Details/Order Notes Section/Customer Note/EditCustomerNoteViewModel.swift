@@ -68,7 +68,7 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
 
     /// Update the note remotely and invoke a completion block when finished
     ///
-    func handleButtonDoneTap(onCompletion: @escaping (Bool) -> Void) {
+    func updateNote(onCompletion: @escaping (Bool) -> Void) {
         if areOptimisticUpdatesEnabled {
             handleOrderUpdate(withNote: newNote)
             onCompletion(true)

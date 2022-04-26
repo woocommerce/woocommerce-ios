@@ -13,7 +13,7 @@ final class SimplePaymentsNoteViewModel: EditCustomerNoteViewModelProtocol {
 
     /// Commit the original note.
     ///
-    func handleButtonDoneTap(onCompletion: @escaping (Bool) -> Void) {
+    func updateNote(onCompletion: @escaping (Bool) -> Void) {
         originalNote = newNote
         onCompletion(true)
 

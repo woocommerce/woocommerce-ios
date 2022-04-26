@@ -76,7 +76,7 @@ struct EditCustomerNote<ViewModel: EditCustomerNoteViewModelProtocol>: View {
         switch viewModel.navigationTrailingItem {
         case .done(let enabled):
             Button(Localization.done) {
-                viewModel.handleButtonDoneTap { success in
+                viewModel.updateNote { success in
                     if success {
                         dismiss()
                     }

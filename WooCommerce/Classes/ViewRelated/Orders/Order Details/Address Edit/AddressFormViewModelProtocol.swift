@@ -471,9 +471,10 @@ private extension AddressFormViewModel {
     ///
     func bindNavigationTrailingItemPublisher() {
         Publishers.CombineLatest4($fields, $secondaryFields, $showDifferentAddressForm, performingNetworkRequest)
-            .map { [originalAddress, secondaryOriginalAddress]
+            .map { [weak self, originalAddress, secondaryOriginalAddress]
                 fields, secondaryFields, showDifferentAddressForm, performingNetworkRequest -> AddressFormNavigationItem in
-                guard !performingNetworkRequest else {
+                let optimisticUpdatesEnabled = self?.areOptimisticUpdatesEnabled ?? false
+                guard optimisticUpdatesEnabled || !performingNetworkRequest else {
                     return .loading
                 }
 

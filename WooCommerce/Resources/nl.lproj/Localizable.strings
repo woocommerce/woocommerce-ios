@@ -3666,7 +3666,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "See the benefits" = "Bekijk de voordelen";
 
 /* Title of the action button on the Select Products screenReads like: Select 1 Product */
-"Select %1$@" = "%$1@ selecteren";
+"Select %1$@" = "%1$@ selecteren";
 
 /* Button to select all products on the product list selector
    Select all button title in the issue refund screen */

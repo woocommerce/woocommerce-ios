@@ -113,10 +113,10 @@ extension ProductShippingSettingsViewModel: ProductShippingSettingsActionHandler
     }
 
     func completeUpdating(onCompletion: ProductShippingSettingsViewController.Completion) {
-        let dimensions = ProductDimensions(length: length ?? "",
-                                           width: width ?? "",
-                                           height: height ?? "")
-        onCompletion(weight,
+        let dimensions = ProductDimensions(length: length?.formattedForAPI() ?? "",
+                                           width: width?.formattedForAPI() ?? "",
+                                           height: height?.formattedForAPI() ?? "")
+        onCompletion(weight?.formattedForAPI(),
                      dimensions,
                      shippingClassSlug,
                      shippingClassID,

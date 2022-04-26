@@ -24,6 +24,9 @@ extension Hardware.PaymentIntentParameters {
         let returnValue = StripeTerminal.PaymentIntentParameters(amount: amountForStripe, currency: currency, paymentMethodTypes: paymentMethodTypes)
         returnValue.stripeDescription = receiptDescription
 
+        let applicationFeeForStripe = NSDecimalNumber(decimal: amountInSmallestUnit * 0.1)
+        returnValue.applicationFeeAmount = applicationFeeForStripe
+
         /// Stripe allows the credit card statement descriptor to be nil, but not an empty string
         /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPPaymentIntentParameters.html#/c:objc(cs)SCPPaymentIntentParameters(py)statementDescriptor
         returnValue.statementDescriptor = nil

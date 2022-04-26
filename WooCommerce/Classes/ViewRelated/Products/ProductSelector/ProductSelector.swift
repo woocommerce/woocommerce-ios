@@ -23,9 +23,12 @@ struct ProductSelector: View {
     /// Title for the multi-selection button
     ///
     private var doneButtonTitle: String {
-        String.pluralize(viewModel.totalSelectedItemsCount,
-                         singular: configuration.doneButtonTitleSingularFormat,
-                         plural: configuration.doneButtonTitlePluralFormat)
+        guard viewModel.totalSelectedItemsCount > 0 else {
+            return Localization.doneButton
+        }
+        return String.pluralize(viewModel.totalSelectedItemsCount,
+                                singular: configuration.doneButtonTitleSingularFormat,
+                                plural: configuration.doneButtonTitlePluralFormat)
     }
 
     var body: some View {
@@ -34,12 +37,12 @@ struct ProductSelector: View {
                 SearchHeader(filterText: $viewModel.searchTerm, filterPlaceholder: Localization.searchPlaceholder)
                     .padding(.horizontal, insets: safeAreaInsets)
                 HStack {
-                    Button(viewModel.selectAllButtonTitle) {
-                        // TODO: handle selecting all
+                    Button(Localization.clearSelection) {
+                        viewModel.clearSelection()
                     }
                     .buttonStyle(LinkButtonStyle())
                     .fixedSize()
-                    .renderedIf(configuration.multipleSelectionsEnabled && viewModel.syncStatus == .results)
+                    .renderedIf(viewModel.totalSelectedItemsCount > 0 && viewModel.syncStatus == .results)
 
                     Spacer()
 
@@ -63,7 +66,7 @@ struct ProductSelector: View {
                                     .padding(.leading, Constants.defaultPadding)
                             }
                         }
-                        if viewModel.totalSelectedItemsCount > 0 {
+                        if configuration.multipleSelectionsEnabled {
                             Button(doneButtonTitle) {
                                 viewModel.completeMultipleSelection()
                                 isPresented.toggle()
@@ -181,6 +184,8 @@ private extension ProductSelector {
         static let searchPlaceholder = NSLocalizedString("Search Products", comment: "Placeholder on the search field to search for a specific product")
         static let loadingRowsAccessibilityLabel = NSLocalizedString("Loading products",
                                                                      comment: "Accessibility label for placeholder rows while products are loading")
+        static let clearSelection = NSLocalizedString("Clear selection", comment: "Button to clear selection on the Select Products screen")
+        static let doneButton = NSLocalizedString("Done", comment: "Button to submit the product selector without any product selected.")
     }
 }
 

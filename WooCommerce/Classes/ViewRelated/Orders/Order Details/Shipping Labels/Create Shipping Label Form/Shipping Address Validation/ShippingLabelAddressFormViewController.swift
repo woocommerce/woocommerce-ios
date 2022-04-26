@@ -232,6 +232,7 @@ private extension ShippingLabelAddressFormViewController {
                 self.onCompletion(self.viewModel.address)
                 self.navigationController?.popViewController(animated: true)
             case .failure:
+                self.displayErrorAlert(title: "title", message: "error")
                 break
             }
         }
@@ -246,9 +247,23 @@ private extension ShippingLabelAddressFormViewController {
                 self.onCompletion(self.viewModel.address)
                 self.navigationController?.popViewController(animated: true)
             case .failure:
+                self.displayErrorAlert(title: "title", message: "error")
                 break
             }
         }
+    }
+
+    func displayErrorAlert(title: String?, message: String?) {
+        let alert = UIAlertController(title: title,
+                message: message,
+                preferredStyle: .alert)
+        let cancel = UIAlertAction(title: NSLocalizedString(
+                "OK",
+                comment: "Dismiss button on the alert when there is an error updating the product"
+        ), style: .cancel, handler: nil)
+        alert.addAction(cancel)
+
+        present(alert, animated: true, completion: nil)
     }
 }
 

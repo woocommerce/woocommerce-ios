@@ -22,13 +22,13 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="biP-ZS-hq2">
-                    <rect key="frame" x="0.0" y="44" width="414" height="80"/>
+                    <rect key="frame" x="0.0" y="44" width="414" height="62"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="80" id="kBA-wC-wkm"/>
+                        <constraint firstAttribute="height" constant="62" id="kBA-wC-wkm"/>
                     </constraints>
                 </stackView>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="fCF-yK-YZD">
-                    <rect key="frame" x="0.0" y="124" width="414" height="772"/>
+                    <rect key="frame" x="0.0" y="106" width="414" height="790"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                 </tableView>
             </subviews>

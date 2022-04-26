@@ -30,16 +30,9 @@ final class ProductVariationsViewController: UIViewController, GhostableViewCont
         return refreshControl
     }()
 
-    /// Stack view that is contained in the table view header.
+    /// Stack view containing the generate new variation button.
     ///
-//    private lazy var topStackView: UIStackView = {
-//        let stackView = UIStackView(arrangedSubviews: [])
-//        stackView.axis = .vertical
-//        stackView.translatesAutoresizingMaskIntoConstraints = false
-//        return stackView
-//    }()
-
-    @IBOutlet weak var topStackView: UIStackView!
+    @IBOutlet private weak var topStackView: UIStackView!
 
     /// Footer "Loading More" Spinner.
     ///
@@ -150,16 +143,10 @@ final class ProductVariationsViewController: UIViewController, GhostableViewCont
         configureTableView()
         configureSyncingCoordinator()
         registerTableViewCells()
-        configureHeaderContainerView()
+        configureTopStackView()
         updateEmptyState()
 
         syncingCoordinator.synchronizeFirstPage()
-    }
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-
-        tableView.updateHeaderHeight()
     }
 }
 
@@ -289,14 +276,10 @@ private extension ProductVariationsViewController {
     }
 }
 
-// MARK: - Table header view
+// MARK: - Top Stack View
 //
 private extension ProductVariationsViewController {
-    func configureHeaderContainerView() {
-        //let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
-       // headerContainer.addSubview(topStackView)
-       // headerContainer.pinSubviewToAllEdges(topStackView)
-
+    func configureTopStackView() {
         addTopButton(title: Localization.generateVariationAction,
                      insets: .init(top: 16, left: 16, bottom: 8, right: 16),
                      hasBottomBorder: true,

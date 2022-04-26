@@ -548,7 +548,7 @@ private extension AddressFormViewModel {
             }
             .assign(to: &$navigationTrailingItem)
     }
-    
+
     /// Determines whether the address form has pending changes, based on the navigation trailing item.
     ///
     func bindHasPendingChangesPublisher() {

@@ -154,6 +154,10 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
     }
 
     func userDidCancelFlow() {
+        if hasPendingChanges {
+            syncFieldsWithOrder()
+        }
+
         analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCanceled(subject: self.analyticsFlowType()))
     }
 }
@@ -173,7 +177,7 @@ private extension EditOrderAddressFormViewModel {
     func syncFieldsWithOrder() {
         syncFieldsWithAddress(currentOrderAddress ?? .empty)
     }
-    
+
     /// Handles the action to update the order.
     /// - Parameters:
     ///   - modifiedOrder: Given modified order to be updated.

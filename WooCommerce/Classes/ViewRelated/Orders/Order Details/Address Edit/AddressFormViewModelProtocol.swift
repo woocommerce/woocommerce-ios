@@ -278,13 +278,10 @@ open class AddressFormViewModel: ObservableObject {
             self.bindNavigationTrailingItemPublisher()
             self.bindHasPendingChangesPublisher()
 
-            self.trackOnLoad()
-        }.store(in: &subscriptions)
-
-        onLoadTrigger.sink { [weak self] in
-            guard let self = self else { return }
             self.fetchStoredCountriesAndTriggerSyncIfNeeded()
             self.refreshCountryAndStateObjects()
+
+            self.trackOnLoad()
         }.store(in: &subscriptions)
     }
 

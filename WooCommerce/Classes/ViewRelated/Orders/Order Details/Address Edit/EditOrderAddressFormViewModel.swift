@@ -136,7 +136,7 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
             switch result {
             case .success(let updatedOrder):
                 self.onOrderUpdate?(updatedOrder)
-                self.notice = AddressFormViewModel.NoticeFactory.createSuccessNotice()
+                self.displayAddressUpdatedNoticeIfNeeded()
                 self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCompleted(subject: self.analyticsFlowType()))
 
             case .failure(let error):

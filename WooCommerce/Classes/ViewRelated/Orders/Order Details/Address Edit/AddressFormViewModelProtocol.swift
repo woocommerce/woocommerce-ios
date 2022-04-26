@@ -245,13 +245,18 @@ open class AddressFormViewModel: ObservableObject {
     ///
     private let featureFlagService: FeatureFlagService
 
+    /// Presents an error notice in the tab bar context after the update operation fails.
+    ///
+    private let noticePresenter: NoticePresenter
+
     init(siteID: Int64,
          address: Address,
          secondaryAddress: Address? = nil,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         self.siteID = siteID
 
         self.originalAddress = address
@@ -264,6 +269,7 @@ open class AddressFormViewModel: ObservableObject {
         self.stores = stores
         self.analytics = analytics
         self.featureFlagService = featureFlagService
+        self.noticePresenter = noticePresenter
 
         // Listen only to the first emitted event.
         onLoadTrigger.first().sink { [weak self] in
@@ -405,6 +411,17 @@ open class AddressFormViewModel: ObservableObject {
         let primaryEmailIsValid = fields.email.isEmpty || EmailFormatValidator.validate(string: fields.email)
         let secondaryEmailIsValid = secondaryFields.email.isEmpty || EmailFormatValidator.validate(string: fields.email)
         return primaryEmailIsValid && secondaryEmailIsValid
+    }
+
+    /// Enqueues the success notice on successful updating only when
+    /// optimistic updates are not enabled.
+    ///
+    func displayAddressUpdatedNoticeIfNeeded() {
+        guard !areOptimisticUpdatesEnabled else {
+            return
+        }
+
+        notice = NoticeFactory.createSuccessNotice()
     }
 }
 

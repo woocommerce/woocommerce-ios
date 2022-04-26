@@ -32,12 +32,14 @@ final class ProductVariationsViewController: UIViewController, GhostableViewCont
 
     /// Stack view that is contained in the table view header.
     ///
-    private lazy var topStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [])
-        stackView.axis = .vertical
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }()
+//    private lazy var topStackView: UIStackView = {
+//        let stackView = UIStackView(arrangedSubviews: [])
+//        stackView.axis = .vertical
+//        stackView.translatesAutoresizingMaskIntoConstraints = false
+//        return stackView
+//    }()
+
+    @IBOutlet weak var topStackView: UIStackView!
 
     /// Footer "Loading More" Spinner.
     ///
@@ -291,17 +293,15 @@ private extension ProductVariationsViewController {
 //
 private extension ProductVariationsViewController {
     func configureHeaderContainerView() {
-        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
-        headerContainer.addSubview(topStackView)
-        headerContainer.pinSubviewToAllEdges(topStackView)
+        //let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
+       // headerContainer.addSubview(topStackView)
+       // headerContainer.pinSubviewToAllEdges(topStackView)
 
         addTopButton(title: Localization.generateVariationAction,
                      insets: .init(top: 16, left: 16, bottom: 8, right: 16),
                      hasBottomBorder: true,
                      actionSelector: #selector(addButtonTapped),
                      stylingHandler: { $0.applySecondaryButtonStyle() })
-
-        tableView.tableHeaderView = headerContainer
     }
 
     func addTopButton(title: String,

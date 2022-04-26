@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -12,6 +12,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProductVariationsViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
                 <outlet property="tableView" destination="fCF-yK-YZD" id="o1B-1P-QyV"/>
+                <outlet property="topStackView" destination="biP-ZS-hq2" id="uia-TO-BbT"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -20,8 +21,14 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="biP-ZS-hq2">
+                    <rect key="frame" x="0.0" y="44" width="414" height="80"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="80" id="kBA-wC-wkm"/>
+                    </constraints>
+                </stackView>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="fCF-yK-YZD">
-                    <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                    <rect key="frame" x="0.0" y="124" width="414" height="772"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                 </tableView>
             </subviews>
@@ -29,11 +36,14 @@
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="fCF-yK-YZD" secondAttribute="trailing" id="9Tw-76-jV7"/>
-                <constraint firstItem="fCF-yK-YZD" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="LpE-Hf-Tza"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="biP-ZS-hq2" secondAttribute="trailing" id="aV2-Jv-BzG"/>
                 <constraint firstAttribute="bottom" secondItem="fCF-yK-YZD" secondAttribute="bottom" id="bPq-aC-chC"/>
+                <constraint firstItem="fCF-yK-YZD" firstAttribute="top" secondItem="biP-ZS-hq2" secondAttribute="bottom" id="eXo-De-RJc"/>
                 <constraint firstItem="fCF-yK-YZD" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="gfX-HE-oqD"/>
+                <constraint firstItem="biP-ZS-hq2" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="j9z-Fm-dbG"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="top" secondItem="biP-ZS-hq2" secondAttribute="top" id="meX-AK-TXb"/>
             </constraints>
-            <point key="canvasLocation" x="132" y="122"/>
+            <point key="canvasLocation" x="131.8840579710145" y="121.875"/>
         </view>
     </objects>
     <resources>

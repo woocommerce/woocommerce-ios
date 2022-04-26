@@ -22,13 +22,8 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
     ///
     private let type: AddressType
 
-    /// Order update callback
-    ///
-    private let onOrderUpdate: ((Yosemite.Order) -> Void)?
-
     init(order: Yosemite.Order,
          type: AddressType,
-         onOrderUpdate: ((Yosemite.Order) -> Void)? = nil,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
@@ -36,7 +31,6 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         self.order = order
         self.type = type
-        self.onOrderUpdate = onOrderUpdate
 
         let addressToEdit: Address?
         switch type {
@@ -191,8 +185,7 @@ private extension EditOrderAddressFormViewModel {
 
             self.performingNetworkRequest.send(false)
             switch result {
-            case .success(let updatedOrder):
-                self.onOrderUpdate?(updatedOrder)
+            case .success:
                 self.displayAddressUpdatedNoticeIfNeeded()
                 self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCompleted(subject: self.analyticsFlowType()))
 

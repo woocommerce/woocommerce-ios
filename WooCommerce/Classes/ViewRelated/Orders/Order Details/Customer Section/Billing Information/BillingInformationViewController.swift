@@ -23,11 +23,7 @@ final class BillingInformationViewController: UIViewController {
     let editingEnabled: Bool
 
     private(set) lazy var editBillingAddressViewModel: EditOrderAddressFormViewModel = {
-        return EditOrderAddressFormViewModel(order: order, type: .billing) { [weak self] updatedOrder in
-            self?.order = updatedOrder
-            self?.reloadSections()
-            self?.tableView.reloadData()
-        }
+        return EditOrderAddressFormViewModel(order: order, type: .billing)
     }()
 
     /// EntityListener: Update / Deletion Notifications.

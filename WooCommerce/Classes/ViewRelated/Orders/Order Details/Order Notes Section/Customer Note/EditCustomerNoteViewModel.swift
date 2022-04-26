@@ -134,19 +134,24 @@ private extension EditCustomerNoteViewModel {
         let modifiedOrder = order.copy(customerNote: customerNote)
 
         let updateAction = makeUpdateAction(order: modifiedOrder) { [weak self] result in
-            self?.performingNetworkRequest.send(false)
+            guard let self = self else {
+                onFinish?(result.isSuccess)
+                return
+            }
+
+            self.performingNetworkRequest.send(false)
 
             guard case let .failure(error) = result else {
-                self?.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCompleted(subject: .customerNote))
-                self?.displayCustomerNoteUpdatedNoticeIfNeeded()
+                self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCompleted(subject: .customerNote))
+                self.displayCustomerNoteUpdatedNoticeIfNeeded()
                 onFinish?(true)
                 return
             }
 
             DDLogError("⛔️ Order Update Failure: [\(orderID).customerNote = \(customerNote ?? "")]. Error: \(error)")
 
-            self?.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowFailed(subject: .customerNote))
-            self?.displayUpdateErrorNotice(customerNote: customerNote)
+            self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowFailed(subject: .customerNote))
+            self.displayUpdateErrorNotice(customerNote: customerNote)
             onFinish?(false)
         }
 

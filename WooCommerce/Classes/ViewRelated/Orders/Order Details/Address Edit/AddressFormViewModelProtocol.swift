@@ -2,6 +2,7 @@ import Combine
 import Yosemite
 import class WordPressShared.EmailFormatValidator
 import protocol Storage.StorageManagerType
+import Experiments
 
 /// Protocol to describe viewmodel of editable address
 ///
@@ -240,12 +241,17 @@ open class AddressFormViewModel: ObservableObject {
     ///
     private var subscriptions = Set<AnyCancellable>()
 
+    /// Service to check if a feature flag is enabled.
+    ///
+    private let featureFlagService: FeatureFlagService
+
     init(siteID: Int64,
          address: Address,
          secondaryAddress: Address? = nil,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
 
         self.originalAddress = address
@@ -257,6 +263,7 @@ open class AddressFormViewModel: ObservableObject {
         self.storageManager = storageManager
         self.stores = stores
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
 
         // Listen only to the first emitted event.
         onLoadTrigger.first().sink { [weak self] in

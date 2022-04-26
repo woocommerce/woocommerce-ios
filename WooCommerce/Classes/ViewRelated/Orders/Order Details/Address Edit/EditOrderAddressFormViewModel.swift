@@ -155,6 +155,21 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
 }
 
 private extension EditOrderAddressFormViewModel {
+    var currentOrderAddress: Address? {
+        switch type {
+        case .shipping:
+            return order.shippingAddress
+        case .billing:
+            return order.billingAddress
+        }
+    }
+
+    /// Updates fields with the current order address
+    ///
+    func syncFieldsWithOrder() {
+        syncFieldsWithAddress(currentOrderAddress ?? .empty)
+    }
+    
     /// Handles the action to update the order.
     /// - Parameters:
     ///   - modifiedOrder: Given modified order to be updated.

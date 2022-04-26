@@ -289,7 +289,7 @@ open class AddressFormViewModel: ObservableObject {
 
     /// Original `Address` model.
     ///
-    private let originalAddress: Address
+    private var originalAddress: Address
 
     /// Secondary original `Address` model.
     ///
@@ -439,6 +439,11 @@ open class AddressFormViewModel: ObservableObject {
             /// upon failure, so we have to use notice modifier for this modal.
             notice = errorNotice
         }
+    }
+
+    func syncFieldsWithAddress(_ address: Address) {
+        self.originalAddress = address
+        self.fields = .init(with: originalAddress)
     }
 }
 

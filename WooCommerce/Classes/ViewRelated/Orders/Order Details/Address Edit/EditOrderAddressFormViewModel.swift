@@ -1,6 +1,7 @@
 import Combine
 import Yosemite
 import protocol Storage.StorageManagerType
+import Experiments
 
 final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormViewModelProtocol {
 
@@ -26,7 +27,9 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
          onOrderUpdate: ((Yosemite.Order) -> Void)? = nil,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         self.order = order
         self.type = type
         self.onOrderUpdate = onOrderUpdate
@@ -43,7 +46,9 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
                    address: addressToEdit ?? .empty,
                    storageManager: storageManager,
                    stores: stores,
-                   analytics: analytics)
+                   analytics: analytics,
+                   featureFlagService: featureFlagService,
+                   noticePresenter: noticePresenter)
     }
 
     // MARK: - Protocol conformance

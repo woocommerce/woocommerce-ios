@@ -423,6 +423,22 @@ open class AddressFormViewModel: ObservableObject {
 
         notice = NoticeFactory.createSuccessNotice()
     }
+
+    /// Enqueues the `Unable to Update Address` Notice.
+    ///
+    func displayUpdateErrorNotice(retryAction: @escaping () -> Void) {
+        let noticeIdentifier = UUID().uuidString
+        let errorNotice = NoticeFactory.createErrorNotice(from: .unableToUpdateAddress,
+                                                          info: NoticeNotificationInfo(identifier: noticeIdentifier),
+                                                          retryAction: retryAction)
+        if areOptimisticUpdatesEnabled {
+            noticePresenter.enqueue(notice: errorNotice)
+        } else {
+            /// If optimistic updates are not enabled the modal is not dismissed
+            /// upon failure, so we have to use notice modifier for this modal.
+            notice = errorNotice
+        }
+    }
 }
 
 extension AddressFormViewModel {
@@ -457,6 +473,7 @@ extension AddressFormViewModel {
     enum Localization {
         static let invalidEmail = NSLocalizedString("Please enter a valid email address.", comment: "Notice text when the merchant enters an invalid email")
         static let success = NSLocalizedString("Address successfully updated.", comment: "Notice text after updating the shipping or billing address")
+        static let retry = NSLocalizedString("Retry", comment: "Retry Action")
     }
 
     /// Creates address form general notices.
@@ -464,8 +481,13 @@ extension AddressFormViewModel {
     enum NoticeFactory {
         /// Creates an error notice based on the provided edit address error.
         ///
-        static func createErrorNotice(from error: EditAddressError) -> Notice {
-            Notice(title: error.errorDescription ?? "", message: error.recoverySuggestion, feedbackType: .error)
+        static func createErrorNotice(from error: EditAddressError, info: NoticeNotificationInfo? = nil, retryAction: (() -> Void)? = nil) -> Notice {
+            Notice(title: error.errorDescription ?? "",
+                   message: error.recoverySuggestion,
+                   feedbackType: .error,
+                   notificationInfo: info,
+                   actionTitle: retryAction != nil ? Localization.retry: nil,
+                   actionHandler: retryAction)
         }
 
         /// Creates an error notice indicating that the email address is invalid.

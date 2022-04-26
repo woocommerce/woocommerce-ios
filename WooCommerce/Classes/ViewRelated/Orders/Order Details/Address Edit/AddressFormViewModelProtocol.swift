@@ -341,6 +341,12 @@ open class AddressFormViewModel: ObservableObject {
         secondaryFields.selectedCountry?.states.isNotEmpty ?? false
     }
 
+    /// Indicates whether the optimistic updates are enabled.
+    ///
+    var areOptimisticUpdatesEnabled: Bool {
+        featureFlagService.isFeatureFlagEnabled(.updateOrderOptimistically)
+    }
+
     /// Creates a view model to be used when selecting a country for primary fields
     ///
     func createCountryViewModel() -> CountrySelectorViewModel {

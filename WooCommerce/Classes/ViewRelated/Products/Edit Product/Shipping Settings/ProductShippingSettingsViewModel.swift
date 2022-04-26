@@ -131,3 +131,13 @@ extension ProductShippingSettingsViewModel: ProductShippingSettingsActionHandler
             || shippingClass != originalShippingClass
     }
 }
+
+private extension String {
+    // Localizes the weight and shipping dimensions
+    //
+    func localizedNumber() -> String? {
+        // API uses US locale for weight and shipping dimensions
+        let usLocale = Locale(identifier: "en_US")
+        return NumberFormatter.localizedString(from: self, from: usLocale, to: .current)
+    }
+}

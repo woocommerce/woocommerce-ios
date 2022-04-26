@@ -73,24 +73,12 @@ final class RefundConfirmationViewModel {
     func submit(rootViewController: UIViewController,
                 showInProgressUI: @escaping (() -> Void),
                 onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        // TODO: 6601 - remove Interac workaround when the API support is shipped.
-        let isInterac: Bool = {
-            switch details.charge?.paymentMethodDetails {
-            case .some(.interacPresent):
-                return true
-            default:
-                return false
-            }
-        }()
-        let automaticallyRefundsPayment = isInterac && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.canadaInPersonPayments) ?
-        false: gatewaySupportsAutomaticRefunds()
-
         // Creates refund object.
         let shippingLine = details.refundsShipping ? details.order.shippingLines.first : nil
         let fees = details.refundsFees ? details.order.fees : []
         let useCase = RefundCreationUseCase(amount: details.amount,
                                             reason: reasonForRefundCellViewModel.value,
-                                            automaticallyRefundsPayment: automaticallyRefundsPayment,
+                                            automaticallyRefundsPayment: gatewaySupportsAutomaticRefunds(),
                                             items: details.items,
                                             shippingLine: shippingLine,
                                             fees: fees,

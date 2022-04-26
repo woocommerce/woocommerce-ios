@@ -277,19 +277,24 @@ open class AddressFormViewModel: ObservableObject {
             self.bindSyncTrigger()
             self.bindNavigationTrailingItemPublisher()
             self.bindHasPendingChangesPublisher()
+        }
+        .store(in: &subscriptions)
 
+        onLoadTrigger.sink { [weak self] in
+            guard let self = self else { return }
             self.fetchStoredCountriesAndTriggerSyncIfNeeded()
             self.refreshCountryAndStateObjects()
 
             self.trackOnLoad()
-        }.store(in: &subscriptions)
+        }
+        .store(in: &subscriptions)
     }
 
     private let siteID: Int64
 
     /// Original `Address` model.
     ///
-    private let originalAddress: Address
+    private var originalAddress: Address
 
     /// Secondary original `Address` model.
     ///
@@ -440,6 +445,11 @@ open class AddressFormViewModel: ObservableObject {
             notice = errorNotice
         }
     }
+
+    func syncFieldsWithAddress(_ address: Address) {
+        self.originalAddress = address
+        self.fields = .init(with: originalAddress)
+    }
 }
 
 extension AddressFormViewModel {
@@ -518,9 +528,13 @@ private extension AddressFormViewModel {
     ///
     func bindNavigationTrailingItemPublisher() {
         Publishers.CombineLatest4($fields, $secondaryFields, $showDifferentAddressForm, performingNetworkRequest)
-            .map { [weak self, originalAddress, secondaryOriginalAddress]
+            .map { [weak self]
                 fields, secondaryFields, showDifferentAddressForm, performingNetworkRequest -> AddressFormNavigationItem in
-                let optimisticUpdatesEnabled = self?.areOptimisticUpdatesEnabled ?? false
+                guard let self = self else {
+                    return .done(enabled: false)
+                }
+
+                let optimisticUpdatesEnabled = self.areOptimisticUpdatesEnabled
                 guard optimisticUpdatesEnabled || !performingNetworkRequest else {
                     return .loading
                 }
@@ -529,13 +543,13 @@ private extension AddressFormViewModel {
                     return .done(enabled: true)
                 }
 
-                let addressesAreDifferentButSecondAddressSwitchIsDisabled = secondaryOriginalAddress != .empty &&
-                originalAddress != secondaryOriginalAddress &&
+                let addressesAreDifferentButSecondAddressSwitchIsDisabled = self.secondaryOriginalAddress != .empty &&
+                self.originalAddress != self.secondaryOriginalAddress &&
                 !showDifferentAddressForm
 
                 return .done(enabled: addressesAreDifferentButSecondAddressSwitchIsDisabled ||
-                             originalAddress != fields.toAddress() ||
-                             secondaryOriginalAddress != secondaryFields.toAddress())
+                             self.originalAddress != fields.toAddress() ||
+                             self.secondaryOriginalAddress != secondaryFields.toAddress())
             }
             .assign(to: &$navigationTrailingItem)
     }

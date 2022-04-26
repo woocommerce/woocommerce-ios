@@ -12,7 +12,11 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
 
     /// Order to be edited.
     ///
-    private let order: Yosemite.Order
+    private var order: Yosemite.Order {
+        didSet {
+            syncFieldsWithOrder()
+        }
+    }
 
     /// Type of order address to edit
     ///
@@ -105,6 +109,10 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
         nil
     }
 
+    func update(order: Order) {
+        self.order = order
+    }
+
     /// Update the address remotely and invoke a completion block when finished
     ///
     func saveAddress(onFinish: @escaping (Bool) -> Void) {
@@ -146,11 +154,30 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
     }
 
     func userDidCancelFlow() {
+        if hasPendingChanges {
+            syncFieldsWithOrder()
+        }
+
         analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCanceled(subject: self.analyticsFlowType()))
     }
 }
 
 private extension EditOrderAddressFormViewModel {
+    var currentOrderAddress: Address? {
+        switch type {
+        case .shipping:
+            return order.shippingAddress
+        case .billing:
+            return order.billingAddress
+        }
+    }
+
+    /// Updates fields with the current order address
+    /// 
+    func syncFieldsWithOrder() {
+        syncFieldsWithAddress(currentOrderAddress ?? .empty)
+    }
+
     /// Handles the action to update the order.
     /// - Parameters:
     ///   - modifiedOrder: Given modified order to be updated.

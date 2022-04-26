@@ -173,7 +173,7 @@ private extension EditOrderAddressFormViewModel {
     }
 
     /// Updates fields with the current order address
-    /// 
+    ///
     func syncFieldsWithOrder() {
         syncFieldsWithAddress(currentOrderAddress ?? .empty)
     }

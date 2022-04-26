@@ -287,8 +287,7 @@ open class AddressFormViewModel: ObservableObject {
 
             self.fetchStoredCountriesAndTriggerSyncIfNeeded()
             self.refreshCountryAndStateObjects()
-        }
-        .store(in: &subscriptions)
+        }.store(in: &subscriptions)
     }
 
     private let siteID: Int64

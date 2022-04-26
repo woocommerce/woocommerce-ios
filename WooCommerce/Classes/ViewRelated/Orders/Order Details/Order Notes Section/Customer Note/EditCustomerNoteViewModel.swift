@@ -48,11 +48,6 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
     ///
     private let featureFlagService: FeatureFlagService
 
-    /// Indicates the number of retries after the update operation fails. It used to
-    /// create a unique idenfier for the retry notices.
-    ///
-    private var numberOfRetries: Int = 0
-
     init(order: Order,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
@@ -94,10 +89,6 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
 
 // MARK: Helper Methods
 private extension EditCustomerNoteViewModel {
-    enum Constants {
-        static let retryNoticeIdentifierFormat = "update_customer_note_retry_number_%d"
-    }
-
     /// Calculates what navigation trailing item should be shown depending on our internal state.
     ///
     func bindNavigationTrailingItemPublisher() {
@@ -182,12 +173,11 @@ private extension EditCustomerNoteViewModel {
     /// Enqueues the `Unable to Change Customer Note of Order` Notice.
     ///
     func displayUpdateErrorNotice(customerNote: String?) {
-        let noticeIdentifier = String(format: Constants.retryNoticeIdentifierFormat, numberOfRetries)
+        let noticeIdentifier = UUID().uuidString
         let notice = Notice(title: Localization.error,
                             feedbackType: .error,
                             notificationInfo: NoticeNotificationInfo(identifier: noticeIdentifier),
                             actionTitle: Localization.retry) { [weak self] in
-            self?.numberOfRetries += 1
             self?.handleOrderUpdate(withNote: customerNote)
         }
 

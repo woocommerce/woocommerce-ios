@@ -256,6 +256,14 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func shippingSettingsRow(product: ProductFormDataModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
+        // Localizes the weight and shipping dimensions
+        //
+        func localizedNumber(_ string: String) -> String? {
+            // API uses US locale for weight and shipping dimensions
+            let usLocale = Locale(identifier: "en_US")
+            return NumberFormatter.localizedString(from: string, from: usLocale, to: .current)
+        }
+
         let icon = UIImage.shippingImage
         let title = Localization.shippingSettingsTitle
 
@@ -263,15 +271,19 @@ private extension DefaultProductFormTableViewModel {
 
         // Weight[unit]
         if let weight = product.weight, let weightUnit = ServiceLocator.shippingSettingsService.weightUnit, !weight.isEmpty {
+            let localizedWeight = localizedNumber(weight) ?? weight
             shippingDetails.append(String.localizedStringWithFormat(Localization.weightFormat,
-                                                                    weight, weightUnit))
+                                                                    localizedWeight, weightUnit))
         }
 
         // L x W x H[unit]
         let length = product.dimensions.length
         let width = product.dimensions.width
         let height = product.dimensions.height
-        let dimensions = [length, width, height].filter({ !$0.isEmpty })
+        let dimensions = [length, width, height]
+            .map({ localizedNumber($0) ?? $0 })
+            .filter({ !$0.isEmpty })
+
         if let dimensionUnit = ServiceLocator.shippingSettingsService.dimensionUnit,
             !dimensions.isEmpty {
             switch dimensions.count {

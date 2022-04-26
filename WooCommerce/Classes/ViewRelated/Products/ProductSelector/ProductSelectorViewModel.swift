@@ -130,8 +130,9 @@ final class ProductSelectorViewModel: ObservableObject {
     }
 
     /// IDs of selected products and variations from initializer.
+    /// This is mutable since we want to cancel the setup for any item that is unselected manually.
     ///
-    private let initialSelectedItems: [Int64]
+    private var initialSelectedItems: [Int64]
 
     /// Initializer for single selection
     ///
@@ -213,6 +214,8 @@ final class ProductSelectorViewModel: ObservableObject {
               variableProduct.variations.isNotEmpty else {
             return
         }
+        // remove items that exist in the initial list
+        initialSelectedItems.removeAll { selectedVariationIDs.contains($0) }
         // remove all previous selected variations
         selectedProductVariationIDs.removeAll(where: { variableProduct.variations.contains($0) })
         // append new selected IDs
@@ -229,6 +232,7 @@ final class ProductSelectorViewModel: ObservableObject {
     /// Unselect all items.
     ///
     func clearSelection() {
+        initialSelectedItems = []
         selectedProductIDs = []
         selectedProductVariationIDs = []
     }
@@ -420,6 +424,10 @@ private extension ProductSelectorViewModel {
     /// Toggles the selection of the specified product.
     ///
     func toggleSelection(productID: Int64) {
+        if initialSelectedItems.contains(productID) {
+            initialSelectedItems.removeAll(where: { $0 == productID })
+        }
+
         if selectedProductIDs.contains(productID) {
             selectedProductIDs.removeAll(where: { $0 == productID })
         } else {

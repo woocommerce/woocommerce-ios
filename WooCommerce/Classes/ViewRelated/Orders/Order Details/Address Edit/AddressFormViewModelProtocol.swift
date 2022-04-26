@@ -523,9 +523,13 @@ private extension AddressFormViewModel {
     ///
     func bindNavigationTrailingItemPublisher() {
         Publishers.CombineLatest4($fields, $secondaryFields, $showDifferentAddressForm, performingNetworkRequest)
-            .map { [weak self, originalAddress, secondaryOriginalAddress]
+            .map { [weak self]
                 fields, secondaryFields, showDifferentAddressForm, performingNetworkRequest -> AddressFormNavigationItem in
-                let optimisticUpdatesEnabled = self?.areOptimisticUpdatesEnabled ?? false
+                guard let self = self else {
+                    return .done(enabled: false)
+                }
+
+                let optimisticUpdatesEnabled = self.areOptimisticUpdatesEnabled
                 guard optimisticUpdatesEnabled || !performingNetworkRequest else {
                     return .loading
                 }
@@ -534,17 +538,17 @@ private extension AddressFormViewModel {
                     return .done(enabled: true)
                 }
 
-                let addressesAreDifferentButSecondAddressSwitchIsDisabled = secondaryOriginalAddress != .empty &&
-                originalAddress != secondaryOriginalAddress &&
+                let addressesAreDifferentButSecondAddressSwitchIsDisabled = self.secondaryOriginalAddress != .empty &&
+                self.originalAddress != self.secondaryOriginalAddress &&
                 !showDifferentAddressForm
 
                 return .done(enabled: addressesAreDifferentButSecondAddressSwitchIsDisabled ||
-                             originalAddress != fields.toAddress() ||
-                             secondaryOriginalAddress != secondaryFields.toAddress())
+                             self.originalAddress != fields.toAddress() ||
+                             self.secondaryOriginalAddress != secondaryFields.toAddress())
             }
             .assign(to: &$navigationTrailingItem)
     }
-
+    
     /// Determines whether the address form has pending changes, based on the navigation trailing item.
     ///
     func bindHasPendingChangesPublisher() {

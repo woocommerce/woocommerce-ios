@@ -60,10 +60,10 @@ final class ProductShippingSettingsViewModel: ProductShippingSettingsViewModelOu
 
     init(product: ProductFormDataModel) {
         self.product = product
-        weight = product.weight
-        length = product.dimensions.length
-        width = product.dimensions.width
-        height = product.dimensions.height
+        weight = product.weight?.localizedNumber()
+        length = product.dimensions.length.localizedNumber()
+        width = product.dimensions.width.localizedNumber()
+        height = product.dimensions.height.localizedNumber()
         shippingClassSlug = product.shippingClass
         shippingClassID = product.shippingClassID
 

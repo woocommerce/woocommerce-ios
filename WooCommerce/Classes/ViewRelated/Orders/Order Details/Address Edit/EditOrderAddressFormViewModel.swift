@@ -136,7 +136,7 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
             switch result {
             case .success(let updatedOrder):
                 self.onOrderUpdate?(updatedOrder)
-                self.notice = NoticeFactory.createSuccessNotice()
+                self.notice = AddressFormViewModel.NoticeFactory.createSuccessNotice()
                 self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCompleted(subject: self.analyticsFlowType()))
 
             case .failure(let error):
@@ -160,18 +160,6 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
 
     func userDidCancelFlow() {
         analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCanceled(subject: self.analyticsFlowType()))
-    }
-}
-
-extension EditOrderAddressFormViewModel {
-    /// Creates edit address form notices.
-    ///
-    enum NoticeFactory {
-        /// Creates a success notice for editing an address.
-        ///
-        static func createSuccessNotice() -> Notice {
-            .init(title: Localization.success, feedbackType: .success)
-        }
     }
 }
 
@@ -200,8 +188,6 @@ private extension EditOrderAddressFormViewModel {
                                                           comment: "Title for the Use as Billing Address switch in the Address form")
         static let useAsShippingToggle = NSLocalizedString("Use as Shipping Address",
                                                            comment: "Title for the Use as Shipping Address switch in the Address form")
-
-        static let success = NSLocalizedString("Address successfully updated.", comment: "Notice text after updating the shipping or billing address")
     }
 }
 

@@ -439,6 +439,7 @@ extension AddressFormViewModel {
 
     enum Localization {
         static let invalidEmail = NSLocalizedString("Please enter a valid email address.", comment: "Notice text when the merchant enters an invalid email")
+        static let success = NSLocalizedString("Address successfully updated.", comment: "Notice text after updating the shipping or billing address")
     }
 
     /// Creates address form general notices.
@@ -454,6 +455,12 @@ extension AddressFormViewModel {
         ///
         static func createInvalidEmailNotice() -> Notice {
             .init(title: Localization.invalidEmail, feedbackType: .error)
+        }
+
+        /// Creates a success notice for editing an address.
+        ///
+        static func createSuccessNotice() -> Notice {
+            .init(title: Localization.success, feedbackType: .success)
         }
     }
 }

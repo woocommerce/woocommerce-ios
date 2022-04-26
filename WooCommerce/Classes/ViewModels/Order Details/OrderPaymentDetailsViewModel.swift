@@ -137,7 +137,9 @@ final class OrderPaymentDetailsViewModel {
         )
 
         let template = NSLocalizedString("%@ via %@",
-                                         comment: "It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link.")
+                                         comment: "Label for a refund on an order, which reads \"<date> via <refund method type>\", " +
+                                         "e.g. \"25 Apr 2022 via WooCommerce In-Person Payments\". " +
+                                         "Shown in a cell with a title \"Refunded\" for context")
         let refundText = String.localizedStringWithFormat(template, dateCreated, refundType)
 
         return refundText

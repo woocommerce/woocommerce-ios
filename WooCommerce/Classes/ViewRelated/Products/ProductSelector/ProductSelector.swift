@@ -18,6 +18,14 @@ struct ProductSelector: View {
     ///
     @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
 
+    /// Title for the multi-selection button
+    ///
+    private var doneButtonTitle: String {
+        String.pluralize(viewModel.totalSelectedItemsCount,
+                         singular: configuration.doneButtonTitleSingularFormat,
+                         plural: configuration.doneButtonTitlePluralFormat)
+    }
+
     var body: some View {
         NavigationView {
             VStack {
@@ -25,17 +33,28 @@ struct ProductSelector: View {
                     .padding(.horizontal, insets: safeAreaInsets)
                 switch viewModel.syncStatus {
                 case .results:
-                    InfiniteScrollList(isLoading: viewModel.shouldShowScrollIndicator,
-                                       loadAction: viewModel.syncNextPage) {
-                        ForEach(viewModel.productRows) { rowViewModel in
-                            createProductRow(rowViewModel: rowViewModel)
-                                .padding(Constants.defaultPadding)
-                            Divider().frame(height: Constants.dividerHeight)
-                                .padding(.leading, Constants.defaultPadding)
+                    VStack(spacing: 0) {
+                        InfiniteScrollList(isLoading: viewModel.shouldShowScrollIndicator,
+                                           loadAction: viewModel.syncNextPage) {
+                            ForEach(viewModel.productRows) { rowViewModel in
+                                createProductRow(rowViewModel: rowViewModel)
+                                    .padding(Constants.defaultPadding)
+                                Divider().frame(height: Constants.dividerHeight)
+                                    .padding(.leading, Constants.defaultPadding)
+                            }
                         }
-                        .padding(.horizontal, insets: safeAreaInsets)
-                        .background(Color(.listForeground).ignoresSafeArea())
+                        if viewModel.totalSelectedItemsCount > 0 {
+                            Button(doneButtonTitle) {
+                                viewModel.completeMultipleSelection()
+                                isPresented.toggle()
+                            }
+                            .buttonStyle(PrimaryButtonStyle())
+                            .padding(Constants.defaultPadding)
+                        }
                     }
+                    .padding(.horizontal, insets: safeAreaInsets)
+                    .background(Color(.listForeground).ignoresSafeArea())
+
                 case .empty:
                     EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
                         .frame(maxHeight: .infinity)
@@ -76,9 +95,16 @@ struct ProductSelector: View {
     ///
     @ViewBuilder private func createProductRow(rowViewModel: ProductRowViewModel) -> some View {
         if let addVariationToOrderVM = viewModel.getVariationsViewModel(for: rowViewModel.productOrVariationID) {
-            LazyNavigationLink(destination: ProductVariationSelector(isPresented: $isPresented, viewModel: addVariationToOrderVM)) {
+            LazyNavigationLink(destination: ProductVariationSelector(
+                isPresented: $isPresented,
+                viewModel: addVariationToOrderVM,
+                multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
+                onMultipleSelections: { selectedIDs in
+                    viewModel.updateSelectedVariations(productID: rowViewModel.productOrVariationID, selectedVariationIDs: selectedIDs)
+                })) {
                 HStack {
-                    ProductRow(viewModel: rowViewModel)
+                    ProductRow(multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
+                               viewModel: rowViewModel)
                         .frame(maxWidth: .infinity, alignment: .leading)
 
                     DisclosureIndicator()
@@ -86,11 +112,14 @@ struct ProductSelector: View {
             }
             .accessibilityHint(configuration.variableProductRowAccessibilityHint)
         } else {
-            ProductRow(viewModel: rowViewModel)
+            ProductRow(multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
+                       viewModel: rowViewModel)
                 .accessibilityHint(configuration.productRowAccessibilityHint)
                 .onTapGesture {
                     viewModel.selectProduct(rowViewModel.productOrVariationID)
-                    isPresented.toggle()
+                    if !configuration.multipleSelectionsEnabled {
+                        isPresented.toggle()
+                    }
                 }
         }
     }
@@ -98,8 +127,11 @@ struct ProductSelector: View {
 
 extension ProductSelector {
     struct Configuration {
+        var multipleSelectionsEnabled: Bool = false
         var searchHeaderBackgroundColor: UIColor = .listForeground
         var prefersLargeTitle: Bool = true
+        var doneButtonTitleSingularFormat: String = ""
+        var doneButtonTitlePluralFormat: String = ""
         let title: String
         let cancelButtonTitle: String
         let productRowAccessibilityHint: String
@@ -126,6 +158,7 @@ struct AddProduct_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = ProductSelectorViewModel(siteID: 123)
         let configuration = ProductSelector.Configuration(
+            multipleSelectionsEnabled: true,
             title: "Add Product",
             cancelButtonTitle: "Close",
             productRowAccessibilityHint: "Add product to order",

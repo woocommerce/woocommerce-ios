@@ -67,6 +67,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.checkEmptyCircleImage)
     }
 
+    func test_check_circle_partial_image_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.checkPartialCircleImage)
+    }
+
     func testChevronImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.chevronImage)
     }

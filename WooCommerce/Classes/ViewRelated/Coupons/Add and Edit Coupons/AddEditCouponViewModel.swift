@@ -80,13 +80,11 @@ final class AddEditCouponViewModel: ObservableObject {
 
     /// View model for the product selector
     ///
-    lazy var productSelectorViewModel = {
-        ProductSelectorViewModel(siteID: siteID, storageManager: storageManager, stores: stores) { _ in
-            // TODO
-        } onVariationSelected: { _ in
-            // TODO
-        }
-    }()
+    var productSelectorViewModel: ProductSelectorViewModel {
+        ProductSelectorViewModel(siteID: siteID, selectedItemIDs: productOrVariationIDs, onMultipleSelectionCompleted: { [weak self] ids in
+            self?.productOrVariationIDs = ids
+        })
+    }
 
     private(set) var coupon: Coupon?
     private let stores: StoresManager
@@ -103,6 +101,7 @@ final class AddEditCouponViewModel: ObservableObject {
     @Published var expiryDateField: Date?
     @Published var freeShipping: Bool
     @Published var couponRestrictionsViewModel: CouponRestrictionsViewModel
+    @Published var productOrVariationIDs: [Int64]
 
     /// Init method for coupon creation
     ///
@@ -122,6 +121,7 @@ final class AddEditCouponViewModel: ObservableObject {
         expiryDateField = nil
         freeShipping = false
         couponRestrictionsViewModel = CouponRestrictionsViewModel(siteID: siteID)
+        productOrVariationIDs = []
     }
 
     /// Init method for coupon editing
@@ -141,6 +141,7 @@ final class AddEditCouponViewModel: ObservableObject {
         expiryDateField = existingCoupon.dateExpires
         freeShipping = existingCoupon.freeShipping
         couponRestrictionsViewModel = CouponRestrictionsViewModel(coupon: existingCoupon)
+        productOrVariationIDs = existingCoupon.productIds
         self.stores = stores
         self.storageManager = storageManager
     }

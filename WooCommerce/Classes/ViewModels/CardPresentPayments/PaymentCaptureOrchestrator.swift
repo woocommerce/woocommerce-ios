@@ -55,6 +55,7 @@ final class PaymentCaptureOrchestrator {
 
         paymentParameters(
                 order: order,
+                country: paymentGatewayAccount.country,
                 statementDescriptor: paymentGatewayAccount.statementDescriptor,
                 paymentMethodTypes: paymentMethodTypes
         ) { [weak self] result in
@@ -225,6 +226,7 @@ private extension PaymentCaptureOrchestrator {
     }
 
     func paymentParameters(order: Order,
+                           country: String,
                            statementDescriptor: String?,
                            paymentMethodTypes: [String],
                            onCompletion: @escaping ((Result<PaymentParameters, Error>) -> Void)) {
@@ -254,6 +256,7 @@ private extension PaymentCaptureOrchestrator {
 
             let parameters = PaymentParameters(amount: orderTotal as Decimal,
                                                currency: order.currency,
+                                               applicationFee: self.applicationFee(for: orderTotal, country: country),
                                                receiptDescription: self.receiptDescription(orderNumber: order.number),
                                                statementDescription: statementDescriptor,
                                                receiptEmail: receiptEmail,
@@ -262,6 +265,22 @@ private extension PaymentCaptureOrchestrator {
 
             onCompletion(Result.success(parameters))
         }
+    }
+
+    private func applicationFee(for orderTotal: NSDecimalNumber, country: String) -> Decimal? {
+        guard country.uppercased() == "CA" else {
+            return nil
+        }
+
+        let fee = orderTotal.multiplying(by: Constants.canadaPercentageFee).adding(Constants.canadaFlatFee)
+
+        let numberHandler = NSDecimalNumberHandler(roundingMode: .plain,
+                                                   scale: 2,
+                                                   raiseOnExactness: false,
+                                                   raiseOnOverflow: false,
+                                                   raiseOnUnderflow: false,
+                                                   raiseOnDivideByZero: false)
+        return fee.rounding(accordingToBehavior: numberHandler) as Decimal
     }
 
     func receiptDescription(orderNumber: String) -> String? {
@@ -288,9 +307,13 @@ private extension PaymentCaptureOrchestrator {
 
 private extension PaymentCaptureOrchestrator {
     enum Constants {
-        /// Minimum order amount in USD:
+        /// Minimum order amount in USD or CAD:
         /// https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts
         static let minimumAmount = NSDecimalNumber(string: "0.5")
+
+        static let canadaFlatFee = NSDecimalNumber(string: "0.25")
+
+        static let canadaPercentageFee = NSDecimalNumber(string: "0.026")
     }
 
     func isTotalAmountValid(order: Order) -> Bool {

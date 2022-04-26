@@ -6,19 +6,6 @@ import Yosemite
 /// Hosting controller that wraps an `EditOrderAddressForm`.
 ///
 final class EditOrderAddressHostingController: UIHostingController<EditOrderAddressForm<EditOrderAddressFormViewModel>> {
-
-    /// References to keep the Combine subscriptions alive within the lifecycle of the object.
-    ///
-    private var subscriptions: Set<AnyCancellable> = []
-
-    /// Presents an error notice in the current modal presentation context
-    ///
-    private lazy var modalNoticePresenter: NoticePresenter = {
-        let presenter = DefaultNoticePresenter()
-        presenter.presentingViewController = self
-        return presenter
-    }()
-
     /// Presents a success notice in the tab bar context after this `self` is dismissed.
     ///
     private let systemNoticePresenter: NoticePresenter

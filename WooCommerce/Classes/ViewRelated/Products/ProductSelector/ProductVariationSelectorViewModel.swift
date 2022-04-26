@@ -140,6 +140,12 @@ final class ProductVariationSelectorViewModel: ObservableObject {
             toggleSelection(productVariationID: variationID)
         }
     }
+
+    /// Unselect all items.
+    ///
+    func clearSelection() {
+        selectedProductVariationIDs = []
+    }
 }
 
 // MARK: - SyncingCoordinatorDelegate & Sync Methods

@@ -126,7 +126,6 @@ private extension EditCustomerNoteViewModel {
 
         let updateAction = makeUpdateAction(order: modifiedOrder) { [weak self] result in
             guard let self = self else {
-                onFinish?(result.isSuccess)
                 return
             }
 

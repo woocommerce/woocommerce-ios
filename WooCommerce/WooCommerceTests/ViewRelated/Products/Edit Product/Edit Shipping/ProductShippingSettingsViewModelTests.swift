@@ -5,6 +5,8 @@ import XCTest
 final class ProductShippingSettingsViewModelTests: XCTestCase {
     typealias Section = ProductShippingSettingsViewController.Section
 
+    private let usLocale: Locale = Locale(identifier: "en_US")
+
     // MARK: - Initialization
 
     func test_readonly_shipping_values_are_as_expected_after_initialization() {
@@ -18,7 +20,7 @@ final class ProductShippingSettingsViewModelTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Act
-        let viewModel = ProductShippingSettingsViewModel(product: model)
+        let viewModel = ProductShippingSettingsViewModel(product: model, locale: usLocale)
 
         // Assert
         let expectedSections: [Section] = [
@@ -47,7 +49,7 @@ final class ProductShippingSettingsViewModelTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Act
-        let viewModel = ProductShippingSettingsViewModel(product: model)
+        let viewModel = ProductShippingSettingsViewModel(product: model, locale: usLocale)
         waitForExpectation { expectation in
             viewModel.completeUpdating { (weight, dimensions, shippingClass, shippingClassID, hasUnsavedChanges) in
                 // Assert
@@ -72,7 +74,7 @@ final class ProductShippingSettingsViewModelTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Act
-        let viewModel = ProductShippingSettingsViewModel(product: model)
+        let viewModel = ProductShippingSettingsViewModel(product: model, locale: usLocale)
         let retrievedShippingClass = ProductShippingClass(count: 0, descriptionHTML: nil, name: "60 Days", shippingClassID: 2, siteID: 0, slug: "90-day")
         viewModel.onShippingClassRetrieved(shippingClass: retrievedShippingClass)
         waitForExpectation { expectation in
@@ -131,7 +133,7 @@ final class ProductShippingSettingsViewModelTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Act
-        let viewModel = ProductShippingSettingsViewModel(product: model)
+        let viewModel = ProductShippingSettingsViewModel(product: model, locale: usLocale)
         let retrievedShippingClass = ProductShippingClass(count: 0, descriptionHTML: nil, name: "60 Days", shippingClassID: 2, siteID: 0, slug: "90-day")
         viewModel.onShippingClassRetrieved(shippingClass: retrievedShippingClass)
         let hasUnsavedChanges = viewModel.hasUnsavedChanges()

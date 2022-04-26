@@ -25,6 +25,7 @@ struct CouponDetails: View {
     private let onDeletion: () -> Void
 
     @ObservedObject private var viewModel: CouponDetailsViewModel
+    @ObservedObject private var addEditCouponViewModel: AddEditCouponViewModel
     @State private var showingActionSheet: Bool = false
     @State private var showingShareSheet: Bool = false
     @State private var showingEditCoupon: Bool = false
@@ -45,6 +46,7 @@ struct CouponDetails: View {
         self.noticePresenter = DefaultNoticePresenter()
         viewModel.syncCoupon()
         viewModel.loadCouponReport()
+        addEditCouponViewModel = AddEditCouponViewModel(existingCoupon: viewModel.coupon)
 
         ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "loaded"])
     }
@@ -186,15 +188,15 @@ struct CouponDetails: View {
                     viewModel.loadCouponReport()
                 })
             }
+            .sheet(isPresented: $showingEditCoupon) {
+                AddEditCoupon(addEditCouponViewModel)
+            }
             .alert(isPresented: $showingDeletionConfirmAlert, content: {
                 Alert(title: Text(Localization.deleteCoupon),
                       message: Text(Localization.deleteCouponConfirm),
                       primaryButton: .destructive(Text(Localization.deleteButton), action: handleCouponDeletion),
                       secondaryButton: .cancel())
             })
-            .sheet(isPresented: $showingEditCoupon) {
-                AddEditCoupon(AddEditCouponViewModel(existingCoupon: viewModel.coupon))
-            }
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {

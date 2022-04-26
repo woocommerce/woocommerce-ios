@@ -49,6 +49,14 @@ protocol CardPresentPaymentsModalViewModel {
     func didTapAuxiliaryButton(in viewController: UIViewController?)
 }
 
+/// The type of card-present transaction.
+enum CardPresentTransactionType {
+    /// To collect payment.
+    case collectPayment
+
+    /// To issue a refund.
+    case refund
+}
 
 /// Represents the different visual modes of the modal view's textfields
 enum PaymentsModalTextMode {

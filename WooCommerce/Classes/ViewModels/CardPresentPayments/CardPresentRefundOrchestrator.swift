@@ -30,10 +30,6 @@ final class CardPresentRefundOrchestrator {
                 onProcessingMessage: @escaping () -> Void,
                 onDisplayMessage: @escaping (String) -> Void,
                 onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        /// Sets the state of `CardPresentPaymentStore`.
-        let setAccount = CardPresentPaymentAction.use(paymentGatewayAccount: paymentGatewayAccount)
-        stores.dispatch(setAccount)
-
         /// Briefly suppresses pass (wallet) presentation so that the merchant doesn't attempt to pay for the buyer's order when the
         /// reader begins to collect payment.
         suppressPassPresentation()
@@ -50,7 +46,10 @@ final class CardPresentRefundOrchestrator {
             default:
                 break
             }
-        }, onCompletion: { result in
+        }, onCompletion: { [weak self] result in
+            guard let self = self else { return }
+            self.allowPassPresentation()
+            onProcessingMessage()
             onCompletion(result)
         })
         stores.dispatch(refundAction)
@@ -59,8 +58,7 @@ final class CardPresentRefundOrchestrator {
     /// Cancels the current refund.
     /// - Parameter onCompletion: called when the cancellation completes.
     func cancelRefund(onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        let action = CardPresentPaymentAction.cancelRefund { [weak self] result in
-            self?.allowPassPresentation()
+        let action = CardPresentPaymentAction.cancelRefund { result in
             onCompletion(result)
         }
         stores.dispatch(action)
@@ -78,10 +76,6 @@ private extension CardPresentRefundOrchestrator {
         /// return 0 `notSupported`
         ///
         guard !UIDevice.isPad() else {
-            return
-        }
-
-        guard !PKPassLibrary.isSuppressingAutomaticPassPresentation() else {
             return
         }
 

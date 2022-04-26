@@ -47,7 +47,7 @@ final class InPersonPaymentsViewModel: ObservableObject {
     }
 
     private func updateLearnMoreURL(state: CardPresentPaymentOnboardingState) {
-        let preferredPlugin: CardPresentPaymentsPlugins
+        let preferredPlugin: CardPresentPaymentsPlugin
         switch state {
         case .pluginUnsupportedVersion(let plugin),
                 .pluginNotActivated(let plugin),

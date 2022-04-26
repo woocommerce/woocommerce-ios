@@ -21,7 +21,7 @@ class ShippingLineDetailsViewModel: ObservableObject {
 
     /// Placeholder for amount text field
     ///
-    let amountPlaceholder: String
+    let amountPlaceholder: String = "0"
 
     /// Stores the amount entered by the merchant.
     ///
@@ -36,7 +36,7 @@ class ShippingLineDetailsViewModel: ObservableObject {
     ///
     @Published var methodTitle: String
 
-    private let initialAmount: Decimal
+    private let initialAmount: Decimal?
     private let initialMethodTitle: String
 
     /// Returns true when existing shipping line is edited.
@@ -52,7 +52,7 @@ class ShippingLineDetailsViewModel: ObservableObject {
     /// Returns true when there are no valid pending changes.
     ///
     var shouldDisableDoneButton: Bool {
-        guard let amountDecimal = priceFieldFormatter.amountDecimal, amountDecimal != .zero else {
+        guard let amountDecimal = priceFieldFormatter.amountDecimal else {
             return true
         }
 
@@ -71,7 +71,6 @@ class ShippingLineDetailsViewModel: ObservableObject {
         self.priceFieldFormatter = .init(locale: locale, storeCurrencySettings: storeCurrencySettings, allowNegativeNumber: true)
         self.currencySymbol = storeCurrencySettings.symbol(from: storeCurrencySettings.currencyCode)
         self.currencyPosition = storeCurrencySettings.currencyPosition
-        self.amountPlaceholder = priceFieldFormatter.formatAmount("0")
 
         self.isExistingShippingLine = isExistingShippingLine
         self.initialMethodTitle = initialMethodTitle
@@ -81,10 +80,10 @@ class ShippingLineDetailsViewModel: ObservableObject {
         if let initialAmount = currencyFormatter.convertToDecimal(from: shippingTotal) {
             self.initialAmount = initialAmount as Decimal
         } else {
-            self.initialAmount = .zero
+            self.initialAmount = nil
         }
 
-        if initialAmount != .zero, let formattedInputAmount = currencyFormatter.formatAmount(initialAmount) {
+        if let initialAmount = initialAmount, let formattedInputAmount = currencyFormatter.formatAmount(initialAmount) {
             self.amount = priceFieldFormatter.formatAmount(formattedInputAmount)
         }
 

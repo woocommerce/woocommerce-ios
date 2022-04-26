@@ -2,9 +2,9 @@ import Yosemite
 import protocol Storage.StorageManagerType
 import Combine
 
-/// View model for `AddProductVariationToOrder`.
+/// View model for `ProductVariationSelector`.
 ///
-final class AddProductVariationToOrderViewModel: ObservableObject {
+final class ProductVariationSelectorViewModel: ObservableObject {
     private let siteID: Int64
 
     /// Storage to fetch product variation list
@@ -42,24 +42,19 @@ final class AddProductVariationToOrderViewModel: ObservableObject {
 
     /// All purchasable product variations for the product.
     ///
-    private var productVariations: [ProductVariation] {
-        productVariationsResultsController.fetchedObjects.filter { $0.purchasable }
-    }
+    @Published private var productVariations: [ProductVariation] = []
 
     /// View models for each product variation row
     ///
-    var productVariationRows: [ProductRowViewModel] {
-        return productVariations.map {
-            .init(productVariation: $0,
-                  name: ProductVariationFormatter().generateName(for: $0, from: productAttributes),
-                  canChangeQuantity: false,
-                  displayMode: .stock)
-        }
-    }
+    @Published var productVariationRows: [ProductRowViewModel] = []
 
     /// Closure to be invoked when a product variation is selected
     ///
     let onVariationSelected: ((ProductVariation) -> Void)?
+
+    /// All selected product variations if the selector supports multiple selections.
+    ///
+    @Published private(set) var selectedProductVariationIDs: [Int64]
 
     // MARK: Sync & Storage properties
 
@@ -99,6 +94,7 @@ final class AddProductVariationToOrderViewModel: ObservableObject {
          productID: Int64,
          productName: String,
          productAttributes: [ProductAttribute],
+         selectedProductVariationIDs: [Int64] = [],
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          onVariationSelected: ((ProductVariation) -> Void)? = nil) {
@@ -109,6 +105,7 @@ final class AddProductVariationToOrderViewModel: ObservableObject {
         self.storageManager = storageManager
         self.stores = stores
         self.onVariationSelected = onVariationSelected
+        self.selectedProductVariationIDs = selectedProductVariationIDs
 
         configureSyncingCoordinator()
         configureProductVariationsResultsController()
@@ -117,6 +114,7 @@ final class AddProductVariationToOrderViewModel: ObservableObject {
 
     convenience init(siteID: Int64,
                      product: Product,
+                     selectedProductVariationIDs: [Int64] = [],
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
                      stores: StoresManager = ServiceLocator.stores,
                      onVariationSelected: ((ProductVariation) -> Void)? = nil) {
@@ -124,6 +122,7 @@ final class AddProductVariationToOrderViewModel: ObservableObject {
                   productID: product.productID,
                   productName: product.name,
                   productAttributes: product.attributesForVariations,
+                  selectedProductVariationIDs: selectedProductVariationIDs,
                   storageManager: storageManager,
                   stores: stores,
                   onVariationSelected: onVariationSelected)
@@ -135,12 +134,16 @@ final class AddProductVariationToOrderViewModel: ObservableObject {
         guard let selectedVariation = productVariations.first(where: { $0.productVariationID == variationID }) else {
             return
         }
-        onVariationSelected?(selectedVariation)
+        if let onVariationSelected = onVariationSelected {
+            onVariationSelected(selectedVariation)
+        } else {
+            toggleSelection(productVariationID: variationID)
+        }
     }
 }
 
 // MARK: - SyncingCoordinatorDelegate & Sync Methods
-extension AddProductVariationToOrderViewModel: SyncingCoordinatorDelegate {
+extension ProductVariationSelectorViewModel: SyncingCoordinatorDelegate {
     /// Sync product variations from remote.
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)?) {
@@ -181,7 +184,7 @@ extension AddProductVariationToOrderViewModel: SyncingCoordinatorDelegate {
 }
 
 // MARK: - Finite State Machine Management
-private extension AddProductVariationToOrderViewModel {
+private extension ProductVariationSelectorViewModel {
     /// Update state for sync from remote.
     ///
     func transitionToSyncingState() {
@@ -200,7 +203,7 @@ private extension AddProductVariationToOrderViewModel {
 }
 
 // MARK: - Configuration
-private extension AddProductVariationToOrderViewModel {
+private extension ProductVariationSelectorViewModel {
     /// Performs initial fetch from storage and updates sync status accordingly.
     ///
     func configureProductVariationsResultsController() {
@@ -213,6 +216,8 @@ private extension AddProductVariationToOrderViewModel {
     func updateProductVariationsResultsController() {
         do {
             try productVariationsResultsController.performFetch()
+            productVariations = productVariationsResultsController.fetchedObjects.filter { $0.purchasable }
+            observeSelections()
         } catch {
             DDLogError("⛔️ Error fetching product variations for new order: \(error)")
         }
@@ -237,8 +242,37 @@ private extension AddProductVariationToOrderViewModel {
     }
 }
 
+// MARK: - Multiple selection support
+private extension ProductVariationSelectorViewModel {
+    /// Toggle the selection of the specified product variation.
+    ///
+    func toggleSelection(productVariationID: Int64) {
+        if selectedProductVariationIDs.contains(productVariationID) {
+            selectedProductVariationIDs.removeAll(where: { $0 == productVariationID })
+        } else {
+            selectedProductVariationIDs.append(productVariationID)
+        }
+    }
+
+    /// Observe changes in selections to update product rows
+    ///
+    func observeSelections() {
+        $productVariations.combineLatest($selectedProductVariationIDs) { [weak self] variations, selectedIDs -> [ProductRowViewModel] in
+            guard let self = self else { return [] }
+            return variations.map { variation in
+                let selectedState: ProductRow.SelectedState = selectedIDs.contains(variation.productVariationID) ? .selected : .notSelected
+                return ProductRowViewModel(productVariation: variation,
+                                           name: ProductVariationFormatter().generateName(for: variation, from: self.productAttributes),
+                                           canChangeQuantity: false,
+                                           displayMode: .stock,
+                                           selectedState: selectedState)
+            }
+        }.assign(to: &$productVariationRows)
+    }
+}
+
 // MARK: - Utils
-extension AddProductVariationToOrderViewModel {
+extension ProductVariationSelectorViewModel {
     /// Represents possible statuses for syncing product variations
     ///
     enum SyncStatus {
@@ -274,7 +308,7 @@ extension AddProductVariationToOrderViewModel {
     }
 }
 
-private extension AddProductVariationToOrderViewModel {
+private extension ProductVariationSelectorViewModel {
     enum Localization {
         static let errorMessage = NSLocalizedString("There was an error syncing product variations",
                                                     comment: "Notice displayed when syncing the list of product variations fails")

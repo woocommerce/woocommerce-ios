@@ -1,11 +1,11 @@
 import Combine
 import Foundation
 import Yosemite
+import protocol Storage.StorageManagerType
 
 /// View Model for `CouponRestriction`
 ///
 final class CouponRestrictionsViewModel: ObservableObject {
-    private let coupon: Coupon
 
     let currencySymbol: String
 
@@ -25,38 +25,76 @@ final class CouponRestrictionsViewModel: ObservableObject {
 
     @Published var excludeSaleItems: Bool
 
-    init(coupon: Coupon,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
-        self.coupon = coupon
-        self.currencySymbol = currencySettings.symbol(from: currencySettings.currencyCode)
+    @Published var excludedProductOrVariationIDs: [Int64]
 
-        self.minimumSpend = coupon.minimumAmount
-        self.maximumSpend = coupon.maximumAmount
+    /// View model for the product selector
+    ///
+    lazy var productSelectorViewModel = {
+        ProductSelectorViewModel(siteID: siteID, selectedItemIDs: excludedProductOrVariationIDs, onMultipleSelectionCompleted: { [weak self] ids in
+            self?.excludedProductOrVariationIDs = ids
+        })
+    }()
+
+    private let siteID: Int64
+    private let stores: StoresManager
+    private let storageManager: StorageManagerType
+
+    init(coupon: Coupon,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+        currencySymbol = currencySettings.symbol(from: currencySettings.currencyCode)
+        siteID = coupon.siteID
+        self.stores = stores
+        self.storageManager = storageManager
+
+        minimumSpend = coupon.minimumAmount
+        maximumSpend = coupon.maximumAmount
         if let perCoupon = coupon.usageLimit {
-            self.usageLimitPerCoupon = "\(perCoupon)"
+            usageLimitPerCoupon = "\(perCoupon)"
         } else {
-            self.usageLimitPerCoupon = ""
+            usageLimitPerCoupon = ""
         }
 
         if let perUser = coupon.usageLimitPerUser {
-            self.usageLimitPerUser = "\(perUser)"
+            usageLimitPerUser = "\(perUser)"
         } else {
-            self.usageLimitPerUser = ""
+            usageLimitPerUser = ""
         }
 
         if let limitUsageItemCount = coupon.limitUsageToXItems {
-            self.limitUsageToXItems = "\(limitUsageItemCount)"
+            limitUsageToXItems = "\(limitUsageItemCount)"
         } else {
-            self.limitUsageToXItems = ""
+            limitUsageToXItems = ""
         }
 
         if coupon.emailRestrictions.isNotEmpty {
-            self.allowedEmails = coupon.emailRestrictions.joined(separator: ", ")
+            allowedEmails = coupon.emailRestrictions.joined(separator: ", ")
         } else {
-            self.allowedEmails = ""
+            allowedEmails = ""
         }
 
-        self.individualUseOnly = coupon.individualUse
-        self.excludeSaleItems = coupon.excludeSaleItems
+        individualUseOnly = coupon.individualUse
+        excludeSaleItems = coupon.excludeSaleItems
+        excludedProductOrVariationIDs = coupon.excludedProductIds
+    }
+
+    init(siteID: Int64,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+        currencySymbol = currencySettings.symbol(from: currencySettings.currencyCode)
+        minimumSpend = ""
+        maximumSpend = ""
+        usageLimitPerCoupon = ""
+        usageLimitPerUser = ""
+        limitUsageToXItems = ""
+        allowedEmails = ""
+        individualUseOnly = false
+        excludeSaleItems = false
+        excludedProductOrVariationIDs = []
+        self.siteID = siteID
+        self.stores = stores
+        self.storageManager = storageManager
     }
 }

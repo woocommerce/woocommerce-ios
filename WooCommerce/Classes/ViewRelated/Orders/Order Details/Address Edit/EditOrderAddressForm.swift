@@ -194,31 +194,51 @@ struct SingleAddressForm: View {
     ///
     @State private var showStateSelector = false
 
+    /// Stores shared value derived from max title width among all the fields.
+    ///
+    @State private var titleWidth: CGFloat? = nil
+
     var body: some View {
+        content
+            .onPreferenceChange(MaxWidthPreferenceKey.self) { value in
+                if let value = value {
+                    titleWidth = value
+                }
+            }
+    }
+
+    @ViewBuilder
+    var content: some View {
         ListHeaderView(text: Localization.detailsSection, alignment: .left)
             .padding(.horizontal, insets: safeAreaInsets)
             .accessibility(addTraits: .isHeader)
         VStack(spacing: 0) {
             TitleAndTextFieldRow(title: Localization.firstNameField,
-                                 placeholder: "",
+                                 titleWidth: $titleWidth,
+                                 placeholder: Localization.firstNameHint,
                                  text: $fields.firstName,
                                  symbol: nil,
+                                 fieldAlignment: .leading,
                                  keyboardType: .default)
             Divider()
                 .padding(.leading, Constants.dividerPadding)
             TitleAndTextFieldRow(title: Localization.lastNameField,
-                                 placeholder: "",
+                                 titleWidth: $titleWidth,
+                                 placeholder: Localization.lastNameHint,
                                  text: $fields.lastName,
                                  symbol: nil,
+                                 fieldAlignment: .leading,
                                  keyboardType: .default)
             Divider()
                 .padding(.leading, Constants.dividerPadding)
 
             if showEmailField {
                 TitleAndTextFieldRow(title: Localization.emailField,
-                                     placeholder: "",
+                                     titleWidth: $titleWidth,
+                                     placeholder: Localization.emailHint,
                                      text: $fields.email,
                                      symbol: nil,
+                                     fieldAlignment: .leading,
                                      keyboardType: .emailAddress)
                     .autocapitalization(.none)
                 Divider()
@@ -227,9 +247,11 @@ struct SingleAddressForm: View {
             }
 
             TitleAndTextFieldRow(title: Localization.phoneField,
-                                 placeholder: "",
+                                 titleWidth: $titleWidth,
+                                 placeholder: Localization.phoneHint,
                                  text: $fields.phone,
                                  symbol: nil,
+                                 fieldAlignment: .leading,
                                  keyboardType: .phonePad)
         }
         .padding(.horizontal, insets: safeAreaInsets)
@@ -242,37 +264,47 @@ struct SingleAddressForm: View {
         VStack(spacing: 0) {
             Group {
                 TitleAndTextFieldRow(title: Localization.companyField,
-                                     placeholder: Localization.placeholderOptional,
+                                     titleWidth: $titleWidth,
+                                     placeholder: Localization.hintOptional,
                                      text: $fields.company,
                                      symbol: nil,
+                                     fieldAlignment: .leading,
                                      keyboardType: .default)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
                 TitleAndTextFieldRow(title: Localization.address1Field,
-                                     placeholder: "",
+                                     titleWidth: $titleWidth,
+                                     placeholder: Localization.address1Hint,
                                      text: $fields.address1,
                                      symbol: nil,
+                                     fieldAlignment: .leading,
                                      keyboardType: .default)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
                 TitleAndTextFieldRow(title: Localization.address2Field,
-                                     placeholder: Localization.placeholderOptional,
+                                     titleWidth: $titleWidth,
+                                     placeholder: Localization.hintOptional,
                                      text: $fields.address2,
                                      symbol: nil,
+                                     fieldAlignment: .leading,
                                      keyboardType: .default)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
                 TitleAndTextFieldRow(title: Localization.cityField,
-                                     placeholder: "",
+                                     titleWidth: $titleWidth,
+                                     placeholder: Localization.cityHint,
                                      text: $fields.city,
                                      symbol: nil,
+                                     fieldAlignment: .leading,
                                      keyboardType: .default)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
                 TitleAndTextFieldRow(title: Localization.postcodeField,
-                                     placeholder: "",
+                                     titleWidth: $titleWidth,
+                                     placeholder: Localization.postcodeHint,
                                      text: $fields.postcode,
                                      symbol: nil,
+                                     fieldAlignment: .leading,
                                      keyboardType: .default)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
@@ -301,7 +333,9 @@ struct SingleAddressForm: View {
                 }
 
                 TitleAndValueRow(title: Localization.countryField,
-                                 value: .init(placeHolder: Localization.placeholderSelectOption, content: fields.country),
+                                 titleWidth: $titleWidth,
+                                 value: .init(placeHolder: Localization.hintSelectOption, content: fields.country),
+                                 valueTextAlignment: .leading,
                                  selectionStyle: .disclosure) {
                     showCountrySelector = true
                 }
@@ -320,15 +354,19 @@ struct SingleAddressForm: View {
     @ViewBuilder private func stateRow() -> some View {
         if showStateFieldAsSelector {
             TitleAndValueRow(title: Localization.stateField,
-                             value: .init(placeHolder: Localization.placeholderSelectOption, content: fields.state),
+                             titleWidth: $titleWidth,
+                             value: .init(placeHolder: Localization.hintSelectOption, content: fields.state),
+                             valueTextAlignment: .leading,
                              selectionStyle: .disclosure) {
                 showStateSelector = true
             }
         } else {
             TitleAndTextFieldRow(title: Localization.stateField,
-                                 placeholder: "",
+                                 titleWidth: $titleWidth,
+                                 placeholder: Localization.stateHint,
                                  text: $fields.state,
                                  symbol: nil,
+                                 fieldAlignment: .leading,
                                  keyboardType: .default)
         }
     }
@@ -348,21 +386,28 @@ private enum Localization {
     static let detailsSection = NSLocalizedString("DETAILS", comment: "Details section title in the Edit Address Form")
 
     static let firstNameField = NSLocalizedString("First name", comment: "Text field name in Edit Address Form")
+    static let firstNameHint = NSLocalizedString("Enter Name", comment: "Name field placeholder in Edit Address Form")
     static let lastNameField = NSLocalizedString("Last name", comment: "Text field name in Edit Address Form")
+    static let lastNameHint = NSLocalizedString("Enter Last Name", comment: "Last name field placeholder in Edit Address Form")
     static let emailField = NSLocalizedString("Email", comment: "Text field email in Edit Address Form")
+    static let emailHint = NSLocalizedString("Enter Email", comment: "Email field placeholder in Edit Address Form")
     static let phoneField = NSLocalizedString("Phone", comment: "Text field phone in Edit Address Form")
+    static let phoneHint = NSLocalizedString("Enter Phone", comment: "Phone field placeholder in Edit Address Form")
 
     static let companyField = NSLocalizedString("Company", comment: "Text field company in Edit Address Form")
     static let address1Field = NSLocalizedString("Address 1", comment: "Text field address 1 in Edit Address Form")
+    static let address1Hint = NSLocalizedString("Enter Address", comment: "Address field placeholder in Edit Address Form")
     static let address2Field = NSLocalizedString("Address 2", comment: "Text field address 2 in Edit Address Form")
     static let cityField = NSLocalizedString("City", comment: "Text field city in Edit Address Form")
+    static let cityHint = NSLocalizedString("Enter City", comment: "City field placeholder in Edit Address Form")
     static let postcodeField = NSLocalizedString("Postcode", comment: "Text field postcode in Edit Address Form")
+    static let postcodeHint = NSLocalizedString("Enter Postcode", comment: "Postcode field placeholder in Edit Address Form")
     static let countryField = NSLocalizedString("Country", comment: "Text field country in Edit Address Form")
     static let stateField = NSLocalizedString("State", comment: "Text field state in Edit Address Form")
+    static let stateHint = NSLocalizedString("Enter State", comment: "State field placeholder in Edit Address Form")
 
-    static let placeholderRequired = NSLocalizedString("Required", comment: "Text field placeholder in Edit Address Form")
-    static let placeholderOptional = NSLocalizedString("Optional", comment: "Text field placeholder in Edit Address Form")
-    static let placeholderSelectOption = NSLocalizedString("Select an option", comment: "Text field placeholder in Edit Address Form")
+    static let hintOptional = NSLocalizedString("Optional", comment: "Text field placeholder in Edit Address Form")
+    static let hintSelectOption = NSLocalizedString("Select an option", comment: "Text field placeholder in Edit Address Form")
 }
 
 #if DEBUG

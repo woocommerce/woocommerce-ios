@@ -6,7 +6,7 @@ final class CardPresentModalProcessingTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        viewModel = CardPresentModalProcessing(name: Expectations.name, amount: Expectations.amount)
+        viewModel = CardPresentModalProcessing(name: Expectations.name, amount: Expectations.amount, transactionType: .collectPayment)
     }
 
     override func tearDown() {

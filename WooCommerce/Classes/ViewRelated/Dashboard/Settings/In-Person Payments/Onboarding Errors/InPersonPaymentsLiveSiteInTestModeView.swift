@@ -2,7 +2,7 @@ import SwiftUI
 import Yosemite
 
 struct InPersonPaymentsLiveSiteInTestMode: View {
-    let plugin: CardPresentPaymentsPlugins
+    let plugin: CardPresentPaymentsPlugin
     let onRefresh: () -> Void
 
     var body: some View {

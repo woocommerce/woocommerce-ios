@@ -207,6 +207,29 @@ extension StripeCardReaderService: CardReaderService {
         }
     }
 
+    public func waitForInsertedCardToBeRemoved() -> Future<Void, Never> {
+        return Future() { [weak self] promise in
+            guard let self = self else {
+                return
+            }
+
+            // If there is no chip card inserted, it is ok to immediately return. The payment method may have been swipe or tap.
+            guard self.isChipCardInserted else {
+                return promise(.success(()))
+            }
+
+            self.timerCancellable = Timer.publish(every: 1, tolerance: 0.1, on: .main, in: .default)
+                .autoconnect()
+                .receive(on: DispatchQueue.main)
+                .sink(receiveValue: { _ in
+                    if !self.isChipCardInserted {
+                        self.timerCancellable?.cancel()
+                        return promise(.success(()))
+                    }
+                })
+        }
+    }
+
     public func clear() {
         // Shortcircuit the SDK has not been initialized.
         // This prevent a crash when logging out or switching stores before
@@ -240,9 +263,6 @@ extension StripeCardReaderService: CardReaderService {
                 self.collectPaymentMethod(intent: intent)
             }.flatMap { intent in
                 self.processPayment(intent: intent)
-            }.flatMap { intent in
-                self.waitForInsertedCardToBeRemoved()
-                    .map { intent }
             }
             .map(PaymentIntent.init(intent:))
             .eraseToAnyPublisher()
@@ -433,29 +453,6 @@ private extension StripeCardReaderService {
         }
     }
 
-    func waitForInsertedCardToBeRemoved() -> Future<Void, Error> {
-        return Future() { [weak self] promise in
-            guard let self = self else {
-                return
-            }
-
-            // If there is no chip card inserted, it is ok to immediatedly return. The payment method may have been swipe or tap.
-            if !self.isChipCardInserted {
-                return promise(.success(()))
-            }
-
-            self.timerCancellable = Timer.publish(every: 1, tolerance: 0.1, on: .main, in: .default)
-                .autoconnect()
-                .receive(on: DispatchQueue.main)
-                .sink(receiveValue: { _ in
-                    if !self.isChipCardInserted {
-                        self.timerCancellable?.cancel()
-                        return promise(.success(()))
-                    }
-                })
-        }
-    }
-
     func processPayment(intent: StripeTerminal.PaymentIntent) -> Future<StripeTerminal.PaymentIntent, Error> {
         return Future() { [weak self] promise in
             Terminal.shared.processPayment(intent) { (intent, error) in
@@ -481,13 +478,7 @@ private extension StripeCardReaderService {
 // MARK: - Refunds
 extension StripeCardReaderService {
     public func refundPayment(parameters: RefundParameters) -> AnyPublisher<String, Error> {
-        if isChipCardInserted {
-            sendReaderEvent(CardReaderEvent.make(displayMessage: .removeCard))
-        }
-        return waitForInsertedCardToBeRemoved()
-            .flatMap {
-                self.createRefundParameters(parameters: parameters)
-            }
+        return createRefundParameters(parameters: parameters)
             .flatMap { refundParameters in
                 self.refund(refundParameters)
             }
@@ -524,10 +515,12 @@ extension StripeCardReaderService {
         return Future() { [weak self] promise in
             self?.refundCancellable = Terminal.shared.collectRefundPaymentMethod(parameters) { collectError in
                 if let error = collectError {
+                    self?.refundCancellable = nil
                     promise(.failure(CardReaderServiceError.refundPayment(underlyingError: UnderlyingError(with: error))))
                 } else {
                     // Process refund
                     Terminal.shared.processRefund { processedRefund, processError in
+                        self?.refundCancellable = nil
                         if let error = processError {
                             promise(.failure(CardReaderServiceError.refundPayment(underlyingError: UnderlyingError(with: error))))
                         } else if let refund = processedRefund {

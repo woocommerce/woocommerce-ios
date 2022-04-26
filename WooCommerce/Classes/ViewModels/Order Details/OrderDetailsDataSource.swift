@@ -53,6 +53,16 @@ final class OrderDetailsDataSource: NSObject {
             !orderContainsAnySubscription()
     }
 
+    var isEligibleForRefund: Bool {
+        guard !isRefundedStatus,
+              !isEligibleForCardPresentPayment,
+              refundableOrderItemsDeterminer.isAnythingToRefund(from: order, with: refunds, currencyFormatter: currencyFormatter) else {
+            return false
+        }
+
+        return true
+    }
+
     /// Whether the button to create shipping labels should be visible.
     ///
     var shouldShowShippingLabelCreation: Bool {
@@ -208,13 +218,17 @@ final class OrderDetailsDataSource: NSObject {
     /// IPP Configuration
     private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
+    private let refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol
+
     init(order: Order,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration) {
+         cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
+         refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol = OrderRefundsOptionsDeterminer()) {
         self.storageManager = storageManager
         self.order = order
         self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
         self.couponLines = order.coupons
+        self.refundableOrderItemsDeterminer = refundableOrderItemsDeterminer
 
         super.init()
     }
@@ -532,8 +546,8 @@ private extension OrderDetailsDataSource {
 
     private func configureCollectPaymentButton(cell: ButtonTableViewCell, at indexPath: IndexPath) {
         cell.configure(style: .primary,
-                       title: Titles.collectPayment) {
-            self.onCellAction?(.collectPayment, indexPath)
+                       title: Titles.collectPayment) { [weak self] in
+            self?.onCellAction?(.collectPayment, indexPath)
         }
         cell.hideSeparator()
     }
@@ -1027,9 +1041,8 @@ extension OrderDetailsDataSource {
             if shouldShowReceipts {
                 rows.append(.seeReceipt)
             }
-            let orderTotal = Double(order.total) ?? 0
-            let isEligibleForRefund = orderTotal > 0
-            if !isRefundedStatus && !isEligibleForCardPresentPayment && isEligibleForRefund {
+
+            if isEligibleForRefund {
                 rows.append(.issueRefundButton)
             }
 

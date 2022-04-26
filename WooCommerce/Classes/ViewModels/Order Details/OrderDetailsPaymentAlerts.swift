@@ -1,11 +1,13 @@
 import MessageUI
 import UIKit
 import WordPressUI
+import enum Hardware.CardReaderServiceError
+import enum Hardware.UnderlyingError
 
 /// A layer of indirection between OrderDetailsViewController and the modal alerts
 /// presented to provide user-facing feedback about the progress
 /// of the payment collection process
-final class OrderDetailsPaymentAlerts {
+final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
     private weak var presentingController: UIViewController?
 
     // Storing this as a weak variable means that iOS should automatically set this to nil
@@ -15,7 +17,7 @@ final class OrderDetailsPaymentAlerts {
         if let controller = _modalController {
             return controller
         } else {
-            let controller = CardPresentPaymentsModalViewController(viewModel: readerIsReady())
+            let controller = CardPresentPaymentsModalViewController(viewModel: readerIsReady(onCancel: {}))
             _modalController = controller
             return controller
         }
@@ -24,15 +26,12 @@ final class OrderDetailsPaymentAlerts {
     private var name: String = ""
     private var amount: String = ""
 
-    private let paymentGatewayAccountID: String?
-    private let countryCode: String
-    private let cardReaderModel: String
+    private let transactionType: CardPresentTransactionType
 
-    init(presentingController: UIViewController, paymentGatewayAccountID: String?, countryCode: String, cardReaderModel: String) {
+    init(transactionType: CardPresentTransactionType,
+         presentingController: UIViewController) {
+        self.transactionType = transactionType
         self.presentingController = presentingController
-        self.paymentGatewayAccountID = paymentGatewayAccountID
-        self.countryCode = countryCode
-        self.cardReaderModel = cardReaderModel
     }
 
     func presentViewModel(viewModel: CardPresentPaymentsModalViewModel) {
@@ -45,13 +44,13 @@ final class OrderDetailsPaymentAlerts {
         }
     }
 
-    func readerIsReady(title: String, amount: String) {
+    func readerIsReady(title: String, amount: String, onCancel: @escaping () -> Void) {
         self.name = title
         self.amount = amount
 
         // Initial presentation of the modal view controller. We need to provide
         // a customer name and an amount.
-        let viewModel = readerIsReady()
+        let viewModel = readerIsReady(onCancel: onCancel)
         presentViewModel(viewModel: viewModel)
     }
 
@@ -78,8 +77,8 @@ final class OrderDetailsPaymentAlerts {
         presentViewModel(viewModel: viewModel)
     }
 
-    func error(error: Error, tryAgain: @escaping () -> Void) {
-        let viewModel = errorViewModel(error: error, tryAgain: tryAgain)
+    func error(error: Error, tryAgain: @escaping () -> Void, dismissCompletion: @escaping () -> Void) {
+        let viewModel = errorViewModel(error: error, tryAgain: tryAgain, dismissCompletion: dismissCompletion)
         presentViewModel(viewModel: viewModel)
     }
 
@@ -95,16 +94,15 @@ final class OrderDetailsPaymentAlerts {
 }
 
 private extension OrderDetailsPaymentAlerts {
-    func readerIsReady() -> CardPresentPaymentsModalViewModel {
+    func readerIsReady(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalReaderIsReady(name: name,
                                       amount: amount,
-                                      paymentGatewayAccountID: paymentGatewayAccountID,
-                                      countryCode: countryCode,
-                                      cardReaderModel: cardReaderModel)
+                                      transactionType: transactionType,
+                                      cancelAction: onCancel)
     }
 
     func tapOrInsert(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalTapCard(name: name, amount: amount, onCancel: onCancel)
+        CardPresentModalTapCard(name: name, amount: amount, transactionType: transactionType, onCancel: onCancel)
     }
 
     func displayMessage(message: String) -> CardPresentPaymentsModalViewModel {
@@ -112,7 +110,7 @@ private extension OrderDetailsPaymentAlerts {
     }
 
     func processing() -> CardPresentPaymentsModalViewModel {
-        CardPresentModalProcessing(name: name, amount: amount)
+        CardPresentModalProcessing(name: name, amount: amount, transactionType: transactionType)
     }
 
     func successViewModel(printReceipt: @escaping () -> Void,
@@ -129,8 +127,34 @@ private extension OrderDetailsPaymentAlerts {
         }
     }
 
-    func errorViewModel(error: Error, tryAgain: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalError(error: error, primaryAction: tryAgain)
+    func errorViewModel(error: Error,
+                        tryAgain: @escaping () -> Void,
+                        dismissCompletion: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        let errorDescription: String?
+        if let error = error as? CardReaderServiceError {
+            switch error {
+            case .connection(let underlyingError),
+                    .discovery(let underlyingError),
+                    .disconnection(let underlyingError),
+                    .intentCreation(let underlyingError),
+                    .paymentMethodCollection(let underlyingError),
+                    .paymentCapture(let underlyingError),
+                    .paymentCancellation(let underlyingError),
+                    .refundCreation(let underlyingError),
+                    .refundPayment(let underlyingError),
+                    .refundCancellation(let underlyingError),
+                    .softwareUpdate(let underlyingError, _):
+                errorDescription = Localization.errorDescription(underlyingError: underlyingError, transactionType: transactionType)
+            default:
+                errorDescription = error.errorDescription
+            }
+        } else {
+            errorDescription = error.localizedDescription
+        }
+        return CardPresentModalError(errorDescription: errorDescription,
+                                     transactionType: transactionType,
+                                     primaryAction: tryAgain,
+                                     dismissCompletion: dismissCompletion)
     }
 
     func retryableErrorViewModel(tryAgain: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
@@ -139,5 +163,64 @@ private extension OrderDetailsPaymentAlerts {
 
     func nonRetryableErrorViewModel(amount: String, error: Error) -> CardPresentPaymentsModalViewModel {
         CardPresentModalNonRetryableError(amount: amount, error: error)
+    }
+}
+
+private extension OrderDetailsPaymentAlerts {
+    enum Localization {
+        static func errorDescription(underlyingError: UnderlyingError, transactionType: CardPresentTransactionType) -> String? {
+            switch underlyingError {
+            case .unsupportedReaderVersion:
+                switch transactionType {
+                case .collectPayment:
+                    return NSLocalizedString(
+                        "The card reader software is out-of-date - please update the card reader software before attempting to process payments",
+                        comment: "Error message when the card reader software is too far out of date to process payments."
+                    )
+                case .refund:
+                    return NSLocalizedString(
+                        "The card reader software is out-of-date - please update the card reader software before attempting to process refunds",
+                        comment: "Error message when the card reader software is too far out of date to process in-person refunds."
+                    )
+                }
+            case .paymentDeclinedByCardReader:
+                switch transactionType {
+                case .collectPayment:
+                    return NSLocalizedString("The card was declined by the card reader - please try another means of payment",
+                                             comment: "Error message when the card reader itself declines the card.")
+                case .refund:
+                    return NSLocalizedString("The card was declined by the card reader - please try another means of refund",
+                                             comment: "Error message when the card reader itself declines the card.")
+                }
+            case .processorAPIError:
+                switch transactionType {
+                case .collectPayment:
+                    return NSLocalizedString(
+                        "The payment can not be processed by the payment processor.",
+                        comment: "Error message when the payment can not be processed (i.e. order amount is below the minimum amount allowed.)"
+                    )
+                case .refund:
+                    return NSLocalizedString(
+                        "The refund can not be processed by the payment processor.",
+                        comment: "Error message when the in-person refund can not be processed (i.e. order amount is below the minimum amount allowed.)"
+                    )
+                }
+            case .internalServiceError:
+                switch transactionType {
+                case .collectPayment:
+                    return NSLocalizedString(
+                        "Sorry, this payment couldn’t be processed",
+                        comment: "Error message when the card reader service experiences an unexpected internal service error."
+                    )
+                case .refund:
+                    return NSLocalizedString(
+                        "Sorry, this refund couldn’t be processed",
+                        comment: "Error message when the card reader service experiences an unexpected internal service error."
+                    )
+                }
+            default:
+                return underlyingError.errorDescription
+            }
+        }
     }
 }

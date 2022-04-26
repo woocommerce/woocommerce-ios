@@ -40,6 +40,36 @@ final class CountrySelectorViewModelTests: XCTestCase {
         ])
     }
 
+    func test_filter_term_with_last_character_whitespace_return_expected_result() {
+        // Given
+        let binding = Binding<Country?>(get: { nil }, set: { _ in })
+        let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: binding)
+
+        // When
+        viewModel.searchTerm = "Indonesia "
+        let countries = viewModel.command.data.map { $0.name }
+
+        // Then
+        assertEqual(countries, [
+            "Indonesia"
+        ])
+    }
+
+    func test_filter_term_with_last_character_newline_return_expected_result() {
+        // Given
+        let binding = Binding<Country?>(get: { nil }, set: { _ in })
+        let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: binding)
+
+        // When
+        viewModel.searchTerm = "Indonesia\n"
+        let countries = viewModel.command.data.map { $0.name }
+
+        // Then
+        assertEqual(countries, [
+            "Indonesia"
+        ])
+    }
+
     func test_filter_countries_with_uppercase_letters_return_expected_results() {
         // Given
         let binding = Binding<Country?>(get: { nil }, set: { _ in })

@@ -203,6 +203,7 @@ public enum WooAnalyticsStat: String {
     case orderDetailEditFlowCompleted = "order_detail_edit_flow_completed"
     case orderDetailEditFlowCanceled = "order_detail_edit_flow_canceled"
     case orderDetailEditFlowFailed = "order_detail_edit_flow_failed"
+    case orderDetailPaymentLinkShared = "order_detail_payment_link_shared"
 
     // MARK: Order Data/Action Events
     //
@@ -288,6 +289,9 @@ public enum WooAnalyticsStat: String {
     case collectPaymentCanceled = "card_present_collect_payment_canceled"
     case collectPaymentFailed = "card_present_collect_payment_failed"
     case collectPaymentSuccess = "card_present_collect_payment_success"
+    case collectInteracPaymentSuccess = "card_interac_collect_payment_success"
+    case interacRefundSuccess = "interac_refund_success"
+    case interacRefundFailed = "interac_refund_failed"
 
     // MARK: Push Notifications Events
     //

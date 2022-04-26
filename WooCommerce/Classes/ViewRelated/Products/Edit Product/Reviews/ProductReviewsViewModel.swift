@@ -6,7 +6,7 @@ import class AutomatticTracks.CrashLogging
 
 /// The Product Reviews view model used in ProductReviewsViewController
 final class ProductReviewsViewModel {
-    private let data: ReviewsDataSource
+    private let data: ReviewsDataSourceProtocol
 
     var isEmpty: Bool {
         return data.isEmpty
@@ -22,7 +22,7 @@ final class ProductReviewsViewModel {
 
     private let siteID: Int64
 
-    init(siteID: Int64, data: ReviewsDataSource) {
+    init(siteID: Int64, data: ReviewsDataSourceProtocol) {
         self.siteID = siteID
         self.data = data
     }

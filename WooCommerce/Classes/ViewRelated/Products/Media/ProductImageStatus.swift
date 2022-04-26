@@ -52,4 +52,16 @@ extension ProductImageStatus {
             return ProductImageCollectionViewCell.self
         }
     }
+
+    /// A string that uniquely identifies a `ProductImageStatus` during
+    /// dragging.
+    ///
+    var dragItemIdentifier: String {
+        switch self {
+        case .uploading(let asset):
+            return asset.identifier()
+        case .remote(let image):
+            return "\(image.imageID)"
+        }
+    }
 }

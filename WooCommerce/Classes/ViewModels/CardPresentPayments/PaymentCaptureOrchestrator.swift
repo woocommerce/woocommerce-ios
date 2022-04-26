@@ -19,10 +19,17 @@ struct CardPresentCapturedPaymentData {
 final class PaymentCaptureOrchestrator {
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
     private let personNameComponentsFormatter = PersonNameComponentsFormatter()
+    private let paymentReceiptEmailParameterDeterminer = PaymentReceiptEmailParameterDeterminer()
 
     private let celebration = PaymentCaptureCelebration()
 
     private var walletSuppressionRequestToken: PKSuppressionRequestToken?
+
+    private let stores: StoresManager
+
+    init(stores: StoresManager = ServiceLocator.stores) {
+        self.stores = stores
+    }
 
     func collectPayment(for order: Order,
                         paymentGatewayAccount: PaymentGatewayAccount,
@@ -30,6 +37,7 @@ final class PaymentCaptureOrchestrator {
                         onWaitingForInput: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onDisplayMessage: @escaping (String) -> Void,
+                        onProcessingCompletion: @escaping (PaymentIntent) -> Void,
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
         /// Bail out if the order amount is below the minimum allowed:
         /// https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts
@@ -43,49 +51,55 @@ final class PaymentCaptureOrchestrator {
         ///
         let setAccount = CardPresentPaymentAction.use(paymentGatewayAccount: paymentGatewayAccount)
 
-        ServiceLocator.stores.dispatch(setAccount)
+        stores.dispatch(setAccount)
 
-        guard let parameters = paymentParameters(
+        paymentParameters(
                 order: order,
                 statementDescriptor: paymentGatewayAccount.statementDescriptor,
                 paymentMethodTypes: paymentMethodTypes
-        ) else {
-            DDLogError("Error: failed to create payment parameters for an order")
-            onCompletion(.failure(CardReaderServiceError.paymentCapture()))
-            return
-        }
+        ) { [weak self] result in
+            guard let self = self else { return }
 
-        /// Briefly suppress pass (wallet) presentation so that the merchant doesn't attempt to pay for the buyer's order when the
-        /// reader begins to collect payment.
-        ///
-        suppressPassPresentation()
+            switch result {
+            case let .success(parameters):
+                /// Briefly suppress pass (wallet) presentation so that the merchant doesn't attempt to pay for the buyer's order when the
+                /// reader begins to collect payment.
+                ///
+                self.suppressPassPresentation()
 
-        let paymentAction = CardPresentPaymentAction.collectPayment(
-            siteID: order.siteID,
-            orderID: order.orderID,
-            parameters: parameters,
-            onCardReaderMessage: { (event) in
-                switch event {
-                case .waitingForInput:
-                    onWaitingForInput()
-                case .displayMessage(let message):
-                    onDisplayMessage(message)
-                default:
-                    break
-                }
-            },
-            onCompletion: { [weak self] result in
-                self?.allowPassPresentation()
-                onProcessingMessage()
-                self?.completePaymentIntentCapture(
-                    order: order,
-                    captureResult: result,
-                    onCompletion: onCompletion
+                let paymentAction = CardPresentPaymentAction.collectPayment(
+                    siteID: order.siteID,
+                    orderID: order.orderID,
+                    parameters: parameters,
+                    onCardReaderMessage: { event in
+                        switch event {
+                        case .waitingForInput:
+                            onWaitingForInput()
+                        case .displayMessage(let message):
+                            onDisplayMessage(message)
+                        default:
+                            break
+                        }
+                    },
+                    onProcessingCompletion: { intent in
+                        onProcessingCompletion(intent)
+                    },
+                    onCompletion: { [weak self] result in
+                        self?.allowPassPresentation()
+                        onProcessingMessage()
+                        self?.completePaymentIntentCapture(
+                            order: order,
+                            captureResult: result,
+                            onCompletion: onCompletion
+                        )
+                    }
                 )
-            }
-        )
 
-        ServiceLocator.stores.dispatch(paymentAction)
+                self.stores.dispatch(paymentAction)
+            case let .failure(error):
+                onCompletion(Result.failure(error))
+             }
+        }
     }
 
     func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
@@ -93,7 +107,7 @@ final class PaymentCaptureOrchestrator {
             self?.allowPassPresentation()
             onCompletion(result)
         }
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     func emailReceipt(for order: Order, params: CardPresentReceiptParameters, onContent: @escaping (String) -> Void) {
@@ -101,13 +115,13 @@ final class PaymentCaptureOrchestrator {
             onContent(emailContent)
         }
 
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     func saveReceipt(for order: Order, params: CardPresentReceiptParameters) {
         let action = ReceiptAction.saveReceipt(order: order, parameters: params)
 
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 }
 
@@ -207,34 +221,51 @@ private extension PaymentCaptureOrchestrator {
             }
         }
 
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
-    func paymentParameters(order: Order, statementDescriptor: String?, paymentMethodTypes: [String]) -> PaymentParameters? {
+    func paymentParameters(order: Order,
+                           statementDescriptor: String?,
+                           paymentMethodTypes: [String],
+                           onCompletion: @escaping ((Result<PaymentParameters, Error>) -> Void)) {
         guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
             DDLogError("Error: attempted to collect payment for an order without a valid total.")
-            return nil
+            onCompletion(Result.failure(NotValidAmountError.other))
+
+            return
         }
 
-        let metadata = PaymentIntent.initMetadata(
-            store: ServiceLocator.stores.sessionManager.defaultSite?.name,
-            customerName: buildCustomerNameFromBillingAddress(order.billingAddress),
-            customerEmail: order.billingAddress?.email,
-            siteURL: ServiceLocator.stores.sessionManager.defaultSite?.url,
-            orderID: order.orderID,
-            paymentType: PaymentIntent.PaymentTypes.single
-        )
+        paymentReceiptEmailParameterDeterminer.receiptEmail(from: order) { [weak self] result in
+            guard let self = self else { return }
 
-        return PaymentParameters(amount: orderTotal as Decimal,
-                                 currency: order.currency,
-                                 receiptDescription: receiptDescription(orderNumber: order.number),
-                                 statementDescription: statementDescriptor,
-                                 paymentMethodTypes: paymentMethodTypes,
-                                 metadata: metadata)
+            var receiptEmail: String?
+            if case let .success(email) = result {
+                receiptEmail = email
+            }
+
+            let metadata = PaymentIntent.initMetadata(
+                store: self.stores.sessionManager.defaultSite?.name,
+                customerName: self.buildCustomerNameFromBillingAddress(order.billingAddress),
+                customerEmail: order.billingAddress?.email,
+                siteURL: self.stores.sessionManager.defaultSite?.url,
+                orderID: order.orderID,
+                paymentType: PaymentIntent.PaymentTypes.single
+            )
+
+            let parameters = PaymentParameters(amount: orderTotal as Decimal,
+                                               currency: order.currency,
+                                               receiptDescription: self.receiptDescription(orderNumber: order.number),
+                                               statementDescription: statementDescriptor,
+                                               receiptEmail: receiptEmail,
+                                               paymentMethodTypes: paymentMethodTypes,
+                                               metadata: metadata)
+
+            onCompletion(Result.success(parameters))
+        }
     }
 
     func receiptDescription(orderNumber: String) -> String? {
-        guard let storeName = ServiceLocator.stores.sessionManager.defaultSite?.name else {
+        guard let storeName = stores.sessionManager.defaultSite?.name else {
             return nil
         }
 
@@ -290,21 +321,21 @@ private extension PaymentCaptureOrchestrator {
     }
 }
 
-private extension PaymentCaptureOrchestrator {
-    private enum NotValidAmountError: Error, LocalizedError {
+extension PaymentCaptureOrchestrator {
+    enum NotValidAmountError: Error, LocalizedError {
         case belowMinimumAmount(amount: String)
         case other
 
-        public var errorDescription: String? {
+        var errorDescription: String? {
             switch self {
             case .belowMinimumAmount(let amount):
-                return String.localizedStringWithFormat(Localizations.belowMinimumAmount, amount)
+                return String.localizedStringWithFormat(Localization.belowMinimumAmount, amount)
             case .other:
-                return Localizations.defaultMessage
+                return Localization.defaultMessage
             }
         }
 
-        enum Localizations {
+        private enum Localization {
             static let defaultMessage = NSLocalizedString(
                 "Unable to process payment. Order total amount is not valid.",
                 comment: "Error message when the order amount is not valid."

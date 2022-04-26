@@ -619,7 +619,10 @@ final class IssueRefundViewModelTests: XCTestCase {
     func test_viewModel_does_not_fetch_charge_and_is_disabled_when_no_PaymentGatewayAccount_in_storage() throws {
         // Given
         // The order has a chargeID
-        let order = MockOrders().sampleOrder().copy(chargeID: "ch_id")
+        let items = [
+            MockOrderItem.sampleItem(itemID: 1, quantity: 3, price: 11.50),
+        ]
+        let order = MockOrders().makeOrder(items: items).copy(chargeID: "ch_id")
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
             if case .fetchWCPayCharge(siteID: _, chargeID: _, onCompletion: _) = action {
@@ -630,6 +633,7 @@ final class IssueRefundViewModelTests: XCTestCase {
 
         // When
         let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores, storage: storageManager)
+        viewModel.selectAllOrderItems()
 
         // Then
         XCTAssertFalse(viewModel.isNextButtonAnimating)

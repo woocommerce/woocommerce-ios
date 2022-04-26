@@ -37,8 +37,7 @@ extension NumberFormatter {
                                 to targetLocale: Locale) -> String? {
         let formatter = NumberFormatter()
         formatter.locale = sourceLocale
-        formatter.usesGroupingSeparator = true
-        formatter.groupingSize = 3
+        formatter.usesGroupingSeparator = false
         formatter.formatterBehavior = .behavior10_4
         formatter.numberStyle = .decimal
         formatter.generatesDecimalNumbers = true

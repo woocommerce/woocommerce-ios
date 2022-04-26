@@ -79,9 +79,8 @@ class NumberFormatter_LocalizedTests: XCTestCase {
                                                        from: itLocale,
                                                        to: usLocale),
                        "1")
-        XCTAssertEqual(NumberFormatter.localizedString(using: valueWithThousandSeparator,
+        XCTAssertNil(NumberFormatter.localizedString(using: valueWithThousandSeparator,
                                                        from: usLocale,
-                                                       to: itLocale),
-                       "1.000")
+                                                       to: itLocale))
     }
 }

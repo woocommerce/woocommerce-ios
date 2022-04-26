@@ -231,9 +231,18 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertFalse(resynchronizeRequested)
     }
 
-    func test_when_having_no_error_shows_orders_banner() {
+    func test_when_having_no_error_and_orders_banner_should_be_visible_shows_orders_banner() {
         // Given
-        let viewModel = OrderListViewModel(siteID: siteID, filters: nil)
+        let storesManager = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = OrderListViewModel(siteID: siteID, stores: storesManager, filters: nil)
+        storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadFeedbackVisibility(_, onCompletion):
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
 
         // When
         viewModel.activate()
@@ -241,6 +250,51 @@ final class OrderListViewModelTests: XCTestCase {
         // Then
         waitUntil {
             viewModel.topBanner == .orderCreation
+        }
+    }
+
+    func test_when_having_no_error_and_orders_banner_should_not_be_visible_shows_nothing() {
+        // Given
+        let storesManager = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = OrderListViewModel(siteID: siteID, stores: storesManager, filters: nil)
+        storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadFeedbackVisibility(_, onCompletion):
+                onCompletion(.success(false))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.activate()
+
+        // Then
+        waitUntil {
+            viewModel.topBanner == .none
+        }
+    }
+
+    func test_when_having_no_error_and_orders_banner_visibility_loading_fails_shows_nothing() {
+        // Given
+        let storesManager = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = OrderListViewModel(siteID: siteID, stores: storesManager, filters: nil)
+        storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadFeedbackVisibility(_, onCompletion):
+                let error = NSError(domain: "Test", code: 503, userInfo: nil)
+                onCompletion(.failure(error))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.activate()
+
+        // Then
+        waitUntil {
+            viewModel.topBanner == .none
         }
     }
 

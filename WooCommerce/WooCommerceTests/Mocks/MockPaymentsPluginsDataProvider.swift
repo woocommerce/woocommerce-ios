@@ -6,24 +6,18 @@ import Yosemite
 final class MockCardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol {
     private let wcPayPlugin: SystemPlugin?
     private let stripePlugin: SystemPlugin?
-    private let bothPluginsInstalledAndActive: Bool
-    private let wcPayInstalledAndActive: Bool
-    private let stripeInstalledAndActive: Bool
+    private let paymentPluginsInstalledAndActiveStatus: PaymentPluginsInstalledAndActiveStatus
     private let isWCPayVersionSupported: Bool
     private let isStripeVersionSupported: Bool
 
     init(wcPayPlugin: SystemPlugin? = nil,
          stripePlugin: SystemPlugin? = nil,
-         bothPluginsInstalledAndActive: Bool = false,
-         wcPayInstalledAndActive: Bool = false,
-         stripeInstalledAndActive: Bool = false,
+         paymentPluginsInstalledAndActiveStatus: PaymentPluginsInstalledAndActiveStatus = .noneAreInstalledAndActive,
          isWCPayVersionSupported: Bool = false,
          isStripeVersionSupported: Bool = false) {
         self.wcPayPlugin = wcPayPlugin
         self.stripePlugin = stripePlugin
-        self.bothPluginsInstalledAndActive = bothPluginsInstalledAndActive
-        self.wcPayInstalledAndActive = wcPayInstalledAndActive
-        self.stripeInstalledAndActive = stripeInstalledAndActive
+        self.paymentPluginsInstalledAndActiveStatus = paymentPluginsInstalledAndActiveStatus
         self.isWCPayVersionSupported = isWCPayVersionSupported
         self.isStripeVersionSupported = isStripeVersionSupported
     }
@@ -37,16 +31,8 @@ final class MockCardPresentPluginsDataProvider: CardPresentPluginsDataProviderPr
         stripePlugin
     }
 
-    func bothPluginsInstalledAndActive(wcPay: SystemPlugin?, stripe: SystemPlugin?) -> Bool {
-        bothPluginsInstalledAndActive
-    }
-
-    func wcPayInstalledAndActive(wcPay: SystemPlugin?) -> Bool {
-        wcPayInstalledAndActive
-    }
-
-    func stripeInstalledAndActive(stripe: SystemPlugin?) -> Bool {
-        stripeInstalledAndActive
+    func paymentPluginsInstalledAndActiveStatus(wcPay: Yosemite.SystemPlugin?, stripe: Yosemite.SystemPlugin?) -> PaymentPluginsInstalledAndActiveStatus {
+        paymentPluginsInstalledAndActiveStatus
     }
 
     func isWCPayVersionSupported(plugin: SystemPlugin) -> Bool {

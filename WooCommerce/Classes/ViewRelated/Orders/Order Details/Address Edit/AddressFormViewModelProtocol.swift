@@ -279,8 +279,7 @@ open class AddressFormViewModel: ObservableObject {
             self.bindHasPendingChangesPublisher()
 
             self.trackOnLoad()
-        }
-        .store(in: &subscriptions)
+        }.store(in: &subscriptions)
 
         onLoadTrigger.sink { [weak self] in
             guard let self = self else { return }
@@ -288,8 +287,7 @@ open class AddressFormViewModel: ObservableObject {
 
             self.fetchStoredCountriesAndTriggerSyncIfNeeded()
             self.refreshCountryAndStateObjects()
-        }
-        .store(in: &subscriptions)
+        }.store(in: &subscriptions)
     }
 
     private let siteID: Int64

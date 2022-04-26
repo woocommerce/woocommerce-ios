@@ -1,3 +1,5 @@
-Créez des commandes en déplacement en y ajoutant des produits, les informations d’expédition et de facturation, ainsi que les frais ! Vous pouvez recevoir un paiement en personne par carte de crédit dans la foulée ou envoyer un lien à votre client pour qu’il règle sa commande depuis son appareil. Vous l’avez demandé, c’est désormais chose faite !
+Vous trouverez un lien de paiement pratique en haut d’une commande qui n’a pas encore fait l’objet d’un paiement. Envoyez ce lien à votre client pour qu’il puisse régler sa commande directement depuis son téléphone ou son ordinateur.
 
-Notre fonctionnalité de gestion des codes promo est également en cours d’optimisation. Pour obtenir un avant-goût, activez-la sous l’onglet Plus > Réglages > Fonctionnalités expérimentales.
+C’est une excellente option à utiliser avec la nouvelle fonctionnalité de création de commandes ! Créez une commande lorsque le client se trouve devant vous, puis envoyez-lui un message avec le lien de paiement via votre site. Ingénieux, n’est-ce pas ?
+
+Afin de bénéficier de cette option dans l’application, vous devrez effectuer la mise à jour vers WooCommerce 6.4 ou une version supérieure.

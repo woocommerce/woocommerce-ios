@@ -31,6 +31,7 @@ struct ProductSelector: View {
             VStack {
                 SearchHeader(filterText: $viewModel.searchTerm, filterPlaceholder: Localization.searchPlaceholder)
                     .padding(.horizontal, insets: safeAreaInsets)
+                    .accessibilityIdentifier("product-selector-search-bar")
                 switch viewModel.syncStatus {
                 case .results:
                     VStack(spacing: 0) {

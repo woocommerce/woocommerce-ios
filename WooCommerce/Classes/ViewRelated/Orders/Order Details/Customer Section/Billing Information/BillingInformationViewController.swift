@@ -109,7 +109,8 @@ private extension BillingInformationViewController {
     ///
     func configureEntityListener() {
         entityListener.onUpsert = { [weak self] updatedOrder in
-            guard let self = self else {
+            guard let self = self,
+                  self.order != updatedOrder else {
                 return
             }
             self.order = updatedOrder

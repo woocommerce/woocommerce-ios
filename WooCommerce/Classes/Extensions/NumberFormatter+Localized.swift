@@ -29,4 +29,27 @@ extension NumberFormatter {
         formatter.roundingMode = .halfUp
         return formatter.string(from: number)
     }
+
+    /// Converts string value from the specified source locale to target locale
+    ///
+    static func localizedString(from string: String,
+                                from sourceLocale: Locale,
+                                to targetLocale: Locale) -> String? {
+        let formatter = NumberFormatter()
+        formatter.locale = sourceLocale
+        formatter.usesGroupingSeparator = true
+        formatter.groupingSize = 3
+        formatter.formatterBehavior = .behavior10_4
+        formatter.numberStyle = .decimal
+        formatter.generatesDecimalNumbers = true
+        formatter.roundingMode = .halfUp
+
+        guard let number = formatter.number(from: string) else {
+            return nil
+        }
+
+        formatter.locale = targetLocale
+
+        return formatter.string(from: number)
+    }
 }

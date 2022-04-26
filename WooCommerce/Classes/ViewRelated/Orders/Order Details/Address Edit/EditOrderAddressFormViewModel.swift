@@ -12,7 +12,11 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
 
     /// Order to be edited.
     ///
-    private var order: Yosemite.Order
+    private var order: Yosemite.Order {
+        didSet {
+            syncFieldsWithOrder()
+        }
+    }
 
     /// Type of order address to edit
     ///

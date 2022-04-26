@@ -401,7 +401,32 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         assertEqual(noticeRequest, EditOrderAddressFormViewModel.NoticeFactory.createSuccessNotice())
     }
 
-    func test_view_model_fires_error_notice_after_failing_to_update_address_when_optimistic_updates_are_disabled() {
+    func test_view_model_does_not_fire_success_notice_after_updating_address_successfully_when_optimistic_updates_are_enabled() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: true,
+                                                        isUseUpdateOrderAddressOptimisticallyIfAvaiableOn: true)
+        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .shipping, stores: testingStores, featureFlagService: featureFlagService)
+        testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrderOptimistically(_, order, _, onCompletion):
+                onCompletion(.success(order))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        let noticeRequest = waitFor { promise in
+            viewModel.saveAddress { _ in
+                promise(viewModel.notice)
+            }
+        }
+
+        // Then
+        XCTAssertNil(noticeRequest)
+    }
+
+    func test_view_model_sets_notice_with_error_notice_after_failing_to_update_address_when_optimistic_updates_are_disabled() {
         // Given
         let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: false,
                                                         isUseUpdateOrderAddressOptimisticallyIfAvaiableOn: true)
@@ -426,7 +451,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         assertEqual(noticeRequest?.message, AddressFormViewModel.NoticeFactory.createErrorNotice(from: .unableToUpdateAddress).message)
     }
 
-    func test_view_model_fires_error_notice_after_failing_to_update_address_when_optimistic_updates_are_enabled() {
+    func test_view_model_enqueues_error_notice_after_failing_to_update_address_when_optimistic_updates_are_enabled() {
         // Given
         let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: true,
                                                         isUseUpdateOrderAddressOptimisticallyIfAvaiableOn: true)

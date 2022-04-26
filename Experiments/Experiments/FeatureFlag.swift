@@ -65,4 +65,11 @@ public enum FeatureFlag: Int {
     /// Enable optimistic updates for orders
     ///
     case updateOrderOptimistically
+
+    /// Enable optimistic updates for order address if are enabled.
+    ///
+    /// This feature flag will be removed when development to enable
+    /// optimistic updating of the address of an order is finished.
+    ///
+    case useUpdateOrderAddressOptimisticallyIfAvailable
 }

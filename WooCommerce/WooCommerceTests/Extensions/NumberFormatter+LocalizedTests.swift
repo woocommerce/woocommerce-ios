@@ -41,4 +41,47 @@ class NumberFormatter_LocalizedTests: XCTestCase {
         XCTAssertEqual(NumberFormatter.localizedString(from: number, locale: usLocale), "1.2")
         XCTAssertEqual(NumberFormatter.localizedString(from: number, locale: itLocale), "1,2")
     }
+
+    func test_localizedString_using_returns_correctly_depending_on_locale() {
+        // Given
+        let usLocale = Locale(identifier: "en_US")
+        let itLocale = Locale(identifier: "it_IT")
+
+        // When
+        let valueWithPeriod = "1.2"
+
+        // Then
+        XCTAssertEqual(NumberFormatter.localizedString(using: valueWithPeriod,
+                                                       from: usLocale,
+                                                       to: itLocale),
+                       "1,2")
+        XCTAssertNil(NumberFormatter.localizedString(using: valueWithPeriod,
+                                                       from: itLocale,
+                                                       to: usLocale))
+
+        // When
+        let valueWithComma = "1,2"
+
+        // Then
+        XCTAssertEqual(NumberFormatter.localizedString(using: valueWithComma,
+                                                       from: itLocale,
+                                                       to: usLocale),
+                       "1.2")
+        XCTAssertNil(NumberFormatter.localizedString(using: valueWithComma,
+                                                       from: usLocale,
+                                                       to: itLocale))
+
+        // When
+        let valueWithThousandSeparator = "1,000"
+
+        // Then
+        XCTAssertEqual(NumberFormatter.localizedString(using: valueWithThousandSeparator,
+                                                       from: itLocale,
+                                                       to: usLocale),
+                       "1")
+        XCTAssertEqual(NumberFormatter.localizedString(using: valueWithThousandSeparator,
+                                                       from: usLocale,
+                                                       to: itLocale),
+                       "1.000")
+    }
 }

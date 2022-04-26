@@ -33,8 +33,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .updateOrderOptimistically:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .useUpdateOrderAddressOptimisticallyIfAvailable:
-            return buildConfig == .localDeveloper
         default:
             return true
         }

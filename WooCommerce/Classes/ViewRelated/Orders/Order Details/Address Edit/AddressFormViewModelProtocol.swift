@@ -360,8 +360,7 @@ open class AddressFormViewModel: ObservableObject {
     /// Indicates whether the optimistic updates are enabled.
     ///
     var areOptimisticUpdatesEnabled: Bool {
-        featureFlagService.isFeatureFlagEnabled(.useUpdateOrderAddressOptimisticallyIfAvailable)
-        && featureFlagService.isFeatureFlagEnabled(.updateOrderOptimistically)
+        featureFlagService.isFeatureFlagEnabled(.updateOrderOptimistically)
     }
 
     /// Creates a view model to be used when selecting a country for primary fields

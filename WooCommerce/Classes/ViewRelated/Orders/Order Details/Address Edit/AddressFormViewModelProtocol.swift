@@ -272,20 +272,21 @@ open class AddressFormViewModel: ObservableObject {
         self.noticePresenter = noticePresenter
 
         // Listen only to the first emitted event.
-        onLoadTrigger.first().sink { [weak self] in
+        firstLoadTrigger.first().sink { [weak self] in
             guard let self = self else { return }
             self.bindSyncTrigger()
             self.bindNavigationTrailingItemPublisher()
             self.bindHasPendingChangesPublisher()
-        }
-        .store(in: &subscriptions)
+
+            self.trackOnLoad()
+        }.store(in: &subscriptions)
 
         onLoadTrigger.sink { [weak self] in
             guard let self = self else { return }
+            self.firstLoadTrigger.send()
+
             self.fetchStoredCountriesAndTriggerSyncIfNeeded()
             self.refreshCountryAndStateObjects()
-
-            self.trackOnLoad()
         }
         .store(in: &subscriptions)
     }
@@ -315,6 +316,10 @@ open class AddressFormViewModel: ObservableObject {
     /// Trigger to perform any one time setups.
     ///
     let onLoadTrigger: PassthroughSubject<Void, Never> = PassthroughSubject()
+
+    /// Trigger to perform only once time.
+    ///
+    private let firstLoadTrigger: PassthroughSubject<Void, Never> = PassthroughSubject()
 
     /// Tracks if a network request is being performed.
     ///

@@ -10,7 +10,8 @@ class PaymentCaptureOrchestratorTests: XCTestCase {
 
     override func setUpWithError() throws {
         stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
-        sut = PaymentCaptureOrchestrator(stores: stores)
+        sut = PaymentCaptureOrchestrator(stores: stores,
+                                         paymentReceiptEmailParameterDeterminer: MockReceiptEmailParameterDeterminer())
     }
 
     override func tearDownWithError() throws {
@@ -214,5 +215,11 @@ extension PaymentCaptureOrchestratorTests {
                 onCardReaderMessage(.waitingForInput("Present card"))
             }
         }
+    }
+}
+
+struct MockReceiptEmailParameterDeterminer: ReceiptEmailParameterDeterminer {
+    func receiptEmail(from order: Order, onCompletion: @escaping ((Result<String?, Error>) -> Void)) {
+        onCompletion(.success(nil))
     }
 }

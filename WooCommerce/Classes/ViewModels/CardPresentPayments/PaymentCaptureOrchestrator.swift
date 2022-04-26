@@ -19,7 +19,7 @@ struct CardPresentCapturedPaymentData {
 final class PaymentCaptureOrchestrator {
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
     private let personNameComponentsFormatter = PersonNameComponentsFormatter()
-    private let paymentReceiptEmailParameterDeterminer = PaymentReceiptEmailParameterDeterminer()
+    private let paymentReceiptEmailParameterDeterminer: ReceiptEmailParameterDeterminer
 
     private let celebration = PaymentCaptureCelebration()
 
@@ -27,8 +27,10 @@ final class PaymentCaptureOrchestrator {
 
     private let stores: StoresManager
 
-    init(stores: StoresManager = ServiceLocator.stores) {
+    init(stores: StoresManager = ServiceLocator.stores,
+         paymentReceiptEmailParameterDeterminer: ReceiptEmailParameterDeterminer = PaymentReceiptEmailParameterDeterminer()) {
         self.stores = stores
+        self.paymentReceiptEmailParameterDeterminer = paymentReceiptEmailParameterDeterminer
     }
 
     func collectPayment(for order: Order,

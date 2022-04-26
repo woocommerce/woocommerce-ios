@@ -149,9 +149,14 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: true))
     }
 
-    func test_loading_indicator_gets_enabled_during_network_request() {
+    func test_loading_indicator_gets_enabled_during_network_request_when_optimistic_updates_are_disabled() {
         // Given
-        let viewModel = EditOrderAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), type: .shipping, storageManager: testingStorage)
+        let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: false,
+                                                        isUseUpdateOrderAddressOptimisticallyIfAvaiableOn: true)
+        let viewModel = EditOrderAddressFormViewModel(order: order(withShippingAddress: sampleAddress()),
+                                                      type: .shipping,
+                                                      storageManager: testingStorage,
+                                                      featureFlagService: featureFlagService)
 
         // When
         viewModel.onLoadTrigger.send()
@@ -259,7 +264,8 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         let update: (order: Order, fields: [OrderUpdateField]) = waitFor { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateOrder(_, order, fields, _):
+                case let .updateOrder(_, order, fields, _),
+                     let .updateOrderOptimistically(_, order, fields, _):
                     promise((order, fields))
                 default:
                     XCTFail("Unsupported Action")
@@ -285,7 +291,8 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         let update: (order: Order, fields: [OrderUpdateField]) = waitFor { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateOrder(_, order, fields, _):
+                case let .updateOrder(_, order, fields, _),
+                     let .updateOrderOptimistically(_, order, fields, _):
                     promise((order, fields))
                 default:
                     XCTFail("Unsupported Action")
@@ -310,7 +317,8 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         let update: (order: Order, fields: [OrderUpdateField]) = waitFor { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateOrder(_, order, fields, _):
+                case let .updateOrder(_, order, fields, _),
+                     let .updateOrderOptimistically(_, order, fields, _):
                     promise((order, fields))
                 default:
                     XCTFail("Unsupported Action")
@@ -352,7 +360,8 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         let update: (order: Order, fields: [OrderUpdateField]) = waitFor { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateOrder(_, order, fields, _):
+                case let .updateOrder(_, order, fields, _),
+                     let .updateOrderOptimistically(_, order, fields, _):
                     promise((order, fields))
                 default:
                     XCTFail("Unsupported Action")
@@ -367,9 +376,11 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         assertEqual(update.fields, [.billingAddress, .shippingAddress])
     }
 
-    func test_view_model_fires_success_notice_after_updating_address_successfully() {
+    func test_view_model_fires_success_notice_after_updating_address_successfully_when_optimistic_updates_are_disabled() {
         // Given
-        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .shipping, stores: testingStores)
+        let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: false,
+                                                        isUseUpdateOrderAddressOptimisticallyIfAvaiableOn: true)
+        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .shipping, stores: testingStores, featureFlagService: featureFlagService)
         testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case let .updateOrder(_, order, _, onCompletion):
@@ -390,9 +401,11 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         assertEqual(noticeRequest, EditOrderAddressFormViewModel.NoticeFactory.createSuccessNotice())
     }
 
-    func test_view_model_fires_error_notice_after_failing_to_update_address() {
+    func test_view_model_fires_error_notice_after_failing_to_update_address_when_optimistic_updates_are_disabled() {
         // Given
-        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .shipping, stores: testingStores)
+        let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: false,
+                                                        isUseUpdateOrderAddressOptimisticallyIfAvaiableOn: true)
+        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .shipping, stores: testingStores, featureFlagService: featureFlagService)
         testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case let .updateOrder(_, _, _, onCompletion):
@@ -410,7 +423,37 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         }
 
         // Then
-        assertEqual(noticeRequest, AddressFormViewModel.NoticeFactory.createErrorNotice(from: .unableToUpdateAddress))
+        assertEqual(noticeRequest?.message, AddressFormViewModel.NoticeFactory.createErrorNotice(from: .unableToUpdateAddress).message)
+    }
+
+    func test_view_model_fires_error_notice_after_failing_to_update_address_when_optimistic_updates_are_enabled() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: true,
+                                                        isUseUpdateOrderAddressOptimisticallyIfAvaiableOn: true)
+        let noticePresenter = MockNoticePresenter()
+        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(),
+                                                      type: .shipping,
+                                                      stores: testingStores,
+                                                      featureFlagService: featureFlagService,
+                                                      noticePresenter: noticePresenter)
+        testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrderOptimistically(_, _, _, onCompletion):
+                onCompletion(.failure(NSError(domain: "", code: 0)))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        _ = waitFor { promise in
+            viewModel.saveAddress { _ in
+                promise(true)
+            }
+        }
+
+        // Then
+        assertEqual(.error, noticePresenter.queuedNotices.first?.feedbackType)
     }
 
     func test_view_model_fires_error_notice_after_failing_to_fetch_countries() {
@@ -440,7 +483,8 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         let billingAddress: Address? = waitFor { promise in
             self.testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateOrder(_, order, _, _):
+                case let .updateOrder(_, order, _, _),
+                     let .updateOrderOptimistically(_, order, _, _):
                     promise(order.billingAddress)
                 default:
                     XCTFail("Unsupported Action")
@@ -467,7 +511,8 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         let shippingAddress: Address? = waitFor { promise in
             self.testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateOrder(_, order, _, _):
+                case let .updateOrder(_, order, _, _),
+                     let .updateOrderOptimistically(_, order, _, _):
                     promise(order.shippingAddress)
                 default:
                     XCTFail("Unsupported Action")
@@ -494,7 +539,8 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         let billingAddress: Address? = waitFor { promise in
             self.testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateOrder(_, order, _, _):
+                case let .updateOrder(_, order, _, _),
+                     let .updateOrderOptimistically(_, order, _, _):
                     promise(order.billingAddress)
                 default:
                     XCTFail("Unsupported Action")
@@ -533,7 +579,8 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
                                                  analytics: WooAnalytics(analyticsProvider: analyticsProvider))
         testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, order, _, onCompletion):
+            case let .updateOrder(_, order, _, onCompletion),
+                 let .updateOrderOptimistically(_, order, _, onCompletion):
                 onCompletion(.success(order))
             default:
                 XCTFail("Unsupported Action")
@@ -561,7 +608,8 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
                                                  analytics: WooAnalytics(analyticsProvider: analyticsProvider))
         testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, order, _, onCompletion):
+            case let .updateOrder(_, order, _, onCompletion),
+                 let .updateOrderOptimistically(_, order, _, onCompletion):
                 onCompletion(.success(order))
             default:
                 XCTFail("Unsupported Action")
@@ -589,7 +637,8 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
                                                  analytics: WooAnalytics(analyticsProvider: analyticsProvider))
         testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, _, _, onCompletion):
+            case let .updateOrder(_, _, _, onCompletion),
+                 let .updateOrderOptimistically(_, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "", code: 0)))
             default:
                 XCTFail("Unsupported Action")
@@ -617,7 +666,8 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
                                                  analytics: WooAnalytics(analyticsProvider: analyticsProvider))
         testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, _, _, onCompletion):
+            case let .updateOrder(_, _, _, onCompletion),
+                 let .updateOrderOptimistically(_, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "", code: 0)))
             default:
                 XCTFail("Unsupported Action")

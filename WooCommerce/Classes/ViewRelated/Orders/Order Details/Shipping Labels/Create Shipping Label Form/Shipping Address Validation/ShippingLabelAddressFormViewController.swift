@@ -274,7 +274,7 @@ private extension ShippingLabelAddressFormViewController {
     func displayAddressUpdateFailedNotice() {
         let notice = Notice(
                 title: Localization.addressValidationErrorNotice,
-                feedbackType: .success,
+                feedbackType: .error,
                 actionTitle: Localization.addressValidationActionLabel
         )
 

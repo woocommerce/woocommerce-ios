@@ -58,6 +58,10 @@ class NumberFormatter_LocalizedTests: XCTestCase {
         XCTAssertNil(NumberFormatter.localizedString(using: valueWithPeriod,
                                                        from: itLocale,
                                                        to: usLocale))
+        XCTAssertEqual(NumberFormatter.localizedString(using: valueWithPeriod,
+                                                       from: usLocale,
+                                                       to: usLocale),
+                       "1.2")
 
         // When
         let valueWithComma = "1,2"
@@ -70,6 +74,10 @@ class NumberFormatter_LocalizedTests: XCTestCase {
         XCTAssertNil(NumberFormatter.localizedString(using: valueWithComma,
                                                        from: usLocale,
                                                        to: itLocale))
+        XCTAssertEqual(NumberFormatter.localizedString(using: valueWithComma,
+                                                       from: itLocale,
+                                                       to: itLocale),
+                       "1,2")
 
         // When
         let valueWithThousandSeparator = "1,000"

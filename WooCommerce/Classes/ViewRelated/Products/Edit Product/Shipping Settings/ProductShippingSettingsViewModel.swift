@@ -61,19 +61,19 @@ final class ProductShippingSettingsViewModel: ProductShippingSettingsViewModelOu
     // Localized values
     //
     var localizedWeight: String? {
-        weight?.localized(toLocale: locale)
+        weight?.localized(toLocale: locale) ?? weight
     }
 
     var localizedLength: String? {
-        length?.localized(toLocale: locale)
+        length?.localized(toLocale: locale) ?? length
     }
 
     var localizedWidth: String? {
-        width?.localized(toLocale: locale)
+        width?.localized(toLocale: locale) ?? width
     }
 
     var localizedHeight: String? {
-        height?.localized(toLocale: locale)
+        height?.localized(toLocale: locale) ?? height
     }
 
     /// Nil and not editable until the shipping class is synced at a later point.
@@ -185,8 +185,8 @@ private extension String {
 
     /// Localizes the weight and shipping dimensions
     ///
-    func localized(toLocale: Locale) -> String {
-        NumberFormatter.localizedString(using: self, from: usLocale, to: toLocale) ?? self
+    func localized(toLocale: Locale) -> String? {
+        NumberFormatter.localizedString(using: self, from: usLocale, to: toLocale)
     }
 
     /// Formats the weight and shipping dimensions to the API preferred locale (US locale)

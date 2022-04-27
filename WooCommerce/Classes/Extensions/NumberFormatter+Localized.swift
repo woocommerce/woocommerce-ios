@@ -30,7 +30,16 @@ extension NumberFormatter {
         return formatter.string(from: number)
     }
 
-    /// Converts string value from the specified source locale to target locale
+    /// Converts given number in string format, from the specified source locale to target locale.
+    ///
+    /// This method does not use grouping separator while localizing the number. (No thousands separator)
+    ///
+    /// - Parameters:
+    ///     - using: The string to be localized.
+    ///     - from: The current `Locale` of the input string.
+    ///     - to: The `Locale` to be used for localizing the input string.
+    ///
+    /// - Returns: The input string localized to the target locale. Returns `nil` if the localization is unsucessful.
     ///
     static func localizedString(using string: String,
                                 from sourceLocale: Locale,

@@ -150,7 +150,7 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
     }
 
     override func trackOnLoad() {
-        analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowStarted(subject: self.analyticsFlowType()))
+        analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowStarted(subject: analyticsFlowType()))
     }
 
     func userDidCancelFlow() {
@@ -158,7 +158,7 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
             syncFieldsWithOrder()
         }
 
-        analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCanceled(subject: self.analyticsFlowType()))
+        analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCanceled(subject: analyticsFlowType()))
     }
 }
 

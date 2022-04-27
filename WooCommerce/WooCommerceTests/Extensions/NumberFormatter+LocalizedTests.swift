@@ -42,7 +42,7 @@ class NumberFormatter_LocalizedTests: XCTestCase {
         XCTAssertEqual(NumberFormatter.localizedString(from: number, locale: itLocale), "1,2")
     }
 
-    func test_localizedString_using_returns_correctly_depending_on_locale() {
+    func test_localizedString_using_method_returns_correctly_based_on_from_and_to_locales() {
         // Given
         let usLocale = Locale(identifier: "en_US")
         let itLocale = Locale(identifier: "it_IT")
@@ -51,13 +51,19 @@ class NumberFormatter_LocalizedTests: XCTestCase {
         let valueWithPeriod = "1.2"
 
         // Then
+
+        // Valid output when converting to a different locale
         XCTAssertEqual(NumberFormatter.localizedString(using: valueWithPeriod,
                                                        from: usLocale,
                                                        to: itLocale),
                        "1,2")
+
+        // Nil output when providing invalid `from` locale
         XCTAssertNil(NumberFormatter.localizedString(using: valueWithPeriod,
                                                        from: itLocale,
                                                        to: usLocale))
+
+        // Same output as input when providing same locale values from `from` and `to` params
         XCTAssertEqual(NumberFormatter.localizedString(using: valueWithPeriod,
                                                        from: usLocale,
                                                        to: usLocale),
@@ -67,13 +73,19 @@ class NumberFormatter_LocalizedTests: XCTestCase {
         let valueWithComma = "1,2"
 
         // Then
+
+        // Valid output when converting to a different locale
         XCTAssertEqual(NumberFormatter.localizedString(using: valueWithComma,
                                                        from: itLocale,
                                                        to: usLocale),
                        "1.2")
+
+        // Nil output when providing invalid `from` locale
         XCTAssertNil(NumberFormatter.localizedString(using: valueWithComma,
                                                        from: usLocale,
                                                        to: itLocale))
+
+        // Same output as input when providing same locale values from `from` and `to` params
         XCTAssertEqual(NumberFormatter.localizedString(using: valueWithComma,
                                                        from: itLocale,
                                                        to: itLocale),

@@ -29,10 +29,10 @@ final class ProductShippingSettingsViewModelTests: XCTestCase {
         ]
         XCTAssertEqual(viewModel.sections, expectedSections)
         XCTAssertEqual(viewModel.product as? EditableProductModel, model)
-        XCTAssertEqual(viewModel.weight, "1.6")
-        XCTAssertEqual(viewModel.length, dimensions.length)
-        XCTAssertEqual(viewModel.width, dimensions.width)
-        XCTAssertEqual(viewModel.height, dimensions.height)
+        XCTAssertEqual(viewModel.localizedWeight, "1.6")
+        XCTAssertEqual(viewModel.localizedLength, dimensions.length)
+        XCTAssertEqual(viewModel.localizedWidth, dimensions.width)
+        XCTAssertEqual(viewModel.localizedHeight, dimensions.height)
         XCTAssertNil(viewModel.shippingClass)
     }
 

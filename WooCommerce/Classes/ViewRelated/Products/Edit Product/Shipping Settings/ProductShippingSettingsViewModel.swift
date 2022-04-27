@@ -11,10 +11,10 @@ protocol ProductShippingSettingsViewModelOutput {
     /// The product before any shipping changes.
     var product: ProductFormDataModel { get }
 
-    var weight: String? { get }
-    var length: String? { get }
-    var width: String? { get }
-    var height: String? { get }
+    var localizedWeight: String? { get }
+    var localizedLength: String? { get }
+    var localizedWidth: String? { get }
+    var localizedHeight: String? { get }
 
     /// Only for UI display and list selector
     /// Nil and not editable until the shipping class is synced at a later point.
@@ -51,12 +51,30 @@ final class ProductShippingSettingsViewModel: ProductShippingSettingsViewModelOu
 
     // Editable data
     //
-    private(set) var weight: String?
-    private(set) var length: String?
-    private(set) var width: String?
-    private(set) var height: String?
+    private var weight: String?
+    private var length: String?
+    private var width: String?
+    private var height: String?
     private var shippingClassSlug: String?
     private var shippingClassID: Int64
+
+    // Localized values
+    //
+    var localizedWeight: String? {
+        weight?.localized(toLocale: locale)
+    }
+
+    var localizedLength: String? {
+        length?.localized(toLocale: locale)
+    }
+
+    var localizedWidth: String? {
+        width?.localized(toLocale: locale)
+    }
+
+    var localizedHeight: String? {
+        height?.localized(toLocale: locale)
+    }
 
     /// Nil and not editable until the shipping class is synced at a later point.
     private(set) var shippingClass: ProductShippingClass?
@@ -66,10 +84,10 @@ final class ProductShippingSettingsViewModel: ProductShippingSettingsViewModelOu
          locale: Locale = .current) {
         self.product = product
         self.locale = locale
-        weight = product.weight?.localized(toLocale: locale)
-        length = product.dimensions.length.localized(toLocale: locale)
-        width = product.dimensions.width.localized(toLocale: locale)
-        height = product.dimensions.height.localized(toLocale: locale)
+        weight = product.weight
+        length = product.dimensions.length
+        width = product.dimensions.width
+        height = product.dimensions.height
         shippingClassSlug = product.shippingClass
         shippingClassID = product.shippingClassID
 
@@ -92,19 +110,19 @@ final class ProductShippingSettingsViewModel: ProductShippingSettingsViewModelOu
 
 extension ProductShippingSettingsViewModel: ProductShippingSettingsActionHandler {
     func handleWeightChange(_ weight: String?) {
-        self.weight = weight
+        self.weight = weight?.formattedForAPI(fromLocale: locale)
     }
 
     func handleLengthChange(_ length: String?) {
-        self.length = length
+        self.length = length?.formattedForAPI(fromLocale: locale) ?? ""
     }
 
     func handleWidthChange(_ width: String?) {
-        self.width = width
+        self.width = width?.formattedForAPI(fromLocale: locale) ?? ""
     }
 
     func handleHeightChange(_ height: String?) {
-        self.height = height
+        self.height = height?.formattedForAPI(fromLocale: locale) ?? ""
     }
 
     func handleShippingClassChange(_ shippingClass: ProductShippingClass?) {
@@ -119,10 +137,10 @@ extension ProductShippingSettingsViewModel: ProductShippingSettingsActionHandler
     }
 
     func completeUpdating(onCompletion: ProductShippingSettingsViewController.Completion) {
-        let dimensions = ProductDimensions(length: length?.formattedForAPI(fromLocale: locale) ?? "",
-                                           width: width?.formattedForAPI(fromLocale: locale) ?? "",
-                                           height: height?.formattedForAPI(fromLocale: locale) ?? "")
-        onCompletion(weight?.formattedForAPI(fromLocale: locale),
+        let dimensions = ProductDimensions(length: length ?? "",
+                                           width: width ?? "",
+                                           height: height ?? "")
+        onCompletion(weight,
                      dimensions,
                      shippingClassSlug,
                      shippingClassID,

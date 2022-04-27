@@ -296,7 +296,7 @@ private extension RefundSubmissionUseCase {
                 // Cancels current refund, if possible.
                 self?.cardPresentRefundOrchestrator.cancelRefund { [weak self] _ in
                     // Regardless of whether the refund could be cancelled (e.g. it completed but failed), retry the refund.
-                    self?.attemptCardPresentRefund(refundAmount: refundAmount, 
+                    self?.attemptCardPresentRefund(refundAmount: refundAmount,
                                                                  charge: charge,
                                                                  paymentGatewayAccount: paymentGatewayAccount,
                                                                  onCompletion: onCompletion)

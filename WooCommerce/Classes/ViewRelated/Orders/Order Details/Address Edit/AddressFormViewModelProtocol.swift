@@ -564,14 +564,14 @@ private extension AddressFormViewModel {
 
     /// Creates a publisher that syncs countries into our storage layer.
     ///
-    func makeSyncCountriesFuture() -> AnyPublisher<Void, EditAddressError> {
-        Future<Void, EditAddressError> { [weak self] promise in
+    func makeSyncCountriesFuture() -> AnyPublisher<Void, AddressFormError> {
+        Future<Void, AddressFormError> { [weak self] promise in
             guard let self = self else { return }
 
             let action = DataAction.synchronizeCountries(siteID: self.siteID) { result in
                 let newResult = result
                     .map { _ in } // Hides the result success type because we don't need it.
-                    .mapError { _ in EditAddressError.unableToLoadCountries }
+                    .mapError { _ in AddressFormError.unableToLoadCountries }
                 promise(newResult)
             }
             self.stores.dispatch(action)

@@ -49,7 +49,7 @@ final class ProductShippingSettingsViewModelTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Act
-        let viewModel = ProductShippingSettingsViewModel(product: model, locale: usLocale)
+        let viewModel = ProductShippingSettingsViewModel(product: model)
         waitForExpectation { expectation in
             viewModel.completeUpdating { (weight, dimensions, shippingClass, shippingClassID, hasUnsavedChanges) in
                 // Assert
@@ -74,7 +74,7 @@ final class ProductShippingSettingsViewModelTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Act
-        let viewModel = ProductShippingSettingsViewModel(product: model, locale: usLocale)
+        let viewModel = ProductShippingSettingsViewModel(product: model)
         let retrievedShippingClass = ProductShippingClass(count: 0, descriptionHTML: nil, name: "60 Days", shippingClassID: 2, siteID: 0, slug: "90-day")
         viewModel.onShippingClassRetrieved(shippingClass: retrievedShippingClass)
         waitForExpectation { expectation in
@@ -133,7 +133,7 @@ final class ProductShippingSettingsViewModelTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Act
-        let viewModel = ProductShippingSettingsViewModel(product: model, locale: usLocale)
+        let viewModel = ProductShippingSettingsViewModel(product: model)
         let retrievedShippingClass = ProductShippingClass(count: 0, descriptionHTML: nil, name: "60 Days", shippingClassID: 2, siteID: 0, slug: "90-day")
         viewModel.onShippingClassRetrieved(shippingClass: retrievedShippingClass)
         let hasUnsavedChanges = viewModel.hasUnsavedChanges()

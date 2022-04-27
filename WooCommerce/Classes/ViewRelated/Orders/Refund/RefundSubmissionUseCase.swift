@@ -278,7 +278,7 @@ private extension RefundSubmissionUseCase {
     }
 
     /// Logs the failure reason, cancels the current refund, and offers retry if possible.
-    func handleRefundFailureAndRetryRefund(_ error: Error,
+    private func handleRefundFailureAndRetryRefund(_ error: Error,
                                            refundAmount: Decimal,
                                            charge: WCPayCharge,
                                            paymentGatewayAccount: PaymentGatewayAccount,

@@ -478,7 +478,11 @@ extension IssueRefundViewModel {
     /// Calculates whether there are pending changes to commit
     ///
     private func calculatePendingChangesState() -> Bool {
-        (state.refundQuantityStore.count() > 0 || state.shouldRefundShipping || state.shouldRefundFees) && state.fetchChargeError == nil
+        guard state.fetchChargeError == nil else {
+            return false
+        }
+
+        return state.refundQuantityStore.count() > 0 || state.shouldRefundShipping || state.shouldRefundFees
     }
 
     /// Calculates whether the "select all" button should be visible or not.

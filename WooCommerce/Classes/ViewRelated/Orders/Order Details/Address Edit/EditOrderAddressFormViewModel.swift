@@ -243,8 +243,8 @@ private extension EditOrderAddressFormViewModel {
     ///
     func displayUpdateErrorNotice(modifiedOrder: Yosemite.Order, fields: [OrderUpdateField], updatedAddress: Address) {
         let noticeIdentifier = UUID().uuidString
-        let errorNotice = NoticeFactory.createRetriableErrorNotice(from: .unableToUpdateAddress,
-                                                                   info: NoticeNotificationInfo(identifier: noticeIdentifier)) { [weak self] in
+        let errorNotice = NoticeFactory.createErrorNotice(from: .unableToUpdateAddress,
+                                                          info: NoticeNotificationInfo(identifier: noticeIdentifier)) { [weak self] in
             self?.handleOrderUpdate(modifiedOrder, fields: fields, updatedAddress: updatedAddress)
         }
 
@@ -287,6 +287,7 @@ private extension EditOrderAddressFormViewModel {
 
 extension EditOrderAddressFormViewModel {
     /// Representation of possible errors that can happen
+    /// 
     enum EditAddressError: LocalizedError {
         case unableToUpdateAddress
 
@@ -310,9 +311,9 @@ extension EditOrderAddressFormViewModel {
     /// Creates edit address form notices.
     ///
     enum NoticeFactory {
-        /// Creates an error notice with retry based on the provided edit address error.
+        /// Creates an error notice based on the provided edit address error.
         ///
-        static func createRetriableErrorNotice(from error: EditAddressError, info: NoticeNotificationInfo, retryAction: @escaping () -> Void) -> Notice {
+        static func createErrorNotice(from error: EditAddressError, info: NoticeNotificationInfo? = nil, retryAction: (() -> Void)? = nil) -> Notice {
             Notice(title: error.errorDescription ?? "",
                    message: error.recoverySuggestion,
                    feedbackType: .error,

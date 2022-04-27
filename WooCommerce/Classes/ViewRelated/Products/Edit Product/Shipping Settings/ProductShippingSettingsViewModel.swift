@@ -110,7 +110,7 @@ final class ProductShippingSettingsViewModel: ProductShippingSettingsViewModelOu
 
 extension ProductShippingSettingsViewModel: ProductShippingSettingsActionHandler {
     func handleWeightChange(_ weight: String?) {
-        self.weight = weight?.formattedForAPI(fromLocale: locale)
+        self.weight = weight?.formattedForAPI(fromLocale: locale) ?? ""
     }
 
     func handleLengthChange(_ length: String?) {
@@ -140,7 +140,7 @@ extension ProductShippingSettingsViewModel: ProductShippingSettingsActionHandler
         let dimensions = ProductDimensions(length: length ?? "",
                                            width: width ?? "",
                                            height: height ?? "")
-        onCompletion(weight,
+        onCompletion(weight ?? "",
                      dimensions,
                      shippingClassSlug,
                      shippingClassID,

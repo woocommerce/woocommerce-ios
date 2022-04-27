@@ -32,7 +32,7 @@ extension NumberFormatter {
 
     /// Converts given number in string format, from the specified source locale to target locale.
     ///
-    /// This method does not use grouping separator while localizing the number. (No thousands separator)
+    /// This method does not accept numbers with grouping separator. (No thousands separator)
     ///
     /// - Parameters:
     ///     - using: The string to be localized.

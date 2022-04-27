@@ -290,7 +290,9 @@ private extension RefundSubmissionUseCase {
         if let cardReaderError = error as? CardReaderServiceError,
            case .refundPayment(_, let shouldRetry) = cardReaderError,
            shouldRetry == false {
-            alerts.nonRetryableError(from: rootViewController, error: error)
+            alerts.nonRetryableError(from: rootViewController, error: error) {
+                onCompletion(.failure(error))
+            }
         } else {
             alerts.error(error: error, tryAgain: { [weak self] in
                 // Cancels current refund, if possible.

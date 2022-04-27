@@ -287,8 +287,9 @@ private extension CollectOrderPaymentUseCase {
 
                 case .failure(let cancelError):
                     // Inform that payment can't be retried.
-                    self.alerts.nonRetryableError(from: self.rootViewController, error: cancelError)
-                    onCompletion(.failure(error))
+                    self.alerts.nonRetryableError(from: self.rootViewController, error: cancelError) {
+                        onCompletion(.failure(error))
+                    }
                 }
             }
         }, dismissCompletion: {

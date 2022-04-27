@@ -444,7 +444,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         }
 
         // Then
-        assertEqual(noticeRequest?.message, AddressFormViewModel.NoticeFactory.createErrorNotice(from: .unableToUpdateAddress).message)
+        assertEqual(noticeRequest?.message, EditOrderAddressFormViewModel.NoticeFactory.createErrorNotice(from: .unableToUpdateAddress).message)
     }
 
     func test_view_model_enqueues_error_notice_after_failing_to_update_address_when_optimistic_updates_are_enabled() {

@@ -18,7 +18,7 @@ final class ProductShippingSettingsViewController: UIViewController {
         _ hasUnsavedChanges: Bool) -> Void
     private let onCompletion: Completion
 
-    private let viewModel: ProductShippingSettingsViewModel
+    private let viewModel: ProductShippingSettingsViewModelOutput & ProductShippingSettingsActionHandler
     private let shippingSettingsService: ShippingSettingsService
 
     init(product: ProductFormDataModel,

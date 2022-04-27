@@ -232,7 +232,7 @@ private extension ShippingLabelAddressFormViewController {
                 self.onCompletion(self.viewModel.address)
                 self.navigationController?.popViewController(animated: true)
             case .failure:
-                self.displayErrorAlert(title: "title", message: "error")
+                self.displayShipFromAddressUpdateFailedNotice()
                 break
             }
         }
@@ -247,23 +247,18 @@ private extension ShippingLabelAddressFormViewController {
                 self.onCompletion(self.viewModel.address)
                 self.navigationController?.popViewController(animated: true)
             case .failure:
-                self.displayErrorAlert(title: "title", message: "error")
+                self.displayShipFromAddressUpdateFailedNotice()
                 break
             }
         }
     }
 
-    func displayErrorAlert(title: String?, message: String?) {
-        let alert = UIAlertController(title: title,
-                message: message,
-                preferredStyle: .alert)
-        let cancel = UIAlertAction(title: NSLocalizedString(
-                "OK",
-                comment: "Dismiss button on the alert when there is an error updating the product"
-        ), style: .cancel, handler: nil)
-        alert.addAction(cancel)
+    func displayShipFromAddressUpdateFailedNotice() {
+        let message = NSLocalizedString("Check the field errors before submitting", comment: "Ship From address update failed notice")
+        let actionTitle = NSLocalizedString("OK", comment: "Dismiss the alert notice")
+        let notice = Notice(title: message, feedbackType: .success, actionTitle: actionTitle)
 
-        present(alert, animated: true, completion: nil)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
 

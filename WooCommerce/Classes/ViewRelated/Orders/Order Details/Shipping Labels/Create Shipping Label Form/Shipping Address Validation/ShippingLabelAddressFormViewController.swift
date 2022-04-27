@@ -270,10 +270,13 @@ private extension ShippingLabelAddressFormViewController {
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
+    /// Enqueues the Address Validation Error notice.
     func displayAddressUpdateFailedNotice() {
-        let message = NSLocalizedString("Check the field errors before submitting", comment: "Ship From address update failed notice")
-        let actionTitle = NSLocalizedString("OK", comment: "Dismiss the alert notice")
-        let notice = Notice(title: message, feedbackType: .success, actionTitle: actionTitle)
+        let notice = Notice(
+                title: Localization.addressValidationErrorNotice,
+                feedbackType: .success,
+                actionTitle: Localization.addressValidationActionLabel
+        )
 
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
@@ -625,6 +628,8 @@ private extension ShippingLabelAddressFormViewController {
                                                             comment: "Error in finding the address in the Shipping Label Address Validation in Apple Maps")
         static let phoneNumberErrorNotice = NSLocalizedString("The phone number is not valid or you can't call the customer from this device.",
             comment: "Error in calling the phone number of the customer in the Shipping Label Address Validation")
+        static let addressValidationErrorNotice = NSLocalizedString("Check the field errors before submitting", comment: "Ship From address update failed notice")
+        static let addressValidationActionLabel = NSLocalizedString("OK", comment: "Dismiss the alert notice")
         static let contactActionLabel = NSLocalizedString("Contact Customer", comment: "Contact Customer action in Shipping Label Address Validation.")
         static let contactActionCancel = NSLocalizedString("Cancel", comment: "Close the action sheet")
         static let contactActionEmail = NSLocalizedString("Email", comment: "Email button title")

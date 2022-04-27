@@ -7,34 +7,6 @@ final class ProductShippingSettingsViewModelTests: XCTestCase {
 
     // MARK: - Initialization
 
-    func test_readonly_shipping_values_are_as_expected_after_initialization() {
-        // Arrange
-        let dimensions = ProductDimensions(length: "2.9", width: "", height: "1116")
-        let product = Product.fake()
-            .copy(weight: "1.6",
-                  dimensions: dimensions,
-                  shippingClass: "60-day",
-                  shippingClassID: 2)
-        let model = EditableProductModel(product: product)
-
-        // Act
-        let viewModel = ProductShippingSettingsViewModel(product: model,
-                                                         locale: Locale(identifier: "en_US"))
-
-        // Assert
-        let expectedSections: [Section] = [
-            .init(rows: [.weight, .length, .width, .height]),
-            .init(rows: [.shippingClass])
-        ]
-        XCTAssertEqual(viewModel.sections, expectedSections)
-        XCTAssertEqual(viewModel.product as? EditableProductModel, model)
-        XCTAssertEqual(viewModel.localizedWeight, "1.6")
-        XCTAssertEqual(viewModel.localizedLength, dimensions.length)
-        XCTAssertEqual(viewModel.localizedWidth, dimensions.width)
-        XCTAssertEqual(viewModel.localizedHeight, dimensions.height)
-        XCTAssertNil(viewModel.shippingClass)
-    }
-
     func test_readonly_shipping_values_are_as_expected_based_on_locale_after_initialization() {
         // Arrange
         let dimensions = ProductDimensions(length: "2.9", width: "", height: "1116")

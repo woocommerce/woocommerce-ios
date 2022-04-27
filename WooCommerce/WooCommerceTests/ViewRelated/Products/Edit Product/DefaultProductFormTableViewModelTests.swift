@@ -119,4 +119,40 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
             XCTFail("Cell not found")
         }
     }
+
+    func test_shipping_settings_row_displays_localized_weight_and_dimensions() {
+        // Given
+        let dimensions = ProductDimensions(length: "2.9", width: "1.1", height: "113")
+        let product = Product.fake()
+            .copy(productTypeKey: ProductType.simple.rawValue,
+                  weight: "1.6",
+                  dimensions: dimensions)
+        let model = EditableProductModel(product: product)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+        let weightUnit = "kg"
+        let dimensionUnit = "cm"
+
+        // When
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "",
+                                                              locale: Locale(identifier: "it_IT"),
+                                                              weightUnit: weightUnit,
+                                                              dimensionUnit: dimensionUnit)
+
+        // Then
+        guard case let .settings(rows) = tableViewModel.sections[1] else {
+            XCTFail("Unexpected section at index 1: \(tableViewModel.sections)")
+            return
+        }
+        var shippingViewModel: ProductFormSection.SettingsRow.ViewModel?
+        for row in rows {
+            if case let .shipping(viewModel, _) = row {
+                shippingViewModel = viewModel
+                break
+            }
+        }
+
+        XCTAssertEqual(shippingViewModel?.details, "Weight: 1,6\(weightUnit)\nDimensions: 2,9 x 1,1 x 113 \(dimensionUnit)")
+    }
 }

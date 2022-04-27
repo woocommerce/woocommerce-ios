@@ -563,6 +563,166 @@ final class OrderStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    func test_optimistic_update_order_customer_note_correctly() {
+        // Given
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let originalOrder = sampleOrder()
+        let updatedOrder = originalOrder.copy(customerNote: "Updated!")
+
+        orderStore.upsertStoredOrder(readOnlyOrder: originalOrder, in: viewStorage)
+
+        /// As we're updating the order optimistically, the response from the API will be ignored.
+        /// It's only to simulate the successful path.
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
+
+        // When
+        let result: Result<Networking.Order, Error> = waitFor { promise in
+            let action = OrderAction.updateOrderOptimistically(siteID: self.sampleSiteID, order: updatedOrder, fields: [.customerNote]) { result in
+                promise(result)
+            }
+            orderStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let storageOrder = storageManager.viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderID)
+        XCTAssertEqual(storageOrder?.customerNote, updatedOrder.customerNote)
+    }
+
+    func test_optimistic_update_order_customer_note_reverts_upon_failure() {
+        // Given
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let originalOrder = sampleOrder() // (Customer note == "")
+        let updatedOrder = originalOrder.copy(customerNote: "Updated!")
+
+        orderStore.upsertStoredOrder(readOnlyOrder: originalOrder, in: viewStorage)
+
+        network.removeAllSimulatedResponses()
+
+        // When
+        let result: Result<Networking.Order, Error> = waitFor { promise in
+            let action = OrderAction.updateOrderOptimistically(siteID: self.sampleSiteID, order: updatedOrder, fields: [.customerNote]) { result in
+                promise(result)
+            }
+            orderStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertFalse(result.isSuccess)
+        let storageOrder = storageManager.viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderID)
+        XCTAssertEqual(storageOrder?.customerNote, originalOrder.customerNote)
+    }
+
+    func test_optimistic_update_deletes_order_from_storage_upon_failure_if_it_does_not_exist_locally() {
+        // Given
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let originalOrder = sampleOrder() // (Customer note == "")
+        let updatedOrder = originalOrder.copy(customerNote: "Updated!")
+
+        network.removeAllSimulatedResponses()
+
+        // When
+        let result: Result<Networking.Order, Error> = waitFor { promise in
+            let action = OrderAction.updateOrderOptimistically(siteID: self.sampleSiteID, order: updatedOrder, fields: [.customerNote]) { result in
+                promise(result)
+            }
+            orderStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertFalse(result.isSuccess)
+        let storageOrder = storageManager.viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderID)
+        XCTAssertNil(storageOrder)
+    }
+
+    func test_optimistic_update_order_shipping_phone_correctly() {
+        // Given
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let originalOrder = sampleOrder() // [Shipping Phone == "333-333-3333"]
+        let newAddress = Address.fake().copy(phone: "333-333-3334")
+        let updatedOrder = originalOrder.copy(shippingAddress: newAddress) // [Shipping Phone == "333-333-3334"]
+
+        orderStore.upsertStoredOrder(readOnlyOrder: originalOrder, in: viewStorage)
+
+        /// As we're updating the order optimistically, the response from the API will be ignored.
+        /// It's only to simulate the successful path.
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
+
+        // When
+        let result: Result<Networking.Order, Error> = waitFor { promise in
+            let action = OrderAction.updateOrderOptimistically(siteID: self.sampleSiteID, order: updatedOrder, fields: [.shippingAddress]) { result in
+                promise(result)
+            }
+            orderStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let storageOrder = storageManager.viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderID)
+        XCTAssertEqual(storageOrder?.shippingPhone, updatedOrder.shippingAddress?.phone)
+    }
+
+    func test_optimistic_update_order_shipping_phone_reverts_upon_failure() {
+        // Given
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let originalOrder = sampleOrder() // [Shipping Phone == "333-333-3333"]
+        let newAddress = Address.fake().copy(phone: "333-333-3334")
+        let updatedOrder = originalOrder.copy(shippingAddress: newAddress) // [Shipping Phone == "333-333-3334"]
+
+        orderStore.upsertStoredOrder(readOnlyOrder: originalOrder, in: viewStorage)
+
+        network.removeAllSimulatedResponses()
+
+        // When
+        let result: Result<Networking.Order, Error> = waitFor { promise in
+            let action = OrderAction.updateOrderOptimistically(siteID: self.sampleSiteID, order: updatedOrder, fields: [.shippingAddress]) { result in
+                promise(result)
+            }
+            orderStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertFalse(result.isSuccess)
+        let storageOrder = storageManager.viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderID)
+        XCTAssertEqual(storageOrder?.shippingPhone, originalOrder.shippingAddress?.phone)
+    }
+
+    func test_optimistic_update_order_shipping_and_billing_phone_correctly() {
+        // Given
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let originalOrder = sampleOrder() // [Shipping & Biling Phone == "333-333-3333"]
+        let newAddress = Address.fake().copy(phone: "333-333-3334")
+        let updatedOrder = originalOrder.copy(billingAddress: newAddress, shippingAddress: newAddress) // [Shipping & Biling == "333-333-3334"]
+
+        orderStore.upsertStoredOrder(readOnlyOrder: originalOrder, in: viewStorage)
+
+        /// As we're updating the order optimistically, the response from the API will be ignored.
+        /// It's only to simulate the successful path.
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
+
+        // When
+        let result: Result<Networking.Order, Error> = waitFor { promise in
+            let action = OrderAction.updateOrderOptimistically(siteID: self.sampleSiteID,
+                                                               order: updatedOrder,
+                                                               fields: [.shippingAddress, .billingAddress]) { result in
+                promise(result)
+            }
+            orderStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let storageOrder = storageManager.viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderID)
+        XCTAssertEqual(storageOrder?.shippingPhone, updatedOrder.shippingAddress?.phone)
+        XCTAssertEqual(storageOrder?.billingPhone, updatedOrder.billingAddress?.phone)
+    }
+
 
     // MARK: - OrderAction.resetStoredOrders
 

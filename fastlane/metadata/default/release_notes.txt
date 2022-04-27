@@ -1,3 +1,5 @@
-Create orders on the go with products, shipping & billing information, and fees! You can quickly take an in-person credit card payment right after or send a link to a customer to pay for that order on their own device. You’ve asked for it, and now it’s here!
+You’ll find a handy-dandy payment link at the top of an order that hasn’t had a payment applied yet. Send that link to your customer, and they can pay for that order right from their phone or computer.
 
-We’re also making progress on our coupon management feature. Get a sneak peek of it by turning it on in the More tab > Settings > Experimental Features.
+This is a great option to use with the new order creation feature! Create an order while a customer is standing in front of you, and then text them the payment link through your site. Awesome, right?
+
+You’ll need to update to WooCommerce 6.4 or greater to get this option in the app.

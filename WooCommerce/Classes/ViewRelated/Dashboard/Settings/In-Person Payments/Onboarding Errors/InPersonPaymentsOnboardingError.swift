@@ -79,7 +79,7 @@ struct InPersonPaymentsOnboardingError: View {
     }
 }
 
-extension CardPresentPaymentsPlugins {
+extension CardPresentPaymentsPlugin {
     public var image: UIImage {
         switch self {
         case .wcPay:

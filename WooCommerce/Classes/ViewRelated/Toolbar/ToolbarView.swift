@@ -12,14 +12,18 @@ final class ToolbarView: UIView {
 
     init() {
         super.init(frame: .zero)
-        translatesAutoresizingMaskIntoConstraints = false
-
-        addSubview(stackView)
-        pinSubviewToAllEdges(stackView)
+        setup()
     }
 
-    required init(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setup()
+    }
+
+    func setup() {
+        translatesAutoresizingMaskIntoConstraints = false
+        addSubview(stackView)
+        pinSubviewToAllEdges(stackView)
     }
 
     func setSubviews(leftViews: [UIView], rightViews: [UIView]) {

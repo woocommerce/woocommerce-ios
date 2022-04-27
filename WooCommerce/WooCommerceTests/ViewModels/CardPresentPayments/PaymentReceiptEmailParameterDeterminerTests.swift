@@ -29,8 +29,7 @@ final class PaymentReceiptEmailParameterDeterminerTests: XCTestCase {
         let order = Order.fake()
         let wcPayPlugin = SystemPlugin.fake().copy(version: "4.3.4")
         let cardPresentPluginsDataProvider = MockCardPresentPluginsDataProvider(wcPayPlugin: wcPayPlugin,
-                                                                      bothPluginsInstalledAndActive: false,
-                                                                      wcPayInstalledAndActive: true)
+                                                                                paymentPluginsInstalledAndActiveStatus: .onlyWCPayIsInstalledAndActive)
         let sut = PaymentReceiptEmailParameterDeterminer(cardPresentPluginsDataProvider: cardPresentPluginsDataProvider, stores: stores)
 
         // When
@@ -55,8 +54,7 @@ final class PaymentReceiptEmailParameterDeterminerTests: XCTestCase {
         let billingAddress = Address.fake().copy(email: receiptEmail)
         let wcPayPlugin = SystemPlugin.fake().copy(version: "4.0.0")
         let cardPresentPluginsDataProvider = MockCardPresentPluginsDataProvider(wcPayPlugin: wcPayPlugin,
-                                                                      bothPluginsInstalledAndActive: false,
-                                                                      wcPayInstalledAndActive: true)
+                                                                                paymentPluginsInstalledAndActiveStatus: .onlyWCPayIsInstalledAndActive)
         let sut = PaymentReceiptEmailParameterDeterminer(cardPresentPluginsDataProvider: cardPresentPluginsDataProvider, stores: stores)
 
         // When
@@ -81,8 +79,7 @@ final class PaymentReceiptEmailParameterDeterminerTests: XCTestCase {
         let billingAddress = Address.fake().copy(email: receiptEmail)
         let wcPayPlugin = SystemPlugin.fake().copy(version: "3.9.9")
         let cardPresentPluginsDataProvider = MockCardPresentPluginsDataProvider(wcPayPlugin: wcPayPlugin,
-                                                                      bothPluginsInstalledAndActive: false,
-                                                                      wcPayInstalledAndActive: true)
+                                                                                paymentPluginsInstalledAndActiveStatus: .onlyWCPayIsInstalledAndActive)
         let sut = PaymentReceiptEmailParameterDeterminer(cardPresentPluginsDataProvider: cardPresentPluginsDataProvider, stores: stores)
 
         // When
@@ -105,7 +102,7 @@ final class PaymentReceiptEmailParameterDeterminerTests: XCTestCase {
         // Given
         let receiptEmail = "test@test.com"
         let billingAddress = Address.fake().copy(email: receiptEmail)
-        let cardPresentPluginsDataProvider = MockCardPresentPluginsDataProvider(bothPluginsInstalledAndActive: true)
+        let cardPresentPluginsDataProvider = MockCardPresentPluginsDataProvider(paymentPluginsInstalledAndActiveStatus: .bothAreInstalledAndActive)
         let sut = PaymentReceiptEmailParameterDeterminer(cardPresentPluginsDataProvider: cardPresentPluginsDataProvider, stores: stores)
 
         // When
@@ -128,7 +125,7 @@ final class PaymentReceiptEmailParameterDeterminerTests: XCTestCase {
         // Given
         let receiptEmail = "test@test.com"
         let billingAddress = Address.fake().copy(email: receiptEmail)
-        let cardPresentPluginsDataProvider = MockCardPresentPluginsDataProvider(bothPluginsInstalledAndActive: false, wcPayInstalledAndActive: false)
+        let cardPresentPluginsDataProvider = MockCardPresentPluginsDataProvider(paymentPluginsInstalledAndActiveStatus: .onlyStripeIsInstalledAndActive)
         let sut = PaymentReceiptEmailParameterDeterminer(cardPresentPluginsDataProvider: cardPresentPluginsDataProvider, stores: stores)
 
         // When

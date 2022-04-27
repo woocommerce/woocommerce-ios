@@ -68,13 +68,13 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
     CardReaderConnectionController(forSiteID: siteID,
                                    knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
                                    alertsProvider: CardReaderSettingsAlerts(),
-                                   configuration: cardPresentConfigurationLoader.configuration,
-                                   analyticsTracker: .init(configuration: cardPresentConfigurationLoader.configuration,
+                                   configuration: cardPresentConfiguration,
+                                   analyticsTracker: .init(configuration: cardPresentConfiguration,
                                                            stores: stores,
                                                            analytics: analytics))
 
-    /// IPP Configuration loader.
-    private lazy var cardPresentConfigurationLoader = CardPresentConfigurationLoader(stores: stores)
+    /// IPP Configuration.
+    private let cardPresentConfiguration: CardPresentPaymentsConfiguration
 
     /// PaymentGatewayAccount Results Controller.
     private lazy var paymentGatewayAccountResultsController: ResultsController<StoragePaymentGatewayAccount> = {
@@ -93,6 +93,7 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
          alerts: OrderDetailsPaymentAlertsProtocol,
          currencyFormatter: CurrencyFormatter,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         cardPresentConfiguration: CardPresentPaymentsConfiguration,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics) {
@@ -106,6 +107,7 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
         self.rootViewController = rootViewController
         self.alerts = alerts
         self.currencyFormatter = currencyFormatter
+        self.cardPresentConfiguration = cardPresentConfiguration
         self.stores = stores
         self.storageManager = storageManager
         self.analytics = analytics
@@ -278,8 +280,10 @@ private extension RefundSubmissionUseCase {
             guard let self = self else { return }
             switch result {
             case .success:
+                self.trackClientSideRefundRequestSuccess(charge: charge)
                 onCompletion(.success(()))
             case .failure(let error):
+                self.trackClientSideRefundRequestFailed(charge: charge, error: error)
                 self.handleRefundFailureAndRetryRefund(error, refundAmount: refundAmount, charge: charge, onCompletion: onCompletion)
             }
         })
@@ -349,6 +353,35 @@ private extension RefundSubmissionUseCase {
     func trackCreateRefundRequestFailed(error: Error) {
         analytics.track(event: WooAnalyticsEvent.IssueRefund.createRefundFailed(orderID: details.order.orderID, error: error))
     }
+
+    /// Tracks when the refund request succeeds on the client-side before submitting to the site.
+    func trackClientSideRefundRequestSuccess(charge: WCPayCharge) {
+        switch charge.paymentMethodDetails {
+        case .interacPresent:
+            analytics.track(event: WooAnalyticsEvent.InPersonPayments
+                .interacRefundSuccess(gatewayID: paymentGatewayAccounts.first?.gatewayID,
+                                      countryCode: cardPresentConfiguration.countryCode,
+                                      cardReaderModel: connectedReader?.readerType.model ?? ""))
+        default:
+            // Tracks refund success events with other payment methods if needed.
+            return
+        }
+    }
+
+    /// Tracks when the refund request fails on the client-side before submitting to the site.
+    func trackClientSideRefundRequestFailed(charge: WCPayCharge, error: Error) {
+        switch charge.paymentMethodDetails {
+        case .interacPresent:
+            analytics.track(event: WooAnalyticsEvent.InPersonPayments
+                .interacRefundFailed(error: error,
+                                     gatewayID: paymentGatewayAccounts.first?.gatewayID,
+                                     countryCode: cardPresentConfiguration.countryCode,
+                                     cardReaderModel: connectedReader?.readerType.model ?? ""))
+        default:
+            // Tracks refund failure events with other payment methods if needed.
+            return
+        }
+    }
 }
 
 // MARK: Connected Card Readers
@@ -362,15 +395,17 @@ private extension RefundSubmissionUseCase {
 }
 
 // MARK: Definitions
-private extension RefundSubmissionUseCase {
+extension RefundSubmissionUseCase {
     /// Mailing a receipt failed but the SDK didn't return a more specific error
     ///
-    enum RefundSubmissionError: Error {
+    enum RefundSubmissionError: Error, Equatable {
         case cardReaderDisconnected
         case invalidRefundAmount
         case unknownPaymentGatewayAccount
     }
+}
 
+private extension RefundSubmissionUseCase {
     enum Localization {
         private static let refundPaymentWithoutName = NSLocalizedString("Refund payment",
                                                                         comment: "Alert title when starting the in-person refund flow without a user name.")

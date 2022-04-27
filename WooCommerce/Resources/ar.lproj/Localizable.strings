@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-04-12 09:54:03+0000 */
+/* Translation-Revision-Date: 2022-04-25 18:54:04+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -92,10 +92,12 @@
 /* The number of category allowed for a coupon in singular form. Reads like: 1 Category */
 "%1$d Category" = "⁦%1$d⁩ تصنيف";
 
-/* The number of products allowed for a coupon in singular form. Reads like: 1 Product */
+/* Count of one product
+   The number of products allowed for a coupon in singular form. Reads like: 1 Product */
 "%1$d Product" = "⁦%1$d⁩ منتج";
 
-/* The number of products allowed for a coupon in plural form. Reads like: 10 Products */
+/* Count of several products, reads like: 2 Products
+   The number of products allowed for a coupon in plural form. Reads like: 10 Products */
 "%1$d Products" = "⁦%1$d⁩ من المنتجات";
 
 /* Singular format of number of business day in Shipping Labels > Carrier and Rates */
@@ -338,14 +340,15 @@
 /* Title for the button to add the Customer Provided Note in Order Details */
 "Add Customer Note" = "إضافة ملحوظة العميل";
 
+/* Button for adding a description to a coupon in the view for adding or editing a coupon. */
+"Add Description (Optional)" = "إضافة وصف (اختياري)";
+
 /* Downloadable file screen navigation title */
 "Add Downloadable File" = "إضافة ملف قابل للتنزيل";
 
-/* Title for the Fee screen during order creation */
+/* Title for the Fee screen during order creation
+   Title text of the button that adds a fee when creating a new order */
 "Add Fee" = "إضافة رسوم إضافية";
-
-/* Title text of the button that adds fees when creating a new order */
-"Add Fees" = "إضافة رسوم";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
 "Add File" = "إضافة ملف";
@@ -428,6 +431,9 @@
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press enter" = "إضافة كل الخيارات واضغط على مفتاح enter";
 
+/* Button in the action sheet for adding the expiration date for a coupon. */
+"Add expiration date" = "إضافة تاريخ انتهاء الصلاحية";
+
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
 "Add more details" = "إضافة مزيد من التفاصيل";
@@ -449,6 +455,9 @@
 
 /* Navigates to a screen to create a simple payments order */
 "Add simple payments order" = "إضافة طلب المدفوعات البسيطة";
+
+/* Placeholder text that will be shown in the view for adding the description of a coupon. */
+"Add the description of the coupon." = "أضف وصف القسيمة.";
 
 /* Option to add item to new package on Package Details screen of Shipping Label flow. */
 "Add to new package" = "إضافة إلى الحزمة الجديدة";
@@ -554,9 +563,15 @@
 /* Title of the Amount label on Coupon Details screen */
 "Amount" = "الكمية";
 
+/* Title of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
+"Amount (%)" = "المبلغ (%)";
+
 /* Title for the amount field on the Fee Details screen during order creationParameters: %1$@ - fee type (percent sign or currency symbol)
    Title for the amount field on the Shipping Details screen during order creationParameters: %1$@ - currency symbol */
 "Amount (%1$@)" = "المبلغ (%1$@)";
+
+/* Title of the Amount field on the Coupon Edit or Creation screen for a fixed amount discount coupon.Reads like: Amount ($) */
+"Amount (%@)" = "المبلغ (%@)";
 
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
 "Amount Eligible For Refund" = "المبلغ الذي يستحق الاسترداد";
@@ -641,6 +656,9 @@
 
 /* No comment provided by engineer. */
 "Apply %@ off to some products with the promo code “%@”." = "قم بتطبيق خصم قدره %1$@ على بعض المنتجات باستخدام الرمز الترويجي \"%2$@\".";
+
+/* Header of the section for applying a coupon to specific products or categories in the view for adding or editing a coupon. */
+"Apply this coupon to" = "تطبيق هذه القسيمة على";
 
 /* Approve a comment */
 "Approve" = "موافقة";
@@ -748,9 +766,6 @@
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "رقم الشريط %1$i, %2$@, ";
 
-/* Beta annotation for sharing a payment link */
-"Beta" = "بيتا";
-
 /* Section header title for billing address in billing information
    Title for the Billing Address section in order customer data - Title for the Edit Billing Address Form */
 "Billing Address" = "عنوان الفوترة";
@@ -802,7 +817,7 @@
 "Can Not Request Link" = "يتعذر طلب رابط";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title that closes the action sheet in product variations - Button title that closes the presented screen - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button in the navigation bar of the view for adding or editing a coupon. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
+   Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title that closes the action sheet in product variations - Button title that closes the presented screen - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to cancel an in-person payment or refund - Button to cancel the creation of an order on the New Order screen - Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button in the navigation bar of the view for adding or editing a coupon. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the main more actions menu sheet. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
 "Cancel" = "إلغاء";
 
 /* Display label for cancelled order status. */
@@ -920,9 +935,12 @@
 /* Button title for clearing all filters for the list. */
 "Clear all" = "مسح الكل";
 
-/* Text for the close button in the Add Product screen
-   Text for the close button in the Edit Address Form - Text for the close button in the Fee Details screen - Text for the close button in the Product screen - Text for the close button in the Shipping Line Details screen - Title of the Close action on the Jetpack Install view */
+/* Accessibility label for the close button
+   Button to dismiss modal overlay. Presented to users after refunding a payment fails - Text for the close button in the Add Product screen - Text for the close button in the Edit Address Form - Text for the close button in the Fee Details screen - Text for the close button in the Product screen - Text for the close button in the Shipping Line Details screen - Title of the Close action on the Jetpack Install view */
 "Close" = "إغلاق";
+
+/* Accessibility value when a banner is collapsed */
+"Collapsed" = "تم الطي";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "جمع المعلومات";
@@ -1111,6 +1129,15 @@
 /* Description for the Origin Country row in Customs screen of Shipping Label flow */
 "Country where the product was manufactured or assembled" = "البلد الذي تم تصنيع المنتج فيه أو تجميعه";
 
+/* Text field coupon code in the view for adding or editing a coupon. */
+"Coupon Code" = "رمز القسيمة";
+
+/* Title of the view for editing the coupon description. */
+"Coupon Description" = "وصف القسيمة";
+
+/* Field in the view for adding or editing a coupon. */
+"Coupon Expiry Date" = "Coupon Expiry Date";
+
 /* Cell title on beta features screen to enable coupon management */
 "Coupon Management" = "إدارة القسائم";
 
@@ -1122,6 +1149,12 @@
 
 /* Notice message after deleting coupon from the Coupon Details screen */
 "Coupon deleted" = "حذف قسيمة شرائية";
+
+/* Header of the coupon details in the view for adding or editing a coupon. */
+"Coupon details" = "تفاصيل القسيمة";
+
+/* Title of the view for selecting an expiry date for a coupon. */
+"Coupon expiry date" = "تاريخ انتهاء صلاحية القسيمة";
 
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
@@ -1152,8 +1185,8 @@
 /* Title of the view for creating a coupon with generic discount. */
 "Create discount" = "إنشاء خصم";
 
-/* Title of the view for creating a coupon with fixed card discount. */
-"Create fixed card discount" = "إنشاء خصم ثابت للبطاقة";
+/* Title of the view for creating a coupon with fixed cart discount. */
+"Create fixed cart discount" = "إنشاء خصم ثابت لعربة التسوق";
 
 /* Title of the view for creating a coupon with fixed product discount. */
 "Create fixed product discount" = "إنشاء خصم ثابت للمنتجات";
@@ -1241,6 +1274,9 @@
 /* Title of the banner notice in Shipping Labels -> Carrier and Rates */
 "Customer paid a %1$@ of %2$@ for shipping" = "دفع العميل %1$@ من %2$@ مقابل الشحن";
 
+/* The footer of the text field coupon code in the view for adding or editing a coupon. */
+"Customers need to enter this code to use the coupon." = "يحتاج العملاء إلى إدخال هذا الرمز لاستخدام القسيمة.";
+
 /* Navigation title for Customs screen in Shipping Label flow
    Title of the cell Customs inside Create Shipping Label form */
 "Customs" = "الجمارك";
@@ -1288,6 +1324,9 @@
 
 /* Delete tracking button title */
 "Delete Tracking" = "حذف التعقب";
+
+/* Button in the action sheet for deleting the expiration date of a coupon. */
+"Delete expiration date" = "حذف تاريخ انتهاء الصلاحية";
 
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "وصف منتجك";
@@ -1406,6 +1445,15 @@
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "اضغط ضغطًا مزدوجًا لتبديل الإعداد.";
 
+/* Accessibility hint to expand a banner */
+"Double-tap for more information" = "النقر المزدوج للحصول على مزيد من المعلومات";
+
+/* Accessibility hint to collapse a banner */
+"Double-tap to collapse" = "النقر المزدوج للطي";
+
+/* Accessibility hint to dismiss a banner */
+"Double-tap to dismiss" = "النقر المزدوج للرفض";
+
 /* Button title Download Settings in Downloadable Files More Options Action Sheet
    Download file settings navigation title */
 "Download Settings" = "تنزيل الإعدادات";
@@ -1432,6 +1480,9 @@
    Display label for the product's draft status */
 "Draft" = "مسودة";
 
+/* Drag and drop helper text above photo list in Product images screen */
+"Drag and drop to re-order photos" = "السحب والإفلات لإعادة ترتيب الصور";
+
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "حدِّد منتجاتك التي تحتوي على أكواد مميزة بسهولة.";
 
@@ -1452,7 +1503,14 @@
 /* Accessibility label for the button to edit customer details on the New Order screen */
 "Edit Customer Details" = "تحرير تفاصيل العميل";
 
-/* Edit Products button inside the Linked Products screen. */
+/* Button for editing the description of a coupon in the view for adding or editing a coupon. */
+"Edit Description" = "تحرير الوصف";
+
+/* Button for specify the product categories where a coupon can be applied in the view for adding or editing a coupon. */
+"Edit Product Categories" = "تحرير تصنيفات المنتج";
+
+/* Button for specify the products where a coupon can be applied in the view for adding or editing a coupon.
+   Edit Products button inside the Linked Products screen. */
 "Edit Products" = "تحرير المنتجات";
 
 /* Accessibility label for the button to edit order status on the New Order screen */
@@ -1467,8 +1525,11 @@
 /* Title of the view for editing a coupon with generic discount. */
 "Edit discount" = "تحرير الخصم";
 
-/* Title of the view for editing a coupon with fixed card discount. */
-"Edit fixed card discount" = "تحرير خصم ثابت للبطاقة";
+/* Button in the action sheet for editing the expiration date of a coupon. */
+"Edit expiration date" = "تحرير تاريخ انتهاء الصلاحية";
+
+/* Title of the view for editing a coupon with fixed cart discount. */
+"Edit fixed cart discount" = "تحرير الخصم الثابت لعربة التسوق";
 
 /* Title of the view for editing a coupon with fixed product discount. */
 "Edit fixed product discount" = "تحرير خصم ثابت للمنتجات";
@@ -1538,7 +1599,8 @@
 /* Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "تأكَّد من **تحديث البرنامج الثابت لطابعتك**. اطلع على مستندات طابعتك للحصول على إرشادات حول التحديث.";
 
-/* Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
+/* Address field placeholder in Edit Address Form
+   Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
 "Enter Address" = "إدخال العنوان";
 
 /* Short instructions label in the simple payments screen */
@@ -1548,7 +1610,11 @@
    Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
 "Enter Another Store" = "إدخال متجر آخر";
 
-/* Placeholder of the row that holds the provided email when creating a simple payment */
+/* City field placeholder in Edit Address Form */
+"Enter City" = "إدخال المدينة";
+
+/* Email field placeholder in Edit Address Form
+   Placeholder of the row that holds the provided email when creating a simple payment */
 "Enter Email" = "إدخال البريد الإلكتروني";
 
 /* Placeholder for the required ITN row in Customs screen of Shipping Label flow */
@@ -1557,8 +1623,21 @@
 /* Placeholder for the ITN row in Customs screen of Shippling Label flow */
 "Enter ITN (Optional)" = "إدخال رقم المعاملة الدخلي (اختياري)";
 
-/* Placeholder for the row to enter the package name on the Add New Custom Package screen in Shipping Label flow */
+/* Last name field placeholder in Edit Address Form */
+"Enter Last Name" = "إدخال اسم العائلة";
+
+/* Name field placeholder in Edit Address Form
+   Placeholder for the row to enter the package name on the Add New Custom Package screen in Shipping Label flow */
 "Enter Name" = "إدخال اسم";
+
+/* Phone field placeholder in Edit Address Form */
+"Enter Phone" = "إدخال الهاتف";
+
+/* Postcode field placeholder in Edit Address Form */
+"Enter Postcode" = "إدخال الرمز البريدي";
+
+/* State field placeholder in Edit Address Form */
+"Enter State" = "إدخال البلد";
 
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "إدخال عنوان URL";
@@ -1566,6 +1645,9 @@
 /* Action button linking to instructions for enter another store.Presented when logging in with an email address that is not a WordPress.com account
    Button title. Takes the user to the login by store address flow. */
 "Enter Your Store Address" = "إدخال عنوان متجرك";
+
+/* Text field coupon code placeholder in the view for adding or editing a coupon. */
+"Enter a coupon" = "إدخال قسيمة";
 
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "إدخال اسم شركة النقل";
@@ -1644,6 +1726,9 @@
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
 "Everyone loves a deal" = "يحب الجميع الصفقات";
 
+/* Title of the action button on the Exclude Products screenReads like: Exclude 1 Product */
+"Exclude %1$@" = "استبعاد %1$@";
+
 /* Title of the action button to add product categories to the exclusion list in Coupon Usage Details screen */
 "Exclude Product Categories" = "استبعاد تصنيفات المنتج";
 
@@ -1653,11 +1738,17 @@
 /* Title for the exclude sale items row in coupon usage details screen. */
 "Exclude Sale Items" = "استبعاد العناصر المعروضة للبيع بسعر مخفَّض";
 
+/* Title of the Exclude Products screen */
+"Exclude products" = "المنتجات المستبعدة";
+
 /* Text on Coupon Details screen to indicate that the coupon can not be applied to sale items */
 "Excludes sale items" = "يستبعد العناصر المعروضة للبيع بسعر مخفَّض";
 
 /* Title of the exclusions section in Coupon Usage Details screen */
 "Exclusions" = "الاستبعادات";
+
+/* Accessibility value when a banner is expanded */
+"Expanded" = "تمت التوسعة";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -1720,8 +1811,8 @@
 /* Subtitle of the cell Customs inside Create Shipping Label form */
 "Fill out customs form" = "ملء نموذج الجمارك";
 
-/* Title of the toolbar button to filter orders without filters applied.
-   Title of the toolbar button to filter products by different attributes. - Title of the toolbar button to filter products without any filters applied. */
+/* Button to filter products on the product list selector
+   Title of the toolbar button to filter orders without filters applied. - Title of the toolbar button to filter products by different attributes. - Title of the toolbar button to filter products without any filters applied. */
 "Filter" = "عامل التصفية";
 
 /* Title of the toolbar button to filter orders with filters applied.
@@ -2013,6 +2104,9 @@
 /* Navigation title of the webview which is used in Inbox Notes.
    Title for the screen that shows inbox notes. - Title of the Inbox menu in the hub menu */
 "Inbox" = "علبة الوارد";
+
+/* Toggle field in the view for adding or editing a coupon. */
+"Include Free Shipping?" = "هل تتضمن شحنًا مجانيًا؟";
 
 /* Describes a standard *.wordpress.com site domain */
 "Included with Site" = "تم التضمين مع الموقع";
@@ -2606,8 +2700,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
 "No tax classes yet" = "لا توجد فئات للضريبة حتى الآن";
 
-/* Display label for the order fee's tax status setting option
-   Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow - The description in product variations bulk update, of a value, that is missing from all variations - Value for fields in Coupon Usage Details screen when no value is set */
+/* Coupon expiry date placeholder in the view for adding or editing a coupon
+   Display label for the order fee's tax status setting option - Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow - The description in product variations bulk update, of a value, that is missing from all variations - Value for fields in Coupon Usage Details screen when no value is set */
 "None" = "لا شيء";
 
 /* Action title to dismiss enabling Analytics for a store
@@ -2836,8 +2930,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message when the presented card remaining credit or balance is insufficient for the purchase. */
 "Payment declined due to insufficient funds. Try another means of payment" = "تم رفض عملية الدفع لأن الأموال غير كافية. تجربة وسائل دفع أخرى";
 
-/* Error message. Presented to users after a collecting a payment fails
-   Error message. Presented to users after collecting a payment fails */
+/* Error message. Presented to users after collecting a payment fails */
 "Payment failed" = "فشلت عملية الدفع";
 
 /* Title of 'Payment method' section in the receipt
@@ -2919,7 +3012,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message shown when a URL is invalid. */
 "Please enter a complete website address, like example.com." = "يرجى إدخال عنوان موقع ويب كامل، مثل example.com.";
 
-/* Product price error notice message, when the sale price was not set during a sale setup */
+/* Bulk price update error, when the sale price is empty
+   Product price error notice message, when the sale price was not set during a sale setup */
 "Please enter a sale price for the scheduled sale" = "يرجى إدخال سعر البيع للسعر المجدول";
 
 /* No comment provided by engineer. */
@@ -3103,6 +3197,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Indicates that a payment is being processed */
 "Processing payment..." = "جارٍ معالجة الدفع...";
 
+/* Indicates that an in-person refund is being processed */
+"Processing refund" = "معالجة عملية استرداد المبالغ المدفوعة";
+
 /* Product section title
    Product section title if there is only one product. - Product section title in Review Order screen if there is one product. - Title for the Product screen during order creation */
 "Product" = "المنتج";
@@ -3233,7 +3330,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "قراءة سياسة الخصوصية";
 
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
+/* Indicates the status of a card reader. Presented to users when in-person payment collection or refund starts
+   Indicates the status of a card reader. Presented to users when payment collection starts */
 "Reader is ready" = "القارئ جاهز";
 
 /* Refund note section title */
@@ -3287,6 +3385,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title of the section containing information about how the refund will be processed. */
 "Refund Via" = "استرداد الأموال بواسطة";
 
+/* Error message. Presented to users after an in-person refund fails */
+"Refund failed" = "فشلت عملية استرداد الأموال";
+
+/* Alert title when starting the in-person refund flow without a user name. */
+"Refund payment" = "عملية الدفع الخاصة باسترداد المبالغ المدفوعة";
+
+/* Alert title when starting the in-person refund flow with a user name. */
+"Refund payment from %1$@" = "عملية دفع استرداد المبالغ المدفوعة من %1$@";
+
 /* Display label for refunded order status.
    The title for the refunded amount cell */
 "Refunded" = "تم رد المبلغ";
@@ -3303,6 +3410,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* It reads, 'Refunded via <payment method>' */
 "Refunded via %@" = "تم الاسترداد بواسطة %@";
+
+/* VoiceOver accessibility label. Indicates that an in-person refund is being processed */
+"Refunding payment" = "عملية الدفع الخاصة باسترداد المبالغ المدفوعة";
+
+/* Button in the view for adding or editing a coupon. */
+"Regenerate Coupon Code" = "إعادة إنشاء رمز القسيمة";
 
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "النطاق المُسجل";
@@ -3367,7 +3480,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Request a Refund" = "طلب استرداد الأموال";
 
 /* Name text field placeholder in Shipping Label Address Validation when it's required
-   Text field placeholder in Edit Address Form - Text field placeholder in Shipping Label Address Validation - Text field placeholder in Shipping Label Address Validation when phone number is required */
+   Text field placeholder in Shipping Label Address Validation - Text field placeholder in Shipping Label Address Validation when phone number is required */
 "Required" = "مطلوبة";
 
 /* Deletes all activity logs except for the marked 'Current'. */
@@ -3467,8 +3580,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Restriction type Sanitary / Phytosanitary Inspection for contents declared in the customs form for Shipping Label flow */
 "Sanitary \/ Phytosanitary Inspection" = "التفتيش الصحي\/تفتيش الصحة النباتية";
 
-/* Action for saving a Product remotely
-   Add Product Category. Save button title in navbar. - Add Product Tags. Save button title in navbar. - Button title that save the price selection for bulk variation update */
+/* Action for saving a Coupon remotely
+   Action for saving a Product remotely - Add Product Category. Save button title in navbar. - Add Product Tags. Save button title in navbar. - Button title that save the price selection for bulk variation update */
 "Save" = "حفظ";
 
 /* Button title to save a product as draft in Discard Changes Action Sheet */
@@ -3552,7 +3665,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the Jetpack benefits banner. */
 "See the benefits" = "الاطلاع على المزايا";
 
-/* Select all button title in the issue refund screen */
+/* Title of the action button on the Select Products screenReads like: Select 1 Product */
+"Select %1$@" = "تحديد %1$@";
+
+/* Button to select all products on the product list selector
+   Select all button title in the issue refund screen */
 "Select All" = "تحديد الكل";
 
 /* Select parent category screen - Screen title */
@@ -3582,6 +3699,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "تحديد نمط الفقرة";
 
+/* Title for the Select Products screen */
+"Select products" = "تحديد المنتجات";
+
 /* Placeholder value of the cell in Product Price Settings > Schedule sale from a certain date */
 "Select start date" = "تحديد تاريخ البدء";
 
@@ -3609,15 +3729,24 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Service Package menu in Shipping Label Add New Package flow */
 "Service Package" = "حزمة الخدمة";
 
+/* Title of the action sheet for setting an expiry date for a coupon. */
+"Set an expiry date for this coupon" = "تعيين تاريخ انتهاء صلاحية لهذه القسيمة";
+
 /* Tells user to set an email that support can use for replies */
 "Set email" = "تعيين البريد الإلكتروني";
+
+/* Subtitle of the Amount field on the Coupon Edit or Creation screen for a fixed amount discount coupon. */
+"Set the fixed amount of the discount you want to offer." = "حدِّد المبلغ الثابت للخصم الذي ترغب في توفيره.";
+
+/* Subtitle of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
+"Set the percentage of the discount you want to offer." = "حدِّد النسبة المئوية للخصم الذي ترغب في توفيره.";
 
 /* Header text on Add New Custom Package screen in Shipping Label flow
    Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "قم بإعداد الحزمة التي ستستخدمها لشحن منتجاتك. سنقوم بحفظها للطلبات المستقبلية.";
 
 /* Accessibility label for the Settings button.
-   Settings navigation title */
+   Settings button in the hub menu - Settings navigation title */
 "Settings" = "إعدادات";
 
 /* Title of a modal presenting a list of readers to choose from. */
@@ -3629,7 +3758,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action title for sharing coupon from the Coupon Details screen */
 "Share Coupon" = "مشاركة قسيمة";
 
-/* Payment Link method title on the select payment method screen for simple payments */
+/* Payment Link method title on the select payment method screen for simple payments
+   Title to share an order payment link. */
 "Share Payment Link" = "مشاركة رابط الدفع";
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
@@ -3855,6 +3985,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message shown when a refund could not be canceled (likely because it had already completed) */
 "Sorry, this refund could not be canceled" = "عذرًا، يتعذر إلغاء عملية رد المبالغ المدفوعة هذه";
 
+/* Error message when the card reader service experiences an unexpected internal service error. */
+"Sorry, this refund couldn’t be processed" = "عذرًأ، تتعذر معالجة عملية استرداد المبالغ المدفوعة هذه";
+
 /* No comment provided by engineer. */
 "Sorry, usernames can only contain lowercase letters (a-z) and numbers." = "عذرًا، يمكن أن تحتوي أسماء المستخدمين فقط على حروف أبجدية صغيرة (a-z) وأرقام.";
 
@@ -4078,6 +4211,10 @@ This part is the link to the website, and forms part of a longer sentence which 
    Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Tap, insert or swipe to pay" = "الضغط أو الإدراج أو التمرير للدفع";
 
+/* Indicates the action expected from a user. Presented to users when in-person refund starts
+   Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
+"Tap, insert or swipe to refund" = "الضغط أو الإدراج أو التمرير لاسترداد المبالغ المدفوعة";
+
 /* Tax label for a refund details view
    Tax label for the tax detail row. - Title on the refunds screen that lists the fees tax cost - Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
 "Tax" = "الضريبة";
@@ -4208,6 +4345,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the card reader software is too far out of date to process payments. */
 "The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "برنامج قارئ البطاقة قديم - يرجى تحديث برنامج قارئ البطاقة قبل محاولة معالجة عمليات الدفع";
 
+/* Error message when the card reader software is too far out of date to process in-person refunds. */
+"The card reader software is out-of-date - please update the card reader software before attempting to process refunds" = "برنامج قارئ البطاقة غير مُحدَّث - يرجى تحديث برنامج قارئ البطاقة قبل محاولة معالجة عمليات استرداد المبالغ المدفوعة";
+
 /* Error message when the card reader software update fails due to a communication error. */
 "The card reader software update failed due to a communication error - please try again" = "فشل تحديث برنامج قارئ البطاقة بسبب مشكلة في الاتصال - يرجى المحاولة مجددًا";
 
@@ -4222,6 +4362,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of payment" = "تم رفض البطاقة بواسطة قارئ البطاقة - يرجى تجربة وسائل دفع أخرى";
+
+/* Error message when the card reader itself declines the card. */
+"The card was declined by the card reader - please try another means of refund" = "تم رفض البطاقة بواسطة قارئ البطاقة - يرجى تجربة وسائل أخرى لاسترداد المبالغ المدفوعة";
 
 /* Error message when the card processor declines the payment. */
 "The card was declined by the payment processor - please try another means of payment" = "تم رفض البطاقة بواسطة مُعالج الدفع - يرجى تجربة وسائل دفع أخرى";
@@ -4247,6 +4390,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "رقم الهاتف غير صالح، أو يتعذر عليك الاتصال بالعميل من هذا الجهاز.";
 
+/* VoiceOver accessibility hint, informing the user that this field allows to enter the price to use for bulk updating all variations */
+"The price for bulk updating all variations. Editable." = "سعر التحديث المُجمَّع لجميع الأنواع. قابل للتحرير.";
+
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "سعر هذا المنتج. قابل للتحرير.";
 
@@ -4259,16 +4405,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
 "The reader has a critically low battery. Please charge the reader or try a different reader." = "بطارية القارئ منخفضة للغاية. يرجى شحن القارئ أو جرب قارئًا مختلفًا.";
 
+/* Error message when the in-person refund can not be processed (i.e. order amount is below the minimum amount allowed.) */
+"The refund can not be processed by the payment processor." = "تتعذر معالجة عملية استرداد المبالغ المدفوعة بواسطة مُعالج الدفع.";
+
 /* Error message when a request times out. */
 "The request timed out - please try again" = "انتهت مهلة الطلب - يرجى المحاولة مجددًا";
 
-/* Product price error notice message, when the sale price is added but the regular price is not */
+/* Bulk price update error message, when the sale price is added but the regular price is not
+   Product price error notice message, when the sale price is added but the regular price is not */
 "The sale price can't be added without the regular price." = "تتعذر إضافة سعر البيع من دون السعر العادي.";
 
 /* VoiceOver accessibility hint, informing the user that the cell shows the sale price information for this product. */
 "The sale price for this product. Editable." = "سعر بيع هذا المنتج. قابل للتحرير.";
 
-/* Product price error notice message, when the sale price is higher than the regular price */
+/* Bulk price update error, when the sale price is higher than the regular price
+   Product price error notice message, when the sale price is higher than the regular price */
 "The sale price should be lower than the regular price." = "ينبغي أن يكون سعر العرض أقل من السعر العادي.";
 
 /* A failure reason for when the request couldn't be serialized. */
@@ -4548,7 +4699,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Trust" = "الثقة";
 
 /* Action displayed in the error prompt when loading total discounted amount in Coupon Details screen fails
-   Button to retry a software update. Presented to users when updating the card reader software fails - Button to try again after connecting to a specific reader fails due to a critically low battery. - Button to try again. Presented to users after a failure occurs - Try Again button on the error alert when fetching system status report fails */
+   Button to retry a software update. Presented to users when updating the card reader software fails - Button to try again after connecting to a specific reader fails due to a critically low battery. - Button to try again. Presented to users after a failure occurs - Button to try to refund a payment again. Presented to users after refunding a payment fails - Try Again button on the error alert when fetching system status report fails */
 "Try Again" = "حاول مرّة اخرى";
 
 /* Message from the in-person payment card reader prompting user to retry a payment using a different card */
@@ -4557,7 +4708,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message from the in-person payment card reader prompting user to retry a payment using a different method, e.g. swipe, tap, insert */
 "Try Another Read Method" = "تجربة طريقة قارئ أخرى";
 
-/* Button to try to collect a payment again. Presented to users after a collecting a payment fails */
+/* Button to try to collect a payment again. Presented to users after collecting a payment fails */
 "Try Collecting Again" = "محاولة الجمع مجددًا";
 
 /* Button to trigger connection to another account in store picker */
@@ -4721,6 +4872,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the card reader battery level is too low to safely perform a software update. */
 "Unable to update card reader software - the reader battery is too low" = " يتعذر تحديث برنامج قارئ البطاقة - حيث إن بطارية القارئ منخفضة للغاية";
 
+/* Notice title when unable to bulk update price of the variations */
+"Unable to update price" = "يتعذر تحديث السعر";
+
 /* Title for the error screen when In-Person Payments is unavailable */
 "Unable to verify In-Person Payments for this store" = "يتعذر التحقُّق من المدفوعات الشخصية لهذا المخزن";
 
@@ -4854,13 +5008,17 @@ This part is the link to the website, and forms part of a longer sentence which 
    Navigation bar title for editing linked products for upsell products */
 "Upsells" = "منتجات يوصى بها";
 
+/* Header of the section usage details in the view for adding or editing a coupon. */
+"Usage Details" = "تفاصيل الاستخدام";
+
 /* Title for the usage limit per coupon row in coupon usage details screen. */
 "Usage Limit Per Coupon" = "حد الإستخدام لكل قسيمة";
 
 /* Title for the usage limit per user row in coupon usage details screen. */
 "Usage Limit Per User" = "حد الإستخدام لكل مستخدم";
 
-/* Title for the usage restrictions section on coupon usage details screen */
+/* Field in the view for adding or editing a coupon.
+   Title for the usage restrictions section on coupon usage details screen */
 "Usage Restrictions" = "قيود الاستخدام";
 
 /* Title of the Usage details row in Coupon Details screen */

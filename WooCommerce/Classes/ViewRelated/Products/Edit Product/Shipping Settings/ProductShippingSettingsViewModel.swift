@@ -115,12 +115,7 @@ extension ProductShippingSettingsViewModel: ProductShippingSettingsActionHandler
             return
         }
 
-        guard let formatted = weight.formattedForAPI(fromLocale: locale) else {
-            self.weight = weight
-            return
-        }
-
-        self.weight = formatted
+        self.weight = weight.formattedForAPI(fromLocale: locale) ?? weight
     }
 
     func handleLengthChange(_ length: String?) {
@@ -129,12 +124,7 @@ extension ProductShippingSettingsViewModel: ProductShippingSettingsActionHandler
             return
         }
 
-        guard let formatted = length.formattedForAPI(fromLocale: locale) else {
-            self.length = length
-            return
-        }
-
-        self.length = formatted
+        self.length = length.formattedForAPI(fromLocale: locale) ?? length
     }
 
     func handleWidthChange(_ width: String?) {
@@ -143,12 +133,7 @@ extension ProductShippingSettingsViewModel: ProductShippingSettingsActionHandler
             return
         }
 
-        guard let formatted = width.formattedForAPI(fromLocale: locale) else {
-            self.width = width
-            return
-        }
-
-        self.width = formatted
+        self.width = width.formattedForAPI(fromLocale: locale) ?? width
     }
 
     func handleHeightChange(_ height: String?) {
@@ -157,12 +142,7 @@ extension ProductShippingSettingsViewModel: ProductShippingSettingsActionHandler
             return
         }
 
-        guard let formatted = height.formattedForAPI(fromLocale: locale) else {
-            self.height = height
-            return
-        }
-
-        self.height = formatted
+        self.height = height.formattedForAPI(fromLocale: locale) ?? height
     }
 
     func handleShippingClassChange(_ shippingClass: ProductShippingClass?) {

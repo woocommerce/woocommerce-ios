@@ -110,19 +110,59 @@ final class ProductShippingSettingsViewModel: ProductShippingSettingsViewModelOu
 
 extension ProductShippingSettingsViewModel: ProductShippingSettingsActionHandler {
     func handleWeightChange(_ weight: String?) {
-        self.weight = weight?.formattedForAPI(fromLocale: locale) ?? ""
+        guard let weight = weight else {
+            self.weight = nil
+            return
+        }
+
+        guard let formatted = weight.formattedForAPI(fromLocale: locale) else {
+            self.weight = weight
+            return
+        }
+
+        self.weight = formatted
     }
 
     func handleLengthChange(_ length: String?) {
-        self.length = length?.formattedForAPI(fromLocale: locale) ?? ""
+        guard let length = length else {
+            self.length = nil
+            return
+        }
+
+        guard let formatted = length.formattedForAPI(fromLocale: locale) else {
+            self.length = length
+            return
+        }
+
+        self.length = formatted
     }
 
     func handleWidthChange(_ width: String?) {
-        self.width = width?.formattedForAPI(fromLocale: locale) ?? ""
+        guard let width = width else {
+            self.width = nil
+            return
+        }
+
+        guard let formatted = width.formattedForAPI(fromLocale: locale) else {
+            self.width = width
+            return
+        }
+
+        self.width = formatted
     }
 
     func handleHeightChange(_ height: String?) {
-        self.height = height?.formattedForAPI(fromLocale: locale) ?? ""
+        guard let height = height else {
+            self.height = nil
+            return
+        }
+
+        guard let formatted = height.formattedForAPI(fromLocale: locale) else {
+            self.height = height
+            return
+        }
+
+        self.height = formatted
     }
 
     func handleShippingClassChange(_ shippingClass: ProductShippingClass?) {

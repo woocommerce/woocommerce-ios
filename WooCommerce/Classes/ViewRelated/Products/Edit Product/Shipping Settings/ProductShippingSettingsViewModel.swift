@@ -45,6 +45,8 @@ final class ProductShippingSettingsViewModel: ProductShippingSettingsViewModelOu
     let sections: [Section]
     let product: ProductFormDataModel
 
+    // User device locale used to localize weight and shipping dimensions
+    //
     private let locale: Locale
 
     // Editable data
@@ -137,19 +139,21 @@ extension ProductShippingSettingsViewModel: ProductShippingSettingsActionHandler
 }
 
 private extension String {
-    // API uses US locale for weight and shipping dimensions
+    /// API uses US locale for weight and shipping dimensions
+    ///
     private var usLocale: Locale {
         Locale(identifier: "en_US")
     }
 
-    // Localizes the weight and shipping dimensions
-    //
+    /// Localizes the weight and shipping dimensions
+    ///
     func localized(toLocale: Locale) -> String {
         NumberFormatter.localizedString(using: self, from: usLocale, to: toLocale) ?? self
     }
 
-    // Formats the weight and shipping dimensions to the API preferred locale (US locale)
-    //
+    /// Formats the weight and shipping dimensions to the API preferred locale (US locale)
+    /// API doesn not accept numbers using comma as decimal separator. More details at p91TBi-8kO-p2
+    ///
     func formattedForAPI(fromLocale: Locale) -> String? {
         NumberFormatter.localizedString(using: self, from: fromLocale, to: usLocale)
     }

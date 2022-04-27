@@ -43,7 +43,8 @@ final class RefundConfirmationViewModelTests: XCTestCase {
                                                           refundsShipping: false,
                                                           refundsFees: false,
                                                           items: [],
-                                                          paymentGateway: nil)
+                                                          paymentGateway: nil,
+                                                          paymentGatewayAccount: nil)
 
         let viewModel = RefundConfirmationViewModel(details: details, currencySettings: currencySettings)
 
@@ -70,7 +71,8 @@ final class RefundConfirmationViewModelTests: XCTestCase {
                                                           refundsShipping: false,
                                                           refundsFees: false,
                                                           items: [],
-                                                          paymentGateway: nil)
+                                                          paymentGateway: nil,
+                                                          paymentGatewayAccount: nil)
 
         // When
         let viewModel = RefundConfirmationViewModel(details: details, currencySettings: currencySettings)
@@ -89,7 +91,8 @@ final class RefundConfirmationViewModelTests: XCTestCase {
                                                           refundsShipping: false,
                                                           refundsFees: false,
                                                           items: [],
-                                                          paymentGateway: gateway)
+                                                          paymentGateway: gateway,
+                                                          paymentGatewayAccount: nil)
 
         // When
         let viewModel = RefundConfirmationViewModel(details: details)
@@ -113,7 +116,8 @@ final class RefundConfirmationViewModelTests: XCTestCase {
                                                           refundsShipping: false,
                                                           refundsFees: false,
                                                           items: [],
-                                                          paymentGateway: gateway)
+                                                          paymentGateway: gateway,
+                                                          paymentGatewayAccount: nil)
 
         // When
         let viewModel = RefundConfirmationViewModel(details: details)
@@ -140,7 +144,8 @@ final class RefundConfirmationViewModelTests: XCTestCase {
                                                           refundsShipping: false,
                                                           refundsFees: false,
                                                           items: [],
-                                                          paymentGateway: gateway)
+                                                          paymentGateway: gateway,
+                                                          paymentGatewayAccount: nil)
 
         // When
         let viewModel = RefundConfirmationViewModel(details: details)
@@ -164,7 +169,8 @@ final class RefundConfirmationViewModelTests: XCTestCase {
                                                           refundsShipping: false,
                                                           refundsFees: false,
                                                           items: [],
-                                                          paymentGateway: nil)
+                                                          paymentGateway: nil,
+                                                          paymentGatewayAccount: nil)
         let dispatcher = MockStoresManager(sessionManager: .testingInstance)
         dispatcher.whenReceivingAction(ofType: RefundAction.self) { action in
             switch action {
@@ -202,7 +208,8 @@ final class RefundConfirmationViewModelTests: XCTestCase {
                                                           refundsShipping: false,
                                                           refundsFees: false,
                                                           items: [],
-                                                          paymentGateway: nil)
+                                                          paymentGateway: nil,
+                                                          paymentGatewayAccount: nil)
         let dispatcher = MockStoresManager(sessionManager: .testingInstance)
         dispatcher.whenReceivingAction(ofType: RefundAction.self) { action in
             switch action {
@@ -244,7 +251,8 @@ final class RefundConfirmationViewModelTests: XCTestCase {
                                                           refundsShipping: true,
                                                           refundsFees: true,
                                                           items: [],
-                                                          paymentGateway: gateway)
+                                                          paymentGateway: gateway,
+                                                          paymentGatewayAccount: nil)
         let dispatcher = MockStoresManager(sessionManager: .testingInstance)
 
         // When
@@ -276,7 +284,8 @@ final class RefundConfirmationViewModelTests: XCTestCase {
                                                           refundsShipping: true,
                                                           refundsFees: true,
                                                           items: [],
-                                                          paymentGateway: gateway)
+                                                          paymentGateway: gateway,
+                                                          paymentGatewayAccount: nil)
         let dispatcher = MockStoresManager(sessionManager: .testingInstance)
 
         // When
@@ -306,7 +315,8 @@ final class RefundConfirmationViewModelTests: XCTestCase {
                                                           refundsShipping: false,
                                                           refundsFees: false,
                                                           items: [],
-                                                          paymentGateway: nil)
+                                                          paymentGateway: nil,
+                                                          paymentGatewayAccount: nil)
         let expectedError = NSError(domain: "Refund Error", code: 0, userInfo: nil)
         let dispatcher = MockStoresManager(sessionManager: .testingInstance)
         dispatcher.whenReceivingAction(ofType: RefundAction.self) { action in
@@ -346,7 +356,8 @@ final class RefundConfirmationViewModelTests: XCTestCase {
                                                           refundsShipping: false,
                                                           refundsFees: false,
                                                           items: [],
-                                                          paymentGateway: nil)
+                                                          paymentGateway: nil,
+                                                          paymentGatewayAccount: nil)
         let viewModel = RefundConfirmationViewModel(details: details, analytics: analytics)
 
         // When
@@ -367,7 +378,8 @@ final class RefundConfirmationViewModelTests: XCTestCase {
                                                           refundsShipping: false,
                                                           refundsFees: false,
                                                           items: [],
-                                                          paymentGateway: gateway)
+                                                          paymentGateway: gateway,
+                                                          paymentGatewayAccount: nil)
         let viewModel = RefundConfirmationViewModel(details: details, analytics: analytics)
 
         // When
@@ -394,7 +406,8 @@ final class RefundConfirmationViewModelTests: XCTestCase {
                                                           refundsShipping: false,
                                                           refundsFees: false,
                                                           items: [],
-                                                          paymentGateway: gateway)
+                                                          paymentGateway: gateway,
+                                                          paymentGatewayAccount: nil)
         let viewModel = RefundConfirmationViewModel(details: details, analytics: analytics)
 
         // When
@@ -420,7 +433,8 @@ final class RefundConfirmationViewModelTests: XCTestCase {
                                                           refundsShipping: false,
                                                           refundsFees: false,
                                                           items: [],
-                                                          paymentGateway: nil)
+                                                          paymentGateway: nil,
+                                                          paymentGatewayAccount: nil)
         let expectedError = NSError(domain: "Refund Error", code: 0, userInfo: nil)
         let dispatcher = MockStoresManager(sessionManager: .testingInstance)
         dispatcher.whenReceivingAction(ofType: RefundAction.self) { action in
@@ -456,7 +470,8 @@ final class RefundConfirmationViewModelTests: XCTestCase {
                                                           refundsShipping: false,
                                                           refundsFees: false,
                                                           items: [],
-                                                          paymentGateway: nil)
+                                                          paymentGateway: nil,
+                                                          paymentGatewayAccount: nil)
         let dispatcher = MockStoresManager(sessionManager: .testingInstance)
         dispatcher.whenReceivingAction(ofType: RefundAction.self) { action in
             switch action {

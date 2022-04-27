@@ -318,7 +318,7 @@ private extension OrderDetailsViewController {
         actionSheet.addDefaultActionWithTitle(Localization.ActionsMenu.paymentLink) { [weak self] _ in
             guard let self = self else { return }
 
-            SharingHelper.shareURL(url: paymentLink, title: nil, from: self.view, in: self) { _, completed, _, _ in
+            SharingHelper.shareURL(url: paymentLink, title: nil, from: sender, in: self) { _, completed, _, _ in
                 if completed {
                     ServiceLocator.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailPaymentLinkShared())
                 }

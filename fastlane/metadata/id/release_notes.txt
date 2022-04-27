@@ -1,3 +1,5 @@
-Siapkan pesanan dengan mudah dari mana saja dengan produk, informasi pengiriman & tagihan, dan biaya! Anda dapat menerima pembayaran kartu kredit secara tatap muka sesudahnya atau mengirimkan tautan kepada pelanggan untuk membayar pesanan dari perangkat mereka. Ini adalah permintaan Anda, dan kami sudah menyediakannya!
+Anda akan mendapatkan tautan yang mempermudah pembayaran di atas pesanan yang belum dibayar. Kirim link ke pelanggan Anda dan mereka dapat membayar pesanan langsung dari telepon atau komputer.
 
-Kami juga sedang mengembangkan fitur manajemen kupon. Intip fitur ini dengan mengaktifkannya di tab Lainnya > Pengaturan > Fitur Eksperimental.
+Pilihan ini dapat digunakan dengan fitur pembuatan pesanan baru. Buat pesanan di hadapan pelanggan dan kirim tautan pembayaran lewat situs Anda. Keren, 'kan?
+
+Anda perlu memperbarui WooCommerce 6.4 atau yang lebih tinggi untuk menggunakan pilihan ini di aplikasi.

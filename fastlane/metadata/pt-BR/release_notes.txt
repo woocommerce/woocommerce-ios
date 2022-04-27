@@ -1,3 +1,5 @@
-Crie pedidos de onde estiver com informações de cobrança, envio e produtos, além de taxas! Você pode receber pagamentos com cartão de crédito presenciais logo em seguida ou enviar um link para o cliente pagar o pedido em seu próprio dispositivo. Vocês pediram, nós atendemos.
+Você encontrará um link de pagamento de fácil acesso na parte superior do pedido caso ele ainda não tenha sido pago. Envie o link para o cliente, que poderá pagar o pedido usando o celular ou o computador.
 
-Além disso, estamos avançando no desenvolvimento da funcionalidade de gerenciamento de cupons. Ative-a na guia Mais > Configurações > Funcionalidades experimentais para ver em primeira mão.
+Esta é uma ótima opção para usar com a nova funcionalidade de criação de pedidos. Crie um pedido enquanto o cliente está com você e depois envie o link de pagamento pelo site. Incrível, não é?
+
+Você precisará atualizar para a versão 6.4 ou superior do WooCommerce para ter esta opção no aplicativo.

@@ -234,7 +234,7 @@ private extension RefundSubmissionUseCase {
     ///   - charge: the charge of the order for the refund to match the payment method.
     ///   - paymentGatewayAccount: the payment gateway account for the site to refund (e.g. WCPay or Stripe extension).
     ///   - onCompletion: called when the in-person refund completes.
-    func attemptCardPresentRefund(refundAmount: Decimal,
+    private func attemptCardPresentRefund(refundAmount: Decimal,
                                   charge: WCPayCharge,
                                   paymentGatewayAccount: PaymentGatewayAccount,
                                   onCompletion: @escaping (Result<Void, Error>) -> ()) {

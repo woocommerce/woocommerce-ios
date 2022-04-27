@@ -585,7 +585,6 @@ extension StripeCardReaderService {
         case .fraud,
                 .invalidAccount,
                 .currencyNotSupported,
-                .cardNotSupported,
                 .duplicateTransaction,
                 .incorrectPostalCode,
                 .invalidAmount:
@@ -598,6 +597,7 @@ extension StripeCardReaderService {
                 .testCard,
                 .testModeLiveCard,
                 .expiredCard,
+                .cardNotSupported,
                 .unknown:
             return true
         }

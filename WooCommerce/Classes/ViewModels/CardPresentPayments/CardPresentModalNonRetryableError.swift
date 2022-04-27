@@ -9,6 +9,9 @@ final class CardPresentModalNonRetryableError: CardPresentPaymentsModalViewModel
     /// The error returned by the stack
     private let error: Error
 
+    /// Called when the view is dismissed
+    private let onDismission: () -> Void
+
     let textMode: PaymentsModalTextMode = .reducedBottomInfo
     let actionsMode: PaymentsModalActionsMode = .oneAction
 
@@ -40,13 +43,15 @@ final class CardPresentModalNonRetryableError: CardPresentPaymentsModalViewModel
         return topTitle + bottomTitle
     }
 
-    init(amount: String, error: Error) {
+    init(amount: String, error: Error, onDismission: @escaping () -> Void) {
         self.amount = amount
         self.error = error
+        self.onDismission = onDismission
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
         viewController?.dismiss(animated: true)
+        onDismission()
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) { }

@@ -82,8 +82,8 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
         presentViewModel(viewModel: viewModel)
     }
 
-    func nonRetryableError(from: UIViewController?, error: Error) {
-        let viewModel = nonRetryableErrorViewModel(amount: amount, error: error)
+    func nonRetryableError(from: UIViewController?, error: Error, dismissCompletion: @escaping () -> Void) {
+        let viewModel = nonRetryableErrorViewModel(amount: amount, error: error, dismissCompletion: dismissCompletion)
         presentViewModel(viewModel: viewModel)
     }
 
@@ -161,8 +161,8 @@ private extension OrderDetailsPaymentAlerts {
         CardPresentModalRetryableError(primaryAction: tryAgain)
     }
 
-    func nonRetryableErrorViewModel(amount: String, error: Error) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalNonRetryableError(amount: amount, error: error)
+    func nonRetryableErrorViewModel(amount: String, error: Error, dismissCompletion: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalNonRetryableError(amount: amount, error: error, onDismission: dismissCompletion)
     }
 }
 

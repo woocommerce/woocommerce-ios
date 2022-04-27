@@ -151,8 +151,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
 
     func test_loading_indicator_gets_enabled_during_network_request_when_optimistic_updates_are_disabled() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: false,
-                                                        isUseUpdateOrderAddressOptimisticallyIfAvaiableOn: true)
+        let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: false)
         let viewModel = EditOrderAddressFormViewModel(order: order(withShippingAddress: sampleAddress()),
                                                       type: .shipping,
                                                       storageManager: testingStorage,
@@ -378,8 +377,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
 
     func test_view_model_fires_success_notice_after_updating_address_successfully_when_optimistic_updates_are_disabled() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: false,
-                                                        isUseUpdateOrderAddressOptimisticallyIfAvaiableOn: true)
+        let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: false)
         let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .shipping, stores: testingStores, featureFlagService: featureFlagService)
         testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
@@ -403,8 +401,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
 
     func test_view_model_does_not_fire_success_notice_after_updating_address_successfully_when_optimistic_updates_are_enabled() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: true,
-                                                        isUseUpdateOrderAddressOptimisticallyIfAvaiableOn: true)
+        let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: true)
         let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .shipping, stores: testingStores, featureFlagService: featureFlagService)
         testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
@@ -428,8 +425,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
 
     func test_view_model_sets_notice_with_error_notice_after_failing_to_update_address_when_optimistic_updates_are_disabled() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: false,
-                                                        isUseUpdateOrderAddressOptimisticallyIfAvaiableOn: true)
+        let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: false)
         let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .shipping, stores: testingStores, featureFlagService: featureFlagService)
         testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
@@ -453,8 +449,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
 
     func test_view_model_enqueues_error_notice_after_failing_to_update_address_when_optimistic_updates_are_enabled() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: true,
-                                                        isUseUpdateOrderAddressOptimisticallyIfAvaiableOn: true)
+        let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: true)
         let noticePresenter = MockNoticePresenter()
         let viewModel = EditOrderAddressFormViewModel(order: Order.fake(),
                                                       type: .shipping,

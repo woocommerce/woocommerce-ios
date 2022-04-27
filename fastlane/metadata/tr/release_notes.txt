@@ -1,3 +1,5 @@
-Hareket halindeyken; ürünler, nakliye, fatura bilgileri ve ücretleri kullanarak siparişler oluşturun! Hemen ardından yüz yüze kredi kartı ödemesini hızlı bir şekilde alabilir veya müşteriye ilgili siparişin ödemesini kendi cihazında yapması için bir bağlantı gönderebilirsiniz. Siz istediniz, biz de yaptık!
+Henüz ödeme uygulanmamış bir siparişin üst kısmında, kullanışlı bir ödeme bağlantısı bulacaksınız. Bu bağlantıyı müşterinize gönderdiğinizde, siparişin ödemesini doğrudan telefonlarından veya bilgisayarlarından yapabilirler.
 
-Kupon yönetimi özelliğimizde de ilerleme kaydediyoruz. Diğer sekmesi > Ayarlar > Deneysel Özellikler bölümünden etkinleştirerek bir göz atın.
+Bu, yeni sipariş oluşturma özelliğiyle birlikte kullanılabilen harika bir seçenektir! Bir müşteri önünüzde dururken sipariş oluşturun ve ardından kendisine ödeme bağlantısını siteniz aracılığıyla kısa mesaj olarak gönderin. Harika, değil mi?
+
+Uygulamada bu seçeneği kullanabilmek için WooCommerce 6.4 veya daha yenisine güncellemeniz gerekir.

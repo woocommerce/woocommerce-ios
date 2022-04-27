@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-04-12 16:54:03+0000 */
+/* Translation-Revision-Date: 2022-04-26 15:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -92,10 +92,12 @@
 /* The number of category allowed for a coupon in singular form. Reads like: 1 Category */
 "%1$d Category" = "%1$d 카테고리";
 
-/* The number of products allowed for a coupon in singular form. Reads like: 1 Product */
+/* Count of one product
+   The number of products allowed for a coupon in singular form. Reads like: 1 Product */
 "%1$d Product" = "%1$d 상품";
 
-/* The number of products allowed for a coupon in plural form. Reads like: 10 Products */
+/* Count of several products, reads like: 2 Products
+   The number of products allowed for a coupon in plural form. Reads like: 10 Products */
 "%1$d Products" = "%1$d 상품";
 
 /* Singular format of number of business day in Shipping Labels > Carrier and Rates */
@@ -338,14 +340,15 @@
 /* Title for the button to add the Customer Provided Note in Order Details */
 "Add Customer Note" = "고객 메모 추가";
 
+/* Button for adding a description to a coupon in the view for adding or editing a coupon. */
+"Add Description (Optional)" = "설명 추가(선택 사항)";
+
 /* Downloadable file screen navigation title */
 "Add Downloadable File" = "다운로드 가능한 파일 추가";
 
-/* Title for the Fee screen during order creation */
+/* Title for the Fee screen during order creation
+   Title text of the button that adds a fee when creating a new order */
 "Add Fee" = "수수료 추가";
-
-/* Title text of the button that adds fees when creating a new order */
-"Add Fees" = "수수료 추가";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
 "Add File" = "파일 추가하기";
@@ -428,6 +431,9 @@
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press enter" = "각 옵션 추가 및 Enter 키 누르기";
 
+/* Button in the action sheet for adding the expiration date for a coupon. */
+"Add expiration date" = "만료일 추가";
+
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
 "Add more details" = "세부사항 추가";
@@ -449,6 +455,9 @@
 
 /* Navigates to a screen to create a simple payments order */
 "Add simple payments order" = "간편한 결제 주문 추가";
+
+/* Placeholder text that will be shown in the view for adding the description of a coupon. */
+"Add the description of the coupon." = "쿠폰 설명을 추가합니다.";
 
 /* Option to add item to new package on Package Details screen of Shipping Label flow. */
 "Add to new package" = "새 패키지에 추가";
@@ -554,9 +563,15 @@
 /* Title of the Amount label on Coupon Details screen */
 "Amount" = "금액";
 
+/* Title of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
+"Amount (%)" = "금액(%)";
+
 /* Title for the amount field on the Fee Details screen during order creationParameters: %1$@ - fee type (percent sign or currency symbol)
    Title for the amount field on the Shipping Details screen during order creationParameters: %1$@ - currency symbol */
 "Amount (%1$@)" = "금액(%1$@)";
+
+/* Title of the Amount field on the Coupon Edit or Creation screen for a fixed amount discount coupon.Reads like: Amount ($) */
+"Amount (%@)" = "금액(%@)";
 
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
 "Amount Eligible For Refund" = "환불 가능 금액";
@@ -641,6 +656,9 @@
 
 /* No comment provided by engineer. */
 "Apply %@ off to some products with the promo code “%@”." = "프로모션 코드가 “%2$@”인 일부 상품에 %1$@ 할인을 적용합니다.";
+
+/* Header of the section for applying a coupon to specific products or categories in the view for adding or editing a coupon. */
+"Apply this coupon to" = "다음에 이 쿠폰 적용";
 
 /* Approve a comment */
 "Approve" = "승인하기";
@@ -748,9 +766,6 @@
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "표시줄 번호 %1$i, %2$@, ";
 
-/* Beta annotation for sharing a payment link */
-"Beta" = "베타";
-
 /* Section header title for billing address in billing information
    Title for the Billing Address section in order customer data - Title for the Edit Billing Address Form */
 "Billing Address" = "청구 주소";
@@ -802,7 +817,7 @@
 "Can Not Request Link" = "링크를 요청할 수 없음";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title that closes the action sheet in product variations - Button title that closes the presented screen - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button in the navigation bar of the view for adding or editing a coupon. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
+   Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title that closes the action sheet in product variations - Button title that closes the presented screen - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to cancel an in-person payment or refund - Button to cancel the creation of an order on the New Order screen - Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button in the navigation bar of the view for adding or editing a coupon. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the main more actions menu sheet. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
 "Cancel" = "취소";
 
 /* Display label for cancelled order status. */
@@ -920,9 +935,12 @@
 /* Button title for clearing all filters for the list. */
 "Clear all" = "모두 지우기";
 
-/* Text for the close button in the Add Product screen
-   Text for the close button in the Edit Address Form - Text for the close button in the Fee Details screen - Text for the close button in the Product screen - Text for the close button in the Shipping Line Details screen - Title of the Close action on the Jetpack Install view */
+/* Accessibility label for the close button
+   Button to dismiss modal overlay. Presented to users after refunding a payment fails - Text for the close button in the Add Product screen - Text for the close button in the Edit Address Form - Text for the close button in the Fee Details screen - Text for the close button in the Product screen - Text for the close button in the Shipping Line Details screen - Title of the Close action on the Jetpack Install view */
 "Close" = "닫기";
+
+/* Accessibility value when a banner is collapsed */
+"Collapsed" = "축소됨";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "정보 수집";
@@ -1111,6 +1129,15 @@
 /* Description for the Origin Country row in Customs screen of Shipping Label flow */
 "Country where the product was manufactured or assembled" = "상품이 제조 또는 조립된 국가";
 
+/* Text field coupon code in the view for adding or editing a coupon. */
+"Coupon Code" = "쿠폰 코드";
+
+/* Title of the view for editing the coupon description. */
+"Coupon Description" = "쿠폰 설명";
+
+/* Field in the view for adding or editing a coupon. */
+"Coupon Expiry Date" = "Coupon Expiry Date";
+
 /* Cell title on beta features screen to enable coupon management */
 "Coupon Management" = "쿠폰 관리";
 
@@ -1122,6 +1149,12 @@
 
 /* Notice message after deleting coupon from the Coupon Details screen */
 "Coupon deleted" = "쿠폰 삭제됨";
+
+/* Header of the coupon details in the view for adding or editing a coupon. */
+"Coupon details" = "쿠폰 상세 정보";
+
+/* Title of the view for selecting an expiry date for a coupon. */
+"Coupon expiry date" = "쿠폰 만료일";
 
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
@@ -1152,8 +1185,8 @@
 /* Title of the view for creating a coupon with generic discount. */
 "Create discount" = "할인 생성";
 
-/* Title of the view for creating a coupon with fixed card discount. */
-"Create fixed card discount" = "고정 카드 할인 생성";
+/* Title of the view for creating a coupon with fixed cart discount. */
+"Create fixed cart discount" = "고정 장바구니 할인 생성";
 
 /* Title of the view for creating a coupon with fixed product discount. */
 "Create fixed product discount" = "고정 상품 할인 생성";
@@ -1241,6 +1274,9 @@
 /* Title of the banner notice in Shipping Labels -> Carrier and Rates */
 "Customer paid a %1$@ of %2$@ for shipping" = "배송에 대해 고객이 결제한 %1$@\/%2$@";
 
+/* The footer of the text field coupon code in the view for adding or editing a coupon. */
+"Customers need to enter this code to use the coupon." = "고객이 쿠폰을 사용하려면 이 코드를 입력해야 합니다.";
+
 /* Navigation title for Customs screen in Shipping Label flow
    Title of the cell Customs inside Create Shipping Label form */
 "Customs" = "세관";
@@ -1288,6 +1324,9 @@
 
 /* Delete tracking button title */
 "Delete Tracking" = "추적 삭제";
+
+/* Button in the action sheet for deleting the expiration date of a coupon. */
+"Delete expiration date" = "만료일 삭제";
 
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "제품 설명";
@@ -1406,6 +1445,15 @@
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "설정을 전환하려면 두 번 누르세요.";
 
+/* Accessibility hint to expand a banner */
+"Double-tap for more information" = "두 번 눌러 자세히 알아보기";
+
+/* Accessibility hint to collapse a banner */
+"Double-tap to collapse" = "두 번 눌러 축소하기";
+
+/* Accessibility hint to dismiss a banner */
+"Double-tap to dismiss" = "두 번 눌러 해제하기";
+
 /* Button title Download Settings in Downloadable Files More Options Action Sheet
    Download file settings navigation title */
 "Download Settings" = "설정 다운로드";
@@ -1432,6 +1480,9 @@
    Display label for the product's draft status */
 "Draft" = "임시글";
 
+/* Drag and drop helper text above photo list in Product images screen */
+"Drag and drop to re-order photos" = "끌어 놓아서 사진 순서 변경";
+
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "고유 코드로 제품을 간편하게 식별합니다.";
 
@@ -1452,7 +1503,14 @@
 /* Accessibility label for the button to edit customer details on the New Order screen */
 "Edit Customer Details" = "고객 상세 정보 편집";
 
-/* Edit Products button inside the Linked Products screen. */
+/* Button for editing the description of a coupon in the view for adding or editing a coupon. */
+"Edit Description" = "설명 편집";
+
+/* Button for specify the product categories where a coupon can be applied in the view for adding or editing a coupon. */
+"Edit Product Categories" = "상품 카테고리 편집";
+
+/* Button for specify the products where a coupon can be applied in the view for adding or editing a coupon.
+   Edit Products button inside the Linked Products screen. */
 "Edit Products" = "제품 편집";
 
 /* Accessibility label for the button to edit order status on the New Order screen */
@@ -1467,8 +1525,11 @@
 /* Title of the view for editing a coupon with generic discount. */
 "Edit discount" = "할인 편집";
 
-/* Title of the view for editing a coupon with fixed card discount. */
-"Edit fixed card discount" = "고정 카드 할인 편집";
+/* Button in the action sheet for editing the expiration date of a coupon. */
+"Edit expiration date" = "만료일 편집";
+
+/* Title of the view for editing a coupon with fixed cart discount. */
+"Edit fixed cart discount" = "고정 장바구니 할인 편집";
 
 /* Title of the view for editing a coupon with fixed product discount. */
 "Edit fixed product discount" = "고정 상품 할인 편집";
@@ -1538,7 +1599,8 @@
 /* Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "**프린터 펌웨어가 최신 상태**인지 확인하세요. 프린터 설명서에서 업데이트에 대한 지침을 참조하세요.";
 
-/* Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
+/* Address field placeholder in Edit Address Form
+   Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
 "Enter Address" = "주소 입력";
 
 /* Short instructions label in the simple payments screen */
@@ -1548,7 +1610,11 @@
    Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
 "Enter Another Store" = "다른 스토어 입력";
 
-/* Placeholder of the row that holds the provided email when creating a simple payment */
+/* City field placeholder in Edit Address Form */
+"Enter City" = "구\/군\/시 입력";
+
+/* Email field placeholder in Edit Address Form
+   Placeholder of the row that holds the provided email when creating a simple payment */
 "Enter Email" = "이메일 주소 입력";
 
 /* Placeholder for the required ITN row in Customs screen of Shipping Label flow */
@@ -1557,8 +1623,21 @@
 /* Placeholder for the ITN row in Customs screen of Shippling Label flow */
 "Enter ITN (Optional)" = "ITN 입력(선택 사항)";
 
-/* Placeholder for the row to enter the package name on the Add New Custom Package screen in Shipping Label flow */
+/* Last name field placeholder in Edit Address Form */
+"Enter Last Name" = "이름 입력";
+
+/* Name field placeholder in Edit Address Form
+   Placeholder for the row to enter the package name on the Add New Custom Package screen in Shipping Label flow */
 "Enter Name" = "이름 입력";
+
+/* Phone field placeholder in Edit Address Form */
+"Enter Phone" = "전화 입력";
+
+/* Postcode field placeholder in Edit Address Form */
+"Enter Postcode" = "우편번호 입력";
+
+/* State field placeholder in Edit Address Form */
+"Enter State" = "광역시\/도 입력";
 
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "URL 입력";
@@ -1566,6 +1645,9 @@
 /* Action button linking to instructions for enter another store.Presented when logging in with an email address that is not a WordPress.com account
    Button title. Takes the user to the login by store address flow. */
 "Enter Your Store Address" = "스토어 주소 입력";
+
+/* Text field coupon code placeholder in the view for adding or editing a coupon. */
+"Enter a coupon" = "쿠폰 입력";
 
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "운송업체 이름 입력";
@@ -1644,6 +1726,9 @@
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
 "Everyone loves a deal" = "누구나 좋아하는 딜";
 
+/* Title of the action button on the Exclude Products screenReads like: Exclude 1 Product */
+"Exclude %1$@" = "%1$@ 제외";
+
 /* Title of the action button to add product categories to the exclusion list in Coupon Usage Details screen */
 "Exclude Product Categories" = "상품 카테고리 제외";
 
@@ -1653,11 +1738,17 @@
 /* Title for the exclude sale items row in coupon usage details screen. */
 "Exclude Sale Items" = "세일 아이템 제외";
 
+/* Title of the Exclude Products screen */
+"Exclude products" = "상품 제외";
+
 /* Text on Coupon Details screen to indicate that the coupon can not be applied to sale items */
 "Excludes sale items" = "세일 아이템 제외";
 
 /* Title of the exclusions section in Coupon Usage Details screen */
 "Exclusions" = "제외";
+
+/* Accessibility value when a banner is expanded */
+"Expanded" = "확장됨";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -1720,8 +1811,8 @@
 /* Subtitle of the cell Customs inside Create Shipping Label form */
 "Fill out customs form" = "세관 양식 작성";
 
-/* Title of the toolbar button to filter orders without filters applied.
-   Title of the toolbar button to filter products by different attributes. - Title of the toolbar button to filter products without any filters applied. */
+/* Button to filter products on the product list selector
+   Title of the toolbar button to filter orders without filters applied. - Title of the toolbar button to filter products by different attributes. - Title of the toolbar button to filter products without any filters applied. */
 "Filter" = "필터";
 
 /* Title of the toolbar button to filter orders with filters applied.
@@ -2013,6 +2104,9 @@
 /* Navigation title of the webview which is used in Inbox Notes.
    Title for the screen that shows inbox notes. - Title of the Inbox menu in the hub menu */
 "Inbox" = "받은 편지함";
+
+/* Toggle field in the view for adding or editing a coupon. */
+"Include Free Shipping?" = "무료 배송 포함 여부";
 
 /* Describes a standard *.wordpress.com site domain */
 "Included with Site" = "사이트에 포함됨";
@@ -2606,8 +2700,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
 "No tax classes yet" = "아직 세금 클래스가 없음";
 
-/* Display label for the order fee's tax status setting option
-   Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow - The description in product variations bulk update, of a value, that is missing from all variations - Value for fields in Coupon Usage Details screen when no value is set */
+/* Coupon expiry date placeholder in the view for adding or editing a coupon
+   Display label for the order fee's tax status setting option - Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow - The description in product variations bulk update, of a value, that is missing from all variations - Value for fields in Coupon Usage Details screen when no value is set */
 "None" = "없음";
 
 /* Action title to dismiss enabling Analytics for a store
@@ -2836,8 +2930,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message when the presented card remaining credit or balance is insufficient for the purchase. */
 "Payment declined due to insufficient funds. Try another means of payment" = "한도가 부족하여 결제가 거부되었습니다. 다른 결제 수단 시도";
 
-/* Error message. Presented to users after a collecting a payment fails
-   Error message. Presented to users after collecting a payment fails */
+/* Error message. Presented to users after collecting a payment fails */
 "Payment failed" = "결제 실패";
 
 /* Title of 'Payment method' section in the receipt
@@ -2919,7 +3012,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message shown when a URL is invalid. */
 "Please enter a complete website address, like example.com." = "example.com과 같은 완전한 웹사이트 주소를 입력하세요.";
 
-/* Product price error notice message, when the sale price was not set during a sale setup */
+/* Bulk price update error, when the sale price is empty
+   Product price error notice message, when the sale price was not set during a sale setup */
 "Please enter a sale price for the scheduled sale" = "예정된 할인의 할인 가격을 입력하세요.";
 
 /* No comment provided by engineer. */
@@ -3103,6 +3197,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Indicates that a payment is being processed */
 "Processing payment..." = "결제 처리 중...";
 
+/* Indicates that an in-person refund is being processed */
+"Processing refund" = "환불 처리하기";
+
 /* Product section title
    Product section title if there is only one product. - Product section title in Review Order screen if there is one product. - Title for the Product screen during order creation */
 "Product" = "상품";
@@ -3233,7 +3330,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "개인정보 취급방침 읽기";
 
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
+/* Indicates the status of a card reader. Presented to users when in-person payment collection or refund starts
+   Indicates the status of a card reader. Presented to users when payment collection starts */
 "Reader is ready" = "리더 준비 완료";
 
 /* Refund note section title */
@@ -3287,6 +3385,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title of the section containing information about how the refund will be processed. */
 "Refund Via" = "통해 환불";
 
+/* Error message. Presented to users after an in-person refund fails */
+"Refund failed" = "환불 실패";
+
+/* Alert title when starting the in-person refund flow without a user name. */
+"Refund payment" = "결제 환불";
+
+/* Alert title when starting the in-person refund flow with a user name. */
+"Refund payment from %1$@" = "%1$@에서 결제 환불";
+
 /* Display label for refunded order status.
    The title for the refunded amount cell */
 "Refunded" = "환불됨";
@@ -3303,6 +3410,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* It reads, 'Refunded via <payment method>' */
 "Refunded via %@" = "%@을(를) 통해 환불됨";
+
+/* VoiceOver accessibility label. Indicates that an in-person refund is being processed */
+"Refunding payment" = "결제 환불하기";
+
+/* Button in the view for adding or editing a coupon. */
+"Regenerate Coupon Code" = "쿠폰 코드 재생성";
 
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "등록된 도메인";
@@ -3367,7 +3480,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Request a Refund" = "환불 요청";
 
 /* Name text field placeholder in Shipping Label Address Validation when it's required
-   Text field placeholder in Edit Address Form - Text field placeholder in Shipping Label Address Validation - Text field placeholder in Shipping Label Address Validation when phone number is required */
+   Text field placeholder in Shipping Label Address Validation - Text field placeholder in Shipping Label Address Validation when phone number is required */
 "Required" = "필수 항목";
 
 /* Deletes all activity logs except for the marked 'Current'. */
@@ -3467,8 +3580,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Restriction type Sanitary / Phytosanitary Inspection for contents declared in the customs form for Shipping Label flow */
 "Sanitary \/ Phytosanitary Inspection" = "위생\/식물검역 검사";
 
-/* Action for saving a Product remotely
-   Add Product Category. Save button title in navbar. - Add Product Tags. Save button title in navbar. - Button title that save the price selection for bulk variation update */
+/* Action for saving a Coupon remotely
+   Action for saving a Product remotely - Add Product Category. Save button title in navbar. - Add Product Tags. Save button title in navbar. - Button title that save the price selection for bulk variation update */
 "Save" = "저장";
 
 /* Button title to save a product as draft in Discard Changes Action Sheet */
@@ -3552,7 +3665,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the Jetpack benefits banner. */
 "See the benefits" = "혜택 보기";
 
-/* Select all button title in the issue refund screen */
+/* Title of the action button on the Select Products screenReads like: Select 1 Product */
+"Select %1$@" = "%1$@ 선택";
+
+/* Button to select all products on the product list selector
+   Select all button title in the issue refund screen */
 "Select All" = "모두 선택";
 
 /* Select parent category screen - Screen title */
@@ -3582,6 +3699,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "단락 스타일 선택";
 
+/* Title for the Select Products screen */
+"Select products" = "상품 선택";
+
 /* Placeholder value of the cell in Product Price Settings > Schedule sale from a certain date */
 "Select start date" = "시작 날짜 선택";
 
@@ -3609,15 +3729,24 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Service Package menu in Shipping Label Add New Package flow */
 "Service Package" = "서비스 패키지";
 
+/* Title of the action sheet for setting an expiry date for a coupon. */
+"Set an expiry date for this coupon" = "이 쿠폰의 만료일 설정";
+
 /* Tells user to set an email that support can use for replies */
 "Set email" = "이메일 설정";
+
+/* Subtitle of the Amount field on the Coupon Edit or Creation screen for a fixed amount discount coupon. */
+"Set the fixed amount of the discount you want to offer." = "제공하려는 할인 고정 금액을 설정하세요.";
+
+/* Subtitle of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
+"Set the percentage of the discount you want to offer." = "제공하려는 할인 비율을 설정하세요.";
 
 /* Header text on Add New Custom Package screen in Shipping Label flow
    Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "상품 배송에 사용할 패키지를 설정하세요. 향후 주문을 위해 저장됩니다.";
 
 /* Accessibility label for the Settings button.
-   Settings navigation title */
+   Settings button in the hub menu - Settings navigation title */
 "Settings" = "설정";
 
 /* Title of a modal presenting a list of readers to choose from. */
@@ -3629,7 +3758,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action title for sharing coupon from the Coupon Details screen */
 "Share Coupon" = "쿠폰 공유";
 
-/* Payment Link method title on the select payment method screen for simple payments */
+/* Payment Link method title on the select payment method screen for simple payments
+   Title to share an order payment link. */
 "Share Payment Link" = "결제 링크 공유";
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
@@ -3855,6 +3985,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message shown when a refund could not be canceled (likely because it had already completed) */
 "Sorry, this refund could not be canceled" = "죄송합니다. 이 환불은 취소할 수 없습니다.";
 
+/* Error message when the card reader service experiences an unexpected internal service error. */
+"Sorry, this refund couldn’t be processed" = "죄송합니다. 이 환불은 처리할 수 없습니다.";
+
 /* No comment provided by engineer. */
 "Sorry, usernames can only contain lowercase letters (a-z) and numbers." = "죄송합니다. 사용자명은 소문자(a-z)와 숫자만 포함할 수 있습니다.";
 
@@ -4078,6 +4211,10 @@ This part is the link to the website, and forms part of a longer sentence which 
    Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Tap, insert or swipe to pay" = "누르거나 삽입하거나 살짝 밀어서 결제하기";
 
+/* Indicates the action expected from a user. Presented to users when in-person refund starts
+   Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
+"Tap, insert or swipe to refund" = "누르거나 삽입하거나 살짝 밀어서 환불받기";
+
 /* Tax label for a refund details view
    Tax label for the tax detail row. - Title on the refunds screen that lists the fees tax cost - Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
 "Tax" = "세금";
@@ -4208,6 +4345,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the card reader software is too far out of date to process payments. */
 "The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "카드 리더 소프트웨어가 오래되었음 - 프로세스를 시도하기 전에 카드 리더 소프트웨어를 업데이트하세요.";
 
+/* Error message when the card reader software is too far out of date to process in-person refunds. */
+"The card reader software is out-of-date - please update the card reader software before attempting to process refunds" = "카드 리더 소프트웨어가 오래되었음 - 환불 처리를 시도하기 전에 카드 리더 소프트웨어를 업데이트하세요.";
+
 /* Error message when the card reader software update fails due to a communication error. */
 "The card reader software update failed due to a communication error - please try again" = "통신 오류로 인해 카드 리더 소프트웨어 업데이트에 실패했음 - 다시 시도하세요.";
 
@@ -4222,6 +4362,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of payment" = "카드 리더에서 카드가 거부되었음 - 다른 결제 수단을 시도하세요.";
+
+/* Error message when the card reader itself declines the card. */
+"The card was declined by the card reader - please try another means of refund" = "카드가 카드 리더에서 거부되었음 - 다른 환불 수단을 사용해 보세요.";
 
 /* Error message when the card processor declines the payment. */
 "The card was declined by the payment processor - please try another means of payment" = "결제 처리기에서 카드가 거부되었음 - 다른 결제 수단을 시도하세요.";
@@ -4247,6 +4390,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "전화번호가 유효하지 않거나 이 기기에서 고객에게 전화를 걸 수 없습니다.";
 
+/* VoiceOver accessibility hint, informing the user that this field allows to enter the price to use for bulk updating all variations */
+"The price for bulk updating all variations. Editable." = "모든 변형 일괄 업데이트 가격. 편집 가능.";
+
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "이 제품의 가격입니다. 편집 가능합니다.";
 
@@ -4259,16 +4405,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
 "The reader has a critically low battery. Please charge the reader or try a different reader." = "리더의 배터리 잔량이 너무 부족합니다. 배터리를 충전하거나 다른 리더를 사용해 보세요.";
 
+/* Error message when the in-person refund can not be processed (i.e. order amount is below the minimum amount allowed.) */
+"The refund can not be processed by the payment processor." = "결제 처리업체에서 환불을 처리할 수 없습니다.";
+
 /* Error message when a request times out. */
 "The request timed out - please try again" = "요청 시간 초과 - 다시 시도하세요.";
 
-/* Product price error notice message, when the sale price is added but the regular price is not */
+/* Bulk price update error message, when the sale price is added but the regular price is not
+   Product price error notice message, when the sale price is added but the regular price is not */
 "The sale price can't be added without the regular price." = "정규 가격이 없으면 판매 가격을 추가할 수 없습니다.";
 
 /* VoiceOver accessibility hint, informing the user that the cell shows the sale price information for this product. */
 "The sale price for this product. Editable." = "이 제품의 판매 가격입니다. 편집 가능합니다.";
 
-/* Product price error notice message, when the sale price is higher than the regular price */
+/* Bulk price update error, when the sale price is higher than the regular price
+   Product price error notice message, when the sale price is higher than the regular price */
 "The sale price should be lower than the regular price." = "할인 가격은 정상 가격보다 낮아야 합니다.";
 
 /* A failure reason for when the request couldn't be serialized. */
@@ -4548,7 +4699,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Trust" = "신뢰함";
 
 /* Action displayed in the error prompt when loading total discounted amount in Coupon Details screen fails
-   Button to retry a software update. Presented to users when updating the card reader software fails - Button to try again after connecting to a specific reader fails due to a critically low battery. - Button to try again. Presented to users after a failure occurs - Try Again button on the error alert when fetching system status report fails */
+   Button to retry a software update. Presented to users when updating the card reader software fails - Button to try again after connecting to a specific reader fails due to a critically low battery. - Button to try again. Presented to users after a failure occurs - Button to try to refund a payment again. Presented to users after refunding a payment fails - Try Again button on the error alert when fetching system status report fails */
 "Try Again" = "재시도";
 
 /* Message from the in-person payment card reader prompting user to retry a payment using a different card */
@@ -4557,7 +4708,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message from the in-person payment card reader prompting user to retry a payment using a different method, e.g. swipe, tap, insert */
 "Try Another Read Method" = "다른 읽기 방법 시도";
 
-/* Button to try to collect a payment again. Presented to users after a collecting a payment fails */
+/* Button to try to collect a payment again. Presented to users after collecting a payment fails */
 "Try Collecting Again" = "다시 수집 시도";
 
 /* Button to trigger connection to another account in store picker */
@@ -4721,6 +4872,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the card reader battery level is too low to safely perform a software update. */
 "Unable to update card reader software - the reader battery is too low" = "카드 리더 소프트웨어를 업데이트할 수 없음 - 리더 배터리 잔량이 부족합니다.";
 
+/* Notice title when unable to bulk update price of the variations */
+"Unable to update price" = "가격을 업데이트할 수 없음";
+
 /* Title for the error screen when In-Person Payments is unavailable */
 "Unable to verify In-Person Payments for this store" = "이 스토어의 대면 결제를 확인할 수 없음";
 
@@ -4854,13 +5008,17 @@ This part is the link to the website, and forms part of a longer sentence which 
    Navigation bar title for editing linked products for upsell products */
 "Upsells" = "상향 판매";
 
+/* Header of the section usage details in the view for adding or editing a coupon. */
+"Usage Details" = "사용 상세 정보";
+
 /* Title for the usage limit per coupon row in coupon usage details screen. */
 "Usage Limit Per Coupon" = "쿠폰당 사용 한도";
 
 /* Title for the usage limit per user row in coupon usage details screen. */
 "Usage Limit Per User" = "사용자별 사용 한도";
 
-/* Title for the usage restrictions section on coupon usage details screen */
+/* Field in the view for adding or editing a coupon.
+   Title for the usage restrictions section on coupon usage details screen */
 "Usage Restrictions" = "사용 제한";
 
 /* Title of the Usage details row in Coupon Details screen */

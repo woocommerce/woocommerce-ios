@@ -40,6 +40,10 @@ final class IssueRefundViewModel {
         /// Charge to be refunded
         ///
         var charge: WCPayCharge?
+
+        /// Error from fetching refund charge.
+        ///
+        var fetchChargeError: FetchChargeError?
     }
 
     /// Current ViewModel state
@@ -104,6 +108,19 @@ final class IssueRefundViewModel {
         return resultsController.fetchedObjects.first
     }()
 
+    /// PaymentGatewayAccount Results Controller.
+    private lazy var paymentGatewayAccountResultsController: ResultsController<StoragePaymentGatewayAccount> = {
+        let predicate = NSPredicate(format: "siteID = %ld", state.order.siteID)
+        let resultsController = ResultsController<StoragePaymentGatewayAccount>(storageManager: storage, matching: predicate, sortedBy: [])
+        try? resultsController.performFetch()
+        return resultsController
+    }()
+
+    /// Payment Gateway Accounts for the site (i.e. that can be used to refund)
+    private var paymentGatewayAccounts: [PaymentGatewayAccount] {
+        paymentGatewayAccountResultsController.fetchedObjects
+    }
+
     /// Charge related to the order. Used to show card details in the `Refund Via` section, and the refund confirmation screen.
     ///
     private var charge: WCPayCharge? {
@@ -158,7 +175,8 @@ final class IssueRefundViewModel {
                                                           refundsShipping: state.shouldRefundShipping,
                                                           refundsFees: state.shouldRefundFees,
                                                           items: state.refundQuantityStore.refundableItems(),
-                                                          paymentGateway: paymentGateway)
+                                                          paymentGateway: paymentGateway,
+                                                          paymentGatewayAccount: paymentGatewayAccounts.first)
         return RefundConfirmationViewModel(details: details, currencySettings: state.currencySettings)
     }
 }
@@ -283,6 +301,15 @@ private extension IssueRefundViewModel {
         guard let chargeID = state.order.chargeID else {
             return
         }
+        guard let paymentGatewayAccount = paymentGatewayAccounts.first else {
+            return state.fetchChargeError = .unknownPaymentGatewayAccount
+        }
+
+        state.fetchChargeError = nil
+
+        let setPaymentGatewayAccountAction = CardPresentPaymentAction.use(paymentGatewayAccount: paymentGatewayAccount)
+        stores.dispatch(setPaymentGatewayAccountAction)
+
         let action = CardPresentPaymentAction.fetchWCPayCharge(siteID: state.order.siteID, chargeID: chargeID, onCompletion: { _ in })
         stores.dispatch(action)
     }
@@ -444,14 +471,18 @@ extension IssueRefundViewModel {
     /// Calculates whether the next button should be animating or not
     ///
     private func calculateNextButtonAnimatingState() -> Bool {
-        // When we have a chargeID, we need to wait until we fetch the charge.
-        state.charge == nil && !state.order.chargeID.isNilOrEmpty
+        // When we have a chargeID, we need to wait until we fetch the charge unless there is an error fetching the charge.
+        state.charge == nil && !state.order.chargeID.isNilOrEmpty && state.fetchChargeError == nil
     }
 
     /// Calculates whether there are pending changes to commit
     ///
     private func calculatePendingChangesState() -> Bool {
-        state.refundQuantityStore.count() > 0 || state.shouldRefundShipping || state.shouldRefundFees
+        guard state.fetchChargeError == nil else {
+            return false
+        }
+
+        return state.refundQuantityStore.count() > 0 || state.shouldRefundShipping || state.shouldRefundFees
     }
 
     /// Calculates whether the "select all" button should be visible or not.
@@ -483,6 +514,14 @@ extension IssueRefundViewModel {
     private func isAnyFeeAvailableForRefund() -> Bool {
         // Return false if there are no fees left to be refunded.
         return state.order.fees.isNotEmpty
+    }
+}
+
+// MARK: Definitions
+extension IssueRefundViewModel {
+    /// Error from fetching refund charge details.
+    enum FetchChargeError: Error, Equatable {
+        case unknownPaymentGatewayAccount
     }
 }
 

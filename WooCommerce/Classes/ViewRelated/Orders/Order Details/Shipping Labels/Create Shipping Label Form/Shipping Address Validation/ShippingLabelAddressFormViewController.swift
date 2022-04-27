@@ -274,8 +274,8 @@ private extension ShippingLabelAddressFormViewController {
     func displayAddressUpdateFailedNotice() {
         let notice = Notice(
                 title: Localization.addressValidationErrorNotice,
-                actionTitle: Localization.addressValidationActionLabel,
-                feedbackType: .error
+                feedbackType: .error,
+                actionTitle: Localization.addressValidationActionLabel
         )
 
         ServiceLocator.noticePresenter.enqueue(notice: notice)

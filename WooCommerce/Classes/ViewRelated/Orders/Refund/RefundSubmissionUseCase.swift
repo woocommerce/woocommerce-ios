@@ -286,7 +286,6 @@ private extension RefundSubmissionUseCase {
         // TODO: 5984 - tracks in-person refund error
         DDLogError("Failed to refund: \(error.localizedDescription)")
         // Informs about the error.
-        //TODO: Check which refund errors can't be retried, and use that to call nonRetryableError(from: self.rootViewController, error: cancelError)
         if let cardReaderError = error as? CardReaderServiceError,
            case .refundPayment(_, let shouldRetry) = cardReaderError,
            shouldRetry == false {

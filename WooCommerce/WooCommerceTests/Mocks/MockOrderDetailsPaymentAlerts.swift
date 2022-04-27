@@ -39,7 +39,7 @@ final class MockOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
         dismissErrorCompletion = dismissCompletion
     }
 
-    func nonRetryableError(from: UIViewController?, error: Error) {
+    func nonRetryableError(from: UIViewController?, error: Error, dismissCompletion: @escaping () -> Void) {
         // no-op
     }
 

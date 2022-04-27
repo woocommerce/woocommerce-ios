@@ -6,7 +6,7 @@ final class CardPresentModalNonRetryableErrorTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        viewModel = CardPresentModalNonRetryableError(amount: Expectations.amount, error: Expectations.error)
+        viewModel = CardPresentModalNonRetryableError(amount: Expectations.amount, error: Expectations.error, onDismission: {})
     }
 
     override func tearDown() {

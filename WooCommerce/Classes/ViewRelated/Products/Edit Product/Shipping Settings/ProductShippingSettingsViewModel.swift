@@ -180,7 +180,7 @@ extension ProductShippingSettingsViewModel: ProductShippingSettingsActionHandler
         let dimensions = ProductDimensions(length: length ?? "",
                                            width: width ?? "",
                                            height: height ?? "")
-        onCompletion(weight ?? "",
+        onCompletion(weight,
                      dimensions,
                      shippingClassSlug,
                      shippingClassID,

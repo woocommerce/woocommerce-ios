@@ -99,6 +99,7 @@ class NumberFormatter_LocalizedTests: XCTestCase {
                                                        from: itLocale,
                                                        to: usLocale),
                        "1")
+        // Nil output when providing a input and locale combination with thousand separator
         XCTAssertNil(NumberFormatter.localizedString(using: valueWithThousandSeparator,
                                                        from: usLocale,
                                                        to: itLocale))

@@ -7,6 +7,9 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
     private(set) var sections: [ProductFormSection] = []
     private let currency: String
     private let currencyFormatter: CurrencyFormatter
+    private let locale: Locale
+    private let weightUnit: String?
+    private let dimensionUnit: String?
 
     // Timezone of the website
     //
@@ -15,9 +18,15 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
     init(product: ProductFormDataModel,
          actionsFactory: ProductFormActionsFactoryProtocol,
          currency: String,
-         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
+         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+         locale: Locale = .current,
+         weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
+         dimensionUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit) {
         self.currency = currency
         self.currencyFormatter = currencyFormatter
+        self.locale = locale
+        self.weightUnit = weightUnit
+        self.dimensionUnit = dimensionUnit
         configureSections(product: product, actionsFactory: actionsFactory)
     }
 }
@@ -261,7 +270,7 @@ private extension DefaultProductFormTableViewModel {
         func localizedNumber(_ string: String) -> String? {
             // API uses US locale for weight and shipping dimensions
             let usLocale = Locale(identifier: "en_US")
-            return NumberFormatter.localizedString(using: string, from: usLocale, to: .current)
+            return NumberFormatter.localizedString(using: string, from: usLocale, to: locale)
         }
 
         let icon = UIImage.shippingImage
@@ -270,7 +279,7 @@ private extension DefaultProductFormTableViewModel {
         var shippingDetails = [String]()
 
         // Weight[unit]
-        if let weight = product.weight, let weightUnit = ServiceLocator.shippingSettingsService.weightUnit, !weight.isEmpty {
+        if let weight = product.weight, let weightUnit = weightUnit, !weight.isEmpty {
             let localizedWeight = localizedNumber(weight) ?? weight
             shippingDetails.append(String.localizedStringWithFormat(Localization.weightFormat,
                                                                     localizedWeight, weightUnit))
@@ -284,7 +293,7 @@ private extension DefaultProductFormTableViewModel {
             .map({ localizedNumber($0) ?? $0 })
             .filter({ !$0.isEmpty })
 
-        if let dimensionUnit = ServiceLocator.shippingSettingsService.dimensionUnit,
+        if let dimensionUnit = dimensionUnit,
             !dimensions.isEmpty {
             switch dimensions.count {
             case 1:

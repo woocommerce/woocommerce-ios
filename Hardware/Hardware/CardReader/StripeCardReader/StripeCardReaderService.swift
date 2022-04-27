@@ -590,7 +590,6 @@ extension StripeCardReaderService {
                 .currencyNotSupported,
                 .cardNotSupported,
                 .duplicateTransaction,
-                .expiredCard,
                 .incorrectPostalCode,
                 .invalidAmount:
             return false
@@ -601,6 +600,7 @@ extension StripeCardReaderService {
                 .tooManyPinTries,
                 .testCard,
                 .testModeLiveCard,
+                .expiredCard,
                 .unknown:
             return true
         }

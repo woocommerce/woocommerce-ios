@@ -26,6 +26,11 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
     ///
     private let onOrderUpdate: ((Yosemite.Order) -> Void)?
 
+
+    /// Presents an error notice in the tab bar context after the update operation fails.
+    ///
+    private let noticePresenter: NoticePresenter
+
     init(order: Yosemite.Order,
          type: AddressType,
          onOrderUpdate: ((Yosemite.Order) -> Void)? = nil,
@@ -37,6 +42,7 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
         self.order = order
         self.type = type
         self.onOrderUpdate = onOrderUpdate
+        self.noticePresenter = noticePresenter
 
         let addressToEdit: Address?
         switch type {
@@ -51,8 +57,7 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
                    storageManager: storageManager,
                    stores: stores,
                    analytics: analytics,
-                   featureFlagService: featureFlagService,
-                   noticePresenter: noticePresenter)
+                   featureFlagService: featureFlagService)
     }
 
     // MARK: - Protocol conformance
@@ -223,11 +228,32 @@ private extension EditOrderAddressFormViewModel {
         }
     }
 
+    /// Enqueues the success notice on successful updating only when
+    /// optimistic updates are not enabled.
+    ///
+    func displayAddressUpdatedNoticeIfNeeded() {
+        guard !areOptimisticUpdatesEnabled else {
+            return
+        }
+
+        notice = NoticeFactory.createSuccessNotice()
+    }
+
     /// Enqueues the `Unable to Update Order` Notice.
     ///
     func displayUpdateErrorNotice(modifiedOrder: Yosemite.Order, fields: [OrderUpdateField], updatedAddress: Address) {
-        displayRetriableUpdateErrorNotice { [weak self] in
+        let noticeIdentifier = UUID().uuidString
+        let errorNotice = NoticeFactory.createRetriableErrorNotice(from: .unableToUpdateAddress,
+                                                                   info: NoticeNotificationInfo(identifier: noticeIdentifier)) { [weak self] in
             self?.handleOrderUpdate(modifiedOrder, fields: fields, updatedAddress: updatedAddress)
+        }
+
+        if areOptimisticUpdatesEnabled {
+            noticePresenter.enqueue(notice: errorNotice)
+        } else {
+            /// If optimistic updates are not enabled the modal is not dismissed
+            /// upon failure, so we have to use notice modifier for this modal.
+            notice = errorNotice
         }
     }
 
@@ -254,6 +280,52 @@ private extension EditOrderAddressFormViewModel {
                                                           comment: "Title for the Use as Billing Address switch in the Address form")
         static let useAsShippingToggle = NSLocalizedString("Use as Shipping Address",
                                                            comment: "Title for the Use as Shipping Address switch in the Address form")
+        static let success = NSLocalizedString("Address successfully updated.", comment: "Notice text after updating the shipping or billing address")
+        static let retry = NSLocalizedString("Retry", comment: "Retry Action")
+    }
+}
+
+extension EditOrderAddressFormViewModel {
+    /// Representation of possible errors that can happen
+    enum EditAddressError: LocalizedError {
+        case unableToUpdateAddress
+
+        var errorDescription: String? {
+            switch self {
+            case .unableToUpdateAddress:
+                return NSLocalizedString("Unable to update address.",
+                                         comment: "Error notice title when we fail to update an address in the edit address screen.")
+            }
+        }
+
+        var recoverySuggestion: String? {
+            switch self {
+            case .unableToUpdateAddress:
+                return NSLocalizedString("Please make sure you are running the latest version of WooCommerce and try again later.",
+                                         comment: "Error notice recovery suggestion when we fail to update an address in the edit address screen.")
+            }
+        }
+    }
+
+    /// Creates edit address form notices.
+    ///
+    enum NoticeFactory {
+        /// Creates an error notice with retry based on the provided edit address error.
+        ///
+        static func createRetriableErrorNotice(from error: EditAddressError, info: NoticeNotificationInfo, retryAction: @escaping () -> Void) -> Notice {
+            Notice(title: error.errorDescription ?? "",
+                   message: error.recoverySuggestion,
+                   feedbackType: .error,
+                   notificationInfo: info,
+                   actionTitle: Localization.retry,
+                   actionHandler: retryAction)
+        }
+
+        /// Creates a success notice for editing an address.
+        ///
+        static func createSuccessNotice() -> Notice {
+            .init(title: Localization.success, feedbackType: .success)
+        }
     }
 }
 

@@ -245,18 +245,13 @@ open class AddressFormViewModel: ObservableObject {
     ///
     private let featureFlagService: FeatureFlagService
 
-    /// Presents an error notice in the tab bar context after the update operation fails.
-    ///
-    private let noticePresenter: NoticePresenter
-
     init(siteID: Int64,
          address: Address,
          secondaryAddress: Address? = nil,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
 
         self.originalAddress = address
@@ -269,7 +264,6 @@ open class AddressFormViewModel: ObservableObject {
         self.stores = stores
         self.analytics = analytics
         self.featureFlagService = featureFlagService
-        self.noticePresenter = noticePresenter
 
         // Listen only to the first emitted event.
         firstLoadTrigger.first().sink { [weak self] in
@@ -422,33 +416,6 @@ open class AddressFormViewModel: ObservableObject {
         return primaryEmailIsValid && secondaryEmailIsValid
     }
 
-    /// Enqueues the success notice on successful updating only when
-    /// optimistic updates are not enabled.
-    ///
-    func displayAddressUpdatedNoticeIfNeeded() {
-        guard !areOptimisticUpdatesEnabled else {
-            return
-        }
-
-        notice = NoticeFactory.createSuccessNotice()
-    }
-
-    /// Enqueues the `Unable to Update Address` Notice.
-    ///
-    func displayRetriableUpdateErrorNotice(retryAction: @escaping () -> Void) {
-        let noticeIdentifier = UUID().uuidString
-        let errorNotice = NoticeFactory.createErrorNotice(from: .unableToUpdateAddress,
-                                                          info: NoticeNotificationInfo(identifier: noticeIdentifier),
-                                                          retryAction: retryAction)
-        if areOptimisticUpdatesEnabled {
-            noticePresenter.enqueue(notice: errorNotice)
-        } else {
-            /// If optimistic updates are not enabled the modal is not dismissed
-            /// upon failure, so we have to use notice modifier for this modal.
-            notice = errorNotice
-        }
-    }
-
     func syncFieldsWithAddress(_ address: Address) {
         self.originalAddress = address
         self.fields = .init(with: originalAddress)
@@ -458,18 +425,14 @@ open class AddressFormViewModel: ObservableObject {
 extension AddressFormViewModel {
 
     /// Representation of possible errors that can happen
-    enum EditAddressError: LocalizedError {
+    enum AddressFormError: LocalizedError {
         case unableToLoadCountries
-        case unableToUpdateAddress
 
         var errorDescription: String? {
             switch self {
             case .unableToLoadCountries:
                 return NSLocalizedString("Unable to fetch country information, please try again later.",
                                          comment: "Error notice when we fail to load country information in the edit address screen.")
-            case .unableToUpdateAddress:
-                return NSLocalizedString("Unable to update address.",
-                                         comment: "Error notice title when we fail to update an address in the edit address screen.")
             }
         }
 
@@ -477,43 +440,29 @@ extension AddressFormViewModel {
             switch self {
             case .unableToLoadCountries:
                 return nil
-            case .unableToUpdateAddress:
-                return NSLocalizedString("Please make sure you are running the latest version of WooCommerce and try again later.",
-                                         comment: "Error notice recovery suggestion when we fail to update an address in the edit address screen.")
             }
         }
     }
 
     enum Localization {
         static let invalidEmail = NSLocalizedString("Please enter a valid email address.", comment: "Notice text when the merchant enters an invalid email")
-        static let success = NSLocalizedString("Address successfully updated.", comment: "Notice text after updating the shipping or billing address")
-        static let retry = NSLocalizedString("Retry", comment: "Retry Action")
     }
 
     /// Creates address form general notices.
     ///
     enum NoticeFactory {
-        /// Creates an error notice based on the provided edit address error.
+        /// Creates an error notice based on the provided address form error.
         ///
-        static func createErrorNotice(from error: EditAddressError, info: NoticeNotificationInfo? = nil, retryAction: (() -> Void)? = nil) -> Notice {
+        static func createErrorNotice(from error: AddressFormError) -> Notice {
             Notice(title: error.errorDescription ?? "",
                    message: error.recoverySuggestion,
-                   feedbackType: .error,
-                   notificationInfo: info,
-                   actionTitle: retryAction != nil ? Localization.retry: nil,
-                   actionHandler: retryAction)
+                   feedbackType: .error)
         }
 
         /// Creates an error notice indicating that the email address is invalid.
         ///
         static func createInvalidEmailNotice() -> Notice {
             .init(title: Localization.invalidEmail, feedbackType: .error)
-        }
-
-        /// Creates a success notice for editing an address.
-        ///
-        static func createSuccessNotice() -> Notice {
-            .init(title: Localization.success, feedbackType: .success)
         }
     }
 }

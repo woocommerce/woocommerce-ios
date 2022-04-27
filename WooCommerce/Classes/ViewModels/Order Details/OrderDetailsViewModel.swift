@@ -27,6 +27,7 @@ final class OrderDetailsViewModel {
     func update(order newOrder: Order) {
         self.order = newOrder
         dataSource.update(order: order)
+        editNoteViewModel.update(order: order)
     }
 
     let productLeftTitle = NSLocalizedString("PRODUCT", comment: "Product section title")
@@ -80,6 +81,10 @@ final class OrderDetailsViewModel {
     private(set) lazy var dataSource: OrderDetailsDataSource = {
         return OrderDetailsDataSource(order: order,
                                       cardPresentPaymentsConfiguration: configurationLoader.configuration)
+    }()
+
+    private(set) lazy var editNoteViewModel: EditCustomerNoteViewModel = {
+        return EditCustomerNoteViewModel(order: order)
     }()
 
     /// Order Notes

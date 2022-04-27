@@ -46,7 +46,9 @@ final class CardPresentRefundOrchestrator {
             default:
                 break
             }
-        }, onCompletion: { result in
+        }, onCompletion: { [weak self] result in
+            guard let self = self else { return }
+            self.allowPassPresentation()
             onProcessingMessage()
             onCompletion(result)
         })
@@ -56,8 +58,7 @@ final class CardPresentRefundOrchestrator {
     /// Cancels the current refund.
     /// - Parameter onCompletion: called when the cancellation completes.
     func cancelRefund(onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        let action = CardPresentPaymentAction.cancelRefund { [weak self] result in
-            self?.allowPassPresentation()
+        let action = CardPresentPaymentAction.cancelRefund { result in
             onCompletion(result)
         }
         stores.dispatch(action)
@@ -75,10 +76,6 @@ private extension CardPresentRefundOrchestrator {
         /// return 0 `notSupported`
         ///
         guard !UIDevice.isPad() else {
-            return
-        }
-
-        guard !PKPassLibrary.isSuppressingAutomaticPassPresentation() else {
             return
         }
 

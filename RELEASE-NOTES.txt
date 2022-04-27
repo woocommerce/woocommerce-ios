@@ -1,5 +1,11 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+9.1
+-----
+
+- [*] Product name field in product form - Remove scroll behaviour and increase field height to fully display long product names. [https://github.com/woocommerce/woocommerce-ios/pull/6681]
+- [*] Filter toolbar in Products list tab - Filter toolbar is pinned outside of the products list. [https://github.com/woocommerce/woocommerce-ios/pull/6698]
+
 9.0
 -----
 

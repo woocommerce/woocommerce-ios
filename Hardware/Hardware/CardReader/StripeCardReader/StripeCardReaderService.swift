@@ -207,6 +207,29 @@ extension StripeCardReaderService: CardReaderService {
         }
     }
 
+    public func waitForInsertedCardToBeRemoved() -> Future<Void, Never> {
+        return Future() { [weak self] promise in
+            guard let self = self else {
+                return
+            }
+
+            // If there is no chip card inserted, it is ok to immediately return. The payment method may have been swipe or tap.
+            guard self.isChipCardInserted else {
+                return promise(.success(()))
+            }
+
+            self.timerCancellable = Timer.publish(every: 1, tolerance: 0.1, on: .main, in: .default)
+                .autoconnect()
+                .receive(on: DispatchQueue.main)
+                .sink(receiveValue: { _ in
+                    if !self.isChipCardInserted {
+                        self.timerCancellable?.cancel()
+                        return promise(.success(()))
+                    }
+                })
+        }
+    }
+
     public func clear() {
         // Shortcircuit the SDK has not been initialized.
         // This prevent a crash when logging out or switching stores before
@@ -240,9 +263,6 @@ extension StripeCardReaderService: CardReaderService {
                 self.collectPaymentMethod(intent: intent)
             }.flatMap { intent in
                 self.processPayment(intent: intent)
-            }.flatMap { intent in
-                self.waitForInsertedCardToBeRemoved()
-                    .map { intent }
             }
             .map(PaymentIntent.init(intent:))
             .eraseToAnyPublisher()
@@ -430,29 +450,6 @@ private extension StripeCardReaderService {
                     promise(.success(intent))
                 }
             }
-        }
-    }
-
-    func waitForInsertedCardToBeRemoved() -> Future<Void, Error> {
-        return Future() { [weak self] promise in
-            guard let self = self else {
-                return
-            }
-
-            // If there is no chip card inserted, it is ok to immediatedly return. The payment method may have been swipe or tap.
-            if !self.isChipCardInserted {
-                return promise(.success(()))
-            }
-
-            self.timerCancellable = Timer.publish(every: 1, tolerance: 0.1, on: .main, in: .default)
-                .autoconnect()
-                .receive(on: DispatchQueue.main)
-                .sink(receiveValue: { _ in
-                    if !self.isChipCardInserted {
-                        self.timerCancellable?.cancel()
-                        return promise(.success(()))
-                    }
-                })
         }
     }
 

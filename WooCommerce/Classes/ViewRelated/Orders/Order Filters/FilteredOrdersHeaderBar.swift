@@ -56,6 +56,7 @@ private extension FilteredOrdersHeaderBar {
 
         filterButton.setTitle(title, for: .normal)
         filterButton.contentEdgeInsets = .zero
+        filterButton.accessibilityIdentifier = "orders-filter-button"
     }
 
     enum Localization {

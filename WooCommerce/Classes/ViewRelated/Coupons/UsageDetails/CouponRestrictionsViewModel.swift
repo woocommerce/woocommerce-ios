@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import Yosemite
+import protocol Storage.StorageManagerType
 
 /// View Model for `CouponRestriction`
 ///
@@ -24,9 +25,28 @@ final class CouponRestrictionsViewModel: ObservableObject {
 
     @Published var excludeSaleItems: Bool
 
+    @Published var excludedProductOrVariationIDs: [Int64]
+
+    /// View model for the product selector
+    ///
+    lazy var productSelectorViewModel = {
+        ProductSelectorViewModel(siteID: siteID, selectedItemIDs: excludedProductOrVariationIDs, onMultipleSelectionCompleted: { [weak self] ids in
+            self?.excludedProductOrVariationIDs = ids
+        })
+    }()
+
+    private let siteID: Int64
+    private let stores: StoresManager
+    private let storageManager: StorageManagerType
+
     init(coupon: Coupon,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
         currencySymbol = currencySettings.symbol(from: currencySettings.currencyCode)
+        siteID = coupon.siteID
+        self.stores = stores
+        self.storageManager = storageManager
 
         minimumSpend = coupon.minimumAmount
         maximumSpend = coupon.maximumAmount
@@ -56,9 +76,13 @@ final class CouponRestrictionsViewModel: ObservableObject {
 
         individualUseOnly = coupon.individualUse
         excludeSaleItems = coupon.excludeSaleItems
+        excludedProductOrVariationIDs = coupon.excludedProductIds
     }
 
-    init(currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+    init(siteID: Int64,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
         currencySymbol = currencySettings.symbol(from: currencySettings.currencyCode)
         minimumSpend = ""
         maximumSpend = ""
@@ -68,5 +92,9 @@ final class CouponRestrictionsViewModel: ObservableObject {
         allowedEmails = ""
         individualUseOnly = false
         excludeSaleItems = false
+        excludedProductOrVariationIDs = []
+        self.siteID = siteID
+        self.stores = stores
+        self.storageManager = storageManager
     }
 }

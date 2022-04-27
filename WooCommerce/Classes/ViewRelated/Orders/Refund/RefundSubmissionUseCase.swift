@@ -1,7 +1,6 @@
 import Foundation
 import Combine
 import Yosemite
-import protocol Storage.StorageManagerType
 
 /// Protocol to abstract the `RefundSubmissionUseCase`.
 /// TODO: 5983 - Use this to facilitate unit tests.
@@ -22,9 +21,6 @@ protocol RefundSubmissionProtocol {
 /// submit refund to the site, and analytics.
 /// Otherwise, it submits the refund to the site directly with analytics.
 final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
-    /// Store's ID.
-    private let siteID: Int64
-
     /// Refund details.
     private let details: Details
 
@@ -41,9 +37,6 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
 
     /// Stores manager.
     private let stores: StoresManager
-
-    /// Storage manager for fetching payment gateway accounts.
-    private let storageManager: StorageManagerType
 
     /// Analytics manager.
     private let analytics: Analytics
@@ -65,38 +58,25 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
 
     /// Controller to connect a card reader for in-person refund.
     private lazy var cardReaderConnectionController =
-    CardReaderConnectionController(forSiteID: siteID,
+    CardReaderConnectionController(forSiteID: order.siteID,
                                    knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
                                    alertsProvider: CardReaderSettingsAlerts(),
-                                   configuration: cardPresentConfigurationLoader.configuration,
-                                   analyticsTracker: .init(configuration: cardPresentConfigurationLoader.configuration,
+                                   configuration: cardPresentConfiguration,
+                                   analyticsTracker: .init(configuration: cardPresentConfiguration,
                                                            stores: stores,
                                                            analytics: analytics))
 
-    /// IPP Configuration loader.
-    private lazy var cardPresentConfigurationLoader = CardPresentConfigurationLoader(stores: stores)
+    /// IPP Configuration.
+    private let cardPresentConfiguration: CardPresentPaymentsConfiguration
 
-    /// PaymentGatewayAccount Results Controller.
-    private lazy var paymentGatewayAccountResultsController: ResultsController<StoragePaymentGatewayAccount> = {
-        let predicate = NSPredicate(format: "siteID = %ld", siteID)
-        return ResultsController<StoragePaymentGatewayAccount>(storageManager: storageManager, matching: predicate, sortedBy: [])
-    }()
-
-    /// Payment Gateway Accounts for the site (i.e. that can be used to refund)
-    private var paymentGatewayAccounts: [PaymentGatewayAccount] {
-        paymentGatewayAccountResultsController.fetchedObjects
-    }
-
-    init(siteID: Int64,
-         details: Details,
+    init(details: Details,
          rootViewController: UIViewController,
          alerts: OrderDetailsPaymentAlertsProtocol,
          currencyFormatter: CurrencyFormatter,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         cardPresentConfiguration: CardPresentPaymentsConfiguration,
          stores: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics) {
-        self.siteID = siteID
         self.details = details
         self.formattedAmount = {
             let currencyCode = currencySettings.currencyCode
@@ -106,8 +86,8 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
         self.rootViewController = rootViewController
         self.alerts = alerts
         self.currencyFormatter = currencyFormatter
+        self.cardPresentConfiguration = cardPresentConfiguration
         self.stores = stores
-        self.storageManager = storageManager
         self.analytics = analytics
     }
 
@@ -131,15 +111,21 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
         if let charge = details.charge, shouldRefundWithCardReader(details: details) {
             guard let refundAmount = currencyFormatter.convertToDecimal(from: details.amount) else {
                 DDLogError("Error: attempted to refund an order without a valid amount.")
-                onCompletion(.failure(RefundSubmissionError.invalidRefundAmount))
-                return
+                return onCompletion(.failure(RefundSubmissionError.invalidRefundAmount))
             }
+
+            guard let paymentGatewayAccount = details.paymentGatewayAccount else {
+                return onCompletion(.failure(RefundSubmissionError.unknownPaymentGatewayAccount))
+            }
+
             observeConnectedReadersForAnalytics()
             connectReader { [weak self] result in
                 guard let self = self else { return }
                 switch result {
                 case .success:
-                    self.attemptCardPresentRefund(refundAmount: refundAmount as Decimal, charge: charge) { [weak self] result in
+                    self.attemptCardPresentRefund(refundAmount: refundAmount as Decimal,
+                                                  charge: charge,
+                                                  paymentGatewayAccount: paymentGatewayAccount) { [weak self] result in
                         guard let self = self else { return }
                         switch result {
                         case .success:
@@ -173,6 +159,9 @@ extension RefundSubmissionUseCase {
 
         /// Total amount to refund.
         let amount: String
+
+        /// Payment Gateway Account for the site (i.e. that can be used to refund).
+        let paymentGatewayAccount: PaymentGatewayAccount?
     }
 }
 
@@ -243,15 +232,12 @@ private extension RefundSubmissionUseCase {
     /// - Parameters:
     ///   - refundAmount: the amount to refund.
     ///   - charge: the charge of the order for the refund to match the payment method.
+    ///   - paymentGatewayAccount: the payment gateway account for the site to refund (e.g. WCPay or Stripe extension).
     ///   - onCompletion: called when the in-person refund completes.
-    func attemptCardPresentRefund(refundAmount: Decimal, charge: WCPayCharge, onCompletion: @escaping (Result<Void, Error>) -> ()) {
-        // Fetches payment gateway accounts, at least one is required for in-person refunds.
-        try? paymentGatewayAccountResultsController.performFetch()
-        guard let paymentGatewayAccount = paymentGatewayAccounts.first else {
-            onCompletion(.failure(RefundSubmissionError.unknownPaymentGatewayAccount))
-            return
-        }
-
+    func attemptCardPresentRefund(refundAmount: Decimal,
+                                  charge: WCPayCharge,
+                                  paymentGatewayAccount: PaymentGatewayAccount,
+                                  onCompletion: @escaping (Result<Void, Error>) -> ()) {
         // Shows reader ready alert.
         alerts.readerIsReady(title: Localization.refundPaymentTitle(username: order.billingAddress?.firstName),
                              amount: formattedAmount,
@@ -278,15 +264,25 @@ private extension RefundSubmissionUseCase {
             guard let self = self else { return }
             switch result {
             case .success:
+                self.trackClientSideRefundRequestSuccess(charge: charge, paymentGatewayAccount: paymentGatewayAccount)
                 onCompletion(.success(()))
             case .failure(let error):
-                self.handleRefundFailureAndRetryRefund(error, refundAmount: refundAmount, charge: charge, onCompletion: onCompletion)
+                self.trackClientSideRefundRequestFailed(charge: charge, paymentGatewayAccount: paymentGatewayAccount, error: error)
+                self.handleRefundFailureAndRetryRefund(error,
+                                                       refundAmount: refundAmount,
+                                                       charge: charge,
+                                                       paymentGatewayAccount: paymentGatewayAccount,
+                                                       onCompletion: onCompletion)
             }
         })
     }
 
     /// Logs the failure reason, cancels the current refund, and offers retry if possible.
-    func handleRefundFailureAndRetryRefund(_ error: Error, refundAmount: Decimal, charge: WCPayCharge, onCompletion: @escaping (Result<Void, Error>) -> ()) {
+    func handleRefundFailureAndRetryRefund(_ error: Error,
+                                           refundAmount: Decimal,
+                                           charge: WCPayCharge,
+                                           paymentGatewayAccount: PaymentGatewayAccount,
+                                           onCompletion: @escaping (Result<Void, Error>) -> ()) {
         // TODO: 5984 - tracks in-person refund error
         DDLogError("Failed to refund: \(error.localizedDescription)")
         // Informs about the error.
@@ -300,7 +296,10 @@ private extension RefundSubmissionUseCase {
                 // Cancels current refund, if possible.
                 self?.cardPresentRefundOrchestrator.cancelRefund { [weak self] _ in
                     // Regardless of whether the refund could be cancelled (e.g. it completed but failed), retry the refund.
-                    self?.attemptCardPresentRefund(refundAmount: refundAmount, charge: charge, onCompletion: onCompletion)
+                    self?.attemptCardPresentRefund(refundAmount: refundAmount, 
+                                                                 charge: charge,
+                                                                 paymentGatewayAccount: paymentGatewayAccount,
+                                                                 onCompletion: onCompletion)
                 }
             }, dismissCompletion: {
                 onCompletion(.failure(error))
@@ -355,6 +354,35 @@ private extension RefundSubmissionUseCase {
     func trackCreateRefundRequestFailed(error: Error) {
         analytics.track(event: WooAnalyticsEvent.IssueRefund.createRefundFailed(orderID: details.order.orderID, error: error))
     }
+
+    /// Tracks when the refund request succeeds on the client-side before submitting to the site.
+    func trackClientSideRefundRequestSuccess(charge: WCPayCharge, paymentGatewayAccount: PaymentGatewayAccount) {
+        switch charge.paymentMethodDetails {
+        case .interacPresent:
+            analytics.track(event: WooAnalyticsEvent.InPersonPayments
+                .interacRefundSuccess(gatewayID: paymentGatewayAccount.gatewayID,
+                                      countryCode: cardPresentConfiguration.countryCode,
+                                      cardReaderModel: connectedReader?.readerType.model ?? ""))
+        default:
+            // Tracks refund success events with other payment methods if needed.
+            return
+        }
+    }
+
+    /// Tracks when the refund request fails on the client-side before submitting to the site.
+    func trackClientSideRefundRequestFailed(charge: WCPayCharge, paymentGatewayAccount: PaymentGatewayAccount, error: Error) {
+        switch charge.paymentMethodDetails {
+        case .interacPresent:
+            analytics.track(event: WooAnalyticsEvent.InPersonPayments
+                .interacRefundFailed(error: error,
+                                     gatewayID: paymentGatewayAccount.gatewayID,
+                                     countryCode: cardPresentConfiguration.countryCode,
+                                     cardReaderModel: connectedReader?.readerType.model ?? ""))
+        default:
+            // Tracks refund failure events with other payment methods if needed.
+            return
+        }
+    }
 }
 
 // MARK: Connected Card Readers
@@ -368,15 +396,17 @@ private extension RefundSubmissionUseCase {
 }
 
 // MARK: Definitions
-private extension RefundSubmissionUseCase {
+extension RefundSubmissionUseCase {
     /// Mailing a receipt failed but the SDK didn't return a more specific error
     ///
-    enum RefundSubmissionError: Error {
+    enum RefundSubmissionError: Error, Equatable {
         case cardReaderDisconnected
         case invalidRefundAmount
         case unknownPaymentGatewayAccount
     }
+}
 
+private extension RefundSubmissionUseCase {
     enum Localization {
         private static let refundPaymentWithoutName = NSLocalizedString("Refund payment",
                                                                         comment: "Alert title when starting the in-person refund flow without a user name.")

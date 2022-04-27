@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 default_platform(:ios)
 fastlane_require 'dotenv'
 fastlane_require 'git'
@@ -10,12 +12,13 @@ PROJECT_ENV_FILE_PATH = File.join(SECRETS_DIR, 'project.env')
 
 # Constants
 PROJECT_ROOT_FOLDER = File.dirname(File.expand_path(__dir__))
+RESOURCES_FOLDER = File.join(PROJECT_ROOT_FOLDER, 'WooCommerce', 'Resources')
 FASTLANE_DIR = __dir__
 DERIVED_DATA_DIR = File.join(FASTLANE_DIR, 'DerivedData')
 SCREENSHOTS_DIR =  File.join(FASTLANE_DIR, 'screenshots')
 IOS_LOCALES = %w[ar de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant].freeze
 GLOTPRESS_LOCALES = %w[ar de es fr he id it ja ko nl pt-br ru sv tr zh-cn zh-tw].freeze
-SIMULATOR_VERSION = '14.3'.freeze # For screenshots
+SIMULATOR_VERSION = '14.3' # For screenshots
 SCREENSHOT_DEVICES = [
   'iPhone 11 Pro Max',
   'iPhone 8 Plus',
@@ -23,8 +26,8 @@ SCREENSHOT_DEVICES = [
   'iPad Pro (12.9-inch) (3rd generation)'
 ].freeze
 
-MAIN_BUNDLE_IDENTIFIERS = %w[com.automattic.woocommerce]        # Registered in our main account, for development and AppStore
-ALPHA_BUNDLE_IDENTIFIERS = %w[com.automattic.alpha.woocommerce] # Registered in our Enterprise account, for AppCenter / Installable Builds
+MAIN_BUNDLE_IDENTIFIERS = %w[com.automattic.woocommerce].freeze        # Registered in our main account, for development and AppStore
+ALPHA_BUNDLE_IDENTIFIERS = %w[com.automattic.alpha.woocommerce].freeze # Registered in our Enterprise account, for App Center / Installable Builds
 
 # Use this instead of getting values from ENV directly
 # It will throw an error if the requested value is missing
@@ -88,14 +91,14 @@ platform :ios do
   #####################################################################################
   desc 'Creates a new release branch from the current trunk'
   lane :code_freeze do |options|
-    old_version = ios_codefreeze_prechecks(options)
+    ios_codefreeze_prechecks(options)
 
     ios_bump_version_release
     new_version = ios_get_app_version
     extract_release_notes_for_version(
       version: new_version,
       release_notes_file_path: 'RELEASE-NOTES.txt',
-      extracted_notes_file_path: File.join('WooCommerce', 'Resources', 'release_notes.txt')
+      extracted_notes_file_path: File.join(RESOURCES_FOLDER, 'release_notes.txt')
     )
     ios_update_release_notes(new_version: new_version)
     setbranchprotection(repository: GHHELPER_REPO, branch: "release/#{new_version}")
@@ -118,7 +121,7 @@ platform :ios do
   desc 'Creates a new release branch from the current trunk'
   lane :complete_code_freeze do |options|
     ios_completecodefreeze_prechecks(options)
-    ios_localize_project
+    update_localization
     version = ios_get_app_version
     trigger_beta_build(branch_to_build: "release/#{version}")
   end
@@ -137,11 +140,10 @@ platform :ios do
   #####################################################################################
   desc 'Updates the AppStoreStrings.pot file with the latest data'
   lane :update_appstore_strings do |options|
-    project_root = File.dirname(File.expand_path(__dir__))
-    source_metadata_folder = File.join(project_root, 'fastlane', 'appstoreres', 'metadata', 'source')
+    source_metadata_folder = File.join(PROJECT_ROOT_FOLDER, 'fastlane', 'appstoreres', 'metadata', 'source')
 
     files = {
-      whats_new: File.join(project_root, 'WooCommerce', 'Resources', 'release_notes.txt'),
+      whats_new: File.join(RESOURCES_FOLDER, 'release_notes.txt'),
       app_store_subtitle: File.join(source_metadata_folder, 'subtitle.txt'),
       app_store_desc: File.join(source_metadata_folder, 'description.txt'),
       app_store_keywords: File.join(source_metadata_folder, 'keywords.txt'),
@@ -154,7 +156,7 @@ platform :ios do
     }
 
     ios_update_metadata_source(
-      po_file_path: File.join(project_root, 'WooCommerce', 'Resources', 'AppStoreStrings.pot'),
+      po_file_path: File.join(RESOURCES_FOLDER, 'AppStoreStrings.pot'),
       source_files: files,
       release_version: options[:version]
     )
@@ -237,7 +239,9 @@ platform :ios do
   #####################################################################################
   desc 'Trigger the final release build on CI'
   lane :finalize_release do |options|
-    UI.user_error!('To finalize a hotfix, please use the finalize_hotfix_release lane instead') if ios_current_branch_is_hotfix
+    if ios_current_branch_is_hotfix
+      UI.user_error!('To finalize a hotfix, please use the finalize_hotfix_release lane instead')
+    end
 
     ios_finalize_prechecks(options)
 
@@ -247,7 +251,7 @@ platform :ios do
       abort_on_violations: false
     )
 
-    UI.message("Checking release notes strings translation status...")
+    UI.message('Checking release notes strings translation status...')
     check_translation_progress(
       glotpress_url: 'https://translate.wordpress.com/projects/woocommerce/woocommerce-ios/release-notes/',
       abort_on_violations: false
@@ -382,7 +386,7 @@ platform :ios do
     sh('cd .. && rm WooCommerce.app.dSYM.zip')
 
     if options[:create_release]
-      archive_zip_path = File.dirname(Dir.pwd) + '/WooCommerce.xarchive.zip'
+      archive_zip_path = File.join(File.dirname(Dir.pwd), 'WooCommerce.xarchive.zip')
       zip(path: lane_context[SharedValues::XCODEBUILD_ARCHIVE], output_path: archive_zip_path)
 
       version = options[:beta_release] ? ios_get_build_version : ios_get_app_version
@@ -409,7 +413,7 @@ platform :ios do
   # bundle exec fastlane build_and_upload_installable_build build_number:123
   #####################################################################################
   desc 'Builds and uploads an installable build'
-  lane :build_and_upload_installable_build do |options|
+  lane :build_and_upload_installable_build do
     ensure_sentry_installed
 
     alpha_code_signing
@@ -449,13 +453,21 @@ platform :ios do
       dsym_path: './build/WooCommerce.app.dSYM.zip'
     )
 
+    UI.message("Successfully built and uploaded installable build `#{build_number}` to App Center.")
+
     return if ENV['BUILDKITE_PULL_REQUEST'].nil?
 
-    download_url = Actions.lane_context[SharedValues::APPCENTER_DOWNLOAD_LINK]
-    UI.message("Successfully built and uploaded installable build here: #{download_url}")
     install_url = 'https://install.appcenter.ms/orgs/automattic/apps/WooCommerce-Installable-Builds'
+    qr_code_url = "https://chart.googleapis.com/chart?chs=500x500&cht=qr&chl=#{CGI.escape(install_url)}&choe=UTF-8"
 
-    comment_body = "You can test the changes on this Pull Request by downloading it from AppCenter <a href='#{install_url}'>here</a> with build number: <code>#{build_number}</code>. IPA is available <a href='#{download_url}'>here</a>. If you need access to this, you can ask a maintainer to add you."
+    comment_body = <<~COMMENT_BODY
+      You can test the changes from this Pull Request by:<ul>
+        <li><a href='#{install_url}'>Clicking here</a> or scanning the QR code below to access App Center</li>
+        <li>Then installing the build number <code>#{build_number}</code> on your iPhone</li>
+      </ul>
+      <img src='#{qr_code_url}' width='150' height='150' />
+      If you need access to App Center, please ask a maintainer to add you.
+    COMMENT_BODY
 
     comment_on_pr(
       project: 'woocommerce/woocommerce-ios',
@@ -539,7 +551,7 @@ platform :ios do
     xcversion(version: '~> 12.0')
 
     scan(
-      workspace: File.join(FASTLANE_DIR, '../WooCommerce.xcworkspace'),
+      workspace: 'WooCommerce.xcworkspace',
       scheme: 'WooCommerceScreenshots',
       build_for_testing: true,
       derived_data_path: DERIVED_DATA_DIR
@@ -643,16 +655,19 @@ platform :ios do
     fastlane_require 'snapshot'
 
     # Provide enough information to bootstrap the configuration and generate the HTML report
-    Snapshot.config = FastlaneCore::Configuration.create(Snapshot::Options.available_options, {
-      "workspace": '../WooCommerce.xcworkspace',
-      "scheme": 'WooCommerceScreenshots'
-    })
+    Snapshot.config = FastlaneCore::Configuration.create(
+      Snapshot::Options.available_options,
+      {
+        workspace: '../WooCommerce.xcworkspace',
+        scheme: 'WooCommerceScreenshots'
+      }
+    )
 
     Snapshot::ReportsGenerator.new.generate
   end
 
   desc 'Download App Store Translations'
-  lane :download_app_store_translations do |_options|
+  lane :download_app_store_translations do
     files = {
 
       # Metadata fields
@@ -760,7 +775,7 @@ platform :ios do
   # Example:
   # bundle exec fastlane update_certs_and_profiles
   #####################################################################################
-  lane :update_certs_and_profiles do |_options|
+  lane :update_certs_and_profiles do
     alpha_code_signing
     appstore_code_signing
   end
@@ -768,7 +783,7 @@ platform :ios do
   ########################################################################
   # Fastlane match code signing
   ########################################################################
-  private_lane :alpha_code_signing do |_options|
+  private_lane :alpha_code_signing do
     match(
       type: 'enterprise',
       team_id: get_required_env('INT_EXPORT_TEAM_ID'),
@@ -777,13 +792,13 @@ platform :ios do
     )
   end
 
-  private_lane :appstore_code_signing do |_options|
+  private_lane :appstore_code_signing do
     match(
       type: 'appstore',
       team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
       readonly: false,
       app_identifier: MAIN_BUNDLE_IDENTIFIERS,
-      template_name: 'Apple Pay Pass Suppression',
+      template_name: 'Apple Pay Pass Suppression'
     )
   end
 
@@ -791,12 +806,12 @@ platform :ios do
   # Helper Lanes
   ########################################################################
   desc 'Run release preflight checks'
-  lane :release_preflight do |_options|
+  lane :release_preflight do
     configure_validate
   end
 
   desc 'Run localization only'
-  lane :update_localization do |_options|
+  lane :update_localization do
     ios_localize_project
   end
 
@@ -807,33 +822,33 @@ platform :ios do
   rescue IOError => e
     UI.crash(e)
   ensure
-    file.close unless file.nil?
+    file&.close
   end
 end
 
-def fastlane_directory()
-  File.expand_path File.dirname(__FILE__)
+def fastlane_directory
+  __dir__
 end
 
-def derived_data_directory()
-  File.join(fastlane_directory, "DerivedData")
+def derived_data_directory
+  File.join(fastlane_directory, 'DerivedData')
 end
 
-def screenshots_directory()
-  File.join(fastlane_directory, "screenshots")
+def screenshots_directory
+  File.join(fastlane_directory, 'screenshots')
 end
 
-def screenshot_devices()
+def screenshot_devices
   [
-    "iPhone 11 Pro Max",
-    "iPhone 8 Plus",
-    "iPad Pro (12.9-inch) (2nd generation)",
-    "iPad Pro (12.9-inch) (3rd generation)",
+    'iPhone 11 Pro Max',
+    'iPhone 8 Plus',
+    'iPad Pro (12.9-inch) (2nd generation)',
+    'iPad Pro (12.9-inch) (3rd generation)'
   ]
 end
 
-def simulator_version()
-  return '14.4'
+def simulator_version
+  '14.4'
 end
 
 ########################################################################
@@ -851,20 +866,20 @@ end
 # Example:
 # bundle exec fastlane test_without_building name:UITests
 #####################################################################################
-desc "Run tests without building"
-lane :test_without_building do | options |
+desc 'Run tests without building'
+lane :test_without_building do |options|
   # Find the referenced .xctestrun file based on its name
-  buildProductsPath = File.expand_path("DerivedData/Build/Products/", File.dirname(Dir.pwd))
+  buildProductsPath = File.expand_path('DerivedData/Build/Products/', File.dirname(Dir.pwd))
 
-  testPlanPath = Dir.glob(File.join(buildProductsPath, '*.xctestrun') ).select { |e|
+  testPlanPath = Dir.glob(File.join(buildProductsPath, '*.xctestrun')).select do |e|
     e.include?(options[:name])
-  }.first
+  end.first
 
-  UI.user_error!("Unable to find .xctestrun file") unless testPlanPath != nil and File.exists? (testPlanPath)
+  UI.user_error!('Unable to find .xctestrun file') unless !testPlanPath.nil? && File.exist?((testPlanPath))
 
-  summary = run_tests(
-    workspace: "WooCommerce.xcworkspace",
-    scheme: "WooCommerce",
+  run_tests(
+    workspace: 'WooCommerce.xcworkspace',
+    scheme: 'WooCommerce',
     device: options[:device],
     deployment_target_version: options[:ios_version],
     test_without_building: true,
@@ -883,17 +898,17 @@ end
 # -----------------------------------------------------------------------------------
 def generate_installable_build_number
   if ENV['BUILDKITE']
-    commit = ENV['BUILDKITE_COMMIT'][0,7]
+    commit = ENV['BUILDKITE_COMMIT'][0, 7]
     branch = ENV['BUILDKITE_BRANCH']
     pr_num = ENV['BUILDKITE_PULL_REQUEST']
 
-    return pr_num == 'false' ? "#{branch}-#{commit}" : "pr#{pr_num}-#{commit}"
+    pr_num == 'false' ? "#{branch}-#{commit}" : "pr#{pr_num}-#{commit}"
   else
     repo = Git.open(PROJECT_ROOT_FOLDER)
     commit = repo.current_branch
     branch = repo.revparse('HEAD')[0, 7]
 
-    return "#{branch}-#{commit}"
+    "#{branch}-#{commit}"
   end
 end
 

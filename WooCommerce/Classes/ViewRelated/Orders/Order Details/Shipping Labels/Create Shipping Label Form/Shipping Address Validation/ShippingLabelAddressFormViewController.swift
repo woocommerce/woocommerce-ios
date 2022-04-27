@@ -232,7 +232,7 @@ private extension ShippingLabelAddressFormViewController {
                 self.onCompletion(self.viewModel.address)
                 self.navigationController?.popViewController(animated: true)
             case .failure:
-                self.displayShipFromAddressUpdateFailedNotice()
+                self.displayAddressUpdateFailedNotice()
                 break
             }
         }
@@ -247,18 +247,10 @@ private extension ShippingLabelAddressFormViewController {
                 self.onCompletion(self.viewModel.address)
                 self.navigationController?.popViewController(animated: true)
             case .failure:
-                self.displayShipFromAddressUpdateFailedNotice()
+                self.displayAddressUpdateFailedNotice()
                 break
             }
         }
-    }
-
-    func displayShipFromAddressUpdateFailedNotice() {
-        let message = NSLocalizedString("Check the field errors before submitting", comment: "Ship From address update failed notice")
-        let actionTitle = NSLocalizedString("OK", comment: "Dismiss the alert notice")
-        let notice = Notice(title: message, feedbackType: .success, actionTitle: actionTitle)
-
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -275,6 +267,14 @@ private extension ShippingLabelAddressFormViewController {
     ///
     private func displayPhoneNumberErrorNotice() {
         let notice = Notice(title: Localization.phoneNumberErrorNotice, feedbackType: .error, actionTitle: nil, actionHandler: nil)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
+    }
+
+    func displayAddressUpdateFailedNotice() {
+        let message = NSLocalizedString("Check the field errors before submitting", comment: "Ship From address update failed notice")
+        let actionTitle = NSLocalizedString("OK", comment: "Dismiss the alert notice")
+        let notice = Notice(title: message, feedbackType: .success, actionTitle: actionTitle)
+
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }

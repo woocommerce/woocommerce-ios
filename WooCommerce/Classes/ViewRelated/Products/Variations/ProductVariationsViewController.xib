@@ -36,11 +36,11 @@
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="fCF-yK-YZD" secondAttribute="trailing" id="9Tw-76-jV7"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="biP-ZS-hq2" secondAttribute="trailing" id="aV2-Jv-BzG"/>
+                <constraint firstAttribute="trailing" secondItem="biP-ZS-hq2" secondAttribute="trailing" id="aV2-Jv-BzG"/>
                 <constraint firstAttribute="bottom" secondItem="fCF-yK-YZD" secondAttribute="bottom" id="bPq-aC-chC"/>
                 <constraint firstItem="fCF-yK-YZD" firstAttribute="top" secondItem="biP-ZS-hq2" secondAttribute="bottom" id="eXo-De-RJc"/>
                 <constraint firstItem="fCF-yK-YZD" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="gfX-HE-oqD"/>
-                <constraint firstItem="biP-ZS-hq2" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="j9z-Fm-dbG"/>
+                <constraint firstItem="biP-ZS-hq2" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="j9z-Fm-dbG"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="top" secondItem="biP-ZS-hq2" secondAttribute="top" id="meX-AK-TXb"/>
             </constraints>
             <point key="canvasLocation" x="131.8840579710145" y="121.875"/>

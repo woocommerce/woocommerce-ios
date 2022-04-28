@@ -655,7 +655,6 @@ private extension ProductStore {
         derivedStorage.perform { [weak self] in
             if shouldDeleteExistingProducts {
                 derivedStorage.deleteProducts(siteID: siteID)
-                derivedStorage.deleteProductSearchResults(keyword: keyword)
             }
             self?.upsertStoredProducts(readOnlyProducts: readOnlyProducts, in: derivedStorage)
             self?.upsertStoredResults(siteID: siteID, keyword: keyword, readOnlyProducts: readOnlyProducts, in: derivedStorage)

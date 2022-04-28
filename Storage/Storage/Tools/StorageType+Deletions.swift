@@ -18,17 +18,6 @@ public extension StorageType {
         }
     }
 
-    /// Deletes all of the stored Products for the provided siteID.
-    ///
-    func deleteProductSearchResults(keyword: String) {
-        guard let products = loadProductSearchResults(keyword: keyword)?.products else {
-            return
-        }
-        for product in products {
-            deleteObject(product)
-        }
-    }
-
     /// Deletes all of the stored Product Variations for the provided siteID and productID.
     ///
     func deleteProductVariations(siteID: Int64, productID: Int64) {

@@ -174,24 +174,3 @@ extension ProductShippingSettingsViewModel: ProductShippingSettingsActionHandler
             || shippingClass != originalShippingClass
     }
 }
-
-private extension String {
-    /// API uses US locale for weight and shipping dimensions
-    ///
-    private var usLocale: Locale {
-        Locale(identifier: "en_US")
-    }
-
-    /// Localizes the weight and shipping dimensions
-    ///
-    func localized(toLocale: Locale) -> String? {
-        NumberFormatter.localizedString(using: self, from: usLocale, to: toLocale)
-    }
-
-    /// Formats the weight and shipping dimensions to the API preferred locale (US locale)
-    /// API doesn not accept numbers using comma as decimal separator. More details at p91TBi-8kO-p2
-    ///
-    func formattedForAPI(fromLocale: Locale) -> String? {
-        NumberFormatter.localizedString(using: self, from: fromLocale, to: usLocale)
-    }
-}

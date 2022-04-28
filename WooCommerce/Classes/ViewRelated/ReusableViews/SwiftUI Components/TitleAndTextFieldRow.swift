@@ -71,7 +71,7 @@ struct TitleAndTextFieldRow: View {
         .padding([.leading, .trailing], Constants.padding)
     }
 
-    private func formatText(_ newValue: String) {
+    private func formatText(_ newValue: String) -> String {
         guard let inputFormatter = inputFormatter else {
             return newValue
         }

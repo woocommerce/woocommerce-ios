@@ -20,6 +20,7 @@ public final class StripeCardReaderService: NSObject {
     /// see
     ///  https://stripe.dev/stripe-terminal-ios/docs/Protocols/SCPDiscoveryDelegate.html#/c:objc(pl)SCPDiscoveryDelegate(im)terminal:didUpdateDiscoveredReaders:
     private let discoveredStripeReadersCache = StripeCardReaderDiscoveryCache()
+    private let shouldRetryRefundAfterFailureDeterminer = ShouldRetryStripeRefundAfterFailureDeterminer()
 
     private var activePaymentIntent: StripeTerminal.PaymentIntent? = nil
 
@@ -539,7 +540,7 @@ extension StripeCardReaderService {
                             case .failed:
                                 promise(.failure(CardReaderServiceError.refundPayment(
                                     underlyingError: .internalServiceError,
-                                    shouldRetry: self.shouldRetryRefund(with: refund.failureReason)
+                                    shouldRetry: self.shouldRetryRefundAfterFailureDeterminer.shouldRetryRefund(after: refund.failureReason)
                                 )))
                             @unknown default:
                                 break
@@ -570,35 +571,9 @@ extension StripeCardReaderService {
     private func shouldRetryRefund(after processError: ProcessRefundError) -> Bool {
         if let refund = processError.refund {
             // Retry based on `failure_reason`
-            return shouldRetryRefund(with: refund.failureReason)
+            return shouldRetryRefundAfterFailureDeterminer.shouldRetryRefund(after: refund.failureReason)
         } else {
             // Retry because the status is unknown
-            return true
-        }
-    }
-
-    private func shouldRetryRefund(with failureReason: String?) -> Bool {
-        guard let failureReason = failureReason else {
-            return false
-        }
-        switch DeclineReason(with: failureReason) {
-        case .fraud,
-                .invalidAccount,
-                .currencyNotSupported,
-                .duplicateTransaction,
-                .incorrectPostalCode,
-                .invalidAmount:
-            return false
-        case .temporary,
-                .generic,
-                .insufficientFunds,
-                .pinRequired,
-                .tooManyPinTries,
-                .testCard,
-                .testModeLiveCard,
-                .expiredCard,
-                .cardNotSupported,
-                .unknown:
             return true
         }
     }

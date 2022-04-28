@@ -7,6 +7,12 @@ import XCTest
 /// Mock for `ProductsRemote`.
 ///
 final class MockProductsRemote {
+    private(set) var searchProductTriggered: Bool = false
+    private(set) var searchProductWithStockStatus: ProductStockStatus?
+    private(set) var searchProductWithProductStatus: ProductStatus?
+    private(set) var searchProductWithProductType: ProductType?
+    private(set) var searchProductWithProductCategory: ProductCategory?
+    
     private struct ResultKey: Hashable {
         let siteID: Int64
         let productIDs: [Int64]
@@ -138,9 +144,17 @@ extension MockProductsRemote: ProductsRemoteProtocol {
                         keyword: String,
                         pageNumber: Int,
                         pageSize: Int,
+                        stockStatus: ProductStockStatus?,
+                        productStatus: ProductStatus?,
+                        productType: ProductType?,
+                        productCategory: ProductCategory?,
                         excludedProductIDs: [Int64],
                         completion: @escaping (Result<[Product], Error>) -> Void) {
-        // no-op
+        searchProductTriggered = true
+        searchProductWithStockStatus = stockStatus
+        searchProductWithProductType = productType
+        searchProductWithProductStatus = productStatus
+        searchProductWithProductCategory = productCategory
     }
 
     func searchSku(for siteID: Int64, sku: String, completion: @escaping (Result<String, Error>) -> Void) {

@@ -46,11 +46,24 @@ public class ProductStore: Store {
             retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .retrieveProducts(let siteID, let productIDs, let pageNumber, let pageSize, let onCompletion):
             retrieveProducts(siteID: siteID, productIDs: productIDs, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
-        case .searchProducts(let siteID, let keyword, let pageNumber, let pageSize, let excludedProductIDs, let onCompletion):
+        case let .searchProducts(siteID,
+                                 keyword,
+                                 pageNumber,
+                                 pageSize,
+                                 stockStatus,
+                                 productStatus,
+                                 productType,
+                                 productCategory,
+                                 excludedProductIDs,
+                                 onCompletion):
             searchProducts(siteID: siteID,
                            keyword: keyword,
                            pageNumber: pageNumber,
                            pageSize: pageSize,
+                           stockStatus: stockStatus,
+                           productStatus: productStatus,
+                           productType: productType,
+                           productCategory: productCategory,
                            excludedProductIDs: excludedProductIDs,
                            onCompletion: onCompletion)
         case .synchronizeProducts(let siteID,
@@ -109,18 +122,28 @@ private extension ProductStore {
                         keyword: String,
                         pageNumber: Int,
                         pageSize: Int,
+                        stockStatus: ProductStockStatus?,
+                        productStatus: ProductStatus?,
+                        productType: ProductType?,
+                        productCategory: ProductCategory?,
                         excludedProductIDs: [Int64],
                         onCompletion: @escaping (Result<Void, Error>) -> Void) {
         remote.searchProducts(for: siteID,
-                              keyword: keyword,
-                              pageNumber: pageNumber,
-                              pageSize: pageSize,
-                              excludedProductIDs: excludedProductIDs) { [weak self] result in
+                                 keyword: keyword,
+                                 pageNumber: pageNumber,
+                                 pageSize: pageSize,
+                                 stockStatus: stockStatus,
+                                 productStatus: productStatus,
+                                 productType: productType,
+                                 productCategory: productCategory,
+                                 excludedProductIDs: excludedProductIDs) { [weak self] result in
             switch result {
             case .success(let products):
+                let shouldDeleteExistingProducts = pageNumber == Default.firstPageNumber
                 self?.upsertSearchResultsInBackground(siteID: siteID,
                                                       keyword: keyword,
-                                                      readOnlyProducts: products) {
+                                                      readOnlyProducts: products,
+                                                      shouldDeleteExistingProducts: shouldDeleteExistingProducts) {
                     onCompletion(.success(()))
                 }
             case .failure(let error):
@@ -623,9 +646,17 @@ private extension ProductStore {
 
     /// Upserts the Products, and associates them to the SearchResults Entity (in Background)
     ///
-    private func upsertSearchResultsInBackground(siteID: Int64, keyword: String, readOnlyProducts: [Networking.Product], onCompletion: @escaping () -> Void) {
+    private func upsertSearchResultsInBackground(siteID: Int64,
+                                                 keyword: String,
+                                                 readOnlyProducts: [Networking.Product],
+                                                 shouldDeleteExistingProducts: Bool = false,
+                                                 onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform { [weak self] in
+            if shouldDeleteExistingProducts {
+                derivedStorage.deleteProducts(siteID: siteID)
+                derivedStorage.deleteProductSearchResults(keyword: keyword)
+            }
             self?.upsertStoredProducts(readOnlyProducts: readOnlyProducts, in: derivedStorage)
             self?.upsertStoredResults(siteID: siteID, keyword: keyword, readOnlyProducts: readOnlyProducts, in: derivedStorage)
         }

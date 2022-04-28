@@ -162,7 +162,7 @@ private extension OrderDetailsPaymentAlerts {
     }
 
     func nonRetryableErrorViewModel(amount: String, error: Error, dismissCompletion: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalNonRetryableError(amount: amount, error: error, onDismission: dismissCompletion)
+        CardPresentModalNonRetryableError(amount: amount, error: error, onDismiss: dismissCompletion)
     }
 }
 

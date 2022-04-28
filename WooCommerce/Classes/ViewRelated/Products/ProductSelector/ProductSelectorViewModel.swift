@@ -195,9 +195,10 @@ final class ProductSelectorViewModel: ObservableObject {
         guard let variableProduct = products.first(where: { $0.productID == productID }), variableProduct.variations.isNotEmpty else {
             return nil
         }
+        let selectedItems = selectedProductVariationIDs.filter { variableProduct.variations.contains($0) }
         return ProductVariationSelectorViewModel(siteID: siteID,
                                                  product: variableProduct,
-                                                 selectedProductVariationIDs: selectedProductVariationIDs,
+                                                 selectedProductVariationIDs: selectedItems,
                                                  onVariationSelected: onVariationSelected)
     }
 

@@ -4436,7 +4436,6 @@
 			isa = PBXGroup;
 			children = (
 				DE74F2A127E41D4F0002FE59 /* EnableAnalytics */,
-				DE69C54B27BB7163000BB888 /* UsageDetails */,
 				DE7B479127A38ABC0018742E /* CouponDetails */,
 				4572641527F1EABE004E1F95 /* Add and Edit Coupons */,
 				03FBDA9C263AD49100ACE257 /* CouponListViewController.swift */,
@@ -5164,6 +5163,7 @@
 				4572641627F1EB0D004E1F95 /* AddEditCoupon.swift */,
 				4572641827F1EB27004E1F95 /* AddEditCouponViewModel.swift */,
 				4521396F27FF53E400964ED3 /* CouponExpiryDateView.swift */,
+				DE69C54B27BB7163000BB888 /* UsageDetails */,
 				4535EE78281ADD1F004212B4 /* Coupon Text Validators */,
 			);
 			path = "Add and Edit Coupons";

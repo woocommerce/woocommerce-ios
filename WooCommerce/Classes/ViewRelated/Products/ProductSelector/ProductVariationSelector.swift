@@ -127,8 +127,7 @@ struct AddProductVariationToOrder_Previews: PreviewProvider {
             productID: 2,
             productName: "Monstera Plant",
             productAttributes: [],
-            selectedProductVariationIDs: [],
-            purchasableItemsOnly: false
+            selectedProductVariationIDs: []
         )
 
         ProductVariationSelector(isPresented: .constant(true), viewModel: viewModel, multipleSelectionsEnabled: true)

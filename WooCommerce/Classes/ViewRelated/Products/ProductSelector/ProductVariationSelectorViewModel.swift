@@ -99,7 +99,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
          productName: String,
          productAttributes: [ProductAttribute],
          selectedProductVariationIDs: [Int64] = [],
-         purchasableItemsOnly: Bool,
+         purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          onVariationSelected: ((ProductVariation) -> Void)? = nil) {
@@ -121,7 +121,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
     convenience init(siteID: Int64,
                      product: Product,
                      selectedProductVariationIDs: [Int64] = [],
-                     purchasableItemsOnly: Bool,
+                     purchasableItemsOnly: Bool = false,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
                      stores: StoresManager = ServiceLocator.stores,
                      onVariationSelected: ((ProductVariation) -> Void)? = nil) {

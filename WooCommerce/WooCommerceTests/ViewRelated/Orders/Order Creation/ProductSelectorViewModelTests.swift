@@ -205,7 +205,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // When
         viewModel.searchTerm = "shirt"
-        viewModel.clearSearch()
+        viewModel.clearSearchAndFilters()
 
         // Then
         XCTAssertEqual(viewModel.searchTerm, "")
@@ -232,7 +232,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // When
         viewModel.searchTerm = "shirt"
-        viewModel.clearSearch()
+        viewModel.clearSearchAndFilters()
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
 
         // Then

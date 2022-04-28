@@ -221,6 +221,75 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         XCTAssertEqual(eventProperties["country"] as? String, "US")
         XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayID)
     }
+
+    func test_canceling_readerIsReady_alert_tracks_interacRefundCanceled_event_when_payment_method_is_interac() throws {
+        // Given
+        let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
+                                                   charge: .fake().copy(paymentMethodDetails: .interacPresent(
+                                                    details: .init(brand: .visa,
+                                                                   last4: "9969",
+                                                                   funding: .credit,
+                                                                   receipt: .init(accountType: .credit,
+                                                                                  applicationPreferredName: "Stripe Credit",
+                                                                                  dedicatedFileName: "A000000003101001")))),
+                                                   amount: "2.28",
+                                                   paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID)))
+        mockSuccessfulCardReaderConnection(clientSideRefundResult: .failure(RefundSubmissionUseCase.RefundSubmissionError.cardReaderDisconnected),
+                                           cancelRefundResult: .success(()))
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}, onCompletion: { result in
+                promise(result)
+            })
+            self.alerts.cancelReaderIsReadyAlert?()
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? RefundSubmissionUseCase.RefundSubmissionError, .canceledByUser)
+
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "interac_refund_cancelled"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["card_reader_model"] as? String, Mocks.cardReaderModel)
+        XCTAssertEqual(eventProperties["country"] as? String, "US")
+        XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayID)
+    }
+
+    func test_canceling_tapOrInsertCard_alert_tracks_interacRefundCanceled_event_when_payment_method_is_interac() throws {
+        // Given
+        let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
+                                                   charge: .fake().copy(paymentMethodDetails: .interacPresent(
+                                                    details: .init(brand: .visa,
+                                                                   last4: "9969",
+                                                                   funding: .credit,
+                                                                   receipt: .init(accountType: .credit,
+                                                                                  applicationPreferredName: "Stripe Credit",
+                                                                                  dedicatedFileName: "A000000003101001")))),
+                                                   amount: "2.28",
+                                                   paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID)))
+        mockSuccessfulCardReaderConnection(clientSideRefundResult: .failure(RefundSubmissionUseCase.RefundSubmissionError.cardReaderDisconnected),
+                                           cancelRefundResult: .success(()),
+                                           returnCardReaderMessage: .waitingForInput(""))
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}, onCompletion: { result in
+                promise(result)
+            })
+            self.alerts.cancelTapOrInsertCardAlert?()
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? RefundSubmissionUseCase.RefundSubmissionError, .canceledByUser)
+
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "interac_refund_cancelled"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["card_reader_model"] as? String, Mocks.cardReaderModel)
+        XCTAssertEqual(eventProperties["country"] as? String, "US")
+        XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayID)
+    }
 }
 
 private extension RefundSubmissionUseCaseTests {
@@ -237,14 +306,29 @@ private extension RefundSubmissionUseCaseTests {
         }
     }
 
-    func mockSuccessfulCardReaderConnection(clientSideRefundResult: Result<Void, Error>) {
+    /// Mocks successful card reader connection and allows mocking for subsequent actions - client-side refund, refund cancellation, and what message it returns to
+    /// the card reader.
+    /// Because `MockStoresManager.whenReceivingAction` has to include all actions for the same store in one call, default values
+    /// are set to optional actions.
+    /// - Parameters:
+    ///   - clientSideRefundResult: the result of client-side refund on the card reader in `CardPresentPaymentAction.refundPayment`.
+    ///   - cancelRefundResult: the result of refund cancellation on the card reader. Default result is success.
+    ///   - returnCardReaderMessage: optional message to refund during the client-side refund flow on the card reader in `CardPresentPaymentAction.refundPayment`.
+    func mockSuccessfulCardReaderConnection(clientSideRefundResult: Result<Void, Error>,
+                                            cancelRefundResult: Result<Void, Error> = .success(()),
+                                            returnCardReaderMessage: CardReaderEvent? = nil) {
         stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
             if case let .checkCardReaderConnected(completion) = action {
                 completion(Just<[CardReader]>([MockCardReader.wisePad3()]).eraseToAnyPublisher())
             } else if case let .observeConnectedReaders(completion) = action {
                 completion([MockCardReader.wisePad3()])
-            } else if case let .refundPayment(_, _, completion) = action {
+            } else if case let .refundPayment(_, onCardReaderMessage, completion) = action {
+                if let cardReaderMessage = returnCardReaderMessage {
+                    onCardReaderMessage(cardReaderMessage)
+                }
                 completion?(clientSideRefundResult)
+            } else if case let .cancelRefund(completion) = action {
+                completion?(cancelRefundResult)
             }
         }
     }

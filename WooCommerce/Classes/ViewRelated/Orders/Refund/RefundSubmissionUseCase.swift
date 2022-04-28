@@ -242,7 +242,7 @@ private extension RefundSubmissionUseCase {
         alerts.readerIsReady(title: Localization.refundPaymentTitle(username: order.billingAddress?.firstName),
                              amount: formattedAmount,
                              onCancel: { [weak self] in
-            self?.cancelRefund()
+            self?.cancelRefund(charge: charge, paymentGatewayAccount: paymentGatewayAccount, onCompletion: onCompletion)
         })
 
         // Starts refund process.
@@ -252,7 +252,7 @@ private extension RefundSubmissionUseCase {
                                              onWaitingForInput: { [weak self] in
             // Requests card input.
             self?.alerts.tapOrInsertCard(onCancel: { [weak self] in
-                self?.cancelRefund()
+                self?.cancelRefund(charge: charge, paymentGatewayAccount: paymentGatewayAccount, onCompletion: onCompletion)
             })
         }, onProcessingMessage: { [weak self] in
             // Shows waiting message.
@@ -302,9 +302,10 @@ private extension RefundSubmissionUseCase {
     }
 
     /// Cancels refund and records analytics.
-    func cancelRefund() {
+    func cancelRefund(charge: WCPayCharge, paymentGatewayAccount: PaymentGatewayAccount, onCompletion: @escaping (Result<Void, Error>) -> ()) {
+        trackClientSideRefundCanceled(charge: charge, paymentGatewayAccount: paymentGatewayAccount)
         cardPresentRefundOrchestrator.cancelRefund { _ in
-            // TODO: 5984 - tracks in-person refund cancellation
+            onCompletion(.failure(RefundSubmissionError.canceledByUser))
         }
     }
 
@@ -377,6 +378,19 @@ private extension RefundSubmissionUseCase {
             return
         }
     }
+
+    /// Tracks when the refund request is canceled on the client-side.
+    func trackClientSideRefundCanceled(charge: WCPayCharge, paymentGatewayAccount: PaymentGatewayAccount) {
+        switch charge.paymentMethodDetails {
+        case .interacPresent:
+            analytics.track(event: .InPersonPayments.interacRefundCanceled(gatewayID: paymentGatewayAccount.gatewayID,
+                                                                           countryCode: cardPresentConfiguration.countryCode,
+                                                                           cardReaderModel: connectedReader?.readerType.model ?? ""))
+        default:
+            // Tracks refund cancellation events with other payment methods if needed.
+            return
+        }
+    }
 }
 
 // MARK: Connected Card Readers
@@ -397,6 +411,7 @@ extension RefundSubmissionUseCase {
         case cardReaderDisconnected
         case invalidRefundAmount
         case unknownPaymentGatewayAccount
+        case canceledByUser
     }
 }
 

@@ -62,7 +62,8 @@ struct AddEditCoupon: View {
                                                      text: $viewModel.amountField,
                                                      editable: true,
                                                      fieldAlignment: .leading,
-                                                     keyboardType: .decimalPad)
+                                                     keyboardType: .decimalPad,
+                                                     inputFormatter: PriceInputFormatter())
                                 Divider()
                                     .padding(.leading, Constants.margin)
 
@@ -78,7 +79,8 @@ struct AddEditCoupon: View {
                                                      text: $viewModel.codeField,
                                                      editable: true,
                                                      fieldAlignment: .leading,
-                                                     keyboardType: .default)
+                                                     keyboardType: .default,
+                                                     inputFormatter: CouponCodeInputFormatter())
                                 Divider()
                                     .padding(.leading, Constants.margin)
                                     .padding(.bottom, Constants.verticalSpacing)

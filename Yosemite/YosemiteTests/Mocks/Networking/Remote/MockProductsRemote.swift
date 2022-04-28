@@ -12,7 +12,7 @@ final class MockProductsRemote {
     private(set) var searchProductWithProductStatus: ProductStatus?
     private(set) var searchProductWithProductType: ProductType?
     private(set) var searchProductWithProductCategory: ProductCategory?
-    
+
     private struct ResultKey: Hashable {
         let siteID: Int64
         let productIDs: [Int64]

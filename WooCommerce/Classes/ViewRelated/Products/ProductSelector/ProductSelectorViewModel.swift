@@ -287,7 +287,11 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
         let action = ProductAction.searchProducts(siteID: siteID,
                                                   keyword: keyword,
                                                   pageNumber: pageNumber,
-                                                  pageSize: pageSize) { [weak self] result in
+                                                  pageSize: pageSize,
+                                                  stockStatus: filters.stockStatus,
+                                                  productStatus: filters.productStatus,
+                                                  productType: filters.productType,
+                                                  productCategory: filters.productCategory) { [weak self] result in
             // Don't continue if this isn't the latest search.
             guard let self = self, keyword == self.searchTerm else {
                 return

@@ -114,7 +114,7 @@ final class NewOrderViewModel: ObservableObject {
     /// View model for the product list
     ///
     lazy var addProductViewModel = {
-        ProductSelectorViewModel(siteID: siteID, storageManager: storageManager, stores: stores) { [weak self] product in
+        ProductSelectorViewModel(siteID: siteID, purchasableItemsOnly: true, storageManager: storageManager, stores: stores) { [weak self] product in
             guard let self = self else { return }
             self.addProductToOrder(product)
         } onVariationSelected: { [weak self] variation in

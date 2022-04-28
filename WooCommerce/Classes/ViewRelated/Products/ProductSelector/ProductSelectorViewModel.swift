@@ -138,9 +138,14 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     private let initialSelectedItems: [Int64]
 
+    /// Whether the product list should contains only purchasable items.
+    ///
+    private let purchasableItemsOnly: Bool
+
     /// Initializer for single selection
     ///
     init(siteID: Int64,
+         purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          onProductSelected: ((Product) -> Void)? = nil,
@@ -152,6 +157,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onVariationSelected = onVariationSelected
         self.onMultipleSelectionCompleted = nil
         self.initialSelectedItems = []
+        self.purchasableItemsOnly = purchasableItemsOnly
 
         configureSyncingCoordinator()
         configureProductsResultsController()
@@ -163,6 +169,7 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     init(siteID: Int64,
          selectedItemIDs: [Int64],
+         purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil) {
@@ -173,6 +180,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onVariationSelected = nil
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
         self.initialSelectedItems = selectedItemIDs
+        self.purchasableItemsOnly = purchasableItemsOnly
 
         configureSyncingCoordinator()
         configureProductsResultsController()
@@ -202,6 +210,7 @@ final class ProductSelectorViewModel: ObservableObject {
         return ProductVariationSelectorViewModel(siteID: siteID,
                                                  product: variableProduct,
                                                  selectedProductVariationIDs: selectedProductVariationIDs,
+                                                 purchasableItemsOnly: purchasableItemsOnly,
                                                  onVariationSelected: onVariationSelected)
     }
 
@@ -358,7 +367,11 @@ private extension ProductSelectorViewModel {
     func updateProductsResultsController() {
         do {
             try productsResultsController.performFetch()
-            products = productsResultsController.fetchedObjects.filter { $0.purchasable }
+            if purchasableItemsOnly {
+                products = productsResultsController.fetchedObjects.filter { $0.purchasable }
+            } else {
+                products = productsResultsController.fetchedObjects
+            }
             updateSelectionsFromInitialSelectedItems()
             observeSelections()
         } catch {

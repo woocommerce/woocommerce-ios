@@ -67,6 +67,6 @@ final class ShouldRetryStripeRefundAfterFailureDeterminerTests: XCTestCase {
     }
 
     func test_shouldRetryRefund_when_failure_reason_is_unknown_returns_true() {
-        XCTAssertFalse(ShouldRetryStripeRefundAfterFailureDeterminer().shouldRetryRefund(after: "not-a-stripe-error-for-sure"))
+        XCTAssertTrue(ShouldRetryStripeRefundAfterFailureDeterminer().shouldRetryRefund(after: "not-a-stripe-error-for-sure"))
     }
 }

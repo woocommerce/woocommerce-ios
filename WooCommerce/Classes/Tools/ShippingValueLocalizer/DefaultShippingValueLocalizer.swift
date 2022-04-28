@@ -24,6 +24,10 @@ struct DefaultShippingValueLocalizer: ShippingValueLocalizer {
 
     /// Localizes the shipping value from `apiLocale` to `deviceLocale`
     ///
+    /// Returns `nil` for numbers with grouping separator. (No thousands separator)
+    ///
+    /// Because, API does not support having thousand separators in shipping values like weight and package dimensions.
+    ///
     func localized(shippingValue: String?) -> String? {
         guard let shippingValue = shippingValue else {
             return nil
@@ -32,6 +36,10 @@ struct DefaultShippingValueLocalizer: ShippingValueLocalizer {
     }
 
     /// Localizes the shipping value from `deviceLocale` to `apiLocale`
+    ///
+    /// Returns `nil` for numbers with grouping separator. (No thousands separator)
+    ///
+    /// Because, API does not support having thousand separators in shipping values like weight and package dimensions.
     ///
     func unLocalized(shippingValue: String?) -> String? {
         guard let shippingValue = shippingValue else {

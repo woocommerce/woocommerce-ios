@@ -139,7 +139,7 @@
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%@ left a review on %@" = "%1$@ left a review on %2$@";
 
-/* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
+/* Label for a refund on an order, which reads \"<date> via <refund method type>\", e.g. \"25 Apr 2022 via WooCommerce In-Person Payments\". Shown in a cell with a title \"Refunded\" for context */
 "%@ via %@" = "%1$@ via %2$@";
 
 /* No comment provided by engineer. */
@@ -515,7 +515,8 @@
 /* Header bar label on top of order list when no filters are applied */
 "All Orders" = "All Orders";
 
-/* Text indicating that there's no limit to the number of products that a coupon can be applied for. Displayed on coupon list items and details screen */
+/* Button indicating that coupon can be applied to all products in the view for adding or editing a coupon.
+   Text indicating that there's no limit to the number of products that a coupon can be applied for. Displayed on coupon list items and details screen */
 "All Products" = "All Products";
 
 /* Exception rule for a coupon. Reads like: All Products excl. 2 Products */
@@ -812,7 +813,7 @@
 "Can Not Request Link" = "Can Not Request Link";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title that closes the action sheet in product variations - Button title that closes the presented screen - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to cancel an in-person payment or refund - Button to cancel the creation of an order on the New Order screen - Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button in the navigation bar of the view for adding or editing a coupon. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the main more actions menu sheet. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
+   Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title that closes the action sheet in product variations - Button title that closes the presented screen - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to cancel an in-person payment or refund - Button to cancel the creation of an order on the New Order screen - Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button in the navigation bar of the view for adding or editing a coupon. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the main more actions menu sheet. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - Text for the cancel button in the Exclude Products screen - Text for the cancel button in the Select Products screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
 "Cancel" = "Cancel";
 
 /* Display label for cancelled order status. */
@@ -1528,9 +1529,11 @@
 /* Button for specify the product categories where a coupon can be applied in the view for adding or editing a coupon. */
 "Edit Product Categories" = "Edit Product Categories";
 
-/* Button for specify the products where a coupon can be applied in the view for adding or editing a coupon.
-   Edit Products button inside the Linked Products screen. */
+/* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "Edit Products";
+
+/* Button specifying the number of products applicable to a coupon in the view for adding or editing a coupon. Reads like: Edit Products (2) */
+"Edit Products (%1$d)" = "Edit Products (%1$d)";
 
 /* Accessibility label for the button to edit order status on the New Order screen */
 "Edit Status" = "Edit Status";
@@ -1731,13 +1734,20 @@
 /* Title of the action button on the Exclude Products screenReads like: Exclude 1 Product */
 "Exclude %1$@" = "Exclude %1$@";
 
+/* Title of the action button at the bottom of the Exclude Products screen when more than 1 item is selected, reads like: Exclude 5 Products */
+"Exclude %1$d Products" = "Exclude %1$d Products";
+
+/* Title of the action button at the bottom of the Exclude Products screen when one product is selected */
+"Exclude 1 Product" = "Exclude 1 Product";
+
 /* Title of the action button to add product categories to the exclusion list in Coupon Usage Details screen */
 "Exclude Product Categories" = "Exclude Product Categories";
 
 /* Title of the Exclude Products screen */
 "Exclude products" = "Exclude products";
 
-/* Title of the action button to add products to the exclusion list in Coupon Usage Details screen */
+/* Title for the screen to exclude products for a coupon
+   Title of the action button to add products to the exclusion list in Coupon Usage Details screen */
 "Exclude Products" = "Exclude Products";
 
 /* Title for the exclude sale items row in coupon usage details screen. */
@@ -2677,7 +2687,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message displayed if there are no product variations for a product. */
 "No product variations found" = "No product variations found";
 
-/* Message displayed if there are no products to display in the Add Product screen */
+/* Message displayed if there are no products to display in the Select Product screen */
 "No products found" = "No products found";
 
 /* Placeholder for the linked products list selector screen
@@ -2791,7 +2801,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "Opens a list of available statuses.";
 
-/* Accessibility hint for selecting a variable product in the Add Product screen */
+/* Accessibility hint for excluding a variable product in the Exclude Products screen
+   Accessibility hint for selecting a variable product in the Add Product screen - Accessibility hint for selecting a variable product in the Select Products screen */
 "Opens list of product variations." = "Opens list of product variations.";
 
 /* Accessibility hint for selecting a product in a new order */
@@ -3666,6 +3677,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the action button on the Select Products screenReads like: Select 1 Product */
 "Select %1$@" = "Select %1$@";
 
+/* Title of the action button at the bottom of the Select Products screen when more than 1 item is selected, reads like: Select 5 Products */
+"Select %1$d Products" = "Select %1$d Products";
+
+/* Title of the action button at the bottom of the Select Products screen when one product is selected */
+"Select 1 Product" = "Select 1 Product";
+
 /* Placeholder for the selected package in the Shipping Labels Package Details screen */
 "Select a package" = "Select a package";
 
@@ -3693,6 +3710,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the Select Products screen */
 "Select products" = "Select products";
+
+/* Title for the screen to select products for a coupon */
+"Select Products" = "Select Products";
 
 /* Placeholder value of the cell in Product Price Settings > Schedule sale from a certain date */
 "Select start date" = "Select start date";
@@ -4665,6 +4685,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Today */
 "today" = "today";
+
+/* Accessibility hint for selecting a product in the Select Products screen */
+"Toggles selection for this product in a coupon." = "Toggles selection for this product in a coupon.";
+
+/* Accessibility hint for excluding a product in the Exclude Products screen */
+"Toggles selection to exclude this product in a coupon." = "Toggles selection to exclude this product in a coupon.";
 
 /* Accessibility Identifier for the Aztec Ordered List Style. */
 "Toggles the ordered list style" = "Toggles the ordered list style";

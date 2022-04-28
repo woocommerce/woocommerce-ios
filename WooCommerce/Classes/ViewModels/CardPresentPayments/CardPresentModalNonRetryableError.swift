@@ -50,8 +50,9 @@ final class CardPresentModalNonRetryableError: CardPresentPaymentsModalViewModel
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        viewController?.dismiss(animated: true)
-        onDismiss()
+        viewController?.dismiss(animated: true) { [weak self] in
+            self?.onDismiss()
+        }
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) { }

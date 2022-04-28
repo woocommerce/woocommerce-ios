@@ -233,7 +233,6 @@ private extension ShippingLabelAddressFormViewController {
                 self.navigationController?.popViewController(animated: true)
             case .failure:
                 self.displayAddressUpdateFailedNotice()
-                break
             }
         }
     }
@@ -248,7 +247,6 @@ private extension ShippingLabelAddressFormViewController {
                 self.navigationController?.popViewController(animated: true)
             case .failure:
                 self.displayAddressUpdateFailedNotice()
-                break
             }
         }
     }

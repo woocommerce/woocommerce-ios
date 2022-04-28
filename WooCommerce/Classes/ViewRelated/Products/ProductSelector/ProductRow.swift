@@ -68,7 +68,6 @@ struct ProductRow: View {
                         Text(viewModel.skuLabel)
                             .subheadlineStyle()
                     }
-                    .multilineTextAlignment(.leading)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())

@@ -146,9 +146,6 @@ struct CouponRestrictions: View {
                 ProductSelector(configuration: ProductSelector.Configuration.excludedProductsForCoupons,
                                 isPresented: $showingExcludeProducts,
                                 viewModel: viewModel.productSelectorViewModel)
-                    .onDisappear {
-                        viewModel.productSelectorViewModel.clearSearch()
-                    }
             }
 
             LazyNavigationLink(destination: CouponAllowedEmails(emailFormats: $viewModel.allowedEmails), isActive: $showingAllowedEmails) {

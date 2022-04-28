@@ -205,10 +205,11 @@ final class ProductSelectorViewModel: ObservableObject {
                                                  onVariationSelected: onVariationSelected)
     }
 
-    /// Clears the current search term to display the full product list.
+    /// Clears the current search term and filters to display the full product list.
     ///
-    func clearSearch() {
+    func clearSearchAndFilters() {
         searchTerm = ""
+        filters = .init()
     }
 
     /// Updates selected variation list based on the new selected IDs

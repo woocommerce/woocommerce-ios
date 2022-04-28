@@ -7,9 +7,14 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
     private(set) var sections: [ProductFormSection] = []
     private let currency: String
     private let currencyFormatter: CurrencyFormatter
-    private let locale: Locale
-    private let weightUnit: String?
+
+    // Localizes weight and package dimensions
+    //
+    private let shippingValueLocalizer: ShippingValueLocalizer
+
     private let dimensionUnit: String?
+    private let weightUnit: String?
+
 
     // Timezone of the website
     //
@@ -19,12 +24,12 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
          actionsFactory: ProductFormActionsFactoryProtocol,
          currency: String,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-         locale: Locale = .current,
+         shippingValueLocalizer: ShippingValueLocalizer = DefaultShippingValueLocalizer(),
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
          dimensionUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit) {
         self.currency = currency
         self.currencyFormatter = currencyFormatter
-        self.locale = locale
+        self.shippingValueLocalizer = shippingValueLocalizer
         self.weightUnit = weightUnit
         self.dimensionUnit = dimensionUnit
         configureSections(product: product, actionsFactory: actionsFactory)
@@ -265,14 +270,6 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func shippingSettingsRow(product: ProductFormDataModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
-        // Localizes the weight and shipping dimensions
-        //
-        func localizedNumber(_ string: String) -> String? {
-            // API uses US locale for weight and shipping dimensions
-            let usLocale = Locale(identifier: "en_US")
-            return NumberFormatter.localizedString(using: string, from: usLocale, to: locale)
-        }
-
         let icon = UIImage.shippingImage
         let title = Localization.shippingSettingsTitle
 
@@ -280,7 +277,7 @@ private extension DefaultProductFormTableViewModel {
 
         // Weight[unit]
         if let weight = product.weight, let weightUnit = weightUnit, !weight.isEmpty {
-            let localizedWeight = localizedNumber(weight) ?? weight
+            let localizedWeight = shippingValueLocalizer.localized(shippingValue: weight) ?? weight
             shippingDetails.append(String.localizedStringWithFormat(Localization.weightFormat,
                                                                     localizedWeight, weightUnit))
         }
@@ -290,7 +287,7 @@ private extension DefaultProductFormTableViewModel {
         let width = product.dimensions.width
         let height = product.dimensions.height
         let dimensions = [length, width, height]
-            .map({ localizedNumber($0) ?? $0 })
+            .map({ shippingValueLocalizer.localized(shippingValue: $0) ?? $0 })
             .filter({ !$0.isEmpty })
 
         if let dimensionUnit = dimensionUnit,

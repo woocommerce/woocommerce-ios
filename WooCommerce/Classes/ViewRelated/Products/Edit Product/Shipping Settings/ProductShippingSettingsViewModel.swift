@@ -45,9 +45,9 @@ final class ProductShippingSettingsViewModel: ProductShippingSettingsViewModelOu
     let sections: [Section]
     let product: ProductFormDataModel
 
-    // User device locale used to localize weight and shipping dimensions
+    // Localizes weight and package dimensions
     //
-    private let locale: Locale
+    private let shippingValueLocalizer: ShippingValueLocalizer
 
     // Editable data
     //
@@ -61,19 +61,19 @@ final class ProductShippingSettingsViewModel: ProductShippingSettingsViewModelOu
     // Localized values
     //
     var localizedWeight: String? {
-        weight?.localized(toLocale: locale) ?? weight
+        shippingValueLocalizer.localized(shippingValue: weight) ?? weight
     }
 
     var localizedLength: String? {
-        length?.localized(toLocale: locale) ?? length
+        shippingValueLocalizer.localized(shippingValue: length) ?? length
     }
 
     var localizedWidth: String? {
-        width?.localized(toLocale: locale) ?? width
+        shippingValueLocalizer.localized(shippingValue: width) ?? width
     }
 
     var localizedHeight: String? {
-        height?.localized(toLocale: locale) ?? height
+        shippingValueLocalizer.localized(shippingValue: height) ?? height
     }
 
     /// Nil and not editable until the shipping class is synced at a later point.
@@ -81,9 +81,9 @@ final class ProductShippingSettingsViewModel: ProductShippingSettingsViewModelOu
     private var originalShippingClass: ProductShippingClass?
 
     init(product: ProductFormDataModel,
-         locale: Locale = .current) {
+         shippingValueLocalizer: ShippingValueLocalizer = DefaultShippingValueLocalizer()) {
         self.product = product
-        self.locale = locale
+        self.shippingValueLocalizer = shippingValueLocalizer
         weight = product.weight
         length = product.dimensions.length
         width = product.dimensions.width
@@ -115,7 +115,7 @@ extension ProductShippingSettingsViewModel: ProductShippingSettingsActionHandler
             return
         }
 
-        self.weight = weight.formattedForAPI(fromLocale: locale) ?? weight
+        self.weight = shippingValueLocalizer.unLocalized(shippingValue: weight) ?? weight
     }
 
     func handleLengthChange(_ length: String?) {
@@ -123,8 +123,7 @@ extension ProductShippingSettingsViewModel: ProductShippingSettingsActionHandler
             self.length = nil
             return
         }
-
-        self.length = length.formattedForAPI(fromLocale: locale) ?? length
+        self.length = shippingValueLocalizer.unLocalized(shippingValue: length) ?? length
     }
 
     func handleWidthChange(_ width: String?) {
@@ -133,7 +132,7 @@ extension ProductShippingSettingsViewModel: ProductShippingSettingsActionHandler
             return
         }
 
-        self.width = width.formattedForAPI(fromLocale: locale) ?? width
+        self.width = shippingValueLocalizer.unLocalized(shippingValue: width) ?? width
     }
 
     func handleHeightChange(_ height: String?) {
@@ -142,7 +141,7 @@ extension ProductShippingSettingsViewModel: ProductShippingSettingsActionHandler
             return
         }
 
-        self.height = height.formattedForAPI(fromLocale: locale) ?? height
+        self.height = shippingValueLocalizer.unLocalized(shippingValue: height) ?? height
     }
 
     func handleShippingClassChange(_ shippingClass: ProductShippingClass?) {

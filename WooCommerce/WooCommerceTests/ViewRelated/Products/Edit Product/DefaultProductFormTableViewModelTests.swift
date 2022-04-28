@@ -131,12 +131,12 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
         let weightUnit = "kg"
         let dimensionUnit = "cm"
-
+        let shippingValueLocalizer = DefaultShippingValueLocalizer(deviceLocale: Locale(identifier: "it_IT"))
         // When
         let tableViewModel = DefaultProductFormTableViewModel(product: model,
                                                               actionsFactory: actionsFactory,
                                                               currency: "",
-                                                              locale: Locale(identifier: "it_IT"),
+                                                              shippingValueLocalizer: shippingValueLocalizer,
                                                               weightUnit: weightUnit,
                                                               dimensionUnit: dimensionUnit)
 

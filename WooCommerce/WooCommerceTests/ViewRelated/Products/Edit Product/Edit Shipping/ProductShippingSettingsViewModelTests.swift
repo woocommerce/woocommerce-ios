@@ -16,10 +16,11 @@ final class ProductShippingSettingsViewModelTests: XCTestCase {
                   shippingClass: "60-day",
                   shippingClassID: 2)
         let model = EditableProductModel(product: product)
+        let shippingValueLocalizer = DefaultShippingValueLocalizer(deviceLocale: Locale(identifier: "it_IT"))
 
         // Act
         let viewModel = ProductShippingSettingsViewModel(product: model,
-                                                         locale: Locale(identifier: "it_IT"))
+                                                         shippingValueLocalizer: shippingValueLocalizer)
 
         // Assert
         let expectedSections: [Section] = [

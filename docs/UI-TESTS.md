@@ -20,7 +20,6 @@ The following flows are covered/planned to be covered by UI tests. Tests that ar
    - [x] Orders list loads
    - [ ] Single Order Screen:
      - [x] Single order screen loads
-     - [x] Dismissal of order creation flow when tapping the Close button
      - [ ] View product on single order screen
      - [ ] Add customer note
      - [ ] Add order note
@@ -34,6 +33,7 @@ The following flows are covered/planned to be covered by UI tests. Tests that ar
      - [ ] With shipping
      - [ ] With a fee
      - [ ] With a customer note
+   - [x] Order Creation flow can be dismissed
 4. [Products](../WooCommerce/WooCommerceUITests/Tests/ProductsTests.swift)
     - [x] Products list and single product screens load
     - [ ] Add new product - Simple physical product

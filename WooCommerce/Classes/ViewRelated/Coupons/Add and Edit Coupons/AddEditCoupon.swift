@@ -225,6 +225,9 @@ struct AddEditCoupon: View {
                 ProductSelector(configuration: ProductSelector.Configuration.productsForCoupons,
                                 isPresented: $showingSelectProducts,
                                 viewModel: viewModel.productSelectorViewModel)
+                    .onDisappear {
+                        viewModel.productSelectorViewModel.clearSearchAndFilters()
+                    }
             }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

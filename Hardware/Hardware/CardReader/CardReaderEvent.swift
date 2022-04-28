@@ -1,5 +1,5 @@
 /// The possible events from a connected reader.
-public enum CardReaderEvent {
+public enum CardReaderEvent: Equatable {
     /// The reader begins waiting for input.
     /// The app should prompt the customer to present a payment method
     case waitingForInput(String)
@@ -14,6 +14,9 @@ public enum CardReaderEvent {
 
     /// A card was removed.
     case cardRemoved
+
+    /// A card was removed after client-side payment capture.
+    case cardRemovedAfterPaymentCapture
 
     /// Low battery warning.
     case lowBattery

@@ -186,8 +186,6 @@ private extension CollectOrderPaymentUseCaseTests {
             } else if case let .collectPayment(_, _, _, _, onProcessingCompletion, onCompletion) = action {
                 onProcessingCompletion(intent)
                 onCompletion(.success(intent))
-            } else if case let .captureOrderPayment(_, _, _, completion) = action {
-                completion(.success(()))
             }
         }
     }

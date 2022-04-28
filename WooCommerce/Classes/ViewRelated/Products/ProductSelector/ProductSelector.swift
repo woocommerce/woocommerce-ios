@@ -106,9 +106,6 @@ struct ProductSelector: View {
             .onAppear {
                 viewModel.onLoadTrigger.send()
             }
-            .onDisappear {
-                viewModel.clearSearchAndFilters()
-            }
             .notice($viewModel.notice, autoDismiss: false)
             .sheet(isPresented: $showingFilter) {
                 FilterListView(viewModel: viewModel.filterListViewModel) { filters in

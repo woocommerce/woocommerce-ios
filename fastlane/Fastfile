@@ -551,7 +551,7 @@ platform :ios do
     xcversion(version: '~> 12.0')
 
     scan(
-      workspace: File.join(FASTLANE_DIR, '../WooCommerce.xcworkspace'),
+      workspace: 'WooCommerce.xcworkspace',
       scheme: 'WooCommerceScreenshots',
       build_for_testing: true,
       derived_data_path: DERIVED_DATA_DIR

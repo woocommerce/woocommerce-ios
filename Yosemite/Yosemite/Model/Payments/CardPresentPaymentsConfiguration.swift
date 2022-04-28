@@ -8,22 +8,26 @@ public struct CardPresentPaymentsConfiguration {
     public let currencies: [CurrencyCode]
     public let paymentGateways: [String]
     public let supportedReaders: [CardReaderType]
+    public let supportedPluginVersions: [PaymentPluginVersionSupport]
 
     init(countryCode: String,
          stripeTerminalforCanadaEnabled: Bool,
          paymentMethods: [WCPayPaymentMethodType],
          currencies: [CurrencyCode],
          paymentGateways: [String],
-         supportedReaders: [CardReaderType]) {
+         supportedReaders: [CardReaderType],
+         supportedPluginVersions: [PaymentPluginVersionSupport]) {
         self.countryCode = countryCode
         self.stripeTerminalforCanadaEnabled = stripeTerminalforCanadaEnabled
         self.paymentMethods = paymentMethods
         self.currencies = currencies
         self.paymentGateways = paymentGateways
         self.supportedReaders = supportedReaders
+        self.supportedPluginVersions = supportedPluginVersions
     }
 
     public init(country: String, canadaEnabled: Bool) {
+        /// Changing `minimumVersion` values here? You'll need to also update `CardPresentPaymentsOnboardingUseCaseTests`
         switch country {
         case "US":
             self.init(
@@ -32,7 +36,11 @@ public struct CardPresentPaymentsConfiguration {
                 paymentMethods: [.cardPresent],
                 currencies: [.USD],
                 paymentGateways: [WCPayAccount.gatewayID, StripeAccount.gatewayID],
-                supportedReaders: [.chipper, .stripeM2]
+                supportedReaders: [.chipper, .stripeM2],
+                supportedPluginVersions: [
+                    .init(plugin: .wcPay, minimumVersion: "3.2.1"),
+                    .init(plugin: .stripe, minimumVersion: "6.2.0")
+                ]
             )
         case "CA" where canadaEnabled == true:
             self.init(
@@ -41,7 +49,8 @@ public struct CardPresentPaymentsConfiguration {
                 paymentMethods: [.cardPresent, .interacPresent],
                 currencies: [.CAD],
                 paymentGateways: [WCPayAccount.gatewayID],
-                supportedReaders: [.wisepad3]
+                supportedReaders: [.wisepad3],
+                supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.0.0")]
             )
         default:
             self.init(
@@ -50,7 +59,8 @@ public struct CardPresentPaymentsConfiguration {
                 paymentMethods: [],
                 currencies: [],
                 paymentGateways: [],
-                supportedReaders: []
+                supportedReaders: [],
+                supportedPluginVersions: []
             )
         }
     }

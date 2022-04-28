@@ -89,6 +89,42 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         }
     }
 
+    func test_collectPayment_processing_completion_tracks_collectInteracPaymentSuccess_event_when_payment_method_is_interac() throws {
+        // Given
+        let intent = MockPaymentIntent.mock(paymentMethod: .interacPresent)
+        mockSuccessfulCardPresentPaymentActions(intent: intent)
+
+        // When
+        waitFor { promise in
+            self.useCase.collectPayment(backButtonTitle: "", onCollect: { _ in
+                promise(())
+            }, onCompleted: {})
+        }
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "card_interac_collect_payment_success"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["card_reader_model"] as? String, Mocks.cardReaderModel)
+        XCTAssertEqual(eventProperties["country"] as? String, "US")
+        XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayAccount)
+    }
+
+    func test_collectPayment_processing_completion_does_not_track_collectInteracPaymentSuccess_event_when_payment_method_is_not_interac() throws {
+        // Given
+        let intent = MockPaymentIntent.mock(paymentMethod: .cardPresent)
+        mockSuccessfulCardPresentPaymentActions(intent: intent)
+
+        // When
+        waitFor { promise in
+            self.useCase.collectPayment(backButtonTitle: "", onCollect: { _ in
+                promise(())
+            }, onCompleted: {})
+        }
+
+        // Then
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("card_interac_collect_payment_success"))
+    }
+
     // MARK: - Failure cases
 
     func test_collectPayment_with_below_minimum_amount_results_in_failure_and_tracks_collectPaymentFailed_event() throws {
@@ -137,6 +173,21 @@ private extension CollectOrderPaymentUseCaseTests {
                 completion([MockCardReader.wisePad3()])
             } else if case let .cancelPayment(completion) = action {
                 completion?(.success(()))
+            }
+        }
+    }
+
+    func mockSuccessfulCardPresentPaymentActions(intent: PaymentIntent) {
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case let .checkCardReaderConnected(completion) = action {
+                completion(Just<[CardReader]>([MockCardReader.wisePad3()]).eraseToAnyPublisher())
+            } else if case let .observeConnectedReaders(completion) = action {
+                completion([MockCardReader.wisePad3()])
+            } else if case let .collectPayment(_, _, _, _, onProcessingCompletion, onCompletion) = action {
+                onProcessingCompletion(intent)
+                onCompletion(.success(intent))
+            } else if case let .captureOrderPayment(_, _, _, completion) = action {
+                completion(.success(()))
             }
         }
     }

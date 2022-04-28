@@ -380,7 +380,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
 
         // When
         viewModel.noteViewModel.newNote = "content"
-        viewModel.noteViewModel.updateNote(onFinish: { _ in })
+        viewModel.noteViewModel.updateNote(onCompletion: { _ in })
 
         // Then
         assertEqual(mockAnalytics.receivedEvents, [

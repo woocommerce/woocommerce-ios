@@ -84,11 +84,12 @@ public final class CardPresentPaymentStore: Store {
             disconnect(onCompletion: completion)
         case .observeConnectedReaders(let completion):
             observeConnectedReaders(onCompletion: completion)
-        case .collectPayment(let siteID, let orderID, let parameters, let event, let completion):
+        case .collectPayment(let siteID, let orderID, let parameters, let event, let processPaymentCompletion, let completion):
             collectPayment(siteID: siteID,
                            orderID: orderID,
                            parameters: parameters,
                            onCardReaderMessage: event,
+                           onProcessingCompletion: processPaymentCompletion,
                            onCompletion: completion)
         case .cancelPayment(let completion):
             cancelPayment(onCompletion: completion)
@@ -208,23 +209,32 @@ private extension CardPresentPaymentStore {
                         orderID: Int64,
                         parameters: PaymentParameters,
                         onCardReaderMessage: @escaping (CardReaderEvent) -> Void,
+                        onProcessingCompletion: @escaping (PaymentIntent) -> Void,
                         onCompletion: @escaping (Result<PaymentIntent, Error>) -> Void) {
         // Observe status events fired by the card reader
         let readerEventsSubscription = cardReaderService.readerEvents.sink { event in
             onCardReaderMessage(event)
         }
 
-        paymentCancellable = cardReaderService.capturePayment(parameters).sink { error in
-            readerEventsSubscription.cancel()
-            switch error {
-            case .failure(let error):
-                onCompletion(.failure(error))
-            default:
-                break
+        paymentCancellable = cardReaderService.capturePayment(parameters)
+            .handleEvents(receiveOutput: { intent in
+                onProcessingCompletion(intent)
+            })
+            .flatMap { intent in
+                self.cardReaderService.waitForInsertedCardToBeRemoved()
+                    .map { intent }
             }
-        } receiveValue: { intent in
-            onCompletion(.success(intent))
-        }
+            .sink { error in
+                readerEventsSubscription.cancel()
+                switch error {
+                case .failure(let error):
+                    onCompletion(.failure(error))
+                default:
+                    break
+                }
+            } receiveValue: { intent in
+                onCompletion(.success(intent))
+            }
     }
 
     func cancelPayment(onCompletion: ((Result<Void, Error>) -> Void)?) {

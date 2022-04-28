@@ -6,6 +6,7 @@ import WordPressAuthenticator
 struct CouponExpiryDateView: View {
 
     @State var date: Date = Date()
+    let timezone: TimeZone = TimeZone.siteTimezone
     let completion: ((Date) -> Void)
 
     var body: some View {
@@ -13,6 +14,7 @@ struct CouponExpiryDateView: View {
             ScrollView {
                 VStack {
                     DatePicker("Date picker", selection: $date, displayedComponents: .date)
+                        .environment(\.timeZone, timezone)
                         .datePickerStyle(GraphicalDatePickerStyle())
                         .onChange(of: date) { newDate in
                             completion(newDate)

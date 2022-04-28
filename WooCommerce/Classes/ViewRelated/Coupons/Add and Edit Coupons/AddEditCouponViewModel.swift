@@ -165,7 +165,7 @@ final class AddEditCouponViewModel: ObservableObject {
 
     func updateCoupon(coupon: Coupon) {
         isLoading = true
-        let action = CouponAction.updateCoupon(coupon) { [weak self] result in
+        let action = CouponAction.updateCoupon(coupon, siteTimezone: TimeZone.siteTimezone) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(_):

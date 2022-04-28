@@ -1,8 +1,6 @@
 import XCTest
 import Yosemite
 @testable import WooCommerce
-import SwiftUI
-import simd
 
 final class PaymentCaptureOrchestratorTests: XCTestCase {
 

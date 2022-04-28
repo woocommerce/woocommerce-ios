@@ -46,6 +46,12 @@ public struct NoOpCardReaderService: CardReaderService {
         }
     }
 
+    public func waitForInsertedCardToBeRemoved() -> Future<Void, Never> {
+        Future() { promise in
+            promise(.success(()))
+        }
+    }
+
     /// Clears and resets internal state.
     /// We need to call this method when switching accounts or stores
     public func clear() {

@@ -270,7 +270,7 @@ private extension PaymentCaptureOrchestrator {
     }
 
     private func applicationFee(for orderTotal: NSDecimalNumber, country: String) -> Decimal? {
-        guard country.uppercased() == "CA" else {
+        guard country.uppercased() == SiteAddress.CountryCode.CA.rawValue else {
             return nil
         }
 

@@ -256,12 +256,12 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
         let action = ProductAction.synchronizeProducts(siteID: siteID,
                                                        pageNumber: pageNumber,
                                                        pageSize: pageSize,
-                                                       stockStatus: nil,
-                                                       productStatus: nil,
-                                                       productType: nil,
-                                                       productCategory: nil,
+                                                       stockStatus: filters.stockStatus,
+                                                       productStatus: filters.productStatus,
+                                                       productType: filters.productType,
+                                                       productCategory: filters.productCategory,
                                                        sortOrder: .nameAscending,
-                                                       shouldDeleteStoredProductsOnFirstPage: false) { [weak self] result in
+                                                       shouldDeleteStoredProductsOnFirstPage: true) { [weak self] result in
             guard let self = self else { return }
 
             switch result {

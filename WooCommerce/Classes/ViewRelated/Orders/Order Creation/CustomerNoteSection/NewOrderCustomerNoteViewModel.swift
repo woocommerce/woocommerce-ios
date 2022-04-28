@@ -10,21 +10,11 @@ class NewOrderCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
     ///
     @Published private(set) var navigationTrailingItem: EditCustomerNoteNavigationItem = .done(enabled: false)
 
-    /// Not used.
-    ///
-    @Published var presentNotice: EditCustomerNoteNotice? = nil
-
-    /// Not used.
-    ///
-    var presentNoticePublisher: Published<EditCustomerNoteNotice?>.Publisher {
-        $presentNotice
-    }
-
     /// Commit the original note.
     ///
-    func updateNote(onFinish: @escaping (Bool) -> Void) {
+    func updateNote(onCompletion: @escaping (Bool) -> Void) {
         originalNote = newNote
-        onFinish(true)
+        onCompletion(true)
     }
 
     /// Revert to original content.

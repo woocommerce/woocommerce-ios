@@ -226,7 +226,7 @@ struct AddEditCoupon: View {
                                 isPresented: $showingSelectProducts,
                                 viewModel: viewModel.productSelectorViewModel)
                     .onDisappear {
-                        viewModel.productSelectorViewModel.clearSearch()
+                        viewModel.productSelectorViewModel.clearSearchAndFilters()
                     }
             }
             .toolbar {

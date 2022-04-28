@@ -147,7 +147,7 @@ struct CouponRestrictions: View {
                                 isPresented: $showingExcludeProducts,
                                 viewModel: viewModel.productSelectorViewModel)
                     .onDisappear {
-                        viewModel.productSelectorViewModel.clearSearch()
+                        viewModel.productSelectorViewModel.clearSearchAndFilters()
                     }
             }
 

@@ -37,6 +37,7 @@ final class PaymentCaptureOrchestrator {
                         onWaitingForInput: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onDisplayMessage: @escaping (String) -> Void,
+                        onProcessingCompletion: @escaping (PaymentIntent) -> Void,
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
         /// Bail out if the order amount is below the minimum allowed:
         /// https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts
@@ -70,7 +71,7 @@ final class PaymentCaptureOrchestrator {
                     siteID: order.siteID,
                     orderID: order.orderID,
                     parameters: parameters,
-                    onCardReaderMessage: { (event) in
+                    onCardReaderMessage: { event in
                         switch event {
                         case .waitingForInput:
                             onWaitingForInput()
@@ -79,6 +80,9 @@ final class PaymentCaptureOrchestrator {
                         default:
                             break
                         }
+                    },
+                    onProcessingCompletion: { intent in
+                        onProcessingCompletion(intent)
                     },
                     onCompletion: { [weak self] result in
                         self?.allowPassPresentation()

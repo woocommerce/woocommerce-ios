@@ -1,3 +1,5 @@
-Crea ordini in movimento con prodotti, informazioni su spedizione e di fatturazione e commissioni. Puoi accettare rapidamente un pagamento con carta di credito di persona o inviare un link a un cliente per pagare quell'ordine sul proprio dispositivo. Lo hai richiesto e ora è qui.
+Troverai un pratico link di pagamento nella parte superiore di un ordine a cui non è stato ancora applicato un pagamento. Invia quel link al tuo cliente e potrà pagare per quell'ordine direttamente dal suo telefono o dal computer.
 
-Stiamo anche migliorando la nostra funzionalità di gestione dei codici promozionali. Dai un'occhiata attivandola nella scheda Altro > Impostazioni > Funzionalità sperimentali.
+Questa è un'ottima opzione da usare con la funzionalità per la creazione di nuovi ordini. Crea un ordine mentre un cliente è in piedi davanti a te e, successivamente, inviagli un messaggio con il link di pagamento tramite il tuo sito. Meraviglioso non credi?
+
+Avrai bisogno di effettuare l'aggiornamento a WooCommerce 6.4 o superiore per ottenere questa opzione nell'app.

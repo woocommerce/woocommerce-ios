@@ -134,9 +134,14 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     private var initialSelectedItems: [Int64]
 
+    /// Whether the product list should contains only purchasable items.
+    ///
+    private let purchasableItemsOnly: Bool
+
     /// Initializer for single selection
     ///
     init(siteID: Int64,
+         purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          onProductSelected: ((Product) -> Void)? = nil,
@@ -148,6 +153,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onVariationSelected = onVariationSelected
         self.onMultipleSelectionCompleted = nil
         self.initialSelectedItems = []
+        self.purchasableItemsOnly = purchasableItemsOnly
 
         configureSyncingCoordinator()
         configureProductsResultsController()
@@ -159,6 +165,7 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     init(siteID: Int64,
          selectedItemIDs: [Int64],
+         purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil) {
@@ -169,6 +176,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onVariationSelected = nil
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
         self.initialSelectedItems = selectedItemIDs
+        self.purchasableItemsOnly = purchasableItemsOnly
 
         configureSyncingCoordinator()
         configureProductsResultsController()
@@ -199,13 +207,15 @@ final class ProductSelectorViewModel: ObservableObject {
         return ProductVariationSelectorViewModel(siteID: siteID,
                                                  product: variableProduct,
                                                  selectedProductVariationIDs: selectedItems,
+                                                 purchasableItemsOnly: purchasableItemsOnly,
                                                  onVariationSelected: onVariationSelected)
     }
 
-    /// Clears the current search term to display the full product list.
+    /// Clears the current search term and filters to display the full product list.
     ///
-    func clearSearch() {
+    func clearSearchAndFilters() {
         searchTerm = ""
+        filters = .init()
     }
 
     /// Updates selected variation list based on the new selected IDs
@@ -259,12 +269,12 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
         let action = ProductAction.synchronizeProducts(siteID: siteID,
                                                        pageNumber: pageNumber,
                                                        pageSize: pageSize,
-                                                       stockStatus: nil,
-                                                       productStatus: nil,
-                                                       productType: nil,
-                                                       productCategory: nil,
+                                                       stockStatus: filters.stockStatus,
+                                                       productStatus: filters.productStatus,
+                                                       productType: filters.productType,
+                                                       productCategory: filters.productCategory,
                                                        sortOrder: .nameAscending,
-                                                       shouldDeleteStoredProductsOnFirstPage: false) { [weak self] result in
+                                                       shouldDeleteStoredProductsOnFirstPage: true) { [weak self] result in
             guard let self = self else { return }
 
             switch result {
@@ -360,7 +370,11 @@ private extension ProductSelectorViewModel {
     func updateProductsResultsController() {
         do {
             try productsResultsController.performFetch()
-            products = productsResultsController.fetchedObjects.filter { $0.purchasable }
+            if purchasableItemsOnly {
+                products = productsResultsController.fetchedObjects.filter { $0.purchasable }
+            } else {
+                products = productsResultsController.fetchedObjects
+            }
             updateSelectionsFromInitialSelectedItems()
             observeSelections()
         } catch {
@@ -443,9 +457,12 @@ private extension ProductSelectorViewModel {
             return
         }
         for id in initialSelectedItems {
-            if !selectedProductIDs.contains(id), products.contains(where: { $0.productID == id }) {
+            guard !selectedProductIDs.contains(id) && !selectedProductVariationIDs.contains(id) else {
+                continue
+            }
+            if products.contains(where: { $0.productID == id }) {
                 selectedProductIDs.append(id)
-            } else if !selectedProductVariationIDs.contains(id) {
+            } else {
                 selectedProductVariationIDs.append(id)
             }
         }

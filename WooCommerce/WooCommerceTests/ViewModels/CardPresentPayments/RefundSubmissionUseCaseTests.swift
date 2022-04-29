@@ -221,6 +221,46 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         XCTAssertEqual(eventProperties["country"] as? String, "US")
         XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayID)
     }
+
+    func test_submitRefund_with_client_side_retryable_failure_shows_non_retryable_error_alert() throws {
+        // Given
+        let shouldRetry = false
+        let error = CardReaderServiceError.refundPayment(shouldRetry: shouldRetry)
+        let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
+                                                   charge: .fake().copy(paymentMethodDetails: .interacPresent(
+                                                    details: .init(brand: .visa,
+                                                                   last4: "9969",
+                                                                   funding: .credit,
+                                                                   receipt: .init(accountType: .credit,
+                                                                                  applicationPreferredName: "Stripe Credit",
+                                                                                  dedicatedFileName: "A000000003101001")))),
+                                                   amount: "2.28",
+                                                   paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID)))
+        mockSuccessfulCardReaderConnection(clientSideRefundResult: .failure(error))
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}, onCompletion: { result in
+                promise(result)
+            })
+            self.alerts.dismissErrorCompletion?()
+        }
+
+        var theRightFailureResultWasReturned = false
+        switch result {
+        case let .failure(error):
+            if let cardReaderServiceError = error as? CardReaderServiceError,
+               case let .refundPayment(_, retry) = cardReaderServiceError {
+                theRightFailureResultWasReturned = shouldRetry == retry
+            }
+        case .success():
+            break
+        }
+
+        // Then
+        XCTAssertTrue(theRightFailureResultWasReturned)
+        XCTAssertTrue(self.alerts.nonRetryableErrorWasCalled)
+    }
 }
 
 private extension RefundSubmissionUseCaseTests {

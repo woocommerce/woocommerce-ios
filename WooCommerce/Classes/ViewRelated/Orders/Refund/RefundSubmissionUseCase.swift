@@ -234,7 +234,7 @@ private extension RefundSubmissionUseCase {
     ///   - charge: the charge of the order for the refund to match the payment method.
     ///   - paymentGatewayAccount: the payment gateway account for the site to refund (e.g. WCPay or Stripe extension).
     ///   - onCompletion: called when the in-person refund completes.
-    func attemptCardPresentRefund(refundAmount: Decimal,
+    private func attemptCardPresentRefund(refundAmount: Decimal,
                                   charge: WCPayCharge,
                                   paymentGatewayAccount: PaymentGatewayAccount,
                                   onCompletion: @escaping (Result<Void, Error>) -> ()) {
@@ -278,7 +278,7 @@ private extension RefundSubmissionUseCase {
     }
 
     /// Logs the failure reason, cancels the current refund, and offers retry if possible.
-    func handleRefundFailureAndRetryRefund(_ error: Error,
+    private func handleRefundFailureAndRetryRefund(_ error: Error,
                                            refundAmount: Decimal,
                                            charge: WCPayCharge,
                                            paymentGatewayAccount: PaymentGatewayAccount,
@@ -286,19 +286,26 @@ private extension RefundSubmissionUseCase {
         // TODO: 5984 - tracks in-person refund error
         DDLogError("Failed to refund: \(error.localizedDescription)")
         // Informs about the error.
-        //TODO: Check which refund errors can't be retried, and use that to call nonRetryableError(from: self.rootViewController, error: cancelError)
-        alerts.error(error: error, tryAgain: { [weak self] in
-            // Cancels current refund, if possible.
-            self?.cardPresentRefundOrchestrator.cancelRefund { [weak self] _ in
-                // Regardless of whether the refund could be cancelled (e.g. it completed but failed), retry the refund.
-                self?.attemptCardPresentRefund(refundAmount: refundAmount,
-                                               charge: charge,
-                                               paymentGatewayAccount: paymentGatewayAccount,
-                                               onCompletion: onCompletion)
+        if let cardReaderError = error as? CardReaderServiceError,
+           case .refundPayment(_, let shouldRetry) = cardReaderError,
+           shouldRetry == false {
+            alerts.nonRetryableError(from: rootViewController, error: error) {
+                onCompletion(.failure(error))
             }
-        }, dismissCompletion: {
-            onCompletion(.failure(error))
-        })
+        } else {
+            alerts.error(error: error, tryAgain: { [weak self] in
+                // Cancels current refund, if possible.
+                self?.cardPresentRefundOrchestrator.cancelRefund { [weak self] _ in
+                    // Regardless of whether the refund could be cancelled (e.g. it completed but failed), retry the refund.
+                    self?.attemptCardPresentRefund(refundAmount: refundAmount,
+                                                                 charge: charge,
+                                                                 paymentGatewayAccount: paymentGatewayAccount,
+                                                                 onCompletion: onCompletion)
+                }
+            }, dismissCompletion: {
+                onCompletion(.failure(error))
+            })
+        }
     }
 
     /// Cancels refund and records analytics.

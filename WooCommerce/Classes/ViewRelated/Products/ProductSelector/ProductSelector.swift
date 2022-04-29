@@ -18,20 +18,43 @@ struct ProductSelector: View {
     ///
     @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
 
+    @State private var showingFilters: Bool = false
+
     /// Title for the multi-selection button
     ///
     private var doneButtonTitle: String {
-        String.pluralize(viewModel.totalSelectedItemsCount,
-                         singular: configuration.doneButtonTitleSingularFormat,
-                         plural: configuration.doneButtonTitlePluralFormat)
+        guard viewModel.totalSelectedItemsCount > 0 else {
+            return Localization.doneButton
+        }
+        return String.pluralize(viewModel.totalSelectedItemsCount,
+                                singular: configuration.doneButtonTitleSingularFormat,
+                                plural: configuration.doneButtonTitlePluralFormat)
     }
 
     var body: some View {
         NavigationView {
-            VStack {
+            VStack(spacing: 0) {
                 SearchHeader(filterText: $viewModel.searchTerm, filterPlaceholder: Localization.searchPlaceholder)
                     .padding(.horizontal, insets: safeAreaInsets)
                     .accessibilityIdentifier("product-selector-search-bar")
+                HStack {
+                    Button(Localization.clearSelection) {
+                        viewModel.clearSelection()
+                    }
+                    .buttonStyle(LinkButtonStyle())
+                    .fixedSize()
+                    .renderedIf(viewModel.totalSelectedItemsCount > 0 && viewModel.syncStatus == .results)
+
+                    Spacer()
+
+                    Button(viewModel.filterButtonTitle) {
+                        showingFilters.toggle()
+                    }
+                    .buttonStyle(LinkButtonStyle())
+                    .fixedSize()
+                    .renderedIf(configuration.showsFilters)
+                }
+
                 switch viewModel.syncStatus {
                 case .results:
                     VStack(spacing: 0) {
@@ -44,7 +67,7 @@ struct ProductSelector: View {
                                     .padding(.leading, Constants.defaultPadding)
                             }
                         }
-                        if viewModel.totalSelectedItemsCount > 0 {
+                        if configuration.multipleSelectionsEnabled {
                             Button(doneButtonTitle) {
                                 viewModel.completeMultipleSelection()
                                 isPresented.toggle()
@@ -88,6 +111,15 @@ struct ProductSelector: View {
                 viewModel.onLoadTrigger.send()
             }
             .notice($viewModel.notice, autoDismiss: false)
+            .sheet(isPresented: $showingFilters) {
+                FilterListView(viewModel: viewModel.filterListViewModel) { filters in
+                    viewModel.filters = filters
+                } onClearAction: {
+                    // no-op
+                } onDismissAction: {
+                    // no-op
+                }
+            }
         }
         .wooNavigationBarStyle()
     }
@@ -128,6 +160,7 @@ struct ProductSelector: View {
 
 extension ProductSelector {
     struct Configuration {
+        var showsFilters: Bool = false
         var multipleSelectionsEnabled: Bool = false
         var searchHeaderBackgroundColor: UIColor = .listForeground
         var prefersLargeTitle: Bool = true
@@ -152,6 +185,8 @@ private extension ProductSelector {
         static let searchPlaceholder = NSLocalizedString("Search Products", comment: "Placeholder on the search field to search for a specific product")
         static let loadingRowsAccessibilityLabel = NSLocalizedString("Loading products",
                                                                      comment: "Accessibility label for placeholder rows while products are loading")
+        static let clearSelection = NSLocalizedString("Clear selection", comment: "Button to clear selection on the Select Products screen")
+        static let doneButton = NSLocalizedString("Done", comment: "Button to submit the product selector without any product selected.")
     }
 }
 
@@ -159,6 +194,7 @@ struct AddProduct_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = ProductSelectorViewModel(siteID: 123)
         let configuration = ProductSelector.Configuration(
+            showsFilters: true,
             multipleSelectionsEnabled: true,
             title: "Add Product",
             cancelButtonTitle: "Close",

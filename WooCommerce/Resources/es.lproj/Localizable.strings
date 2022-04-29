@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-04-12 16:54:04+0000 */
+/* Translation-Revision-Date: 2022-04-26 11:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -92,10 +92,12 @@
 /* The number of category allowed for a coupon in singular form. Reads like: 1 Category */
 "%1$d Category" = "%1$d categoría";
 
-/* The number of products allowed for a coupon in singular form. Reads like: 1 Product */
+/* Count of one product
+   The number of products allowed for a coupon in singular form. Reads like: 1 Product */
 "%1$d Product" = "%1$d producto";
 
-/* The number of products allowed for a coupon in plural form. Reads like: 10 Products */
+/* Count of several products, reads like: 2 Products
+   The number of products allowed for a coupon in plural form. Reads like: 10 Products */
 "%1$d Products" = "%1$d productos";
 
 /* Singular format of number of business day in Shipping Labels > Carrier and Rates */
@@ -338,14 +340,15 @@
 /* Title for the button to add the Customer Provided Note in Order Details */
 "Add Customer Note" = "Añadir nota para el cliente";
 
+/* Button for adding a description to a coupon in the view for adding or editing a coupon. */
+"Add Description (Optional)" = "Añadir descripción (opcional)";
+
 /* Downloadable file screen navigation title */
 "Add Downloadable File" = "Añadir archivo descargable";
 
-/* Title for the Fee screen during order creation */
+/* Title for the Fee screen during order creation
+   Title text of the button that adds a fee when creating a new order */
 "Add Fee" = "Añadir tasa";
-
-/* Title text of the button that adds fees when creating a new order */
-"Add Fees" = "Añadir cuotas";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
 "Add File" = "Añadir archivo";
@@ -428,6 +431,9 @@
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press enter" = "Añade cada opción y pulsa Intro";
 
+/* Button in the action sheet for adding the expiration date for a coupon. */
+"Add expiration date" = "Añadir fecha de caducidad";
+
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
 "Add more details" = "Añadir más detalles";
@@ -449,6 +455,9 @@
 
 /* Navigates to a screen to create a simple payments order */
 "Add simple payments order" = "Añadir pedido de Pagos simples";
+
+/* Placeholder text that will be shown in the view for adding the description of a coupon. */
+"Add the description of the coupon." = "Añade la descripción del cupón.";
 
 /* Option to add item to new package on Package Details screen of Shipping Label flow. */
 "Add to new package" = "Añadir a un nuevo paquete";
@@ -554,9 +563,15 @@
 /* Title of the Amount label on Coupon Details screen */
 "Amount" = "Importe";
 
+/* Title of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
+"Amount (%)" = "Importe (%)";
+
 /* Title for the amount field on the Fee Details screen during order creationParameters: %1$@ - fee type (percent sign or currency symbol)
    Title for the amount field on the Shipping Details screen during order creationParameters: %1$@ - currency symbol */
 "Amount (%1$@)" = "Importe (%1$@)";
+
+/* Title of the Amount field on the Coupon Edit or Creation screen for a fixed amount discount coupon.Reads like: Amount ($) */
+"Amount (%@)" = "Importe (%@)";
 
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
 "Amount Eligible For Refund" = "Cantidad apta para el reembolso";
@@ -641,6 +656,9 @@
 
 /* No comment provided by engineer. */
 "Apply %@ off to some products with the promo code “%@”." = "Aplica un descuento del %1$@ a algunos productos con el código promocional “%2$@”.";
+
+/* Header of the section for applying a coupon to specific products or categories in the view for adding or editing a coupon. */
+"Apply this coupon to" = "Aplicar este cupón para";
 
 /* Approve a comment */
 "Approve" = "Aprobar";
@@ -748,9 +766,6 @@
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "Número de la barra %1$i, %2$@, ";
 
-/* Beta annotation for sharing a payment link */
-"Beta" = "Beta";
-
 /* Section header title for billing address in billing information
    Title for the Billing Address section in order customer data - Title for the Edit Billing Address Form */
 "Billing Address" = "Dirección de facturación";
@@ -802,7 +817,7 @@
 "Can Not Request Link" = "No se puede solicitar el enlace";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title that closes the action sheet in product variations - Button title that closes the presented screen - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button in the navigation bar of the view for adding or editing a coupon. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
+   Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title that closes the action sheet in product variations - Button title that closes the presented screen - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to cancel an in-person payment or refund - Button to cancel the creation of an order on the New Order screen - Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button in the navigation bar of the view for adding or editing a coupon. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the main more actions menu sheet. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
 "Cancel" = "Cancelar";
 
 /* Display label for cancelled order status. */
@@ -920,9 +935,12 @@
 /* Button title for clearing all filters for the list. */
 "Clear all" = "Borrar todo";
 
-/* Text for the close button in the Add Product screen
-   Text for the close button in the Edit Address Form - Text for the close button in the Fee Details screen - Text for the close button in the Product screen - Text for the close button in the Shipping Line Details screen - Title of the Close action on the Jetpack Install view */
+/* Accessibility label for the close button
+   Button to dismiss modal overlay. Presented to users after refunding a payment fails - Text for the close button in the Add Product screen - Text for the close button in the Edit Address Form - Text for the close button in the Fee Details screen - Text for the close button in the Product screen - Text for the close button in the Shipping Line Details screen - Title of the Close action on the Jetpack Install view */
 "Close" = "Cerrar";
+
+/* Accessibility value when a banner is collapsed */
+"Collapsed" = "Cerrado";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Recopilar información";
@@ -1111,6 +1129,15 @@
 /* Description for the Origin Country row in Customs screen of Shipping Label flow */
 "Country where the product was manufactured or assembled" = "País en el que se fabricó o montó el producto";
 
+/* Text field coupon code in the view for adding or editing a coupon. */
+"Coupon Code" = "Código de cupón";
+
+/* Title of the view for editing the coupon description. */
+"Coupon Description" = "Descripción del cupón";
+
+/* Field in the view for adding or editing a coupon. */
+"Coupon Expiry Date" = "Coupon Expiry Date";
+
 /* Cell title on beta features screen to enable coupon management */
 "Coupon Management" = "Gestión de cupones";
 
@@ -1122,6 +1149,12 @@
 
 /* Notice message after deleting coupon from the Coupon Details screen */
 "Coupon deleted" = "Cupón eliminado";
+
+/* Header of the coupon details in the view for adding or editing a coupon. */
+"Coupon details" = "Datos del cupón";
+
+/* Title of the view for selecting an expiry date for a coupon. */
+"Coupon expiry date" = "Fecha de caducidad del cupón";
 
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
@@ -1152,8 +1185,8 @@
 /* Title of the view for creating a coupon with generic discount. */
 "Create discount" = "Crear descuento";
 
-/* Title of the view for creating a coupon with fixed card discount. */
-"Create fixed card discount" = "Crear descuento fijo de tarjeta";
+/* Title of the view for creating a coupon with fixed cart discount. */
+"Create fixed cart discount" = "Crear descuento fijo en el carro de compra";
 
 /* Title of the view for creating a coupon with fixed product discount. */
 "Create fixed product discount" = "Crear descuento fijo de producto";
@@ -1241,6 +1274,9 @@
 /* Title of the banner notice in Shipping Labels -> Carrier and Rates */
 "Customer paid a %1$@ of %2$@ for shipping" = "El cliente ha pagado un %1$@ de %2$@ por el envío";
 
+/* The footer of the text field coupon code in the view for adding or editing a coupon. */
+"Customers need to enter this code to use the coupon." = "Los clientes tienen que introducir este código para usar el cupón.";
+
 /* Navigation title for Customs screen in Shipping Label flow
    Title of the cell Customs inside Create Shipping Label form */
 "Customs" = "Aduanas";
@@ -1288,6 +1324,9 @@
 
 /* Delete tracking button title */
 "Delete Tracking" = "Eliminar seguimiento";
+
+/* Button in the action sheet for deleting the expiration date of a coupon. */
+"Delete expiration date" = "Eliminar fecha de caducidad";
 
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "Describe tu producto";
@@ -1406,6 +1445,15 @@
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "Toca dos veces para activar o desactivar la opción.";
 
+/* Accessibility hint to expand a banner */
+"Double-tap for more information" = "Pulsa dos veces para obtener más información";
+
+/* Accessibility hint to collapse a banner */
+"Double-tap to collapse" = "Pulsa dos veces para cerrar";
+
+/* Accessibility hint to dismiss a banner */
+"Double-tap to dismiss" = "Pulsa dos veces para descartar";
+
 /* Button title Download Settings in Downloadable Files More Options Action Sheet
    Download file settings navigation title */
 "Download Settings" = "Ajustes de descarga";
@@ -1432,6 +1480,9 @@
    Display label for the product's draft status */
 "Draft" = "Borrador";
 
+/* Drag and drop helper text above photo list in Product images screen */
+"Drag and drop to re-order photos" = "Arrastrar y soltar para reordenar fotos";
+
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "Identifica fácilmente tus productos con códigos únicos";
 
@@ -1452,7 +1503,14 @@
 /* Accessibility label for the button to edit customer details on the New Order screen */
 "Edit Customer Details" = "Editar detalles del cliente";
 
-/* Edit Products button inside the Linked Products screen. */
+/* Button for editing the description of a coupon in the view for adding or editing a coupon. */
+"Edit Description" = "Editar descripción";
+
+/* Button for specify the product categories where a coupon can be applied in the view for adding or editing a coupon. */
+"Edit Product Categories" = "Editar categorías de productos";
+
+/* Button for specify the products where a coupon can be applied in the view for adding or editing a coupon.
+   Edit Products button inside the Linked Products screen. */
 "Edit Products" = "Editar productos";
 
 /* Accessibility label for the button to edit order status on the New Order screen */
@@ -1467,8 +1525,11 @@
 /* Title of the view for editing a coupon with generic discount. */
 "Edit discount" = "Editar descuento";
 
-/* Title of the view for editing a coupon with fixed card discount. */
-"Edit fixed card discount" = "Editar descuento fijo de tarjeta";
+/* Button in the action sheet for editing the expiration date of a coupon. */
+"Edit expiration date" = "Editar fecha de caducidad";
+
+/* Title of the view for editing a coupon with fixed cart discount. */
+"Edit fixed cart discount" = "Editar descuento fijo en el carro de compra";
 
 /* Title of the view for editing a coupon with fixed product discount. */
 "Edit fixed product discount" = "Editar descuento fijo de producto";
@@ -1538,7 +1599,8 @@
 /* Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "Comprueba que el **firmware de la impresora está actualizado**. Consulta la documentación de la impresora para saber cómo actualizarla.";
 
-/* Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
+/* Address field placeholder in Edit Address Form
+   Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
 "Enter Address" = "Introducir dirección";
 
 /* Short instructions label in the simple payments screen */
@@ -1548,7 +1610,11 @@
    Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
 "Enter Another Store" = "Introduce otra tienda";
 
-/* Placeholder of the row that holds the provided email when creating a simple payment */
+/* City field placeholder in Edit Address Form */
+"Enter City" = "Introducir ciudad";
+
+/* Email field placeholder in Edit Address Form
+   Placeholder of the row that holds the provided email when creating a simple payment */
 "Enter Email" = "Introducir correo electrónico";
 
 /* Placeholder for the required ITN row in Customs screen of Shipping Label flow */
@@ -1557,8 +1623,21 @@
 /* Placeholder for the ITN row in Customs screen of Shippling Label flow */
 "Enter ITN (Optional)" = "Introduce un número de transacción internacional (opcional)";
 
-/* Placeholder for the row to enter the package name on the Add New Custom Package screen in Shipping Label flow */
+/* Last name field placeholder in Edit Address Form */
+"Enter Last Name" = "Introducir apellidos";
+
+/* Name field placeholder in Edit Address Form
+   Placeholder for the row to enter the package name on the Add New Custom Package screen in Shipping Label flow */
 "Enter Name" = "Introduce un nombre";
+
+/* Phone field placeholder in Edit Address Form */
+"Enter Phone" = "Introducir teléfono";
+
+/* Postcode field placeholder in Edit Address Form */
+"Enter Postcode" = "Introducir código postal";
+
+/* State field placeholder in Edit Address Form */
+"Enter State" = "Introducir estado";
 
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "Introducir URL";
@@ -1566,6 +1645,9 @@
 /* Action button linking to instructions for enter another store.Presented when logging in with an email address that is not a WordPress.com account
    Button title. Takes the user to the login by store address flow. */
 "Enter Your Store Address" = "Introduce la dirección de tu tienda";
+
+/* Text field coupon code placeholder in the view for adding or editing a coupon. */
+"Enter a coupon" = "Introducir cupón";
 
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "Introduce el nombre de la empresa de transporte";
@@ -1644,6 +1726,9 @@
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
 "Everyone loves a deal" = "A todo el mundo le gustan las ofertas";
 
+/* Title of the action button on the Exclude Products screenReads like: Exclude 1 Product */
+"Exclude %1$@" = "Excluir %1$@";
+
 /* Title of the action button to add product categories to the exclusion list in Coupon Usage Details screen */
 "Exclude Product Categories" = "Excluir categorías de productos";
 
@@ -1653,11 +1738,17 @@
 /* Title for the exclude sale items row in coupon usage details screen. */
 "Exclude Sale Items" = "Excluir artículos rebajados";
 
+/* Title of the Exclude Products screen */
+"Exclude products" = "Excluir productos";
+
 /* Text on Coupon Details screen to indicate that the coupon can not be applied to sale items */
 "Excludes sale items" = "Excepto artículos rebajados";
 
 /* Title of the exclusions section in Coupon Usage Details screen */
 "Exclusions" = "Exclusiones";
+
+/* Accessibility value when a banner is expanded */
+"Expanded" = "Ampliado";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -1720,8 +1811,8 @@
 /* Subtitle of the cell Customs inside Create Shipping Label form */
 "Fill out customs form" = "Rellena los formularios de aduanas";
 
-/* Title of the toolbar button to filter orders without filters applied.
-   Title of the toolbar button to filter products by different attributes. - Title of the toolbar button to filter products without any filters applied. */
+/* Button to filter products on the product list selector
+   Title of the toolbar button to filter orders without filters applied. - Title of the toolbar button to filter products by different attributes. - Title of the toolbar button to filter products without any filters applied. */
 "Filter" = "Filtro";
 
 /* Title of the toolbar button to filter orders with filters applied.
@@ -2013,6 +2104,9 @@
 /* Navigation title of the webview which is used in Inbox Notes.
    Title for the screen that shows inbox notes. - Title of the Inbox menu in the hub menu */
 "Inbox" = "Bandeja de entrada";
+
+/* Toggle field in the view for adding or editing a coupon. */
+"Include Free Shipping?" = "¿Incluir envío gratuito?";
 
 /* Describes a standard *.wordpress.com site domain */
 "Included with Site" = "Incluido con el sitio";
@@ -2606,8 +2700,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
 "No tax classes yet" = "Todavía no hay clases de impuesto";
 
-/* Display label for the order fee's tax status setting option
-   Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow - The description in product variations bulk update, of a value, that is missing from all variations - Value for fields in Coupon Usage Details screen when no value is set */
+/* Coupon expiry date placeholder in the view for adding or editing a coupon
+   Display label for the order fee's tax status setting option - Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow - The description in product variations bulk update, of a value, that is missing from all variations - Value for fields in Coupon Usage Details screen when no value is set */
 "None" = "Ninguno";
 
 /* Action title to dismiss enabling Analytics for a store
@@ -2836,8 +2930,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message when the presented card remaining credit or balance is insufficient for the purchase. */
 "Payment declined due to insufficient funds. Try another means of payment" = "Se ha rechazado el pago porque no hay fondos suficientes. Prueba otro método de pago.";
 
-/* Error message. Presented to users after a collecting a payment fails
-   Error message. Presented to users after collecting a payment fails */
+/* Error message. Presented to users after collecting a payment fails */
 "Payment failed" = "Error de pago";
 
 /* Title of 'Payment method' section in the receipt
@@ -2919,7 +3012,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message shown when a URL is invalid. */
 "Please enter a complete website address, like example.com." = "Introduce una dirección de sitio web completa, como ejemplo.com.";
 
-/* Product price error notice message, when the sale price was not set during a sale setup */
+/* Bulk price update error, when the sale price is empty
+   Product price error notice message, when the sale price was not set during a sale setup */
 "Please enter a sale price for the scheduled sale" = "Introduce un precio de venta para la venta programada";
 
 /* No comment provided by engineer. */
@@ -3103,6 +3197,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Indicates that a payment is being processed */
 "Processing payment..." = "Procesando el pago…";
 
+/* Indicates that an in-person refund is being processed */
+"Processing refund" = "Procesando el reembolso";
+
 /* Product section title
    Product section title if there is only one product. - Product section title in Review Order screen if there is one product. - Title for the Product screen during order creation */
 "Product" = "Producto";
@@ -3233,7 +3330,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "Leer la política de privacidad";
 
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
+/* Indicates the status of a card reader. Presented to users when in-person payment collection or refund starts
+   Indicates the status of a card reader. Presented to users when payment collection starts */
 "Reader is ready" = "Lector preparado";
 
 /* Refund note section title */
@@ -3287,6 +3385,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title of the section containing information about how the refund will be processed. */
 "Refund Via" = "Reembolso a través de";
 
+/* Error message. Presented to users after an in-person refund fails */
+"Refund failed" = "No se ha podido realizar el reembolso";
+
+/* Alert title when starting the in-person refund flow without a user name. */
+"Refund payment" = "Realizar el reembolso";
+
+/* Alert title when starting the in-person refund flow with a user name. */
+"Refund payment from %1$@" = "Reembolso de %1$@";
+
 /* Display label for refunded order status.
    The title for the refunded amount cell */
 "Refunded" = "Reembolsado";
@@ -3303,6 +3410,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* It reads, 'Refunded via <payment method>' */
 "Refunded via %@" = "Reembolsado a través de %@";
+
+/* VoiceOver accessibility label. Indicates that an in-person refund is being processed */
+"Refunding payment" = "Realizando el reembolso";
+
+/* Button in the view for adding or editing a coupon. */
+"Regenerate Coupon Code" = "Regenerar código del cupón";
 
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "Dominio registrado";
@@ -3367,7 +3480,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Request a Refund" = "Solicitar un reembolso";
 
 /* Name text field placeholder in Shipping Label Address Validation when it's required
-   Text field placeholder in Edit Address Form - Text field placeholder in Shipping Label Address Validation - Text field placeholder in Shipping Label Address Validation when phone number is required */
+   Text field placeholder in Shipping Label Address Validation - Text field placeholder in Shipping Label Address Validation when phone number is required */
 "Required" = "Obligatorio";
 
 /* Deletes all activity logs except for the marked 'Current'. */
@@ -3467,8 +3580,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Restriction type Sanitary / Phytosanitary Inspection for contents declared in the customs form for Shipping Label flow */
 "Sanitary \/ Phytosanitary Inspection" = "Inspección sanitaria\/fitosanitaria";
 
-/* Action for saving a Product remotely
-   Add Product Category. Save button title in navbar. - Add Product Tags. Save button title in navbar. - Button title that save the price selection for bulk variation update */
+/* Action for saving a Coupon remotely
+   Action for saving a Product remotely - Add Product Category. Save button title in navbar. - Add Product Tags. Save button title in navbar. - Button title that save the price selection for bulk variation update */
 "Save" = "Guardar";
 
 /* Button title to save a product as draft in Discard Changes Action Sheet */
@@ -3552,7 +3665,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the Jetpack benefits banner. */
 "See the benefits" = "Ver las ventajas";
 
-/* Select all button title in the issue refund screen */
+/* Title of the action button on the Select Products screenReads like: Select 1 Product */
+"Select %1$@" = "Seleccionar %1$@";
+
+/* Button to select all products on the product list selector
+   Select all button title in the issue refund screen */
 "Select All" = "Elegir todo";
 
 /* Select parent category screen - Screen title */
@@ -3582,6 +3699,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "Elegir el estilo del párrafo";
 
+/* Title for the Select Products screen */
+"Select products" = "Seleccionar productos";
+
 /* Placeholder value of the cell in Product Price Settings > Schedule sale from a certain date */
 "Select start date" = "Selecciona la fecha de inicio";
 
@@ -3609,15 +3729,24 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Service Package menu in Shipping Label Add New Package flow */
 "Service Package" = "Paquete de servicios";
 
+/* Title of the action sheet for setting an expiry date for a coupon. */
+"Set an expiry date for this coupon" = "Establecer fecha de caducidad del cupón";
+
 /* Tells user to set an email that support can use for replies */
 "Set email" = "Configurar correo electrónico";
+
+/* Subtitle of the Amount field on the Coupon Edit or Creation screen for a fixed amount discount coupon. */
+"Set the fixed amount of the discount you want to offer." = "Establece el importe fijo del descuento que quieres ofrecer.";
+
+/* Subtitle of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
+"Set the percentage of the discount you want to offer." = "Establece el porcentaje de descuento que quieres ofrecer.";
 
 /* Header text on Add New Custom Package screen in Shipping Label flow
    Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "Configura el paquete que vas a utilizar para enviar tus productos. Lo guardaremos para futuros pedidos.";
 
 /* Accessibility label for the Settings button.
-   Settings navigation title */
+   Settings button in the hub menu - Settings navigation title */
 "Settings" = "Configuracion";
 
 /* Title of a modal presenting a list of readers to choose from. */
@@ -3629,7 +3758,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action title for sharing coupon from the Coupon Details screen */
 "Share Coupon" = "Compartir cupón";
 
-/* Payment Link method title on the select payment method screen for simple payments */
+/* Payment Link method title on the select payment method screen for simple payments
+   Title to share an order payment link. */
 "Share Payment Link" = "Comparte el enlace para realizar el pago";
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
@@ -3855,6 +3985,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message shown when a refund could not be canceled (likely because it had already completed) */
 "Sorry, this refund could not be canceled" = "Lo sentimos, este reembolso no se ha podido cancelar";
 
+/* Error message when the card reader service experiences an unexpected internal service error. */
+"Sorry, this refund couldn’t be processed" = "No se ha podido procesar el reembolso";
+
 /* No comment provided by engineer. */
 "Sorry, usernames can only contain lowercase letters (a-z) and numbers." = "El nombre de usuario sólo puede contenter letras minúsculas (a-z) y números.";
 
@@ -4078,6 +4211,10 @@ This part is the link to the website, and forms part of a longer sentence which 
    Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Tap, insert or swipe to pay" = "Acerca, inserta o desliza la tarjeta para pagar";
 
+/* Indicates the action expected from a user. Presented to users when in-person refund starts
+   Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
+"Tap, insert or swipe to refund" = "Acerca, inserta o desliza la tarjeta para obtener el reembolso";
+
 /* Tax label for a refund details view
    Tax label for the tax detail row. - Title on the refunds screen that lists the fees tax cost - Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
 "Tax" = "Impuesto";
@@ -4208,6 +4345,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the card reader software is too far out of date to process payments. */
 "The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "El software del lector de tarjetas está obsoleto. Actualízalo antes de intentar procesar pagos.";
 
+/* Error message when the card reader software is too far out of date to process in-person refunds. */
+"The card reader software is out-of-date - please update the card reader software before attempting to process refunds" = "El software del lector de tarjetas no está actualizado. Actualízalo antes de intentar procesar reembolsos.";
+
 /* Error message when the card reader software update fails due to a communication error. */
 "The card reader software update failed due to a communication error - please try again" = "La actualización del software del lector de tarjetas ha fallado debido a un error de comunicación. Inténtalo de nuevo.";
 
@@ -4222,6 +4362,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of payment" = "El lector de tarjetas ha rechazado la tarjeta. Prueba otro método de pago.";
+
+/* Error message when the card reader itself declines the card. */
+"The card was declined by the card reader - please try another means of refund" = "El lector de tarjetas ha rechazado la tarjeta. Prueba con otro método de reembolso.";
 
 /* Error message when the card processor declines the payment. */
 "The card was declined by the payment processor - please try another means of payment" = "El procesador de pagos ha rechazado la tarjeta. Prueba otro método de pago.";
@@ -4247,6 +4390,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "El número de teléfono no es válido o no puedes llamar al cliente desde este dispositivo.";
 
+/* VoiceOver accessibility hint, informing the user that this field allows to enter the price to use for bulk updating all variations */
+"The price for bulk updating all variations. Editable." = "Precio por lote actualizando todas las variaciones. Editable.";
+
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "El precio de este producto. Editable.";
 
@@ -4259,16 +4405,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
 "The reader has a critically low battery. Please charge the reader or try a different reader." = "El lector tiene muy poca batería. Carga el lector o prueba con otro diferente.";
 
+/* Error message when the in-person refund can not be processed (i.e. order amount is below the minimum amount allowed.) */
+"The refund can not be processed by the payment processor." = "El procesador de pagos no puede procesar el reembolso.";
+
 /* Error message when a request times out. */
 "The request timed out - please try again" = "Se ha agotado el tiempo de espera de la solicitud. Inténtalo de nuevo.";
 
-/* Product price error notice message, when the sale price is added but the regular price is not */
+/* Bulk price update error message, when the sale price is added but the regular price is not
+   Product price error notice message, when the sale price is added but the regular price is not */
 "The sale price can't be added without the regular price." = "No se puede añadir el precio de la rebaja sin incluir el precio normal.";
 
 /* VoiceOver accessibility hint, informing the user that the cell shows the sale price information for this product. */
 "The sale price for this product. Editable." = "El precio de venta de este producto. Editable.";
 
-/* Product price error notice message, when the sale price is higher than the regular price */
+/* Bulk price update error, when the sale price is higher than the regular price
+   Product price error notice message, when the sale price is higher than the regular price */
 "The sale price should be lower than the regular price." = "El precio rebajado debe ser menor que el normal.";
 
 /* A failure reason for when the request couldn't be serialized. */
@@ -4548,7 +4699,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Trust" = "Confiar";
 
 /* Action displayed in the error prompt when loading total discounted amount in Coupon Details screen fails
-   Button to retry a software update. Presented to users when updating the card reader software fails - Button to try again after connecting to a specific reader fails due to a critically low battery. - Button to try again. Presented to users after a failure occurs - Try Again button on the error alert when fetching system status report fails */
+   Button to retry a software update. Presented to users when updating the card reader software fails - Button to try again after connecting to a specific reader fails due to a critically low battery. - Button to try again. Presented to users after a failure occurs - Button to try to refund a payment again. Presented to users after refunding a payment fails - Try Again button on the error alert when fetching system status report fails */
 "Try Again" = "Intentar de nuevo";
 
 /* Message from the in-person payment card reader prompting user to retry a payment using a different card */
@@ -4557,7 +4708,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message from the in-person payment card reader prompting user to retry a payment using a different method, e.g. swipe, tap, insert */
 "Try Another Read Method" = "Prueba otro método de lectura.";
 
-/* Button to try to collect a payment again. Presented to users after a collecting a payment fails */
+/* Button to try to collect a payment again. Presented to users after collecting a payment fails */
 "Try Collecting Again" = "Intenta recibir el pago de nuevo";
 
 /* Button to trigger connection to another account in store picker */
@@ -4721,6 +4872,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the card reader battery level is too low to safely perform a software update. */
 "Unable to update card reader software - the reader battery is too low" = "No se ha podido actualizar el software del lector de tarjetas. El lector tiene poca batería.";
 
+/* Notice title when unable to bulk update price of the variations */
+"Unable to update price" = "No se puede actualizar el precio";
+
 /* Title for the error screen when In-Person Payments is unavailable */
 "Unable to verify In-Person Payments for this store" = "No se ha podido verificar Pagos en Persona para esta tienda";
 
@@ -4854,13 +5008,17 @@ This part is the link to the website, and forms part of a longer sentence which 
    Navigation bar title for editing linked products for upsell products */
 "Upsells" = "Ventas dirigidas";
 
+/* Header of the section usage details in the view for adding or editing a coupon. */
+"Usage Details" = "Detalles de uso";
+
 /* Title for the usage limit per coupon row in coupon usage details screen. */
 "Usage Limit Per Coupon" = "Límite de uso por cupón";
 
 /* Title for the usage limit per user row in coupon usage details screen. */
 "Usage Limit Per User" = "Límite de uso por usuario";
 
-/* Title for the usage restrictions section on coupon usage details screen */
+/* Field in the view for adding or editing a coupon.
+   Title for the usage restrictions section on coupon usage details screen */
 "Usage Restrictions" = "Restricciones de uso";
 
 /* Title of the Usage details row in Coupon Details screen */

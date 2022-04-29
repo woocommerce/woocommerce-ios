@@ -226,7 +226,7 @@ struct AddEditCoupon: View {
                                 isPresented: $showingSelectProducts,
                                 viewModel: viewModel.productSelectorViewModel)
                     .onDisappear {
-                        viewModel.productSelectorViewModel.clearSearch()
+                        viewModel.productSelectorViewModel.clearSearchAndFilters()
                     }
             }
             .toolbar {
@@ -328,7 +328,8 @@ struct AddEditCoupon_Previews: PreviewProvider {
 
 private extension ProductSelector.Configuration {
     static let productsForCoupons: Self =
-        .init(multipleSelectionsEnabled: true,
+        .init(showsFilters: true,
+              multipleSelectionsEnabled: true,
               doneButtonTitleSingularFormat: Localization.doneButtonSingular,
               doneButtonTitlePluralFormat: Localization.doneButtonPlural,
               title: Localization.title,

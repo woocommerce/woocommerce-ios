@@ -598,6 +598,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         // The order has a chargeID
         let order = MockOrders().sampleOrder().copy(chargeID: "ch_id")
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        insertSamplePaymentGateway(siteID: order.siteID)
 
         // When
         let chargeFetched: Bool = waitFor { promise in
@@ -608,11 +609,35 @@ final class IssueRefundViewModelTests: XCTestCase {
                 promise(true)
             }
 
-            _ = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores)
+            _ = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores, storage: self.storageManager)
         }
 
         // Then
         XCTAssertTrue(chargeFetched)
+    }
+
+    func test_viewModel_does_not_fetch_charge_and_is_disabled_when_no_PaymentGatewayAccount_in_storage() throws {
+        // Given
+        // The order has a chargeID
+        let items = [
+            MockOrderItem.sampleItem(itemID: 1, quantity: 3, price: 11.50),
+        ]
+        let order = MockOrders().makeOrder(items: items).copy(chargeID: "ch_id")
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case .fetchWCPayCharge(siteID: _, chargeID: _, onCompletion: _) = action {
+                XCTFail("Charge should not be fetched when there is no `PaymentGatewayAccount` in storage.")
+            }
+        }
+        storageManager.reset()
+
+        // When
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores, storage: storageManager)
+        viewModel.selectAllOrderItems()
+
+        // Then
+        XCTAssertFalse(viewModel.isNextButtonAnimating)
+        XCTAssertFalse(viewModel.isNextButtonEnabled)
     }
 
     func test_viewModel_shows_spinner_when_charge_not_fetched_yet() {
@@ -620,8 +645,9 @@ final class IssueRefundViewModelTests: XCTestCase {
         // The order has a chargeID
         let order = MockOrders().sampleOrder().copy(chargeID: "ch_id")
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        insertSamplePaymentGateway(siteID: order.siteID)
 
-        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores)
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores, storage: storageManager)
 
         // Then
         XCTAssertTrue(viewModel.isNextButtonAnimating)
@@ -632,8 +658,9 @@ final class IssueRefundViewModelTests: XCTestCase {
         // The order has a chargeID
         let order = MockOrders().sampleOrder().copy(chargeID: nil)
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        insertSamplePaymentGateway(siteID: order.siteID)
 
-        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores)
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores, storage: storageManager)
 
         // Then
         XCTAssertFalse(viewModel.isNextButtonAnimating)
@@ -644,8 +671,9 @@ final class IssueRefundViewModelTests: XCTestCase {
         // The order has a chargeID
         let order = MockOrders().sampleOrder().copy(chargeID: "")
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        insertSamplePaymentGateway(siteID: order.siteID)
 
-        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores)
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores, storage: storageManager)
 
         // Then
         XCTAssertFalse(viewModel.isNextButtonAnimating)
@@ -656,6 +684,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         // The order has a chargeID
         let order = MockOrders().sampleOrder().copy(chargeID: "ch_id")
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        insertSamplePaymentGateway(siteID: order.siteID)
 
         let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores, storage: storageManager)
 
@@ -665,5 +694,25 @@ final class IssueRefundViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.isNextButtonAnimating)
+    }
+}
+
+private extension IssueRefundViewModelTests {
+    func insertSamplePaymentGateway(siteID: Int64) {
+        let paymentGatewayAccount = PaymentGatewayAccount
+            .fake()
+            .copy(
+                siteID: siteID,
+                gatewayID: "woocommerce-payments",
+                status: "complete",
+                hasPendingRequirements: false,
+                hasOverdueRequirements: false,
+                isCardPresentEligible: true,
+                isLive: true,
+                isInTestMode: false
+            )
+        storageManager.reset()
+        let newAccount = storageManager.viewStorage.insertNewObject(ofType: StoragePaymentGatewayAccount.self)
+        newAccount.update(with: paymentGatewayAccount)
     }
 }

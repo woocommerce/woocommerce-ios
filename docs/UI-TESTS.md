@@ -6,7 +6,7 @@ WooCommerce for iOS has UI acceptance tests for critical user flows through the 
 
 The following flows are covered/planned to be covered by UI tests. Tests that are covered will be checked.
 
-1. [Login](../WooCommerce/WooCommerceUITests/Tests/LoginTests.swift):
+1. [Login](../WooCommerce/WooCommerceUITests/Tests/LoginTests.swift)
     - [x] Log in with Store Address
     - [x] Log in with email/password
     - [x] Invalid password
@@ -17,21 +17,23 @@ The following flows are covered/planned to be covered by UI tests. Tests that ar
     - [ ] Stats Today, This Week, This Month, This Year load
     - [ ] Tap chart on stats
 3. [Orders](../WooCommerce/WooCommerceUITests/Tests/OrdersTests.swift)
-    - [x] Orders list and single order screens load
-    - [x] Dismissal of order creation flow when tapping the Close button
-    - [ ] View product on single order screen
-    - [ ] Add customer note
-    - [ ] Add order note
-    - [ ] Update order status
-    - [ ] Issue refund
-    - [ ] Add shipping details
-    - Create a new order:
-       - [x] With a selected order status
-       - [ ] With a product
-       - [ ] With customer details
-       - [ ] With shipping
-       - [ ] With a fee
-       - [ ] With a customer note
+   - [x] Orders list loads
+   - [ ] Single Order Screen:
+     - [x] Single order screen loads
+     - [ ] View product on single order screen
+     - [ ] Add customer note
+     - [ ] Add order note
+     - [ ] Update order status
+     - [ ] Issue refund
+     - [ ] Add shipping details
+   - [ ] Create a new order:
+     - [x] With a selected order status
+     - [ ] With a product
+     - [ ] With customer details
+     - [ ] With shipping
+     - [ ] With a fee
+     - [ ] With a customer note
+   - [x] Order Creation flow can be dismissed
 4. [Products](../WooCommerce/WooCommerceUITests/Tests/ProductsTests.swift)
     - [x] Products list and single product screens load
     - [ ] Add new product - Simple physical product

@@ -217,9 +217,9 @@ private struct PlusButton: View {
             } icon: {
                 Image(uiImage: .plusImage)
             }
-            Spacer()
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(Rectangle())
         .foregroundColor(Color(foregroundColor))
         .background(Color(.clear))
     }

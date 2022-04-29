@@ -16,7 +16,7 @@ struct ProductCategorySelector: View {
 
 struct ProductCategorySelector_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = ProductCategorySelectorViewModel()
+        let viewModel = ProductCategorySelectorViewModel(siteID: 123) { _ in }
         ProductCategorySelector(viewModel: viewModel)
     }
 }

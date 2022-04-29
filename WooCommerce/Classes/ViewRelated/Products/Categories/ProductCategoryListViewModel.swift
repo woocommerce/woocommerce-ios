@@ -94,6 +94,7 @@ final class ProductCategoryListViewModel {
 
     init(storesManager: StoresManager = ServiceLocator.stores,
          siteID: Int64,
+         selectedCategoryIDs: [Int64] = [],
          selectedCategories: [ProductCategory] = [],
          enrichingDataSource: ProductCategoryListViewModelEnrichingDataSource? = nil,
          delegate: ProductCategoryListViewModelDelegate? = nil,

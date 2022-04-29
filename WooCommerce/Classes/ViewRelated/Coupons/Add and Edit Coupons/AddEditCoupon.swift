@@ -41,9 +41,6 @@ struct AddEditCoupon: View {
 
     init(_ viewModel: AddEditCouponViewModel) {
         self.viewModel = viewModel
-        viewModel.onCompletion = { _ in
-            // TODO: handle the new coupon or the error, refreshing the coupon detail and dismissing this view.
-        }
         //TODO: add analytics
     }
 
@@ -238,6 +235,7 @@ struct AddEditCoupon: View {
                     })
                 }
             }
+            .notice($viewModel.notice)
             .navigationTitle(viewModel.title)
             .navigationBarTitleDisplayMode(.large)
             .wooNavigationBarStyle()

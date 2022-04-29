@@ -218,7 +218,7 @@ private struct ProductsSection: View {
                                     isPresented: $showAddProduct,
                                     viewModel: viewModel.addProductViewModel)
                         .onDisappear {
-                            viewModel.addProductViewModel.clearSearch()
+                            viewModel.addProductViewModel.clearSearchAndFilters()
                             navigationButtonID = UUID()
                         }
                 })

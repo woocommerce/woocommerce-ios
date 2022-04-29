@@ -1,3 +1,5 @@
-אפשר ליצור הזמנות בכל עת עם מוצרים, פרטים של משלוח וחיוב ועמלות! אפשר לגבות במהירות תשלומים באופן אישי מכרטיסי אשראי ישר אחרי שהלקוח קיבל קישור לתשלום עבור ההזמנה במכשיר שלו. קיבלנו בקשות להוסיף, וכעת הוספנו!
+You’ll find a handy-dandy payment link at the top of an order that hasn’t had a payment applied yet. Send that link to your customer, and they can pay for that order right from their phone or computer.
 
-אנחנו גם ממשיכים לשפר את האפשרות לניהול קופונים. אפשר לקבל הצצה לאפשרות על ידי הפעלה שלה בלשונית 'עוד' > 'הגדרות' > 'אפשרויות ניסיוניות'.
+This is a great option to use with the new order creation feature! Create an order while a customer is standing in front of you, and then text them the payment link through your site. Awesome, right?
+
+You’ll need to update to WooCommerce 6.4 or greater to get this option in the app.

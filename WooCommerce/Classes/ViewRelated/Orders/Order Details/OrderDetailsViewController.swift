@@ -318,7 +318,7 @@ private extension OrderDetailsViewController {
         actionSheet.addDefaultActionWithTitle(Localization.ActionsMenu.paymentLink) { [weak self] _ in
             guard let self = self else { return }
 
-            SharingHelper.shareURL(url: paymentLink, title: nil, from: self.view, in: self) { _, completed, _, _ in
+            SharingHelper.shareURL(url: paymentLink, title: nil, from: sender, in: self) { _, completed, _, _ in
                 if completed {
                     ServiceLocator.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailPaymentLinkShared())
                 }
@@ -704,9 +704,8 @@ private extension OrderDetailsViewController {
     }
 
     func editCustomerNoteTapped() {
-        let viewModel = EditCustomerNoteViewModel(order: viewModel.order)
-        let editNoteViewController = EditCustomerNoteHostingController(viewModel: viewModel)
-        present(editNoteViewController, animated: true, completion: nil)
+        let editNoteViewController = EditCustomerNoteHostingController(viewModel: viewModel.editNoteViewModel)
+        present(editNoteViewController, animated: true)
 
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowStarted(subject: .customerNote))
     }

@@ -86,6 +86,14 @@ final class AddEditCouponViewModel: ObservableObject {
         })
     }
 
+    /// View model for the category selector
+    ///
+    var categorySelectorViewModel: ProductCategorySelectorViewModel {
+        .init(siteID: siteID, selectedCategories: categoryIDs) { [weak self] categories in
+            self?.categoryIDs = categories.map { $0.categoryID } 
+        }
+    }
+
     private(set) var coupon: Coupon?
     private let stores: StoresManager
     private let storageManager: StorageManagerType
@@ -102,6 +110,7 @@ final class AddEditCouponViewModel: ObservableObject {
     @Published var freeShipping: Bool
     @Published var couponRestrictionsViewModel: CouponRestrictionsViewModel
     @Published var productOrVariationIDs: [Int64]
+    @Published var categoryIDs: [Int64]
 
     /// Init method for coupon creation
     ///
@@ -122,6 +131,7 @@ final class AddEditCouponViewModel: ObservableObject {
         freeShipping = false
         couponRestrictionsViewModel = CouponRestrictionsViewModel(siteID: siteID)
         productOrVariationIDs = []
+        categoryIDs = []
     }
 
     /// Init method for coupon editing
@@ -142,6 +152,7 @@ final class AddEditCouponViewModel: ObservableObject {
         freeShipping = existingCoupon.freeShipping
         couponRestrictionsViewModel = CouponRestrictionsViewModel(coupon: existingCoupon)
         productOrVariationIDs = existingCoupon.productIds
+        categoryIDs = existingCoupon.productCategories
         self.stores = stores
         self.storageManager = storageManager
     }

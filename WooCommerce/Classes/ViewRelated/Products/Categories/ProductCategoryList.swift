@@ -2,7 +2,7 @@ import SwiftUI
 
 /// SwiftUI wrapper of `ProductCategoryListViewController`.
 ///
-struct ProductCategorySelector: UIViewControllerRepresentable {
+struct ProductCategoryList: UIViewControllerRepresentable {
     private let viewModel: ProductCategoryListViewModel
 
     init(viewModel: ProductCategoryListViewModel) {

@@ -11,14 +11,7 @@ final class ProductCategorySelectorViewModel: ObservableObject {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
 
-    private(set) lazy var listViewModel: ProductCategoryListViewModel = {
-        .init(storesManager: stores,
-              siteID: siteID,
-              selectedCategoryIDs: selectedCategories) { [weak self] _ in
-            guard let self = self else { return }
-            self.selectedItemsCount = self.listViewModel.selectedCategories.count
-        }
-    }()
+    let listViewModel: ProductCategoryListViewModel
 
     @Published private(set) var selectedItemsCount: Int = 0
 
@@ -32,6 +25,13 @@ final class ProductCategorySelectorViewModel: ObservableObject {
         self.onCategorySelection = onCategorySelection
         self.stores = storesManager
         self.storageManager = storageManager
+
+        listViewModel = .init(storesManager: stores,
+                              siteID: siteID,
+                              selectedCategoryIDs: selectedCategories)
+        listViewModel.$selectedCategories
+            .map { $0.count }
+            .assign(to: &$selectedItemsCount)
     }
 
     /// Triggered when selection is done.

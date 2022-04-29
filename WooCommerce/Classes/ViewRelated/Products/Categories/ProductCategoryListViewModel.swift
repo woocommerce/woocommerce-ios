@@ -45,13 +45,14 @@ final class ProductCategoryListViewModel {
     ///
     private let siteID: Int64
 
-    /// Initially selected category IDs
+    /// Initially selected category IDs.
+    /// This is mutable so that we can remove any item when unselecting it manually.
     ///
-    private let initiallySelectedIDs: [Int64]
+    private var initiallySelectedIDs: [Int64]
 
     /// Product categories that will be eventually modified by the user
     ///
-    private(set) var selectedCategories: [ProductCategory]
+    @Published private(set) var selectedCategories: [ProductCategory]
 
     /// Array of view models to be rendered by the View Controller.
     ///
@@ -176,7 +177,8 @@ final class ProductCategoryListViewModel {
 
         // If the category selected exist, remove it, otherwise, add it to `selectedCategories`.
         if let indexCategory = selectedCategories.firstIndex(where: { $0.categoryID == categoryViewModel.categoryID}) {
-            selectedCategories.remove(at: indexCategory)
+            let discardedItem = selectedCategories.remove(at: indexCategory)
+            initiallySelectedIDs.removeAll(where: { $0 == discardedItem.categoryID })
         } else {
             let selectedCategory = resultController.fetchedObjects.first(where: { $0.categoryID == categoryViewModel.categoryID })
 

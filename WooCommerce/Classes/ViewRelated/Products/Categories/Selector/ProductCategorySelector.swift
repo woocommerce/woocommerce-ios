@@ -9,12 +9,11 @@ struct ProductCategorySelector: View {
     private let config: Configuration
 
     private var doneButtonTitle: String {
-        let itemsCount = viewModel.listViewModel.selectedCategories.count
-        if itemsCount == 0 {
+        if viewModel.selectedItemsCount == 0 {
             return Localization.doneButton
         } else {
             return String.pluralize(
-                itemsCount,
+                viewModel.selectedItemsCount,
                 singular: config.doneButtonSingularFormat,
                 plural: config.doneButtonPluralFormat
             )

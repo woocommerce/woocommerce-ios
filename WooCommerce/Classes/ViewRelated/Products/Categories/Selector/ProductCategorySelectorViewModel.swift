@@ -14,9 +14,13 @@ final class ProductCategorySelectorViewModel: ObservableObject {
     private(set) lazy var listViewModel: ProductCategoryListViewModel = {
         .init(storesManager: stores,
               siteID: siteID,
-              selectedCategoryIDs: selectedCategories,
-              delegate: self)
+              selectedCategoryIDs: selectedCategories) { [weak self] _ in
+            guard let self = self else { return }
+            self.selectedItemsCount = self.listViewModel.selectedCategories.count
+        }
     }()
+
+    @Published private(set) var selectedItemsCount: Int = 0
 
     init(siteID: Int64,
          selectedCategories: [Int64] = [],
@@ -34,11 +38,5 @@ final class ProductCategorySelectorViewModel: ObservableObject {
     ///
     func submitSelection() {
         onCategorySelection(listViewModel.selectedCategories)
-    }
-}
-
-extension ProductCategorySelectorViewModel: ProductCategoryListViewModelDelegate {
-    func viewModel(_ viewModel: ProductCategoryListViewModel, didSelectRowAt index: Int) {
-        // TODO
     }
 }

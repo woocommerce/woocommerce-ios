@@ -69,6 +69,7 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
     private lazy var cardReaderConnectionController =
     CardReaderConnectionController(forSiteID: order.siteID,
                                    storageManager: storageManager,
+                                   stores: stores,
                                    knownReaderProvider: knownReaderProvider,
                                    alertsProvider: cardReaderConnectionAlerts,
                                    configuration: cardPresentConfiguration,

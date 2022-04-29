@@ -349,19 +349,23 @@ private extension RefundSubmissionUseCaseTests {
         }
     }
 
-    /// Mocks successful card reader connection and allows mocking for subsequent actions - client-side refund, refund cancellation, and what message it returns to
-    /// the card reader.
+    /// Mocks successful card reader connection and allows mocking for subsequent actions - client-side refund, refund cancellation, and what message
+    /// it returns to the card reader.
     /// Because `MockStoresManager.whenReceivingAction` has to include all actions for the same store in one call, default values
     /// are set to optional actions.
     /// - Parameters:
     ///   - connectedCardReaders: an array of connected card readers. Default value is one WisePad 3 reader.
     ///   - clientSideRefundResult: the result of client-side refund on the card reader in `CardPresentPaymentAction.refundPayment`. Default result is success.
     ///   - cancelRefundResult: the result of refund cancellation on the card reader. Default result is success.
-    ///   - returnCardReaderMessage: optional message to refund during the client-side refund flow on the card reader in `CardPresentPaymentAction.refundPayment`.
+    ///   - returnCardReaderMessage: optional message to refund during the client-side refund flow on the card reader in
+    ///                             `CardPresentPaymentAction.refundPayment`.
+    ///   - cancelCardReaderDiscoveryResult: the result of cancelling reader discovery in `CardPresentPaymentAction.cancelCardReaderDiscovery`.
+    ///                                      Default result is success.
     func mockCardPresentPaymentActions(connectedCardReaders: [CardReader] = [MockCardReader.wisePad3()],
                                        clientSideRefundResult: Result<Void, Error> = .success(()),
                                        cancelRefundResult: Result<Void, Error> = .success(()),
-                                       returnCardReaderMessage: CardReaderEvent? = nil) {
+                                       returnCardReaderMessage: CardReaderEvent? = nil,
+                                       cancelCardReaderDiscoveryResult: Result<Void, Error> = .success(())) {
         stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
             if case let .checkCardReaderConnected(completion) = action {
                 if connectedCardReaders.isEmpty {
@@ -380,6 +384,8 @@ private extension RefundSubmissionUseCaseTests {
                 completion?(clientSideRefundResult)
             } else if case let .cancelRefund(completion) = action {
                 completion?(cancelRefundResult)
+            } else if case let .cancelCardReaderDiscovery(completion) = action {
+                completion(cancelCardReaderDiscoveryResult)
             }
         }
     }

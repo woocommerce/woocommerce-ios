@@ -75,8 +75,8 @@ final class CardReaderConnectionController {
         case canceled
     }
 
-    let storageManager: StorageManagerType
-    let stores: StoresManager
+    private let storageManager: StorageManagerType
+    private let stores: StoresManager
 
     private var state: ControllerState {
         didSet {

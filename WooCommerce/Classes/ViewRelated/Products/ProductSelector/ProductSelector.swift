@@ -18,7 +18,7 @@ struct ProductSelector: View {
     ///
     @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
 
-    @State private var showingFilter: Bool = false
+    @State private var showingFilters: Bool = false
 
     /// Title for the multi-selection button
     ///

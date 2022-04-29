@@ -122,9 +122,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     func collectPayment(backButtonTitle: String, onCollect: @escaping (Result<Void, Error>) -> (), onCompleted: @escaping () -> ()) {
         guard isTotalAmountValid() else {
             DDLogError("💳 Error: failed to capture payment for order. Order amount is below minimum or not valid")
-            handlePaymentFailureAndRetryPayment(totalAmountInvalidError()) { _ in
-                onCompleted()
-            }
+            self.alerts.nonRetryableError(from: self.rootViewController, error: totalAmountInvalidError(), dismissCompletion: onCompleted)
 
             return
         }

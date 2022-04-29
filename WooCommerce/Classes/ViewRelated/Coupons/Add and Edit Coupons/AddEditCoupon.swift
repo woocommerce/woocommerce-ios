@@ -357,3 +357,21 @@ private extension ProductSelector.Configuration {
         )
     }
 }
+
+private extension ProductCategorySelector.Configuration {
+    static let categoriesForCoupons: Self = .init(
+        title: Localization.title,
+        doneButtonSingularFormat: Localization.doneSingularFormat,
+        doneButtonPluralFormat: Localization.donePluralFormat
+    )
+
+    enum Localization {
+        static let title = NSLocalizedString("Select categories", comment: "Title for the Select Categories screen")
+        static let doneSingularFormat = NSLocalizedString("Select %1$@ Category", comment: "Button to submit selection on the Select Category screen when 1 item is selected")
+        static let donePluralFormat = NSLocalizedString(
+            "Select %1$@ Categories",
+            comment: "Button to submit selection on the Select Category screen " +
+            "when more than 1 item is selected. " +
+            "Reads like: Select 10 Categories")
+    }
+}

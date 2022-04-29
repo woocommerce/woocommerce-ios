@@ -18,7 +18,7 @@ struct ProductSelector: View {
     ///
     @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
 
-    @State private var showingFilter: Bool = false
+    @State private var showingFilters: Bool = false
 
     /// Title for the multi-selection button
     ///
@@ -47,11 +47,11 @@ struct ProductSelector: View {
                     Spacer()
 
                     Button(viewModel.filterButtonTitle) {
-                        showingFilter.toggle()
+                        showingFilters.toggle()
                     }
                     .buttonStyle(LinkButtonStyle())
                     .fixedSize()
-                    .renderedIf(configuration.showsFilter)
+                    .renderedIf(configuration.showsFilters)
                 }
 
                 switch viewModel.syncStatus {
@@ -110,7 +110,7 @@ struct ProductSelector: View {
                 viewModel.onLoadTrigger.send()
             }
             .notice($viewModel.notice, autoDismiss: false)
-            .sheet(isPresented: $showingFilter) {
+            .sheet(isPresented: $showingFilters) {
                 FilterListView(viewModel: viewModel.filterListViewModel) { filters in
                     viewModel.filters = filters
                 } onClearAction: {
@@ -159,7 +159,7 @@ struct ProductSelector: View {
 
 extension ProductSelector {
     struct Configuration {
-        var showsFilter: Bool = false
+        var showsFilters: Bool = false
         var multipleSelectionsEnabled: Bool = false
         var searchHeaderBackgroundColor: UIColor = .listForeground
         var prefersLargeTitle: Bool = true
@@ -193,7 +193,7 @@ struct AddProduct_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = ProductSelectorViewModel(siteID: 123)
         let configuration = ProductSelector.Configuration(
-            showsFilter: true,
+            showsFilters: true,
             multipleSelectionsEnabled: true,
             title: "Add Product",
             cancelButtonTitle: "Close",

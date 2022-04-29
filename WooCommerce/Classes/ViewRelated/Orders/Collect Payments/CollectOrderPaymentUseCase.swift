@@ -21,6 +21,10 @@ protocol CollectOrderPaymentProtocol {
 /// Orchestrates reader connection, payment, UI alerts, receipt handling and analytics.
 ///
 final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
+    /// Currency formatter
+    ///
+    private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+
     /// Store's ID.
     ///
     private let siteID: Int64
@@ -116,6 +120,14 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     /// - Parameter onCollect: Closure Invoked after the collect process has finished.
     /// - Parameter onCompleted: Closure Invoked after the flow has been totally completed, Currently after merchant has handled the receipt.
     func collectPayment(backButtonTitle: String, onCollect: @escaping (Result<Void, Error>) -> (), onCompleted: @escaping () -> ()) {
+        guard isTotalAmountHigherThanMinimumAllowed() else {
+            handlePaymentFailureAndRetryPayment(minimumAmountError()) { _ in
+                onCompleted()
+            }
+
+            return
+        }
+
         configureBackend()
         observeConnectedReadersForAnalytics()
         connectReader { [weak self] result in
@@ -141,6 +153,25 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
 
 // MARK: Private functions
 private extension CollectOrderPaymentUseCase {
+    /// Checks whether the amount to be collected is higher than the minimum allowed charge amount
+    ///
+    func isTotalAmountHigherThanMinimumAllowed() -> Bool {
+        guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
+            return false
+        }
+
+        return orderTotal as Decimal >= configuration.minimumAllowedChargeAmount as Decimal
+    }
+
+    func minimumAmountError() -> Error {
+        guard let minimum = currencyFormatter.formatAmount(configuration.minimumAllowedChargeAmount, with: order.currency) else {
+            return NotValidAmountError.other
+        }
+
+        return NotValidAmountError.belowMinimumAmount(amount: minimum)
+    }
+
+
     /// Configure the CardPresentPaymentStore to use the appropriate backend
     ///
     func configureBackend() {
@@ -437,6 +468,34 @@ private extension CollectOrderPaymentUseCase {
                 return collectPaymentWithoutName
             }
             return .localizedStringWithFormat(collectPaymentWithName, username)
+        }
+    }
+}
+
+extension CollectOrderPaymentUseCase {
+    enum NotValidAmountError: Error, LocalizedError {
+        case belowMinimumAmount(amount: String)
+        case other
+
+        var errorDescription: String? {
+            switch self {
+            case .belowMinimumAmount(let amount):
+                return String.localizedStringWithFormat(Localization.belowMinimumAmount, amount)
+            case .other:
+                return Localization.defaultMessage
+            }
+        }
+
+        private enum Localization {
+            static let defaultMessage = NSLocalizedString(
+                "Unable to process payment. Order total amount is not valid.",
+                comment: "Error message when the order amount is not valid."
+            )
+
+            static let belowMinimumAmount = NSLocalizedString(
+                "Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@",
+                comment: "Error message when the order amount is below the minimum amount allowed."
+            )
         }
     }
 }

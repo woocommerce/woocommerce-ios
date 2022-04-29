@@ -240,6 +240,27 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         XCTAssertNotNil(row)
         XCTAssertEqual(row?.selectedState, .selected)
     }
+
+    func test_clearSelection_unselects_previously_selected_rows() {
+        // Given
+        let product = Product.fake().copy(productID: sampleProductID)
+        let productVariation = sampleProductVariation.copy(productVariationID: 1)
+        insert(productVariation)
+        let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID,
+                                                          product: product,
+                                                          storageManager: storageManager)
+
+        // When
+        viewModel.selectVariation(productVariation.productVariationID)
+        // Confidence check
+        let row = viewModel.productVariationRows.first(where: { $0.productOrVariationID == productVariation.productVariationID })
+        XCTAssertEqual(row?.selectedState, .selected)
+        viewModel.clearSelection()
+
+        // Then
+        let updatedRow = viewModel.productVariationRows.first(where: { $0.productOrVariationID == productVariation.productVariationID })
+        XCTAssertEqual(updatedRow?.selectedState, .notSelected)
+    }
 }
 
 // MARK: - Utils

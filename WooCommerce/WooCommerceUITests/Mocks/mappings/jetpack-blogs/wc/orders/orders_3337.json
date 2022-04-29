@@ -1,10 +1,15 @@
 {
     "request": {
-        "method": "POST",
+        "method": "GET",
         "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
-        "bodyPatterns": [ {
-                "matches": ".*path=\/wc\/v3\/orders%26_method%3Dpost.*"
-        } ]
+        "queryParameters": {
+            "json": {
+                "equalTo": "true"
+            },
+            "path": {
+                "matches": "/wc/v3/orders/3337&_method=get"
+            }
+        }
     },
     "response": {
         "status": 200,
@@ -12,7 +17,7 @@
             "data": {
                 "id": 3337,
                 "parent_id": 0,
-                "status": "pending",
+                "status": "processing",
                 "currency": "USD",
                 "version": "6.3.1",
                 "prices_include_tax": true,
@@ -23,7 +28,7 @@
                 "shipping_total": "0.00",
                 "shipping_tax": "0.00",
                 "cart_tax": "0.00",
-                "total": "0.00",
+                "total": "110.00",
                 "total_tax": "0.00",
                 "customer_id": 0,
                 "order_key": "abc123",
@@ -64,7 +69,22 @@
                 "cart_hash": "",
                 "number": "3337",
                 "meta_data": [],
-                "line_items": [],
+                "line_items": [{
+                    "id": 1,
+                    "name": "Akoya Pearl shades",
+                    "product_id": 2129,
+                    "variation_id": 0,
+                    "quantity": 1,
+                    "tax_class": "",
+                    "subtotal": "110.00",
+                    "subtotal_tax": "0.00",
+                    "total": "110.00",
+                    "total_tax": "0.00",
+                    "taxes": [],
+                    "meta_data": [],
+                    "sku": "",
+                    "price": 110
+                }],
                 "tax_lines": [],
                 "shipping_lines": [],
                 "fee_lines": [],

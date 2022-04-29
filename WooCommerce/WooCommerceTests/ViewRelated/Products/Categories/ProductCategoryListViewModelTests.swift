@@ -150,11 +150,4 @@ private extension ProductCategoryListViewModelTests {
         let category = storage.insertNewObject(ofType: StorageProductCategory.self)
         category.update(with: readOnlyProductCategory)
     }
-
-    func insert(_ readOnlyProductCategories: [Yosemite.ProductCategory]) {
-        for readOnlyProductCategory in readOnlyProductCategories {
-            let category = storage.insertNewObject(ofType: StorageProductCategory.self)
-            category.update(with: readOnlyProductCategory)
-        }
-    }
 }

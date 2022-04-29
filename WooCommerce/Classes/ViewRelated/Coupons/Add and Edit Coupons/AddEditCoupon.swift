@@ -104,6 +104,7 @@ struct AddEditCoupon: View {
                             } label: {
                                 HStack {
                                     Image(uiImage: viewModel.editDescriptionIcon)
+                                        .resizable()
                                         .colorMultiply(Color(.text))
                                         .frame(width: Constants.iconSize, height: Constants.iconSize)
                                     Text(viewModel.editDescriptionLabel)
@@ -149,7 +150,9 @@ struct AddEditCoupon: View {
                             } label: {
                                 HStack {
                                     if viewModel.productOrVariationIDs.isNotEmpty {
-                                        Image(uiImage: .pencilImage).colorMultiply(Color(.text))
+                                        Image(uiImage: .pencilImage)
+                                            .resizable()
+                                            .colorMultiply(Color(.text))
                                             .frame(width: Constants.iconSize, height: Constants.iconSize)
                                         Text(String.localizedStringWithFormat(Localization.editProductsButton, viewModel.productOrVariationIDs.count))
                                             .bodyStyle()
@@ -167,11 +170,20 @@ struct AddEditCoupon: View {
                                 showingSelectCategories = true
                             } label: {
                                 HStack {
-                                    Image(uiImage: .pencilImage)
-                                        .colorMultiply(Color(.text))
-                                        .frame(width: Constants.iconSize, height: Constants.iconSize)
-                                    Text(Localization.editProductCategoriesButton)
-                                        .bodyStyle()
+                                    if viewModel.categoryIDs.isNotEmpty {
+                                        Image(uiImage: .pencilImage)
+                                            .resizable()
+                                            .colorMultiply(Color(.text))
+                                            .frame(width: Constants.iconSize, height: Constants.iconSize)
+                                        Text(String.localizedStringWithFormat(Localization.editProductCategoriesButton, viewModel.categoryIDs.count))
+                                            .bodyStyle()
+                                    } else {
+                                        Image(uiImage: .plusImage)
+                                            .resizable()
+                                            .frame(width: Constants.iconSize, height: Constants.iconSize)
+                                        Text(Localization.selectCategoriesButton)
+                                            .bodyStyle()
+                                    }
                                 }
                             }
                             .buttonStyle(SecondaryButtonStyle())
@@ -294,9 +306,13 @@ private extension AddEditCoupon {
             "Edit Products (%1$d)",
             comment: "Button specifying the number of products applicable to a coupon in the view for adding or editing a coupon. " +
             "Reads like: Edit Products (2)")
+        static let selectCategoriesButton = NSLocalizedString(
+            "Select Product Categories",
+            comment: "Button to select specific categories applicable for a coupon in the view for adding or editing a coupon.")
         static let editProductCategoriesButton = NSLocalizedString(
-            "Edit Product Categories",
-            comment: "Button for specify the product categories where a coupon can be applied in the view for adding or editing a coupon.")
+            "Edit Product Categories (%1$d)",
+            comment: "Button for specify the product categories where a coupon can be applied in the view for adding or editing a coupon. " +
+            "Reads like: Edit Categories")
         static let headerUsageDetails = NSLocalizedString(
             "Usage Details",
             comment: "Header of the section usage details in the view for adding or editing a coupon.")

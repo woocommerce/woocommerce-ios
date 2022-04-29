@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import protocol Storage.StorageManagerType
 
 /// Classes conforming to this protocol can enrich the Product Category List UI,
 /// e.g by adding extra rows
@@ -40,6 +41,10 @@ final class ProductCategoryListViewModel {
     /// Reference to the StoresManager to dispatch Yosemite Actions.
     ///
     private let storesManager: StoresManager
+
+    /// Storage to fetch categories from.
+    ///
+    private let storageManager: StorageManagerType
 
     /// Site Id of the related categories
     ///
@@ -91,20 +96,21 @@ final class ProductCategoryListViewModel {
     }
 
     private lazy var resultController: ResultsController<StorageProductCategory> = {
-        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID = %ld", self.siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageProductCategory.name, ascending: true)
         return ResultsController<StorageProductCategory>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
-    init(storesManager: StoresManager = ServiceLocator.stores,
-         siteID: Int64,
+    init(siteID: Int64,
          selectedCategoryIDs: [Int64] = [],
          selectedCategories: [ProductCategory] = [],
+         storesManager: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          enrichingDataSource: ProductCategoryListViewModelEnrichingDataSource? = nil,
          delegate: ProductCategoryListViewModelDelegate? = nil,
          onProductCategorySelection: ProductCategorySelection? = nil) {
         self.storesManager = storesManager
+        self.storageManager = storageManager
         self.siteID = siteID
         self.selectedCategories = selectedCategories
         self.enrichingDataSource = enrichingDataSource

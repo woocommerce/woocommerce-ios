@@ -26,9 +26,9 @@ final class ProductCategorySelectorViewModel: ObservableObject {
         self.stores = storesManager
         self.storageManager = storageManager
 
-        listViewModel = .init(storesManager: stores,
-                              siteID: siteID,
-                              selectedCategoryIDs: selectedCategories)
+        listViewModel = .init(siteID: siteID,
+                              selectedCategoryIDs: selectedCategories,
+                              storesManager: stores)
         listViewModel.$selectedCategories
             .map { $0.count }
             .assign(to: &$selectedItemsCount)

@@ -771,11 +771,46 @@ platform :ios do
     release_notes_source = File.join(RESOURCES_FOLDER, 'release_notes.txt')
     FileUtils.cp(release_notes_source, File.join(metadata_directory, 'default', 'release_notes.txt'))
 
-    download_localized_app_store_metadata(
-      glotpress_project_url: GLOTPRESS_METADATA_PROJECT_URL,
-      metadata_directory: metadata_directory,
-      locales: GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES,
-      commit_message: 'Update metadata translations'
+    # FIXME: Replace this with a call to the future replacement of `gp_downloadmetadata` once it's implemented in the release-toolkit (see paaHJt-31O-p2).
+    locales_map = GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES
+    target_files = {
+      "v#{ios_get_app_version}-whats-new": { desc: "release_notes.txt", max_size: 4000 },
+      app_store_name: { desc: "name.txt", max_size: 30 },
+      app_store_subtitle: { desc: "subtitle.txt", max_size: 30 },
+      app_store_desc: { desc: "description.txt", max_size: 4000 },
+      app_store_keywords: { desc: "keywords.txt", max_size: 100 },
+    }
+
+    gp_downloadmetadata(
+      project_url: GLOTPRESS_METADATA_PROJECT_URL,
+      target_files: target_files,
+      locales: locales_map,
+      download_path: metadata_directory
+    )
+    files_to_commit = [File.join(metadata_directory, '**', '*.txt')]
+
+    # Ensure that none of the `.txt` files in `en-US` would accidentally override our originals in `default`
+    target_files.values.map { |h| h[:desc] }.each do |file|
+      en_file_path = File.join(metadata_directory, 'en-US', file)
+      UI.user_error!("File `#{en_file_path}` would override the same one in `#{metadata_directory}/default`, but `default/` is the source of truth. " \
+                     + "Delete the `#{en_file_path}` file, ensure the `default/` one has the expected original copy, and try again.") if File.exist?(en_file_path)
+    end
+
+    # Ensure even empty locale folders have an empty `.gitkeep` file (in case we don't have any translation at all ready for some locales)
+    locales_map.values.each do |locale|
+      gitkeep = File.join(metadata_directory, locale, '.gitkeep')
+      next if File.exist?(gitkeep)
+      FileUtils.mkdir_p(File.dirname(gitkeep))
+      FileUtils.touch(gitkeep)
+      files_to_commit.append(gitkeep)
+    end
+
+    # Commit
+    git_add(path: files_to_commit, shell_escape: false)
+    git_commit(
+      path: files_to_commit,
+      message: 'Update metadata translations',
+      allow_nothing_to_commit: true
     )
   end
 

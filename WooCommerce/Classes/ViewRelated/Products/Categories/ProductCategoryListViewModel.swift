@@ -111,13 +111,15 @@ final class ProductCategoryListViewModel {
         self.delegate = delegate
         self.onProductCategorySelection = onProductCategorySelection
         self.initiallySelectedIDs = selectedCategoryIDs
+
+        try? resultController.performFetch()
+        updateViewModelsArray()
     }
 
     /// Load existing categories from storage and fire the synchronize all categories action.
     ///
     func performFetch() {
         synchronizeAllCategories()
-        try? resultController.performFetch()
     }
 
     /// Retry product categories synchronization when `syncCategoriesState` is on a `.failed` state.

@@ -63,7 +63,7 @@ struct AddEditCoupon: View {
                                                      editable: true,
                                                      fieldAlignment: .leading,
                                                      keyboardType: .decimalPad,
-                                                     inputFormatter: PriceInputFormatter())
+                                                     inputFormatter: CouponAmountInputFormatter())
                                 Divider()
                                     .padding(.leading, Constants.margin)
 

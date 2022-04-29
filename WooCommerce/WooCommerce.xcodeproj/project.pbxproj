@@ -703,6 +703,7 @@
 		452FE6522565849B00EB54A0 /* LinkedProductsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452FE6512565849B00EB54A0 /* LinkedProductsViewModel.swift */; };
 		453227B723C4D6EC00D816B3 /* TimeZone+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453227B623C4D6EC00D816B3 /* TimeZone+Woo.swift */; };
 		4535EE7A281ADD56004212B4 /* CouponCodeInputFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4535EE79281ADD56004212B4 /* CouponCodeInputFormatter.swift */; };
+		4535EE7E281BE04A004212B4 /* CouponAmountInputFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4535EE7D281BE04A004212B4 /* CouponAmountInputFormatter.swift */; };
 		453770D12431FF4700AC718D /* ProductSettingsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453770D02431FF4700AC718D /* ProductSettingsViewModelTests.swift */; };
 		45381B4527341B8A003FEC5F /* DateRangeFilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45381B4327341B8A003FEC5F /* DateRangeFilterViewController.swift */; };
 		45381B4627341B8A003FEC5F /* DateRangeFilterViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45381B4427341B8A003FEC5F /* DateRangeFilterViewController.xib */; };
@@ -2390,6 +2391,7 @@
 		452FE6512565849B00EB54A0 /* LinkedProductsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkedProductsViewModel.swift; sourceTree = "<group>"; };
 		453227B623C4D6EC00D816B3 /* TimeZone+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeZone+Woo.swift"; sourceTree = "<group>"; };
 		4535EE79281ADD56004212B4 /* CouponCodeInputFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponCodeInputFormatter.swift; sourceTree = "<group>"; };
+		4535EE7D281BE04A004212B4 /* CouponAmountInputFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponAmountInputFormatter.swift; sourceTree = "<group>"; };
 		453770D02431FF4700AC718D /* ProductSettingsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSettingsViewModelTests.swift; sourceTree = "<group>"; };
 		45381B4327341B8A003FEC5F /* DateRangeFilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateRangeFilterViewController.swift; sourceTree = "<group>"; };
 		45381B4427341B8A003FEC5F /* DateRangeFilterViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DateRangeFilterViewController.xib; sourceTree = "<group>"; };
@@ -5016,6 +5018,7 @@
 		4535EE78281ADD1F004212B4 /* Coupon Text Validators */ = {
 			isa = PBXGroup;
 			children = (
+				4535EE7D281BE04A004212B4 /* CouponAmountInputFormatter.swift */,
 				4535EE79281ADD56004212B4 /* CouponCodeInputFormatter.swift */,
 			);
 			path = "Coupon Text Validators";
@@ -9106,6 +9109,7 @@
 				E107FCE126C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift in Sources */,
 				027A2E142513124E00DA6ACB /* Keychain+Entries.swift in Sources */,
 				268EC45F26CEA50C00716F5C /* EditCustomerNote.swift in Sources */,
+				4535EE7E281BE04A004212B4 /* CouponAmountInputFormatter.swift in Sources */,
 				CE35F11B2343F3B1007B2A6B /* TwoColumnHeadlineFootnoteTableViewCell.swift in Sources */,
 				D8C251DB230D288A00F49782 /* PushNotesManager.swift in Sources */,
 				09468D9027D5014E0054A751 /* BulkUpdatePriceViewController.swift in Sources */,

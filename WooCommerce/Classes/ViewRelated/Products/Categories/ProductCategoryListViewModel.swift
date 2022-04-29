@@ -45,6 +45,10 @@ final class ProductCategoryListViewModel {
     ///
     private let siteID: Int64
 
+    /// Initially selected category IDs
+    ///
+    private let initiallySelectedIDs: [Int64]
+
     /// Product categories that will be eventually modified by the user
     ///
     private(set) var selectedCategories: [ProductCategory]
@@ -105,6 +109,7 @@ final class ProductCategoryListViewModel {
         self.enrichingDataSource = enrichingDataSource
         self.delegate = delegate
         self.onProductCategorySelection = onProductCategorySelection
+        self.initiallySelectedIDs = selectedCategoryIDs
     }
 
     /// Load existing categories from storage and fire the synchronize all categories action.
@@ -190,9 +195,21 @@ final class ProductCategoryListViewModel {
     ///
     func updateViewModelsArray() {
         let fetchedCategories = resultController.fetchedObjects
+        updateInitialItemsIfNeeded(with: fetchedCategories)
         let baseViewModels = ProductCategoryListViewModel.CellViewModelBuilder.viewModels(from: fetchedCategories, selectedCategories: selectedCategories)
 
         categoryViewModels = enrichingDataSource?.enrichCategoryViewModels( baseViewModels) ?? baseViewModels
+    }
+
+    /// Update `selectedCategories` based on initially selected items.
+    ///
+    private func updateInitialItemsIfNeeded(with categories: [ProductCategory]) {
+        guard initiallySelectedIDs.isNotEmpty && selectedCategories.isEmpty else {
+            return
+        }
+        selectedCategories = initiallySelectedIDs.compactMap { id in
+            categories.first(where: { $0.categoryID == id })
+        }
     }
 }
 

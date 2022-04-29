@@ -9,6 +9,7 @@ public struct CardPresentPaymentsConfiguration {
     public let paymentGateways: [String]
     public let supportedReaders: [CardReaderType]
     public let supportedPluginVersions: [PaymentPluginVersionSupport]
+    public let minimumAllowedChargeAmount: NSDecimalNumber
 
     init(countryCode: String,
          stripeTerminalforCanadaEnabled: Bool,
@@ -16,7 +17,8 @@ public struct CardPresentPaymentsConfiguration {
          currencies: [CurrencyCode],
          paymentGateways: [String],
          supportedReaders: [CardReaderType],
-         supportedPluginVersions: [PaymentPluginVersionSupport]) {
+         supportedPluginVersions: [PaymentPluginVersionSupport],
+         minimumAllowedChargeAmount: NSDecimalNumber) {
         self.countryCode = countryCode
         self.stripeTerminalforCanadaEnabled = stripeTerminalforCanadaEnabled
         self.paymentMethods = paymentMethods
@@ -24,6 +26,7 @@ public struct CardPresentPaymentsConfiguration {
         self.paymentGateways = paymentGateways
         self.supportedReaders = supportedReaders
         self.supportedPluginVersions = supportedPluginVersions
+        self.minimumAllowedChargeAmount = minimumAllowedChargeAmount
     }
 
     public init(country: String, canadaEnabled: Bool) {
@@ -40,7 +43,8 @@ public struct CardPresentPaymentsConfiguration {
                 supportedPluginVersions: [
                     .init(plugin: .wcPay, minimumVersion: "3.2.1"),
                     .init(plugin: .stripe, minimumVersion: "6.2.0")
-                ]
+                ],
+                minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5")
             )
         case "CA" where canadaEnabled == true:
             self.init(
@@ -50,7 +54,8 @@ public struct CardPresentPaymentsConfiguration {
                 currencies: [.CAD],
                 paymentGateways: [WCPayAccount.gatewayID],
                 supportedReaders: [.wisepad3],
-                supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.0.0")]
+                supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.0.0")],
+                minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5")
             )
         default:
             self.init(
@@ -60,7 +65,8 @@ public struct CardPresentPaymentsConfiguration {
                 currencies: [],
                 paymentGateways: [],
                 supportedReaders: [],
-                supportedPluginVersions: []
+                supportedPluginVersions: [],
+                minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5")
             )
         }
     }

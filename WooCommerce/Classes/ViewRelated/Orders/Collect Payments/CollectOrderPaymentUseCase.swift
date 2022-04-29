@@ -21,7 +21,7 @@ protocol CollectOrderPaymentProtocol {
 /// Orchestrates reader connection, payment, UI alerts, receipt handling and analytics.
 ///
 final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
-    /// Currency formatter
+    /// Currency Formatter
     ///
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
@@ -32,6 +32,14 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     /// Order to collect.
     ///
     private let order: Order
+
+    /// Order total in decimal number. It is lazy to avoid multiple conversions that can be costly.
+    /// It can be lazy because the order is a constant and never changes (this class is intended to be
+    /// fired and disposed, not reused for multiple payment flows).
+    ///
+    private lazy var orderTotal: NSDecimalNumber? = {
+        currencyFormatter.convertToDecimal(from: order.total)
+    }()
 
     /// Formatted amount to collect.
     ///
@@ -154,7 +162,7 @@ private extension CollectOrderPaymentUseCase {
     /// Checks whether the amount to be collected is valid: (not nil, convertible to decimal, higher than minimum amount ...)
     ///
     func isTotalAmountValid() -> Bool {
-        guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
+        guard let orderTotal = orderTotal else {
             return false
         }
 
@@ -166,7 +174,7 @@ private extension CollectOrderPaymentUseCase {
     /// Determines and returns the error that provoked the amount being invalid
     ///
     func totalAmountInvalidError() -> Error {
-        let orderTotalAmountCanBeConverted = currencyFormatter.convertToDecimal(from: order.total) != nil
+        let orderTotalAmountCanBeConverted = orderTotal != nil
 
         guard orderTotalAmountCanBeConverted,
               let minimum = currencyFormatter.formatAmount(configuration.minimumAllowedChargeAmount, with: order.currency) else {
@@ -240,6 +248,12 @@ private extension CollectOrderPaymentUseCase {
     /// Attempts to collect payment for an order.
     ///
     func attemptPayment(onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
+        guard let orderTotal = orderTotal else {
+            onCompletion(.failure(NotValidAmountError.other))
+
+            return
+        }
+
         // Track tapped event
         analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentTapped(forGatewayID: paymentGatewayAccount.gatewayID,
                                                                                        countryCode: configuration.countryCode,
@@ -257,9 +271,10 @@ private extension CollectOrderPaymentUseCase {
         // Start collect payment process
         paymentOrchestrator.collectPayment(
             for: order,
-               paymentGatewayAccount: paymentGatewayAccount,
-               paymentMethodTypes: configuration.paymentMethods.map(\.rawValue),
-               onWaitingForInput: { [weak self] in
+            orderTotal: orderTotal,
+            paymentGatewayAccount: paymentGatewayAccount,
+            paymentMethodTypes: configuration.paymentMethods.map(\.rawValue),
+            onWaitingForInput: { [weak self] in
                    // Request card input
                    self?.alerts.tapOrInsertCard(onCancel: { [weak self] in
                        self?.cancelPayment {
@@ -267,24 +282,22 @@ private extension CollectOrderPaymentUseCase {
                        }
                    })
 
-               }, onProcessingMessage: { [weak self] in
-                   // Waiting message
-                   self?.alerts.processingPayment()
-
-               }, onDisplayMessage: { [weak self] message in
-                   // Reader messages. EG: Remove Card
-                   self?.alerts.displayReaderMessage(message: message)
-
-               }, onProcessingCompletion: { [weak self] intent in
-                   self?.trackProcessingCompletion(intent: intent)
-               }, onCompletion: { [weak self] result in
-                   switch result {
-                   case .success(let capturedPaymentData):
-                       self?.handleSuccessfulPayment(capturedPaymentData: capturedPaymentData, onCompletion: onCompletion)
-                   case .failure(let error):
-                       self?.handlePaymentFailureAndRetryPayment(error, onCompletion: onCompletion)
-                   }
-               }
+            }, onProcessingMessage: { [weak self] in
+                // Waiting message
+                self?.alerts.processingPayment()
+            }, onDisplayMessage: { [weak self] message in
+                // Reader messages. EG: Remove Card
+                self?.alerts.displayReaderMessage(message: message)
+            }, onProcessingCompletion: { [weak self] intent in
+                self?.trackProcessingCompletion(intent: intent)
+            }, onCompletion: { [weak self] result in
+                switch result {
+                case .success(let capturedPaymentData):
+                    self?.handleSuccessfulPayment(capturedPaymentData: capturedPaymentData, onCompletion: onCompletion)
+                case .failure(let error):
+                    self?.handlePaymentFailureAndRetryPayment(error, onCompletion: onCompletion)
+                }
+            }
         )
     }
 

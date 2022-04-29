@@ -34,6 +34,7 @@ final class PaymentCaptureOrchestrator {
     }
 
     func collectPayment(for order: Order,
+                        orderTotal: NSDecimalNumber,
                         paymentGatewayAccount: PaymentGatewayAccount,
                         paymentMethodTypes: [String],
                         onWaitingForInput: @escaping () -> Void,
@@ -49,6 +50,7 @@ final class PaymentCaptureOrchestrator {
 
         paymentParameters(
                 order: order,
+                orderTotal: orderTotal,
                 country: paymentGatewayAccount.country,
                 statementDescriptor: paymentGatewayAccount.statementDescriptor,
                 paymentMethodTypes: paymentMethodTypes
@@ -220,17 +222,11 @@ private extension PaymentCaptureOrchestrator {
     }
 
     func paymentParameters(order: Order,
+                           orderTotal: NSDecimalNumber,
                            country: String,
                            statementDescriptor: String?,
                            paymentMethodTypes: [String],
                            onCompletion: @escaping ((Result<PaymentParameters, Error>) -> Void)) {
-        guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
-            DDLogError("Error: attempted to collect payment for an order without a valid total.")
-            onCompletion(Result.failure(CollectOrderPaymentUseCase.NotValidAmountError.other))
-
-            return
-        }
-
         paymentReceiptEmailParameterDeterminer.receiptEmail(from: order) { [weak self] result in
             guard let self = self else { return }
 

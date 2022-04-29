@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import Yosemite
+import protocol Storage.StorageManagerType
 
 /// Protocol to abstract the `RefundSubmissionUseCase`.
 /// TODO: 5983 - Use this to facilitate unit tests.
@@ -38,6 +39,8 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
     /// Stores manager.
     private let stores: StoresManager
 
+    private let storageManager: StorageManagerType
+
     /// Analytics manager.
     private let analytics: Analytics
 
@@ -56,11 +59,18 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
     /// In-person refund orchestrator.
     private lazy var cardPresentRefundOrchestrator = CardPresentRefundOrchestrator(stores: stores)
 
+    /// Alert manager to inform merchants about card reader connection actions used in `CardReaderConnectionController`.
+    private let cardReaderConnectionAlerts: CardReaderSettingsAlertsProvider
+
+    /// Provides any known card reader to be used in `CardReaderConnectionController`.
+    private let knownReaderProvider: CardReaderSettingsKnownReaderProvider
+
     /// Controller to connect a card reader for in-person refund.
     private lazy var cardReaderConnectionController =
     CardReaderConnectionController(forSiteID: order.siteID,
-                                   knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
-                                   alertsProvider: CardReaderSettingsAlerts(),
+                                   storageManager: storageManager,
+                                   knownReaderProvider: knownReaderProvider,
+                                   alertsProvider: cardReaderConnectionAlerts,
                                    configuration: cardPresentConfiguration,
                                    analyticsTracker: .init(configuration: cardPresentConfiguration,
                                                            stores: stores,
@@ -72,10 +82,13 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
     init(details: Details,
          rootViewController: UIViewController,
          alerts: OrderDetailsPaymentAlertsProtocol,
+         cardReaderConnectionAlerts: CardReaderSettingsAlertsProvider = CardReaderSettingsAlerts(),
          currencyFormatter: CurrencyFormatter,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          cardPresentConfiguration: CardPresentPaymentsConfiguration,
+         knownReaderProvider: CardReaderSettingsKnownReaderProvider = CardReaderSettingsKnownReaderStorage(),
          stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics) {
         self.details = details
         self.formattedAmount = {
@@ -85,9 +98,12 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
         }()
         self.rootViewController = rootViewController
         self.alerts = alerts
+        self.cardReaderConnectionAlerts = cardReaderConnectionAlerts
         self.currencyFormatter = currencyFormatter
         self.cardPresentConfiguration = cardPresentConfiguration
+        self.knownReaderProvider = knownReaderProvider
         self.stores = stores
+        self.storageManager = storageManager
         self.analytics = analytics
     }
 
@@ -119,7 +135,7 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
             }
 
             observeConnectedReadersForAnalytics()
-            connectReader { [weak self] result in
+            connectReader(charge: charge, paymentGatewayAccount: paymentGatewayAccount) { [weak self] result in
                 guard let self = self else { return }
                 switch result {
                 case .success:
@@ -184,7 +200,7 @@ private extension RefundSubmissionUseCase {
 
     /// Attempts to connect to a reader.
     /// Finishes with success immediately if a reader is already connected.
-    func connectReader(onCompletion: @escaping (Result<Void, Error>) -> ()) {
+    func connectReader(charge: WCPayCharge, paymentGatewayAccount: PaymentGatewayAccount, onCompletion: @escaping (Result<Void, Error>) -> ()) {
         // `checkCardReaderConnected` action will return a publisher that:
         // - Sends one value if there is no reader connected.
         // - Completes when a reader is connected.
@@ -212,10 +228,15 @@ private extension RefundSubmissionUseCase {
                     self.cardReaderConnectionController.searchAndConnect(from: self.rootViewController) { [weak self] result in
                         guard let self = self else { return }
                         switch result {
-                        case let .success(isConnected):
-                            if isConnected == false {
+                        case let .success(connectionResult):
+                            switch connectionResult {
+                            case .canceled:
                                 self.readerSubscription = nil
+                                self.trackClientSideRefundCanceled(charge: charge, paymentGatewayAccount: paymentGatewayAccount)
                                 onCompletion(.failure(RefundSubmissionError.cardReaderDisconnected))
+                            default:
+                                // Connected case will be handled in `receiveCompletion`.
+                                break
                             }
                         case .failure(let error):
                             self.readerSubscription = nil

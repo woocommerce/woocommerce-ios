@@ -137,6 +137,8 @@ private extension OrderDetailsViewController {
                                                                 style: .plain,
                                                                 target: self,
                                                                 action: #selector(presentActionMenuSheet(_:)))
+        } else {
+            navigationItem.rightBarButtonItem = nil
         }
     }
 
@@ -189,6 +191,7 @@ private extension OrderDetailsViewController {
     /// Reloads the tableView's sections and data.
     ///
     func reloadTableViewSectionsAndData() {
+        configureNavigationBar()
         reloadSections()
         reloadTableViewDataIfPossible()
     }

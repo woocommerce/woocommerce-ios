@@ -11,6 +11,8 @@ final class ProductCategorySelectorViewModel: ObservableObject {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
 
+    /// View model for the category list.
+    ///
     let listViewModel: ProductCategoryListViewModel
 
     @Published private(set) var selectedItemsCount: Int = 0

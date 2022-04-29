@@ -8,6 +8,7 @@ struct ProductCategorySelector: View {
 
     private let config: Configuration
 
+    /// Title of the done button calculated based on number of selected items
     private var doneButtonTitle: String {
         if viewModel.selectedItemsCount == 0 {
             return Localization.doneButton
@@ -54,6 +55,8 @@ struct ProductCategorySelector: View {
     }
 }
 
+// MARK: - Configuration
+//
 extension ProductCategorySelector {
     struct Configuration {
         let title: String
@@ -62,6 +65,8 @@ extension ProductCategorySelector {
     }
 }
 
+// MARK: - Localization
+//
 private extension ProductCategorySelector {
     enum Localization {
         static let doneButton = NSLocalizedString("Done", comment: "Button to submit selection on Select Categories screen")

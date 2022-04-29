@@ -90,7 +90,7 @@ final class AddEditCouponViewModel: ObservableObject {
     ///
     var categorySelectorViewModel: ProductCategorySelectorViewModel {
         .init(siteID: siteID, selectedCategories: categoryIDs) { [weak self] categories in
-            self?.categoryIDs = categories.map { $0.categoryID } 
+            self?.categoryIDs = categories.map { $0.categoryID }
         }
     }
 

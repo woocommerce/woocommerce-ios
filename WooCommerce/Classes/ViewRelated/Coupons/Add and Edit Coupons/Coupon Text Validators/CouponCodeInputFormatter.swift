@@ -4,6 +4,7 @@ import Foundation
 ///
 struct CouponCodeInputFormatter: UnitInputFormatter {
     func isValid(input: String) -> Bool {
+        // Every string is a valid coupon code.
         return true
     }
 

@@ -41,14 +41,6 @@ final class PaymentCaptureOrchestrator {
                         onDisplayMessage: @escaping (String) -> Void,
                         onProcessingCompletion: @escaping (PaymentIntent) -> Void,
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
-        /// Bail out if the order amount is below the minimum allowed:
-        /// https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts
-        guard isTotalAmountValid(order: order) else {
-            DDLogError("💳 Error: failed to capture payment for order. Order amount is below minimum")
-            onCompletion(.failure(minimumAmountError(order: order, minimumAmount: Constants.minimumAmount)))
-            return
-        }
-
         /// Set state of CardPresentPaymentStore
         ///
         let setAccount = CardPresentPaymentAction.use(paymentGatewayAccount: paymentGatewayAccount)
@@ -234,7 +226,7 @@ private extension PaymentCaptureOrchestrator {
                            onCompletion: @escaping ((Result<PaymentParameters, Error>) -> Void)) {
         guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
             DDLogError("Error: attempted to collect payment for an order without a valid total.")
-            onCompletion(Result.failure(NotValidAmountError.other))
+            onCompletion(Result.failure(CollectOrderPaymentUseCase.NotValidAmountError.other))
 
             return
         }
@@ -309,29 +301,9 @@ private extension PaymentCaptureOrchestrator {
 
 private extension PaymentCaptureOrchestrator {
     enum Constants {
-        /// Minimum order amount in USD or CAD:
-        /// https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts
-        static let minimumAmount = NSDecimalNumber(string: "0.5")
-
         static let canadaFlatFee = NSDecimalNumber(string: "0.25")
 
         static let canadaPercentageFee = NSDecimalNumber(string: "0.026")
-    }
-
-    func isTotalAmountValid(order: Order) -> Bool {
-        guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
-            return false
-        }
-
-        return orderTotal as Decimal >= Constants.minimumAmount as Decimal
-    }
-
-    func minimumAmountError(order: Order, minimumAmount: NSDecimalNumber) -> Error {
-        guard let minimum = currencyFormatter.formatAmount(minimumAmount, with: order.currency) else {
-            return NotValidAmountError.other
-        }
-
-        return NotValidAmountError.belowMinimumAmount(amount: minimum)
     }
 }
 
@@ -343,33 +315,5 @@ private extension PaymentCaptureOrchestrator {
                                                             + "Order @{number} for @{store name} "
                                                             + "Parameters: %1$@ - order number, "
                                                             + "%2$@ - store name")
-    }
-}
-
-extension PaymentCaptureOrchestrator {
-    enum NotValidAmountError: Error, LocalizedError {
-        case belowMinimumAmount(amount: String)
-        case other
-
-        var errorDescription: String? {
-            switch self {
-            case .belowMinimumAmount(let amount):
-                return String.localizedStringWithFormat(Localization.belowMinimumAmount, amount)
-            case .other:
-                return Localization.defaultMessage
-            }
-        }
-
-        private enum Localization {
-            static let defaultMessage = NSLocalizedString(
-                "Unable to process payment. Order total amount is not valid.",
-                comment: "Error message when the order amount is not valid."
-            )
-
-            static let belowMinimumAmount = NSLocalizedString(
-                "Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@",
-                comment: "Error message when the order amount is below the minimum amount allowed."
-            )
-        }
     }
 }

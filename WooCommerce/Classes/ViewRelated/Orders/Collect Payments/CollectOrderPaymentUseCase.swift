@@ -121,10 +121,9 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     /// - Parameter onCompleted: Closure Invoked after the flow has been totally completed, Currently after merchant has handled the receipt.
     func collectPayment(backButtonTitle: String, onCollect: @escaping (Result<Void, Error>) -> (), onCompleted: @escaping () -> ()) {
         guard isTotalAmountValid() else {
-            DDLogError("💳 Error: failed to capture payment for order. Order amount is below minimum or not valid")
-            self.alerts.nonRetryableError(from: self.rootViewController, error: totalAmountInvalidError(), dismissCompletion: onCompleted)
-
-            return
+            let error = totalAmountInvalidError()
+            onCollect(.failure(error))
+            return handleTotalAmountInvalidError(totalAmountInvalidError(), onCompleted: onCompleted)
         }
 
         configureBackend()
@@ -177,6 +176,11 @@ private extension CollectOrderPaymentUseCase {
         return NotValidAmountError.belowMinimumAmount(amount: minimum)
     }
 
+    func handleTotalAmountInvalidError(_ error: Error, onCompleted: @escaping () -> ()) {
+        trackPaymentFailure(with: error)
+        DDLogError("💳 Error: failed to capture payment for order. Order amount is below minimum or not valid")
+        self.alerts.nonRetryableError(from: self.rootViewController, error: totalAmountInvalidError(), dismissCompletion: onCompleted)
+    }
 
     /// Configure the CardPresentPaymentStore to use the appropriate backend
     ///
@@ -302,12 +306,9 @@ private extension CollectOrderPaymentUseCase {
     /// Log the failure reason, cancel the current payment and retry it if possible.
     ///
     func handlePaymentFailureAndRetryPayment(_ error: Error, onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
-        // Record error
-        analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentFailed(forGatewayID: paymentGatewayAccount.gatewayID,
-                                                                                       error: error,
-                                                                                       countryCode: configuration.countryCode,
-                                                                                       cardReaderModel: connectedReader?.readerType.model))
         DDLogError("Failed to collect payment: \(error.localizedDescription)")
+
+        trackPaymentFailure(with: error)
 
         // Inform about the error
         alerts.error(error: error,
@@ -332,6 +333,14 @@ private extension CollectOrderPaymentUseCase {
         }, dismissCompletion: {
             onCompletion(.failure(error))
         })
+    }
+
+    private func trackPaymentFailure(with error: Error) {
+        // Record error
+        analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentFailed(forGatewayID: paymentGatewayAccount.gatewayID,
+                                                                                       error: error,
+                                                                                       countryCode: configuration.countryCode,
+                                                                                       cardReaderModel: connectedReader?.readerType.model))
     }
 
     /// Cancels payment and record analytics.

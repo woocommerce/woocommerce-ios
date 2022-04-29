@@ -7,7 +7,7 @@ struct CouponAmountInputFormatter: UnitInputFormatter {
         guard input.isNotEmpty else {
             return false
         }
-        return true
+        return PriceInputFormatter().isValid(input: input)
     }
 
     func format(input text: String?) -> String {

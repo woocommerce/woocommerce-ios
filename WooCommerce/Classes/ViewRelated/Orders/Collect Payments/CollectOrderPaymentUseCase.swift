@@ -154,7 +154,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
 
 // MARK: Private functions
 private extension CollectOrderPaymentUseCase {
-    /// Checks whether the amount to be collected is valid: (not nil, formattable, higher than minimum amount ...)
+    /// Checks whether the amount to be collected is valid: (not nil, convertible to decimal, higher than minimum amount ...)
     ///
     func isTotalAmountValid() -> Bool {
         guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
@@ -169,9 +169,9 @@ private extension CollectOrderPaymentUseCase {
     /// Determines and returns the error that provoked the amount being invalid
     ///
     func totalAmountInvalidError() -> Error {
-        let orderTotalIsFormattable = currencyFormatter.convertToDecimal(from: order.total) != nil
+        let orderTotalAmountCanBeConverted = currencyFormatter.convertToDecimal(from: order.total) != nil
 
-        guard orderTotalIsFormattable,
+        guard orderTotalAmountCanBeConverted,
               let minimum = currencyFormatter.formatAmount(configuration.minimumAllowedChargeAmount, with: order.currency) else {
             return NotValidAmountError.other
         }

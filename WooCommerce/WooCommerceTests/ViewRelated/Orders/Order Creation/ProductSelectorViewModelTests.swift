@@ -205,7 +205,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // When
         viewModel.searchTerm = "shirt"
-        viewModel.clearSearch()
+        viewModel.clearSearchAndFilters()
 
         // Then
         XCTAssertEqual(viewModel.searchTerm, "")
@@ -232,7 +232,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // When
         viewModel.searchTerm = "shirt"
-        viewModel.clearSearch()
+        viewModel.clearSearchAndFilters()
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
 
         // Then
@@ -323,6 +323,138 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNil(variationsViewModel)
+    }
+
+    func test_selecting_a_product_sets_its_row_to_selected_state() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
+        insert(product)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 storageManager: storageManager)
+
+        // When
+        viewModel.selectProduct(product.productID)
+
+        // Then
+        let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
+        XCTAssertNotNil(productRow)
+        XCTAssertEqual(productRow?.selectedState, .selected)
+    }
+
+    func test_selecting_a_product_sets_its_row_to_notSelected_state_if_it_was_previously_selected() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
+        insert(product)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 storageManager: storageManager)
+
+        // When
+        viewModel.selectProduct(product.productID)
+        viewModel.selectProduct(product.productID)
+
+        // Then
+        let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
+        XCTAssertNotNil(productRow)
+        XCTAssertEqual(productRow?.selectedState, .notSelected)
+    }
+
+    func test_selecting_a_product_variation_set_its_product_row_to_partiallySelected() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true, variations: [1, 2])
+        insert(product)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 storageManager: storageManager)
+
+        // When
+        viewModel.updateSelectedVariations(productID: product.productID, selectedVariationIDs: [2])
+
+        // Then
+        let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
+        XCTAssertNotNil(productRow)
+        XCTAssertEqual(productRow?.selectedState, .partiallySelected)
+    }
+
+    func test_initialSelectedItems_are_reflected_in_selected_rows() {
+        // Given
+        let simpleProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
+        let variableProduct = Product.fake().copy(siteID: sampleSiteID, productID: 10, purchasable: true, variations: [12, 20])
+        insert(simpleProduct)
+        insert(variableProduct)
+
+        // When
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 selectedItemIDs: [1, 12, 20],
+                                                 storageManager: storageManager)
+
+        // Then
+        let simpleProductRow = viewModel.productRows.first(where: { $0.productOrVariationID == simpleProduct.productID })
+        XCTAssertEqual(simpleProductRow?.selectedState, .selected)
+        let variableProductRow = viewModel.productRows.first(where: { $0.productOrVariationID == variableProduct.productID })
+        XCTAssertEqual(variableProductRow?.selectedState, .selected)
+    }
+
+    func test_completion_block_is_triggered_with_all_selected_items() {
+        // Given
+        let simpleProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
+        let variableProduct = Product.fake().copy(siteID: sampleSiteID, productID: 10, purchasable: true, variations: [12, 20])
+        insert(simpleProduct)
+        insert(variableProduct)
+        var selectedItems: [Int64] = []
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 selectedItemIDs: [],
+                                                 storageManager: storageManager,
+                                                 onMultipleSelectionCompleted: {
+            selectedItems = $0
+        })
+
+        // When
+        viewModel.selectProduct(simpleProduct.productID)
+        viewModel.updateSelectedVariations(productID: variableProduct.productID, selectedVariationIDs: [12])
+        viewModel.completeMultipleSelection()
+
+        // Then
+        XCTAssertEqual(selectedItems, [simpleProduct.productID, 12])
+    }
+
+    func test_filter_button_title_shows_correct_number_of_active_filters() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID)
+        // confidence check
+        XCTAssertEqual(viewModel.filterButtonTitle, NSLocalizedString("Filter", comment: ""))
+
+        // When
+        viewModel.filters = FilterProductListViewModel.Filters(
+            stockStatus: ProductStockStatus.outOfStock,
+            productStatus: ProductStatus.draft,
+            productType: ProductType.simple,
+            productCategory: nil,
+            numberOfActiveFilters: 3
+        )
+
+        // Then
+        XCTAssertEqual(viewModel.filterButtonTitle, String.localizedStringWithFormat(NSLocalizedString("Filter (%ld)", comment: ""), 3))
+    }
+
+    func test_productRows_are_updated_correctly_when_filters_are_applied() {
+        // Given
+        let simpleProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, productTypeKey: ProductType.simple.rawValue, purchasable: true)
+        let variableProduct = Product.fake().copy(siteID: sampleSiteID, productID: 10, productTypeKey: ProductType.variable.rawValue, purchasable: true)
+        insert(variableProduct)
+        insert(simpleProduct)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // When
+        viewModel.filters = FilterProductListViewModel.Filters(
+            stockStatus: nil,
+            productStatus: nil,
+            productType: ProductType.simple,
+            productCategory: nil,
+            numberOfActiveFilters: 1
+        )
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.count, 1)
+        XCTAssertEqual(viewModel.productRows.first?.productOrVariationID, simpleProduct.productID)
     }
 }
 

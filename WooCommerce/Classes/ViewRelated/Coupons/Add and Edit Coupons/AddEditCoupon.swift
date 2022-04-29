@@ -391,10 +391,10 @@ private extension ProductCategorySelector.Configuration {
         static let title = NSLocalizedString("Select categories", comment: "Title for the Select Categories screen")
         static let doneSingularFormat = NSLocalizedString(
             "Select %1$d Category",
-            comment: "Button to submit selection on the Select Category screen when 1 item is selected")
+            comment: "Button to submit selection on the Select Categories screen when 1 item is selected")
         static let donePluralFormat = NSLocalizedString(
             "Select %1$d Categories",
-            comment: "Button to submit selection on the Select Category screen " +
+            comment: "Button to submit selection on the Select Categories screen " +
             "when more than 1 item is selected. " +
             "Reads like: Select 10 Categories")
     }

@@ -120,8 +120,9 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     /// - Parameter onCollect: Closure Invoked after the collect process has finished.
     /// - Parameter onCompleted: Closure Invoked after the flow has been totally completed, Currently after merchant has handled the receipt.
     func collectPayment(backButtonTitle: String, onCollect: @escaping (Result<Void, Error>) -> (), onCompleted: @escaping () -> ()) {
-        guard isTotalAmountHigherThanMinimumAllowed() else {
-            handlePaymentFailureAndRetryPayment(minimumAmountError()) { _ in
+        guard isTotalAmountValid() else {
+            DDLogError("💳 Error: failed to capture payment for order. Order amount is below minimum or not valid")
+            handlePaymentFailureAndRetryPayment(totalAmountInvalidError()) { _ in
                 onCompleted()
             }
 
@@ -153,18 +154,25 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
 
 // MARK: Private functions
 private extension CollectOrderPaymentUseCase {
-    /// Checks whether the amount to be collected is higher than the minimum allowed charge amount
+    /// Checks whether the amount to be collected is valid: (not nil, formattable, higher than minimum amount ...)
     ///
-    func isTotalAmountHigherThanMinimumAllowed() -> Bool {
+    func isTotalAmountValid() -> Bool {
         guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
             return false
         }
 
+        /// Bail out if the order amount is below the minimum allowed:
+        /// https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts
         return orderTotal as Decimal >= configuration.minimumAllowedChargeAmount as Decimal
     }
 
-    func minimumAmountError() -> Error {
-        guard let minimum = currencyFormatter.formatAmount(configuration.minimumAllowedChargeAmount, with: order.currency) else {
+    /// Determines and returns the error that provoked the amount being invalid
+    ///
+    func totalAmountInvalidError() -> Error {
+        let orderTotalIsFormattable = currencyFormatter.convertToDecimal(from: order.total) != nil
+
+        guard orderTotalIsFormattable,
+              let minimum = currencyFormatter.formatAmount(configuration.minimumAllowedChargeAmount, with: order.currency) else {
             return NotValidAmountError.other
         }
 

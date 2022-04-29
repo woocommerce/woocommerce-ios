@@ -34,7 +34,8 @@ struct ProductCategorySelector: View {
             VStack(spacing: 0) {
                 ProductCategoryList(viewModel: viewModel.listViewModel)
                 Button(doneButtonTitle) {
-                    // TODO
+                    viewModel.submitSelection()
+                    isPresented = false
                 }
                 .buttonStyle(PrimaryButtonStyle())
                 .padding()

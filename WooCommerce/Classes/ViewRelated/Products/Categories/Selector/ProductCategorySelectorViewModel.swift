@@ -29,6 +29,12 @@ final class ProductCategorySelectorViewModel: ObservableObject {
         self.stores = storesManager
         self.storageManager = storageManager
     }
+
+    /// Triggered when selection is done.
+    ///
+    func submitSelection() {
+        onCategorySelection(listViewModel.selectedCategories)
+    }
 }
 
 extension ProductCategorySelectorViewModel: ProductCategoryListViewModelDelegate {

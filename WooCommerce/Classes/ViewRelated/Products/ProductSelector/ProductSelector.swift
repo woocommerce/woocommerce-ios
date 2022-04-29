@@ -44,11 +44,11 @@ struct ProductSelector: View {
                     Spacer()
 
                     Button(viewModel.filterButtonTitle) {
-                        showingFilter.toggle()
+                        showingFilters.toggle()
                     }
                     .buttonStyle(LinkButtonStyle())
                     .fixedSize()
-                    .renderedIf(configuration.showsFilter)
+                    .renderedIf(configuration.showsFilters)
                 }
 
                 switch viewModel.syncStatus {

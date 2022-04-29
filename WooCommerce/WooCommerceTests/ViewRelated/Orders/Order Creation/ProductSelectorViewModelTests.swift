@@ -151,7 +151,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let expectation = expectation(description: "Completed product search")
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .searchProducts(_, _, _, _, _, onCompletion):
+            case let .searchProducts(_, _, _, _, _, _, _, _, _, onCompletion):
                 let product = Product.fake().copy(siteID: self.sampleSiteID, purchasable: true)
                 self.insert(product, withSearchTerm: "shirt")
                 onCompletion(.success(()))
@@ -179,7 +179,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let expectation = expectation(description: "Completed product search")
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .searchProducts(_, _, _, _, _, onCompletion):
+            case let .searchProducts(_, _, _, _, _, _, _, _, _, onCompletion):
                 self.insert(shirt, withSearchTerm: "shirt")
                 onCompletion(.success(()))
                 expectation.fulfill()
@@ -199,16 +199,22 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows[0].name, "T-shirt")
     }
 
-    func test_clearSearch_resets_searchTerm() {
+    func test_clearSearchAndFilters_resets_searchTerm_and_filters() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID)
 
         // When
         viewModel.searchTerm = "shirt"
+        viewModel.filters = .init(stockStatus: .outOfStock,
+                                  productStatus: .draft,
+                                  productType: .simple,
+                                  productCategory: nil,
+                                  numberOfActiveFilters: 3)
         viewModel.clearSearchAndFilters()
 
         // Then
         XCTAssertEqual(viewModel.searchTerm, "")
+        XCTAssertEqual(viewModel.filters, FilterProductListViewModel.Filters())
     }
 
     func test_clearing_search_returns_full_product_list() {
@@ -219,7 +225,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         insert([product.copy(name: "T-shirt"), product.copy(name: "Hoodie")])
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .searchProducts(_, _, _, _, _, onCompletion):
+            case let .searchProducts(_, _, _, _, _, _, _, _, _, onCompletion):
                 self.insert(product.copy(name: "T-shirt"), withSearchTerm: "shirt")
                 onCompletion(.success(()))
             case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
@@ -266,7 +272,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let notice: Notice? = waitFor { promise in
             self.stores.whenReceivingAction(ofType: ProductAction.self) { action in
                 switch action {
-                case let .searchProducts(_, _, _, _, _, onCompletion):
+                case let .searchProducts(_, _, _, _, _, _, _, _, _, onCompletion):
                     onCompletion(.failure(NSError(domain: "Error", code: 0)))
                     promise(viewModel.notice)
                 default:
@@ -455,6 +461,81 @@ final class ProductSelectorViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.productRows.count, 1)
         XCTAssertEqual(viewModel.productRows.first?.productOrVariationID, simpleProduct.productID)
+    }
+
+    func test_synchronizeProducts_are_triggered_with_correct_filters() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, stores: stores)
+        var filteredStockStatus: ProductStockStatus?
+        var filteredProductStatus: ProductStatus?
+        var filteredProductType: ProductType?
+        var filteredProductCategory: Yosemite.ProductCategory?
+        let filters = FilterProductListViewModel.Filters(
+            stockStatus: .outOfStock,
+            productStatus: .draft,
+            productType: ProductType.simple,
+            productCategory: .init(categoryID: 123, siteID: sampleSiteID, parentID: 1, name: "Test", slug: "test"),
+            numberOfActiveFilters: 1
+        )
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .synchronizeProducts(_, _, _, stockStatus, productStatus, productType, category, _, _, _, onCompletion):
+                filteredStockStatus = stockStatus
+                filteredProductType = productType
+                filteredProductStatus = productStatus
+                filteredProductCategory = category
+                onCompletion(.success(true))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+
+        // When
+        viewModel.filters = filters
+
+        // Then
+        assertEqual(filteredStockStatus, filters.stockStatus)
+        assertEqual(filteredProductType, filters.productType)
+        assertEqual(filteredProductStatus, filters.productStatus)
+        assertEqual(filteredProductCategory, filters.productCategory)
+    }
+
+    func test_searchProducts_are_triggered_with_correct_filters() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, stores: stores)
+        var filteredStockStatus: ProductStockStatus?
+        var filteredProductStatus: ProductStatus?
+        var filteredProductType: ProductType?
+        var filteredProductCategory: Yosemite.ProductCategory?
+        let filters = FilterProductListViewModel.Filters(
+            stockStatus: .outOfStock,
+            productStatus: .draft,
+            productType: ProductType.simple,
+            productCategory: .init(categoryID: 123, siteID: sampleSiteID, parentID: 1, name: "Test", slug: "test"),
+            numberOfActiveFilters: 1
+        )
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .searchProducts(_, _, _, _, stockStatus, productStatus, productType, category, _, onCompletion):
+                filteredStockStatus = stockStatus
+                filteredProductType = productType
+                filteredProductStatus = productStatus
+                filteredProductCategory = category
+                onCompletion(.success(Void()))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+
+        // When
+        viewModel.searchTerm = "hiii"
+        viewModel.filters = filters
+
+        // Then
+        assertEqual(filteredStockStatus, filters.stockStatus)
+        assertEqual(filteredProductType, filters.productType)
+        assertEqual(filteredProductStatus, filters.productStatus)
+        assertEqual(filteredProductCategory, filters.productCategory)
     }
 }
 

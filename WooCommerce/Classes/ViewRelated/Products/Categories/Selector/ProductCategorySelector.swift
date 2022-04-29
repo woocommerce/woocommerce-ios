@@ -10,7 +10,27 @@ struct ProductCategorySelector: View {
     }
 
     var body: some View {
-        Text("Hello, World!")
+        NavigationView {
+            VStack(spacing: 0) {
+                ProductCategoryList(viewModel: viewModel.listViewModel)
+                Button("Done") {
+                    // TODO
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .padding()
+            }
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        // TODO
+                    }
+                }
+            }
+            .navigationTitle("Select Products")
+            .navigationBarTitleDisplayMode(.large)
+            .navigationViewStyle(.stack)
+            .wooNavigationBarStyle()
+        }
     }
 }
 

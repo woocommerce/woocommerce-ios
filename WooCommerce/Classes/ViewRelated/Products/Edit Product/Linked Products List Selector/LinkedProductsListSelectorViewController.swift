@@ -86,11 +86,7 @@ private extension LinkedProductsListSelectorViewController {
             self?.navigationController?.popViewController(animated: true)
         }
         let listSelector: UIViewController = {
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.couponEditing) {
-                return ProductListSelectorViewController(excludedProductIDs: excludedProductIDs, siteID: siteID, onCompletion: selectorCompletion)
-            } else {
-                return LegacyProductListSelectorViewController(excludedProductIDs: excludedProductIDs, siteID: siteID, onCompletion: selectorCompletion)
-            }
+            return ProductListSelectorViewController(excludedProductIDs: excludedProductIDs, siteID: siteID, onCompletion: selectorCompletion)
         }()
         show(listSelector, sender: self)
     }

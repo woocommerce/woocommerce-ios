@@ -21,7 +21,8 @@ struct CouponRestrictions: View {
                         TitleAndTextFieldRow(title: String.localizedStringWithFormat(Localization.minimumSpend, viewModel.currencySymbol),
                                              placeholder: Localization.none,
                                              text: $viewModel.minimumSpend,
-                                             keyboardType: .decimalPad)
+                                             keyboardType: .decimalPad,
+                                             inputFormatter: CouponAmountInputFormatter())
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()
                             .padding(.leading, Constants.margin)
@@ -29,7 +30,8 @@ struct CouponRestrictions: View {
                         TitleAndTextFieldRow(title: String.localizedStringWithFormat(Localization.maximumSpend, viewModel.currencySymbol),
                                              placeholder: Localization.none,
                                              text: $viewModel.maximumSpend,
-                                             keyboardType: .decimalPad)
+                                             keyboardType: .decimalPad,
+                                             inputFormatter: CouponAmountInputFormatter())
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()
                             .padding(.leading, Constants.margin)
@@ -37,7 +39,8 @@ struct CouponRestrictions: View {
                         TitleAndTextFieldRow(title: Localization.usageLimitPerCoupon,
                                              placeholder: Localization.unlimited,
                                              text: $viewModel.usageLimitPerCoupon,
-                                             keyboardType: .asciiCapableNumberPad)
+                                             keyboardType: .asciiCapableNumberPad,
+                                             inputFormatter: IntegerInputFormatter(defaultValue: ""))
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()
                             .padding(.leading, Constants.margin)
@@ -45,7 +48,8 @@ struct CouponRestrictions: View {
                         TitleAndTextFieldRow(title: Localization.usageLimitPerUser,
                                              placeholder: Localization.unlimited,
                                              text: $viewModel.usageLimitPerUser,
-                                             keyboardType: .asciiCapableNumberPad)
+                                             keyboardType: .asciiCapableNumberPad,
+                                             inputFormatter: IntegerInputFormatter(defaultValue: ""))
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()
                             .padding(.leading, Constants.margin)
@@ -57,7 +61,8 @@ struct CouponRestrictions: View {
                         TitleAndTextFieldRow(title: Localization.limitUsageToXItems,
                                              placeholder: Localization.allQualifyingInCart,
                                              text: $viewModel.limitUsageToXItems,
-                                             keyboardType: .asciiCapableNumberPad)
+                                             keyboardType: .asciiCapableNumberPad,
+                                             inputFormatter: IntegerInputFormatter(defaultValue: ""))
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()
                             .padding(.leading, Constants.margin)

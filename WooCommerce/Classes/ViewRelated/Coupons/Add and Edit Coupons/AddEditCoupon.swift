@@ -11,6 +11,7 @@ struct AddEditCoupon: View {
     @State private var showingCouponExpiryDate: Bool = false
     @State private var showingCouponRestrictions: Bool = false
     @State private var showingSelectProducts: Bool = false
+    @State private var showingSelectCategories: Bool = false
     @Environment(\.presentationMode) var presentation
 
     private var expiryDateActionSheetButtons: [Alert.Button] {
@@ -163,7 +164,7 @@ struct AddEditCoupon: View {
                             .padding(.bottom, Constants.verticalSpacing)
 
                             Button {
-                                //TODO: handle action
+                                showingSelectCategories = true
                             } label: {
                                 HStack {
                                     Image(uiImage: .pencilImage)
@@ -228,6 +229,11 @@ struct AddEditCoupon: View {
                     .onDisappear {
                         viewModel.productSelectorViewModel.clearSearchAndFilters()
                     }
+            }
+            .sheet(isPresented: $showingSelectCategories) {
+                ProductCategorySelector(isPresented: $showingSelectCategories,
+                                        config: ProductCategorySelector.Configuration.categoriesForCoupons,
+                                        viewModel: viewModel.categorySelectorViewModel)
             }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -367,9 +373,11 @@ private extension ProductCategorySelector.Configuration {
 
     enum Localization {
         static let title = NSLocalizedString("Select categories", comment: "Title for the Select Categories screen")
-        static let doneSingularFormat = NSLocalizedString("Select %1$@ Category", comment: "Button to submit selection on the Select Category screen when 1 item is selected")
+        static let doneSingularFormat = NSLocalizedString(
+            "Select %1$d Category",
+            comment: "Button to submit selection on the Select Category screen when 1 item is selected")
         static let donePluralFormat = NSLocalizedString(
-            "Select %1$@ Categories",
+            "Select %1$d Categories",
             comment: "Button to submit selection on the Select Category screen " +
             "when more than 1 item is selected. " +
             "Reads like: Select 10 Categories")

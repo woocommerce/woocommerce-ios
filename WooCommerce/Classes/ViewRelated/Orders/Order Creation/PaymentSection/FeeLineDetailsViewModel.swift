@@ -29,7 +29,7 @@ class FeeLineDetailsViewModel: ObservableObject {
         }
     }
 
-    /// Decimal value of currently entered fee. For percentage type it is calulcated final amount.
+    /// Decimal value of currently entered fee. For percentage type it is calculated final amount.
     ///
     private var finalAmountDecimal: Decimal {
         let inputString = feeType == .fixed ? amount : percentage
@@ -43,6 +43,12 @@ class FeeLineDetailsViewModel: ObservableObject {
         case .percentage:
             return baseAmountForPercentage * (decimalInput as Decimal) * 0.01
         }
+    }
+
+    /// Formatted string value of currently entered fee. For percentage type it is calculated final amount.
+    ///
+    var finalAmountString: String? {
+        currencyFormatter.formatAmount(finalAmountDecimal)
     }
 
     /// The base amount (items + shipping) to apply percentage fee on.
@@ -133,7 +139,7 @@ class FeeLineDetailsViewModel: ObservableObject {
     }
 
     func saveData() {
-        guard let finalAmountString = currencyFormatter.formatAmount(finalAmountDecimal) else {
+        guard let finalAmountString = finalAmountString else {
             return
         }
 

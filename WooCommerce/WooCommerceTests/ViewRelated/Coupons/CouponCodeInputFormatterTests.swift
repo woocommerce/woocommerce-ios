@@ -12,7 +12,7 @@ final class CouponCodeInputFormatterTests: XCTestCase {
     }
 
     // MARK: test cases for `format(input:)`
-    func test_a_coupon_code_will_bed_formatte_uppercased() {
+    func test_a_coupon_code_will_be_formatted_uppercased() {
         let input = "abcdefd"
         XCTAssertEqual(formatter.format(input: input), "ABCDEFD")
     }

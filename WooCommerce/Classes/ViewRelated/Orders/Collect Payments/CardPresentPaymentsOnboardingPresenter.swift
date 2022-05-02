@@ -50,11 +50,11 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
                     return
                 }
 
-                if let navigationController = viewController as? UINavigationController {
-                    navigationController.popViewController(animated: true)
-                } else {
-                    viewController.navigationController?.popViewController(animated: true)
-                }
+//                if let navigationController = viewController as? UINavigationController {
+//                    navigationController.popViewController(animated: true)
+//                } else {
+//                    viewController.navigationController?.popViewController(animated: true)
+//                }
 
                 completion()
             })

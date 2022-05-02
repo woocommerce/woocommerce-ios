@@ -250,7 +250,6 @@ final class AddEditCouponViewModel: ObservableObject {
 
     enum CouponError: Error, Equatable {
         case couponCodeEmpty
-        case ciao
         case other(error: Error)
 
         static func ==(lhs: CouponError, rhs: CouponError) -> Bool {

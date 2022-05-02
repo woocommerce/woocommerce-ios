@@ -66,7 +66,7 @@ class FeeLineDetailsViewModel: ObservableObject {
     /// Returns true when base amount for percentage > 0.
     ///
     var isPercentageOptionAvailable: Bool {
-        baseAmountForPercentage > 0
+        !isExistingFeeLine && baseAmountForPercentage > 0
     }
 
     /// Returns true when there are no valid pending changes.

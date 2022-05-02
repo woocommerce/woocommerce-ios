@@ -411,6 +411,7 @@
 		035C6DEB273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035C6DEA273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift */; };
 		035F2308275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035F2307275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift */; };
 		036F6EA6281847D5006D84F8 /* PaymentCaptureOrchestratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036F6EA5281847D5006D84F8 /* PaymentCaptureOrchestratorTests.swift */; };
+		0375799928201F750083F2E1 /* CardPaymentReadinessUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0375799828201F750083F2E1 /* CardPaymentReadinessUseCase.swift */; };
 		0379C51727BFCE9800A7E284 /* WCPayCardBrand+icons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0379C51627BFCE9800A7E284 /* WCPayCardBrand+icons.swift */; };
 		0379C51927BFE23400A7E284 /* RefundConfirmationCardDetailsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0379C51827BFE23400A7E284 /* RefundConfirmationCardDetailsCell.xib */; };
 		0379C51B27BFE23F00A7E284 /* RefundConfirmationCardDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0379C51A27BFE23F00A7E284 /* RefundConfirmationCardDetailsCell.swift */; };
@@ -2132,6 +2133,7 @@
 		035C6DEA273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareUpdateTypeProperty.swift; sourceTree = "<group>"; };
 		035F2307275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalConnectingFailedUpdatePostalCode.swift; sourceTree = "<group>"; };
 		036F6EA5281847D5006D84F8 /* PaymentCaptureOrchestratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentCaptureOrchestratorTests.swift; sourceTree = "<group>"; };
+		0375799828201F750083F2E1 /* CardPaymentReadinessUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPaymentReadinessUseCase.swift; sourceTree = "<group>"; };
 		0379C51627BFCE9800A7E284 /* WCPayCardBrand+icons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayCardBrand+icons.swift"; sourceTree = "<group>"; };
 		0379C51827BFE23400A7E284 /* RefundConfirmationCardDetailsCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RefundConfirmationCardDetailsCell.xib; sourceTree = "<group>"; };
 		0379C51A27BFE23F00A7E284 /* RefundConfirmationCardDetailsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundConfirmationCardDetailsCell.swift; sourceTree = "<group>"; };
@@ -7459,6 +7461,7 @@
 				CECC758D23D2260E00486676 /* Refunded Products */,
 				02619856256B539400E321E9 /* Shipping Labels */,
 				CE85535C209B5BB700938BDC /* OrderDetailsViewModel.swift */,
+				0375799828201F750083F2E1 /* CardPaymentReadinessUseCase.swift */,
 				D817585D22BB5E8700289CFE /* OrderEmailComposer.swift */,
 				D817586122BB64C300289CFE /* OrderDetailsNotices.swift */,
 				D817586322BDD81600289CFE /* OrderDetailsDataSource.swift */,
@@ -9398,6 +9401,7 @@
 				F997174523DC068500592D8E /* XLPagerStrip+AccessibilityIdentifier.swift in Sources */,
 				D8C2A28B231931D100F503E9 /* ReviewViewModel.swift in Sources */,
 				B541B223218A29A6008FE7C1 /* NSParagraphStyle+Woo.swift in Sources */,
+				0375799928201F750083F2E1 /* CardPaymentReadinessUseCase.swift in Sources */,
 				E10BC15E26CC06970064F5E2 /* ScrollableVStack.swift in Sources */,
 				B50BB4162141828F00AF0F3C /* FooterSpinnerView.swift in Sources */,
 				D8610CE2257099E100A5DF27 /* FancyAlertViewController+UnifiedLogin.swift in Sources */,

@@ -31,7 +31,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
                 case .success:
                     break
                 case .failure:
-                    self?.displayAppleMapsErrorNotice()
+                    self?.displayErrorNotice(title: Localization.appleMapsErrorNotice)
                 }
             }
         } contactCustomerPressed: { [weak self] sourceView in
@@ -50,7 +50,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
             if let phoneNumber = phone, phoneNumber.isNotEmpty {
                 actionSheet.addDefaultActionWithTitle(Localization.contactActionCall) { _ in
                     if PhoneHelper.callPhoneNumber(phone: phoneNumber) == false {
-                        self.displayPhoneNumberErrorNotice()
+                        self.displayErrorNotice(title: Localization.phoneNumberErrorNotice)
                     }
                 }
                 actionSheet.addDefaultActionWithTitle(Localization.contactActionMessage) { _ in
@@ -232,7 +232,7 @@ private extension ShippingLabelAddressFormViewController {
                 self.onCompletion(self.viewModel.address)
                 self.navigationController?.popViewController(animated: true)
             case .failure:
-                self.displayAddressUpdateFailedNotice()
+                self.displayErrorNotice(title: Localization.addressValidationErrorNotice)
             }
         }
     }
@@ -254,36 +254,23 @@ private extension ShippingLabelAddressFormViewController {
 
 // MARK: - Utils
 private extension ShippingLabelAddressFormViewController {
-    /// Enqueues the `Apple Maps` Error Notice.
-    ///
-    private func displayAppleMapsErrorNotice() {
-        let notice = Notice(title: Localization.appleMapsErrorNotice, feedbackType: .error, actionTitle: nil, actionHandler: nil)
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
-    }
-
-    /// Enqueues the `Phone Number`  Error Notice.
-    ///
-    private func displayPhoneNumberErrorNotice() {
-        let notice = Notice(title: Localization.phoneNumberErrorNotice, feedbackType: .error, actionTitle: nil, actionHandler: nil)
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
-    }
-
     private func handleAddressValidationFailure(failure: ShippingLabelAddressFormViewModel.AddressValidationError?) {
         if let failure = failure {
             switch failure {
             case .none:
-                self.displayAddressUpdateFailedNotice()
+                self.displayErrorNotice(title: Localization.addressValidationErrorNotice)
             case .remote:
                 break
             }
         } else {
-            self.displayAddressUpdateFailedNotice()
+            self.displayErrorNotice(title: Localization.addressValidationErrorNotice)
         }
     }
 
-    /// Enqueues the Address Validation Error notice.
-    private func displayAddressUpdateFailedNotice() {
-        let notice = Notice(title: Localization.addressValidationErrorNotice, feedbackType: .error, actionTitle: nil, actionHandler: nil)
+    /// Enqueue an error notice
+    ///
+    private func displayErrorNotice(title: String) {
+        let notice = Notice(title: title, feedbackType: .error, actionTitle: nil, actionHandler: nil)
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }

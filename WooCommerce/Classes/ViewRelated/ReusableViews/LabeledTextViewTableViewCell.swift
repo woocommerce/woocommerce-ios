@@ -15,7 +15,9 @@ final class LabeledTextViewTableViewCell: UITableViewCell {
         var style: Style = .headline
 
     }
-    @IBOutlet weak var productLabelHolder: UIView!
+
+    @IBOutlet weak var productStatusBadgeHolder: UIView! // container with extra top margin for badge alignment
+    @IBOutlet weak var productStatusBadgeBg: UIView!
     @IBOutlet weak var productStatusLabel: UILabel!
     @IBOutlet var productTextField: EnhancedTextView!
 
@@ -48,14 +50,14 @@ private extension LabeledTextViewTableViewCell {
         productStatusLabel.font = UIFont.preferredFont(forTextStyle: .caption1)
         productStatusLabel.textAlignment = .center
         productStatusLabel.textColor = BadgeStyle.Colors.textColor
-        productLabelHolder.backgroundColor = BadgeStyle.Colors.defaultBg
-        productLabelHolder.layer.cornerRadius = BadgeStyle.cornerRadius
+        productStatusBadgeBg.backgroundColor = BadgeStyle.Colors.defaultBg
+        productStatusBadgeBg.layer.cornerRadius = BadgeStyle.cornerRadius
     }
 
     func configureProductStatusLabel(productStatus: ProductStatus) {
         productStatusLabel.text = productStatus.description
-        productLabelHolder.backgroundColor = productStatus == .pending ? BadgeStyle.Colors.pendingBg : BadgeStyle.Colors.defaultBg
-        productLabelHolder.isHidden = productStatus == .published
+        productStatusBadgeBg.backgroundColor = productStatus == .pending ? BadgeStyle.Colors.pendingBg : BadgeStyle.Colors.defaultBg
+        productStatusBadgeHolder.isHidden = productStatus == .published
     }
 
     enum BadgeStyle {

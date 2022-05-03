@@ -55,6 +55,7 @@ struct TitleAndTextFieldRow: View {
                     .font(.body)
                     .keyboardType(keyboardType)
                     .disabled(!editable)
+                    //     .accessibilityIdentifier("test-accessibilityIdentifier-for-text-field")
                 if let symbol = symbol {
                     Text(symbol)
                         .bodyStyle()

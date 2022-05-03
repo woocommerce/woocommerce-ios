@@ -235,7 +235,7 @@ private extension RefundSubmissionUseCase {
                                 self.readerSubscription = nil
                                 self.trackClientSideRefundCanceled(charge: charge, paymentGatewayAccount: paymentGatewayAccount)
                                 onCompletion(.failure(RefundSubmissionError.cardReaderDisconnected))
-                            default:
+                            case .connected:
                                 // Connected case will be handled in `receiveCompletion`.
                                 break
                             }

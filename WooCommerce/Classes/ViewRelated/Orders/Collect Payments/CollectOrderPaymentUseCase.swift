@@ -186,7 +186,7 @@ private extension CollectOrderPaymentUseCase {
                             case .canceled:
                                 self.readerSubscription = nil
                                 onCompletion(.failure(CollectOrderPaymentUseCaseError.cardReaderDisconnected))
-                            default:
+                            case .connected:
                                 // Connected case will be handled in `receiveCompletion`.
                                 break
                             }

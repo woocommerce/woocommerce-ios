@@ -2,7 +2,7 @@
 
 9.2
 -----
-
+- [*] Order Creation: Updated percentage fee flow - added amount preview, disabled percentage option when editing. [https://github.com/woocommerce/woocommerce-ios/pull/6763]
 
 9.1
 -----

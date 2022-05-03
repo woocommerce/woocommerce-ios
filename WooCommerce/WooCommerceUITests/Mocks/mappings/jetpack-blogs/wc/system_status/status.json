@@ -117,8 +117,8 @@
                 }, {
                     "plugin": "woocommerce\/woocommerce.php",
                     "name": "WooCommerce",
-                    "version": "5.9.0",
-                    "version_latest": "5.9.0",
+                    "version": "6.3.0",
+                    "version_latest": "6.3.0",
                     "url": "https:\/\/woocommerce.com\/",
                     "author_name": "Automattic",
                     "author_url": "https:\/\/woocommerce.com",

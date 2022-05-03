@@ -86,10 +86,10 @@ final class RefundConfirmationViewModel {
         let refund = useCase.createRefund()
 
         // Submits refund.
-        let submissionUseCase = RefundSubmissionUseCase(siteID: details.order.siteID,
-                                                        details: .init(order: details.order,
+        let submissionUseCase = RefundSubmissionUseCase(details: .init(order: details.order,
                                                                        charge: details.charge,
-                                                                       amount: details.amount),
+                                                                       amount: details.amount,
+                                                                       paymentGatewayAccount: details.paymentGatewayAccount),
                                                         rootViewController: rootViewController,
                                                         alerts: OrderDetailsPaymentAlerts(transactionType: .refund,
                                                                                           presentingController: rootViewController),
@@ -159,6 +159,10 @@ extension RefundConfirmationViewModel {
         /// Payment gateway used with the order
         ///
         let paymentGateway: PaymentGateway?
+
+        /// Payment gateway account of the site (e.g. WCPay or Stripe extension)
+        ///
+        let paymentGatewayAccount: PaymentGatewayAccount?
     }
 }
 

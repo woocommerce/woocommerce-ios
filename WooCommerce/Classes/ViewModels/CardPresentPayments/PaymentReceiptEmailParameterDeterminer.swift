@@ -1,9 +1,15 @@
 import Foundation
 import Yosemite
 
+/// Determines the email to be set (if any) on a receipt
+///
+protocol ReceiptEmailParameterDeterminer {
+    func receiptEmail(from order: Order, onCompletion: @escaping ((Result<String?, Error>) -> Void))
+}
+
 /// Determines the email to be set (if any) on a payment receipt depending on the current payment plugins (WCPay, Stripe) configuration
-/// 
-struct PaymentReceiptEmailParameterDeterminer {
+///
+struct PaymentReceiptEmailParameterDeterminer: ReceiptEmailParameterDeterminer {
     private let cardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol
     private let stores: StoresManager
     private static let defaultConfiguration = CardPresentConfigurationLoader(stores: ServiceLocator.stores).configuration

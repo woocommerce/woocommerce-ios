@@ -12,6 +12,10 @@ public enum ProductAction: Action {
                         keyword: String,
                         pageNumber: Int,
                         pageSize: Int,
+                        stockStatus: ProductStockStatus? = nil,
+                        productStatus: ProductStatus? = nil,
+                        productType: ProductType? = nil,
+                        productCategory: ProductCategory? = nil,
                         excludedProductIDs: [Int64] = [],
                         onCompletion: (Result<Void, Error>) -> Void)
 

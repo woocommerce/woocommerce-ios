@@ -10,6 +10,10 @@ public struct PaymentIntentParameters {
     @CurrencyCode
     public private(set) var currency: String
 
+    /// The base fee to charge the Merchant for the payment. This is for client-side transactions, e.g. Interac, and will
+    /// be overridden server-side for transactions which are captured on the Server.
+    public let applicationFee: Decimal?
+
     /// An arbitrary string attached to the object. If you send a receipt email for this payment, the email will include the description.
     public let receiptDescription: String?
 
@@ -40,6 +44,7 @@ public struct PaymentIntentParameters {
 
     public init(amount: Decimal,
                 currency: String,
+                applicationFee: Decimal? = nil,
                 receiptDescription: String? = nil,
                 statementDescription: String? = nil,
                 receiptEmail: String? = nil,
@@ -47,6 +52,7 @@ public struct PaymentIntentParameters {
                 metadata: [AnyHashable: Any]? = nil) {
         self.amount = amount
         self.currency = currency
+        self.applicationFee = applicationFee
         self.receiptDescription = receiptDescription
         self.statementDescription = statementDescription
         self.receiptEmail = receiptEmail

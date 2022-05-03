@@ -237,15 +237,7 @@ private extension PaymentCaptureOrchestrator {
             return nil
         }
 
-        let fee = orderTotal.adding(Constants.canadaFlatFee)
-
-        let numberHandler = NSDecimalNumberHandler(roundingMode: .plain,
-                                                   scale: 2,
-                                                   raiseOnExactness: false,
-                                                   raiseOnOverflow: false,
-                                                   raiseOnUnderflow: false,
-                                                   raiseOnDivideByZero: false)
-        return fee.rounding(accordingToBehavior: numberHandler) as Decimal
+        return Constants.canadaFlatFee as Decimal
     }
 
     func receiptDescription(orderNumber: String) -> String? {

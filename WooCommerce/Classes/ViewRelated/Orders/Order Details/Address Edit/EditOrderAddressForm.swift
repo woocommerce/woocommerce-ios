@@ -98,6 +98,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                                   sectionTitle: viewModel.sectionTitle,
                                   showEmailField: viewModel.showEmailField,
                                   showStateFieldAsSelector: viewModel.showStateFieldAsSelector)
+                     //             .accessibilityIdentifier("order-address-form")
 
                 if viewModel.showAlternativeUsageToggle, let alternativeUsageToggleTitle = viewModel.alternativeUsageToggleTitle {
                     TitleAndToggleRow(title: alternativeUsageToggleTitle, isOn: $viewModel.fields.useAsToggle)
@@ -115,6 +116,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                         .padding(.horizontal, insets: safeAreaInsets)
                         .background(Color(.systemBackground))
                         .addingTopAndBottomDividers()
+                        .accessibilityIdentifier("order-creation-customer-details-shipping-address-toggle")
                 }
 
                 if viewModel.showDifferentAddressForm {
@@ -124,6 +126,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                                       sectionTitle: viewModel.secondarySectionTitle,
                                       showEmailField: false,
                                       showStateFieldAsSelector: viewModel.showSecondaryStateFieldAsSelector)
+                    //    .accessibilityIdentifier("secondary-order-address-form")
                 }
 
                 Spacer(minLength: safeAreaInsets.bottom)
@@ -166,6 +169,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                     }
                 })
             }
+            .accessibilityIdentifier("order-customer-details-done-button")
             .disabled(!enabled)
         case .loading:
             ProgressView()
@@ -220,6 +224,7 @@ struct SingleAddressForm: View {
                                  symbol: nil,
                                  fieldAlignment: .leading,
                                  keyboardType: .default)
+               // .accessibilityIdentifier("order-address-form-first-name-field")
             Divider()
                 .padding(.leading, Constants.dividerPadding)
             TitleAndTextFieldRow(title: Localization.lastNameField,
@@ -229,6 +234,7 @@ struct SingleAddressForm: View {
                                  symbol: nil,
                                  fieldAlignment: .leading,
                                  keyboardType: .default)
+                .accessibilityIdentifier("order-address-form-last-name-field")
             Divider()
                 .padding(.leading, Constants.dividerPadding)
 
@@ -279,6 +285,7 @@ struct SingleAddressForm: View {
                                      symbol: nil,
                                      fieldAlignment: .leading,
                                      keyboardType: .default)
+                    .accessibilityIdentifier("order-address-form-address1-field")
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
                 TitleAndTextFieldRow(title: Localization.address2Field,

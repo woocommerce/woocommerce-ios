@@ -14,7 +14,7 @@ enum MockCardReaderSettingsAlertsMode {
     case cancelSearchingAfterConnectionFailure
 }
 
-final class MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
+final class MockCardReaderSettingsAlerts {
     private var mode: MockCardReaderSettingsAlertsMode
     private var didPresentFoundReader: Bool
 
@@ -22,6 +22,13 @@ final class MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         self.mode = mode
         self.didPresentFoundReader = false
     }
+
+    func update(mode: MockCardReaderSettingsAlertsMode) {
+        self.mode = mode
+    }
+}
+
+extension MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
     func scanningForReader(from: UIViewController, cancel: @escaping () -> Void) {
         if mode == .cancelScanning {
             cancel()

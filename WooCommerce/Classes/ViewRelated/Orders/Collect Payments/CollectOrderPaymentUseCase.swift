@@ -181,10 +181,14 @@ private extension CollectOrderPaymentUseCase {
                     self.connectionController.searchAndConnect(from: self.rootViewController) { [weak self] result in
                         guard let self = self else { return }
                         switch result {
-                        case let .success(isConnected):
-                            if isConnected == false {
+                        case let .success(connectionResult):
+                            switch connectionResult {
+                            case .canceled:
                                 self.readerSubscription = nil
                                 onCompletion(.failure(CollectOrderPaymentUseCaseError.cardReaderDisconnected))
+                            case .connected:
+                                // Connected case will be handled in `receiveCompletion`.
+                                break
                             }
                         case .failure(let error):
                             self.readerSubscription = nil

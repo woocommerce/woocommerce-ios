@@ -963,6 +963,24 @@ extension WooAnalyticsEvent {
                               error: error)
         }
 
+        /// Tracked when an Interac client-side refund is canceled
+        ///
+        /// - Parameters:
+        ///   - gatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - countryCode: the country code of the store.
+        ///   - cardReaderModel: the model type of the card reader.
+        ///
+        static func interacRefundCanceled(gatewayID: String?,
+                                          countryCode: String,
+                                          cardReaderModel: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .interacRefundCanceled,
+                              properties: [
+                                Keys.cardReaderModel: cardReaderModel,
+                                Keys.countryCode: countryCode,
+                                Keys.gatewayID: self.gatewayID(forGatewayID: gatewayID)
+                              ])
+        }
+
         /// Tracked when the "learn more" button in the In-Person Payments onboarding is tapped.
         ///
         /// - Parameter countryCode: the country code of the store.

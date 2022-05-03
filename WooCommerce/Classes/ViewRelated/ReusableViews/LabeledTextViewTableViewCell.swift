@@ -44,7 +44,6 @@ private extension LabeledTextViewTableViewCell {
         productTextField.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
     }
 
-
     func configureLabelStyle() {
         productStatusLabel.font = UIFont.preferredFont(forTextStyle: .caption1)
         productStatusLabel.textAlignment = .center
@@ -55,7 +54,8 @@ private extension LabeledTextViewTableViewCell {
 
     func configureProductStatusLabel(productStatus: ProductStatus) {
         productStatusLabel.text = productStatus.description
-        productLabelHolder.isHidden = productStatus == ProductStatus.published
+        productLabelHolder.backgroundColor = productStatus == .pending ? .withColorStudio(.orange, shade: .shade10) : .gray(.shade5)
+        productLabelHolder.isHidden = productStatus == .published
     }
 }
 

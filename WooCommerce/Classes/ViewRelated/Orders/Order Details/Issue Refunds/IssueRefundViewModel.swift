@@ -67,7 +67,7 @@ final class IssueRefundViewModel {
     /// This closure is executed when fetching the charge details failed.
     /// Implement the input parameter with a closure to be execured when the user wants to retry the fetch action.
     ///
-    var onChargeFetchError: ((@escaping (() -> Void)) -> (Void))?
+    var onChargeFetchErrorNoticeShowRequest: ((@escaping (() -> Void)) -> (Void))?
 
     /// Title for the navigation bar
     ///
@@ -319,7 +319,7 @@ private extension IssueRefundViewModel {
             if case .failure(_) = result {
                 self?.state.fetchChargeError = .requestError
 
-                self?.onChargeFetchError?({ [weak self] in
+                self?.onChargeFetchErrorNoticeShowRequest?({ [weak self] in
                     self?.fetchCharge()
                 })
             }

@@ -216,7 +216,7 @@ private extension CardPresentPaymentStore {
                 Publishers.CombineLatest(
                     self.cardReaderService.waitForInsertedCardToBeRemoved()
                         .handleEvents(receiveOutput: {
-                            onCardReaderMessage(.cardRemovedAfterPaymentCapture)
+                            onCardReaderMessage(.cardRemovedAfterClientSidePaymentCapture)
                         })
                         .map { intent },
                     self.captureOrderPaymentOnSite(siteID: siteID, orderID: orderID, paymentIntent: intent)

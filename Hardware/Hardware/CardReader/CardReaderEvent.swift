@@ -16,7 +16,7 @@ public enum CardReaderEvent: Equatable {
     case cardRemoved
 
     /// A card was removed after client-side payment capture.
-    case cardRemovedAfterPaymentCapture
+    case cardRemovedAfterClientSidePaymentCapture
 
     /// Low battery warning.
     case lowBattery

@@ -679,7 +679,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                 orderID: self.sampleOrderID,
                                 parameters: .init(amount: 2.5, currency: "USD")) { cardReaderEvent in
                     cardReaderEvents.append(cardReaderEvent)
-                    if cardReaderEvent == .cardRemovedAfterPaymentCapture {
+                    if cardReaderEvent == .cardRemovedAfterClientSidePaymentCapture {
                         promise(())
                     }
                 } onProcessingCompletion: { intent in
@@ -691,7 +691,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         // Then
         // Only `cardRemovedAfterPaymentCapture` is sent from `CardPresentPaymentStore` while other events in production
         // are sent from `StripeCardReaderService` which is mocked here.
-        XCTAssertEqual(cardReaderEvents, [.cardRemovedAfterPaymentCapture])
+        XCTAssertEqual(cardReaderEvents, [.cardRemovedAfterClientSidePaymentCapture])
     }
 
     /// Verifies that after card reader finishes capturing payment with an error, `onCompletion` is called with a failure result

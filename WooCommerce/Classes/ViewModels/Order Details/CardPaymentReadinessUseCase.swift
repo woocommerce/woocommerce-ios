@@ -39,6 +39,7 @@ final class CardPaymentReadinessUseCase {
         let readerConnected = CardPresentPaymentAction.checkCardReaderConnected { connectPublisher in
             // TODO: Use readerConnectedReadiness to preempt the onboarding readiness check.
             // This requires a refactor of `checkCardReaderConnected` to emit an event for a connected reader.
+            // See https://github.com/woocommerce/woocommerce-ios/issues/6766
             let readerConnectedReadiness = connectPublisher.map { _ -> CardPaymentReadiness in
                 return CardPaymentReadiness.loading
             }

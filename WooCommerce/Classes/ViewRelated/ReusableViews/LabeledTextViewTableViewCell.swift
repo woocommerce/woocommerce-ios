@@ -47,15 +47,25 @@ private extension LabeledTextViewTableViewCell {
     func configureLabelStyle() {
         productStatusLabel.font = UIFont.preferredFont(forTextStyle: .caption1)
         productStatusLabel.textAlignment = .center
-        productStatusLabel.textColor = UIColor.black
-        productLabelHolder.backgroundColor = .gray(.shade5)
-        productLabelHolder.layer.cornerRadius = CGFloat(4.0)
+        productStatusLabel.textColor = BadgeStyle.Colors.textColor
+        productLabelHolder.backgroundColor = BadgeStyle.Colors.defaultBg
+        productLabelHolder.layer.cornerRadius = BadgeStyle.cornerRadius
     }
 
     func configureProductStatusLabel(productStatus: ProductStatus) {
         productStatusLabel.text = productStatus.description
-        productLabelHolder.backgroundColor = productStatus == .pending ? .withColorStudio(.orange, shade: .shade10) : .gray(.shade5)
+        productLabelHolder.backgroundColor = productStatus == .pending ? BadgeStyle.Colors.pendingBg : BadgeStyle.Colors.defaultBg
         productLabelHolder.isHidden = productStatus == .published
+    }
+
+    enum BadgeStyle {
+        static let cornerRadius: CGFloat = 4
+
+        enum Colors {
+            static let textColor: UIColor = .black
+            static let defaultBg: UIColor = .gray(.shade5)
+            static let pendingBg: UIColor = .withColorStudio(.orange, shade: .shade10)
+        }
     }
 }
 

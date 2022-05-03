@@ -317,6 +317,7 @@ struct SingleAddressForm: View {
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
             }
+            .accessibilityIdentifier("address-group-test-accessibilityIdentifier")
 
             Group {
                 // Go to edit country

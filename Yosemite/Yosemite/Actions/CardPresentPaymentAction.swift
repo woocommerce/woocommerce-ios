@@ -19,12 +19,6 @@ public enum CardPresentPaymentAction: Action {
     ///
     case loadAccounts(siteID: Int64, onCompletion: (Result<Void, Error>) -> Void)
 
-    /// Captures a payment intent ID, associated to an order and site
-    case captureOrderPayment(siteID: Int64,
-                             orderID: Int64,
-                             paymentIntentID: String,
-                             completion: (Result<Void, Error>) -> Void)
-
     /// Start the Card Reader discovery process.
     ///
     case startCardReaderDiscovery(siteID: Int64, onReaderDiscovered: ([CardReader]) -> Void, onError: (Error) -> Void)

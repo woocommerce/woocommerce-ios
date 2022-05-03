@@ -80,6 +80,8 @@ final class PaymentCaptureOrchestrator {
                             onWaitingForInput()
                         case .displayMessage(let message):
                             onDisplayMessage(message)
+                        case .cardRemovedAfterClientSidePaymentCapture:
+                            onProcessingMessage()
                         default:
                             break
                         }
@@ -89,7 +91,6 @@ final class PaymentCaptureOrchestrator {
                     },
                     onCompletion: { [weak self] result in
                         self?.allowPassPresentation()
-                        onProcessingMessage()
                         self?.completePaymentIntentCapture(
                             order: order,
                             captureResult: result,
@@ -101,7 +102,7 @@ final class PaymentCaptureOrchestrator {
                 self.stores.dispatch(paymentAction)
             case let .failure(error):
                 onCompletion(Result.failure(error))
-             }
+            }
         }
     }
 
@@ -184,24 +185,6 @@ private extension PaymentCaptureOrchestrator {
         case .failure(let error):
             onCompletion(.failure(error))
         case .success(let paymentIntent):
-            submitPaymentIntent(siteID: order.siteID,
-                                order: order,
-                                paymentIntent: paymentIntent,
-                                onCompletion: onCompletion)
-        }
-    }
-
-    func submitPaymentIntent(siteID: Int64,
-                             order: Order,
-                             paymentIntent: PaymentIntent,
-                             onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
-        let action = CardPresentPaymentAction.captureOrderPayment(siteID: siteID,
-                                                                     orderID: order.orderID,
-                                                                     paymentIntentID: paymentIntent.id) { [weak self] result in
-            guard let self = self else {
-                return
-            }
-
             guard let paymentMethod = paymentIntent.paymentMethod(),
                   let receiptParameters = paymentIntent.receiptParameters() else {
                 let error = CardReaderServiceError.paymentCapture()
@@ -212,19 +195,11 @@ private extension PaymentCaptureOrchestrator {
                 return
             }
 
-            switch result {
-            case .success:
-                self.celebrate() // plays a sound, haptic
-                self.saveReceipt(for: order, params: receiptParameters)
-                onCompletion(.success(.init(paymentMethod: paymentMethod,
-                                            receiptParameters: receiptParameters)))
-            case .failure(let error):
-                onCompletion(.failure(CardReaderServiceError.paymentCaptureWithPaymentMethod(underlyingError: error, paymentMethod: paymentMethod)))
-                return
-            }
+            celebrate() // plays a sound, haptic
+            saveReceipt(for: order, params: receiptParameters)
+            onCompletion(.success(.init(paymentMethod: paymentMethod,
+                                        receiptParameters: receiptParameters)))
         }
-
-        stores.dispatch(action)
     }
 
     func paymentParameters(order: Order,

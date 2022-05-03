@@ -636,6 +636,8 @@ private extension ShippingLabelAddressFormViewController {
             comment: "Error in calling the phone number of the customer in the Shipping Label Address Validation")
         static let addressValidationErrorNotice = NSLocalizedString("Certain required fields needs attention.",
                 comment: "Ship From address update failed notice")
+        static let addressValidationFailedNotice = NSLocalizedString("The address cannot be validated, please double-check the address and try again",
+                comment: "Ship From address validation failed notice")
         static let contactActionLabel = NSLocalizedString("Contact Customer", comment: "Contact Customer action in Shipping Label Address Validation.")
         static let contactActionCancel = NSLocalizedString("Cancel", comment: "Close the action sheet")
         static let contactActionEmail = NSLocalizedString("Email", comment: "Email button title")

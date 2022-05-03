@@ -73,7 +73,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
                                                                            amount: "24.23",
                                                                            discountType: .percent,
                                                                            description: "This is a test description",
-                                                                           dateExpires: Date().endOfDay(timezone: TimeZone.current),
+                                                                           dateExpires: Date().startOfDay(timezone: TimeZone.current),
                                                                            individualUse: true,
                                                                            usageLimit: 40,
                                                                            usageLimitPerUser: 1,

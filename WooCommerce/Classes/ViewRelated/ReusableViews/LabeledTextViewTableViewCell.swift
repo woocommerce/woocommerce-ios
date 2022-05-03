@@ -28,7 +28,6 @@ final class LabeledTextViewTableViewCell: UITableViewCell {
     func configure(with viewModel: ViewModel) {
         productTextField.text = viewModel.text
         productTextField.placeholder = viewModel.placeholder
-        productStatusLabel.text = viewModel.productStatus.description
         productTextField.isScrollEnabled = viewModel.isScrollEnabled
         productTextField.onTextChange = viewModel.onNameChange
         productTextField.onTextDidBeginEditing = viewModel.onTextDidBeginEditing
@@ -55,16 +54,9 @@ private extension LabeledTextViewTableViewCell {
     }
 
     func configureProductStatusLabel(productStatus: ProductStatus) {
-        if productStatus == ProductStatus.draft {
-                let statusLabel = NSLocalizedString("Draft", comment: "Display label for the product's draft status")
-                productLabelHolder.isHidden = false
-                productStatusLabel.isHidden = false
-                productStatusLabel.text? = statusLabel
-            } else {
-                productLabelHolder.isHidden = true
-                productStatusLabel.isHidden = true
-            }
-        }
+        productStatusLabel.text = productStatus.description
+        productLabelHolder.isHidden = productStatus == ProductStatus.published
+    }
 }
 
 // Styles

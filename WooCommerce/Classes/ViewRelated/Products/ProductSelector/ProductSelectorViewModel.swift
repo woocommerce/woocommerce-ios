@@ -24,6 +24,33 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     let onLoadTrigger: PassthroughSubject<Void, Never> = PassthroughSubject()
 
+    /// View model for the filter list.
+    ///
+    var filterListViewModel: FilterProductListViewModel {
+        FilterProductListViewModel(filters: filters, siteID: siteID)
+    }
+
+    /// Selected filter for the product list
+    ///
+    var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters() {
+        didSet {
+            let contentIsNotSyncedYet = syncingCoordinator.highestPageBeingSynced ?? 0 == 0
+            if filters != oldValue || contentIsNotSyncedYet {
+                updateFilterButtonTitle()
+                productsResultsController.updatePredicate(siteID: siteID,
+                                                          stockStatus: filters.stockStatus,
+                                                          productStatus: filters.productStatus,
+                                                          productType: filters.productType)
+                updateProductsResultsController()
+                syncingCoordinator.resynchronize {}
+            }
+        }
+    }
+
+    /// Title of the filter button, should be updated with number of active filters.
+    ///
+    @Published var filterButtonTitle: String = Localization.filterButtonWithoutActiveFilters
+
     /// Defines the current notice that should be shown.
     /// Defaults to `nil`.
     ///
@@ -103,12 +130,18 @@ final class ProductSelectorViewModel: ObservableObject {
     }
 
     /// IDs of selected products and variations from initializer.
+    /// This is mutable since we want to cancel the setup for any item that is unselected manually.
     ///
-    private let initialSelectedItems: [Int64]
+    private var initialSelectedItems: [Int64]
+
+    /// Whether the product list should contains only purchasable items.
+    ///
+    private let purchasableItemsOnly: Bool
 
     /// Initializer for single selection
     ///
     init(siteID: Int64,
+         purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          onProductSelected: ((Product) -> Void)? = nil,
@@ -120,6 +153,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onVariationSelected = onVariationSelected
         self.onMultipleSelectionCompleted = nil
         self.initialSelectedItems = []
+        self.purchasableItemsOnly = purchasableItemsOnly
 
         configureSyncingCoordinator()
         configureProductsResultsController()
@@ -131,6 +165,7 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     init(siteID: Int64,
          selectedItemIDs: [Int64],
+         purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil) {
@@ -141,6 +176,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onVariationSelected = nil
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
         self.initialSelectedItems = selectedItemIDs
+        self.purchasableItemsOnly = purchasableItemsOnly
 
         configureSyncingCoordinator()
         configureProductsResultsController()
@@ -167,16 +203,19 @@ final class ProductSelectorViewModel: ObservableObject {
         guard let variableProduct = products.first(where: { $0.productID == productID }), variableProduct.variations.isNotEmpty else {
             return nil
         }
+        let selectedItems = selectedProductVariationIDs.filter { variableProduct.variations.contains($0) }
         return ProductVariationSelectorViewModel(siteID: siteID,
                                                  product: variableProduct,
-                                                 selectedProductVariationIDs: selectedProductVariationIDs,
+                                                 selectedProductVariationIDs: selectedItems,
+                                                 purchasableItemsOnly: purchasableItemsOnly,
                                                  onVariationSelected: onVariationSelected)
     }
 
-    /// Clears the current search term to display the full product list.
+    /// Clears the current search term and filters to display the full product list.
     ///
-    func clearSearch() {
+    func clearSearchAndFilters() {
         searchTerm = ""
+        filters = .init()
     }
 
     /// Updates selected variation list based on the new selected IDs
@@ -186,14 +225,12 @@ final class ProductSelectorViewModel: ObservableObject {
               variableProduct.variations.isNotEmpty else {
             return
         }
+        // remove items that exist in the initial list
+        initialSelectedItems.removeAll { selectedVariationIDs.contains($0) }
         // remove all previous selected variations
         selectedProductVariationIDs.removeAll(where: { variableProduct.variations.contains($0) })
         // append new selected IDs
         selectedProductVariationIDs.append(contentsOf: selectedVariationIDs)
-        // update product rows
-        productRows = generateProductRows(products: products,
-                                          selectedProductIDs: selectedProductIDs,
-                                          selectedProductVariationIDs: selectedProductVariationIDs)
     }
 
     /// Triggers completion closure when the multiple selection completes.
@@ -201,6 +238,14 @@ final class ProductSelectorViewModel: ObservableObject {
     func completeMultipleSelection() {
         let allIDs = selectedProductIDs + selectedProductVariationIDs
         onMultipleSelectionCompleted?(allIDs)
+    }
+
+    /// Unselect all items.
+    ///
+    func clearSelection() {
+        initialSelectedItems = []
+        selectedProductIDs = []
+        selectedProductVariationIDs = []
     }
 }
 
@@ -224,12 +269,12 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
         let action = ProductAction.synchronizeProducts(siteID: siteID,
                                                        pageNumber: pageNumber,
                                                        pageSize: pageSize,
-                                                       stockStatus: nil,
-                                                       productStatus: nil,
-                                                       productType: nil,
-                                                       productCategory: nil,
+                                                       stockStatus: filters.stockStatus,
+                                                       productStatus: filters.productStatus,
+                                                       productType: filters.productType,
+                                                       productCategory: filters.productCategory,
                                                        sortOrder: .nameAscending,
-                                                       shouldDeleteStoredProductsOnFirstPage: false) { [weak self] result in
+                                                       shouldDeleteStoredProductsOnFirstPage: true) { [weak self] result in
             guard let self = self else { return }
 
             switch result {
@@ -254,7 +299,11 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
         let action = ProductAction.searchProducts(siteID: siteID,
                                                   keyword: keyword,
                                                   pageNumber: pageNumber,
-                                                  pageSize: pageSize) { [weak self] result in
+                                                  pageSize: pageSize,
+                                                  stockStatus: filters.stockStatus,
+                                                  productStatus: filters.productStatus,
+                                                  productType: filters.productType,
+                                                  productCategory: filters.productCategory) { [weak self] result in
             // Don't continue if this isn't the latest search.
             guard let self = self, keyword == self.searchTerm else {
                 return
@@ -325,7 +374,11 @@ private extension ProductSelectorViewModel {
     func updateProductsResultsController() {
         do {
             try productsResultsController.performFetch()
-            products = productsResultsController.fetchedObjects.filter { $0.purchasable }
+            if purchasableItemsOnly {
+                products = productsResultsController.fetchedObjects.filter { $0.purchasable }
+            } else {
+                products = productsResultsController.fetchedObjects
+            }
             updateSelectionsFromInitialSelectedItems()
             observeSelections()
         } catch {
@@ -374,6 +427,15 @@ private extension ProductSelectorViewModel {
                 self.syncingCoordinator.resynchronize()
             }.store(in: &subscriptions)
     }
+
+    func updateFilterButtonTitle() {
+        let activeFiltersCount = filters.numberOfActiveFilters
+        if activeFiltersCount == 0 {
+            filterButtonTitle = Localization.filterButtonWithoutActiveFilters
+        } else {
+            filterButtonTitle = String.localizedStringWithFormat(Localization.filterButtonWithActiveFilters, activeFiltersCount)
+        }
+    }
 }
 
 // MARK: - Multiple selection support
@@ -381,6 +443,10 @@ private extension ProductSelectorViewModel {
     /// Toggles the selection of the specified product.
     ///
     func toggleSelection(productID: Int64) {
+        if initialSelectedItems.contains(productID) {
+            initialSelectedItems.removeAll(where: { $0 == productID })
+        }
+
         if selectedProductIDs.contains(productID) {
             selectedProductIDs.removeAll(where: { $0 == productID })
         } else {
@@ -409,13 +475,14 @@ private extension ProductSelectorViewModel {
     /// Observes changes in selections to update product rows
     ///
     func observeSelections() {
-        $products.combineLatest($selectedProductIDs) { [weak self] products, selectedProductIDs -> [ProductRowViewModel] in
+        $products.combineLatest($selectedProductIDs, $selectedProductVariationIDs) {
+            [weak self] products, selectedProductIDs, selectedVariationIDs -> [ProductRowViewModel] in
             guard let self = self else {
                 return []
             }
             return self.generateProductRows(products: products,
                                             selectedProductIDs: selectedProductIDs,
-                                            selectedProductVariationIDs: self.selectedProductVariationIDs)
+                                            selectedProductVariationIDs: selectedVariationIDs)
         }.assign(to: &$productRows)
     }
 
@@ -493,5 +560,13 @@ private extension ProductSelectorViewModel {
         static let searchErrorMessage = NSLocalizedString("There was an error searching products",
                                                           comment: "Notice displayed when searching the list of products fails")
         static let errorActionTitle = NSLocalizedString("Retry", comment: "Retry action for an error notice")
+        static let filterButtonWithoutActiveFilters = NSLocalizedString(
+            "Filter",
+            comment: "Title of the button to select all products on the Select Product screen"
+        )
+        static let filterButtonWithActiveFilters = NSLocalizedString(
+                "Filter (%ld)",
+                comment: "Title of the button to filter products with filters applied on the Select Product screen"
+        )
     }
 }

@@ -26,10 +26,12 @@ final class OrdersTests: XCTestCase {
     }
 
     func test_create_new_order() throws {
+        let products = try GetMocks.readProductsData()
+
         try TabNavComponent().goToOrdersScreen()
             .startOrderCreation()
-
-        try NewOrderFlow.editOrderStatus()
+            .editOrderStatus()
+            .addProduct(byName: products[0].name)
             .createOrder()
     }
 

@@ -10,6 +10,7 @@ final class MockOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
     var error: Error?
     var retryFromError: (() -> Void)?
     var dismissErrorCompletion: (() -> Void)?
+    var nonRetryableErrorWasCalled = false
 
     func presentViewModel(viewModel: CardPresentPaymentsModalViewModel) {
         // no-op
@@ -41,8 +42,9 @@ final class MockOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
         dismissErrorCompletion = dismissCompletion
     }
 
-    func nonRetryableError(from: UIViewController?, error: Error) {
-        // no-op
+    func nonRetryableError(from: UIViewController?, error: Error, dismissCompletion: @escaping () -> Void) {
+        nonRetryableErrorWasCalled = true
+        dismissErrorCompletion = dismissCompletion
     }
 
     func retryableError(from: UIViewController?, tryAgain: @escaping () -> Void) {

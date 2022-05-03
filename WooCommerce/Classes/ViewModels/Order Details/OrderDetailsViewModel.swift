@@ -29,7 +29,6 @@ final class OrderDetailsViewModel {
         let onboardingUseCase = CardPresentPaymentsOnboardingUseCase(stores: stores)
         self.cardPaymentReadiness = CardPaymentReadinessUseCase(onboardingUseCase: onboardingUseCase, stores: stores)
         onboardingViewModel = InPersonPaymentsViewModel(useCase: onboardingUseCase)
-        cardPaymentReadiness.checkCardPaymentReadiness()
     }
 
     func update(order newOrder: Order) {

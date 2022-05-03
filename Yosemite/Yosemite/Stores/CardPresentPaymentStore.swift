@@ -105,6 +105,8 @@ public final class CardPresentPaymentStore: Store {
             reset()
         case .checkCardReaderConnected(onCompletion: let completion):
             checkCardReaderConnected(onCompletion: completion)
+        case .publishCardReaderConnections(onCompletion: let completion):
+            publishCardReaderConnections(onCompletion: completion)
         case .fetchWCPayCharge(let siteID, let chargeID, let completion):
             fetchCharge(siteID: siteID, chargeID: chargeID, completion: completion)
         }
@@ -314,6 +316,8 @@ private extension CardPresentPaymentStore {
             ))
     }
 
+    // TODO: Replace `checkCardReaderConnected` with `publishCardReaderConnections`, which emits an event for a connected reader.
+    // See https://github.com/woocommerce/woocommerce-ios/issues/6766
     func checkCardReaderConnected(onCompletion: (AnyPublisher<[CardReader], Never>) -> Void) {
         let publisher = cardReaderService.connectedReaders
             // We only emit values when there is no reader connected, including an initial value
@@ -324,6 +328,14 @@ private extension CardPresentPaymentStore {
             .removeDuplicates()
             // Beyond this point, the publisher should emit an empty initial value once
             // and then finish when a reader is connected.
+            .eraseToAnyPublisher()
+
+        onCompletion(publisher)
+    }
+
+    func publishCardReaderConnections(onCompletion: (AnyPublisher<[CardReader], Never>) -> Void) {
+        let publisher = cardReaderService.connectedReaders
+            .removeDuplicates()
             .eraseToAnyPublisher()
 
         onCompletion(publisher)

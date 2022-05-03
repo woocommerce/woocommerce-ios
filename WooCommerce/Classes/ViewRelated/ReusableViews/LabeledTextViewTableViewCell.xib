@@ -18,7 +18,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="UC5-pp-RCE">
+                    <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="UC5-pp-RCE">
                         <rect key="frame" x="16" y="8" width="288" height="28"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="gvh-NZ-8It" customClass="EnhancedTextView" customModule="WooCommerce" customModuleProvider="target">
@@ -32,7 +32,7 @@
                                 <rect key="frame" x="236.5" y="0.0" width="51.5" height="28"/>
                                 <subviews>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Ls-Wz-Lz4">
-                                        <rect key="frame" x="8" y="0.0" width="35.5" height="28"/>
+                                        <rect key="frame" x="8" y="8" width="35.5" height="12"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -42,8 +42,8 @@
                                 <constraints>
                                     <constraint firstItem="9Ls-Wz-Lz4" firstAttribute="leading" secondItem="A6r-Hf-px7" secondAttribute="leading" constant="8" id="6pg-Hg-H1r"/>
                                     <constraint firstAttribute="trailing" secondItem="9Ls-Wz-Lz4" secondAttribute="trailing" constant="8" id="AqL-XT-p8y"/>
-                                    <constraint firstAttribute="bottom" secondItem="9Ls-Wz-Lz4" secondAttribute="bottom" id="TaL-NL-uMD"/>
-                                    <constraint firstItem="9Ls-Wz-Lz4" firstAttribute="top" secondItem="A6r-Hf-px7" secondAttribute="top" id="bhG-qZ-Kzw"/>
+                                    <constraint firstAttribute="bottom" secondItem="9Ls-Wz-Lz4" secondAttribute="bottom" constant="8" id="TaL-NL-uMD"/>
+                                    <constraint firstItem="9Ls-Wz-Lz4" firstAttribute="top" secondItem="A6r-Hf-px7" secondAttribute="top" constant="8" id="bhG-qZ-Kzw"/>
                                 </constraints>
                             </view>
                         </subviews>

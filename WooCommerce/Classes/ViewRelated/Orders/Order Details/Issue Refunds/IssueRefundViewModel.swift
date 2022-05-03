@@ -310,7 +310,15 @@ private extension IssueRefundViewModel {
         let setPaymentGatewayAccountAction = CardPresentPaymentAction.use(paymentGatewayAccount: paymentGatewayAccount)
         stores.dispatch(setPaymentGatewayAccountAction)
 
-        let action = CardPresentPaymentAction.fetchWCPayCharge(siteID: state.order.siteID, chargeID: chargeID, onCompletion: { _ in })
+        let action = CardPresentPaymentAction.fetchWCPayCharge(siteID: state.order.siteID, chargeID: chargeID, onCompletion: { [weak self] result in
+            switch result {
+            case .success(_):
+                self?.state.fetchChargeError = nil
+            case .failure(_):
+                self?.state.fetchChargeError = .requestError
+            }
+        })
+        
         stores.dispatch(action)
     }
 }
@@ -522,6 +530,7 @@ extension IssueRefundViewModel {
     /// Error from fetching refund charge details.
     enum FetchChargeError: Error, Equatable {
         case unknownPaymentGatewayAccount
+        case requestError
     }
 }
 

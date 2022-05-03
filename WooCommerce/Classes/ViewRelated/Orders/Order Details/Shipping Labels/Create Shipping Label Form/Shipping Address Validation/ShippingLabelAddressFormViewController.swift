@@ -246,7 +246,7 @@ private extension ShippingLabelAddressFormViewController {
                 self.onCompletion(self.viewModel.address)
                 self.navigationController?.popViewController(animated: true)
             case .failure:
-                self.displayAddressUpdateFailedNotice()
+                self.handleAddressValidationFailure(failure: result.failure)
             }
         }
     }
@@ -266,6 +266,19 @@ private extension ShippingLabelAddressFormViewController {
     private func displayPhoneNumberErrorNotice() {
         let notice = Notice(title: Localization.phoneNumberErrorNotice, feedbackType: .error, actionTitle: nil, actionHandler: nil)
         ServiceLocator.noticePresenter.enqueue(notice: notice)
+    }
+
+    private func handleAddressValidationFailure(failure: ShippingLabelAddressFormViewModel.AddressValidationError?) {
+        if let failure = failure {
+            switch failure {
+            case .none:
+                self.displayAddressUpdateFailedNotice()
+            case .remote:
+                break
+            }
+        } else {
+            self.displayAddressUpdateFailedNotice()
+        }
     }
 
     /// Enqueues the Address Validation Error notice.

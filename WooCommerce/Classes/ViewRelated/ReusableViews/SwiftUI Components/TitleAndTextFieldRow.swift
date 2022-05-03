@@ -10,6 +10,7 @@ struct TitleAndTextFieldRow: View {
     private let onEditingChanged: ((Bool) -> Void)?
     private let editable: Bool
     private let fieldAlignment: TextAlignment
+    private let accessibilityIdentifier: String?
 
     @Binding private var text: String
 
@@ -26,7 +27,8 @@ struct TitleAndTextFieldRow: View {
          editable: Bool = true,
          fieldAlignment: TextAlignment = .trailing,
          keyboardType: UIKeyboardType = .default,
-         onEditingChanged: ((Bool) -> Void)? = nil) {
+         onEditingChanged: ((Bool) -> Void)? = nil,
+         accessibilityIdentifier: String? = nil) {
         self.title = title
         self._titleWidth = titleWidth
         self.placeholder = placeholder
@@ -36,6 +38,7 @@ struct TitleAndTextFieldRow: View {
         self.fieldAlignment = fieldAlignment
         self.keyboardType = keyboardType
         self.onEditingChanged = onEditingChanged
+        self.accessibilityIdentifier = accessibilityIdentifier
     }
 
     var body: some View {

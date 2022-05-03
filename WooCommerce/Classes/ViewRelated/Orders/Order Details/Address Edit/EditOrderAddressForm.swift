@@ -223,7 +223,8 @@ struct SingleAddressForm: View {
                                  text: $fields.firstName,
                                  symbol: nil,
                                  fieldAlignment: .leading,
-                                 keyboardType: .default)
+                                 keyboardType: .default,
+                                 accessibilityIdentifier: "parameter-order-address-form-first-name-field")
                // .accessibilityIdentifier("order-address-form-first-name-field")
             Divider()
                 .padding(.leading, Constants.dividerPadding)

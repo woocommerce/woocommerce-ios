@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-04-20 11:10:08+0000 */
+/* Translation-Revision-Date: 2022-04-27 11:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -341,7 +341,7 @@
 "Add Customer Note" = "新增顧客備註";
 
 /* Button for adding a description to a coupon in the view for adding or editing a coupon. */
-"Add Description (Optional)" = "Add Description (Optional)";
+"Add Description (Optional)" = "新增說明 (選填)";
 
 /* Downloadable file screen navigation title */
 "Add Downloadable File" = "新增可下載的檔案";
@@ -432,7 +432,7 @@
 "Add each option and press enter" = "在新增每個選項後按下 Enter 鍵";
 
 /* Button in the action sheet for adding the expiration date for a coupon. */
-"Add expiration date" = "Add expiration date";
+"Add expiration date" = "新增到期日";
 
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
@@ -457,7 +457,7 @@
 "Add simple payments order" = "新增輕鬆付款訂單";
 
 /* Placeholder text that will be shown in the view for adding the description of a coupon. */
-"Add the description of the coupon." = "Add the description of the coupon.";
+"Add the description of the coupon." = "新增優惠券說明。";
 
 /* Option to add item to new package on Package Details screen of Shipping Label flow. */
 "Add to new package" = "加入新包裹";
@@ -564,14 +564,14 @@
 "Amount" = "金額";
 
 /* Title of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
-"Amount (%)" = "Amount (%)";
+"Amount (%)" = "金額 (%)";
 
 /* Title for the amount field on the Fee Details screen during order creationParameters: %1$@ - fee type (percent sign or currency symbol)
    Title for the amount field on the Shipping Details screen during order creationParameters: %1$@ - currency symbol */
 "Amount (%1$@)" = "金額 (%1$@)";
 
 /* Title of the Amount field on the Coupon Edit or Creation screen for a fixed amount discount coupon.Reads like: Amount ($) */
-"Amount (%@)" = "Amount (%@)";
+"Amount (%@)" = "金額 (%@)";
 
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
 "Amount Eligible For Refund" = "符合退款資格的金額";
@@ -658,7 +658,7 @@
 "Apply %@ off to some products with the promo code “%@”." = "使用促銷代碼「%2$@」，部分商品可享 %1$@ 折扣。";
 
 /* Header of the section for applying a coupon to specific products or categories in the view for adding or editing a coupon. */
-"Apply this coupon to" = "Apply this coupon to";
+"Apply this coupon to" = "將此優惠券套用至";
 
 /* Approve a comment */
 "Approve" = "核准";
@@ -940,7 +940,7 @@
 "Close" = "關閉";
 
 /* Accessibility value when a banner is collapsed */
-"Collapsed" = "Collapsed";
+"Collapsed" = "已收合";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "收集資訊";
@@ -1133,7 +1133,7 @@
 "Coupon Code" = "優惠券代碼";
 
 /* Title of the view for editing the coupon description. */
-"Coupon Description" = "Coupon Description";
+"Coupon Description" = "優惠券說明。";
 
 /* Field in the view for adding or editing a coupon. */
 "Coupon Expiry Date" = "Coupon Expiry Date";
@@ -1186,7 +1186,7 @@
 "Create discount" = "建立折扣";
 
 /* Title of the view for creating a coupon with fixed cart discount. */
-"Create fixed cart discount" = "Create fixed cart discount";
+"Create fixed cart discount" = "建立固定的購物車折扣";
 
 /* Title of the view for creating a coupon with fixed product discount. */
 "Create fixed product discount" = "建立固定的商品折扣";
@@ -1275,7 +1275,7 @@
 "Customer paid a %1$@ of %2$@ for shipping" = "客戶支付 %1$@ (%2$@) 運費";
 
 /* The footer of the text field coupon code in the view for adding or editing a coupon. */
-"Customers need to enter this code to use the coupon." = "Customers need to enter this code to use the coupon.";
+"Customers need to enter this code to use the coupon." = "顧客需輸入此代碼才能使用優惠券。";
 
 /* Navigation title for Customs screen in Shipping Label flow
    Title of the cell Customs inside Create Shipping Label form */
@@ -1326,7 +1326,7 @@
 "Delete Tracking" = "刪除追蹤";
 
 /* Button in the action sheet for deleting the expiration date of a coupon. */
-"Delete expiration date" = "Delete expiration date";
+"Delete expiration date" = "刪除到期日";
 
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "請描述你的產品";
@@ -1446,13 +1446,13 @@
 "Double tap to toggle setting." = "按兩下即可切換設定。";
 
 /* Accessibility hint to expand a banner */
-"Double-tap for more information" = "Double-tap for more information";
+"Double-tap for more information" = "點選兩下以瞭解詳情";
 
 /* Accessibility hint to collapse a banner */
-"Double-tap to collapse" = "Double-tap to collapse";
+"Double-tap to collapse" = "點選兩下以收合";
 
 /* Accessibility hint to dismiss a banner */
-"Double-tap to dismiss" = "Double-tap to dismiss";
+"Double-tap to dismiss" = "點選兩下以關閉";
 
 /* Button title Download Settings in Downloadable Files More Options Action Sheet
    Download file settings navigation title */
@@ -1481,7 +1481,7 @@
 "Draft" = "草稿";
 
 /* Drag and drop helper text above photo list in Product images screen */
-"Drag and drop to re-order photos" = "Drag and drop to re-order photos";
+"Drag and drop to re-order photos" = "拖放相片來重新排序";
 
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "使用唯一代碼輕鬆識別你的產品";
@@ -1504,10 +1504,10 @@
 "Edit Customer Details" = "編輯顧客詳細資訊";
 
 /* Button for editing the description of a coupon in the view for adding or editing a coupon. */
-"Edit Description" = "Edit Description";
+"Edit Description" = "編輯說明";
 
 /* Button for specify the product categories where a coupon can be applied in the view for adding or editing a coupon. */
-"Edit Product Categories" = "Edit Product Categories";
+"Edit Product Categories" = "編輯產品類別";
 
 /* Button for specify the products where a coupon can be applied in the view for adding or editing a coupon.
    Edit Products button inside the Linked Products screen. */
@@ -1526,10 +1526,10 @@
 "Edit discount" = "編輯折扣";
 
 /* Button in the action sheet for editing the expiration date of a coupon. */
-"Edit expiration date" = "Edit expiration date";
+"Edit expiration date" = "編輯到期日";
 
 /* Title of the view for editing a coupon with fixed cart discount. */
-"Edit fixed cart discount" = "Edit fixed cart discount";
+"Edit fixed cart discount" = "編輯固定的購物車折扣";
 
 /* Title of the view for editing a coupon with fixed product discount. */
 "Edit fixed product discount" = "編輯固定的商品折扣";
@@ -1611,7 +1611,7 @@
 "Enter Another Store" = "輸入其他商店";
 
 /* City field placeholder in Edit Address Form */
-"Enter City" = "Enter City";
+"Enter City" = "輸入城市";
 
 /* Email field placeholder in Edit Address Form
    Placeholder of the row that holds the provided email when creating a simple payment */
@@ -1624,20 +1624,20 @@
 "Enter ITN (Optional)" = "輸入 ITN (選填)";
 
 /* Last name field placeholder in Edit Address Form */
-"Enter Last Name" = "Enter Last Name";
+"Enter Last Name" = "輸入姓氏";
 
 /* Name field placeholder in Edit Address Form
    Placeholder for the row to enter the package name on the Add New Custom Package screen in Shipping Label flow */
 "Enter Name" = "輸入名稱";
 
 /* Phone field placeholder in Edit Address Form */
-"Enter Phone" = "Enter Phone";
+"Enter Phone" = "輸入電話";
 
 /* Postcode field placeholder in Edit Address Form */
-"Enter Postcode" = "Enter Postcode";
+"Enter Postcode" = "輸入郵遞區號";
 
 /* State field placeholder in Edit Address Form */
-"Enter State" = "Enter State";
+"Enter State" = "輸入州\/省";
 
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "輸入 URL";
@@ -1647,7 +1647,7 @@
 "Enter Your Store Address" = "輸入你的商店地址";
 
 /* Text field coupon code placeholder in the view for adding or editing a coupon. */
-"Enter a coupon" = "Enter a coupon";
+"Enter a coupon" = "輸入優惠券";
 
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "輸入貨運業者名稱";
@@ -1727,7 +1727,7 @@
 "Everyone loves a deal" = "人人都喜歡優惠";
 
 /* Title of the action button on the Exclude Products screenReads like: Exclude 1 Product */
-"Exclude %1$@" = "Exclude %1$@";
+"Exclude %1$@" = "排除 %1$@";
 
 /* Title of the action button to add product categories to the exclusion list in Coupon Usage Details screen */
 "Exclude Product Categories" = "排除商品類別";
@@ -1739,7 +1739,7 @@
 "Exclude Sale Items" = "排除特價商品";
 
 /* Title of the Exclude Products screen */
-"Exclude products" = "Exclude products";
+"Exclude products" = "排除產品";
 
 /* Text on Coupon Details screen to indicate that the coupon can not be applied to sale items */
 "Excludes sale items" = "排除特價商品";
@@ -2106,7 +2106,7 @@
 "Inbox" = "收件匣";
 
 /* Toggle field in the view for adding or editing a coupon. */
-"Include Free Shipping?" = "Include Free Shipping?";
+"Include Free Shipping?" = "包含免運費嗎？";
 
 /* Describes a standard *.wordpress.com site domain */
 "Included with Site" = "已隨附於網站中";
@@ -3198,7 +3198,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Processing payment..." = "正在處理付款…";
 
 /* Indicates that an in-person refund is being processed */
-"Processing refund" = "Processing refund";
+"Processing refund" = "正在處理退款";
 
 /* Product section title
    Product section title if there is only one product. - Product section title in Review Order screen if there is one product. - Title for the Product screen during order creation */
@@ -3386,13 +3386,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Refund Via" = "退款方式：";
 
 /* Error message. Presented to users after an in-person refund fails */
-"Refund failed" = "Refund failed";
+"Refund failed" = "退款失敗";
 
 /* Alert title when starting the in-person refund flow without a user name. */
-"Refund payment" = "Refund payment";
+"Refund payment" = "退款";
 
 /* Alert title when starting the in-person refund flow with a user name. */
-"Refund payment from %1$@" = "Refund payment from %1$@";
+"Refund payment from %1$@" = "退還 %1$@ 的付款";
 
 /* Display label for refunded order status.
    The title for the refunded amount cell */
@@ -3412,10 +3412,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Refunded via %@" = "已透過 %@ 退款";
 
 /* VoiceOver accessibility label. Indicates that an in-person refund is being processed */
-"Refunding payment" = "Refunding payment";
+"Refunding payment" = "正在退款";
 
 /* Button in the view for adding or editing a coupon. */
-"Regenerate Coupon Code" = "Regenerate Coupon Code";
+"Regenerate Coupon Code" = "重新產生優惠券代碼";
 
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "已註冊的網域";
@@ -3666,7 +3666,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "See the benefits" = "查看優勢";
 
 /* Title of the action button on the Select Products screenReads like: Select 1 Product */
-"Select %1$@" = "Select %1$@";
+"Select %1$@" = "選擇 %1$@";
 
 /* Button to select all products on the product list selector
    Select all button title in the issue refund screen */
@@ -3700,7 +3700,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Select paragraph style" = "選取段落風格";
 
 /* Title for the Select Products screen */
-"Select products" = "Select products";
+"Select products" = "選擇產品";
 
 /* Placeholder value of the cell in Product Price Settings > Schedule sale from a certain date */
 "Select start date" = "選擇開始日期";
@@ -3730,16 +3730,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Service Package" = "服務包裹";
 
 /* Title of the action sheet for setting an expiry date for a coupon. */
-"Set an expiry date for this coupon" = "Set an expiry date for this coupon";
+"Set an expiry date for this coupon" = "設定此優惠券的到期日";
 
 /* Tells user to set an email that support can use for replies */
 "Set email" = "設定電子郵件";
 
 /* Subtitle of the Amount field on the Coupon Edit or Creation screen for a fixed amount discount coupon. */
-"Set the fixed amount of the discount you want to offer." = "Set the fixed amount of the discount you want to offer.";
+"Set the fixed amount of the discount you want to offer." = "設定要提供的固定折扣金額。";
 
 /* Subtitle of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
-"Set the percentage of the discount you want to offer." = "Set the percentage of the discount you want to offer.";
+"Set the percentage of the discount you want to offer." = "設定要提供的折扣百分比。";
 
 /* Header text on Add New Custom Package screen in Shipping Label flow
    Header text on Add New Service Package screen in Shipping Label flow */
@@ -3986,7 +3986,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Sorry, this refund could not be canceled" = "抱歉，無法取消此退款";
 
 /* Error message when the card reader service experiences an unexpected internal service error. */
-"Sorry, this refund couldn’t be processed" = "Sorry, this refund couldn’t be processed";
+"Sorry, this refund couldn’t be processed" = "抱歉，無法處理此退款";
 
 /* No comment provided by engineer. */
 "Sorry, usernames can only contain lowercase letters (a-z) and numbers." = "很抱歉，使用者名稱只能包含小寫字母 (a-z) 和數字。";
@@ -4213,7 +4213,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Indicates the action expected from a user. Presented to users when in-person refund starts
    Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
-"Tap, insert or swipe to refund" = "Tap, insert or swipe to refund";
+"Tap, insert or swipe to refund" = "點選、插入或滑動以退款";
 
 /* Tax label for a refund details view
    Tax label for the tax detail row. - Title on the refunds screen that lists the fees tax cost - Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
@@ -4346,7 +4346,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "讀卡機軟體已過期 - 請先更新讀卡機軟體，再嘗試處理付款";
 
 /* Error message when the card reader software is too far out of date to process in-person refunds. */
-"The card reader software is out-of-date - please update the card reader software before attempting to process refunds" = "The card reader software is out-of-date - please update the card reader software before attempting to process refunds";
+"The card reader software is out-of-date - please update the card reader software before attempting to process refunds" = "讀卡機軟體已過期 - 請先更新讀卡機軟體，再嘗試處理退款";
 
 /* Error message when the card reader software update fails due to a communication error. */
 "The card reader software update failed due to a communication error - please try again" = "通訊錯誤導致讀卡機軟體更新失敗 - 請再試一次";
@@ -4364,7 +4364,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The card was declined by the card reader - please try another means of payment" = "該卡片被讀卡機拒絕 - 請嘗試其他付款方式";
 
 /* Error message when the card reader itself declines the card. */
-"The card was declined by the card reader - please try another means of refund" = "The card was declined by the card reader - please try another means of refund";
+"The card was declined by the card reader - please try another means of refund" = "該卡片遭讀卡機拒絕 - 請嘗試其他退款方式";
 
 /* Error message when the card processor declines the payment. */
 "The card was declined by the payment processor - please try another means of payment" = "該卡片被付款處理商拒絕 - 請嘗試其他付款方式";
@@ -4391,7 +4391,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The phone number is not valid or you can't call the customer from this device." = "電話號碼無效，或是你無法使用此裝置致電顧客。";
 
 /* VoiceOver accessibility hint, informing the user that this field allows to enter the price to use for bulk updating all variations */
-"The price for bulk updating all variations. Editable." = "The price for bulk updating all variations. Editable.";
+"The price for bulk updating all variations. Editable." = "大量更新所有款式的價格。 可編輯。";
 
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "此產品的價格。可編輯。";
@@ -4406,7 +4406,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The reader has a critically low battery. Please charge the reader or try a different reader." = "讀卡機電量過低。 請為讀卡機充電，或嘗試使用其他讀卡機。";
 
 /* Error message when the in-person refund can not be processed (i.e. order amount is below the minimum amount allowed.) */
-"The refund can not be processed by the payment processor." = "The refund can not be processed by the payment processor.";
+"The refund can not be processed by the payment processor." = "付款處理商無法處理退款。";
 
 /* Error message when a request times out. */
 "The request timed out - please try again" = "要求逾時 - 請再試一次";
@@ -4873,7 +4873,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to update card reader software - the reader battery is too low" = "無法更新讀卡機軟體 - 讀卡機電池電量過低";
 
 /* Notice title when unable to bulk update price of the variations */
-"Unable to update price" = "Unable to update price";
+"Unable to update price" = "無法更新價格";
 
 /* Title for the error screen when In-Person Payments is unavailable */
 "Unable to verify In-Person Payments for this store" = "無法驗證此商店的親自收款功能";

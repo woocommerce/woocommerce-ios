@@ -5,6 +5,8 @@ import UIKit
 final class MockOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
     var cancelReaderIsReadyAlert: (() -> Void)?
 
+    var cancelTapOrInsertCardAlert: (() -> Void)?
+
     var error: Error?
     var retryFromError: (() -> Void)?
     var dismissErrorCompletion: (() -> Void)?
@@ -19,7 +21,7 @@ final class MockOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
     }
 
     func tapOrInsertCard(onCancel: @escaping () -> Void) {
-        // no-op
+        cancelTapOrInsertCardAlert = onCancel
     }
 
     func displayReaderMessage(message: String) {

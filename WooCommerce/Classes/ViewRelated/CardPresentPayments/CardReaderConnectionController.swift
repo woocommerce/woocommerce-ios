@@ -69,8 +69,14 @@ final class CardReaderConnectionController {
         case discoveryFailed(Error)
     }
 
-    let storageManager: StorageManagerType
-    let stores: StoresManager
+    /// The final state of the card reader connection to return without errors.
+    enum ConnectionResult {
+        case connected
+        case canceled
+    }
+
+    private let storageManager: StorageManagerType
+    private let stores: StoresManager
 
     private var state: ControllerState {
         didSet {
@@ -78,9 +84,9 @@ final class CardReaderConnectionController {
         }
     }
     private weak var fromController: UIViewController?
-    private var siteID: Int64
-    private var knownCardReaderProvider: CardReaderSettingsKnownReaderProvider
-    private var alerts: CardReaderSettingsAlertsProvider
+    private let siteID: Int64
+    private let knownCardReaderProvider: CardReaderSettingsKnownReaderProvider
+    private let alerts: CardReaderSettingsAlertsProvider
     private let configuration: CardPresentPaymentsConfiguration
 
     /// Reader(s) discovered by the card reader service
@@ -114,7 +120,7 @@ final class CardReaderConnectionController {
 
     private var subscriptions = Set<AnyCancellable>()
 
-    private var onCompletion: ((Result<Bool, Error>) -> Void)?
+    private var onCompletion: ((Result<ConnectionResult, Error>) -> Void)?
 
     private(set) lazy var dataSource: CardReaderSettingsDataSource = {
         return CardReaderSettingsDataSource(siteID: siteID, storageManager: storageManager)
@@ -157,7 +163,7 @@ final class CardReaderConnectionController {
         subscriptions.removeAll()
     }
 
-    func searchAndConnect(from: UIViewController?, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+    func searchAndConnect(from: UIViewController?, onCompletion: @escaping (Result<ConnectionResult, Error>) -> Void) {
         guard from != nil else {
             return
         }
@@ -174,6 +180,8 @@ private extension CardReaderConnectionController {
             guard let self = self else { return }
             self.gatewayID = self.dataSource.cardPresentPaymentGatewayID()
         })
+        // Sets gateway ID from initial fetch.
+        gatewayID = dataSource.cardPresentPaymentGatewayID()
     }
 
     func loadPaymentGatewayAccounts() {
@@ -523,7 +531,7 @@ private extension CardReaderConnectionController {
     func onCancel() {
         alerts.dismiss()
         let action = CardPresentPaymentAction.cancelCardReaderDiscovery() { [weak self] _ in
-            self?.returnSuccess(connected: false)
+            self?.returnSuccess(result: .canceled)
         }
         stores.dispatch(action)
     }
@@ -586,10 +594,10 @@ private extension CardReaderConnectionController {
                 // actually see a success message showing the installation was complete
                 if case .updating(progress: 1) = self.state {
                     DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-                        self.returnSuccess(connected: true)
+                        self.returnSuccess(result: .connected)
                     }
                 } else {
-                    self.returnSuccess(connected: true)
+                    self.returnSuccess(result: .connected)
                 }
             case .failure(let error):
                 ServiceLocator.analytics.track(
@@ -752,18 +760,18 @@ private extension CardReaderConnectionController {
 
     /// Calls the completion with a success result
     ///
-    private func returnSuccess(connected: Bool) {
-        self.alerts.dismiss()
-        self.onCompletion?(.success(connected))
-        self.state = .idle
+    private func returnSuccess(result: ConnectionResult) {
+        alerts.dismiss()
+        onCompletion?(.success(result))
+        state = .idle
     }
 
     /// Calls the completion with a failure result
     ///
     private func returnFailure(error: Error) {
-        self.alerts.dismiss()
-        self.onCompletion?(.failure(error))
-        self.state = .idle
+        alerts.dismiss()
+        onCompletion?(.failure(error))
+        state = .idle
     }
 }
 

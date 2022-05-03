@@ -13,7 +13,8 @@ final class BulkUpdateViewController: UIViewController, GhostableViewController 
 
     private var subscriptions = Set<AnyCancellable>()
 
-    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: ValueOneTableViewCell.self,
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(sectionHeaderVerticalSpace: .large,
+                                                                                                cellClass: ValueOneTableViewCell.self,
                                                                                                 rowsPerSection: Constants.placeholderRowsPerSection,
                                                                                                 isScrollEnabled: false))
 

@@ -90,11 +90,16 @@ final class ProductVariationSelectorViewModel: ObservableObject {
         return resultsController
     }()
 
+    /// Whether the variation list should contains only purchasable items.
+    ///
+    private let purchasableItemsOnly: Bool
+
     init(siteID: Int64,
          productID: Int64,
          productName: String,
          productAttributes: [ProductAttribute],
          selectedProductVariationIDs: [Int64] = [],
+         purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          onVariationSelected: ((ProductVariation) -> Void)? = nil) {
@@ -106,6 +111,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
         self.stores = stores
         self.onVariationSelected = onVariationSelected
         self.selectedProductVariationIDs = selectedProductVariationIDs
+        self.purchasableItemsOnly = purchasableItemsOnly
 
         configureSyncingCoordinator()
         configureProductVariationsResultsController()
@@ -115,6 +121,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
     convenience init(siteID: Int64,
                      product: Product,
                      selectedProductVariationIDs: [Int64] = [],
+                     purchasableItemsOnly: Bool = false,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
                      stores: StoresManager = ServiceLocator.stores,
                      onVariationSelected: ((ProductVariation) -> Void)? = nil) {
@@ -123,6 +130,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
                   productName: product.name,
                   productAttributes: product.attributesForVariations,
                   selectedProductVariationIDs: selectedProductVariationIDs,
+                  purchasableItemsOnly: purchasableItemsOnly,
                   storageManager: storageManager,
                   stores: stores,
                   onVariationSelected: onVariationSelected)
@@ -139,6 +147,12 @@ final class ProductVariationSelectorViewModel: ObservableObject {
         } else {
             toggleSelection(productVariationID: variationID)
         }
+    }
+
+    /// Unselect all items.
+    ///
+    func clearSelection() {
+        selectedProductVariationIDs = []
     }
 }
 
@@ -216,7 +230,11 @@ private extension ProductVariationSelectorViewModel {
     func updateProductVariationsResultsController() {
         do {
             try productVariationsResultsController.performFetch()
-            productVariations = productVariationsResultsController.fetchedObjects.filter { $0.purchasable }
+            if purchasableItemsOnly {
+                productVariations = productVariationsResultsController.fetchedObjects.filter { $0.purchasable }
+            } else {
+                productVariations = productVariationsResultsController.fetchedObjects
+            }
             observeSelections()
         } catch {
             DDLogError("⛔️ Error fetching product variations for new order: \(error)")

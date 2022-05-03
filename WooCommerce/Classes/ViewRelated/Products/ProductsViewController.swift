@@ -7,11 +7,18 @@ import class AutomatticTracks.CrashLogging
 /// Shows a list of products with pull to refresh and infinite scroll
 /// TODO: it will be good to have unit tests for this, introducing a `ViewModel`
 ///
-final class ProductsViewController: UIViewController {
+final class ProductsViewController: UIViewController, GhostableViewController {
 
     /// Main TableView
     ///
     @IBOutlet weak var tableView: UITableView!
+
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(sectionHeaderVerticalSpace: .medium,
+                                                                                                cellClass: ProductsTabProductTableViewCell.self,
+                                                                                                rowsPerSection: Constants.placeholderRowsPerSection,
+                                                                                                estimatedRowHeight: Constants.estimatedRowHeight,
+                                                                                                separatorStyle: .none,
+                                                                                                isScrollEnabled: false))
 
     /// Pull To Refresh Support.
     ///
@@ -39,6 +46,7 @@ final class ProductsViewController: UIViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
+
 
     /// Top toolbar that shows the sort and filter CTAs.
     ///
@@ -184,8 +192,8 @@ final class ProductsViewController: UIViewController {
         refreshControl.resetAnimation(in: tableView) { [unowned self] in
             // ghost animation is also removed after switching tabs
             // show make sure it's displayed again
-            self.removePlaceholderProducts()
-            self.displayPlaceholderProducts()
+            self.removeGhostContent()
+            self.displayGhostContent(over: tableView)
         }
     }
 
@@ -335,10 +343,6 @@ private extension ProductsViewController {
         tableView.cellLayoutMarginsFollowReadableWidth = true
         tableView.estimatedRowHeight = Constants.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
-
-        // Removes extra header spacing in ghost content view.
-        tableView.estimatedSectionHeaderHeight = 0
-        tableView.sectionHeaderHeight = 0
 
         tableView.backgroundColor = .listBackground
         tableView.tableFooterView = footerSpinnerView
@@ -584,16 +588,15 @@ private extension ProductsViewController {
 extension ProductsViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return resultsController.sections.count
+        resultsController.sections.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return resultsController.sections[section].numberOfObjects
+        resultsController.sections[section].numberOfObjects
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(ProductsTabProductTableViewCell.self, for: indexPath)
-
         let product = resultsController.object(at: indexPath)
         let viewModel = ProductsTabProductViewModel(product: product)
         cell.update(viewModel: viewModel, imageService: imageService)
@@ -601,7 +604,6 @@ extension ProductsViewController: UITableViewDataSource {
         return cell
     }
 }
-
 
 // MARK: - UITableViewDelegate Conformance
 //
@@ -612,7 +614,7 @@ extension ProductsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
+        UITableView.automaticDimension
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -723,26 +725,6 @@ private extension ProductsViewController {
 // MARK: - Placeholders
 //
 private extension ProductsViewController {
-
-    /// Renders the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
-    ///
-    func displayPlaceholderProducts() {
-        let options = GhostOptions(reuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier, rowsPerSection: Constants.placeholderRowsPerSection)
-        tableView.displayGhostContent(options: options,
-        style: .wooDefaultGhostStyle)
-        resultsController.stopForwardingEvents()
-    }
-
-    /// Removes the Placeholder Products (and restores the ResultsController <> UITableView link).
-    ///
-    func removePlaceholderProducts() {
-        tableView.removeGhostContent()
-        // Assign again the original closure
-        setClosuresToResultController(resultsController, onReload: { [weak self] in
-            self?.reloadTableAndView()
-        })
-        tableView.reloadData()
-    }
 
     /// Displays the overlay when there are no results.
     ///
@@ -958,7 +940,7 @@ private extension ProductsViewController {
         case .syncing(let pageNumber):
             let isFirstPage = pageNumber == SyncingCoordinator.Defaults.pageFirstIndex
             if isFirstPage && resultsController.isEmpty {
-                displayPlaceholderProducts()
+                displayGhostContent(over: tableView)
             } else if !isFirstPage {
                 ensureFooterSpinnerIsStarted()
             }
@@ -977,7 +959,7 @@ private extension ProductsViewController {
             removeAllOverlays()
         case .syncing:
             ensureFooterSpinnerIsStopped()
-            removePlaceholderProducts()
+            removeGhostContent()
             showTopBannerViewIfNeeded()
             showOrHideToolbar()
         case .results:

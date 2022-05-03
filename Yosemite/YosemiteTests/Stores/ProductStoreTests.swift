@@ -1046,6 +1046,36 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(searchResults.first?.keyword, keyword)
     }
 
+    func test_searchProducts_triggers_remote_request_with_filters() {
+        // Given
+        let remote = MockProductsRemote()
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        let filteredStockStatus: ProductStockStatus = .outOfStock
+        let filteredProductStatus: ProductStatus = .draft
+        let filteredProductType: ProductType = .simple
+        let filteredProductCategory: Networking.ProductCategory = .init(categoryID: 123, siteID: sampleSiteID, parentID: 1, name: "Test", slug: "test")
+
+        // When
+        let searchAction = ProductAction.searchProducts(siteID: sampleSiteID,
+                                                        keyword: "hiii",
+                                                        pageNumber: defaultPageNumber,
+                                                        pageSize: defaultPageSize,
+                                                        stockStatus: filteredStockStatus,
+                                                        productStatus: filteredProductStatus,
+                                                        productType: filteredProductType,
+                                                        productCategory: filteredProductCategory,
+                                                        excludedProductIDs: [],
+                                                        onCompletion: { _ in })
+        productStore.onAction(searchAction)
+
+        // Then
+        XCTAssertTrue(remote.searchProductTriggered)
+        assertEqual(filteredStockStatus, remote.searchProductWithStockStatus)
+        assertEqual(filteredProductType, remote.searchProductWithProductType)
+        assertEqual(filteredProductStatus, remote.searchProductWithProductStatus)
+        assertEqual(filteredProductCategory, remote.searchProductWithProductCategory)
+    }
+
     // MARK: - ProductAction.updateProduct
 
     /// Verifies that `ProductAction.updateProduct` returns the expected `Product`.

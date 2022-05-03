@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-04-20 11:10:08+0000 */
+/* Translation-Revision-Date: 2022-04-27 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -341,7 +341,7 @@
 "Add Customer Note" = "להוסיף הערת לקוח";
 
 /* Button for adding a description to a coupon in the view for adding or editing a coupon. */
-"Add Description (Optional)" = "Add Description (Optional)";
+"Add Description (Optional)" = "להוסיף תיאור (אופציונלי)";
 
 /* Downloadable file screen navigation title */
 "Add Downloadable File" = "להוסיף קובץ שניתן להורדה";
@@ -432,7 +432,7 @@
 "Add each option and press enter" = "יש להוסיף כל אפשרות בנפרד ולהקיש Enter";
 
 /* Button in the action sheet for adding the expiration date for a coupon. */
-"Add expiration date" = "Add expiration date";
+"Add expiration date" = "להוסיף תאריך תפוגה";
 
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
@@ -457,7 +457,7 @@
 "Add simple payments order" = "להוסיף הזמנה של תשלומים פשוטים";
 
 /* Placeholder text that will be shown in the view for adding the description of a coupon. */
-"Add the description of the coupon." = "Add the description of the coupon.";
+"Add the description of the coupon." = "להוסיף את התיאור לקופון.";
 
 /* Option to add item to new package on Package Details screen of Shipping Label flow. */
 "Add to new package" = "להוסיף לאריזה חדשה";
@@ -564,14 +564,14 @@
 "Amount" = "סכום";
 
 /* Title of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
-"Amount (%)" = "Amount (%)";
+"Amount (%)" = "סכום (%)";
 
 /* Title for the amount field on the Fee Details screen during order creationParameters: %1$@ - fee type (percent sign or currency symbol)
    Title for the amount field on the Shipping Details screen during order creationParameters: %1$@ - currency symbol */
 "Amount (%1$@)" = "סכום (%1$@)";
 
 /* Title of the Amount field on the Coupon Edit or Creation screen for a fixed amount discount coupon.Reads like: Amount ($) */
-"Amount (%@)" = "Amount (%@)";
+"Amount (%@)" = "סכום (%@)";
 
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
 "Amount Eligible For Refund" = "ניתן לקבל החזר כספי עבור הסכום";
@@ -658,7 +658,7 @@
 "Apply %@ off to some products with the promo code “%@”." = "ניתן להחיל הנחה של %1$@ על חלק מהמוצרים עם קוד המבצע \"%2$@\".";
 
 /* Header of the section for applying a coupon to specific products or categories in the view for adding or editing a coupon. */
-"Apply this coupon to" = "Apply this coupon to";
+"Apply this coupon to" = "להחיל את הקופון על";
 
 /* Approve a comment */
 "Approve" = "אישור";
@@ -940,7 +940,7 @@
 "Close" = "סגור";
 
 /* Accessibility value when a banner is collapsed */
-"Collapsed" = "Collapsed";
+"Collapsed" = "צומצם";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "איסוף מידע";
@@ -1133,7 +1133,7 @@
 "Coupon Code" = "קוד קופון";
 
 /* Title of the view for editing the coupon description. */
-"Coupon Description" = "Coupon Description";
+"Coupon Description" = "תיאור קופון";
 
 /* Field in the view for adding or editing a coupon. */
 "Coupon Expiry Date" = "Coupon Expiry Date";
@@ -1186,7 +1186,7 @@
 "Create discount" = "ליצור הנחה";
 
 /* Title of the view for creating a coupon with fixed cart discount. */
-"Create fixed cart discount" = "Create fixed cart discount";
+"Create fixed cart discount" = "ליצור הנחה קבועה לעגלת הקניות";
 
 /* Title of the view for creating a coupon with fixed product discount. */
 "Create fixed product discount" = "ליצור הנחת מוצר קבועה";
@@ -1275,7 +1275,7 @@
 "Customer paid a %1$@ of %2$@ for shipping" = "הלקוח שילם %1$@ מתוך %2$@ עבור המשלוח";
 
 /* The footer of the text field coupon code in the view for adding or editing a coupon. */
-"Customers need to enter this code to use the coupon." = "Customers need to enter this code to use the coupon.";
+"Customers need to enter this code to use the coupon." = "הלקוחות צריכים להזין את הקוד הזה כדי להשתמש בקופון.";
 
 /* Navigation title for Customs screen in Shipping Label flow
    Title of the cell Customs inside Create Shipping Label form */
@@ -1326,7 +1326,7 @@
 "Delete Tracking" = "מחיקת מעקב";
 
 /* Button in the action sheet for deleting the expiration date of a coupon. */
-"Delete expiration date" = "Delete expiration date";
+"Delete expiration date" = "למחוק תאריך תפוגה";
 
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "יש לתאר את המוצר שלך";
@@ -1446,13 +1446,13 @@
 "Double tap to toggle setting." = "יש להקיש פעמיים כדי לשנות את ההגדרות.";
 
 /* Accessibility hint to expand a banner */
-"Double-tap for more information" = "Double-tap for more information";
+"Double-tap for more information" = "יש להקיש פעמיים למידע נוסף";
 
 /* Accessibility hint to collapse a banner */
-"Double-tap to collapse" = "Double-tap to collapse";
+"Double-tap to collapse" = "יש להקיש פעמיים כדי לצמצם";
 
 /* Accessibility hint to dismiss a banner */
-"Double-tap to dismiss" = "Double-tap to dismiss";
+"Double-tap to dismiss" = "יש להקיש פעמיים כדי להתעלם";
 
 /* Button title Download Settings in Downloadable Files More Options Action Sheet
    Download file settings navigation title */
@@ -1481,7 +1481,7 @@
 "Draft" = "טיוטה";
 
 /* Drag and drop helper text above photo list in Product images screen */
-"Drag and drop to re-order photos" = "Drag and drop to re-order photos";
+"Drag and drop to re-order photos" = "לגרור ולשחרר כדי לשנות את הסדר של התמונות";
 
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "לזהות בקלות את המוצרים שלך בעזרת קודים ייחודיים";
@@ -1504,10 +1504,10 @@
 "Edit Customer Details" = "לערוך את פרטי הלקוח";
 
 /* Button for editing the description of a coupon in the view for adding or editing a coupon. */
-"Edit Description" = "Edit Description";
+"Edit Description" = "לערוך את התיאור";
 
 /* Button for specify the product categories where a coupon can be applied in the view for adding or editing a coupon. */
-"Edit Product Categories" = "Edit Product Categories";
+"Edit Product Categories" = "לערוך קטגוריות מוצרים";
 
 /* Button for specify the products where a coupon can be applied in the view for adding or editing a coupon.
    Edit Products button inside the Linked Products screen. */
@@ -1526,10 +1526,10 @@
 "Edit discount" = "לערוך הנחה";
 
 /* Button in the action sheet for editing the expiration date of a coupon. */
-"Edit expiration date" = "Edit expiration date";
+"Edit expiration date" = "לערוך תאריך תפוגה";
 
 /* Title of the view for editing a coupon with fixed cart discount. */
-"Edit fixed cart discount" = "Edit fixed cart discount";
+"Edit fixed cart discount" = "לערוך הנחה קבועה לעגלת הקניות";
 
 /* Title of the view for editing a coupon with fixed product discount. */
 "Edit fixed product discount" = "לערוך הנחת מוצר קבועה";
@@ -1611,7 +1611,7 @@
 "Enter Another Store" = "יש להזין חנות אחרת";
 
 /* City field placeholder in Edit Address Form */
-"Enter City" = "Enter City";
+"Enter City" = "יש להזין עיר";
 
 /* Email field placeholder in Edit Address Form
    Placeholder of the row that holds the provided email when creating a simple payment */
@@ -1624,20 +1624,20 @@
 "Enter ITN (Optional)" = "יש להזין ITN (אופציונלי)";
 
 /* Last name field placeholder in Edit Address Form */
-"Enter Last Name" = "Enter Last Name";
+"Enter Last Name" = "יש להזין שם משפחה";
 
 /* Name field placeholder in Edit Address Form
    Placeholder for the row to enter the package name on the Add New Custom Package screen in Shipping Label flow */
 "Enter Name" = "יש להזין שם";
 
 /* Phone field placeholder in Edit Address Form */
-"Enter Phone" = "Enter Phone";
+"Enter Phone" = "יש להזין טלפון";
 
 /* Postcode field placeholder in Edit Address Form */
-"Enter Postcode" = "Enter Postcode";
+"Enter Postcode" = "יש להזין מיקוד";
 
 /* State field placeholder in Edit Address Form */
-"Enter State" = "Enter State";
+"Enter State" = "יש להזין מדינה";
 
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "להזין כתובת URL";
@@ -1647,7 +1647,7 @@
 "Enter Your Store Address" = "להזין את הכתובת של החנות שלך";
 
 /* Text field coupon code placeholder in the view for adding or editing a coupon. */
-"Enter a coupon" = "Enter a coupon";
+"Enter a coupon" = "יש להזין קופון";
 
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "יש להזין את שם הספק";
@@ -1727,7 +1727,7 @@
 "Everyone loves a deal" = "מי לא רוצה לקבל מבצע";
 
 /* Title of the action button on the Exclude Products screenReads like: Exclude 1 Product */
-"Exclude %1$@" = "Exclude %1$@";
+"Exclude %1$@" = "לא לכלול %1$@";
 
 /* Title of the action button to add product categories to the exclusion list in Coupon Usage Details screen */
 "Exclude Product Categories" = "להחריג קטגוריות מוצרים";
@@ -1739,7 +1739,7 @@
 "Exclude Sale Items" = "לא לכלול פריטים במבצע";
 
 /* Title of the Exclude Products screen */
-"Exclude products" = "Exclude products";
+"Exclude products" = "לא לכלול מוצרים";
 
 /* Text on Coupon Details screen to indicate that the coupon can not be applied to sale items */
 "Excludes sale items" = "להחריג פריטים במבצע";
@@ -2106,7 +2106,7 @@
 "Inbox" = "תיבת דואר נכנס";
 
 /* Toggle field in the view for adding or editing a coupon. */
-"Include Free Shipping?" = "Include Free Shipping?";
+"Include Free Shipping?" = "האם להוסיף משלוח חינם?";
 
 /* Describes a standard *.wordpress.com site domain */
 "Included with Site" = "כלול באתר";
@@ -3198,7 +3198,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Processing payment..." = "מעבר תשלום...";
 
 /* Indicates that an in-person refund is being processed */
-"Processing refund" = "Processing refund";
+"Processing refund" = "מעבד את ההחזר הכספי";
 
 /* Product section title
    Product section title if there is only one product. - Product section title in Review Order screen if there is one product. - Title for the Product screen during order creation */
@@ -3386,13 +3386,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Refund Via" = "החזר כספי דרך";
 
 /* Error message. Presented to users after an in-person refund fails */
-"Refund failed" = "Refund failed";
+"Refund failed" = "ההחזר הכספי נכשל";
 
 /* Alert title when starting the in-person refund flow without a user name. */
-"Refund payment" = "Refund payment";
+"Refund payment" = "להנפיק החזר כספי על תשלום";
 
 /* Alert title when starting the in-person refund flow with a user name. */
-"Refund payment from %1$@" = "Refund payment from %1$@";
+"Refund payment from %1$@" = "להנפיק החזר כספי על תשלום מאת %1$@";
 
 /* Display label for refunded order status.
    The title for the refunded amount cell */
@@ -3412,10 +3412,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Refunded via %@" = "החזר כספי בוצע באמצעות %@";
 
 /* VoiceOver accessibility label. Indicates that an in-person refund is being processed */
-"Refunding payment" = "Refunding payment";
+"Refunding payment" = "הנפקת החזר כספי על תשלום";
 
 /* Button in the view for adding or editing a coupon. */
-"Regenerate Coupon Code" = "Regenerate Coupon Code";
+"Regenerate Coupon Code" = "ליצור מחדש את קוד הקופון";
 
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "דומיין רשום";
@@ -3666,7 +3666,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "See the benefits" = "לצפייה בהטבות";
 
 /* Title of the action button on the Select Products screenReads like: Select 1 Product */
-"Select %1$@" = "Select %1$@";
+"Select %1$@" = "לבחור %1$@";
 
 /* Button to select all products on the product list selector
    Select all button title in the issue refund screen */
@@ -3700,7 +3700,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Select paragraph style" = "בחירת סגנון פסקה";
 
 /* Title for the Select Products screen */
-"Select products" = "Select products";
+"Select products" = "יש לבחור מוצרים";
 
 /* Placeholder value of the cell in Product Price Settings > Schedule sale from a certain date */
 "Select start date" = "לבחור בתאריך התחלה";
@@ -3730,16 +3730,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Service Package" = "חבילת שירותים";
 
 /* Title of the action sheet for setting an expiry date for a coupon. */
-"Set an expiry date for this coupon" = "Set an expiry date for this coupon";
+"Set an expiry date for this coupon" = "יש להגדיר תאריך תפוגה לקופון";
 
 /* Tells user to set an email that support can use for replies */
 "Set email" = "הגדרת אימייל";
 
 /* Subtitle of the Amount field on the Coupon Edit or Creation screen for a fixed amount discount coupon. */
-"Set the fixed amount of the discount you want to offer." = "Set the fixed amount of the discount you want to offer.";
+"Set the fixed amount of the discount you want to offer." = "יש להגדיר את הסכום הקבוע להנחה שברצונך להציע.";
 
 /* Subtitle of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
-"Set the percentage of the discount you want to offer." = "Set the percentage of the discount you want to offer.";
+"Set the percentage of the discount you want to offer." = "יש להגדיר את אחוז ההנחה שברצונך להציע.";
 
 /* Header text on Add New Custom Package screen in Shipping Label flow
    Header text on Add New Service Package screen in Shipping Label flow */
@@ -3986,7 +3986,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Sorry, this refund could not be canceled" = "מצטערים, לא ניתן לבטל את ההחזר הכספי הזה";
 
 /* Error message when the card reader service experiences an unexpected internal service error. */
-"Sorry, this refund couldn’t be processed" = "Sorry, this refund couldn’t be processed";
+"Sorry, this refund couldn’t be processed" = "מצטערים, לא ניתן היה לעבד את ההחזר הכספי הזה";
 
 /* No comment provided by engineer. */
 "Sorry, usernames can only contain lowercase letters (a-z) and numbers." = "שם המשתמש יכול להכיל רק אותיות קטנות (a-z) ומספרים.";
@@ -4213,7 +4213,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Indicates the action expected from a user. Presented to users when in-person refund starts
    Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
-"Tap, insert or swipe to refund" = "Tap, insert or swipe to refund";
+"Tap, insert or swipe to refund" = "יש להקיש, להכניס או להחליק כדי לבצע החזר כספי";
 
 /* Tax label for a refund details view
    Tax label for the tax detail row. - Title on the refunds screen that lists the fees tax cost - Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
@@ -4346,7 +4346,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "התוכנה של קורא הכרטיסים לא מעודכנת – עליך לעדכן את התוכנה של קורא הכרטיסים לפני ניסיון לעבד תשלומים";
 
 /* Error message when the card reader software is too far out of date to process in-person refunds. */
-"The card reader software is out-of-date - please update the card reader software before attempting to process refunds" = "The card reader software is out-of-date - please update the card reader software before attempting to process refunds";
+"The card reader software is out-of-date - please update the card reader software before attempting to process refunds" = "התוכנה של קורא הכרטיסים לא מעודכנת – עליך לעדכן את התוכנה של קורא הכרטיסים לפני ניסיון לעבד החזרים כספיים";
 
 /* Error message when the card reader software update fails due to a communication error. */
 "The card reader software update failed due to a communication error - please try again" = "עדכון התוכנה של קורא הכרטיסים נכשל עקב שגיאה בתקשורת – יש לנסות שוב";
@@ -4364,7 +4364,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The card was declined by the card reader - please try another means of payment" = "הכרטיס נדחה על ידי קורא הכרטיסים – יש לנסות אמצעי תשלום אחר";
 
 /* Error message when the card reader itself declines the card. */
-"The card was declined by the card reader - please try another means of refund" = "The card was declined by the card reader - please try another means of refund";
+"The card was declined by the card reader - please try another means of refund" = "הכרטיס נדחה על ידי קורא הכרטיסים – יש לנסות אמצעי תשלום אחר להחזר הכספי";
 
 /* Error message when the card processor declines the payment. */
 "The card was declined by the payment processor - please try another means of payment" = "הכרטיס נדחה על ידי מעבד התשלומים – יש לנסות אמצעי תשלום אחר";
@@ -4391,7 +4391,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The phone number is not valid or you can't call the customer from this device." = "מספר הטלפון לא תקין או שאין לך אפשרות להתקשר ללקוח ממכשיר זה.";
 
 /* VoiceOver accessibility hint, informing the user that this field allows to enter the price to use for bulk updating all variations */
-"The price for bulk updating all variations. Editable." = "The price for bulk updating all variations. Editable.";
+"The price for bulk updating all variations. Editable." = "המחיר לעדכון גלובלי של כל הסוגים. ניתן לעריכה.";
 
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "המחיר של המוצר. ניתן לעריכה.";
@@ -4406,7 +4406,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The reader has a critically low battery. Please charge the reader or try a different reader." = "רמת הסוללה של הקורא נמוכה מאוד. יש לטעון את הקורא או לנסות קורא אחר.";
 
 /* Error message when the in-person refund can not be processed (i.e. order amount is below the minimum amount allowed.) */
-"The refund can not be processed by the payment processor." = "The refund can not be processed by the payment processor.";
+"The refund can not be processed by the payment processor." = "לא ניתן לעבד את ההחזר הכספי באמצעות מעבד התשלומים.";
 
 /* Error message when a request times out. */
 "The request timed out - please try again" = "הזמן הקצוב של הבקשה הסתיים – יש לנסות שוב";
@@ -4873,7 +4873,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to update card reader software - the reader battery is too low" = "לא ניתן לעדכן את התוכנה של קורא הכרטיסים – רמת הסוללה של הקורא נמוכה מדי";
 
 /* Notice title when unable to bulk update price of the variations */
-"Unable to update price" = "Unable to update price";
+"Unable to update price" = "לא ניתן היה לעדכן את המחיר";
 
 /* Title for the error screen when In-Person Payments is unavailable */
 "Unable to verify In-Person Payments for this store" = "לא ניתן לאמת תשלומים באופן אישי בחנות זו";

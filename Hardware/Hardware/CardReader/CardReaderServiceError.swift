@@ -35,7 +35,7 @@ public enum CardReaderServiceError: Error {
     case refundCreation(underlyingError: UnderlyingError = .internalServiceError)
 
     /// Error thrown while refunding a payment
-    case refundPayment(underlyingError: UnderlyingError = .internalServiceError)
+    case refundPayment(underlyingError: UnderlyingError = .internalServiceError, shouldRetry: Bool)
 
     /// Error thrown while cancelling a refund
     case refundCancellation(underlyingError: UnderlyingError = .internalServiceError)
@@ -58,7 +58,7 @@ extension CardReaderServiceError: LocalizedError {
                 .paymentCapture(let underlyingError),
                 .paymentCancellation(let underlyingError),
                 .refundCreation(let underlyingError),
-                .refundPayment(let underlyingError),
+                .refundPayment(let underlyingError, _),
                 .refundCancellation(let underlyingError),
                 .softwareUpdate(let underlyingError, _):
             return underlyingError.errorDescription

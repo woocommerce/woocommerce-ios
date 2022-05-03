@@ -33,7 +33,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     ///
     private let order: Order
 
-    /// Order total in decimal number. It is lazy to avoid multiple conversions that can be costly.
+    /// Order total in decimal number. It is lazy so we avoid multiple conversions.
     /// It can be lazy because the order is a constant and never changes (this class is intended to be
     /// fired and disposed, not reused for multiple payment flows).
     ///

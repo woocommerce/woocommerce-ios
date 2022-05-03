@@ -21,8 +21,15 @@
                     <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="UC5-pp-RCE">
                         <rect key="frame" x="16" y="8" width="288" height="28"/>
                         <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="gvh-NZ-8It" customClass="EnhancedTextView" customModule="WooCommerce" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="231.5" height="28"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <color key="textColor" systemColor="labelColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
                             <view clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="A6r-Hf-px7" userLabel="Product Status Label Holder">
-                                <rect key="frame" x="0.0" y="0.0" width="51.5" height="28"/>
+                                <rect key="frame" x="236.5" y="0.0" width="51.5" height="28"/>
                                 <subviews>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Ls-Wz-Lz4">
                                         <rect key="frame" x="8" y="0.0" width="35.5" height="28"/>
@@ -39,13 +46,6 @@
                                     <constraint firstItem="9Ls-Wz-Lz4" firstAttribute="top" secondItem="A6r-Hf-px7" secondAttribute="top" id="bhG-qZ-Kzw"/>
                                 </constraints>
                             </view>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="gvh-NZ-8It" customClass="EnhancedTextView" customModule="WooCommerce" customModuleProvider="target">
-                                <rect key="frame" x="56.5" y="0.0" width="231.5" height="28"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <color key="textColor" systemColor="labelColor"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                            </textView>
                         </subviews>
                     </stackView>
                 </subviews>

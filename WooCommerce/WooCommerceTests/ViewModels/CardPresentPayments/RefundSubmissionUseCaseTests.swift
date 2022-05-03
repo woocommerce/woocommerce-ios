@@ -242,7 +242,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
                                                                                   dedicatedFileName: "A000000003101001")))),
                                                    amount: "2.28",
                                                    paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID)))
-        mockSuccessfulCardReaderConnection(clientSideRefundResult: .failure(error))
+        mockCardPresentPaymentActions(clientSideRefundResult: .failure(error))
 
         // When
         let result: Result<Void, Error> = waitFor { promise in

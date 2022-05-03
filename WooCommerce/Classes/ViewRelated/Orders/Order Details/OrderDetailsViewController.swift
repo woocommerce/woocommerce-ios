@@ -716,7 +716,7 @@ private extension OrderDetailsViewController {
     }
 
     @objc private func collectPaymentTapped() {
-        guard case .ready = viewModel.cardPaymentReadiness.readiness else {
+        guard case .ready = viewModel.cardPresentPaymentsReadiness.readiness else {
             return showOnboardingBeforePayment()
         }
         collectPayment()
@@ -725,7 +725,7 @@ private extension OrderDetailsViewController {
     private func showOnboardingBeforePayment() {
         let viewController = InPersonPaymentsViewController(viewModel: viewModel.onboardingViewModel)
         show(viewController, sender: self)
-        readinessSubscription = viewModel.cardPaymentReadiness.$readiness
+        readinessSubscription = viewModel.cardPresentPaymentsReadiness.$readiness
             .sink(receiveValue: { [weak self] readiness in
                 guard case .ready = readiness,
                       let self = self else {

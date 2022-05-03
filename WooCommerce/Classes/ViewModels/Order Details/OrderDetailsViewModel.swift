@@ -19,7 +19,7 @@ final class OrderDetailsViewModel {
         return lookUpOrderStatus(for: order)
     }
 
-    let cardPaymentReadiness: CardPaymentReadinessUseCase
+    let cardPresentPaymentsReadiness: CardPresentPaymentsReadinessUseCase
 
     let onboardingViewModel: InPersonPaymentsViewModel
 
@@ -27,7 +27,7 @@ final class OrderDetailsViewModel {
         self.order = order
         self.stores = stores
         let onboardingUseCase = CardPresentPaymentsOnboardingUseCase(stores: stores)
-        self.cardPaymentReadiness = CardPaymentReadinessUseCase(onboardingUseCase: onboardingUseCase, stores: stores)
+        self.cardPresentPaymentsReadiness = CardPresentPaymentsReadinessUseCase(onboardingUseCase: onboardingUseCase, stores: stores)
         onboardingViewModel = InPersonPaymentsViewModel(useCase: onboardingUseCase)
     }
 

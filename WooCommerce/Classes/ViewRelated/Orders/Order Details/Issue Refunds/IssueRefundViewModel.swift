@@ -64,6 +64,11 @@ final class IssueRefundViewModel {
     ///
     var onChange: (() -> (Void))?
 
+    /// This closure is executed when fetching the charge details failed.
+    /// Implement the input parameter with a closure to be execured when the user wants to retry the fetch action.
+    ///
+    var onChargeFetchError: ((@escaping (() -> Void)) -> (Void))?
+
     /// Title for the navigation bar
     ///
     private(set) var title: String = ""
@@ -311,14 +316,15 @@ private extension IssueRefundViewModel {
         stores.dispatch(setPaymentGatewayAccountAction)
 
         let action = CardPresentPaymentAction.fetchWCPayCharge(siteID: state.order.siteID, chargeID: chargeID, onCompletion: { [weak self] result in
-            switch result {
-            case .success(_):
-                self?.state.fetchChargeError = nil
-            case .failure(_):
+            if case .failure(_) = result {
                 self?.state.fetchChargeError = .requestError
+
+                self?.onChargeFetchError?({ [weak self] in
+                    self?.fetchCharge()
+                })
             }
         })
-        
+
         stores.dispatch(action)
     }
 }

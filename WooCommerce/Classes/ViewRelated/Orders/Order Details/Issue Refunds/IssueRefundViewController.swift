@@ -69,6 +69,16 @@ private extension IssueRefundViewController {
         viewModel.onChange = { [weak self] in
             self?.updateWithViewModelContent()
         }
+
+        viewModel.onChargeFetchError = { [weak self] retryAction in
+            let notice = Notice(title: Localization.retryFetchChargeNoticeTitle,
+                                feedbackType: .error,
+                                actionTitle: Localization.retryFetchChargeNoticeRetryActionTitle,
+                                actionHandler: retryAction)
+            let noticePresenter = DefaultNoticePresenter()
+            noticePresenter.presentingViewController = self
+            noticePresenter.enqueue(notice: notice)
+        }
     }
 
     func updateWithViewModelContent() {
@@ -265,5 +275,11 @@ private extension IssueRefundViewController {
         static let nextTitle = NSLocalizedString("Next", comment: "Title of the next button in the issue refund screen")
         static let cancelTitle = NSLocalizedString("Cancel", comment: "Cancel button title in the issue refund screen")
         static let selectAllTitle = NSLocalizedString("Select All", comment: "Select all button title in the issue refund screen")
+        static let retryFetchChargeNoticeTitle = NSLocalizedString(
+            "Failed to fetch your charge details. Please try again.",
+            comment: "Error message on the Issue Refund screen when fetching the charge details failed")
+        static let retryFetchChargeNoticeRetryActionTitle = NSLocalizedString(
+            "Retry",
+            comment: "Action button that will retry fetching the charge details on the Issue Refund screen")
     }
 }

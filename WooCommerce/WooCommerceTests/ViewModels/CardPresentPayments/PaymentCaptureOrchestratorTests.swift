@@ -28,7 +28,8 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                                                         supportedCurrencies: ["USD"],
                                                         country: "US",
                                                         isCardPresentEligible: true)
-        let order = Order.fake().copy(siteID: sampleSiteID, currency: "USD", total: "150.00")
+        let order = Order.fake().copy(siteID: sampleSiteID, currency: "USD")
+        let orderTotal: NSDecimalNumber = 150
 
         // When
         let parameters: PaymentParameters = waitFor { promise in
@@ -40,6 +41,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
 
             self.sut.collectPayment(
                 for: order,
+                orderTotal: orderTotal,
                    paymentGatewayAccount: account,
                    paymentMethodTypes: ["card_present"],
                    onWaitingForInput: {},
@@ -60,7 +62,8 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                                                         supportedCurrencies: ["CAD"],
                                                         country: "CA",
                                                         isCardPresentEligible: true)
-        let order = Order.fake().copy(siteID: sampleSiteID, currency: "CAD", total: "150.00")
+        let order = Order.fake().copy(siteID: sampleSiteID, currency: "CAD")
+        let orderTotal: NSDecimalNumber = 150
 
         // When
         let parameters: PaymentParameters = waitFor { promise in
@@ -72,6 +75,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
 
             self.sut.collectPayment(
                 for: order,
+                   orderTotal: orderTotal,
                    paymentGatewayAccount: account,
                    paymentMethodTypes: ["card_present"],
                    onWaitingForInput: {},
@@ -93,7 +97,8 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                                                         supportedCurrencies: ["CAD"],
                                                         country: "CA",
                                                         isCardPresentEligible: true)
-        let order = Order.fake().copy(siteID: sampleSiteID, currency: "CAD", total: "153.00")
+        let order = Order.fake().copy(siteID: sampleSiteID, currency: "CAD")
+        let orderTotal: NSDecimalNumber = 153
 
         // When
         let parameters: PaymentParameters = waitFor { promise in
@@ -105,6 +110,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
 
             self.sut.collectPayment(
                 for: order,
+                   orderTotal: orderTotal,
                    paymentGatewayAccount: account,
                    paymentMethodTypes: ["card_present"],
                    onWaitingForInput: {},
@@ -126,7 +132,8 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                                                         supportedCurrencies: ["CAD"],
                                                         country: "CA",
                                                         isCardPresentEligible: true)
-        let order = Order.fake().copy(siteID: sampleSiteID, currency: "CAD", total: "42.50")
+        let order = Order.fake().copy(siteID: sampleSiteID, currency: "CAD")
+        let orderTotal: NSDecimalNumber = 42.50
 
         // When
         let parameters: PaymentParameters = waitFor { promise in
@@ -138,6 +145,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
 
             self.sut.collectPayment(
                 for: order,
+                   orderTotal: orderTotal,
                    paymentGatewayAccount: account,
                    paymentMethodTypes: ["card_present"],
                    onWaitingForInput: {},
@@ -159,7 +167,8 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                                                         supportedCurrencies: ["CAD"],
                                                         country: "CA",
                                                         isCardPresentEligible: true)
-        let order = Order.fake().copy(siteID: sampleSiteID, currency: "CAD", total: "39")
+        let order = Order.fake().copy(siteID: sampleSiteID, currency: "CAD")
+        let orderTotal: NSDecimalNumber = 39
 
         // When
         let parameters: PaymentParameters = waitFor { promise in
@@ -171,6 +180,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
 
             self.sut.collectPayment(
                 for: order,
+                   orderTotal: orderTotal,
                    paymentGatewayAccount: account,
                    paymentMethodTypes: ["card_present"],
                    onWaitingForInput: {},

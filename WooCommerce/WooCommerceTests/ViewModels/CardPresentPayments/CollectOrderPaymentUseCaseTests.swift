@@ -154,11 +154,10 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         }
 
         // Then
-        XCTAssertNotNil(result?.failure as? PaymentCaptureOrchestrator.NotValidAmountError)
+        XCTAssertNotNil(result?.failure as? CollectOrderPaymentUseCase.NotValidAmountError)
 
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "card_present_collect_payment_failed"}))
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
-        XCTAssertEqual(eventProperties["card_reader_model"] as? String, Mocks.cardReaderModel)
         XCTAssertEqual(eventProperties["country"] as? String, "US")
         XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayAccount)
     }

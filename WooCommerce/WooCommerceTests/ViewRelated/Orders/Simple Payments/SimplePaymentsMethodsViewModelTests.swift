@@ -185,7 +185,12 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
 
         let analytics = MockAnalyticsProvider()
         let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()))
-        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", storage: storage, analytics: WooAnalytics(analyticsProvider: analytics))
+        let onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
+        let viewModel = SimplePaymentsMethodsViewModel(
+            formattedTotal: "$12.00",
+            cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
+            storage: storage,
+            analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
         viewModel.collectPayment(on: UIViewController(), useCase: useCase, onSuccess: {})
@@ -241,7 +246,12 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
 
         let analytics = MockAnalyticsProvider()
         let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .failure(NSError(domain: "Error", code: 0, userInfo: nil)))
-        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", storage: storage, analytics: WooAnalytics(analyticsProvider: analytics))
+        let onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
+        let viewModel = SimplePaymentsMethodsViewModel(
+            formattedTotal: "$12.00",
+            cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
+            storage: storage,
+            analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
         viewModel.collectPayment(on: UIViewController(), useCase: useCase, onSuccess: {})
@@ -283,7 +293,12 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         let analytics = MockAnalyticsProvider()
         let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()))
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", stores: stores, analytics: WooAnalytics(analyticsProvider: analytics))
+        let onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
+        let viewModel = SimplePaymentsMethodsViewModel(
+            formattedTotal: "$12.00",
+            cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
+            stores: stores,
+            analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
         viewModel.collectPayment(on: UIViewController(), useCase: useCase, onSuccess: {})
@@ -375,7 +390,12 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
 
         let noticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
         let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()))
-        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", presentNoticeSubject: noticeSubject, storage: storage)
+        let onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
+        let viewModel = SimplePaymentsMethodsViewModel(
+            formattedTotal: "$12.00",
+            presentNoticeSubject: noticeSubject,
+            cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
+            storage: storage)
 
         // When
         let receivedCompleted: Bool = waitFor { promise in
@@ -403,7 +423,11 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         storage.insertSamplePaymentGatewayAccount(readOnlyAccount: .fake())
 
         let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()))
-        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", storage: storage)
+        let onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
+        let viewModel = SimplePaymentsMethodsViewModel(
+            formattedTotal: "$12.00",
+            cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
+            storage: storage)
 
         // When
         let calledOnSuccess: Bool = waitFor { promise in

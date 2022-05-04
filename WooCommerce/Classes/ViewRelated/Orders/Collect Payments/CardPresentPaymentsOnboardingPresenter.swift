@@ -2,7 +2,12 @@ import UIKit
 import Yosemite
 import Combine
 
-final class CardPresentPaymentsOnboardingPresenter {
+protocol CardPresentPaymentsOnboardingPresenting {
+    func showOnboardingIfRequired(from: UIViewController,
+                                  readyToCollectPayment: @escaping (() -> ()))
+}
+
+final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting {
 
     private let stores: StoresManager
 

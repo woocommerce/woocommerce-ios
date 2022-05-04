@@ -20,7 +20,7 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
 
     /// Allows the onboarding flow to be presented before a card present payment when required
     ///
-    private let cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenter
+    private let cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting
 
     /// Defines if the view should show a loading indicator.
     /// Currently set while marking the order as complete
@@ -107,7 +107,7 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
          formattedTotal: String,
          presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
          cppStoreStateObserver: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
-         cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenter = CardPresentPaymentsOnboardingPresenter(),
+         cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting = CardPresentPaymentsOnboardingPresenter(),
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics) {

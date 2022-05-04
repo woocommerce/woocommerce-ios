@@ -10,7 +10,8 @@ public struct PaymentIntentParameters {
     @CurrencyCode
     public private(set) var currency: String
 
-    /// The amount of the payment needs to be provided in the currency’s smallest unit.
+    /// The amount of the payment needs to be provided in the currency’s smallest unit, determined by Stripe.
+    /// We calculate that amount for each currency multiplying the original amount by this value.
     /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPPaymentIntentParameters.html#/c:objc(cs)SCPPaymentIntentParameters(py)amount
     public let stripeSmallestCurrencyUnitMultiplier: Decimal
 

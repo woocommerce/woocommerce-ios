@@ -44,6 +44,7 @@ final class IssueRefundViewController: UIViewController {
         configureNavigationBar()
         configureTableView()
         observeViewModel()
+        viewModel.fetch()
         updateWithViewModelContent()
     }
 

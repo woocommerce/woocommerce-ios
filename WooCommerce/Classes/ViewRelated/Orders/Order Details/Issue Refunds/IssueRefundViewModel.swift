@@ -168,7 +168,6 @@ final class IssueRefundViewModel {
         selectedItemsTitle = createSelectedItemsCount()
         hasUnsavedChanges = calculatePendingChangesState()
         observeCharge()
-        fetchCharge()
     }
 
     /// Creates the `ViewModel` to be used when navigating to the page where the user can
@@ -236,6 +235,12 @@ extension IssueRefundViewModel {
         }
 
         trackSelectAllButtonTapped()
+    }
+
+    /// Fetches the necessary information to show the issue refund screen.
+    ///
+    func fetch() {
+        fetchCharge()
     }
 }
 

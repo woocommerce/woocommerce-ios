@@ -18,6 +18,10 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     ///
     @Published private(set) var showPayWithCardRow = true
 
+    /// Allows the onboarding flow to be presented before a card present payment when required
+    ///
+    private let cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenter
+
     /// Defines if the view should show a loading indicator.
     /// Currently set while marking the order as complete
     ///
@@ -103,6 +107,7 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
          formattedTotal: String,
          presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
          cppStoreStateObserver: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
+         cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenter = CardPresentPaymentsOnboardingPresenter(),
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics) {
@@ -112,6 +117,7 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
         self.formattedTotal = formattedTotal
         self.presentNoticeSubject = presentNoticeSubject
         self.cppStoreStateObserver = cppStoreStateObserver
+        self.cardPresentPaymentsOnboardingPresenter = cardPresentPaymentsOnboardingPresenter
         self.stores = stores
         self.storage = storage
         self.analytics = analytics
@@ -160,41 +166,51 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
             return presentNoticeSubject.send(.error(Localization.genericCollectError))
         }
 
-        guard let order = ordersResultController.fetchedObjects.first else {
-            DDLogError("⛔️ Order not found, can't collect payment.")
-            return presentNoticeSubject.send(.error(Localization.genericCollectError))
-        }
+        cardPresentPaymentsOnboardingPresenter.showOnboardingIfRequired(
+            from: rootViewController) { [weak self] in
+                guard let self = self else { return }
 
-        guard let paymentGateway = gatewayAccountResultsController.fetchedObjects.first else {
-            DDLogError("⛔️ Payment Gateway not found, can't collect payment.")
-            return presentNoticeSubject.send(.error(Localization.genericCollectError))
-        }
+                guard let order = self.ordersResultController.fetchedObjects.first else {
+                    DDLogError("⛔️ Order not found, can't collect payment.")
+                    return self.presentNoticeSubject.send(.error(Localization.genericCollectError))
+                }
 
-        collectPaymentsUseCase = useCase ?? CollectOrderPaymentUseCase(siteID: siteID,
-                                                                       order: order,
-                                                                       formattedAmount: formattedTotal,
-                                                                       paymentGatewayAccount: paymentGateway,
-                                                                       rootViewController: rootViewController,
-                                                                       alerts: OrderDetailsPaymentAlerts(transactionType: .collectPayment,
-                                                                                                         presentingController: rootViewController),
-                                                                       configuration: CardPresentConfigurationLoader().configuration)
-        collectPaymentsUseCase?.collectPayment(backButtonTitle: Localization.continueToOrders, onCollect: { [weak self] result in
-            if result.isFailure {
-                self?.trackFlowFailed()
+                guard let paymentGateway = self.gatewayAccountResultsController.fetchedObjects.first else {
+                    DDLogError("⛔️ Payment Gateway not found, can't collect payment.")
+                    return self.presentNoticeSubject.send(.error(Localization.genericCollectError))
+                }
+
+                self.collectPaymentsUseCase = useCase ?? CollectOrderPaymentUseCase(
+                    siteID: self.siteID,
+                    order: order,
+                    formattedAmount: self.formattedTotal,
+                    paymentGatewayAccount: paymentGateway,
+                    rootViewController: rootViewController,
+                    alerts: OrderDetailsPaymentAlerts(transactionType: .collectPayment,
+                                                      presentingController: rootViewController),
+                    configuration: CardPresentConfigurationLoader().configuration)
+
+                self.collectPaymentsUseCase?.collectPayment(
+                    backButtonTitle: Localization.continueToOrders,
+                    onCollect: { [weak self] result in
+                        if result.isFailure {
+                            self?.trackFlowFailed()
+                        }
+                    },
+                    onCompleted: { [weak self] in
+                        // Inform success to consumer
+                        onSuccess()
+
+                        // Sent notice request
+                        self?.presentNoticeSubject.send(.completed)
+
+                        // Make sure we free all the resources
+                        self?.collectPaymentsUseCase = nil
+
+                        // Tracks completion
+                        self?.trackFlowCompleted(method: .card)
+                    })
             }
-        }, onCompleted: { [weak self] in
-            // Inform success to consumer
-            onSuccess()
-
-            // Sent notice request
-            self?.presentNoticeSubject.send(.completed)
-
-            // Make sure we free all the resources
-            self?.collectPaymentsUseCase = nil
-
-            // Tracks completion
-            self?.trackFlowCompleted(method: .card)
-        })
     }
 
     /// Tracks the collect by cash intention.

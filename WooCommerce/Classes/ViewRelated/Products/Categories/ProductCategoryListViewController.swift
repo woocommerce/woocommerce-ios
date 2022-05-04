@@ -59,17 +59,20 @@ private extension ProductCategoryListViewController {
             self?.tableView.reloadData()
         }
         viewModel.observeCategoryListStateChanges { [weak self] syncState in
+            guard let self = self else { return }
             switch syncState {
             case .initialized:
                 break
             case .syncing:
-                self?.displayGhostContent()
+                if self.viewModel.categoryViewModels.isEmpty {
+                    self.displayGhostContent()
+                }
             case let .failed(retryToken):
-                self?.removeGhostContent()
-                self?.displaySyncingErrorNotice(retryToken: retryToken)
+                self.removeGhostContent()
+                self.displaySyncingErrorNotice(retryToken: retryToken)
             case .synced:
-                self?.tableView.reloadData()
-                self?.removeGhostContent()
+                self.tableView.reloadData()
+                self.removeGhostContent()
             }
         }
     }

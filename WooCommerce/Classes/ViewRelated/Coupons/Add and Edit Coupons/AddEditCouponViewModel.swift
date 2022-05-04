@@ -86,6 +86,38 @@ final class AddEditCouponViewModel: ObservableObject {
         })
     }
 
+    /// Title for the Edit Products button with the number of selected products.
+    ///
+    var editProductsButtonTitle: String {
+        String.localizedStringWithFormat(Localization.editProductsButton, productOrVariationIDs.count)
+    }
+
+    /// View model for the category selector
+    ///
+    var categorySelectorViewModel: ProductCategorySelectorViewModel {
+        .init(siteID: siteID, selectedCategories: categoryIDs) { [weak self] categories in
+            self?.categoryIDs = categories.map { $0.categoryID }
+        }
+    }
+
+    /// Title for the Edit Categories button with the number of selected product categories.
+    ///
+    var editCategoriesButtonTitle: String {
+        String.localizedStringWithFormat(Localization.editProductCategoriesButton, categoryIDs.count)
+    }
+
+    /// Whether the coupon is applicable to any specified products.
+    ///
+    var hasSelectedProducts: Bool {
+        productOrVariationIDs.isNotEmpty
+    }
+
+    /// Whether the coupon is applicable to any specified product categories.
+    ///
+    var hasSelectedCategories: Bool {
+        categoryIDs.isNotEmpty
+    }
+
     private(set) var coupon: Coupon?
     private let stores: StoresManager
     private let storageManager: StorageManagerType
@@ -101,7 +133,8 @@ final class AddEditCouponViewModel: ObservableObject {
     @Published var expiryDateField: Date?
     @Published var freeShipping: Bool
     @Published var couponRestrictionsViewModel: CouponRestrictionsViewModel
-    @Published var productOrVariationIDs: [Int64]
+    @Published private var productOrVariationIDs: [Int64]
+    @Published private var categoryIDs: [Int64]
 
     /// Init method for coupon creation
     ///
@@ -122,6 +155,7 @@ final class AddEditCouponViewModel: ObservableObject {
         freeShipping = false
         couponRestrictionsViewModel = CouponRestrictionsViewModel(siteID: siteID)
         productOrVariationIDs = []
+        categoryIDs = []
     }
 
     /// Init method for coupon editing
@@ -142,6 +176,7 @@ final class AddEditCouponViewModel: ObservableObject {
         freeShipping = existingCoupon.freeShipping
         couponRestrictionsViewModel = CouponRestrictionsViewModel(coupon: existingCoupon)
         productOrVariationIDs = existingCoupon.productIds
+        categoryIDs = existingCoupon.productCategories
         self.stores = stores
         self.storageManager = storageManager
     }
@@ -253,5 +288,13 @@ private extension AddEditCouponViewModel {
         static let couponExpiryDatePlaceholder = NSLocalizedString(
             "None",
             comment: "Coupon expiry date placeholder in the view for adding or editing a coupon")
+        static let editProductsButton = NSLocalizedString(
+            "Edit Products (%1$d)",
+            comment: "Button specifying the number of products applicable to a coupon in the view for adding or editing a coupon. " +
+            "Reads like: Edit Products (2)")
+        static let editProductCategoriesButton = NSLocalizedString(
+            "Edit Product Categories (%1$d)",
+            comment: "Button for specify the product categories where a coupon can be applied in the view for adding or editing a coupon. " +
+            "Reads like: Edit Categories")
     }
 }

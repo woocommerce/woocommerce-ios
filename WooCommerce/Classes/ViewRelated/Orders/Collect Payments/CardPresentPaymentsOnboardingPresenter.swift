@@ -12,6 +12,8 @@ final class CardPresentPaymentsOnboardingPresenter {
 
     private var readinessSubscription: AnyCancellable?
 
+    private var subscriptions = [AnyCancellable]()
+
     init(stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
         let onboardingUseCase = CardPresentPaymentsOnboardingUseCase(stores: stores)
@@ -31,12 +33,19 @@ final class CardPresentPaymentsOnboardingPresenter {
                                 readyToCollectPayment completion: @escaping (() -> ())) {
         let onboardingViewController = InPersonPaymentsViewController(viewModel: onboardingViewModel)
         viewController.show(onboardingViewController, sender: viewController)
+
         readinessSubscription = readinessUseCase.$readiness
             .sink(receiveValue: { readiness in
                 guard case .ready = readiness else {
                     return
                 }
-                viewController.navigationController?.popToViewController(viewController, animated: true)
+
+                if let navigationController = viewController as? UINavigationController {
+                    navigationController.popViewController(animated: true)
+                } else {
+                    viewController.navigationController?.popViewController(animated: true)
+                }
+
                 completion()
             })
     }

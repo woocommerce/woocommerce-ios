@@ -52,8 +52,6 @@ final class OrderDetailsViewController: UIViewController {
 
     private let notices = OrderDetailsNotices()
 
-    private var readinessSubscription: AnyCancellable?
-
     // MARK: - View Lifecycle
     init(viewModel: OrderDetailsViewModel) {
         self.viewModel = viewModel
@@ -719,27 +717,6 @@ private extension OrderDetailsViewController {
     }
 
     @objc private func collectPaymentTapped() {
-        guard case .ready = viewModel.cardPresentPaymentsReadiness.readiness else {
-            return showOnboardingBeforePayment()
-        }
-        collectPayment()
-    }
-
-    private func showOnboardingBeforePayment() {
-        let viewController = InPersonPaymentsViewController(viewModel: viewModel.onboardingViewModel)
-        show(viewController, sender: self)
-        readinessSubscription = viewModel.cardPresentPaymentsReadiness.$readiness
-            .sink(receiveValue: { [weak self] readiness in
-                guard case .ready = readiness,
-                      let self = self else {
-                          return
-                      }
-                self.navigationController?.popToViewController(self, animated: true)
-                self.collectPayment()
-            })
-    }
-
-    private func collectPayment() {
         viewModel.collectPayment(rootViewController: self, backButtonTitle: Localization.Payments.backToOrder) { [weak self] result in
             guard let self = self else { return }
             // Refresh date & view once payment has been collected.

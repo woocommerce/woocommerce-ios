@@ -2,7 +2,7 @@ import Foundation
 import Combine
 import Yosemite
 
-final class CardPaymentReadinessUseCase {
+final class CardPresentPaymentsReadinessUseCase {
     /// Represents the system's readiness to accept a card payment
     ///
     enum CardPaymentReadiness {
@@ -25,38 +25,53 @@ final class CardPaymentReadinessUseCase {
 
     private let stores: StoresManager
 
+    private var cancellables: [AnyCancellable] = []
+
     init(onboardingUseCase: CardPresentPaymentsOnboardingUseCase,
          stores: StoresManager = ServiceLocator.stores) {
         self.onboardingUseCase = onboardingUseCase
         self.stores = stores
+        checkCardPaymentReadiness()
     }
 
     /// Checks whether there is a reader connected (implying that we're ready to accept payments)
     /// If there's not, checks whether `CardPresentOnboardingState` is `.completed`
     ///
-    func checkCardPaymentReadiness() {
-        onboardingUseCase.refresh()
-        let readerConnected = CardPresentPaymentAction.checkCardReaderConnected { connectPublisher in
-            // TODO: Use readerConnectedReadiness to preempt the onboarding readiness check.
-            // This requires a refactor of `checkCardReaderConnected` to emit an event for a connected reader.
-            // See https://github.com/woocommerce/woocommerce-ios/issues/6766
-            let readerConnectedReadiness = connectPublisher.map { _ -> CardPaymentReadiness in
-                return CardPaymentReadiness.loading
+    private func checkCardPaymentReadiness() {
+        let readerConnected = CardPresentPaymentAction.publishCardReaderConnections { [weak self] connectPublisher in
+            guard let self = self else { return }
+            let readerConnectedReadiness = connectPublisher
+                .map { readers -> CardPaymentReadiness in
+                    if readers.isNotEmpty {
+                        return .ready
+                    } else {
+                        /// Since there are no readers connected, we'll load the onboarding state
+                        return .loading
+                    }
+                }
+                .removeDuplicates()
+                .share()
+
+            readerConnectedReadiness.sink { [weak self] readiness in
+                if case .loading = readiness {
+                    self?.onboardingUseCase.refresh()
+                }
             }
+            .store(in: &self.cancellables)
 
             let onboardingReadiness = self.onboardingUseCase.statePublisher
                 .compactMap({ state -> CardPaymentReadiness? in
                     switch state {
                     case .loading:
-                        // Ignoring intermediate loading steps simplifies the logic
+                        /// Ignoring intermediate loading steps simplifies the logic.
+                        /// We already know about initial loading from the readerConnectedReadiness stream
                         return nil
                     case .completed:
-                        return CardPaymentReadiness.ready
+                        return .ready
                     default:
-                        return CardPaymentReadiness.onboardingRequired
+                        return .onboardingRequired
                     }
                 })
-                .removeDuplicates()
 
             readerConnectedReadiness
                 .merge(with: onboardingReadiness)

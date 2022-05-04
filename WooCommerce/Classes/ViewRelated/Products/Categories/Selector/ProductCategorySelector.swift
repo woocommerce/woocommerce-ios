@@ -49,9 +49,9 @@ struct ProductCategorySelector: View {
             }
             .navigationTitle(config.title)
             .navigationBarTitleDisplayMode(.large)
-            .navigationViewStyle(.stack)
             .wooNavigationBarStyle()
         }
+        .navigationViewStyle(.stack)
     }
 }
 

@@ -19,6 +19,10 @@ public final class NewOrderScreen: ScreenObject {
         $0.buttons["new-order-add-product-button"]
     }
 
+    private let addCustomerDetailsButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.staticTexts["Add Customer Details"]
+    }
+
     private var createButton: XCUIElement { createButtonGetter(app) }
 
     /// Cancel button in the Navigation bar.
@@ -32,6 +36,10 @@ public final class NewOrderScreen: ScreenObject {
     /// Add Product button in Product section.
     ///
     private var addProductButton: XCUIElement { addProductButtonGetter(app) }
+
+    /// Add Customer Details button in the Customer Details section.
+    ///
+    private var addCustomerDetailsButton: XCUIElement { addCustomerDetailsButtonGetter(app) }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
@@ -91,5 +99,18 @@ public final class NewOrderScreen: ScreenObject {
     public func cancelOrderCreation() throws -> OrdersScreen {
         cancelButton.tap()
         return try OrdersScreen()
+    }
+
+    /// Opens the Customer Details screen.
+    /// - Returns: Customer Details screen object.
+    @discardableResult
+    public func openCustomerDetailsScreen() throws -> CustomerDetailsScreen {
+        addCustomerDetailsButton.tap()
+        return try CustomerDetailsScreen()
+    }
+
+    public func checkCustomerDetails() throws -> NewOrderScreen {
+        return try openCustomerDetailsScreen()
+        .closeCustomerDetailsScreen()
     }
 }

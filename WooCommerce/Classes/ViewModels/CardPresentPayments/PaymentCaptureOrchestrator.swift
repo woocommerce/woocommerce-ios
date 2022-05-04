@@ -272,9 +272,8 @@ private extension PaymentCaptureOrchestrator {
 
 private extension PaymentCaptureOrchestrator {
     enum Constants {
-        static let canadaFlatFee = NSDecimalNumber(string: "0.25")
-
-        static let canadaPercentageFee = NSDecimalNumber(string: "0.026")
+        static let canadaFlatFee = NSDecimalNumber(string: "0.15")
+        static let canadaPercentageFee = NSDecimalNumber(0)
     }
 }
 

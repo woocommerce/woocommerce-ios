@@ -59,10 +59,15 @@ final class PaymentIntentParametersTests: XCTestCase {
     }
 
     func test_amount_is_converted_to_smallest_unit_before_being_passed_to_stripe() throws {
+        let stripeSmallestCurrencyUnitMultiplier: Decimal = 200
         let amount = Decimal(120.10)
-        let expectation = UInt(12010)
+        let amountInSmallestUnit = amount * stripeSmallestCurrencyUnitMultiplier
+        let expectation = NSDecimalNumber(decimal: amountInSmallestUnit).uintValue
 
-        let params = PaymentIntentParameters(amount: amount, currency: "usd", stripeSmallestCurrencyUnitMultiplier: 100, paymentMethodTypes: ["card_present"])
+        let params = PaymentIntentParameters(amount: amount,
+                                             currency: "usd",
+                                             stripeSmallestCurrencyUnitMultiplier: stripeSmallestCurrencyUnitMultiplier,
+                                             paymentMethodTypes: ["card_present"])
         let stripeParams = try XCTUnwrap(params.toStripe())
 
         XCTAssertEqual(expectation, stripeParams.amount)

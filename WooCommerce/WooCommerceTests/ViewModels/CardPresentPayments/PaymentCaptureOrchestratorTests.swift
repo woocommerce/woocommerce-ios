@@ -42,13 +42,14 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
             self.sut.collectPayment(
                 for: order,
                 orderTotal: orderTotal,
-                   paymentGatewayAccount: account,
-                   paymentMethodTypes: ["card_present"],
-                   onWaitingForInput: {},
-                   onProcessingMessage: {},
-                   onDisplayMessage: { _ in },
-                   onProcessingCompletion: { _ in },
-                   onCompletion: { _ in })
+                paymentGatewayAccount: account,
+                paymentMethodTypes: ["card_present"],
+                stripeSmallestCurrencyUnitMultiplier: 100,
+                onWaitingForInput: {},
+                onProcessingMessage: {},
+                onDisplayMessage: { _ in },
+                onProcessingCompletion: { _ in },
+                onCompletion: { _ in })
         }
 
         // Then
@@ -75,14 +76,15 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
 
             self.sut.collectPayment(
                 for: order,
-                   orderTotal: orderTotal,
-                   paymentGatewayAccount: account,
-                   paymentMethodTypes: ["card_present"],
-                   onWaitingForInput: {},
-                   onProcessingMessage: {},
-                   onDisplayMessage: { _ in },
-                   onProcessingCompletion: { _ in },
-                   onCompletion: { _ in })
+                orderTotal: orderTotal,
+                paymentGatewayAccount: account,
+                paymentMethodTypes: ["card_present"],
+                stripeSmallestCurrencyUnitMultiplier: 100,
+                onWaitingForInput: {},
+                onProcessingMessage: {},
+                onDisplayMessage: { _ in },
+                onProcessingCompletion: { _ in },
+                onCompletion: { _ in })
         }
 
         // Then

@@ -12,7 +12,15 @@ public final class CustomerDetailsScreen: ScreenObject {
     }
 
     private let closeButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.staticTexts["close"]
+        $0.buttons["Close"] //need an accessibilityIdentifier here if we keep this
+    }
+
+    private let addressFormGetter: (XCUIApplication) -> XCUIElement = {
+        $0.groups["order-address-form"]
+    }
+
+    private let firstNameFieldGetter: (XCUIApplication) -> XCUIElement = {
+        $0.textFields["order-address-form-first-name-field"]
     }
 
     private var addressToggle: XCUIElement { addressToggleGetter(app) }
@@ -21,10 +29,16 @@ public final class CustomerDetailsScreen: ScreenObject {
 
     private var closeButton: XCUIElement { closeButtonGetter(app) }
 
+    private var addressForm: XCUIElement { addressFormGetter(app) }
+
 
     init(app: XCUIApplication = XCUIApplication()) throws {
+        print(app.otherElements)
+        print(app.buttons)
+        print(app.groups)
+   //     print(app.otherElements.allElementsBoundByIndex)
         try super.init(
-            expectedElementGetters: [ closeButtonGetter ],
+            expectedElementGetters: [ addressFormGetter ],
             app: app
         )
     }

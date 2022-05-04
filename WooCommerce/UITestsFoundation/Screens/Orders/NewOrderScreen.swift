@@ -109,6 +109,11 @@ public final class NewOrderScreen: ScreenObject {
         return try CustomerDetailsScreen()
     }
 
+    public func addCustomerDetails() throws -> NewOrderScreen {
+        return try openCustomerDetailsScreen()
+            .enterCustomerDetails()
+    }
+
     public func checkCustomerDetails() throws -> NewOrderScreen {
         return try openCustomerDetailsScreen()
         .closeCustomerDetailsScreen()

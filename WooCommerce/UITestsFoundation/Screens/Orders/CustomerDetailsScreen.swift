@@ -31,14 +31,16 @@ public final class CustomerDetailsScreen: ScreenObject {
 
     private var addressForm: XCUIElement { addressFormGetter(app) }
 
+    private var firstNameField: XCUIElement { firstNameFieldGetter(app) }
+
 
     init(app: XCUIApplication = XCUIApplication()) throws {
-        print(app.otherElements)
-        print(app.buttons)
-        print(app.groups)
+    //    print(app.otherElements)
+    //    print(app.buttons)
+   //     print(app.groups)
    //     print(app.otherElements.allElementsBoundByIndex)
         try super.init(
-            expectedElementGetters: [ addressFormGetter ],
+            expectedElementGetters: [ closeButtonGetter ],
             app: app
         )
     }
@@ -55,10 +57,11 @@ public final class CustomerDetailsScreen: ScreenObject {
     /// Updates the order with basic customer details.
     /// - Returns: New Order screen object.
     @discardableResult
-    public func addCustomerDetails() throws -> NewOrderScreen {
-        //        app.elements[“billing-form”].textFields[“name-field”].tap
+    public func enterCustomerDetails() throws -> NewOrderScreen {
+        firstNameField.tap()
+        firstNameField.typeText("Mira")
         //        enter some text
-        addressToggle.tap()
+    //    addressToggle.tap()
         //        app.elements[“billing-form”].textFields[“name-field”].tap
         //        enter some Text
         //doneButton.tap()

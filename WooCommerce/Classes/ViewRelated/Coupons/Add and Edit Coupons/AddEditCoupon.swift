@@ -149,12 +149,12 @@ struct AddEditCoupon: View {
                                 showingSelectProducts = true
                             } label: {
                                 HStack {
-                                    if viewModel.productOrVariationIDs.isNotEmpty {
+                                    if viewModel.hasSelectedProducts {
                                         Image(uiImage: .pencilImage)
                                             .resizable()
                                             .colorMultiply(Color(.text))
                                             .frame(width: Constants.iconSize, height: Constants.iconSize)
-                                        Text(String.localizedStringWithFormat(Localization.editProductsButton, viewModel.productOrVariationIDs.count))
+                                        Text(viewModel.editProductsButtonTitle)
                                             .bodyStyle()
                                     } else {
                                         Text(Localization.allProductsButton)
@@ -170,12 +170,12 @@ struct AddEditCoupon: View {
                                 showingSelectCategories = true
                             } label: {
                                 HStack {
-                                    if viewModel.categoryIDs.isNotEmpty {
+                                    if viewModel.hasSelectedCategories {
                                         Image(uiImage: .pencilImage)
                                             .resizable()
                                             .colorMultiply(Color(.text))
                                             .frame(width: Constants.iconSize, height: Constants.iconSize)
-                                        Text(String.localizedStringWithFormat(Localization.editProductCategoriesButton, viewModel.categoryIDs.count))
+                                        Text(viewModel.editCategoriesButtonTitle)
                                             .bodyStyle()
                                     } else {
                                         Image(uiImage: .plusImage)
@@ -302,17 +302,9 @@ private extension AddEditCoupon {
         static let allProductsButton = NSLocalizedString(
             "All Products",
             comment: "Button indicating that coupon can be applied to all products in the view for adding or editing a coupon.")
-        static let editProductsButton = NSLocalizedString(
-            "Edit Products (%1$d)",
-            comment: "Button specifying the number of products applicable to a coupon in the view for adding or editing a coupon. " +
-            "Reads like: Edit Products (2)")
         static let selectCategoriesButton = NSLocalizedString(
             "Select Product Categories",
             comment: "Button to select specific categories applicable for a coupon in the view for adding or editing a coupon.")
-        static let editProductCategoriesButton = NSLocalizedString(
-            "Edit Product Categories (%1$d)",
-            comment: "Button for specify the product categories where a coupon can be applied in the view for adding or editing a coupon. " +
-            "Reads like: Edit Categories")
         static let headerUsageDetails = NSLocalizedString(
             "Usage Details",
             comment: "Header of the section usage details in the view for adding or editing a coupon.")

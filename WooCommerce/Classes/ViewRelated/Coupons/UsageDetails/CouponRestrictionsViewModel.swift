@@ -25,9 +25,9 @@ final class CouponRestrictionsViewModel: ObservableObject {
 
     @Published var excludeSaleItems: Bool
 
-    @Published var excludedProductOrVariationIDs: [Int64]
+    @Published private var excludedProductOrVariationIDs: [Int64]
 
-    @Published var excludedCategoryIDs: [Int64]
+    @Published private var excludedCategoryIDs: [Int64]
 
     /// View model for the product selector
     ///

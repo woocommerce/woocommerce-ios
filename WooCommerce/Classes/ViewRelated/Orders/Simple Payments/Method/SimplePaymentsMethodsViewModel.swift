@@ -18,6 +18,10 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     ///
     @Published private(set) var showPayWithCardRow = false
 
+    /// Allows the onboarding flow to be presented before a card present payment when required
+    ///
+    private let cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting
+
     /// Defines if the view should show a loading indicator.
     /// Currently set while marking the order as complete
     ///
@@ -97,25 +101,45 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     ///
     private var collectPaymentsUseCase: CollectOrderPaymentProtocol?
 
+    struct Dependencies {
+        let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never>
+        let cppStoreStateObserver: CardPresentPaymentsOnboardingUseCaseProtocol
+        let cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting
+        let stores: StoresManager
+        let storage: StorageManagerType
+        let analytics: Analytics
+
+        init(presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
+             cppStoreStateObserver: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
+             cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting = CardPresentPaymentsOnboardingPresenter(),
+             stores: StoresManager = ServiceLocator.stores,
+             storage: StorageManagerType = ServiceLocator.storageManager,
+             analytics: Analytics = ServiceLocator.analytics) {
+            self.presentNoticeSubject = presentNoticeSubject
+            self.cppStoreStateObserver = cppStoreStateObserver
+            self.cardPresentPaymentsOnboardingPresenter = cardPresentPaymentsOnboardingPresenter
+            self.stores = stores
+            self.storage = storage
+            self.analytics = analytics
+        }
+    }
+
     init(siteID: Int64 = 0,
          orderID: Int64 = 0,
          paymentLink: URL? = nil,
          formattedTotal: String,
-         presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
-         cppStoreStateObserver: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
-         stores: StoresManager = ServiceLocator.stores,
-         storage: StorageManagerType = ServiceLocator.storageManager,
-         analytics: Analytics = ServiceLocator.analytics) {
+         dependencies: Dependencies = Dependencies()) {
         self.siteID = siteID
         self.orderID = orderID
         self.paymentLink = paymentLink
         self.formattedTotal = formattedTotal
-        self.presentNoticeSubject = presentNoticeSubject
-        self.cppStoreStateObserver = cppStoreStateObserver
-        self.stores = stores
-        self.storage = storage
-        self.analytics = analytics
-        self.title = String(format: Localization.title, formattedTotal)
+        presentNoticeSubject = dependencies.presentNoticeSubject
+        cppStoreStateObserver = dependencies.cppStoreStateObserver
+        cardPresentPaymentsOnboardingPresenter = dependencies.cardPresentPaymentsOnboardingPresenter
+        stores = dependencies.stores
+        storage = dependencies.storage
+        analytics = dependencies.analytics
+        title = String(format: Localization.title, formattedTotal)
 
         bindStoreCPPState()
     }
@@ -160,41 +184,51 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
             return presentNoticeSubject.send(.error(Localization.genericCollectError))
         }
 
-        guard let order = ordersResultController.fetchedObjects.first else {
-            DDLogError("⛔️ Order not found, can't collect payment.")
-            return presentNoticeSubject.send(.error(Localization.genericCollectError))
-        }
+        cardPresentPaymentsOnboardingPresenter.showOnboardingIfRequired(
+            from: rootViewController) { [weak self] in
+                guard let self = self else { return }
 
-        guard let paymentGateway = gatewayAccountResultsController.fetchedObjects.first else {
-            DDLogError("⛔️ Payment Gateway not found, can't collect payment.")
-            return presentNoticeSubject.send(.error(Localization.genericCollectError))
-        }
+                guard let order = self.ordersResultController.fetchedObjects.first else {
+                    DDLogError("⛔️ Order not found, can't collect payment.")
+                    return self.presentNoticeSubject.send(.error(Localization.genericCollectError))
+                }
 
-        collectPaymentsUseCase = useCase ?? CollectOrderPaymentUseCase(siteID: siteID,
-                                                                       order: order,
-                                                                       formattedAmount: formattedTotal,
-                                                                       paymentGatewayAccount: paymentGateway,
-                                                                       rootViewController: rootViewController,
-                                                                       alerts: OrderDetailsPaymentAlerts(transactionType: .collectPayment,
-                                                                                                         presentingController: rootViewController),
-                                                                       configuration: CardPresentConfigurationLoader().configuration)
-        collectPaymentsUseCase?.collectPayment(backButtonTitle: Localization.continueToOrders, onCollect: { [weak self] result in
-            if result.isFailure {
-                self?.trackFlowFailed()
+                guard let paymentGateway = self.gatewayAccountResultsController.fetchedObjects.first else {
+                    DDLogError("⛔️ Payment Gateway not found, can't collect payment.")
+                    return self.presentNoticeSubject.send(.error(Localization.genericCollectError))
+                }
+
+                self.collectPaymentsUseCase = useCase ?? CollectOrderPaymentUseCase(
+                    siteID: self.siteID,
+                    order: order,
+                    formattedAmount: self.formattedTotal,
+                    paymentGatewayAccount: paymentGateway,
+                    rootViewController: rootViewController,
+                    alerts: OrderDetailsPaymentAlerts(transactionType: .collectPayment,
+                                                      presentingController: rootViewController),
+                    configuration: CardPresentConfigurationLoader().configuration)
+
+                self.collectPaymentsUseCase?.collectPayment(
+                    backButtonTitle: Localization.continueToOrders,
+                    onCollect: { [weak self] result in
+                        if result.isFailure {
+                            self?.trackFlowFailed()
+                        }
+                    },
+                    onCompleted: { [weak self] in
+                        // Inform success to consumer
+                        onSuccess()
+
+                        // Sent notice request
+                        self?.presentNoticeSubject.send(.completed)
+
+                        // Make sure we free all the resources
+                        self?.collectPaymentsUseCase = nil
+
+                        // Tracks completion
+                        self?.trackFlowCompleted(method: .card)
+                    })
             }
-        }, onCompleted: { [weak self] in
-            // Inform success to consumer
-            onSuccess()
-
-            // Sent notice request
-            self?.presentNoticeSubject.send(.completed)
-
-            // Make sure we free all the resources
-            self?.collectPaymentsUseCase = nil
-
-            // Tracks completion
-            self?.trackFlowCompleted(method: .card)
-        })
     }
 
     /// Tracks the collect by cash intention.

@@ -3,7 +3,6 @@
 9.2
 -----
 - [*] Order Creation: Updated percentage fee flow - added amount preview, disabled percentage option when editing. [https://github.com/woocommerce/woocommerce-ios/pull/6763]
-- [*] Refunds: Allow retry after failure fetching refund charge details. [https://github.com/woocommerce/woocommerce-ios/pull/6772]
 
 9.1
 -----

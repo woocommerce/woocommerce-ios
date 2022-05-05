@@ -403,6 +403,21 @@ final class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(paymentDataViewModel.orderTotal, "£30.00")
     }
 
+    func test_payment_data_view_model_is_initialized_with_expected_default_values_for_new_order() {
+        // Given
+        let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
+
+        // When
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, currencySettings: currencySettings)
+
+        // Then
+        XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£0.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "£0.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.feesTotal, "£0.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.taxesTotal, "£0.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£0.00")
+    }
+
     // MARK: - Payment Section Tests
 
     func test_payment_section_is_updated_when_products_update() {
@@ -669,7 +684,6 @@ final class NewOrderViewModelTests: XCTestCase {
 
         // Then
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
-        XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowTaxes)
         XCTAssertEqual(viewModel.paymentDataViewModel.taxesTotal, "$2.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 2.50)
 

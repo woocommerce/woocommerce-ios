@@ -210,7 +210,7 @@ private extension CouponDetailsViewModel {
         amount = formattedAmount.isEmpty ? coupon.amount : formattedAmount
         summary = coupon.summary(currencySettings: currencySettings)
 
-        expiryDate = coupon.dateExpires?.toString(dateStyle: .long, timeStyle: .none) ?? ""
+        expiryDate = coupon.dateExpires?.toString(dateStyle: .long, timeStyle: .none, timeZone: TimeZone.siteTimezone) ?? ""
         usageLimitPerUser = coupon.usageLimitPerUser ?? Constants.noLimit
         excludeSaleItems = coupon.excludeSaleItems
 

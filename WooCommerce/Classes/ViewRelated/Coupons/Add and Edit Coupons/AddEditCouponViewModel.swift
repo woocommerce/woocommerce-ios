@@ -72,7 +72,7 @@ final class AddEditCouponViewModel: ObservableObject {
     ///
     var expiryDateValue: TitleAndValueRow.Value {
         guard expiryDateField == nil else {
-            return .content(expiryDateField?.toString(dateStyle: .long, timeStyle: .none) ?? "")
+            return .content(expiryDateField?.toString(dateStyle: .long, timeStyle: .none, timeZone: TimeZone.siteTimezone) ?? "")
         }
 
         return .placeholder(Localization.couponExpiryDatePlaceholder)
@@ -89,6 +89,7 @@ final class AddEditCouponViewModel: ObservableObject {
     private(set) var coupon: Coupon?
     private let stores: StoresManager
     private let storageManager: StorageManagerType
+    let timezone: TimeZone
 
     /// When the view is updating or creating a new Coupon remotely.
     ///
@@ -108,12 +109,14 @@ final class AddEditCouponViewModel: ObservableObject {
     init(siteID: Int64,
          discountType: Coupon.DiscountType,
          stores: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         timezone: TimeZone = .siteTimezone) {
         self.siteID = siteID
         editingOption = .creation
         self.discountType = discountType
         self.stores = stores
         self.storageManager = storageManager
+        self.timezone = timezone
 
         amountField = String()
         codeField = String()
@@ -128,11 +131,15 @@ final class AddEditCouponViewModel: ObservableObject {
     ///
     init(existingCoupon: Coupon,
          stores: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         timezone: TimeZone = .siteTimezone) {
         siteID = existingCoupon.siteID
         coupon = existingCoupon
         editingOption = .editing
         discountType = existingCoupon.discountType
+        self.stores = stores
+        self.storageManager = storageManager
+        self.timezone = timezone
 
         // Populate fields
         amountField = existingCoupon.amount
@@ -142,8 +149,6 @@ final class AddEditCouponViewModel: ObservableObject {
         freeShipping = existingCoupon.freeShipping
         couponRestrictionsViewModel = CouponRestrictionsViewModel(coupon: existingCoupon)
         productOrVariationIDs = existingCoupon.productIds
-        self.stores = stores
-        self.storageManager = storageManager
     }
 
     /// The method will generate a code in the same way as the existing admin website code does.

@@ -30,7 +30,7 @@ public struct Coupon {
 
     public let description: String
 
-    /// Date the coupon will expire, in GMT (UTC)
+    /// Date the coupon will expire.
     public let dateExpires: Date?
 
     /// Total number of times this coupon has been used, by all customers
@@ -175,7 +175,7 @@ public struct Coupon {
         try container.encode(amount, forKey: .amount)
         try container.encode(discountType, forKey: .discountType)
         try container.encode(description, forKey: .description)
-        try container.encode(dateExpires, forKey: .dateExpiresNotGmt)
+        try container.encode(dateExpires, forKey: .dateExpires)
         try container.encode(productIds, forKey: .productIds)
         try container.encode(excludedProductIds, forKey: .excludedProductIds)
         try container.encode(usageLimit, forKey: .usageLimit)
@@ -215,7 +215,7 @@ extension Coupon: Codable {
         case dateModified = "dateModifiedGmt"
         case discountType
         case description
-        case dateExpires = "dateExpiresGmt"
+        case dateExpires = "dateExpires"
         case usageCount
         case individualUse
         case productIds
@@ -231,9 +231,6 @@ extension Coupon: Codable {
         case maximumAmount
         case emailRestrictions
         case usedBy
-
-        // We are going to use this coding key because during the update/creation of a coupon, the `dateExpiresGmt` doesn't work.
-        case dateExpiresNotGmt = "dateExpires"
     }
 }
 

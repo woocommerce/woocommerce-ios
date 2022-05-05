@@ -50,13 +50,15 @@ final class AddEditCouponViewModelTests: XCTestCase {
     func test_populatedCoupon_return_expected_coupon_during_editing() {
         // Given
         let viewModel = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(discountType: .percent))
-        XCTAssertEqual(viewModel.populatedCoupon, Coupon.sampleCoupon.copy(discountType: .percent))
+        let expiryDate = Date().startOfDay(timezone: viewModel.timezone)
+        XCTAssertEqual(viewModel.populatedCoupon, Coupon.sampleCoupon.copy(discountType: .percent,
+                                                                           dateExpires: expiryDate))
 
         // When
         viewModel.amountField = "24.23"
         viewModel.codeField = "TEST"
         viewModel.descriptionField = "This is a test description"
-        viewModel.expiryDateField = Date().endOfDay(timezone: TimeZone.current)
+        viewModel.expiryDateField = Date().endOfDay(timezone: viewModel.timezone)
         viewModel.freeShipping = true
         viewModel.couponRestrictionsViewModel.minimumSpend = "10"
         viewModel.couponRestrictionsViewModel.maximumSpend = "50"
@@ -73,7 +75,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
                                                                            amount: "24.23",
                                                                            discountType: .percent,
                                                                            description: "This is a test description",
-                                                                           dateExpires: Date().endOfDay(timezone: TimeZone.current),
+                                                                           dateExpires: expiryDate,
                                                                            individualUse: true,
                                                                            usageLimit: 40,
                                                                            usageLimitPerUser: 1,

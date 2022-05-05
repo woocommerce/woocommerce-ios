@@ -288,6 +288,7 @@ private extension SettingsViewController {
 
     func inPersonPaymentsWasPressed() {
         let viewModel = InPersonPaymentsViewModel()
+        viewModel.refresh()
         let viewController = InPersonPaymentsViewController(viewModel: viewModel)
         show(viewController, sender: self)
     }

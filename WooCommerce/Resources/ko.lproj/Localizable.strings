@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-04-26 15:54:03+0000 */
+/* Translation-Revision-Date: 2022-04-26 17:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -4346,7 +4346,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "카드 리더 소프트웨어가 오래되었음 - 프로세스를 시도하기 전에 카드 리더 소프트웨어를 업데이트하세요.";
 
 /* Error message when the card reader software is too far out of date to process in-person refunds. */
-"The card reader software is out-of-date - please update the card reader software before attempting to process refunds" = "카드 리더 소프트웨어가 오래되었음 - 환불 처리를 시도하기 전에 카드 리더 소프트웨어를 업데이트하세요.";
+"The card reader software is out-of-date - please update the card reader software before attempting to process refunds" = "카드 리더 소프트웨어가 오래되습니다. 환불 처리를 시도하기 전에 카드 리더 소프트웨어를 업데이트하세요.";
 
 /* Error message when the card reader software update fails due to a communication error. */
 "The card reader software update failed due to a communication error - please try again" = "통신 오류로 인해 카드 리더 소프트웨어 업데이트에 실패했음 - 다시 시도하세요.";
@@ -4364,7 +4364,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The card was declined by the card reader - please try another means of payment" = "카드 리더에서 카드가 거부되었음 - 다른 결제 수단을 시도하세요.";
 
 /* Error message when the card reader itself declines the card. */
-"The card was declined by the card reader - please try another means of refund" = "카드가 카드 리더에서 거부되었음 - 다른 환불 수단을 사용해 보세요.";
+"The card was declined by the card reader - please try another means of refund" = "카드가 카드 리더에서 거부되었습니다. 다른 환불 수단을 사용해 보세요.";
 
 /* Error message when the card processor declines the payment. */
 "The card was declined by the payment processor - please try another means of payment" = "결제 처리기에서 카드가 거부되었음 - 다른 결제 수단을 시도하세요.";
@@ -4391,7 +4391,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The phone number is not valid or you can't call the customer from this device." = "전화번호가 유효하지 않거나 이 기기에서 고객에게 전화를 걸 수 없습니다.";
 
 /* VoiceOver accessibility hint, informing the user that this field allows to enter the price to use for bulk updating all variations */
-"The price for bulk updating all variations. Editable." = "모든 변형 일괄 업데이트 가격. 편집 가능.";
+"The price for bulk updating all variations. Editable." = "모든 변화 일괄 업데이트하는 가격입니다. 수정 가능합니다.";
 
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "이 제품의 가격입니다. 편집 가능합니다.";

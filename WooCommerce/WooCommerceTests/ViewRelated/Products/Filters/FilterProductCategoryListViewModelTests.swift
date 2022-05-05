@@ -13,8 +13,8 @@ final class FilterProductCategoryListViewModelTests: XCTestCase {
         super.setUp()
 
         filterProductCategoryListViewModel = FilterProductCategoryListViewModel(anyCategoryIsSelected: anyCategoryIsSelectedDefaultValue)
-        productCategoryListViewModel = ProductCategoryListViewModel(storesManager: MockProductCategoryStoresManager(),
-                                                                    siteID: 0,
+        productCategoryListViewModel = ProductCategoryListViewModel(siteID: 0,
+                                                                    storesManager: MockProductCategoryStoresManager(),
                                                                     enrichingDataSource: filterProductCategoryListViewModel,
                                                                     delegate: filterProductCategoryListViewModel)
     }

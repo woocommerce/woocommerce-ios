@@ -85,6 +85,7 @@ final class FeeLineDetailsViewModelTests: XCTestCase {
         viewModel.percentage = "hi:11.3005.02-"
 
         // Then
+        XCTAssertTrue(viewModel.isPercentageOptionAvailable)
         XCTAssertEqual(viewModel.percentage, "11.30")
         XCTAssertFalse(viewModel.shouldDisableDoneButton)
     }
@@ -117,7 +118,7 @@ final class FeeLineDetailsViewModelTests: XCTestCase {
                                                 didSelectSave: { _ in })
 
         // Then
-        XCTAssertTrue(viewModel.isPercentageOptionAvailable)
+        XCTAssertFalse(viewModel.isPercentageOptionAvailable)
         XCTAssertTrue(viewModel.isExistingFeeLine)
         XCTAssertEqual(viewModel.feeType, .fixed)
         XCTAssertEqual(viewModel.amount, "10.00")
@@ -134,7 +135,7 @@ final class FeeLineDetailsViewModelTests: XCTestCase {
                                                 didSelectSave: { _ in })
 
         // Then
-        XCTAssertTrue(viewModel.isPercentageOptionAvailable)
+        XCTAssertFalse(viewModel.isPercentageOptionAvailable)
         XCTAssertTrue(viewModel.isExistingFeeLine)
         XCTAssertEqual(viewModel.feeType, .fixed)
         XCTAssertEqual(viewModel.amount, "-10.00")

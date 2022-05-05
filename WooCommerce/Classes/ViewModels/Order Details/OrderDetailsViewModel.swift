@@ -19,9 +19,16 @@ final class OrderDetailsViewModel {
         return lookUpOrderStatus(for: order)
     }
 
+    let cardPresentPaymentsReadiness: CardPresentPaymentsReadinessUseCase
+
+    let onboardingViewModel: InPersonPaymentsViewModel
+
     init(order: Order, stores: StoresManager = ServiceLocator.stores) {
         self.order = order
         self.stores = stores
+        let onboardingUseCase = CardPresentPaymentsOnboardingUseCase(stores: stores)
+        self.cardPresentPaymentsReadiness = CardPresentPaymentsReadinessUseCase(onboardingUseCase: onboardingUseCase, stores: stores)
+        onboardingViewModel = InPersonPaymentsViewModel(useCase: onboardingUseCase)
     }
 
     func update(order newOrder: Order) {

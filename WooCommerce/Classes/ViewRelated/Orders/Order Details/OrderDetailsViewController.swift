@@ -52,6 +52,8 @@ final class OrderDetailsViewController: UIViewController {
 
     private let notices = OrderDetailsNotices()
 
+    private var readinessSubscription: AnyCancellable?
+
     // MARK: - View Lifecycle
     init(viewModel: OrderDetailsViewModel) {
         self.viewModel = viewModel
@@ -137,6 +139,8 @@ private extension OrderDetailsViewController {
                                                                 style: .plain,
                                                                 target: self,
                                                                 action: #selector(presentActionMenuSheet(_:)))
+        } else {
+            navigationItem.rightBarButtonItem = nil
         }
     }
 
@@ -189,6 +193,7 @@ private extension OrderDetailsViewController {
     /// Reloads the tableView's sections and data.
     ///
     func reloadTableViewSectionsAndData() {
+        configureNavigationBar()
         reloadSections()
         reloadTableViewDataIfPossible()
     }
@@ -527,7 +532,7 @@ private extension OrderDetailsViewController {
             guard indexPath != nil else {
                 break
             }
-            collectPayment()
+            collectPaymentTapped()
         case .reprintShippingLabel(let shippingLabel):
             guard let navigationController = navigationController else {
                 assertionFailure("Cannot reprint a shipping label because `navigationController` is nil")
@@ -717,7 +722,28 @@ private extension OrderDetailsViewController {
         present(navigationController, animated: true, completion: nil)
     }
 
-    @objc private func collectPayment() {
+    @objc private func collectPaymentTapped() {
+        guard case .ready = viewModel.cardPresentPaymentsReadiness.readiness else {
+            return showOnboardingBeforePayment()
+        }
+        collectPayment()
+    }
+
+    private func showOnboardingBeforePayment() {
+        let viewController = InPersonPaymentsViewController(viewModel: viewModel.onboardingViewModel)
+        show(viewController, sender: self)
+        readinessSubscription = viewModel.cardPresentPaymentsReadiness.$readiness
+            .sink(receiveValue: { [weak self] readiness in
+                guard case .ready = readiness,
+                      let self = self else {
+                          return
+                      }
+                self.navigationController?.popToViewController(self, animated: true)
+                self.collectPayment()
+            })
+    }
+
+    private func collectPayment() {
         viewModel.collectPayment(rootViewController: self, backButtonTitle: Localization.Payments.backToOrder) { [weak self] result in
             guard let self = self else { return }
             // Refresh date & view once payment has been collected.

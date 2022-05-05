@@ -2,13 +2,23 @@
 import UIKit
 
 /// Mock for `OrderDetailsPaymentAlertsProtocol`.
-final class MockOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
+final class MockOrderDetailsPaymentAlerts {
+    // Public closures to mock alert actions and properties for assertions.
     var cancelReaderIsReadyAlert: (() -> Void)?
+
+    var cancelTapOrInsertCardAlert: (() -> Void)?
 
     var error: Error?
     var retryFromError: (() -> Void)?
     var dismissErrorCompletion: (() -> Void)?
+    var nonRetryableErrorWasCalled = false
 
+    // Success alert.
+    var printReceiptFromSuccessAlert: (() -> Void)?
+    var emailReceiptFromSuccessAlert: (() -> Void)?
+}
+
+extension MockOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
     func presentViewModel(viewModel: CardPresentPaymentsModalViewModel) {
         // no-op
     }
@@ -18,7 +28,7 @@ final class MockOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
     }
 
     func tapOrInsertCard(onCancel: @escaping () -> Void) {
-        // no-op
+        cancelTapOrInsertCardAlert = onCancel
     }
 
     func displayReaderMessage(message: String) {
@@ -30,7 +40,8 @@ final class MockOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
     }
 
     func success(printReceipt: @escaping () -> Void, emailReceipt: @escaping () -> Void, noReceiptTitle: String, noReceiptAction: @escaping () -> Void) {
-        // no-op
+        printReceiptFromSuccessAlert = printReceipt
+        emailReceiptFromSuccessAlert = emailReceipt
     }
 
     func error(error: Error, tryAgain: @escaping () -> Void, dismissCompletion: @escaping () -> Void) {
@@ -39,8 +50,9 @@ final class MockOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
         dismissErrorCompletion = dismissCompletion
     }
 
-    func nonRetryableError(from: UIViewController?, error: Error) {
-        // no-op
+    func nonRetryableError(from: UIViewController?, error: Error, dismissCompletion: @escaping () -> Void) {
+        nonRetryableErrorWasCalled = true
+        dismissErrorCompletion = dismissCompletion
     }
 
     func retryableError(from: UIViewController?, tryAgain: @escaping () -> Void) {

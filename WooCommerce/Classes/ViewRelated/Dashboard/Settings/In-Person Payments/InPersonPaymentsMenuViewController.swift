@@ -248,7 +248,7 @@ private enum Row: CaseIterable {
 }
 
 private enum Constants {
-    static let bbposChipper2XBTManualURL = URL(string: "https://developer.bbpos.com/quick_start_guide/Chipper%202X%20BT%20Quick%20Start%20Guide.pdf")!
+    static let bbposChipper2XBTManualURL = URL(string: "https://stripe.com/files/docs/terminal/c2xbt_product_sheet.pdf")!
     static let stripeM2ManualURL = URL(string: "https://stripe.com/files/docs/terminal/m2_product_sheet.pdf")!
     static let wisepad3ManualURL = URL(string: "https://stripe.com/files/docs/terminal/wp3_product_sheet.pdf")!
 }

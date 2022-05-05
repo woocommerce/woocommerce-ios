@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-04-25 21:54:19+0000 */
+/* Translation-Revision-Date: 2022-04-26 20:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -1507,7 +1507,7 @@
 "Edit Description" = "Editar descrição";
 
 /* Button for specify the product categories where a coupon can be applied in the view for adding or editing a coupon. */
-"Edit Product Categories" = "Editar Categorias de produto";
+"Edit Product Categories" = "Editar categorias de produto";
 
 /* Button for specify the products where a coupon can be applied in the view for adding or editing a coupon.
    Edit Products button inside the Linked Products screen. */

@@ -37,25 +37,34 @@ struct ProductVariationSelector: View {
         Group {
             switch viewModel.syncStatus {
             case .results:
-                InfiniteScrollList(isLoading: viewModel.shouldShowScrollIndicator,
-                                   loadAction: viewModel.syncNextPage) {
-                    ForEach(viewModel.productVariationRows) { rowViewModel in
-                        ProductRow(multipleSelectionsEnabled: multipleSelectionsEnabled,
-                                   viewModel: rowViewModel)
-                            .accessibilityHint(Localization.productRowAccessibilityHint)
-                            .padding(Constants.defaultPadding)
-                            .onTapGesture {
-                                viewModel.selectVariation(rowViewModel.productOrVariationID)
-                                if !multipleSelectionsEnabled {
-                                    isPresented.toggle()
-                                }
-                            }
-                        Divider().frame(height: Constants.dividerHeight)
-                            .padding(.leading, Constants.defaultPadding)
+                VStack(alignment: .leading, spacing: 0) {
+                    Button(Localization.clearSelection) {
+                        viewModel.clearSelection()
                     }
-                    .padding(.horizontal, insets: safeAreaInsets)
-                    .background(Color(.listForeground).ignoresSafeArea())
+                    .buttonStyle(LinkButtonStyle())
+                    .fixedSize()
+                    .renderedIf(viewModel.selectedProductVariationIDs.isNotEmpty)
+
+                    InfiniteScrollList(isLoading: viewModel.shouldShowScrollIndicator,
+                                       loadAction: viewModel.syncNextPage) {
+                        ForEach(viewModel.productVariationRows) { rowViewModel in
+                            ProductRow(multipleSelectionsEnabled: multipleSelectionsEnabled,
+                                       viewModel: rowViewModel)
+                                .accessibilityHint(Localization.productRowAccessibilityHint)
+                                .padding(Constants.defaultPadding)
+                                .onTapGesture {
+                                    viewModel.selectVariation(rowViewModel.productOrVariationID)
+                                    if !multipleSelectionsEnabled {
+                                        isPresented.toggle()
+                                    }
+                                }
+                            Divider().frame(height: Constants.dividerHeight)
+                                .padding(.leading, Constants.defaultPadding)
+                        }
+                    }
                 }
+                .padding(.horizontal, insets: safeAreaInsets)
+                .background(Color(.listForeground).ignoresSafeArea())
             case .empty:
                 EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
                     .frame(maxHeight: .infinity)
@@ -117,6 +126,7 @@ private extension ProductVariationSelector {
                                                                    comment: "Accessibility hint for selecting a variation in a list of product variations")
         static let loadingRowsAccessibilityLabel = NSLocalizedString("Loading product variations",
                                                                      comment: "Accessibility label for placeholder rows while product variations are loading")
+        static let clearSelection = NSLocalizedString("Clear selection", comment: "Button to clear selection on the Select Product Variations screen")
     }
 }
 

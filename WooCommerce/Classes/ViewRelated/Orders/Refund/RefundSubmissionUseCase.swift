@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import Yosemite
+import protocol Storage.StorageManagerType
 
 /// Protocol to abstract the `RefundSubmissionUseCase`.
 /// TODO: 5983 - Use this to facilitate unit tests.
@@ -38,6 +39,8 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
     /// Stores manager.
     private let stores: StoresManager
 
+    private let storageManager: StorageManagerType
+
     /// Analytics manager.
     private let analytics: Analytics
 
@@ -56,11 +59,19 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
     /// In-person refund orchestrator.
     private lazy var cardPresentRefundOrchestrator = CardPresentRefundOrchestrator(stores: stores)
 
+    /// Alert manager to inform merchants about card reader connection actions used in `CardReaderConnectionController`.
+    private let cardReaderConnectionAlerts: CardReaderSettingsAlertsProvider
+
+    /// Provides any known card reader to be used in `CardReaderConnectionController`.
+    private let knownReaderProvider: CardReaderSettingsKnownReaderProvider
+
     /// Controller to connect a card reader for in-person refund.
     private lazy var cardReaderConnectionController =
     CardReaderConnectionController(forSiteID: order.siteID,
-                                   knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
-                                   alertsProvider: CardReaderSettingsAlerts(),
+                                   storageManager: storageManager,
+                                   stores: stores,
+                                   knownReaderProvider: knownReaderProvider,
+                                   alertsProvider: cardReaderConnectionAlerts,
                                    configuration: cardPresentConfiguration,
                                    analyticsTracker: .init(configuration: cardPresentConfiguration,
                                                            stores: stores,
@@ -72,10 +83,13 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
     init(details: Details,
          rootViewController: UIViewController,
          alerts: OrderDetailsPaymentAlertsProtocol,
+         cardReaderConnectionAlerts: CardReaderSettingsAlertsProvider = CardReaderSettingsAlerts(),
          currencyFormatter: CurrencyFormatter,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          cardPresentConfiguration: CardPresentPaymentsConfiguration,
+         knownReaderProvider: CardReaderSettingsKnownReaderProvider = CardReaderSettingsKnownReaderStorage(),
          stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics) {
         self.details = details
         self.formattedAmount = {
@@ -85,9 +99,12 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
         }()
         self.rootViewController = rootViewController
         self.alerts = alerts
+        self.cardReaderConnectionAlerts = cardReaderConnectionAlerts
         self.currencyFormatter = currencyFormatter
         self.cardPresentConfiguration = cardPresentConfiguration
+        self.knownReaderProvider = knownReaderProvider
         self.stores = stores
+        self.storageManager = storageManager
         self.analytics = analytics
     }
 
@@ -119,7 +136,7 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
             }
 
             observeConnectedReadersForAnalytics()
-            connectReader { [weak self] result in
+            connectReader(charge: charge, paymentGatewayAccount: paymentGatewayAccount) { [weak self] result in
                 guard let self = self else { return }
                 switch result {
                 case .success:
@@ -184,7 +201,7 @@ private extension RefundSubmissionUseCase {
 
     /// Attempts to connect to a reader.
     /// Finishes with success immediately if a reader is already connected.
-    func connectReader(onCompletion: @escaping (Result<Void, Error>) -> ()) {
+    func connectReader(charge: WCPayCharge, paymentGatewayAccount: PaymentGatewayAccount, onCompletion: @escaping (Result<Void, Error>) -> ()) {
         // `checkCardReaderConnected` action will return a publisher that:
         // - Sends one value if there is no reader connected.
         // - Completes when a reader is connected.
@@ -212,10 +229,15 @@ private extension RefundSubmissionUseCase {
                     self.cardReaderConnectionController.searchAndConnect(from: self.rootViewController) { [weak self] result in
                         guard let self = self else { return }
                         switch result {
-                        case let .success(isConnected):
-                            if isConnected == false {
+                        case let .success(connectionResult):
+                            switch connectionResult {
+                            case .canceled:
                                 self.readerSubscription = nil
+                                self.trackClientSideRefundCanceled(charge: charge, paymentGatewayAccount: paymentGatewayAccount)
                                 onCompletion(.failure(RefundSubmissionError.cardReaderDisconnected))
+                            case .connected:
+                                // Connected case will be handled in `receiveCompletion`.
+                                break
                             }
                         case .failure(let error):
                             self.readerSubscription = nil
@@ -234,7 +256,7 @@ private extension RefundSubmissionUseCase {
     ///   - charge: the charge of the order for the refund to match the payment method.
     ///   - paymentGatewayAccount: the payment gateway account for the site to refund (e.g. WCPay or Stripe extension).
     ///   - onCompletion: called when the in-person refund completes.
-    func attemptCardPresentRefund(refundAmount: Decimal,
+    private func attemptCardPresentRefund(refundAmount: Decimal,
                                   charge: WCPayCharge,
                                   paymentGatewayAccount: PaymentGatewayAccount,
                                   onCompletion: @escaping (Result<Void, Error>) -> ()) {
@@ -242,7 +264,7 @@ private extension RefundSubmissionUseCase {
         alerts.readerIsReady(title: Localization.refundPaymentTitle(username: order.billingAddress?.firstName),
                              amount: formattedAmount,
                              onCancel: { [weak self] in
-            self?.cancelRefund()
+            self?.cancelRefund(charge: charge, paymentGatewayAccount: paymentGatewayAccount, onCompletion: onCompletion)
         })
 
         // Starts refund process.
@@ -252,7 +274,7 @@ private extension RefundSubmissionUseCase {
                                              onWaitingForInput: { [weak self] in
             // Requests card input.
             self?.alerts.tapOrInsertCard(onCancel: { [weak self] in
-                self?.cancelRefund()
+                self?.cancelRefund(charge: charge, paymentGatewayAccount: paymentGatewayAccount, onCompletion: onCompletion)
             })
         }, onProcessingMessage: { [weak self] in
             // Shows waiting message.
@@ -278,7 +300,7 @@ private extension RefundSubmissionUseCase {
     }
 
     /// Logs the failure reason, cancels the current refund, and offers retry if possible.
-    func handleRefundFailureAndRetryRefund(_ error: Error,
+    private func handleRefundFailureAndRetryRefund(_ error: Error,
                                            refundAmount: Decimal,
                                            charge: WCPayCharge,
                                            paymentGatewayAccount: PaymentGatewayAccount,
@@ -286,25 +308,33 @@ private extension RefundSubmissionUseCase {
         // TODO: 5984 - tracks in-person refund error
         DDLogError("Failed to refund: \(error.localizedDescription)")
         // Informs about the error.
-        //TODO: Check which refund errors can't be retried, and use that to call nonRetryableError(from: self.rootViewController, error: cancelError)
-        alerts.error(error: error, tryAgain: { [weak self] in
-            // Cancels current refund, if possible.
-            self?.cardPresentRefundOrchestrator.cancelRefund { [weak self] _ in
-                // Regardless of whether the refund could be cancelled (e.g. it completed but failed), retry the refund.
-                self?.attemptCardPresentRefund(refundAmount: refundAmount,
-                                               charge: charge,
-                                               paymentGatewayAccount: paymentGatewayAccount,
-                                               onCompletion: onCompletion)
+        if let cardReaderError = error as? CardReaderServiceError,
+           case .refundPayment(_, let shouldRetry) = cardReaderError,
+           shouldRetry == false {
+            alerts.nonRetryableError(from: rootViewController, error: error) {
+                onCompletion(.failure(error))
             }
-        }, dismissCompletion: {
-            onCompletion(.failure(error))
-        })
+        } else {
+            alerts.error(error: error, tryAgain: { [weak self] in
+                // Cancels current refund, if possible.
+                self?.cardPresentRefundOrchestrator.cancelRefund { [weak self] _ in
+                    // Regardless of whether the refund could be cancelled (e.g. it completed but failed), retry the refund.
+                    self?.attemptCardPresentRefund(refundAmount: refundAmount,
+                                                                 charge: charge,
+                                                                 paymentGatewayAccount: paymentGatewayAccount,
+                                                                 onCompletion: onCompletion)
+                }
+            }, dismissCompletion: {
+                onCompletion(.failure(error))
+            })
+        }
     }
 
     /// Cancels refund and records analytics.
-    func cancelRefund() {
+    func cancelRefund(charge: WCPayCharge, paymentGatewayAccount: PaymentGatewayAccount, onCompletion: @escaping (Result<Void, Error>) -> ()) {
+        trackClientSideRefundCanceled(charge: charge, paymentGatewayAccount: paymentGatewayAccount)
         cardPresentRefundOrchestrator.cancelRefund { _ in
-            // TODO: 5984 - tracks in-person refund cancellation
+            onCompletion(.failure(RefundSubmissionError.canceledByUser))
         }
     }
 
@@ -377,6 +407,19 @@ private extension RefundSubmissionUseCase {
             return
         }
     }
+
+    /// Tracks when the refund request is canceled on the client-side.
+    func trackClientSideRefundCanceled(charge: WCPayCharge, paymentGatewayAccount: PaymentGatewayAccount) {
+        switch charge.paymentMethodDetails {
+        case .interacPresent:
+            analytics.track(event: .InPersonPayments.interacRefundCanceled(gatewayID: paymentGatewayAccount.gatewayID,
+                                                                           countryCode: cardPresentConfiguration.countryCode,
+                                                                           cardReaderModel: connectedReader?.readerType.model ?? ""))
+        default:
+            // Tracks refund cancellation events with other payment methods if needed.
+            return
+        }
+    }
 }
 
 // MARK: Connected Card Readers
@@ -397,6 +440,7 @@ extension RefundSubmissionUseCase {
         case cardReaderDisconnected
         case invalidRefundAmount
         case unknownPaymentGatewayAccount
+        case canceledByUser
     }
 }
 

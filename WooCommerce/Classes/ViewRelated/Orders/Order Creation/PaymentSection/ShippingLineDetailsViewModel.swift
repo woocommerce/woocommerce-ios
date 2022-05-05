@@ -76,8 +76,8 @@ class ShippingLineDetailsViewModel: ObservableObject {
         self.initialMethodTitle = initialMethodTitle
         self.methodTitle = initialMethodTitle
 
-       let currencyFormatter = CurrencyFormatter(currencySettings: storeCurrencySettings)
-        if let initialAmount = currencyFormatter.convertToDecimal(from: shippingTotal) {
+        let currencyFormatter = CurrencyFormatter(currencySettings: storeCurrencySettings)
+        if isExistingShippingLine, let initialAmount = currencyFormatter.convertToDecimal(from: shippingTotal) {
             self.initialAmount = initialAmount as Decimal
         } else {
             self.initialAmount = nil

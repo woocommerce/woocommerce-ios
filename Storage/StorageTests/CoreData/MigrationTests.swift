@@ -1150,6 +1150,35 @@ final class MigrationTests: XCTestCase {
         // Check URL is correctly set.
         XCTAssertEqual(migratedOrder.value(forKey: "paymentURL") as? NSURL, url)
     }
+
+    func test_migrating_from_67_to_68_enables_creating_new_Coupon_with_some_fields_optional() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 67")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 68")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        XCTAssertEqual(try targetContext.count(entityName: "Coupon"), 0)
+
+        // Creates an `Coupon`
+        let coupon = insertCoupon(to: targetContext,
+                                  limitUsageToXItems: nil,
+                                  usageLimitPerUser: nil,
+                                  usageLimit: nil)
+
+        XCTAssertEqual(try targetContext.count(entityName: "Coupon"), 1)
+
+        let couponFetched = try XCTUnwrap(targetContext.firstObject(ofType: Coupon.self))
+        XCTAssertNil(couponFetched.value(forKey: "limitUsageToXItems"))
+        XCTAssertNil(couponFetched.value(forKey: "usageLimitPerUser"))
+        XCTAssertNil(couponFetched.value(forKey: "usageLimit"))
+        XCTAssertEqual(try XCTUnwrap(targetContext.firstObject(ofType: Coupon.self)), coupon)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -1259,16 +1288,19 @@ private extension MigrationTests {
     }
 
     @discardableResult
-    func insertCoupon(to context: NSManagedObjectContext) -> NSManagedObject {
+    func insertCoupon(to context: NSManagedObjectContext,
+                      limitUsageToXItems: Int64? = 3,
+                      usageLimitPerUser: Int64? = 1,
+                      usageLimit: Int64? = 1000) -> NSManagedObject {
         context.insert(entityName: "Coupon", properties: [
             "couponID": 123123,
             "maximumAmount": "12.00",
             "minimumAmount": "1.00",
             "excludeSaleItems": true,
             "freeShipping": false,
-            "limitUsageToXItems": 3,
-            "usageLimitPerUser": 1,
-            "usageLimit": 1000,
+            "limitUsageToXItems": limitUsageToXItems,
+            "usageLimitPerUser": usageLimitPerUser,
+            "usageLimit": usageLimit,
             "individualUse": true,
             "usageCount": 200,
             "dateExpires": Date(),

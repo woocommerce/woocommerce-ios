@@ -22,9 +22,9 @@ extension Storage.Coupon: ReadOnlyConvertible {
         individualUse = coupon.individualUse
         products = coupon.productIds
         excludedProducts = coupon.excludedProductIds
-        usageLimit = Int64(coupon.usageLimit ?? 0)
-        usageLimitPerUser = Int64(coupon.usageLimitPerUser ?? 0)
-        limitUsageToXItems = Int64(coupon.limitUsageToXItems ?? 0)
+        usageLimit = coupon.usageLimit != nil ? NSNumber(value: coupon.usageLimit!) : nil
+        usageLimitPerUser = coupon.usageLimitPerUser != nil ? NSNumber(value: coupon.usageLimitPerUser!) : nil
+        limitUsageToXItems = coupon.limitUsageToXItems != nil ? NSNumber(value: coupon.limitUsageToXItems!) : nil
         freeShipping = coupon.freeShipping
         productCategories = coupon.productCategories
         excludedProductCategories = coupon.excludedProductCategories
@@ -51,9 +51,9 @@ extension Storage.Coupon: ReadOnlyConvertible {
                       individualUse: individualUse,
                       productIds: products ?? [],
                       excludedProductIds: excludedProducts ?? [],
-                      usageLimit: usageLimit,
-                      usageLimitPerUser: usageLimitPerUser,
-                      limitUsageToXItems: limitUsageToXItems,
+                      usageLimit: usageLimit?.int64Value,
+                      usageLimitPerUser: usageLimitPerUser?.int64Value,
+                      limitUsageToXItems: limitUsageToXItems?.int64Value,
                       freeShipping: freeShipping,
                       productCategories: productCategories ?? [],
                       excludedProductCategories: excludedProductCategories ?? [],

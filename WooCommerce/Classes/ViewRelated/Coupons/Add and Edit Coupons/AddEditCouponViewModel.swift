@@ -72,7 +72,7 @@ final class AddEditCouponViewModel: ObservableObject {
     ///
     var expiryDateValue: TitleAndValueRow.Value {
         guard expiryDateField == nil else {
-            return .content(expiryDateField?.toString(dateStyle: .long, timeStyle: .none) ?? "")
+            return .content(expiryDateField?.toString(dateStyle: .long, timeStyle: .none, timeZone: TimeZone.siteTimezone) ?? "")
         }
 
         return .placeholder(Localization.couponExpiryDatePlaceholder)
@@ -121,6 +121,7 @@ final class AddEditCouponViewModel: ObservableObject {
     private(set) var coupon: Coupon?
     private let stores: StoresManager
     private let storageManager: StorageManagerType
+    let timezone: TimeZone
 
     /// When the view is updating or creating a new Coupon remotely.
     ///
@@ -141,12 +142,14 @@ final class AddEditCouponViewModel: ObservableObject {
     init(siteID: Int64,
          discountType: Coupon.DiscountType,
          stores: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         timezone: TimeZone = .siteTimezone) {
         self.siteID = siteID
         editingOption = .creation
         self.discountType = discountType
         self.stores = stores
         self.storageManager = storageManager
+        self.timezone = timezone
 
         amountField = String()
         codeField = String()
@@ -162,11 +165,15 @@ final class AddEditCouponViewModel: ObservableObject {
     ///
     init(existingCoupon: Coupon,
          stores: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         timezone: TimeZone = .siteTimezone) {
         siteID = existingCoupon.siteID
         coupon = existingCoupon
         editingOption = .editing
         discountType = existingCoupon.discountType
+        self.stores = stores
+        self.storageManager = storageManager
+        self.timezone = timezone
 
         // Populate fields
         amountField = existingCoupon.amount
@@ -177,8 +184,6 @@ final class AddEditCouponViewModel: ObservableObject {
         couponRestrictionsViewModel = CouponRestrictionsViewModel(coupon: existingCoupon)
         productOrVariationIDs = existingCoupon.productIds
         categoryIDs = existingCoupon.productCategories
-        self.stores = stores
-        self.storageManager = storageManager
     }
 
     /// The method will generate a code in the same way as the existing admin website code does.
@@ -200,7 +205,7 @@ final class AddEditCouponViewModel: ObservableObject {
 
     func updateCoupon(coupon: Coupon) {
         isLoading = true
-        let action = CouponAction.updateCoupon(coupon) { [weak self] result in
+        let action = CouponAction.updateCoupon(coupon, siteTimezone: TimeZone.siteTimezone) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(_):
@@ -220,7 +225,7 @@ final class AddEditCouponViewModel: ObservableObject {
                      amount: amountField,
                      discountType: discountType,
                      description: descriptionField,
-                     dateExpires: expiryDateField,
+                     dateExpires: expiryDateField?.startOfDay(timezone: TimeZone.siteTimezone),
                      individualUse: couponRestrictionsViewModel.individualUseOnly,
                      usageLimit: Int64(couponRestrictionsViewModel.usageLimitPerCoupon),
                      usageLimitPerUser: Int64(couponRestrictionsViewModel.usageLimitPerUser),
@@ -238,7 +243,7 @@ final class AddEditCouponViewModel: ObservableObject {
                dateModified: Date(),
                discountType: discountType,
                description: descriptionField,
-               dateExpires: expiryDateField,
+               dateExpires: expiryDateField?.startOfDay(timezone: TimeZone.siteTimezone),
                usageCount: 0,
                individualUse: couponRestrictionsViewModel.individualUseOnly,
                productIds: [],

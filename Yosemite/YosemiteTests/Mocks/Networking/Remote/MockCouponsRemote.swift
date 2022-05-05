@@ -70,12 +70,16 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
         spyDeleteCouponWithID = couponID
     }
 
-    func updateCoupon(_ coupon: Coupon, completion: @escaping (Result<Coupon, Error>) -> Void) {
+    func updateCoupon(_ coupon: Coupon,
+                      siteTimezone: TimeZone?,
+                      completion: @escaping (Result<Coupon, Error>) -> Void) {
         didCallUpdateCoupon = true
         spyUpdateCoupon = coupon
     }
 
-    func createCoupon(_ coupon: Coupon, completion: @escaping (Result<Coupon, Error>) -> Void) {
+    func createCoupon(_ coupon: Coupon,
+                      siteTimezone: TimeZone?,
+                      completion: @escaping (Result<Coupon, Error>) -> Void) {
         didCallCreateCoupon = true
         spyCreateCoupon = coupon
     }

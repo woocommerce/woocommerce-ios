@@ -31,17 +31,21 @@ public enum CouponAction: Action {
     /// Updates a coupon for a site given its ID and returns the updated coupon if the request succeeds.
     ///
     /// - `coupon`: the coupon to be updated.
+    /// - `siteTimezone`: the timezone configured on the site (also know as local time of the site).
     /// - `onCompletion`: invoked when the update finishes.
     ///
     case updateCoupon(_ coupon: Coupon,
+                      siteTimezone: TimeZone?,
                       onCompletion: (Result<Coupon, Error>) -> Void)
 
     /// Creates a coupon for a site given its ID and returns the created coupon if the request succeeds.
     ///
     /// - `coupon`: the coupon to be created.
+    /// - `siteTimezone`: the timezone configured on the site (also know as local time of the site).
     /// - `onCompletion`: invoked when the creation finishes.
     ///
     case createCoupon(_ coupon: Coupon,
+                      siteTimezone: TimeZone?,
                       onCompletion: (Result<Coupon, Error>) -> Void)
 
     /// Loads analytics report for a coupon with the specified coupon ID and site ID.

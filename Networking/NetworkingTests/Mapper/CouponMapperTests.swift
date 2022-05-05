@@ -36,7 +36,7 @@ final class CouponMapperTests: XCTestCase {
             dateModified: dateFormatter.date(from: "2017-03-21T18:25:02")!,
             discountType: .fixedCart,
             description: "Coupon description",
-            dateExpires: dateFormatter.date(from: "2017-03-31T18:25:02"),
+            dateExpires: dateFormatter.date(from: "2017-03-31T15:25:02"),
             usageCount: 10,
             individualUse: true,
             productIds: [12893712, 12389],

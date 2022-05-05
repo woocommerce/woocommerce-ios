@@ -16,7 +16,7 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
 
     /// Defines if the view should show a card payment method.
     ///
-    @Published private(set) var showPayWithCardRow = true
+    @Published private(set) var showPayWithCardRow = false
 
     /// Allows the onboarding flow to be presented before a card present payment when required
     ///
@@ -255,12 +255,12 @@ private extension SimplePaymentsMethodsViewModel {
     /// Observes the store CPP state and update publish variables accordingly.
     ///
     func bindStoreCPPState() {
-//        cppStoreStateObserver
-//            .statePublisher
-//            .map { $0.isCompleted }
-//            .removeDuplicates()
-//            .assign(to: &$showPayWithCardRow)
-//        cppStoreStateObserver.refresh()
+        cppStoreStateObserver
+            .statePublisher
+            .map { $0.isCompleted }
+            .removeDuplicates()
+            .assign(to: &$showPayWithCardRow)
+        cppStoreStateObserver.refresh()
     }
 
     /// Tracks the `simplePaymentsFlowCompleted` event.

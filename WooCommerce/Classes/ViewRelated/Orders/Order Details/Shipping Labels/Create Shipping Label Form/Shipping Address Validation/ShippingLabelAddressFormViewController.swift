@@ -260,9 +260,9 @@ private extension ShippingLabelAddressFormViewController {
         }
         switch error {
         case .none:
-            displayErrorNotice(title: Localization.addressValidationErrorNotice)
+            displayErrorNotice(title: Localization.addressLocalValidationErrorNotice)
         case .remote:
-            displayErrorNotice(title: Localization.cannotValidateAddressNotice)
+            displayErrorNotice(title: Localization.addressRemoteValidationFailedNotice)
         }
     }
 

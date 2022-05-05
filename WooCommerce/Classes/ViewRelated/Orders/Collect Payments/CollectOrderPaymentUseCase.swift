@@ -278,6 +278,7 @@ private extension CollectOrderPaymentUseCase {
             orderTotal: orderTotal,
             paymentGatewayAccount: paymentGatewayAccount,
             paymentMethodTypes: configuration.paymentMethods.map(\.rawValue),
+            stripeSmallestCurrencyUnitMultiplier: configuration.stripeSmallestCurrencyUnitMultiplier,
             onWaitingForInput: { [weak self] in
                    // Request card input
                    self?.alerts.tapOrInsertCard(onCancel: { [weak self] in

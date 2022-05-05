@@ -557,7 +557,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
             let action = CardPresentPaymentAction
                 .collectPayment(siteID: sampleSiteID,
                                 orderID: sampleOrderID,
-                                parameters: .init(amount: 2.5, currency: "USD")) { cardReaderEvent in
+                                parameters: .init(amount: 2.5, currency: "USD", stripeSmallestCurrencyUnitMultiplier: 100)) { cardReaderEvent in
 
                 } onProcessingCompletion: { intent in
                     promise(intent)
@@ -596,7 +596,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
             let action = CardPresentPaymentAction
                 .collectPayment(siteID: sampleSiteID,
                                 orderID: sampleOrderID,
-                                parameters: .init(amount: 2.5, currency: "USD")) { cardReaderEvent in
+                                parameters: .init(amount: 2.5, currency: "USD", stripeSmallestCurrencyUnitMultiplier: 100)) { cardReaderEvent in
                 } onProcessingCompletion: { intent in
                 } onCompletion: { result in
                     promise(result)
@@ -636,7 +636,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
             let action = CardPresentPaymentAction
                 .collectPayment(siteID: sampleSiteID,
                                 orderID: sampleOrderID,
-                                parameters: .init(amount: 2.5, currency: "USD")) { cardReaderEvent in
+                                parameters: .init(amount: 2.5, currency: "USD", stripeSmallestCurrencyUnitMultiplier: 100)) { cardReaderEvent in
                 } onProcessingCompletion: { intent in
                 } onCompletion: { result in
                     promise(result)
@@ -677,7 +677,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
             let action = CardPresentPaymentAction
                 .collectPayment(siteID: self.sampleSiteID,
                                 orderID: self.sampleOrderID,
-                                parameters: .init(amount: 2.5, currency: "USD")) { cardReaderEvent in
+                                parameters: .init(amount: 2.5, currency: "USD", stripeSmallestCurrencyUnitMultiplier: 100)) { cardReaderEvent in
                     cardReaderEvents.append(cardReaderEvent)
                     if cardReaderEvent == .cardRemovedAfterClientSidePaymentCapture {
                         promise(())
@@ -715,7 +715,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
             let action = CardPresentPaymentAction
                 .collectPayment(siteID: sampleSiteID,
                                 orderID: sampleOrderID,
-                                parameters: .init(amount: 2.5, currency: "USD")) { cardReaderEvent in
+                                parameters: .init(amount: 2.5, currency: "USD", stripeSmallestCurrencyUnitMultiplier: 100)) { cardReaderEvent in
                 } onProcessingCompletion: { intent in
                     XCTFail("`onProcessingCompletion` should only be called when payment capture succeeds.")
                 } onCompletion: { result in

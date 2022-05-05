@@ -37,6 +37,7 @@ final class PaymentCaptureOrchestrator {
                         orderTotal: NSDecimalNumber,
                         paymentGatewayAccount: PaymentGatewayAccount,
                         paymentMethodTypes: [String],
+                        stripeSmallestCurrencyUnitMultiplier: Decimal,
                         onWaitingForInput: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onDisplayMessage: @escaping (String) -> Void,
@@ -53,7 +54,8 @@ final class PaymentCaptureOrchestrator {
                 orderTotal: orderTotal,
                 country: paymentGatewayAccount.country,
                 statementDescriptor: paymentGatewayAccount.statementDescriptor,
-                paymentMethodTypes: paymentMethodTypes
+                paymentMethodTypes: paymentMethodTypes,
+                stripeSmallestCurrencyUnitMultiplier: stripeSmallestCurrencyUnitMultiplier
         ) { [weak self] result in
             guard let self = self else { return }
 
@@ -201,6 +203,7 @@ private extension PaymentCaptureOrchestrator {
                            country: String,
                            statementDescriptor: String?,
                            paymentMethodTypes: [String],
+                           stripeSmallestCurrencyUnitMultiplier: Decimal,
                            onCompletion: @escaping ((Result<PaymentParameters, Error>) -> Void)) {
         paymentReceiptEmailParameterDeterminer.receiptEmail(from: order) { [weak self] result in
             guard let self = self else { return }
@@ -221,6 +224,7 @@ private extension PaymentCaptureOrchestrator {
 
             let parameters = PaymentParameters(amount: orderTotal as Decimal,
                                                currency: order.currency,
+                                               stripeSmallestCurrencyUnitMultiplier: stripeSmallestCurrencyUnitMultiplier,
                                                applicationFee: self.applicationFee(for: orderTotal, country: country),
                                                receiptDescription: self.receiptDescription(orderNumber: order.number),
                                                statementDescription: statementDescriptor,

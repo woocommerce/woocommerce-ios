@@ -44,14 +44,8 @@ extension Hardware.PaymentIntentParameters {
 }
 
 private extension Hardware.PaymentIntentParameters {
-    enum Constants {
-        static let smallestCurrencyUnitMultiplier: Decimal = 100
-    }
-
     func prepareAmountForStripe(_ amount: Decimal) -> UInt {
-        /// The amount of the payment needs to be provided in the currency’s smallest unit.
-        /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPPaymentIntentParameters.html#/c:objc(cs)SCPPaymentIntentParameters(py)amount
-        let amountInSmallestUnit = amount * Constants.smallestCurrencyUnitMultiplier
+        let amountInSmallestUnit = amount * stripeSmallestCurrencyUnitMultiplier
         return NSDecimalNumber(decimal: amountInSmallestUnit).uintValue
     }
 }

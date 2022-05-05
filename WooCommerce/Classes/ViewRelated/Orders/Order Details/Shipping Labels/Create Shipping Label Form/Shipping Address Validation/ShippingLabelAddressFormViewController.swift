@@ -258,12 +258,12 @@ private extension ShippingLabelAddressFormViewController {
         if let failure = failure {
             switch failure {
             case .none:
-                self.displayErrorNotice(title: Localization.addressValidationErrorNotice)
+                displayErrorNotice(title: Localization.addressValidationErrorNotice)
             case .remote:
-                self.displayErrorNotice(title: Localization.cannotValidateAddressNotice)
+                displayErrorNotice(title: Localization.cannotValidateAddressNotice)
             }
         } else {
-            self.displayErrorNotice(title: Localization.addressValidationErrorNotice)
+            displayErrorNotice(title: Localization.addressValidationErrorNotice)
         }
     }
 

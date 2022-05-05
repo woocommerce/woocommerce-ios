@@ -321,7 +321,7 @@ private extension IssueRefundViewModel {
         stores.dispatch(setPaymentGatewayAccountAction)
 
         let action = CardPresentPaymentAction.fetchWCPayCharge(siteID: state.order.siteID, chargeID: chargeID, onCompletion: { [weak self] result in
-            if case .failure(_) = result {
+            if case .failure = result {
                 self?.state.fetchChargeError = .requestError
 
                 self?.showFetchChargeErrorNotice?({ [weak self] in

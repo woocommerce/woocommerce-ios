@@ -6,6 +6,8 @@ import Fakes
 @testable import WooCommerce
 @testable import Yosemite
 
+private typealias Dependencies = SimplePaymentsMethodsViewModel.Dependencies
+
 final class SimplePaymentsMethodsViewModelTests: XCTestCase {
 
     var subscriptions = Set<AnyCancellable>()
@@ -22,7 +24,9 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
             }
         }
 
-        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", stores: stores)
+        let dependencies = Dependencies(stores: stores)
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00",
+                                                       dependencies: dependencies)
 
         // When
         let loadingStates: [Bool] = waitFor { promise in
@@ -44,7 +48,9 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
     func test_view_is_disabled_while_loading_is_enabled() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", stores: stores)
+        let dependencies = Dependencies(stores: stores)
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00",
+                                                       dependencies: dependencies)
 
         // When
         let loading: Bool = waitFor { promise in
@@ -68,7 +74,9 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
     func test_onSuccess_is_invoked_after_order_is_marked_as_paid() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", stores: stores)
+        let dependencies = Dependencies(stores: stores)
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00",
+                                                       dependencies: dependencies)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case let .updateOrderStatus(_, _, _, onCompletion):
@@ -93,7 +101,9 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let noticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
-        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", presentNoticeSubject: noticeSubject, stores: stores)
+        let dependencies = Dependencies(presentNoticeSubject: noticeSubject, stores: stores)
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00",
+                                                       dependencies: dependencies)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case let .updateOrderStatus(_, _, _, onCompletion):
@@ -125,7 +135,9 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let noticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
-        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", presentNoticeSubject: noticeSubject, stores: stores)
+        let dependencies = Dependencies(presentNoticeSubject: noticeSubject, stores: stores)
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00",
+                                                       dependencies: dependencies)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case let .updateOrderStatus(_, _, _, onCompletion):
@@ -166,7 +178,10 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         }
 
         let analytics = MockAnalyticsProvider()
-        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", stores: stores, analytics: WooAnalytics(analyticsProvider: analytics))
+        let dependencies = Dependencies(stores: stores,
+                                        analytics: WooAnalytics(analyticsProvider: analytics))
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00",
+                                                       dependencies: dependencies)
 
         // When
         viewModel.markOrderAsPaid(onSuccess: {})
@@ -186,11 +201,12 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         let analytics = MockAnalyticsProvider()
         let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()))
         let onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
-        let viewModel = SimplePaymentsMethodsViewModel(
-            formattedTotal: "$12.00",
+        let dependencies = Dependencies(
             cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
             storage: storage,
             analytics: WooAnalytics(analyticsProvider: analytics))
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00",
+                                                       dependencies: dependencies)
 
         // When
         viewModel.collectPayment(on: UIViewController(), useCase: useCase, onSuccess: {})
@@ -204,7 +220,9 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
     func test_completed_event_is_tracked_after_sharing_a_link() {
         // Given
         let analytics = MockAnalyticsProvider()
-        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", analytics: WooAnalytics(analyticsProvider: analytics))
+        let dependencies = Dependencies(analytics: WooAnalytics(analyticsProvider: analytics))
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00",
+                                                       dependencies: dependencies)
 
         // When
         viewModel.performLinkSharedTasks()
@@ -228,7 +246,10 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         }
 
         let analytics = MockAnalyticsProvider()
-        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", stores: stores, analytics: WooAnalytics(analyticsProvider: analytics))
+        let dependencies = Dependencies(stores: stores,
+                                        analytics: WooAnalytics(analyticsProvider: analytics))
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00",
+                                                       dependencies: dependencies)
 
         // When
         viewModel.markOrderAsPaid(onSuccess: {})
@@ -247,11 +268,12 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         let analytics = MockAnalyticsProvider()
         let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .failure(NSError(domain: "Error", code: 0, userInfo: nil)))
         let onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
-        let viewModel = SimplePaymentsMethodsViewModel(
-            formattedTotal: "$12.00",
+        let dependencies = Dependencies(
             cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
             storage: storage,
             analytics: WooAnalytics(analyticsProvider: analytics))
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00",
+                                                       dependencies: dependencies)
 
         // When
         viewModel.collectPayment(on: UIViewController(), useCase: useCase, onSuccess: {})
@@ -265,7 +287,10 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         // Given
         let analytics = MockAnalyticsProvider()
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", stores: stores, analytics: WooAnalytics(analyticsProvider: analytics))
+        let dependencies = Dependencies(stores: stores,
+                                        analytics: WooAnalytics(analyticsProvider: analytics))
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00",
+                                                       dependencies: dependencies)
 
         // When
         viewModel.trackCollectByCash()
@@ -278,7 +303,9 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
     func test_collect_event_is_tracked_when_sharing_payment_links() {
         // Given
         let analytics = MockAnalyticsProvider()
-        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", analytics: WooAnalytics(analyticsProvider: analytics))
+        let dependencies = Dependencies(analytics: WooAnalytics(analyticsProvider: analytics))
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00",
+                                                       dependencies: dependencies)
 
         // When
         viewModel.trackCollectByPaymentLink()
@@ -294,11 +321,12 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()))
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
-        let viewModel = SimplePaymentsMethodsViewModel(
-            formattedTotal: "$12.00",
+        let dependencies = Dependencies(
             cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: analytics))
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00",
+                                                       dependencies: dependencies)
 
         // When
         viewModel.collectPayment(on: UIViewController(), useCase: useCase, onSuccess: {})
@@ -311,7 +339,9 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
     func test_card_row_is_shown_for_cpp_store() {
         // Given
         let cppStateObserver = MockCardPresentPaymentsOnboardingUseCase(initial: .completed(plugin: .wcPay))
-        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", cppStoreStateObserver: cppStateObserver)
+        let dependencies = Dependencies(cppStoreStateObserver: cppStateObserver)
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00",
+                                                       dependencies: dependencies)
 
         // Then
         XCTAssertTrue(viewModel.showPayWithCardRow)
@@ -320,7 +350,9 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
     func test_card_row_is_not_shown_for_non_cpp_store() {
         // Given
         let cppStateObserver = MockCardPresentPaymentsOnboardingUseCase(initial: .pluginNotInstalled)
-        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", cppStoreStateObserver: cppStateObserver)
+        let dependencies = Dependencies(cppStoreStateObserver: cppStateObserver)
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00",
+                                                       dependencies: dependencies)
 
         // Then
         XCTAssertFalse(viewModel.showPayWithCardRow)
@@ -330,7 +362,9 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         // Given
         let subject = PassthroughSubject<CardPresentPaymentOnboardingState, Never>()
         let cppStateObserver = MockCardPresentPaymentsOnboardingUseCase(initial: .pluginNotInstalled, publisher: subject.eraseToAnyPublisher())
-        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", cppStoreStateObserver: cppStateObserver)
+        let dependencies = Dependencies(cppStoreStateObserver: cppStateObserver)
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00",
+                                                       dependencies: dependencies)
         XCTAssertFalse(viewModel.showPayWithCardRow)
 
         // When
@@ -362,7 +396,9 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
     func test_view_model_attempts_created_notice_after_sharing_link() {
         // Given
         let noticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
-        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", presentNoticeSubject: noticeSubject)
+        let dependencies = Dependencies(presentNoticeSubject: noticeSubject)
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00",
+                                                       dependencies: dependencies)
 
         // When
         let receivedCompleted: Bool = waitFor { promise in
@@ -391,11 +427,11 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         let noticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
         let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()))
         let onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
-        let viewModel = SimplePaymentsMethodsViewModel(
-            formattedTotal: "$12.00",
-            presentNoticeSubject: noticeSubject,
-            cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
-            storage: storage)
+        let dependencies = Dependencies(presentNoticeSubject: noticeSubject,
+                                        cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
+                                        storage: storage)
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00",
+                                                       dependencies: dependencies)
 
         // When
         let receivedCompleted: Bool = waitFor { promise in
@@ -424,10 +460,10 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
 
         let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()))
         let onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
-        let viewModel = SimplePaymentsMethodsViewModel(
-            formattedTotal: "$12.00",
-            cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
-            storage: storage)
+        let dependencies = Dependencies(cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
+                                        storage: storage)
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00",
+                                                       dependencies: dependencies)
 
         // When
         let calledOnSuccess: Bool = waitFor { promise in

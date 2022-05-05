@@ -101,27 +101,45 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     ///
     private var collectPaymentsUseCase: CollectOrderPaymentProtocol?
 
+    struct Dependencies {
+        let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never>
+        let cppStoreStateObserver: CardPresentPaymentsOnboardingUseCaseProtocol
+        let cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting
+        let stores: StoresManager
+        let storage: StorageManagerType
+        let analytics: Analytics
+
+        init(presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
+             cppStoreStateObserver: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
+             cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting = CardPresentPaymentsOnboardingPresenter(),
+             stores: StoresManager = ServiceLocator.stores,
+             storage: StorageManagerType = ServiceLocator.storageManager,
+             analytics: Analytics = ServiceLocator.analytics) {
+            self.presentNoticeSubject = presentNoticeSubject
+            self.cppStoreStateObserver = cppStoreStateObserver
+            self.cardPresentPaymentsOnboardingPresenter = cardPresentPaymentsOnboardingPresenter
+            self.stores = stores
+            self.storage = storage
+            self.analytics = analytics
+        }
+    }
+
     init(siteID: Int64 = 0,
          orderID: Int64 = 0,
          paymentLink: URL? = nil,
          formattedTotal: String,
-         presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
-         cppStoreStateObserver: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
-         cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting = CardPresentPaymentsOnboardingPresenter(),
-         stores: StoresManager = ServiceLocator.stores,
-         storage: StorageManagerType = ServiceLocator.storageManager,
-         analytics: Analytics = ServiceLocator.analytics) {
+         dependencies: Dependencies = Dependencies()) {
         self.siteID = siteID
         self.orderID = orderID
         self.paymentLink = paymentLink
         self.formattedTotal = formattedTotal
-        self.presentNoticeSubject = presentNoticeSubject
-        self.cppStoreStateObserver = cppStoreStateObserver
-        self.cardPresentPaymentsOnboardingPresenter = cardPresentPaymentsOnboardingPresenter
-        self.stores = stores
-        self.storage = storage
-        self.analytics = analytics
-        self.title = String(format: Localization.title, formattedTotal)
+        presentNoticeSubject = dependencies.presentNoticeSubject
+        cppStoreStateObserver = dependencies.cppStoreStateObserver
+        cardPresentPaymentsOnboardingPresenter = dependencies.cardPresentPaymentsOnboardingPresenter
+        stores = dependencies.stores
+        storage = dependencies.storage
+        analytics = dependencies.analytics
+        title = String(format: Localization.title, formattedTotal)
 
         bindStoreCPPState()
     }

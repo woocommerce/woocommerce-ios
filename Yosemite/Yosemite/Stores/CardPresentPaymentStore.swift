@@ -470,9 +470,6 @@ private extension CardPresentPaymentStore {
     }
 
     func loadWCPayAccount(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        /// Delete any WCPay account present. There can be only one.
-        self.deleteStaleAccount(siteID: siteID, gatewayID: WCPayAccount.gatewayID)
-
         /// Fetch the WCPay account
         remote.loadAccount(for: siteID) { [weak self] result in
             guard let self = self else {
@@ -492,9 +489,6 @@ private extension CardPresentPaymentStore {
     }
 
     func loadStripeAccount(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        /// Delete any Stripe account present. There can be only one.
-        self.deleteStaleAccount(siteID: siteID, gatewayID: StripeAccount.gatewayID)
-
         stripeRemote.loadAccount(for: siteID) { [weak self] result in
             guard let self = self else {
                 return

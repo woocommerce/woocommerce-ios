@@ -73,7 +73,7 @@ private extension IssueRefundViewController {
 
         viewModel.showFetchChargeErrorNotice = { [weak self] retryAction in
             guard let self = self else { return }
-            
+
             let notice = Notice(title: Localization.retryFetchChargeNoticeTitle,
                                 feedbackType: .error,
                                 actionTitle: Localization.retryFetchChargeNoticeRetryActionTitle,

@@ -25,9 +25,9 @@ struct OrdersTopBannerFactory {
 
 private extension OrdersTopBannerFactory {
     enum Localization {
-        static let title = NSLocalizedString("Create orders and take payments!", comment: "Title of the banner notice in the Orders tab")
+        static let title = NSLocalizedString("Create orders & take payments!", comment: "Title of the banner notice in the Orders tab")
         static let infoText = NSLocalizedString("We've been working on making it possible to create orders and take payments from your device! " +
-                                                "You can try these features out by tapping on the \"+\" icon",
+                                                "You can try these features out by tapping on the \"+\" button",
                                                 comment: "Content of the banner notice in the Orders tab")
         static let dismiss = NSLocalizedString("Dismiss", comment: "The title of the button to dismiss the Orders top banner")
         static let giveFeedback = NSLocalizedString("Give feedback", comment: "Title of the button to give feedback about the Orders features")

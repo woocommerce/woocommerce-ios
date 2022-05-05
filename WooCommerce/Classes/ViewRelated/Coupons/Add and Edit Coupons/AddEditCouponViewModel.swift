@@ -77,7 +77,7 @@ final class AddEditCouponViewModel: ObservableObject {
     ///
     var expiryDateValue: TitleAndValueRow.Value {
         guard expiryDateField == nil else {
-            return .content(expiryDateField?.toString(dateStyle: .long, timeStyle: .none) ?? "")
+            return .content(expiryDateField?.toString(dateStyle: .long, timeStyle: .none, timeZone: TimeZone.siteTimezone) ?? "")
         }
 
         return .placeholder(Localization.couponExpiryDatePlaceholder)
@@ -91,9 +91,42 @@ final class AddEditCouponViewModel: ObservableObject {
         })
     }
 
+    /// Title for the Edit Products button with the number of selected products.
+    ///
+    var editProductsButtonTitle: String {
+        String.localizedStringWithFormat(Localization.editProductsButton, productOrVariationIDs.count)
+    }
+
+    /// View model for the category selector
+    ///
+    var categorySelectorViewModel: ProductCategorySelectorViewModel {
+        .init(siteID: siteID, selectedCategories: categoryIDs) { [weak self] categories in
+            self?.categoryIDs = categories.map { $0.categoryID }
+        }
+    }
+
+    /// Title for the Edit Categories button with the number of selected product categories.
+    ///
+    var editCategoriesButtonTitle: String {
+        String.localizedStringWithFormat(Localization.editProductCategoriesButton, categoryIDs.count)
+    }
+
+    /// Whether the coupon is applicable to any specified products.
+    ///
+    var hasSelectedProducts: Bool {
+        productOrVariationIDs.isNotEmpty
+    }
+
+    /// Whether the coupon is applicable to any specified product categories.
+    ///
+    var hasSelectedCategories: Bool {
+        categoryIDs.isNotEmpty
+    }
+
     private(set) var coupon: Coupon?
     private let stores: StoresManager
     private let storageManager: StorageManagerType
+    let timezone: TimeZone
 
     /// When the view is updating or creating a new Coupon remotely.
     ///
@@ -106,19 +139,22 @@ final class AddEditCouponViewModel: ObservableObject {
     @Published var expiryDateField: Date?
     @Published var freeShipping: Bool
     @Published var couponRestrictionsViewModel: CouponRestrictionsViewModel
-    @Published var productOrVariationIDs: [Int64]
+    @Published private var productOrVariationIDs: [Int64]
+    @Published private var categoryIDs: [Int64]
 
     /// Init method for coupon creation
     ///
     init(siteID: Int64,
          discountType: Coupon.DiscountType,
          stores: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         timezone: TimeZone = .siteTimezone) {
         self.siteID = siteID
         editingOption = .creation
         self.discountType = discountType
         self.stores = stores
         self.storageManager = storageManager
+        self.timezone = timezone
 
         amountField = String()
         codeField = String()
@@ -127,17 +163,22 @@ final class AddEditCouponViewModel: ObservableObject {
         freeShipping = false
         couponRestrictionsViewModel = CouponRestrictionsViewModel(siteID: siteID)
         productOrVariationIDs = []
+        categoryIDs = []
     }
 
     /// Init method for coupon editing
     ///
     init(existingCoupon: Coupon,
          stores: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         timezone: TimeZone = .siteTimezone) {
         siteID = existingCoupon.siteID
         coupon = existingCoupon
         editingOption = .editing
         discountType = existingCoupon.discountType
+        self.stores = stores
+        self.storageManager = storageManager
+        self.timezone = timezone
 
         // Populate fields
         amountField = existingCoupon.amount
@@ -147,8 +188,7 @@ final class AddEditCouponViewModel: ObservableObject {
         freeShipping = existingCoupon.freeShipping
         couponRestrictionsViewModel = CouponRestrictionsViewModel(coupon: existingCoupon)
         productOrVariationIDs = existingCoupon.productIds
-        self.stores = stores
-        self.storageManager = storageManager
+        categoryIDs = existingCoupon.productCategories
     }
 
     /// The method will generate a code in the same way as the existing admin website code does.
@@ -313,5 +353,13 @@ private extension AddEditCouponViewModel {
         static let genericCreateCouponError = NSLocalizedString("Something went wrong while creating the coupon.",
                                                                 comment: "Error message in the Add Edit Coupon screen " +
                                                                 "when the creation of the coupon goes in error.")
+        static let editProductsButton = NSLocalizedString(
+            "Edit Products (%1$d)",
+            comment: "Button specifying the number of products applicable to a coupon in the view for adding or editing a coupon. " +
+            "Reads like: Edit Products (2)")
+        static let editProductCategoriesButton = NSLocalizedString(
+            "Edit Product Categories (%1$d)",
+            comment: "Button for specify the product categories where a coupon can be applied in the view for adding or editing a coupon. " +
+            "Reads like: Edit Categories")
     }
 }

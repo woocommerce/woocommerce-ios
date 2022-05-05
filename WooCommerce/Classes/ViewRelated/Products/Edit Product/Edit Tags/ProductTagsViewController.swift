@@ -10,8 +10,7 @@ final class ProductTagsViewController: UIViewController, GhostableViewController
     @IBOutlet private weak var textView: UITextView!
     @IBOutlet private var separatorView: UIView!
 
-    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(displaysSectionHeader: false,
-                                                                                                cellClass: WooBasicTableViewCell.self,
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: WooBasicTableViewCell.self,
                                                                                                 isScrollEnabled: false))
 
     private let product: Product

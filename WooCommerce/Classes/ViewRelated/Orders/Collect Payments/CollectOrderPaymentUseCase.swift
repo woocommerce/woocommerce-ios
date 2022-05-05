@@ -21,6 +21,10 @@ protocol CollectOrderPaymentProtocol {
 /// Orchestrates reader connection, payment, UI alerts, receipt handling and analytics.
 ///
 final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
+    /// Currency Formatter
+    ///
+    private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+
     /// Store's ID.
     ///
     private let siteID: Int64
@@ -28,6 +32,14 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     /// Order to collect.
     ///
     private let order: Order
+
+    /// Order total in decimal number. It is lazy so we avoid multiple conversions.
+    /// It can be lazy because the order is a constant and never changes (this class is intended to be
+    /// fired and disposed, not reused for multiple payment flows).
+    ///
+    private lazy var orderTotal: NSDecimalNumber? = {
+        currencyFormatter.convertToDecimal(from: order.total)
+    }()
 
     /// Formatted amount to collect.
     ///
@@ -41,7 +53,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     ///
     private let stores: StoresManager
 
-    /// Analytics manager,
+    /// Analytics manager.
     ///
     private let analytics: Analytics
 
@@ -116,6 +128,12 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     /// - Parameter onCollect: Closure Invoked after the collect process has finished.
     /// - Parameter onCompleted: Closure Invoked after the flow has been totally completed, Currently after merchant has handled the receipt.
     func collectPayment(backButtonTitle: String, onCollect: @escaping (Result<Void, Error>) -> (), onCompleted: @escaping () -> ()) {
+        guard isTotalAmountValid() else {
+            let error = totalAmountInvalidError()
+            onCollect(.failure(error))
+            return handleTotalAmountInvalidError(totalAmountInvalidError(), onCompleted: onCompleted)
+        }
+
         configureBackend()
         observeConnectedReadersForAnalytics()
         connectReader { [weak self] result in
@@ -141,6 +159,37 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
 
 // MARK: Private functions
 private extension CollectOrderPaymentUseCase {
+    /// Checks whether the amount to be collected is valid: (not nil, convertible to decimal, higher than minimum amount ...)
+    ///
+    func isTotalAmountValid() -> Bool {
+        guard let orderTotal = orderTotal else {
+            return false
+        }
+
+        /// Bail out if the order amount is below the minimum allowed:
+        /// https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts
+        return orderTotal as Decimal >= configuration.minimumAllowedChargeAmount as Decimal
+    }
+
+    /// Determines and returns the error that provoked the amount being invalid
+    ///
+    func totalAmountInvalidError() -> Error {
+        let orderTotalAmountCanBeConverted = orderTotal != nil
+
+        guard orderTotalAmountCanBeConverted,
+              let minimum = currencyFormatter.formatAmount(configuration.minimumAllowedChargeAmount, with: order.currency) else {
+            return NotValidAmountError.other
+        }
+
+        return NotValidAmountError.belowMinimumAmount(amount: minimum)
+    }
+
+    func handleTotalAmountInvalidError(_ error: Error, onCompleted: @escaping () -> ()) {
+        trackPaymentFailure(with: error)
+        DDLogError("💳 Error: failed to capture payment for order. Order amount is below minimum or not valid")
+        self.alerts.nonRetryableError(from: self.rootViewController, error: totalAmountInvalidError(), dismissCompletion: onCompleted)
+    }
+
     /// Configure the CardPresentPaymentStore to use the appropriate backend
     ///
     func configureBackend() {
@@ -181,10 +230,14 @@ private extension CollectOrderPaymentUseCase {
                     self.connectionController.searchAndConnect(from: self.rootViewController) { [weak self] result in
                         guard let self = self else { return }
                         switch result {
-                        case let .success(isConnected):
-                            if isConnected == false {
+                        case let .success(connectionResult):
+                            switch connectionResult {
+                            case .canceled:
                                 self.readerSubscription = nil
                                 onCompletion(.failure(CollectOrderPaymentUseCaseError.cardReaderDisconnected))
+                            case .connected:
+                                // Connected case will be handled in `receiveCompletion`.
+                                break
                             }
                         case .failure(let error):
                             self.readerSubscription = nil
@@ -199,6 +252,12 @@ private extension CollectOrderPaymentUseCase {
     /// Attempts to collect payment for an order.
     ///
     func attemptPayment(onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
+        guard let orderTotal = orderTotal else {
+            onCompletion(.failure(NotValidAmountError.other))
+
+            return
+        }
+
         // Track tapped event
         analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentTapped(forGatewayID: paymentGatewayAccount.gatewayID,
                                                                                        countryCode: configuration.countryCode,
@@ -216,9 +275,11 @@ private extension CollectOrderPaymentUseCase {
         // Start collect payment process
         paymentOrchestrator.collectPayment(
             for: order,
-               paymentGatewayAccount: paymentGatewayAccount,
-               paymentMethodTypes: configuration.paymentMethods.map(\.rawValue),
-               onWaitingForInput: { [weak self] in
+            orderTotal: orderTotal,
+            paymentGatewayAccount: paymentGatewayAccount,
+            paymentMethodTypes: configuration.paymentMethods.map(\.rawValue),
+            stripeSmallestCurrencyUnitMultiplier: configuration.stripeSmallestCurrencyUnitMultiplier,
+            onWaitingForInput: { [weak self] in
                    // Request card input
                    self?.alerts.tapOrInsertCard(onCancel: { [weak self] in
                        self?.cancelPayment {
@@ -226,24 +287,22 @@ private extension CollectOrderPaymentUseCase {
                        }
                    })
 
-               }, onProcessingMessage: { [weak self] in
-                   // Waiting message
-                   self?.alerts.processingPayment()
-
-               }, onDisplayMessage: { [weak self] message in
-                   // Reader messages. EG: Remove Card
-                   self?.alerts.displayReaderMessage(message: message)
-
-               }, onProcessingCompletion: { [weak self] intent in
-                   self?.trackProcessingCompletion(intent: intent)
-               }, onCompletion: { [weak self] result in
-                   switch result {
-                   case .success(let capturedPaymentData):
-                       self?.handleSuccessfulPayment(capturedPaymentData: capturedPaymentData, onCompletion: onCompletion)
-                   case .failure(let error):
-                       self?.handlePaymentFailureAndRetryPayment(error, onCompletion: onCompletion)
-                   }
-               }
+            }, onProcessingMessage: { [weak self] in
+                // Waiting message
+                self?.alerts.processingPayment()
+            }, onDisplayMessage: { [weak self] message in
+                // Reader messages. EG: Remove Card
+                self?.alerts.displayReaderMessage(message: message)
+            }, onProcessingCompletion: { [weak self] intent in
+                self?.trackProcessingCompletion(intent: intent)
+            }, onCompletion: { [weak self] result in
+                switch result {
+                case .success(let capturedPaymentData):
+                    self?.handleSuccessfulPayment(capturedPaymentData: capturedPaymentData, onCompletion: onCompletion)
+                case .failure(let error):
+                    self?.handlePaymentFailureAndRetryPayment(error, onCompletion: onCompletion)
+                }
+            }
         )
     }
 
@@ -265,12 +324,9 @@ private extension CollectOrderPaymentUseCase {
     /// Log the failure reason, cancel the current payment and retry it if possible.
     ///
     func handlePaymentFailureAndRetryPayment(_ error: Error, onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
-        // Record error
-        analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentFailed(forGatewayID: paymentGatewayAccount.gatewayID,
-                                                                                       error: error,
-                                                                                       countryCode: configuration.countryCode,
-                                                                                       cardReaderModel: connectedReader?.readerType.model))
         DDLogError("Failed to collect payment: \(error.localizedDescription)")
+
+        trackPaymentFailure(with: error)
 
         // Inform about the error
         alerts.error(error: error,
@@ -287,13 +343,22 @@ private extension CollectOrderPaymentUseCase {
 
                 case .failure(let cancelError):
                     // Inform that payment can't be retried.
-                    self.alerts.nonRetryableError(from: self.rootViewController, error: cancelError)
-                    onCompletion(.failure(error))
+                    self.alerts.nonRetryableError(from: self.rootViewController, error: cancelError) {
+                        onCompletion(.failure(error))
+                    }
                 }
             }
         }, dismissCompletion: {
             onCompletion(.failure(error))
         })
+    }
+
+    private func trackPaymentFailure(with error: Error) {
+        // Record error
+        analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentFailed(forGatewayID: paymentGatewayAccount.gatewayID,
+                                                                                       error: error,
+                                                                                       countryCode: configuration.countryCode,
+                                                                                       cardReaderModel: connectedReader?.readerType.model))
     }
 
     /// Cancels payment and record analytics.
@@ -312,16 +377,27 @@ private extension CollectOrderPaymentUseCase {
     ///
     func presentReceiptAlert(receiptParameters: CardPresentReceiptParameters, backButtonTitle: String, onCompleted: @escaping () -> ()) {
         // Present receipt alert
-        alerts.success(printReceipt: { [order, configuration] in
+        alerts.success(printReceipt: { [order, configuration, weak self] in
+            guard let self = self else { return }
+
             // Inform about flow completion.
             onCompleted()
 
             // Delegate print action
-            ReceiptActionCoordinator.printReceipt(for: order, params: receiptParameters, countryCode: configuration.countryCode)
+            ReceiptActionCoordinator.printReceipt(for: order,
+                                                  params: receiptParameters,
+                                                  countryCode: configuration.countryCode,
+                                                  cardReaderModel: self.connectedReader?.readerType.model,
+                                                  stores: self.stores,
+                                                  analytics: self.analytics)
 
-        }, emailReceipt: { [order, analytics, paymentOrchestrator, configuration] in
+        }, emailReceipt: { [order, analytics, paymentOrchestrator, configuration, weak self] in
+            guard let self = self else { return }
+
             // Record button tapped
-            analytics.track(event: .InPersonPayments.receiptEmailTapped(countryCode: configuration.countryCode))
+            analytics.track(event: .InPersonPayments
+                .receiptEmailTapped(countryCode: configuration.countryCode,
+                                    cardReaderModel: self.connectedReader?.readerType.model ?? ""))
 
             // Request & present email
             paymentOrchestrator.emailReceipt(for: order, params: receiptParameters) { [weak self] emailContent in
@@ -384,15 +460,17 @@ private extension CollectOrderPaymentUseCase {
 // MARK: MailComposer Delegate
 extension CollectOrderPaymentUseCase: MFMailComposeViewControllerDelegate {
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        let cardReaderModel = connectedReader?.readerType.model ?? ""
         switch result {
         case .cancelled:
-            analytics.track(event: .InPersonPayments.receiptEmailCanceled(countryCode: configuration.countryCode))
+            analytics.track(event: .InPersonPayments.receiptEmailCanceled(countryCode: configuration.countryCode, cardReaderModel: cardReaderModel))
         case .sent, .saved:
-            analytics.track(event: .InPersonPayments.receiptEmailSuccess(countryCode: configuration.countryCode))
+            analytics.track(event: .InPersonPayments.receiptEmailSuccess(countryCode: configuration.countryCode, cardReaderModel: cardReaderModel))
         case .failed:
             analytics.track(event: .InPersonPayments
                 .receiptEmailFailed(error: error ?? UnknownEmailError(),
-                                    countryCode: configuration.countryCode))
+                                    countryCode: configuration.countryCode,
+                                    cardReaderModel: cardReaderModel))
         @unknown default:
             assertionFailure("MFMailComposeViewController finished with an unknown result type")
         }
@@ -436,6 +514,34 @@ private extension CollectOrderPaymentUseCase {
                 return collectPaymentWithoutName
             }
             return .localizedStringWithFormat(collectPaymentWithName, username)
+        }
+    }
+}
+
+extension CollectOrderPaymentUseCase {
+    enum NotValidAmountError: Error, LocalizedError {
+        case belowMinimumAmount(amount: String)
+        case other
+
+        var errorDescription: String? {
+            switch self {
+            case .belowMinimumAmount(let amount):
+                return String.localizedStringWithFormat(Localization.belowMinimumAmount, amount)
+            case .other:
+                return Localization.defaultMessage
+            }
+        }
+
+        private enum Localization {
+            static let defaultMessage = NSLocalizedString(
+                "Unable to process payment. Order total amount is not valid.",
+                comment: "Error message when the order amount is not valid."
+            )
+
+            static let belowMinimumAmount = NSLocalizedString(
+                "Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@",
+                comment: "Error message when the order amount is below the minimum amount allowed."
+            )
         }
     }
 }

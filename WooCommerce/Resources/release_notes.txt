@@ -1,5 +1,6 @@
-You’ll find a handy-dandy payment link at the top of an order that hasn’t had a payment applied yet. Send that link to your customer, and they can pay for that order right from their phone or computer.
 
-This is a great option to use with the new order creation feature! Create an order while a customer is standing in front of you, and then text them the payment link through your site. Awesome, right?
+- [*] Product name field in product form - Remove scroll behaviour and increase field height to fully display long product names. [https://github.com/woocommerce/woocommerce-ios/pull/6681]
+- [*] Filter toolbar in Products list tab - Filter toolbar is pinned outside of the products list. [https://github.com/woocommerce/woocommerce-ios/pull/6698]
+- [internal] Loading screens are refactored to avoid duplicated code and a potential crash. Please quickly smoke test them to make sure that everything still works as before. [https://github.com/woocommerce/woocommerce-ios/pull/6717]
+- [*] Shipping settings - Weight and shipping package dimensions are localized based on device locale. Also, decimal point information is no longer lost upon saving a product, when using comma as a decimal separator. [https://github.com/woocommerce/woocommerce-ios/pull/6721]
 
-You’ll need to update to WooCommerce 6.4 or greater to get this option in the app.

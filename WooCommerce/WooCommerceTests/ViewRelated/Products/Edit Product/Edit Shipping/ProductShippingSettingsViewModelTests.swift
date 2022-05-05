@@ -7,7 +7,7 @@ final class ProductShippingSettingsViewModelTests: XCTestCase {
 
     // MARK: - Initialization
 
-    func test_readonly_shipping_values_are_as_expected_after_initialization() {
+    func test_readonly_shipping_values_are_as_expected_based_on_locale_after_initialization() {
         // Arrange
         let dimensions = ProductDimensions(length: "2.9", width: "", height: "1116")
         let product = Product.fake()
@@ -16,9 +16,11 @@ final class ProductShippingSettingsViewModelTests: XCTestCase {
                   shippingClass: "60-day",
                   shippingClassID: 2)
         let model = EditableProductModel(product: product)
+        let shippingValueLocalizer = DefaultShippingValueLocalizer(deviceLocale: Locale(identifier: "it_IT"))
 
         // Act
-        let viewModel = ProductShippingSettingsViewModel(product: model)
+        let viewModel = ProductShippingSettingsViewModel(product: model,
+                                                         shippingValueLocalizer: shippingValueLocalizer)
 
         // Assert
         let expectedSections: [Section] = [
@@ -27,10 +29,10 @@ final class ProductShippingSettingsViewModelTests: XCTestCase {
         ]
         XCTAssertEqual(viewModel.sections, expectedSections)
         XCTAssertEqual(viewModel.product as? EditableProductModel, model)
-        XCTAssertEqual(viewModel.weight, "1.6")
-        XCTAssertEqual(viewModel.length, dimensions.length)
-        XCTAssertEqual(viewModel.width, dimensions.width)
-        XCTAssertEqual(viewModel.height, dimensions.height)
+        XCTAssertEqual(viewModel.localizedWeight, "1,6")
+        XCTAssertEqual(viewModel.localizedLength, "2,9")
+        XCTAssertEqual(viewModel.localizedWidth, "")
+        XCTAssertEqual(viewModel.localizedHeight, "1116")
         XCTAssertNil(viewModel.shippingClass)
     }
 

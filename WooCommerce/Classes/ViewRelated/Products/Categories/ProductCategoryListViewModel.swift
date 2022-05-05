@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import protocol Storage.StorageManagerType
 
 /// Classes conforming to this protocol can enrich the Product Category List UI,
 /// e.g by adding extra rows
@@ -41,13 +42,22 @@ final class ProductCategoryListViewModel {
     ///
     private let storesManager: StoresManager
 
+    /// Storage to fetch categories from.
+    ///
+    private let storageManager: StorageManagerType
+
     /// Site Id of the related categories
     ///
     private let siteID: Int64
 
+    /// Initially selected category IDs.
+    /// This is mutable so that we can remove any item when unselecting it manually.
+    ///
+    private var initiallySelectedIDs: [Int64]
+
     /// Product categories that will be eventually modified by the user
     ///
-    private(set) var selectedCategories: [ProductCategory]
+    @Published private(set) var selectedCategories: [ProductCategory]
 
     /// Array of view models to be rendered by the View Controller.
     ///
@@ -86,31 +96,36 @@ final class ProductCategoryListViewModel {
     }
 
     private lazy var resultController: ResultsController<StorageProductCategory> = {
-        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID = %ld", self.siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageProductCategory.name, ascending: true)
         return ResultsController<StorageProductCategory>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
-    init(storesManager: StoresManager = ServiceLocator.stores,
-         siteID: Int64,
+    init(siteID: Int64,
+         selectedCategoryIDs: [Int64] = [],
          selectedCategories: [ProductCategory] = [],
+         storesManager: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          enrichingDataSource: ProductCategoryListViewModelEnrichingDataSource? = nil,
          delegate: ProductCategoryListViewModelDelegate? = nil,
          onProductCategorySelection: ProductCategorySelection? = nil) {
         self.storesManager = storesManager
+        self.storageManager = storageManager
         self.siteID = siteID
         self.selectedCategories = selectedCategories
         self.enrichingDataSource = enrichingDataSource
         self.delegate = delegate
         self.onProductCategorySelection = onProductCategorySelection
+        self.initiallySelectedIDs = selectedCategoryIDs
+
+        try? resultController.performFetch()
+        updateViewModelsArray()
     }
 
     /// Load existing categories from storage and fire the synchronize all categories action.
     ///
     func performFetch() {
         synchronizeAllCategories()
-        try? resultController.performFetch()
     }
 
     /// Retry product categories synchronization when `syncCategoriesState` is on a `.failed` state.
@@ -170,7 +185,8 @@ final class ProductCategoryListViewModel {
 
         // If the category selected exist, remove it, otherwise, add it to `selectedCategories`.
         if let indexCategory = selectedCategories.firstIndex(where: { $0.categoryID == categoryViewModel.categoryID}) {
-            selectedCategories.remove(at: indexCategory)
+            let discardedItem = selectedCategories.remove(at: indexCategory)
+            initiallySelectedIDs.removeAll(where: { $0 == discardedItem.categoryID })
         } else {
             let selectedCategory = resultController.fetchedObjects.first(where: { $0.categoryID == categoryViewModel.categoryID })
 
@@ -189,9 +205,21 @@ final class ProductCategoryListViewModel {
     ///
     func updateViewModelsArray() {
         let fetchedCategories = resultController.fetchedObjects
+        updateInitialItemsIfNeeded(with: fetchedCategories)
         let baseViewModels = ProductCategoryListViewModel.CellViewModelBuilder.viewModels(from: fetchedCategories, selectedCategories: selectedCategories)
 
         categoryViewModels = enrichingDataSource?.enrichCategoryViewModels( baseViewModels) ?? baseViewModels
+    }
+
+    /// Update `selectedCategories` based on initially selected items.
+    ///
+    private func updateInitialItemsIfNeeded(with categories: [ProductCategory]) {
+        guard initiallySelectedIDs.isNotEmpty && selectedCategories.isEmpty else {
+            return
+        }
+        selectedCategories = initiallySelectedIDs.compactMap { id in
+            categories.first(where: { $0.categoryID == id })
+        }
     }
 }
 

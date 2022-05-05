@@ -25,7 +25,9 @@ final class CouponRestrictionsViewModel: ObservableObject {
 
     @Published var excludeSaleItems: Bool
 
-    @Published var excludedProductOrVariationIDs: [Int64]
+    @Published private var excludedProductOrVariationIDs: [Int64]
+
+    @Published private var excludedCategoryIDs: [Int64]
 
     /// View model for the product selector
     ///
@@ -33,6 +35,17 @@ final class CouponRestrictionsViewModel: ObservableObject {
         ProductSelectorViewModel(siteID: siteID, selectedItemIDs: excludedProductOrVariationIDs, onMultipleSelectionCompleted: { [weak self] ids in
             self?.excludedProductOrVariationIDs = ids
         })
+    }()
+
+    /// View model for the category selector
+    ///
+    lazy var categorySelectorViewModel = {
+        ProductCategorySelectorViewModel(siteID: siteID,
+                                         selectedCategories: excludedCategoryIDs,
+                                         storesManager: stores,
+                                         storageManager: storageManager) { [weak self] categories in
+            self?.excludedCategoryIDs = categories.map { $0.categoryID }
+        }
     }()
 
     private let siteID: Int64
@@ -77,6 +90,7 @@ final class CouponRestrictionsViewModel: ObservableObject {
         individualUseOnly = coupon.individualUse
         excludeSaleItems = coupon.excludeSaleItems
         excludedProductOrVariationIDs = coupon.excludedProductIds
+        excludedCategoryIDs = coupon.excludedProductCategories
     }
 
     init(siteID: Int64,
@@ -93,6 +107,7 @@ final class CouponRestrictionsViewModel: ObservableObject {
         individualUseOnly = false
         excludeSaleItems = false
         excludedProductOrVariationIDs = []
+        excludedCategoryIDs = []
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager

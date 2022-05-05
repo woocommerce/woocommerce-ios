@@ -4,6 +4,7 @@ struct CouponRestrictions: View {
 
     @State private var showingAllowedEmails: Bool = false
     @State private var showingExcludeProducts: Bool = false
+    @State private var showingExcludeCategories: Bool = false
     @ObservedObject private var viewModel: CouponRestrictionsViewModel
 
     // Tracks the scale of the view due to accessibility changes
@@ -129,7 +130,7 @@ struct CouponRestrictions: View {
                     .buttonStyle(SecondaryButtonStyle(labelFont: .body))
 
                     Button(action: {
-                        // TODO: show category selection
+                        showingExcludeCategories = true
                     }) {
                         HStack {
                             Image(uiImage: UIImage.plusImage)
@@ -152,10 +153,14 @@ struct CouponRestrictions: View {
                                 isPresented: $showingExcludeProducts,
                                 viewModel: viewModel.productSelectorViewModel)
                     .onDisappear {
-                        viewModel.productSelectorViewModel.clearSearch()
+                        viewModel.productSelectorViewModel.clearSearchAndFilters()
                     }
             }
-
+            .sheet(isPresented: $showingExcludeCategories) {
+                ProductCategorySelector(isPresented: $showingExcludeCategories,
+                                        config: ProductCategorySelector.Configuration.excludedCategories,
+                                        viewModel: viewModel.categorySelectorViewModel)
+            }
             LazyNavigationLink(destination: CouponAllowedEmails(emailFormats: $viewModel.allowedEmails), isActive: $showingAllowedEmails) {
                 EmptyView()
             }
@@ -256,7 +261,8 @@ struct CouponRestrictions_Previews: PreviewProvider {
 
 private extension ProductSelector.Configuration {
     static let excludedProductsForCoupons: Self =
-        .init(multipleSelectionsEnabled: true,
+        .init(showsFilters: true,
+              multipleSelectionsEnabled: true,
               doneButtonTitleSingularFormat: Localization.doneButtonSingular,
               doneButtonTitlePluralFormat: Localization.doneButtonPlural,
               title: Localization.title,
@@ -282,5 +288,25 @@ private extension ProductSelector.Configuration {
             comment: "Title of the action button at the bottom of the Exclude Products screen " +
             "when more than 1 item is selected, reads like: Exclude 5 Products"
         )
+    }
+}
+
+private extension ProductCategorySelector.Configuration {
+    static let excludedCategories: Self = .init(
+        title: Localization.title,
+        doneButtonSingularFormat: Localization.doneSingularFormat,
+        doneButtonPluralFormat: Localization.donePluralFormat
+    )
+
+    enum Localization {
+        static let title = NSLocalizedString("Exclude categories", comment: "Title for the Exclude Categories screen")
+        static let doneSingularFormat = NSLocalizedString(
+            "Exclude %1$d Category",
+            comment: "Button to submit selection on the Exclude Categories screen when 1 item is selected")
+        static let donePluralFormat = NSLocalizedString(
+            "Exclude %1$d Categories",
+            comment: "Button to submit selection on the Exclude Categories screen " +
+            "when more than 1 item is selected. " +
+            "Reads like: Exclude 10 Categories")
     }
 }

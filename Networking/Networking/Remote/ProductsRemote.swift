@@ -25,6 +25,10 @@ public protocol ProductsRemoteProtocol {
                         keyword: String,
                         pageNumber: Int,
                         pageSize: Int,
+                        stockStatus: ProductStockStatus?,
+                        productStatus: ProductStatus?,
+                        productType: ProductType?,
+                        productCategory: ProductCategory?,
                         excludedProductIDs: [Int64],
                         completion: @escaping (Result<[Product], Error>) -> Void)
     func searchSku(for siteID: Int64,
@@ -202,17 +206,29 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
                                keyword: String,
                                pageNumber: Int,
                                pageSize: Int,
+                               stockStatus: ProductStockStatus? = nil,
+                               productStatus: ProductStatus? = nil,
+                               productType: ProductType? = nil,
+                               productCategory: ProductCategory? = nil,
                                excludedProductIDs: [Int64] = [],
                                completion: @escaping (Result<[Product], Error>) -> Void) {
         let stringOfExcludedProductIDs = excludedProductIDs.map { String($0) }
             .joined(separator: ",")
+
+        let filterParameters = [
+            ParameterKey.stockStatus: stockStatus?.rawValue ?? "",
+            ParameterKey.productStatus: productStatus?.rawValue ?? "",
+            ParameterKey.productType: productType?.rawValue ?? "",
+            ParameterKey.category: filterProductCategoryParemeterValue(from: productCategory),
+            ParameterKey.exclude: stringOfExcludedProductIDs
+            ].filter({ $0.value.isEmpty == false })
 
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.search: keyword,
             ParameterKey.exclude: stringOfExcludedProductIDs
-        ]
+        ].merging(filterParameters, uniquingKeysWith: { (first, _) in first })
 
         let path = Path.products
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)

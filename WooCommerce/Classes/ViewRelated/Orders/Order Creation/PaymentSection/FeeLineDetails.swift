@@ -51,7 +51,11 @@ struct FeeLineDetails: View {
                             case .fixed:
                                 inputFixedField
                             case .percentage:
-                                inputPercentageField
+                                VStack {
+                                    inputPercentageField
+                                    TitleAndValueRow(title: Localization.calculatedAmount,
+                                                     value: .init(placeHolder: viewModel.amountPlaceholder, content: viewModel.finalAmountString))
+                                }
                             }
                         }
                         .background(Color(.listForeground))
@@ -124,7 +128,7 @@ struct FeeLineDetails: View {
 
     private var inputPercentageField: some View {
         AdaptiveStack(horizontalAlignment: .leading) {
-            Text(String.localizedStringWithFormat(Localization.amountField, viewModel.percentSymbol))
+            Text(String.localizedStringWithFormat(Localization.percentageField, viewModel.percentSymbol))
                 .bodyStyle()
                 .fixedSize()
 
@@ -158,7 +162,13 @@ private extension FeeLineDetails {
         static let fee = NSLocalizedString("Fee", comment: "Title for the Fee Details screen during order creation")
 
         static let amountField = NSLocalizedString("Amount (%1$@)", comment: "Title for the amount field on the Fee Details screen during order creation"
-                                                   + "Parameters: %1$@ - fee type (percent sign or currency symbol)")
+                                                   + "Parameters: %1$@ - currency symbol")
+
+        static let percentageField = NSLocalizedString("Percentage (%1$@)",
+                                                       comment: "Title for the amount field on the Fee Details screen during order creation"
+                                                       + "Parameters: %1$@ - percent sign")
+        static let calculatedAmount = NSLocalizedString("Calculated amount",
+                                                        comment: "Title for the helper field describing calculated amount for given percentage")
 
         static let close = NSLocalizedString("Close", comment: "Text for the close button in the Fee Details screen")
         static let done = NSLocalizedString("Done", comment: "Text for the done button in the Fee Details screen")

@@ -32,6 +32,11 @@ final class ReceiptViewModel {
 
     /// Prints the receipt
     func printReceipt() {
-        ReceiptActionCoordinator.printReceipt(for: order, params: receipt, countryCode: countryCode)
+        ReceiptActionCoordinator.printReceipt(for: order,
+                                              params: receipt,
+                                              countryCode: countryCode,
+                                              cardReaderModel: nil,
+                                              stores: ServiceLocator.stores,
+                                              analytics: ServiceLocator.analytics)
     }
 }

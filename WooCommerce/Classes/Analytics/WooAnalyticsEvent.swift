@@ -1014,72 +1014,106 @@ extension WooAnalyticsEvent {
 
         /// Tracked when the user taps on the "Email receipt" button after successfully collecting a payment to email a receipt.
         /// - Parameter countryCode: the country code of the store.
+        /// - Parameter cardReaderModel: the model type of the card reader.
         ///
-        static func receiptEmailTapped(countryCode: String) -> WooAnalyticsEvent {
+        static func receiptEmailTapped(countryCode: String, cardReaderModel: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .receiptEmailTapped,
-                              properties: [Keys.countryCode: countryCode])
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.cardReaderModel: cardReaderModel
+                              ])
         }
 
         /// Tracked when sending or saving the receipt email failed.
         /// - Parameters:
         ///   - error: the error to be included in the event properties.
         ///   - countryCode: the country code of the store.
+        ///   - cardReaderModel: the model type of the card reader.
         ///
-        static func receiptEmailFailed(error: Error, countryCode: String) -> WooAnalyticsEvent {
+        static func receiptEmailFailed(error: Error, countryCode: String, cardReaderModel: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .receiptEmailFailed,
-                              properties: [Keys.countryCode: countryCode],
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.cardReaderModel: cardReaderModel
+                              ],
                               error: error)
         }
 
         /// Tracked when the user canceled sending the receipt by email.
         /// - Parameter countryCode: the country code of the store.
+        /// - Parameter cardReaderModel: the model type of the card reader.
         ///
-        static func receiptEmailCanceled(countryCode: String) -> WooAnalyticsEvent {
+        static func receiptEmailCanceled(countryCode: String, cardReaderModel: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .receiptEmailCanceled,
-                              properties: [Keys.countryCode: countryCode])
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.cardReaderModel: cardReaderModel
+                              ])
         }
 
         /// Tracked when the receipt was sent by email.
         /// - Parameter countryCode: the country code of the store.
         ///
-        static func receiptEmailSuccess(countryCode: String) -> WooAnalyticsEvent {
+        static func receiptEmailSuccess(countryCode: String, cardReaderModel: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .receiptEmailSuccess,
-                              properties: [Keys.countryCode: countryCode])
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.cardReaderModel: cardReaderModel
+                              ])
         }
 
         /// Tracked when the user tapped on the button to print a receipt.
         /// - Parameter countryCode: the country code of the store.
         ///
-        static func receiptPrintTapped(countryCode: String) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .receiptPrintTapped,
-                              properties: [Keys.countryCode: countryCode])
+        static func receiptPrintTapped(countryCode: String, cardReaderModel: String?) -> WooAnalyticsEvent {
+            let properties: [String: WooAnalyticsEventPropertyType?] = [
+                Keys.countryCode: countryCode,
+                Keys.cardReaderModel: cardReaderModel
+            ]
+            return WooAnalyticsEvent(statName: .receiptPrintTapped,
+                                     properties: properties.compactMapValues { $0 })
         }
 
         /// Tracked when printing the receipt failed.
         /// - Parameters:
         ///   - error: the error to be included in the event properties.
         ///   - countryCode: the country code of the store.
+        ///   - cardReaderModel: the country code of the store.
         ///
-        static func receiptPrintFailed(error: Error, countryCode: String) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .receiptPrintFailed,
-                              properties: [Keys.countryCode: countryCode],
-                              error: error)
+        static func receiptPrintFailed(error: Error, countryCode: String, cardReaderModel: String?) -> WooAnalyticsEvent {
+            let properties: [String: WooAnalyticsEventPropertyType?] = [
+                Keys.countryCode: countryCode,
+                Keys.cardReaderModel: cardReaderModel
+            ]
+            return WooAnalyticsEvent(statName: .receiptPrintFailed,
+                                     properties: properties.compactMapValues { $0 },
+                                     error: error)
         }
 
         /// Tracked when the user canceled printing the receipt.
         /// - Parameter countryCode: the country code of the store.
+        /// - Parameter cardReaderModel: the country code of the store.
         ///
-        static func receiptPrintCanceled(countryCode: String) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .receiptPrintCanceled,
-                              properties: [Keys.countryCode: countryCode])
+        static func receiptPrintCanceled(countryCode: String, cardReaderModel: String?) -> WooAnalyticsEvent {
+            let properties: [String: WooAnalyticsEventPropertyType?] = [
+                Keys.countryCode: countryCode,
+                Keys.cardReaderModel: cardReaderModel
+            ]
+            return WooAnalyticsEvent(statName: .receiptPrintCanceled,
+                                     properties: properties.compactMapValues { $0 })
         }
 
         /// Tracked when the receipt was successfully sent to the printer. iOS won't guarantee that the receipt has actually printed.
         /// - Parameter countryCode: the country code of the store.
+        /// - Parameter cardReaderModel: the country code of the store.
         ///
-        static func receiptPrintSuccess(countryCode: String) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .receiptPrintSuccess,
-                              properties: [Keys.countryCode: countryCode])
+        static func receiptPrintSuccess(countryCode: String, cardReaderModel: String?) -> WooAnalyticsEvent {
+            let properties: [String: WooAnalyticsEventPropertyType?] = [
+                Keys.countryCode: countryCode,
+                Keys.cardReaderModel: cardReaderModel
+            ]
+            return WooAnalyticsEvent(statName: .receiptPrintSuccess,
+                                     properties: properties.compactMapValues { $0 })
         }
     }
 }

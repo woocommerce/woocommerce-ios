@@ -125,6 +125,114 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         XCTAssertFalse(analyticsProvider.receivedEvents.contains("card_interac_collect_payment_success"))
     }
 
+    // MARK: Success alert actions
+
+    func test_printing_receipt_from_collectPayment_success_alert_tracks_receiptPrintTapped_event() throws {
+        // Given
+        let intent = MockPaymentIntent.mock(paymentMethod: .cardPresent)
+        mockSuccessfulCardPresentPaymentActions(intent: intent)
+
+        // When
+        waitFor { promise in
+            self.useCase.collectPayment(backButtonTitle: "", onCollect: { _ in
+                promise(())
+            }, onCompleted: {})
+        }
+        alerts.printReceiptFromSuccessAlert?()
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "receipt_print_tapped"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["card_reader_model"] as? String, Mocks.cardReaderModel)
+        XCTAssertEqual(eventProperties["country"] as? String, "US")
+    }
+
+    func test_emailing_receipt_from_collectPayment_success_alert_tracks_receiptEmailTapped_event() throws {
+        // Given
+        let intent = MockPaymentIntent.mock(paymentMethod: .cardPresent)
+        mockSuccessfulCardPresentPaymentActions(intent: intent)
+
+        // When
+        waitFor { promise in
+            self.useCase.collectPayment(backButtonTitle: "", onCollect: { _ in
+                promise(())
+            }, onCompleted: {})
+        }
+        alerts.emailReceiptFromSuccessAlert?()
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "receipt_email_tapped"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["card_reader_model"] as? String, Mocks.cardReaderModel)
+        XCTAssertEqual(eventProperties["country"] as? String, "US")
+    }
+
+    func test_emailing_receipt_with_failure_from_collectPayment_success_alert_tracks_receiptEmailFailed_event() throws {
+        // Given
+        let intent = MockPaymentIntent.mock(paymentMethod: .cardPresent)
+        mockSuccessfulCardPresentPaymentActions(intent: intent)
+
+        // When
+        waitFor { promise in
+            self.useCase.collectPayment(backButtonTitle: "", onCollect: { _ in
+                promise(())
+            }, onCompleted: {})
+        }
+        alerts.emailReceiptFromSuccessAlert?()
+        let error = NSError(domain: "Email receipt failure", code: 100, userInfo: [:])
+        useCase.mailComposeController(.init(), didFinishWith: .failed, error: error)
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "receipt_email_failed"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["card_reader_model"] as? String, Mocks.cardReaderModel)
+        XCTAssertEqual(eventProperties["country"] as? String, "US")
+        XCTAssertEqual(eventProperties["error_code"] as? String, "100")
+        XCTAssertEqual(eventProperties["error_domain"] as? String, "Email receipt failure")
+    }
+
+    func test_canceling_emailing_receipt_from_collectPayment_success_alert_tracks_receiptEmailCanceled_event() throws {
+        // Given
+        let intent = MockPaymentIntent.mock(paymentMethod: .cardPresent)
+        mockSuccessfulCardPresentPaymentActions(intent: intent)
+
+        // When
+        waitFor { promise in
+            self.useCase.collectPayment(backButtonTitle: "", onCollect: { _ in
+                promise(())
+            }, onCompleted: {})
+        }
+        alerts.emailReceiptFromSuccessAlert?()
+        useCase.mailComposeController(.init(), didFinishWith: .cancelled, error: nil)
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "receipt_email_canceled"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["card_reader_model"] as? String, Mocks.cardReaderModel)
+        XCTAssertEqual(eventProperties["country"] as? String, "US")
+    }
+
+    func test_emailing_receipt_successfully_from_collectPayment_success_alert_tracks_receiptEmailSuccess_event() throws {
+        // Given
+        let intent = MockPaymentIntent.mock(paymentMethod: .cardPresent)
+        mockSuccessfulCardPresentPaymentActions(intent: intent)
+
+        // When
+        waitFor { promise in
+            self.useCase.collectPayment(backButtonTitle: "", onCollect: { _ in
+                promise(())
+            }, onCompleted: {})
+        }
+        alerts.emailReceiptFromSuccessAlert?()
+        useCase.mailComposeController(.init(), didFinishWith: .sent, error: nil)
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "receipt_email_success"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["card_reader_model"] as? String, Mocks.cardReaderModel)
+        XCTAssertEqual(eventProperties["country"] as? String, "US")
+    }
+
     // MARK: - Failure cases
 
     func test_collectPayment_with_below_minimum_amount_results_in_failure_and_tracks_collectPaymentFailed_event() throws {

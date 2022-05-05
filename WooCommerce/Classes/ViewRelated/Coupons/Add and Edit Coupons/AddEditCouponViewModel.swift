@@ -17,6 +17,11 @@ final class AddEditCouponViewModel: ObservableObject {
 
     var onCompletion: ((Result<Coupon, Error>) -> Void)?
 
+    /// Defines the current notice that should be shown.
+    /// Defaults to `nil`.
+    ///
+    @Published var notice: Notice?
+
     var title: String {
         switch editingOption {
         case .creation:
@@ -204,6 +209,13 @@ final class AddEditCouponViewModel: ObservableObject {
     }
 
     func updateCoupon(coupon: Coupon) {
+        if let validationError = validateCouponLocally(coupon) {
+            notice = NoticeFactory.createCouponErrorNotice(validationError,
+                                                           editingOption: editingOption)
+            onCompletion?(.failure(validationError))
+            return
+        }
+
         isLoading = true
         let action = CouponAction.updateCoupon(coupon, siteTimezone: TimeZone.siteTimezone) { [weak self] result in
             guard let self = self else { return }
@@ -212,6 +224,8 @@ final class AddEditCouponViewModel: ObservableObject {
                 break
             case .failure(let error):
                 DDLogError("⛔️ Error updating the coupon: \(error)")
+                self.notice = NoticeFactory.createCouponErrorNotice(.other(error: error),
+                                                                    editingOption: self.editingOption)
             }
             self.isLoading = false
             self.onCompletion?(result)
@@ -261,15 +275,53 @@ final class AddEditCouponViewModel: ObservableObject {
                usedBy: [])
     }
 
-    private enum EditingOption {
+    func validateCouponLocally(_ coupon: Coupon) -> CouponError? {
+        if coupon.code.isEmpty {
+            return .couponCodeEmpty
+        }
+
+        return nil
+    }
+
+    enum EditingOption {
         case creation
         case editing
+    }
+
+    enum CouponError: Error, Equatable {
+        case couponCodeEmpty
+        case other(error: Error)
+
+        static func ==(lhs: CouponError, rhs: CouponError) -> Bool {
+            return lhs.localizedDescription == rhs.localizedDescription
+        }
     }
 }
 
 // MARK: - Constants
 //
 private extension AddEditCouponViewModel {
+
+    /// Coupon notices
+    ///
+    enum NoticeFactory {
+        /// Returns a default coupon editing/creation error notice.
+        ///
+        static func createCouponErrorNotice(_ couponError: AddEditCouponViewModel.CouponError,
+                                            editingOption: AddEditCouponViewModel.EditingOption) -> Notice {
+            switch couponError {
+            case .couponCodeEmpty:
+                return Notice(title: Localization.errorCouponCodeEmpty, feedbackType: .error)
+            default:
+                switch editingOption {
+                case .editing:
+                    return Notice(title: Localization.genericUpdateCouponError, feedbackType: .error)
+                case .creation:
+                    return Notice(title: Localization.genericCreateCouponError, feedbackType: .error)
+                }
+            }
+        }
+    }
 
     enum Localization {
         static let amountPercent = NSLocalizedString("Amount (%)",
@@ -293,6 +345,14 @@ private extension AddEditCouponViewModel {
         static let couponExpiryDatePlaceholder = NSLocalizedString(
             "None",
             comment: "Coupon expiry date placeholder in the view for adding or editing a coupon")
+        static let errorCouponCodeEmpty = NSLocalizedString("The coupon code couldn't be empty",
+                                                            comment: "Error message in the Add Edit Coupon screen when the coupon code is empty.")
+        static let genericUpdateCouponError = NSLocalizedString("Something went wrong while updating the coupon.",
+                                                                comment: "Error message in the Add Edit Coupon screen " +
+                                                                "when the update of the coupon goes in error.")
+        static let genericCreateCouponError = NSLocalizedString("Something went wrong while creating the coupon.",
+                                                                comment: "Error message in the Add Edit Coupon screen " +
+                                                                "when the creation of the coupon goes in error.")
         static let editProductsButton = NSLocalizedString(
             "Edit Products (%1$d)",
             comment: "Button specifying the number of products applicable to a coupon in the view for adding or editing a coupon. " +

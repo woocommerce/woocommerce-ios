@@ -91,6 +91,30 @@ final class AddEditCouponViewModelTests: XCTestCase {
         //TODO: implement this test method in the implementation of coupon creation (M3)
     }
 
+    func test_validateCouponLocally_return_expected_error_if_coupon_code_is_empty() {
+        // Given
+        let coupon = Coupon.sampleCoupon.copy(code: "")
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon)
+
+        // When
+        let result = viewModel.validateCouponLocally(coupon)
+
+        // Then
+        XCTAssertEqual(result, AddEditCouponViewModel.CouponError.couponCodeEmpty)
+    }
+
+    func test_validateCouponLocally_return_nil_if_coupon_code_is_not_empty() {
+        // Given
+        let coupon = Coupon.sampleCoupon.copy(code: "ABCDEF")
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon)
+
+        // When
+        let result = viewModel.validateCouponLocally(coupon)
+
+        // Then
+        XCTAssertNil(result)
+    }
+
     private enum Localization {
         static let titleCreatePercentageDiscount = NSLocalizedString(
             "Create percentage discount",

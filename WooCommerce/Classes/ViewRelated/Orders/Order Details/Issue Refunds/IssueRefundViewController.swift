@@ -71,7 +71,7 @@ private extension IssueRefundViewController {
             self?.updateWithViewModelContent()
         }
 
-        viewModel.onChargeFetchErrorNoticeShowRequest = { [weak self] retryAction in
+        viewModel.showFetchChargeErrorNotice = { [weak self] retryAction in
             let notice = Notice(title: Localization.retryFetchChargeNoticeTitle,
                                 feedbackType: .error,
                                 actionTitle: Localization.retryFetchChargeNoticeRetryActionTitle,

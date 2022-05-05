@@ -644,7 +644,7 @@ final class IssueRefundViewModelTests: XCTestCase {
 
     func test_fetch_when_fetching_charge_fails_then_it_notifies_it() throws {
         // Given
-        var onChargeFetchErrorNoticeShowRequest = false
+        var showFetchChargeErrorNotice = false
         // The order has a chargeID
         let items = [
             MockOrderItem.sampleItem(itemID: 1, quantity: 3, price: 11.50),
@@ -660,13 +660,13 @@ final class IssueRefundViewModelTests: XCTestCase {
 
         // When
         let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores, storage: storageManager)
-        viewModel.onChargeFetchErrorNoticeShowRequest = { _ in
-            onChargeFetchErrorNoticeShowRequest = true
+        viewModel.showFetchChargeErrorNotice = { _ in
+            showFetchChargeErrorNotice = true
         }
         viewModel.fetch()
 
         // Then
-        XCTAssertTrue(onChargeFetchErrorNoticeShowRequest)
+        XCTAssertTrue(showFetchChargeErrorNotice)
     }
 
     func test_viewModel_shows_spinner_when_charge_not_fetched_yet() {

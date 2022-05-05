@@ -430,7 +430,6 @@ extension NewOrderViewModel {
         let feesBaseAmountForPercentage: Decimal
         let feesTotal: String
 
-        let shouldShowTaxes: Bool
         let taxesTotal: String
 
         /// Whether payment data is being reloaded (during remote sync)
@@ -447,7 +446,6 @@ extension NewOrderViewModel {
              shouldShowFees: Bool = false,
              feesBaseAmountForPercentage: Decimal = 0,
              feesTotal: String = "",
-             shouldShowTaxes: Bool = false,
              taxesTotal: String = "",
              orderTotal: String = "",
              isLoading: Bool = false,
@@ -461,7 +459,6 @@ extension NewOrderViewModel {
             self.shouldShowFees = shouldShowFees
             self.feesBaseAmountForPercentage = feesBaseAmountForPercentage
             self.feesTotal = currencyFormatter.formatAmount(feesTotal) ?? ""
-            self.shouldShowTaxes = shouldShowTaxes
             self.taxesTotal = currencyFormatter.formatAmount(taxesTotal) ?? ""
             self.orderTotal = currencyFormatter.formatAmount(orderTotal) ?? ""
             self.isLoading = isLoading
@@ -629,7 +626,6 @@ private extension NewOrderViewModel {
                                             shouldShowFees: order.fees.filter { $0.name != nil }.isNotEmpty,
                                             feesBaseAmountForPercentage: orderTotals.feesBaseAmountForPercentage as Decimal,
                                             feesTotal: orderTotals.feesTotal.stringValue,
-                                            shouldShowTaxes: order.totalTax.isNotEmpty,
                                             taxesTotal: order.totalTax,
                                             orderTotal: order.total,
                                             isLoading: isDataSyncing,

@@ -669,7 +669,6 @@ final class NewOrderViewModelTests: XCTestCase {
 
         // Then
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
-        XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowTaxes)
         XCTAssertEqual(viewModel.paymentDataViewModel.taxesTotal, "$2.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 2.50)
 

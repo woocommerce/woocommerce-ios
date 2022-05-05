@@ -46,9 +46,7 @@ struct OrderPaymentSection: View {
                     FeeLineDetails(viewModel: viewModel.feeLineViewModel)
                 }
 
-            if viewModel.shouldShowTaxes {
-                TitleAndValueRow(title: Localization.taxesTotal, value: .content(viewModel.taxesTotal))
-            }
+            TitleAndValueRow(title: Localization.taxesTotal, value: .content(viewModel.taxesTotal))
 
             TitleAndValueRow(title: Localization.orderTotal, value: .content(viewModel.orderTotal), bold: true, selectionStyle: .none) {}
         }

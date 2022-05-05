@@ -9,13 +9,19 @@ import WordPressUI
 final class ProductCategoryListViewController: UIViewController, GhostableViewController {
 
     @IBOutlet private var tableView: UITableView!
+    @IBOutlet private var searchBar: UISearchBar!
+    @IBOutlet private var selectAllButtonBarView: UIView!
+    @IBOutlet private var selectAllButton: UIButton!
 
     lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: ProductCategoryTableViewCell.self))
 
     let viewModel: ProductCategoryListViewModel
 
-    init(viewModel: ProductCategoryListViewModel) {
+    private let configuration: Configuration
+
+    init(viewModel: ProductCategoryListViewModel, configuration: Configuration = .init()) {
         self.viewModel = viewModel
+        self.configuration = configuration
 
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
@@ -27,10 +33,21 @@ final class ProductCategoryListViewController: UIViewController, GhostableViewCo
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        configureSearchBar()
+        configureSelectAllButton()
         registerTableViewCells()
         configureTableView()
         configureViewModel()
         handleSwipeBackGesture()
+    }
+}
+
+// MARK: - Configuration to customize the list
+//
+extension ProductCategoryListViewController {
+    struct Configuration {
+        let searchEnabled: Bool = false
+        let selectAllEnabled: Bool = false
     }
 }
 
@@ -47,6 +64,14 @@ private extension ProductCategoryListViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.removeLastCellSeparator()
+    }
+
+    func configureSearchBar() {
+        searchBar.isHidden = !configuration.searchEnabled
+    }
+
+    func configureSelectAllButton() {
+        selectAllButtonBarView.isHidden = !configuration.selectAllEnabled
     }
 }
 

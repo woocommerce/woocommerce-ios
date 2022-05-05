@@ -231,8 +231,8 @@ private extension ShippingLabelAddressFormViewController {
             case .success:
                 self.onCompletion(self.viewModel.address)
                 self.navigationController?.popViewController(animated: true)
-            case .failure:
-                self.handleAddressValidationFailure(error: result.failure)
+            case .failure(let error):
+                self.handleAddressValidationFailure(error: error)
             }
         }
     }
@@ -245,8 +245,8 @@ private extension ShippingLabelAddressFormViewController {
             case .success:
                 self.onCompletion(self.viewModel.address)
                 self.navigationController?.popViewController(animated: true)
-            case .failure:
-                self.handleAddressValidationFailure(error: result.failure)
+            case .failure(let error):
+                self.handleAddressValidationFailure(error: error)
             }
         }
     }

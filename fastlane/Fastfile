@@ -182,7 +182,7 @@ platform :ios do
   desc 'Creates a new release branch from the current trunk'
   lane :complete_code_freeze do |options|
     ios_completecodefreeze_prechecks(options)
-    update_localization
+    generate_strings_file_for_glotpress
     version = ios_get_app_version
     trigger_beta_build(branch_to_build: "release/#{version}")
   end
@@ -958,7 +958,7 @@ platform :ios do
   end
 
   desc 'Run localization only'
-  lane :update_localization do
+  lane :generate_strings_file_for_glotpress do
     cocoapods
 
     en_lproj_path = File.join(RESOURCES_FOLDER, 'en.lproj')

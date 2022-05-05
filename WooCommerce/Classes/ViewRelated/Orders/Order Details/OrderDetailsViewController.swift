@@ -383,6 +383,10 @@ private extension OrderDetailsViewController {
         }
 
         group.enter()
+        refreshCardPresentPaymentEligibility()
+        group.leave()
+
+        group.enter()
         syncSavedReceipts {_ in
             group.leave()
         }

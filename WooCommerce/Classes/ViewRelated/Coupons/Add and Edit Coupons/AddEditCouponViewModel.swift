@@ -15,7 +15,7 @@ final class AddEditCouponViewModel: ObservableObject {
 
     private let discountType: Coupon.DiscountType
 
-    var onCompletion: ((Result<Coupon, Error>) -> Void)?
+    private let onCompletion: ((Result<Coupon, Error>) -> Void)?
 
     /// Defines the current notice that should be shown.
     /// Defaults to `nil`.
@@ -148,13 +148,15 @@ final class AddEditCouponViewModel: ObservableObject {
          discountType: Coupon.DiscountType,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         timezone: TimeZone = .siteTimezone) {
+         timezone: TimeZone = .siteTimezone,
+         onCompletion: ((Result<Coupon, Error>) -> Void)? = nil) {
         self.siteID = siteID
         editingOption = .creation
         self.discountType = discountType
         self.stores = stores
         self.storageManager = storageManager
         self.timezone = timezone
+        self.onCompletion = onCompletion
 
         amountField = String()
         codeField = String()
@@ -171,7 +173,8 @@ final class AddEditCouponViewModel: ObservableObject {
     init(existingCoupon: Coupon,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         timezone: TimeZone = .siteTimezone) {
+         timezone: TimeZone = .siteTimezone,
+         onCompletion: ((Result<Coupon, Error>) -> Void)? = nil) {
         siteID = existingCoupon.siteID
         coupon = existingCoupon
         editingOption = .editing
@@ -179,6 +182,7 @@ final class AddEditCouponViewModel: ObservableObject {
         self.stores = stores
         self.storageManager = storageManager
         self.timezone = timezone
+        self.onCompletion = onCompletion
 
         // Populate fields
         amountField = existingCoupon.amount

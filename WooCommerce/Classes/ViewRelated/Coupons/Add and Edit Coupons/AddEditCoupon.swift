@@ -50,7 +50,6 @@ struct AddEditCoupon: View {
             GeometryReader { geometry in
                 ScrollView {
                     VStack (alignment: .leading, spacing: 0) {
-
                         Group {
                             ListHeaderView(text: Localization.headerCouponDetails.uppercased(), alignment: .left)
 
@@ -334,7 +333,7 @@ struct AddEditCoupon_Previews: PreviewProvider {
 
         /// Edit Coupon
         ///
-        let editingViewModel = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon)
+        let editingViewModel = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon, onCompletion: nil)
         AddEditCoupon(editingViewModel)
     }
 }

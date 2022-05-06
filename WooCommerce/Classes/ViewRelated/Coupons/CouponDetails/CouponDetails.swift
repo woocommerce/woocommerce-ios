@@ -28,7 +28,6 @@ struct CouponDetails: View {
     @ObservedObject private var addEditCouponViewModel: AddEditCouponViewModel
     @State private var showingActionSheet: Bool = false
     @State private var showingShareSheet: Bool = false
-    @State private var showingEditCoupon: Bool = false
     @State private var showingAmountLoadingErrorPrompt: Bool = false
     @State private var showingEnableAnalytics: Bool = false
     @State private var showingDeletionConfirmAlert: Bool = false
@@ -46,7 +45,16 @@ struct CouponDetails: View {
         self.noticePresenter = DefaultNoticePresenter()
         viewModel.syncCoupon()
         viewModel.loadCouponReport()
-        addEditCouponViewModel = AddEditCouponViewModel(existingCoupon: viewModel.coupon)
+
+        addEditCouponViewModel = AddEditCouponViewModel(existingCoupon: viewModel.coupon, onCompletion: { result in
+            switch result {
+            case .success(let updatedCoupon):
+                viewModel.updateCoupon(updatedCoupon)
+                viewModel.showingEditCoupon = false
+            default:
+                break
+            }
+        })
 
         ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "loaded"])
     }
@@ -70,7 +78,7 @@ struct CouponDetails: View {
             buttons.append(contentsOf: [
                 .default(Text(Localization.editCoupon), action: {
                     // TODO: add analytics
-                    showingEditCoupon = true
+                    viewModel.showingEditCoupon = true
                 })
             ])
         }
@@ -188,7 +196,7 @@ struct CouponDetails: View {
                     viewModel.loadCouponReport()
                 })
             }
-            .sheet(isPresented: $showingEditCoupon) {
+            .sheet(isPresented: $viewModel.showingEditCoupon) {
                 AddEditCoupon(addEditCouponViewModel)
             }
             .alert(isPresented: $showingDeletionConfirmAlert, content: {

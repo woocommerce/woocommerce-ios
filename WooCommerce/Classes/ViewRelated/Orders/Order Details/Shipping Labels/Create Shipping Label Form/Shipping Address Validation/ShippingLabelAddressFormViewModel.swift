@@ -286,8 +286,8 @@ extension ShippingLabelAddressFormViewModel {
 extension ShippingLabelAddressFormViewModel {
 
     enum AddressValidationError: Error {
-        case none
-        case remote(ShippingLabelAddressValidationError?)
+        case local
+        case remote(Error)
     }
 
     /// Validate the address locally and remotely. If `onlyLocally` is equal `true`, the validation will happens just locally.
@@ -298,7 +298,7 @@ extension ShippingLabelAddressFormViewModel {
         if validateAddressLocally().isNotEmpty {
             addressValidated = .none
             state.isLoading = false
-            completion(.failure(.none))
+            completion(.failure(.local))
             return
         }
         addressValidated = .local
@@ -318,19 +318,20 @@ extension ShippingLabelAddressFormViewModel {
                 self?.addressValidationError = nil
                 self?.state.isLoading = false
                 completion(.success(()))
-            case .failure(let error as ShippingLabelAddressValidationError):
-                ServiceLocator.analytics.track(.shippingLabelAddressValidationFailed, withProperties: ["error": error.localizedDescription])
-                self?.addressValidated = .none
-                self?.addressValidationError = error
-                self?.state.isLoading = false
-                completion(.failure(.remote(error)))
             case .failure(let error):
                 ServiceLocator.analytics.track(.shippingLabelAddressValidationFailed, withProperties: ["error": error.localizedDescription])
                 DDLogError("⛔️ Error validating shipping label address: \(error)")
                 self?.addressValidated = .none
-                self?.addressValidationError = ShippingLabelAddressValidationError(addressError: nil, generalError: error.localizedDescription)
+
+                if let error = error as? ShippingLabelAddressValidationError {
+                    self?.addressValidationError = error
+                } else {
+                    self?.addressValidationError = ShippingLabelAddressValidationError(addressError: nil, generalError: error.localizedDescription)
+                }
+
                 self?.state.isLoading = false
-                completion(.failure(.none))
+
+                completion(.failure(.remote(error)))
             }
         }
         stores.dispatch(action)

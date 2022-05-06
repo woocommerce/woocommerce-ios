@@ -68,6 +68,7 @@ private extension ProductCategoryListViewController {
 
     func configureSearchBar() {
         searchBar.isHidden = !configuration.searchEnabled
+        searchBar.placeholder = Localization.searchBarPlaceholder
     }
 
     func configureSelectAllButton() {
@@ -110,8 +111,8 @@ private extension ProductCategoryListViewController {
     /// Displays the Sync Error Notice.
     ///
     func displaySyncingErrorNotice(retryToken: ProductCategoryListViewModel.RetryToken) {
-        let message = NSLocalizedString("Unable to load categories", comment: "Load Product Categories Action Failed")
-        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
+        let message = Localization.synchErrorMessage
+        let actionTitle = Localization.retryButtonTitle
         let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
             self?.viewModel.retryCategorySynchronization(retryToken: retryToken)
         }
@@ -140,5 +141,13 @@ extension ProductCategoryListViewController: UITableViewDataSource, UITableViewD
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         viewModel.selectOrDeselectCategory(index: indexPath.row)
         tableView.reloadData()
+    }
+}
+
+private extension ProductCategoryListViewController {
+    enum Localization {
+        static let searchBarPlaceholder = NSLocalizedString("Search Categories", comment: "Placeholder text on the search bar on the category list")
+        static let synchErrorMessage = NSLocalizedString("Unable to load categories", comment: "Notice message when loading product categories fails")
+        static let retryButtonTitle = NSLocalizedString("Retry", comment: "Retry Action on the notice when loading product categories fails")
     }
 }

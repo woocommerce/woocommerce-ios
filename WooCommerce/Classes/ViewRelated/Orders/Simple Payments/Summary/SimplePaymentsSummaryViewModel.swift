@@ -252,8 +252,9 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
                                        orderID: orderID,
                                        paymentLink: paymentLink,
                                        formattedTotal: total,
-                                       presentNoticeSubject: presentNoticeSubject,
-                                       stores: stores)
+                                       dependencies: .init(
+                                        presentNoticeSubject: presentNoticeSubject,
+                                        stores: stores))
     }
 }
 

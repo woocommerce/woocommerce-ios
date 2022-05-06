@@ -430,7 +430,6 @@ extension NewOrderViewModel {
         let feesBaseAmountForPercentage: Decimal
         let feesTotal: String
 
-        let shouldShowTaxes: Bool
         let taxesTotal: String
 
         /// Whether payment data is being reloaded (during remote sync)
@@ -440,30 +439,28 @@ extension NewOrderViewModel {
         let shippingLineViewModel: ShippingLineDetailsViewModel
         let feeLineViewModel: FeeLineDetailsViewModel
 
-        init(itemsTotal: String = "",
+        init(itemsTotal: String = "0",
              shouldShowShippingTotal: Bool = false,
-             shippingTotal: String = "",
+             shippingTotal: String = "0",
              shippingMethodTitle: String = "",
              shouldShowFees: Bool = false,
              feesBaseAmountForPercentage: Decimal = 0,
-             feesTotal: String = "",
-             shouldShowTaxes: Bool = false,
-             taxesTotal: String = "",
-             orderTotal: String = "",
+             feesTotal: String = "0",
+             taxesTotal: String = "0",
+             orderTotal: String = "0",
              isLoading: Bool = false,
              saveShippingLineClosure: @escaping (ShippingLine?) -> Void = { _ in },
              saveFeeLineClosure: @escaping (OrderFeeLine?) -> Void = { _ in },
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
-            self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? ""
+            self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? "0.00"
             self.shouldShowShippingTotal = shouldShowShippingTotal
-            self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? ""
+            self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? "0.00"
             self.shippingMethodTitle = shippingMethodTitle
             self.shouldShowFees = shouldShowFees
             self.feesBaseAmountForPercentage = feesBaseAmountForPercentage
-            self.feesTotal = currencyFormatter.formatAmount(feesTotal) ?? ""
-            self.shouldShowTaxes = shouldShowTaxes
-            self.taxesTotal = currencyFormatter.formatAmount(taxesTotal) ?? ""
-            self.orderTotal = currencyFormatter.formatAmount(orderTotal) ?? ""
+            self.feesTotal = currencyFormatter.formatAmount(feesTotal) ?? "0.00"
+            self.taxesTotal = currencyFormatter.formatAmount(taxesTotal) ?? "0.00"
+            self.orderTotal = currencyFormatter.formatAmount(orderTotal) ?? "0.00"
             self.isLoading = isLoading
             self.shippingLineViewModel = ShippingLineDetailsViewModel(isExistingShippingLine: shouldShowShippingTotal,
                                                                       initialMethodTitle: shippingMethodTitle,
@@ -624,14 +621,13 @@ private extension NewOrderViewModel {
 
                 return PaymentDataViewModel(itemsTotal: orderTotals.itemsTotal.stringValue,
                                             shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
-                                            shippingTotal: order.shippingTotal,
+                                            shippingTotal: order.shippingTotal.isNotEmpty ? order.shippingTotal : "0",
                                             shippingMethodTitle: shippingMethodTitle,
                                             shouldShowFees: order.fees.filter { $0.name != nil }.isNotEmpty,
                                             feesBaseAmountForPercentage: orderTotals.feesBaseAmountForPercentage as Decimal,
                                             feesTotal: orderTotals.feesTotal.stringValue,
-                                            shouldShowTaxes: order.totalTax.isNotEmpty,
-                                            taxesTotal: order.totalTax,
-                                            orderTotal: order.total,
+                                            taxesTotal: order.totalTax.isNotEmpty ? order.totalTax : "0",
+                                            orderTotal: order.total.isNotEmpty ? order.total : "0",
                                             isLoading: isDataSyncing,
                                             saveShippingLineClosure: self.saveShippingLine,
                                             saveFeeLineClosure: self.saveFeeLine,

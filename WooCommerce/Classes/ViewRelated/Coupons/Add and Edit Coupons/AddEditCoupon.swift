@@ -45,9 +45,6 @@ struct AddEditCoupon: View {
 
     init(_ viewModel: AddEditCouponViewModel) {
         self.viewModel = viewModel
-        viewModel.onCompletion = { _ in
-            // TODO: handle the new coupon or the error, refreshing the coupon detail and dismissing this view.
-        }
         //TODO: add analytics
     }
 
@@ -66,7 +63,8 @@ struct AddEditCoupon: View {
                                                      text: $viewModel.amountField,
                                                      editable: true,
                                                      fieldAlignment: .leading,
-                                                     keyboardType: .decimalPad)
+                                                     keyboardType: .decimalPad,
+                                                     inputFormatter: CouponAmountInputFormatter())
                                 Divider()
                                     .padding(.leading, Constants.margin)
 
@@ -82,7 +80,8 @@ struct AddEditCoupon: View {
                                                      text: $viewModel.codeField,
                                                      editable: true,
                                                      fieldAlignment: .leading,
-                                                     keyboardType: .default)
+                                                     keyboardType: .default,
+                                                     inputFormatter: CouponCodeInputFormatter())
                                 Divider()
                                     .padding(.leading, Constants.margin)
                                     .padding(.bottom, Constants.verticalSpacing)
@@ -258,6 +257,7 @@ struct AddEditCoupon: View {
                     })
                 }
             }
+            .notice($viewModel.notice)
             .navigationTitle(viewModel.title)
             .navigationBarTitleDisplayMode(.large)
             .wooNavigationBarStyle()

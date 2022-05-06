@@ -260,7 +260,7 @@ extension Coupon {
                                      dateModified: Date(timeIntervalSinceNow: -1000),
                                      discountType: .fixedCart,
                                      description: "Coupon description",
-                                     dateExpires: Date(timeIntervalSinceNow: 1000),
+                                     dateExpires: Date(timeIntervalSinceNow: 1000).startOfDay(timezone: TimeZone.current),
                                      usageCount: 10,
                                      individualUse: true,
                                      productIds: [],

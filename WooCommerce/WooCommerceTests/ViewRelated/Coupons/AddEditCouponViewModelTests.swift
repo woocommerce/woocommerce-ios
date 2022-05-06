@@ -49,7 +49,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
 
     func test_populatedCoupon_return_expected_coupon_during_editing() {
         // Given
-        let viewModel = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(discountType: .percent))
+        let viewModel = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(discountType: .percent), timezone: .current)
         let expiryDate = Date().startOfDay(timezone: viewModel.timezone)
         XCTAssertEqual(viewModel.populatedCoupon, Coupon.sampleCoupon.copy(discountType: .percent,
                                                                            dateExpires: expiryDate))

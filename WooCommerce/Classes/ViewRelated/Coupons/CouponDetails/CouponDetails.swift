@@ -5,8 +5,8 @@ import Yosemite
 ///
 final class CouponDetailsHostingController: UIHostingController<CouponDetails> {
 
-    init(viewModel: CouponDetailsViewModel, onDeletion: @escaping () -> Void) {
-        super.init(rootView: CouponDetails(viewModel: viewModel, onDeletion: onDeletion))
+    init(viewModel: CouponDetailsViewModel, onUpdate: @escaping () -> Void, onDeletion: @escaping () -> Void) {
+        super.init(rootView: CouponDetails(viewModel: viewModel, onUpdate: onUpdate, onDeletion: onDeletion))
         // The navigation title is set here instead of the SwiftUI view's `navigationTitle`
         // to avoid the blinking of the title label when pushed from UIKit view.
         title = viewModel.couponCode
@@ -21,6 +21,9 @@ final class CouponDetailsHostingController: UIHostingController<CouponDetails> {
 }
 
 struct CouponDetails: View {
+    // Closure to be triggered when the coupon is updated successfully
+    private let onUpdate: () -> Void
+
     // Closure to be triggered when the coupon is deleted successfully
     private let onDeletion: () -> Void
 
@@ -39,9 +42,10 @@ struct CouponDetails: View {
     /// It is kept internal so that the hosting controller can update its presenting controller to itself.
     let noticePresenter: DefaultNoticePresenter
 
-    init(viewModel: CouponDetailsViewModel, onDeletion: @escaping () -> Void) {
+    init(viewModel: CouponDetailsViewModel, onUpdate: @escaping () -> Void, onDeletion: @escaping () -> Void) {
         self.viewModel = viewModel
         self.onDeletion = onDeletion
+        self.onUpdate = onUpdate
         self.noticePresenter = DefaultNoticePresenter()
         viewModel.syncCoupon()
         viewModel.loadCouponReport()
@@ -51,6 +55,7 @@ struct CouponDetails: View {
             case .success(let updatedCoupon):
                 viewModel.updateCoupon(updatedCoupon)
                 viewModel.showingEditCoupon = false
+                onUpdate()
             default:
                 break
             }
@@ -429,7 +434,7 @@ private extension CouponDetails {
 #if DEBUG
 struct CouponDetails_Previews: PreviewProvider {
     static var previews: some View {
-        CouponDetails(viewModel: CouponDetailsViewModel(coupon: Coupon.sampleCoupon), onDeletion: {})
+        CouponDetails(viewModel: CouponDetailsViewModel(coupon: Coupon.sampleCoupon), onUpdate: {}, onDeletion: {})
     }
 }
 #endif

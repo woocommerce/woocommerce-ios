@@ -145,6 +145,30 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.selectedCategories.count, 1)
         XCTAssertEqual(viewModel.selectedCategories.first?.categoryID, category.categoryID)
     }
+
+    func test_searchQuery_change_updates_view_model_array_correctly() {
+        // Given
+        let siteID: Int64 = 132
+        let category1 = Yosemite.ProductCategory(categoryID: 33, siteID: siteID, parentID: 0, name: "Western", slug: "western")
+        insert(category1)
+        let category2 = Yosemite.ProductCategory(categoryID: 12, siteID: siteID, parentID: 0, name: "Oriental", slug: "oriental")
+        insert(category2)
+
+        let viewModel = ProductCategoryListViewModel(siteID: siteID, storageManager: storageManager)
+        XCTAssertEqual(viewModel.categoryViewModels.count, 2) // confidence check
+
+        // When
+        viewModel.searchQuery = "a"
+
+        // Then
+        waitFor { promise in
+            // wait for 500 milliseconds due to debouncing
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                promise(())
+            }
+        }
+        XCTAssertEqual(viewModel.categoryViewModels.count, 1)
+    }
 }
 
 // MARK: - Utils

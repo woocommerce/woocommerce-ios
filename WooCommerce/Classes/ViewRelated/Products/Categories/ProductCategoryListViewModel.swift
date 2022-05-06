@@ -205,7 +205,7 @@ final class ProductCategoryListViewModel {
         updateInitialItemsIfNeeded(with: fetchedCategories)
         let baseViewModels = ProductCategoryListViewModel.CellViewModelBuilder.viewModels(from: fetchedCategories, selectedCategories: selectedCategories)
 
-        categoryViewModels = enrichingDataSource?.enrichCategoryViewModels( baseViewModels) ?? baseViewModels
+        categoryViewModels = enrichingDataSource?.enrichCategoryViewModels(baseViewModels) ?? baseViewModels
     }
 
     /// Update `selectedCategories` based on initially selected items.

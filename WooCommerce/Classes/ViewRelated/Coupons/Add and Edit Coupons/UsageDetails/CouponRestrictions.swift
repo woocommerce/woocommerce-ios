@@ -121,10 +121,10 @@ struct CouponRestrictions: View {
                         showingExcludeProducts = true
                     }) {
                         HStack {
-                            Image(uiImage: UIImage.plusImage)
+                            Image(uiImage: viewModel.excludeProductsButtonIcon)
                                 .resizable()
                                 .frame(width: Constants.plusIconSize * scale, height: Constants.plusIconSize * scale)
-                            Text(Localization.excludeProducts)
+                            Text(viewModel.excludeProductsTitle)
                         }
                     }
                     .buttonStyle(SecondaryButtonStyle(labelFont: .body))
@@ -133,10 +133,10 @@ struct CouponRestrictions: View {
                         showingExcludeCategories = true
                     }) {
                         HStack {
-                            Image(uiImage: UIImage.plusImage)
+                            Image(uiImage: viewModel.excludeCategoriesButtonIcon)
                                 .resizable()
                                 .frame(width: Constants.plusIconSize * scale, height: Constants.plusIconSize * scale)
-                            Text(Localization.excludeProductCategories)
+                            Text(viewModel.excludeCategoriesButtonTitle)
                         }
                     }
                     .buttonStyle(SecondaryButtonStyle(labelFont: .body))
@@ -237,14 +237,6 @@ private extension CouponRestrictions {
             comment: "Value for the allowed emails row in Coupon Usage Details screen when no restriction is set"
         )
         static let exclusions = NSLocalizedString("Exclusions", comment: "Title of the exclusions section in Coupon Usage Details screen")
-        static let excludeProducts = NSLocalizedString(
-            "Exclude Products",
-            comment: "Title of the action button to add products to the exclusion list in Coupon Usage Details screen"
-        )
-        static let excludeProductCategories = NSLocalizedString(
-            "Exclude Product Categories",
-            comment: "Title of the action button to add product categories to the exclusion list in Coupon Usage Details screen"
-        )
     }
 }
 

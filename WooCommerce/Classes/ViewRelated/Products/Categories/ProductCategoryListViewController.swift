@@ -71,6 +71,7 @@ private extension ProductCategoryListViewController {
     func configureSearchBar() {
         searchBar.isHidden = !configuration.searchEnabled
         searchBar.placeholder = Localization.searchBarPlaceholder
+        searchBar.delegate = self
     }
 
     func configureClearSelectionButton() {
@@ -167,5 +168,13 @@ private extension ProductCategoryListViewController {
         static let synchErrorMessage = NSLocalizedString("Unable to load categories", comment: "Notice message when loading product categories fails")
         static let retryButtonTitle = NSLocalizedString("Retry", comment: "Retry Action on the notice when loading product categories fails")
         static let clearSelectionButtonTitle = NSLocalizedString("Clear Selection", comment: "Button to clear selection on the product categories list")
+    }
+}
+
+// MARK: - UISearchBarDelegate conformance
+//
+extension ProductCategoryListViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        viewModel.searchQuery = searchText
     }
 }

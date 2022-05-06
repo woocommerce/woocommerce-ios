@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 import Yosemite
 import WordPressUI
@@ -18,6 +19,7 @@ final class ProductCategoryListViewController: UIViewController, GhostableViewCo
     let viewModel: ProductCategoryListViewModel
 
     private let configuration: Configuration
+    private var selectedListSubscription: AnyCancellable?
 
     init(viewModel: ProductCategoryListViewModel, configuration: Configuration = .init()) {
         self.viewModel = viewModel
@@ -34,7 +36,7 @@ final class ProductCategoryListViewController: UIViewController, GhostableViewCo
         super.viewDidLoad()
 
         configureSearchBar()
-        configureSelectAllButton()
+        configureClearSelectionButton()
         registerTableViewCells()
         configureTableView()
         configureViewModel()
@@ -71,13 +73,23 @@ private extension ProductCategoryListViewController {
         searchBar.placeholder = Localization.searchBarPlaceholder
     }
 
-    func configureSelectAllButton() {
-        clearSelectionButtonBarView.isHidden = !configuration.clearSelectionEnabled
+    func configureClearSelectionButton() {
         clearSelectionButton.setTitle(Localization.clearSelectionButtonTitle, for: .normal)
         clearSelectionButton.applyLinkButtonStyle()
         clearSelectionButton.addAction(UIAction { [weak self] _ in
             self?.viewModel.resetSelectedCategoriesAndReload()
         }, for: .touchUpInside)
+
+        selectedListSubscription = viewModel.$selectedCategories
+            .map { [weak self] selectedItems -> Bool in
+                guard let self = self, self.configuration.clearSelectionEnabled else {
+                    return true
+                }
+                return selectedItems.isEmpty
+            }
+            .sink { [weak self] shouldHideClearSelection in
+                self?.clearSelectionButtonBarView.isHidden = shouldHideClearSelection
+            }
     }
 }
 

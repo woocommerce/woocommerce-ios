@@ -9,6 +9,30 @@ final class CouponRestrictionsViewModel: ObservableObject {
 
     let currencySymbol: String
 
+    var excludeProductsButtonIcon: UIImage {
+        excludedProductOrVariationIDs.isEmpty ? .plusImage : .pencilImage
+    }
+
+    var excludeProductsTitle: String {
+        if excludedProductOrVariationIDs.isEmpty {
+            return Localization.excludeProducts
+        } else {
+            return String.localizedStringWithFormat(Localization.excludedProducts, excludedProductOrVariationIDs.count)
+        }
+    }
+
+    var excludeCategoriesButtonIcon: UIImage {
+        excludedCategoryIDs.isEmpty ? .plusImage : .pencilImage
+    }
+
+    var excludeCategoriesButtonTitle: String {
+        if excludedCategoryIDs.isEmpty {
+            return Localization.excludeProductCategories
+        } else {
+            return String.localizedStringWithFormat(Localization.excludedProductCategories, excludedCategoryIDs.count)
+        }
+    }
+
     @Published var minimumSpend: String
 
     @Published var maximumSpend: String
@@ -111,5 +135,28 @@ final class CouponRestrictionsViewModel: ObservableObject {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
+    }
+}
+
+private extension CouponRestrictionsViewModel {
+    enum Localization {
+        static let excludeProducts = NSLocalizedString(
+            "Exclude Products",
+            comment: "Title of the action button to add products to the exclusion list in Coupon Usage Restrictions screen"
+        )
+        static let excludedProducts = NSLocalizedString(
+            "Exclude Products (%1$d)",
+            comment: "Title of the action button to add excluded products on Coupon Usage Restrictions screen. " +
+            "The number of selected items is included between the brackets. Reads like: Exclude Products (2)"
+        )
+        static let excludeProductCategories = NSLocalizedString(
+            "Exclude Product Categories",
+            comment: "Title of the action button to exclude product categories on Coupon Usage Restrictions screen"
+        )
+        static let excludedProductCategories = NSLocalizedString(
+            "Exclude Product Categories (%1$d)",
+            comment: "Title of the action button to add excluded product categories on Coupon Usage Restrictions screen. " +
+            "The number of selected items is mentioned between the brackets. Reads like: Exclude Product Categories (4)"
+        )
     }
 }

@@ -121,10 +121,10 @@ struct CouponRestrictions: View {
                         showingExcludeProducts = true
                     }) {
                         HStack {
-                            Image(uiImage: UIImage.plusImage)
+                            Image(uiImage: viewModel.excludeProductsButtonIcon)
                                 .resizable()
                                 .frame(width: Constants.plusIconSize * scale, height: Constants.plusIconSize * scale)
-                            Text(Localization.excludeProducts)
+                            Text(viewModel.excludeProductsTitle)
                         }
                     }
                     .buttonStyle(SecondaryButtonStyle(labelFont: .body))
@@ -133,10 +133,10 @@ struct CouponRestrictions: View {
                         showingExcludeCategories = true
                     }) {
                         HStack {
-                            Image(uiImage: UIImage.plusImage)
+                            Image(uiImage: viewModel.excludeCategoriesButtonIcon)
                                 .resizable()
                                 .frame(width: Constants.plusIconSize * scale, height: Constants.plusIconSize * scale)
-                            Text(Localization.excludeProductCategories)
+                            Text(viewModel.excludeCategoriesButtonTitle)
                         }
                     }
                     .buttonStyle(SecondaryButtonStyle(labelFont: .body))
@@ -180,71 +180,63 @@ private extension CouponRestrictions {
     enum Localization {
         static let usageRestriction = NSLocalizedString(
             "Usage Restrictions",
-            comment: "Title for the usage restrictions section on coupon usage details screen"
+            comment: "Title for the usage restrictions section on coupon usage restrictions screen"
         )
         static let minimumSpend = NSLocalizedString(
             "Min. Spend (%1$@)",
-            comment: "Title for the minimum spend row on coupon usage details screen with currency symbol within the brackets. " +
+            comment: "Title for the minimum spend row on coupon usage restrictions screen with currency symbol within the brackets. " +
             "Reads like: Min. Spend ($)"
         )
         static let maximumSpend = NSLocalizedString(
             "Max. Spend (%1$@)",
-            comment: "Title for the maximum spend row on coupon usage details screen with currency symbol within the brackets. " +
+            comment: "Title for the maximum spend row on coupon usage restrictions screen with currency symbol within the brackets. " +
             "Reads like: Max. Spend ($)"
         )
         static let usageLimitPerCoupon = NSLocalizedString(
             "Usage Limit Per Coupon",
-            comment: "Title for the usage limit per coupon row in coupon usage details screen."
+            comment: "Title for the usage limit per coupon row in coupon usage restrictions screen."
         )
         static let usageLimitPerUser = NSLocalizedString(
             "Usage Limit Per User",
-            comment: "Title for the usage limit per user row in coupon usage details screen."
+            comment: "Title for the usage limit per user row in coupon usage restrictions screen."
         )
         static let limitUsageToXItems = NSLocalizedString(
             "Limit Usage to X Items",
-            comment: "Title for the limit usage to X items row in coupon usage details screen."
+            comment: "Title for the limit usage to X items row in coupon usage restrictions screen."
         )
         static let allowedEmails = NSLocalizedString(
             "Allowed Emails",
-            comment: "Title for the allowed email row in coupon usage details screen."
+            comment: "Title for the allowed email row in coupon usage restrictions screen."
         )
         static let individualUseOnly = NSLocalizedString(
             "Individual Use Only",
-            comment: "Title for the individual use only row in coupon usage details screen."
+            comment: "Title for the individual use only row in coupon usage restrictions screen."
         )
         static let individualUseDescription = NSLocalizedString(
             "Turn this on if the coupon cannot be used in conjunction with other coupons.",
-            comment: "Description for the individual use only row in coupon usage details screen."
+            comment: "Description for the individual use only row in coupon usage restrictions screen."
         )
         static let excludeSaleItems = NSLocalizedString(
             "Exclude Sale Items",
-            comment: "Title for the exclude sale items row in coupon usage details screen."
+            comment: "Title for the exclude sale items row in coupon usage restrictions screen."
         )
         static let excludeSaleItemsDescription = NSLocalizedString(
             "Turn this on if the coupon should not apply to items on sale. " +
             "Per-item coupons will only work if the item is not on sale. " +
             "Per-cart coupons will only work if there are items in the cart that are not on sale.",
-            comment: "Description for the exclude sale items row in coupon usage details screen."
+            comment: "Description for the exclude sale items row in coupon usage restrictions screen."
         )
-        static let none = NSLocalizedString("None", comment: "Value for fields in Coupon Usage Details screen when no value is set")
-        static let unlimited = NSLocalizedString("Unlimited", comment: "Value for fields in Coupon Usage Details screen when no limit is set")
+        static let none = NSLocalizedString("None", comment: "Value for fields in Coupon Usage Restrictions screen when no value is set")
+        static let unlimited = NSLocalizedString("Unlimited", comment: "Value for fields in Coupon Usage Restrictions screen when no limit is set")
         static let allQualifyingInCart = NSLocalizedString(
             "All Qualifying",
-            comment: "Value for the limit usage to X items row in Coupon Usage Details screen when no limit is set"
+            comment: "Value for the limit usage to X items row in Coupon Usage Restrictions screen when no limit is set"
         )
         static let noRestrictions = NSLocalizedString(
             "No Restrictions",
-            comment: "Value for the allowed emails row in Coupon Usage Details screen when no restriction is set"
+            comment: "Value for the allowed emails row in Coupon Usage Restrictions screen when no restriction is set"
         )
-        static let exclusions = NSLocalizedString("Exclusions", comment: "Title of the exclusions section in Coupon Usage Details screen")
-        static let excludeProducts = NSLocalizedString(
-            "Exclude Products",
-            comment: "Title of the action button to add products to the exclusion list in Coupon Usage Details screen"
-        )
-        static let excludeProductCategories = NSLocalizedString(
-            "Exclude Product Categories",
-            comment: "Title of the action button to add product categories to the exclusion list in Coupon Usage Details screen"
-        )
+        static let exclusions = NSLocalizedString("Exclusions", comment: "Title of the exclusions section in Coupon Usage Restrictions screen")
     }
 }
 

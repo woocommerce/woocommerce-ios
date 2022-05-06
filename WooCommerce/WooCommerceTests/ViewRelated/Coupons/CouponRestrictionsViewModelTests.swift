@@ -26,4 +26,46 @@ final class CouponRestrictionsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.individualUseOnly, true)
         XCTAssertEqual(viewModel.excludeSaleItems, false)
     }
+
+    func test_exclude_products_button_icon_and_title_when_no_product_is_selected() {
+        // Given
+        let coupon = Coupon.fake()
+        let viewModel = CouponRestrictionsViewModel(coupon: coupon)
+
+        // Then
+        XCTAssertEqual(viewModel.excludeProductsButtonIcon.pngData(), UIImage.plusImage.pngData())
+        XCTAssertEqual(viewModel.excludeProductsTitle, NSLocalizedString("Exclude Products", comment: ""))
+    }
+
+    func test_exclude_products_button_icon_and_title_when_some_products_are_selected() {
+        // Given
+        let coupon = Coupon.fake().copy(excludedProductIds: [123, 2, 56])
+        let viewModel = CouponRestrictionsViewModel(coupon: coupon)
+
+        // Then
+        XCTAssertEqual(viewModel.excludeProductsButtonIcon.pngData(), UIImage.pencilImage.pngData())
+        let expectedTitle = String.localizedStringWithFormat(NSLocalizedString("Exclude Products (%1$d)", comment: ""), 3)
+        XCTAssertEqual(viewModel.excludeProductsTitle, expectedTitle)
+    }
+
+    func test_exclude_product_categories_button_icon_and_title_when_no_product_is_selected() {
+        // Given
+        let coupon = Coupon.fake()
+        let viewModel = CouponRestrictionsViewModel(coupon: coupon)
+
+        // Then
+        XCTAssertEqual(viewModel.excludeCategoriesButtonIcon.pngData(), UIImage.plusImage.pngData())
+        XCTAssertEqual(viewModel.excludeCategoriesButtonTitle, NSLocalizedString("Exclude Product Categories", comment: ""))
+    }
+
+    func test_exclude_product_categories_button_icon_and_title_when_some_products_are_selected() {
+        // Given
+        let coupon = Coupon.fake().copy(excludedProductCategories: [44, 6])
+        let viewModel = CouponRestrictionsViewModel(coupon: coupon)
+
+        // Then
+        XCTAssertEqual(viewModel.excludeCategoriesButtonIcon.pngData(), UIImage.pencilImage.pngData())
+        let expectedTitle = String.localizedStringWithFormat(NSLocalizedString("Exclude Product Categories (%1$d)", comment: ""), 2)
+        XCTAssertEqual(viewModel.excludeCategoriesButtonTitle, expectedTitle)
+    }
 }

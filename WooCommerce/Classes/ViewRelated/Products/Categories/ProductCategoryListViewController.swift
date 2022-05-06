@@ -46,8 +46,8 @@ final class ProductCategoryListViewController: UIViewController, GhostableViewCo
 //
 extension ProductCategoryListViewController {
     struct Configuration {
-        let searchEnabled: Bool = false
-        let selectAllEnabled: Bool = false
+        var searchEnabled: Bool = false
+        var selectAllEnabled: Bool = false
     }
 }
 
@@ -73,6 +73,8 @@ private extension ProductCategoryListViewController {
 
     func configureSelectAllButton() {
         selectAllButtonBarView.isHidden = !configuration.selectAllEnabled
+        selectAllButton.setTitle(Localization.selectAllButtonTitle, for: .normal)
+        selectAllButton.applyLinkButtonStyle()
     }
 }
 
@@ -149,5 +151,6 @@ private extension ProductCategoryListViewController {
         static let searchBarPlaceholder = NSLocalizedString("Search Categories", comment: "Placeholder text on the search bar on the category list")
         static let synchErrorMessage = NSLocalizedString("Unable to load categories", comment: "Notice message when loading product categories fails")
         static let retryButtonTitle = NSLocalizedString("Retry", comment: "Retry Action on the notice when loading product categories fails")
+        static let selectAllButtonTitle = NSLocalizedString("Select All", comment: "Button to select all items on the product categories list")
     }
 }

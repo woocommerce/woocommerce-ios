@@ -187,7 +187,7 @@ task :generate do
 
   puts "\n\nDONE. Generated Copiable for all projects."
 
-  %w[Networking Yosemite].each do |prefix|
+  %w[Hardware Networking Yosemite].each do |prefix|
     puts "\n\nGenerating Fakes for #{prefix}..."
     puts '=' * 100
 

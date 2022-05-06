@@ -233,7 +233,7 @@ private extension ShippingLabelAddressFormViewController {
                 self.navigationController?.popViewController(animated: true)
             case .failure(let error):
                 if case .local = error {
-                    displayErrorNotice(title: Localization.addressLocalValidationErrorNotice)
+                    self.displayErrorNotice(title: Localization.addressLocalValidationErrorNotice)
                 }
             }
         }
@@ -249,7 +249,7 @@ private extension ShippingLabelAddressFormViewController {
                 self.navigationController?.popViewController(animated: true)
             case .failure(let error):
                 if case .local = error {
-                    displayErrorNotice(title: Localization.addressLocalValidationErrorNotice)
+                    self.displayErrorNotice(title: Localization.addressLocalValidationErrorNotice)
                 }
             }
         }

@@ -322,13 +322,14 @@ extension ShippingLabelAddressFormViewModel {
                 ServiceLocator.analytics.track(.shippingLabelAddressValidationFailed, withProperties: ["error": error.localizedDescription])
                 DDLogError("⛔️ Error validating shipping label address: \(error)")
                 self?.addressValidated = .none
-                self?.state.isLoading = false
 
                 if let error = error as? ShippingLabelAddressValidationError {
                     self?.addressValidationError = error
                 } else {
                     self?.addressValidationError = ShippingLabelAddressValidationError(addressError: nil, generalError: error.localizedDescription)
                 }
+
+                self?.state.isLoading = false
 
                 completion(.failure(.remote(error)))
             }

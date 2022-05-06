@@ -13,6 +13,7 @@
             <connections>
                 <outlet property="clearSelectionButton" destination="fdL-Fv-YUq" id="4pY-Cu-W62"/>
                 <outlet property="clearSelectionButtonBarView" destination="pl0-eW-IeX" id="FS6-rQ-VQ4"/>
+                <outlet property="contentStackView" destination="WLv-21-ggw" id="lVG-TT-gMH"/>
                 <outlet property="searchBar" destination="1Sw-bB-VbX" id="7pD-i5-lVf"/>
                 <outlet property="tableView" destination="2Yi-Za-cWv" id="M3B-lU-YYO"/>
                 <outlet property="view" destination="lKf-zg-URS" id="g1c-gC-3eC"/>

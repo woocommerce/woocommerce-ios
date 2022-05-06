@@ -68,11 +68,7 @@ final class ProductCategoryListViewModel {
 
     /// Array of view models to be rendered by the View Controller.
     ///
-    private(set) var categoryViewModels: [ProductCategoryCellViewModel] = []
-
-    /// Closure to be invoked when `synchronizeCategories` state  changes
-    ///
-    private var onSyncStateChange: ((SyncingState) -> Void)?
+    @Published private(set) var categoryViewModels: [ProductCategoryCellViewModel] = []
 
     /// Closure invoked when the list needs to reload
     ///
@@ -93,14 +89,7 @@ final class ProductCategoryListViewModel {
 
     /// Current  category synchronization state
     ///
-    private var syncCategoriesState: SyncingState = .initialized {
-        didSet {
-            guard syncCategoriesState != oldValue else {
-                return
-            }
-            onSyncStateChange?(syncCategoriesState)
-        }
-    }
+    @Published private(set) var syncCategoriesState: SyncingState = .initialized
 
     private lazy var resultController: ResultsController<StorageProductCategory> = {
         let predicate = NSPredicate(format: "siteID = %ld", self.siteID)
@@ -143,14 +132,6 @@ final class ProductCategoryListViewModel {
             return
         }
         synchronizeAllCategories(fromPageNumber: retryToken.fromPageNumber)
-    }
-
-    /// Observes and notifies of changes made to product categories. the current state will be dispatched upon subscription.
-    /// Calling this method will remove any other previous observer.
-    ///
-    func observeCategoryListStateChanges(onStateChanges: @escaping (SyncingState) -> Void) {
-        onSyncStateChange = onStateChanges
-        onSyncStateChange?(syncCategoriesState)
     }
 
     /// Observe the need of reload by passing a closure that will be invoked when there is a need to reload the data.

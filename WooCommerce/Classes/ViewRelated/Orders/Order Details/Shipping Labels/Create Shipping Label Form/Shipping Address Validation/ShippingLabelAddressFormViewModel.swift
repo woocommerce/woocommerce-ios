@@ -287,7 +287,7 @@ extension ShippingLabelAddressFormViewModel {
 
     enum AddressValidationError: Error {
         case local
-        case remote(Error?)
+        case remote(Error)
     }
 
     /// Validate the address locally and remotely. If `onlyLocally` is equal `true`, the validation will happens just locally.

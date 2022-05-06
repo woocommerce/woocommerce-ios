@@ -56,7 +56,14 @@ private extension LabeledTextViewTableViewCell {
 
     func configureProductStatusLabel(productStatus: ProductStatus) {
         productStatusLabel.text = productStatus.description
-        productStatusBadgeBg.backgroundColor = productStatus == .pending ? BadgeStyle.Colors.pendingBg : BadgeStyle.Colors.defaultBg
+
+        switch productStatus {
+        case .pending:
+            productStatusBadgeBg.backgroundColor = BadgeStyle.Colors.pendingBg
+        default:
+            productStatusBadgeBg.backgroundColor = BadgeStyle.Colors.defaultBg
+        }
+
         productStatusBadgeHolder.isHidden = productStatus == .published
     }
 

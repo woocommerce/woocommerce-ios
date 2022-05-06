@@ -11,7 +11,7 @@ struct CouponRestrictions: View {
     @ScaledMetric private var scale: CGFloat = 1.0
 
     private let categorySelectorConfig = ProductCategorySelector.Configuration.excludedCategories
-    private let categoryListConfig = ProductCategoryListViewController.Configuration(searchEnabled: true, selectAllEnabled: true)
+    private let categoryListConfig = ProductCategoryListViewController.Configuration(searchEnabled: true, clearSelectionEnabled: true)
 
     init(viewModel: CouponRestrictionsViewModel) {
         self.viewModel = viewModel

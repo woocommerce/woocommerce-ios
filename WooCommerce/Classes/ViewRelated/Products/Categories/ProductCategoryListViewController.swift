@@ -10,8 +10,8 @@ final class ProductCategoryListViewController: UIViewController, GhostableViewCo
 
     @IBOutlet private var tableView: UITableView!
     @IBOutlet private var searchBar: UISearchBar!
-    @IBOutlet private var selectAllButtonBarView: UIView!
-    @IBOutlet private var selectAllButton: UIButton!
+    @IBOutlet private var clearSelectionButtonBarView: UIView!
+    @IBOutlet private var clearSelectionButton: UIButton!
 
     lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: ProductCategoryTableViewCell.self))
 
@@ -47,7 +47,7 @@ final class ProductCategoryListViewController: UIViewController, GhostableViewCo
 extension ProductCategoryListViewController {
     struct Configuration {
         var searchEnabled: Bool = false
-        var selectAllEnabled: Bool = false
+        var clearSelectionEnabled: Bool = false
     }
 }
 
@@ -72,9 +72,12 @@ private extension ProductCategoryListViewController {
     }
 
     func configureSelectAllButton() {
-        selectAllButtonBarView.isHidden = !configuration.selectAllEnabled
-        selectAllButton.setTitle(Localization.selectAllButtonTitle, for: .normal)
-        selectAllButton.applyLinkButtonStyle()
+        clearSelectionButtonBarView.isHidden = !configuration.clearSelectionEnabled
+        clearSelectionButton.setTitle(Localization.clearSelectionButtonTitle, for: .normal)
+        clearSelectionButton.applyLinkButtonStyle()
+        clearSelectionButton.addAction(UIAction { [weak self] _ in
+            self?.viewModel.resetSelectedCategoriesAndReload()
+        }, for: .touchUpInside)
     }
 }
 
@@ -151,6 +154,6 @@ private extension ProductCategoryListViewController {
         static let searchBarPlaceholder = NSLocalizedString("Search Categories", comment: "Placeholder text on the search bar on the category list")
         static let synchErrorMessage = NSLocalizedString("Unable to load categories", comment: "Notice message when loading product categories fails")
         static let retryButtonTitle = NSLocalizedString("Retry", comment: "Retry Action on the notice when loading product categories fails")
-        static let selectAllButtonTitle = NSLocalizedString("Select All", comment: "Button to select all items on the product categories list")
+        static let clearSelectionButtonTitle = NSLocalizedString("Clear Selection", comment: "Button to clear selection on the product categories list")
     }
 }

@@ -174,6 +174,14 @@ final class ProductCategoryListViewModel {
         selectedCategories = []
     }
 
+    /// Resets the selected categories and triggers UI reload
+    ///
+    func resetSelectedCategoriesAndReload() {
+        resetSelectedCategories()
+        updateViewModelsArray()
+        reloadData()
+    }
+
     /// Select or Deselect a category, notifying the delegate before any other action
     ///
     func selectOrDeselectCategory(index: Int) {

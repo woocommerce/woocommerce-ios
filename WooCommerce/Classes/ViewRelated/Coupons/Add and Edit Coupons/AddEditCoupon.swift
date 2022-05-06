@@ -41,7 +41,7 @@ struct AddEditCoupon: View {
     }
 
     private let categorySelectorConfig = ProductCategorySelector.Configuration.categoriesForCoupons
-    private let categoryListConfig = ProductCategoryListViewController.Configuration(searchEnabled: true, selectAllEnabled: true)
+    private let categoryListConfig = ProductCategoryListViewController.Configuration(searchEnabled: true, clearSelectionEnabled: true)
 
     init(_ viewModel: AddEditCouponViewModel) {
         self.viewModel = viewModel

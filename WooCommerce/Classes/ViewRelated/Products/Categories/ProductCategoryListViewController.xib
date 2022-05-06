@@ -11,9 +11,9 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProductCategoryListViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
+                <outlet property="clearSelectionButton" destination="fdL-Fv-YUq" id="4pY-Cu-W62"/>
+                <outlet property="clearSelectionButtonBarView" destination="pl0-eW-IeX" id="FS6-rQ-VQ4"/>
                 <outlet property="searchBar" destination="1Sw-bB-VbX" id="7pD-i5-lVf"/>
-                <outlet property="selectAllButton" destination="fdL-Fv-YUq" id="4pY-Cu-W62"/>
-                <outlet property="selectAllButtonBarView" destination="pl0-eW-IeX" id="FS6-rQ-VQ4"/>
                 <outlet property="tableView" destination="2Yi-Za-cWv" id="M3B-lU-YYO"/>
                 <outlet property="view" destination="lKf-zg-URS" id="g1c-gC-3eC"/>
             </connections>
@@ -34,7 +34,7 @@
                             <rect key="frame" x="0.0" y="51" width="414" height="44"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fdL-Fv-YUq">
-                                    <rect key="frame" x="16" y="0.0" width="46" height="44"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="46" height="44"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="44" id="N55-cE-4qh"/>
                                     </constraints>
@@ -44,7 +44,7 @@
                             </subviews>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
-                                <constraint firstItem="fdL-Fv-YUq" firstAttribute="leading" secondItem="pl0-eW-IeX" secondAttribute="leading" constant="16" id="9KY-RX-HIK"/>
+                                <constraint firstItem="fdL-Fv-YUq" firstAttribute="leading" secondItem="pl0-eW-IeX" secondAttribute="leading" id="9KY-RX-HIK"/>
                                 <constraint firstAttribute="bottom" secondItem="fdL-Fv-YUq" secondAttribute="bottom" id="DJd-bo-sZp"/>
                                 <constraint firstItem="fdL-Fv-YUq" firstAttribute="top" secondItem="pl0-eW-IeX" secondAttribute="top" id="hfW-g4-YEy"/>
                             </constraints>

@@ -13,6 +13,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
     private var alerts: MockOrderDetailsPaymentAlerts!
     private var cardReaderConnectionAlerts: MockCardReaderSettingsAlerts!
     private var knownCardReaderProvider: MockKnownReaderProvider!
+    private var onboardingPresenter: MockCardPresentPaymentsOnboardingPresenter!
     private var storageManager: MockStorageManager!
 
     override func setUp() {
@@ -24,11 +25,13 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         alerts = MockOrderDetailsPaymentAlerts()
         cardReaderConnectionAlerts = MockCardReaderSettingsAlerts(mode: .continueSearching)
         knownCardReaderProvider = MockKnownReaderProvider()
+        onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
         storageManager = MockStorageManager()
     }
 
     override func tearDown() {
         storageManager = nil
+        onboardingPresenter = nil
         knownCardReaderProvider = nil
         cardReaderConnectionAlerts = nil
         alerts = nil
@@ -81,6 +84,51 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 
         // Then
         XCTAssertTrue(stores.receivedActions.contains(where: { $0 is CardPresentPaymentAction }))
+    }
+
+    func test_submitRefund_with_non_interac_payment_method_does_not_call_showOnboardingIfRequired() throws {
+        // Given
+        let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
+                                                   charge: .fake().copy(paymentMethodDetails: .cardPresent(
+                                                    details: .init(brand: .visa,
+                                                                   last4: "9969",
+                                                                   funding: .credit,
+                                                                   receipt: .init(accountType: .credit,
+                                                                                  applicationPreferredName: "Stripe Credit",
+                                                                                  dedicatedFileName: "A000000003101001")))),
+                                                   amount: "2.28",
+                                                   paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID)))
+        mockServerSideRefund(result: .success(()))
+
+        // When
+        waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+                promise(())
+            }
+        }
+
+        // Then
+        XCTAssertFalse(onboardingPresenter.spyShowOnboardingWasCalled)
+    }
+
+    func test_submitRefund_with_interac_payment_method_calls_showOnboardingIfRequired() throws {
+        // Given
+        let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
+                                                   charge: .fake().copy(paymentMethodDetails: .interacPresent(
+                                                    details: .init(brand: .visa,
+                                                                   last4: "9969",
+                                                                   funding: .credit,
+                                                                   receipt: .init(accountType: .credit,
+                                                                                  applicationPreferredName: "Stripe Credit",
+                                                                                  dedicatedFileName: "A000000003101001")))),
+                                                   amount: "2.28",
+                                                   paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID)))
+
+        // When
+        useCase.submitRefund(.fake(), showInProgressUI: {}, onCompletion: { _ in })
+
+        // Then
+        XCTAssertTrue(onboardingPresenter.spyShowOnboardingWasCalled)
     }
 
     func test_submitRefund_without_a_paymentGatewayAccount_in_storage_returns_failure() {
@@ -439,6 +487,7 @@ private extension RefundSubmissionUseCaseTests {
                                 currencySettings: .init(),
                                 cardPresentConfiguration: Mocks.configuration,
                                 knownReaderProvider: knownCardReaderProvider,
+                                cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
                                 stores: stores,
                                 storageManager: storageManager,
                                 analytics: analytics)

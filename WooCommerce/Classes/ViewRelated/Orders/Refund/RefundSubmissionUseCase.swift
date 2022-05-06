@@ -65,6 +65,10 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
     /// Provides any known card reader to be used in `CardReaderConnectionController`.
     private let knownReaderProvider: CardReaderSettingsKnownReaderProvider
 
+    /// Presents the card present onboarding flow, when required.
+    /// It is shown before processing a refund which is processed via the card reader.
+    private let cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting
+
     /// Controller to connect a card reader for in-person refund.
     private lazy var cardReaderConnectionController =
     CardReaderConnectionController(forSiteID: order.siteID,
@@ -88,6 +92,7 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          cardPresentConfiguration: CardPresentPaymentsConfiguration,
          knownReaderProvider: CardReaderSettingsKnownReaderProvider = CardReaderSettingsKnownReaderStorage(),
+         cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting = CardPresentPaymentsOnboardingPresenter(),
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics) {
@@ -103,6 +108,7 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
         self.currencyFormatter = currencyFormatter
         self.cardPresentConfiguration = cardPresentConfiguration
         self.knownReaderProvider = knownReaderProvider
+        self.cardPresentPaymentsOnboardingPresenter = cardPresentPaymentsOnboardingPresenter
         self.stores = stores
         self.storageManager = storageManager
         self.analytics = analytics
@@ -126,35 +132,39 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
                       showInProgressUI: @escaping (() -> Void),
                       onCompletion: @escaping (Result<Void, Error>) -> Void) {
         if let charge = details.charge, shouldRefundWithCardReader(details: details) {
-            guard let refundAmount = currencyFormatter.convertToDecimal(from: details.amount) else {
-                DDLogError("Error: attempted to refund an order without a valid amount.")
-                return onCompletion(.failure(RefundSubmissionError.invalidRefundAmount))
-            }
-
-            guard let paymentGatewayAccount = details.paymentGatewayAccount else {
-                return onCompletion(.failure(RefundSubmissionError.unknownPaymentGatewayAccount))
-            }
-
-            observeConnectedReadersForAnalytics()
-            connectReader(charge: charge, paymentGatewayAccount: paymentGatewayAccount) { [weak self] result in
+            cardPresentPaymentsOnboardingPresenter.showOnboardingIfRequired(
+                from: rootViewController) { [weak self] in
                 guard let self = self else { return }
-                switch result {
-                case .success:
-                    self.attemptCardPresentRefund(refundAmount: refundAmount as Decimal,
-                                                  charge: charge,
-                                                  paymentGatewayAccount: paymentGatewayAccount) { [weak self] result in
-                        guard let self = self else { return }
-                        switch result {
-                        case .success:
-                            self.submitRefundToSite(refund: refund) { result in
-                                onCompletion(result)
+                guard let refundAmount = self.currencyFormatter.convertToDecimal(from: self.details.amount) else {
+                    DDLogError("Error: attempted to refund an order without a valid amount.")
+                    return onCompletion(.failure(RefundSubmissionError.invalidRefundAmount))
+                }
+
+                guard let paymentGatewayAccount = self.details.paymentGatewayAccount else {
+                    return onCompletion(.failure(RefundSubmissionError.unknownPaymentGatewayAccount))
+                }
+
+                self.observeConnectedReadersForAnalytics()
+                self.connectReader(charge: charge, paymentGatewayAccount: paymentGatewayAccount) { [weak self] result in
+                    guard let self = self else { return }
+                    switch result {
+                    case .success:
+                        self.attemptCardPresentRefund(refundAmount: refundAmount as Decimal,
+                                                      charge: charge,
+                                                      paymentGatewayAccount: paymentGatewayAccount) { [weak self] result in
+                            guard let self = self else { return }
+                            switch result {
+                            case .success:
+                                self.submitRefundToSite(refund: refund) { result in
+                                    onCompletion(result)
+                                }
+                            case .failure(let error):
+                                onCompletion(.failure(error))
                             }
-                        case .failure(let error):
-                            onCompletion(.failure(error))
                         }
+                    case .failure:
+                        onCompletion(result)
                     }
-                case .failure:
-                    onCompletion(result)
                 }
             }
         } else {

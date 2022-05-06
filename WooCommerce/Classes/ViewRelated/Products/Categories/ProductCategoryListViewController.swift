@@ -82,6 +82,7 @@ private extension ProductCategoryListViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.removeLastCellSeparator()
+        tableView.keyboardDismissMode = .onDrag
     }
 
     func configureSearchBar() {
@@ -197,6 +198,7 @@ extension ProductCategoryListViewController: UITableViewDataSource, UITableViewD
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         viewModel.selectOrDeselectCategory(index: indexPath.row)
         tableView.reloadData()
+        searchBar.resignFirstResponder()
     }
 }
 

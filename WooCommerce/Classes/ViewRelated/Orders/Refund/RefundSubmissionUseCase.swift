@@ -84,34 +84,56 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
     /// IPP Configuration.
     private let cardPresentConfiguration: CardPresentPaymentsConfiguration
 
+    struct Dependencies {
+        let cardReaderConnectionAlerts: CardReaderSettingsAlertsProvider
+        let currencyFormatter: CurrencyFormatter
+        let currencySettings: CurrencySettings
+        let knownReaderProvider: CardReaderSettingsKnownReaderProvider
+        let cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting
+        let stores: StoresManager
+        let storageManager: StorageManagerType
+        let analytics: Analytics
+
+        init(cardReaderConnectionAlerts: CardReaderSettingsAlertsProvider = CardReaderSettingsAlerts(),
+             currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+             currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+             knownReaderProvider: CardReaderSettingsKnownReaderProvider = CardReaderSettingsKnownReaderStorage(),
+             cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting = CardPresentPaymentsOnboardingPresenter(),
+             stores: StoresManager = ServiceLocator.stores,
+             storageManager: StorageManagerType = ServiceLocator.storageManager,
+             analytics: Analytics = ServiceLocator.analytics) {
+            self.cardReaderConnectionAlerts = cardReaderConnectionAlerts
+            self.currencyFormatter = currencyFormatter
+            self.currencySettings = currencySettings
+            self.knownReaderProvider = knownReaderProvider
+            self.cardPresentPaymentsOnboardingPresenter = cardPresentPaymentsOnboardingPresenter
+            self.stores = stores
+            self.storageManager = storageManager
+            self.analytics = analytics
+        }
+    }
+
     init(details: Details,
          rootViewController: UIViewController,
          alerts: OrderDetailsPaymentAlertsProtocol,
-         cardReaderConnectionAlerts: CardReaderSettingsAlertsProvider = CardReaderSettingsAlerts(),
-         currencyFormatter: CurrencyFormatter,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          cardPresentConfiguration: CardPresentPaymentsConfiguration,
-         knownReaderProvider: CardReaderSettingsKnownReaderProvider = CardReaderSettingsKnownReaderStorage(),
-         cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting = CardPresentPaymentsOnboardingPresenter(),
-         stores: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager,
-         analytics: Analytics = ServiceLocator.analytics) {
+         dependencies: Dependencies = Dependencies()) {
         self.details = details
         self.formattedAmount = {
-            let currencyCode = currencySettings.currencyCode
-            let unit = currencySettings.symbol(from: currencyCode)
-            return currencyFormatter.formatAmount(details.amount, with: unit) ?? ""
+            let currencyCode = dependencies.currencySettings.currencyCode
+            let unit = dependencies.currencySettings.symbol(from: currencyCode)
+            return dependencies.currencyFormatter.formatAmount(details.amount, with: unit) ?? ""
         }()
         self.rootViewController = rootViewController
         self.alerts = alerts
-        self.cardReaderConnectionAlerts = cardReaderConnectionAlerts
-        self.currencyFormatter = currencyFormatter
+        self.cardReaderConnectionAlerts = dependencies.cardReaderConnectionAlerts
+        self.currencyFormatter = dependencies.currencyFormatter
         self.cardPresentConfiguration = cardPresentConfiguration
-        self.knownReaderProvider = knownReaderProvider
-        self.cardPresentPaymentsOnboardingPresenter = cardPresentPaymentsOnboardingPresenter
-        self.stores = stores
-        self.storageManager = storageManager
-        self.analytics = analytics
+        self.knownReaderProvider = dependencies.knownReaderProvider
+        self.cardPresentPaymentsOnboardingPresenter = dependencies.cardPresentPaymentsOnboardingPresenter
+        self.stores = dependencies.stores
+        self.storageManager = dependencies.storageManager
+        self.analytics = dependencies.analytics
     }
 
     /// Starts the refund submission flow.

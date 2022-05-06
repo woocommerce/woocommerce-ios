@@ -6,6 +6,8 @@ import Yosemite
 import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
 
+private typealias Dependencies = RefundSubmissionUseCase.Dependencies
+
 final class RefundSubmissionUseCaseTests: XCTestCase {
     private var stores: MockStoresManager!
     private var analyticsProvider: MockAnalyticsProvider!
@@ -479,18 +481,23 @@ private extension RefundSubmissionUseCaseTests {
     }
 
     func createUseCase(details: RefundSubmissionUseCase.Details) -> RefundSubmissionUseCase {
-        RefundSubmissionUseCase(details: details,
-                                rootViewController: .init(),
-                                alerts: alerts,
-                                cardReaderConnectionAlerts: cardReaderConnectionAlerts,
-                                currencyFormatter: CurrencyFormatter(currencySettings: .init()),
-                                currencySettings: .init(),
-                                cardPresentConfiguration: Mocks.configuration,
-                                knownReaderProvider: knownCardReaderProvider,
-                                cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
-                                stores: stores,
-                                storageManager: storageManager,
-                                analytics: analytics)
+        let dependencies = Dependencies(
+            cardReaderConnectionAlerts: cardReaderConnectionAlerts,
+            currencyFormatter: CurrencyFormatter(currencySettings: .init()),
+            currencySettings: .init(),
+            knownReaderProvider: knownCardReaderProvider,
+            cardPresentPaymentsOnboardingPresenter:
+                onboardingPresenter,
+            stores: stores,
+            storageManager: storageManager,
+            analytics: analytics)
+
+        return RefundSubmissionUseCase(
+            details: details,
+            rootViewController: .init(),
+            alerts: alerts,
+            cardPresentConfiguration: Mocks.configuration,
+            dependencies: dependencies)
     }
 
     func createPaymentGatewayAccount(siteID: Int64) -> PaymentGatewayAccount {

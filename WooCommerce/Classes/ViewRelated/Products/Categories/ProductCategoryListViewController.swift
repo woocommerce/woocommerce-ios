@@ -48,8 +48,8 @@ final class ProductCategoryListViewController: UIViewController, GhostableViewCo
 //
 extension ProductCategoryListViewController {
     struct Configuration {
-        var searchEnabled: Bool = false
-        var clearSelectionEnabled: Bool = false
+        var searchEnabled = false
+        var clearSelectionEnabled = false
     }
 }
 

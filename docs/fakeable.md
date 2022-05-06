@@ -28,7 +28,7 @@ func test() {
 
 ## Generating Fake Methods
 
-The `fake()` methods are generated using [Sourcery](https://github.com/krzysztofzablocki/Sourcery). For now, only `classes`, `structs`, and `enums` of the `Networking` and `Yosemite` target are supported.
+The `fake()` methods are generated using [Sourcery](https://github.com/krzysztofzablocki/Sourcery). For now, only `classes`, `structs`, and `enums` of the `Networking`, `Yosemite`, and `Hardware` targets are supported.
 
 To generate a `fake()` method:
 
@@ -61,6 +61,7 @@ The [`rake generate`](../Rakefile) command executes the Sourcery configuration f
 ```
 Networking module → Networking-Fakes.yaml
 Yosemite module → Yosemite-Fakes.yaml
+Hardware module → Hardware-Fakes.yaml
 ```
 
 It uses a single template, [`Fakes.swifttemplate`](../CodeGeneration/Sourcery/Fakes/Fakes.swifttemplate), to generate the code. It's written using [Swift templates](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/writing-templates.html).

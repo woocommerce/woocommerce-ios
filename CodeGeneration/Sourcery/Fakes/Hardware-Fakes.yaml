@@ -1,0 +1,8 @@
+project:
+    file: ../../../Hardware/Hardware.xcodeproj
+    target:
+        name: Hardware
+templates:
+    - Fakes.swifttemplate
+output: ../../../Fakes/Fakes/Hardware.generated.swift
+

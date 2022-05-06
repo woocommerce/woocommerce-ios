@@ -178,7 +178,7 @@ end
 
 desc 'Run all code generation tasks'
 task :generate do
-  %w[Networking Storage Yosemite WooCommerce].each do |prefix|
+  %w[Hardware Networking Storage Yosemite WooCommerce].each do |prefix|
     puts "\n\nGenerating Copiable for #{prefix}..."
     puts '=' * 100
 

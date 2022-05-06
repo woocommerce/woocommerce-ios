@@ -87,9 +87,7 @@ private extension ProductCategoryListViewController {
                 }
                 return selectedItems.isEmpty
             }
-            .sink { [weak self] shouldHideClearSelection in
-                self?.clearSelectionButtonBarView.isHidden = shouldHideClearSelection
-            }
+            .assign(to: \.isHidden, on: clearSelectionButtonBarView)
     }
 }
 

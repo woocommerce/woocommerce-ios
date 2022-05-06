@@ -71,6 +71,7 @@ private extension ProductCategoryListViewController {
     func configureSearchBar() {
         searchBar.isHidden = !configuration.searchEnabled
         searchBar.placeholder = Localization.searchBarPlaceholder
+        searchBar.searchTextField.textColor = .text
         searchBar.delegate = self
     }
 

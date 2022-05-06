@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
@@ -63,6 +64,8 @@ final class ProductCategoryListViewModel {
     /// 
     @Published var searchQuery: String = ""
 
+    private var searchQuerySubscription: AnyCancellable?
+
     /// Array of view models to be rendered by the View Controller.
     ///
     private(set) var categoryViewModels: [ProductCategoryCellViewModel] = []
@@ -124,6 +127,7 @@ final class ProductCategoryListViewModel {
 
         try? resultController.performFetch()
         updateViewModelsArray()
+        configureProductSearch()
     }
 
     /// Load existing categories from storage and fire the synchronize all categories action.
@@ -232,6 +236,32 @@ final class ProductCategoryListViewModel {
         selectedCategories = initiallySelectedIDs.compactMap { id in
             categories.first(where: { $0.categoryID == id })
         }
+    }
+
+    /// Updates the category results predicate & reload the list
+    ///
+    private func configureProductSearch() {
+        searchQuerySubscription = $searchQuery
+            .dropFirst()
+            .removeDuplicates()
+            .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
+            .sink { [weak self] newQuery in
+                guard let self = self else { return }
+
+                if newQuery.isNotEmpty {
+                    let searchPredicate = NSPredicate(format: "siteID = %ld AND (name CONTAINS[cd] %@) OR (slug CONTAINS[cd] %@)",
+                                                      self.siteID,
+                                                      newQuery,
+                                                      newQuery)
+                    self.resultController.predicate = searchPredicate
+                } else {
+                    // Resets the results to the full product list when there is no search query.
+                    self.resultController.predicate = NSPredicate(format: "siteID = %ld", self.siteID)
+                }
+                try? self.resultController.performFetch()
+                self.updateViewModelsArray()
+                self.reloadData()
+            }
     }
 }
 

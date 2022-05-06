@@ -287,7 +287,7 @@ extension ShippingLabelAddressFormViewModel {
 
     enum AddressValidationError: Error {
         case local
-        case remote(ShippingLabelAddressValidationError?)
+        case remote(Error?)
     }
 
     /// Validate the address locally and remotely. If `onlyLocally` is equal `true`, the validation will happens just locally.
@@ -318,19 +318,13 @@ extension ShippingLabelAddressFormViewModel {
                 self?.addressValidationError = nil
                 self?.state.isLoading = false
                 completion(.success(()))
-            case .failure(let error as ShippingLabelAddressValidationError):
-                ServiceLocator.analytics.track(.shippingLabelAddressValidationFailed, withProperties: ["error": error.localizedDescription])
-                self?.addressValidated = .none
-                self?.addressValidationError = error
-                self?.state.isLoading = false
-                completion(.failure(.remote(error)))
             case .failure(let error):
                 ServiceLocator.analytics.track(.shippingLabelAddressValidationFailed, withProperties: ["error": error.localizedDescription])
                 DDLogError("⛔️ Error validating shipping label address: \(error)")
                 self?.addressValidated = .none
                 self?.addressValidationError = ShippingLabelAddressValidationError(addressError: nil, generalError: error.localizedDescription)
                 self?.state.isLoading = false
-                completion(.failure(.local))
+                completion(.failure(.remote(error)))
             }
         }
         stores.dispatch(action)

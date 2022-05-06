@@ -286,7 +286,7 @@ extension ShippingLabelAddressFormViewModel {
 extension ShippingLabelAddressFormViewModel {
 
     enum AddressValidationError: Error {
-        case none
+        case local
         case remote(ShippingLabelAddressValidationError?)
     }
 
@@ -298,7 +298,7 @@ extension ShippingLabelAddressFormViewModel {
         if validateAddressLocally().isNotEmpty {
             addressValidated = .none
             state.isLoading = false
-            completion(.failure(.none))
+            completion(.failure(.local))
             return
         }
         addressValidated = .local
@@ -330,7 +330,7 @@ extension ShippingLabelAddressFormViewModel {
                 self?.addressValidated = .none
                 self?.addressValidationError = ShippingLabelAddressValidationError(addressError: nil, generalError: error.localizedDescription)
                 self?.state.isLoading = false
-                completion(.failure(.none))
+                completion(.failure(.local))
             }
         }
         stores.dispatch(action)

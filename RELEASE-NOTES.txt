@@ -3,6 +3,7 @@
 9.2
 -----
 - [*] Order Creation: Updated percentage fee flow - added amount preview, disabled percentage option when editing. [https://github.com/woocommerce/woocommerce-ios/pull/6763]
+- [*] Product Details: Update status badge layout and show it for more cases. [https://github.com/woocommerce/woocommerce-ios/pull/6768]
 
 9.1
 -----

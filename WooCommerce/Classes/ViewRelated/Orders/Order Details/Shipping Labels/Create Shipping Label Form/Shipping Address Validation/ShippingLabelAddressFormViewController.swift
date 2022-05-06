@@ -232,7 +232,9 @@ private extension ShippingLabelAddressFormViewController {
                 self.onCompletion(self.viewModel.address)
                 self.navigationController?.popViewController(animated: true)
             case .failure(let error):
-                self.handleAddressValidationError(error: error)
+                if case .local = error {
+                    displayErrorNotice(title: Localization.addressLocalValidationErrorNotice)
+                }
             }
         }
     }
@@ -246,7 +248,9 @@ private extension ShippingLabelAddressFormViewController {
                 self.onCompletion(self.viewModel.address)
                 self.navigationController?.popViewController(animated: true)
             case .failure(let error):
-                self.handleAddressValidationError(error: error)
+                if case .local = error {
+                    displayErrorNotice(title: Localization.addressLocalValidationErrorNotice)
+                }
             }
         }
     }
@@ -254,12 +258,6 @@ private extension ShippingLabelAddressFormViewController {
 
 // MARK: - Utils
 private extension ShippingLabelAddressFormViewController {
-    func handleAddressValidationError(error: ShippingLabelAddressFormViewModel.AddressValidationError) {
-        if case .local = error {
-            displayErrorNotice(title: Localization.addressLocalValidationErrorNotice)
-        }
-    }
-
     /// Enqueue an error notice
     ///
     func displayErrorNotice(title: String) {

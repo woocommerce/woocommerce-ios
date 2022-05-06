@@ -255,11 +255,8 @@ private extension ShippingLabelAddressFormViewController {
 // MARK: - Utils
 private extension ShippingLabelAddressFormViewController {
     func handleAddressValidationError(error: ShippingLabelAddressFormViewModel.AddressValidationError) {
-        switch error {
-        case .local:
+        if case .local = error {
             displayErrorNotice(title: Localization.addressLocalValidationErrorNotice)
-        case .remote:
-            displayErrorNotice(title: Localization.addressRemoteValidationFailedNotice)
         }
     }
 

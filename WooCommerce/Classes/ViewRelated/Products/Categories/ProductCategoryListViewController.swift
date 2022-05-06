@@ -128,7 +128,7 @@ private extension ProductCategoryListViewController {
     /// Displays the Sync Error Notice.
     ///
     func displaySyncingErrorNotice(retryToken: ProductCategoryListViewModel.RetryToken) {
-        let message = Localization.synchErrorMessage
+        let message = Localization.syncErrorMessage
         let actionTitle = Localization.retryButtonTitle
         let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
             self?.viewModel.retryCategorySynchronization(retryToken: retryToken)
@@ -164,7 +164,7 @@ extension ProductCategoryListViewController: UITableViewDataSource, UITableViewD
 private extension ProductCategoryListViewController {
     enum Localization {
         static let searchBarPlaceholder = NSLocalizedString("Search Categories", comment: "Placeholder text on the search bar on the category list")
-        static let synchErrorMessage = NSLocalizedString("Unable to load categories", comment: "Notice message when loading product categories fails")
+        static let syncErrorMessage = NSLocalizedString("Unable to load categories", comment: "Notice message when loading product categories fails")
         static let retryButtonTitle = NSLocalizedString("Retry", comment: "Retry Action on the notice when loading product categories fails")
         static let clearSelectionButtonTitle = NSLocalizedString("Clear Selection", comment: "Button to clear selection on the product categories list")
     }

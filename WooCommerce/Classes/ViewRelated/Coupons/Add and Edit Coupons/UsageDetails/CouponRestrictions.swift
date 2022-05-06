@@ -10,6 +10,9 @@ struct CouponRestrictions: View {
     // Tracks the scale of the view due to accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
+    private let categorySelectorConfig = ProductCategorySelector.Configuration.excludedCategories
+    private let categoryListConfig = ProductCategoryListViewController.Configuration(searchEnabled: true, clearSelectionEnabled: true)
+
     init(viewModel: CouponRestrictionsViewModel) {
         self.viewModel = viewModel
     }
@@ -158,7 +161,8 @@ struct CouponRestrictions: View {
             }
             .sheet(isPresented: $showingExcludeCategories) {
                 ProductCategorySelector(isPresented: $showingExcludeCategories,
-                                        config: ProductCategorySelector.Configuration.excludedCategories,
+                                        viewConfig: categorySelectorConfig,
+                                        categoryListConfig: categoryListConfig,
                                         viewModel: viewModel.categorySelectorViewModel)
             }
             LazyNavigationLink(destination: CouponAllowedEmails(emailFormats: $viewModel.allowedEmails), isActive: $showingAllowedEmails) {

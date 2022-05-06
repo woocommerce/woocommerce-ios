@@ -40,6 +40,9 @@ struct AddEditCoupon: View {
         return buttons
     }
 
+    private let categorySelectorConfig = ProductCategorySelector.Configuration.categoriesForCoupons
+    private let categoryListConfig = ProductCategoryListViewController.Configuration(searchEnabled: true, clearSelectionEnabled: true)
+
     init(_ viewModel: AddEditCouponViewModel) {
         self.viewModel = viewModel
         //TODO: add analytics
@@ -243,7 +246,8 @@ struct AddEditCoupon: View {
             }
             .sheet(isPresented: $showingSelectCategories) {
                 ProductCategorySelector(isPresented: $showingSelectCategories,
-                                        config: ProductCategorySelector.Configuration.categoriesForCoupons,
+                                        viewConfig: categorySelectorConfig,
+                                        categoryListConfig: categoryListConfig,
                                         viewModel: viewModel.categorySelectorViewModel)
             }
             .toolbar {

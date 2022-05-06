@@ -6,7 +6,8 @@ struct ProductCategorySelector: View {
     @Binding private var isPresented: Bool
     @ObservedObject private var viewModel: ProductCategorySelectorViewModel
 
-    private let config: Configuration
+    private let viewConfig: Configuration
+    private let categoryListConfig: ProductCategoryListViewController.Configuration
 
     /// Title of the done button calculated based on number of selected items
     private var doneButtonTitle: String {
@@ -15,24 +16,26 @@ struct ProductCategorySelector: View {
         } else {
             return String.pluralize(
                 viewModel.selectedItemsCount,
-                singular: config.doneButtonSingularFormat,
-                plural: config.doneButtonPluralFormat
+                singular: viewConfig.doneButtonSingularFormat,
+                plural: viewConfig.doneButtonPluralFormat
             )
         }
     }
 
     init(isPresented: Binding<Bool>,
-         config: Configuration,
+         viewConfig: Configuration,
+         categoryListConfig: ProductCategoryListViewController.Configuration,
          viewModel: ProductCategorySelectorViewModel) {
         self.viewModel = viewModel
-        self.config = config
+        self.viewConfig = viewConfig
+        self.categoryListConfig = categoryListConfig
         self._isPresented = isPresented
     }
 
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
-                ProductCategoryList(viewModel: viewModel.listViewModel)
+                ProductCategoryList(viewModel: viewModel.listViewModel, config: categoryListConfig)
                 Button(doneButtonTitle) {
                     viewModel.submitSelection()
                     isPresented = false
@@ -47,7 +50,7 @@ struct ProductCategorySelector: View {
                     }
                 }
             }
-            .navigationTitle(config.title)
+            .navigationTitle(viewConfig.title)
             .navigationBarTitleDisplayMode(.large)
             .wooNavigationBarStyle()
         }
@@ -83,7 +86,8 @@ struct ProductCategorySelector_Previews: PreviewProvider {
             doneButtonPluralFormat: ""
         )
         ProductCategorySelector(isPresented: .constant(true),
-                                config: config,
+                                viewConfig: config,
+                                categoryListConfig: .init(),
                                 viewModel: viewModel)
     }
 }

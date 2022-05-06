@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -10,6 +11,9 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProductCategoryListViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
+                <outlet property="clearSelectionButton" destination="fdL-Fv-YUq" id="4pY-Cu-W62"/>
+                <outlet property="clearSelectionButtonBarView" destination="pl0-eW-IeX" id="FS6-rQ-VQ4"/>
+                <outlet property="searchBar" destination="1Sw-bB-VbX" id="7pD-i5-lVf"/>
                 <outlet property="tableView" destination="2Yi-Za-cWv" id="M3B-lU-YYO"/>
                 <outlet property="view" destination="lKf-zg-URS" id="g1c-gC-3eC"/>
             </connections>
@@ -19,18 +23,46 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="2Yi-Za-cWv">
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="WLv-21-ggw">
                     <rect key="frame" x="0.0" y="44" width="414" height="818"/>
-                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                </tableView>
+                    <subviews>
+                        <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="1Sw-bB-VbX">
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="51"/>
+                            <textInputTraits key="textInputTraits"/>
+                        </searchBar>
+                        <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pl0-eW-IeX">
+                            <rect key="frame" x="0.0" y="51" width="414" height="44"/>
+                            <subviews>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fdL-Fv-YUq">
+                                    <rect key="frame" x="0.0" y="0.0" width="46" height="44"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="44" id="N55-cE-4qh"/>
+                                    </constraints>
+                                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                    <state key="normal" title="Button"/>
+                                </button>
+                            </subviews>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            <constraints>
+                                <constraint firstItem="fdL-Fv-YUq" firstAttribute="leading" secondItem="pl0-eW-IeX" secondAttribute="leading" id="9KY-RX-HIK"/>
+                                <constraint firstAttribute="bottom" secondItem="fdL-Fv-YUq" secondAttribute="bottom" id="DJd-bo-sZp"/>
+                                <constraint firstItem="fdL-Fv-YUq" firstAttribute="top" secondItem="pl0-eW-IeX" secondAttribute="top" id="hfW-g4-YEy"/>
+                            </constraints>
+                        </view>
+                        <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="2Yi-Za-cWv">
+                            <rect key="frame" x="0.0" y="95" width="414" height="723"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        </tableView>
+                    </subviews>
+                </stackView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="FoU-dV-dBq"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
-                <constraint firstItem="2Yi-Za-cWv" firstAttribute="top" secondItem="FoU-dV-dBq" secondAttribute="top" id="Qr7-1B-BU6"/>
-                <constraint firstItem="2Yi-Za-cWv" firstAttribute="bottom" secondItem="FoU-dV-dBq" secondAttribute="bottom" id="X2q-AJ-rbp"/>
-                <constraint firstItem="2Yi-Za-cWv" firstAttribute="leading" secondItem="lKf-zg-URS" secondAttribute="leading" id="cDC-gl-zQz"/>
-                <constraint firstAttribute="trailing" secondItem="2Yi-Za-cWv" secondAttribute="trailing" id="vNP-d7-lfq"/>
+                <constraint firstItem="WLv-21-ggw" firstAttribute="trailing" secondItem="lKf-zg-URS" secondAttribute="trailing" id="38K-Lt-jJj"/>
+                <constraint firstItem="WLv-21-ggw" firstAttribute="top" secondItem="FoU-dV-dBq" secondAttribute="top" id="SkU-8c-6d2"/>
+                <constraint firstItem="WLv-21-ggw" firstAttribute="leading" secondItem="lKf-zg-URS" secondAttribute="leading" id="Sx4-nE-Kz5"/>
+                <constraint firstItem="WLv-21-ggw" firstAttribute="bottom" secondItem="FoU-dV-dBq" secondAttribute="bottom" id="idf-4b-brM"/>
             </constraints>
             <point key="canvasLocation" x="137.68115942028987" y="128.57142857142856"/>
         </view>

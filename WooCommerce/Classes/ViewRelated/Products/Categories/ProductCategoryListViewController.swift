@@ -50,13 +50,18 @@ final class ProductCategoryListViewController: UIViewController, GhostableViewCo
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        configureSearchBar()
         configureClearSelectionButton()
         registerTableViewCells()
         configureTableView()
         configureEmptyView()
         configureViewModel()
         handleSwipeBackGesture()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        // Note: configuring the search bar text color does not work in `viewDidLoad` and `viewWillAppear`.
+        configureSearchBar()
     }
 }
 

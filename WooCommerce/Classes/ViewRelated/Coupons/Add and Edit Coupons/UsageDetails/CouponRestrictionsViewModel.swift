@@ -142,21 +142,21 @@ private extension CouponRestrictionsViewModel {
     enum Localization {
         static let excludeProducts = NSLocalizedString(
             "Exclude Products",
-            comment: "Title of the action button to add products to the exclusion list in Coupon Usage Details screen"
+            comment: "Title of the action button to add products to the exclusion list in Coupon Usage Restrictions screen"
         )
         static let excludedProducts = NSLocalizedString(
             "Exclude Products (%1$d)",
-            comment: "Title of the action button to add excluded products on Coupon Usage Details screen. " +
+            comment: "Title of the action button to add excluded products on Coupon Usage Restrictions screen. " +
             "The number of selected items is included between the brackets. Reads like: Exclude Products (2)"
         )
         static let excludeProductCategories = NSLocalizedString(
             "Exclude Product Categories",
-            comment: "Title of the action button to add product categories on Coupon Usage Details screen"
+            comment: "Title of the action button to exclude product categories on Coupon Usage Restrictions screen"
         )
         static let excludedProductCategories = NSLocalizedString(
             "Exclude Product Categories (%1$d)",
-            comment: "Title of the action button to add excluded product categories on Coupon Usage Details screen. " +
-            "The number of selected items is included between the brackets. Reads like: Exclude Product Categories (4)"
+            comment: "Title of the action button to add excluded product categories on Coupon Usage Restrictions screen. " +
+            "The number of selected items is mentioned between the brackets. Reads like: Exclude Product Categories (4)"
         )
     }
 }

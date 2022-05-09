@@ -1,5 +1,4 @@
 import Codegen
-import Foundation
 
 /// The possible statuses for a PaymentIntent.
 public enum PaymentIntentStatus: Equatable, GeneratedFakeable {

@@ -9,7 +9,7 @@ import WordPressUI
 ///
 final class ProductCategoryListViewController: UIViewController, GhostableViewController {
 
-    @IBOutlet var contentStackView: UIStackView!
+    @IBOutlet private var contentStackView: UIStackView!
     @IBOutlet private var tableView: UITableView!
     @IBOutlet private var searchBar: UISearchBar!
     @IBOutlet private var clearSelectionButtonBarView: UIView!

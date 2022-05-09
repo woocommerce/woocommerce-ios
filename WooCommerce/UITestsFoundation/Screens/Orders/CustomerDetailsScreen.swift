@@ -45,27 +45,18 @@ public final class CustomerDetailsScreen: ScreenObject {
         )
     }
 
-
-    /// Changes the new order status to the second status in the Order Status list.
-    /// - Returns: New Order screen object.
-    @discardableResult
-    public func closeCustomerDetailsScreen() throws -> NewOrderScreen {
-        closeButton.tap()
-        return try NewOrderScreen()
-    }
-
-    /// Updates the order with basic customer details.
+    /// Updates the order with minimal customer details.
     /// - Returns: New Order screen object.
     @discardableResult
     public func enterCustomerDetails() throws -> NewOrderScreen {
         firstNameField.tap()
         firstNameField.typeText("Mira")
-        //        enter some text
     //    addressToggle.tap()
-        //        app.elements[“billing-form”].textFields[“name-field”].tap
+        //
+        //        app.elements[“shipping-form”].textFields[“name-field”].tap
         //        enter some Text
-        //doneButton.tap()
-        closeButton.tap()
+        doneButton.tap()
+        //closeButton.tap()
         return try NewOrderScreen()
     }
 }

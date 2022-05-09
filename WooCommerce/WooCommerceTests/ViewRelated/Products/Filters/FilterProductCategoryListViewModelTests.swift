@@ -1,3 +1,4 @@
+import Combine
 import XCTest
 import TestKit
 @testable import WooCommerce
@@ -8,6 +9,7 @@ final class FilterProductCategoryListViewModelTests: XCTestCase {
     private var filterProductCategoryListViewModel: FilterProductCategoryListViewModel!
     private var productCategoryListViewModel: ProductCategoryListViewModel!
     private let anyCategoryIsSelectedDefaultValue = false
+    private var subscription: AnyCancellable?
 
     override func setUp() {
         super.setUp()
@@ -24,6 +26,7 @@ final class FilterProductCategoryListViewModelTests: XCTestCase {
 
         filterProductCategoryListViewModel = nil
         productCategoryListViewModel = nil
+        subscription = nil
     }
 
     func test_enrichCategoryViewModels_then_it_adds_the_any_category_view_model_with_the_right_selected_state() {
@@ -77,7 +80,8 @@ final class FilterProductCategoryListViewModelTests: XCTestCase {
         productCategoryListViewModel.performFetch()
 
         let categoryViewModels: [ProductCategoryCellViewModel] = waitFor { [weak self] promise in
-            self?.productCategoryListViewModel.observeCategoryListStateChanges { [weak self] state in
+            guard let self = self else { return }
+            self.subscription = self.productCategoryListViewModel.$syncCategoriesState.sink { [weak self] state in
                 guard let self = self else {
                     return
                 }

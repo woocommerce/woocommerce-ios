@@ -4,11 +4,11 @@ import XCTest
 public final class CustomerDetailsScreen: ScreenObject {
 
     private let addressToggleGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["order-creation-customer-details-shipping-address-toggle"]
+        $0.switches["order-creation-customer-details-shipping-address-toggle"]
     }
 
     private let doneButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["customer-details-done-button"]
+        $0.buttons["order-customer-details-done-button"]
     }
 
     private let closeButtonGetter: (XCUIApplication) -> XCUIElement = {
@@ -40,7 +40,7 @@ public final class CustomerDetailsScreen: ScreenObject {
    //     print(app.groups)
    //     print(app.otherElements.allElementsBoundByIndex)
         try super.init(
-            expectedElementGetters: [ closeButtonGetter ],
+            expectedElementGetters: [ closeButtonGetter, addressToggleGetter ],
             app: app
         )
     }

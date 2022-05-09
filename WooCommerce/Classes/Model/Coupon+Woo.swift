@@ -121,8 +121,10 @@ extension Coupon {
         case .percent:
             let percentFormatter = NumberFormatter()
             percentFormatter.numberStyle = .percent
+            percentFormatter.maximumFractionDigits = 2
+            percentFormatter.multiplier = 1
             if let amountDouble = Double(amount) {
-                let amountNumber = NSNumber(value: amountDouble / 100)
+                let amountNumber = NSNumber(value: amountDouble)
                 amountString = percentFormatter.string(from: amountNumber) ?? ""
             }
         case .fixedCart, .fixedProduct:

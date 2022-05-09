@@ -49,6 +49,7 @@ final class OrderDetailsDataSource: NSObject {
             isOrderCurrencyEligibleForCardPayment() &&
             isOrderStatusEligibleForCardPayment() &&
             isOrderPaymentMethodEligibleForCardPayment() &&
+            hasCardPresentEligiblePaymentGatewayAccount() &&
             !orderContainsAnySubscription()
     }
 
@@ -1540,6 +1541,16 @@ private extension OrderDetailsDataSource {
         case .unknown:
             return false
         }
+    }
+
+    func hasCardPresentEligiblePaymentGatewayAccount() -> Bool {
+        let accounts = resultsControllers.paymentGatewayAccounts
+
+        guard accounts.count <= 1 else {
+            return false
+        }
+
+        return resultsControllers.paymentGatewayAccounts.contains(where: \.isCardPresentEligible)
     }
 
     func orderContainsAnySubscription() -> Bool {

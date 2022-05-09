@@ -4,32 +4,21 @@ import Yosemite
 import protocol Storage.StorageManagerType
 
 final class CardPresentPaymentEligibilityDeterminer {
-    private let storageManager: StorageManagerType
-    private let order: Order
-    /// IPP Configuration
-    private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
     private lazy var currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
-    init(order: Order,
-         cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
-        self.order = order
-        self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
-        self.storageManager = storageManager
-    }
-
     func isEligibleForCardPresentPayment(order: Order,
+                                         cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
                                          accounts: [PaymentGatewayAccount],
                                          products: [Product]) -> Bool {
-            isOrderAmountEligibleForCardPayment() &&
-            isOrderCurrencyEligibleForCardPayment() &&
-            isOrderStatusEligibleForCardPayment() &&
-            isOrderPaymentMethodEligibleForCardPayment() &&
-            hasCardPresentEligiblePaymentGatewayAccount(from: accounts) &&
-        !orderContainsAnySubscription(from: products)
+        isOrderAmountEligibleForCardPayment(order) &&
+        isOrderCurrencyEligibleForCardPayment(order, cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration) &&
+        isOrderStatusEligibleForCardPayment(order) &&
+        isOrderPaymentMethodEligibleForCardPayment(order) &&
+        hasCardPresentEligiblePaymentGatewayAccount(from: accounts) &&
+        !orderContainsAnySubscription(from: products, order: order)
     }
 
-    private func isOrderAmountEligibleForCardPayment() -> Bool {
+    private func isOrderAmountEligibleForCardPayment(_ order: Order) -> Bool {
         // If the order is paid, it is not eligible.
         guard order.datePaid == nil else {
             return false
@@ -48,18 +37,18 @@ final class CardPresentPaymentEligibilityDeterminer {
         return !paymentViewModel.hasBeenPartiallyCharged
     }
 
-    private func isOrderCurrencyEligibleForCardPayment() -> Bool {
+    private func isOrderCurrencyEligibleForCardPayment(_ order: Order, cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration) -> Bool {
         guard let currency = CurrencyCode(caseInsensitiveRawValue: order.currency) else {
             return false
         }
         return cardPresentPaymentsConfiguration.currencies.contains(currency)
     }
 
-    private func isOrderStatusEligibleForCardPayment() -> Bool {
+    private func isOrderStatusEligibleForCardPayment(_ order: Order) -> Bool {
         (order.status == .pending || order.status == .onHold || order.status == .processing)
     }
 
-    private func isOrderPaymentMethodEligibleForCardPayment() -> Bool {
+    private func isOrderPaymentMethodEligibleForCardPayment(_ order: Order) -> Bool {
         let paymentMethod = OrderPaymentMethod(rawValue: order.paymentMethodID)
         switch paymentMethod {
         case .booking, .cod, .woocommercePayments, .none:
@@ -73,7 +62,7 @@ final class CardPresentPaymentEligibilityDeterminer {
         accounts.contains(where: \.isCardPresentEligible)
     }
 
-    private func orderContainsAnySubscription(from products: [Product]) -> Bool {
+    private func orderContainsAnySubscription(from products: [Product], order: Order) -> Bool {
         order.items.contains { item in
             let product = products.filter({ item.productID == $0.productID }).first
             return product?.productType == .subscription

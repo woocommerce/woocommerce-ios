@@ -46,6 +46,7 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var isEligibleForCardPresentPayment: Bool {
         cardPresentPaymentEligibilityDeterminer.isEligibleForCardPresentPayment(order: order,
+                                                                                cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration,
                                                                                 accounts: resultsControllers.paymentGatewayAccounts,
                                                                                 products: resultsControllers.products)
     }
@@ -221,16 +222,14 @@ final class OrderDetailsDataSource: NSObject {
     init(order: Order,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
-         refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol = OrderRefundsOptionsDeterminer()) {
+         refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol = OrderRefundsOptionsDeterminer(),
+         cardPresentPaymentEligibilityDeterminer: CardPresentPaymentEligibilityDeterminer = CardPresentPaymentEligibilityDeterminer()) {
         self.storageManager = storageManager
         self.order = order
         self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
         self.couponLines = order.coupons
         self.refundableOrderItemsDeterminer = refundableOrderItemsDeterminer
-        self.cardPresentPaymentEligibilityDeterminer = CardPresentPaymentEligibilityDeterminer(
-            order: order,
-            cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration
-        )
+        self.cardPresentPaymentEligibilityDeterminer = cardPresentPaymentEligibilityDeterminer
 
         super.init()
     }

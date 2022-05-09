@@ -15,7 +15,7 @@ final class AddEditCouponViewModel: ObservableObject {
 
     private let discountType: Coupon.DiscountType
 
-    private let onCompletion: ((Result<Coupon, Error>) -> Void)?
+    private let onCompletion: ((Result<Coupon, Error>) -> Void)
 
     /// Defines the current notice that should be shown.
     /// Defaults to `nil`.
@@ -149,7 +149,7 @@ final class AddEditCouponViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          timezone: TimeZone = .siteTimezone,
-         onCompletion: ((Result<Coupon, Error>) -> Void)? = nil) {
+         onCompletion: @escaping ((Result<Coupon, Error>) -> Void)) {
         self.siteID = siteID
         editingOption = .creation
         self.discountType = discountType
@@ -174,7 +174,7 @@ final class AddEditCouponViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          timezone: TimeZone = .siteTimezone,
-         onCompletion: ((Result<Coupon, Error>) -> Void)? = nil) {
+         onCompletion: @escaping ((Result<Coupon, Error>) -> Void)) {
         siteID = existingCoupon.siteID
         coupon = existingCoupon
         editingOption = .editing
@@ -216,7 +216,7 @@ final class AddEditCouponViewModel: ObservableObject {
         if let validationError = validateCouponLocally(coupon) {
             notice = NoticeFactory.createCouponErrorNotice(validationError,
                                                            editingOption: editingOption)
-            onCompletion?(.failure(validationError))
+            onCompletion(.failure(validationError))
             return
         }
 
@@ -232,7 +232,7 @@ final class AddEditCouponViewModel: ObservableObject {
                                                                     editingOption: self.editingOption)
             }
             self.isLoading = false
-            self.onCompletion?(result)
+            self.onCompletion(result)
         }
         stores.dispatch(action)
     }

@@ -77,7 +77,7 @@ final class AddEditCouponViewModel: ObservableObject {
     ///
     var expiryDateValue: TitleAndValueRow.Value {
         guard expiryDateField == nil else {
-            return .content(expiryDateField?.toString(dateStyle: .long, timeStyle: .none, timeZone: TimeZone.siteTimezone) ?? "")
+            return .content(expiryDateField?.toString(dateStyle: .long, timeStyle: .none, timeZone: timezone) ?? "")
         }
 
         return .placeholder(Localization.couponExpiryDatePlaceholder)
@@ -217,7 +217,7 @@ final class AddEditCouponViewModel: ObservableObject {
         }
 
         isLoading = true
-        let action = CouponAction.updateCoupon(coupon, siteTimezone: TimeZone.siteTimezone) { [weak self] result in
+        let action = CouponAction.updateCoupon(coupon, siteTimezone: timezone) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(_):
@@ -239,7 +239,7 @@ final class AddEditCouponViewModel: ObservableObject {
                      amount: amountField,
                      discountType: discountType,
                      description: descriptionField,
-                     dateExpires: expiryDateField?.startOfDay(timezone: TimeZone.siteTimezone),
+                     dateExpires: expiryDateField?.startOfDay(timezone: timezone),
                      individualUse: couponRestrictionsViewModel.individualUseOnly,
                      usageLimit: Int64(couponRestrictionsViewModel.usageLimitPerCoupon),
                      usageLimitPerUser: Int64(couponRestrictionsViewModel.usageLimitPerUser),
@@ -257,7 +257,7 @@ final class AddEditCouponViewModel: ObservableObject {
                dateModified: Date(),
                discountType: discountType,
                description: descriptionField,
-               dateExpires: expiryDateField?.startOfDay(timezone: TimeZone.siteTimezone),
+               dateExpires: expiryDateField?.startOfDay(timezone: timezone),
                usageCount: 0,
                individualUse: couponRestrictionsViewModel.individualUseOnly,
                productIds: [],

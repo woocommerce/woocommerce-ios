@@ -51,7 +51,6 @@ final class CouponSearchUICommand: SearchUICommand {
         }
 
         ServiceLocator.stores.dispatch(action)
-        // TODO: add analytics
     }
 
     func didSelectSearchResult(model: Coupon, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {

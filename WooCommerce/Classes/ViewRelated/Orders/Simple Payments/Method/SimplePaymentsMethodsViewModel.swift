@@ -22,6 +22,8 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     ///
     private let cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting
 
+    private let cardPresentPaymentEligibilityDeterminer: CardPresentPaymentEligibilityDeterminer
+
     /// Defines if the view should show a loading indicator.
     /// Currently set while marking the order as complete
     ///
@@ -60,10 +62,6 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     ///
     private let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never>
 
-    /// Observes the store's current CPP state.
-    ///
-    private let cppStoreStateObserver: CardPresentPaymentsOnboardingUseCaseProtocol
-
     /// Store manager to update order.
     ///
     private let stores: StoresManager
@@ -97,27 +95,40 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
         return controller
     }()
 
+    /// Stored products.
+    /// We need it to ascertain whether we should show the card collect payment row or not
+    ///
+    private lazy var productResultsController: ResultsController<StorageProduct> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let descriptor = NSSortDescriptor(key: "name", ascending: true)
+
+        let controller = ResultsController<StorageProduct>(storageManager: storage, matching: predicate, sortedBy: [])
+
+        try? controller.performFetch()
+        return controller
+    }()
+
     /// Retains the use-case so it can perform all of its async tasks.
     ///
     private var collectPaymentsUseCase: CollectOrderPaymentProtocol?
 
     struct Dependencies {
         let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never>
-        let cppStoreStateObserver: CardPresentPaymentsOnboardingUseCaseProtocol
         let cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting
+        let cardPresentPaymentEligibilityDeterminer: CardPresentPaymentEligibilityDeterminer
         let stores: StoresManager
         let storage: StorageManagerType
         let analytics: Analytics
 
         init(presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
-             cppStoreStateObserver: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
              cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting = CardPresentPaymentsOnboardingPresenter(),
+             cardPresentPaymentEligibilityDeterminer: CardPresentPaymentEligibilityDeterminer = CardPresentPaymentEligibilityDeterminer(),
              stores: StoresManager = ServiceLocator.stores,
              storage: StorageManagerType = ServiceLocator.storageManager,
              analytics: Analytics = ServiceLocator.analytics) {
             self.presentNoticeSubject = presentNoticeSubject
-            self.cppStoreStateObserver = cppStoreStateObserver
             self.cardPresentPaymentsOnboardingPresenter = cardPresentPaymentsOnboardingPresenter
+            self.cardPresentPaymentEligibilityDeterminer = cardPresentPaymentEligibilityDeterminer
             self.stores = stores
             self.storage = storage
             self.analytics = analytics
@@ -134,14 +145,14 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
         self.paymentLink = paymentLink
         self.formattedTotal = formattedTotal
         presentNoticeSubject = dependencies.presentNoticeSubject
-        cppStoreStateObserver = dependencies.cppStoreStateObserver
         cardPresentPaymentsOnboardingPresenter = dependencies.cardPresentPaymentsOnboardingPresenter
+        cardPresentPaymentEligibilityDeterminer = dependencies.cardPresentPaymentEligibilityDeterminer
         stores = dependencies.stores
         storage = dependencies.storage
         analytics = dependencies.analytics
         title = String(format: Localization.title, formattedTotal)
 
-        bindStoreCPPState()
+        determinePayWithCardRowVisibility()
     }
 
     /// Creates the info text when the merchant selects the cash payment method.
@@ -252,15 +263,18 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
 // MARK: Helpers
 private extension SimplePaymentsMethodsViewModel {
 
-    /// Observes the store CPP state and update publish variables accordingly.
+    /// Determines whether we should show the card payment row and update publish variables accordingly.
     ///
-    func bindStoreCPPState() {
-        cppStoreStateObserver
-            .statePublisher
-            .map { $0.isCompleted }
-            .removeDuplicates()
-            .assign(to: &$showPayWithCardRow)
-        cppStoreStateObserver.refresh()
+    func determinePayWithCardRowVisibility() {
+        guard let order = ordersResultController.fetchedObjects.first else {
+            return showPayWithCardRow = false
+        }
+
+        showPayWithCardRow = cardPresentPaymentEligibilityDeterminer
+            .isEligibleForCardPresentPayment(order: order,
+                                             cardPresentPaymentsConfiguration: CardPresentConfigurationLoader().configuration,
+                                             accounts: gatewayAccountResultsController.fetchedObjects,
+                                             products: productResultsController.fetchedObjects)
     }
 
     /// Tracks the `simplePaymentsFlowCompleted` event.

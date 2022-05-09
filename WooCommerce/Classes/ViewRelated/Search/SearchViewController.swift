@@ -357,9 +357,11 @@ private extension SearchViewController {
         keyboardFrameObserver.startObservingKeyboardFrame()
     }
 
+    /// Handles debouncing search upon update of search query to optimize search requests.
+    ///
     func configureSearchFunctionality() {
         searchQuerySubscription = $searchQuery
-            .dropFirst()
+            .dropFirst() // ignores initial value as it's not user's input
             .removeDuplicates()
             .debounce(for: .milliseconds(Settings.searchDebounceTime), scheduler: DispatchQueue.main)
             .sink { [weak self] query in

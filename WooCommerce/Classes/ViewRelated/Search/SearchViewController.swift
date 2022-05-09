@@ -361,7 +361,7 @@ private extension SearchViewController {
         searchQuerySubscription = $searchQuery
             .dropFirst()
             .removeDuplicates()
-            .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
+            .debounce(for: .milliseconds(Settings.searchDebounceTime), scheduler: DispatchQueue.main)
             .sink { [weak self] query in
                 self?.synchronizeSearchResults(with: query)
             }
@@ -578,6 +578,7 @@ private extension SearchViewController {
 private enum Settings {
     static let estimatedHeaderHeight = CGFloat(43)
     static let estimatedRowHeight = CGFloat(86)
+    static let searchDebounceTime = 500
 }
 
 

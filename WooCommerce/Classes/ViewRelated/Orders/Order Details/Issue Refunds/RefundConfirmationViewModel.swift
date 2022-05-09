@@ -86,17 +86,20 @@ final class RefundConfirmationViewModel {
         let refund = useCase.createRefund()
 
         // Submits refund.
-        let submissionUseCase = RefundSubmissionUseCase(details: .init(order: details.order,
-                                                                       charge: details.charge,
-                                                                       amount: details.amount,
-                                                                       paymentGatewayAccount: details.paymentGatewayAccount),
-                                                        rootViewController: rootViewController,
-                                                        alerts: OrderDetailsPaymentAlerts(transactionType: .refund,
-                                                                                          presentingController: rootViewController),
-                                                        currencyFormatter: currencyFormatter,
-                                                        cardPresentConfiguration: CardPresentConfigurationLoader(stores: actionProcessor).configuration,
-                                                        stores: actionProcessor,
-                                                        analytics: analytics)
+        let submissionUseCase = RefundSubmissionUseCase(
+            details: .init(order: details.order,
+                           charge: details.charge,
+                           amount: details.amount,
+                           paymentGatewayAccount: details.paymentGatewayAccount),
+            rootViewController: rootViewController,
+            alerts: OrderDetailsPaymentAlerts(transactionType: .refund,
+                                              presentingController: rootViewController),
+            cardPresentConfiguration: CardPresentConfigurationLoader(stores: actionProcessor).configuration,
+            dependencies: RefundSubmissionUseCase.Dependencies(
+                currencyFormatter: currencyFormatter,
+                stores: actionProcessor,
+                analytics: analytics))
+
         self.submissionUseCase = submissionUseCase
         submissionUseCase.submitRefund(refund,
                                        showInProgressUI: showInProgressUI,

@@ -11,10 +11,6 @@ public final class CustomerDetailsScreen: ScreenObject {
         $0.buttons["order-customer-details-done-button"]
     }
 
-    private let closeButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["Close"] //need an accessibilityIdentifier here if we keep this
-    }
-
     private let addressFormGetter: (XCUIApplication) -> XCUIElement = {
         $0.groups["order-address-form"]
     }
@@ -27,8 +23,6 @@ public final class CustomerDetailsScreen: ScreenObject {
 
     private var doneButton: XCUIElement { doneButtonGetter(app) }
 
-    private var closeButton: XCUIElement { closeButtonGetter(app) }
-
     private var addressForm: XCUIElement { addressFormGetter(app) }
 
     private var firstNameField: XCUIElement { firstNameFieldGetter(app) }
@@ -40,7 +34,7 @@ public final class CustomerDetailsScreen: ScreenObject {
    //     print(app.groups)
    //     print(app.otherElements.allElementsBoundByIndex)
         try super.init(
-            expectedElementGetters: [ closeButtonGetter, addressToggleGetter ],
+            expectedElementGetters: [ addressToggleGetter ],
             app: app
         )
     }

@@ -3,20 +3,18 @@
         "method": "POST",
         "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
         "bodyPatterns": [ {
-                "matches": ".*path=/wc/v3/orders%26_method%3Dpost.*",
+                "matches": ".*path=/wc/v3/orders/3337%26_method%3Dpost.*",
                 "equalToJson": {
                     "line_items": [{
-                        "total": "110.00",
                         "quantity": 1,
-                        "id": 0,
+                        "total": "110.00",
                         "subtotal": "110.00",
+                        "id": 1,
                         "product_id": 2129
                     }],
-                    "customer_note": "",
-                    "status": "auto-draft",
                     "fee_lines": [],
                     "shipping_lines": [],
-                    "billing": [{
+                    "billing": {
                         "first_name": "Mira",
                         "last_name": "",
                         "company": "",
@@ -28,8 +26,8 @@
                         "country": "",
                         "email": null,
                         "phone": ""
-                    }],
-                    "shipping": [{
+                    },
+                    "shipping": {
                         "first_name": "Mira",
                         "last_name": "",
                         "company": "",
@@ -41,7 +39,7 @@
                         "country": "",
                         "email": null,
                         "phone": ""
-                    }]
+                    }
                 }
         } ]
     },

@@ -145,7 +145,7 @@ private extension ProductCategoryListViewController {
                 case .initialized:
                     break
                 case .syncing:
-                    if self.viewModel.categoryViewModels.isEmpty {
+                    if models.isEmpty {
                         self.displayGhostContent()
                     }
                 case let .failed(retryToken):

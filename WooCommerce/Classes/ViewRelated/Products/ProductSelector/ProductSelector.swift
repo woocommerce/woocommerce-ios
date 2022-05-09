@@ -54,6 +54,7 @@ struct ProductSelector: View {
                     .fixedSize()
                     .renderedIf(configuration.showsFilters)
                 }
+                .padding(.horizontal, insets: safeAreaInsets)
 
                 switch viewModel.syncStatus {
                 case .results:
@@ -121,6 +122,7 @@ struct ProductSelector: View {
                 }
             }
         }
+        .navigationViewStyle(.stack)
         .wooNavigationBarStyle()
     }
 

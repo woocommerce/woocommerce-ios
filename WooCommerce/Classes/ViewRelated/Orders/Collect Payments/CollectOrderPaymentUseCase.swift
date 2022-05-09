@@ -53,7 +53,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     ///
     private let stores: StoresManager
 
-    /// Analytics manager,
+    /// Analytics manager.
     ///
     private let analytics: Analytics
 
@@ -278,6 +278,7 @@ private extension CollectOrderPaymentUseCase {
             orderTotal: orderTotal,
             paymentGatewayAccount: paymentGatewayAccount,
             paymentMethodTypes: configuration.paymentMethods.map(\.rawValue),
+            stripeSmallestCurrencyUnitMultiplier: configuration.stripeSmallestCurrencyUnitMultiplier,
             onWaitingForInput: { [weak self] in
                    // Request card input
                    self?.alerts.tapOrInsertCard(onCancel: { [weak self] in
@@ -376,16 +377,27 @@ private extension CollectOrderPaymentUseCase {
     ///
     func presentReceiptAlert(receiptParameters: CardPresentReceiptParameters, backButtonTitle: String, onCompleted: @escaping () -> ()) {
         // Present receipt alert
-        alerts.success(printReceipt: { [order, configuration] in
+        alerts.success(printReceipt: { [order, configuration, weak self] in
+            guard let self = self else { return }
+
             // Inform about flow completion.
             onCompleted()
 
             // Delegate print action
-            ReceiptActionCoordinator.printReceipt(for: order, params: receiptParameters, countryCode: configuration.countryCode)
+            ReceiptActionCoordinator.printReceipt(for: order,
+                                                  params: receiptParameters,
+                                                  countryCode: configuration.countryCode,
+                                                  cardReaderModel: self.connectedReader?.readerType.model,
+                                                  stores: self.stores,
+                                                  analytics: self.analytics)
 
-        }, emailReceipt: { [order, analytics, paymentOrchestrator, configuration] in
+        }, emailReceipt: { [order, analytics, paymentOrchestrator, configuration, weak self] in
+            guard let self = self else { return }
+
             // Record button tapped
-            analytics.track(event: .InPersonPayments.receiptEmailTapped(countryCode: configuration.countryCode))
+            analytics.track(event: .InPersonPayments
+                .receiptEmailTapped(countryCode: configuration.countryCode,
+                                    cardReaderModel: self.connectedReader?.readerType.model ?? ""))
 
             // Request & present email
             paymentOrchestrator.emailReceipt(for: order, params: receiptParameters) { [weak self] emailContent in
@@ -448,15 +460,17 @@ private extension CollectOrderPaymentUseCase {
 // MARK: MailComposer Delegate
 extension CollectOrderPaymentUseCase: MFMailComposeViewControllerDelegate {
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        let cardReaderModel = connectedReader?.readerType.model ?? ""
         switch result {
         case .cancelled:
-            analytics.track(event: .InPersonPayments.receiptEmailCanceled(countryCode: configuration.countryCode))
+            analytics.track(event: .InPersonPayments.receiptEmailCanceled(countryCode: configuration.countryCode, cardReaderModel: cardReaderModel))
         case .sent, .saved:
-            analytics.track(event: .InPersonPayments.receiptEmailSuccess(countryCode: configuration.countryCode))
+            analytics.track(event: .InPersonPayments.receiptEmailSuccess(countryCode: configuration.countryCode, cardReaderModel: cardReaderModel))
         case .failed:
             analytics.track(event: .InPersonPayments
                 .receiptEmailFailed(error: error ?? UnknownEmailError(),
-                                    countryCode: configuration.countryCode))
+                                    countryCode: configuration.countryCode,
+                                    cardReaderModel: cardReaderModel))
         @unknown default:
             assertionFailure("MFMailComposeViewController finished with an unknown result type")
         }

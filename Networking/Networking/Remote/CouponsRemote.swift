@@ -24,9 +24,13 @@ public protocol CouponsRemoteProtocol {
                       couponID: Int64,
                       completion: @escaping (Result<Coupon, Error>) -> Void)
 
-    func updateCoupon(_ coupon: Coupon, completion: @escaping (Result<Coupon, Error>) -> Void)
+    func updateCoupon(_ coupon: Coupon,
+                      siteTimezone: TimeZone?,
+                      completion: @escaping (Result<Coupon, Error>) -> Void)
 
-    func createCoupon(_ coupon: Coupon, completion: @escaping (Result<Coupon, Error>) -> Void)
+    func createCoupon(_ coupon: Coupon,
+                      siteTimezone: TimeZone?,
+                      completion: @escaping (Result<Coupon, Error>) -> Void)
 
     func loadCouponReport(for siteID: Int64,
                           couponID: Int64,
@@ -139,11 +143,19 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
     ///
     /// - Parameters:
     ///     - coupon: The coupon to be updated remotely.
+    ///     - siteTimezone: the timezone configured on the site (also know as local time of the site).
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func updateCoupon(_ coupon: Coupon, completion: @escaping (Result<Coupon, Error>) -> Void) {
+    public func updateCoupon(_ coupon: Coupon,
+                             siteTimezone: TimeZone? = nil,
+                             completion: @escaping (Result<Coupon, Error>) -> Void) {
         do {
-            let parameters = try coupon.toDictionary(keyEncodingStrategy: .convertToSnakeCase)
+            let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
+            if let siteTimezone = siteTimezone {
+                dateFormatter.timeZone = siteTimezone
+            }
+
+            let parameters = try coupon.toDictionary(keyEncodingStrategy: .convertToSnakeCase, dateFormatter: dateFormatter)
             let couponID = coupon.couponID
             let siteID = coupon.siteID
             let path = Path.coupons + "/\(couponID)"
@@ -162,11 +174,19 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
     ///
     /// - Parameters:
     ///     - coupon: The coupon to be created remotely.
+    ///     - siteTimezone: the timezone configured on the site (also know as local time of the site).
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func createCoupon(_ coupon: Coupon, completion: @escaping (Result<Coupon, Error>) -> Void) {
+    public func createCoupon(_ coupon: Coupon,
+                             siteTimezone: TimeZone? = nil,
+                             completion: @escaping (Result<Coupon, Error>) -> Void) {
         do {
-            let parameters = try coupon.toDictionary()
+            let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
+            if let siteTimezone = siteTimezone {
+                dateFormatter.timeZone = siteTimezone
+            }
+
+            let parameters = try coupon.toDictionary(keyEncodingStrategy: .convertToSnakeCase, dateFormatter: dateFormatter)
             let siteID = coupon.siteID
             let path = Path.coupons
             let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)

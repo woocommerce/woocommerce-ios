@@ -26,7 +26,6 @@ final class InPersonPaymentsViewModel: ObservableObject {
             })
             .handleEvents(receiveOutput: trackState(_:))
             .assign(to: &$state)
-        refresh()
     }
 
     /// Initializes the view model with a fixed state that never changes.

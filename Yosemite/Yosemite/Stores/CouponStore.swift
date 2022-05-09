@@ -60,10 +60,10 @@ public final class CouponStore: Store {
                                onCompletion: onCompletion)
         case .deleteCoupon(let siteID, let couponID, let onCompletion):
             deleteCoupon(siteID: siteID, couponID: couponID, onCompletion: onCompletion)
-        case .updateCoupon(let coupon, let onCompletion):
-            updateCoupon(coupon, onCompletion: onCompletion)
-        case .createCoupon(let coupon, let onCompletion):
-            createCoupon(coupon, onCompletion: onCompletion)
+        case .updateCoupon(let coupon, let siteTimezone, let onCompletion):
+            updateCoupon(coupon, siteTimezone: siteTimezone, onCompletion: onCompletion)
+        case .createCoupon(let coupon, let siteTimezone, let onCompletion):
+            createCoupon(coupon, siteTimezone: siteTimezone, onCompletion: onCompletion)
         case .loadCouponReport(let siteID, let couponID, let startDate, let onCompletion):
             loadCouponReport(siteID: siteID, couponID: couponID, startDate: startDate, onCompletion: onCompletion)
         case .searchCoupons(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
@@ -150,10 +150,13 @@ private extension CouponStore {
     /// After the API request succeeds, the stored coupon should be updated accordingly.
     /// - Parameters:
     ///   - coupon: The coupon to be updated
+    ///   - siteTimezone: the timezone configured on the site (also know as local time of the site).
     ///   - onCompletion: Closure to call after update is complete. Called on the main thread.
     ///
-    func updateCoupon(_ coupon: Coupon, onCompletion: @escaping (Result<Coupon, Error>) -> Void) {
-        remote.updateCoupon(coupon) { [weak self] result in
+    func updateCoupon(_ coupon: Coupon,
+                      siteTimezone: TimeZone? = nil,
+                      onCompletion: @escaping (Result<Coupon, Error>) -> Void) {
+        remote.updateCoupon(coupon, siteTimezone: siteTimezone) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .failure(let error):
@@ -170,10 +173,13 @@ private extension CouponStore {
     /// After the API request succeeds, a new stored coupon should be inserted into the local storage.
     /// - Parameters:
     ///   - coupon: The coupon to be created
+    ///   - siteTimezone: the timezone configured on the site (also know as local time of the site).
     ///   - onCompletion: Closure to call after creation is complete. Called on the main thread.
     ///
-    func createCoupon(_ coupon: Coupon, onCompletion: @escaping (Result<Coupon, Error>) -> Void) {
-        remote.createCoupon(coupon) { [weak self] result in
+    func createCoupon(_ coupon: Coupon,
+                      siteTimezone: TimeZone? = nil,
+                      onCompletion: @escaping (Result<Coupon, Error>) -> Void) {
+        remote.createCoupon(coupon, siteTimezone: siteTimezone) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .failure(let error):

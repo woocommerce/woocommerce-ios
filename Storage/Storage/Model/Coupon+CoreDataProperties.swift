@@ -19,9 +19,9 @@ extension Coupon {
     @NSManaged public var dateExpires: Date?
     @NSManaged public var usageCount: Int64
     @NSManaged public var individualUse: Bool
-    @NSManaged public var usageLimit: Int64
-    @NSManaged public var usageLimitPerUser: Int64
-    @NSManaged public var limitUsageToXItems: Int64
+    @NSManaged public var usageLimit: NSNumber?
+    @NSManaged public var usageLimitPerUser: NSNumber?
+    @NSManaged public var limitUsageToXItems: NSNumber?
     @NSManaged public var freeShipping: Bool
     @NSManaged public var excludeSaleItems: Bool
     @NSManaged public var minimumAmount: String?

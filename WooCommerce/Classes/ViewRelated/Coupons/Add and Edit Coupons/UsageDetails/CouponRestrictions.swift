@@ -4,10 +4,14 @@ struct CouponRestrictions: View {
 
     @State private var showingAllowedEmails: Bool = false
     @State private var showingExcludeProducts: Bool = false
+    @State private var showingExcludeCategories: Bool = false
     @ObservedObject private var viewModel: CouponRestrictionsViewModel
 
     // Tracks the scale of the view due to accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
+
+    private let categorySelectorConfig = ProductCategorySelector.Configuration.excludedCategories
+    private let categoryListConfig = ProductCategoryListViewController.Configuration(searchEnabled: true, clearSelectionEnabled: true)
 
     init(viewModel: CouponRestrictionsViewModel) {
         self.viewModel = viewModel
@@ -21,7 +25,8 @@ struct CouponRestrictions: View {
                         TitleAndTextFieldRow(title: String.localizedStringWithFormat(Localization.minimumSpend, viewModel.currencySymbol),
                                              placeholder: Localization.none,
                                              text: $viewModel.minimumSpend,
-                                             keyboardType: .decimalPad)
+                                             keyboardType: .decimalPad,
+                                             inputFormatter: CouponAmountInputFormatter())
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()
                             .padding(.leading, Constants.margin)
@@ -29,7 +34,8 @@ struct CouponRestrictions: View {
                         TitleAndTextFieldRow(title: String.localizedStringWithFormat(Localization.maximumSpend, viewModel.currencySymbol),
                                              placeholder: Localization.none,
                                              text: $viewModel.maximumSpend,
-                                             keyboardType: .decimalPad)
+                                             keyboardType: .decimalPad,
+                                             inputFormatter: CouponAmountInputFormatter())
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()
                             .padding(.leading, Constants.margin)
@@ -37,7 +43,8 @@ struct CouponRestrictions: View {
                         TitleAndTextFieldRow(title: Localization.usageLimitPerCoupon,
                                              placeholder: Localization.unlimited,
                                              text: $viewModel.usageLimitPerCoupon,
-                                             keyboardType: .asciiCapableNumberPad)
+                                             keyboardType: .asciiCapableNumberPad,
+                                             inputFormatter: IntegerInputFormatter(defaultValue: ""))
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()
                             .padding(.leading, Constants.margin)
@@ -45,7 +52,8 @@ struct CouponRestrictions: View {
                         TitleAndTextFieldRow(title: Localization.usageLimitPerUser,
                                              placeholder: Localization.unlimited,
                                              text: $viewModel.usageLimitPerUser,
-                                             keyboardType: .asciiCapableNumberPad)
+                                             keyboardType: .asciiCapableNumberPad,
+                                             inputFormatter: IntegerInputFormatter(defaultValue: ""))
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()
                             .padding(.leading, Constants.margin)
@@ -57,7 +65,8 @@ struct CouponRestrictions: View {
                         TitleAndTextFieldRow(title: Localization.limitUsageToXItems,
                                              placeholder: Localization.allQualifyingInCart,
                                              text: $viewModel.limitUsageToXItems,
-                                             keyboardType: .asciiCapableNumberPad)
+                                             keyboardType: .asciiCapableNumberPad,
+                                             inputFormatter: IntegerInputFormatter(defaultValue: ""))
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()
                             .padding(.leading, Constants.margin)
@@ -115,22 +124,22 @@ struct CouponRestrictions: View {
                         showingExcludeProducts = true
                     }) {
                         HStack {
-                            Image(uiImage: UIImage.plusImage)
+                            Image(uiImage: viewModel.excludeProductsButtonIcon)
                                 .resizable()
                                 .frame(width: Constants.plusIconSize * scale, height: Constants.plusIconSize * scale)
-                            Text(Localization.excludeProducts)
+                            Text(viewModel.excludeProductsTitle)
                         }
                     }
                     .buttonStyle(SecondaryButtonStyle(labelFont: .body))
 
                     Button(action: {
-                        // TODO: show category selection
+                        showingExcludeCategories = true
                     }) {
                         HStack {
-                            Image(uiImage: UIImage.plusImage)
+                            Image(uiImage: viewModel.excludeCategoriesButtonIcon)
                                 .resizable()
                                 .frame(width: Constants.plusIconSize * scale, height: Constants.plusIconSize * scale)
-                            Text(Localization.excludeProductCategories)
+                            Text(viewModel.excludeCategoriesButtonTitle)
                         }
                     }
                     .buttonStyle(SecondaryButtonStyle(labelFont: .body))
@@ -150,7 +159,12 @@ struct CouponRestrictions: View {
                         viewModel.productSelectorViewModel.clearSearchAndFilters()
                     }
             }
-
+            .sheet(isPresented: $showingExcludeCategories) {
+                ProductCategorySelector(isPresented: $showingExcludeCategories,
+                                        viewConfig: categorySelectorConfig,
+                                        categoryListConfig: categoryListConfig,
+                                        viewModel: viewModel.categorySelectorViewModel)
+            }
             LazyNavigationLink(destination: CouponAllowedEmails(emailFormats: $viewModel.allowedEmails), isActive: $showingAllowedEmails) {
                 EmptyView()
             }
@@ -170,71 +184,63 @@ private extension CouponRestrictions {
     enum Localization {
         static let usageRestriction = NSLocalizedString(
             "Usage Restrictions",
-            comment: "Title for the usage restrictions section on coupon usage details screen"
+            comment: "Title for the usage restrictions section on coupon usage restrictions screen"
         )
         static let minimumSpend = NSLocalizedString(
             "Min. Spend (%1$@)",
-            comment: "Title for the minimum spend row on coupon usage details screen with currency symbol within the brackets. " +
+            comment: "Title for the minimum spend row on coupon usage restrictions screen with currency symbol within the brackets. " +
             "Reads like: Min. Spend ($)"
         )
         static let maximumSpend = NSLocalizedString(
             "Max. Spend (%1$@)",
-            comment: "Title for the maximum spend row on coupon usage details screen with currency symbol within the brackets. " +
+            comment: "Title for the maximum spend row on coupon usage restrictions screen with currency symbol within the brackets. " +
             "Reads like: Max. Spend ($)"
         )
         static let usageLimitPerCoupon = NSLocalizedString(
             "Usage Limit Per Coupon",
-            comment: "Title for the usage limit per coupon row in coupon usage details screen."
+            comment: "Title for the usage limit per coupon row in coupon usage restrictions screen."
         )
         static let usageLimitPerUser = NSLocalizedString(
             "Usage Limit Per User",
-            comment: "Title for the usage limit per user row in coupon usage details screen."
+            comment: "Title for the usage limit per user row in coupon usage restrictions screen."
         )
         static let limitUsageToXItems = NSLocalizedString(
             "Limit Usage to X Items",
-            comment: "Title for the limit usage to X items row in coupon usage details screen."
+            comment: "Title for the limit usage to X items row in coupon usage restrictions screen."
         )
         static let allowedEmails = NSLocalizedString(
             "Allowed Emails",
-            comment: "Title for the allowed email row in coupon usage details screen."
+            comment: "Title for the allowed email row in coupon usage restrictions screen."
         )
         static let individualUseOnly = NSLocalizedString(
             "Individual Use Only",
-            comment: "Title for the individual use only row in coupon usage details screen."
+            comment: "Title for the individual use only row in coupon usage restrictions screen."
         )
         static let individualUseDescription = NSLocalizedString(
             "Turn this on if the coupon cannot be used in conjunction with other coupons.",
-            comment: "Description for the individual use only row in coupon usage details screen."
+            comment: "Description for the individual use only row in coupon usage restrictions screen."
         )
         static let excludeSaleItems = NSLocalizedString(
             "Exclude Sale Items",
-            comment: "Title for the exclude sale items row in coupon usage details screen."
+            comment: "Title for the exclude sale items row in coupon usage restrictions screen."
         )
         static let excludeSaleItemsDescription = NSLocalizedString(
             "Turn this on if the coupon should not apply to items on sale. " +
             "Per-item coupons will only work if the item is not on sale. " +
             "Per-cart coupons will only work if there are items in the cart that are not on sale.",
-            comment: "Description for the exclude sale items row in coupon usage details screen."
+            comment: "Description for the exclude sale items row in coupon usage restrictions screen."
         )
-        static let none = NSLocalizedString("None", comment: "Value for fields in Coupon Usage Details screen when no value is set")
-        static let unlimited = NSLocalizedString("Unlimited", comment: "Value for fields in Coupon Usage Details screen when no limit is set")
+        static let none = NSLocalizedString("None", comment: "Value for fields in Coupon Usage Restrictions screen when no value is set")
+        static let unlimited = NSLocalizedString("Unlimited", comment: "Value for fields in Coupon Usage Restrictions screen when no limit is set")
         static let allQualifyingInCart = NSLocalizedString(
             "All Qualifying",
-            comment: "Value for the limit usage to X items row in Coupon Usage Details screen when no limit is set"
+            comment: "Value for the limit usage to X items row in Coupon Usage Restrictions screen when no limit is set"
         )
         static let noRestrictions = NSLocalizedString(
             "No Restrictions",
-            comment: "Value for the allowed emails row in Coupon Usage Details screen when no restriction is set"
+            comment: "Value for the allowed emails row in Coupon Usage Restrictions screen when no restriction is set"
         )
-        static let exclusions = NSLocalizedString("Exclusions", comment: "Title of the exclusions section in Coupon Usage Details screen")
-        static let excludeProducts = NSLocalizedString(
-            "Exclude Products",
-            comment: "Title of the action button to add products to the exclusion list in Coupon Usage Details screen"
-        )
-        static let excludeProductCategories = NSLocalizedString(
-            "Exclude Product Categories",
-            comment: "Title of the action button to add product categories to the exclusion list in Coupon Usage Details screen"
-        )
+        static let exclusions = NSLocalizedString("Exclusions", comment: "Title of the exclusions section in Coupon Usage Restrictions screen")
     }
 }
 
@@ -278,5 +284,25 @@ private extension ProductSelector.Configuration {
             comment: "Title of the action button at the bottom of the Exclude Products screen " +
             "when more than 1 item is selected, reads like: Exclude 5 Products"
         )
+    }
+}
+
+private extension ProductCategorySelector.Configuration {
+    static let excludedCategories: Self = .init(
+        title: Localization.title,
+        doneButtonSingularFormat: Localization.doneSingularFormat,
+        doneButtonPluralFormat: Localization.donePluralFormat
+    )
+
+    enum Localization {
+        static let title = NSLocalizedString("Exclude categories", comment: "Title for the Exclude Categories screen")
+        static let doneSingularFormat = NSLocalizedString(
+            "Exclude %1$d Category",
+            comment: "Button to submit selection on the Exclude Categories screen when 1 item is selected")
+        static let donePluralFormat = NSLocalizedString(
+            "Exclude %1$d Categories",
+            comment: "Button to submit selection on the Exclude Categories screen " +
+            "when more than 1 item is selected. " +
+            "Reads like: Exclude 10 Categories")
     }
 }

@@ -10,6 +10,11 @@ public struct PaymentIntentParameters {
     @CurrencyCode
     public private(set) var currency: String
 
+    /// The amount of the payment needs to be provided in the currency’s smallest unit, determined by Stripe.
+    /// We calculate that amount for each currency multiplying the original amount by this value.
+    /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPPaymentIntentParameters.html#/c:objc(cs)SCPPaymentIntentParameters(py)amount
+    public let stripeSmallestCurrencyUnitMultiplier: Decimal
+
     /// The base fee to charge the Merchant for the payment. This is for client-side transactions, e.g. Interac, and will
     /// be overridden server-side for transactions which are captured on the Server.
     public let applicationFee: Decimal?
@@ -44,6 +49,7 @@ public struct PaymentIntentParameters {
 
     public init(amount: Decimal,
                 currency: String,
+                stripeSmallestCurrencyUnitMultiplier: Decimal,
                 applicationFee: Decimal? = nil,
                 receiptDescription: String? = nil,
                 statementDescription: String? = nil,
@@ -52,6 +58,7 @@ public struct PaymentIntentParameters {
                 metadata: [AnyHashable: Any]? = nil) {
         self.amount = amount
         self.currency = currency
+        self.stripeSmallestCurrencyUnitMultiplier = stripeSmallestCurrencyUnitMultiplier
         self.applicationFee = applicationFee
         self.receiptDescription = receiptDescription
         self.statementDescription = statementDescription

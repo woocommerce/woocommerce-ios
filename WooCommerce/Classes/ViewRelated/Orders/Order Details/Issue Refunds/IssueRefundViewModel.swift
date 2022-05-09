@@ -64,6 +64,11 @@ final class IssueRefundViewModel {
     ///
     var onChange: (() -> (Void))?
 
+    /// This closure is executed when fetching the charge details failed.
+    /// Implement the input parameter with a closure to be execured when the user wants to retry the fetch action.
+    ///
+    var showFetchChargeErrorNotice: ((@escaping (() -> Void)) -> (Void))?
+
     /// Title for the navigation bar
     ///
     private(set) var title: String = ""
@@ -163,7 +168,6 @@ final class IssueRefundViewModel {
         selectedItemsTitle = createSelectedItemsCount()
         hasUnsavedChanges = calculatePendingChangesState()
         observeCharge()
-        fetchCharge()
     }
 
     /// Creates the `ViewModel` to be used when navigating to the page where the user can
@@ -231,6 +235,12 @@ extension IssueRefundViewModel {
         }
 
         trackSelectAllButtonTapped()
+    }
+
+    /// Fetches the necessary information to show the issue refund screen.
+    ///
+    func fetch() {
+        fetchCharge()
     }
 }
 
@@ -310,7 +320,16 @@ private extension IssueRefundViewModel {
         let setPaymentGatewayAccountAction = CardPresentPaymentAction.use(paymentGatewayAccount: paymentGatewayAccount)
         stores.dispatch(setPaymentGatewayAccountAction)
 
-        let action = CardPresentPaymentAction.fetchWCPayCharge(siteID: state.order.siteID, chargeID: chargeID, onCompletion: { _ in })
+        let action = CardPresentPaymentAction.fetchWCPayCharge(siteID: state.order.siteID, chargeID: chargeID, onCompletion: { [weak self] result in
+            if case .failure = result {
+                self?.state.fetchChargeError = .requestError
+
+                self?.showFetchChargeErrorNotice?({ [weak self] in
+                    self?.fetchCharge()
+                })
+            }
+        })
+
         stores.dispatch(action)
     }
 }
@@ -522,6 +541,7 @@ extension IssueRefundViewModel {
     /// Error from fetching refund charge details.
     enum FetchChargeError: Error, Equatable {
         case unknownPaymentGatewayAccount
+        case requestError
     }
 }
 

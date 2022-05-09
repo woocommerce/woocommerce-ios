@@ -2,7 +2,8 @@
 import UIKit
 
 /// Mock for `OrderDetailsPaymentAlertsProtocol`.
-final class MockOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
+final class MockOrderDetailsPaymentAlerts {
+    // Public closures to mock alert actions and properties for assertions.
     var cancelReaderIsReadyAlert: (() -> Void)?
 
     var cancelTapOrInsertCardAlert: (() -> Void)?
@@ -12,6 +13,12 @@ final class MockOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
     var dismissErrorCompletion: (() -> Void)?
     var nonRetryableErrorWasCalled = false
 
+    // Success alert.
+    var printReceiptFromSuccessAlert: (() -> Void)?
+    var emailReceiptFromSuccessAlert: (() -> Void)?
+}
+
+extension MockOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
     func presentViewModel(viewModel: CardPresentPaymentsModalViewModel) {
         // no-op
     }
@@ -33,7 +40,8 @@ final class MockOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
     }
 
     func success(printReceipt: @escaping () -> Void, emailReceipt: @escaping () -> Void, noReceiptTitle: String, noReceiptAction: @escaping () -> Void) {
-        // no-op
+        printReceiptFromSuccessAlert = printReceipt
+        emailReceiptFromSuccessAlert = emailReceipt
     }
 
     func error(error: Error, tryAgain: @escaping () -> Void, dismissCompletion: @escaping () -> Void) {

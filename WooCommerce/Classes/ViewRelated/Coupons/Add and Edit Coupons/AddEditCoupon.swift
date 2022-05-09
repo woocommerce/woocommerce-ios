@@ -11,6 +11,7 @@ struct AddEditCoupon: View {
     @State private var showingCouponExpiryDate: Bool = false
     @State private var showingCouponRestrictions: Bool = false
     @State private var showingSelectProducts: Bool = false
+    @State private var showingSelectCategories: Bool = false
     @Environment(\.presentationMode) var presentation
 
     private var expiryDateActionSheetButtons: [Alert.Button] {
@@ -39,11 +40,11 @@ struct AddEditCoupon: View {
         return buttons
     }
 
+    private let categorySelectorConfig = ProductCategorySelector.Configuration.categoriesForCoupons
+    private let categoryListConfig = ProductCategoryListViewController.Configuration(searchEnabled: true, clearSelectionEnabled: true)
+
     init(_ viewModel: AddEditCouponViewModel) {
         self.viewModel = viewModel
-        viewModel.onCompletion = { _ in
-            // TODO: handle the new coupon or the error, refreshing the coupon detail and dismissing this view.
-        }
         //TODO: add analytics
     }
 
@@ -52,7 +53,6 @@ struct AddEditCoupon: View {
             GeometryReader { geometry in
                 ScrollView {
                     VStack (alignment: .leading, spacing: 0) {
-
                         Group {
                             ListHeaderView(text: Localization.headerCouponDetails.uppercased(), alignment: .left)
 
@@ -62,7 +62,8 @@ struct AddEditCoupon: View {
                                                      text: $viewModel.amountField,
                                                      editable: true,
                                                      fieldAlignment: .leading,
-                                                     keyboardType: .decimalPad)
+                                                     keyboardType: .decimalPad,
+                                                     inputFormatter: CouponAmountInputFormatter())
                                 Divider()
                                     .padding(.leading, Constants.margin)
 
@@ -78,7 +79,8 @@ struct AddEditCoupon: View {
                                                      text: $viewModel.codeField,
                                                      editable: true,
                                                      fieldAlignment: .leading,
-                                                     keyboardType: .default)
+                                                     keyboardType: .default,
+                                                     inputFormatter: CouponCodeInputFormatter())
                                 Divider()
                                     .padding(.leading, Constants.margin)
                                     .padding(.bottom, Constants.verticalSpacing)
@@ -103,6 +105,7 @@ struct AddEditCoupon: View {
                             } label: {
                                 HStack {
                                     Image(uiImage: viewModel.editDescriptionIcon)
+                                        .resizable()
                                         .colorMultiply(Color(.text))
                                         .frame(width: Constants.iconSize, height: Constants.iconSize)
                                     Text(viewModel.editDescriptionLabel)
@@ -147,10 +150,12 @@ struct AddEditCoupon: View {
                                 showingSelectProducts = true
                             } label: {
                                 HStack {
-                                    if viewModel.productOrVariationIDs.isNotEmpty {
-                                        Image(uiImage: .pencilImage).colorMultiply(Color(.text))
+                                    if viewModel.hasSelectedProducts {
+                                        Image(uiImage: .pencilImage)
+                                            .resizable()
+                                            .colorMultiply(Color(.text))
                                             .frame(width: Constants.iconSize, height: Constants.iconSize)
-                                        Text(String.localizedStringWithFormat(Localization.editProductsButton, viewModel.productOrVariationIDs.count))
+                                        Text(viewModel.editProductsButtonTitle)
                                             .bodyStyle()
                                     } else {
                                         Text(Localization.allProductsButton)
@@ -163,14 +168,23 @@ struct AddEditCoupon: View {
                             .padding(.bottom, Constants.verticalSpacing)
 
                             Button {
-                                //TODO: handle action
+                                showingSelectCategories = true
                             } label: {
                                 HStack {
-                                    Image(uiImage: .pencilImage)
-                                        .colorMultiply(Color(.text))
-                                        .frame(width: Constants.iconSize, height: Constants.iconSize)
-                                    Text(Localization.editProductCategoriesButton)
-                                        .bodyStyle()
+                                    if viewModel.hasSelectedCategories {
+                                        Image(uiImage: .pencilImage)
+                                            .resizable()
+                                            .colorMultiply(Color(.text))
+                                            .frame(width: Constants.iconSize, height: Constants.iconSize)
+                                        Text(viewModel.editCategoriesButtonTitle)
+                                            .bodyStyle()
+                                    } else {
+                                        Image(uiImage: .plusImage)
+                                            .resizable()
+                                            .frame(width: Constants.iconSize, height: Constants.iconSize)
+                                        Text(Localization.selectCategoriesButton)
+                                            .bodyStyle()
+                                    }
                                 }
                             }
                             .buttonStyle(SecondaryButtonStyle())
@@ -229,6 +243,12 @@ struct AddEditCoupon: View {
                         viewModel.productSelectorViewModel.clearSearchAndFilters()
                     }
             }
+            .sheet(isPresented: $showingSelectCategories) {
+                ProductCategorySelector(isPresented: $showingSelectCategories,
+                                        viewConfig: categorySelectorConfig,
+                                        categoryListConfig: categoryListConfig,
+                                        viewModel: viewModel.categorySelectorViewModel)
+            }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(Localization.cancelButton, action: {
@@ -236,6 +256,7 @@ struct AddEditCoupon: View {
                     })
                 }
             }
+            .notice($viewModel.notice)
             .navigationTitle(viewModel.title)
             .navigationBarTitleDisplayMode(.large)
             .wooNavigationBarStyle()
@@ -284,13 +305,9 @@ private extension AddEditCoupon {
         static let allProductsButton = NSLocalizedString(
             "All Products",
             comment: "Button indicating that coupon can be applied to all products in the view for adding or editing a coupon.")
-        static let editProductsButton = NSLocalizedString(
-            "Edit Products (%1$d)",
-            comment: "Button specifying the number of products applicable to a coupon in the view for adding or editing a coupon. " +
-            "Reads like: Edit Products (2)")
-        static let editProductCategoriesButton = NSLocalizedString(
-            "Edit Product Categories",
-            comment: "Button for specify the product categories where a coupon can be applied in the view for adding or editing a coupon.")
+        static let selectCategoriesButton = NSLocalizedString(
+            "Select Product Categories",
+            comment: "Button to select specific categories applicable for a coupon in the view for adding or editing a coupon.")
         static let headerUsageDetails = NSLocalizedString(
             "Usage Details",
             comment: "Header of the section usage details in the view for adding or editing a coupon.")
@@ -320,7 +337,7 @@ struct AddEditCoupon_Previews: PreviewProvider {
 
         /// Edit Coupon
         ///
-        let editingViewModel = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon)
+        let editingViewModel = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon, onCompletion: { _ in })
         AddEditCoupon(editingViewModel)
     }
 }
@@ -355,5 +372,25 @@ private extension ProductSelector.Configuration {
             comment: "Title of the action button at the bottom of the Select Products screen " +
             "when more than 1 item is selected, reads like: Select 5 Products"
         )
+    }
+}
+
+private extension ProductCategorySelector.Configuration {
+    static let categoriesForCoupons: Self = .init(
+        title: Localization.title,
+        doneButtonSingularFormat: Localization.doneSingularFormat,
+        doneButtonPluralFormat: Localization.donePluralFormat
+    )
+
+    enum Localization {
+        static let title = NSLocalizedString("Select categories", comment: "Title for the Select Categories screen")
+        static let doneSingularFormat = NSLocalizedString(
+            "Select %1$d Category",
+            comment: "Button to submit selection on the Select Categories screen when 1 item is selected")
+        static let donePluralFormat = NSLocalizedString(
+            "Select %1$d Categories",
+            comment: "Button to submit selection on the Select Categories screen " +
+            "when more than 1 item is selected. " +
+            "Reads like: Select 10 Categories")
     }
 }

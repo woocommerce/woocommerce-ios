@@ -6,16 +6,14 @@ import protocol Storage.StorageManagerType
 final class CardPresentPaymentEligibilityDeterminer {
     private let storageManager: StorageManagerType
     private let order: Order
-    private let currencyFormatter: CurrencyFormatter
     /// IPP Configuration
     private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
+    private lazy var currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
     init(order: Order,
-         currencyFormatter: CurrencyFormatter,
          cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.order = order
-        self.currencyFormatter = currencyFormatter
         self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
         self.storageManager = storageManager
     }

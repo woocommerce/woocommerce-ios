@@ -24,8 +24,6 @@ final class ProductCategoryListViewController: UIViewController, GhostableViewCo
 
     /// The controller of the view to show if the search results are empty.
     ///
-    /// - SeeAlso: State.empty
-    ///
     private lazy var emptyStateViewController: EmptyStateViewController = {
         let emptyStateViewController = EmptyStateViewController(style: .list)
         let config: EmptyStateViewController.Config = .simple(

@@ -5,36 +5,36 @@ import XCTest
 final class AddEditCouponViewModelTests: XCTestCase {
 
     func test_titleView_property_return_expected_values_on_creation_depending_on_discountType() {
-        let viewModel1 = AddEditCouponViewModel(siteID: 123, discountType: .percent)
+        let viewModel1 = AddEditCouponViewModel(siteID: 123, discountType: .percent, onCompletion: { _ in })
         XCTAssertEqual(viewModel1.title, Localization.titleCreatePercentageDiscount)
 
-        let viewModel2 = AddEditCouponViewModel(siteID: 123, discountType: .fixedCart)
+        let viewModel2 = AddEditCouponViewModel(siteID: 123, discountType: .fixedCart, onCompletion: { _ in })
         XCTAssertEqual(viewModel2.title, Localization.titleCreateFixedCartDiscount)
 
-        let viewModel3 = AddEditCouponViewModel(siteID: 123, discountType: .fixedProduct)
+        let viewModel3 = AddEditCouponViewModel(siteID: 123, discountType: .fixedProduct, onCompletion: { _ in })
         XCTAssertEqual(viewModel3.title, Localization.titleCreateFixedProductDiscount)
 
-        let viewModel4 = AddEditCouponViewModel(siteID: 123, discountType: .other)
+        let viewModel4 = AddEditCouponViewModel(siteID: 123, discountType: .other, onCompletion: { _ in })
         XCTAssertEqual(viewModel4.title, Localization.titleCreateGenericDiscount)
     }
 
     func test_titleView_property_return_expected_values_on_editing_depending_on_discountType() {
-        let viewModel1 = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(discountType: .percent))
+        let viewModel1 = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(discountType: .percent), onCompletion: { _ in })
         XCTAssertEqual(viewModel1.title, Localization.titleEditPercentageDiscount)
 
-        let viewModel2 = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(discountType: .fixedCart))
+        let viewModel2 = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(discountType: .fixedCart), onCompletion: { _ in })
         XCTAssertEqual(viewModel2.title, Localization.titleEditFixedCartDiscount)
 
-        let viewModel3 = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(discountType: .fixedProduct))
+        let viewModel3 = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(discountType: .fixedProduct), onCompletion: { _ in })
         XCTAssertEqual(viewModel3.title, Localization.titleEditFixedProductDiscount)
 
-        let viewModel4 = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(discountType: .other))
+        let viewModel4 = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(discountType: .other), onCompletion: { _ in })
         XCTAssertEqual(viewModel4.title, Localization.titleEditGenericDiscount)
     }
 
     func test_generateRandomCouponCode_populate_correctly_the_codeField() {
         // Given
-        let viewModel = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(code: ""))
+        let viewModel = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(code: ""), onCompletion: { _ in })
         XCTAssertEqual(viewModel.codeField, "")
 
         // When
@@ -49,7 +49,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
 
     func test_populatedCoupon_return_expected_coupon_during_editing() {
         // Given
-        let viewModel = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(discountType: .percent))
+        let viewModel = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(discountType: .percent), timezone: .current, onCompletion: { _ in })
         let expiryDate = Date().startOfDay(timezone: viewModel.timezone)
         XCTAssertEqual(viewModel.populatedCoupon, Coupon.sampleCoupon.copy(discountType: .percent,
                                                                            dateExpires: expiryDate))
@@ -94,7 +94,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
     func test_validateCouponLocally_return_expected_error_if_coupon_code_is_empty() {
         // Given
         let coupon = Coupon.sampleCoupon.copy(code: "")
-        let viewModel = AddEditCouponViewModel(existingCoupon: coupon)
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
 
         // When
         let result = viewModel.validateCouponLocally(coupon)
@@ -106,7 +106,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
     func test_validateCouponLocally_return_nil_if_coupon_code_is_not_empty() {
         // Given
         let coupon = Coupon.sampleCoupon.copy(code: "ABCDEF")
-        let viewModel = AddEditCouponViewModel(existingCoupon: coupon)
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
 
         // When
         let result = viewModel.validateCouponLocally(coupon)

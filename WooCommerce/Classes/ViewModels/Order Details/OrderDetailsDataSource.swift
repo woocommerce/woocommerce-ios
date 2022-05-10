@@ -48,9 +48,8 @@ final class OrderDetailsDataSource: NSObject {
         let hasCardPresentEligiblePaymentGatewayAccount = resultsControllers
             .paymentGatewayAccounts
             .contains(where: \.isCardPresentEligible)
-        let orderIsEligibleForCardPresentPayment = cardPresentPaymentEligibilityDeterminer.isEligibleForCardPresentPayment(order: order,
-                                                                                cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration,
-                                                                                products: resultsControllers.products)
+        let orderIsEligibleForCardPresentPayment = order.isEligibleForCardPresentPayment(cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration,
+                                                                                         products: resultsControllers.products)
 
         return hasCardPresentEligiblePaymentGatewayAccount && orderIsEligibleForCardPresentPayment
     }
@@ -221,19 +220,16 @@ final class OrderDetailsDataSource: NSObject {
     private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
     private let refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol
-    private let cardPresentPaymentEligibilityDeterminer: CardPresentPaymentEligibilityDeterminer
 
     init(order: Order,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
-         refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol = OrderRefundsOptionsDeterminer(),
-         cardPresentPaymentEligibilityDeterminer: CardPresentPaymentEligibilityDeterminer = CardPresentPaymentEligibilityDeterminer()) {
+         refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol = OrderRefundsOptionsDeterminer()) {
         self.storageManager = storageManager
         self.order = order
         self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
         self.couponLines = order.coupons
         self.refundableOrderItemsDeterminer = refundableOrderItemsDeterminer
-        self.cardPresentPaymentEligibilityDeterminer = cardPresentPaymentEligibilityDeterminer
 
         super.init()
     }

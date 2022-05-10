@@ -21,8 +21,6 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
 
     private var readinessSubscription: AnyCancellable?
 
-    private var subscriptions = [AnyCancellable]()
-
     init(stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
         onboardingUseCase = CardPresentPaymentsOnboardingUseCase(stores: stores)
@@ -40,7 +38,10 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
 
     private func showOnboarding(from viewController: UIViewController,
                                 readyToCollectPayment completion: @escaping (() -> ())) {
-        let onboardingViewController = InPersonPaymentsViewController(viewModel: onboardingViewModel)
+        let onboardingViewController = InPersonPaymentsViewController(viewModel: onboardingViewModel,
+                                                                      onWillDisappear: { [weak self] in
+            self?.readinessSubscription?.cancel()
+        })
         viewController.show(onboardingViewController, sender: viewController)
 
         readinessSubscription = readinessUseCase.$readiness

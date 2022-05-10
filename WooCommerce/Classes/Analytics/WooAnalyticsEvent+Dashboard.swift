@@ -10,6 +10,18 @@ extension WooAnalyticsEvent {
         static func dashboardMainStatsLoaded(timeRange: StatsTimeRangeV4) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .dashboardMainStatsLoaded, properties: [Keys.range: timeRange.analyticsValue])
         }
+
+        static func dashboardMainStatsDate(timeRange: StatsTimeRangeV4) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .dashboardMainStatsDate, properties: [Keys.range: timeRange.analyticsValue])
+        }
+
+        static func dashboardTopPerformersLoaded(timeRange: StatsTimeRangeV4) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .dashboardTopPerformersLoaded, properties: [Keys.range: timeRange.analyticsValue])
+        }
+
+        static func dashboardTopPerformersDate(timeRange: StatsTimeRangeV4) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .dashboardTopPerformersDate, properties: [Keys.range: timeRange.analyticsValue])
+        }
     }
 }
 

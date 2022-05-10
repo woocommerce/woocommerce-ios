@@ -8,13 +8,11 @@ final class CardPresentPaymentEligibilityDeterminer {
 
     func isEligibleForCardPresentPayment(order: Order,
                                          cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
-                                         accounts: [PaymentGatewayAccount],
                                          products: [Product]) -> Bool {
         isOrderAmountEligibleForCardPayment(order) &&
         isOrderCurrencyEligibleForCardPayment(order, cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration) &&
         isOrderStatusEligibleForCardPayment(order) &&
         isOrderPaymentMethodEligibleForCardPayment(order) &&
-        hasCardPresentEligiblePaymentGatewayAccount(from: accounts) &&
         !orderContainsAnySubscription(from: products, order: order)
     }
 

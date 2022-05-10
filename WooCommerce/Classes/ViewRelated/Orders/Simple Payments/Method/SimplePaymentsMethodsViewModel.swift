@@ -273,7 +273,6 @@ private extension SimplePaymentsMethodsViewModel {
         showPayWithCardRow = cardPresentPaymentEligibilityDeterminer
             .isEligibleForCardPresentPayment(order: order,
                                              cardPresentPaymentsConfiguration: CardPresentConfigurationLoader().configuration,
-                                             accounts: gatewayAccountResultsController.fetchedObjects,
                                              products: productResultsController.fetchedObjects)
     }
 

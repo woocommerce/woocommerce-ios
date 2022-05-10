@@ -89,12 +89,13 @@ final class NewOrderViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let error = NSError(domain: "Error", code: 0)
 
         // When
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case let .createOrder(_, _, onCompletion):
-                onCompletion(.failure(NSError(domain: "Error", code: 0)))
+                onCompletion(.failure(error))
             default:
                 XCTFail("Received unsupported action: \(action)")
             }
@@ -102,13 +103,14 @@ final class NewOrderViewModelTests: XCTestCase {
         viewModel.createOrder()
 
         // Then
-        XCTAssertEqual(viewModel.notice, NewOrderViewModel.NoticeFactory.createOrderErrorNotice())
+        XCTAssertEqual(viewModel.notice, NewOrderViewModel.NoticeFactory.createOrderErrorNotice(error, order: .fake()))
     }
 
     func test_view_model_fires_error_notice_when_order_sync_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
+        let error = NSError(domain: "Error", code: 0)
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
 
         // When
@@ -116,7 +118,7 @@ final class NewOrderViewModelTests: XCTestCase {
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
                 case let .createOrder(_, _, onCompletion):
-                    onCompletion(.failure(NSError(domain: "Error", code: 0)))
+                    onCompletion(.failure(error))
                     expectation.fulfill()
                 default:
                     XCTFail("Received unsupported action: \(action)")
@@ -128,14 +130,15 @@ final class NewOrderViewModelTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(viewModel.notice, NewOrderViewModel.NoticeFactory.syncOrderErrorNotice(with: synchronizer))
+        XCTAssertEqual(viewModel.notice, NewOrderViewModel.NoticeFactory.syncOrderErrorNotice(error, with: synchronizer))
     }
 
     func test_view_model_clears_error_notice_when_order_is_syncing() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
-        viewModel.notice = NewOrderViewModel.NoticeFactory.createOrderErrorNotice()
+        let error = NSError(domain: "Error", code: 0)
+        viewModel.notice = NewOrderViewModel.NoticeFactory.createOrderErrorNotice(error, order: .fake())
 
         // When
         let notice: Notice? = waitFor { promise in

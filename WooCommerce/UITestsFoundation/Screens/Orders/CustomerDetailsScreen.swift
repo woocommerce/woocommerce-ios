@@ -29,10 +29,6 @@ public final class CustomerDetailsScreen: ScreenObject {
 
 
     init(app: XCUIApplication = XCUIApplication()) throws {
-    //    print(app.otherElements)
-    //    print(app.buttons)
-   //     print(app.groups)
-   //     print(app.otherElements.allElementsBoundByIndex)
         try super.init(
             expectedElementGetters: [ addressToggleGetter ],
             app: app
@@ -43,14 +39,12 @@ public final class CustomerDetailsScreen: ScreenObject {
     /// - Returns: New Order screen object.
     @discardableResult
     public func enterCustomerDetails() throws -> NewOrderScreen {
-        firstNameField.tap()
-        firstNameField.typeText("Mira")
-    //    addressToggle.tap()
-        //
-        //        app.elements[“shipping-form”].textFields[“name-field”].tap
-        //        enter some Text
+        billingFirstNameField.tap()
+        billingFirstNameField.typeText("Mira")
+        addressToggle.tap()
+        shippingFirstNameField.tap()
+        shippingFirstNameField.typeText("Mira")
         doneButton.tap()
-        //closeButton.tap()
         return try NewOrderScreen()
     }
 }

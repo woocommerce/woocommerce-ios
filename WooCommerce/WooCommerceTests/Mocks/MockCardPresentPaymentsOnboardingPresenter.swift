@@ -1,9 +1,12 @@
 import UIKit
 @testable import WooCommerce
 
-struct MockCardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting {
+final class MockCardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting {
+    var spyShowOnboardingWasCalled = false
+
     func showOnboardingIfRequired(from viewController: UIViewController,
                                   readyToCollectPayment completion: @escaping (() -> ())) {
+        spyShowOnboardingWasCalled = true
         completion()
     }
 }

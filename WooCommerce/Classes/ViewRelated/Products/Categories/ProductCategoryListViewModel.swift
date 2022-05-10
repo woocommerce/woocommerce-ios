@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
@@ -59,13 +60,15 @@ final class ProductCategoryListViewModel {
     ///
     @Published private(set) var selectedCategories: [ProductCategory]
 
+    /// Search query from the search bar
+    /// 
+    @Published var searchQuery: String = ""
+
+    private var searchQuerySubscription: AnyCancellable?
+
     /// Array of view models to be rendered by the View Controller.
     ///
-    private(set) var categoryViewModels: [ProductCategoryCellViewModel] = []
-
-    /// Closure to be invoked when `synchronizeCategories` state  changes
-    ///
-    private var onSyncStateChange: ((SyncingState) -> Void)?
+    @Published private(set) var categoryViewModels: [ProductCategoryCellViewModel] = []
 
     /// Closure invoked when the list needs to reload
     ///
@@ -86,14 +89,7 @@ final class ProductCategoryListViewModel {
 
     /// Current  category synchronization state
     ///
-    private var syncCategoriesState: SyncingState = .initialized {
-        didSet {
-            guard syncCategoriesState != oldValue else {
-                return
-            }
-            onSyncStateChange?(syncCategoriesState)
-        }
-    }
+    @Published private(set) var syncCategoriesState: SyncingState = .initialized
 
     private lazy var resultController: ResultsController<StorageProductCategory> = {
         let predicate = NSPredicate(format: "siteID = %ld", self.siteID)
@@ -120,6 +116,7 @@ final class ProductCategoryListViewModel {
 
         try? resultController.performFetch()
         updateViewModelsArray()
+        configureProductSearch()
     }
 
     /// Load existing categories from storage and fire the synchronize all categories action.
@@ -135,14 +132,6 @@ final class ProductCategoryListViewModel {
             return
         }
         synchronizeAllCategories(fromPageNumber: retryToken.fromPageNumber)
-    }
-
-    /// Observes and notifies of changes made to product categories. the current state will be dispatched upon subscription.
-    /// Calling this method will remove any other previous observer.
-    ///
-    func observeCategoryListStateChanges(onStateChanges: @escaping (SyncingState) -> Void) {
-        onSyncStateChange = onStateChanges
-        onSyncStateChange?(syncCategoriesState)
     }
 
     /// Observe the need of reload by passing a closure that will be invoked when there is a need to reload the data.
@@ -216,7 +205,7 @@ final class ProductCategoryListViewModel {
         updateInitialItemsIfNeeded(with: fetchedCategories)
         let baseViewModels = ProductCategoryListViewModel.CellViewModelBuilder.viewModels(from: fetchedCategories, selectedCategories: selectedCategories)
 
-        categoryViewModels = enrichingDataSource?.enrichCategoryViewModels( baseViewModels) ?? baseViewModels
+        categoryViewModels = enrichingDataSource?.enrichCategoryViewModels(baseViewModels) ?? baseViewModels
     }
 
     /// Update `selectedCategories` based on initially selected items.
@@ -228,6 +217,32 @@ final class ProductCategoryListViewModel {
         selectedCategories = initiallySelectedIDs.compactMap { id in
             categories.first(where: { $0.categoryID == id })
         }
+    }
+
+    /// Updates the category results predicate & reload the list
+    ///
+    private func configureProductSearch() {
+        searchQuerySubscription = $searchQuery
+            .dropFirst()
+            .removeDuplicates()
+            .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
+            .sink { [weak self] newQuery in
+                guard let self = self else { return }
+
+                if newQuery.isNotEmpty {
+                    let searchPredicate = NSPredicate(format: "siteID = %ld AND (name CONTAINS[cd] %@) OR (slug CONTAINS[cd] %@)",
+                                                      self.siteID,
+                                                      newQuery,
+                                                      newQuery)
+                    self.resultController.predicate = searchPredicate
+                } else {
+                    // Resets the results to the full product list when there is no search query.
+                    self.resultController.predicate = NSPredicate(format: "siteID = %ld", self.siteID)
+                }
+                try? self.resultController.performFetch()
+                self.updateViewModelsArray()
+                self.reloadData()
+            }
     }
 }
 

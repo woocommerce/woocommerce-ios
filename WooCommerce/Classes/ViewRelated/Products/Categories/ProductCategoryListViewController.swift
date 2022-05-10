@@ -9,6 +9,7 @@ import WordPressUI
 ///
 final class ProductCategoryListViewController: UIViewController, GhostableViewController {
 
+    @IBOutlet private var contentStackView: UIStackView!
     @IBOutlet private var tableView: UITableView!
     @IBOutlet private var searchBar: UISearchBar!
     @IBOutlet private var clearSelectionButtonBarView: UIView!
@@ -19,7 +20,19 @@ final class ProductCategoryListViewController: UIViewController, GhostableViewCo
     let viewModel: ProductCategoryListViewModel
 
     private let configuration: Configuration
-    private var selectedListSubscription: AnyCancellable?
+    private var subscriptions: Set<AnyCancellable> = []
+
+    /// The controller of the view to show if the search results are empty.
+    ///
+    private lazy var emptyStateViewController: EmptyStateViewController = {
+        let emptyStateViewController = EmptyStateViewController(style: .list)
+        let config: EmptyStateViewController.Config = .simple(
+            message: .init(string: Localization.emptyStateMessage),
+            image: .emptySearchResultsImage
+        )
+        emptyStateViewController.configure(config)
+        return emptyStateViewController
+    }()
 
     init(viewModel: ProductCategoryListViewModel, configuration: Configuration = .init()) {
         self.viewModel = viewModel
@@ -35,12 +48,18 @@ final class ProductCategoryListViewController: UIViewController, GhostableViewCo
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        configureSearchBar()
         configureClearSelectionButton()
         registerTableViewCells()
         configureTableView()
+        configureEmptyView()
         configureViewModel()
         handleSwipeBackGesture()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        // Note: configuring the search bar text color does not work in `viewDidLoad` and `viewWillAppear`.
+        configureSearchBar()
     }
 }
 
@@ -61,16 +80,19 @@ private extension ProductCategoryListViewController {
     }
 
     func configureTableView() {
-        view.backgroundColor = .listBackground
+        view.backgroundColor = .listForeground
         tableView.backgroundColor = .listBackground
         tableView.dataSource = self
         tableView.delegate = self
         tableView.removeLastCellSeparator()
+        tableView.keyboardDismissMode = .onDrag
     }
 
     func configureSearchBar() {
         searchBar.isHidden = !configuration.searchEnabled
         searchBar.placeholder = Localization.searchBarPlaceholder
+        searchBar.searchTextField.textColor = .text
+        searchBar.delegate = self
     }
 
     func configureClearSelectionButton() {
@@ -80,14 +102,26 @@ private extension ProductCategoryListViewController {
             self?.viewModel.resetSelectedCategoriesAndReload()
         }, for: .touchUpInside)
 
-        selectedListSubscription = viewModel.$selectedCategories
-            .map { [weak self] selectedItems -> Bool in
+        viewModel.$selectedCategories.combineLatest(viewModel.$categoryViewModels)
+            .map { [weak self] selectedItems, models -> Bool in
                 guard let self = self, self.configuration.clearSelectionEnabled else {
                     return true
                 }
-                return selectedItems.isEmpty
+                return selectedItems.isEmpty || models.isEmpty
             }
             .assign(to: \.isHidden, on: clearSelectionButtonBarView)
+            .store(in: &subscriptions)
+    }
+
+    func configureEmptyView() {
+        addChild(emptyStateViewController)
+
+        emptyStateViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        contentStackView.addSubview(emptyStateViewController.view)
+        contentStackView.addArrangedSubview(emptyStateViewController.view)
+
+        emptyStateViewController.didMove(toParent: self)
+        emptyStateViewController.view.isHidden = true
     }
 }
 
@@ -99,23 +133,32 @@ private extension ProductCategoryListViewController {
         viewModel.observeReloadNeeded { [weak self] in
             self?.tableView.reloadData()
         }
-        viewModel.observeCategoryListStateChanges { [weak self] syncState in
-            guard let self = self else { return }
-            switch syncState {
-            case .initialized:
-                break
-            case .syncing:
-                if self.viewModel.categoryViewModels.isEmpty {
-                    self.displayGhostContent()
+
+        viewModel.$syncCategoriesState.combineLatest(viewModel.$categoryViewModels)
+            .sink { [weak self] syncState, models in
+                guard let self = self else { return }
+                self.emptyStateViewController.view.isHidden = true
+                self.tableView.isHidden = false
+                switch syncState {
+                case .initialized:
+                    break
+                case .syncing:
+                    if models.isEmpty {
+                        self.displayGhostContent()
+                    }
+                case let .failed(retryToken):
+                    self.removeGhostContent()
+                    self.displaySyncingErrorNotice(retryToken: retryToken)
+                case .synced:
+                    self.tableView.reloadData()
+                    self.removeGhostContent()
+                    if models.isEmpty {
+                        self.emptyStateViewController.view.isHidden = false
+                        self.tableView.isHidden = true
+                    }
                 }
-            case let .failed(retryToken):
-                self.removeGhostContent()
-                self.displaySyncingErrorNotice(retryToken: retryToken)
-            case .synced:
-                self.tableView.reloadData()
-                self.removeGhostContent()
             }
-        }
+            .store(in: &subscriptions)
     }
 }
 
@@ -156,6 +199,7 @@ extension ProductCategoryListViewController: UITableViewDataSource, UITableViewD
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         viewModel.selectOrDeselectCategory(index: indexPath.row)
         tableView.reloadData()
+        searchBar.resignFirstResponder()
     }
 }
 
@@ -165,5 +209,15 @@ private extension ProductCategoryListViewController {
         static let syncErrorMessage = NSLocalizedString("Unable to load categories", comment: "Notice message when loading product categories fails")
         static let retryButtonTitle = NSLocalizedString("Retry", comment: "Retry Action on the notice when loading product categories fails")
         static let clearSelectionButtonTitle = NSLocalizedString("Clear Selection", comment: "Button to clear selection on the product categories list")
+        static let emptyStateMessage = NSLocalizedString("No product categories found",
+                                                         comment: "Message on the empty view when the category list or its search result is empty.")
+    }
+}
+
+// MARK: - UISearchBarDelegate conformance
+//
+extension ProductCategoryListViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        viewModel.searchQuery = searchText
     }
 }

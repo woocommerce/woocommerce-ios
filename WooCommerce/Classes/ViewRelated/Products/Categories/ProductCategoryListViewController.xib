@@ -13,6 +13,7 @@
             <connections>
                 <outlet property="clearSelectionButton" destination="fdL-Fv-YUq" id="4pY-Cu-W62"/>
                 <outlet property="clearSelectionButtonBarView" destination="pl0-eW-IeX" id="FS6-rQ-VQ4"/>
+                <outlet property="contentStackView" destination="WLv-21-ggw" id="lVG-TT-gMH"/>
                 <outlet property="searchBar" destination="1Sw-bB-VbX" id="7pD-i5-lVf"/>
                 <outlet property="tableView" destination="2Yi-Za-cWv" id="M3B-lU-YYO"/>
                 <outlet property="view" destination="lKf-zg-URS" id="g1c-gC-3eC"/>
@@ -26,7 +27,7 @@
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="WLv-21-ggw">
                     <rect key="frame" x="0.0" y="44" width="414" height="818"/>
                     <subviews>
-                        <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="1Sw-bB-VbX">
+                        <searchBar contentMode="redraw" searchBarStyle="minimal" translatesAutoresizingMaskIntoConstraints="NO" id="1Sw-bB-VbX">
                             <rect key="frame" x="0.0" y="0.0" width="414" height="51"/>
                             <textInputTraits key="textInputTraits"/>
                         </searchBar>

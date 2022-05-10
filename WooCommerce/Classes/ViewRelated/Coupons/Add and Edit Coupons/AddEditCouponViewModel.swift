@@ -15,7 +15,7 @@ final class AddEditCouponViewModel: ObservableObject {
 
     private let discountType: Coupon.DiscountType
 
-    var onCompletion: ((Result<Coupon, Error>) -> Void)?
+    private let onCompletion: ((Result<Coupon, Error>) -> Void)
 
     /// Defines the current notice that should be shown.
     /// Defaults to `nil`.
@@ -139,8 +139,8 @@ final class AddEditCouponViewModel: ObservableObject {
     @Published var expiryDateField: Date?
     @Published var freeShipping: Bool
     @Published var couponRestrictionsViewModel: CouponRestrictionsViewModel
-    @Published private var productOrVariationIDs: [Int64]
-    @Published private var categoryIDs: [Int64]
+    @Published var productOrVariationIDs: [Int64]
+    @Published var categoryIDs: [Int64]
 
     /// Init method for coupon creation
     ///
@@ -148,13 +148,15 @@ final class AddEditCouponViewModel: ObservableObject {
          discountType: Coupon.DiscountType,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         timezone: TimeZone = .siteTimezone) {
+         timezone: TimeZone = .siteTimezone,
+         onCompletion: @escaping ((Result<Coupon, Error>) -> Void)) {
         self.siteID = siteID
         editingOption = .creation
         self.discountType = discountType
         self.stores = stores
         self.storageManager = storageManager
         self.timezone = timezone
+        self.onCompletion = onCompletion
 
         amountField = String()
         codeField = String()
@@ -171,7 +173,8 @@ final class AddEditCouponViewModel: ObservableObject {
     init(existingCoupon: Coupon,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         timezone: TimeZone = .siteTimezone) {
+         timezone: TimeZone = .siteTimezone,
+         onCompletion: @escaping ((Result<Coupon, Error>) -> Void)) {
         siteID = existingCoupon.siteID
         coupon = existingCoupon
         editingOption = .editing
@@ -179,6 +182,7 @@ final class AddEditCouponViewModel: ObservableObject {
         self.stores = stores
         self.storageManager = storageManager
         self.timezone = timezone
+        self.onCompletion = onCompletion
 
         // Populate fields
         amountField = existingCoupon.amount
@@ -212,7 +216,7 @@ final class AddEditCouponViewModel: ObservableObject {
         if let validationError = validateCouponLocally(coupon) {
             notice = NoticeFactory.createCouponErrorNotice(validationError,
                                                            editingOption: editingOption)
-            onCompletion?(.failure(validationError))
+            onCompletion(.failure(validationError))
             return
         }
 
@@ -228,7 +232,7 @@ final class AddEditCouponViewModel: ObservableObject {
                                                                     editingOption: self.editingOption)
             }
             self.isLoading = false
-            self.onCompletion?(result)
+            self.onCompletion(result)
         }
         stores.dispatch(action)
     }
@@ -241,10 +245,14 @@ final class AddEditCouponViewModel: ObservableObject {
                      description: descriptionField,
                      dateExpires: expiryDateField?.startOfDay(timezone: timezone),
                      individualUse: couponRestrictionsViewModel.individualUseOnly,
+                     productIds: productOrVariationIDs,
+                     excludedProductIds: couponRestrictionsViewModel.excludedProductOrVariationIDs,
                      usageLimit: Int64(couponRestrictionsViewModel.usageLimitPerCoupon),
                      usageLimitPerUser: Int64(couponRestrictionsViewModel.usageLimitPerUser),
                      limitUsageToXItems: Int64(couponRestrictionsViewModel.limitUsageToXItems),
                      freeShipping: freeShipping,
+                     productCategories: categoryIDs,
+                     excludedProductCategories: couponRestrictionsViewModel.excludedCategoryIDs,
                      excludeSaleItems: couponRestrictionsViewModel.excludeSaleItems,
                      minimumAmount: couponRestrictionsViewModel.minimumSpend,
                      maximumAmount: couponRestrictionsViewModel.maximumSpend,

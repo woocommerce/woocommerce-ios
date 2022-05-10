@@ -59,6 +59,15 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         if !state.isCompleted {
             state = .loading
         }
+        refreshOnboardingState()
+    }
+
+    func forceRefresh() {
+        state = .loading
+        refreshOnboardingState()
+    }
+
+    private func refreshOnboardingState() {
         synchronizeStoreCountryAndPlugins { [weak self] in
             self?.updateAccounts()
         }

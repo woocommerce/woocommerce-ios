@@ -162,7 +162,7 @@ private extension StoreStatsAndTopPerformersViewController {
                            latestDateToInclude: latestDateToInclude) { [weak self] result in
                 switch result {
                 case .success:
-                    self?.trackStatsLoaded(for: vc.granularity)
+                    self?.trackStatsLoaded(for: vc.timeRange)
                 case .failure(let error):
                     DDLogError("⛔️ Error synchronizing order stats: \(error)")
                     periodSyncError = error
@@ -458,12 +458,12 @@ private extension StoreStatsAndTopPerformersViewController {
 // MARK: - Private Helpers
 //
 private extension StoreStatsAndTopPerformersViewController {
-    func trackStatsLoaded(for granularity: StatsGranularityV4) {
+    func trackStatsLoaded(for timeRange: StatsTimeRangeV4) {
         guard ServiceLocator.stores.isAuthenticated else {
             return
         }
 
-        ServiceLocator.analytics.track(.dashboardMainStatsLoaded, withProperties: ["granularity": granularity.rawValue])
+        ServiceLocator.analytics.track(event: .Dashboard.dashboardMainStatsLoaded(timeRange: timeRange))
     }
 }
 

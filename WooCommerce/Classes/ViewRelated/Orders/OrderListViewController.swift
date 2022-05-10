@@ -47,8 +47,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         return dataSource
     }()
 
-    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(displaysSectionHeader: false,
-                                                                                                cellClass: OrderTableViewCell.self,
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: OrderTableViewCell.self,
                                                                                                 estimatedRowHeight: Settings.estimatedRowHeight,
                                                                                                 tableViewStyle: .grouped,
                                                                                                 isScrollEnabled: false))
@@ -659,7 +658,7 @@ private extension OrderListViewController {
         topBannerView = OrdersTopBannerFactory.createOrdersBanner(onTopButtonPressed: { [weak self] in
             self?.tableView.updateHeaderHeight()
         }, onDismissButtonPressed: { [weak self] in
-            self?.viewModel.hideOrdersBanners = true
+            self?.viewModel.dismissOrdersBanner()
         }, onGiveFeedbackButtonPressed: { [weak self] in
             let surveyNavigation = SurveyCoordinatingController(survey: .orderCreation)
             self?.present(surveyNavigation, animated: true, completion: nil)

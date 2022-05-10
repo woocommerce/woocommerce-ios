@@ -8,11 +8,11 @@ final class ProductReviewsViewController: UIViewController, GhostableViewControl
 
     private let viewModel: ProductReviewsViewModel
 
-    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: ProductReviewTableViewCell.self,
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(sectionHeaderVerticalSpace: .large,
+                                                                                                cellClass: ProductReviewTableViewCell.self,
                                                                                                 estimatedRowHeight: ReviewsDataSource
                                                                                                                     .Settings
                                                                                                                     .estimatedRowHeight))
-
     /// Pull To Refresh Support.
     ///
     private lazy var refreshControl: UIRefreshControl = {

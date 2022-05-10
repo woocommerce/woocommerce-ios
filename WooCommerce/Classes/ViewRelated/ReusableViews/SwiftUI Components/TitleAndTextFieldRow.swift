@@ -10,6 +10,7 @@ struct TitleAndTextFieldRow: View {
     private let onEditingChanged: ((Bool) -> Void)?
     private let editable: Bool
     private let fieldAlignment: TextAlignment
+    private let inputFormatter: UnitInputFormatter?
 
     @Binding private var text: String
 
@@ -26,6 +27,7 @@ struct TitleAndTextFieldRow: View {
          editable: Bool = true,
          fieldAlignment: TextAlignment = .trailing,
          keyboardType: UIKeyboardType = .default,
+         inputFormatter: UnitInputFormatter? = nil,
          onEditingChanged: ((Bool) -> Void)? = nil) {
         self.title = title
         self._titleWidth = titleWidth
@@ -35,6 +37,7 @@ struct TitleAndTextFieldRow: View {
         self.editable = editable
         self.fieldAlignment = fieldAlignment
         self.keyboardType = keyboardType
+        self.inputFormatter = inputFormatter
         self.onEditingChanged = onEditingChanged
     }
 
@@ -48,6 +51,12 @@ struct TitleAndTextFieldRow: View {
                 .frame(width: titleWidth, alignment: .leading)
             HStack {
                 TextField(placeholder, text: $text, onEditingChanged: onEditingChanged ?? { _ in })
+                    .onChange(of: text, perform: { newValue in
+                        text = formatText(newValue)
+                    })
+                    .onAppear {
+                        text = formatText(text)
+                    }
                     .multilineTextAlignment(fieldAlignment)
                     .font(.body)
                     .keyboardType(keyboardType)
@@ -60,6 +69,13 @@ struct TitleAndTextFieldRow: View {
         }
         .frame(minHeight: Constants.height)
         .padding([.leading, .trailing], Constants.padding)
+    }
+
+    private func formatText(_ newValue: String) -> String {
+        guard let inputFormatter = inputFormatter else {
+            return newValue
+        }
+        return inputFormatter.format(input: newValue)
     }
 }
 

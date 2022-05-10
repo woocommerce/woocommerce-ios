@@ -294,7 +294,7 @@ final class CouponStoreTests: XCTestCase {
         // Given
         let sampleCouponID: Int64 = 720
         let coupon = Coupon.fake().copy(siteID: sampleSiteID, couponID: sampleCouponID, amount: "10", discountType: .percent)
-        let action = CouponAction.updateCoupon(coupon) { _ in }
+        let action = CouponAction.updateCoupon(coupon, siteTimezone: nil) { _ in }
 
         // When
         store.onAction(action)
@@ -317,7 +317,7 @@ final class CouponStoreTests: XCTestCase {
         // When
         let updatedCoupon = sampleCoupon.copy(amount: "9")
         let result: Result<Networking.Coupon, Error> = waitFor { promise in
-            let action = CouponAction.updateCoupon(updatedCoupon) { result in
+            let action = CouponAction.updateCoupon(updatedCoupon, siteTimezone: nil) { result in
                 promise(result)
             }
             self.store.onAction(action)
@@ -343,7 +343,7 @@ final class CouponStoreTests: XCTestCase {
         let updatedCoupon = sampleCoupon.copy(amount: "10.00", discountType: .fixedCart)
         let result: Result<Networking.Coupon, Error> = waitFor { promise in
             let action: CouponAction
-            action = .updateCoupon(updatedCoupon) { result in
+            action = .updateCoupon(updatedCoupon, siteTimezone: nil) { result in
                 promise(result)
             }
             self.store.onAction(action)
@@ -362,7 +362,7 @@ final class CouponStoreTests: XCTestCase {
         // Given
         let sampleCouponID: Int64 = 720
         let coupon = Coupon.fake().copy(siteID: sampleSiteID, couponID: sampleCouponID, amount: "10", discountType: .percent)
-        let action = CouponAction.createCoupon(coupon) { _ in }
+        let action = CouponAction.createCoupon(coupon, siteTimezone: nil) { _ in }
 
         // When
         store.onAction(action)
@@ -382,7 +382,7 @@ final class CouponStoreTests: XCTestCase {
 
         // When
         let result: Result<Networking.Coupon, Error> = waitFor { promise in
-            let action = CouponAction.createCoupon(sampleCoupon) { result in
+            let action = CouponAction.createCoupon(sampleCoupon, siteTimezone: nil) { result in
                 promise(result)
             }
             self.store.onAction(action)
@@ -404,7 +404,7 @@ final class CouponStoreTests: XCTestCase {
         // When
         let result: Result<Networking.Coupon, Error> = waitFor { promise in
             let action: CouponAction
-            action = .createCoupon(sampleCoupon) { result in
+            action = .createCoupon(sampleCoupon, siteTimezone: nil) { result in
                 promise(result)
             }
             self.store.onAction(action)

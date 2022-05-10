@@ -19,7 +19,7 @@ struct CardPresentCapturedPaymentData {
 final class PaymentCaptureOrchestrator {
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
     private let personNameComponentsFormatter = PersonNameComponentsFormatter()
-    private let paymentReceiptEmailParameterDeterminer = PaymentReceiptEmailParameterDeterminer()
+    private let paymentReceiptEmailParameterDeterminer: ReceiptEmailParameterDeterminer
 
     private let celebration = PaymentCaptureCelebration()
 
@@ -27,25 +27,22 @@ final class PaymentCaptureOrchestrator {
 
     private let stores: StoresManager
 
-    init(stores: StoresManager = ServiceLocator.stores) {
+    init(stores: StoresManager = ServiceLocator.stores,
+         paymentReceiptEmailParameterDeterminer: ReceiptEmailParameterDeterminer = PaymentReceiptEmailParameterDeterminer()) {
         self.stores = stores
+        self.paymentReceiptEmailParameterDeterminer = paymentReceiptEmailParameterDeterminer
     }
 
     func collectPayment(for order: Order,
+                        orderTotal: NSDecimalNumber,
                         paymentGatewayAccount: PaymentGatewayAccount,
                         paymentMethodTypes: [String],
+                        stripeSmallestCurrencyUnitMultiplier: Decimal,
                         onWaitingForInput: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onDisplayMessage: @escaping (String) -> Void,
+                        onProcessingCompletion: @escaping (PaymentIntent) -> Void,
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
-        /// Bail out if the order amount is below the minimum allowed:
-        /// https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts
-        guard isTotalAmountValid(order: order) else {
-            DDLogError("💳 Error: failed to capture payment for order. Order amount is below minimum")
-            onCompletion(.failure(minimumAmountError(order: order, minimumAmount: Constants.minimumAmount)))
-            return
-        }
-
         /// Set state of CardPresentPaymentStore
         ///
         let setAccount = CardPresentPaymentAction.use(paymentGatewayAccount: paymentGatewayAccount)
@@ -54,8 +51,11 @@ final class PaymentCaptureOrchestrator {
 
         paymentParameters(
                 order: order,
+                orderTotal: orderTotal,
+                country: paymentGatewayAccount.country,
                 statementDescriptor: paymentGatewayAccount.statementDescriptor,
-                paymentMethodTypes: paymentMethodTypes
+                paymentMethodTypes: paymentMethodTypes,
+                stripeSmallestCurrencyUnitMultiplier: stripeSmallestCurrencyUnitMultiplier
         ) { [weak self] result in
             guard let self = self else { return }
 
@@ -70,19 +70,23 @@ final class PaymentCaptureOrchestrator {
                     siteID: order.siteID,
                     orderID: order.orderID,
                     parameters: parameters,
-                    onCardReaderMessage: { (event) in
+                    onCardReaderMessage: { event in
                         switch event {
                         case .waitingForInput:
                             onWaitingForInput()
                         case .displayMessage(let message):
                             onDisplayMessage(message)
+                        case .cardRemovedAfterClientSidePaymentCapture:
+                            onProcessingMessage()
                         default:
                             break
                         }
                     },
+                    onProcessingCompletion: { intent in
+                        onProcessingCompletion(intent)
+                    },
                     onCompletion: { [weak self] result in
                         self?.allowPassPresentation()
-                        onProcessingMessage()
                         self?.completePaymentIntentCapture(
                             order: order,
                             captureResult: result,
@@ -94,7 +98,7 @@ final class PaymentCaptureOrchestrator {
                 self.stores.dispatch(paymentAction)
             case let .failure(error):
                 onCompletion(Result.failure(error))
-             }
+            }
         }
     }
 
@@ -177,24 +181,6 @@ private extension PaymentCaptureOrchestrator {
         case .failure(let error):
             onCompletion(.failure(error))
         case .success(let paymentIntent):
-            submitPaymentIntent(siteID: order.siteID,
-                                order: order,
-                                paymentIntent: paymentIntent,
-                                onCompletion: onCompletion)
-        }
-    }
-
-    func submitPaymentIntent(siteID: Int64,
-                             order: Order,
-                             paymentIntent: PaymentIntent,
-                             onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
-        let action = CardPresentPaymentAction.captureOrderPayment(siteID: siteID,
-                                                                     orderID: order.orderID,
-                                                                     paymentIntentID: paymentIntent.id) { [weak self] result in
-            guard let self = self else {
-                return
-            }
-
             guard let paymentMethod = paymentIntent.paymentMethod(),
                   let receiptParameters = paymentIntent.receiptParameters() else {
                 let error = CardReaderServiceError.paymentCapture()
@@ -205,32 +191,20 @@ private extension PaymentCaptureOrchestrator {
                 return
             }
 
-            switch result {
-            case .success:
-                self.celebrate() // plays a sound, haptic
-                self.saveReceipt(for: order, params: receiptParameters)
-                onCompletion(.success(.init(paymentMethod: paymentMethod,
-                                            receiptParameters: receiptParameters)))
-            case .failure(let error):
-                onCompletion(.failure(CardReaderServiceError.paymentCaptureWithPaymentMethod(underlyingError: error, paymentMethod: paymentMethod)))
-                return
-            }
+            celebrate() // plays a sound, haptic
+            saveReceipt(for: order, params: receiptParameters)
+            onCompletion(.success(.init(paymentMethod: paymentMethod,
+                                        receiptParameters: receiptParameters)))
         }
-
-        stores.dispatch(action)
     }
 
     func paymentParameters(order: Order,
+                           orderTotal: NSDecimalNumber,
+                           country: String,
                            statementDescriptor: String?,
                            paymentMethodTypes: [String],
+                           stripeSmallestCurrencyUnitMultiplier: Decimal,
                            onCompletion: @escaping ((Result<PaymentParameters, Error>) -> Void)) {
-        guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
-            DDLogError("Error: attempted to collect payment for an order without a valid total.")
-            onCompletion(Result.failure(NotValidAmountError.other))
-
-            return
-        }
-
         paymentReceiptEmailParameterDeterminer.receiptEmail(from: order) { [weak self] result in
             guard let self = self else { return }
 
@@ -250,6 +224,8 @@ private extension PaymentCaptureOrchestrator {
 
             let parameters = PaymentParameters(amount: orderTotal as Decimal,
                                                currency: order.currency,
+                                               stripeSmallestCurrencyUnitMultiplier: stripeSmallestCurrencyUnitMultiplier,
+                                               applicationFee: self.applicationFee(for: orderTotal, country: country),
                                                receiptDescription: self.receiptDescription(orderNumber: order.number),
                                                statementDescription: statementDescriptor,
                                                receiptEmail: receiptEmail,
@@ -258,6 +234,22 @@ private extension PaymentCaptureOrchestrator {
 
             onCompletion(Result.success(parameters))
         }
+    }
+
+    private func applicationFee(for orderTotal: NSDecimalNumber, country: String) -> Decimal? {
+        guard country.uppercased() == SiteAddress.CountryCode.CA.rawValue else {
+            return nil
+        }
+
+        let fee = orderTotal.multiplying(by: Constants.canadaPercentageFee).adding(Constants.canadaFlatFee)
+
+        let numberHandler = NSDecimalNumberHandler(roundingMode: .plain,
+                                                   scale: 2,
+                                                   raiseOnExactness: false,
+                                                   raiseOnOverflow: false,
+                                                   raiseOnUnderflow: false,
+                                                   raiseOnDivideByZero: false)
+        return fee.rounding(accordingToBehavior: numberHandler) as Decimal
     }
 
     func receiptDescription(orderNumber: String) -> String? {
@@ -284,25 +276,8 @@ private extension PaymentCaptureOrchestrator {
 
 private extension PaymentCaptureOrchestrator {
     enum Constants {
-        /// Minimum order amount in USD:
-        /// https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts
-        static let minimumAmount = NSDecimalNumber(string: "0.5")
-    }
-
-    func isTotalAmountValid(order: Order) -> Bool {
-        guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
-            return false
-        }
-
-        return orderTotal as Decimal >= Constants.minimumAmount as Decimal
-    }
-
-    func minimumAmountError(order: Order, minimumAmount: NSDecimalNumber) -> Error {
-        guard let minimum = currencyFormatter.formatAmount(minimumAmount, with: order.currency) else {
-            return NotValidAmountError.other
-        }
-
-        return NotValidAmountError.belowMinimumAmount(amount: minimum)
+        static let canadaFlatFee = NSDecimalNumber(string: "0.15")
+        static let canadaPercentageFee = NSDecimalNumber(0)
     }
 }
 
@@ -314,33 +289,5 @@ private extension PaymentCaptureOrchestrator {
                                                             + "Order @{number} for @{store name} "
                                                             + "Parameters: %1$@ - order number, "
                                                             + "%2$@ - store name")
-    }
-}
-
-extension PaymentCaptureOrchestrator {
-    enum NotValidAmountError: Error, LocalizedError {
-        case belowMinimumAmount(amount: String)
-        case other
-
-        var errorDescription: String? {
-            switch self {
-            case .belowMinimumAmount(let amount):
-                return String.localizedStringWithFormat(Localization.belowMinimumAmount, amount)
-            case .other:
-                return Localization.defaultMessage
-            }
-        }
-
-        private enum Localization {
-            static let defaultMessage = NSLocalizedString(
-                "Unable to process payment. Order total amount is not valid.",
-                comment: "Error message when the order amount is not valid."
-            )
-
-            static let belowMinimumAmount = NSLocalizedString(
-                "Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@",
-                comment: "Error message when the order amount is below the minimum amount allowed."
-            )
-        }
     }
 }

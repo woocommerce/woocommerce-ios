@@ -1,13 +1,20 @@
 import Foundation
 import Yosemite
 
+/// Determines the email to be set (if any) on a receipt
+///
+protocol ReceiptEmailParameterDeterminer {
+    func receiptEmail(from order: Order, onCompletion: @escaping ((Result<String?, Error>) -> Void))
+}
+
 /// Determines the email to be set (if any) on a payment receipt depending on the current payment plugins (WCPay, Stripe) configuration
-/// 
-struct PaymentReceiptEmailParameterDeterminer {
+///
+struct PaymentReceiptEmailParameterDeterminer: ReceiptEmailParameterDeterminer {
     private let cardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol
     private let stores: StoresManager
+    private static let defaultConfiguration = CardPresentConfigurationLoader(stores: ServiceLocator.stores).configuration
 
-    init(cardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol = CardPresentPluginsDataProvider(),
+    init(cardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol = CardPresentPluginsDataProvider(configuration: Self.defaultConfiguration),
          stores: StoresManager = ServiceLocator.stores) {
         self.cardPresentPluginsDataProvider = cardPresentPluginsDataProvider
         self.stores = stores
@@ -34,13 +41,14 @@ struct PaymentReceiptEmailParameterDeterminer {
     private func receiptEmail(from order: Order) -> String? {
         let wcPay = cardPresentPluginsDataProvider.getWCPayPlugin()
         let stripe = cardPresentPluginsDataProvider.getStripePlugin()
+        let paymentPluginsInstalledAndActiveStatus = cardPresentPluginsDataProvider.paymentPluginsInstalledAndActiveStatus(wcPay: wcPay, stripe: stripe)
 
-        guard !cardPresentPluginsDataProvider.bothPluginsInstalledAndActive(wcPay: wcPay, stripe: stripe) else {
+        guard paymentPluginsInstalledAndActiveStatus != .bothAreInstalledAndActive else {
             return nil
         }
 
         guard let wcPay = wcPay,
-              cardPresentPluginsDataProvider.wcPayInstalledAndActive(wcPay: wcPay) else {
+              paymentPluginsInstalledAndActiveStatus == .onlyWCPayIsInstalledAndActive else {
             return order.billingAddress?.email
         }
 

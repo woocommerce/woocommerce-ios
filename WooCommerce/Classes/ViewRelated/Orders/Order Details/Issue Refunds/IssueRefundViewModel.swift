@@ -40,6 +40,10 @@ final class IssueRefundViewModel {
         /// Charge to be refunded
         ///
         var charge: WCPayCharge?
+
+        /// Error from fetching refund charge.
+        ///
+        var fetchChargeError: FetchChargeError?
     }
 
     /// Current ViewModel state
@@ -59,6 +63,11 @@ final class IssueRefundViewModel {
     /// Closure to notify the `ViewController` when the view model properties change
     ///
     var onChange: (() -> (Void))?
+
+    /// This closure is executed when fetching the charge details failed.
+    /// Implement the input parameter with a closure to be execured when the user wants to retry the fetch action.
+    ///
+    var showFetchChargeErrorNotice: ((@escaping (() -> Void)) -> (Void))?
 
     /// Title for the navigation bar
     ///
@@ -104,6 +113,19 @@ final class IssueRefundViewModel {
         return resultsController.fetchedObjects.first
     }()
 
+    /// PaymentGatewayAccount Results Controller.
+    private lazy var paymentGatewayAccountResultsController: ResultsController<StoragePaymentGatewayAccount> = {
+        let predicate = NSPredicate(format: "siteID = %ld", state.order.siteID)
+        let resultsController = ResultsController<StoragePaymentGatewayAccount>(storageManager: storage, matching: predicate, sortedBy: [])
+        try? resultsController.performFetch()
+        return resultsController
+    }()
+
+    /// Payment Gateway Accounts for the site (i.e. that can be used to refund)
+    private var paymentGatewayAccounts: [PaymentGatewayAccount] {
+        paymentGatewayAccountResultsController.fetchedObjects
+    }
+
     /// Charge related to the order. Used to show card details in the `Refund Via` section, and the refund confirmation screen.
     ///
     private var charge: WCPayCharge? {
@@ -131,11 +153,12 @@ final class IssueRefundViewModel {
          currencySettings: CurrencySettings,
          analytics: Analytics = ServiceLocator.analytics,
          stores: StoresManager = ServiceLocator.stores,
-         storage: StorageManagerType = ServiceLocator.storageManager) {
+         storage: StorageManagerType = ServiceLocator.storageManager,
+         refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol = OrderRefundsOptionsDeterminer()) {
         self.analytics = analytics
         self.stores = stores
         self.storage = storage
-        let items = Self.filterItems(from: order, with: refunds)
+        let items = refundableOrderItemsDeterminer.determineRefundableOrderItems(from: order, with: refunds)
         state = State(order: order, refunds: refunds, itemsToRefund: items, currencySettings: currencySettings, charge: nil)
         sections = createSections()
         title = calculateTitle()
@@ -145,7 +168,6 @@ final class IssueRefundViewModel {
         selectedItemsTitle = createSelectedItemsCount()
         hasUnsavedChanges = calculatePendingChangesState()
         observeCharge()
-        fetchCharge()
     }
 
     /// Creates the `ViewModel` to be used when navigating to the page where the user can
@@ -157,7 +179,8 @@ final class IssueRefundViewModel {
                                                           refundsShipping: state.shouldRefundShipping,
                                                           refundsFees: state.shouldRefundFees,
                                                           items: state.refundQuantityStore.refundableItems(),
-                                                          paymentGateway: paymentGateway)
+                                                          paymentGateway: paymentGateway,
+                                                          paymentGatewayAccount: paymentGatewayAccounts.first)
         return RefundConfirmationViewModel(details: details, currencySettings: state.currencySettings)
     }
 }
@@ -212,6 +235,12 @@ extension IssueRefundViewModel {
         }
 
         trackSelectAllButtonTapped()
+    }
+
+    /// Fetches the necessary information to show the issue refund screen.
+    ///
+    func fetch() {
+        fetchCharge()
     }
 }
 
@@ -282,7 +311,25 @@ private extension IssueRefundViewModel {
         guard let chargeID = state.order.chargeID else {
             return
         }
-        let action = CardPresentPaymentAction.fetchWCPayCharge(siteID: state.order.siteID, chargeID: chargeID, onCompletion: { _ in })
+        guard let paymentGatewayAccount = paymentGatewayAccounts.first else {
+            return state.fetchChargeError = .unknownPaymentGatewayAccount
+        }
+
+        state.fetchChargeError = nil
+
+        let setPaymentGatewayAccountAction = CardPresentPaymentAction.use(paymentGatewayAccount: paymentGatewayAccount)
+        stores.dispatch(setPaymentGatewayAccountAction)
+
+        let action = CardPresentPaymentAction.fetchWCPayCharge(siteID: state.order.siteID, chargeID: chargeID, onCompletion: { [weak self] result in
+            if case .failure = result {
+                self?.state.fetchChargeError = .requestError
+
+                self?.showFetchChargeErrorNotice?({ [weak self] in
+                    self?.fetchCharge()
+                })
+            }
+        })
+
         stores.dispatch(action)
     }
 }
@@ -358,7 +405,8 @@ extension IssueRefundViewModel {
     ///
     private func createShippingSection() -> Section? {
         // If there is no shipping cost to refund or shipping has already been refunded, then hide the section.
-        guard let shippingLine = state.order.shippingLines.first, hasShippingBeenRefunded() == false else {
+        guard let shippingLine = state.order.shippingLines.first,
+                hasShippingBeenRefunded() == false else {
             return nil
         }
 
@@ -442,14 +490,18 @@ extension IssueRefundViewModel {
     /// Calculates whether the next button should be animating or not
     ///
     private func calculateNextButtonAnimatingState() -> Bool {
-        // When we have a chargeID, we need to wait until we fetch the charge.
-        state.charge == nil && !state.order.chargeID.isNilOrEmpty
+        // When we have a chargeID, we need to wait until we fetch the charge unless there is an error fetching the charge.
+        state.charge == nil && !state.order.chargeID.isNilOrEmpty && state.fetchChargeError == nil
     }
 
     /// Calculates whether there are pending changes to commit
     ///
     private func calculatePendingChangesState() -> Bool {
-        state.refundQuantityStore.count() > 0 || state.shouldRefundShipping || state.shouldRefundFees
+        guard state.fetchChargeError == nil else {
+            return false
+        }
+
+        return state.refundQuantityStore.count() > 0 || state.shouldRefundShipping || state.shouldRefundFees
     }
 
     /// Calculates whether the "select all" button should be visible or not.
@@ -482,35 +534,14 @@ extension IssueRefundViewModel {
         // Return false if there are no fees left to be refunded.
         return state.order.fees.isNotEmpty
     }
+}
 
-    /// Return an array of `RefundableOrderItems` by taking out all previously refunded items
-    ///
-    private static func filterItems(from order: Order, with refunds: [Refund]) -> [RefundableOrderItem] {
-        // Flattened array with all items refunded
-        let allRefundedItems = refunds.flatMap { $0.items }
-
-        // Transform `order.items` by subtracting the quantity left to refund and evicting those who were fully refunded.
-        return order.items.compactMap { item -> RefundableOrderItem? in
-
-            // Calculate how many times an item has been refunded. This number is negative.
-            let timesRefunded = allRefundedItems.reduce(0) { timesRefunded, refundedItem -> Decimal in
-
-                // Only keep accumulating if the refunded item product and the original item product match
-                guard refundedItem.productOrVariationID == item.productOrVariationID else {
-                    return timesRefunded
-                }
-                return timesRefunded + refundedItem.quantity
-            }
-
-            // If there is no more items to refund, evict it from the resulting array
-            let quantityLeftToRefund = item.quantity + timesRefunded
-            guard quantityLeftToRefund > 0 else {
-                return nil
-            }
-
-            // Return the item with the updated quantity to refund
-            return RefundableOrderItem(item: item, quantity: quantityLeftToRefund)
-        }
+// MARK: Definitions
+extension IssueRefundViewModel {
+    /// Error from fetching refund charge details.
+    enum FetchChargeError: Error, Equatable {
+        case unknownPaymentGatewayAccount
+        case requestError
     }
 }
 

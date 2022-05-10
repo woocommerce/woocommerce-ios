@@ -15,6 +15,8 @@ final class OrderDetailsViewModel {
 
     private(set) var order: Order
 
+    private let cardPresentPaymentsOnboardingPresenter = CardPresentPaymentsOnboardingPresenter()
+
     var orderStatus: OrderStatus? {
         return lookUpOrderStatus(for: order)
     }
@@ -27,6 +29,7 @@ final class OrderDetailsViewModel {
     func update(order newOrder: Order) {
         self.order = newOrder
         dataSource.update(order: order)
+        editNoteViewModel.update(order: order)
     }
 
     let productLeftTitle = NSLocalizedString("PRODUCT", comment: "Product section title")
@@ -80,6 +83,10 @@ final class OrderDetailsViewModel {
     private(set) lazy var dataSource: OrderDetailsDataSource = {
         return OrderDetailsDataSource(order: order,
                                       cardPresentPaymentsConfiguration: configurationLoader.configuration)
+    }()
+
+    private(set) lazy var editNoteViewModel: EditCustomerNoteViewModel = {
+        return EditCustomerNoteViewModel(order: order)
     }()
 
     /// Order Notes
@@ -520,31 +527,40 @@ extension OrderDetailsViewModel {
 
     /// Collects payments for the current order.
     /// Tries to connect to a reader if necessary.
+    /// Checks onboarding status before connecting to a reader.
     /// Handles receipt sharing.
     ///
     func collectPayment(rootViewController: UIViewController, backButtonTitle: String, onCollect: @escaping (Result<Void, Error>) -> Void) {
-        guard let paymentGateway = cardPresentPaymentGatewayAccounts.first else {
-            return DDLogError("⛔️ Payment Gateway not found, can't collect payment.")
+        cardPresentPaymentsOnboardingPresenter.showOnboardingIfRequired(from: rootViewController) { [weak self] in
+            guard let self = self else { return }
+            guard let paymentGateway = self.cardPresentPaymentGatewayAccounts.first else {
+                return DDLogError("⛔️ Payment Gateway not found, can't collect payment.")
+            }
+
+            let formattedTotal: String = {
+                let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+                let currencyCode = ServiceLocator.currencySettings.currencyCode
+                let unit = ServiceLocator.currencySettings.symbol(from: currencyCode)
+                return currencyFormatter.formatAmount(self.order.total, with: unit) ?? ""
+            }()
+
+            self.collectPaymentsUseCase = CollectOrderPaymentUseCase(
+                siteID: self.order.siteID,
+                order: self.order,
+                formattedAmount: formattedTotal,
+                paymentGatewayAccount: paymentGateway,
+                rootViewController: rootViewController,
+                alerts: OrderDetailsPaymentAlerts(transactionType: .collectPayment,
+                                                  presentingController: rootViewController),
+                configuration: self.configurationLoader.configuration)
+
+            self.collectPaymentsUseCase?.collectPayment(
+                backButtonTitle: backButtonTitle,
+                onCollect: onCollect,
+                onCompleted: { [weak self] in
+                    // Make sure we free all the resources
+                    self?.collectPaymentsUseCase = nil
+                })
         }
-
-        let formattedTotal: String = {
-            let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
-            let currencyCode = ServiceLocator.currencySettings.currencyCode
-            let unit = ServiceLocator.currencySettings.symbol(from: currencyCode)
-            return currencyFormatter.formatAmount(order.total, with: unit) ?? ""
-        }()
-
-        collectPaymentsUseCase = CollectOrderPaymentUseCase(siteID: order.siteID,
-                                                            order: order,
-                                                            formattedAmount: formattedTotal,
-                                                            paymentGatewayAccount: paymentGateway,
-                                                            rootViewController: rootViewController,
-                                                            alerts: OrderDetailsPaymentAlerts(transactionType: .collectPayment,
-                                                                                              presentingController: rootViewController),
-                                                            configuration: configurationLoader.configuration)
-        collectPaymentsUseCase?.collectPayment(backButtonTitle: backButtonTitle, onCollect: onCollect, onCompleted: { [weak self] in
-            // Make sure we free all the resources
-            self?.collectPaymentsUseCase = nil
-        })
     }
 }

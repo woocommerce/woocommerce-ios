@@ -3,7 +3,7 @@ import Yosemite
 
 /// Groups an order item and its quantity available for refund
 ///
-struct RefundableOrderItem {
+struct RefundableOrderItem: Equatable {
     /// Original purchased item
     ///
     let item: OrderItem

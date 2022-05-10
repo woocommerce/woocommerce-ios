@@ -210,13 +210,16 @@ private struct ProductsSection: View {
                     showAddProduct.toggle()
                 }
                 .id(addProductButton)
+                .accessibilityIdentifier(NewOrder.Accessibility.addProductButtonIdentifier)
                 .buttonStyle(PlusButtonStyle())
                 .sheet(isPresented: $showAddProduct, onDismiss: {
                     scroll.scrollTo(addProductButton)
                 }, content: {
-                    AddProductToOrder(isPresented: $showAddProduct, viewModel: viewModel.addProductViewModel)
+                    ProductSelector(configuration: ProductSelector.Configuration.addProductToOrder,
+                                    isPresented: $showAddProduct,
+                                    viewModel: viewModel.addProductViewModel)
                         .onDisappear {
-                            viewModel.addProductViewModel.clearSearch()
+                            viewModel.addProductViewModel.clearSearchAndFilters()
                             navigationButtonID = UUID()
                         }
                 })
@@ -251,6 +254,7 @@ private extension NewOrder {
     enum Accessibility {
         static let createButtonIdentifier = "new-order-create-button"
         static let cancelButtonIdentifier = "new-order-cancel-button"
+        static let addProductButtonIdentifier = "new-order-add-product-button"
     }
 }
 
@@ -279,5 +283,26 @@ struct NewOrder_Previews: PreviewProvider {
         }
         .environment(\.layoutDirection, .rightToLeft)
         .previewDisplayName("Right to left")
+    }
+}
+
+private extension ProductSelector.Configuration {
+    static let addProductToOrder: Self =
+        .init(searchHeaderBackgroundColor: .listBackground,
+              prefersLargeTitle: false,
+              title: Localization.title,
+              cancelButtonTitle: Localization.close,
+              productRowAccessibilityHint: Localization.productRowAccessibilityHint,
+              variableProductRowAccessibilityHint: Localization.variableProductRowAccessibilityHint)
+
+    enum Localization {
+        static let title = NSLocalizedString("Add Product", comment: "Title for the screen to add a product to an order")
+        static let close = NSLocalizedString("Close", comment: "Text for the close button in the Add Product screen")
+        static let productRowAccessibilityHint = NSLocalizedString("Adds product to order.",
+                                                                   comment: "Accessibility hint for selecting a product in the Add Product screen")
+        static let variableProductRowAccessibilityHint = NSLocalizedString(
+            "Opens list of product variations.",
+            comment: "Accessibility hint for selecting a variable product in the Add Product screen"
+        )
     }
 }

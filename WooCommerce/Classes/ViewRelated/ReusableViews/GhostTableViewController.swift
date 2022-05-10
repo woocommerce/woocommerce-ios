@@ -1,9 +1,16 @@
 import UIKit
 import WordPressUI
 
+enum GhostTableViewSectionHeaderVerticalSpace {
+    case none
+    case medium
+    case large
+}
+
 /// This struct encapsulates the necessary data to configure an instance of `GhostTableViewController`
 struct GhostTableViewOptions {
     fileprivate let ghostOptions: GhostOptions
+    fileprivate let sectionHeaderVerticalSpace: GhostTableViewSectionHeaderVerticalSpace
     fileprivate let estimatedRowHeight: CGFloat
     fileprivate let cellClass: UITableViewCell.Type
     fileprivate let tableViewStyle: UITableView.Style
@@ -11,7 +18,7 @@ struct GhostTableViewOptions {
     fileprivate let separatorStyle: UITableViewCell.SeparatorStyle
     fileprivate let isScrollEnabled: Bool
 
-    init(displaysSectionHeader: Bool = true,
+    init(sectionHeaderVerticalSpace: GhostTableViewSectionHeaderVerticalSpace = .none,
          cellClass: UITableViewCell.Type,
          rowsPerSection: [Int] = [3],
          estimatedRowHeight: CGFloat = 44,
@@ -20,7 +27,10 @@ struct GhostTableViewOptions {
          separatorStyle: UITableViewCell.SeparatorStyle = .singleLine,
          isScrollEnabled: Bool = true) {
         // By just passing the cellClass in the initializer we enforce that the GhostOptions reuseIdentifier is always that of the cellClass
-        ghostOptions = GhostOptions(displaysSectionHeader: displaysSectionHeader, reuseIdentifier: cellClass.reuseIdentifier, rowsPerSection: rowsPerSection)
+        ghostOptions = GhostOptions(displaysSectionHeader: sectionHeaderVerticalSpace != .none,
+                                    reuseIdentifier: cellClass.reuseIdentifier,
+                                    rowsPerSection: rowsPerSection)
+        self.sectionHeaderVerticalSpace = sectionHeaderVerticalSpace
         self.estimatedRowHeight = estimatedRowHeight
         self.cellClass = cellClass
         self.tableViewStyle = tableViewStyle
@@ -58,7 +68,22 @@ final class GhostTableViewController: UITableViewController {
         tableView.estimatedRowHeight = options.estimatedRowHeight
         tableView.isScrollEnabled = options.isScrollEnabled
         tableView.applyFooterViewForHidingExtraRowPlaceholders()
-        tableView.registerNib(for: options.cellClass)
+        registerCellClass()
+        configureSectionHeaderHeight()
+    }
+
+    private func registerCellClass() {
+        options.cellClass.nibExistsInMainBundle() ? tableView.registerNib(for: options.cellClass) : tableView.register(options.cellClass)
+    }
+
+    private func configureSectionHeaderHeight() {
+        if options.sectionHeaderVerticalSpace == .medium {
+            // WordPressUI uses `titleForHeaderInSection` in `GhostTableViewHandler` returning an empty string to render the section header.
+            // This however creates a large heighted section. By setting the header height to 0 we decrease the size
+            // thus showing a medium vertical space size
+            tableView.estimatedSectionHeaderHeight = 0
+            tableView.sectionHeaderHeight = 0
+        }
     }
 
     /// Activate the ghost if this view is added to the parent.

@@ -31,7 +31,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
                 case .success:
                     break
                 case .failure:
-                    self?.displayAppleMapsErrorNotice()
+                    self?.displayErrorNotice(title: Localization.appleMapsErrorNotice)
                 }
             }
         } contactCustomerPressed: { [weak self] sourceView in
@@ -50,7 +50,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
             if let phoneNumber = phone, phoneNumber.isNotEmpty {
                 actionSheet.addDefaultActionWithTitle(Localization.contactActionCall) { _ in
                     if PhoneHelper.callPhoneNumber(phone: phoneNumber) == false {
-                        self.displayPhoneNumberErrorNotice()
+                        self.displayErrorNotice(title: Localization.phoneNumberErrorNotice)
                     }
                 }
                 actionSheet.addDefaultActionWithTitle(Localization.contactActionMessage) { _ in
@@ -231,8 +231,10 @@ private extension ShippingLabelAddressFormViewController {
             case .success:
                 self.onCompletion(self.viewModel.address)
                 self.navigationController?.popViewController(animated: true)
-            case .failure:
-                break
+            case .failure(let error):
+                if case .local = error {
+                    self.displayErrorNotice(title: Localization.addressLocalValidationErrorNotice)
+                }
             }
         }
     }
@@ -245,8 +247,10 @@ private extension ShippingLabelAddressFormViewController {
             case .success:
                 self.onCompletion(self.viewModel.address)
                 self.navigationController?.popViewController(animated: true)
-            case .failure:
-                break
+            case .failure(let error):
+                if case .local = error {
+                    self.displayErrorNotice(title: Localization.addressLocalValidationErrorNotice)
+                }
             }
         }
     }
@@ -254,17 +258,10 @@ private extension ShippingLabelAddressFormViewController {
 
 // MARK: - Utils
 private extension ShippingLabelAddressFormViewController {
-    /// Enqueues the `Apple Maps` Error Notice.
+    /// Enqueue an error notice
     ///
-    private func displayAppleMapsErrorNotice() {
-        let notice = Notice(title: Localization.appleMapsErrorNotice, feedbackType: .error, actionTitle: nil, actionHandler: nil)
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
-    }
-
-    /// Enqueues the `Phone Number`  Error Notice.
-    ///
-    private func displayPhoneNumberErrorNotice() {
-        let notice = Notice(title: Localization.phoneNumberErrorNotice, feedbackType: .error, actionTitle: nil, actionHandler: nil)
+    func displayErrorNotice(title: String) {
+        let notice = Notice(title: title, feedbackType: .error, actionTitle: nil, actionHandler: nil)
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
@@ -615,6 +612,8 @@ private extension ShippingLabelAddressFormViewController {
                                                             comment: "Error in finding the address in the Shipping Label Address Validation in Apple Maps")
         static let phoneNumberErrorNotice = NSLocalizedString("The phone number is not valid or you can't call the customer from this device.",
             comment: "Error in calling the phone number of the customer in the Shipping Label Address Validation")
+        static let addressLocalValidationErrorNotice = NSLocalizedString("Certain required fields need attention.",
+                comment: "Error message when local validation fails in Shipping Label Address Validation")
         static let contactActionLabel = NSLocalizedString("Contact Customer", comment: "Contact Customer action in Shipping Label Address Validation.")
         static let contactActionCancel = NSLocalizedString("Cancel", comment: "Close the action sheet")
         static let contactActionEmail = NSLocalizedString("Email", comment: "Email button title")

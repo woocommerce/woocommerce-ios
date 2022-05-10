@@ -289,6 +289,10 @@ public enum WooAnalyticsStat: String {
     case collectPaymentCanceled = "card_present_collect_payment_canceled"
     case collectPaymentFailed = "card_present_collect_payment_failed"
     case collectPaymentSuccess = "card_present_collect_payment_success"
+    case collectInteracPaymentSuccess = "card_interac_collect_payment_success"
+    case interacRefundSuccess = "interac_refund_success"
+    case interacRefundFailed = "interac_refund_failed"
+    case interacRefundCanceled = "interac_refund_cancelled"
 
     // MARK: Push Notifications Events
     //

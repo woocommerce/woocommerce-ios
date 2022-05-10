@@ -12,8 +12,7 @@ final class CouponListViewController: UIViewController, GhostableViewController 
     ///
     private var emptyStateViewController: UIViewController?
 
-    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(displaysSectionHeader: false,
-                                                                                                cellClass: TitleAndSubtitleAndStatusTableViewCell.self,
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: TitleAndSubtitleAndStatusTableViewCell.self,
                                                                                                 rowsPerSection: Constants.placeholderRowsPerSection,
                                                                                                 estimatedRowHeight: Constants.estimatedRowHeight,
                                                                                                 backgroundColor: .basicBackground))
@@ -197,6 +196,9 @@ extension CouponListViewController: UITableViewDelegate {
         let detailsViewModel = CouponDetailsViewModel(coupon: coupon)
         let hostingController = CouponDetailsHostingController(viewModel: detailsViewModel) { [weak self] in
             guard let self = self else { return }
+            self.viewModel.refreshCoupons()
+        } onDeletion: { [weak self] in
+            guard let self = self else { return }
             self.navigationController?.popViewController(animated: true)
             let notice = Notice(title: Localization.couponDeleted, feedbackType: .success)
             self.noticePresenter.enqueue(notice: notice)
@@ -250,7 +252,7 @@ private extension CouponListViewController {
         ServiceLocator.analytics.track(.couponsListSearchTapped)
         let searchViewController = SearchViewController<TitleAndSubtitleAndStatusTableViewCell, CouponSearchUICommand>(
             storeID: siteID,
-            command: CouponSearchUICommand(),
+            command: CouponSearchUICommand(siteID: siteID),
             cellType: TitleAndSubtitleAndStatusTableViewCell.self,
             cellSeparator: .singleLine
         )

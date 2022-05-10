@@ -145,6 +145,7 @@ To generate a `copy()` method for a `class` or `struct`:
 The [`rake generate`](../Rakefile) command executes the Sourcery configuration files located in the [`CodeGeneration` folder](../CodeGeneration/Sourcery/Copiable). There are different configuration files for every module:
 
 ```
+Hardware module → Hardware-Copiable.sourcery.yaml
 Networking module → Networking-Copiable.sourcery.yaml
 Storage module → Storage-Copiable.sourcery.yaml
 WooCommerce module → WooCommerce-Copiable.sourcery.yaml
@@ -155,3 +156,11 @@ All of them use a single template, [`Models+Copiable.swifttemplate`](../CodeGene
 
 Please refer to the [Sourcery reference](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/index.html) for more info about how to write templates.
 
+## Adding Copiable to a New Xcode Framework
+
+1. In Xcode target settings, add Codegen to the Xcode framework in General > Frameworks and Libraries.  
+2. Add a new file `{{FrameworkName}}-Copiable.sourcery.yaml` under [`CodeGeneration/Sourcery/Copiable`](../CodeGeneration/Sourcery/Copiable) similar to other yaml files in the same folder.
+3. In [`Rakefile`](../Rakefile) which includes the script for `rake generate` command, add the new framework to the list of frameworks for Copiable generation similar to other frameworks.
+4. In the new Xcode framework, add a new folder `Model/Copiable` in the file hierarchy. 
+5. Now you can try generating copy methods as instructed in an earlier section.
+6. In the new Xcode framework, add the newly generated file `Models+Copiable.generated.swift` under the new folder `Model/Copiable`. 

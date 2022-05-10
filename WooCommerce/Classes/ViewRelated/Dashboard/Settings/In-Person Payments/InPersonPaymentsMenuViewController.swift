@@ -3,11 +3,11 @@ import SwiftUI
 import Yosemite
 
 final class InPersonPaymentsMenuViewController: UITableViewController {
-    private let plugin: CardPresentPaymentsPlugins
+    private let plugin: CardPresentPaymentsPlugin
     private var rows = [Row]()
     private let configurationLoader: CardPresentConfigurationLoader
 
-    init(plugin: CardPresentPaymentsPlugins) {
+    init(plugin: CardPresentPaymentsPlugin) {
         self.plugin = plugin
         configurationLoader = CardPresentConfigurationLoader()
         super.init(style: .grouped)
@@ -132,7 +132,7 @@ private extension InPersonPaymentsMenuViewController {
 //
 extension InPersonPaymentsMenuViewController {
     func orderCardReaderWasPressed() {
-        WebviewHelper.launch(configurationLoader.configuration.purchaseCardReaderUrl(for: plugin), with: self)
+        WebviewHelper.launch(configurationLoader.configuration.purchaseCardReaderUrl(), with: self)
     }
 
     func manageCardReaderWasPressed() {
@@ -147,7 +147,7 @@ extension InPersonPaymentsMenuViewController {
     }
 
     func bbposChipper2XBTManualWasPressed() {
-            WebviewHelper.launch(Constants.bbposChipper2XBTManualURL, with: self)
+        WebviewHelper.launch(Constants.bbposChipper2XBTManualURL, with: self)
     }
 
     func stripeM2ManualWasPressed() {
@@ -248,7 +248,7 @@ private enum Row: CaseIterable {
 }
 
 private enum Constants {
-    static let bbposChipper2XBTManualURL = URL(string: "https://developer.bbpos.com/quick_start_guide/Chipper%202X%20BT%20Quick%20Start%20Guide.pdf")!
+    static let bbposChipper2XBTManualURL = URL(string: "https://stripe.com/files/docs/terminal/c2xbt_product_sheet.pdf")!
     static let stripeM2ManualURL = URL(string: "https://stripe.com/files/docs/terminal/m2_product_sheet.pdf")!
     static let wisepad3ManualURL = URL(string: "https://stripe.com/files/docs/terminal/wp3_product_sheet.pdf")!
 }
@@ -259,7 +259,7 @@ private enum Constants {
 /// SwiftUI wrapper for CardReaderSettingsPresentingViewController
 ///
 struct InPersonPaymentsMenu: UIViewControllerRepresentable {
-    let plugin: CardPresentPaymentsPlugins
+    let plugin: CardPresentPaymentsPlugin
 
     func makeUIViewController(context: Context) -> some UIViewController {
         InPersonPaymentsMenuViewController(plugin: plugin)

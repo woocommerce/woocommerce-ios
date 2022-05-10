@@ -78,6 +78,10 @@ final class CouponDetailsViewModel: ObservableObject {
     ///
     @Published private(set) var isDeletionInProgress: Bool = false
 
+    /// Handle when the Edit Coupon Screen should be shown.
+    ///
+    @Published var showingEditCoupon: Bool = false
+
     /// The message to be shared about the coupon
     ///
     var shareMessage: String {
@@ -140,6 +144,10 @@ final class CouponDetailsViewModel: ObservableObject {
             }
         }
         stores.dispatch(action)
+    }
+
+    func updateCoupon(_ coupon: Coupon) {
+        self.coupon = coupon
     }
 
     func loadCouponReport() {
@@ -210,7 +218,7 @@ private extension CouponDetailsViewModel {
         amount = formattedAmount.isEmpty ? coupon.amount : formattedAmount
         summary = coupon.summary(currencySettings: currencySettings)
 
-        expiryDate = coupon.dateExpires?.toString(dateStyle: .long, timeStyle: .none) ?? ""
+        expiryDate = coupon.dateExpires?.toString(dateStyle: .long, timeStyle: .none, timeZone: TimeZone.siteTimezone) ?? ""
         usageLimitPerUser = coupon.usageLimitPerUser ?? Constants.noLimit
         excludeSaleItems = coupon.excludeSaleItems
 

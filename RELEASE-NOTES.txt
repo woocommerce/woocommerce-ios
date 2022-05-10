@@ -1,5 +1,20 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+9.2
+-----
+- [*] Order Creation: Updated percentage fee flow - added amount preview, disabled percentage option when editing. [https://github.com/woocommerce/woocommerce-ios/pull/6763]
+- [*] Product Details: Update status badge layout and show it for more cases. [https://github.com/woocommerce/woocommerce-ios/pull/6768]
+- [*] Coupons: Filter initial search results to show only coupons of the currently selected store. [https://github.com/woocommerce/woocommerce-ios/pull/6800]
+- [*] Coupons: Fixed crash when there are duplicated items on the coupon list. [https://github.com/woocommerce/woocommerce-ios/pull/6798]
+
+9.1
+-----
+
+- [*] Product name field in product form - Remove scroll behaviour and increase field height to fully display long product names. [https://github.com/woocommerce/woocommerce-ios/pull/6681]
+- [*] Filter toolbar in Products list tab - Filter toolbar is pinned outside of the products list. [https://github.com/woocommerce/woocommerce-ios/pull/6698]
+- [internal] Loading screens are refactored to avoid duplicated code and a potential crash. Please quickly smoke test them to make sure that everything still works as before. [https://github.com/woocommerce/woocommerce-ios/pull/6717]
+- [*] Shipping settings - Weight and shipping package dimensions are localized based on device locale. Also, decimal point information is no longer lost upon saving a product, when using comma as a decimal separator. [https://github.com/woocommerce/woocommerce-ios/pull/6721]
+
 9.0
 -----
 

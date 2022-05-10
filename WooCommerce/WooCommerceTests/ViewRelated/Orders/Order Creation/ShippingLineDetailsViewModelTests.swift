@@ -97,6 +97,19 @@ final class ShippingLineDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.methodTitle, "Flat Rate")
     }
 
+    func test_view_model_does_not_prefill_zero_amount_without_existing_shipping_line() {
+        // Given
+        let viewModel = ShippingLineDetailsViewModel(isExistingShippingLine: false,
+                                                     initialMethodTitle: "",
+                                                     shippingTotal: "0",
+                                                     locale: usLocale,
+                                                     storeCurrencySettings: usStoreSettings,
+                                                     didSelectSave: { _ in })
+
+        // Then
+        XCTAssertTrue(viewModel.amount.isEmpty)
+    }
+
     func test_view_model_disables_done_button_for_empty_state_and_enables_with_input() {
         // Given
         let viewModel = ShippingLineDetailsViewModel(isExistingShippingLine: false,
@@ -255,5 +268,4 @@ final class ShippingLineDetailsViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(viewModel.isExistingShippingLine)
     }
-
 }

@@ -1,3 +1,5 @@
-Erstelle unterwegs Bestellungen mit Produkten, Versand- und Rechnungsinformationen! Du kannst direkt im Anschluss eine persönliche Kreditkartenzahlung annehmen oder einen Link an einen Kunden senden, damit dieser die Bestellung auf seinem eigenen Gerät bezahlen kann. Du hast es dir gewünscht und wir haben diesen Wunsch erfüllt!
+Bei Bestellungen, auf die noch keine Zahlung angewendet wurde, findest du oben einen praktischen Zahlungslink. Sende diesen Link an deinen Kunden. Dann kann er die Bestellung direkt von seinem Smartphone oder Computer aus bezahlen.
 
-Auch bei der Funktion zur Verwaltung von Gutscheinen machen wir Fortschritte. Auf dem Tab „Mehr“ unter „Einstellungen“ > „Experimentelle Funktionen“ kannst du sie aktivieren und sie dir genauer ansehen.
+Das ist eine tolle Option der neuen Funktion zur Erstellung von Bestellungen! Erstelle eine Bestellung, während ein Kunde vor dir steht, und schicke ihm dann den Zahlungslink über deine Website. Super, oder?
+
+Um diese Option in der App zu nutzen, musst du ein Update auf WooCommerce 6.4 oder höher durchführen.

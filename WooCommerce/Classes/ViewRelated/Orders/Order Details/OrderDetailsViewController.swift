@@ -137,6 +137,8 @@ private extension OrderDetailsViewController {
                                                                 style: .plain,
                                                                 target: self,
                                                                 action: #selector(presentActionMenuSheet(_:)))
+        } else {
+            navigationItem.rightBarButtonItem = nil
         }
     }
 
@@ -189,6 +191,7 @@ private extension OrderDetailsViewController {
     /// Reloads the tableView's sections and data.
     ///
     func reloadTableViewSectionsAndData() {
+        configureNavigationBar()
         reloadSections()
         reloadTableViewDataIfPossible()
     }
@@ -318,7 +321,7 @@ private extension OrderDetailsViewController {
         actionSheet.addDefaultActionWithTitle(Localization.ActionsMenu.paymentLink) { [weak self] _ in
             guard let self = self else { return }
 
-            SharingHelper.shareURL(url: paymentLink, title: nil, from: self.view, in: self) { _, completed, _, _ in
+            SharingHelper.shareURL(url: paymentLink, title: nil, from: sender, in: self) { _, completed, _, _ in
                 if completed {
                     ServiceLocator.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailPaymentLinkShared())
                 }
@@ -527,7 +530,7 @@ private extension OrderDetailsViewController {
             guard indexPath != nil else {
                 break
             }
-            collectPayment()
+            collectPaymentTapped()
         case .reprintShippingLabel(let shippingLabel):
             guard let navigationController = navigationController else {
                 assertionFailure("Cannot reprint a shipping label because `navigationController` is nil")
@@ -704,9 +707,8 @@ private extension OrderDetailsViewController {
     }
 
     func editCustomerNoteTapped() {
-        let viewModel = EditCustomerNoteViewModel(order: viewModel.order)
-        let editNoteViewController = EditCustomerNoteHostingController(viewModel: viewModel)
-        present(editNoteViewController, animated: true, completion: nil)
+        let editNoteViewController = EditCustomerNoteHostingController(viewModel: viewModel.editNoteViewModel)
+        present(editNoteViewController, animated: true)
 
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowStarted(subject: .customerNote))
     }
@@ -718,7 +720,7 @@ private extension OrderDetailsViewController {
         present(navigationController, animated: true, completion: nil)
     }
 
-    @objc private func collectPayment() {
+    @objc private func collectPaymentTapped() {
         viewModel.collectPayment(rootViewController: self, backButtonTitle: Localization.Payments.backToOrder) { [weak self] result in
             guard let self = self else { return }
             // Refresh date & view once payment has been collected.

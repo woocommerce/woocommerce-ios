@@ -1,5 +1,7 @@
+import Combine
 import Foundation
 import Yosemite
+import protocol Storage.StorageManagerType
 
 /// Classes conforming to this protocol can enrich the Product Category List UI,
 /// e.g by adding extra rows
@@ -41,21 +43,32 @@ final class ProductCategoryListViewModel {
     ///
     private let storesManager: StoresManager
 
+    /// Storage to fetch categories from.
+    ///
+    private let storageManager: StorageManagerType
+
     /// Site Id of the related categories
     ///
     private let siteID: Int64
 
+    /// Initially selected category IDs.
+    /// This is mutable so that we can remove any item when unselecting it manually.
+    ///
+    private var initiallySelectedIDs: [Int64]
+
     /// Product categories that will be eventually modified by the user
     ///
-    private(set) var selectedCategories: [ProductCategory]
+    @Published private(set) var selectedCategories: [ProductCategory]
+
+    /// Search query from the search bar
+    /// 
+    @Published var searchQuery: String = ""
+
+    private var searchQuerySubscription: AnyCancellable?
 
     /// Array of view models to be rendered by the View Controller.
     ///
-    private(set) var categoryViewModels: [ProductCategoryCellViewModel] = []
-
-    /// Closure to be invoked when `synchronizeCategories` state  changes
-    ///
-    private var onSyncStateChange: ((SyncingState) -> Void)?
+    @Published private(set) var categoryViewModels: [ProductCategoryCellViewModel] = []
 
     /// Closure invoked when the list needs to reload
     ///
@@ -76,41 +89,40 @@ final class ProductCategoryListViewModel {
 
     /// Current  category synchronization state
     ///
-    private var syncCategoriesState: SyncingState = .initialized {
-        didSet {
-            guard syncCategoriesState != oldValue else {
-                return
-            }
-            onSyncStateChange?(syncCategoriesState)
-        }
-    }
+    @Published private(set) var syncCategoriesState: SyncingState = .initialized
 
     private lazy var resultController: ResultsController<StorageProductCategory> = {
-        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID = %ld", self.siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageProductCategory.name, ascending: true)
         return ResultsController<StorageProductCategory>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
-    init(storesManager: StoresManager = ServiceLocator.stores,
-         siteID: Int64,
+    init(siteID: Int64,
+         selectedCategoryIDs: [Int64] = [],
          selectedCategories: [ProductCategory] = [],
+         storesManager: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          enrichingDataSource: ProductCategoryListViewModelEnrichingDataSource? = nil,
          delegate: ProductCategoryListViewModelDelegate? = nil,
          onProductCategorySelection: ProductCategorySelection? = nil) {
         self.storesManager = storesManager
+        self.storageManager = storageManager
         self.siteID = siteID
         self.selectedCategories = selectedCategories
         self.enrichingDataSource = enrichingDataSource
         self.delegate = delegate
         self.onProductCategorySelection = onProductCategorySelection
+        self.initiallySelectedIDs = selectedCategoryIDs
+
+        try? resultController.performFetch()
+        updateViewModelsArray()
+        configureProductSearch()
     }
 
     /// Load existing categories from storage and fire the synchronize all categories action.
     ///
     func performFetch() {
         synchronizeAllCategories()
-        try? resultController.performFetch()
     }
 
     /// Retry product categories synchronization when `syncCategoriesState` is on a `.failed` state.
@@ -120,14 +132,6 @@ final class ProductCategoryListViewModel {
             return
         }
         synchronizeAllCategories(fromPageNumber: retryToken.fromPageNumber)
-    }
-
-    /// Observes and notifies of changes made to product categories. the current state will be dispatched upon subscription.
-    /// Calling this method will remove any other previous observer.
-    ///
-    func observeCategoryListStateChanges(onStateChanges: @escaping (SyncingState) -> Void) {
-        onSyncStateChange = onStateChanges
-        onSyncStateChange?(syncCategoriesState)
     }
 
     /// Observe the need of reload by passing a closure that will be invoked when there is a need to reload the data.
@@ -159,6 +163,14 @@ final class ProductCategoryListViewModel {
         selectedCategories = []
     }
 
+    /// Resets the selected categories and triggers UI reload
+    ///
+    func resetSelectedCategoriesAndReload() {
+        resetSelectedCategories()
+        updateViewModelsArray()
+        reloadData()
+    }
+
     /// Select or Deselect a category, notifying the delegate before any other action
     ///
     func selectOrDeselectCategory(index: Int) {
@@ -170,7 +182,8 @@ final class ProductCategoryListViewModel {
 
         // If the category selected exist, remove it, otherwise, add it to `selectedCategories`.
         if let indexCategory = selectedCategories.firstIndex(where: { $0.categoryID == categoryViewModel.categoryID}) {
-            selectedCategories.remove(at: indexCategory)
+            let discardedItem = selectedCategories.remove(at: indexCategory)
+            initiallySelectedIDs.removeAll(where: { $0 == discardedItem.categoryID })
         } else {
             let selectedCategory = resultController.fetchedObjects.first(where: { $0.categoryID == categoryViewModel.categoryID })
 
@@ -189,9 +202,47 @@ final class ProductCategoryListViewModel {
     ///
     func updateViewModelsArray() {
         let fetchedCategories = resultController.fetchedObjects
+        updateInitialItemsIfNeeded(with: fetchedCategories)
         let baseViewModels = ProductCategoryListViewModel.CellViewModelBuilder.viewModels(from: fetchedCategories, selectedCategories: selectedCategories)
 
-        categoryViewModels = enrichingDataSource?.enrichCategoryViewModels( baseViewModels) ?? baseViewModels
+        categoryViewModels = enrichingDataSource?.enrichCategoryViewModels(baseViewModels) ?? baseViewModels
+    }
+
+    /// Update `selectedCategories` based on initially selected items.
+    ///
+    private func updateInitialItemsIfNeeded(with categories: [ProductCategory]) {
+        guard initiallySelectedIDs.isNotEmpty && selectedCategories.isEmpty else {
+            return
+        }
+        selectedCategories = initiallySelectedIDs.compactMap { id in
+            categories.first(where: { $0.categoryID == id })
+        }
+    }
+
+    /// Updates the category results predicate & reload the list
+    ///
+    private func configureProductSearch() {
+        searchQuerySubscription = $searchQuery
+            .dropFirst()
+            .removeDuplicates()
+            .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
+            .sink { [weak self] newQuery in
+                guard let self = self else { return }
+
+                if newQuery.isNotEmpty {
+                    let searchPredicate = NSPredicate(format: "siteID = %ld AND (name CONTAINS[cd] %@) OR (slug CONTAINS[cd] %@)",
+                                                      self.siteID,
+                                                      newQuery,
+                                                      newQuery)
+                    self.resultController.predicate = searchPredicate
+                } else {
+                    // Resets the results to the full product list when there is no search query.
+                    self.resultController.predicate = NSPredicate(format: "siteID = %ld", self.siteID)
+                }
+                try? self.resultController.performFetch()
+                self.updateViewModelsArray()
+                self.reloadData()
+            }
     }
 }
 

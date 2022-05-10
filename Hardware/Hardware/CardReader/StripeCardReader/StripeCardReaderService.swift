@@ -20,6 +20,7 @@ public final class StripeCardReaderService: NSObject {
     /// see
     ///  https://stripe.dev/stripe-terminal-ios/docs/Protocols/SCPDiscoveryDelegate.html#/c:objc(pl)SCPDiscoveryDelegate(im)terminal:didUpdateDiscoveredReaders:
     private let discoveredStripeReadersCache = StripeCardReaderDiscoveryCache()
+    private let shouldRetryRefundAfterFailureDeterminer = ShouldRetryStripeRefundAfterFailureDeterminer()
 
     private var activePaymentIntent: StripeTerminal.PaymentIntent? = nil
 
@@ -207,6 +208,29 @@ extension StripeCardReaderService: CardReaderService {
         }
     }
 
+    public func waitForInsertedCardToBeRemoved() -> Future<Void, Never> {
+        return Future() { [weak self] promise in
+            guard let self = self else {
+                return
+            }
+
+            // If there is no chip card inserted, it is ok to immediately return. The payment method may have been swipe or tap.
+            guard self.isChipCardInserted else {
+                return promise(.success(()))
+            }
+
+            self.timerCancellable = Timer.publish(every: 1, tolerance: 0.1, on: .main, in: .default)
+                .autoconnect()
+                .receive(on: DispatchQueue.main)
+                .sink(receiveValue: { _ in
+                    if !self.isChipCardInserted {
+                        self.timerCancellable?.cancel()
+                        return promise(.success(()))
+                    }
+                })
+        }
+    }
+
     public func clear() {
         // Shortcircuit the SDK has not been initialized.
         // This prevent a crash when logging out or switching stores before
@@ -240,9 +264,6 @@ extension StripeCardReaderService: CardReaderService {
                 self.collectPaymentMethod(intent: intent)
             }.flatMap { intent in
                 self.processPayment(intent: intent)
-            }.flatMap { intent in
-                self.waitForInsertedCardToBeRemoved()
-                    .map { intent }
             }
             .map(PaymentIntent.init(intent:))
             .eraseToAnyPublisher()
@@ -433,29 +454,6 @@ private extension StripeCardReaderService {
         }
     }
 
-    func waitForInsertedCardToBeRemoved() -> Future<Void, Error> {
-        return Future() { [weak self] promise in
-            guard let self = self else {
-                return
-            }
-
-            // If there is no chip card inserted, it is ok to immediatedly return. The payment method may have been swipe or tap.
-            if !self.isChipCardInserted {
-                return promise(.success(()))
-            }
-
-            self.timerCancellable = Timer.publish(every: 1, tolerance: 0.1, on: .main, in: .default)
-                .autoconnect()
-                .receive(on: DispatchQueue.main)
-                .sink(receiveValue: { _ in
-                    if !self.isChipCardInserted {
-                        self.timerCancellable?.cancel()
-                        return promise(.success(()))
-                    }
-                })
-        }
-    }
-
     func processPayment(intent: StripeTerminal.PaymentIntent) -> Future<StripeTerminal.PaymentIntent, Error> {
         return Future() { [weak self] promise in
             Terminal.shared.processPayment(intent) { (intent, error) in
@@ -505,7 +503,8 @@ extension StripeCardReaderService {
     func createRefundParameters(parameters: RefundParameters) -> Future<StripeTerminal.RefundParameters, Error> {
         return Future() { promise in
             guard let refundParameters = parameters.toStripe() else {
-                return promise(.failure(CardReaderServiceError.refundPayment(underlyingError: .internalServiceError)))
+                return promise(.failure(CardReaderServiceError.refundPayment(underlyingError: .internalServiceError,
+                                                                            shouldRetry: false)))
             }
             return promise(.success(refundParameters))
         }
@@ -516,34 +515,66 @@ extension StripeCardReaderService {
     ///
     func refund(_ parameters: StripeTerminal.RefundParameters) -> Future<StripeTerminal.Refund, Error> {
         return Future() { [weak self] promise in
-            self?.refundCancellable = Terminal.shared.collectRefundPaymentMethod(parameters) { collectError in
+            self?.refundCancellable = Terminal.shared.collectRefundPaymentMethod(parameters) { [weak self] collectError in
                 if let error = collectError {
                     self?.refundCancellable = nil
-                    promise(.failure(CardReaderServiceError.refundPayment(underlyingError: UnderlyingError(with: error))))
+                    promise(.failure(CardReaderServiceError.refundPayment(
+                        underlyingError: UnderlyingError(with: error),
+                        shouldRetry: true
+                    )))
                 } else {
                     // Process refund
-                    Terminal.shared.processRefund { processedRefund, processError in
-                        self?.refundCancellable = nil
+                    Terminal.shared.processRefund { [weak self] processedRefund, processError in
+                        guard let self = self else { return }
+                        self.refundCancellable = nil
                         if let error = processError {
-                            promise(.failure(CardReaderServiceError.refundPayment(underlyingError: UnderlyingError(with: error))))
+                            promise(.failure(CardReaderServiceError.refundPayment(
+                                underlyingError: UnderlyingError(with: error),
+                                shouldRetry: self.shouldRetryRefund(after: error)
+                            )))
                         } else if let refund = processedRefund {
                             switch refund.status {
                                 //TODO: Find out how best to handle pending and unknown. Succeed for now based on Stripe's sample code
                             case .succeeded, .pending, .unknown:
                                 promise(.success(refund))
                             case .failed:
-                                //TODO: Consider using `refund.failureReason` here
-                                promise(.failure(CardReaderServiceError.refundPayment(underlyingError: .internalServiceError)))
+                                promise(.failure(CardReaderServiceError.refundPayment(
+                                    underlyingError: .internalServiceError,
+                                    shouldRetry: self.shouldRetryRefundAfterFailureDeterminer.shouldRetryRefund(after: refund.failureReason)
+                                )))
                             @unknown default:
                                 break
                             }
                         } else {
-                            promise(.failure(CardReaderServiceError.refundPayment(underlyingError: .internalServiceError)))
+                            promise(.failure(CardReaderServiceError.refundPayment(
+                                underlyingError: .internalServiceError,
+                                shouldRetry: false
+                            )))
                             //TODO: check why we might have no refund and no error
                         }
                     }
                 }
             }
+        }
+    }
+
+    /// Implements refund retry logic as recommended by Stripe
+    /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)processRefund
+    /// > When `processRefund` fails, the SDK returns an error that either includes the failed `SCPRefund` or the `SCPRefundParameters` that led to a failure.
+    /// > Your app should inspect the `SCPProcessRefundError` to decide how to proceed.
+    /// >
+    /// > If the `refund` property is nil, the request to Stripe’s servers timed out and the refund’s status is unknown.
+    /// > We recommend that you retry processRefund with the original `SCPRefundParameters`.
+    /// >
+    /// > If the `SCPProcessRefundError` has a `failure_reason`, the refund was declined.
+    /// > We recommend that you take action based on the decline code you received.
+    private func shouldRetryRefund(after processError: ProcessRefundError) -> Bool {
+        if let refund = processError.refund {
+            // Retry based on `failure_reason`
+            return shouldRetryRefundAfterFailureDeterminer.shouldRetryRefund(after: refund.failureReason)
+        } else {
+            // Retry because the status is unknown
+            return true
         }
     }
 

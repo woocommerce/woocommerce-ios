@@ -7,11 +7,18 @@ import class AutomatticTracks.CrashLogging
 /// Shows a list of products with pull to refresh and infinite scroll
 /// TODO: it will be good to have unit tests for this, introducing a `ViewModel`
 ///
-final class ProductsViewController: UIViewController {
+final class ProductsViewController: UIViewController, GhostableViewController {
 
     /// Main TableView
     ///
     @IBOutlet weak var tableView: UITableView!
+
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(sectionHeaderVerticalSpace: .medium,
+                                                                                                cellClass: ProductsTabProductTableViewCell.self,
+                                                                                                rowsPerSection: Constants.placeholderRowsPerSection,
+                                                                                                estimatedRowHeight: Constants.estimatedRowHeight,
+                                                                                                separatorStyle: .none,
+                                                                                                isScrollEnabled: false))
 
     /// Pull To Refresh Support.
     ///
@@ -32,7 +39,7 @@ final class ProductsViewController: UIViewController {
     /// Top stack view that is shown above the table view as the table header view.
     ///
     private lazy var topStackView: UIStackView = {
-        let subviews = [topBannerContainerView, toolbar]
+        let subviews = [topBannerContainerView]
         let stackView = UIStackView(arrangedSubviews: subviews)
         stackView.axis = .vertical
         stackView.spacing = Constants.headerViewSpacing
@@ -40,11 +47,13 @@ final class ProductsViewController: UIViewController {
         return stackView
     }()
 
+
     /// Top toolbar that shows the sort and filter CTAs.
     ///
-    private lazy var toolbar: UIView = {
-        return createToolbar()
-    }()
+    @IBOutlet private weak var toolbar: ToolbarView!
+
+    // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
+    private let hiddenScrollView = UIScrollView()
 
     /// The filter CTA in the top toolbar.
     private lazy var filterButton: UIButton = UIButton(frame: .zero)
@@ -162,7 +171,8 @@ final class ProductsViewController: UIViewController {
         configureNavigationBar()
         configureMainView()
         configureTableView()
-        configureToolBarView()
+        configureHiddenScrollView()
+        configureToolbar()
         configureSyncingCoordinator()
         registerTableViewCells()
 
@@ -182,8 +192,8 @@ final class ProductsViewController: UIViewController {
         refreshControl.resetAnimation(in: tableView) { [unowned self] in
             // ghost animation is also removed after switching tabs
             // show make sure it's displayed again
-            self.removePlaceholderProducts()
-            self.displayPlaceholderProducts()
+            self.removeGhostContent()
+            self.displayGhostContent(over: tableView)
         }
     }
 
@@ -334,10 +344,6 @@ private extension ProductsViewController {
         tableView.estimatedRowHeight = Constants.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
 
-        // Removes extra header spacing in ghost content view.
-        tableView.estimatedSectionHeaderHeight = 0
-        tableView.sectionHeaderHeight = 0
-
         tableView.backgroundColor = .listBackground
         tableView.tableFooterView = footerSpinnerView
         tableView.separatorStyle = .none
@@ -364,13 +370,24 @@ private extension ProductsViewController {
         stateCoordinator.transitionToResultsUpdatedState(hasData: !isEmpty)
     }
 
-    /// Configure toolbar view by number of products
-    ///
-    func configureToolBarView() {
-        showOrHideToolBar()
+    private func configureHiddenScrollView() {
+        // Configure large title using the `hiddenScrollView` trick.
+        hiddenScrollView.configureForLargeTitleWorkaround()
+        // Adds the "hidden" scroll view to the root of the UIViewController for large title workaround.
+        view.addSubview(hiddenScrollView)
+        view.sendSubviewToBack(hiddenScrollView)
+        hiddenScrollView.translatesAutoresizingMaskIntoConstraints = false
+        view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
     }
 
-    func createToolbar() -> ToolbarView {
+    /// Configure toolbar view by number of products
+    ///
+    private func configureToolbar() {
+        setupToolbar()
+        showOrHideToolbar()
+    }
+
+    private func setupToolbar() {
         let sortTitle = NSLocalizedString("Sort by", comment: "Title of the toolbar button to sort products in different ways.")
         let sortButton = UIButton(frame: .zero)
         sortButton.setTitle(sortTitle, for: .normal)
@@ -385,11 +402,8 @@ private extension ProductsViewController {
             $0.contentEdgeInsets = Constants.toolbarButtonInsets
         }
 
-        let toolbar = ToolbarView()
         toolbar.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
         toolbar.setSubviews(leftViews: [sortButton], rightViews: [filterButton])
-
-        return toolbar
     }
 
     /// Setup: Sync'ing Coordinator
@@ -409,7 +423,7 @@ private extension ProductsViewController {
     /// If there is 0 products, toolbar will be hidden
     /// if there is 1 or more products, toolbar will be visible
     ///
-    func showOrHideToolBar() {
+    func showOrHideToolbar() {
         toolbar.isHidden = filters.numberOfActiveFilters == 0 ? isEmpty : false
     }
 }
@@ -538,7 +552,7 @@ private extension ProductsViewController {
     /// Manages view components and reload tableview
     ///
     func reloadTableAndView() {
-        showOrHideToolBar()
+        showOrHideToolbar()
         addOrRemoveOverlay()
         tableView.reloadData()
     }
@@ -574,16 +588,15 @@ private extension ProductsViewController {
 extension ProductsViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return resultsController.sections.count
+        resultsController.sections.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return resultsController.sections[section].numberOfObjects
+        resultsController.sections[section].numberOfObjects
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(ProductsTabProductTableViewCell.self, for: indexPath)
-
         let product = resultsController.object(at: indexPath)
         let viewModel = ProductsTabProductViewModel(product: product)
         cell.update(viewModel: viewModel, imageService: imageService)
@@ -591,7 +604,6 @@ extension ProductsViewController: UITableViewDataSource {
         return cell
     }
 }
-
 
 // MARK: - UITableViewDelegate Conformance
 //
@@ -602,7 +614,7 @@ extension ProductsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
+        UITableView.automaticDimension
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -625,6 +637,10 @@ extension ProductsViewController: UITableViewDelegate {
         // the actual value. AKA no flicker!
         //
         estimatedRowHeights[indexPath] = cell.frame.height
+    }
+
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
     }
 }
 
@@ -709,26 +725,6 @@ private extension ProductsViewController {
 // MARK: - Placeholders
 //
 private extension ProductsViewController {
-
-    /// Renders the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
-    ///
-    func displayPlaceholderProducts() {
-        let options = GhostOptions(reuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier, rowsPerSection: Constants.placeholderRowsPerSection)
-        tableView.displayGhostContent(options: options,
-        style: .wooDefaultGhostStyle)
-        resultsController.stopForwardingEvents()
-    }
-
-    /// Removes the Placeholder Products (and restores the ResultsController <> UITableView link).
-    ///
-    func removePlaceholderProducts() {
-        tableView.removeGhostContent()
-        // Assign again the original closure
-        setClosuresToResultController(resultsController, onReload: { [weak self] in
-            self?.reloadTableAndView()
-        })
-        tableView.reloadData()
-    }
 
     /// Displays the overlay when there are no results.
     ///
@@ -944,7 +940,7 @@ private extension ProductsViewController {
         case .syncing(let pageNumber):
             let isFirstPage = pageNumber == SyncingCoordinator.Defaults.pageFirstIndex
             if isFirstPage && resultsController.isEmpty {
-                displayPlaceholderProducts()
+                displayGhostContent(over: tableView)
             } else if !isFirstPage {
                 ensureFooterSpinnerIsStarted()
             }
@@ -963,9 +959,9 @@ private extension ProductsViewController {
             removeAllOverlays()
         case .syncing:
             ensureFooterSpinnerIsStopped()
-            removePlaceholderProducts()
+            removeGhostContent()
             showTopBannerViewIfNeeded()
-            showOrHideToolBar()
+            showOrHideToolbar()
         case .results:
             break
         }

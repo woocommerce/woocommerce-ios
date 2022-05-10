@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 
 /// WCPay: Remote Endpoints
@@ -18,16 +19,14 @@ public class WCPayRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    /// Captures a payment for an order. See https://stripe.com/docs/terminal/payments#capture-payment
+    /// Captures a payment for an order and returns a publisher of the result. See https://stripe.com/docs/terminal/payments#capture-payment
     /// - Parameters:
     ///   - siteID: Site for which we'll capture the payment.
     ///   - orderID: Order for which we are capturing the payment.
     ///   - paymentIntentID: Stripe Payment Intent ID created using the Terminal SDK.
-    ///   - completion: Closure to be run on completion.
     public func captureOrderPayment(for siteID: Int64,
-                               orderID: Int64,
-                               paymentIntentID: String,
-                               completion: @escaping (Result<RemotePaymentIntent, Error>) -> Void) {
+                                    orderID: Int64,
+                                    paymentIntentID: String) -> AnyPublisher<Result<RemotePaymentIntent, Error>, Never> {
         let path = "\(Path.orders)/\(orderID)/\(Path.captureTerminalPayment)"
 
         let parameters = [
@@ -39,7 +38,7 @@ public class WCPayRemote: Remote {
 
         let mapper = RemotePaymentIntentMapper()
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return enqueue(request, mapper: mapper)
     }
 
     /// Fetches the details of a charge, if available. See https://stripe.com/docs/api/charges/object

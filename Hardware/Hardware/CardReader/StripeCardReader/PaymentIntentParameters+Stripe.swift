@@ -15,14 +15,18 @@ extension Hardware.PaymentIntentParameters {
             return nil
         }
 
-        /// The amount of the payment needs to be provided in the currency’s smallest unit.
-        /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPPaymentIntentParameters.html#/c:objc(cs)SCPPaymentIntentParameters(py)amount
-        let amountInSmallestUnit = amount * 100
-
-        let amountForStripe = NSDecimalNumber(decimal: amountInSmallestUnit).uintValue
+        let amountForStripe = prepareAmountForStripe(amount)
 
         let returnValue = StripeTerminal.PaymentIntentParameters(amount: amountForStripe, currency: currency, paymentMethodTypes: paymentMethodTypes)
         returnValue.stripeDescription = receiptDescription
+
+        if let applicationFee = applicationFee {
+            /// Stripe requires that "The amount must be provided as a boxed UInt in the currency's smallest unit."
+            /// Smallest-unit and UInt conversion is done in the same way as for the total amount, but that does not need to be boxed.
+            let applicationFeeForStripe = NSNumber(value: prepareAmountForStripe(applicationFee))
+
+            returnValue.applicationFeeAmount = applicationFeeForStripe
+        }
 
         /// Stripe allows the credit card statement descriptor to be nil, but not an empty string
         /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPPaymentIntentParameters.html#/c:objc(cs)SCPPaymentIntentParameters(py)statementDescriptor
@@ -36,6 +40,13 @@ extension Hardware.PaymentIntentParameters {
         returnValue.metadata = metadata
 
         return returnValue
+    }
+}
+
+private extension Hardware.PaymentIntentParameters {
+    func prepareAmountForStripe(_ amount: Decimal) -> UInt {
+        let amountInSmallestUnit = amount * stripeSmallestCurrencyUnitMultiplier
+        return NSDecimalNumber(decimal: amountInSmallestUnit).uintValue
     }
 }
 #endif

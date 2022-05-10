@@ -54,6 +54,8 @@ final class RefundConfirmationViewModel {
 
     private let analytics: Analytics
 
+    private let cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting = CardPresentPaymentsOnboardingPresenter()
+
     init(details: Details,
          actionProcessor: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
@@ -73,24 +75,12 @@ final class RefundConfirmationViewModel {
     func submit(rootViewController: UIViewController,
                 showInProgressUI: @escaping (() -> Void),
                 onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        // TODO: 6601 - remove Interac workaround when the API support is shipped.
-        let isInterac: Bool = {
-            switch details.charge?.paymentMethodDetails {
-            case .some(.interacPresent):
-                return true
-            default:
-                return false
-            }
-        }()
-        let automaticallyRefundsPayment = isInterac && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.canadaInPersonPayments) ?
-        false: gatewaySupportsAutomaticRefunds()
-
         // Creates refund object.
         let shippingLine = details.refundsShipping ? details.order.shippingLines.first : nil
         let fees = details.refundsFees ? details.order.fees : []
         let useCase = RefundCreationUseCase(amount: details.amount,
                                             reason: reasonForRefundCellViewModel.value,
-                                            automaticallyRefundsPayment: automaticallyRefundsPayment,
+                                            automaticallyRefundsPayment: gatewaySupportsAutomaticRefunds(),
                                             items: details.items,
                                             shippingLine: shippingLine,
                                             fees: fees,
@@ -98,16 +88,21 @@ final class RefundConfirmationViewModel {
         let refund = useCase.createRefund()
 
         // Submits refund.
-        let submissionUseCase = RefundSubmissionUseCase(siteID: details.order.siteID,
-                                                        details: .init(order: details.order,
-                                                                       charge: details.charge,
-                                                                       amount: details.amount),
-                                                        rootViewController: rootViewController,
-                                                        alerts: OrderDetailsPaymentAlerts(transactionType: .refund,
-                                                                                          presentingController: rootViewController),
-                                                        currencyFormatter: currencyFormatter,
-                                                        stores: actionProcessor,
-                                                        analytics: analytics)
+        let submissionUseCase = RefundSubmissionUseCase(
+            details: .init(order: details.order,
+                           charge: details.charge,
+                           amount: details.amount,
+                           paymentGatewayAccount: details.paymentGatewayAccount),
+            rootViewController: rootViewController,
+            alerts: OrderDetailsPaymentAlerts(transactionType: .refund,
+                                              presentingController: rootViewController),
+            cardPresentConfiguration: CardPresentConfigurationLoader(stores: actionProcessor).configuration,
+            dependencies: RefundSubmissionUseCase.Dependencies(
+                currencyFormatter: currencyFormatter,
+                cardPresentPaymentsOnboardingPresenter: cardPresentPaymentsOnboardingPresenter,
+                stores: actionProcessor,
+                analytics: analytics))
+
         self.submissionUseCase = submissionUseCase
         submissionUseCase.submitRefund(refund,
                                        showInProgressUI: showInProgressUI,
@@ -123,6 +118,7 @@ final class RefundConfirmationViewModel {
             default:
                 onCompletion(result)
             }
+            self.submissionUseCase = nil
         })
     }
 
@@ -169,6 +165,10 @@ extension RefundConfirmationViewModel {
         /// Payment gateway used with the order
         ///
         let paymentGateway: PaymentGateway?
+
+        /// Payment gateway account of the site (e.g. WCPay or Stripe extension)
+        ///
+        let paymentGatewayAccount: PaymentGatewayAccount?
     }
 }
 

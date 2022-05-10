@@ -1,3 +1,4 @@
+import Combine
 import XCTest
 import Fakes
 @testable import Yosemite
@@ -316,48 +317,6 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         XCTAssert(storageAccount?.status == "complete")
     }
 
-    /// Verifies that the store hits the network when capturing a payment ID, and that propagates errors.
-    ///
-    func test_capturePaymentID_returns_error_on_failure() throws {
-        let store = CardPresentPaymentStore(dispatcher: dispatcher,
-                                            storageManager: storageManager,
-                                            network: network,
-                                            cardReaderService: mockCardReaderService)
-        let expectation = self.expectation(description: "Capture Payment Intent error response")
-        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment", filename: "generic_error")
-        let action = CardPresentPaymentAction.captureOrderPayment(siteID: sampleSiteID,
-                                                                     orderID: sampleOrderID,
-                                                                     paymentIntentID: samplePaymentIntentID,
-                                                                     completion: { result in
-                                                                        XCTAssertTrue(result.isFailure)
-                                                                        expectation.fulfill()
-                                                                     })
-
-        store.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
-    }
-
-    /// Verifies that the store hits the network when capturing a payment ID, and that propagates success.
-    ///
-    func test_capturePaymentID_returns_expected_data() throws {
-        let store = CardPresentPaymentStore(dispatcher: dispatcher,
-                                            storageManager: storageManager,
-                                            network: network,
-                                            cardReaderService: mockCardReaderService)
-        let expectation = self.expectation(description: "Load Account fetch response")
-        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
-                                 filename: "wcpay-payment-intent-succeeded")
-        let action = CardPresentPaymentAction.captureOrderPayment(siteID: sampleSiteID,
-                                                                     orderID: sampleOrderID,
-                                                                     paymentIntentID: samplePaymentIntentID,
-                                                                     completion: { result in
-                                                                        XCTAssertTrue(result.isSuccess)
-                                                                        expectation.fulfill()
-                                                                     })
-        store.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
-    }
-
     /// Verifies that the store hits the network when fetching a charge, and propagates success.
     ///
     func test_fetchWCPayCharge_returns_expected_data() throws {
@@ -572,5 +531,201 @@ final class CardPresentPaymentStoreTests: XCTestCase {
             store.onAction(action)
         }
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.WCPayCharge.self, matching: nil), 2)
+    }
+
+    // MARK: - `collectPayment`
+
+    /// Verifies that  only `onProcessingCompletion` is called after card reader finishes capturing payment, since card has to be removed before
+    /// `onCompletion` is called.
+    ///
+    func test_collectPayment_calls_onProcessingCompletion_but_not_onCompletion_after_card_reader_capturePayment_success() {
+        // Given
+        let store = CardPresentPaymentStore(dispatcher: dispatcher,
+                                            storageManager: storageManager,
+                                            network: network,
+                                            cardReaderService: mockCardReaderService)
+        let intent = MockPaymentIntent.mock()
+        mockCardReaderService.whenCapturingPayment(thenReturn: Just(intent)
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher())
+        mockCardReaderService.whenWaitForInsertedCardToBeRemoved(thenReturn: Future<Void, Never> { promise in
+            // Card is not removed.
+        })
+
+        // When
+        let processedIntent: PaymentIntent = waitFor { [self] promise in
+            let action = CardPresentPaymentAction
+                .collectPayment(siteID: sampleSiteID,
+                                orderID: sampleOrderID,
+                                parameters: .init(amount: 2.5, currency: "USD", stripeSmallestCurrencyUnitMultiplier: 100)) { cardReaderEvent in
+
+                } onProcessingCompletion: { intent in
+                    promise(intent)
+                } onCompletion: { result in
+                    XCTFail("Payment collection is not complete until the card removal step completes.")
+                }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(processedIntent.id, intent.id)
+        XCTAssertEqual(processedIntent.status, intent.status)
+    }
+
+    /// Verifies that `onCompletion` is called after card reader finishes capturing payment, then the card is removed successfully
+    /// and the site finishes capturing payment.
+    ///
+    func test_collectPayment_calls_onCompletion_after_card_reader_capturePayment_success_and_card_removal_and_site_capturePayment() throws {
+        // Given
+        let store = CardPresentPaymentStore(dispatcher: dispatcher,
+                                            storageManager: storageManager,
+                                            network: network,
+                                            cardReaderService: mockCardReaderService)
+        let intent = MockPaymentIntent.mock()
+        mockCardReaderService.whenCapturingPayment(thenReturn: Just(intent)
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher())
+        mockCardReaderService.whenWaitForInsertedCardToBeRemoved(thenReturn: Future<Void, Never> { promise in
+            promise(.success(()))
+        })
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
+                                 filename: "wcpay-payment-intent-succeeded")
+
+        // When
+        let result: Result<PaymentIntent, Error> = waitFor { [self] promise in
+            let action = CardPresentPaymentAction
+                .collectPayment(siteID: sampleSiteID,
+                                orderID: sampleOrderID,
+                                parameters: .init(amount: 2.5, currency: "USD", stripeSmallestCurrencyUnitMultiplier: 100)) { cardReaderEvent in
+                } onProcessingCompletion: { intent in
+                } onCompletion: { result in
+                    promise(result)
+                }
+            store.onAction(action)
+        }
+
+        // Then
+        let finalIntent = try XCTUnwrap(result.get())
+        XCTAssertEqual(finalIntent.id, intent.id)
+        XCTAssertEqual(finalIntent.status, intent.status)
+    }
+
+    /// Verifies that `onCompletion` is called with an error after card reader finishes capturing payment, the card is removed successfully
+    /// but the site fails to capture payment.
+    ///
+    func test_collectPayment_calls_onCompletion_with_failure_after_card_reader_capturePayment_success_but_site_capturePayment_failure() throws {
+        // Given
+        let store = CardPresentPaymentStore(dispatcher: dispatcher,
+                                            storageManager: storageManager,
+                                            network: network,
+                                            cardReaderService: mockCardReaderService)
+        let intent = MockPaymentIntent.mock()
+        // Success on client-side processing.
+        mockCardReaderService.whenCapturingPayment(thenReturn: Just(intent)
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher())
+        // Success on card removal.
+        mockCardReaderService.whenWaitForInsertedCardToBeRemoved(thenReturn: Future<Void, Never> { promise in
+            promise(.success(()))
+        })
+        // Error on server-side processing.
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment", filename: "generic_error")
+
+        // When
+        let result: Result<PaymentIntent, Error> = waitFor { [self] promise in
+            let action = CardPresentPaymentAction
+                .collectPayment(siteID: sampleSiteID,
+                                orderID: sampleOrderID,
+                                parameters: .init(amount: 2.5, currency: "USD", stripeSmallestCurrencyUnitMultiplier: 100)) { cardReaderEvent in
+                } onProcessingCompletion: { intent in
+                } onCompletion: { result in
+                    promise(result)
+                }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure as? ServerSidePaymentCaptureError)
+        guard case .paymentGateway = error else {
+            return XCTFail("Unexpected payment gateway error: \(error)")
+        }
+    }
+
+    /// Verifies that `CardReaderEvent.cardRemovedAfterPaymentCapture` is sent after card reader finishes capturing payment, the card is removed successfully
+    /// and before the site captures payment.
+    ///
+    func test_collectPayment_sends_cardRemovedAfterPaymentCapture_event_after_card_removal_and_before_site_capturePayment_completion() {
+        // Given
+        let store = CardPresentPaymentStore(dispatcher: dispatcher,
+                                            storageManager: storageManager,
+                                            network: network,
+                                            cardReaderService: mockCardReaderService)
+        let intent = MockPaymentIntent.mock()
+        // Success on client-side processing.
+        mockCardReaderService.whenCapturingPayment(thenReturn: Just(intent)
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher())
+        // Success on card removal.
+        mockCardReaderService.whenWaitForInsertedCardToBeRemoved(thenReturn: Future<Void, Never> { promise in
+            promise(.success(()))
+        })
+        // No mock response on the network call to `payments/orders/\(sampleOrderID)/capture_terminal_payment`.
+
+        // When
+        var cardReaderEvents: [CardReaderEvent] = []
+        let _: Void = waitFor { promise in
+            let action = CardPresentPaymentAction
+                .collectPayment(siteID: self.sampleSiteID,
+                                orderID: self.sampleOrderID,
+                                parameters: .init(amount: 2.5, currency: "USD", stripeSmallestCurrencyUnitMultiplier: 100)) { cardReaderEvent in
+                    cardReaderEvents.append(cardReaderEvent)
+                    if cardReaderEvent == .cardRemovedAfterClientSidePaymentCapture {
+                        promise(())
+                    }
+                } onProcessingCompletion: { intent in
+                } onCompletion: { result in
+                }
+            store.onAction(action)
+        }
+
+        // Then
+        // Only `cardRemovedAfterPaymentCapture` is sent from `CardPresentPaymentStore` while other events in production
+        // are sent from `StripeCardReaderService` which is mocked here.
+        XCTAssertEqual(cardReaderEvents, [.cardRemovedAfterClientSidePaymentCapture])
+    }
+
+    /// Verifies that after card reader finishes capturing payment with an error, `onCompletion` is called with a failure result
+    /// and `onProcessingCompletion` is not called. Card removal is not necessary since the previous step already fails.
+    ///
+    func test_collectPayment_calls_onCompletion_but_not_onProcessingCompletion_after_card_reader_capturePayment_failure() throws {
+        // Given
+        let store = CardPresentPaymentStore(dispatcher: dispatcher,
+                                            storageManager: storageManager,
+                                            network: network,
+                                            cardReaderService: mockCardReaderService)
+        let error = UnderlyingError.readerBusy
+        mockCardReaderService.whenCapturingPayment(thenReturn: Fail<PaymentIntent, Error>(error: error)
+            .eraseToAnyPublisher())
+        mockCardReaderService.whenWaitForInsertedCardToBeRemoved(thenReturn: Future<Void, Never> { promise in
+            // Card is not removed.
+        })
+
+        // When
+        let result: Result<PaymentIntent, Error> = waitFor { [self] promise in
+            let action = CardPresentPaymentAction
+                .collectPayment(siteID: sampleSiteID,
+                                orderID: sampleOrderID,
+                                parameters: .init(amount: 2.5, currency: "USD", stripeSmallestCurrencyUnitMultiplier: 100)) { cardReaderEvent in
+                } onProcessingCompletion: { intent in
+                    XCTFail("`onProcessingCompletion` should only be called when payment capture succeeds.")
+                } onCompletion: { result in
+                    promise(result)
+                }
+            store.onAction(action)
+        }
+
+        // Then
+        let errorFromResult = try XCTUnwrap(result.failure)
+        XCTAssertEqual(errorFromResult as? UnderlyingError, error)
     }
 }

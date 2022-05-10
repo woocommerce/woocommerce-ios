@@ -8,6 +8,14 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
     private let currency: String
     private let currencyFormatter: CurrencyFormatter
 
+    // Localizes weight and package dimensions
+    //
+    private let shippingValueLocalizer: ShippingValueLocalizer
+
+    private let dimensionUnit: String?
+    private let weightUnit: String?
+
+
     // Timezone of the website
     //
     var siteTimezone: TimeZone = TimeZone.siteTimezone
@@ -15,9 +23,15 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
     init(product: ProductFormDataModel,
          actionsFactory: ProductFormActionsFactoryProtocol,
          currency: String,
-         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
+         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+         shippingValueLocalizer: ShippingValueLocalizer = DefaultShippingValueLocalizer(),
+         weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
+         dimensionUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit) {
         self.currency = currency
         self.currencyFormatter = currencyFormatter
+        self.shippingValueLocalizer = shippingValueLocalizer
+        self.weightUnit = weightUnit
+        self.dimensionUnit = dimensionUnit
         configureSections(product: product, actionsFactory: actionsFactory)
     }
 }
@@ -262,17 +276,21 @@ private extension DefaultProductFormTableViewModel {
         var shippingDetails = [String]()
 
         // Weight[unit]
-        if let weight = product.weight, let weightUnit = ServiceLocator.shippingSettingsService.weightUnit, !weight.isEmpty {
+        if let weight = product.weight, let weightUnit = weightUnit, !weight.isEmpty {
+            let localizedWeight = shippingValueLocalizer.localized(shippingValue: weight) ?? weight
             shippingDetails.append(String.localizedStringWithFormat(Localization.weightFormat,
-                                                                    weight, weightUnit))
+                                                                    localizedWeight, weightUnit))
         }
 
         // L x W x H[unit]
         let length = product.dimensions.length
         let width = product.dimensions.width
         let height = product.dimensions.height
-        let dimensions = [length, width, height].filter({ !$0.isEmpty })
-        if let dimensionUnit = ServiceLocator.shippingSettingsService.dimensionUnit,
+        let dimensions = [length, width, height]
+            .map({ shippingValueLocalizer.localized(shippingValue: $0) ?? $0 })
+            .filter({ !$0.isEmpty })
+
+        if let dimensionUnit = dimensionUnit,
             !dimensions.isEmpty {
             switch dimensions.count {
             case 1:

@@ -1,3 +1,1 @@
-Create orders on the go with products, shipping & billing information, and fees! You can quickly take an in-person credit card payment right after or send a link to a customer to pay for that order on their own device. You’ve asked for it, and now it’s here!
-
-We’re also making progress on our coupon management feature. Get a sneak peek of it by turning it on in the More tab > Settings > Experimental Features.
+We spent some time fixing those bugs that made the app harder to use. One of those involved weight and shipping package dimensions on a product. Entering values with commas to separate decimal values works as expected now. Thanks to everyone who reported this! Your feedback is vital to us!

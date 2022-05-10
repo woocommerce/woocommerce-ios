@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -17,47 +18,60 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="UC5-pp-RCE">
-                        <rect key="frame" x="16" y="3" width="288" height="25"/>
+                    <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="UC5-pp-RCE">
+                        <rect key="frame" x="16" y="8" width="288" height="28"/>
                         <subviews>
-                            <view clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="A6r-Hf-px7" userLabel="Product Status Label Holder">
-                                <rect key="frame" x="0.0" y="0.0" width="51.5" height="25"/>
-                                <subviews>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Ls-Wz-Lz4">
-                                        <rect key="frame" x="8" y="0.0" width="35.5" height="25"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                </subviews>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <constraints>
-                                    <constraint firstItem="9Ls-Wz-Lz4" firstAttribute="leading" secondItem="A6r-Hf-px7" secondAttribute="leading" constant="8" id="6pg-Hg-H1r"/>
-                                    <constraint firstAttribute="trailing" secondItem="9Ls-Wz-Lz4" secondAttribute="trailing" constant="8" id="AqL-XT-p8y"/>
-                                    <constraint firstAttribute="bottom" secondItem="9Ls-Wz-Lz4" secondAttribute="bottom" id="TaL-NL-uMD"/>
-                                    <constraint firstItem="9Ls-Wz-Lz4" firstAttribute="top" secondItem="A6r-Hf-px7" secondAttribute="top" id="bhG-qZ-Kzw"/>
-                                </constraints>
-                            </view>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="gvh-NZ-8It" customClass="EnhancedTextView" customModule="WooCommerce" customModuleProvider="target">
-                                <rect key="frame" x="56.5" y="0.0" width="231.5" height="25"/>
+                                <rect key="frame" x="0.0" y="0.0" width="231.5" height="28"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <color key="textColor" systemColor="labelColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="n4n-89-c1P">
+                                <rect key="frame" x="236.5" y="0.0" width="51.5" height="28"/>
+                                <subviews>
+                                    <view clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="A6r-Hf-px7" userLabel="Product Status Label Holder">
+                                        <rect key="frame" x="0.0" y="8" width="51.5" height="20"/>
+                                        <subviews>
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Ls-Wz-Lz4">
+                                                <rect key="frame" x="12" y="4" width="27.5" height="12"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <constraints>
+                                            <constraint firstItem="9Ls-Wz-Lz4" firstAttribute="leading" secondItem="A6r-Hf-px7" secondAttribute="leading" constant="12" id="6pg-Hg-H1r"/>
+                                            <constraint firstAttribute="trailing" secondItem="9Ls-Wz-Lz4" secondAttribute="trailing" constant="12" id="AqL-XT-p8y"/>
+                                            <constraint firstAttribute="bottom" secondItem="9Ls-Wz-Lz4" secondAttribute="bottom" constant="4" id="TaL-NL-uMD"/>
+                                            <constraint firstItem="9Ls-Wz-Lz4" firstAttribute="top" secondItem="A6r-Hf-px7" secondAttribute="top" constant="4" id="bhG-qZ-Kzw"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstItem="A6r-Hf-px7" firstAttribute="leading" secondItem="n4n-89-c1P" secondAttribute="leading" id="8Gc-ie-yqV"/>
+                                    <constraint firstAttribute="trailing" secondItem="A6r-Hf-px7" secondAttribute="trailing" id="8S3-Eg-y1t"/>
+                                    <constraint firstAttribute="bottom" secondItem="A6r-Hf-px7" secondAttribute="bottom" id="RHK-yM-8zU"/>
+                                    <constraint firstItem="A6r-Hf-px7" firstAttribute="top" secondItem="n4n-89-c1P" secondAttribute="top" constant="8" id="tf8-dM-rbR"/>
+                                </constraints>
+                            </view>
                         </subviews>
                     </stackView>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="UC5-pp-RCE" firstAttribute="top" secondItem="0sv-hP-tpf" secondAttribute="top" constant="3" id="8Wf-g3-eXM"/>
+                    <constraint firstItem="UC5-pp-RCE" firstAttribute="top" secondItem="0sv-hP-tpf" secondAttribute="top" constant="8" id="8Wf-g3-eXM"/>
                     <constraint firstItem="UC5-pp-RCE" firstAttribute="leading" secondItem="0sv-hP-tpf" secondAttribute="leading" constant="16" id="GgM-C5-CHt"/>
                     <constraint firstAttribute="trailing" secondItem="UC5-pp-RCE" secondAttribute="trailing" constant="16" id="Sjf-TQ-4xv"/>
-                    <constraint firstAttribute="bottom" secondItem="UC5-pp-RCE" secondAttribute="bottom" constant="16" id="ZhY-zm-fhU"/>
+                    <constraint firstAttribute="bottom" secondItem="UC5-pp-RCE" secondAttribute="bottom" constant="8" id="ZhY-zm-fhU"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="SEn-yL-fY3"/>
             <connections>
-                <outlet property="productLabelHolder" destination="A6r-Hf-px7" id="qn3-Hp-bGK"/>
+                <outlet property="productStatusBadgeBg" destination="A6r-Hf-px7" id="VXc-gx-hSr"/>
+                <outlet property="productStatusBadgeHolder" destination="n4n-89-c1P" id="biC-UT-Equ"/>
                 <outlet property="productStatusLabel" destination="9Ls-Wz-Lz4" id="CgG-SY-xHN"/>
                 <outlet property="productTextField" destination="gvh-NZ-8It" id="nRN-le-nFL"/>
             </connections>

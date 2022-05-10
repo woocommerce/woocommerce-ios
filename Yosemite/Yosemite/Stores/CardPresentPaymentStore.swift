@@ -66,14 +66,6 @@ public final class CardPresentPaymentStore: Store {
         case .loadAccounts(let siteID, let onCompletion):
             loadAccounts(siteID: siteID,
                          onCompletion: onCompletion)
-        case .captureOrderPayment(let siteID,
-                                  let orderID,
-                                  let paymentIntentID,
-                                  let onCompletion):
-            captureOrderPayment(siteID: siteID,
-                                orderID: orderID,
-                                paymentIntentID: paymentIntentID,
-                                onCompletion: onCompletion)
         case .startCardReaderDiscovery(let siteID, let onReaderDiscovered, let onError):
             startCardReaderDiscovery(siteID: siteID, onReaderDiscovered: onReaderDiscovered, onError: onError)
         case .cancelCardReaderDiscovery(let completion):
@@ -84,11 +76,12 @@ public final class CardPresentPaymentStore: Store {
             disconnect(onCompletion: completion)
         case .observeConnectedReaders(let completion):
             observeConnectedReaders(onCompletion: completion)
-        case .collectPayment(let siteID, let orderID, let parameters, let event, let completion):
+        case .collectPayment(let siteID, let orderID, let parameters, let event, let processPaymentCompletion, let completion):
             collectPayment(siteID: siteID,
                            orderID: orderID,
                            parameters: parameters,
                            onCardReaderMessage: event,
+                           onProcessingCompletion: processPaymentCompletion,
                            onCompletion: completion)
         case .cancelPayment(let completion):
             cancelPayment(onCompletion: completion)
@@ -104,6 +97,8 @@ public final class CardPresentPaymentStore: Store {
             reset()
         case .checkCardReaderConnected(onCompletion: let completion):
             checkCardReaderConnected(onCompletion: completion)
+        case .publishCardReaderConnections(onCompletion: let completion):
+            publishCardReaderConnections(onCompletion: completion)
         case .fetchWCPayCharge(let siteID, let chargeID, let completion):
             fetchCharge(siteID: siteID, chargeID: chargeID, completion: completion)
         }
@@ -208,23 +203,43 @@ private extension CardPresentPaymentStore {
                         orderID: Int64,
                         parameters: PaymentParameters,
                         onCardReaderMessage: @escaping (CardReaderEvent) -> Void,
+                        onProcessingCompletion: @escaping (PaymentIntent) -> Void,
                         onCompletion: @escaping (Result<PaymentIntent, Error>) -> Void) {
         // Observe status events fired by the card reader
         let readerEventsSubscription = cardReaderService.readerEvents.sink { event in
             onCardReaderMessage(event)
         }
 
-        paymentCancellable = cardReaderService.capturePayment(parameters).sink { error in
-            readerEventsSubscription.cancel()
-            switch error {
-            case .failure(let error):
-                onCompletion(.failure(error))
-            default:
-                break
+        paymentCancellable = cardReaderService.capturePayment(parameters)
+            .handleEvents(receiveOutput: { intent in
+                onProcessingCompletion(intent)
+            })
+            .flatMap { intent in
+                Publishers.CombineLatest(
+                    self.cardReaderService.waitForInsertedCardToBeRemoved()
+                        .handleEvents(receiveOutput: {
+                            onCardReaderMessage(.cardRemovedAfterClientSidePaymentCapture)
+                        })
+                        .map { intent },
+                    self.captureOrderPaymentOnSite(siteID: siteID, orderID: orderID, paymentIntent: intent)
+                )
             }
-        } receiveValue: { intent in
-            onCompletion(.success(intent))
-        }
+            .sink { completion in
+                readerEventsSubscription.cancel()
+                switch completion {
+                case .failure(let error):
+                    onCompletion(.failure(error))
+                default:
+                    break
+                }
+            } receiveValue: { intent, captureOrderPaymentResult in
+                switch captureOrderPaymentResult {
+                case .success:
+                    onCompletion(.success(intent))
+                case .failure(let error):
+                    onCompletion(.failure(error))
+                }
+            }
     }
 
     func cancelPayment(onCompletion: ((Result<Void, Error>) -> Void)?) {
@@ -304,6 +319,8 @@ private extension CardPresentPaymentStore {
             ))
     }
 
+    // TODO: Replace `checkCardReaderConnected` with `publishCardReaderConnections`, which emits an event for a connected reader.
+    // See https://github.com/woocommerce/woocommerce-ios/issues/6766
     func checkCardReaderConnected(onCompletion: (AnyPublisher<[CardReader], Never>) -> Void) {
         let publisher = cardReaderService.connectedReaders
             // We only emit values when there is no reader connected, including an initial value
@@ -314,6 +331,14 @@ private extension CardPresentPaymentStore {
             .removeDuplicates()
             // Beyond this point, the publisher should emit an empty initial value once
             // and then finish when a reader is connected.
+            .eraseToAnyPublisher()
+
+        onCompletion(publisher)
+    }
+
+    func publishCardReaderConnections(onCompletion: (AnyPublisher<[CardReader], Never>) -> Void) {
+        let publisher = cardReaderService.connectedReaders
+            .removeDuplicates()
             .eraseToAnyPublisher()
 
         onCompletion(publisher)
@@ -487,58 +512,32 @@ private extension CardPresentPaymentStore {
         }
     }
 
-    func captureOrderPayment(siteID: Int64,
-                             orderID: Int64,
-                             paymentIntentID: String,
-                             onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    /// Submits order to the site for server-side processing.
+    func captureOrderPaymentOnSite(siteID: Int64,
+                                   orderID: Int64,
+                                   paymentIntent: PaymentIntent) -> AnyPublisher<Result<Void, Error>, Never> {
+        let captureOrderPaymentPublisher: AnyPublisher<Result<RemotePaymentIntent, Error>, Never>
         switch usingBackend {
         case .wcpay:
-            captureOrderPaymentUsingWCPay(siteID: siteID, orderID: orderID, paymentIntentID: paymentIntentID, onCompletion: onCompletion)
+            captureOrderPaymentPublisher = remote.captureOrderPayment(for: siteID, orderID: orderID, paymentIntentID: paymentIntent.id)
         case .stripe:
-            captureOrderPaymentUsingStripe(siteID: siteID, orderID: orderID, paymentIntentID: paymentIntentID, onCompletion: onCompletion)
+            captureOrderPaymentPublisher = stripeRemote.captureOrderPayment(for: siteID, orderID: orderID, paymentIntentID: paymentIntent.id)
         }
-    }
-
-    func captureOrderPaymentUsingWCPay(siteID: Int64,
-                                       orderID: Int64,
-                                       paymentIntentID: String,
-                                       onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        remote.captureOrderPayment(for: siteID, orderID: orderID, paymentIntentID: paymentIntentID, completion: { result in
-            switch result {
-            case .success(let intent):
-                guard intent.status == .succeeded else {
-                    DDLogDebug("Unexpected payment intent status \(intent.status) after attempting capture")
-                    onCompletion(.failure(CardReaderServiceError.paymentCapture()))
-                    return
+        return captureOrderPaymentPublisher
+            .map { result in
+                switch result {
+                case .success(let intent):
+                    guard intent.status == .succeeded else {
+                        DDLogDebug("Unexpected payment intent status \(intent.status) after attempting capture")
+                        return .failure(ServerSidePaymentCaptureError.paymentIntentNotSuccessful)
+                    }
+                    return .success(())
+                case .failure(let error):
+                    let error = PaymentGatewayAccountError(underlyingError: error)
+                    return .failure(ServerSidePaymentCaptureError.paymentGateway(error: error))
                 }
-
-                onCompletion(.success(()))
-            case .failure(let error):
-                onCompletion(.failure(PaymentGatewayAccountError(underlyingError: error)))
-                return
             }
-        })
-    }
-
-    func captureOrderPaymentUsingStripe(siteID: Int64,
-                                       orderID: Int64,
-                                       paymentIntentID: String,
-                                       onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        stripeRemote.captureOrderPayment(for: siteID, orderID: orderID, paymentIntentID: paymentIntentID, completion: { result in
-            switch result {
-            case .success(let intent):
-                guard intent.status == .succeeded else {
-                    DDLogDebug("Unexpected payment intent status \(intent.status) after attempting capture")
-                    onCompletion(.failure(CardReaderServiceError.paymentCapture()))
-                    return
-                }
-
-                onCompletion(.success(()))
-            case .failure(let error):
-                onCompletion(.failure(PaymentGatewayAccountError(underlyingError: error)))
-                return
-            }
-        })
+            .eraseToAnyPublisher()
     }
 
     func fetchCharge(siteID: Int64, chargeID: String, completion: @escaping (Result<WCPayCharge, Error>) -> Void) {
@@ -637,6 +636,11 @@ private extension CardPresentPaymentStore {
         storage.deleteObject(charge)
         storage.saveIfNeeded()
     }
+}
+
+public enum ServerSidePaymentCaptureError: Error {
+    case paymentIntentNotSuccessful
+    case paymentGateway(error: PaymentGatewayAccountError)
 }
 
 public enum PaymentGatewayAccountError: Error, LocalizedError {

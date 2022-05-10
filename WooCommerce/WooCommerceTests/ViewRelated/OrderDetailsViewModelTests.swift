@@ -50,6 +50,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
     func test_markComplete_dispatches_updateOrder_action() throws {
         // Given
+        storesManager.reset()
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 
         // When
@@ -71,6 +72,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
     func test_checkShippingLabelCreationEligibility_dispatches_correctly() throws {
         // Given
+        storesManager.reset()
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 
         // When

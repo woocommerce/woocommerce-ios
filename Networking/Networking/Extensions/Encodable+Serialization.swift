@@ -13,9 +13,12 @@ extension Encodable {
 
     /// Attempts to serialize to a dictionary from String to Any.
     ///
-    func toDictionary() throws -> [String: Any] {
+    func toDictionary(keyEncodingStrategy: JSONEncoder.KeyEncodingStrategy = .useDefaultKeys,
+                      dateFormatter: DateFormatter = DateFormatter.Defaults.dateTimeFormatter) throws -> [String: Any] {
         let jsonEncoder = JSONEncoder()
-        jsonEncoder.dateEncodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
+        jsonEncoder.dateEncodingStrategy = .formatted(dateFormatter)
+        jsonEncoder.keyEncodingStrategy = keyEncodingStrategy
+
         let data = try jsonEncoder.encode(self)
 
         do {

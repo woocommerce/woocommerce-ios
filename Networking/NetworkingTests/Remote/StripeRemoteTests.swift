@@ -1,3 +1,4 @@
+import Combine
 import XCTest
 @testable import Networking
 
@@ -22,11 +23,18 @@ final class StripeRemoteTests: XCTestCase {
     ///
     private let samplePaymentIntentID: String = "pi_123456789012345678901234"
 
+    private var subscriptions: Set<AnyCancellable> = []
+
     /// Repeat always!
     ///
     override func setUp() {
         super.setUp()
         network.removeAllSimulatedResponses()
+    }
+
+    override func tearDown() {
+        subscriptions = []
+        super.tearDown()
     }
 
     /// Verifies that loadConnectionToken properly parses the sample response.
@@ -438,9 +446,9 @@ final class StripeRemoteTests: XCTestCase {
         let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
             remote.captureOrderPayment(for: self.sampleSiteID,
                                           orderID: self.sampleOrderID,
-                                          paymentIntentID: self.samplePaymentIntentID) { result in
+                                       paymentIntentID: self.samplePaymentIntentID).sink { result in
                 promise(result)
-            }
+            }.store(in: &self.subscriptions)
         }
 
         XCTAssertTrue(result.isSuccess)
@@ -460,9 +468,9 @@ final class StripeRemoteTests: XCTestCase {
         let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
             remote.captureOrderPayment(for: self.sampleSiteID,
                                           orderID: self.sampleOrderID,
-                                          paymentIntentID: self.samplePaymentIntentID) { result in
+                                       paymentIntentID: self.samplePaymentIntentID).sink { result in
                 promise(result)
-            }
+            }.store(in: &self.subscriptions)
         }
 
         XCTAssertTrue(result.isSuccess)
@@ -482,9 +490,9 @@ final class StripeRemoteTests: XCTestCase {
         let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
             remote.captureOrderPayment(for: self.sampleSiteID,
                                           orderID: self.sampleOrderID,
-                                          paymentIntentID: self.samplePaymentIntentID) { result in
+                                       paymentIntentID: self.samplePaymentIntentID).sink { result in
                 promise(result)
-            }
+            }.store(in: &self.subscriptions)
         }
 
         XCTAssertTrue(result.isSuccess)
@@ -504,9 +512,9 @@ final class StripeRemoteTests: XCTestCase {
         let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
             remote.captureOrderPayment(for: self.sampleSiteID,
                                           orderID: self.sampleOrderID,
-                                          paymentIntentID: self.samplePaymentIntentID) { result in
+                                       paymentIntentID: self.samplePaymentIntentID).sink { result in
                 promise(result)
-            }
+            }.store(in: &self.subscriptions)
         }
 
         XCTAssertTrue(result.isSuccess)
@@ -526,9 +534,9 @@ final class StripeRemoteTests: XCTestCase {
         let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
             remote.captureOrderPayment(for: self.sampleSiteID,
                                           orderID: self.sampleOrderID,
-                                          paymentIntentID: self.samplePaymentIntentID) { result in
+                                       paymentIntentID: self.samplePaymentIntentID).sink { result in
                 promise(result)
-            }
+            }.store(in: &self.subscriptions)
         }
 
         XCTAssertTrue(result.isSuccess)
@@ -548,9 +556,9 @@ final class StripeRemoteTests: XCTestCase {
         let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
             remote.captureOrderPayment(for: self.sampleSiteID,
                                           orderID: self.sampleOrderID,
-                                          paymentIntentID: self.samplePaymentIntentID) { result in
+                                       paymentIntentID: self.samplePaymentIntentID).sink { result in
                 promise(result)
-            }
+            }.store(in: &self.subscriptions)
         }
 
         XCTAssertTrue(result.isSuccess)
@@ -570,9 +578,9 @@ final class StripeRemoteTests: XCTestCase {
         let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
             remote.captureOrderPayment(for: self.sampleSiteID,
                                           orderID: self.sampleOrderID,
-                                          paymentIntentID: self.samplePaymentIntentID) { result in
+                                       paymentIntentID: self.samplePaymentIntentID).sink { result in
                 promise(result)
-            }
+            }.store(in: &self.subscriptions)
         }
 
         XCTAssertTrue(result.isSuccess)
@@ -592,9 +600,9 @@ final class StripeRemoteTests: XCTestCase {
         let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
             remote.captureOrderPayment(for: self.sampleSiteID,
                                           orderID: self.sampleOrderID,
-                                          paymentIntentID: self.samplePaymentIntentID) { result in
+                                       paymentIntentID: self.samplePaymentIntentID).sink { result in
                 promise(result)
-            }
+            }.store(in: &self.subscriptions)
         }
 
         XCTAssertTrue(result.isFailure)

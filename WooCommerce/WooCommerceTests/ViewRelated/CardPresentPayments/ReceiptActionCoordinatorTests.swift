@@ -5,21 +5,26 @@ import Hardware
 
 @testable import WooCommerce
 
-class ReceiptActionCoordinatorTests: XCTestCase {
-    func test_printReceipt_logs_receiptPrintTapped_analyticEvent() {
+final class ReceiptActionCoordinatorTests: XCTestCase {
+    func test_printReceipt_logs_receiptPrintTapped_analyticEvent() throws {
         // Given
-        ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: MockAnalyticsProvider()))
+        let analytics = MockAnalyticsProvider()
         let order = MockOrders().makeOrder()
         let params = CardPresentReceiptParameters.makeParams()
 
         // When
-        ReceiptActionCoordinator.printReceipt(for: order, params: params, countryCode: "CA")
+        ReceiptActionCoordinator.printReceipt(for: order,
+                                              params: params,
+                                              countryCode: "CA",
+                                              cardReaderModel: "WISEPAD_3",
+                                              stores: ServiceLocator.stores,
+                                              analytics: WooAnalytics(analyticsProvider: analytics))
 
         // Then
-        let analytics = ServiceLocator.analytics.analyticsProvider as! MockAnalyticsProvider
-        let receivedEvents = analytics.receivedEvents
-
-        XCTAssert(receivedEvents.contains(WooAnalyticsStat.receiptPrintTapped.rawValue))
+        let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.receiptPrintTapped.rawValue}))
+        let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["card_reader_model"] as? String, "WISEPAD_3")
+        XCTAssertEqual(eventProperties["country"] as? String, "CA")
     }
 
     func test_printReceipt_sends_print_receiptAction() throws {
@@ -30,12 +35,14 @@ class ReceiptActionCoordinatorTests: XCTestCase {
         let storesManager = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         storesManager.reset()
 
-        ServiceLocator.setStores(storesManager)
-
         assertEmpty(storesManager.receivedActions)
 
         // When
-        ReceiptActionCoordinator.printReceipt(for: order, params: params, countryCode: "CA")
+        ReceiptActionCoordinator.printReceipt(for: order,
+                                              params: params,
+                                              countryCode: "CA",
+                                              cardReaderModel: nil,
+                                              stores: storesManager, analytics: ServiceLocator.analytics)
 
         //Then
         XCTAssertEqual(storesManager.receivedActions.count, 1)
@@ -71,11 +78,15 @@ extension ReceiptActionCoordinatorTests {
         let params = CardPresentReceiptParameters.makeParams()
 
         let storesManager = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
-        ServiceLocator.setStores(storesManager)
-        ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: MockAnalyticsProvider()))
+        let analytics = MockAnalyticsProvider()
 
         // When
-        ReceiptActionCoordinator.printReceipt(for: order, params: params, countryCode: "CA")
+        ReceiptActionCoordinator.printReceipt(for: order,
+                                              params: params,
+                                              countryCode: "CA",
+                                              cardReaderModel: nil,
+                                              stores: storesManager,
+                                              analytics: WooAnalytics(analyticsProvider: analytics))
 
         //Then
         let action = try XCTUnwrap(storesManager.receivedActions.first as? ReceiptAction)
@@ -83,9 +94,7 @@ extension ReceiptActionCoordinatorTests {
         case .print(order: _, parameters: _, let completion):
             completion(printingResult)
 
-            let analytics = ServiceLocator.analytics.analyticsProvider as! MockAnalyticsProvider
             let receivedEvents = analytics.receivedEvents
-
             XCTAssert(receivedEvents.contains(analytic.rawValue))
         default:
             XCTFail("Print Receipt failed to dispatch .print action")

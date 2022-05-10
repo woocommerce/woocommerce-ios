@@ -2,7 +2,15 @@ import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
 
+/// Extension helpers for `Order` related with Card Present Payments
+///
 extension Order {
+    /// Determines whether this order can be paid with card
+    ///
+    /// - Parameters:
+    ///     - cardPresentPaymentsConfiguration: The current configuration for the card payment. Use to check the validity of the order currency.
+    ///     - products: A list of products linked to the store. Used to check whether the order contains any product of type subscription.
+    ///
     func isEligibleForCardPresentPayment(cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
                                          products: [Product]) -> Bool {
         isAmountEligibleForCardPayment &&
@@ -51,10 +59,6 @@ extension Order {
             return false
         }
         return cardPresentPaymentsConfiguration.currencies.contains(currency)
-    }
-
-    func hasCardPresentEligiblePaymentGatewayAccount(from accounts: [PaymentGatewayAccount]) -> Bool {
-        accounts.contains(where: \.isCardPresentEligible)
     }
 
     private func containsAnySubscription(from products: [Product]) -> Bool {

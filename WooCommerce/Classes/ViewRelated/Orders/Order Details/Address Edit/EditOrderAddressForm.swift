@@ -127,6 +127,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                                       sectionTitle: viewModel.secondarySectionTitle,
                                       showEmailField: false,
                                       showStateFieldAsSelector: viewModel.showSecondaryStateFieldAsSelector)
+                        .accessibilityElement(children: .contain)
                         .accessibilityIdentifier("secondary-order-address-form")
                 }
 

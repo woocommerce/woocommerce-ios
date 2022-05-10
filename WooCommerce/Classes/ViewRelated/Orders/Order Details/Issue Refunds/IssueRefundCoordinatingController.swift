@@ -42,10 +42,11 @@ private extension IssueRefundCoordinatingController {
         let issueRefundViewController = IssueRefundViewController(order: order, refunds: refunds)
 
         // Select quantity action
-        issueRefundViewController.onSelectQuantityAction = { [weak self] command, issueRefundVC in
+        issueRefundViewController.onSelectQuantityAction = { [weak self] command in
             self?.navigateToItemQuantitySelection(using: command) { selectedQuantity in
-                issueRefundVC.updateRefundQuantity(quantity: selectedQuantity, forItemAtIndex: command.itemIndex)
+                issueRefundViewController.updateRefundQuantity(quantity: selectedQuantity, forItemAtIndex: command.itemIndex)
             }
+
         }
 
         // Next action
@@ -75,10 +76,10 @@ private extension IssueRefundCoordinatingController {
         let refundConfirmationViewController = RefundConfirmationViewController(viewModel: viewModel)
 
         // Confirmation & submission action
-        refundConfirmationViewController.onRefundButtonAction = { [weak self] refundConfirmationVC in
+        refundConfirmationViewController.onRefundButtonAction = { [weak self] in
             self?.presetRefundConfirmationAlert(amount: viewModel.refundAmount) { didConfirm in
                 if didConfirm {
-                    refundConfirmationVC.submitRefund()
+                    refundConfirmationViewController.submitRefund()
                 }
             }
         }

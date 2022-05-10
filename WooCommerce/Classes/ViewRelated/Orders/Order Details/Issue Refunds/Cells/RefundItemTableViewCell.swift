@@ -35,7 +35,7 @@ final class RefundItemTableViewCell: UITableViewCell {
 
     /// Closure invoked when the user taps the quantity button
     ///
-    var onQuantityTapped: ((UITableViewCell) -> ())?
+    var onQuantityTapped: (() -> ())?
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -130,7 +130,7 @@ extension RefundItemTableViewCell {
 // MARK: Actions
 private extension RefundItemTableViewCell {
     @IBAction func quantityButtonPressed(_ sender: Any) {
-        onQuantityTapped?(self)
+        onQuantityTapped?()
     }
 }
 

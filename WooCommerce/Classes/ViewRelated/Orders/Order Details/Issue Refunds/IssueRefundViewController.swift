@@ -24,7 +24,7 @@ final class IssueRefundViewController: UIViewController {
 
     /// Closure invoked when the the quantity button of an item is pressed
     ///
-    var onSelectQuantityAction: ((RefundItemQuantityListSelectorCommand, IssueRefundViewController) -> Void)?
+    var onSelectQuantityAction: ((RefundItemQuantityListSelectorCommand) -> Void)?
 
     init(order: Order,
          refunds: [Refund],
@@ -122,7 +122,7 @@ private extension IssueRefundViewController {
         }
 
         let command = RefundItemQuantityListSelectorCommand(maxRefundQuantity: refundQuantity, currentQuantity: currentQuantity, itemIndex: indexPath.row)
-        onSelectQuantityAction?(command, self)
+        onSelectQuantityAction?(command)
 
         viewModel.trackQuantityButtonTapped()
     }
@@ -221,7 +221,7 @@ extension IssueRefundViewController: UITableViewDelegate, UITableViewDataSource 
         case let viewModel as RefundItemViewModel:
             let cell = tableView.dequeueReusableCell(RefundItemTableViewCell.self, for: indexPath)
             cell.configure(with: viewModel, imageService: imageService)
-            cell.onQuantityTapped = { [weak self] cell in
+            cell.onQuantityTapped = { [weak self] in
                 self?.quantityButtonPressed(sender: cell)
             }
             return cell

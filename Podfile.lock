@@ -30,7 +30,7 @@ PODS:
     - AppAuth/Core (~> 1.4)
     - GTMSessionFetcher/Core (~> 1.5)
   - GTMSessionFetcher/Core (1.7.0)
-  - KeychainAccess (3.2.1)
+  - KeychainAccess (4.2.2)
   - Kingfisher (6.0.1)
   - NSObject-SafeExpectations (0.0.4)
   - "NSURL+IDN (0.4)"
@@ -91,7 +91,7 @@ DEPENDENCIES:
   - CocoaLumberjack (~> 3.5)
   - CocoaLumberjack/Swift (~> 3.5)
   - Gridicons (~> 1.2.0)
-  - KeychainAccess (~> 3.2)
+  - KeychainAccess (~> 4.2.2)
   - Kingfisher (~> 6.0.0)
   - Sourcery (~> 1.0.3)
   - StripeTerminal (~> 2.7)
@@ -157,7 +157,7 @@ SPEC CHECKSUMS:
   Gridicons: 4455b9f366960121430e45997e32112ae49ffe1d
   GTMAppAuth: ad5c2b70b9a8689e1a04033c9369c4915bfcbe89
   GTMSessionFetcher: 43748f93435c2aa068b1cbe39655aaf600652e91
-  KeychainAccess: d5470352939ced6d6f7fb51cb2e67aae51fc294f
+  KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
   Kingfisher: adde87a4f74f6a3845395769354efff593581740
   NSObject-SafeExpectations: ab8fe623d36b25aa1f150affa324e40a2f3c0374
   "NSURL+IDN": afc873e639c18138a1589697c3add197fe8679ca
@@ -185,6 +185,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
   ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
-PODFILE CHECKSUM: 537aa9c47a806d11c2e319e1a76494dcae5d4ac2
+PODFILE CHECKSUM: f1a5345adf59ad723217bd8973c73acbe5e3f7cf
 
 COCOAPODS: 1.11.2

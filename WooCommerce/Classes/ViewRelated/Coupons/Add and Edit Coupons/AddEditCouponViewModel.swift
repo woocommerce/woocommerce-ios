@@ -213,6 +213,33 @@ final class AddEditCouponViewModel: ObservableObject {
     }
 
     func updateCoupon(coupon: Coupon) {
+        guard let initialCoupon = self.coupon else {
+            return
+        }
+
+        let usageDetailsUpdated: Bool = {
+            coupon.maximumAmount != initialCoupon.maximumAmount ||
+            coupon.minimumAmount != initialCoupon.minimumAmount ||
+            coupon.usageLimit != initialCoupon.usageLimit ||
+            coupon.usageLimitPerUser != initialCoupon.usageLimitPerUser ||
+            coupon.limitUsageToXItems != initialCoupon.limitUsageToXItems ||
+            coupon.emailRestrictions != initialCoupon.emailRestrictions ||
+            coupon.individualUse != initialCoupon.individualUse ||
+            coupon.excludeSaleItems != initialCoupon.excludeSaleItems ||
+            coupon.excludedProductIds != initialCoupon.excludedProductIds ||
+            coupon.excludedProductCategories != initialCoupon.excludedProductCategories
+        }()
+
+        ServiceLocator.analytics.track(.couponUpdateInitiated, withProperties: [
+            "coupon_code_updated": coupon.code.lowercased() != initialCoupon.code.lowercased(),
+            "amount_updated": coupon.amount != initialCoupon.amount,
+            "description_updated": coupon.description != initialCoupon.description,
+            "allowed_products_or_categories_updated": coupon.productIds != initialCoupon.productIds ||
+            coupon.productCategories != initialCoupon.productCategories,
+            "expiry_date_updated": coupon.dateExpires != initialCoupon.dateExpires,
+            "usage_details_updated": usageDetailsUpdated
+        ])
+
         if let validationError = validateCouponLocally(coupon) {
             notice = NoticeFactory.createCouponErrorNotice(validationError,
                                                            editingOption: editingOption)
@@ -223,16 +250,17 @@ final class AddEditCouponViewModel: ObservableObject {
         isLoading = true
         let action = CouponAction.updateCoupon(coupon, siteTimezone: TimeZone.siteTimezone) { [weak self] result in
             guard let self = self else { return }
+            self.isLoading = false
             switch result {
             case .success(_):
-                break
+                ServiceLocator.analytics.track(.couponUpdateSuccess)
+                self.onCompletion(result)
             case .failure(let error):
                 DDLogError("⛔️ Error updating the coupon: \(error)")
+                ServiceLocator.analytics.track(.couponDeleteFailed, withError: error)
                 self.notice = NoticeFactory.createCouponErrorNotice(.other(error: error),
                                                                     editingOption: self.editingOption)
             }
-            self.isLoading = false
-            self.onCompletion(result)
         }
         stores.dispatch(action)
     }

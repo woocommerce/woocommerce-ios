@@ -1,3 +1,4 @@
+import Codegen
 import Combine
 import TestKit
 import XCTest
@@ -91,7 +92,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
     func test_collectPayment_processing_completion_tracks_collectInteracPaymentSuccess_event_when_payment_method_is_interac() throws {
         // Given
-        let intent = MockPaymentIntent.mock(paymentMethod: .interacPresent)
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .interacPresent(details: .fake()))])
         mockSuccessfulCardPresentPaymentActions(intent: intent)
 
         // When
@@ -111,7 +112,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
     func test_collectPayment_processing_completion_does_not_track_collectInteracPaymentSuccess_event_when_payment_method_is_not_interac() throws {
         // Given
-        let intent = MockPaymentIntent.mock(paymentMethod: .cardPresent)
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
         mockSuccessfulCardPresentPaymentActions(intent: intent)
 
         // When
@@ -129,7 +130,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
     func test_printing_receipt_from_collectPayment_success_alert_tracks_receiptPrintTapped_event() throws {
         // Given
-        let intent = MockPaymentIntent.mock(paymentMethod: .cardPresent)
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
         mockSuccessfulCardPresentPaymentActions(intent: intent)
 
         // When
@@ -149,7 +150,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
     func test_emailing_receipt_from_collectPayment_success_alert_tracks_receiptEmailTapped_event() throws {
         // Given
-        let intent = MockPaymentIntent.mock(paymentMethod: .cardPresent)
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
         mockSuccessfulCardPresentPaymentActions(intent: intent)
 
         // When
@@ -169,7 +170,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
     func test_emailing_receipt_with_failure_from_collectPayment_success_alert_tracks_receiptEmailFailed_event() throws {
         // Given
-        let intent = MockPaymentIntent.mock(paymentMethod: .cardPresent)
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
         mockSuccessfulCardPresentPaymentActions(intent: intent)
 
         // When
@@ -193,7 +194,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
     func test_canceling_emailing_receipt_from_collectPayment_success_alert_tracks_receiptEmailCanceled_event() throws {
         // Given
-        let intent = MockPaymentIntent.mock(paymentMethod: .cardPresent)
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
         mockSuccessfulCardPresentPaymentActions(intent: intent)
 
         // When
@@ -214,7 +215,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
     func test_emailing_receipt_successfully_from_collectPayment_success_alert_tracks_receiptEmailSuccess_event() throws {
         // Given
-        let intent = MockPaymentIntent.mock(paymentMethod: .cardPresent)
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
         mockSuccessfulCardPresentPaymentActions(intent: intent)
 
         // When

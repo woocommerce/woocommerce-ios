@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		028C39E028255CFE0007BA25 /* Models+Copiable.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028C39DF28255CFE0007BA25 /* Models+Copiable.generated.swift */; };
+		02B5147A28254ED300750B71 /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 02B5147928254ED300750B71 /* Codegen */; };
 		030338102705F7D400764131 /* ReceiptTotalLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0303380F2705F7D400764131 /* ReceiptTotalLine.swift */; };
 		039D948B2760C0660044EF38 /* NoOpCardReaderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039D948A2760C0660044EF38 /* NoOpCardReaderService.swift */; };
 		03B440AA2754DFC400759429 /* UnderlyingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B440A92754DFC400759429 /* UnderlyingError.swift */; };
@@ -124,6 +126,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		02B5147C28254ED300750B71 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E1CFC1712643EBCB0089F86F /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -139,6 +151,7 @@
 
 /* Begin PBXFileReference section */
 		02351FF56149ADCD11338B19 /* Pods-SampleReceiptPrinter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleReceiptPrinter.release.xcconfig"; path = "Target Support Files/Pods-SampleReceiptPrinter/Pods-SampleReceiptPrinter.release.xcconfig"; sourceTree = "<group>"; };
+		028C39DF28255CFE0007BA25 /* Models+Copiable.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Models+Copiable.generated.swift"; sourceTree = "<group>"; };
 		0303380F2705F7D400764131 /* ReceiptTotalLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptTotalLine.swift; sourceTree = "<group>"; };
 		039D948A2760C0660044EF38 /* NoOpCardReaderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoOpCardReaderService.swift; sourceTree = "<group>"; };
 		03B440A92754DFC400759429 /* UnderlyingError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnderlyingError.swift; sourceTree = "<group>"; };
@@ -257,6 +270,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				02B5147A28254ED300750B71 /* Codegen in Frameworks */,
 				C5D2CB7D21CEE28FEBF18BF6 /* Pods_Hardware.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -282,6 +296,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		028C39DD28255C9F0007BA25 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				028C39DE28255CE10007BA25 /* Copiable */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		028C39DE28255CE10007BA25 /* Copiable */ = {
+			isa = PBXGroup;
+			children = (
+				028C39DF28255CFE0007BA25 /* Models+Copiable.generated.swift */,
+			);
+			path = Copiable;
+			sourceTree = "<group>";
+		};
 		55CD4BB2273E6159007686D3 /* AirPrintReceipt */ = {
 			isa = PBXGroup;
 			children = (
@@ -371,6 +401,7 @@
 		D88FDB0125DD216B00CB0DBD /* Hardware */ = {
 			isa = PBXGroup;
 			children = (
+				028C39DD28255C9F0007BA25 /* Model */,
 				E140F61A2668CDBB00FDB5FF /* Internal */,
 				D845BE4E262ED7AE00A3E40F /* Printer */,
 				D88FDB1D25DD218800CB0DBD /* CardReader */,
@@ -544,12 +575,16 @@
 				D88FDAFB25DD216B00CB0DBD /* Sources */,
 				D88FDAFC25DD216B00CB0DBD /* Frameworks */,
 				D88FDAFD25DD216B00CB0DBD /* Resources */,
+				02B5147C28254ED300750B71 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = Hardware;
+			packageProductDependencies = (
+				02B5147928254ED300750B71 /* Codegen */,
+			);
 			productName = Hardware;
 			productReference = D88FDAFF25DD216B00CB0DBD /* Hardware.framework */;
 			productType = "com.apple.product-type.framework";
@@ -782,6 +817,7 @@
 				317975C2274EBC1F004357B1 /* DeclineReason+Stripe.swift in Sources */,
 				D845BDB8262D97B300A3E40F /* ReceiptDetails.swift in Sources */,
 				D88FDB2D25DD21B000CB0DBD /* PaymentIntentParameters.swift in Sources */,
+				028C39E028255CFE0007BA25 /* Models+Copiable.generated.swift in Sources */,
 				D89B8F0825DDC8F60001C726 /* Charge.swift in Sources */,
 				D845BDCC262D9B7700A3E40F /* CardBrand+Stripe.swift in Sources */,
 				D88FDB2E25DD21B000CB0DBD /* CardReaderEvent.swift in Sources */,
@@ -1334,6 +1370,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		02B5147928254ED300750B71 /* Codegen */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Codegen;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = D88FDAF625DD216B00CB0DBD /* Project object */;
 }

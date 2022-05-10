@@ -238,7 +238,6 @@ struct SingleAddressForm: View {
                                  symbol: nil,
                                  fieldAlignment: .leading,
                                  keyboardType: .default)
-                .accessibilityIdentifier("order-address-form-last-name-field")
             Divider()
                 .padding(.leading, Constants.dividerPadding)
 
@@ -289,7 +288,6 @@ struct SingleAddressForm: View {
                                      symbol: nil,
                                      fieldAlignment: .leading,
                                      keyboardType: .default)
-                    .accessibilityIdentifier("order-address-form-address1-field")
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
                 TitleAndTextFieldRow(title: Localization.address2Field,

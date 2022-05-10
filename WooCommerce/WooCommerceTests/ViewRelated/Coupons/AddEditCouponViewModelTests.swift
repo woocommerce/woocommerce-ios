@@ -60,6 +60,8 @@ final class AddEditCouponViewModelTests: XCTestCase {
         viewModel.descriptionField = "This is a test description"
         viewModel.expiryDateField = Date().endOfDay(timezone: viewModel.timezone)
         viewModel.freeShipping = true
+        viewModel.productOrVariationIDs = [10, 50]
+        viewModel.categoryIDs = [3, 9, 44]
         viewModel.couponRestrictionsViewModel.minimumSpend = "10"
         viewModel.couponRestrictionsViewModel.maximumSpend = "50"
         viewModel.couponRestrictionsViewModel.usageLimitPerCoupon = "40"
@@ -68,6 +70,8 @@ final class AddEditCouponViewModelTests: XCTestCase {
         viewModel.couponRestrictionsViewModel.allowedEmails = "*@gmail.com, *@wordpress.com"
         viewModel.couponRestrictionsViewModel.individualUseOnly = true
         viewModel.couponRestrictionsViewModel.excludeSaleItems = true
+        viewModel.couponRestrictionsViewModel.excludedProductOrVariationIDs = [11, 30]
+        viewModel.couponRestrictionsViewModel.excludedCategoryIDs = [4, 10]
 
 
         // Then
@@ -77,10 +81,14 @@ final class AddEditCouponViewModelTests: XCTestCase {
                                                                            description: "This is a test description",
                                                                            dateExpires: expiryDate,
                                                                            individualUse: true,
+                                                                           productIds: [10, 50],
+                                                                           excludedProductIds: [11, 30],
                                                                            usageLimit: 40,
                                                                            usageLimitPerUser: 1,
                                                                            limitUsageToXItems: 10,
                                                                            freeShipping: true,
+                                                                           productCategories: [3, 9, 44],
+                                                                           excludedProductCategories: [4, 10],
                                                                            excludeSaleItems: true,
                                                                            minimumAmount: "10",
                                                                            maximumAmount: "50",

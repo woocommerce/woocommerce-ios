@@ -544,7 +544,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                             storageManager: storageManager,
                                             network: network,
                                             cardReaderService: mockCardReaderService)
-        let intent = MockPaymentIntent.mock()
+        let intent = PaymentIntent.fake()
         mockCardReaderService.whenCapturingPayment(thenReturn: Just(intent)
             .setFailureType(to: Error.self)
             .eraseToAnyPublisher())
@@ -581,7 +581,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                             storageManager: storageManager,
                                             network: network,
                                             cardReaderService: mockCardReaderService)
-        let intent = MockPaymentIntent.mock()
+        let intent = PaymentIntent.fake()
         mockCardReaderService.whenCapturingPayment(thenReturn: Just(intent)
             .setFailureType(to: Error.self)
             .eraseToAnyPublisher())
@@ -619,7 +619,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                             storageManager: storageManager,
                                             network: network,
                                             cardReaderService: mockCardReaderService)
-        let intent = MockPaymentIntent.mock()
+        let intent = PaymentIntent.fake()
         // Success on client-side processing.
         mockCardReaderService.whenCapturingPayment(thenReturn: Just(intent)
             .setFailureType(to: Error.self)
@@ -660,7 +660,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                             storageManager: storageManager,
                                             network: network,
                                             cardReaderService: mockCardReaderService)
-        let intent = MockPaymentIntent.mock()
+        let intent = PaymentIntent.fake()
         // Success on client-side processing.
         mockCardReaderService.whenCapturingPayment(thenReturn: Just(intent)
             .setFailureType(to: Error.self)

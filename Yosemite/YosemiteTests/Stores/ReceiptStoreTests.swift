@@ -47,7 +47,9 @@ final class ReceiptStoreTests: XCTestCase {
     }
 
     func test_print_calls_print_in_service() throws {
-        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        // Given
+        let mockIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let mockOrder = makeOrder()
 
         let receiptStore = ReceiptStore(dispatcher: dispatcher,
@@ -64,7 +66,9 @@ final class ReceiptStoreTests: XCTestCase {
     }
 
     func test_print_calls_print_in_passing_expected_parameters() throws {
-        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        // Given
+        let mockIntent = PaymentIntent.fake().copy(amount: 10000, currency: "usd", charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let mockOrder = makeOrder()
 
         let receiptStore = ReceiptStore(dispatcher: dispatcher,
@@ -73,10 +77,12 @@ final class ReceiptStoreTests: XCTestCase {
                                         receiptPrinterService: receiptPrinterService,
                                         fileStorage: MockInMemoryStorage())
 
+        // When
         let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
 
         receiptStore.onAction(action)
 
+        // Then
         let parametersProvided = receiptPrinterService.contentProvided
 
         XCTAssertEqual(mockParameters.amount, parametersProvided?.parameters.amount)
@@ -85,7 +91,9 @@ final class ReceiptStoreTests: XCTestCase {
     }
 
     func test_print_callsPrint_passing_TotalAmountPaid() throws {
-        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        // Given
+        let mockIntent = PaymentIntent.fake().copy(amount: 10000, charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let mockOrder = makeOrder()
 
         let receiptStore = ReceiptStore(dispatcher: dispatcher,
@@ -94,10 +102,12 @@ final class ReceiptStoreTests: XCTestCase {
                                         receiptPrinterService: receiptPrinterService,
                                         fileStorage: MockInMemoryStorage())
 
+        // When
         let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
 
         receiptStore.onAction(action)
 
+        // Then
         let amountPaidLine = receiptPrinterService.contentProvided?.cartTotals.first {
             $0.description == ReceiptContent.Localization.amountPaidLineDescription
         }
@@ -105,7 +115,9 @@ final class ReceiptStoreTests: XCTestCase {
     }
 
     func test_print_callsPrint_passing_TotalTaxes() throws {
-        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        // Given
+        let mockIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let mockOrder = makeOrder(discountTax: "1.21", shippingTax: "0.50", totalTax: "10.71")
 
         let receiptStore = ReceiptStore(dispatcher: dispatcher,
@@ -114,10 +126,12 @@ final class ReceiptStoreTests: XCTestCase {
                                         receiptPrinterService: receiptPrinterService,
                                         fileStorage: MockInMemoryStorage())
 
+        // When
         let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
 
         receiptStore.onAction(action)
 
+        // Then
         let actualTaxLine = receiptPrinterService.contentProvided?.cartTotals.first {
             $0.description == ReceiptContent.Localization.totalTaxLineDescription
         }
@@ -125,7 +139,9 @@ final class ReceiptStoreTests: XCTestCase {
     }
 
     func test_print_OrderWithoutTaxes_DoesNotIncludeTaxesInReceiptContent() throws {
-        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        // Given
+        let mockIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let mockOrder = makeOrder(totalTax: "0.00")
 
         let receiptStore = ReceiptStore(dispatcher: dispatcher,
@@ -134,10 +150,12 @@ final class ReceiptStoreTests: XCTestCase {
                                         receiptPrinterService: receiptPrinterService,
                                         fileStorage: MockInMemoryStorage())
 
+        // When
         let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
 
         receiptStore.onAction(action)
 
+        // Then
         let actualTaxLine = receiptPrinterService.contentProvided?.cartTotals.first {
             $0.description == ReceiptContent.Localization.totalTaxLineDescription
         }
@@ -145,7 +163,9 @@ final class ReceiptStoreTests: XCTestCase {
     }
 
     func test_print_callsPrint_passing_Shipping() throws {
-        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        // Given
+        let mockIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let mockOrder = makeOrder(shippingTotal: "5.50")
 
         let receiptStore = ReceiptStore(dispatcher: dispatcher,
@@ -154,10 +174,12 @@ final class ReceiptStoreTests: XCTestCase {
                                         receiptPrinterService: receiptPrinterService,
                                         fileStorage: MockInMemoryStorage())
 
+        // When
         let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
 
         receiptStore.onAction(action)
 
+        // Then
         let actualShippingLine = receiptPrinterService.contentProvided?.cartTotals.first {
             $0.description == ReceiptContent.Localization.shippingLineDescription
         }
@@ -165,7 +187,9 @@ final class ReceiptStoreTests: XCTestCase {
     }
 
     func test_print_OrderWithoutShipping_DoesNotIncludeShippingInReceiptContent() throws {
-        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        // Given
+        let mockIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let mockOrder = makeOrder(shippingTotal: "0.00")
 
         let receiptStore = ReceiptStore(dispatcher: dispatcher,
@@ -174,10 +198,12 @@ final class ReceiptStoreTests: XCTestCase {
                                         receiptPrinterService: receiptPrinterService,
                                         fileStorage: MockInMemoryStorage())
 
+        // When
         let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
 
         receiptStore.onAction(action)
 
+        // Then
         let actualShippingLine = receiptPrinterService.contentProvided?.cartTotals.first {
             $0.description == ReceiptContent.Localization.shippingLineDescription
         }
@@ -185,7 +211,9 @@ final class ReceiptStoreTests: XCTestCase {
     }
 
     func test_print_callsPrint_passing_Discount() throws {
-        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        // Given
+        let mockIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let coupons = [OrderCouponLine(couponID: 123, code: "5off", discount: "5.00", discountTax: "0.00")]
         let mockOrder = makeOrder(discountTotal: "5.00", coupons: coupons)
 
@@ -195,10 +223,12 @@ final class ReceiptStoreTests: XCTestCase {
                                         receiptPrinterService: receiptPrinterService,
                                         fileStorage: MockInMemoryStorage())
 
+        // When
         let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
 
         receiptStore.onAction(action)
 
+        // Then
         let actualDiscountLine = receiptPrinterService.contentProvided?.cartTotals.first {
             $0.description.starts(with: expectedDiscountLineDescription())
         }
@@ -206,7 +236,9 @@ final class ReceiptStoreTests: XCTestCase {
     }
 
     func test_print_OrderWithoutDiscountOrCoupons_DoesNotIncludeDiscountInReceiptContent() throws {
-        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        // Given
+        let mockIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let mockOrder = makeOrder(discountTotal: "0.00", coupons: [])
 
         let receiptStore = ReceiptStore(dispatcher: dispatcher,
@@ -215,10 +247,12 @@ final class ReceiptStoreTests: XCTestCase {
                                         receiptPrinterService: receiptPrinterService,
                                         fileStorage: MockInMemoryStorage())
 
+        // When
         let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
 
         receiptStore.onAction(action)
 
+        // Then
         let actualDiscountLine = receiptPrinterService.contentProvided?.cartTotals.first {
             $0.description.starts(with: expectedDiscountLineDescription())
         }
@@ -226,7 +260,9 @@ final class ReceiptStoreTests: XCTestCase {
     }
 
     func test_print_OrderWithoutDiscount_WithCoupon_IncludesCouponInReceiptContent() throws {
-        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        // Given
+        let mockIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let coupons = [OrderCouponLine(couponID: 123, code: "FreeShipping", discount: "0.00", discountTax: "0.00")]
         let mockOrder = makeOrder(discountTotal: "0.00", coupons: coupons)
 
@@ -236,10 +272,12 @@ final class ReceiptStoreTests: XCTestCase {
                                         receiptPrinterService: receiptPrinterService,
                                         fileStorage: MockInMemoryStorage())
 
+        // When
         let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
 
         receiptStore.onAction(action)
 
+        // Then
         let actualDiscountLine = try XCTUnwrap(receiptPrinterService.contentProvided?.cartTotals.first {
             $0.description.starts(with: expectedDiscountLineDescription())
         })
@@ -249,7 +287,9 @@ final class ReceiptStoreTests: XCTestCase {
     }
 
     func test_print_OrderWithDiscountFromMultipleCoupons_ListsCouponsInReceiptContent() throws {
-        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        // Given
+        let mockIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let coupons = [OrderCouponLine(couponID: 123, code: "1off", discount: "1.00", discountTax: "0.00"),
                        OrderCouponLine(couponID: 1901, code: "AVQW112", discount: "12.50", discountTax: "0.00")]
         let mockOrder = makeOrder(discountTotal: "13.50", coupons: coupons)
@@ -260,10 +300,12 @@ final class ReceiptStoreTests: XCTestCase {
                                         receiptPrinterService: receiptPrinterService,
                                         fileStorage: MockInMemoryStorage())
 
+        // When
         let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
 
         receiptStore.onAction(action)
 
+        // Then
         let actualDiscountLine = try XCTUnwrap(receiptPrinterService.contentProvided?.cartTotals.first {
             $0.description.starts(with: expectedDiscountLineDescription())
         })
@@ -272,7 +314,9 @@ final class ReceiptStoreTests: XCTestCase {
     }
 
     func test_print_callsPrint_passing_Fees() throws {
-        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        // Given
+        let mockIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let fees = [makeFee(amount: "5.00"), makeFee(amount: "15.50")]
         let mockOrder = makeOrder(fees: fees)
 
@@ -282,10 +326,12 @@ final class ReceiptStoreTests: XCTestCase {
                                         receiptPrinterService: receiptPrinterService,
                                         fileStorage: MockInMemoryStorage())
 
+        // When
         let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
 
         receiptStore.onAction(action)
 
+        // Then
         let actualFeesLine = receiptPrinterService.contentProvided?.cartTotals.first {
             $0.description == ReceiptContent.Localization.feesLineDescription
         }
@@ -293,7 +339,9 @@ final class ReceiptStoreTests: XCTestCase {
     }
 
     func test_print_OrderWithoutFees_DoesNotIncludeFeesInReceiptContent() throws {
-        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        // Given
+        let mockIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let mockOrder = makeOrder(fees: [])
 
         let receiptStore = ReceiptStore(dispatcher: dispatcher,
@@ -302,10 +350,12 @@ final class ReceiptStoreTests: XCTestCase {
                                         receiptPrinterService: receiptPrinterService,
                                         fileStorage: MockInMemoryStorage())
 
+        // When
         let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
 
         receiptStore.onAction(action)
 
+        // Then
         let actualFeesLine = receiptPrinterService.contentProvided?.cartTotals.first {
             $0.description == ReceiptContent.Localization.feesLineDescription
         }
@@ -313,7 +363,9 @@ final class ReceiptStoreTests: XCTestCase {
     }
 
     func test_print_OrderWithZeroFees_DoesNotIncludeFeesInReceiptContent() throws {
-        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        // Given
+        let mockIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let mockOrder = makeOrder(fees: [makeFee(amount: "0.00")])
 
         let receiptStore = ReceiptStore(dispatcher: dispatcher,
@@ -322,10 +374,12 @@ final class ReceiptStoreTests: XCTestCase {
                                         receiptPrinterService: receiptPrinterService,
                                         fileStorage: MockInMemoryStorage())
 
+        // When
         let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
 
         receiptStore.onAction(action)
 
+        // Then
         let actualFeesLine = receiptPrinterService.contentProvided?.cartTotals.first {
             $0.description == ReceiptContent.Localization.feesLineDescription
         }
@@ -333,7 +387,9 @@ final class ReceiptStoreTests: XCTestCase {
     }
 
     func test_print_callsPrint_passing_LineItemsTotal_calculatedUsing_UndiscountedSubtotals() throws {
-        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        // Given
+        let mockIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let items = [makeItem(subtotal: "20.00", total: "12.50"), makeItem(subtotal: "10.00", total: "10.00")]
         let mockOrder = makeOrder(items: items)
 
@@ -343,10 +399,12 @@ final class ReceiptStoreTests: XCTestCase {
                                         receiptPrinterService: receiptPrinterService,
                                         fileStorage: MockInMemoryStorage())
 
+        // When
         let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
 
         receiptStore.onAction(action)
 
+        // Then
         let lineItemsTotalLine = receiptPrinterService.contentProvided?.cartTotals.first {
             $0.description == ReceiptContent.Localization.productTotalLineDescription
         }
@@ -354,10 +412,11 @@ final class ReceiptStoreTests: XCTestCase {
     }
 
     func test_generateContent_callsGenerate_passingUnmodified_customerNote() throws {
-        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        // Given
+        let mockIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let expectedNote = "<a href=\"https://example.com\">This note has a link</a>"
         let mockOrder = makeOrder(customerNote: expectedNote)
-        let expectation = expectation(description: #function)
 
         let receiptStore = ReceiptStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
@@ -365,21 +424,25 @@ final class ReceiptStoreTests: XCTestCase {
                                         receiptPrinterService: receiptPrinterService,
                                         fileStorage: MockInMemoryStorage())
 
-        let action = ReceiptAction.generateContent(
-            order: mockOrder,
-            parameters: mockParameters,
-            onContent: { content in
-                XCTAssert(content.contains(expectedNote))
-                expectation.fulfill()
-        })
+        // When
+        let content: String = waitFor { promise in
+            let action = ReceiptAction.generateContent(
+                order: mockOrder,
+                parameters: mockParameters,
+                onContent: { content in
+                    promise(content)
+                })
+            receiptStore.onAction(action)
+        }
 
-        receiptStore.onAction(action)
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssert(content.contains(expectedNote))
     }
 
     func test_print_callsPrint_passingHTMLStripped_customerNote() throws {
-        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        // Given
+        let mockIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let mockOrder = makeOrder(customerNote: "<a href=\"https://example.com\">This note has a link</a>")
 
         let receiptStore = ReceiptStore(dispatcher: dispatcher,
@@ -388,10 +451,12 @@ final class ReceiptStoreTests: XCTestCase {
                                         receiptPrinterService: receiptPrinterService,
                                         fileStorage: MockInMemoryStorage())
 
+        // When
         let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
 
         receiptStore.onAction(action)
 
+        // Then
         XCTAssertEqual(receiptPrinterService.contentProvided?.orderNote, "This note has a link")
     }
 }

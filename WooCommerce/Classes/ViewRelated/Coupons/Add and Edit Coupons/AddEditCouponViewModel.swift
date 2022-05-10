@@ -139,8 +139,8 @@ final class AddEditCouponViewModel: ObservableObject {
     @Published var expiryDateField: Date?
     @Published var freeShipping: Bool
     @Published var couponRestrictionsViewModel: CouponRestrictionsViewModel
-    @Published private var productOrVariationIDs: [Int64]
-    @Published private var categoryIDs: [Int64]
+    @Published var productOrVariationIDs: [Int64]
+    @Published var categoryIDs: [Int64]
 
     /// Init method for coupon creation
     ///
@@ -245,10 +245,14 @@ final class AddEditCouponViewModel: ObservableObject {
                      description: descriptionField,
                      dateExpires: expiryDateField?.startOfDay(timezone: TimeZone.siteTimezone),
                      individualUse: couponRestrictionsViewModel.individualUseOnly,
+                     productIds: productOrVariationIDs,
+                     excludedProductIds: couponRestrictionsViewModel.excludedProductOrVariationIDs,
                      usageLimit: Int64(couponRestrictionsViewModel.usageLimitPerCoupon),
                      usageLimitPerUser: Int64(couponRestrictionsViewModel.usageLimitPerUser),
                      limitUsageToXItems: Int64(couponRestrictionsViewModel.limitUsageToXItems),
                      freeShipping: freeShipping,
+                     productCategories: categoryIDs,
+                     excludedProductCategories: couponRestrictionsViewModel.excludedCategoryIDs,
                      excludeSaleItems: couponRestrictionsViewModel.excludeSaleItems,
                      minimumAmount: couponRestrictionsViewModel.minimumSpend,
                      maximumAmount: couponRestrictionsViewModel.maximumSpend,

@@ -214,6 +214,7 @@ struct SingleAddressForm: View {
 
     @ViewBuilder
     var content: some View {
+        VStack {
         ListHeaderView(text: Localization.detailsSection, alignment: .left)
             .padding(.horizontal, insets: safeAreaInsets)
             .accessibility(addTraits: .isHeader)
@@ -356,6 +357,7 @@ struct SingleAddressForm: View {
         .padding(.horizontal, insets: safeAreaInsets)
         .background(Color(.systemBackground))
         .addingTopAndBottomDividers()
+    }
     }
 
     /// Decides if the state row should be rendered as a list selector field or as a text input field.

@@ -252,7 +252,7 @@ private extension CouponListViewController {
         ServiceLocator.analytics.track(.couponsListSearchTapped)
         let searchViewController = SearchViewController<TitleAndSubtitleAndStatusTableViewCell, CouponSearchUICommand>(
             storeID: siteID,
-            command: CouponSearchUICommand(),
+            command: CouponSearchUICommand(siteID: siteID),
             cellType: TitleAndSubtitleAndStatusTableViewCell.self,
             cellSeparator: .singleLine
         )

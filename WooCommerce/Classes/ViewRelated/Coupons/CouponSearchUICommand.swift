@@ -15,10 +15,17 @@ final class CouponSearchUICommand: SearchUICommand {
 
     let cancelButtonAccessibilityIdentifier = "coupon-search-screen-cancel-button"
 
+    private let siteID: Int64
+
+    init(siteID: Int64) {
+        self.siteID = siteID
+    }
+
     func createResultsController() -> ResultsController<StorageCoupon> {
         let storageManager = ServiceLocator.storageManager
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageCoupon.dateCreated, ascending: false)
-        return ResultsController<StorageCoupon>(storageManager: storageManager, sortedBy: [descriptor])
+        return ResultsController<StorageCoupon>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }
 
     func createStarterViewController() -> UIViewController? {
@@ -44,7 +51,6 @@ final class CouponSearchUICommand: SearchUICommand {
         }
 
         ServiceLocator.stores.dispatch(action)
-        // TODO: add analytics
     }
 
     func didSelectSearchResult(model: Coupon, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {

@@ -8,7 +8,11 @@ import XCTest
 final class Order_CardPresentPaymentTests: XCTestCase {
     private static let currency = "US"
     private let configuration = CardPresentPaymentsConfiguration(country: Order_CardPresentPaymentTests.currency, canadaEnabled: true)
-    private let validOrder = Order.fake().copy(status: .pending, currency: Order_CardPresentPaymentTests.currency, datePaid: nil, total: "25", paymentMethodID: "woocommercePayments")
+    private let validOrder = Order.fake().copy(status: .pending,
+                                               currency: Order_CardPresentPaymentTests.currency,
+                                               datePaid: nil,
+                                               total: "25",
+                                               paymentMethodID: "woocommercePayments")
 
     func test_isEligibleForCardPresentPayment_when_order_has_all_requirements_then_it_is_eligible() {
         XCTAssertFalse(validOrder.isEligibleForCardPresentPayment(cardPresentPaymentsConfiguration: configuration, products: []))

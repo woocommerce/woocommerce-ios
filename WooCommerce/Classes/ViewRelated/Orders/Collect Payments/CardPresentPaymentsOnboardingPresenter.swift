@@ -5,11 +5,15 @@ import Combine
 protocol CardPresentPaymentsOnboardingPresenting {
     func showOnboardingIfRequired(from: UIViewController,
                                   readyToCollectPayment: @escaping (() -> ()))
+
+    func refresh()
 }
 
 final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting {
 
     private let stores: StoresManager
+
+    private let onboardingUseCase: CardPresentPaymentsOnboardingUseCase
 
     private let readinessUseCase: CardPresentPaymentsReadinessUseCase
 
@@ -21,7 +25,7 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
 
     init(stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
-        let onboardingUseCase = CardPresentPaymentsOnboardingUseCase(stores: stores)
+        onboardingUseCase = CardPresentPaymentsOnboardingUseCase(stores: stores)
         readinessUseCase = CardPresentPaymentsReadinessUseCase(onboardingUseCase: onboardingUseCase, stores: stores)
         onboardingViewModel = InPersonPaymentsViewModel(useCase: onboardingUseCase)
     }
@@ -55,4 +59,7 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
             })
     }
 
+    func refresh() {
+        onboardingUseCase.forceRefresh()
+    }
 }

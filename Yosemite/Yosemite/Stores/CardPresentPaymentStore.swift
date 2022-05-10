@@ -20,8 +20,7 @@ public final class CardPresentPaymentStore: Store {
     /// Which backend is the store using? Default to WCPay until told otherwise
     private var usingBackend: CardPresentPaymentGatewayExtension = .wcpay
 
-    private let remote: WCPayRemote
-    private let stripeRemote: StripeRemote
+    private let remote: PaymentRemote
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -40,7 +39,6 @@ public final class CardPresentPaymentStore: Store {
         self.cardReaderService = cardReaderService
         self.commonReaderConfigProvider = CommonReaderConfigProvider()
         self.remote = WCPayRemote(network: network)
-        self.stripeRemote = StripeRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -111,14 +109,8 @@ public final class CardPresentPaymentStore: Store {
 private extension CardPresentPaymentStore {
    func startCardReaderDiscovery(siteID: Int64, onReaderDiscovered: @escaping (_ readers: [CardReader]) -> Void, onError: @escaping (Error) -> Void) {
         do {
-            switch usingBackend {
-            case .wcpay:
-                commonReaderConfigProvider.setContext(siteID: siteID, remote: self.remote)
-                try cardReaderService.start(commonReaderConfigProvider)
-            case .stripe:
-                commonReaderConfigProvider.setContext(siteID: siteID, remote: self.stripeRemote)
-                try cardReaderService.start(commonReaderConfigProvider)
-            }
+            commonReaderConfigProvider.setContext(siteID: siteID, remote: self.remote)
+            try cardReaderService.start(commonReaderConfigProvider)
         } catch {
             return onError(error)
         }
@@ -749,5 +741,53 @@ public enum WCPayChargesError: Error, LocalizedError {
         case .otherError(let error):
             return error.localizedDescription
         }
+    }
+}
+
+private final class CardPresentPaymentRemoteDeterminer {
+    func usingRemote(from paymentGatewayAccount: PaymentGatewayAccount, network: Network) -> CardReaderCapableRemote {
+        switch paymentGatewayAccount.gatewayID {
+        case WCPayAccount.gatewayID:
+            return WCPayRemote(network: network)
+        case StripeAccount.gatewayID:
+            return StripeRemote(network: network)
+        default:
+            return WCPayRemote(network: network)
+        }
+    }
+}
+
+private protocol PaymentAccount {
+    func toPaymentGatewayAccount(siteID: Int64) -> PaymentGatewayAccount
+}
+
+extension WCPayAccount: PaymentAccount {}
+
+extension StripeAccount: PaymentAccount {}
+
+private protocol PaymentRemote: CardReaderCapableRemote {
+    func loadAccount(for siteID: Int64,
+                            completion: @escaping (Result<PaymentAccount, Error>) -> Void)
+    func fetchCharge(for siteID: Int64,
+                            chargeID: String,
+                            completion: @escaping (Result<WCPayCharge, Error>) -> Void)
+    func captureOrderPayment(for siteID: Int64,
+                               orderID: Int64,
+                               paymentIntentID: String) -> AnyPublisher<Result<RemotePaymentIntent, Error>, Never>
+}
+
+extension StripeRemote: PaymentRemote {
+    fileprivate func loadAccount(for siteID: Int64, completion: @escaping (Result<PaymentAccount, Error>) -> Void) {
+        loadAccount(for: siteID, completion: completion)
+    }
+
+    func fetchCharge(for siteID: Int64,
+                            chargeID: String,
+                     completion: @escaping (Result<WCPayCharge, Error>) -> Void) {}
+}
+
+extension WCPayRemote: PaymentRemote {
+    fileprivate func loadAccount(for siteID: Int64, completion: @escaping (Result<PaymentAccount, Error>) -> Void) {
+        loadAccount(for: siteID, completion: completion)
     }
 }

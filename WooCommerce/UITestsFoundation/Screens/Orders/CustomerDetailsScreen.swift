@@ -11,21 +11,21 @@ public final class CustomerDetailsScreen: ScreenObject {
         $0.buttons["order-customer-details-done-button"]
     }
 
-    private let addressFormGetter: (XCUIApplication) -> XCUIElement = {
-        $0.groups["order-address-form"]
+    private let shippingFirstNameFieldGetter: (XCUIApplication) -> XCUIElement = {
+        $0.otherElements["secondary-order-address-form"].descendants(matching: .textField)["order-address-form-first-name-field"]
     }
 
-    private let firstNameFieldGetter: (XCUIApplication) -> XCUIElement = {
-        $0.textFields["order-address-form-first-name-field"]
+    private let billingFirstNameFieldGetter: (XCUIApplication) -> XCUIElement = {
+        $0.otherElements["order-address-form"].descendants(matching: .textField)["order-address-form-first-name-field"]
     }
 
     private var addressToggle: XCUIElement { addressToggleGetter(app) }
 
     private var doneButton: XCUIElement { doneButtonGetter(app) }
 
-    private var addressForm: XCUIElement { addressFormGetter(app) }
+    private var shippingFirstNameField: XCUIElement { shippingFirstNameFieldGetter(app) }
 
-    private var firstNameField: XCUIElement { firstNameFieldGetter(app) }
+    private var billingFirstNameField: XCUIElement { billingFirstNameFieldGetter(app) }
 
 
     init(app: XCUIApplication = XCUIApplication()) throws {

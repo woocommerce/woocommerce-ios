@@ -82,7 +82,7 @@ struct CouponDetails: View {
         if viewModel.isEditingEnabled {
             buttons.append(contentsOf: [
                 .default(Text(Localization.editCoupon), action: {
-                    // TODO: add analytics
+                    ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "tapped_edit"])
                     viewModel.showingEditCoupon = true
                 })
             ])
@@ -90,6 +90,7 @@ struct CouponDetails: View {
 
         if viewModel.isDeletingEnabled {
             buttons.append(.destructive(Text(Localization.deleteCoupon), action: {
+                ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "tapped_delete"])
                 showingDeletionConfirmAlert = true
             }))
         }

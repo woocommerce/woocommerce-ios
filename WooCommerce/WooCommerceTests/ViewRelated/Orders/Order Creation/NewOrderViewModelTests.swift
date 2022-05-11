@@ -889,6 +889,32 @@ final class NewOrderViewModelTests: XCTestCase {
         XCTAssertTrue(analytics.receivedEvents.isEmpty)
     }
 
+    func test_sync_failure_tracked_when_sync_fails() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        waitForExpectation { expectation in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .createOrder(_, _, onCompletion):
+                    onCompletion(.failure(NSError(domain: "Error", code: 0)))
+                    expectation.fulfill()
+                default:
+                    XCTFail("Received unsupported action: \(action)")
+                }
+            }
+
+            // When remote sync is triggered
+            viewModel.saveShippingLine(ShippingLine.fake())
+        }
+
+        // Then
+        XCTAssertTrue(analytics.receivedEvents.contains(WooAnalyticsStat.orderSyncFailed.rawValue))
+    }
+
     // MARK: -
 
     func test_customer_note_section_is_updated_when_note_is_added_to_order() {

@@ -30,8 +30,13 @@ PODS:
     - AppAuth/Core (~> 1.4)
     - GTMSessionFetcher/Core (~> 1.5)
   - GTMSessionFetcher/Core (1.7.0)
+<<<<<<< HEAD
   - KeychainAccess (4.2.2)
   - Kingfisher (6.0.1)
+=======
+  - KeychainAccess (3.2.1)
+  - Kingfisher (7.2.2)
+>>>>>>> trunk
   - NSObject-SafeExpectations (0.0.4)
   - "NSURL+IDN (0.4)"
   - Sentry (6.2.1):
@@ -91,8 +96,13 @@ DEPENDENCIES:
   - CocoaLumberjack (~> 3.5)
   - CocoaLumberjack/Swift (~> 3.5)
   - Gridicons (~> 1.2.0)
+<<<<<<< HEAD
   - KeychainAccess (~> 4.2.2)
   - Kingfisher (~> 6.0.0)
+=======
+  - KeychainAccess (~> 3.2)
+  - Kingfisher (~> 7.2.2)
+>>>>>>> trunk
   - Sourcery (~> 1.0.3)
   - StripeTerminal (~> 2.7)
   - WordPress-Editor-iOS (~> 1.11.0)
@@ -157,8 +167,13 @@ SPEC CHECKSUMS:
   Gridicons: 4455b9f366960121430e45997e32112ae49ffe1d
   GTMAppAuth: ad5c2b70b9a8689e1a04033c9369c4915bfcbe89
   GTMSessionFetcher: 43748f93435c2aa068b1cbe39655aaf600652e91
+<<<<<<< HEAD
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
   Kingfisher: adde87a4f74f6a3845395769354efff593581740
+=======
+  KeychainAccess: d5470352939ced6d6f7fb51cb2e67aae51fc294f
+  Kingfisher: 184d4d1a8c36666e663caf8e08abe87898595c53
+>>>>>>> trunk
   NSObject-SafeExpectations: ab8fe623d36b25aa1f150affa324e40a2f3c0374
   "NSURL+IDN": afc873e639c18138a1589697c3add197fe8679ca
   Sentry: 9b922b396b0e0bca8516a10e36b0ea3ebea5faf7
@@ -185,6 +200,10 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
   ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
+<<<<<<< HEAD
 PODFILE CHECKSUM: f1a5345adf59ad723217bd8973c73acbe5e3f7cf
+=======
+PODFILE CHECKSUM: f7102ea355609049f4306feb9e5d957c3890971f
+>>>>>>> trunk
 
 COCOAPODS: 1.11.2

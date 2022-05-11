@@ -484,6 +484,10 @@ extension OrderDetailsViewModel {
         ServiceLocator.stores.dispatch(action)
     }
 
+    func refreshCardPresentPaymentOnboarding() {
+        cardPresentPaymentsOnboardingPresenter.refresh()
+    }
+
     func checkOrderAddOnFeatureSwitchState(onCompletion: (() -> Void)? = nil) {
         let action = AppSettingsAction.loadOrderAddOnsSwitchState { [weak self] result in
             self?.dataSource.showAddOns = (try? result.get()) ?? false

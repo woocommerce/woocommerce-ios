@@ -3,17 +3,25 @@ import Foundation
 /// `UnitInputFormatter` implementation for Coupon Amount input.
 ///
 struct CouponAmountInputFormatter: UnitInputFormatter {
+    let priceInputFormatter = PriceInputFormatter()
+
     func isValid(input: String) -> Bool {
         guard input.isNotEmpty else {
             return false
         }
-        return PriceInputFormatter().isValid(input: input)
+        return priceInputFormatter.isValid(input: input)
     }
 
     func format(input text: String?) -> String {
         guard text.isNilOrEmpty else {
-            return PriceInputFormatter().format(input: text)
+            return priceInputFormatter.format(input: text)
         }
         return "0"
+    }
+}
+
+extension CouponAmountInputFormatter {
+    func value(from input: String) -> NSNumber? {
+        priceInputFormatter.value(from: input)
     }
 }

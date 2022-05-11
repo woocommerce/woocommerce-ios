@@ -325,8 +325,8 @@ private extension AddEditCouponViewModel {
         let amountFormatter = CouponAmountInputFormatter()
 
         let usageDetailsUpdated: Bool = {
-            coupon.maximumAmount != amountFormatter.format(input: initialCoupon.maximumAmount) ||
-            coupon.minimumAmount != amountFormatter.format(input: initialCoupon.minimumAmount) ||
+            amountFormatter.value(from: coupon.maximumAmount) != amountFormatter.value(from: initialCoupon.maximumAmount) ||
+            amountFormatter.value(from: coupon.minimumAmount) != amountFormatter.value(from: initialCoupon.minimumAmount) ||
             coupon.usageLimit != initialCoupon.usageLimit ||
             coupon.usageLimitPerUser != initialCoupon.usageLimitPerUser ||
             coupon.limitUsageToXItems != initialCoupon.limitUsageToXItems ||
@@ -346,7 +346,7 @@ private extension AddEditCouponViewModel {
 
         ServiceLocator.analytics.track(.couponUpdateInitiated, withProperties: [
             "coupon_code_updated": coupon.code.lowercased() != initialCoupon.code.lowercased(),
-            "amount_updated": coupon.amount != amountFormatter.format(input: initialCoupon.amount),
+            "amount_updated": amountFormatter.value(from: coupon.amount) != amountFormatter.value(from: initialCoupon.amount),
             "description_updated": coupon.description != initialCoupon.description,
             "allowed_products_or_categories_updated": coupon.productIds != initialCoupon.productIds ||
             coupon.productCategories != initialCoupon.productCategories,

@@ -6,6 +6,9 @@ import Yosemite
 @testable import WooCommerce
 
 final class CollectOrderPaymentUseCaseTests: XCTestCase {
+    private let defaultSiteID: Int64 = 122
+    private let defaultOrderID: Int64 = 322
+
     private var stores: MockStoresManager!
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
@@ -20,8 +23,8 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
 
         alerts = MockOrderDetailsPaymentAlerts()
-        useCase = CollectOrderPaymentUseCase(siteID: 122,
-                                             order: .fake().copy(total: "1.5"),
+        useCase = CollectOrderPaymentUseCase(siteID: defaultSiteID,
+                                             order: .fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5"),
                                              formattedAmount: "1.5",
                                              paymentGatewayAccount: .fake().copy(gatewayID: Mocks.paymentGatewayAccount),
                                              rootViewController: .init(),
@@ -269,6 +272,52 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
         XCTAssertEqual(eventProperties["country"] as? String, "US")
         XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayAccount)
+    }
+
+    func test_collectPayment_with_interac_dispatches_markOrderAsPaidLocally_after_successful_client_side_capture() throws {
+        // Given
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .interacPresent(details: .fake()))])
+        mockSuccessfulCardPresentPaymentActions(intent: intent)
+        var markOrderAsPaidLocallyAction: (siteID: Int64, orderID: Int64)?
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            if case let .markOrderAsPaidLocally(siteID, orderID, _, _) = action {
+                markOrderAsPaidLocallyAction = (siteID: siteID, orderID: orderID)
+            }
+        }
+
+        // When
+        waitFor { promise in
+            self.useCase.collectPayment(backButtonTitle: "", onCollect: { _ in
+                promise(())
+            }, onCompleted: {})
+        }
+
+        // Then
+        let action = try XCTUnwrap(markOrderAsPaidLocallyAction)
+        XCTAssertEqual(action.siteID, defaultSiteID)
+        XCTAssertEqual(action.orderID, defaultOrderID)
+    }
+
+    func test_collectPayment_with_noninterac_does_not_dispatch_markOrderAsPaidLocally_after_successful_client_side_capture() throws {
+        // Given
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        mockSuccessfulCardPresentPaymentActions(intent: intent)
+        var markOrderAsPaidLocallyAction: (siteID: Int64, orderID: Int64)?
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            if case let .markOrderAsPaidLocally(siteID, orderID, _, _) = action {
+                markOrderAsPaidLocallyAction = (siteID: siteID, orderID: orderID)
+            }
+        }
+
+        // When
+        waitFor { promise in
+            self.useCase.collectPayment(backButtonTitle: "", onCollect: { _ in
+                promise(())
+            }, onCompleted: {})
+        }
+
+        // Then
+        XCTAssertNil(markOrderAsPaidLocallyAction)
     }
 }
 

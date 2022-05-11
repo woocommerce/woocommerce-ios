@@ -89,6 +89,11 @@ public enum OrderAction: Action {
                                    email: String?,
                                    onCompletion: (Result<Order, Error>) -> Void)
 
+    /// Updates an order to be considered as paid locally, for use cases where the payment is captured in the
+    /// app to prevent from multiple charging for the same order after subsequent failures (e.g. Interac in Canada).
+    ///
+    case markOrderAsPaidLocally(siteID: Int64, orderID: Int64, datePaid: Date, onCompletion: (Result<Order, Error>) -> Void)
+
     /// Deletes a given order.
     ///
     case deleteOrder(siteID: Int64, order: Order, deletePermanently: Bool, onCompletion: (Result<Order, Error>) -> Void)

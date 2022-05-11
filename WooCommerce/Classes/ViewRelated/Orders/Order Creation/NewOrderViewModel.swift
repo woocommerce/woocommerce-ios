@@ -819,8 +819,8 @@ extension NewOrderViewModel {
         ///
         private static func isEmailError(_ error: Error, order: Order) -> Bool {
             switch error as? DotcomError {
-            case .unknown(code: "rest_invalid_param", message: "Invalid parameter(s): billing"):
-                return order.billingAddress?.hasEmailAddress == false
+            case .unknown(code: "rest_invalid_param", let message?):
+                return message.contains("billing") && order.billingAddress?.hasEmailAddress == false
             default:
                 return false
             }

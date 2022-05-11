@@ -1,5 +1,7 @@
+import Codegen
+
 /// The various card brands for a card.
-public enum CardBrand: String, CaseIterable, Codable {
+public enum CardBrand: String, CaseIterable, Codable, GeneratedFakeable {
     /// Visa card
     case visa
 

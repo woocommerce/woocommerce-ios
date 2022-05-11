@@ -99,6 +99,7 @@ final class AddManualCustomTrackingViewModelTests: XCTestCase {
 
     func testCanCommitReturnsFalseWithoutName() {
         subject?.trackingNumber = "123"
+        subject?.providerName = nil
 
         XCTAssertFalse(subject!.canCommit)
     }

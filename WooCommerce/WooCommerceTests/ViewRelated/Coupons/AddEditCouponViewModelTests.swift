@@ -49,16 +49,19 @@ final class AddEditCouponViewModelTests: XCTestCase {
 
     func test_populatedCoupon_return_expected_coupon_during_editing() {
         // Given
-        let viewModel = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(discountType: .percent), timezone: .current, onCompletion: { _ in })
-        let expiryDate = Date().startOfDay(timezone: viewModel.timezone)
-        XCTAssertEqual(viewModel.populatedCoupon, Coupon.sampleCoupon.copy(discountType: .percent,
-                                                                           dateExpires: expiryDate))
+        let timeZone = TimeZone.current
+        let expiryDate = Date().startOfDay(timezone: timeZone)
+        let viewModel = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(discountType: .percent, dateExpires: expiryDate),
+                                               timezone: timeZone,
+                                               onCompletion: { _ in })
+        assertEqual(viewModel.populatedCoupon, Coupon.sampleCoupon.copy(discountType: .percent,
+                                                                        dateExpires: expiryDate))
 
         // When
         viewModel.amountField = "24.23"
         viewModel.codeField = "TEST"
         viewModel.descriptionField = "This is a test description"
-        viewModel.expiryDateField = Date().endOfDay(timezone: viewModel.timezone)
+        viewModel.expiryDateField = Date().endOfDay(timezone: timeZone)
         viewModel.freeShipping = true
         viewModel.productOrVariationIDs = [10, 50]
         viewModel.categoryIDs = [3, 9, 44]
@@ -75,24 +78,24 @@ final class AddEditCouponViewModelTests: XCTestCase {
 
 
         // Then
-        XCTAssertEqual(viewModel.populatedCoupon, Coupon.sampleCoupon.copy(code: "TEST",
-                                                                           amount: "24.23",
-                                                                           discountType: .percent,
-                                                                           description: "This is a test description",
-                                                                           dateExpires: expiryDate,
-                                                                           individualUse: true,
-                                                                           productIds: [10, 50],
-                                                                           excludedProductIds: [11, 30],
-                                                                           usageLimit: 40,
-                                                                           usageLimitPerUser: 1,
-                                                                           limitUsageToXItems: 10,
-                                                                           freeShipping: true,
-                                                                           productCategories: [3, 9, 44],
-                                                                           excludedProductCategories: [4, 10],
-                                                                           excludeSaleItems: true,
-                                                                           minimumAmount: "10",
-                                                                           maximumAmount: "50",
-                                                                           emailRestrictions: ["*@gmail.com", "*@wordpress.com"]))
+        assertEqual(viewModel.populatedCoupon, Coupon.sampleCoupon.copy(code: "TEST",
+                                                                        amount: "24.23",
+                                                                        discountType: .percent,
+                                                                        description: "This is a test description",
+                                                                        dateExpires: expiryDate,
+                                                                        individualUse: true,
+                                                                        productIds: [10, 50],
+                                                                        excludedProductIds: [11, 30],
+                                                                        usageLimit: 40,
+                                                                        usageLimitPerUser: 1,
+                                                                        limitUsageToXItems: 10,
+                                                                        freeShipping: true,
+                                                                        productCategories: [3, 9, 44],
+                                                                        excludedProductCategories: [4, 10],
+                                                                        excludeSaleItems: true,
+                                                                        minimumAmount: "10",
+                                                                        maximumAmount: "50",
+                                                                        emailRestrictions: ["*@gmail.com", "*@wordpress.com"]))
     }
 
     func test_populatedCoupon_return_expected_coupon_during_creation() {

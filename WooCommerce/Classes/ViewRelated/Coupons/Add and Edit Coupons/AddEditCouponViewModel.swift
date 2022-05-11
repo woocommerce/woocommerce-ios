@@ -264,7 +264,7 @@ final class AddEditCouponViewModel: ObservableObject {
                 self.onCompletion(result)
             case .failure(let error):
                 DDLogError("⛔️ Error updating the coupon: \(error)")
-                ServiceLocator.analytics.track(.couponDeleteFailed, withError: error)
+                ServiceLocator.analytics.track(.couponUpdateFailed, withError: error)
                 self.notice = NoticeFactory.createCouponErrorNotice(.other(error: error),
                                                                     editingOption: self.editingOption)
             }

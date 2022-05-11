@@ -66,6 +66,14 @@ public final class NewOrderScreen: ScreenObject {
         return try AddProductScreen()
     }
 
+    /// Opens the Customer Details screen.
+    /// - Returns: Customer Details screen object.
+    @discardableResult
+    public func openCustomerDetailsScreen() throws -> CustomerDetailsScreen {
+        addCustomerDetailsButton.tap()
+        return try CustomerDetailsScreen()
+    }
+
 // MARK: - High-level Order Creation actions
 
     /// Creates a remote order with all of the entered order data.
@@ -93,24 +101,18 @@ public final class NewOrderScreen: ScreenObject {
             .selectProduct(byName: name)
     }
 
+    /// Adds minimal customer details on the Customer Details screen
+    /// - Returns: New Order screen object.
+    public func addCustomerDetails() throws -> NewOrderScreen {
+        return try openCustomerDetailsScreen()
+            .enterCustomerDetails()
+    }
+
     /// Cancels Order Creation process
     /// - Returns: Orders Screen object.
     @discardableResult
     public func cancelOrderCreation() throws -> OrdersScreen {
         cancelButton.tap()
         return try OrdersScreen()
-    }
-
-    /// Opens the Customer Details screen.
-    /// - Returns: Customer Details screen object.
-    @discardableResult
-    public func openCustomerDetailsScreen() throws -> CustomerDetailsScreen {
-        addCustomerDetailsButton.tap()
-        return try CustomerDetailsScreen()
-    }
-
-    public func addCustomerDetails() throws -> NewOrderScreen {
-        return try openCustomerDetailsScreen()
-            .enterCustomerDetails()
     }
 }

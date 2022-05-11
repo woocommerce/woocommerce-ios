@@ -384,6 +384,14 @@ private extension CouponDetails {
             comment: "Restriction for customers with specified emails to use a coupon, " +
             "reads like: Restricted to customers with emails: *@a8c.com, *@vip.com"
         )
+        static let itemsLimitUsage = NSLocalizedString(
+            "Limited to %1$d items in cart",
+            comment: ""
+        )
+        static let usageLimitPerCoupon = NSLocalizedString(
+            "Can be used %1$d times",
+            comment: ""
+        )
 
         static let manageCoupon = NSLocalizedString("Manage Coupon", comment: "Title of the action sheet displayed from the Coupon Details screen")
         static let copyCode = NSLocalizedString("Copy Code", comment: "Action title for copying coupon code from the Coupon Details screen")

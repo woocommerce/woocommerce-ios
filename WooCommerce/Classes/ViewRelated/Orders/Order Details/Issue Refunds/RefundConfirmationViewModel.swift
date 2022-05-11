@@ -54,6 +54,8 @@ final class RefundConfirmationViewModel {
 
     private let analytics: Analytics
 
+    private let cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting = CardPresentPaymentsOnboardingPresenter()
+
     init(details: Details,
          actionProcessor: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
@@ -97,6 +99,7 @@ final class RefundConfirmationViewModel {
             cardPresentConfiguration: CardPresentConfigurationLoader(stores: actionProcessor).configuration,
             dependencies: RefundSubmissionUseCase.Dependencies(
                 currencyFormatter: currencyFormatter,
+                cardPresentPaymentsOnboardingPresenter: cardPresentPaymentsOnboardingPresenter,
                 stores: actionProcessor,
                 analytics: analytics))
 

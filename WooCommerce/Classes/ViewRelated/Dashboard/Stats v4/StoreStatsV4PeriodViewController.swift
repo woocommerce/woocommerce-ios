@@ -589,7 +589,7 @@ private extension StoreStatsV4PeriodViewController {
             return
         }
         usageTracksEventEmitter.interacted()
-        ServiceLocator.analytics.track(.dashboardMainStatsDate, withProperties: ["range": granularity.rawValue])
+        ServiceLocator.analytics.track(event: .Dashboard.dashboardMainStatsDate(timeRange: timeRange))
         isInitialLoad = false
     }
 

@@ -5,6 +5,9 @@
 - [*] Order Creation: Updated percentage fee flow - added amount preview, disabled percentage option when editing. [https://github.com/woocommerce/woocommerce-ios/pull/6763]
 - [*] Product Details: Update status badge layout and show it for more cases. [https://github.com/woocommerce/woocommerce-ios/pull/6768]
 - [*] Coupons: now, the percentage amount of coupons will be displayed correctly in the listing and in coupon detail if the amount contains fraction digits. [https://github.com/woocommerce/woocommerce-ios/pull/6804]
+- [*] Coupons: Filter initial search results to show only coupons of the currently selected store. [https://github.com/woocommerce/woocommerce-ios/pull/6800]
+- [*] Coupons: Fixed crash when there are duplicated items on the coupon list. [https://github.com/woocommerce/woocommerce-ios/pull/6798]
+- [*] In-Person Payments: Run onboarding checks when connecting a reader. [https://github.com/woocommerce/woocommerce-ios/pull/6761, https://github.com/woocommerce/woocommerce-ios/pull/6774, https://github.com/woocommerce/woocommerce-ios/pull/6789]
 
 9.1
 -----

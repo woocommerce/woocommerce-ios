@@ -3,6 +3,7 @@
 
 import Yosemite
 import Networking
+import Hardware
 
 extension ProductReviewFromNoteParcel {
     /// Returns a "ready to use" type filled with fake values.

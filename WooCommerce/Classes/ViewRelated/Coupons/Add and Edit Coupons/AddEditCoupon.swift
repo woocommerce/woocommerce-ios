@@ -221,7 +221,9 @@ struct AddEditCoupon: View {
                             EmptyView()
                         }
 
-                        LazyNavigationLink(destination: CouponExpiryDateView(date: viewModel.expiryDateField ?? Date(), completion: { updatedExpiryDate in
+                        LazyNavigationLink(destination: CouponExpiryDateView(date: viewModel.expiryDateField ?? Date(),
+                                                                             timezone: viewModel.timezone,
+                                                                             completion: { updatedExpiryDate in
                             viewModel.expiryDateField = updatedExpiryDate
                         }),
                                            isActive: $showingCouponExpiryDate) {

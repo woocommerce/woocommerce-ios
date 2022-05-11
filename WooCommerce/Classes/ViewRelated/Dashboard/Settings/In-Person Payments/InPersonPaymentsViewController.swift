@@ -1,7 +1,11 @@
 import SwiftUI
 
 final class InPersonPaymentsViewController: UIHostingController<InPersonPaymentsView> {
-    init(viewModel: InPersonPaymentsViewModel) {
+    private let onWillDisappear: (() -> ())?
+
+    init(viewModel: InPersonPaymentsViewModel,
+         onWillDisappear: (() -> ())? = nil) {
+        self.onWillDisappear = onWillDisappear
         super.init(rootView: InPersonPaymentsView(viewModel: viewModel))
         rootView.showSupport = { [weak self] in
             guard let self = self else { return }
@@ -15,6 +19,11 @@ final class InPersonPaymentsViewController: UIHostingController<InPersonPayments
 
     @objc required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        onWillDisappear?()
+        super.viewWillDisappear(animated)
     }
 }
 

@@ -213,39 +213,7 @@ final class AddEditCouponViewModel: ObservableObject {
     }
 
     func updateCoupon(coupon: Coupon) {
-        guard let initialCoupon = self.coupon else {
-            return
-        }
-
-        let usageDetailsUpdated: Bool = {
-            coupon.maximumAmount != initialCoupon.maximumAmount ||
-            coupon.minimumAmount != initialCoupon.minimumAmount ||
-            coupon.usageLimit != initialCoupon.usageLimit ||
-            coupon.usageLimitPerUser != initialCoupon.usageLimitPerUser ||
-            coupon.limitUsageToXItems != initialCoupon.limitUsageToXItems ||
-            coupon.emailRestrictions != initialCoupon.emailRestrictions ||
-            coupon.individualUse != initialCoupon.individualUse ||
-            coupon.excludeSaleItems != initialCoupon.excludeSaleItems ||
-            coupon.excludedProductIds != initialCoupon.excludedProductIds ||
-            coupon.excludedProductCategories != initialCoupon.excludedProductCategories
-        }()
-
-        let expiryDateUpdated: Bool = {
-            guard let oldDate = initialCoupon.dateExpires, let newDate = coupon.dateExpires else {
-                return initialCoupon.dateExpires != coupon.dateExpires
-            }
-            return !oldDate.isSameDay(as: newDate)
-        }()
-
-        ServiceLocator.analytics.track(.couponUpdateInitiated, withProperties: [
-            "coupon_code_updated": coupon.code.lowercased() != initialCoupon.code.lowercased(),
-            "amount_updated": coupon.amount != initialCoupon.amount,
-            "description_updated": coupon.description != initialCoupon.description,
-            "allowed_products_or_categories_updated": coupon.productIds != initialCoupon.productIds ||
-            coupon.productCategories != initialCoupon.productCategories,
-            "expiry_date_updated": expiryDateUpdated,
-            "usage_restrictions_updated": usageDetailsUpdated
-        ])
+        trackCouponUpdateInitiated(with: coupon)
 
         if let validationError = validateCouponLocally(coupon) {
             notice = NoticeFactory.createCouponErrorNotice(validationError,
@@ -344,6 +312,45 @@ final class AddEditCouponViewModel: ObservableObject {
         static func ==(lhs: CouponError, rhs: CouponError) -> Bool {
             return lhs.localizedDescription == rhs.localizedDescription
         }
+    }
+}
+
+// MARK: - Helpers
+private extension AddEditCouponViewModel {
+    func trackCouponUpdateInitiated(with coupon: Coupon) {
+        guard let initialCoupon = self.coupon else {
+            return
+        }
+
+        let usageDetailsUpdated: Bool = {
+            coupon.maximumAmount != initialCoupon.maximumAmount ||
+            coupon.minimumAmount != initialCoupon.minimumAmount ||
+            coupon.usageLimit != initialCoupon.usageLimit ||
+            coupon.usageLimitPerUser != initialCoupon.usageLimitPerUser ||
+            coupon.limitUsageToXItems != initialCoupon.limitUsageToXItems ||
+            coupon.emailRestrictions != initialCoupon.emailRestrictions ||
+            coupon.individualUse != initialCoupon.individualUse ||
+            coupon.excludeSaleItems != initialCoupon.excludeSaleItems ||
+            coupon.excludedProductIds != initialCoupon.excludedProductIds ||
+            coupon.excludedProductCategories != initialCoupon.excludedProductCategories
+        }()
+
+        let expiryDateUpdated: Bool = {
+            guard let oldDate = initialCoupon.dateExpires, let newDate = coupon.dateExpires else {
+                return initialCoupon.dateExpires != coupon.dateExpires
+            }
+            return !oldDate.isSameDay(as: newDate)
+        }()
+
+        ServiceLocator.analytics.track(.couponUpdateInitiated, withProperties: [
+            "coupon_code_updated": coupon.code.lowercased() != initialCoupon.code.lowercased(),
+            "amount_updated": coupon.amount != initialCoupon.amount,
+            "description_updated": coupon.description != initialCoupon.description,
+            "allowed_products_or_categories_updated": coupon.productIds != initialCoupon.productIds ||
+            coupon.productCategories != initialCoupon.productCategories,
+            "expiry_date_updated": expiryDateUpdated,
+            "usage_restrictions_updated": usageDetailsUpdated
+        ])
     }
 }
 

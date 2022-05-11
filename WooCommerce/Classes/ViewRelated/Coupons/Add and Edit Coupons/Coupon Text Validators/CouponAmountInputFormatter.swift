@@ -3,7 +3,11 @@ import Foundation
 /// `UnitInputFormatter` implementation for Coupon Amount input.
 ///
 struct CouponAmountInputFormatter: UnitInputFormatter {
-    let priceInputFormatter = PriceInputFormatter()
+    let priceInputFormatter: PriceInputFormatter
+
+    init(currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+        self.priceInputFormatter = PriceInputFormatter(currencySettings: currencySettings)
+    }
 
     func isValid(input: String) -> Bool {
         guard input.isNotEmpty else {

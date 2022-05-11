@@ -266,25 +266,31 @@ final class AddEditCouponViewModel: ObservableObject {
     }
 
     var populatedCoupon: Coupon {
+        let emailRestrictions: [String] = {
+            if couponRestrictionsViewModel.allowedEmails.isEmpty {
+                return []
+            }
+            return couponRestrictionsViewModel.allowedEmails.components(separatedBy: ", ")
+        }()
         // TODO: Fill all the missing data (like `productIds`, `excludedProductIds`, `productCategories`, `excludedProductCategories`)
-        coupon?.copy(code: codeField,
-                     amount: amountField,
-                     discountType: discountType,
-                     description: descriptionField,
-                     dateExpires: expiryDateField?.startOfDay(timezone: TimeZone.siteTimezone),
-                     individualUse: couponRestrictionsViewModel.individualUseOnly,
-                     productIds: productOrVariationIDs,
-                     excludedProductIds: couponRestrictionsViewModel.excludedProductOrVariationIDs,
-                     usageLimit: Int64(couponRestrictionsViewModel.usageLimitPerCoupon),
-                     usageLimitPerUser: Int64(couponRestrictionsViewModel.usageLimitPerUser),
-                     limitUsageToXItems: Int64(couponRestrictionsViewModel.limitUsageToXItems),
-                     freeShipping: freeShipping,
-                     productCategories: categoryIDs,
-                     excludedProductCategories: couponRestrictionsViewModel.excludedCategoryIDs,
-                     excludeSaleItems: couponRestrictionsViewModel.excludeSaleItems,
-                     minimumAmount: couponRestrictionsViewModel.minimumSpend,
-                     maximumAmount: couponRestrictionsViewModel.maximumSpend,
-                     emailRestrictions: couponRestrictionsViewModel.allowedEmails.components(separatedBy: ", ")) ??
+        return coupon?.copy(code: codeField,
+                            amount: amountField,
+                            discountType: discountType,
+                            description: descriptionField,
+                            dateExpires: expiryDateField?.startOfDay(timezone: TimeZone.siteTimezone),
+                            individualUse: couponRestrictionsViewModel.individualUseOnly,
+                            productIds: productOrVariationIDs,
+                            excludedProductIds: couponRestrictionsViewModel.excludedProductOrVariationIDs,
+                            usageLimit: Int64(couponRestrictionsViewModel.usageLimitPerCoupon),
+                            usageLimitPerUser: Int64(couponRestrictionsViewModel.usageLimitPerUser),
+                            limitUsageToXItems: Int64(couponRestrictionsViewModel.limitUsageToXItems),
+                            freeShipping: freeShipping,
+                            productCategories: categoryIDs,
+                            excludedProductCategories: couponRestrictionsViewModel.excludedCategoryIDs,
+                            excludeSaleItems: couponRestrictionsViewModel.excludeSaleItems,
+                            minimumAmount: couponRestrictionsViewModel.minimumSpend,
+                            maximumAmount: couponRestrictionsViewModel.maximumSpend,
+                            emailRestrictions: emailRestrictions) ??
         Coupon(siteID: siteID,
                couponID: -1,
                code: codeField,
@@ -307,7 +313,7 @@ final class AddEditCouponViewModel: ObservableObject {
                excludeSaleItems: couponRestrictionsViewModel.excludeSaleItems,
                minimumAmount: couponRestrictionsViewModel.minimumSpend,
                maximumAmount: couponRestrictionsViewModel.maximumSpend,
-               emailRestrictions: couponRestrictionsViewModel.allowedEmails.components(separatedBy: ", "),
+               emailRestrictions: emailRestrictions,
                usedBy: [])
     }
 

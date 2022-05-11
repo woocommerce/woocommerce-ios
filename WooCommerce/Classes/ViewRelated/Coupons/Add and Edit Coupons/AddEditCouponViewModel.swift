@@ -316,15 +316,17 @@ final class AddEditCouponViewModel: ObservableObject {
 }
 
 // MARK: - Helpers
+//
 private extension AddEditCouponViewModel {
     func trackCouponUpdateInitiated(with coupon: Coupon) {
         guard let initialCoupon = self.coupon else {
             return
         }
+        let amountFormatter = CouponAmountInputFormatter()
 
         let usageDetailsUpdated: Bool = {
-            coupon.maximumAmount != initialCoupon.maximumAmount ||
-            coupon.minimumAmount != initialCoupon.minimumAmount ||
+            coupon.maximumAmount != amountFormatter.format(input: initialCoupon.maximumAmount) ||
+            coupon.minimumAmount != amountFormatter.format(input: initialCoupon.minimumAmount) ||
             coupon.usageLimit != initialCoupon.usageLimit ||
             coupon.usageLimitPerUser != initialCoupon.usageLimitPerUser ||
             coupon.limitUsageToXItems != initialCoupon.limitUsageToXItems ||
@@ -344,7 +346,7 @@ private extension AddEditCouponViewModel {
 
         ServiceLocator.analytics.track(.couponUpdateInitiated, withProperties: [
             "coupon_code_updated": coupon.code.lowercased() != initialCoupon.code.lowercased(),
-            "amount_updated": coupon.amount != initialCoupon.amount,
+            "amount_updated": coupon.amount != amountFormatter.format(input: initialCoupon.amount),
             "description_updated": coupon.description != initialCoupon.description,
             "allowed_products_or_categories_updated": coupon.productIds != initialCoupon.productIds ||
             coupon.productCategories != initialCoupon.productCategories,

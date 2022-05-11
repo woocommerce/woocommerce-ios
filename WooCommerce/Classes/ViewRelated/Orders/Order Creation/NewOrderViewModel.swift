@@ -2,6 +2,7 @@ import Yosemite
 import Combine
 import protocol Storage.StorageManagerType
 import Experiments
+import enum Networking.DotcomError
 
 /// View model for `NewOrder`.
 ///
@@ -305,7 +306,7 @@ final class NewOrderViewModel: ObservableObject {
                 self.onOrderCreated(newOrder)
                 self.trackCreateOrderSuccess()
             case .failure(let error):
-                self.notice = NoticeFactory.createOrderErrorNotice()
+                self.notice = NoticeFactory.createOrderErrorNotice(error, order: self.orderSynchronizer.order)
                 self.trackCreateOrderFailure(error: error)
                 DDLogError("⛔️ Error creating new order: \(error)")
             }
@@ -525,7 +526,7 @@ private extension NewOrderViewModel {
                 switch state {
                 case .error(let error):
                     DDLogError("⛔️ Error syncing new order remotely: \(error)")
-                    return NoticeFactory.syncOrderErrorNotice(with: self.orderSynchronizer)
+                    return NoticeFactory.syncOrderErrorNotice(error, with: self.orderSynchronizer)
                 default:
                     return nil
                 }
@@ -795,15 +796,33 @@ extension NewOrderViewModel {
     enum NoticeFactory {
         /// Returns a default order creation error notice.
         ///
-        static func createOrderErrorNotice() -> Notice {
-            Notice(title: Localization.errorMessageOrderCreation, feedbackType: .error)
+        static func createOrderErrorNotice(_ error: Error, order: Order) -> Notice {
+            guard !isEmailError(error, order: order) else {
+                return Notice(title: Localization.invalidBillingParameters, message: Localization.invalidBillingSuggestion, feedbackType: .error)
+            }
+            return Notice(title: Localization.errorMessageOrderCreation, feedbackType: .error)
         }
 
         /// Returns an order sync error notice.
         ///
-        static func syncOrderErrorNotice(with orderSynchronizer: OrderSynchronizer) -> Notice {
-            Notice(title: Localization.errorMessageOrderSync, feedbackType: .error, actionTitle: Localization.retryOrderSync) {
+        static func syncOrderErrorNotice(_ error: Error, with orderSynchronizer: OrderSynchronizer) -> Notice {
+            guard !isEmailError(error, order: orderSynchronizer.order) else {
+                return Notice(title: Localization.invalidBillingParameters, message: Localization.invalidBillingSuggestion, feedbackType: .error)
+            }
+            return Notice(title: Localization.errorMessageOrderSync, feedbackType: .error, actionTitle: Localization.retryOrderSync) {
                 orderSynchronizer.retryTrigger.send()
+            }
+        }
+
+        /// Returns `true` if the provided error is about invalid shipping details and the latest order does not have a billing email.
+        /// This is needed because old stores error when sending empty emails.
+        ///
+        private static func isEmailError(_ error: Error, order: Order) -> Bool {
+            switch error as? DotcomError {
+            case .unknown(code: "rest_invalid_param", let message?):
+                return message.contains("billing") && order.billingAddress?.hasEmailAddress == false
+            default:
+                return false
             }
         }
     }
@@ -815,5 +834,10 @@ private extension NewOrderViewModel {
         static let errorMessageOrderSync = NSLocalizedString("Unable to load taxes for order",
                                                              comment: "Notice displayed when taxes cannot be synced for new order")
         static let retryOrderSync = NSLocalizedString("Retry", comment: "Action button to retry syncing the draft order")
+
+        static let invalidBillingParameters = NSLocalizedString("Unable to set customer details.",
+                                                                comment: "Error notice title when we fail to update an address when creating an order.")
+        static let invalidBillingSuggestion = NSLocalizedString("Please make sure you are running the latest version of WooCommerce and try again later.",
+                                                                comment: "Recovery suggestion when we fail to update an address when creating an order")
     }
 }

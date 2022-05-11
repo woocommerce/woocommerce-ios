@@ -1,5 +1,1 @@
-Você encontrará um link de pagamento de fácil acesso na parte superior do pedido caso ele ainda não tenha sido pago. Envie o link para o cliente, que poderá pagar o pedido usando o celular ou o computador.
-
-Esta é uma ótima opção para usar com a nova funcionalidade de criação de pedidos. Crie um pedido enquanto o cliente está com você e depois envie o link de pagamento pelo site. Incrível, não é?
-
-Você precisará atualizar para a versão 6.4 ou superior do WooCommerce para ter esta opção no aplicativo.
+Corrigimos os bugs que dificultavam o uso do app, o que inclui o erro nas dimensões e no peso do pacote para envio de um produto. Agora, já é possível inserir valores com vírgulas para separar casas decimais. Agradecemos a todos que relataram esse erro. O feedback de vocês é essencial para nós.

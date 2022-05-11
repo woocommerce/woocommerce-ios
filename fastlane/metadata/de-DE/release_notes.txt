@@ -1,5 +1,1 @@
-Bei Bestellungen, auf die noch keine Zahlung angewendet wurde, findest du oben einen praktischen Zahlungslink. Sende diesen Link an deinen Kunden. Dann kann er die Bestellung direkt von seinem Smartphone oder Computer aus bezahlen.
-
-Das ist eine tolle Option der neuen Funktion zur Erstellung von Bestellungen! Erstelle eine Bestellung, während ein Kunde vor dir steht, und schicke ihm dann den Zahlungslink über deine Website. Super, oder?
-
-Um diese Option in der App zu nutzen, musst du ein Update auf WooCommerce 6.4 oder höher durchführen.
+Wir haben Fehler behoben, die die Nutzung der App erschwert haben. Bei einem Fehler geht es um Gewicht und Abmessungen des Versandpakets von Produkten. Ab sofort können Werte mit Komma als Dezimaltrennzeichen wie erwartet eingegeben werden. Vielen Dank an alle, die dieses Problem gemeldet haben! Euer Feedback ist enorm wichtig für uns!

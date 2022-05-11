@@ -225,7 +225,9 @@ private extension CouponDetailsViewModel {
         summary = coupon.summary(currencySettings: currencySettings)
 
         expiryDate = coupon.dateExpires?.toString(dateStyle: .long, timeStyle: .none, timeZone: TimeZone.siteTimezone) ?? ""
+        usageLimit = coupon.usageLimit ?? Constants.noLimit
         usageLimitPerUser = coupon.usageLimitPerUser ?? Constants.noLimit
+        limitUsageToXItems = coupon.limitUsageToXItems ?? Constants.noLimit
         excludeSaleItems = coupon.excludeSaleItems
 
         if let digitMinimumAmount = Double(coupon.minimumAmount), digitMinimumAmount > 0 {

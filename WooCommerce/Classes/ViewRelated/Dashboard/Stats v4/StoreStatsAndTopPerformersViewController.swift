@@ -407,7 +407,8 @@ private extension StoreStatsAndTopPerformersViewController {
                                                           onCompletion: { result in
                                                             switch result {
                                                             case .success:
-                                                                ServiceLocator.analytics.track(event: .Dashboard.dashboardTopPerformersLoaded(timeRange: timeRange))
+                                                                ServiceLocator.analytics.track(event:
+                                                                        .Dashboard.dashboardTopPerformersLoaded(timeRange: timeRange))
                                                             case .failure(let error):
                                                                 DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
                                                             }

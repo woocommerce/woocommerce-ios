@@ -526,6 +526,7 @@ private extension NewOrderViewModel {
                 switch state {
                 case .error(let error):
                     DDLogError("⛔️ Error syncing new order remotely: \(error)")
+                    self.trackSyncOrderFailure(error: error)
                     return NoticeFactory.syncOrderErrorNotice(error, with: self.orderSynchronizer)
                 default:
                     return nil
@@ -686,6 +687,13 @@ private extension NewOrderViewModel {
     ///
     func trackCreateOrderFailure(error: Error) {
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreationFailed(errorContext: String(describing: error),
+                                                                            errorDescription: error.localizedDescription))
+    }
+
+    /// Tracks an order remote sync failure
+    ///
+    func trackSyncOrderFailure(error: Error) {
+        analytics.track(event: WooAnalyticsEvent.Orders.orderSyncFailed(errorContext: String(describing: error),
                                                                             errorDescription: error.localizedDescription))
     }
 

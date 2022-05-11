@@ -85,7 +85,7 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
             softwareUpdateSubject.send(.none)
         case .loadAccounts(let siteID, let onCompletion):
             insertSamplePaymentGateway(forSiteID: siteID)
-            onCompletion(Result.success(()))
+            onCompletion(Result.success([]))
         case .loadActivePaymentGatewayExtension(let onCompletion):
             onCompletion(paymentExtension)
         default:

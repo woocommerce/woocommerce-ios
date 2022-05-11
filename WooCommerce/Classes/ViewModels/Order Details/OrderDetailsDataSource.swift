@@ -77,11 +77,6 @@ final class OrderDetailsDataSource: NSObject {
             !isEligibleForCardPresentPayment
     }
 
-    func cardPresentPaymentGatewayAccounts() -> [PaymentGatewayAccount] {
-        resultsControllers.paymentGatewayAccounts.filter { $0.isCardPresentEligible }
-    }
-
-
     /// Whether the order has a receipt associated.
     ///
     var shouldShowReceipts: Bool = false
@@ -192,6 +187,10 @@ final class OrderDetailsDataSource: NSObject {
             orderNotesSections = computeOrderNotesSections()
         }
     }
+
+    /// Payment gateway accounts for card-present payments.
+    ///
+    var cardPresentPaymentGatewayAccounts: [PaymentGatewayAccount] = []
 
     /// Note from the customer about the order
     ///
@@ -1544,13 +1543,11 @@ private extension OrderDetailsDataSource {
     }
 
     func hasCardPresentEligiblePaymentGatewayAccount() -> Bool {
-        let accounts = resultsControllers.paymentGatewayAccounts
-
-        guard accounts.count <= 1 else {
+        guard cardPresentPaymentGatewayAccounts.count <= 1 else {
             return false
         }
 
-        return resultsControllers.paymentGatewayAccounts.contains(where: \.isCardPresentEligible)
+        return cardPresentPaymentGatewayAccounts.contains(where: \.isCardPresentEligible)
     }
 
     func orderContainsAnySubscription() -> Bool {

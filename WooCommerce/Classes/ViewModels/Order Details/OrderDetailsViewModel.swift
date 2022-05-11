@@ -139,8 +139,12 @@ final class OrderDetailsViewModel {
     }
 
 
-    private var cardPresentPaymentGatewayAccounts: [PaymentGatewayAccount] {
-        return dataSource.cardPresentPaymentGatewayAccounts()
+    private var cardPresentPaymentGatewayAccounts: [PaymentGatewayAccount] = [] {
+        didSet {
+            dataSource.cardPresentPaymentGatewayAccounts = cardPresentPaymentGatewayAccounts
+            dataSource.reloadSections()
+            onUIReloadRequired?()
+        }
     }
 
     private var receipt: CardPresentReceiptParameters? = nil
@@ -476,11 +480,17 @@ extension OrderDetailsViewModel {
         stores.dispatch(action)
     }
 
-    func refreshCardPresentPaymentEligibility() {
-        /// No need for a completion here. The VC will be notified of changes to the stored paymentGatewayAccounts
-        /// by the viewModel (after passing up through the dataSource and originating in the resultsControllers)
-        ///
-        let action = CardPresentPaymentAction.loadAccounts(siteID: order.siteID) {_ in}
+    func refreshCardPresentPaymentEligibility(onCompletion: (() -> Void)? = nil) {
+        let action = CardPresentPaymentAction.loadAccounts(siteID: order.siteID) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let accounts):
+                self.cardPresentPaymentGatewayAccounts = accounts
+            case .failure:
+                break
+            }
+            onCompletion?()
+        }
         ServiceLocator.stores.dispatch(action)
     }
 

@@ -17,7 +17,7 @@ public enum CardPresentPaymentAction: Action {
     /// the Stripe extension. Let's attempt to load each and update view storage with the results.
     /// Calls the passed completion with success after both loads have been attempted.
     ///
-    case loadAccounts(siteID: Int64, onCompletion: (Result<Void, Error>) -> Void)
+    case loadAccounts(siteID: Int64, onCompletion: (Result<[PaymentGatewayAccount], Error>) -> Void)
 
     /// Start the Card Reader discovery process.
     ///

@@ -432,9 +432,10 @@ private extension CardPresentPaymentStore {
 
     /// Loads the account corresponding to the currently selected backend. Deletes the other (if it exists).
     ///
-    func loadAccounts(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func loadAccounts(siteID: Int64, onCompletion: @escaping (Result<[PaymentGatewayAccount], Error>) -> Void) {
         var error: Error? = nil
 
+        var accounts: [PaymentGatewayAccount] = []
         let group = DispatchGroup()
         group.enter()
         loadWCPayAccount(siteID: siteID, onCompletion: { result in
@@ -442,8 +443,8 @@ private extension CardPresentPaymentStore {
             case .failure(let loadError):
                 DDLogError("⛔️ Error synchronizing WCPay Account: \(loadError)")
                 error = loadError
-            case .success():
-                break
+            case .success(let account):
+                accounts.append(account)
             }
             group.leave()
         })
@@ -454,24 +455,24 @@ private extension CardPresentPaymentStore {
             case .failure(let loadError):
                 DDLogError("⛔️ Error synchronizing Stripe Account: \(loadError)")
                 error = loadError
-            case .success():
-                break
+            case .success(let account):
+                accounts.append(account)
             }
             group.leave()
         })
 
         group.notify(queue: .main) {
-            guard let error = error else {
-                onCompletion(.success(()))
+            guard let error = error, accounts.isEmpty else {
+                onCompletion(.success(accounts))
                 return
             }
             onCompletion(.failure(error))
         }
     }
 
-    func loadWCPayAccount(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func loadWCPayAccount(siteID: Int64, onCompletion: @escaping (Result<PaymentGatewayAccount, Error>) -> Void) {
         /// Delete any WCPay account present. There can be only one.
-        self.deleteStaleAccount(siteID: siteID, gatewayID: WCPayAccount.gatewayID)
+        deleteStaleAccount(siteID: siteID, gatewayID: WCPayAccount.gatewayID)
 
         /// Fetch the WCPay account
         remote.loadAccount(for: siteID) { [weak self] result in
@@ -483,7 +484,7 @@ private extension CardPresentPaymentStore {
             case .success(let wcpayAccount):
                 let account = wcpayAccount.toPaymentGatewayAccount(siteID: siteID)
                 self.upsertStoredAccountInBackground(readonlyAccount: account)
-                onCompletion(.success(()))
+                onCompletion(.success(account))
             case .failure(let error):
                 self.deleteStaleAccount(siteID: siteID, gatewayID: WCPayAccount.gatewayID)
                 onCompletion(.failure(error))
@@ -491,9 +492,9 @@ private extension CardPresentPaymentStore {
         }
     }
 
-    func loadStripeAccount(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func loadStripeAccount(siteID: Int64, onCompletion: @escaping (Result<PaymentGatewayAccount, Error>) -> Void) {
         /// Delete any Stripe account present. There can be only one.
-        self.deleteStaleAccount(siteID: siteID, gatewayID: StripeAccount.gatewayID)
+        deleteStaleAccount(siteID: siteID, gatewayID: StripeAccount.gatewayID)
 
         stripeRemote.loadAccount(for: siteID) { [weak self] result in
             guard let self = self else {
@@ -504,7 +505,7 @@ private extension CardPresentPaymentStore {
             case .success(let stripeAccount):
                 let account = stripeAccount.toPaymentGatewayAccount(siteID: siteID)
                 self.upsertStoredAccountInBackground(readonlyAccount: account)
-                onCompletion(.success(()))
+                onCompletion(.success(account))
             case .failure(let error):
                 self.deleteStaleAccount(siteID: siteID, gatewayID: StripeAccount.gatewayID)
                 onCompletion(.failure(error))

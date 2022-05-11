@@ -383,8 +383,9 @@ private extension OrderDetailsViewController {
         }
 
         group.enter()
-        refreshCardPresentPaymentEligibility()
-        group.leave()
+        refreshCardPresentPaymentEligibility {
+            group.leave()
+        }
 
         group.enter()
         syncSavedReceipts {_ in
@@ -460,8 +461,8 @@ private extension OrderDetailsViewController {
         }
     }
 
-    func refreshCardPresentPaymentEligibility() {
-        viewModel.refreshCardPresentPaymentEligibility()
+    func refreshCardPresentPaymentEligibility(onCompletion: (() -> Void)? = nil) {
+        viewModel.refreshCardPresentPaymentEligibility(onCompletion: onCompletion)
     }
 
     func checkOrderAddOnFeatureSwitchState(onCompletion: (() -> Void)? = nil) {

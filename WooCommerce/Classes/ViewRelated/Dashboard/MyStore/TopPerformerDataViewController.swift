@@ -250,7 +250,7 @@ private extension TopPerformerDataViewController {
             isInitialLoad = false
             return
         }
-        ServiceLocator.analytics.track(.dashboardTopPerformersDate, withProperties: ["range": granularity.rawValue])
+        ServiceLocator.analytics.track(event: .Dashboard.dashboardTopPerformersDate(timeRange: timeRange))
         isInitialLoad = false
     }
 

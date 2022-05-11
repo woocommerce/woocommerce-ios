@@ -237,7 +237,7 @@ final class AddEditCouponViewModel: ObservableObject {
             "allowed_products_or_categories_updated": coupon.productIds != initialCoupon.productIds ||
             coupon.productCategories != initialCoupon.productCategories,
             "expiry_date_updated": coupon.dateExpires != initialCoupon.dateExpires,
-            "usage_details_updated": usageDetailsUpdated
+            "usage_restrictions_updated": usageDetailsUpdated
         ])
 
         if let validationError = validateCouponLocally(coupon) {

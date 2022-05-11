@@ -81,7 +81,7 @@ extension StripeCardReaderService: CardReaderService {
             // Example with `charge_declined` error:
             // Terminal.shared.simulatorConfiguration.simulatedCard = .init(testCardNumber: "4000000000000002")
             // https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPSimulatorConfiguration.html#/c:objc(cs)SCPSimulatorConfiguration(py)simulatedCard
-            Terminal.shared.simulatorConfiguration.simulatedCard = .init(type: .amex)
+            Terminal.shared.simulatorConfiguration.simulatedCard = .init(type: .interac)
         }
 
         let config = DiscoveryConfiguration(

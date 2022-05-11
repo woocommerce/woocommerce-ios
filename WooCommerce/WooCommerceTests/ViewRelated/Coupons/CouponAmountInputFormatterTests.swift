@@ -136,7 +136,7 @@ final class CouponAmountInputFormatterTests: XCTestCase {
 
         // Then
         XCTAssertEqual(formatter.value(from: commaValue), NSNumber(value: 0))
-        
+
         // When
         let noSeparatorValue = "000"
 

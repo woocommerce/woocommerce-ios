@@ -169,6 +169,20 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         }
         XCTAssertEqual(viewModel.categoryViewModels.count, 1)
     }
+
+    func test_resetSelectedCategoriesAndReload_clears_all_selection() {
+        // Given
+        let siteID: Int64 = 132
+        let category = Yosemite.ProductCategory(categoryID: 33, siteID: siteID, parentID: 1, name: "Test", slug: "test")
+        insert(category)
+
+        // When
+        let viewModel = ProductCategoryListViewModel(siteID: siteID, selectedCategoryIDs: [category.categoryID], storageManager: storageManager)
+        viewModel.resetSelectedCategories()
+
+        // Then
+        XCTAssertEqual(viewModel.selectedCategories.count, 0)
+    }
 }
 
 // MARK: - Utils

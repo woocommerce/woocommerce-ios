@@ -242,7 +242,7 @@ private extension RefundSubmissionUseCase {
             self.readerSubscription = connectPublisher
                 .sink() { [weak self] readers in
                     guard let self = self else { return }
-                    
+
                     if readers.isNotEmpty {
                         // Dismisses the current connection alert before notifying the completion.
                         // If no presented controller is found(because the reader was already connected), just notify the completion.
@@ -253,7 +253,7 @@ private extension RefundSubmissionUseCase {
                         } else {
                             onCompletion(.success(()))
                         }
-                        
+
                         // Nil the subscription since we are done with the connection.
                         self.readerSubscription = nil
                     } else {

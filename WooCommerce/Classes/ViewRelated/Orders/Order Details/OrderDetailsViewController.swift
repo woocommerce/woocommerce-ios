@@ -383,10 +383,6 @@ private extension OrderDetailsViewController {
         }
 
         group.enter()
-        refreshCardPresentPaymentEligibility()
-        group.leave()
-
-        group.enter()
         viewModel.refreshCardPresentPaymentOnboarding()
         group.leave()
 

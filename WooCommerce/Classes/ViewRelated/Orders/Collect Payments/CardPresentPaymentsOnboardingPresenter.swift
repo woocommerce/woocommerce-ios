@@ -25,7 +25,7 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
         self.stores = stores
         onboardingUseCase = CardPresentPaymentsOnboardingUseCase(stores: stores)
         readinessUseCase = CardPresentPaymentsReadinessUseCase(onboardingUseCase: onboardingUseCase, stores: stores)
-        onboardingViewModel = InPersonPaymentsViewModel(useCase: onboardingUseCase)
+        onboardingViewModel = InPersonPaymentsViewModel(useCase: onboardingUseCase, showMenuOnCompletion: false)
     }
 
     func showOnboardingIfRequired(from viewController: UIViewController,
@@ -50,11 +50,11 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
                     return
                 }
 
-                if let navigationController = viewController as? UINavigationController {
-                    navigationController.popViewController(animated: true)
-                } else {
-                    viewController.navigationController?.popViewController(animated: true)
-                }
+//                if let navigationController = viewController as? UINavigationController {
+//                    navigationController.popViewController(animated: true)
+//                } else {
+//                    viewController.navigationController?.popViewController(animated: true)
+//                }
 
                 completion()
             })

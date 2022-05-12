@@ -178,6 +178,58 @@ final class AddEditCouponViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.hasChangesMade)
     }
 
+    func test_hasChangesMade_is_correct_for_updated_product_restrictions() {
+        // Given
+        let coupon = Coupon.sampleCoupon
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+        XCTAssertFalse(viewModel.hasChangesMade) // confidence check
+
+        // When
+        viewModel.productOrVariationIDs = [1, 21, 33]
+
+        // Then
+        XCTAssertTrue(viewModel.hasChangesMade)
+    }
+
+    func test_hasChangesMade_is_correct_for_updated_category_restrictions() {
+        // Given
+        let coupon = Coupon.sampleCoupon
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+        XCTAssertFalse(viewModel.hasChangesMade) // confidence check
+
+        // When
+        viewModel.categoryIDs = [12, 2]
+
+        // Then
+        XCTAssertTrue(viewModel.hasChangesMade)
+    }
+
+    func test_hasChangesMade_is_correct_for_description() {
+        // Given
+        let coupon = Coupon.sampleCoupon
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+        XCTAssertFalse(viewModel.hasChangesMade) // confidence check
+
+        // When
+        viewModel.descriptionField = "lorem ipsum"
+
+        // Then
+        XCTAssertTrue(viewModel.hasChangesMade)
+    }
+
+    func test_hasChangesMade_is_correct_for_free_shipping() {
+        // Given
+        let coupon = Coupon.sampleCoupon.copy(freeShipping: false)
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+        XCTAssertFalse(viewModel.hasChangesMade) // confidence check
+
+        // When
+        viewModel.freeShipping = true
+
+        // Then
+        XCTAssertTrue(viewModel.hasChangesMade)
+    }
+
     func test_hasChangesMade_is_correct_for_updated_usage_restrictions() {
         // Given
         let coupon = Coupon.sampleCoupon.copy(usageLimit: 100)

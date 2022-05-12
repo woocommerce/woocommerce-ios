@@ -60,7 +60,7 @@ target 'WooCommerce' do
   # ==================
   #
   pod 'Alamofire', '~> 4.8'
-  pod 'KeychainAccess', '~> 3.2'
+  pod 'KeychainAccess', '~> 4.2.2'
   pod 'CocoaLumberjack', '~> 3.7.4'
   pod 'CocoaLumberjack/Swift', '~> 3.7.4'
   pod 'XLPagerTabStrip', '~> 9.0'

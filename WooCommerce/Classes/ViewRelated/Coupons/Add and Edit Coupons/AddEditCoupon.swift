@@ -45,7 +45,6 @@ struct AddEditCoupon: View {
 
     init(_ viewModel: AddEditCouponViewModel) {
         self.viewModel = viewModel
-        //TODO: add analytics
     }
 
     var body: some View {

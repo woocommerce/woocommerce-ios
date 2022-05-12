@@ -275,7 +275,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 private extension CollectOrderPaymentUseCaseTests {
     func mockCardPresentPaymentActions() {
         stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
-            if case let .checkCardReaderConnected(completion) = action {
+            if case let .publishCardReaderConnections(completion) = action {
                 completion(Just<[CardReader]>([MockCardReader.wisePad3()]).eraseToAnyPublisher())
             } else if case let .observeConnectedReaders(completion) = action {
                 completion([MockCardReader.wisePad3()])
@@ -287,7 +287,7 @@ private extension CollectOrderPaymentUseCaseTests {
 
     func mockSuccessfulCardPresentPaymentActions(intent: PaymentIntent) {
         stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
-            if case let .checkCardReaderConnected(completion) = action {
+            if case let .publishCardReaderConnections(completion) = action {
                 completion(Just<[CardReader]>([MockCardReader.wisePad3()]).eraseToAnyPublisher())
             } else if case let .observeConnectedReaders(completion) = action {
                 completion([MockCardReader.wisePad3()])

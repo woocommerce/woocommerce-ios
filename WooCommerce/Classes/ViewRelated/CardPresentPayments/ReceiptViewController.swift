@@ -13,7 +13,7 @@ final class ReceiptViewController: UIViewController {
     private let countryCode: String
     private let connectedCardReaderModel: String?
 
-    private lazy var emailCoordinator: CardPresentPaymentReceiptEmailCoordinator = .init(countryCode: countryCode)
+    private lazy var emailCoordinator: CardPresentPaymentReceiptEmailCoordinator = .init(countryCode: countryCode, cardReaderModel: connectedCardReaderModel)
     private var receiptContentSubscription: AnyCancellable?
     private var emailDataSubscription: AnyCancellable?
 
@@ -80,12 +80,14 @@ private extension ReceiptViewController {
     }
 
     @objc func emailReceipt() {
+        ServiceLocator.analytics.track(event: .InPersonPayments
+            .receiptEmailTapped(countryCode: countryCode,
+                                cardReaderModel: connectedCardReaderModel))
         emailDataSubscription = viewModel.emailFormData.sink { [weak self] data in
             guard let self = self else { return }
             self.emailCoordinator.presentEmailForm(data: data,
-                                              from: self,
-                                              cardReaderModel: self.connectedCardReaderModel,
-                                              completion: {})
+                                                   from: self,
+                                                   completion: {})
         }
     }
 }

@@ -411,13 +411,14 @@ private extension CollectOrderPaymentUseCase {
     /// Presents the native email client with the provided content.
     ///
     func presentEmailForm(content: String, onCompleted: @escaping () -> ()) {
-        let coordinator = CardPresentPaymentReceiptEmailCoordinator(analytics: analytics, countryCode: configuration.countryCode)
+        let coordinator = CardPresentPaymentReceiptEmailCoordinator(analytics: analytics,
+                                                                    countryCode: configuration.countryCode,
+                                                                    cardReaderModel: connectedReader?.readerType.model)
         receiptEmailCoordinator = coordinator
         coordinator.presentEmailForm(data: .init(content: content,
                                                  order: order,
                                                  storeName: stores.sessionManager.defaultSite?.name),
                                      from: rootViewController,
-                                     cardReaderModel: connectedReader?.readerType.model,
                                      completion: onCompleted)
     }
 }

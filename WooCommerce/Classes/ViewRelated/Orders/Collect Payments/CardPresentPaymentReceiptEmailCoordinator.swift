@@ -21,9 +21,10 @@ final class CardPresentPaymentReceiptEmailCoordinator: NSObject {
         let storeName: String?
     }
 
-    init(analytics: Analytics = ServiceLocator.analytics, countryCode: String) {
+    init(analytics: Analytics = ServiceLocator.analytics, countryCode: String, cardReaderModel: String?) {
         self.analytics = analytics
         self.countryCode = countryCode
+        self.cardReaderModel = cardReaderModel
     }
 
     /// Presents the native email client with the provided receipt content in HTML.
@@ -35,7 +36,6 @@ final class CardPresentPaymentReceiptEmailCoordinator: NSObject {
     ///   - completion: called when the user completes emailing the receipt.
     func presentEmailForm(data: EmailFormData,
                           from viewController: UIViewController,
-                          cardReaderModel: String?,
                           completion: @escaping () -> Void) {
         guard MFMailComposeViewController.canSendMail() else {
             DDLogError("⛔️ Failed to submit email receipt for order: \(data.order.orderID). Email is not configured.")

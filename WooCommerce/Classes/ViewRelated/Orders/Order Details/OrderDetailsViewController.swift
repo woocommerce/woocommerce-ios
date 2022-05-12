@@ -387,6 +387,10 @@ private extension OrderDetailsViewController {
         group.leave()
 
         group.enter()
+        viewModel.refreshCardPresentPaymentOnboarding()
+        group.leave()
+
+        group.enter()
         syncSavedReceipts {_ in
             group.leave()
         }

@@ -6,7 +6,7 @@ import WordPressAuthenticator
 struct CouponExpiryDateView: View {
 
     @State var date: Date = Date()
-    let timezone: TimeZone = TimeZone.siteTimezone
+    var timezone: TimeZone
     let completion: ((Date) -> Void)
 
     var body: some View {
@@ -41,6 +41,6 @@ private extension CouponExpiryDateView {
 
 struct CouponExpiryDateView_Previews: PreviewProvider {
     static var previews: some View {
-        CouponExpiryDateView(date: Date(), completion: { _ in })
+        CouponExpiryDateView(date: Date(), timezone: TimeZone.siteTimezone, completion: { _ in })
     }
 }

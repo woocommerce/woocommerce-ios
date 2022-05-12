@@ -9,4 +9,8 @@ final class MockCardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboa
         spyShowOnboardingWasCalled = true
         completion()
     }
+
+    func refresh() {
+        // No-op
+    }
 }

@@ -256,8 +256,11 @@ struct CouponDetails: View {
                 Text(String.localizedStringWithFormat(Localization.maximumSpend, viewModel.maximumAmount))
                     .renderedIf(viewModel.maximumAmount.isNotEmpty)
 
+                Text(String.localizedStringWithFormat(Localization.singularUsageLimitPerCoupon, viewModel.usageLimit))
+                        .renderedIf(viewModel.usageLimit == 1)
+
                 Text(String.localizedStringWithFormat(Localization.pluralUsageLimitPerCoupon, viewModel.usageLimit))
-                    .renderedIf(viewModel.usageLimit > 0)
+                    .renderedIf(viewModel.usageLimit > 1)
 
                 Text(String.localizedStringWithFormat(Localization.singularLimitPerUser, viewModel.usageLimitPerUser))
                     .renderedIf(viewModel.usageLimitPerUser == 1)
@@ -265,8 +268,11 @@ struct CouponDetails: View {
                 Text(String.localizedStringWithFormat(Localization.pluralLimitPerUser, viewModel.usageLimitPerUser))
                     .renderedIf(viewModel.usageLimitPerUser > 1)
 
+                Text(String.localizedStringWithFormat(Localization.singularItemsInCartUsageLimit, viewModel.limitUsageToXItems))
+                        .renderedIf(viewModel.limitUsageToXItems == 1)
+
                 Text(String.localizedStringWithFormat(Localization.pluralItemsInCartUsageLimit, viewModel.limitUsageToXItems))
-                    .renderedIf(viewModel.limitUsageToXItems > 0)
+                    .renderedIf(viewModel.limitUsageToXItems > 1)
             }
             .renderedIf(viewModel.minimumAmount.isNotEmpty ||
                         viewModel.maximumAmount.isNotEmpty ||

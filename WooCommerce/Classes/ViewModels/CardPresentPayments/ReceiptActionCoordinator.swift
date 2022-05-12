@@ -24,14 +24,4 @@ struct ReceiptActionCoordinator {
 
         stores.dispatch(action)
     }
-
-    static func generateReceiptContent(for order: Order,
-                                       params: CardPresentReceiptParameters,
-                                       stores: StoresManager,
-                                       completion: @escaping (String) -> Void) {
-        let action = ReceiptAction.generateContent(order: order, parameters: params) { content in
-            completion(content)
-        }
-        stores.dispatch(action)
-    }
 }

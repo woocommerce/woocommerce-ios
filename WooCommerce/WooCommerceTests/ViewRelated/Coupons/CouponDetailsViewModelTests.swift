@@ -37,7 +37,9 @@ final class CouponDetailsViewModelTests: XCTestCase {
             dateExpires: Date(timeIntervalSince1970: 1642755825), // GMT: January 21, 2022
             individualUse: true,
             productIds: [],
+            usageLimit: 1200,
             usageLimitPerUser: 3,
+            limitUsageToXItems: 10,
             freeShipping: true,
             excludeSaleItems: false,
             minimumAmount: "5.00",
@@ -53,7 +55,9 @@ final class CouponDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.discountType, NSLocalizedString("Percentage Discount", comment: ""))
         XCTAssertFalse(viewModel.excludeSaleItems)
         XCTAssertTrue(viewModel.allowsFreeShipping)
+        XCTAssertEqual(viewModel.usageLimit, 1200)
         XCTAssertEqual(viewModel.usageLimitPerUser, 3)
+        XCTAssertEqual(viewModel.limitUsageToXItems, 10)
         XCTAssertEqual(viewModel.minimumAmount, "$5.00")
         XCTAssertEqual(viewModel.maximumAmount, "")
         XCTAssertEqual(viewModel.emailRestrictions, ["*@a8c.com", "someone.else@example.com"])

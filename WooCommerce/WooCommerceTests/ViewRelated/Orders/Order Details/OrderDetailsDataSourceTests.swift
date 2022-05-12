@@ -189,6 +189,28 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         storageManager.viewStorage.saveIfNeeded()
     }
 
+    func test_collect_payment_button_is_visible_and_primary_style_if_order_status_is_on_hold_and_method_is_stripe() throws {
+        // Setup
+        let account = storageManager.insertCardPresentEligibleAccount()
+        storageManager.viewStorage.saveIfNeeded()
+
+        // Given
+        let order = makeOrder().copy(status: .onHold, datePaid: .some(nil), paymentMethodID: "stripe")
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        dataSource.configureResultsControllers { }
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
+        XCTAssertNotNil(row(row: .collectCardPaymentButton, in: paymentSection))
+
+        // Clean up
+        storageManager.viewStorage.deleteObject(account)
+        storageManager.viewStorage.saveIfNeeded()
+    }
+
     func test_collect_payment_button_is_not_visible_if_order_is_processing_and_order_is_not_eligible_for_cash_on_delivery() throws {
         // Setup
         let account = storageManager.insertCardPresentEligibleAccount()

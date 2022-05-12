@@ -1536,7 +1536,7 @@ private extension OrderDetailsDataSource {
     func isOrderPaymentMethodEligibleForCardPayment() -> Bool {
         let paymentMethod = OrderPaymentMethod(rawValue: order.paymentMethodID)
         switch paymentMethod {
-        case .booking, .cod, .woocommercePayments, .none:
+        case .booking, .cod, .woocommercePayments, .stripe, .none:
             return true
         case .unknown:
             return false

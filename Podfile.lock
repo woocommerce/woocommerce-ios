@@ -30,7 +30,7 @@ PODS:
     - AppAuth/Core (~> 1.4)
     - GTMSessionFetcher/Core (~> 1.5)
   - GTMSessionFetcher/Core (1.7.0)
-  - KeychainAccess (3.2.1)
+  - KeychainAccess (4.2.2)
   - Kingfisher (7.2.2)
   - NSObject-SafeExpectations (0.0.4)
   - "NSURL+IDN (0.4)"
@@ -91,7 +91,7 @@ DEPENDENCIES:
   - CocoaLumberjack (~> 3.7.4)
   - CocoaLumberjack/Swift (~> 3.7.4)
   - Gridicons (~> 1.2.0)
-  - KeychainAccess (~> 3.2)
+  - KeychainAccess (~> 4.2.2)
   - Kingfisher (~> 7.2.2)
   - Sourcery (~> 1.0.3)
   - StripeTerminal (~> 2.7)
@@ -157,7 +157,7 @@ SPEC CHECKSUMS:
   Gridicons: 4455b9f366960121430e45997e32112ae49ffe1d
   GTMAppAuth: ad5c2b70b9a8689e1a04033c9369c4915bfcbe89
   GTMSessionFetcher: 43748f93435c2aa068b1cbe39655aaf600652e91
-  KeychainAccess: d5470352939ced6d6f7fb51cb2e67aae51fc294f
+  KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
   Kingfisher: 184d4d1a8c36666e663caf8e08abe87898595c53
   NSObject-SafeExpectations: ab8fe623d36b25aa1f150affa324e40a2f3c0374
   "NSURL+IDN": afc873e639c18138a1589697c3add197fe8679ca

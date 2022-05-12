@@ -18,7 +18,7 @@ final class CardPresentPaymentReceiptEmailCoordinator: NSObject {
         let order: Order
 
         /// Name of the store that issues the receipt.
-        let storeName: String
+        let storeName: String?
     }
 
     init(analytics: Analytics = ServiceLocator.analytics, countryCode: String) {

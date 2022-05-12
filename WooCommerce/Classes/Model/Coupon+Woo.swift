@@ -123,6 +123,7 @@ extension Coupon {
             percentFormatter.numberStyle = .percent
             percentFormatter.maximumFractionDigits = 2
             percentFormatter.multiplier = 1
+            percentFormatter.decimalSeparator = currencySettings.decimalSeparator
             if let amountDouble = Double(amount) {
                 let amountNumber = NSNumber(value: amountDouble)
                 amountString = percentFormatter.string(from: amountNumber) ?? ""

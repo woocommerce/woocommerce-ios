@@ -58,6 +58,22 @@ final class CouponWooTests: XCTestCase {
         XCTAssertTrue(sampleCoupon.summary().contains("10%"))
     }
 
+    func test_summary_returns_correct_amount_percentage_discount_type_with_comma_as_decimal_separator_in_currency_settings() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(
+            amount: "10.29",
+            discountType: .percent
+        )
+        let currencySettings = CurrencySettings(currencyCode: .USD,
+                                                currencyPosition: .left,
+                                                thousandSeparator: ".",
+                                                decimalSeparator: ",",
+                                                numberOfDecimals: 2)
+
+        // Then
+        XCTAssertTrue(sampleCoupon.summary(currencySettings: currencySettings).contains("10,29%"))
+    }
+
     func test_coupon_apply_rule_with_no_limit() {
         // Given
         let sampleCoupon = Coupon.fake().copy(productIds: [], excludedProductIds: [], productCategories: [], excludedProductCategories: [])

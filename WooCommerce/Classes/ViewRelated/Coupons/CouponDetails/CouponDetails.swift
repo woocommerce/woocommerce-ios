@@ -256,7 +256,7 @@ struct CouponDetails: View {
                 Text(String.localizedStringWithFormat(Localization.maximumSpend, viewModel.maximumAmount))
                     .renderedIf(viewModel.maximumAmount.isNotEmpty)
 
-                Text(String.localizedStringWithFormat(Localization.usageLimitPerCoupon, viewModel.usageLimit))
+                Text(String.localizedStringWithFormat(Localization.pluralUsageLimitPerCoupon, viewModel.usageLimit))
                     .renderedIf(viewModel.usageLimit > 0)
 
                 Text(String.localizedStringWithFormat(Localization.singularLimitPerUser, viewModel.usageLimitPerUser))
@@ -265,7 +265,7 @@ struct CouponDetails: View {
                 Text(String.localizedStringWithFormat(Localization.pluralLimitPerUser, viewModel.usageLimitPerUser))
                     .renderedIf(viewModel.usageLimitPerUser > 1)
 
-                Text(String.localizedStringWithFormat(Localization.itemsInCartUsageLimit, viewModel.limitUsageToXItems))
+                Text(String.localizedStringWithFormat(Localization.pluralItemsInCartUsageLimit, viewModel.limitUsageToXItems))
                     .renderedIf(viewModel.limitUsageToXItems > 0)
             }
             .renderedIf(viewModel.minimumAmount.isNotEmpty ||
@@ -385,13 +385,24 @@ private extension CouponDetails {
             "%1$d uses per user",
             comment: "The plural limit of time for each user to apply a coupon, reads like: 10 uses per user"
         )
-        static let itemsInCartUsageLimit = NSLocalizedString(
-                "Limited to %1$d items in cart",
-                comment: "The limit of the same item in cart to apply a coupon, reads like: Limited to 10 items in cart"
+        static let singularItemsInCartUsageLimit = NSLocalizedString(
+                "Limited to %1$d item in cart",
+                comment: "The singular limit of the same item in cart to apply a coupon, reads like: " +
+                        "Limited to 10 item in cart"
         )
-        static let usageLimitPerCoupon = NSLocalizedString(
+        static let pluralItemsInCartUsageLimit = NSLocalizedString(
+                "Limited to %1$d items in cart",
+                comment: "The plural limit of the same item in cart to apply a coupon, reads like: " +
+                        "Limited to 10 items in cart"
+        )
+        static let singularUsageLimitPerCoupon = NSLocalizedString(
+                "Can be used %1$d time",
+                comment: "The singular total limit where the same coupon can be applied for everyone, " +
+                        "reads like: Can be used 1 time"
+        )
+        static let pluralUsageLimitPerCoupon = NSLocalizedString(
                 "Can be used %1$d times",
-                comment: "The total limit where the same coupon can be applied for everyone, " +
+                comment: "The plural total limit where the same coupon can be applied for everyone, " +
                         "reads like: Can be used 10 times"
         )
         static let emailRestriction = NSLocalizedString(

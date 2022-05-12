@@ -265,7 +265,7 @@ struct CouponDetails: View {
                 Text(String.localizedStringWithFormat(Localization.pluralLimitPerUser, viewModel.usageLimitPerUser))
                     .renderedIf(viewModel.usageLimitPerUser > 1)
 
-                Text(String.localizedStringWithFormat(Localization.itemsLimitUsage, viewModel.limitUsageToXItems))
+                Text(String.localizedStringWithFormat(Localization.itemsInCartUsageLimit, viewModel.limitUsageToXItems))
                     .renderedIf(viewModel.limitUsageToXItems > 0)
             }
             .renderedIf(viewModel.minimumAmount.isNotEmpty ||
@@ -385,18 +385,19 @@ private extension CouponDetails {
             "%1$d uses per user",
             comment: "The plural limit of time for each user to apply a coupon, reads like: 10 uses per user"
         )
+        static let itemsInCartUsageLimit = NSLocalizedString(
+                "Limited to %1$d items in cart",
+                comment: "The limit of the same item in cart to apply a coupon, reads like: Limited to 10 items in cart"
+        )
+        static let usageLimitPerCoupon = NSLocalizedString(
+                "Can be used %1$d times",
+                comment: "The total limit where the same coupon can be applied for everyone, " +
+                        "reads like: Can be used 10 times"
+        )
         static let emailRestriction = NSLocalizedString(
             "Restricted to customers with emails: %1$@",
             comment: "Restriction for customers with specified emails to use a coupon, " +
             "reads like: Restricted to customers with emails: *@a8c.com, *@vip.com"
-        )
-        static let itemsLimitUsage = NSLocalizedString(
-            "Limited to %1$d items in cart",
-            comment: ""
-        )
-        static let usageLimitPerCoupon = NSLocalizedString(
-            "Can be used %1$d times",
-            comment: ""
         )
 
         static let manageCoupon = NSLocalizedString("Manage Coupon", comment: "Title of the action sheet displayed from the Coupon Details screen")

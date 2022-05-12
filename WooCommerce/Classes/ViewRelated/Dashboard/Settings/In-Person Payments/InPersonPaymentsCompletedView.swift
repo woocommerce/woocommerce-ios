@@ -26,7 +26,7 @@ private enum Localization {
     )
 
     static let message = NSLocalizedString(
-        "Taking you back to accept a payment",
+        "Taking you back to collect a payment",
         comment: "Message when a payments account is successfully connected for Card Present Payments"
     )
 }

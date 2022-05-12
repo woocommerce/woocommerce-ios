@@ -14,7 +14,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
     private typealias Title = OrderDetailsDataSource.Title
 
-    private var storageManager: MockStorageManager!
+    private var storageManager: MockPaymentGatewayAccountStoresManager!
 
     private var storage: StorageType {
         storageManager.viewStorage
@@ -22,7 +22,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        storageManager = MockStorageManager()
+        storageManager = MockPaymentGatewayAccountStoresManager()
     }
 
     override func tearDown() {
@@ -146,6 +146,10 @@ final class OrderDetailsDataSourceTests: XCTestCase {
     }
 
     func test_collect_payment_button_is_visible_and_primary_style_if_order_status_is_processing_and_method_is_cash_on_delivery() throws {
+        // Setup
+        let account = storageManager.insertCardPresentEligibleAccount()
+        storageManager.viewStorage.saveIfNeeded()
+
         // Given
         let order = makeOrder().copy(status: .processing, datePaid: .some(nil), paymentMethodID: "cod")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
@@ -157,9 +161,17 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Then
         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
         XCTAssertNotNil(row(row: .collectCardPaymentButton, in: paymentSection))
+
+        // Clean up
+        storageManager.viewStorage.deleteObject(account)
+        storageManager.viewStorage.saveIfNeeded()
     }
 
     func test_collect_payment_button_is_visible_and_primary_style_if_order_status_is_on_hold_and_method_is_woocommerce_payments() throws {
+        // Setup
+        let account = storageManager.insertCardPresentEligibleAccount()
+        storageManager.viewStorage.saveIfNeeded()
+
         // Given
         let order = makeOrder().copy(status: .onHold, datePaid: .some(nil), paymentMethodID: "woocommerce_payments")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
@@ -171,6 +183,10 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Then
         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
         XCTAssertNotNil(row(row: .collectCardPaymentButton, in: paymentSection))
+
+        // Clean up
+        storageManager.viewStorage.deleteObject(account)
+        storageManager.viewStorage.saveIfNeeded()
     }
 
     func test_collect_payment_button_is_visible_and_primary_style_if_order_status_is_on_hold_and_method_is_stripe() throws {
@@ -196,6 +212,10 @@ final class OrderDetailsDataSourceTests: XCTestCase {
     }
 
     func test_collect_payment_button_is_not_visible_if_order_is_processing_and_order_is_not_eligible_for_cash_on_delivery() throws {
+        // Setup
+        let account = storageManager.insertCardPresentEligibleAccount()
+        storageManager.viewStorage.saveIfNeeded()
+
         // Given
         let order = makeOrder().copy(status: .processing, datePaid: nil, paymentMethodID: "stripe")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
@@ -207,9 +227,17 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Then
         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
         XCTAssertNil(row(row: .collectCardPaymentButton, in: paymentSection))
+
+        // Clean up
+        storageManager.viewStorage.deleteObject(account)
+        storageManager.viewStorage.saveIfNeeded()
     }
 
     func test_collect_payment_button_is_not_visible_if_account_not_eligible_for_card_present_payments() throws {
+        // Setup
+        let account = storageManager.insertCardPresentIneligibleAccount()
+        storageManager.viewStorage.saveIfNeeded()
+
         // Given
         let order = makeOrder().copy(status: .processing, datePaid: nil, paymentMethodID: "stripe")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
@@ -221,9 +249,17 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Then
         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
         XCTAssertNil(row(row: .collectCardPaymentButton, in: paymentSection))
+
+        // Clean up
+        storageManager.viewStorage.deleteObject(account)
+        storageManager.viewStorage.saveIfNeeded()
     }
 
     func test_collect_payment_button_is_not_visible_if_order_is_eligible_for_cash_on_delivery_and_total_amount_is_zero() throws {
+        // Setup
+        let account = storageManager.insertCardPresentEligibleAccount()
+        storageManager.viewStorage.saveIfNeeded()
+
         // Given
         let order = makeOrder().copy(status: .processing, datePaid: nil, total: "0", paymentMethodID: "cod")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
@@ -235,9 +271,17 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Then
         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
         XCTAssertNil(row(row: .collectCardPaymentButton, in: paymentSection))
+
+        // Clean up
+        storageManager.viewStorage.deleteObject(account)
+        storageManager.viewStorage.saveIfNeeded()
     }
 
     func test_collect_payment_button_is_visible_if_order_is_eligible_for_cash_on_delivery_and_total_amount_is_greater_than_zero() throws {
+        // Setup
+        let account = storageManager.insertCardPresentEligibleAccount()
+        storageManager.viewStorage.saveIfNeeded()
+
         // Given
         let order = makeOrder().copy(status: .processing, datePaid: .some(nil), total: "1", paymentMethodID: "cod")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
@@ -249,9 +293,17 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Then
         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
         XCTAssertNotNil(row(row: .collectCardPaymentButton, in: paymentSection))
+
+        // Clean up
+        storageManager.viewStorage.deleteObject(account)
+        storageManager.viewStorage.saveIfNeeded()
     }
 
     func test_collect_payment_button_is_not_visible_if_order_is_a_confirmed_booking_and_total_amount_is_zero() throws {
+        // Setup
+        let account = storageManager.insertCardPresentEligibleAccount()
+        storageManager.viewStorage.saveIfNeeded()
+
         // Given
         let order = makeOrder().copy(status: .processing, datePaid: nil, total: "0", paymentMethodID: "wc-booking-gateway")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
@@ -263,9 +315,17 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Then
         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
         XCTAssertNil(row(row: .collectCardPaymentButton, in: paymentSection))
+
+        // Clean up
+        storageManager.viewStorage.deleteObject(account)
+        storageManager.viewStorage.saveIfNeeded()
     }
 
     func test_collect_payment_button_is_visible_if_order_is_a_confirmed_booking_and_total_amount_is_greater_than_zero() throws {
+        // Setup
+        let account = storageManager.insertCardPresentEligibleAccount()
+        storageManager.viewStorage.saveIfNeeded()
+
         // Given
         let order = makeOrder().copy(status: .processing, datePaid: .some(nil), total: "1", paymentMethodID: "wc-booking-gateway")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
@@ -277,10 +337,18 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Then
         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
         XCTAssertNotNil(row(row: .collectCardPaymentButton, in: paymentSection))
+
+        // Clean up
+        storageManager.viewStorage.deleteObject(account)
+        storageManager.viewStorage.saveIfNeeded()
     }
 
 
     func test_collect_payment_button_is_not_visible_if_date_paid_is_not_nil() throws {
+        // Setup
+        let account = storageManager.insertCardPresentEligibleAccount()
+        storageManager.viewStorage.saveIfNeeded()
+
         // Given
         let order = makeOrder().copy(status: .processing, datePaid: Date(), total: "0", paymentMethodID: "cod")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
@@ -292,9 +360,17 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Then
         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
         XCTAssertNil(row(row: .collectCardPaymentButton, in: paymentSection))
+
+        // Clean up
+        storageManager.viewStorage.deleteObject(account)
+        storageManager.viewStorage.saveIfNeeded()
     }
 
     func test_collect_payment_button_is_visible_if_order_is_eligible_and_currency_is_usd() throws {
+        // Setup
+        let account = storageManager.insertCardPresentEligibleAccount()
+        storageManager.viewStorage.saveIfNeeded()
+
         // Given
         let order = makeOrder().copy(status: .processing, currency: "usd", datePaid: .some(nil), total: "100", paymentMethodID: "cod")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
@@ -306,9 +382,17 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Then
         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
         XCTAssertNotNil(row(row: .collectCardPaymentButton, in: paymentSection))
+
+        // Clean up
+        storageManager.viewStorage.deleteObject(account)
+        storageManager.viewStorage.saveIfNeeded()
     }
 
     func test_collect_payment_button_is_visible_if_order_is_eligible_and_currency_is_in_configuration() throws {
+        // Setup
+        let account = storageManager.insertCardPresentEligibleAccount()
+        storageManager.viewStorage.saveIfNeeded()
+
         // Given
         let configuration = CardPresentPaymentsConfiguration(country: "CA", canadaEnabled: true)
         let order = makeOrder().copy(status: .processing, currency: "cad", datePaid: .some(nil), total: "100", paymentMethodID: "cod")
@@ -321,9 +405,17 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Then
         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
         XCTAssertNotNil(row(row: .collectCardPaymentButton, in: paymentSection))
+
+        // Clean up
+        storageManager.viewStorage.deleteObject(account)
+        storageManager.viewStorage.saveIfNeeded()
     }
 
     func test_collect_payment_button_is_not_visible_if_order_currency_is_not_in_configuration() throws {
+        // Setup
+        let account = storageManager.insertCardPresentEligibleAccount()
+        storageManager.viewStorage.saveIfNeeded()
+
         // Given
         let configuration = CardPresentPaymentsConfiguration(country: "US", canadaEnabled: true)
         let order = makeOrder().copy(status: .processing, currency: "cad", datePaid: .some(nil), total: "100", paymentMethodID: "cod")
@@ -336,9 +428,17 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Then
         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
         XCTAssertNil(row(row: .collectCardPaymentButton, in: paymentSection))
+
+        // Clean up
+        storageManager.viewStorage.deleteObject(account)
+        storageManager.viewStorage.saveIfNeeded()
     }
 
     func test_collect_payment_button_is_not_visible_if_order_currency_would_be_in_configuration_but_not_enabled() throws {
+        // Setup
+        let account = storageManager.insertCardPresentEligibleAccount()
+        storageManager.viewStorage.saveIfNeeded()
+
         // Given
         let configuration = CardPresentPaymentsConfiguration(country: "CA", canadaEnabled: false)
         let order = makeOrder().copy(status: .processing, currency: "cad", datePaid: .some(nil), total: "100", paymentMethodID: "cod")
@@ -351,6 +451,10 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Then
         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
         XCTAssertNil(row(row: .collectCardPaymentButton, in: paymentSection))
+
+        // Clean up
+        storageManager.viewStorage.deleteObject(account)
+        storageManager.viewStorage.saveIfNeeded()
     }
 
     func test_create_shipping_label_button_is_visible_for_eligible_order_with_no_labels() throws {
@@ -424,6 +528,8 @@ final class OrderDetailsDataSourceTests: XCTestCase {
     func test_create_shipping_label_button_is_not_visible_for_cash_on_delivery_order() throws {
         // Given
         let order = makeOrder().copy(status: .processing, datePaid: .some(nil), total: "100", paymentMethodID: "cod")
+        storageManager.insertCardPresentEligibleAccount()
+        storageManager.viewStorage.saveIfNeeded()
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.isEligibleForShippingLabelCreation = true
 
@@ -517,9 +623,11 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         }
     }
 
-    func test_more_button_is_not_visible_in_product_section_for_cash_on_delivery_order() throws {
+    func test_morel_button_is_not_visible_in_product_section_for_cash_on_delivery_order() throws {
         // Given
         let order = makeOrder().copy(status: .processing, datePaid: .some(nil), total: "100", paymentMethodID: "cod")
+        storageManager.insertCardPresentEligibleAccount()
+        storageManager.viewStorage.saveIfNeeded()
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.isEligibleForShippingLabelCreation = true
 
@@ -622,6 +730,52 @@ private extension OrderDetailsDataSourceTests {
     ///
     func row(row: OrderDetailsDataSource.Row, in section: OrderDetailsDataSource.Section) -> OrderDetailsDataSource.Row? {
         section.rows.first { $0 == row }
+    }
+}
+
+/// Mock Payment Gateway Account Store Manager
+///
+///
+private final class MockPaymentGatewayAccountStoresManager: MockStorageManager {
+
+    /// Inserts an account into the specified context that IS eligible for card present payments
+    ///
+    @discardableResult
+    func insertCardPresentEligibleAccount() -> StoragePaymentGatewayAccount {
+        let newAccount = viewStorage.insertNewObject(ofType: StoragePaymentGatewayAccount.self)
+        newAccount.siteID = 1234
+        newAccount.gatewayID = "woocommerce-payments"
+        newAccount.status = "complete"
+        newAccount.hasPendingRequirements = false
+        newAccount.hasOverdueRequirements = false
+        newAccount.currentDeadline = nil
+        newAccount.statementDescriptor = "STAGING.BAR"
+        newAccount.defaultCurrency = "USD"
+        newAccount.supportedCurrencies = ["USD"]
+        newAccount.country = "US"
+        newAccount.isCardPresentEligible = true
+
+        return newAccount
+    }
+
+    /// Inserts an account into the specified context that IS NOT eligible for card present payments
+    ///
+    @discardableResult
+    func insertCardPresentIneligibleAccount() -> StoragePaymentGatewayAccount {
+        let newAccount = viewStorage.insertNewObject(ofType: StoragePaymentGatewayAccount.self)
+        newAccount.siteID = 1234
+        newAccount.gatewayID = "woocommerce-payments"
+        newAccount.status = "complete"
+        newAccount.hasPendingRequirements = false
+        newAccount.hasOverdueRequirements = false
+        newAccount.currentDeadline = nil
+        newAccount.statementDescriptor = "STAGING.BAZ"
+        newAccount.defaultCurrency = "USD"
+        newAccount.supportedCurrencies = ["USD"]
+        newAccount.country = "US"
+        newAccount.isCardPresentEligible = false
+
+        return newAccount
     }
 }
 

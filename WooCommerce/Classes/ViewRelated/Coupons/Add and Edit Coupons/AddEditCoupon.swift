@@ -213,7 +213,7 @@ struct AddEditCoupon: View {
                         .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoading))
                         .padding(.horizontal, Constants.margin)
                         .padding([.top, .bottom], Constants.verticalSpacing)
-                        .renderedIf(viewModel.hasChangesMade)
+                        .disabled(!viewModel.hasChangesMade)
 
                         LazyNavigationLink(destination: FullScreenTextView(title: Localization.titleEditDescriptionView,
                                                                            text: $viewModel.descriptionField,

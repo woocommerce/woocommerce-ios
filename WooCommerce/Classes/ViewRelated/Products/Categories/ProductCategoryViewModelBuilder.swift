@@ -43,6 +43,15 @@ extension ProductCategoryListViewModel {
             }
         }
 
+        /// Returns a simple array of `ProductCategoryCellViewModel` from the provided `categories` disregarding the parent-child relationships.
+        /// Provide an array of `selectedCategories` to properly reflect the selected state in the returned view model array.
+        ///
+        static func flatViewModels(from categories: [ProductCategory], selectedCategories: [ProductCategory]) -> [ProductCategoryCellViewModel] {
+            return categories.map { category in
+                viewModel(for: category, selectedCategories: selectedCategories, indentationLevel: 0)
+            }
+        }
+
         /// Returns an array of `ProductCategoryCellViewModel` by sorting the provided `categories` following a `Category -> SubCategory` order.
         /// Provide an array of `selectedCategories` to properly reflect the selected state in the returned view model array.
         ///

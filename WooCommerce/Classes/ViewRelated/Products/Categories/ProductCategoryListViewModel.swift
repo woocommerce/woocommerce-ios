@@ -203,7 +203,12 @@ final class ProductCategoryListViewModel {
     func updateViewModelsArray() {
         let fetchedCategories = resultController.fetchedObjects
         updateInitialItemsIfNeeded(with: fetchedCategories)
-        let baseViewModels = ProductCategoryListViewModel.CellViewModelBuilder.viewModels(from: fetchedCategories, selectedCategories: selectedCategories)
+        let baseViewModels: [ProductCategoryCellViewModel]
+        if searchQuery.isNotEmpty {
+            baseViewModels = ProductCategoryListViewModel.CellViewModelBuilder.flatViewModels(from: fetchedCategories, selectedCategories: selectedCategories)
+        } else {
+            baseViewModels = ProductCategoryListViewModel.CellViewModelBuilder.viewModels(from: fetchedCategories, selectedCategories: selectedCategories)
+        }
 
         categoryViewModels = enrichingDataSource?.enrichCategoryViewModels(baseViewModels) ?? baseViewModels
     }
@@ -230,7 +235,7 @@ final class ProductCategoryListViewModel {
                 guard let self = self else { return }
 
                 if newQuery.isNotEmpty {
-                    let searchPredicate = NSPredicate(format: "siteID = %ld AND (name CONTAINS[cd] %@) OR (slug CONTAINS[cd] %@)",
+                    let searchPredicate = NSPredicate(format: "siteID = %ld AND ((name CONTAINS[cd] %@) OR (slug CONTAINS[cd] %@))",
                                                       self.siteID,
                                                       newQuery,
                                                       newQuery)

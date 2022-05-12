@@ -320,7 +320,7 @@ private extension AddEditCouponViewModel {
 
         return amountFormatter.value(from: coupon.maximumAmount) != amountFormatter.value(from: initialCoupon.maximumAmount) ||
             amountFormatter.value(from: coupon.minimumAmount) != amountFormatter.value(from: initialCoupon.minimumAmount) ||
-            Int64(couponRestrictionsViewModel.usageLimitPerCoupon) != initialCoupon.usageLimit ||
+            coupon.usageLimit != initialCoupon.usageLimit ||
             coupon.usageLimitPerUser != initialCoupon.usageLimitPerUser ||
             coupon.limitUsageToXItems != initialCoupon.limitUsageToXItems ||
             coupon.emailRestrictions != initialCoupon.emailRestrictions ||

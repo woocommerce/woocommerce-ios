@@ -191,9 +191,11 @@ final class CouponDetailsViewModel: ObservableObject {
             self?.isDeletionInProgress = false
             switch result {
             case .success:
+                ServiceLocator.analytics.track(.couponDeleteSuccess)
                 onSuccess()
             case .failure(let error):
                 DDLogError("⛔️ Error deleting coupon: \(error)")
+                ServiceLocator.analytics.track(.couponDeleteFailed, withError: error)
                 onFailure()
             }
         }

@@ -123,6 +123,18 @@ final class AddEditCouponViewModel: ObservableObject {
         categoryIDs.isNotEmpty
     }
 
+    var hasChangesMade: Bool {
+        let coupon = populatedCoupon
+        return checkAmountUpdated(for: coupon) ||
+        checkDescriptionUpdated(for: coupon) ||
+        checkCouponCodeUpdated(for: coupon) ||
+        checkAllowedProductsAndCategoriesUpdated(for: coupon) ||
+        checkExpiryDateUpdated(for: coupon) ||
+        checkFreeShippingUpdated(for: coupon) ||
+        checkAllowedProductsAndCategoriesUpdated(for: coupon) ||
+        checkUsageRestrictionsUpdated(for: coupon)
+    }
+
     private(set) var coupon: Coupon?
     private let stores: StoresManager
     private let storageManager: StorageManagerType
@@ -318,16 +330,15 @@ final class AddEditCouponViewModel: ObservableObject {
 // MARK: - Helpers
 //
 private extension AddEditCouponViewModel {
-    func trackCouponUpdateInitiated(with coupon: Coupon) {
+    func checkUsageRestrictionsUpdated(for coupon: Coupon) -> Bool {
         guard let initialCoupon = self.coupon else {
-            return
+            return false
         }
         let amountFormatter = CouponAmountInputFormatter()
 
-        let usageDetailsUpdated: Bool = {
-            amountFormatter.value(from: coupon.maximumAmount) != amountFormatter.value(from: initialCoupon.maximumAmount) ||
+        return amountFormatter.value(from: coupon.maximumAmount) != amountFormatter.value(from: initialCoupon.maximumAmount) ||
             amountFormatter.value(from: coupon.minimumAmount) != amountFormatter.value(from: initialCoupon.minimumAmount) ||
-            coupon.usageLimit != initialCoupon.usageLimit ||
+            Int64(couponRestrictionsViewModel.usageLimitPerCoupon) != initialCoupon.usageLimit ||
             coupon.usageLimitPerUser != initialCoupon.usageLimitPerUser ||
             coupon.limitUsageToXItems != initialCoupon.limitUsageToXItems ||
             coupon.emailRestrictions != initialCoupon.emailRestrictions ||
@@ -335,23 +346,62 @@ private extension AddEditCouponViewModel {
             coupon.excludeSaleItems != initialCoupon.excludeSaleItems ||
             coupon.excludedProductIds != initialCoupon.excludedProductIds ||
             coupon.excludedProductCategories != initialCoupon.excludedProductCategories
-        }()
+    }
 
-        let expiryDateUpdated: Bool = {
-            guard let oldDate = initialCoupon.dateExpires, let newDate = coupon.dateExpires else {
-                return initialCoupon.dateExpires != coupon.dateExpires
-            }
-            return !oldDate.isSameDay(as: newDate)
-        }()
+    func checkExpiryDateUpdated(for coupon: Coupon) -> Bool {
+        guard let initialCoupon = self.coupon else {
+            return false
+        }
+        guard let oldDate = initialCoupon.dateExpires, let newDate = coupon.dateExpires else {
+            return initialCoupon.dateExpires != coupon.dateExpires
+        }
+        return !oldDate.isSameDay(as: newDate)
+    }
 
+    func checkCouponCodeUpdated(for coupon: Coupon) -> Bool {
+        guard let initialCoupon = self.coupon else {
+            return false
+        }
+        return coupon.code.lowercased() != initialCoupon.code.lowercased()
+    }
+
+    func checkAmountUpdated(for coupon: Coupon) -> Bool {
+        guard let initialCoupon = self.coupon else {
+            return false
+        }
+        let amountFormatter = CouponAmountInputFormatter()
+        return amountFormatter.value(from: coupon.amount) != amountFormatter.value(from: initialCoupon.amount)
+    }
+
+    func checkDescriptionUpdated(for coupon: Coupon) -> Bool {
+        guard let initialCoupon = self.coupon else {
+            return false
+        }
+        return coupon.description != initialCoupon.description
+    }
+
+    func checkAllowedProductsAndCategoriesUpdated(for coupon: Coupon) -> Bool {
+        guard let initialCoupon = self.coupon else {
+            return false
+        }
+        return coupon.productIds != initialCoupon.productIds || coupon.productCategories != initialCoupon.productCategories
+    }
+
+    func checkFreeShippingUpdated(for coupon: Coupon) -> Bool {
+        guard let initialCoupon = self.coupon else {
+            return false
+        }
+        return coupon.freeShipping != initialCoupon.freeShipping
+    }
+
+    func trackCouponUpdateInitiated(with coupon: Coupon) {
         ServiceLocator.analytics.track(.couponUpdateInitiated, withProperties: [
-            "coupon_code_updated": coupon.code.lowercased() != initialCoupon.code.lowercased(),
-            "amount_updated": amountFormatter.value(from: coupon.amount) != amountFormatter.value(from: initialCoupon.amount),
-            "description_updated": coupon.description != initialCoupon.description,
-            "allowed_products_or_categories_updated": coupon.productIds != initialCoupon.productIds ||
-            coupon.productCategories != initialCoupon.productCategories,
-            "expiry_date_updated": expiryDateUpdated,
-            "usage_restrictions_updated": usageDetailsUpdated
+            "coupon_code_updated": checkCouponCodeUpdated(for: coupon),
+            "amount_updated": checkAmountUpdated(for: coupon),
+            "description_updated": checkDescriptionUpdated(for: coupon),
+            "allowed_products_or_categories_updated": checkAllowedProductsAndCategoriesUpdated(for: coupon),
+            "expiry_date_updated": checkExpiryDateUpdated(for: coupon),
+            "usage_restrictions_updated": checkUsageRestrictionsUpdated(for: coupon)
         ])
     }
 }

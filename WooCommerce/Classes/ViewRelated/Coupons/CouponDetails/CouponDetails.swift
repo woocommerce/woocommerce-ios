@@ -393,12 +393,12 @@ private extension CouponDetails {
         )
         static let singularItemsInCartUsageLimit = NSLocalizedString(
                 "Limited to %1$d item in cart",
-                comment: "The singular limit of the same item in cart to apply a coupon, reads like: " +
-                        "Limited to 10 item in cart"
+                comment: "The required number of items in the cart to apply a coupon in singular form, reads like: " +
+                        "Limited to 1 item in cart"
         )
         static let pluralItemsInCartUsageLimit = NSLocalizedString(
                 "Limited to %1$d items in cart",
-                comment: "The plural limit of the same item in cart to apply a coupon, reads like: " +
+                comment: "The required number of items in the cart to apply a coupon in plural form, reads like: " +
                         "Limited to 10 items in cart"
         )
         static let singularUsageLimitPerCoupon = NSLocalizedString(

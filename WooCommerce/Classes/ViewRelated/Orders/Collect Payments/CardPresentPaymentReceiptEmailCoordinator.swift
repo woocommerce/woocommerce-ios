@@ -2,6 +2,7 @@ import MessageUI
 import UIKit
 import struct Yosemite.Order
 
+/// Coordinates the navigation from a given view controller to present a mail composer for a card-present payment receipt.
 final class CardPresentPaymentReceiptEmailCoordinator: NSObject {
     private let analytics: Analytics
     private let countryCode: String
@@ -10,7 +11,7 @@ final class CardPresentPaymentReceiptEmailCoordinator: NSObject {
     private var completion: (() -> Void)?
 
     /// Contains necessary data to email a receipt.
-    struct EmailFormData {
+    struct EmailFormData: Equatable {
         /// HTML content of the receipt.
         let content: String
 

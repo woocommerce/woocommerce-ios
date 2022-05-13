@@ -210,7 +210,7 @@ final class ReceiptStoreTests: XCTestCase {
         XCTAssertNil(actualShippingLine)
     }
 
-    func test_print_callsPrint_passing_Discount() throws {
+    func test_print_callsPrint_passing_positiveDiscount() throws {
         // Given
         let mockIntent = PaymentIntent.fake().copy(charges: [Mocks.cardPresentCharge])
         let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
@@ -232,7 +232,57 @@ final class ReceiptStoreTests: XCTestCase {
         let actualDiscountLine = receiptPrinterService.contentProvided?.cartTotals.first {
             $0.description.starts(with: expectedDiscountLineDescription())
         }
-        XCTAssertEqual(actualDiscountLine?.amount, "-5.00")
+        XCTAssertEqual(actualDiscountLine?.amount, "5.00")
+    }
+
+    func test_print_callsPrint_passing_negativeDiscount() throws {
+        // Given
+        let mockIntent = PaymentIntent.fake().copy(charges: [Mocks.cardPresentCharge])
+        let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
+        let coupons = [OrderCouponLine(couponID: 123, code: "5off", discount: "-5.00", discountTax: "0.00")]
+        let mockOrder = makeOrder(discountTotal: "-5.00", coupons: coupons)
+
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+
+        // When
+        let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
+
+        receiptStore.onAction(action)
+
+        // Then
+        let actualDiscountLine = receiptPrinterService.contentProvided?.cartTotals.first {
+            $0.description.starts(with: expectedDiscountLineDescription())
+        }
+        XCTAssertEqual(actualDiscountLine?.amount, "5.00")
+    }
+
+    func test_print_callsPrint_passing_formattingDiscount() throws {
+        // Given
+        let mockIntent = PaymentIntent.fake().copy(charges: [Mocks.cardPresentCharge])
+        let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
+        let coupons = [OrderCouponLine(couponID: 123, code: "5off", discount: "-000005.00000010", discountTax: "0.00")]
+        let mockOrder = makeOrder(discountTotal: "-000005.00000010", coupons: coupons)
+
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+
+        // When
+        let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
+
+        receiptStore.onAction(action)
+
+        // Then
+        let actualDiscountLine = receiptPrinterService.contentProvided?.cartTotals.first {
+            $0.description.starts(with: expectedDiscountLineDescription())
+        }
+        XCTAssertEqual(actualDiscountLine?.amount, "5.00")
     }
 
     func test_print_OrderWithoutDiscountOrCoupons_DoesNotIncludeDiscountInReceiptContent() throws {

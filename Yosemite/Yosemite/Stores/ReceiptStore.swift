@@ -147,11 +147,10 @@ private extension ReceiptStore {
     }
 
     func discountLineAmount(order: Order, value: Decimal) -> String {
-        if value > 0 {
-            return "-\(order.discountTotal)"
-        } else {
-            return order.discountTotal
-        }
+        let formatter = NumberFormatter()
+        formatter.maximumFractionDigits = 2
+        formatter.minimumFractionDigits = 2
+        return formatter.string(for: (abs(value))) ?? order.discountTotal
     }
 
     func feesLineAmount(fees: [OrderFeeLine]) -> String {

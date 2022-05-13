@@ -207,6 +207,7 @@ struct CouponDetails: View {
                 }
             }
         }
+        .navigationTitle(viewModel.coupon.code)
         .wooNavigationBarStyle()
     }
 

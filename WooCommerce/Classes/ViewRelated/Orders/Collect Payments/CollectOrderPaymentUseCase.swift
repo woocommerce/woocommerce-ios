@@ -150,8 +150,8 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                     }
                     self?.presentReceiptAlert(receiptParameters: paymentData.receiptParameters, backButtonTitle: backButtonTitle, onCompleted: onCompleted)
                 })
-            case .failure:
-                onCompleted()
+            case .failure(let error):
+                onCollect(.failure(error))
             }
         }
     }

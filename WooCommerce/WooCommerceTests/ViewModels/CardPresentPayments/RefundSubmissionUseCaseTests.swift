@@ -457,7 +457,7 @@ private extension RefundSubmissionUseCaseTests {
                                        returnCardReaderMessage: CardReaderEvent? = nil,
                                        cancelCardReaderDiscoveryResult: Result<Void, Error> = .success(())) {
         stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
-            if case let .checkCardReaderConnected(completion) = action {
+            if case let .publishCardReaderConnections(completion) = action {
                 if connectedCardReaders.isEmpty {
                     // If there are no connected readers, we don't want the publisher to finish which is considered a reader is connected.
                     let subject = CurrentValueSubject<[CardReader], Never>([])

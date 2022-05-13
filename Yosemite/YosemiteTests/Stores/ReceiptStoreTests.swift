@@ -48,7 +48,7 @@ final class ReceiptStoreTests: XCTestCase {
 
     func test_print_calls_print_in_service() throws {
         // Given
-        let mockIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockIntent = PaymentIntent.fake().copy(charges: [Mocks.cardPresentCharge])
         let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let mockOrder = makeOrder()
 
@@ -67,7 +67,7 @@ final class ReceiptStoreTests: XCTestCase {
 
     func test_print_calls_print_in_passing_expected_parameters() throws {
         // Given
-        let mockIntent = PaymentIntent.fake().copy(amount: 10000, currency: "usd", charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockIntent = PaymentIntent.fake().copy(amount: 10000, currency: "usd", charges: [Mocks.cardPresentCharge])
         let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let mockOrder = makeOrder()
 
@@ -92,7 +92,7 @@ final class ReceiptStoreTests: XCTestCase {
 
     func test_print_callsPrint_passing_TotalAmountPaid() throws {
         // Given
-        let mockIntent = PaymentIntent.fake().copy(amount: 10000, charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockIntent = PaymentIntent.fake().copy(amount: 10000, charges: [Mocks.cardPresentCharge])
         let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let mockOrder = makeOrder()
 
@@ -116,7 +116,7 @@ final class ReceiptStoreTests: XCTestCase {
 
     func test_print_callsPrint_passing_TotalTaxes() throws {
         // Given
-        let mockIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockIntent = PaymentIntent.fake().copy(charges: [Mocks.cardPresentCharge])
         let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let mockOrder = makeOrder(discountTax: "1.21", shippingTax: "0.50", totalTax: "10.71")
 
@@ -140,7 +140,7 @@ final class ReceiptStoreTests: XCTestCase {
 
     func test_print_OrderWithoutTaxes_DoesNotIncludeTaxesInReceiptContent() throws {
         // Given
-        let mockIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockIntent = PaymentIntent.fake().copy(charges: [Mocks.cardPresentCharge])
         let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let mockOrder = makeOrder(totalTax: "0.00")
 
@@ -164,7 +164,7 @@ final class ReceiptStoreTests: XCTestCase {
 
     func test_print_callsPrint_passing_Shipping() throws {
         // Given
-        let mockIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockIntent = PaymentIntent.fake().copy(charges: [Mocks.cardPresentCharge])
         let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let mockOrder = makeOrder(shippingTotal: "5.50")
 
@@ -188,7 +188,7 @@ final class ReceiptStoreTests: XCTestCase {
 
     func test_print_OrderWithoutShipping_DoesNotIncludeShippingInReceiptContent() throws {
         // Given
-        let mockIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockIntent = PaymentIntent.fake().copy(charges: [Mocks.cardPresentCharge])
         let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let mockOrder = makeOrder(shippingTotal: "0.00")
 
@@ -212,7 +212,7 @@ final class ReceiptStoreTests: XCTestCase {
 
     func test_print_callsPrint_passing_Discount() throws {
         // Given
-        let mockIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockIntent = PaymentIntent.fake().copy(charges: [Mocks.cardPresentCharge])
         let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let coupons = [OrderCouponLine(couponID: 123, code: "5off", discount: "5.00", discountTax: "0.00")]
         let mockOrder = makeOrder(discountTotal: "5.00", coupons: coupons)
@@ -237,7 +237,7 @@ final class ReceiptStoreTests: XCTestCase {
 
     func test_print_OrderWithoutDiscountOrCoupons_DoesNotIncludeDiscountInReceiptContent() throws {
         // Given
-        let mockIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockIntent = PaymentIntent.fake().copy(charges: [Mocks.cardPresentCharge])
         let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let mockOrder = makeOrder(discountTotal: "0.00", coupons: [])
 
@@ -261,7 +261,7 @@ final class ReceiptStoreTests: XCTestCase {
 
     func test_print_OrderWithoutDiscount_WithCoupon_IncludesCouponInReceiptContent() throws {
         // Given
-        let mockIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockIntent = PaymentIntent.fake().copy(charges: [Mocks.cardPresentCharge])
         let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let coupons = [OrderCouponLine(couponID: 123, code: "FreeShipping", discount: "0.00", discountTax: "0.00")]
         let mockOrder = makeOrder(discountTotal: "0.00", coupons: coupons)
@@ -288,7 +288,7 @@ final class ReceiptStoreTests: XCTestCase {
 
     func test_print_OrderWithDiscountFromMultipleCoupons_ListsCouponsInReceiptContent() throws {
         // Given
-        let mockIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockIntent = PaymentIntent.fake().copy(charges: [Mocks.cardPresentCharge])
         let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let coupons = [OrderCouponLine(couponID: 123, code: "1off", discount: "1.00", discountTax: "0.00"),
                        OrderCouponLine(couponID: 1901, code: "AVQW112", discount: "12.50", discountTax: "0.00")]
@@ -315,7 +315,7 @@ final class ReceiptStoreTests: XCTestCase {
 
     func test_print_callsPrint_passing_Fees() throws {
         // Given
-        let mockIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockIntent = PaymentIntent.fake().copy(charges: [Mocks.cardPresentCharge])
         let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let fees = [makeFee(amount: "5.00"), makeFee(amount: "15.50")]
         let mockOrder = makeOrder(fees: fees)
@@ -340,7 +340,7 @@ final class ReceiptStoreTests: XCTestCase {
 
     func test_print_OrderWithoutFees_DoesNotIncludeFeesInReceiptContent() throws {
         // Given
-        let mockIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockIntent = PaymentIntent.fake().copy(charges: [Mocks.cardPresentCharge])
         let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let mockOrder = makeOrder(fees: [])
 
@@ -364,7 +364,7 @@ final class ReceiptStoreTests: XCTestCase {
 
     func test_print_OrderWithZeroFees_DoesNotIncludeFeesInReceiptContent() throws {
         // Given
-        let mockIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockIntent = PaymentIntent.fake().copy(charges: [Mocks.cardPresentCharge])
         let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let mockOrder = makeOrder(fees: [makeFee(amount: "0.00")])
 
@@ -388,7 +388,7 @@ final class ReceiptStoreTests: XCTestCase {
 
     func test_print_callsPrint_passing_LineItemsTotal_calculatedUsing_UndiscountedSubtotals() throws {
         // Given
-        let mockIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockIntent = PaymentIntent.fake().copy(charges: [Mocks.cardPresentCharge])
         let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let items = [makeItem(subtotal: "20.00", total: "12.50"), makeItem(subtotal: "10.00", total: "10.00")]
         let mockOrder = makeOrder(items: items)
@@ -413,7 +413,7 @@ final class ReceiptStoreTests: XCTestCase {
 
     func test_generateContent_callsGenerate_passingUnmodified_customerNote() throws {
         // Given
-        let mockIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockIntent = PaymentIntent.fake().copy(charges: [Mocks.cardPresentCharge])
         let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let expectedNote = "<a href=\"https://example.com\">This note has a link</a>"
         let mockOrder = makeOrder(customerNote: expectedNote)
@@ -441,7 +441,7 @@ final class ReceiptStoreTests: XCTestCase {
 
     func test_print_callsPrint_passingHTMLStripped_customerNote() throws {
         // Given
-        let mockIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        let mockIntent = PaymentIntent.fake().copy(charges: [Mocks.cardPresentCharge])
         let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let mockOrder = makeOrder(customerNote: "<a href=\"https://example.com\">This note has a link</a>")
 
@@ -525,5 +525,11 @@ private extension ReceiptStoreTests {
                            total: total,
                            totalTax: "",
                            attributes: [])
+    }
+}
+
+private extension ReceiptStoreTests {
+    enum Mocks {
+        static let cardPresentCharge = Charge.fake().copy(paymentMethod: .cardPresent(details: .fake()))
     }
 }

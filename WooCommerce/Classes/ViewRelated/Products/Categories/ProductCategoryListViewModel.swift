@@ -92,7 +92,7 @@ final class ProductCategoryListViewModel {
     @Published private(set) var syncCategoriesState: SyncingState = .initialized
 
     private lazy var resultController: ResultsController<StorageProductCategory> = {
-        let predicate = NSPredicate(format: "siteID = %ld", self.siteID)
+        let predicate = NSPredicate(format: "siteID = %lld", self.siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageProductCategory.name, ascending: true)
         return ResultsController<StorageProductCategory>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
@@ -204,7 +204,12 @@ final class ProductCategoryListViewModel {
     func updateViewModelsArray() {
         let fetchedCategories = resultController.fetchedObjects
         updateInitialItemsIfNeeded(with: fetchedCategories)
-        let baseViewModels = ProductCategoryListViewModel.CellViewModelBuilder.viewModels(from: fetchedCategories, selectedCategories: selectedCategories)
+        let baseViewModels: [ProductCategoryCellViewModel]
+        if searchQuery.isNotEmpty {
+            baseViewModels = ProductCategoryListViewModel.CellViewModelBuilder.flatViewModels(from: fetchedCategories, selectedCategories: selectedCategories)
+        } else {
+            baseViewModels = ProductCategoryListViewModel.CellViewModelBuilder.viewModels(from: fetchedCategories, selectedCategories: selectedCategories)
+        }
 
         categoryViewModels = enrichingDataSource?.enrichCategoryViewModels(baseViewModels) ?? baseViewModels
     }
@@ -231,14 +236,14 @@ final class ProductCategoryListViewModel {
                 guard let self = self else { return }
 
                 if newQuery.isNotEmpty {
-                    let searchPredicate = NSPredicate(format: "siteID = %ld AND (name CONTAINS[cd] %@) OR (slug CONTAINS[cd] %@)",
+                    let searchPredicate = NSPredicate(format: "siteID = %lld AND ((name CONTAINS[cd] %@) OR (slug CONTAINS[cd] %@))",
                                                       self.siteID,
-                                                      newQuery,
-                                                      newQuery)
+                                                      newQuery.trimmingCharacters(in: .whitespacesAndNewlines),
+                                                      newQuery.trimmingCharacters(in: .whitespacesAndNewlines))
                     self.resultController.predicate = searchPredicate
                 } else {
                     // Resets the results to the full product list when there is no search query.
-                    self.resultController.predicate = NSPredicate(format: "siteID = %ld", self.siteID)
+                    self.resultController.predicate = NSPredicate(format: "siteID = %lld", self.siteID)
                 }
                 try? self.resultController.performFetch()
                 self.updateViewModelsArray()

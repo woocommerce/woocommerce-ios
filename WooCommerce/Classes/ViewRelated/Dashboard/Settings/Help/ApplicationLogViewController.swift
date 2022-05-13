@@ -190,7 +190,7 @@ private extension ApplicationLogViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = indexPath.row == 0 ?
-            NSLocalizedString("Current", comment: "Cell title: the current date.") : dateFormatter.string(from: logFileInfo.creationDate )
+            NSLocalizedString("Current", comment: "Cell title: the current date.") : dateFormatter.string(from: logFileInfo.creationDate ?? Date())
     }
 
     /// Clear application logs cell.
@@ -214,7 +214,7 @@ private extension ApplicationLogViewController {
 
         do {
             let contents = try String(contentsOfFile: logFileInfo.filePath)
-            let date = dateFormatter.string(from: logFileInfo.creationDate )
+            let date = dateFormatter.string(from: logFileInfo.creationDate ?? Date())
             let viewModel = ApplicationLogViewModel(logText: contents, logDate: date)
             let appLogDetailVC = ApplicationLogDetailViewController(viewModel: viewModel)
             show(appLogDetailVC, sender: self)

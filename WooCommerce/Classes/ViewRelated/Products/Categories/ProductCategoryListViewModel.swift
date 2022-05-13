@@ -166,6 +166,7 @@ final class ProductCategoryListViewModel {
     /// Resets the selected categories and triggers UI reload
     ///
     func resetSelectedCategoriesAndReload() {
+        initiallySelectedIDs = []
         resetSelectedCategories()
         updateViewModelsArray()
         reloadData()

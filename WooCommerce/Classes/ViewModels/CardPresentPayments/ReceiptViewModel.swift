@@ -1,4 +1,5 @@
 import Combine
+import MessageUI
 import Yosemite
 
 /// ViewModel supporting the receipt preview.
@@ -53,6 +54,11 @@ final class ReceiptViewModel {
                                               cardReaderModel: nil,
                                               stores: stores,
                                               analytics: ServiceLocator.analytics)
+    }
+
+    /// Returns a boolean that indicates whether email is supported for the app and device so that email UI is only displayed when it is supported.
+    func canSendEmail() -> Bool {
+        MFMailComposeViewController.canSendMail()
     }
 
     /// Called when the user initiates emailing a receipt. Returns a tuple of:

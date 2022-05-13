@@ -1,4 +1,3 @@
-import MessageUI
 import Combine
 import UIKit
 import WebKit
@@ -43,7 +42,7 @@ private extension ReceiptViewController {
     func configureToolbar() {
         title = Localization.title
         navigationItem.rightBarButtonItems = [
-            MFMailComposeViewController.canSendMail() ?
+            viewModel.canSendEmail() ?
             UIBarButtonItem(image: .mailImage,
                             style: .plain,
                             target: self,

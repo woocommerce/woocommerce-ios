@@ -213,6 +213,8 @@ final class AddEditCouponViewModel: ObservableObject {
     }
 
     func updateCoupon(coupon: Coupon) {
+        trackCouponUpdateInitiated(with: coupon)
+
         if let validationError = validateCouponLocally(coupon) {
             notice = NoticeFactory.createCouponErrorNotice(validationError,
                                                            editingOption: editingOption)
@@ -223,40 +225,47 @@ final class AddEditCouponViewModel: ObservableObject {
         isLoading = true
         let action = CouponAction.updateCoupon(coupon, siteTimezone: timezone) { [weak self] result in
             guard let self = self else { return }
+            self.isLoading = false
             switch result {
             case .success(_):
-                break
+                ServiceLocator.analytics.track(.couponUpdateSuccess)
+                self.onCompletion(result)
             case .failure(let error):
                 DDLogError("⛔️ Error updating the coupon: \(error)")
+                ServiceLocator.analytics.track(.couponUpdateFailed, withError: error)
                 self.notice = NoticeFactory.createCouponErrorNotice(.other(error: error),
                                                                     editingOption: self.editingOption)
             }
-            self.isLoading = false
-            self.onCompletion(result)
         }
         stores.dispatch(action)
     }
 
     var populatedCoupon: Coupon {
+        let emailRestrictions: [String] = {
+            if couponRestrictionsViewModel.allowedEmails.isEmpty {
+                return []
+            }
+            return couponRestrictionsViewModel.allowedEmails.components(separatedBy: ", ")
+        }()
         // TODO: Fill all the missing data (like `productIds`, `excludedProductIds`, `productCategories`, `excludedProductCategories`)
-        coupon?.copy(code: codeField,
-                     amount: amountField,
-                     discountType: discountType,
-                     description: descriptionField,
-                     dateExpires: expiryDateField?.startOfDay(timezone: timezone),
-                     individualUse: couponRestrictionsViewModel.individualUseOnly,
-                     productIds: productOrVariationIDs,
-                     excludedProductIds: couponRestrictionsViewModel.excludedProductOrVariationIDs,
-                     usageLimit: Int64(couponRestrictionsViewModel.usageLimitPerCoupon),
-                     usageLimitPerUser: Int64(couponRestrictionsViewModel.usageLimitPerUser),
-                     limitUsageToXItems: Int64(couponRestrictionsViewModel.limitUsageToXItems),
-                     freeShipping: freeShipping,
-                     productCategories: categoryIDs,
-                     excludedProductCategories: couponRestrictionsViewModel.excludedCategoryIDs,
-                     excludeSaleItems: couponRestrictionsViewModel.excludeSaleItems,
-                     minimumAmount: couponRestrictionsViewModel.minimumSpend,
-                     maximumAmount: couponRestrictionsViewModel.maximumSpend,
-                     emailRestrictions: couponRestrictionsViewModel.allowedEmails.components(separatedBy: ", ")) ??
+        return coupon?.copy(code: codeField,
+                            amount: amountField,
+                            discountType: discountType,
+                            description: descriptionField,
+                            dateExpires: expiryDateField?.startOfDay(timezone: timezone),
+                            individualUse: couponRestrictionsViewModel.individualUseOnly,
+                            productIds: productOrVariationIDs,
+                            excludedProductIds: couponRestrictionsViewModel.excludedProductOrVariationIDs,
+                            usageLimit: Int64(couponRestrictionsViewModel.usageLimitPerCoupon),
+                            usageLimitPerUser: Int64(couponRestrictionsViewModel.usageLimitPerUser),
+                            limitUsageToXItems: Int64(couponRestrictionsViewModel.limitUsageToXItems),
+                            freeShipping: freeShipping,
+                            productCategories: categoryIDs,
+                            excludedProductCategories: couponRestrictionsViewModel.excludedCategoryIDs,
+                            excludeSaleItems: couponRestrictionsViewModel.excludeSaleItems,
+                            minimumAmount: couponRestrictionsViewModel.minimumSpend,
+                            maximumAmount: couponRestrictionsViewModel.maximumSpend,
+                            emailRestrictions: emailRestrictions) ??
         Coupon(siteID: siteID,
                couponID: -1,
                code: codeField,
@@ -279,7 +288,7 @@ final class AddEditCouponViewModel: ObservableObject {
                excludeSaleItems: couponRestrictionsViewModel.excludeSaleItems,
                minimumAmount: couponRestrictionsViewModel.minimumSpend,
                maximumAmount: couponRestrictionsViewModel.maximumSpend,
-               emailRestrictions: couponRestrictionsViewModel.allowedEmails.components(separatedBy: ", "),
+               emailRestrictions: emailRestrictions,
                usedBy: [])
     }
 
@@ -303,6 +312,47 @@ final class AddEditCouponViewModel: ObservableObject {
         static func ==(lhs: CouponError, rhs: CouponError) -> Bool {
             return lhs.localizedDescription == rhs.localizedDescription
         }
+    }
+}
+
+// MARK: - Helpers
+//
+private extension AddEditCouponViewModel {
+    func trackCouponUpdateInitiated(with coupon: Coupon) {
+        guard let initialCoupon = self.coupon else {
+            return
+        }
+        let amountFormatter = CouponAmountInputFormatter()
+
+        let usageDetailsUpdated: Bool = {
+            amountFormatter.value(from: coupon.maximumAmount) != amountFormatter.value(from: initialCoupon.maximumAmount) ||
+            amountFormatter.value(from: coupon.minimumAmount) != amountFormatter.value(from: initialCoupon.minimumAmount) ||
+            coupon.usageLimit != initialCoupon.usageLimit ||
+            coupon.usageLimitPerUser != initialCoupon.usageLimitPerUser ||
+            coupon.limitUsageToXItems != initialCoupon.limitUsageToXItems ||
+            coupon.emailRestrictions != initialCoupon.emailRestrictions ||
+            coupon.individualUse != initialCoupon.individualUse ||
+            coupon.excludeSaleItems != initialCoupon.excludeSaleItems ||
+            coupon.excludedProductIds != initialCoupon.excludedProductIds ||
+            coupon.excludedProductCategories != initialCoupon.excludedProductCategories
+        }()
+
+        let expiryDateUpdated: Bool = {
+            guard let oldDate = initialCoupon.dateExpires, let newDate = coupon.dateExpires else {
+                return initialCoupon.dateExpires != coupon.dateExpires
+            }
+            return !oldDate.isSameDay(as: newDate)
+        }()
+
+        ServiceLocator.analytics.track(.couponUpdateInitiated, withProperties: [
+            "coupon_code_updated": coupon.code.lowercased() != initialCoupon.code.lowercased(),
+            "amount_updated": amountFormatter.value(from: coupon.amount) != amountFormatter.value(from: initialCoupon.amount),
+            "description_updated": coupon.description != initialCoupon.description,
+            "allowed_products_or_categories_updated": coupon.productIds != initialCoupon.productIds ||
+            coupon.productCategories != initialCoupon.productCategories,
+            "expiry_date_updated": expiryDateUpdated,
+            "usage_restrictions_updated": usageDetailsUpdated
+        ])
     }
 }
 

@@ -60,14 +60,14 @@ target 'WooCommerce' do
   # ==================
   #
   pod 'Alamofire', '~> 4.8'
-  pod 'KeychainAccess', '~> 3.2'
-  pod 'CocoaLumberjack', '~> 3.5'
-  pod 'CocoaLumberjack/Swift', '~> 3.5'
+  pod 'KeychainAccess', '~> 4.2.2'
+  pod 'CocoaLumberjack', '~> 3.7.4'
+  pod 'CocoaLumberjack/Swift', '~> 3.7.4'
   pod 'XLPagerTabStrip', '~> 9.0'
   pod 'Charts', '~> 3.6.0'
   pod 'ZendeskSupportSDK', '~> 5.0'
   pod 'StripeTerminal', '~> 2.7'
-  pod 'Kingfisher', '~> 6.0.0'
+  pod 'Kingfisher', '~> 7.2.2'
   pod 'Wormholy', '~> 1.6.5', configurations: ['Debug']
 
   # Unit Tests
@@ -84,8 +84,8 @@ end
 def yosemite_pods
   pod 'Alamofire', '~> 4.8'
   pod 'StripeTerminal', '~> 2.7'
-  pod 'CocoaLumberjack', '~> 3.5'
-  pod 'CocoaLumberjack/Swift', '~> 3.5'
+  pod 'CocoaLumberjack', '~> 3.7.4'
+  pod 'CocoaLumberjack/Swift', '~> 3.7.4'
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
   pod 'WordPressKit', '~> 4.49.0'
@@ -115,8 +115,8 @@ end
 #
 def networking_pods
   pod 'Alamofire', '~> 4.8'
-  pod 'CocoaLumberjack', '~> 3.5'
-  pod 'CocoaLumberjack/Swift', '~> 3.5'
+  pod 'CocoaLumberjack', '~> 3.7.4'
+  pod 'CocoaLumberjack/Swift', '~> 3.7.4'
 
   pod 'Sourcery', '~> 1.0.3', configuration: 'Debug'
 
@@ -147,8 +147,8 @@ end
 # ==============
 #
 def storage_pods
-  pod 'CocoaLumberjack', '~> 3.5'
-  pod 'CocoaLumberjack/Swift', '~> 3.5'
+  pod 'CocoaLumberjack', '~> 3.7.4'
+  pod 'CocoaLumberjack/Swift', '~> 3.7.4'
 end
 
 # Storage Target:
@@ -172,8 +172,8 @@ end
 #
 def hardware_pods
   pod 'StripeTerminal', '~> 2.7'
-  pod 'CocoaLumberjack', '~> 3.5'
-  pod 'CocoaLumberjack/Swift', '~> 3.5'
+  pod 'CocoaLumberjack', '~> 3.7.4'
+  pod 'CocoaLumberjack/Swift', '~> 3.7.4'
 end
 
 # Hardware Target:
@@ -205,8 +205,8 @@ end
 #
 def experiments_pods
   pod 'Automattic-Tracks-iOS', '~> 0.11.1'
-  pod 'CocoaLumberjack', '~> 3.5'
-  pod 'CocoaLumberjack/Swift', '~> 3.5'
+  pod 'CocoaLumberjack', '~> 3.7.4'
+  pod 'CocoaLumberjack/Swift', '~> 3.7.4'
 end
 
 # Experiments Target:

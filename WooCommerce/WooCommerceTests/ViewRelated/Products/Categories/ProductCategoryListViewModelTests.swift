@@ -163,7 +163,7 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         // Then
         waitFor { promise in
             // wait for 500 milliseconds due to debouncing
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.searchDebounceTime) {
                 promise(())
             }
         }
@@ -201,7 +201,7 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         // Then
         waitFor { promise in
             // wait for 500 milliseconds due to debouncing
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.searchDebounceTime) {
                 promise(())
             }
         }
@@ -225,7 +225,7 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         // Then
         waitFor { promise in
             // wait for 500 milliseconds due to debouncing
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.searchDebounceTime) {
                 promise(())
             }
         }
@@ -254,5 +254,9 @@ private extension ProductCategoryListViewModelTests {
     func insert(_ readOnlyProductCategory: Yosemite.ProductCategory) {
         let category = storage.insertNewObject(ofType: StorageProductCategory.self)
         category.update(with: readOnlyProductCategory)
+    }
+
+    enum Constants {
+        static let searchDebounceTime: Double = 0.5
     }
 }

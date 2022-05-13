@@ -91,19 +91,7 @@ final class CouponDetailsViewModel: ObservableObject {
     ///
     @Published var showingEditCoupon: Bool = false
 
-    var addEditCouponViewModel: AddEditCouponViewModel {
-        .init(existingCoupon: coupon, onCompletion: { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let updatedCoupon):
-                self.updateCoupon(updatedCoupon)
-                self.showingEditCoupon = false
-                self.onUpdate()
-            default:
-                break
-            }
-        })
-    }
+    private(set) lazy var addEditCouponViewModel: AddEditCouponViewModel = createAddEditCouponViewModel(with: coupon)
 
     /// The message to be shared about the coupon
     ///
@@ -130,6 +118,7 @@ final class CouponDetailsViewModel: ObservableObject {
     @Published private(set) var coupon: Coupon {
         didSet {
             populateDetails()
+            addEditCouponViewModel = createAddEditCouponViewModel(with: coupon)
         }
     }
 
@@ -285,6 +274,20 @@ private extension CouponDetailsViewModel {
     func retrieveAnalyticsSetting(completion: @escaping (Result<Bool, Error>) -> Void) {
         let action = SettingAction.retrieveAnalyticsSetting(siteID: coupon.siteID, onCompletion: completion)
         stores.dispatch(action)
+    }
+
+    func createAddEditCouponViewModel(with coupon: Coupon) -> AddEditCouponViewModel {
+        .init(existingCoupon: coupon, onCompletion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let updatedCoupon):
+                self.updateCoupon(updatedCoupon)
+                self.showingEditCoupon = false
+                self.onUpdate()
+            default:
+                break
+            }
+        })
     }
 }
 

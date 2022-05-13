@@ -424,6 +424,7 @@ private extension OrderStore {
             return onCompletion(.failure(MarkOrderAsPaidLocallyError.orderNotFoundInStorage))
         }
         order.datePaid = datePaid
+        order.statusKey = OrderStatusEnum.processing.rawValue
         storage.saveIfNeeded()
         onCompletion(.success(order.toReadOnly()))
     }

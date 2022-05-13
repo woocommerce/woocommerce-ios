@@ -91,6 +91,7 @@ public enum OrderAction: Action {
 
     /// Updates an order to be considered as paid locally, for use cases where the payment is captured in the
     /// app to prevent from multiple charging for the same order after subsequent failures (e.g. Interac in Canada).
+    /// Internally, the order is marked with a paid date and the order status is changed to processing.
     ///
     case markOrderAsPaidLocally(siteID: Int64, orderID: Int64, datePaid: Date, onCompletion: (Result<Order, Error>) -> Void)
 

@@ -16,6 +16,7 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         storageManager.viewStorage
     }
     private var subscription: AnyCancellable?
+    private static let searchDebounceTime: Double = 0.5
 
     override func setUp() {
         super.setUp()
@@ -163,7 +164,7 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         // Then
         waitFor { promise in
             // wait for 500 milliseconds due to debouncing
-            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.searchDebounceTime) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Self.searchDebounceTime) {
                 promise(())
             }
         }
@@ -201,7 +202,7 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         // Then
         waitFor { promise in
             // wait for 500 milliseconds due to debouncing
-            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.searchDebounceTime) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Self.searchDebounceTime) {
                 promise(())
             }
         }
@@ -225,7 +226,7 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         // Then
         waitFor { promise in
             // wait for 500 milliseconds due to debouncing
-            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.searchDebounceTime) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Self.searchDebounceTime) {
                 promise(())
             }
         }
@@ -254,9 +255,5 @@ private extension ProductCategoryListViewModelTests {
     func insert(_ readOnlyProductCategory: Yosemite.ProductCategory) {
         let category = storage.insertNewObject(ofType: StorageProductCategory.self)
         category.update(with: readOnlyProductCategory)
-    }
-
-    enum Constants {
-        static let searchDebounceTime: Double = 0.5
     }
 }

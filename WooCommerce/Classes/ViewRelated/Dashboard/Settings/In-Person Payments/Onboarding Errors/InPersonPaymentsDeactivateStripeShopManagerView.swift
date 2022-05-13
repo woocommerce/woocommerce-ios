@@ -1,6 +1,7 @@
 import SwiftUI
+import Yosemite
 
-struct InPersonPaymentsDeactivateStripeAdmin: View {
+struct InPersonPaymentsDeactivateStripeShopManager: View {
     let countryCode: String
 
     let onRefresh: () -> Void
@@ -30,17 +31,6 @@ struct InPersonPaymentsDeactivateStripeAdmin: View {
             InPersonPaymentsSupportLink()
 
             Spacer()
-
-            Button {
-                presentedSetupURL = setupURL
-            } label: {
-                HStack {
-                    Text(Localization.primaryButton)
-                    Image(uiImage: .externalImage)
-                }
-            }
-            .buttonStyle(PrimaryButtonStyle())
-            .padding(.bottom, Constants.padding)
 
             InPersonPaymentsLearnMore()
         }
@@ -77,13 +67,9 @@ private enum Localization {
     )
 
     static let message = NSLocalizedString(
-        "In-Person Payments will work with only WooCommerce Payments activated. Please deactivate WooCommerce Stripe Gateway to continue.",
-        comment: "Message prompting an administrator to deactivate one of two plugins"
-    )
-
-    static let primaryButton = NSLocalizedString(
-        "Manage Plugins",
-        comment: "Button to open browser to manage plugins"
+        "In-Person Payments will work with only WooCommerce Payments activated." +
+        "Please contact a site administrator to deactivate WooCommerce Stripe Gateway to continue.",
+        comment: "Message prompting an administrator to deactivate Stripe plugin"
     )
 }
 
@@ -92,8 +78,8 @@ private enum Constants {
     static let padding: CGFloat = 24.0
 }
 
-struct InPersonPaymentsDeactivateStripeAdmin_Previews: PreviewProvider {
+struct InPersonPaymentsDeactivateStripeShopManager_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsPluginConflictAdmin(onRefresh: {})
+        InPersonPaymentsPluginConflictShopManager(onRefresh: {})
     }
 }

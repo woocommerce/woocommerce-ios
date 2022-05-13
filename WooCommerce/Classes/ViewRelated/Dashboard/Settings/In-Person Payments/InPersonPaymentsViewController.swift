@@ -46,7 +46,11 @@ struct InPersonPaymentsView: View {
                     InPersonPaymentsPluginConflictShopManager(onRefresh: viewModel.refresh)
                 }
             case .countryNotSupportedDeactivateStripe(let countryCode):
-                InPersonPaymentsDeactivateStripeAdmin(countryCode: countryCode, onRefresh: viewModel.refresh)
+                if viewModel.userIsAdministrator {
+                    InPersonPaymentsDeactivateStripeAdmin(countryCode: countryCode, onRefresh: viewModel.refresh)
+                } else {
+                    InPersonPaymentsDeactivateStripeShopManager(countryCode: countryCode, onRefresh: viewModel.refresh)
+                }
             case .countryNotSupported(let countryCode):
                 InPersonPaymentsCountryNotSupported(countryCode: countryCode)
             case .countryNotSupportedStripe(_, let countryCode):

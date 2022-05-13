@@ -24,6 +24,14 @@ extension String {
         }
     }
 
+    static func pluralize(_ count: Int64, singular: String, plural: String) -> String {
+        if count == 1 {
+            return String.localizedStringWithFormat(singular, count)
+        } else {
+            return String.localizedStringWithFormat(plural, count)
+        }
+    }
+
     /// Helper method to provide the singular or plural (formatted) version of a
     /// string based on a count.
     ///

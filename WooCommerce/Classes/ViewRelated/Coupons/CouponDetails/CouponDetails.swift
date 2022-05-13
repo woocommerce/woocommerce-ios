@@ -273,7 +273,9 @@ struct CouponDetails: View {
             }
             .renderedIf(viewModel.minimumAmount.isNotEmpty ||
                         viewModel.maximumAmount.isNotEmpty ||
-                        viewModel.usageLimitPerUser > 0)
+                        viewModel.usageLimit > 0 ||
+                        viewModel.usageLimitPerUser > 0 ||
+                        viewModel.limitUsageToXItems > 0)
 
             Text(String.localizedStringWithFormat(Localization.expiryFormat, viewModel.expiryDate))
                 .renderedIf(viewModel.expiryDate.isNotEmpty)

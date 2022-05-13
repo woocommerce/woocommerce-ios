@@ -47,7 +47,7 @@ extension ProductCategoryListViewModel {
         /// Provide an array of `selectedCategories` to properly reflect the selected state in the returned view model array.
         ///
         static func flatViewModels(from categories: [ProductCategory], selectedCategories: [ProductCategory]) -> [ProductCategoryCellViewModel] {
-            return categories.map { category in
+            categories.map { category in
                 viewModel(for: category, selectedCategories: selectedCategories, indentationLevel: 0)
             }
         }

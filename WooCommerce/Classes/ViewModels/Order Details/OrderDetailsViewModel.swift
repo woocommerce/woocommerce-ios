@@ -302,7 +302,7 @@ extension OrderDetailsViewModel {
                 return
             }
             let viewModel = ReceiptViewModel(order: order, receipt: receipt, countryCode: countryCode)
-            let receiptViewController = ReceiptViewController(viewModel: viewModel, countryCode: countryCode)
+            let receiptViewController = ReceiptViewController(viewModel: viewModel)
             viewController.navigationController?.pushViewController(receiptViewController, animated: true)
         case .refund:
             ServiceLocator.analytics.track(.orderDetailRefundDetailTapped)

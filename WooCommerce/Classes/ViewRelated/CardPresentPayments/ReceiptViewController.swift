@@ -10,19 +10,13 @@ final class ReceiptViewController: UIViewController {
     @IBOutlet private weak var webView: WKWebView!
 
     private let viewModel: ReceiptViewModel
-    private let countryCode: String
-    private let connectedCardReaderModel: String?
 
-    private lazy var emailCoordinator: CardPresentPaymentReceiptEmailCoordinator = .init(countryCode: countryCode, cardReaderModel: connectedCardReaderModel)
+    private var emailCoordinator: CardPresentPaymentReceiptEmailCoordinator?
     private var receiptContentSubscription: AnyCancellable?
     private var emailDataSubscription: AnyCancellable?
 
-    init(viewModel: ReceiptViewModel,
-         countryCode: String,
-         connectedCardReaderModel: String? = nil) {
+    init(viewModel: ReceiptViewModel) {
         self.viewModel = viewModel
-        self.countryCode = countryCode
-        self.connectedCardReaderModel = connectedCardReaderModel
         super.init(nibName: Self.nibName, bundle: nil)
     }
 
@@ -80,14 +74,13 @@ private extension ReceiptViewController {
     }
 
     @objc func emailReceipt() {
-        ServiceLocator.analytics.track(event: .InPersonPayments
-            .receiptEmailTapped(countryCode: countryCode,
-                                cardReaderModel: connectedCardReaderModel))
-        emailDataSubscription = viewModel.emailFormData.sink { [weak self] data in
+        emailDataSubscription = viewModel.emailReceiptTapped().sink { [weak self] data, countryCode in
             guard let self = self else { return }
-            self.emailCoordinator.presentEmailForm(data: data,
-                                                   from: self,
-                                                   completion: {})
+            let emailCoordinator = CardPresentPaymentReceiptEmailCoordinator(countryCode: countryCode, cardReaderModel: nil)
+            self.emailCoordinator = emailCoordinator
+            emailCoordinator.presentEmailForm(data: data,
+                                              from: self,
+                                              completion: {})
         }
     }
 }

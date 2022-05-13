@@ -6,8 +6,8 @@ import struct Yosemite.Order
 final class CardPresentPaymentReceiptEmailCoordinator: NSObject {
     private let analytics: Analytics
     private let countryCode: String
+    private let cardReaderModel: String?
 
-    private var cardReaderModel: String?
     private var completion: (() -> Void)?
 
     /// Contains necessary data to email a receipt.

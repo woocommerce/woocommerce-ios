@@ -40,10 +40,10 @@ final class ReceiptViewModelTests: XCTestCase {
         XCTAssertEqual(content, mockContent)
     }
 
-    func test_getting_emailFormData_after_generateContent_does_not_dispatch_ReceiptAction_and_returns_latest_content() {
+    func test_emailReceiptTapped_after_generateContent_does_not_dispatch_ReceiptAction_and_returns_latest_content() {
         // Given
         let order = Order.fake()
-        let viewModel = ReceiptViewModel(order: order, receipt: .fake(), countryCode: "", stores: stores)
+        let viewModel = ReceiptViewModel(order: order, receipt: .fake(), countryCode: "CA", stores: stores)
 
         let mockStoreName = "All the sweets"
         var sessionManager = stores.sessionManager
@@ -62,13 +62,34 @@ final class ReceiptViewModelTests: XCTestCase {
         viewModel.generateContent()
         XCTAssertEqual(generateContentInvocationCount, 1)
 
-        var emailFormData: CardPresentPaymentReceiptEmailCoordinator.EmailFormData?
-        viewModel.emailFormData.sink { data in
-            emailFormData = data
-        }.store(in: &subscriptions)
+        let dataAndCountryCode = waitFor { promise in
+            viewModel.emailReceiptTapped().sink { dataAndCountryCode in
+                promise(dataAndCountryCode)
+            }.store(in: &self.subscriptions)
+        }
 
         // Then
-        XCTAssertEqual(emailFormData, .init(content: mockContent, order: order, storeName: mockStoreName))
+        XCTAssertEqual(dataAndCountryCode.formData, .init(content: mockContent, order: order, storeName: mockStoreName))
+        XCTAssertEqual(dataAndCountryCode.countryCode, "CA")
         XCTAssertEqual(generateContentInvocationCount, 1)
+    }
+
+    func test_emailReceiptTapped_tracks_receiptEmailTapped_event() throws {
+        // Given
+        let order = Order.fake()
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = ReceiptViewModel(order: order,
+                                         receipt: .fake(),
+                                         countryCode: "CA",
+                                         analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+
+        // When
+        _ = viewModel.emailReceiptTapped()
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "receipt_email_tapped"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertNil(eventProperties["card_reader_model"])
+        XCTAssertEqual(eventProperties["country"] as? String, "CA")
     }
 }

@@ -31,8 +31,17 @@ final class CouponDetailsViewModel: ObservableObject {
     ///
     @Published private(set) var amount: String = ""
 
+    /// Total number of times this coupon can be used
+    ///
+    @Published private(set) var usageLimit: Int64 = Constants.noLimit
+
     /// Number of times this coupon be used per customer
+    ///
     @Published private(set) var usageLimitPerUser: Int64 = Constants.noLimit
+
+    /// Maximum number of items which the coupon can be applied to in the cart
+    /// 
+    @Published private(set) var limitUsageToXItems: Int64 = Constants.noLimit
 
     /// If `true`, this coupon will not be applied to items that have sale prices
     ///
@@ -221,7 +230,9 @@ private extension CouponDetailsViewModel {
         summary = coupon.summary(currencySettings: currencySettings)
 
         expiryDate = coupon.dateExpires?.toString(dateStyle: .long, timeStyle: .none, timeZone: TimeZone.siteTimezone) ?? ""
+        usageLimit = coupon.usageLimit ?? Constants.noLimit
         usageLimitPerUser = coupon.usageLimitPerUser ?? Constants.noLimit
+        limitUsageToXItems = coupon.limitUsageToXItems ?? Constants.noLimit
         excludeSaleItems = coupon.excludeSaleItems
 
         if let digitMinimumAmount = Double(coupon.minimumAmount), digitMinimumAmount > 0 {

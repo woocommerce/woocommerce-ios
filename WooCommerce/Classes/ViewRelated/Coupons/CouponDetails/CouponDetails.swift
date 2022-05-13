@@ -257,15 +257,26 @@ struct CouponDetails: View {
                 Text(String.localizedStringWithFormat(Localization.maximumSpend, viewModel.maximumAmount))
                     .renderedIf(viewModel.maximumAmount.isNotEmpty)
 
-                Text(String.localizedStringWithFormat(Localization.singularLimitPerUser, viewModel.usageLimitPerUser))
-                    .renderedIf(viewModel.usageLimitPerUser == 1)
+                Text(String.pluralize(Int(viewModel.usageLimit),
+                                      singular: Localization.singularUsageLimitPerCoupon,
+                                      plural: Localization.pluralUsageLimitPerCoupon))
+                .renderedIf(viewModel.usageLimit > 0)
 
-                Text(String.localizedStringWithFormat(Localization.pluralLimitPerUser, viewModel.usageLimitPerUser))
-                    .renderedIf(viewModel.usageLimitPerUser > 1)
+                Text(String.pluralize(Int(viewModel.usageLimitPerUser),
+                                      singular: Localization.singularLimitPerUser,
+                                      plural: Localization.pluralLimitPerUser))
+                .renderedIf(viewModel.usageLimitPerUser > 0)
+
+                Text(String.pluralize(Int(viewModel.limitUsageToXItems),
+                                      singular: Localization.singularItemsInCartUsageLimit,
+                                      plural: Localization.pluralItemsInCartUsageLimit))
+                .renderedIf(viewModel.limitUsageToXItems > 0)
             }
             .renderedIf(viewModel.minimumAmount.isNotEmpty ||
                         viewModel.maximumAmount.isNotEmpty ||
-                        viewModel.usageLimitPerUser > 0)
+                        viewModel.usageLimit > 0 ||
+                        viewModel.usageLimitPerUser > 0 ||
+                        viewModel.limitUsageToXItems > 0)
 
             Text(String.localizedStringWithFormat(Localization.expiryFormat, viewModel.expiryDate))
                 .renderedIf(viewModel.expiryDate.isNotEmpty)
@@ -379,6 +390,26 @@ private extension CouponDetails {
         static let pluralLimitPerUser = NSLocalizedString(
             "%1$d uses per user",
             comment: "The plural limit of time for each user to apply a coupon, reads like: 10 uses per user"
+        )
+        static let singularItemsInCartUsageLimit = NSLocalizedString(
+                "Limited to %1$d item in cart",
+                comment: "The required number of items in the cart to apply a coupon in singular form, reads like: " +
+                        "Limited to 1 item in cart"
+        )
+        static let pluralItemsInCartUsageLimit = NSLocalizedString(
+                "Limited to %1$d items in cart",
+                comment: "The required number of items in the cart to apply a coupon in plural form, reads like: " +
+                        "Limited to 10 items in cart"
+        )
+        static let singularUsageLimitPerCoupon = NSLocalizedString(
+                "Can be used %1$d time",
+                comment: "The singular total limit where the same coupon can be applied for everyone, " +
+                        "reads like: Can be used 1 time"
+        )
+        static let pluralUsageLimitPerCoupon = NSLocalizedString(
+                "Can be used %1$d times",
+                comment: "The plural total limit where the same coupon can be applied for everyone, " +
+                        "reads like: Can be used 10 times"
         )
         static let emailRestriction = NSLocalizedString(
             "Restricted to customers with emails: %1$@",

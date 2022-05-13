@@ -118,7 +118,6 @@ final class CouponDetailsViewModel: ObservableObject {
     @Published private(set) var coupon: Coupon {
         didSet {
             populateDetails()
-            addEditCouponViewModel = createAddEditCouponViewModel(with: coupon)
         }
     }
 
@@ -223,6 +222,10 @@ final class CouponDetailsViewModel: ObservableObject {
             }
         }
         stores.dispatch(action)
+    }
+
+    func resetAddEditViewModel() {
+        addEditCouponViewModel = createAddEditCouponViewModel(with: coupon)
     }
 }
 

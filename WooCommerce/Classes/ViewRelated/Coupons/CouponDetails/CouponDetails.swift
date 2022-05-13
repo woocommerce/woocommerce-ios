@@ -185,6 +185,9 @@ struct CouponDetails: View {
             }
             .sheet(isPresented: $viewModel.showingEditCoupon) {
                 AddEditCoupon(viewModel.addEditCouponViewModel)
+                    .onDisappear {
+                        viewModel.resetAddEditViewModel()
+                    }
             }
             .alert(isPresented: $showingDeletionConfirmAlert, content: {
                 Alert(title: Text(Localization.deleteCoupon),

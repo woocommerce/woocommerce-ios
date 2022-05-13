@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-04-26 20:54:04+0000 */
+/* Translation-Revision-Date: 2022-05-12 12:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -936,7 +936,7 @@
 
 /* Button to clear selection on the Select Product Variations screen
    Button to clear selection on the Select Products screen */
-"Clear selection" = "Clear selection";
+"Clear selection" = "Limpar seleção";
 
 /* Accessibility label for the close button
    Button to dismiss modal overlay. Presented to users after refunding a payment fails - Text for the close button in the Add Product screen - Text for the close button in the Edit Address Form - Text for the close button in the Fee Details screen - Text for the close button in the Product screen - Text for the close button in the Shipping Line Details screen - Title of the Close action on the Jetpack Install view */
@@ -1516,7 +1516,7 @@
 "Edit Products" = "Editar produtos";
 
 /* Button specifying the number of products applicable to a coupon in the view for adding or editing a coupon. Reads like: Edit Products (2) */
-"Edit Products (%1$d)" = "Edit Products (%1$d)";
+"Edit Products (%1$d)" = "Editar produtos (%1$d)";
 
 /* Accessibility label for the button to edit order status on the New Order screen */
 "Edit Status" = "Editar status";
@@ -1732,10 +1732,10 @@
 "Everyone loves a deal" = "Quem não ama uma oferta?";
 
 /* Title of the action button at the bottom of the Exclude Products screen when more than 1 item is selected, reads like: Exclude 5 Products */
-"Exclude %1$d Products" = "Exclude %1$d Products";
+"Exclude %1$d Products" = "Excluir %1$d produtos";
 
 /* Title of the action button at the bottom of the Exclude Products screen when one product is selected */
-"Exclude 1 Product" = "Exclude 1 Product";
+"Exclude 1 Product" = "Excluir 1 produto";
 
 /* Title of the action button to add product categories to the exclusion list in Coupon Usage Details screen */
 "Exclude Product Categories" = "Excluir categorias de produto";
@@ -3673,10 +3673,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "See the benefits" = "Veja os benefícios";
 
 /* Title of the action button at the bottom of the Select Products screen when more than 1 item is selected, reads like: Select 5 Products */
-"Select %1$d Products" = "Select %1$d Products";
+"Select %1$d Products" = "Selecionar %1$d produtos";
 
 /* Title of the action button at the bottom of the Select Products screen when one product is selected */
-"Select 1 Product" = "Select 1 Product";
+"Select 1 Product" = "Selecionar 1 produto";
 
 /* Select all button title in the issue refund screen */
 "Select All" = "Selecionar todos";
@@ -4656,10 +4656,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Today" = "Hoje";
 
 /* Accessibility hint for selecting a product in the Select Products screen */
-"Toggles selection for this product in a coupon." = "Toggles selection for this product in a coupon.";
+"Toggles selection for this product in a coupon." = "Ativa\/desativa a seleção deste produto em um cupom.";
 
 /* Accessibility hint for excluding a product in the Exclude Products screen */
-"Toggles selection to exclude this product in a coupon." = "Toggles selection to exclude this product in a coupon.";
+"Toggles selection to exclude this product in a coupon." = "Ativa\/desativa a seleção para excluir este produto em um cupom.";
 
 /* Accessibility Identifier for the Aztec Ordered List Style. */
 "Toggles the ordered list style" = "Alterna o estilo de lista ordenada";

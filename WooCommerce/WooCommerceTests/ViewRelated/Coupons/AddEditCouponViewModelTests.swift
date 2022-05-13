@@ -50,7 +50,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
     func test_populatedCoupon_return_expected_coupon_during_editing() {
         // Given
         let timeZone = TimeZone.current
-        let expiryDate = Date()
+        let expiryDate = Date().startOfDay(timezone: timeZone)
         let viewModel = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(discountType: .percent, dateExpires: expiryDate),
                                                timezone: timeZone,
                                                onCompletion: { _ in })
@@ -61,7 +61,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
         viewModel.amountField = "24.23"
         viewModel.codeField = "TEST"
         viewModel.descriptionField = "This is a test description"
-        viewModel.expiryDateField = expiryDate
+        viewModel.expiryDateField = Date().endOfDay(timezone: timeZone)
         viewModel.freeShipping = true
         viewModel.productOrVariationIDs = [10, 50]
         viewModel.categoryIDs = [3, 9, 44]

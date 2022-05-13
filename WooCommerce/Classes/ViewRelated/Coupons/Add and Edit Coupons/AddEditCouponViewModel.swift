@@ -268,7 +268,7 @@ final class AddEditCouponViewModel: ObservableObject {
                       dateModified: coupon?.dateModified ?? Date(),
                       discountType: discountType,
                       description: descriptionField,
-                      dateExpires: expiryDateField,
+                      dateExpires: expiryDateField?.startOfDay(timezone: timezone),
                       usageCount: coupon?.usageCount ?? 0,
                       individualUse: couponRestrictionsViewModel.individualUseOnly,
                       productIds: productOrVariationIDs,

@@ -17,7 +17,7 @@ struct CouponExpiryDateView: View {
                         .environment(\.timeZone, timezone)
                         .datePickerStyle(GraphicalDatePickerStyle())
                         .onChange(of: date) { newDate in
-                            completion(newDate.startOfDay(timezone: timezone))
+                            completion(newDate)
                         }
                     Spacer()
                 }

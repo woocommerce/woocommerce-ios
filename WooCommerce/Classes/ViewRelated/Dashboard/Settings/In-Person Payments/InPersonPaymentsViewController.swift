@@ -32,6 +32,7 @@ struct InPersonPaymentsView: View {
 
     var showSupport: (() -> Void)? = nil
     var showURL: ((URL) -> Void)? = nil
+    var shouldShowMenuOnCompletion: Bool = true
 
     var body: some View {
         Group {
@@ -68,7 +69,11 @@ struct InPersonPaymentsView: View {
             case .stripeAccountRejected:
                 InPersonPaymentsStripeRejected()
             case .completed(let plugin):
-                InPersonPaymentsMenu(plugin: plugin)
+                if viewModel.showMenuOnCompletion {
+                    InPersonPaymentsMenu(plugin: plugin)
+                } else {
+                    InPersonPaymentsCompleted()
+                }
             case .noConnectionError:
                 InPersonPaymentsNoConnection(onRefresh: viewModel.refresh)
             default:
@@ -101,7 +106,7 @@ private enum Localization {
 struct InPersonPaymentsView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            InPersonPaymentsView(viewModel: InPersonPaymentsViewModel(fixedState: .genericError))
+            InPersonPaymentsView(viewModel: InPersonPaymentsViewModel(fixedState: .completed(plugin: .stripe)))
         }
     }
 }

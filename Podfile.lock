@@ -13,10 +13,10 @@ PODS:
   - Charts (3.6.0):
     - Charts/Core (= 3.6.0)
   - Charts/Core (3.6.0)
-  - CocoaLumberjack (3.5.3):
-    - CocoaLumberjack/Core (= 3.5.3)
-  - CocoaLumberjack/Core (3.5.3)
-  - CocoaLumberjack/Swift (3.5.3):
+  - CocoaLumberjack (3.7.4):
+    - CocoaLumberjack/Core (= 3.7.4)
+  - CocoaLumberjack/Core (3.7.4)
+  - CocoaLumberjack/Swift (3.7.4):
     - CocoaLumberjack/Core
   - FormatterKit/Resources (1.9.0)
   - FormatterKit/TimeIntervalFormatter (1.9.0):
@@ -30,8 +30,8 @@ PODS:
     - AppAuth/Core (~> 1.4)
     - GTMSessionFetcher/Core (~> 1.5)
   - GTMSessionFetcher/Core (1.7.0)
-  - KeychainAccess (3.2.1)
-  - Kingfisher (6.0.1)
+  - KeychainAccess (4.2.2)
+  - Kingfisher (7.2.2)
   - NSObject-SafeExpectations (0.0.4)
   - "NSURL+IDN (0.4)"
   - Sentry (6.2.1):
@@ -88,11 +88,11 @@ DEPENDENCIES:
   - Alamofire (~> 4.8)
   - Automattic-Tracks-iOS (~> 0.11.1)
   - Charts (~> 3.6.0)
-  - CocoaLumberjack (~> 3.5)
-  - CocoaLumberjack/Swift (~> 3.5)
+  - CocoaLumberjack (~> 3.7.4)
+  - CocoaLumberjack/Swift (~> 3.7.4)
   - Gridicons (~> 1.2.0)
-  - KeychainAccess (~> 3.2)
-  - Kingfisher (~> 6.0.0)
+  - KeychainAccess (~> 4.2.2)
+  - Kingfisher (~> 7.2.2)
   - Sourcery (~> 1.0.3)
   - StripeTerminal (~> 2.7)
   - WordPress-Editor-iOS (~> 1.11.0)
@@ -151,14 +151,14 @@ SPEC CHECKSUMS:
   AppAuth: 80317d99ac7ff2801a2f18ff86b48cd315ed465d
   Automattic-Tracks-iOS: 5cd49d3acf76c26b92b4094d34ba84e6b55e5425
   Charts: b1e3a1f5a1c9ba5394438ca3b91bd8c9076310af
-  CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
+  CocoaLumberjack: 543c79c114dadc3b1aba95641d8738b06b05b646
   FormatterKit: 184db51bf120b633693a73624a4cede89ec51a41
   GoogleSignIn: fd381840dbe7c1137aa6dc30849a5c3e070c034a
   Gridicons: 4455b9f366960121430e45997e32112ae49ffe1d
   GTMAppAuth: ad5c2b70b9a8689e1a04033c9369c4915bfcbe89
   GTMSessionFetcher: 43748f93435c2aa068b1cbe39655aaf600652e91
-  KeychainAccess: d5470352939ced6d6f7fb51cb2e67aae51fc294f
-  Kingfisher: adde87a4f74f6a3845395769354efff593581740
+  KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
+  Kingfisher: 184d4d1a8c36666e663caf8e08abe87898595c53
   NSObject-SafeExpectations: ab8fe623d36b25aa1f150affa324e40a2f3c0374
   "NSURL+IDN": afc873e639c18138a1589697c3add197fe8679ca
   Sentry: 9b922b396b0e0bca8516a10e36b0ea3ebea5faf7
@@ -185,6 +185,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
   ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
-PODFILE CHECKSUM: 537aa9c47a806d11c2e319e1a76494dcae5d4ac2
+PODFILE CHECKSUM: 2609413d245eaea4b659b95ba0990011105c7d20
 
 COCOAPODS: 1.11.2

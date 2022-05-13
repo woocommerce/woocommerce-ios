@@ -5,15 +5,18 @@ final class InPersonPaymentsViewModel: ObservableObject {
     @Published var state: CardPresentPaymentOnboardingState
     var userIsAdministrator: Bool
     var learnMoreURL: URL? = nil
+    let showMenuOnCompletion: Bool
     private let useCase: CardPresentPaymentsOnboardingUseCase
     let stores: StoresManager
 
     /// Initializes the view model for a specific site
     ///
     init(stores: StoresManager = ServiceLocator.stores,
-         useCase: CardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()) {
+         useCase: CardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase(),
+         showMenuOnCompletion: Bool = true) {
         self.stores = stores
         self.useCase = useCase
+        self.showMenuOnCompletion = showMenuOnCompletion
         state = useCase.state
         userIsAdministrator = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator)
 
@@ -36,6 +39,7 @@ final class InPersonPaymentsViewModel: ObservableObject {
         fixedUserIsAdministrator: Bool = false,
         stores: StoresManager = ServiceLocator.stores) {
             self.stores = stores
+            self.showMenuOnCompletion = false
             state = fixedState
             useCase = CardPresentPaymentsOnboardingUseCase()
             userIsAdministrator = fixedUserIsAdministrator

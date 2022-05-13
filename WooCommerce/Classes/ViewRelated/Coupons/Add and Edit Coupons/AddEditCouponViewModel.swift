@@ -334,7 +334,8 @@ private extension AddEditCouponViewModel {
         guard let initialCoupon = self.coupon else {
             return false
         }
-        guard let oldDate = initialCoupon.dateExpires, let newDate = coupon.dateExpires else {
+        guard let oldDate = initialCoupon.dateExpires?.startOfDay(timezone: timezone),
+                let newDate = coupon.dateExpires else {
             return initialCoupon.dateExpires != coupon.dateExpires
         }
         return !oldDate.isSameDay(as: newDate)

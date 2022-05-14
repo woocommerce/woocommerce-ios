@@ -336,7 +336,7 @@ private extension AddEditCouponViewModel {
         // since we're trimming time on the new date, we should also trim the time on the old date
         // as a workaround for the edge case where the date was created with different time zones.
         guard let oldDate = initialCoupon.dateExpires?.startOfDay(timezone: timezone),
-                let newDate = coupon.dateExpires else {
+              let newDate = coupon.dateExpires else {
             return initialCoupon.dateExpires != coupon.dateExpires
         }
         return !oldDate.isSameDay(as: newDate)

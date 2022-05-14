@@ -131,7 +131,6 @@ final class AddEditCouponViewModel: ObservableObject {
         checkAllowedProductsAndCategoriesUpdated(for: coupon) ||
         checkExpiryDateUpdated(for: coupon) ||
         checkFreeShippingUpdated(for: coupon) ||
-        checkAllowedProductsAndCategoriesUpdated(for: coupon) ||
         checkUsageRestrictionsUpdated(for: coupon)
     }
 

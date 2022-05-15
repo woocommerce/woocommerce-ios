@@ -8,6 +8,7 @@
 - [*] Coupons: Filter initial search results to show only coupons of the currently selected store. [https://github.com/woocommerce/woocommerce-ios/pull/6800]
 - [*] Coupons: Fixed crash when there are duplicated items on the coupon list. [https://github.com/woocommerce/woocommerce-ios/pull/6798]
 - [*] In-Person Payments: Run onboarding checks when connecting a reader. [https://github.com/woocommerce/woocommerce-ios/pull/6761, https://github.com/woocommerce/woocommerce-ios/pull/6774, https://github.com/woocommerce/woocommerce-ios/pull/6789]
+- [*] In-Person Payments: after collecting payment for an order, merchants can now email the receipt in addition to printing it in Order Details > See Receipt if email is available on the device. [https://github.com/woocommerce/woocommerce-ios/pull/6833]
 
 9.1
 -----

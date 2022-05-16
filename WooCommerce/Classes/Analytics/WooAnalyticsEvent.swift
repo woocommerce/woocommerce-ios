@@ -419,6 +419,13 @@ extension WooAnalyticsEvent {
                 Keys.errorDescription: errorDescription
             ])
         }
+
+        static func orderSyncFailed(errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderSyncFailed, properties: [
+                Keys.errorContext: errorContext,
+                Keys.errorDescription: errorDescription
+            ])
+        }
     }
 }
 

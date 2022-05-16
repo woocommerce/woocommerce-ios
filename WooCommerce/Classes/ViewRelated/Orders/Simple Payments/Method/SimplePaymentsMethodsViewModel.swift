@@ -152,7 +152,7 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
 
     /// Mark an order as paid and notify if successful.
     ///
-    func markOrderAsPaid(onSuccess: @escaping () -> ()) {
+    func markOrderAsPaid(paymentMethod: WooAnalyticsEvent.SimplePayments.PaymentMethod, onSuccess: @escaping () -> ()) {
         showLoadingIndicator = true
         let action = OrderAction.updateOrderStatus(siteID: siteID, orderID: orderID, status: .completed) { [weak self] error in
             guard let self = self else { return }
@@ -166,7 +166,7 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
 
             onSuccess()
             self.presentNoticeSubject.send(.completed)
-            self.trackFlowCompleted(method: .cash)
+            self.trackFlowCompleted(method: paymentMethod)
         }
         stores.dispatch(action)
     }
@@ -216,17 +216,15 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
                         }
                     },
                     onCompleted: { [weak self] in
-                        // Inform success to consumer
-                        onSuccess()
+                        guard let self = self else { return }
 
-                        // Sent notice request
-                        self?.presentNoticeSubject.send(.completed)
+                        self.markOrderAsPaid(paymentMethod: .card) {
+                            // Inform success to consumer
+                            onSuccess()
+                        }
 
                         // Make sure we free all the resources
-                        self?.collectPaymentsUseCase = nil
-
-                        // Tracks completion
-                        self?.trackFlowCompleted(method: .card)
+                        self.collectPaymentsUseCase = nil
                     })
             }
     }

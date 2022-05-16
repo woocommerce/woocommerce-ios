@@ -85,7 +85,7 @@ struct SimplePaymentsMethod: View {
                   message: Text(viewModel.payByCashInfo()),
                   primaryButton: .cancel(),
                   secondaryButton: .default(Text(Localization.markAsPaidButton), action: {
-                viewModel.markOrderAsPaid {
+                viewModel.markOrderAsPaid(paymentMethod: .cash) {
                     dismiss()
                 }
             }))

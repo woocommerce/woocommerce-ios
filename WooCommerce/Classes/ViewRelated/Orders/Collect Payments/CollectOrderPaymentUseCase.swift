@@ -294,6 +294,7 @@ private extension CollectOrderPaymentUseCase {
                 self?.alerts.displayReaderMessage(message: message)
             }, onProcessingCompletion: { [weak self] intent in
                 self?.trackProcessingCompletion(intent: intent)
+                self?.markOrderAsPaidIfNeeded(intent: intent)
             }, onCompletion: { [weak self] result in
                 switch result {
                 case .success(let capturedPaymentData):
@@ -428,6 +429,25 @@ private extension CollectOrderPaymentUseCase {
         }
 
         rootViewController.present(mail, animated: true)
+    }
+}
+
+// MARK: Interac handling
+private extension CollectOrderPaymentUseCase {
+    /// For certain payment methods like Interac in Canada, the payment is captured on the client side (customer is charged).
+    /// To prevent the order from multiple charges after the first client side success, the order is marked as paid locally in case of any
+    /// potential failures until the next order refresh.
+    func markOrderAsPaidIfNeeded(intent: PaymentIntent) {
+        guard let paymentMethod = intent.paymentMethod() else {
+            return
+        }
+        switch paymentMethod {
+        case .interacPresent:
+            let action = OrderAction.markOrderAsPaidLocally(siteID: order.siteID, orderID: order.orderID, datePaid: Date()) { _ in }
+            stores.dispatch(action)
+        default:
+            return
+        }
     }
 }
 

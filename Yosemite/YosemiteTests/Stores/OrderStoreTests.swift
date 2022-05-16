@@ -1008,6 +1008,53 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
     }
 
+    // MARK: Tests for `markOrderAsPaidLocally`
+
+    func test_markOrderAsPaidLocally_sets_order_datePaid_and_status_to_processing() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let order = Order.fake().copy(status: .pending)
+        store.upsertStoredOrder(readOnlyOrder: order, in: viewStorage)
+        // GMT: Wednesday, May 11, 2022 3:45:03 AM
+        let datePaid = Date(timeIntervalSince1970: 1652240703)
+
+        // When
+        let result: Result<Yosemite.Order, Error> = waitFor { promise in
+            let action = OrderAction.markOrderAsPaidLocally(siteID: order.siteID, orderID: order.orderID, datePaid: datePaid) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let orderOnCompletion = try XCTUnwrap(result.get())
+        // `customerNote` is default to an empty string when converting from an order in storage.
+        assertEqual(order.copy(status: .processing, customerNote: "", datePaid: datePaid), orderOnCompletion)
+
+        let orderInStorage = try XCTUnwrap(viewStorage.loadOrder(siteID: order.siteID, orderID: order.orderID)?.toReadOnly())
+        assertEqual(orderInStorage, orderOnCompletion)
+    }
+
+    func test_markOrderAsPaidLocally_returns_failure_when_there_is_no_order() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let order = Order.fake()
+        // GMT: Wednesday, May 11, 2022 3:45:03 AM
+        let datePaid = Date(timeIntervalSince1970: 1652240703)
+
+        // When
+        let result: Result<Yosemite.Order, Error> = waitFor { promise in
+            let action = OrderAction.markOrderAsPaidLocally(siteID: order.siteID, orderID: order.orderID, datePaid: datePaid) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(result.failure as? OrderStore.MarkOrderAsPaidLocallyError, .orderNotFoundInStorage)
+    }
+
     func test_delete_order_removes_order_from_storage() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)

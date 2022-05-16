@@ -4,6 +4,11 @@ import Yosemite
 import MessageUI
 import protocol Storage.StorageManagerType
 
+enum CollectOrderPaymentUseCaseError: Error {
+    case cardReaderDisconnected
+    case cancelled
+}
+
 /// Protocol to abstract the `CollectOrderPaymentUseCase`.
 /// Currently only used to facilitate unit tests.
 ///
@@ -487,10 +492,7 @@ private extension CollectOrderPaymentUseCase {
     /// Mailing a receipt failed but the SDK didn't return a more specific error
     ///
     struct UnknownEmailError: Error {}
-    enum CollectOrderPaymentUseCaseError: Error {
-        case cardReaderDisconnected
-        case cancelled
-    }
+
 
     enum Localization {
         private static let emailSubjectWithStoreName = NSLocalizedString("Your receipt from %1$@",

@@ -211,9 +211,12 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
                 self.collectPaymentsUseCase?.collectPayment(
                     backButtonTitle: Localization.continueToOrders,
                     onCollect: { [weak self] result in
-                        if result.isFailure {
-                            self?.trackFlowFailed()
-                        }
+                        guard case let .failure(error) = result else { return }
+
+                        let collectOrderPaymentUseCaseError = error as? CollectOrderPaymentUseCaseError
+                        guard collectOrderPaymentUseCaseError != CollectOrderPaymentUseCaseError.cardReaderDisconnected else { return }
+
+                        self?.trackFlowFailed()
                     },
                     onCompleted: { [weak self] in
                         // Inform success to consumer

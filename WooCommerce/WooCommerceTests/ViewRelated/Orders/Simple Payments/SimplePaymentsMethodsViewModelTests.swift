@@ -38,7 +38,7 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
                     promise(loadingStates)
                 }
                 .store(in: &self.subscriptions)
-            viewModel.markOrderAsPaid(onSuccess: {})
+            viewModel.markOrderAsPaid(paymentMethod: .cash, onSuccess: {})
         }
 
         // Then
@@ -63,7 +63,7 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
                 }
             }
 
-            viewModel.markOrderAsPaid(onSuccess: {})
+            viewModel.markOrderAsPaid(paymentMethod: .cash, onSuccess: {})
         }
 
         // Then
@@ -88,7 +88,7 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
 
         // When
         let onSuccessInvoked: Bool = waitFor { promise in
-            viewModel.markOrderAsPaid(onSuccess: {
+            viewModel.markOrderAsPaid(paymentMethod: .cash, onSuccess: {
                 promise(true)
             })
         }
@@ -124,7 +124,7 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
                 }
             }
             .store(in: &self.subscriptions)
-            viewModel.markOrderAsPaid(onSuccess: {})
+            viewModel.markOrderAsPaid(paymentMethod: .cash, onSuccess: {})
         }
 
         // Then
@@ -158,7 +158,7 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
                 }
             }
             .store(in: &self.subscriptions)
-            viewModel.markOrderAsPaid(onSuccess: {})
+            viewModel.markOrderAsPaid(paymentMethod: .cash, onSuccess: {})
         }
 
         // Then
@@ -184,7 +184,7 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
                                                        dependencies: dependencies)
 
         // When
-        viewModel.markOrderAsPaid(onSuccess: {})
+        viewModel.markOrderAsPaid(paymentMethod: .cash, onSuccess: {})
 
         // Then
         assertEqual(analytics.receivedEvents.first, WooAnalyticsStat.simplePaymentsFlowCompleted.rawValue)
@@ -198,11 +198,22 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         storage.insertSampleOrder(readOnlyOrder: .fake())
         storage.insertSamplePaymentGatewayAccount(readOnlyAccount: .fake())
 
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrderStatus(_, _, _, onCompletion):
+                onCompletion(nil)
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
         let analytics = MockAnalyticsProvider()
         let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()))
         let onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
         let dependencies = Dependencies(
             cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
+            stores: stores,
             storage: storage,
             analytics: WooAnalytics(analyticsProvider: analytics))
         let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00",
@@ -252,7 +263,7 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
                                                        dependencies: dependencies)
 
         // When
-        viewModel.markOrderAsPaid(onSuccess: {})
+        viewModel.markOrderAsPaid(paymentMethod: .cash, onSuccess: {})
 
         // Then
         assertEqual(analytics.receivedEvents.first, WooAnalyticsStat.simplePaymentsFlowFailed.rawValue)
@@ -424,11 +435,22 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         storage.insertSampleOrder(readOnlyOrder: .fake())
         storage.insertSamplePaymentGatewayAccount(readOnlyAccount: .fake())
 
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrderStatus(_, _, _, onCompletion):
+                onCompletion(nil)
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
         let noticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
         let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()))
         let onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
         let dependencies = Dependencies(presentNoticeSubject: noticeSubject,
                                         cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
+                                        stores: stores,
                                         storage: storage)
         let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00",
                                                        dependencies: dependencies)
@@ -458,9 +480,20 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         storage.insertSampleOrder(readOnlyOrder: .fake())
         storage.insertSamplePaymentGatewayAccount(readOnlyAccount: .fake())
 
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrderStatus(_, _, _, onCompletion):
+                onCompletion(nil)
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
         let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()))
         let onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
         let dependencies = Dependencies(cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
+                                        stores: stores,
                                         storage: storage)
         let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00",
                                                        dependencies: dependencies)

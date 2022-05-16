@@ -279,7 +279,7 @@ private extension DashboardViewController {
 
     func updateUI(site: Site) {
         let siteName = site.name
-        guard siteName.isEmpty == false else {
+        guard siteName.isNotEmpty else {
             shouldShowStoreNameAsSubtitle = false
             storeNameLabel.text = nil
             return

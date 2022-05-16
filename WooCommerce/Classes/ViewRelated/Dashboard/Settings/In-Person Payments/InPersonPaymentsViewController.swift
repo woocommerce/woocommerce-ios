@@ -1,7 +1,11 @@
 import SwiftUI
 
 final class InPersonPaymentsViewController: UIHostingController<InPersonPaymentsView> {
-    init(viewModel: InPersonPaymentsViewModel) {
+    private let onWillDisappear: (() -> ())?
+
+    init(viewModel: InPersonPaymentsViewModel,
+         onWillDisappear: (() -> ())? = nil) {
+        self.onWillDisappear = onWillDisappear
         super.init(rootView: InPersonPaymentsView(viewModel: viewModel))
         rootView.showSupport = { [weak self] in
             guard let self = self else { return }
@@ -16,6 +20,11 @@ final class InPersonPaymentsViewController: UIHostingController<InPersonPayments
     @objc required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        onWillDisappear?()
+        super.viewWillDisappear(animated)
+    }
 }
 
 struct InPersonPaymentsView: View {
@@ -23,6 +32,7 @@ struct InPersonPaymentsView: View {
 
     var showSupport: (() -> Void)? = nil
     var showURL: ((URL) -> Void)? = nil
+    var shouldShowMenuOnCompletion: Bool = true
 
     var body: some View {
         Group {
@@ -59,7 +69,11 @@ struct InPersonPaymentsView: View {
             case .stripeAccountRejected:
                 InPersonPaymentsStripeRejected()
             case .completed(let plugin):
-                InPersonPaymentsMenu(plugin: plugin)
+                if viewModel.showMenuOnCompletion {
+                    InPersonPaymentsMenu(plugin: plugin)
+                } else {
+                    InPersonPaymentsCompleted()
+                }
             case .noConnectionError:
                 InPersonPaymentsNoConnection(onRefresh: viewModel.refresh)
             default:
@@ -92,7 +106,7 @@ private enum Localization {
 struct InPersonPaymentsView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            InPersonPaymentsView(viewModel: InPersonPaymentsViewModel(fixedState: .genericError))
+            InPersonPaymentsView(viewModel: InPersonPaymentsViewModel(fixedState: .completed(plugin: .stripe)))
         }
     }
 }

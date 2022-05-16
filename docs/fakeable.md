@@ -28,7 +28,7 @@ func test() {
 
 ## Generating Fake Methods
 
-The `fake()` methods are generated using [Sourcery](https://github.com/krzysztofzablocki/Sourcery). For now, only `classes`, `structs`, and `enums` of the `Networking` and `Yosemite` target are supported.
+The `fake()` methods are generated using [Sourcery](https://github.com/krzysztofzablocki/Sourcery). For now, only `classes`, `structs`, and `enums` of the `Networking`, `Yosemite`, and `Hardware` targets are supported.
 
 To generate a `fake()` method:
 
@@ -41,6 +41,8 @@ To generate a `fake()` method:
         ...
     }
     ```
+    
+    Note: for enum types, if an enum only conforms to `GeneratedFakeable` its `fake()` method won't be generated. As a workaround, the enum can conform to basic protocols like `Equatable`.
 
 2. In the terminal, navigate to the project's root folder and run `rake generate`.
 
@@ -61,8 +63,17 @@ The [`rake generate`](../Rakefile) command executes the Sourcery configuration f
 ```
 Networking module → Networking-Fakes.yaml
 Yosemite module → Yosemite-Fakes.yaml
+Hardware module → Hardware-Fakes.yaml
 ```
 
 It uses a single template, [`Fakes.swifttemplate`](../CodeGeneration/Sourcery/Fakes/Fakes.swifttemplate), to generate the code. It's written using [Swift templates](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/writing-templates.html).
 
 Please refer to the [Sourcery reference](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/index.html) for more info about how to write templates.
+
+## Adding Fakeable to a New Xcode Framework
+
+1. In Xcode target settings, add Codegen to the Xcode framework in General > Frameworks and Libraries.
+2. Add a new file `{{FrameworkName}}-Fakes.yaml` under [`CodeGeneration/Sourcery/Fakes`](../CodeGeneration/Sourcery/Fakes) similar to other yaml files in the same folder.
+3. In [`Fakes.swifttemplate`](../CodeGeneration/Sourcery/Fakes/Fakes.swifttemplate), add a line to import the new framework.
+4. In [`Rakefile`](../Rakefile) which includes the script for `rake generate` command, add the new framework to the list of frameworks for Fakeable generation similar to other frameworks.
+5. Now you can try generating fake methods as instructed in an earlier section.

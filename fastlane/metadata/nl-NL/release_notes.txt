@@ -1,5 +1,1 @@
-Als er nog niet is betaald voor een bestelling, vind je bovenaan de bestelling een handige betaallink. Stuur die link naar de klant. Ze kunnen dan rechtstreeks vanaf hun telefoon of pc betalen.
-
-Deze betaalmethode is erg handig bij de nieuwe functie voor bestellingen aanmaken. Maak een bestelling aan terwijl de klant voor je staat en stuur ze vervolgens de betaallink via je site. Geweldig, toch?
-
-Je moet WooCommerce bijwerken naar 6.4 of nieuwer om deze optie in je app te krijgen.
+We hebben wat tijd besteed aan het oplossen van bugs die ervoor zorgden dat de app lastiger te gebruiken was. Een van deze bugs had betrekking op het gewicht en de afmetingen van het verzendpakket. Je kunt nu waarden met komma's invullen om decimale waarden te scheiden. Bedankt dat jullie deze bugs hebben gemeld. Jullie feedback is essentieel voor ons!

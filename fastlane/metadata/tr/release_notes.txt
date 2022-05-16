@@ -1,5 +1,1 @@
-Henüz ödeme uygulanmamış bir siparişin üst kısmında, kullanışlı bir ödeme bağlantısı bulacaksınız. Bu bağlantıyı müşterinize gönderdiğinizde, siparişin ödemesini doğrudan telefonlarından veya bilgisayarlarından yapabilirler.
-
-Bu, yeni sipariş oluşturma özelliğiyle birlikte kullanılabilen harika bir seçenektir! Bir müşteri önünüzde dururken sipariş oluşturun ve ardından kendisine ödeme bağlantısını siteniz aracılığıyla kısa mesaj olarak gönderin. Harika, değil mi?
-
-Uygulamada bu seçeneği kullanabilmek için WooCommerce 6.4 veya daha yenisine güncellemeniz gerekir.
+Biraz da uygulamayı kullanmayı zorlaştıran hataları düzeltmeye zaman ayırdık. Bunlardan biri bir ürünün ağırlık ve kargo paketi boyutlarıyla ilgili hataydı. Artıık ondalık değerleri ayırmak için normalde şekilde virgülle değer girebilirsiniz. Bu hatayı bildiren herkese teşekkürler! Görüşleriniz bizim için çok önemli!

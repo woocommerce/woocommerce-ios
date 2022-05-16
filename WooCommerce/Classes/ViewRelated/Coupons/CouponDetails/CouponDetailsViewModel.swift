@@ -31,8 +31,17 @@ final class CouponDetailsViewModel: ObservableObject {
     ///
     @Published private(set) var amount: String = ""
 
+    /// Total number of times this coupon can be used
+    ///
+    @Published private(set) var usageLimit: Int64 = Constants.noLimit
+
     /// Number of times this coupon be used per customer
+    ///
     @Published private(set) var usageLimitPerUser: Int64 = Constants.noLimit
+
+    /// Maximum number of items which the coupon can be applied to in the cart
+    /// 
+    @Published private(set) var limitUsageToXItems: Int64 = Constants.noLimit
 
     /// If `true`, this coupon will not be applied to items that have sale prices
     ///
@@ -77,6 +86,10 @@ final class CouponDetailsViewModel: ObservableObject {
     /// Indicates whether a network call is in progress
     ///
     @Published private(set) var isDeletionInProgress: Bool = false
+
+    /// Handle when the Edit Coupon Screen should be shown.
+    ///
+    @Published var showingEditCoupon: Bool = false
 
     /// The message to be shared about the coupon
     ///
@@ -142,6 +155,10 @@ final class CouponDetailsViewModel: ObservableObject {
         stores.dispatch(action)
     }
 
+    func updateCoupon(_ coupon: Coupon) {
+        self.coupon = coupon
+    }
+
     func loadCouponReport() {
         // Reset error states
         hasWCAnalyticsDisabled = false
@@ -183,9 +200,11 @@ final class CouponDetailsViewModel: ObservableObject {
             self?.isDeletionInProgress = false
             switch result {
             case .success:
+                ServiceLocator.analytics.track(.couponDeleteSuccess)
                 onSuccess()
             case .failure(let error):
                 DDLogError("⛔️ Error deleting coupon: \(error)")
+                ServiceLocator.analytics.track(.couponDeleteFailed, withError: error)
                 onFailure()
             }
         }
@@ -211,7 +230,9 @@ private extension CouponDetailsViewModel {
         summary = coupon.summary(currencySettings: currencySettings)
 
         expiryDate = coupon.dateExpires?.toString(dateStyle: .long, timeStyle: .none, timeZone: TimeZone.siteTimezone) ?? ""
+        usageLimit = coupon.usageLimit ?? Constants.noLimit
         usageLimitPerUser = coupon.usageLimitPerUser ?? Constants.noLimit
+        limitUsageToXItems = coupon.limitUsageToXItems ?? Constants.noLimit
         excludeSaleItems = coupon.excludeSaleItems
 
         if let digitMinimumAmount = Double(coupon.minimumAmount), digitMinimumAmount > 0 {

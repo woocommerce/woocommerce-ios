@@ -68,11 +68,6 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     /// Stores the connected card reader for analytics.
     private var connectedReader: CardReader?
 
-    /// Closure to inform when the full flow has been completed, after receipt management.
-    /// Needed to be saved as an instance variable because it needs to be referenced from the `MailComposer` delegate.
-    ///
-    private var onCompleted: (() -> ())?
-
     /// Alert manager to inform merchants about reader & card actions.
     ///
     private let alerts: OrderDetailsPaymentAlertsProtocol
@@ -96,6 +91,9 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                                                                                               stores: stores,
                                                                                               analytics: analytics))
     }()
+
+    /// Coordinates emailing a receipt after payment success.
+    private var receiptEmailCoordinator: CardPresentPaymentReceiptEmailCoordinator?
 
     init(siteID: Int64,
          order: Order,
@@ -204,44 +202,43 @@ private extension CollectOrderPaymentUseCase {
         // `checkCardReaderConnected` action will return a publisher that:
         // - Sends one value if there is no reader connected.
         // - Completes when a reader is connected.
-        let readerConnected = CardPresentPaymentAction.checkCardReaderConnected { [weak self] connectPublisher in
+        let readerConnected = CardPresentPaymentAction.publishCardReaderConnections() { [weak self] connectPublisher in
             guard let self = self else { return }
             self.readerSubscription = connectPublisher
-                .sink(receiveCompletion: { [weak self] _ in
+                .sink(receiveValue: { [weak self] readers in
                     guard let self = self else { return }
 
-                    // Dismiss the current connection alert before notifying the completion.
-                    // If no presented controller is found(because the reader was already connected), just notify the completion.
-                    if let connectionController = self.rootViewController.presentedViewController {
-                        connectionController.dismiss(animated: true) {
+                    if readers.isNotEmpty {
+                        // Dismiss the current connection alert before notifying the completion.
+                        // If no presented controller is found(because the reader was already connected), just notify the completion.
+                        if let connectionController = self.rootViewController.presentedViewController {
+                            connectionController.dismiss(animated: true) {
+                                onCompletion(.success(()))
+                            }
+                        } else {
                             onCompletion(.success(()))
                         }
+
+                        // Nil the subscription since we are done with the connection.
+                        self.readerSubscription = nil
                     } else {
-                        onCompletion(.success(()))
-                    }
-
-                    // Nil the subscription since we are done with the connection.
-                    self.readerSubscription = nil
-
-                }, receiveValue: { [weak self] _ in
-                    guard let self = self else { return }
-
-                    // Attempt reader connection
-                    self.connectionController.searchAndConnect(from: self.rootViewController) { [weak self] result in
-                        guard let self = self else { return }
-                        switch result {
-                        case let .success(connectionResult):
-                            switch connectionResult {
-                            case .canceled:
+                        // Attempt reader connection
+                        self.connectionController.searchAndConnect(from: self.rootViewController) { [weak self] result in
+                            guard let self = self else { return }
+                            switch result {
+                            case let .success(connectionResult):
+                                switch connectionResult {
+                                case .canceled:
+                                    self.readerSubscription = nil
+                                    onCompletion(.failure(CollectOrderPaymentUseCaseError.cardReaderDisconnected))
+                                case .connected:
+                                    // Connected case will be handled in `if readers.isNotEmpty`.
+                                    break
+                                }
+                            case .failure(let error):
                                 self.readerSubscription = nil
-                                onCompletion(.failure(CollectOrderPaymentUseCaseError.cardReaderDisconnected))
-                            case .connected:
-                                // Connected case will be handled in `receiveCompletion`.
-                                break
+                                onCompletion(.failure(error))
                             }
-                        case .failure(let error):
-                            self.readerSubscription = nil
-                            onCompletion(.failure(error))
                         }
                     }
                 })
@@ -295,6 +292,7 @@ private extension CollectOrderPaymentUseCase {
                 self?.alerts.displayReaderMessage(message: message)
             }, onProcessingCompletion: { [weak self] intent in
                 self?.trackProcessingCompletion(intent: intent)
+                self?.markOrderAsPaidIfNeeded(intent: intent)
             }, onCompletion: { [weak self] result in
                 switch result {
                 case .success(let capturedPaymentData):
@@ -401,8 +399,7 @@ private extension CollectOrderPaymentUseCase {
 
             // Request & present email
             paymentOrchestrator.emailReceipt(for: order, params: receiptParameters) { [weak self] emailContent in
-                self?.onCompleted = onCompleted // Saved to be able to reference from the `MailComposer` delegate.
-                self?.presentEmailForm(content: emailContent)
+                self?.presentEmailForm(content: emailContent, onCompleted: onCompleted)
             }
         }, noReceiptTitle: backButtonTitle,
            noReceiptAction: {
@@ -413,22 +410,35 @@ private extension CollectOrderPaymentUseCase {
 
     /// Presents the native email client with the provided content.
     ///
-    func presentEmailForm(content: String) {
-        guard MFMailComposeViewController.canSendMail() else {
-            return DDLogError("⛔️ Failed to submit email receipt for order: \(order.orderID). Email is not configured.")
+    func presentEmailForm(content: String, onCompleted: @escaping () -> ()) {
+        let coordinator = CardPresentPaymentReceiptEmailCoordinator(analytics: analytics,
+                                                                    countryCode: configuration.countryCode,
+                                                                    cardReaderModel: connectedReader?.readerType.model)
+        receiptEmailCoordinator = coordinator
+        coordinator.presentEmailForm(data: .init(content: content,
+                                                 order: order,
+                                                 storeName: stores.sessionManager.defaultSite?.name),
+                                     from: rootViewController,
+                                     completion: onCompleted)
+    }
+}
+
+// MARK: Interac handling
+private extension CollectOrderPaymentUseCase {
+    /// For certain payment methods like Interac in Canada, the payment is captured on the client side (customer is charged).
+    /// To prevent the order from multiple charges after the first client side success, the order is marked as paid locally in case of any
+    /// potential failures until the next order refresh.
+    func markOrderAsPaidIfNeeded(intent: PaymentIntent) {
+        guard let paymentMethod = intent.paymentMethod() else {
+            return
         }
-
-        let mail = MFMailComposeViewController()
-        mail.mailComposeDelegate = self
-
-        mail.setSubject(Localization.emailSubject(storeName: stores.sessionManager.defaultSite?.name))
-        mail.setMessageBody(content, isHTML: true)
-
-        if let customerEmail = order.billingAddress?.email {
-            mail.setToRecipients([customerEmail])
+        switch paymentMethod {
+        case .interacPresent:
+            let action = OrderAction.markOrderAsPaidLocally(siteID: order.siteID, orderID: order.orderID, datePaid: Date()) { _ in }
+            stores.dispatch(action)
+        default:
+            return
         }
-
-        rootViewController.present(mail, animated: true)
     }
 }
 
@@ -453,32 +463,6 @@ private extension CollectOrderPaymentUseCase {
                                               cardReaderModel: connectedReader?.readerType.model ?? ""))
         default:
             return
-        }
-    }
-}
-
-// MARK: MailComposer Delegate
-extension CollectOrderPaymentUseCase: MFMailComposeViewControllerDelegate {
-    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
-        let cardReaderModel = connectedReader?.readerType.model ?? ""
-        switch result {
-        case .cancelled:
-            analytics.track(event: .InPersonPayments.receiptEmailCanceled(countryCode: configuration.countryCode, cardReaderModel: cardReaderModel))
-        case .sent, .saved:
-            analytics.track(event: .InPersonPayments.receiptEmailSuccess(countryCode: configuration.countryCode, cardReaderModel: cardReaderModel))
-        case .failed:
-            analytics.track(event: .InPersonPayments
-                .receiptEmailFailed(error: error ?? UnknownEmailError(),
-                                    countryCode: configuration.countryCode,
-                                    cardReaderModel: cardReaderModel))
-        @unknown default:
-            assertionFailure("MFMailComposeViewController finished with an unknown result type")
-        }
-
-        // Dismiss email controller & inform flow completion.
-        controller.dismiss(animated: true) { [weak self] in
-            self?.onCompleted?()
-            self?.onCompleted = nil
         }
     }
 }

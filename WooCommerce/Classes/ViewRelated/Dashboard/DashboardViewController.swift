@@ -277,8 +277,9 @@ private extension DashboardViewController {
         spacerView.isHidden = true
     }
 
-    func updateUI(site: Site?) {
-        guard let siteName = site?.name, siteName.isEmpty == false else {
+    func updateUI(site: Site) {
+        let siteName = site.name
+        guard siteName.isNotEmpty else {
             shouldShowStoreNameAsSubtitle = false
             storeNameLabel.text = nil
             return
@@ -417,6 +418,11 @@ private extension DashboardViewController {
     func observeSiteForUIUpdates() {
         ServiceLocator.stores.site.sink { [weak self] site in
             guard let self = self else { return }
+            // We always want to update UI based on the latest site only if it matches the view controller's site ID.
+            // When switching stores, this is triggered on the view controller of the previous site ID.
+            guard let site = site, site.siteID == self.siteID else {
+                return
+            }
             self.updateUI(site: site)
             self.reloadData(forced: true)
         }.store(in: &subscriptions)

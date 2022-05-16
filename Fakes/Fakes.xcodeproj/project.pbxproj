@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		02B5147E2825532A00750B71 /* Hardware.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B5147D2825532A00750B71 /* Hardware.generated.swift */; };
 		26106B3D25FA4F6C0000DF30 /* ProductFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26106B3C25FA4F6C0000DF30 /* ProductFactory.swift */; };
 		263E383C2641FED600260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E383B2641FED600260D3B /* Codegen */; };
 		26CA6D2625F6C87800B01F48 /* Fakes.h in Headers */ = {isa = PBXBuildFile; fileRef = 26CA6D2425F6C87800B01F48 /* Fakes.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -31,6 +32,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		02B5147D2825532A00750B71 /* Hardware.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hardware.generated.swift; sourceTree = "<group>"; };
 		26106B3C25FA4F6C0000DF30 /* ProductFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFactory.swift; sourceTree = "<group>"; };
 		26CA6D2125F6C87800B01F48 /* Fakes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Fakes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		26CA6D2425F6C87800B01F48 /* Fakes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Fakes.h; sourceTree = "<group>"; };
@@ -86,6 +88,7 @@
 			isa = PBXGroup;
 			children = (
 				26CA6D2D25F6C8FB00B01F48 /* Fake.swift */,
+				02B5147D2825532A00750B71 /* Hardware.generated.swift */,
 				26EEDC8E26FE1C7B00D5BA0E /* Networking.generated.swift */,
 				26EEDC8F26FE1C7B00D5BA0E /* Yosemite.generated.swift */,
 				26106B3B25FA4F5F0000DF30 /* Products */,
@@ -189,6 +192,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				26CA6D2F25F6C8FC00B01F48 /* Fake.swift in Sources */,
+				02B5147E2825532A00750B71 /* Hardware.generated.swift in Sources */,
 				26EEDC9026FE1C7B00D5BA0E /* Networking.generated.swift in Sources */,
 				26106B3D25FA4F6C0000DF30 /* ProductFactory.swift in Sources */,
 				26EEDC9126FE1C7B00D5BA0E /* Yosemite.generated.swift in Sources */,

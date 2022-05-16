@@ -54,3 +54,14 @@ struct PriceInputFormatter: UnitInputFormatter {
         return formattedText
     }
 }
+
+extension PriceInputFormatter {
+    func value(from input: String) -> NSNumber? {
+        guard input.isNotEmpty else {
+            // Allows empty input to be replaced by 0.
+            return NSNumber(value: 0)
+        }
+
+        return numberFormatterPoint.number(from: input) ?? numberFormatterComma.number(from: input)
+    }
+}

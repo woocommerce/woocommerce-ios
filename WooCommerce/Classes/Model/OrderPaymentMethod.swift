@@ -9,6 +9,9 @@ enum OrderPaymentMethod: RawRepresentable {
     /// WooCommerce Payments
     case woocommercePayments
 
+    /// Stripe
+    case stripe
+
     /// No payment method assigned.
     case none
 
@@ -25,6 +28,8 @@ enum OrderPaymentMethod: RawRepresentable {
             self = .cod
         case Keys.woocommercePayments:
             self = .woocommercePayments
+        case Keys.stripe:
+            self = .stripe
         case Keys.none:
             self = .none
         default:
@@ -40,6 +45,8 @@ enum OrderPaymentMethod: RawRepresentable {
             return Keys.cod
         case .woocommercePayments:
             return Keys.woocommercePayments
+        case .stripe:
+            return Keys.stripe
         case .none:
             return Keys.none
         default:
@@ -53,6 +60,7 @@ private enum Keys {
     static let booking = "wc-booking-gateway"
     static let cod = "cod"
     static let woocommercePayments = "woocommerce_payments"
+    static let stripe = "stripe"
     static let none = ""
     static let unknown = "unknown"
 }

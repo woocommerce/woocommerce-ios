@@ -1,5 +1,1 @@
-Encontrarás un enlace de pago práctico en la parte superior de un pedido al que todavía no se haya aplicado ningún pago. Envía ese enlace al cliente y podrá realizar el pago del pedido desde su teléfono u ordenador.
-
-Esta es una muy buena opción para usar con la nueva función de creación de pedidos. Crea un pedido con el cliente delante de ti y, luego, envíale el enlace de pago a través de tu sitio web. Increíble, ¿verdad?
-
-Para disfrutar de esta opción en la aplicación, tendrás que tener la versión 6.4 de WooCommerce o una superior.
+Hemos dedicado un tiempo a corregir los errores que dificultaban el uso de la aplicación. Uno de ellos estaba relacionado con el peso y las dimensiones de envío del paquete del producto. Ahora la acción de introducir comas para separar los valores decimales funciona correctamente. Gracias a todos los que nos habéis informado de este problema. Vuestros comentarios son esenciales para nosotros.

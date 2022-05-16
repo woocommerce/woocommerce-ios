@@ -1,6 +1,8 @@
+import Codegen
+
 /// A PaymentIntent tracks the process of collecting a payment from your customer.
 /// We would create exactly one PaymentIntent for each order
-public struct PaymentIntent: Identifiable {
+public struct PaymentIntent: Identifiable, GeneratedCopiable, GeneratedFakeable {
     /// Unique identifier for the PaymentIntent
     public let id: String
 
@@ -23,6 +25,22 @@ public struct PaymentIntent: Identifiable {
 
     // Charges that were created by this PaymentIntent, if any.
     public let charges: [Charge]
+
+    public init(id: String,
+                status: PaymentIntentStatus,
+                created: Date,
+                amount: UInt,
+                currency: String,
+                metadata: [String: String]?,
+                charges: [Charge]) {
+        self.id = id
+        self.status = status
+        self.created = created
+        self.amount = amount
+        self.currency = currency
+        self.metadata = metadata
+        self.charges = charges
+    }
 }
 
 

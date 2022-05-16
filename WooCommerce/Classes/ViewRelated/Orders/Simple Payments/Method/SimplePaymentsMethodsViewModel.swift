@@ -214,7 +214,7 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
                         guard case let .failure(error) = result else { return }
 
                         let collectOrderPaymentUseCaseError = error as? CollectOrderPaymentUseCaseError
-                        guard collectOrderPaymentUseCaseError != CollectOrderPaymentUseCaseError.cardReaderDisconnected else { return }
+                        guard collectOrderPaymentUseCaseError != CollectOrderPaymentUseCaseError.flowCanceledByUser else { return }
 
                         self?.trackFlowFailed()
                     },

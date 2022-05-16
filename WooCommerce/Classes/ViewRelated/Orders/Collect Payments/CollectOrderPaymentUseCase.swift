@@ -5,8 +5,7 @@ import MessageUI
 import protocol Storage.StorageManagerType
 
 enum CollectOrderPaymentUseCaseError: Error {
-    case cardReaderDisconnected
-    case cancelled
+    case flowCanceledByUser
 }
 
 /// Protocol to abstract the `CollectOrderPaymentUseCase`.
@@ -237,7 +236,7 @@ private extension CollectOrderPaymentUseCase {
                                 switch connectionResult {
                                 case .canceled:
                                     self.readerSubscription = nil
-                                    onCompletion(.failure(CollectOrderPaymentUseCaseError.cardReaderDisconnected))
+                                    onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
                                 case .connected:
                                     // Connected case will be handled in `if readers.isNotEmpty`.
                                     break
@@ -272,7 +271,7 @@ private extension CollectOrderPaymentUseCase {
                              amount: formattedAmount,
                              onCancel: { [weak self] in
             self?.cancelPayment {
-                onCompletion(.failure(CollectOrderPaymentUseCaseError.cancelled))
+                onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
             }
         })
 
@@ -287,7 +286,7 @@ private extension CollectOrderPaymentUseCase {
                    // Request card input
                    self?.alerts.tapOrInsertCard(onCancel: { [weak self] in
                        self?.cancelPayment {
-                           onCompletion(.failure(CollectOrderPaymentUseCaseError.cancelled))
+                           onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
                        }
                    })
 

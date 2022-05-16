@@ -1023,12 +1023,12 @@ extension WooAnalyticsEvent {
         /// - Parameter countryCode: the country code of the store.
         /// - Parameter cardReaderModel: the model type of the card reader.
         ///
-        static func receiptEmailTapped(countryCode: String, cardReaderModel: String) -> WooAnalyticsEvent {
+        static func receiptEmailTapped(countryCode: String, cardReaderModel: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .receiptEmailTapped,
                               properties: [
                                 Keys.countryCode: countryCode,
                                 Keys.cardReaderModel: cardReaderModel
-                              ])
+                              ].compactMapValues { $0 })
         }
 
         /// Tracked when sending or saving the receipt email failed.
@@ -1037,12 +1037,12 @@ extension WooAnalyticsEvent {
         ///   - countryCode: the country code of the store.
         ///   - cardReaderModel: the model type of the card reader.
         ///
-        static func receiptEmailFailed(error: Error, countryCode: String, cardReaderModel: String) -> WooAnalyticsEvent {
+        static func receiptEmailFailed(error: Error, countryCode: String, cardReaderModel: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .receiptEmailFailed,
                               properties: [
                                 Keys.countryCode: countryCode,
                                 Keys.cardReaderModel: cardReaderModel
-                              ],
+                              ].compactMapValues { $0 },
                               error: error)
         }
 
@@ -1050,23 +1050,23 @@ extension WooAnalyticsEvent {
         /// - Parameter countryCode: the country code of the store.
         /// - Parameter cardReaderModel: the model type of the card reader.
         ///
-        static func receiptEmailCanceled(countryCode: String, cardReaderModel: String) -> WooAnalyticsEvent {
+        static func receiptEmailCanceled(countryCode: String, cardReaderModel: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .receiptEmailCanceled,
                               properties: [
                                 Keys.countryCode: countryCode,
                                 Keys.cardReaderModel: cardReaderModel
-                              ])
+                              ].compactMapValues { $0 })
         }
 
         /// Tracked when the receipt was sent by email.
         /// - Parameter countryCode: the country code of the store.
         ///
-        static func receiptEmailSuccess(countryCode: String, cardReaderModel: String) -> WooAnalyticsEvent {
+        static func receiptEmailSuccess(countryCode: String, cardReaderModel: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .receiptEmailSuccess,
                               properties: [
                                 Keys.countryCode: countryCode,
                                 Keys.cardReaderModel: cardReaderModel
-                              ])
+                              ].compactMapValues { $0 })
         }
 
         /// Tracked when the user tapped on the button to print a receipt.

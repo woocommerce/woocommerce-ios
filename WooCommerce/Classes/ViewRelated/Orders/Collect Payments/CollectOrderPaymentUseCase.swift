@@ -68,11 +68,6 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     /// Stores the connected card reader for analytics.
     private var connectedReader: CardReader?
 
-    /// Closure to inform when the full flow has been completed, after receipt management.
-    /// Needed to be saved as an instance variable because it needs to be referenced from the `MailComposer` delegate.
-    ///
-    private var onCompleted: (() -> ())?
-
     /// Alert manager to inform merchants about reader & card actions.
     ///
     private let alerts: OrderDetailsPaymentAlertsProtocol
@@ -96,6 +91,9 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                                                                                               stores: stores,
                                                                                               analytics: analytics))
     }()
+
+    /// Coordinates emailing a receipt after payment success.
+    private var receiptEmailCoordinator: CardPresentPaymentReceiptEmailCoordinator?
 
     init(siteID: Int64,
          order: Order,
@@ -401,8 +399,7 @@ private extension CollectOrderPaymentUseCase {
 
             // Request & present email
             paymentOrchestrator.emailReceipt(for: order, params: receiptParameters) { [weak self] emailContent in
-                self?.onCompleted = onCompleted // Saved to be able to reference from the `MailComposer` delegate.
-                self?.presentEmailForm(content: emailContent)
+                self?.presentEmailForm(content: emailContent, onCompleted: onCompleted)
             }
         }, noReceiptTitle: backButtonTitle,
            noReceiptAction: {
@@ -413,22 +410,16 @@ private extension CollectOrderPaymentUseCase {
 
     /// Presents the native email client with the provided content.
     ///
-    func presentEmailForm(content: String) {
-        guard MFMailComposeViewController.canSendMail() else {
-            return DDLogError("⛔️ Failed to submit email receipt for order: \(order.orderID). Email is not configured.")
-        }
-
-        let mail = MFMailComposeViewController()
-        mail.mailComposeDelegate = self
-
-        mail.setSubject(Localization.emailSubject(storeName: stores.sessionManager.defaultSite?.name))
-        mail.setMessageBody(content, isHTML: true)
-
-        if let customerEmail = order.billingAddress?.email {
-            mail.setToRecipients([customerEmail])
-        }
-
-        rootViewController.present(mail, animated: true)
+    func presentEmailForm(content: String, onCompleted: @escaping () -> ()) {
+        let coordinator = CardPresentPaymentReceiptEmailCoordinator(analytics: analytics,
+                                                                    countryCode: configuration.countryCode,
+                                                                    cardReaderModel: connectedReader?.readerType.model)
+        receiptEmailCoordinator = coordinator
+        coordinator.presentEmailForm(data: .init(content: content,
+                                                 order: order,
+                                                 storeName: stores.sessionManager.defaultSite?.name),
+                                     from: rootViewController,
+                                     completion: onCompleted)
     }
 }
 
@@ -472,32 +463,6 @@ private extension CollectOrderPaymentUseCase {
                                               cardReaderModel: connectedReader?.readerType.model ?? ""))
         default:
             return
-        }
-    }
-}
-
-// MARK: MailComposer Delegate
-extension CollectOrderPaymentUseCase: MFMailComposeViewControllerDelegate {
-    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
-        let cardReaderModel = connectedReader?.readerType.model ?? ""
-        switch result {
-        case .cancelled:
-            analytics.track(event: .InPersonPayments.receiptEmailCanceled(countryCode: configuration.countryCode, cardReaderModel: cardReaderModel))
-        case .sent, .saved:
-            analytics.track(event: .InPersonPayments.receiptEmailSuccess(countryCode: configuration.countryCode, cardReaderModel: cardReaderModel))
-        case .failed:
-            analytics.track(event: .InPersonPayments
-                .receiptEmailFailed(error: error ?? UnknownEmailError(),
-                                    countryCode: configuration.countryCode,
-                                    cardReaderModel: cardReaderModel))
-        @unknown default:
-            assertionFailure("MFMailComposeViewController finished with an unknown result type")
-        }
-
-        // Dismiss email controller & inform flow completion.
-        controller.dismiss(animated: true) { [weak self] in
-            self?.onCompleted?()
-            self?.onCompleted = nil
         }
     }
 }

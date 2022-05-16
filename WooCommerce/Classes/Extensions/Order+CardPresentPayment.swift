@@ -47,7 +47,7 @@ extension Order {
     private var isPaymentMethodEligibleForCardPayment: Bool {
         let paymentMethod = OrderPaymentMethod(rawValue: paymentMethodID)
         switch paymentMethod {
-        case .booking, .cod, .woocommercePayments, .none:
+        case .booking, .cod, .woocommercePayments, .stripe, .none:
             return true
         case .unknown:
             return false

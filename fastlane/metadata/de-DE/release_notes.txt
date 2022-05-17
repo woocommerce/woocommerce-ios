@@ -1,1 +1,0 @@
-Wir haben Fehler behoben, die die Nutzung der App erschwert haben. Bei einem Fehler geht es um Gewicht und Abmessungen des Versandpakets von Produkten. Ab sofort können Werte mit Komma als Dezimaltrennzeichen wie erwartet eingegeben werden. Vielen Dank an alle, die dieses Problem gemeldet haben! Euer Feedback ist enorm wichtig für uns!

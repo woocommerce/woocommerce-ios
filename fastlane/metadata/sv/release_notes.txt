@@ -1,1 +1,0 @@
-Vi har lagt lite tid på att åtgärda fel som gjorde appen svårare att använda. Ett av dessa fel involverade vikten och fraktpaketets dimensioner för en produkt. Att ange värden med kommatecken för att separera decimalvärden fungerar nu som förväntat. Tack till alla som har rapporterat det här felet. Er feedback är jätteviktig för oss.

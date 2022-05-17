@@ -1,1 +1,0 @@
-Biraz da uygulamayı kullanmayı zorlaştıran hataları düzeltmeye zaman ayırdık. Bunlardan biri bir ürünün ağırlık ve kargo paketi boyutlarıyla ilgili hataydı. Artıık ondalık değerleri ayırmak için normalde şekilde virgülle değer girebilirsiniz. Bu hatayı bildiren herkese teşekkürler! Görüşleriniz bizim için çok önemli!

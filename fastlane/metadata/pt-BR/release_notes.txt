@@ -1,1 +1,0 @@
-Corrigimos os bugs que dificultavam o uso do app, o que inclui o erro nas dimensões e no peso do pacote para envio de um produto. Agora, já é possível inserir valores com vírgulas para separar casas decimais. Agradecemos a todos que relataram esse erro. O feedback de vocês é essencial para nós.

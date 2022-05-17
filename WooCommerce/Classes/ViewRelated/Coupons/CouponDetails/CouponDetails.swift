@@ -27,6 +27,8 @@ struct CouponDetails: View {
     // Closure to be triggered when the coupon is deleted successfully
     private let onDeletion: () -> Void
 
+    private let onEditCoupon: () -> Void
+
     @ObservedObject private var viewModel: CouponDetailsViewModel
     @ObservedObject private var addEditCouponViewModel: AddEditCouponViewModel
     @State private var showingActionSheet: Bool = false
@@ -42,10 +44,14 @@ struct CouponDetails: View {
     /// It is kept internal so that the hosting controller can update its presenting controller to itself.
     let noticePresenter: DefaultNoticePresenter
 
-    init(viewModel: CouponDetailsViewModel, onUpdate: @escaping () -> Void, onDeletion: @escaping () -> Void) {
+    init(viewModel: CouponDetailsViewModel,
+         onUpdate: @escaping () -> Void,
+         onDeletion: @escaping () -> Void,
+         onEditCoupon: @escaping () -> Void = {}) {
         self.viewModel = viewModel
         self.onDeletion = onDeletion
         self.onUpdate = onUpdate
+        self.onEditCoupon = onEditCoupon
         self.noticePresenter = DefaultNoticePresenter()
         viewModel.syncCoupon()
         viewModel.loadCouponReport()
@@ -202,7 +208,9 @@ struct CouponDetails: View {
                     viewModel.loadCouponReport()
                 })
             }
-            .sheet(isPresented: $viewModel.showingEditCoupon) {
+            .sheet(isPresented: $viewModel.showingEditCoupon, onDismiss: {
+                onEditCoupon()
+            }) {
                 AddEditCoupon(addEditCouponViewModel)
             }
             .alert(isPresented: $showingDeletionConfirmAlert, content: {

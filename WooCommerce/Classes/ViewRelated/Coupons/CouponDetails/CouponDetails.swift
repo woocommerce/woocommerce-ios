@@ -5,8 +5,13 @@ import Yosemite
 ///
 final class CouponDetailsHostingController: UIHostingController<CouponDetails> {
 
-    init(viewModel: CouponDetailsViewModel, onUpdate: @escaping () -> Void, onDeletion: @escaping () -> Void) {
-        super.init(rootView: CouponDetails(viewModel: viewModel, onUpdate: onUpdate, onDeletion: onDeletion))
+    init(viewModel: CouponDetailsViewModel,
+         onUpdate: @escaping () -> Void,
+         onDeletion: @escaping () -> Void,
+         onEditCoupon: @escaping (AddEditCouponViewModel) -> Void) {
+        var couponDetails = CouponDetails(viewModel: viewModel, onUpdate: onUpdate, onDeletion: onDeletion, onEditCoupon: onEditCoupon)
+        super.init(rootView: couponDetails)
+
         // The navigation title is set here instead of the SwiftUI view's `navigationTitle`
         // to avoid the blinking of the title label when pushed from UIKit view.
         title = viewModel.couponCode
@@ -27,7 +32,7 @@ struct CouponDetails: View {
     // Closure to be triggered when the coupon is deleted successfully
     private let onDeletion: () -> Void
 
-    private let onEditCoupon: () -> Void
+    private let onEditCoupon: (AddEditCouponViewModel) -> Void
 
     @ObservedObject private var viewModel: CouponDetailsViewModel
     @ObservedObject private var addEditCouponViewModel: AddEditCouponViewModel
@@ -47,7 +52,7 @@ struct CouponDetails: View {
     init(viewModel: CouponDetailsViewModel,
          onUpdate: @escaping () -> Void,
          onDeletion: @escaping () -> Void,
-         onEditCoupon: @escaping () -> Void = {}) {
+         onEditCoupon: @escaping (AddEditCouponViewModel) -> Void = {_ in }) {
         self.viewModel = viewModel
         self.onDeletion = onDeletion
         self.onUpdate = onUpdate
@@ -209,7 +214,7 @@ struct CouponDetails: View {
                 })
             }
             .sheet(isPresented: $viewModel.showingEditCoupon, onDismiss: {
-                onEditCoupon()
+                onEditCoupon(addEditCouponViewModel)
             }) {
                 AddEditCoupon(addEditCouponViewModel)
             }

@@ -202,6 +202,10 @@ extension CouponListViewController: UITableViewDelegate {
             self.navigationController?.popViewController(animated: true)
             let notice = Notice(title: Localization.couponDeleted, feedbackType: .success)
             self.noticePresenter.enqueue(notice: notice)
+        } onEditCoupon:  { [weak self] addEditCouponViewModel in
+            guard let self = self else { return }
+            let addEditHostingController = AddEditCouponHostingController(viewModel: addEditCouponViewModel)
+            self.navigationController?.pushViewController(addEditHostingController, animated: true)
         }
         navigationController?.pushViewController(hostingController, animated: true)
     }

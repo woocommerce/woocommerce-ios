@@ -1,5 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+9.3
+-----
+- [*] In-Person Payments: Accessibility improvement [https://github.com/woocommerce/woocommerce-ios/pull/6869]
+
+
 9.2
 -----
 - [***] Experimental Features: Coupons editing and deletion features are now enabled as part of coupon management. [https://github.com/woocommerce/woocommerce-ios/pull/6853]

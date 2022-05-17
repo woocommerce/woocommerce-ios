@@ -4,6 +4,10 @@ import Yosemite
 import MessageUI
 import protocol Storage.StorageManagerType
 
+enum CollectOrderPaymentUseCaseError: Error {
+    case flowCanceledByUser
+}
+
 /// Protocol to abstract the `CollectOrderPaymentUseCase`.
 /// Currently only used to facilitate unit tests.
 ///
@@ -148,8 +152,8 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                     }
                     self?.presentReceiptAlert(receiptParameters: paymentData.receiptParameters, backButtonTitle: backButtonTitle, onCompleted: onCompleted)
                 })
-            case .failure:
-                onCompleted()
+            case .failure(let error):
+                onCollect(.failure(error))
             }
         }
     }
@@ -230,7 +234,7 @@ private extension CollectOrderPaymentUseCase {
                                 switch connectionResult {
                                 case .canceled:
                                     self.readerSubscription = nil
-                                    onCompletion(.failure(CollectOrderPaymentUseCaseError.cardReaderDisconnected))
+                                    onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
                                 case .connected:
                                     // Connected case will be handled in `if readers.isNotEmpty`.
                                     break
@@ -265,7 +269,7 @@ private extension CollectOrderPaymentUseCase {
                              amount: formattedAmount,
                              onCancel: { [weak self] in
             self?.cancelPayment {
-                onCompletion(.failure(CollectOrderPaymentUseCaseError.cancelled))
+                onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
             }
         })
 
@@ -280,7 +284,7 @@ private extension CollectOrderPaymentUseCase {
                    // Request card input
                    self?.alerts.tapOrInsertCard(onCancel: { [weak self] in
                        self?.cancelPayment {
-                           onCompletion(.failure(CollectOrderPaymentUseCaseError.cancelled))
+                           onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
                        }
                    })
 
@@ -472,10 +476,7 @@ private extension CollectOrderPaymentUseCase {
     /// Mailing a receipt failed but the SDK didn't return a more specific error
     ///
     struct UnknownEmailError: Error {}
-    enum CollectOrderPaymentUseCaseError: Error {
-        case cardReaderDisconnected
-        case cancelled
-    }
+
 
     enum Localization {
         private static let emailSubjectWithStoreName = NSLocalizedString("Your receipt from %1$@",

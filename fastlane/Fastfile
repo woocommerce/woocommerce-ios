@@ -693,8 +693,11 @@ platform :ios do
 
   desc 'Downloads localized strings and App Store Connect metadata from GlotPress'
   lane :download_localized_strings_and_metadata_from_glotpress do
-    download_localized_strings_from_glotpress
-    download_localized_metadata_from_glotpress
+    # FIXME: Using old approach for testing only
+    #
+    # download_localized_strings_from_glotpress
+    # download_localized_metadata_from_glotpress
+    ios_update_metadata
   end
 
   desc 'Downloads localized `.strings` from GlotPress'

@@ -1,9 +1,80 @@
 import SwiftUI
 import Yosemite
 
+final class AddEditCouponHostingController: UIHostingController<AddEditCoupon> {
+
+    private let viewModel: AddEditCouponViewModel
+
+    init(viewModel: AddEditCouponViewModel) {
+        self.viewModel = viewModel
+        super.init(rootView: AddEditCoupon(viewModel))
+
+        // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
+        rootView.dismissHandler = { [weak self] in
+            self?.dismiss(animated: true)
+        }
+    }
+
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        handleSwipeBackGesture()
+    }
+}
+
+extension AddEditCouponHostingController {
+    override func shouldPopOnBackButton() -> Bool {
+        guard !viewModel.hasChangesMade else {
+            presentDiscardChangesActionSheet(onDiscard: { [weak self] in
+                self?.discardOrderAndPop()
+            })
+            return false
+        }
+        return true
+    }
+
+    override func shouldPopOnSwipeBack() -> Bool {
+        return shouldPopOnBackButton()
+    }
+}
+
+extension AddEditCouponHostingController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+        return !viewModel.hasChangesMade
+    }
+
+    func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
+        presentDiscardChangesActionSheet(onDiscard: { [weak self] in
+            self?.discardOrderAndDismiss()
+        })
+    }
+}
+
+extension AddEditCouponHostingController {
+    func presentDiscardChangesActionSheet(onDiscard: @escaping () -> Void) {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: onDiscard)
+    }
+
+    func discardOrderAndDismiss() {
+        dismiss(animated: true)
+    }
+
+    func discardOrderAndPop() {
+        navigationController?.popViewController(animated: true)
+    }
+}
+
+
 /// A view for Adding or Editing a Coupon.
 ///
 struct AddEditCoupon: View {
+    /// Set this closure with UIKit dismiss code. Needed because we need access to the UIHostingController `dismiss` method.
+    ///
+    var dismissHandler: () -> Void = {}
 
     @ObservedObject private var viewModel: AddEditCouponViewModel
     @State private var showingEditDescription: Bool = false

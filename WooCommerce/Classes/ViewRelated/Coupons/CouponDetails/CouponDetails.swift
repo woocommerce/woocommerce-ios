@@ -216,7 +216,7 @@ struct CouponDetails: View {
             .sheet(isPresented: $viewModel.showingEditCoupon, onDismiss: {
                 onEditCoupon(addEditCouponViewModel)
             }) {
-                AddEditCoupon(addEditCouponViewModel)
+                AddEditCouponHostingControllerBridge(viewModel: addEditCouponViewModel)
             }
             .alert(isPresented: $showingDeletionConfirmAlert, content: {
                 Alert(title: Text(Localization.deleteCoupon),

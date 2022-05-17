@@ -28,7 +28,7 @@ final class MockPushNotificationsManager: PushNotesManager {
 
     }
 
-    func resetBadgeCountForAllStores(onCompletion: @escaping () -> Void) {
+    func resetBadgeCountForAllStores() async {
 
     }
 

@@ -95,7 +95,9 @@ class AuthenticatedState: StoresManagerState {
         let pushNotesManager = ServiceLocator.pushNotesManager
 
         pushNotesManager.unregisterForRemoteNotifications()
-        pushNotesManager.resetBadgeCountForAllStores(onCompletion: {})
+        Task {
+            await pushNotesManager.resetBadgeCountForAllStores()
+        }
 
         resetServices()
     }

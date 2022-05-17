@@ -67,7 +67,6 @@ final class PushNotificationsManagerTests: XCTestCase {
     }
 
     override func tearDown() {
-        manager.resetBadgeCountForAllStores {}
         manager = nil
         userNotificationCenter = nil
         supportManager = nil
@@ -595,8 +594,9 @@ final class PushNotificationsManagerTests: XCTestCase {
         application.applicationIconBadgeNumber = 90
 
         // Action
-        waitFor { promise in
-            self.manager.resetBadgeCountForAllStores {
+        let _: Void = waitFor { promise in
+            Task {
+                await self.manager.resetBadgeCountForAllStores()
                 promise(())
             }
         }

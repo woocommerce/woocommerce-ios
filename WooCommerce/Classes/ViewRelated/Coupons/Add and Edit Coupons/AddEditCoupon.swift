@@ -30,7 +30,7 @@ extension AddEditCouponHostingController {
     override func shouldPopOnBackButton() -> Bool {
         guard !viewModel.hasChangesMade else {
             presentDiscardChangesActionSheet(onDiscard: { [weak self] in
-                self?.discardOrderAndPop()
+                self?.discardAndPop()
             })
             return false
         }
@@ -49,25 +49,35 @@ extension AddEditCouponHostingController: UIAdaptivePresentationControllerDelega
 
     func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
         presentDiscardChangesActionSheet(onDiscard: { [weak self] in
-            self?.discardOrderAndDismiss()
+            self?.discardAndDismiss()
         })
     }
 }
 
-extension AddEditCouponHostingController {
+private extension AddEditCouponHostingController {
     func presentDiscardChangesActionSheet(onDiscard: @escaping () -> Void) {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: onDiscard)
     }
 
-    func discardOrderAndDismiss() {
+    func discardAndDismiss() {
         dismiss(animated: true)
     }
 
-    func discardOrderAndPop() {
+    func discardAndPop() {
         navigationController?.popViewController(animated: true)
     }
 }
 
+struct AddEditCouponHostingControllerBridge: UIViewControllerRepresentable {
+    let viewModel: AddEditCouponViewModel
+
+    func makeUIViewController(context: Context) -> AddEditCouponHostingController {
+        AddEditCouponHostingController(viewModel: viewModel)
+    }
+
+    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
+    }
+}
 
 /// A view for Adding or Editing a Coupon.
 ///

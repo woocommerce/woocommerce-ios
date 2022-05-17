@@ -206,7 +206,7 @@ platform :ios do
   desc 'Updates a release branch for a new beta release'
   lane :new_beta_release do |options|
     ios_betabuild_prechecks(options)
-    ios_update_metadata(options)
+    download_localized_strings_and_metadata_from_glotpress
     ios_lint_localizations(input_dir: 'WooCommerce/Resources', allow_retry: true)
     ios_bump_version_beta
     version = ios_get_app_version
@@ -282,7 +282,7 @@ platform :ios do
       abort_on_violations: false
     )
 
-    ios_update_metadata(options)
+    download_localized_strings_and_metadata_from_glotpress
     ios_lint_localizations(input_dir: 'WooCommerce/Resources', allow_retry: true)
     ios_bump_version_beta
 

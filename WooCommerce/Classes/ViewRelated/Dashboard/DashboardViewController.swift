@@ -112,13 +112,13 @@ final class DashboardViewController: UIViewController {
         observeSiteForUIUpdates()
         observeBottomJetpackBenefitsBannerVisibilityUpdates()
         observeNavigationBarHeightForStoreNameLabelVisibility()
+        reloadDashboardUIStatsVersion(forced: true)
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // Reset title to prevent it from being empty right after login
         configureTitle()
-        reloadDashboardUIStatsVersion(forced: false)
     }
 
     override func viewDidLayoutSubviews() {

@@ -76,6 +76,22 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
             cell.transform = CGAffineTransform(scaleX: -1, y: 1)
         }
     }
+
+    override func updateIndicator(for viewController: PagerTabStripViewController,
+                                  fromIndex: Int,
+                                  toIndex: Int,
+                                  withProgressPercentage progressPercentage: CGFloat,
+                                  indexWasChanged: Bool) {
+        super.updateIndicator(for: viewController,
+                              fromIndex: fromIndex,
+                              toIndex: toIndex,
+                              withProgressPercentage: progressPercentage,
+                              indexWasChanged: indexWasChanged)
+        guard fromIndex != toIndex, toIndex < periodVCs.count else {
+            return
+        }
+        syncAllStats(forced: false)
+    }
 }
 
 extension StoreStatsAndTopPerformersViewController: DashboardUI {
@@ -128,7 +144,7 @@ private extension StoreStatsAndTopPerformersViewController {
         let timezoneForStatsDates = TimeZone.siteTimezone
         let timezoneForSync = TimeZone.current
 
-        periodVCs.forEach { [weak self] (vc) in
+        [visibleChildViewController].forEach { [weak self] vc in
             guard let self = self else {
                 return
             }

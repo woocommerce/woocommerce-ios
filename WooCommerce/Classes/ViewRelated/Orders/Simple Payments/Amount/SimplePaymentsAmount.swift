@@ -210,7 +210,8 @@ private extension SimplePaymentsAmount {
         static let created = NSLocalizedString("🎉 Order created", comment: "Notice text after creating a simple payment order")
         static let completed = NSLocalizedString("🎉 Order completed", comment: "Notice text after completing a simple payment order")
         static let buttonTitle = NSLocalizedString("Next", comment: "Title for the button to confirm the amount in the simple payments screen")
-        static let dismissOrder = NSLocalizedString("Dismiss Order", comment: "Title for dismiss the action when dragging the screen down.")
+        static let dismissOrder = NSLocalizedString("Dismiss", comment: "Title for dismiss the action of a" +
+                                                    "simple payment creation when dragging the screen down.")
     }
 
     enum Layout {

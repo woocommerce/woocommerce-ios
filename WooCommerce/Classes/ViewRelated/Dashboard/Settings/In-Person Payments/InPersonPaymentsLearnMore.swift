@@ -9,17 +9,17 @@ struct InPersonPaymentsLearnMore: View {
     var body: some View {
         HStack(spacing: 16) {
             Image(uiImage: .infoOutlineImage)
-                    .resizable()
-                    .foregroundColor(Color(.neutral(.shade60)))
-                    .frame(width: iconSize, height: iconSize)
+                .resizable()
+                .foregroundColor(Color(.neutral(.shade60)))
+                .frame(width: iconSize, height: iconSize)
             AttributedText(learnMoreAttributedString)
         }
-                .padding(.vertical, Constants.verticalPadding)
-                .onTapGesture {
-                    ServiceLocator.analytics.track(event: WooAnalyticsEvent.InPersonPayments
-                            .cardPresentOnboardingLearnMoreTapped(countryCode: cardPresentConfiguration.countryCode))
-                    customOpenURL?(InPersonPaymentsLearnMore.learnMoreURL)
-                }
+            .padding(.vertical, Constants.verticalPadding)
+            .onTapGesture {
+                ServiceLocator.analytics.track(event: WooAnalyticsEvent.InPersonPayments
+                                                .cardPresentOnboardingLearnMoreTapped(countryCode: cardPresentConfiguration.countryCode))
+                customOpenURL?(InPersonPaymentsLearnMore.learnMoreURL)
+            }
     }
 
     var iconSize: CGFloat {
@@ -80,6 +80,6 @@ private enum Localization {
 struct InPersonPaymentsLearnMore_Previews: PreviewProvider {
     static var previews: some View {
         InPersonPaymentsLearnMore()
-                .padding()
+            .padding()
     }
 }

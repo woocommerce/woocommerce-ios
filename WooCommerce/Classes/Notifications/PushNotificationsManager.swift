@@ -160,21 +160,14 @@ extension PushNotificationsManager {
         stores.dispatch(action)
     }
 
-    func resetBadgeCountForAllStores() async {
-        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) -> Void in
-            let action = NotificationCountAction.resetForAllSites() { [weak self] in
-                guard let self = self else { return }
-                self.configuration.application.applicationIconBadgeNumber = AppIconBadgeNumber.clearsBadgeAndPotentiallyAllPushNotifications
-                self.removeAllNotifications()
-                continuation.resume()
-            }
-
-            Task {
-                await MainActor.run {
-                    stores.dispatch(action)
-                }
-            }
+    func resetBadgeCountForAllStores(onCompletion: @escaping () -> Void) {
+        let action = NotificationCountAction.resetForAllSites() { [weak self] in
+            guard let self = self else { return }
+            self.configuration.application.applicationIconBadgeNumber = AppIconBadgeNumber.clearsBadgeAndPotentiallyAllPushNotifications
+            self.removeAllNotifications()
+            onCompletion()
         }
+        stores.dispatch(action)
     }
 
     func reloadBadgeCount() {

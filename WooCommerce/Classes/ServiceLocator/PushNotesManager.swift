@@ -26,7 +26,7 @@ protocol PushNotesManager {
 
     /// Resets the Badge Count for all stores.
     ///
-    func resetBadgeCountForAllStores() async
+    func resetBadgeCountForAllStores(onCompletion: @escaping () -> Void)
 
     /// Reloads the Badge Count for the site.
     ///

@@ -45,12 +45,13 @@ final class OrderDetailsDataSource: NSObject {
     /// Whether the order is eligible for card present payment.
     ///
     var isEligibleForCardPresentPayment: Bool {
-        return isOrderAmountEligibleForCardPayment() &&
-            isOrderCurrencyEligibleForCardPayment() &&
-            isOrderStatusEligibleForCardPayment() &&
-            isOrderPaymentMethodEligibleForCardPayment() &&
-            hasCardPresentEligiblePaymentGatewayAccount() &&
-            !orderContainsAnySubscription()
+        let hasCardPresentEligiblePaymentGatewayAccount = resultsControllers
+            .paymentGatewayAccounts
+            .contains(where: \.isCardPresentEligible)
+        let orderIsEligibleForCardPresentPayment = order.isEligibleForCardPresentPayment(cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration,
+                                                                                         products: resultsControllers.products)
+
+        return hasCardPresentEligiblePaymentGatewayAccount && orderIsEligibleForCardPresentPayment
     }
 
     var isEligibleForRefund: Bool {
@@ -1497,66 +1498,6 @@ extension OrderDetailsDataSource {
         static let addOrderCell = 1
         static let paymentCell = 1
         static let paidByCustomerCell = 1
-    }
-}
-
-// MARK: - Private Payments Logic
-
-private extension OrderDetailsDataSource {
-    func isOrderAmountEligibleForCardPayment() -> Bool {
-        // If the order is paid, it is not eligible.
-        guard order.datePaid == nil else {
-            return false
-        }
-
-        guard let totalAmount = currencyFormatter.convertToDecimal(from: order.total), totalAmount.decimalValue > 0 else {
-            return false
-        }
-
-        // If there is a discrepancy between the orderTotal and the remaining amount to collect, it is not eligible
-        // This is a temporary solution that will exclude, for example:
-        // * orders that have been partially refunded.
-        // * orders where the merchant has applied a discount manually
-        // * in general, all orders where we might want to capture a payment for less than the total order amount
-        let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
-        return !paymentViewModel.hasBeenPartiallyCharged
-    }
-
-    func isOrderCurrencyEligibleForCardPayment() -> Bool {
-        guard let currency = CurrencyCode(caseInsensitiveRawValue: order.currency) else {
-            return false
-        }
-        return cardPresentPaymentsConfiguration.currencies.contains(currency)
-    }
-
-    func isOrderStatusEligibleForCardPayment() -> Bool {
-        (order.status == .pending || order.status == .onHold || order.status == .processing)
-    }
-
-    func isOrderPaymentMethodEligibleForCardPayment() -> Bool {
-        let paymentMethod = OrderPaymentMethod(rawValue: order.paymentMethodID)
-        switch paymentMethod {
-        case .booking, .cod, .woocommercePayments, .stripe, .none:
-            return true
-        case .unknown:
-            return false
-        }
-    }
-
-    func hasCardPresentEligiblePaymentGatewayAccount() -> Bool {
-        let accounts = resultsControllers.paymentGatewayAccounts
-
-        guard accounts.count <= 1 else {
-            return false
-        }
-
-        return resultsControllers.paymentGatewayAccounts.contains(where: \.isCardPresentEligible)
-    }
-
-    func orderContainsAnySubscription() -> Bool {
-        order.items.contains { item in
-            lookUpProduct(by: item.productID)?.productType == .subscription
-        }
     }
 }
 

@@ -88,6 +88,8 @@ final class DashboardViewController: UIViewController {
         return view
     }()
 
+    private let viewModel: DashboardViewModel = .init()
+
     private var subscriptions = Set<AnyCancellable>()
 
     // MARK: View Lifecycle
@@ -112,6 +114,7 @@ final class DashboardViewController: UIViewController {
         observeSiteForUIUpdates()
         observeBottomJetpackBenefitsBannerVisibilityUpdates()
         observeNavigationBarHeightForStoreNameLabelVisibility()
+        observeStatsVersionForDashboardUIUpdates()
         reloadDashboardUIStatsVersion(forced: true)
     }
 
@@ -257,10 +260,22 @@ private extension DashboardViewController {
     }
 
     func reloadDashboardUIStatsVersion(forced: Bool) {
-        dashboardUIFactory.reloadDashboardUI(onUIUpdate: { [weak self] dashboardUI in
+        dashboardUI?.reloadData(forced: forced, completion: {})
+    }
+
+    func observeStatsVersionForDashboardUIUpdates() {
+        viewModel.$statsVersion.removeDuplicates().sink { [weak self] statsVersion in
+            guard let self = self else { return }
+            let dashboardUI: DashboardUI
+            switch statsVersion {
+            case .v3:
+                dashboardUI = DeprecatedDashboardStatsViewController()
+            case .v4:
+                dashboardUI = StoreStatsAndTopPerformersViewController(siteID: self.siteID, dashboardViewModel: self.viewModel)
+            }
             dashboardUI.scrollDelegate = self
-            self?.onDashboardUIUpdate(forced: forced, updatedDashboardUI: dashboardUI)
-        })
+            self.onDashboardUIUpdate(forced: false, updatedDashboardUI: dashboardUI)
+        }.store(in: &subscriptions)
     }
 
     /// Display the error banner at the top of the dashboard content (below the site title)

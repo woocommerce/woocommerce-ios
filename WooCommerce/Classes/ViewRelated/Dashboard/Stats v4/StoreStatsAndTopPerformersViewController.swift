@@ -33,11 +33,13 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
     private let siteID: Int64
     private var isSyncing = false
     private let usageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()
+    private let dashboardViewModel: DashboardViewModel
 
     // MARK: - View Lifecycle
 
-    init(siteID: Int64) {
+    init(siteID: Int64, dashboardViewModel: DashboardViewModel) {
         self.siteID = siteID
+        self.dashboardViewModel = dashboardViewModel
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -172,10 +174,10 @@ private extension StoreStatsAndTopPerformersViewController {
             group.enter()
             periodGroup.enter()
             periodStoreStatsGroup.enter()
-            self.syncStats(for: siteID,
-                           siteTimezone: timezoneForSync,
-                           timeRange: vc.timeRange,
-                           latestDateToInclude: latestDateToInclude) { [weak self] result in
+            self.dashboardViewModel.syncStats(for: siteID,
+                                              siteTimezone: timezoneForSync,
+                                              timeRange: vc.timeRange,
+                                              latestDateToInclude: latestDateToInclude) { [weak self] result in
                 switch result {
                 case .success:
                     self?.trackStatsLoaded(for: vc.timeRange)
@@ -191,10 +193,10 @@ private extension StoreStatsAndTopPerformersViewController {
             group.enter()
             periodGroup.enter()
             periodStoreStatsGroup.enter()
-            self.syncSiteVisitStats(for: siteID,
-                                    siteTimezone: timezoneForSync,
-                                    timeRange: vc.timeRange,
-                                    latestDateToInclude: latestDateToInclude) { result in
+            self.dashboardViewModel.syncSiteVisitStats(for: siteID,
+                                                       siteTimezone: timezoneForSync,
+                                                       timeRange: vc.timeRange,
+                                                       latestDateToInclude: latestDateToInclude) { result in
                 if case let .failure(error) = result {
                     DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
                     periodSyncError = error
@@ -206,10 +208,10 @@ private extension StoreStatsAndTopPerformersViewController {
 
             group.enter()
             periodGroup.enter()
-            self.syncTopEarnersStats(for: siteID,
-                                     siteTimezone: timezoneForSync,
-                                     timeRange: vc.timeRange,
-                                     latestDateToInclude: latestDateToInclude) { result in
+            self.dashboardViewModel.syncTopEarnersStats(for: siteID,
+                                                        siteTimezone: timezoneForSync,
+                                                        timeRange: vc.timeRange,
+                                                        latestDateToInclude: latestDateToInclude) { result in
                 if case let .failure(error) = result {
                     DDLogError("⛔️ Error synchronizing top earners stats: \(error)")
                     periodSyncError = error
@@ -366,75 +368,6 @@ private extension StoreStatsAndTopPerformersViewController {
     }
 }
 
-// MARK: - Sync'ing Helpers
-//
-private extension StoreStatsAndTopPerformersViewController {
-    func syncStats(for siteID: Int64,
-                   siteTimezone: TimeZone,
-                   timeRange: StatsTimeRangeV4,
-                   latestDateToInclude: Date,
-                   onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
-        let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
-        let action = StatsActionV4.retrieveStats(siteID: siteID,
-                                                 timeRange: timeRange,
-                                                 earliestDateToInclude: earliestDateToInclude,
-                                                 latestDateToInclude: latestDateToInclude,
-                                                 quantity: timeRange.maxNumberOfIntervals,
-                                                 onCompletion: { result in
-                                                    if case let .failure(error) = result {
-                                                        DDLogError("⛔️ Dashboard (Order Stats) — Error synchronizing order stats v4: \(error)")
-                                                    }
-                                                    onCompletion?(result)
-        })
-
-        ServiceLocator.stores.dispatch(action)
-    }
-
-    func syncSiteVisitStats(for siteID: Int64,
-                            siteTimezone: TimeZone,
-                            timeRange: StatsTimeRangeV4,
-                            latestDateToInclude: Date,
-                            onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
-        let action = StatsActionV4.retrieveSiteVisitStats(siteID: siteID,
-                                                          siteTimezone: siteTimezone,
-                                                          timeRange: timeRange,
-                                                          latestDateToInclude: latestDateToInclude,
-                                                          onCompletion: { result in
-                                                            if case let .failure(error) = result {
-                                                                DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
-                                                            }
-                                                            onCompletion?(result)
-        })
-
-        ServiceLocator.stores.dispatch(action)
-    }
-
-    func syncTopEarnersStats(for siteID: Int64,
-                             siteTimezone: TimeZone,
-                             timeRange: StatsTimeRangeV4,
-                             latestDateToInclude: Date,
-                             onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
-        let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
-        let action = StatsActionV4.retrieveTopEarnerStats(siteID: siteID,
-                                                          timeRange: timeRange,
-                                                          earliestDateToInclude: earliestDateToInclude,
-                                                          latestDateToInclude: latestDateToInclude,
-                                                          quantity: Constants.topEarnerStatsLimit,
-                                                          onCompletion: { result in
-                                                            switch result {
-                                                            case .success:
-                                                                ServiceLocator.analytics.track(event:
-                                                                        .Dashboard.dashboardTopPerformersLoaded(timeRange: timeRange))
-                                                            case .failure(let error):
-                                                                DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
-                                                            }
-                                                            onCompletion?(result)
-        })
-
-        ServiceLocator.stores.dispatch(action)
-    }
-}
-
 private extension StoreStatsAndTopPerformersViewController {
     func updateSiteVisitors(mode: SiteVisitStatsMode) {
         periodVCs.forEach { vc in
@@ -490,7 +423,6 @@ private extension StoreStatsAndTopPerformersViewController {
     }
 
     enum Constants {
-        static let topEarnerStatsLimit: Int = 5
         static let backgroundColor: UIColor = .systemBackground
     }
 }

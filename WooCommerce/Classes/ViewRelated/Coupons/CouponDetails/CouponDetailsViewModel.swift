@@ -91,6 +91,8 @@ final class CouponDetailsViewModel: ObservableObject {
     ///
     @Published var showingEditCoupon: Bool = false
 
+    private(set) lazy var addEditCouponViewModel: AddEditCouponViewModel = createAddEditCouponViewModel(with: coupon)
+
     /// The message to be shared about the coupon
     ///
     var shareMessage: String {
@@ -129,14 +131,25 @@ final class CouponDetailsViewModel: ObservableObject {
     let isEditingEnabled: Bool
     let isDeletingEnabled: Bool
 
+    // Closure to be triggered when the coupon is updated successfully
+    let onUpdate: () -> Void
+
+    // Closure to be triggered when the coupon is deleted successfully
+    let onDeletion: () -> Void
+
     init(coupon: Coupon,
          stores: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         featureFlags: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
+         onUpdate: @escaping () -> Void = {},
+         onDeletion: @escaping () -> Void = {}) {
         self.siteID = coupon.siteID
         self.coupon = coupon
         self.stores = stores
         self.currencySettings = currencySettings
+        self.onDeletion = onDeletion
+        self.onUpdate = onUpdate
+
         isEditingEnabled = featureFlags.isFeatureFlagEnabled(.couponEditing) && coupon.discountType != .other
         isDeletingEnabled = featureFlags.isFeatureFlagEnabled(.couponDeletion)
         populateDetails()
@@ -210,6 +223,10 @@ final class CouponDetailsViewModel: ObservableObject {
         }
         stores.dispatch(action)
     }
+
+    func resetAddEditViewModel() {
+        addEditCouponViewModel = createAddEditCouponViewModel(with: coupon)
+    }
 }
 
 // MARK: - Private helpers
@@ -260,6 +277,20 @@ private extension CouponDetailsViewModel {
     func retrieveAnalyticsSetting(completion: @escaping (Result<Bool, Error>) -> Void) {
         let action = SettingAction.retrieveAnalyticsSetting(siteID: coupon.siteID, onCompletion: completion)
         stores.dispatch(action)
+    }
+
+    func createAddEditCouponViewModel(with coupon: Coupon) -> AddEditCouponViewModel {
+        .init(existingCoupon: coupon, onCompletion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let updatedCoupon):
+                self.updateCoupon(updatedCoupon)
+                self.showingEditCoupon = false
+                self.onUpdate()
+            default:
+                break
+            }
+        })
     }
 }
 

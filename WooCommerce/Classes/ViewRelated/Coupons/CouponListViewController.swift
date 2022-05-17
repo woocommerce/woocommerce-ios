@@ -193,16 +193,16 @@ extension CouponListViewController: UITableViewDelegate {
         guard let coupon = viewModel.coupon(at: indexPath) else {
             return
         }
-        let detailsViewModel = CouponDetailsViewModel(coupon: coupon)
-        let hostingController = CouponDetailsHostingController(viewModel: detailsViewModel) { [weak self] in
+        let detailsViewModel = CouponDetailsViewModel(coupon: coupon, onUpdate: { [weak self] in
             guard let self = self else { return }
             self.viewModel.refreshCoupons()
-        } onDeletion: { [weak self] in
+        }, onDeletion: { [weak self] in
             guard let self = self else { return }
             self.navigationController?.popViewController(animated: true)
             let notice = Notice(title: Localization.couponDeleted, feedbackType: .success)
             self.noticePresenter.enqueue(notice: notice)
-        }
+        })
+        let hostingController = CouponDetailsHostingController(viewModel: detailsViewModel)
         navigationController?.pushViewController(hostingController, animated: true)
     }
 }

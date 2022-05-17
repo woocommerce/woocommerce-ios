@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-05-05 09:54:03+0000 */
+/* Translation-Revision-Date: 2022-05-17 05:23:51+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
@@ -1139,7 +1139,7 @@
 "Coupon Description" = "Descrizione del codice promozionale";
 
 /* Field in the view for adding or editing a coupon. */
-"Coupon Expiry Date" = "Coupon Expiry Date";
+"Coupon Expiry Date" = "Data di scadenza del codice promozionale";
 
 /* Cell title on beta features screen to enable coupon management */
 "Coupon Management" = "Gestione del codice promozionale";

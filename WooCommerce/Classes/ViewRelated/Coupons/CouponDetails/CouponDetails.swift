@@ -9,8 +9,20 @@ final class CouponDetailsHostingController: UIHostingController<CouponDetails> {
          onUpdate: @escaping () -> Void,
          onDeletion: @escaping () -> Void,
          onEditCoupon: @escaping (AddEditCouponViewModel) -> Void) {
-        var couponDetails = CouponDetails(viewModel: viewModel, onUpdate: onUpdate, onDeletion: onDeletion, onEditCoupon: onEditCoupon)
+        // attempt 1 config
+        // let couponDetails = CouponDetails(viewModel: viewModel, onUpdate: onUpdate, onDeletion: onDeletion, onEditCoupon: onEditCoupon)
+
+        // attempt 3 config
+        let couponDetails = CouponDetails(viewModel: viewModel, onUpdate: onUpdate, onDeletion: onDeletion)
+
         super.init(rootView: couponDetails)
+
+        // attempt 3: intercept the Edit Coupon from inside the Coupon Details
+        rootView.onEditCoupon = { [weak self] addEditCouponViewModel in
+            guard let self = self else { return }
+            let addEditHostingController = AddEditCouponHostingController(viewModel: addEditCouponViewModel)
+            self.navigationController?.present(addEditHostingController, animated: true)
+        }
 
         // The navigation title is set here instead of the SwiftUI view's `navigationTitle`
         // to avoid the blinking of the title label when pushed from UIKit view.
@@ -32,7 +44,7 @@ struct CouponDetails: View {
     // Closure to be triggered when the coupon is deleted successfully
     private let onDeletion: () -> Void
 
-    private let onEditCoupon: (AddEditCouponViewModel) -> Void
+    var onEditCoupon: (AddEditCouponViewModel) -> Void
 
     @ObservedObject private var viewModel: CouponDetailsViewModel
     @ObservedObject private var addEditCouponViewModel: AddEditCouponViewModel
@@ -214,6 +226,8 @@ struct CouponDetails: View {
                 })
             }
             .sheet(isPresented: $viewModel.showingEditCoupon, onDismiss: {
+                // this is just a test to compare calling the AddEditCoupon view from a callback
+                // and from the UIViewControllerRepresentable bridge implementation below
                 onEditCoupon(addEditCouponViewModel)
             }) {
                 AddEditCouponHostingControllerBridge(viewModel: addEditCouponViewModel)

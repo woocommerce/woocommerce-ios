@@ -68,6 +68,8 @@ private extension AddEditCouponHostingController {
     }
 }
 
+// attempt 2: Wrap the AddEditCouponUIHostingController in a UIViewControllerRepresentable implementation and call
+// it directly from the CouponDetails sheet declaration
 struct AddEditCouponHostingControllerBridge: UIViewControllerRepresentable {
     let viewModel: AddEditCouponViewModel
 

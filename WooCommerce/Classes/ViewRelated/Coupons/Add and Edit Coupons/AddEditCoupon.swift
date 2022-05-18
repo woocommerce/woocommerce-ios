@@ -26,22 +26,6 @@ final class AddEditCouponHostingController: UIHostingController<AddEditCoupon> {
     }
 }
 
-extension AddEditCouponHostingController {
-    override func shouldPopOnBackButton() -> Bool {
-        guard !viewModel.hasChangesMade else {
-            presentDiscardChangesActionSheet(onDiscard: { [weak self] in
-                self?.discardAndPop()
-            })
-            return false
-        }
-        return true
-    }
-
-    override func shouldPopOnSwipeBack() -> Bool {
-        return shouldPopOnBackButton()
-    }
-}
-
 extension AddEditCouponHostingController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
         return !viewModel.hasChangesMade

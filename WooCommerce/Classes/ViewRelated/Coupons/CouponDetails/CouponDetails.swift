@@ -8,17 +8,7 @@ final class CouponDetailsHostingController: UIHostingController<CouponDetails> {
     init(viewModel: CouponDetailsViewModel,
          onUpdate: @escaping () -> Void,
          onDeletion: @escaping () -> Void) {
-        // attempt 3 config
-        let couponDetails = CouponDetails(viewModel: viewModel, onUpdate: onUpdate, onDeletion: onDeletion)
-
-        super.init(rootView: couponDetails)
-
-        // attempt 3: intercept the Edit Coupon from inside the Coupon Details
-        rootView.onEditCoupon = { [weak self] addEditCouponViewModel in
-            guard let self = self else { return }
-            let addEditHostingController = AddEditCouponHostingController(viewModel: addEditCouponViewModel)
-            self.navigationController?.present(addEditHostingController, animated: true)
-        }
+        super.init(rootView: CouponDetails(viewModel: viewModel, onUpdate: onUpdate, onDeletion: onDeletion))
 
         // The navigation title is set here instead of the SwiftUI view's `navigationTitle`
         // to avoid the blinking of the title label when pushed from UIKit view.
@@ -26,6 +16,14 @@ final class CouponDetailsHostingController: UIHostingController<CouponDetails> {
 
         // Set presenting view controller to show the notice presenter here
         rootView.noticePresenter.presentingViewController = self
+
+        // Set manually the edit coupon button click event to present
+        // the AddEditCoupon view on top of the Coupon details
+        rootView.onEditCoupon = { [weak self] addEditCouponViewModel in
+            guard let self = self else { return }
+            let addEditHostingController = AddEditCouponHostingController(viewModel: addEditCouponViewModel)
+            self.navigationController?.present(addEditHostingController, animated: true)
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -40,6 +38,7 @@ struct CouponDetails: View {
     // Closure to be triggered when the coupon is deleted successfully
     private let onDeletion: () -> Void
 
+    // Closure to be triggered when the edit coupon button is clicked
     var onEditCoupon: (AddEditCouponViewModel) -> Void
 
     @ObservedObject private var viewModel: CouponDetailsViewModel

@@ -53,4 +53,26 @@ final class DashboardViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.statsVersion, .v4)
     }
+
+    func test_statsVersion_changes_from_v3_to_v4_when_store_stats_sync_returns_success() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        // `DotcomError.noRestRoute` error indicates the stats are unavailable.
+        var storeStatsResult: Result<Void, Error> = .failure(DotcomError.noRestRoute)
+        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
+            if case let .retrieveStats(_, _, _, _, _, completion) = action {
+                completion(storeStatsResult)
+            }
+        }
+        let viewModel = DashboardViewModel(stores: stores)
+        viewModel.syncStats(for: 122, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init())
+        XCTAssertEqual(viewModel.statsVersion, .v3)
+
+        // When
+        storeStatsResult = .success(())
+        viewModel.syncStats(for: 122, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init())
+
+        // Then
+        XCTAssertEqual(viewModel.statsVersion, .v4)
+    }
 }

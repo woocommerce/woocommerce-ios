@@ -90,6 +90,20 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .countryNotSupportedStripe(plugin: .stripe, countryCode: "CA"))
     }
 
+    func test_onboarding_returns_deactivate_stripe_when_stripe_and_wcPay_plugins_are_installed_in_Canada() {
+        // Given
+        setupCountry(country: .ca)
+        setupStripePlugin(status: .active, version: .minimumSupportedVersion)
+        setupWCPayPlugin(status: .active, version: .minimumSupportedVersion)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.state
+
+        // Then
+        XCTAssertEqual(state, .deactivateStripe)
+    }
+
     func test_onboarding_returns_wcpay_plugin_unsupported_version_for_canada_when_version_unsupported() {
         // Given
         setupCountry(country: .ca)

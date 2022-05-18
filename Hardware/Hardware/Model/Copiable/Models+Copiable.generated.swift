@@ -4,6 +4,36 @@ import Codegen
 import UIKit
 
 
+extension CardPresentReceiptParameters {
+    public func copy(
+        amount: CopiableProp<UInt> = .copy,
+        formattedAmount: CopiableProp<String> = .copy,
+        currency: CopiableProp<String> = .copy,
+        date: CopiableProp<Date> = .copy,
+        storeName: NullableCopiableProp<String> = .copy,
+        cardDetails: CopiableProp<CardPresentTransactionDetails> = .copy,
+        orderID: NullableCopiableProp<Int64> = .copy
+    ) -> CardPresentReceiptParameters {
+        let amount = amount ?? self.amount
+        let formattedAmount = formattedAmount ?? self.formattedAmount
+        let currency = currency ?? self.currency
+        let date = date ?? self.date
+        let storeName = storeName ?? self.storeName
+        let cardDetails = cardDetails ?? self.cardDetails
+        let orderID = orderID ?? self.orderID
+
+        return CardPresentReceiptParameters(
+            amount: amount,
+            formattedAmount: formattedAmount,
+            currency: currency,
+            date: date,
+            storeName: storeName,
+            cardDetails: cardDetails,
+            orderID: orderID
+        )
+    }
+}
+
 extension Charge {
     public func copy(
         id: CopiableProp<String> = .copy,

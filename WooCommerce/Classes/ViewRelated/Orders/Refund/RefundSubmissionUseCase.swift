@@ -237,46 +237,47 @@ private extension RefundSubmissionUseCase {
         // `checkCardReaderConnected` action will return a publisher that:
         // - Sends one value if there is no reader connected.
         // - Completes when a reader is connected.
-        let readerConnected = CardPresentPaymentAction.checkCardReaderConnected { [weak self] connectPublisher in
+        let readerConnected = CardPresentPaymentAction.publishCardReaderConnections { [weak self] connectPublisher in
             guard let self = self else { return }
             self.readerSubscription = connectPublisher
-                .sink(receiveCompletion: { [weak self] _ in
-                    // Dismisses the current connection alert before notifying the completion.
-                    // If no presented controller is found(because the reader was already connected), just notify the completion.
-                    if let connectionController = self?.rootViewController.presentedViewController {
-                        connectionController.dismiss(animated: true) {
-                            onCompletion(.success(()))
-                        }
-                    } else {
-                        onCompletion(.success(()))
-                    }
-
-                    // Nil the subscription since we are done with the connection.
-                    self?.readerSubscription = nil
-
-                }, receiveValue: { [weak self] _ in
+                .sink() { [weak self] readers in
                     guard let self = self else { return }
 
-                    // Attempts reader connection
-                    self.cardReaderConnectionController.searchAndConnect(from: self.rootViewController) { [weak self] result in
-                        guard let self = self else { return }
-                        switch result {
-                        case let .success(connectionResult):
-                            switch connectionResult {
-                            case .canceled:
-                                self.readerSubscription = nil
-                                self.trackClientSideRefundCanceled(charge: charge, paymentGatewayAccount: paymentGatewayAccount)
-                                onCompletion(.failure(RefundSubmissionError.cardReaderDisconnected))
-                            case .connected:
-                                // Connected case will be handled in `receiveCompletion`.
-                                break
+                    if readers.isNotEmpty {
+                        // Dismisses the current connection alert before notifying the completion.
+                        // If no presented controller is found(because the reader was already connected), just notify the completion.
+                        if let connectionController = self.rootViewController.presentedViewController {
+                            connectionController.dismiss(animated: true) {
+                                onCompletion(.success(()))
                             }
-                        case .failure(let error):
-                            self.readerSubscription = nil
-                            onCompletion(.failure(error))
+                        } else {
+                            onCompletion(.success(()))
+                        }
+
+                        // Nil the subscription since we are done with the connection.
+                        self.readerSubscription = nil
+                    } else {
+                        // Attempts reader connection
+                        self.cardReaderConnectionController.searchAndConnect(from: self.rootViewController) { [weak self] result in
+                            guard let self = self else { return }
+                            switch result {
+                            case let .success(connectionResult):
+                                switch connectionResult {
+                                case .canceled:
+                                    self.readerSubscription = nil
+                                    self.trackClientSideRefundCanceled(charge: charge, paymentGatewayAccount: paymentGatewayAccount)
+                                    onCompletion(.failure(RefundSubmissionError.cardReaderDisconnected))
+                                case .connected:
+                                    // Connected case will be handled in `if readers.isNotEmpty`.
+                                    break
+                                }
+                            case .failure(let error):
+                                self.readerSubscription = nil
+                                onCompletion(.failure(error))
+                            }
                         }
                     }
-                })
+                }
         }
         stores.dispatch(readerConnected)
     }

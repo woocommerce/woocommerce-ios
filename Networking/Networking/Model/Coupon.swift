@@ -175,7 +175,6 @@ public struct Coupon {
         try container.encode(amount, forKey: .amount)
         try container.encode(discountType, forKey: .discountType)
         try container.encode(description, forKey: .description)
-        try container.encode(dateExpires, forKey: .dateExpires)
         try container.encode(productIds, forKey: .productIds)
         try container.encode(excludedProductIds, forKey: .excludedProductIds)
         try container.encode(usageLimit, forKey: .usageLimit)
@@ -187,6 +186,17 @@ public struct Coupon {
         try container.encode(minimumAmount, forKey: .minimumAmount)
         try container.encode(maximumAmount, forKey: .maximumAmount)
         try container.encode(emailRestrictions, forKey: .emailRestrictions)
+
+        /// Encoding `dateExpires` has some special conditions.
+        /// - Encode the content to update the value.
+        /// - Encode an empty string to clear the value (nil is not allowed, and the value will be not updated).
+        ///
+        switch dateExpires {
+        case .some(let content):
+            try container.encode(content, forKey: .dateExpires)
+        case .none:
+            try container.encode("", forKey: .dateExpires)
+        }
     }
 
     /// JSON decoder appropriate for `Coupon` responses.

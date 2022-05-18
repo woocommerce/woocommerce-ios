@@ -1,6 +1,8 @@
+import Codegen
+
 /// Encapsulates the information necessary to print a receipt for a
 /// card present payment
-public struct CardPresentReceiptParameters: Codable, Equatable {
+public struct CardPresentReceiptParameters: Codable, Equatable, GeneratedCopiable, GeneratedFakeable {
     /// The total amount
     public let amount: UInt
 

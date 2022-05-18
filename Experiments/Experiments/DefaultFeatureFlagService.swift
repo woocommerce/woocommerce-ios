@@ -28,9 +28,9 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .splitViewInOrdersTab:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .couponDeletion:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .couponEditing:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .updateOrderOptimistically:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:

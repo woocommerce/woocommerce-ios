@@ -40,7 +40,7 @@ private extension AvailabilityStore {
     func checkStatsV4Availability(siteID: Int64,
                                   onCompletion: @escaping (_ isStatsV4Available: Bool) -> Void) {
         orderStatsRemote.loadOrderStats(for: siteID,
-                              unit: .hourly,
+                              unit: .yearly,
                               earliestDateToInclude: Date(),
                               latestDateToInclude: Date(),
                               quantity: 1) { result in

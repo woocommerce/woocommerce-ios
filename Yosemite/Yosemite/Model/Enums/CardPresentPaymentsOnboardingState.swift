@@ -12,7 +12,7 @@ public enum CardPresentPaymentOnboardingState: Equatable {
     /// 
     case selectPlugin
 
-    case countryNotSupportedDeactivateStripe(countryCode: String)
+    case deactivateStripe
 
     /// Store is not located in one of the supported countries.
     ///
@@ -79,8 +79,8 @@ extension CardPresentPaymentOnboardingState {
             return nil
         case .selectPlugin:
             return "multiple_plugins_installed"
-        case .countryNotSupportedDeactivateStripe:
-            return nil
+        case .deactivateStripe:
+            return "stripe_should_be_deactivated"
         case .countryNotSupported(countryCode: _):
             return "country_not_supported"
         case .countryNotSupportedStripe(countryCode: _):

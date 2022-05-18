@@ -44,7 +44,9 @@ struct PriceInputFormatter: UnitInputFormatter {
             return ""
         }
 
-        let formattedText = text
+        let latinText = text.applyingTransform(StringTransform.toLatin, reverse: false) ?? text
+
+        let formattedText = latinText
             // Replace any characters not in the set of 0-9 with the current decimal separator configured on website
             .replacingOccurrences(of: "[^0-9]", with: currencySettings.decimalSeparator, options: .regularExpression)
             // Remove any initial zero number in the string. Es. 00224.30 will be 2224.30

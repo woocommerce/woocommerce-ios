@@ -9,9 +9,15 @@ final class AddEditCouponHostingController: UIHostingController<AddEditCoupon> {
         self.viewModel = viewModel
         super.init(rootView: AddEditCoupon(viewModel))
 
-        // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
         rootView.dismissHandler = { [weak self] in
-            self?.dismiss(animated: true)
+            guard let self = self else { return }
+            if viewModel.hasChangesMade {
+                UIAlertController.presentDiscardChangesActionSheet(viewController: self) { [weak self] in
+                    self?.dismiss(animated: true)
+                }
+            } else {
+                self.dismiss(animated: true)
+            }
         }
     }
 
@@ -294,7 +300,7 @@ struct AddEditCoupon: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(Localization.cancelButton, action: {
-                        presentation.wrappedValue.dismiss()
+                        dismissHandler()
                     })
                 }
             }

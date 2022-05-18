@@ -21,7 +21,7 @@ public enum CardPresentPaymentOnboardingState: Equatable {
     ///
     case countryNotSupported(countryCode: String)
 
-    /// Store is not located in one of the supported countries for Stripe (but it is for WCPay).
+    /// Only Stripe is installed and activated, but the store is not located in one of the supported countries for Stripe (but it is for WCPay).
     ///
     case countryNotSupportedStripe(plugin: CardPresentPaymentsPlugin, countryCode: String)
 

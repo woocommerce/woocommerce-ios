@@ -38,19 +38,6 @@ extension AddEditCouponHostingController: UIAdaptivePresentationControllerDelega
     }
 }
 
-// attempt 2: Wrap the AddEditCouponUIHostingController in a UIViewControllerRepresentable implementation and call
-// it directly from the CouponDetails sheet declaration
-struct AddEditCouponHostingControllerBridge: UIViewControllerRepresentable {
-    let viewModel: AddEditCouponViewModel
-
-    func makeUIViewController(context: Context) -> AddEditCouponHostingController {
-        AddEditCouponHostingController(viewModel: viewModel)
-    }
-
-    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
-    }
-}
-
 /// A view for Adding or Editing a Coupon.
 ///
 struct AddEditCoupon: View {

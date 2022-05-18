@@ -12,7 +12,6 @@ final class DashboardViewController: UIViewController {
 
     private let siteID: Int64
 
-    private let dashboardUIFactory: DashboardUIFactory
     @Published private var dashboardUI: DashboardUI?
 
     // Used to enable subtitle with store name
@@ -96,7 +95,6 @@ final class DashboardViewController: UIViewController {
 
     init(siteID: Int64) {
         self.siteID = siteID
-        dashboardUIFactory = DashboardUIFactory(siteID: siteID)
         super.init(nibName: nil, bundle: nil)
         configureTabBarItem()
     }

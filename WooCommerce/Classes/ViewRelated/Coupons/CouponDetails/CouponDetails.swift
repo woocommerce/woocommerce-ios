@@ -106,7 +106,7 @@ struct CouponDetails: View {
             buttons.append(contentsOf: [
                 .default(Text(Localization.editCoupon), action: {
                     ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "tapped_edit"])
-                    viewModel.showingEditCoupon = true
+                    onEditCoupon(addEditCouponViewModel)
                 })
             ])
         }
@@ -224,13 +224,6 @@ struct CouponDetails: View {
                                     completionHandler: {
                     viewModel.loadCouponReport()
                 })
-            }
-            .sheet(isPresented: $viewModel.showingEditCoupon, onDismiss: {
-                // this is just a test to compare calling the AddEditCoupon view from a callback
-                // and from the UIViewControllerRepresentable bridge implementation below
-                onEditCoupon(addEditCouponViewModel)
-            }) {
-                AddEditCouponHostingControllerBridge(viewModel: addEditCouponViewModel)
             }
             .alert(isPresented: $showingDeletionConfirmAlert, content: {
                 Alert(title: Text(Localization.deleteCoupon),

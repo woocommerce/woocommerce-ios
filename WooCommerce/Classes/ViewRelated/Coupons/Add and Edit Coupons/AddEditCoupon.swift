@@ -22,7 +22,7 @@ final class AddEditCouponHostingController: UIHostingController<AddEditCoupon> {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        handleSwipeBackGesture()
+        presentationController?.delegate = self
     }
 }
 

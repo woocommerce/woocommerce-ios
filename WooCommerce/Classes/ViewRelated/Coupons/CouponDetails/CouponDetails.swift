@@ -6,7 +6,6 @@ import Yosemite
 final class CouponDetailsHostingController: UIHostingController<CouponDetails> {
 
     init(viewModel: CouponDetailsViewModel, onUpdate: @escaping () -> Void, onDeletion: @escaping () -> Void) {
-
         super.init(rootView: CouponDetails(viewModel: viewModel, onUpdate: onUpdate, onDeletion: onDeletion))
 
         // The navigation title is set here instead of the SwiftUI view's `navigationTitle`

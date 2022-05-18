@@ -8,6 +8,15 @@ final class DeprecatedDashboardStatsViewController: UIViewController {
     ///
     weak var scrollDelegate: DashboardUIScrollDelegate?
 
+    /// Set externally to try refreshing stats data if available.
+    var onPullToRefresh: () async -> Void = {}
+
+    /// Scroll view for pull-to-refresh support.
+    private lazy var scrollView: UIScrollView = .init()
+
+    /// Pull-to-refresh support in case dashboard stats are enabled.
+    private lazy var refreshControl: UIRefreshControl = UIRefreshControl()
+
     /// Empty state screen
     ///
     private lazy var emptyStateViewController = EmptyStateViewController(style: .basic)
@@ -24,6 +33,7 @@ final class DeprecatedDashboardStatsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureScrollView()
         displayEmptyViewController()
     }
 
@@ -33,11 +43,36 @@ final class DeprecatedDashboardStatsViewController: UIViewController {
         addChild(emptyStateViewController)
 
         emptyStateViewController.view.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(emptyStateViewController.view)
+        scrollView.addSubview(emptyStateViewController.view)
+        emptyStateViewController.view.pinSubviewToAllEdges(scrollView)
+        NSLayoutConstraint.activate([
+            scrollView.widthAnchor.constraint(equalTo: emptyStateViewController.view.widthAnchor),
+            scrollView.heightAnchor.constraint(equalTo: emptyStateViewController.view.heightAnchor)
+        ])
 
-        emptyStateViewController.view.pinSubviewToAllEdges(view)
         emptyStateViewController.didMove(toParent: self)
         emptyStateViewController.configure(emptyStateConfig)
+    }
+}
+
+private extension DeprecatedDashboardStatsViewController {
+    func configureScrollView() {
+        view.addSubview(scrollView)
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        view.pinSubviewToSafeArea(scrollView)
+
+        configureRefreshControl()
+    }
+
+    func configureRefreshControl() {
+        scrollView.refreshControl = refreshControl
+        refreshControl.on(.valueChanged) { [weak self] refreshControl in
+            guard let self = self else { return }
+            Task {
+                await self.onPullToRefresh()
+                self.refreshControl.endRefreshing()
+            }
+        }
     }
 }
 
@@ -52,15 +87,8 @@ extension DeprecatedDashboardStatsViewController: DashboardUI {
         set {}
     }
 
-    var onPullToRefresh: () -> Void {
-        get {
-            return {}
-        }
-        set {}
-    }
-
     func remindStatsUpgradeLater() {}
-    func reloadData(forced: Bool, completion: @escaping () -> Void) {}
+    func reloadData(forced: Bool) async {}
 }
 
 // MARK: Constants

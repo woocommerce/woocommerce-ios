@@ -10,13 +10,12 @@ protocol DashboardUI: UIViewController {
     var displaySyncingError: () -> Void { get set }
 
     /// Called when the user pulls to refresh
-    var onPullToRefresh: () -> Void { get set }
+    var onPullToRefresh: () async -> Void { get set }
 
     /// Reloads data in Dashboard
     ///
     /// - Parameter forced: pass `true` to override sync throttling
-    /// - Parameter completion: called when Dashboard data reload finishes
-    func reloadData(forced: Bool, completion: @escaping () -> Void)
+    func reloadData(forced: Bool) async
 }
 
 /// Relays the scroll events to a delegate for navigation bar large title workaround.

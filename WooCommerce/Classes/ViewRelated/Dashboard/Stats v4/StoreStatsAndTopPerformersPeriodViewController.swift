@@ -27,7 +27,7 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     }
 
     /// Called when user pulls down to refresh
-    var onPullToRefresh: () -> Void = {}
+    var onPullToRefresh: () async -> Void = {}
 
     /// Updated when reloading data.
     var currentDate: Date
@@ -337,7 +337,9 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
 //
 private extension StoreStatsAndTopPerformersPeriodViewController {
     @objc func pullToRefresh() {
-        onPullToRefresh()
+        Task {
+            await onPullToRefresh()
+        }
     }
 }
 

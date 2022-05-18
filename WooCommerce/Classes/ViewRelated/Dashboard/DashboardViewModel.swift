@@ -29,11 +29,13 @@ final class DashboardViewModel {
             guard let self = self else { return }
             switch result {
             case .success:
-                break
+                self.statsVersion = .v4
             case .failure(let error):
                 DDLogError("⛔️ Dashboard (Order Stats) — Error synchronizing order stats v4: \(error)")
                 if error as? DotcomError == .noRestRoute {
                     self.statsVersion = .v3
+                } else {
+                    self.statsVersion = .v4
                 }
             }
             onCompletion?(result)

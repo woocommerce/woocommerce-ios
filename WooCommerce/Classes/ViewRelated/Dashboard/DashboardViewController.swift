@@ -14,6 +14,9 @@ final class DashboardViewController: UIViewController {
 
     @Published private var dashboardUI: DashboardUI?
 
+    private lazy var deprecatedStatsViewController = DeprecatedDashboardStatsViewController()
+    private lazy var storeStatsAndTopPerformersViewController = StoreStatsAndTopPerformersViewController(siteID: siteID, dashboardViewModel: viewModel)
+
     // Used to enable subtitle with store name
     private var shouldShowStoreNameAsSubtitle: Bool = false
 
@@ -113,7 +116,9 @@ final class DashboardViewController: UIViewController {
         observeBottomJetpackBenefitsBannerVisibilityUpdates()
         observeNavigationBarHeightForStoreNameLabelVisibility()
         observeStatsVersionForDashboardUIUpdates()
-        reloadDashboardUIStatsVersion(forced: true)
+        Task {
+            await reloadDashboardUIStatsVersion(forced: true)
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -257,8 +262,8 @@ private extension DashboardViewController {
         }
     }
 
-    func reloadDashboardUIStatsVersion(forced: Bool) {
-        dashboardUI?.reloadData(forced: forced, completion: {})
+    func reloadDashboardUIStatsVersion(forced: Bool) async {
+        await storeStatsAndTopPerformersViewController.reloadData(forced: forced)
     }
 
     func observeStatsVersionForDashboardUIUpdates() {
@@ -267,9 +272,9 @@ private extension DashboardViewController {
             let dashboardUI: DashboardUI
             switch statsVersion {
             case .v3:
-                dashboardUI = DeprecatedDashboardStatsViewController()
+                dashboardUI = self.deprecatedStatsViewController
             case .v4:
-                dashboardUI = StoreStatsAndTopPerformersViewController(siteID: self.siteID, dashboardViewModel: self.viewModel)
+                dashboardUI = self.storeStatsAndTopPerformersViewController
             }
             dashboardUI.scrollDelegate = self
             self.onDashboardUIUpdate(forced: false, updatedDashboardUI: dashboardUI)
@@ -340,7 +345,7 @@ private extension DashboardViewController {
         dashboardUI = updatedDashboardUI
 
         updatedDashboardUI.onPullToRefresh = { [weak self] in
-            self?.pullToRefresh()
+            await self?.pullToRefresh()
         }
         updatedDashboardUI.displaySyncingError = { [weak self] in
             self?.showTopBannerView()
@@ -412,9 +417,9 @@ private extension DashboardViewController {
         show(settingsViewController, sender: self)
     }
 
-    func pullToRefresh() {
+    func pullToRefresh() async {
         ServiceLocator.analytics.track(.dashboardPulledToRefresh)
-        reloadDashboardUIStatsVersion(forced: true)
+        await reloadDashboardUIStatsVersion(forced: true)
     }
 }
 
@@ -423,9 +428,10 @@ private extension DashboardViewController {
 private extension DashboardViewController {
     func reloadData(forced: Bool) {
         DDLogInfo("♻️ Requesting dashboard data be reloaded...")
-        dashboardUI?.reloadData(forced: forced, completion: { [weak self] in
-            self?.configureTitle()
-        })
+        Task {
+            await dashboardUI?.reloadData(forced: forced)
+            configureTitle()
+        }
     }
 
     func observeSiteForUIUpdates() {

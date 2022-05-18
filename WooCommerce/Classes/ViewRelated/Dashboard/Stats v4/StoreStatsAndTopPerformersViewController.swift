@@ -13,7 +13,7 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
 
     var displaySyncingError: () -> Void = {}
 
-    var onPullToRefresh: () -> Void = {}
+    var onPullToRefresh: () async -> Void = {}
 
     // MARK: - Subviews
 
@@ -97,10 +97,12 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
 }
 
 extension StoreStatsAndTopPerformersViewController: DashboardUI {
-    func reloadData(forced: Bool, completion: @escaping () -> Void) {
-        syncAllStats(forced: forced, onCompletion: { _ in
-            completion()
-        })
+    func reloadData(forced: Bool) async {
+        await withCheckedContinuation { continuation in
+            syncAllStats(forced: forced) { _ in
+                continuation.resume(returning: ())
+            }
+        }
     }
 
     func remindStatsUpgradeLater() {
@@ -339,7 +341,7 @@ private extension StoreStatsAndTopPerformersViewController {
         periodVCs.forEach { (vc) in
             vc.scrollDelegate = scrollDelegate
             vc.onPullToRefresh = { [weak self] in
-                self?.onPullToRefresh()
+                await self?.onPullToRefresh()
             }
         }
     }

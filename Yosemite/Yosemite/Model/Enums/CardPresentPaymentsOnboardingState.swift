@@ -12,6 +12,9 @@ public enum CardPresentPaymentOnboardingState: Equatable {
     /// 
     case selectPlugin
 
+    /// The Stripe plugin should be deactivated. This state usually happens when WCPay and Stripe
+    /// are both installed and activated in a country that doesn't support Stripe.
+    ///
     case deactivateStripe
 
     /// Store is not located in one of the supported countries.

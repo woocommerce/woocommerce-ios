@@ -7,11 +7,7 @@ final class CouponDetailsHostingController: UIHostingController<CouponDetails> {
 
     init(viewModel: CouponDetailsViewModel,
          onUpdate: @escaping () -> Void,
-         onDeletion: @escaping () -> Void,
-         onEditCoupon: @escaping (AddEditCouponViewModel) -> Void) {
-        // attempt 1 config
-        // let couponDetails = CouponDetails(viewModel: viewModel, onUpdate: onUpdate, onDeletion: onDeletion, onEditCoupon: onEditCoupon)
-
+         onDeletion: @escaping () -> Void) {
         // attempt 3 config
         let couponDetails = CouponDetails(viewModel: viewModel, onUpdate: onUpdate, onDeletion: onDeletion)
 

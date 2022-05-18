@@ -7,6 +7,12 @@ final class DashboardViewModel {
     /// Stats v4 is shown by default, then falls back to v3 if store stats are unavailable.
     @Published private(set) var statsVersion: StatsVersion = .v4
 
+    private let stores: StoresManager
+
+    init(stores: StoresManager = ServiceLocator.stores) {
+        self.stores = stores
+    }
+
     /// Syncs store stats for dashboard UI.
     func syncStats(for siteID: Int64,
                    siteTimezone: TimeZone,
@@ -32,7 +38,7 @@ final class DashboardViewModel {
             }
             onCompletion?(result)
         })
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     /// Syncs visitor stats for dashboard UI.
@@ -51,7 +57,7 @@ final class DashboardViewModel {
             }
             onCompletion?(result)
         })
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     /// Syncs top performers data for dashboard UI.
@@ -76,7 +82,7 @@ final class DashboardViewModel {
             }
             onCompletion?(result)
         })
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 }
 

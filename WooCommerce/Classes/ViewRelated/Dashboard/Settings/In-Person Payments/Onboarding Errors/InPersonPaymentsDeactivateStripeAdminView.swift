@@ -1,8 +1,6 @@
 import SwiftUI
 
 struct InPersonPaymentsDeactivateStripeAdmin: View {
-    let countryCode: String
-
     let onRefresh: () -> Void
     @State var presentedSetupURL: URL? = nil
     @Environment(\.verticalSizeClass) var verticalSizeClass
@@ -18,7 +16,7 @@ struct InPersonPaymentsDeactivateStripeAdmin: View {
             Spacer()
 
             InPersonPaymentsOnboardingError.MainContent(
-                title: title,
+                title: Localization.title,
                 message: Localization.message,
                 image: InPersonPaymentsOnboardingError.ImageInfo(
                     image: .paymentErrorImage,
@@ -47,14 +45,6 @@ struct InPersonPaymentsDeactivateStripeAdmin: View {
         .safariSheet(url: $presentedSetupURL, onDismiss: onRefresh)
     }
 
-    var title: String {
-        guard let countryName = Locale.current.localizedString(forRegionCode: countryCode) else {
-            DDLogError("In-Person Payments unsupported in country code \(countryCode), which can't be localized")
-            return Localization.titleUnknownCountry
-        }
-        return String(format: Localization.title, countryName)
-    }
-
     var setupURL: URL? {
         guard let adminURL = ServiceLocator.stores.sessionManager.defaultSite?.adminURL else {
             return nil
@@ -66,19 +56,14 @@ struct InPersonPaymentsDeactivateStripeAdmin: View {
 
 private enum Localization {
     static let title = NSLocalizedString(
-        "We don’t support In-Person Payments with Stripe in %1$@",
+        "In-Person Payments are processed through WooCommerce Payments.",
         comment: "Title for the error screen when there is more than one plugin active" +
-        "that supports in-person payments and Stripe is not supported in that country."
-    )
-
-    static let titleUnknownCountry = NSLocalizedString(
-        "We don’t support In-Person Payments in your country",
-        comment: "Title for the error screen when In-Person Payments is not supported because we don't know the name of the country"
+        "and the Stripe plugin should be deactivated"
     )
 
     static let message = NSLocalizedString(
-        "In-Person Payments will work with only WooCommerce Payments activated. Please deactivate WooCommerce Stripe Gateway to continue.",
-        comment: "Message prompting an administrator to deactivate one of two plugins"
+        "Please deactivate WooCommerce Stripe Gateway to to collect payments.",
+        comment: "Message prompting an administrator to deactivate Stripe plugin"
     )
 
     static let primaryButton = NSLocalizedString(

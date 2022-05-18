@@ -87,10 +87,6 @@ final class CouponDetailsViewModel: ObservableObject {
     ///
     @Published private(set) var isDeletionInProgress: Bool = false
 
-    /// Handle when the Edit Coupon Screen should be shown.
-    ///
-    @Published var showingEditCoupon: Bool = false
-
     /// The message to be shared about the coupon
     ///
     var shareMessage: String {

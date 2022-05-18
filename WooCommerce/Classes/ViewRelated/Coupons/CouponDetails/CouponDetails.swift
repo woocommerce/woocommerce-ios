@@ -77,7 +77,6 @@ struct CouponDetails: View {
             switch result {
             case .success(let updatedCoupon):
                 viewModel.updateCoupon(updatedCoupon)
-                viewModel.showingEditCoupon = false
                 onUpdate()
             default:
                 break

@@ -32,23 +32,9 @@ extension AddEditCouponHostingController: UIAdaptivePresentationControllerDelega
     }
 
     func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
-        presentDiscardChangesActionSheet(onDiscard: { [weak self] in
-            self?.discardAndDismiss()
-        })
-    }
-}
-
-private extension AddEditCouponHostingController {
-    func presentDiscardChangesActionSheet(onDiscard: @escaping () -> Void) {
-        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: onDiscard)
-    }
-
-    func discardAndDismiss() {
-        dismiss(animated: true)
-    }
-
-    func discardAndPop() {
-        navigationController?.popViewController(animated: true)
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self) { [weak self] in
+            self?.dismiss(animated: true)
+        }
     }
 }
 

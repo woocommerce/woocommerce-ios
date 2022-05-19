@@ -431,7 +431,11 @@ final class IssueRefundViewModelTests: XCTestCase {
         let currencySettings = CurrencySettings()
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         let items = [
-            MockOrderItem.sampleItem(itemID: 1, productID: 1, quantity: item1Quantity, total: currencyFormatter.localize(item1Price * item1Quantity) ?? "0", totalTax: "2.97"),
+            MockOrderItem.sampleItem(itemID: 1,
+                                     productID: 1,
+                                     quantity: item1Quantity,
+                                     total: currencyFormatter.localize(item1Price * item1Quantity) ?? "0",
+                                     totalTax: "2.97")
         ]
         let order = MockOrders().makeOrder(items: items)
         let refund = MockRefunds.sampleRefund(items: [

@@ -8,7 +8,7 @@ struct ProductRow: View {
     ///
     private let multipleSelectionsEnabled: Bool
 
-    private let onCheckboxSelected: () -> Void
+    private let onCheckboxSelected: (() -> Void)?
 
     /// View model to drive the view.
     ///
@@ -33,7 +33,7 @@ struct ProductRow: View {
     init(multipleSelectionsEnabled: Bool = false,
          viewModel: ProductRowViewModel,
          accessibilityHint: String = "",
-         onCheckboxSelected: @escaping () -> Void = {}) {
+         onCheckboxSelected: (() -> Void)? = nil) {
         self.multipleSelectionsEnabled = multipleSelectionsEnabled
         self.viewModel = viewModel
         self.accessibilityHint = accessibilityHint
@@ -45,12 +45,13 @@ struct ProductRow: View {
             AdaptiveStack(horizontalAlignment: .leading) {
                 HStack(alignment: .center) {
                     if multipleSelectionsEnabled {
-                        Image(uiImage: viewModel.selectedState.image)
-                            .frame(width: Layout.checkImageSize * scale, height: Layout.checkImageSize * scale)
-                            .foregroundColor(.init(UIColor.brand))
-                            .onTapGesture {
-                                onCheckboxSelected()
+                        if let selectionHandler = onCheckboxSelected {
+                            checkbox.onTapGesture {
+                                selectionHandler()
                             }
+                        } else {
+                            checkbox
+                        }
                     }
 
                     // Product image
@@ -88,6 +89,12 @@ struct ProductRow: View {
                     .renderedIf(viewModel.canChangeQuantity)
             }
         }
+    }
+
+    private var checkbox: some View {
+        Image(uiImage: viewModel.selectedState.image)
+            .frame(width: Layout.checkImageSize * scale, height: Layout.checkImageSize * scale)
+            .foregroundColor(.init(UIColor.brand))
     }
 }
 

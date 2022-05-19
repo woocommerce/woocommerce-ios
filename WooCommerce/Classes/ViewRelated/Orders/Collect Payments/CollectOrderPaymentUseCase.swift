@@ -331,28 +331,36 @@ private extension CollectOrderPaymentUseCase {
         trackPaymentFailure(with: error)
 
         // Inform about the error
-        alerts.error(error: error,
-                     tryAgain: { [weak self] in
+        if let error = error as? ServerSidePaymentCaptureError, case let .paymentGateway(_, paymentIntent) = error {
+            alerts.serverSidePaymentCaptureError(error: error) { [weak self] in
+                self?.retryServerSidePaymentCapture(paymentIntent: paymentIntent, onCompletion: onCompletion)
+            } dismissCompletion: {
+                onCompletion(.failure(error))
+            }
+        } else {
+            alerts.error(error: error,
+                         tryAgain: { [weak self] in
 
-            // Cancel current payment
-            self?.paymentOrchestrator.cancelPayment { [weak self] result in
-                guard let self = self else { return }
+                // Cancel current payment
+                self?.paymentOrchestrator.cancelPayment { [weak self] result in
+                    guard let self = self else { return }
 
-                switch result {
-                case .success:
-                    // Retry payment
-                    self.attemptPayment(onCompletion: onCompletion)
+                    switch result {
+                    case .success:
+                        // Retry payment
+                        self.attemptPayment(onCompletion: onCompletion)
 
-                case .failure(let cancelError):
-                    // Inform that payment can't be retried.
-                    self.alerts.nonRetryableError(from: self.rootViewController, error: cancelError) {
-                        onCompletion(.failure(error))
+                    case .failure(let cancelError):
+                        // Inform that payment can't be retried.
+                        self.alerts.nonRetryableError(from: self.rootViewController, error: cancelError) {
+                            onCompletion(.failure(error))
+                        }
                     }
                 }
-            }
-        }, dismissCompletion: {
-            onCompletion(.failure(error))
-        })
+            }, dismissCompletion: {
+                onCompletion(.failure(error))
+            })
+        }
     }
 
     private func trackPaymentFailure(with error: Error) {
@@ -424,6 +432,22 @@ private extension CollectOrderPaymentUseCase {
                                                  storeName: stores.sessionManager.defaultSite?.name),
                                      from: rootViewController,
                                      completion: onCompleted)
+    }
+}
+
+// MARK: Error handling
+private extension CollectOrderPaymentUseCase {
+    func retryServerSidePaymentCapture(paymentIntent: PaymentIntent, onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
+        alerts.processingPayment()
+        paymentOrchestrator.retryServerSidePaymentCapture(order: order, paymentIntent: paymentIntent) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let data):
+                onCompletion(result)
+            case .failure(let error):
+                self.handlePaymentFailureAndRetryPayment(error, onCompletion: onCompletion)
+            }
+        }
     }
 }
 

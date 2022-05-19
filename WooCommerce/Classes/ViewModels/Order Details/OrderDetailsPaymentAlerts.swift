@@ -82,6 +82,11 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
         presentViewModel(viewModel: viewModel)
     }
 
+    func serverSidePaymentCaptureError(error: Error, tryAgain: @escaping () -> Void, dismissCompletion: @escaping () -> Void) {
+        let viewModel = serverSidePaymentCaptureErrorViewModel(error: error, tryAgain: tryAgain, dismissCompletion: dismissCompletion)
+        presentViewModel(viewModel: viewModel)
+    }
+
     func nonRetryableError(from: UIViewController?, error: Error, dismissCompletion: @escaping () -> Void) {
         let viewModel = nonRetryableErrorViewModel(amount: amount, error: error, dismissCompletion: dismissCompletion)
         presentViewModel(viewModel: viewModel)
@@ -155,6 +160,13 @@ private extension OrderDetailsPaymentAlerts {
                                      transactionType: transactionType,
                                      primaryAction: tryAgain,
                                      dismissCompletion: dismissCompletion)
+    }
+
+    func serverSidePaymentCaptureErrorViewModel(error: Error,
+                                                tryAgain: @escaping () -> Void,
+                                                dismissCompletion: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalServerSidePaymentCaptureError(primaryAction: tryAgain,
+                                                      dismissCompletion: dismissCompletion)
     }
 
     func retryableErrorViewModel(tryAgain: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {

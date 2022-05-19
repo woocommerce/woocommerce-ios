@@ -83,6 +83,14 @@ public final class CardPresentPaymentStore: Store {
                            onCardReaderMessage: event,
                            onProcessingCompletion: processPaymentCompletion,
                            onCompletion: completion)
+        case .capturePaymentOnSite(let siteID,
+                                   let orderID,
+                                   let paymentIntent,
+                                   let onCompletion):
+            capturePaymentOnSite(siteID: siteID,
+                                 orderID: orderID,
+                                 paymentIntent: paymentIntent,
+                                 onCompletion: onCompletion)
         case .cancelPayment(let completion):
             cancelPayment(onCompletion: completion)
         case .refundPayment(let parameters, let onCardReaderMessage, let completion):
@@ -238,6 +246,13 @@ private extension CardPresentPaymentStore {
                     onCompletion(.failure(error))
                 }
             }
+    }
+
+    func capturePaymentOnSite(siteID: Int64,
+                              orderID: Int64,
+                              paymentIntent: PaymentIntent,
+                              onCompletion: (AnyPublisher<Result<Void, Error>, Never>) -> Void) {
+        onCompletion(captureOrderPaymentOnSite(siteID: siteID, orderID: orderID, paymentIntent: paymentIntent))
     }
 
     func cancelPayment(onCompletion: ((Result<Void, Error>) -> Void)?) {
@@ -515,7 +530,7 @@ private extension CardPresentPaymentStore {
                     return .success(())
                 case .failure(let error):
                     let error = PaymentGatewayAccountError(underlyingError: error)
-                    return .failure(ServerSidePaymentCaptureError.paymentGateway(error: error))
+                    return .failure(ServerSidePaymentCaptureError.paymentGateway(error: error, paymentIntent: paymentIntent))
                 }
             }
             .eraseToAnyPublisher()
@@ -621,7 +636,7 @@ private extension CardPresentPaymentStore {
 
 public enum ServerSidePaymentCaptureError: Error {
     case paymentIntentNotSuccessful
-    case paymentGateway(error: PaymentGatewayAccountError)
+    case paymentGateway(error: PaymentGatewayAccountError, paymentIntent: PaymentIntent)
 }
 
 public enum PaymentGatewayAccountError: Error, LocalizedError {

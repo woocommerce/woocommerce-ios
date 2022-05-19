@@ -16,6 +16,8 @@ protocol OrderDetailsPaymentAlertsProtocol {
 
     func error(error: Error, tryAgain: @escaping () -> Void, dismissCompletion: @escaping () -> Void)
 
+    func serverSidePaymentCaptureError(error: Error, tryAgain: @escaping () -> Void, dismissCompletion: @escaping () -> Void)
+
     func nonRetryableError(from: UIViewController?, error: Error, dismissCompletion: @escaping () -> Void)
 
     func retryableError(from: UIViewController?, tryAgain: @escaping () -> Void)

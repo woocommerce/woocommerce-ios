@@ -50,6 +50,13 @@ public enum CardPresentPaymentAction: Action {
                         onProcessingCompletion: (PaymentIntent) -> Void,
                         onCompletion: (Result<PaymentIntent, Error>) -> Void)
 
+    /// Captures payment on the server side after successful payment capture on the client side.
+    /// Currently used for retrying after receiving an error.
+    case capturePaymentOnSite(siteID: Int64,
+                              orderID: Int64,
+                              paymentIntent: PaymentIntent,
+                              onCompletion: (AnyPublisher<Result<Void, Error>, Never>) -> Void)
+
     /// Cancels an active attempt to collect a payment.
     case cancelPayment(onCompletion: ((Result<Void, Error>) -> Void)?)
 

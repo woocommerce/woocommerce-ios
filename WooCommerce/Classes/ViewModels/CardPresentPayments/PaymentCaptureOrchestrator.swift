@@ -1,3 +1,4 @@
+import Combine
 import Yosemite
 import PassKit
 
@@ -100,6 +101,38 @@ final class PaymentCaptureOrchestrator {
                 onCompletion(Result.failure(error))
             }
         }
+    }
+
+    /// Retries capturing payment on the server side (on the merchant's site).
+    /// - Parameters:
+    ///   - order: the order to capture payment.
+    ///   - paymentIntent: the payment intent after a successful payment capture on the client side.
+    ///   - onCompletion: called when the server-side payment capture completes.
+    func retryServerSidePaymentCapture(order: Order,
+                                       paymentIntent: PaymentIntent,
+                                       onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
+        let action = CardPresentPaymentAction.capturePaymentOnSite(siteID: order.siteID,
+                                                                   orderID: order.orderID,
+                                                                   paymentIntent: paymentIntent) { [weak self] publisher in
+            guard let self = self else { return }
+
+            var subscription: AnyCancellable?
+            subscription = publisher
+                .sink { completion in
+                    subscription?.cancel()
+                } receiveValue: { [weak self] result in
+                    guard let self = self else { return }
+                    switch result {
+                    case .success:
+                        self.completePaymentIntentCapture(order: order,
+                                                          captureResult: .success(paymentIntent),
+                                                          onCompletion: onCompletion)
+                    case .failure(let error):
+                        onCompletion(.failure(error))
+                    }
+                }
+        }
+        stores.dispatch(action)
     }
 
     func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {

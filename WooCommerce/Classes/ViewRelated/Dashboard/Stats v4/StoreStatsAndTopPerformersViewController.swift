@@ -13,7 +13,7 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
 
     var displaySyncingError: () -> Void = {}
 
-    var onPullToRefresh: () async -> Void = {}
+    var onPullToRefresh: @MainActor () async -> Void = {}
 
     // MARK: - Subviews
 
@@ -97,6 +97,7 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
 }
 
 extension StoreStatsAndTopPerformersViewController: DashboardUI {
+    @MainActor
     func reloadData(forced: Bool) async {
         await withCheckedContinuation { continuation in
             syncAllStats(forced: forced) { _ in

@@ -9,7 +9,7 @@ final class DeprecatedDashboardStatsViewController: UIViewController {
     weak var scrollDelegate: DashboardUIScrollDelegate?
 
     /// Set externally to try refreshing stats data if available.
-    var onPullToRefresh: () async -> Void = {}
+    var onPullToRefresh: @MainActor () async -> Void = {}
 
     /// Scroll view for pull-to-refresh support.
     private lazy var scrollView: UIScrollView = .init()
@@ -88,6 +88,7 @@ extension DeprecatedDashboardStatsViewController: DashboardUI {
     }
 
     func remindStatsUpgradeLater() {}
+    @MainActor
     func reloadData(forced: Bool) async {}
 }
 

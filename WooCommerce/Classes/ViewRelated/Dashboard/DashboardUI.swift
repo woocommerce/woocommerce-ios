@@ -10,11 +10,12 @@ protocol DashboardUI: UIViewController {
     var displaySyncingError: () -> Void { get set }
 
     /// Called when the user pulls to refresh
-    var onPullToRefresh: () async -> Void { get set }
+    var onPullToRefresh: @MainActor () async -> Void { get set }
 
     /// Reloads data in Dashboard
     ///
     /// - Parameter forced: pass `true` to override sync throttling
+    @MainActor
     func reloadData(forced: Bool) async
 }
 

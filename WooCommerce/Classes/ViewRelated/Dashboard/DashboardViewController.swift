@@ -262,7 +262,6 @@ private extension DashboardViewController {
         }
     }
 
-    @MainActor
     func reloadDashboardUIStatsVersion(forced: Bool) async {
         await storeStatsAndTopPerformersViewController.reloadData(forced: forced)
     }

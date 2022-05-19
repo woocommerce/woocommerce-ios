@@ -27,7 +27,7 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     }
 
     /// Called when user pulls down to refresh
-    var onPullToRefresh: () async -> Void = {}
+    var onPullToRefresh: @MainActor () async -> Void = {}
 
     /// Updated when reloading data.
     var currentDate: Date

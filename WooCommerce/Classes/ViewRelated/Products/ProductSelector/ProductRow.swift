@@ -8,6 +8,8 @@ struct ProductRow: View {
     ///
     private let multipleSelectionsEnabled: Bool
 
+    private let onCheckboxSelected: () -> Void
+
     /// View model to drive the view.
     ///
     @ObservedObject var viewModel: ProductRowViewModel
@@ -30,10 +32,12 @@ struct ProductRow: View {
 
     init(multipleSelectionsEnabled: Bool = false,
          viewModel: ProductRowViewModel,
-         accessibilityHint: String = "") {
+         accessibilityHint: String = "",
+         onCheckboxSelected: @escaping () -> Void = {}) {
         self.multipleSelectionsEnabled = multipleSelectionsEnabled
         self.viewModel = viewModel
         self.accessibilityHint = accessibilityHint
+        self.onCheckboxSelected = onCheckboxSelected
     }
 
     var body: some View {
@@ -44,6 +48,9 @@ struct ProductRow: View {
                         Image(uiImage: viewModel.selectedState.image)
                             .frame(width: Layout.checkImageSize * scale, height: Layout.checkImageSize * scale)
                             .foregroundColor(.init(UIColor.brand))
+                            .onTapGesture {
+                                onCheckboxSelected()
+                            }
                     }
 
                     // Product image

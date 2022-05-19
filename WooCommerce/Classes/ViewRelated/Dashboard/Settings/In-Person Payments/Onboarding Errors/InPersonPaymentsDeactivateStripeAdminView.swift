@@ -1,4 +1,5 @@
 import SwiftUI
+import Yosemite
 
 struct InPersonPaymentsDeactivateStripeAdmin: View {
     let onRefresh: () -> Void
@@ -62,7 +63,7 @@ private enum Localization {
     )
 
     static let message = NSLocalizedString(
-        "Please deactivate WooCommerce Stripe Gateway to to collect payments.",
+        "Please deactivate WooCommerce Stripe Gateway to collect payments.",
         comment: "Message prompting an administrator to deactivate Stripe plugin"
     )
 

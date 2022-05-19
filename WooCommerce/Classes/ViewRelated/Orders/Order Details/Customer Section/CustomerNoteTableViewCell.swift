@@ -4,7 +4,7 @@ final class CustomerNoteTableViewCell: UITableViewCell {
 
     @IBOutlet private weak var headlineLabel: UILabel!
 
-    @IBOutlet private weak var bodyLabel: UILabel!
+    @IBOutlet private weak var bodyTextView: UITextView!
 
     @IBOutlet private weak var editButton: UIButton!
 
@@ -25,10 +25,10 @@ final class CustomerNoteTableViewCell: UITableViewCell {
     ///
     var body: String? {
         get {
-            return bodyLabel.text
+            return bodyTextView.text
         }
         set {
-            bodyLabel.text = newValue
+            bodyTextView.text = newValue
         }
     }
 
@@ -77,7 +77,8 @@ final class CustomerNoteTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         configureBackground()
-        configureLabels()
+        configureHeadlineLabel()
+        configureBodyTextView()
         configureEditButton()
         configureAddButton()
     }
@@ -85,7 +86,7 @@ final class CustomerNoteTableViewCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         headlineLabel.text = nil
-        bodyLabel.text = nil
+        bodyTextView.text = nil
         onEditTapped = nil
         onAddTapped = nil
         editButton.accessibilityLabel = nil
@@ -100,9 +101,20 @@ private extension CustomerNoteTableViewCell {
         applyDefaultBackgroundStyle()
     }
 
-    func configureLabels() {
+    func configureHeadlineLabel() {
         headlineLabel.applyHeadlineStyle()
-        bodyLabel.applyBodyStyle()
+    }
+
+    func configureBodyTextView() {
+        bodyTextView.font = .body
+        bodyTextView.textColor = .text
+        bodyTextView.backgroundColor = .listForeground
+        bodyTextView.adjustsFontForContentSizeCategory = true
+
+        // Remove padding from inside text view
+        bodyTextView.contentInset = .zero
+        bodyTextView.textContainerInset = .zero
+        bodyTextView.textContainer.lineFragmentPadding = .zero
     }
 
     func configureEditButton() {
@@ -136,8 +148,8 @@ extension CustomerNoteTableViewCell {
         return headlineLabel
     }
 
-    func getBodyLabel() -> UILabel {
-        return bodyLabel
+    func getBodyTextView() -> UITextView {
+        return bodyTextView
     }
 }
 

@@ -262,6 +262,7 @@ private extension DashboardViewController {
         }
     }
 
+    @MainActor
     func reloadDashboardUIStatsVersion(forced: Bool) async {
         await storeStatsAndTopPerformersViewController.reloadData(forced: forced)
     }
@@ -318,8 +319,10 @@ extension DashboardViewController: DashboardUIScrollDelegate {
 private extension DashboardViewController {
     func onDashboardUIUpdate(forced: Bool, updatedDashboardUI: DashboardUI) {
         defer {
-            // Reloads data of the updated dashboard UI at the end.
-            reloadData(forced: forced)
+            Task { [weak self] in
+                // Reloads data of the updated dashboard UI at the end.
+                await self?.reloadData(forced: true)
+            }
         }
 
         // Optimistically hide the error banner any time the dashboard UI updates (not just pull to refresh)
@@ -426,12 +429,11 @@ private extension DashboardViewController {
 // MARK: - Private Helpers
 //
 private extension DashboardViewController {
-    func reloadData(forced: Bool) {
+    @MainActor
+    func reloadData(forced: Bool) async {
         DDLogInfo("♻️ Requesting dashboard data be reloaded...")
-        Task {
-            await dashboardUI?.reloadData(forced: forced)
-            configureTitle()
-        }
+        await dashboardUI?.reloadData(forced: forced)
+        configureTitle()
     }
 
     func observeSiteForUIUpdates() {
@@ -443,7 +445,9 @@ private extension DashboardViewController {
                 return
             }
             self.updateUI(site: site)
-            self.reloadData(forced: true)
+            Task { [weak self] in
+                await self?.reloadData(forced: true)
+            }
         }.store(in: &subscriptions)
     }
 

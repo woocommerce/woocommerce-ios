@@ -174,7 +174,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
             if paymentPluginsInstalledAndActiveStatus == .bothAreInstalledAndActive {
                 // They have WCPay and Stripe installed and active at the same time.
                 // Deactivating Stripe is the advised way to proceed.
-                return .deactivateStripe
+                return .pluginShouldBeDeactivated(plugin: .stripe)
             } else if paymentPluginsInstalledAndActiveStatus == .onlyStripeIsInstalledAndActive {
                 // If we only support WCPay, we don't want to ask users to set up WCPay if they already
                 // have Stripe. In that case, we can tell them that IPP is not supported for Stripe in

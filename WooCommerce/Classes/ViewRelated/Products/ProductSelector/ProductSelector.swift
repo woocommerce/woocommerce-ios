@@ -139,8 +139,10 @@ struct ProductSelector: View {
                 })) {
                 HStack {
                     ProductRow(multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
-                               viewModel: rowViewModel)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                               viewModel: rowViewModel) {
+                        viewModel.toggleSelectionForVariations(of: rowViewModel.productOrVariationID)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
 
                     DisclosureIndicator()
                 }

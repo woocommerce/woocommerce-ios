@@ -1,1 +1,0 @@
-Kami memperbaiki sejumlah bug yang menghambat penggunaan aplikasi. Salah satunya berkaitan dengan berat dan dimensi paket pengiriman produk. Sekarang memasukkan nilai dengan koma untuk memisahkan nilai desimal telah berfungsi normal. Terima kasih untuk semua yang telah melaporkan bug ini! Feedback Anda sangat penting bagi kami!

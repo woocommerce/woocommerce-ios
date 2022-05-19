@@ -1,1 +1,0 @@
-We hebben wat tijd besteed aan het oplossen van bugs die ervoor zorgden dat de app lastiger te gebruiken was. Een van deze bugs had betrekking op het gewicht en de afmetingen van het verzendpakket. Je kunt nu waarden met komma's invullen om decimale waarden te scheiden. Bedankt dat jullie deze bugs hebben gemeld. Jullie feedback is essentieel voor ons!

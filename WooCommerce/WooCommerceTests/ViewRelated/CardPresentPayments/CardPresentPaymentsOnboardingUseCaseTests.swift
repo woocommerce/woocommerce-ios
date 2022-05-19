@@ -101,7 +101,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .deactivateStripe)
+        XCTAssertEqual(state, .pluginShouldBeDeactivated(plugin: .stripe))
     }
 
     func test_onboarding_returns_wcpay_plugin_unsupported_version_for_canada_when_version_unsupported() {

@@ -4,6 +4,7 @@
 -----
 - [*] In-Person Payments: Accessibility improvement [https://github.com/woocommerce/woocommerce-ios/pull/6869]
 
+- [*] Support Arabic numerals on amount fields. [https://github.com/woocommerce/woocommerce-ios/pull/6891]
 
 9.2
 -----

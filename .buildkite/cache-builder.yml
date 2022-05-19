@@ -13,7 +13,7 @@ common_params:
         repo: "woocommerce/woocommerce-ios/"
   # Common environment values to use with the `env` key.
   - &common_env
-    IMAGE_ID: xcode-12.5.1
+    IMAGE_ID: xcode-13.3.1
 
 steps:
 

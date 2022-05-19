@@ -149,4 +149,12 @@ final class PriceInputFormatterTests: XCTestCase {
         // Then
         XCTAssertEqual(formatter.value(from: emptyValue), NSNumber(value: 0))
     }
+
+    func test_arabic_numerals_are_transformed_correctly() {
+        // When
+        let value = "٤٥,٤١"
+
+        // Then
+        XCTAssertEqual(formatter.value(from: value), NSNumber(value: 45.41))
+    }
 }

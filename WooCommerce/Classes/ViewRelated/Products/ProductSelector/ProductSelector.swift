@@ -10,6 +10,10 @@ struct ProductSelector: View {
     ///
     @Binding var isPresented: Bool
 
+    /// Defines whether a variation list is shown.
+    ///
+    @State var isShowingVariationList: Bool = false
+
     /// View model to drive the view.
     ///
     @ObservedObject var viewModel: ProductSelectorViewModel
@@ -130,21 +134,26 @@ struct ProductSelector: View {
     ///
     @ViewBuilder private func createProductRow(rowViewModel: ProductRowViewModel) -> some View {
         if let addVariationToOrderVM = viewModel.getVariationsViewModel(for: rowViewModel.productOrVariationID) {
-            LazyNavigationLink(destination: ProductVariationSelector(
-                isPresented: $isPresented,
-                viewModel: addVariationToOrderVM,
-                multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
-                onMultipleSelections: { selectedIDs in
-                    viewModel.updateSelectedVariations(productID: rowViewModel.productOrVariationID, selectedVariationIDs: selectedIDs)
-                })) {
-                HStack {
-                    ProductRow(multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
-                               viewModel: rowViewModel) {
-                        viewModel.toggleSelectionForVariations(of: rowViewModel.productOrVariationID)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
+            HStack {
+                ProductRow(multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
+                           viewModel: rowViewModel) {
+                    viewModel.toggleSelectionForVariations(of: rowViewModel.productOrVariationID)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .onTapGesture {
+                    isShowingVariationList.toggle()
+                }
 
-                    DisclosureIndicator()
+                DisclosureIndicator()
+
+                LazyNavigationLink(destination: ProductVariationSelector(
+                    isPresented: $isPresented,
+                    viewModel: addVariationToOrderVM,
+                    multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
+                    onMultipleSelections: { selectedIDs in
+                        viewModel.updateSelectedVariations(productID: rowViewModel.productOrVariationID, selectedVariationIDs: selectedIDs)
+                    }), isActive: $isShowingVariationList) {
+                    EmptyView()
                 }
             }
             .accessibilityHint(configuration.variableProductRowAccessibilityHint)

@@ -5,9 +5,9 @@ final class AddEditCouponHostingController: UIHostingController<AddEditCoupon> {
 
     private let viewModel: AddEditCouponViewModel
 
-    init(viewModel: AddEditCouponViewModel) {
+    init(viewModel: AddEditCouponViewModel, onDisappear: () -> Void) {
         self.viewModel = viewModel
-        super.init(rootView: AddEditCoupon(viewModel))
+        super.init(rootView: AddEditCoupon(viewModel).onDisappear(onDisappear))
 
         rootView.dismissHandler = { [weak self] in
             guard let self = self else { return }

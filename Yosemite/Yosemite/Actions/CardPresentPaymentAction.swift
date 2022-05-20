@@ -73,9 +73,6 @@ public enum CardPresentPaymentAction: Action {
     /// 3. Reset all status indicators
     case reset
 
-    /// Checks if a reader is connected
-    case checkCardReaderConnected(onCompletion: (AnyPublisher<[CardReader], Never>) -> Void)
-
     /// Provides a publisher for card reader connections
     case publishCardReaderConnections(onCompletion: (AnyPublisher<[CardReader], Never>) -> Void)
 

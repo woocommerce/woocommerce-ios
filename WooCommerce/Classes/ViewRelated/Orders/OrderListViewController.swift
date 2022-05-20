@@ -360,7 +360,12 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
     ///
     private func hideTopBannerView() {
         topBannerView?.removeFromSuperview()
-        tableView.tableHeaderView = nil
+        if tableView.tableHeaderView != nil {
+            // Setting tableHeaderView = nil when having a previous value keeps an extra header space (See p5T066-3c3#comment-12307)
+            // This solution avoids it by adding an almost zero height header (Originally from https://stackoverflow.com/a/18938763/428353)
+            tableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.size.width, height: CGFloat.leastNonzeroMagnitude))
+        }
+
         tableView.updateHeaderHeight()
     }
 }

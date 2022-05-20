@@ -1,5 +1,0 @@
-Vous trouverez un lien de paiement pratique en haut d’une commande qui n’a pas encore fait l’objet d’un paiement. Envoyez ce lien à votre client pour qu’il puisse régler sa commande directement depuis son téléphone ou son ordinateur.
-
-C’est une excellente option à utiliser avec la nouvelle fonctionnalité de création de commandes ! Créez une commande lorsque le client se trouve devant vous, puis envoyez-lui un message avec le lien de paiement via votre site. Ingénieux, n’est-ce pas ?
-
-Afin de bénéficier de cette option dans l’application, vous devrez effectuer la mise à jour vers WooCommerce 6.4 ou une version supérieure.

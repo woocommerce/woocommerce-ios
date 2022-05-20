@@ -285,6 +285,9 @@
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "About the App";
 
+/* Title when a payments account is successfully connected for Card Present Payments */
+"Account connected" = "Account connected";
+
 /* Reads as 'Account Type'. Part of the mandatory data in receipts */
 "Account Type" = "Account Type";
 
@@ -526,7 +529,7 @@
 /* No comment provided by engineer. */
 "All Products excl. %d Products" = "All Products excl. %d Products";
 
-/* Value for the limit usage to X items row in Coupon Usage Details screen when no limit is set */
+/* Value for the limit usage to X items row in Coupon Usage Restrictions screen when no limit is set */
 "All Qualifying" = "All Qualifying";
 
 /* Mark all reviews as read notice */
@@ -544,7 +547,7 @@
 /* Display label for the product's inventory backorders setting option */
 "Allow, but notify customer" = "Allow, but notify customer";
 
-/* Title for the allowed email row in coupon usage details screen.
+/* Title for the allowed email row in coupon usage restrictions screen.
    Title for the Allowed Emails screen */
 "Allowed Emails" = "Allowed Emails";
 
@@ -563,7 +566,7 @@
 /* Title of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Amount (%)" = "Amount (%)";
 
-/* Title for the amount field on the Fee Details screen during order creationParameters: %1$@ - fee type (percent sign or currency symbol)
+/* Title for the amount field on the Fee Details screen during order creationParameters: %1$@ - currency symbol
    Title for the amount field on the Shipping Details screen during order creationParameters: %1$@ - currency symbol */
 "Amount (%1$@)" = "Amount (%1$@)";
 
@@ -801,17 +804,26 @@
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "By signing up, you agree to our _Terms of Service_.";
 
+/* Title for the helper field describing calculated amount for given percentage */
+"Calculated amount" = "Calculated amount";
+
 /* Call phone number button title */
 "Call" = "Call";
 
 /* Error message format when capturing a unsupported media type with device camera */
 "Camera capture should not support media type: %@" = "Camera capture should not support media type: %@";
 
+/* The singular total limit where the same coupon can be applied for everyone, reads like: Can be used 1 time */
+"Can be used %1$d time" = "Can be used %1$d time";
+
+/* The plural total limit where the same coupon can be applied for everyone, reads like: Can be used 10 times */
+"Can be used %1$d times" = "Can be used %1$d times";
+
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "Can Not Request Link";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title that closes the action sheet in product variations - Button title that closes the presented screen - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to cancel an in-person payment or refund - Button to cancel the creation of an order on the New Order screen - Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button in the navigation bar of the view for adding or editing a coupon. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the main more actions menu sheet. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - Text for the cancel button in the Exclude Products screen - Text for the cancel button in the Select Products screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
+   Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title that closes the action sheet in product variations - Button title that closes the presented screen - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to cancel an in-person payment or refund - Button to cancel the creation of an order on the New Order screen - Button to dismiss Select Categories screen - Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button in the navigation bar of the view for adding or editing a coupon. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the main more actions menu sheet. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - Text for the cancel button in the Exclude Products screen - Text for the cancel button in the Select Products screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
 "Cancel" = "Cancel";
 
 /* Display label for cancelled order status. */
@@ -866,6 +878,9 @@
 /* Edit product categories screen - Screen title
    Filter product categories screen - Screen title - Title of the Categories row on Product main screen - Title of the product form bottom sheet action for editing categories. */
 "Categories" = "Categories";
+
+/* Error message when local validation fails in Shipping Label Address Validation */
+"Certain required fields need attention." = "Certain required fields need attention.";
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "Certificate error";
@@ -932,6 +947,9 @@
 /* Button to clear selection on the Select Product Variations screen
    Button to clear selection on the Select Products screen */
 "Clear selection" = "Clear selection";
+
+/* Button to clear selection on the product categories list */
+"Clear Selection" = "Clear Selection";
 
 /* Accessibility label for the close button
    Button to dismiss modal overlay. Presented to users after refunding a payment fails - Text for the close button in the Add Product screen - Text for the close button in the Edit Address Form - Text for the close button in the Fee Details screen - Text for the close button in the Product screen - Text for the close button in the Shipping Line Details screen - Title of the Close action on the Jetpack Install view */
@@ -1192,7 +1210,7 @@
 "Create order" = "Create order";
 
 /* Title of the banner notice in the Orders tab */
-"Create orders and take payments!" = "Create orders and take payments!";
+"Create orders & take payments!" = "Create orders & take payments!";
 
 /* Title of the view for creating a coupon with percentage discount. */
 "Create percentage discount" = "Create percentage discount";
@@ -1404,7 +1422,7 @@
 "Don't have an account? _Sign up_" = "Don't have an account? _Sign up_";
 
 /* Action title to select products to add to a grouped product from search results
-   Button to submit the product selector without any product selected. - Done button on the Jetpack Install Progress screen. - Done navigation button in Inbox Notes webview - Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - Text for the done button in the Fee Details screen - Text for the done button in the Shipping Line Details screen - The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again. */
+   Button to submit selection on Select Categories screen - Button to submit the product selector without any product selected. - Done button on the Jetpack Install Progress screen. - Done navigation button in Inbox Notes webview - Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - Text for the done button in the Fee Details screen - Text for the done button in the Shipping Line Details screen - The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again. */
 "Done" = "Done";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -1528,8 +1546,8 @@
 /* Title of the view for editing a coupon with percentage discount. */
 "Edit percentage discount" = "Edit percentage discount";
 
-/* Button for specify the product categories where a coupon can be applied in the view for adding or editing a coupon. */
-"Edit Product Categories" = "Edit Product Categories";
+/* Button for specify the product categories where a coupon can be applied in the view for adding or editing a coupon. Reads like: Edit Categories */
+"Edit Product Categories (%1$d)" = "Edit Product Categories (%1$d)";
 
 /* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "Edit Products";
@@ -1733,26 +1751,41 @@
    Site Address placeholder */
 "example.com" = "example.com";
 
+/* Button to submit selection on the Exclude Categories screen when more than 1 item is selected. Reads like: Exclude 10 Categories */
+"Exclude %1$d Categories" = "Exclude %1$d Categories";
+
+/* Button to submit selection on the Exclude Categories screen when 1 item is selected */
+"Exclude %1$d Category" = "Exclude %1$d Category";
+
 /* Title of the action button at the bottom of the Exclude Products screen when more than 1 item is selected, reads like: Exclude 5 Products */
 "Exclude %1$d Products" = "Exclude %1$d Products";
 
 /* Title of the action button at the bottom of the Exclude Products screen when one product is selected */
 "Exclude 1 Product" = "Exclude 1 Product";
 
-/* Title of the action button to add product categories to the exclusion list in Coupon Usage Details screen */
+/* Title for the Exclude Categories screen */
+"Exclude categories" = "Exclude categories";
+
+/* Title of the action button to exclude product categories on Coupon Usage Restrictions screen */
 "Exclude Product Categories" = "Exclude Product Categories";
 
+/* Title of the action button to add excluded product categories on Coupon Usage Restrictions screen. The number of selected items is mentioned between the brackets. Reads like: Exclude Product Categories (4) */
+"Exclude Product Categories (%1$d)" = "Exclude Product Categories (%1$d)";
+
 /* Title for the screen to exclude products for a coupon
-   Title of the action button to add products to the exclusion list in Coupon Usage Details screen */
+   Title of the action button to add products to the exclusion list in Coupon Usage Restrictions screen */
 "Exclude Products" = "Exclude Products";
 
-/* Title for the exclude sale items row in coupon usage details screen. */
+/* Title of the action button to add excluded products on Coupon Usage Restrictions screen. The number of selected items is included between the brackets. Reads like: Exclude Products (2) */
+"Exclude Products (%1$d)" = "Exclude Products (%1$d)";
+
+/* Title for the exclude sale items row in coupon usage restrictions screen. */
 "Exclude Sale Items" = "Exclude Sale Items";
 
 /* Text on Coupon Details screen to indicate that the coupon can not be applied to sale items */
 "Excludes sale items" = "Excludes sale items";
 
-/* Title of the exclusions section in Coupon Usage Details screen */
+/* Title of the exclusions section in Coupon Usage Restrictions screen */
 "Exclusions" = "Exclusions";
 
 /* Accessibility value when a banner is expanded */
@@ -1779,6 +1812,9 @@
 
 /* Error message on the Coupon Details screen when deleting coupon fails */
 "Failed to delete coupon. Please try again." = "Failed to delete coupon. Please try again.";
+
+/* Error message on the Issue Refund screen when fetching the charge details failed */
+"Failed to fetch your charge details. Please try again." = "Failed to fetch your charge details. Please try again.";
 
 /* An error message shown when failing to retrieve information to present a view for a review push notification. */
 "Failed to retrieve the review notification details." = "Failed to retrieve the review notification details.";
@@ -2119,7 +2155,7 @@
 /* Text on Coupon Details screen to indicate that the coupon can not be applied in conjunction with other coupons */
 "Individual use only" = "Individual use only";
 
-/* Title for the individual use only row in coupon usage details screen. */
+/* Title for the individual use only row in coupon usage restrictions screen. */
 "Individual Use Only" = "Individual Use Only";
 
 /* Description for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
@@ -2342,8 +2378,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support.";
 
-/* Title for the limit usage to X items row in coupon usage details screen. */
+/* Title for the limit usage to X items row in coupon usage restrictions screen. */
 "Limit Usage to X Items" = "Limit Usage to X Items";
+
+/* The required number of items in the cart to apply a coupon in singular form, reads like: Limited to 1 item in cart */
+"Limited to %1$d item in cart" = "Limited to %1$d item in cart";
+
+/* The required number of items in the cart to apply a coupon in plural form, reads like: Limited to 10 items in cart */
+"Limited to %1$d items in cart" = "Limited to %1$d items in cart";
 
 /* Description of the Action sheet option when the user wants to change the Product type to external product */
 "Link a product to an external website" = "Link a product to an external website";
@@ -2498,7 +2540,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "Mark this order as complete and notify the customer";
 
-/* Title for the maximum spend row on coupon usage details screen with currency symbol within the brackets. Reads like: Max. Spend ($) */
+/* Title for the maximum spend row on coupon usage restrictions screen with currency symbol within the brackets. Reads like: Max. Spend ($) */
 "Max. Spend (%1$@)" = "Max. Spend (%1$@)";
 
 /* The maximum limit of spending allowed for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
@@ -2529,7 +2571,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Option to select the Microsft Outlook app when logging in with magic links */
 "Microsoft Outlook" = "Microsoft Outlook";
 
-/* Title for the minimum spend row on coupon usage details screen with currency symbol within the brackets. Reads like: Min. Spend ($) */
+/* Title for the minimum spend row on coupon usage restrictions screen with currency symbol within the brackets. Reads like: Min. Spend ($) */
 "Min. Spend (%1$@)" = "Min. Spend (%1$@)";
 
 /* The minimum limit of spending required for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
@@ -2680,6 +2722,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "No price set";
 
+/* Message on the empty view when the category list or its search result is empty. */
+"No product categories found" = "No product categories found";
+
 /* Message displayed if there are no product variations for a product. */
 "No product variations found" = "No product variations found";
 
@@ -2693,7 +2738,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Placeholder for empty product ratings */
 "No ratings" = "No ratings";
 
-/* Value for the allowed emails row in Coupon Usage Details screen when no restriction is set */
+/* Value for the allowed emails row in Coupon Usage Restrictions screen when no restriction is set */
 "No Restrictions" = "No Restrictions";
 
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier'. Parameters: %1$@ - carrier name */
@@ -2715,7 +2760,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No tax classes yet" = "No tax classes yet";
 
 /* Coupon expiry date placeholder in the view for adding or editing a coupon
-   Display label for the order fee's tax status setting option - Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow - The description in product variations bulk update, of a value, that is missing from all variations - Value for fields in Coupon Usage Details screen when no value is set */
+   Display label for the order fee's tax status setting option - Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow - The description in product variations bulk update, of a value, that is missing from all variations - Value for fields in Coupon Usage Restrictions screen when no value is set */
 "None" = "None";
 
 /* Action title to dismiss enabling Analytics for a store
@@ -2975,6 +3020,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the product's pending status */
 "Pending review" = "Pending review";
 
+/* Title for the amount field on the Fee Details screen during order creationParameters: %1$@ - percent sign */
+"Percentage (%1$@)" = "Percentage (%1$@)";
+
 /* Name of percentage discount type */
 "Percentage Discount" = "Percentage Discount";
 
@@ -3071,7 +3119,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when an image captured by camera cannot be saved to the device Photos library */
 "Please make sure the app can access Photos in device settings" = "Please make sure the app can access Photos in device settings";
 
-/* Error notice recovery suggestion when we fail to update an address in the edit address screen. */
+/* Error notice recovery suggestion when we fail to update an address in the edit address screen.
+   Recovery suggestion when we fail to update an address when creating an order */
 "Please make sure you are running the latest version of WooCommerce and try again later." = "Please make sure you are running the latest version of WooCommerce and try again later.";
 
 /* Error message when no package is selected on Shipping Label Package Details screen */
@@ -3532,7 +3581,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Retrieves a list of products that contain a given keyword." = "Retrieves a list of products that contain a given keyword.";
 
 /* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
-   Action button to retry syncing the draft order - Button to retry when there was a network error checking In-Person Payments requirements - Retry Action - Retry action for an error notice - Retry the last action */
+   Action button that will retry fetching the charge details on the Issue Refund screen - Action button to retry syncing the draft order - Button to retry when there was a network error checking In-Person Payments requirements - Retry Action - Retry action for an error notice - Retry Action on the notice when loading product categories fails - Retry the last action */
 "Retry" = "Retry";
 
 /* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages.
@@ -3640,6 +3689,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Products Search Placeholder */
 "Search all products" = "Search all products";
 
+/* Placeholder text on the search bar on the category list */
+"Search Categories" = "Search Categories";
+
 /* Accessibility label for the Search Coupons button */
 "Search coupons" = "Search coupons";
 
@@ -3670,6 +3722,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the Jetpack benefits banner. */
 "See the benefits" = "See the benefits";
 
+/* Button to submit selection on the Select Categories screen when more than 1 item is selected. Reads like: Select 10 Categories */
+"Select %1$d Categories" = "Select %1$d Categories";
+
+/* Button to submit selection on the Select Categories screen when 1 item is selected */
+"Select %1$d Category" = "Select %1$d Category";
+
 /* Title of the action button at the bottom of the Select Products screen when more than 1 item is selected, reads like: Select 5 Products */
 "Select %1$d Products" = "Select %1$d Products";
 
@@ -3691,6 +3749,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Add the shipping carrier. Placeholder of cell presenting carrier name */
 "Select carrier" = "Select carrier";
 
+/* Title for the Select Categories screen */
+"Select categories" = "Select categories";
+
 /* Placeholder value of the cell in Product Price Settings > Schedule sale to a certain date */
 "Select end date" = "Select end date";
 
@@ -3699,6 +3760,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Select parent category screen - Screen title */
 "Select Parent Category" = "Select Parent Category";
+
+/* Button to select specific categories applicable for a coupon in the view for adding or editing a coupon. */
+"Select Product Categories" = "Select Product Categories";
 
 /* Title for the screen to select products for a coupon */
 "Select Products" = "Select Products";
@@ -3963,6 +4027,12 @@ This part is the link to the website, and forms part of a longer sentence which 
    The text on the placeholder overlay when there is issue syncing site plugins */
 "Something went wrong" = "Something went wrong";
 
+/* Error message in the Add Edit Coupon screen when the creation of the coupon goes in error. */
+"Something went wrong while creating the coupon." = "Something went wrong while creating the coupon.";
+
+/* Error message in the Add Edit Coupon screen when the update of the coupon goes in error. */
+"Something went wrong while updating the coupon." = "Something went wrong while updating the coupon.";
+
 /* Notice format when a shipping label refund request fails. */
 "Something went wrong with the refund. Please try again." = "Something went wrong with the refund. Please try again.";
 
@@ -4166,6 +4236,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title for the Simple Payments Methods screens. %1$@ is a placeholder for the total amount to collect
    Text of the button that creates a simple payment order. %1$@ is a placeholder for the total amount to collect */
 "Take Payment (%1$@)" = "Take Payment (%1$@)";
+
+/* Message when a payments account is successfully connected for Card Present Payments */
+"Taking you back to collect a payment" = "Taking you back to collect a payment";
 
 /* Accessibility hint for the More button on formatting toolbar. */
 "Tap for more formatting options" = "Tap for more formatting options";
@@ -4388,6 +4461,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?";
+
+/* Error message in the Add Edit Coupon screen when the coupon code is empty. */
+"The coupon code couldn't be empty" = "The coupon code couldn't be empty";
 
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
 "The customer will receive an email once order is completed" = "The customer will receive an email once order is completed";
@@ -4771,10 +4847,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Settings > Manage Card Reader > Connect > Hint to enable Bluetooth */
 "Turn mobile device Bluetooth on" = "Turn mobile device Bluetooth on";
 
-/* Description for the individual use only row in coupon usage details screen. */
+/* Description for the individual use only row in coupon usage restrictions screen. */
 "Turn this on if the coupon cannot be used in conjunction with other coupons." = "Turn this on if the coupon cannot be used in conjunction with other coupons.";
 
-/* Description for the exclude sale items row in coupon usage details screen. */
+/* Description for the exclude sale items row in coupon usage restrictions screen. */
 "Turn this on if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale." = "Turn this on if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale.";
 
 /* Title of a button linking to the app's Twitter profile */
@@ -4837,7 +4913,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Load Attribute Options Action Failed */
 "Unable to load attribute options" = "Unable to load attribute options";
 
-/* Load Product Categories Action Failed */
+/* Notice message when loading product categories fails */
 "Unable to load categories" = "Unable to load categories";
 
 /* Load Product Attributes Action Failed */
@@ -4897,6 +4973,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when Bluetooth scan times out during reader discovery. */
 "Unable to search for card readers - Bluetooth timed out - please try again" = "Unable to search for card readers - Bluetooth timed out - please try again";
 
+/* Error notice title when we fail to update an address when creating an order. */
+"Unable to set customer details." = "Unable to set customer details.";
+
 /* Error notice title when we fail to update an address in the edit address screen. */
 "Unable to update address." = "Unable to update address.";
 
@@ -4947,7 +5026,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Used when the response doesn't have a valid url to display */
 "unknown url" = "unknown url";
 
-/* Value for fields in Coupon Usage Details screen when no limit is set */
+/* Value for fields in Coupon Usage Restrictions screen when no limit is set */
 "Unlimited" = "Unlimited";
 
 /* Back button title when the product doesn't have a name */
@@ -5052,14 +5131,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Usage details row in Coupon Details screen */
 "Usage details" = "Usage details";
 
-/* Title for the usage limit per coupon row in coupon usage details screen. */
+/* Title for the usage limit per coupon row in coupon usage restrictions screen. */
 "Usage Limit Per Coupon" = "Usage Limit Per Coupon";
 
-/* Title for the usage limit per user row in coupon usage details screen. */
+/* Title for the usage limit per user row in coupon usage restrictions screen. */
 "Usage Limit Per User" = "Usage Limit Per User";
 
 /* Field in the view for adding or editing a coupon.
-   Title for the usage restrictions section on coupon usage details screen */
+   Title for the usage restrictions section on coupon usage restrictions screen */
 "Usage Restrictions" = "Usage Restrictions";
 
 /* Action to use the address in Shipping Label Validation screen as entered */
@@ -5275,7 +5354,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "We're sorry, we were unable to verify In-Person Payments for this store." = "We're sorry, we were unable to verify In-Person Payments for this store.";
 
 /* Content of the banner notice in the Orders tab */
-"We've been working on making it possible to create orders and take payments from your device! You can try these features out by tapping on the \"+\" icon" = "We've been working on making it possible to create orders and take payments from your device! You can try these features out by tapping on the \"+\" icon";
+"We've been working on making it possible to create orders and take payments from your device! You can try these features out by tapping on the \"+\" button" = "We've been working on making it possible to create orders and take payments from your device! You can try these features out by tapping on the \"+\" button";
 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com.";

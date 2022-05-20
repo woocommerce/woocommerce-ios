@@ -211,11 +211,17 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
                 self.collectPaymentsUseCase?.collectPayment(
                     backButtonTitle: Localization.continueToOrders,
                     onCollect: { [weak self] result in
-                        if result.isFailure {
-                            self?.trackFlowFailed()
-                        }
+                        guard case let .failure(error) = result else { return }
+
+                        let collectOrderPaymentUseCaseError = error as? CollectOrderPaymentUseCaseError
+                        guard collectOrderPaymentUseCaseError != CollectOrderPaymentUseCaseError.flowCanceledByUser else { return }
+
+                        self?.trackFlowFailed()
                     },
                     onCompleted: { [weak self] in
+                        // Update order in case its status and/or other details are updated after a successful in-person payment
+                        self?.updateOrderAsynchronously()
+
                         // Inform success to consumer
                         onSuccess()
 
@@ -261,6 +267,11 @@ private extension SimplePaymentsMethodsViewModel {
             .removeDuplicates()
             .assign(to: &$showPayWithCardRow)
         cppStoreStateObserver.refresh()
+    }
+
+    func updateOrderAsynchronously() {
+        let action = OrderAction.retrieveOrder(siteID: siteID, orderID: orderID) { _, _  in }
+        stores.dispatch(action)
     }
 
     /// Tracks the `simplePaymentsFlowCompleted` event.

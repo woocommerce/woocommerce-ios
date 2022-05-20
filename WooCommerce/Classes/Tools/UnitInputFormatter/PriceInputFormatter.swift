@@ -44,7 +44,9 @@ struct PriceInputFormatter: UnitInputFormatter {
             return ""
         }
 
-        let formattedText = text
+        let latinText = text.applyingTransform(StringTransform.toLatin, reverse: false) ?? text
+
+        let formattedText = latinText
             // Replace any characters not in the set of 0-9 with the current decimal separator configured on website
             .replacingOccurrences(of: "[^0-9]", with: currencySettings.decimalSeparator, options: .regularExpression)
             // Remove any initial zero number in the string. Es. 00224.30 will be 2224.30
@@ -52,5 +54,16 @@ struct PriceInputFormatter: UnitInputFormatter {
             // Replace all the occurrences of regex plus all the points or comma (but not the last `.` or `,`) like thousand separators
             .replacingOccurrences(of: "(?:[.,](?=.*[.,])|)+", with: "$1", options: .regularExpression)
         return formattedText
+    }
+}
+
+extension PriceInputFormatter {
+    func value(from input: String) -> NSNumber? {
+        guard input.isNotEmpty else {
+            // Allows empty input to be replaced by 0.
+            return NSNumber(value: 0)
+        }
+
+        return numberFormatterPoint.number(from: input) ?? numberFormatterComma.number(from: input)
     }
 }

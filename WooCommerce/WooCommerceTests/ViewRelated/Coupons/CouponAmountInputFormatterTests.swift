@@ -65,7 +65,7 @@ final class CouponAmountInputFormatterTests: XCTestCase {
                                                 thousandSeparator: "",
                                                 decimalSeparator: ".",
                                                 numberOfDecimals: 3)
-        let formatter = PriceInputFormatter(currencySettings: currencySettings)
+        let formatter = CouponAmountInputFormatter(currencySettings: currencySettings)
 
         let input = "00123.91"
         XCTAssertEqual(formatter.format(input: input), "123.91")
@@ -77,7 +77,7 @@ final class CouponAmountInputFormatterTests: XCTestCase {
                                                 thousandSeparator: "",
                                                 decimalSeparator: ".",
                                                 numberOfDecimals: 3)
-        let formatter = PriceInputFormatter(currencySettings: currencySettings)
+        let formatter = CouponAmountInputFormatter(currencySettings: currencySettings)
 
         let input = "0.314"
         XCTAssertEqual(formatter.format(input: input), "0.314")
@@ -89,7 +89,7 @@ final class CouponAmountInputFormatterTests: XCTestCase {
                                                 thousandSeparator: "",
                                                 decimalSeparator: ".",
                                                 numberOfDecimals: 3)
-        let formatter = PriceInputFormatter(currencySettings: currencySettings)
+        let formatter = CouponAmountInputFormatter(currencySettings: currencySettings)
 
         let input = "0,314"
         XCTAssertEqual(formatter.format(input: input), "0.314")
@@ -106,7 +106,7 @@ final class CouponAmountInputFormatterTests: XCTestCase {
                                                 thousandSeparator: "",
                                                 decimalSeparator: ".",
                                                 numberOfDecimals: 3)
-        let formatter = PriceInputFormatter(currencySettings: currencySettings)
+        let formatter = CouponAmountInputFormatter(currencySettings: currencySettings)
 
         let input = "189293891203.20"
         XCTAssertEqual(formatter.format(input: input), "189293891203.20")
@@ -118,9 +118,35 @@ final class CouponAmountInputFormatterTests: XCTestCase {
                                                 thousandSeparator: "",
                                                 decimalSeparator: ".",
                                                 numberOfDecimals: 3)
-        let formatter = PriceInputFormatter(currencySettings: currencySettings)
+        let formatter = CouponAmountInputFormatter(currencySettings: currencySettings)
 
         let input = "189,293,891,203.20"
         XCTAssertEqual(formatter.format(input: input), "189293891203.20")
+    }
+
+    func test_value_is_correct() {
+        // When
+        let pointValue = "0.00"
+
+        // Then
+        XCTAssertEqual(formatter.value(from: pointValue), NSNumber(value: 0))
+
+        // When
+        let commaValue = "0,00"
+
+        // Then
+        XCTAssertEqual(formatter.value(from: commaValue), NSNumber(value: 0))
+
+        // When
+        let noSeparatorValue = "000"
+
+        // Then
+        XCTAssertEqual(formatter.value(from: noSeparatorValue), NSNumber(value: 0))
+
+        // When
+        let emptyValue = ""
+
+        // Then
+        XCTAssertEqual(formatter.value(from: emptyValue), NSNumber(value: 0))
     }
 }

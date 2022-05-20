@@ -1,5 +1,0 @@
-Troverai un pratico link di pagamento nella parte superiore di un ordine a cui non è stato ancora applicato un pagamento. Invia quel link al tuo cliente e potrà pagare per quell'ordine direttamente dal suo telefono o dal computer.
-
-Questa è un'ottima opzione da usare con la funzionalità per la creazione di nuovi ordini. Crea un ordine mentre un cliente è in piedi davanti a te e, successivamente, inviagli un messaggio con il link di pagamento tramite il tuo sito. Meraviglioso non credi?
-
-Avrai bisogno di effettuare l'aggiornamento a WooCommerce 6.4 o superiore per ottenere questa opzione nell'app.

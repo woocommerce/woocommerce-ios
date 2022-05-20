@@ -5,8 +5,8 @@ import Yosemite
 ///
 final class CouponDetailsHostingController: UIHostingController<CouponDetails> {
 
-    init(viewModel: CouponDetailsViewModel, onUpdate: @escaping () -> Void, onDeletion: @escaping () -> Void) {
-        super.init(rootView: CouponDetails(viewModel: viewModel, onUpdate: onUpdate, onDeletion: onDeletion))
+    init(viewModel: CouponDetailsViewModel) {
+        super.init(rootView: CouponDetails(viewModel: viewModel))
         // The navigation title is set here instead of the SwiftUI view's `navigationTitle`
         // to avoid the blinking of the title label when pushed from UIKit view.
         title = viewModel.couponCode
@@ -21,14 +21,8 @@ final class CouponDetailsHostingController: UIHostingController<CouponDetails> {
 }
 
 struct CouponDetails: View {
-    // Closure to be triggered when the coupon is updated successfully
-    private let onUpdate: () -> Void
-
-    // Closure to be triggered when the coupon is deleted successfully
-    private let onDeletion: () -> Void
 
     @ObservedObject private var viewModel: CouponDetailsViewModel
-    @ObservedObject private var addEditCouponViewModel: AddEditCouponViewModel
     @State private var showingActionSheet: Bool = false
     @State private var showingShareSheet: Bool = false
     @State private var showingAmountLoadingErrorPrompt: Bool = false
@@ -42,24 +36,11 @@ struct CouponDetails: View {
     /// It is kept internal so that the hosting controller can update its presenting controller to itself.
     let noticePresenter: DefaultNoticePresenter
 
-    init(viewModel: CouponDetailsViewModel, onUpdate: @escaping () -> Void, onDeletion: @escaping () -> Void) {
+    init(viewModel: CouponDetailsViewModel) {
         self.viewModel = viewModel
-        self.onDeletion = onDeletion
-        self.onUpdate = onUpdate
         self.noticePresenter = DefaultNoticePresenter()
         viewModel.syncCoupon()
         viewModel.loadCouponReport()
-
-        addEditCouponViewModel = AddEditCouponViewModel(existingCoupon: viewModel.coupon, onCompletion: { result in
-            switch result {
-            case .success(let updatedCoupon):
-                viewModel.updateCoupon(updatedCoupon)
-                viewModel.showingEditCoupon = false
-                onUpdate()
-            default:
-                break
-            }
-        })
 
         ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "loaded"])
     }
@@ -82,7 +63,7 @@ struct CouponDetails: View {
         if viewModel.isEditingEnabled {
             buttons.append(contentsOf: [
                 .default(Text(Localization.editCoupon), action: {
-                    // TODO: add analytics
+                    ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "tapped_edit"])
                     viewModel.showingEditCoupon = true
                 })
             ])
@@ -90,6 +71,7 @@ struct CouponDetails: View {
 
         if viewModel.isDeletingEnabled {
             buttons.append(.destructive(Text(Localization.deleteCoupon), action: {
+                ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "tapped_delete"])
                 showingDeletionConfirmAlert = true
             }))
         }
@@ -120,6 +102,7 @@ struct CouponDetails: View {
                             .font(.title2)
                             .bold()
                         StatusView(label: viewModel.expiryStatus,
+                                   foregroundColor: viewModel.expiryStatusForegroundColor,
                                    backgroundColor: viewModel.expiryStatusBackgroundColor)
                     }
                     .padding(.horizontal, insets: geometry.safeAreaInsets)
@@ -202,7 +185,10 @@ struct CouponDetails: View {
                 })
             }
             .sheet(isPresented: $viewModel.showingEditCoupon) {
-                AddEditCoupon(addEditCouponViewModel)
+                AddEditCoupon(viewModel.addEditCouponViewModel)
+                    .onDisappear {
+                        viewModel.resetAddEditViewModel()
+                    }
             }
             .alert(isPresented: $showingDeletionConfirmAlert, content: {
                 Alert(title: Text(Localization.deleteCoupon),
@@ -225,6 +211,7 @@ struct CouponDetails: View {
                 }
             }
         }
+        .navigationTitle(viewModel.coupon.code)
         .wooNavigationBarStyle()
     }
 
@@ -256,15 +243,26 @@ struct CouponDetails: View {
                 Text(String.localizedStringWithFormat(Localization.maximumSpend, viewModel.maximumAmount))
                     .renderedIf(viewModel.maximumAmount.isNotEmpty)
 
-                Text(String.localizedStringWithFormat(Localization.singularLimitPerUser, viewModel.usageLimitPerUser))
-                    .renderedIf(viewModel.usageLimitPerUser == 1)
+                Text(String.pluralize(Int(viewModel.usageLimit),
+                                      singular: Localization.singularUsageLimitPerCoupon,
+                                      plural: Localization.pluralUsageLimitPerCoupon))
+                .renderedIf(viewModel.usageLimit > 0)
 
-                Text(String.localizedStringWithFormat(Localization.pluralLimitPerUser, viewModel.usageLimitPerUser))
-                    .renderedIf(viewModel.usageLimitPerUser > 1)
+                Text(String.pluralize(Int(viewModel.usageLimitPerUser),
+                                      singular: Localization.singularLimitPerUser,
+                                      plural: Localization.pluralLimitPerUser))
+                .renderedIf(viewModel.usageLimitPerUser > 0)
+
+                Text(String.pluralize(Int(viewModel.limitUsageToXItems),
+                                      singular: Localization.singularItemsInCartUsageLimit,
+                                      plural: Localization.pluralItemsInCartUsageLimit))
+                .renderedIf(viewModel.limitUsageToXItems > 0)
             }
             .renderedIf(viewModel.minimumAmount.isNotEmpty ||
                         viewModel.maximumAmount.isNotEmpty ||
-                        viewModel.usageLimitPerUser > 0)
+                        viewModel.usageLimit > 0 ||
+                        viewModel.usageLimitPerUser > 0 ||
+                        viewModel.limitUsageToXItems > 0)
 
             Text(String.localizedStringWithFormat(Localization.expiryFormat, viewModel.expiryDate))
                 .renderedIf(viewModel.expiryDate.isNotEmpty)
@@ -327,7 +325,7 @@ struct CouponDetails: View {
     }
 
     private func handleCouponDeletion() {
-        viewModel.deleteCoupon(onSuccess: onDeletion, onFailure: {
+        viewModel.deleteCoupon(onSuccess: viewModel.onDeletion, onFailure: {
             let notice = Notice(title: Localization.errorDeletingCoupon, feedbackType: .error)
             noticePresenter.enqueue(notice: notice)
         })
@@ -378,6 +376,26 @@ private extension CouponDetails {
         static let pluralLimitPerUser = NSLocalizedString(
             "%1$d uses per user",
             comment: "The plural limit of time for each user to apply a coupon, reads like: 10 uses per user"
+        )
+        static let singularItemsInCartUsageLimit = NSLocalizedString(
+                "Limited to %1$d item in cart",
+                comment: "The required number of items in the cart to apply a coupon in singular form, reads like: " +
+                        "Limited to 1 item in cart"
+        )
+        static let pluralItemsInCartUsageLimit = NSLocalizedString(
+                "Limited to %1$d items in cart",
+                comment: "The required number of items in the cart to apply a coupon in plural form, reads like: " +
+                        "Limited to 10 items in cart"
+        )
+        static let singularUsageLimitPerCoupon = NSLocalizedString(
+                "Can be used %1$d time",
+                comment: "The singular total limit where the same coupon can be applied for everyone, " +
+                        "reads like: Can be used 1 time"
+        )
+        static let pluralUsageLimitPerCoupon = NSLocalizedString(
+                "Can be used %1$d times",
+                comment: "The plural total limit where the same coupon can be applied for everyone, " +
+                        "reads like: Can be used 10 times"
         )
         static let emailRestriction = NSLocalizedString(
             "Restricted to customers with emails: %1$@",
@@ -434,7 +452,7 @@ private extension CouponDetails {
 #if DEBUG
 struct CouponDetails_Previews: PreviewProvider {
     static var previews: some View {
-        CouponDetails(viewModel: CouponDetailsViewModel(coupon: Coupon.sampleCoupon), onUpdate: {}, onDeletion: {})
+        CouponDetails(viewModel: CouponDetailsViewModel(coupon: Coupon.sampleCoupon))
     }
 }
 #endif

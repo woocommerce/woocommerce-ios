@@ -1,5 +1,7 @@
+import Codegen
+
 /// The type of the PaymentMethod.
-public enum PaymentMethod: Equatable {
+public enum PaymentMethod: Equatable, GeneratedFakeable {
     /// A card payment method.
     case card
 

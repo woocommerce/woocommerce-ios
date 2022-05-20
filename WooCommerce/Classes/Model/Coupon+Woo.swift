@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import UIKit
 
 extension Coupon.DiscountType {
     /// Localized name to be displayed for the discount type.
@@ -121,8 +122,11 @@ extension Coupon {
         case .percent:
             let percentFormatter = NumberFormatter()
             percentFormatter.numberStyle = .percent
+            percentFormatter.maximumFractionDigits = 2
+            percentFormatter.multiplier = 1
+            percentFormatter.decimalSeparator = currencySettings.decimalSeparator
             if let amountDouble = Double(amount) {
-                let amountNumber = NSNumber(value: amountDouble / 100)
+                let amountNumber = NSNumber(value: amountDouble)
                 amountString = percentFormatter.string(from: amountNumber) ?? ""
             }
         case .fixedCart, .fixedProduct:
@@ -187,6 +191,12 @@ extension Coupon {
             case .expired:
                 return Localization.expired
             }
+        }
+
+        /// Text color for the expiry status label
+        ///
+        var statusForegroundColor: UIColor {
+            .black
         }
 
         /// Background color for the expiry status label

@@ -15,6 +15,10 @@ final class CouponDetailsViewModel: ObservableObject {
     ///
     @Published private(set) var expiryStatus: String = ""
 
+    /// Text color for the expiry status view
+    ///
+    @Published private(set) var expiryStatusForegroundColor: UIColor = .clear
+
     /// Background color for the expiry status view
     ///
     @Published private(set) var expiryStatusBackgroundColor: UIColor = .clear
@@ -31,8 +35,17 @@ final class CouponDetailsViewModel: ObservableObject {
     ///
     @Published private(set) var amount: String = ""
 
+    /// Total number of times this coupon can be used
+    ///
+    @Published private(set) var usageLimit: Int64 = Constants.noLimit
+
     /// Number of times this coupon be used per customer
+    ///
     @Published private(set) var usageLimitPerUser: Int64 = Constants.noLimit
+
+    /// Maximum number of items which the coupon can be applied to in the cart
+    /// 
+    @Published private(set) var limitUsageToXItems: Int64 = Constants.noLimit
 
     /// If `true`, this coupon will not be applied to items that have sale prices
     ///
@@ -82,6 +95,8 @@ final class CouponDetailsViewModel: ObservableObject {
     ///
     @Published var showingEditCoupon: Bool = false
 
+    private(set) lazy var addEditCouponViewModel: AddEditCouponViewModel = createAddEditCouponViewModel(with: coupon)
+
     /// The message to be shared about the coupon
     ///
     var shareMessage: String {
@@ -120,14 +135,25 @@ final class CouponDetailsViewModel: ObservableObject {
     let isEditingEnabled: Bool
     let isDeletingEnabled: Bool
 
+    // Closure to be triggered when the coupon is updated successfully
+    let onUpdate: () -> Void
+
+    // Closure to be triggered when the coupon is deleted successfully
+    let onDeletion: () -> Void
+
     init(coupon: Coupon,
          stores: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         featureFlags: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
+         onUpdate: @escaping () -> Void = {},
+         onDeletion: @escaping () -> Void = {}) {
         self.siteID = coupon.siteID
         self.coupon = coupon
         self.stores = stores
         self.currencySettings = currencySettings
+        self.onDeletion = onDeletion
+        self.onUpdate = onUpdate
+
         isEditingEnabled = featureFlags.isFeatureFlagEnabled(.couponEditing) && coupon.discountType != .other
         isDeletingEnabled = featureFlags.isFeatureFlagEnabled(.couponDeletion)
         populateDetails()
@@ -191,13 +217,19 @@ final class CouponDetailsViewModel: ObservableObject {
             self?.isDeletionInProgress = false
             switch result {
             case .success:
+                ServiceLocator.analytics.track(.couponDeleteSuccess)
                 onSuccess()
             case .failure(let error):
                 DDLogError("⛔️ Error deleting coupon: \(error)")
+                ServiceLocator.analytics.track(.couponDeleteFailed, withError: error)
                 onFailure()
             }
         }
         stores.dispatch(action)
+    }
+
+    func resetAddEditViewModel() {
+        addEditCouponViewModel = createAddEditCouponViewModel(with: coupon)
     }
 }
 
@@ -219,7 +251,9 @@ private extension CouponDetailsViewModel {
         summary = coupon.summary(currencySettings: currencySettings)
 
         expiryDate = coupon.dateExpires?.toString(dateStyle: .long, timeStyle: .none, timeZone: TimeZone.siteTimezone) ?? ""
+        usageLimit = coupon.usageLimit ?? Constants.noLimit
         usageLimitPerUser = coupon.usageLimitPerUser ?? Constants.noLimit
+        limitUsageToXItems = coupon.limitUsageToXItems ?? Constants.noLimit
         excludeSaleItems = coupon.excludeSaleItems
 
         if let digitMinimumAmount = Double(coupon.minimumAmount), digitMinimumAmount > 0 {
@@ -237,6 +271,7 @@ private extension CouponDetailsViewModel {
         let status = coupon.expiryStatus()
         expiryStatus = status.localizedName
         expiryStatusBackgroundColor = status.statusBackgroundColor
+        expiryStatusForegroundColor = status.statusForegroundColor
     }
 
     func formatStringAmount(_ amount: String) -> String {
@@ -247,6 +282,20 @@ private extension CouponDetailsViewModel {
     func retrieveAnalyticsSetting(completion: @escaping (Result<Bool, Error>) -> Void) {
         let action = SettingAction.retrieveAnalyticsSetting(siteID: coupon.siteID, onCompletion: completion)
         stores.dispatch(action)
+    }
+
+    func createAddEditCouponViewModel(with coupon: Coupon) -> AddEditCouponViewModel {
+        .init(existingCoupon: coupon, onCompletion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let updatedCoupon):
+                self.updateCoupon(updatedCoupon)
+                self.showingEditCoupon = false
+                self.onUpdate()
+            default:
+                break
+            }
+        })
     }
 }
 

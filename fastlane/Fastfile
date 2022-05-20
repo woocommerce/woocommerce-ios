@@ -29,6 +29,31 @@ SCREENSHOT_DEVICES = [
 MAIN_BUNDLE_IDENTIFIERS = %w[com.automattic.woocommerce].freeze        # Registered in our main account, for development and AppStore
 ALPHA_BUNDLE_IDENTIFIERS = %w[com.automattic.alpha.woocommerce].freeze # Registered in our Enterprise account, for App Center / Installable Builds
 
+# URL of the GlotPress project containing App Store Connect metadata
+GLOTPRESS_METADATA_PROJECT_URL = 'https://translate.wordpress.com/projects/woocommerce/woocommerce-ios/release-notes/'
+
+# Mapping of all locales which can be used for AppStore metadata (Glotpress code => AppStore Connect code)
+#
+# TODO: Replace with `LocaleHelper` once provided by release toolkit (https://github.com/wordpress-mobile/release-toolkit/pull/296)
+GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES = {
+  'ar' => 'ar-SA',
+  'de' => 'de-DE',
+  'es' => 'es-ES',
+  'fr' => 'fr-FR',
+  'he' => 'he',
+  'id' => 'id',
+  'it' => 'it',
+  'ja' => 'ja',
+  'ko' => 'ko',
+  'nl' => 'nl-NL',
+  'pt-br' => 'pt-BR',
+  'ru' => 'ru',
+  'sv' => 'sv',
+  'tr' => 'tr',
+  'zh-cn' => 'zh-Hans',
+  'zh-tw' => 'zh-Hant',
+}.freeze
+
 # Use this instead of getting values from ENV directly
 # It will throw an error if the requested value is missing
 def get_required_env(key)
@@ -181,7 +206,7 @@ platform :ios do
   desc 'Updates a release branch for a new beta release'
   lane :new_beta_release do |options|
     ios_betabuild_prechecks(options)
-    ios_update_metadata(options)
+    download_localized_strings_and_metadata_from_glotpress
     ios_lint_localizations(input_dir: 'WooCommerce/Resources', allow_retry: true)
     ios_bump_version_beta
     version = ios_get_app_version
@@ -257,7 +282,7 @@ platform :ios do
       abort_on_violations: false
     )
 
-    ios_update_metadata(options)
+    download_localized_strings_and_metadata_from_glotpress
     ios_lint_localizations(input_dir: 'WooCommerce/Resources', allow_retry: true)
     ios_bump_version_beta
 
@@ -664,6 +689,81 @@ platform :ios do
     )
 
     Snapshot::ReportsGenerator.new.generate
+  end
+
+  desc 'Downloads localized strings and App Store Connect metadata from GlotPress'
+  lane :download_localized_strings_and_metadata_from_glotpress do
+    download_localized_strings_from_glotpress
+    download_localized_metadata_from_glotpress
+  end
+
+  desc 'Downloads localized `.strings` from GlotPress'
+  lane :download_localized_strings_from_glotpress do
+    # FIXME: This is a copy of what the release toolkit `ios_update_metadata` action does.
+    # We'll soon replace this with the new `ios_download_strings_files_from_glotpress`-based workflow.
+    sh("cd #{PROJECT_ROOT_FOLDER} && ./Scripts/update-translations.rb")
+
+    files_to_commit = Dir.glob(File.join(RESOURCES_FOLDER, '**', '*.strings'))
+    git_add(path: files_to_commit, shell_escape: false)
+    git_commit(
+      path: files_to_commit,
+      message: 'Update translations',
+      allow_nothing_to_commit: true
+    )
+  end
+
+  desc 'Downloads localized metadata for App Store Connect from GlotPress'
+  lane :download_localized_metadata_from_glotpress do
+    metadata_directory = File.join(PROJECT_ROOT_FOLDER, 'fastlane', 'metadata')
+
+    # FIXME: We should make the `fastlane/metadata/default/release_notes.txt` path be the source of truth for the original copies in the future.
+    # (will require changes in the `update_appstore_strings` lane, the Release Scenario, the MC tool to generate the announcement post…)
+    #
+    # In the meantime, just copy the file to the right place for `deliver` to find, i.e. to the `default` pseudo-locale which is used as fallback
+    release_notes_source = File.join(RESOURCES_FOLDER, 'release_notes.txt')
+    FileUtils.cp(release_notes_source, File.join(metadata_directory, 'default', 'release_notes.txt'))
+
+    # FIXME: Replace this with a call to the future replacement of `gp_downloadmetadata` once it's implemented in the release-toolkit (see paaHJt-31O-p2).
+    locales_map = GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES
+    target_files = {
+      "v#{ios_get_app_version}-whats-new": { desc: "release_notes.txt", max_size: 4000 },
+      app_store_name: { desc: "name.txt", max_size: 30 },
+      app_store_subtitle: { desc: "subtitle.txt", max_size: 30 },
+      app_store_desc: { desc: "description.txt", max_size: 4000 },
+      app_store_keywords: { desc: "keywords.txt", max_size: 100 },
+    }
+
+    gp_downloadmetadata(
+      project_url: GLOTPRESS_METADATA_PROJECT_URL,
+      target_files: target_files,
+      locales: locales_map,
+      download_path: metadata_directory
+    )
+    files_to_commit = [File.join(metadata_directory, '**', '*.txt')]
+
+    # Ensure that none of the `.txt` files in `en-US` would accidentally override our originals in `default`
+    target_files.values.map { |h| h[:desc] }.each do |file|
+      en_file_path = File.join(metadata_directory, 'en-US', file)
+      UI.user_error!("File `#{en_file_path}` would override the same one in `#{metadata_directory}/default`, but `default/` is the source of truth. " \
+                     + "Delete the `#{en_file_path}` file, ensure the `default/` one has the expected original copy, and try again.") if File.exist?(en_file_path)
+    end
+
+    # Ensure even empty locale folders have an empty `.gitkeep` file (in case we don't have any translation at all ready for some locales)
+    locales_map.values.each do |locale|
+      gitkeep = File.join(metadata_directory, locale, '.gitkeep')
+      next if File.exist?(gitkeep)
+      FileUtils.mkdir_p(File.dirname(gitkeep))
+      FileUtils.touch(gitkeep)
+      files_to_commit.append(gitkeep)
+    end
+
+    # Commit
+    git_add(path: files_to_commit, shell_escape: false)
+    git_commit(
+      path: files_to_commit,
+      message: 'Update metadata translations',
+      allow_nothing_to_commit: true
+    )
   end
 
   desc 'Download App Store Translations'

@@ -1,5 +1,0 @@
-Anda akan mendapatkan tautan yang mempermudah pembayaran di atas pesanan yang belum dibayar. Kirim link ke pelanggan Anda dan mereka dapat membayar pesanan langsung dari telepon atau komputer.
-
-Pilihan ini dapat digunakan dengan fitur pembuatan pesanan baru. Buat pesanan di hadapan pelanggan dan kirim tautan pembayaran lewat situs Anda. Keren, 'kan?
-
-Anda perlu memperbarui WooCommerce 6.4 atau yang lebih tinggi untuk menggunakan pilihan ini di aplikasi.

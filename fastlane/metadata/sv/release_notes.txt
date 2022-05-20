@@ -1,5 +1,0 @@
-Du hittar en praktisk betalningslänk högst upp på beställningar som ännu inte har betalats. Skicka länken till din kund, så kan de betala för beställningen direkt via telefonen eller datorn.
-
-Det här är ett bra alternativ att använda tillsammans med den nya funktionen för beställningsskapande. Du kan skapa en beställning medan du har kunden framför dig och sedan skicka betalningslänken i ett meddelande via din webbplats. Fantastiskt, eller hur?
-
-Du behöver uppdatera till WooCommerce 6.4 eller senare för att kunna använda det här alternativet i appen.

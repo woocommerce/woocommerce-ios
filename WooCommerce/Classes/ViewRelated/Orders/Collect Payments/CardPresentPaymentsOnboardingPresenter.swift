@@ -5,11 +5,15 @@ import Combine
 protocol CardPresentPaymentsOnboardingPresenting {
     func showOnboardingIfRequired(from: UIViewController,
                                   readyToCollectPayment: @escaping (() -> ()))
+
+    func refresh()
 }
 
 final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting {
 
     private let stores: StoresManager
+
+    private let onboardingUseCase: CardPresentPaymentsOnboardingUseCase
 
     private let readinessUseCase: CardPresentPaymentsReadinessUseCase
 
@@ -17,13 +21,11 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
 
     private var readinessSubscription: AnyCancellable?
 
-    private var subscriptions = [AnyCancellable]()
-
     init(stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
-        let onboardingUseCase = CardPresentPaymentsOnboardingUseCase(stores: stores)
+        onboardingUseCase = CardPresentPaymentsOnboardingUseCase(stores: stores)
         readinessUseCase = CardPresentPaymentsReadinessUseCase(onboardingUseCase: onboardingUseCase, stores: stores)
-        onboardingViewModel = InPersonPaymentsViewModel(useCase: onboardingUseCase)
+        onboardingViewModel = InPersonPaymentsViewModel(useCase: onboardingUseCase, showMenuOnCompletion: false)
     }
 
     func showOnboardingIfRequired(from viewController: UIViewController,
@@ -36,7 +38,10 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
 
     private func showOnboarding(from viewController: UIViewController,
                                 readyToCollectPayment completion: @escaping (() -> ())) {
-        let onboardingViewController = InPersonPaymentsViewController(viewModel: onboardingViewModel)
+        let onboardingViewController = InPersonPaymentsViewController(viewModel: onboardingViewModel,
+                                                                      onWillDisappear: { [weak self] in
+            self?.readinessSubscription?.cancel()
+        })
         viewController.show(onboardingViewController, sender: viewController)
 
         readinessSubscription = readinessUseCase.$readiness
@@ -55,4 +60,7 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
             })
     }
 
+    func refresh() {
+        onboardingUseCase.forceRefresh()
+    }
 }

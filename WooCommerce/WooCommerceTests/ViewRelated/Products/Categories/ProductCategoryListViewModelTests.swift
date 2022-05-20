@@ -16,6 +16,7 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         storageManager.viewStorage
     }
     private var subscription: AnyCancellable?
+    private static let searchDebounceTime: Double = 0.5
 
     override func setUp() {
         super.setUp()
@@ -163,10 +164,88 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         // Then
         waitFor { promise in
             // wait for 500 milliseconds due to debouncing
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Self.searchDebounceTime) {
                 promise(())
             }
         }
+        XCTAssertEqual(viewModel.categoryViewModels.count, 1)
+    }
+
+    func test_resetSelectedCategoriesAndReload_clears_all_selection() {
+        // Given
+        let siteID: Int64 = 132
+        let category = Yosemite.ProductCategory(categoryID: 33, siteID: siteID, parentID: 1, name: "Test", slug: "test")
+        insert(category)
+
+        // When
+        let viewModel = ProductCategoryListViewModel(siteID: siteID, selectedCategoryIDs: [category.categoryID], storageManager: storageManager)
+        viewModel.resetSelectedCategories()
+
+        // Then
+        XCTAssertEqual(viewModel.selectedCategories.count, 0)
+    }
+
+    func test_searching_returns_subcategories() {
+        // Given
+        let siteID: Int64 = 132
+        let category1 = Yosemite.ProductCategory(categoryID: 33, siteID: siteID, parentID: 0, name: "Food", slug: "food")
+        insert(category1)
+        let category2 = Yosemite.ProductCategory(categoryID: 12, siteID: siteID, parentID: 33, name: "Oriental", slug: "oriental")
+        insert(category2)
+
+        let viewModel = ProductCategoryListViewModel(siteID: siteID, storageManager: storageManager)
+        XCTAssertEqual(viewModel.categoryViewModels.count, 2) // confidence check
+
+        // When
+        viewModel.searchQuery = "orien"
+
+        // Then
+        waitFor { promise in
+            // wait for 500 milliseconds due to debouncing
+            DispatchQueue.main.asyncAfter(deadline: .now() + Self.searchDebounceTime) {
+                promise(())
+            }
+        }
+        XCTAssertEqual(viewModel.categoryViewModels.count, 1)
+    }
+
+    func test_searchQuery_with_space_returns_results_without_space() {
+        // Given
+        let siteID: Int64 = 132
+        let category1 = Yosemite.ProductCategory(categoryID: 33, siteID: siteID, parentID: 0, name: "Western", slug: "western")
+        insert(category1)
+        let category2 = Yosemite.ProductCategory(categoryID: 12, siteID: siteID, parentID: 0, name: "Oriental", slug: "oriental")
+        insert(category2)
+
+        let viewModel = ProductCategoryListViewModel(siteID: siteID, storageManager: storageManager)
+        XCTAssertEqual(viewModel.categoryViewModels.count, 2) // confidence check
+
+        // When
+        viewModel.searchQuery = " western "
+
+        // Then
+        waitFor { promise in
+            // wait for 500 milliseconds due to debouncing
+            DispatchQueue.main.asyncAfter(deadline: .now() + Self.searchDebounceTime) {
+                promise(())
+            }
+        }
+        XCTAssertEqual(viewModel.categoryViewModels.count, 1)
+    }
+
+    func test_category_list_displays_only_categories_of_current_site() {
+        // Given
+        let siteID1: Int64 = 132
+        let siteID2: Int64 = 98
+        let category1 = Yosemite.ProductCategory(categoryID: 33, siteID: siteID1, parentID: 0, name: "Western", slug: "western")
+        insert(category1)
+        let category2 = Yosemite.ProductCategory(categoryID: 12, siteID: siteID2, parentID: 0, name: "Oriental", slug: "oriental")
+        insert(category2)
+
+        // When
+        let viewModel = ProductCategoryListViewModel(siteID: siteID1, selectedCategoryIDs: [], storageManager: storageManager)
+
+        // Then
         XCTAssertEqual(viewModel.categoryViewModels.count, 1)
     }
 }

@@ -77,7 +77,7 @@ final class AddEditCouponViewModel: ObservableObject {
     ///
     var expiryDateValue: TitleAndValueRow.Value {
         guard expiryDateField == nil else {
-            return .content(expiryDateField?.toString(dateStyle: .long, timeStyle: .none, timeZone: TimeZone.siteTimezone) ?? "")
+            return .content(expiryDateField?.toString(dateStyle: .long, timeStyle: .none, timeZone: timezone) ?? "")
         }
 
         return .placeholder(Localization.couponExpiryDatePlaceholder)
@@ -123,6 +123,17 @@ final class AddEditCouponViewModel: ObservableObject {
         categoryIDs.isNotEmpty
     }
 
+    var hasChangesMade: Bool {
+        let coupon = populatedCoupon
+        return checkAmountUpdated(for: coupon) ||
+        checkDescriptionUpdated(for: coupon) ||
+        checkCouponCodeUpdated(for: coupon) ||
+        checkAllowedProductsAndCategoriesUpdated(for: coupon) ||
+        checkExpiryDateUpdated(for: coupon) ||
+        checkFreeShippingUpdated(for: coupon) ||
+        checkUsageRestrictionsUpdated(for: coupon)
+    }
+
     private(set) var coupon: Coupon?
     private let stores: StoresManager
     private let storageManager: StorageManagerType
@@ -139,8 +150,8 @@ final class AddEditCouponViewModel: ObservableObject {
     @Published var expiryDateField: Date?
     @Published var freeShipping: Bool
     @Published var couponRestrictionsViewModel: CouponRestrictionsViewModel
-    @Published private var productOrVariationIDs: [Int64]
-    @Published private var categoryIDs: [Int64]
+    @Published var productOrVariationIDs: [Int64]
+    @Published var categoryIDs: [Int64]
 
     /// Init method for coupon creation
     ///
@@ -213,6 +224,8 @@ final class AddEditCouponViewModel: ObservableObject {
     }
 
     func updateCoupon(coupon: Coupon) {
+        trackCouponUpdateInitiated(with: coupon)
+
         if let validationError = validateCouponLocally(coupon) {
             notice = NoticeFactory.createCouponErrorNotice(validationError,
                                                            editingOption: editingOption)
@@ -221,62 +234,55 @@ final class AddEditCouponViewModel: ObservableObject {
         }
 
         isLoading = true
-        let action = CouponAction.updateCoupon(coupon, siteTimezone: TimeZone.siteTimezone) { [weak self] result in
+        let action = CouponAction.updateCoupon(coupon, siteTimezone: timezone) { [weak self] result in
             guard let self = self else { return }
+            self.isLoading = false
             switch result {
             case .success(_):
-                break
+                ServiceLocator.analytics.track(.couponUpdateSuccess)
+                self.onCompletion(result)
             case .failure(let error):
                 DDLogError("⛔️ Error updating the coupon: \(error)")
+                ServiceLocator.analytics.track(.couponUpdateFailed, withError: error)
                 self.notice = NoticeFactory.createCouponErrorNotice(.other(error: error),
                                                                     editingOption: self.editingOption)
             }
-            self.isLoading = false
-            self.onCompletion(result)
         }
         stores.dispatch(action)
     }
 
     var populatedCoupon: Coupon {
-        // TODO: Fill all the missing data (like `productIds`, `excludedProductIds`, `productCategories`, `excludedProductCategories`)
-        coupon?.copy(code: codeField,
-                     amount: amountField,
-                     discountType: discountType,
-                     description: descriptionField,
-                     dateExpires: expiryDateField?.startOfDay(timezone: TimeZone.siteTimezone),
-                     individualUse: couponRestrictionsViewModel.individualUseOnly,
-                     usageLimit: Int64(couponRestrictionsViewModel.usageLimitPerCoupon),
-                     usageLimitPerUser: Int64(couponRestrictionsViewModel.usageLimitPerUser),
-                     limitUsageToXItems: Int64(couponRestrictionsViewModel.limitUsageToXItems),
-                     freeShipping: freeShipping,
-                     excludeSaleItems: couponRestrictionsViewModel.excludeSaleItems,
-                     minimumAmount: couponRestrictionsViewModel.minimumSpend,
-                     maximumAmount: couponRestrictionsViewModel.maximumSpend,
-                     emailRestrictions: couponRestrictionsViewModel.allowedEmails.components(separatedBy: ", ")) ??
-        Coupon(siteID: siteID,
-               couponID: -1,
-               code: codeField,
-               amount: amountField,
-               dateCreated: Date(),
-               dateModified: Date(),
-               discountType: discountType,
-               description: descriptionField,
-               dateExpires: expiryDateField?.startOfDay(timezone: TimeZone.siteTimezone),
-               usageCount: 0,
-               individualUse: couponRestrictionsViewModel.individualUseOnly,
-               productIds: [],
-               excludedProductIds: [],
-               usageLimit: Int64(couponRestrictionsViewModel.usageLimitPerCoupon),
-               usageLimitPerUser: Int64(couponRestrictionsViewModel.usageLimitPerUser),
-               limitUsageToXItems: Int64(couponRestrictionsViewModel.limitUsageToXItems),
-               freeShipping: freeShipping,
-               productCategories: [],
-               excludedProductCategories: [],
-               excludeSaleItems: couponRestrictionsViewModel.excludeSaleItems,
-               minimumAmount: couponRestrictionsViewModel.minimumSpend,
-               maximumAmount: couponRestrictionsViewModel.maximumSpend,
-               emailRestrictions: couponRestrictionsViewModel.allowedEmails.components(separatedBy: ", "),
-               usedBy: [])
+        let emailRestrictions: [String] = {
+            if couponRestrictionsViewModel.allowedEmails.isEmpty {
+                return []
+            }
+            return couponRestrictionsViewModel.allowedEmails.components(separatedBy: ", ")
+        }()
+
+        return Coupon(siteID: siteID,
+                      couponID: coupon?.couponID ?? -1,
+                      code: codeField,
+                      amount: amountField,
+                      dateCreated: coupon?.dateCreated ?? Date(),
+                      dateModified: coupon?.dateModified ?? Date(),
+                      discountType: discountType,
+                      description: descriptionField,
+                      dateExpires: expiryDateField?.startOfDay(timezone: timezone),
+                      usageCount: coupon?.usageCount ?? 0,
+                      individualUse: couponRestrictionsViewModel.individualUseOnly,
+                      productIds: productOrVariationIDs,
+                      excludedProductIds: couponRestrictionsViewModel.excludedProductOrVariationIDs,
+                      usageLimit: Int64(couponRestrictionsViewModel.usageLimitPerCoupon),
+                      usageLimitPerUser: Int64(couponRestrictionsViewModel.usageLimitPerUser),
+                      limitUsageToXItems: Int64(couponRestrictionsViewModel.limitUsageToXItems),
+                      freeShipping: freeShipping,
+                      productCategories: categoryIDs,
+                      excludedProductCategories: couponRestrictionsViewModel.excludedCategoryIDs,
+                      excludeSaleItems: couponRestrictionsViewModel.excludeSaleItems,
+                      minimumAmount: couponRestrictionsViewModel.minimumSpend,
+                      maximumAmount: couponRestrictionsViewModel.maximumSpend,
+                      emailRestrictions: emailRestrictions,
+                      usedBy: coupon?.usedBy ?? [])
     }
 
     func validateCouponLocally(_ coupon: Coupon) -> CouponError? {
@@ -299,6 +305,88 @@ final class AddEditCouponViewModel: ObservableObject {
         static func ==(lhs: CouponError, rhs: CouponError) -> Bool {
             return lhs.localizedDescription == rhs.localizedDescription
         }
+    }
+}
+
+// MARK: - Helpers
+//
+private extension AddEditCouponViewModel {
+    func checkUsageRestrictionsUpdated(for coupon: Coupon) -> Bool {
+        guard let initialCoupon = self.coupon else {
+            return false
+        }
+        let amountFormatter = CouponAmountInputFormatter()
+
+        return amountFormatter.value(from: coupon.maximumAmount) != amountFormatter.value(from: initialCoupon.maximumAmount) ||
+            amountFormatter.value(from: coupon.minimumAmount) != amountFormatter.value(from: initialCoupon.minimumAmount) ||
+            coupon.usageLimit != initialCoupon.usageLimit ||
+            coupon.usageLimitPerUser != initialCoupon.usageLimitPerUser ||
+            coupon.limitUsageToXItems != initialCoupon.limitUsageToXItems ||
+            coupon.emailRestrictions != initialCoupon.emailRestrictions ||
+            coupon.individualUse != initialCoupon.individualUse ||
+            coupon.excludeSaleItems != initialCoupon.excludeSaleItems ||
+            coupon.excludedProductIds != initialCoupon.excludedProductIds ||
+            coupon.excludedProductCategories != initialCoupon.excludedProductCategories
+    }
+
+    func checkExpiryDateUpdated(for coupon: Coupon) -> Bool {
+        guard let initialCoupon = self.coupon else {
+            return false
+        }
+        // since we're trimming time on the new date, we should also trim the time on the old date
+        // as a workaround for the edge case where the date was created with different time zones.
+        guard let oldDate = initialCoupon.dateExpires?.startOfDay(timezone: timezone),
+              let newDate = coupon.dateExpires else {
+            return initialCoupon.dateExpires != coupon.dateExpires
+        }
+        return !oldDate.isSameDay(as: newDate)
+    }
+
+    func checkCouponCodeUpdated(for coupon: Coupon) -> Bool {
+        guard let initialCoupon = self.coupon else {
+            return false
+        }
+        return coupon.code.lowercased() != initialCoupon.code.lowercased()
+    }
+
+    func checkAmountUpdated(for coupon: Coupon) -> Bool {
+        guard let initialCoupon = self.coupon else {
+            return false
+        }
+        let amountFormatter = CouponAmountInputFormatter()
+        return amountFormatter.value(from: coupon.amount) != amountFormatter.value(from: initialCoupon.amount)
+    }
+
+    func checkDescriptionUpdated(for coupon: Coupon) -> Bool {
+        guard let initialCoupon = self.coupon else {
+            return false
+        }
+        return coupon.description != initialCoupon.description
+    }
+
+    func checkAllowedProductsAndCategoriesUpdated(for coupon: Coupon) -> Bool {
+        guard let initialCoupon = self.coupon else {
+            return false
+        }
+        return coupon.productIds != initialCoupon.productIds || coupon.productCategories != initialCoupon.productCategories
+    }
+
+    func checkFreeShippingUpdated(for coupon: Coupon) -> Bool {
+        guard let initialCoupon = self.coupon else {
+            return false
+        }
+        return coupon.freeShipping != initialCoupon.freeShipping
+    }
+
+    func trackCouponUpdateInitiated(with coupon: Coupon) {
+        ServiceLocator.analytics.track(.couponUpdateInitiated, withProperties: [
+            "coupon_code_updated": checkCouponCodeUpdated(for: coupon),
+            "amount_updated": checkAmountUpdated(for: coupon),
+            "description_updated": checkDescriptionUpdated(for: coupon),
+            "allowed_products_or_categories_updated": checkAllowedProductsAndCategoriesUpdated(for: coupon),
+            "expiry_date_updated": checkExpiryDateUpdated(for: coupon),
+            "usage_restrictions_updated": checkUsageRestrictionsUpdated(for: coupon)
+        ])
     }
 }
 

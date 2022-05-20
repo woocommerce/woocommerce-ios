@@ -45,7 +45,6 @@ struct AddEditCoupon: View {
 
     init(_ viewModel: AddEditCouponViewModel) {
         self.viewModel = viewModel
-        //TODO: add analytics
     }
 
     var body: some View {
@@ -213,6 +212,7 @@ struct AddEditCoupon: View {
                         .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoading))
                         .padding(.horizontal, Constants.margin)
                         .padding([.top, .bottom], Constants.verticalSpacing)
+                        .disabled(!viewModel.hasChangesMade)
 
                         LazyNavigationLink(destination: FullScreenTextView(title: Localization.titleEditDescriptionView,
                                                                            text: $viewModel.descriptionField,
@@ -221,7 +221,9 @@ struct AddEditCoupon: View {
                             EmptyView()
                         }
 
-                        LazyNavigationLink(destination: CouponExpiryDateView(date: viewModel.expiryDateField ?? Date(), completion: { updatedExpiryDate in
+                        LazyNavigationLink(destination: CouponExpiryDateView(date: viewModel.expiryDateField ?? Date(),
+                                                                             timezone: viewModel.timezone,
+                                                                             completion: { updatedExpiryDate in
                             viewModel.expiryDateField = updatedExpiryDate
                         }),
                                            isActive: $showingCouponExpiryDate) {

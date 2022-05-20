@@ -49,17 +49,22 @@ final class AddEditCouponViewModelTests: XCTestCase {
 
     func test_populatedCoupon_return_expected_coupon_during_editing() {
         // Given
-        let viewModel = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(discountType: .percent), timezone: .current, onCompletion: { _ in })
-        let expiryDate = Date().startOfDay(timezone: viewModel.timezone)
-        XCTAssertEqual(viewModel.populatedCoupon, Coupon.sampleCoupon.copy(discountType: .percent,
-                                                                           dateExpires: expiryDate))
+        let timeZone = TimeZone.current
+        let expiryDate = Date().startOfDay(timezone: timeZone)
+        let viewModel = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(discountType: .percent, dateExpires: expiryDate),
+                                               timezone: timeZone,
+                                               onCompletion: { _ in })
+        assertEqual(viewModel.populatedCoupon, Coupon.sampleCoupon.copy(discountType: .percent,
+                                                                        dateExpires: expiryDate))
 
         // When
         viewModel.amountField = "24.23"
         viewModel.codeField = "TEST"
         viewModel.descriptionField = "This is a test description"
-        viewModel.expiryDateField = Date().endOfDay(timezone: viewModel.timezone)
+        viewModel.expiryDateField = Date().endOfDay(timezone: timeZone)
         viewModel.freeShipping = true
+        viewModel.productOrVariationIDs = [10, 50]
+        viewModel.categoryIDs = [3, 9, 44]
         viewModel.couponRestrictionsViewModel.minimumSpend = "10"
         viewModel.couponRestrictionsViewModel.maximumSpend = "50"
         viewModel.couponRestrictionsViewModel.usageLimitPerCoupon = "40"
@@ -68,23 +73,29 @@ final class AddEditCouponViewModelTests: XCTestCase {
         viewModel.couponRestrictionsViewModel.allowedEmails = "*@gmail.com, *@wordpress.com"
         viewModel.couponRestrictionsViewModel.individualUseOnly = true
         viewModel.couponRestrictionsViewModel.excludeSaleItems = true
+        viewModel.couponRestrictionsViewModel.excludedProductOrVariationIDs = [11, 30]
+        viewModel.couponRestrictionsViewModel.excludedCategoryIDs = [4, 10]
 
 
         // Then
-        XCTAssertEqual(viewModel.populatedCoupon, Coupon.sampleCoupon.copy(code: "TEST",
-                                                                           amount: "24.23",
-                                                                           discountType: .percent,
-                                                                           description: "This is a test description",
-                                                                           dateExpires: expiryDate,
-                                                                           individualUse: true,
-                                                                           usageLimit: 40,
-                                                                           usageLimitPerUser: 1,
-                                                                           limitUsageToXItems: 10,
-                                                                           freeShipping: true,
-                                                                           excludeSaleItems: true,
-                                                                           minimumAmount: "10",
-                                                                           maximumAmount: "50",
-                                                                           emailRestrictions: ["*@gmail.com", "*@wordpress.com"]))
+        assertEqual(viewModel.populatedCoupon, Coupon.sampleCoupon.copy(code: "TEST",
+                                                                        amount: "24.23",
+                                                                        discountType: .percent,
+                                                                        description: "This is a test description",
+                                                                        dateExpires: expiryDate,
+                                                                        individualUse: true,
+                                                                        productIds: [10, 50],
+                                                                        excludedProductIds: [11, 30],
+                                                                        usageLimit: 40,
+                                                                        usageLimitPerUser: 1,
+                                                                        limitUsageToXItems: 10,
+                                                                        freeShipping: true,
+                                                                        productCategories: [3, 9, 44],
+                                                                        excludedProductCategories: [4, 10],
+                                                                        excludeSaleItems: true,
+                                                                        minimumAmount: "10",
+                                                                        maximumAmount: "50",
+                                                                        emailRestrictions: ["*@gmail.com", "*@wordpress.com"]))
     }
 
     func test_populatedCoupon_return_expected_coupon_during_creation() {
@@ -115,7 +126,126 @@ final class AddEditCouponViewModelTests: XCTestCase {
         XCTAssertNil(result)
     }
 
-    private enum Localization {
+    func test_hasChangesMade_is_correct_for_coupon_code() {
+        // Given
+        let coupon = Coupon.sampleCoupon.copy(code: "ABCDEF")
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+        XCTAssertFalse(viewModel.hasChangesMade) // confidence check
+
+        // When
+        viewModel.codeField = "1d23rds3"
+
+        // Then
+        XCTAssertTrue(viewModel.hasChangesMade)
+    }
+
+    func test_hasChangesMade_is_correct_for_amount() {
+        // Given
+        let coupon = Coupon.sampleCoupon.copy(amount: "11.22")
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+        XCTAssertFalse(viewModel.hasChangesMade) // confidence check
+
+        // When
+        viewModel.amountField = "10.00"
+
+        // Then
+        XCTAssertTrue(viewModel.hasChangesMade)
+    }
+
+    func test_hasChangesMade_is_correct_for_expiry_date() {
+        // Given
+        let coupon = Coupon.sampleCoupon.copy(dateExpires: Date())
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+        XCTAssertFalse(viewModel.hasChangesMade) // confidence check
+
+        // When
+        viewModel.expiryDateField = Date().adding(days: 12, seconds: 0, using: .current)
+
+        // Then
+        XCTAssertTrue(viewModel.hasChangesMade)
+    }
+
+    func test_hasChangesMade_is_correct_for_nil_expiry_date() {
+        // Given
+        let coupon = Coupon.sampleCoupon.copy(dateExpires: Date())
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+        XCTAssertFalse(viewModel.hasChangesMade) // confidence check
+
+        // When
+        viewModel.expiryDateField = nil
+
+        // Then
+        XCTAssertTrue(viewModel.hasChangesMade)
+    }
+
+    func test_hasChangesMade_is_correct_for_updated_product_restrictions() {
+        // Given
+        let coupon = Coupon.sampleCoupon
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+        XCTAssertFalse(viewModel.hasChangesMade) // confidence check
+
+        // When
+        viewModel.productOrVariationIDs = [1, 21, 33]
+
+        // Then
+        XCTAssertTrue(viewModel.hasChangesMade)
+    }
+
+    func test_hasChangesMade_is_correct_for_updated_category_restrictions() {
+        // Given
+        let coupon = Coupon.sampleCoupon
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+        XCTAssertFalse(viewModel.hasChangesMade) // confidence check
+
+        // When
+        viewModel.categoryIDs = [12, 2]
+
+        // Then
+        XCTAssertTrue(viewModel.hasChangesMade)
+    }
+
+    func test_hasChangesMade_is_correct_for_description() {
+        // Given
+        let coupon = Coupon.sampleCoupon
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+        XCTAssertFalse(viewModel.hasChangesMade) // confidence check
+
+        // When
+        viewModel.descriptionField = "lorem ipsum"
+
+        // Then
+        XCTAssertTrue(viewModel.hasChangesMade)
+    }
+
+    func test_hasChangesMade_is_correct_for_free_shipping() {
+        // Given
+        let coupon = Coupon.sampleCoupon.copy(freeShipping: false)
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+        XCTAssertFalse(viewModel.hasChangesMade) // confidence check
+
+        // When
+        viewModel.freeShipping = true
+
+        // Then
+        XCTAssertTrue(viewModel.hasChangesMade)
+    }
+
+    func test_hasChangesMade_is_correct_for_updated_usage_restrictions() {
+        // Given
+        let coupon = Coupon.sampleCoupon.copy(usageLimit: 100)
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+        XCTAssertFalse(viewModel.hasChangesMade) // confidence check
+
+        // When
+        viewModel.couponRestrictionsViewModel.usageLimitPerCoupon = "1000"
+
+        // Then
+        XCTAssertTrue(viewModel.hasChangesMade)
+    }
+}
+
+private extension AddEditCouponViewModelTests {
+    enum Localization {
         static let titleCreatePercentageDiscount = NSLocalizedString(
             "Create percentage discount",
             comment: "Title of the view for creating a coupon with percentage discount.")

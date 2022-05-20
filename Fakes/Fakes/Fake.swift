@@ -19,6 +19,14 @@ extension Int {
     }
 }
 
+extension UInt {
+    /// Returns `0`
+    ///
+    static func fake() -> Self {
+        0
+    }
+}
+
 extension Double {
     /// Returns `0.0`
     ///

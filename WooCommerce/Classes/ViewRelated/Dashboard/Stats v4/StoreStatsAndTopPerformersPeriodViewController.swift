@@ -19,9 +19,6 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     /// Time range for this period
     let timeRange: StatsTimeRangeV4
 
-    /// Stats interval granularity
-    let granularity: StatsGranularityV4
-
     /// Whether site visit stats can be shown
     var siteVisitStatsMode: SiteVisitStatsMode = .default {
         didSet {
@@ -124,7 +121,6 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) {
         self.siteID = siteID
         self.timeRange = timeRange
-        self.granularity = timeRange.intervalGranularity
         self.currentDate = currentDate
         self.viewModel = StoreStatsAndTopPerformersPeriodViewModel(canDisplayInAppFeedbackCard: canDisplayInAppFeedbackCard)
         self.usageTracksEventEmitter = usageTracksEventEmitter

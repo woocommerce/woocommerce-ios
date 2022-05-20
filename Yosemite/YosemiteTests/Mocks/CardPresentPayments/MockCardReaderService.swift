@@ -113,7 +113,7 @@ final class MockCardReaderService: CardReaderService {
 
     func capturePayment(_ parameters: PaymentIntentParameters) -> AnyPublisher<PaymentIntent, Error> {
         capturePaymentPublisher ??
-        Just(MockPaymentIntent.mock())
+        Just(.fake())
             .setFailureType(to: Error.self)
             .eraseToAnyPublisher()
     }

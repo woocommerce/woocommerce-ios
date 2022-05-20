@@ -246,7 +246,9 @@ struct AddEditCoupon: View {
                         .padding(.bottom, Constants.verticalSpacing)
 
                         Button {
-                            viewModel.updateCoupon(coupon: viewModel.populatedCoupon)
+                            viewModel.updateCoupon(coupon: viewModel.populatedCoupon, onUpdateFinished: {
+                                dismissHandler()
+                            })
                         } label: {
                             Text(Localization.saveButton)
                         }

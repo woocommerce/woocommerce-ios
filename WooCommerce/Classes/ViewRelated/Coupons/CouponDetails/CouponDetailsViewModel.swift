@@ -286,7 +286,6 @@ private extension CouponDetailsViewModel {
             switch result {
             case .success(let updatedCoupon):
                 self.updateCoupon(updatedCoupon)
-                self.showingEditCoupon = false
                 self.onUpdate()
             default:
                 break

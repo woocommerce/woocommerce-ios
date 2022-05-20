@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import UIKit
 
 extension Coupon.DiscountType {
     /// Localized name to be displayed for the discount type.
@@ -190,6 +191,12 @@ extension Coupon {
             case .expired:
                 return Localization.expired
             }
+        }
+
+        /// Text color for the expiry status label
+        ///
+        var statusForegroundColor: UIColor {
+            .black
         }
 
         /// Background color for the expiry status label

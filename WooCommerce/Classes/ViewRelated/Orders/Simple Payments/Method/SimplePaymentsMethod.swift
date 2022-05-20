@@ -140,6 +140,7 @@ private struct MethodRow: View {
                 Text(title)
                     .bodyStyle()
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .multilineTextAlignment(.leading)
 
                 DisclosureIndicator()
             }

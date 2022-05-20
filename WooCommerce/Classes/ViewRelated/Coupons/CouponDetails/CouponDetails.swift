@@ -19,7 +19,7 @@ final class CouponDetailsHostingController: UIHostingController<CouponDetails> {
         rootView.onEditCoupon = { [weak self] addEditCouponViewModel in
             guard let self = self else { return }
             let addEditHostingController = AddEditCouponHostingController(viewModel: addEditCouponViewModel)
-            self.navigationController?.present(addEditHostingController, animated: true)
+            self.present(addEditHostingController, animated: true)
         }
     }
 

@@ -5,6 +5,11 @@
 - [*] Support Arabic numerals on amount fields. [https://github.com/woocommerce/woocommerce-ios/pull/6891]
 - [*] In-Person Payments: Accessibility improvement [https://github.com/woocommerce/woocommerce-ios/pull/6869, https://github.com/woocommerce/woocommerce-ios/pull/6886, https://github.com/woocommerce/woocommerce-ios/pull/6906]
 
+- [*] In-Person Payments: Accessibility improvement [https://github.com/woocommerce/woocommerce-ios/pull/6869, https://github.com/woocommerce/woocommerce-ios/pull/6886]
+
+- [*] Orders: Now it's possible to select and copy text from the notes on an order. [https://github.com/woocommerce/woocommerce-ios/pull/6894]
+- [*] Support Arabic numerals on amount fields. [https://github.com/woocommerce/woocommerce-ios/pull/6891]
+- [*] Product Selector: Enabled selecting all variations on variable product rows. [https://github.com/woocommerce/woocommerce-ios/pull/6899]
 
 9.2
 -----

@@ -14,9 +14,9 @@ class OrderNoteTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var statusLabel: UILabel!
 
-    /// Bottom Label
+    /// Bottom Text View
     ///
-    @IBOutlet private var noteLabel: UILabel!
+    @IBOutlet private var noteTextView: UITextView!
 
 
     // MARK: - View Lifecycle
@@ -25,7 +25,8 @@ class OrderNoteTableViewCell: UITableViewCell {
         super.awakeFromNib()
 
         configureBackground()
-        configureLabels()
+        configureStatusLabel()
+        configureNoteTextView()
         configureIconButton()
     }
 
@@ -61,10 +62,10 @@ class OrderNoteTableViewCell: UITableViewCell {
     ///
     var contents: String? {
         get {
-            return noteLabel.text
+            return noteTextView.text
         }
         set {
-            noteLabel.text = newValue
+            noteTextView.text = newValue
         }
     }
 }
@@ -104,12 +105,25 @@ private extension OrderNoteTableViewCell {
         applyDefaultBackgroundStyle()
     }
 
-    /// Setup: Labels
+    /// Setup: Status Label
     ///
-    func configureLabels() {
+    func configureStatusLabel() {
         statusLabel.applyBodyStyle()
         statusLabel.textColor = .textSubtle
-        noteLabel.applyBodyStyle()
+    }
+
+    /// Setup: Note Content Text View
+    ///
+    func configureNoteTextView() {
+        noteTextView.font = .body
+        noteTextView.textColor = .text
+        noteTextView.backgroundColor = .listForeground
+        noteTextView.adjustsFontForContentSizeCategory = true
+
+        // Remove padding from inside text view
+        noteTextView.contentInset = .zero
+        noteTextView.textContainerInset = .zero
+        noteTextView.textContainer.lineFragmentPadding = .zero
     }
 
     /// Setup: Icon Button

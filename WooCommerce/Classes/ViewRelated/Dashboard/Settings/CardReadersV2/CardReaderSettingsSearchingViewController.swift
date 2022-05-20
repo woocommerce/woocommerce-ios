@@ -112,10 +112,17 @@ struct CardReaderSettingsSearchingView: View {
     var learnMoreUrl: URL? = nil
 
     @Environment(\.verticalSizeClass) var verticalSizeClass
+    @Environment(\.sizeCategory) private var sizeCategory
 
     var isCompact: Bool {
         get {
             verticalSizeClass == .compact
+        }
+    }
+
+    var isSizeCategoryLargeThanExtraLarge: Bool {
+        get {
+            sizeCategory >= .accessibilityMedium
         }
     }
 
@@ -159,7 +166,7 @@ struct CardReaderSettingsSearchingView: View {
                 maxHeight: .infinity
             )
             .padding()
-            .if(isCompact) {content in
+            .if(isCompact || isSizeCategoryLargeThanExtraLarge) {content in
                 ScrollView(.vertical) {
                     content
                 }

@@ -380,6 +380,56 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(productRow?.selectedState, .partiallySelected)
     }
 
+    func test_toggleSelectionForVariations_set_its_product_row_to_selected_if_no_variation_was_selected() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true, variations: [1, 2])
+        insert(product)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 storageManager: storageManager)
+
+        // When
+        viewModel.toggleSelectionForVariations(of: product.productID)
+
+        // Then
+        let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
+        XCTAssertNotNil(productRow)
+        XCTAssertEqual(productRow?.selectedState, .selected)
+    }
+
+    func test_toggleSelectionForVariations_set_its_product_row_to_selected_if_some_variations_were_selected_earlier() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true, variations: [1, 2])
+        insert(product)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 storageManager: storageManager)
+
+        // When
+        viewModel.updateSelectedVariations(productID: product.productID, selectedVariationIDs: [2])
+        viewModel.toggleSelectionForVariations(of: product.productID)
+
+        // Then
+        let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
+        XCTAssertNotNil(productRow)
+        XCTAssertEqual(productRow?.selectedState, .selected)
+    }
+
+    func test_toggleSelectionForVariations_set_its_product_row_to_notSelected_if_all_variations_were_selected_earlier() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true, variations: [1, 2])
+        insert(product)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 storageManager: storageManager)
+
+        // When
+        viewModel.updateSelectedVariations(productID: product.productID, selectedVariationIDs: [1, 2])
+        viewModel.toggleSelectionForVariations(of: product.productID)
+
+        // Then
+        let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
+        XCTAssertNotNil(productRow)
+        XCTAssertEqual(productRow?.selectedState, .notSelected)
+    }
+
     func test_initialSelectedItems_are_reflected_in_selected_rows() {
         // Given
         let simpleProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)

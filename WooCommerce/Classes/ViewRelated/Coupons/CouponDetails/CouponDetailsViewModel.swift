@@ -15,6 +15,10 @@ final class CouponDetailsViewModel: ObservableObject {
     ///
     @Published private(set) var expiryStatus: String = ""
 
+    /// Text color for the expiry status view
+    ///
+    @Published private(set) var expiryStatusForegroundColor: UIColor = .clear
+
     /// Background color for the expiry status view
     ///
     @Published private(set) var expiryStatusBackgroundColor: UIColor = .clear
@@ -250,6 +254,7 @@ private extension CouponDetailsViewModel {
         let status = coupon.expiryStatus()
         expiryStatus = status.localizedName
         expiryStatusBackgroundColor = status.statusBackgroundColor
+        expiryStatusForegroundColor = status.statusForegroundColor
     }
 
     func formatStringAmount(_ amount: String) -> String {

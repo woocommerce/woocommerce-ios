@@ -233,6 +233,26 @@ final class ProductSelectorViewModel: ObservableObject {
         selectedProductVariationIDs.append(contentsOf: selectedVariationIDs)
     }
 
+    /// Select all variations for a given product
+    ///
+    func toggleSelectionForVariations(of productID: Int64) {
+        guard let variableProduct = products.first(where: { $0.productID == productID }),
+              variableProduct.variations.isNotEmpty else {
+            return
+        }
+        let selectedIDs: [Int64]
+        let intersection = Set(variableProduct.variations).intersection(Set(selectedProductVariationIDs))
+        if intersection.count == variableProduct.variations.count {
+            // if all variation is currently selected, deselect them all
+            selectedIDs = []
+        } else {
+            // otherwise select all variations for the product
+            selectedIDs = variableProduct.variations
+        }
+
+        updateSelectedVariations(productID: productID, selectedVariationIDs: selectedIDs)
+    }
+
     /// Triggers completion closure when the multiple selection completes.
     ///
     func completeMultipleSelection() {

@@ -32,7 +32,7 @@ final class OrdersTests: XCTestCase {
             .startOrderCreation()
             .editOrderStatus()
             .addProduct(byName: products[0].name)
-            .addCustomerDetails()
+            .addCustomerDetails(name: "Mira")
             .createOrder()
     }
 

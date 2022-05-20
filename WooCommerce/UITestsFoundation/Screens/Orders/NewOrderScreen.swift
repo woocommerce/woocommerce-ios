@@ -103,9 +103,9 @@ public final class NewOrderScreen: ScreenObject {
 
     /// Adds minimal customer details on the Customer Details screen
     /// - Returns: New Order screen object.
-    public func addCustomerDetails() throws -> NewOrderScreen {
+    public func addCustomerDetails(name: String) throws -> NewOrderScreen {
         return try openCustomerDetailsScreen()
-            .enterCustomerDetails()
+            .enterCustomerDetails(name: name)
     }
 
     /// Cancels Order Creation process

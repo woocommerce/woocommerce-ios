@@ -307,7 +307,9 @@ struct AddEditCoupon: View {
             .navigationTitle(viewModel.title)
             .navigationBarTitleDisplayMode(.large)
             .wooNavigationBarStyle()
-        }.onDisappear {
+        }
+        .navigationViewStyle(.stack)
+        .onDisappear {
             onDisappear()
         }
     }

@@ -475,4 +475,39 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(calledOnSuccess)
     }
+
+    func test_view_model_updates_order_async_after_collecting_payment_successfully() throws {
+        // Given
+        let storage = MockStorageManager()
+        let order = Order.fake().copy(status: .pending)
+        storage.insertSampleOrder(readOnlyOrder: order)
+        storage.insertSamplePaymentGatewayAccount(readOnlyAccount: .fake())
+
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+
+        let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()))
+        let onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
+        let dependencies = Dependencies(cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
+                                        stores: stores,
+                                        storage: storage)
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00",
+                                                       dependencies: dependencies)
+
+        // When
+        let (siteID, orderID): (Int64, Int64) = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .retrieveOrder(siteID, orderID, _):
+                    promise((siteID, orderID))
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+            viewModel.collectPayment(on: UIViewController(), useCase: useCase, onSuccess: {})
+        }
+
+        // Then
+        XCTAssertEqual(siteID, order.siteID)
+        XCTAssertEqual(orderID, order.orderID)
+    }
 }

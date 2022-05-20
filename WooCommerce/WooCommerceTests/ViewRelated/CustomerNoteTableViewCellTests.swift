@@ -34,8 +34,8 @@ final class CustomerNoteTableViewCellTests: XCTestCase {
         let mockLabel = UILabel()
         mockLabel.applyBodyStyle()
 
-        XCTAssertEqual(cell?.getBodyLabel().font, mockLabel.font)
-        XCTAssertEqual(cell?.getBodyLabel().textColor, mockLabel.textColor)
+        XCTAssertEqual(cell?.getBodyTextView().font, mockLabel.font)
+        XCTAssertEqual(cell?.getBodyTextView().textColor, mockLabel.textColor)
     }
 
     func testHeadlineLabelValues() {
@@ -43,7 +43,7 @@ final class CustomerNoteTableViewCellTests: XCTestCase {
     }
 
     func testBodyLabelValues() {
-        XCTAssertEqual(cell?.getBodyLabel().text, bodyMock)
+        XCTAssertEqual(cell?.getBodyTextView().text, bodyMock)
     }
 
 }

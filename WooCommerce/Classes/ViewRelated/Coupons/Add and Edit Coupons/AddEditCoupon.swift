@@ -58,7 +58,6 @@ struct AddEditCoupon: View {
     @State private var showingCouponRestrictions: Bool = false
     @State private var showingSelectProducts: Bool = false
     @State private var showingSelectCategories: Bool = false
-    @Environment(\.presentationMode) var presentation
 
     private var expiryDateActionSheetButtons: [Alert.Button] {
         var buttons: [Alert.Button] = []

@@ -68,7 +68,7 @@ private extension DeprecatedDashboardStatsViewController {
         scrollView.refreshControl = refreshControl
         refreshControl.on(.valueChanged) { [weak self] refreshControl in
             guard let self = self else { return }
-            Task {
+            Task { @MainActor in
                 await self.onPullToRefresh()
                 self.refreshControl.endRefreshing()
             }

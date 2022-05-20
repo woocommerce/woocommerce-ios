@@ -337,7 +337,7 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
 //
 private extension StoreStatsAndTopPerformersPeriodViewController {
     @objc func pullToRefresh() {
-        Task {
+        Task { @MainActor in
             await onPullToRefresh()
         }
     }

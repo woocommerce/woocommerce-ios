@@ -116,7 +116,7 @@ final class DashboardViewController: UIViewController {
         observeBottomJetpackBenefitsBannerVisibilityUpdates()
         observeNavigationBarHeightForStoreNameLabelVisibility()
         observeStatsVersionForDashboardUIUpdates()
-        Task {
+        Task { @MainActor in
             await reloadDashboardUIStatsVersion(forced: true)
         }
     }
@@ -318,7 +318,7 @@ extension DashboardViewController: DashboardUIScrollDelegate {
 private extension DashboardViewController {
     func onDashboardUIUpdate(forced: Bool, updatedDashboardUI: DashboardUI) {
         defer {
-            Task { [weak self] in
+            Task { @MainActor [weak self] in
                 // Reloads data of the updated dashboard UI at the end.
                 await self?.reloadData(forced: true)
             }
@@ -444,7 +444,7 @@ private extension DashboardViewController {
                 return
             }
             self.updateUI(site: site)
-            Task { [weak self] in
+            Task { @MainActor [weak self] in
                 await self?.reloadData(forced: true)
             }
         }.store(in: &subscriptions)

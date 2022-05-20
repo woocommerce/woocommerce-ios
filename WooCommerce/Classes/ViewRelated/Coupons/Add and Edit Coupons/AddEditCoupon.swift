@@ -7,10 +7,9 @@ final class AddEditCouponHostingController: UIHostingController<AddEditCoupon> {
 
     init(viewModel: AddEditCouponViewModel, onDisappear: @escaping () -> Void) {
         self.viewModel = viewModel
-        let addEditCouponView = AddEditCoupon(viewModel)
-        addEditCouponView.onDisappear(perform: onDisappear)
-        super.init(rootView: addEditCouponView)
+        super.init(rootView: AddEditCoupon(viewModel))
 
+        rootView.onDisappear = onDisappear
         rootView.dismissHandler = { [weak self] in
             self?.dismiss(animated: true)
         }
@@ -45,6 +44,8 @@ struct AddEditCoupon: View {
     /// Set this closure with UIKit dismiss code. Needed because we need access to the UIHostingController `dismiss` method.
     ///
     var dismissHandler: () -> Void = {}
+
+    var onDisappear: () -> Void = {}
 
     @ObservedObject private var viewModel: AddEditCouponViewModel
     @State private var showingEditDescription: Bool = false
@@ -302,6 +303,8 @@ struct AddEditCoupon: View {
             .navigationTitle(viewModel.title)
             .navigationBarTitleDisplayMode(.large)
             .wooNavigationBarStyle()
+        }.onDisappear {
+            onDisappear()
         }
     }
 }

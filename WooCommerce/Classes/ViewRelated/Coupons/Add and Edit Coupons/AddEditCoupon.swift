@@ -45,6 +45,8 @@ struct AddEditCoupon: View {
     ///
     var dismissHandler: () -> Void = {}
 
+    /// Set this closure with SwiftUI onDisappear code. Needed because we need to set this event from a UIKit object.
+    ///
     var onDisappear: () -> Void = {}
 
     @ObservedObject private var viewModel: AddEditCouponViewModel

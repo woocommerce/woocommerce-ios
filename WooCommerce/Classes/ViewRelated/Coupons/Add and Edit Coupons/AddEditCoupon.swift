@@ -10,14 +10,7 @@ final class AddEditCouponHostingController: UIHostingController<AddEditCoupon> {
         super.init(rootView: AddEditCoupon(viewModel).onDisappear(onDisappear))
 
         rootView.dismissHandler = { [weak self] in
-            guard let self = self else { return }
-            if viewModel.hasChangesMade {
-                UIAlertController.presentDiscardChangesActionSheet(viewController: self) { [weak self] in
-                    self?.dismiss(animated: true)
-                }
-            } else {
-                self.dismiss(animated: true)
-            }
+            self?.dismiss(animated: true)
         }
     }
 

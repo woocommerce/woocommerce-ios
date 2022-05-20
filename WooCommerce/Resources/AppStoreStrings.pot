@@ -57,9 +57,11 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v9.1-whats-new"
+msgctxt "v9.2-whats-new"
 msgid ""
-"We spent some time fixing those bugs that made the app harder to use. One of those involved weight and shipping package dimensions on a product. Entering values with commas to separate decimal values works as expected now. Thanks to everyone who reported this! Your feedback is vital to us!\n"
+"We keep adding new functionality to our experimental Coupon Management feature! This release includes editing and deleting coupons along with several improvements on viewing. Turn this feature on for early access in the More tab, Settings, Experimental Features.\n"
+"\n"
+"This release also has several fixes for order creation, in-person payments, and product management. Thank you all again for your invaluable feedback!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

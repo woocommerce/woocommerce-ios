@@ -1,1 +1,3 @@
-We spent some time fixing those bugs that made the app harder to use. One of those involved weight and shipping package dimensions on a product. Entering values with commas to separate decimal values works as expected now. Thanks to everyone who reported this! Your feedback is vital to us!
+We keep adding new functionality to our experimental Coupon Management feature! This release includes editing and deleting coupons along with several improvements on viewing. Turn this feature on for early access in the More tab, Settings, Experimental Features.
+
+This release also has several fixes for order creation, in-person payments, and product management. Thank you all again for your invaluable feedback!

@@ -54,16 +54,16 @@ final class CouponSearchUICommand: SearchUICommand {
     }
 
     func didSelectSearchResult(model: Coupon, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {
-        let detailsViewModel = CouponDetailsViewModel(coupon: model)
-        let couponDetails = CouponDetails(viewModel: detailsViewModel) { [weak self] in
+        let detailsViewModel = CouponDetailsViewModel(coupon: model, onUpdate: { [weak self] in
             try? self?.createResultsController().performFetch()
-        } onDeletion: {
+        }, onDeletion: {
             viewController.navigationController?.popViewController(animated: true)
             let notice = Notice(title: Localization.couponDeleted, feedbackType: .success)
             let noticePresenter = DefaultNoticePresenter()
             noticePresenter.presentingViewController = viewController
             noticePresenter.enqueue(notice: notice)
-        }
+        })
+        let couponDetails = CouponDetails(viewModel: detailsViewModel)
         let hostingController = UIHostingController(rootView: couponDetails)
         viewController.navigationController?.pushViewController(hostingController, animated: true)
     }

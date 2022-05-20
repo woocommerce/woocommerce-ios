@@ -53,6 +53,7 @@ struct CouponDetails: View {
     init(viewModel: CouponDetailsViewModel,
          onEditCoupon: @escaping (AddEditCouponViewModel) -> Void = {_ in }) {
         self.viewModel = viewModel
+        self.onEditCoupon = onEditCoupon
         self.noticePresenter = DefaultNoticePresenter()
         viewModel.syncCoupon()
         viewModel.loadCouponReport()
@@ -79,7 +80,7 @@ struct CouponDetails: View {
             buttons.append(contentsOf: [
                 .default(Text(Localization.editCoupon), action: {
                     ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "tapped_edit"])
-                    onEditCoupon(addEditCouponViewModel)
+                    onEditCoupon(viewModel.addEditCouponViewModel)
                 })
             ])
         }

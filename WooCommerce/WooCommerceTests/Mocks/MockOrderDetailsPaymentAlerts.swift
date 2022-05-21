@@ -8,10 +8,16 @@ final class MockOrderDetailsPaymentAlerts {
 
     var cancelTapOrInsertCardAlert: (() -> Void)?
 
+    // Error alert.
     var error: Error?
     var retryFromError: (() -> Void)?
     var dismissErrorCompletion: (() -> Void)?
     var nonRetryableErrorWasCalled = false
+
+    // Server-side payment capture error alert.
+    var errorFromServerSidePaymentCapture: Error?
+    var retryFromServerSidePaymentCaptureError: (() -> Void)?
+    var dismissServerSidePaymentCaptureErrorCompletion: (() -> Void)?
 
     // Success alert.
     var printReceiptFromSuccessAlert: (() -> Void)?
@@ -48,6 +54,12 @@ extension MockOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
         self.error = error
         retryFromError = tryAgain
         dismissErrorCompletion = dismissCompletion
+    }
+
+    func serverSidePaymentCaptureError(error: Error, tryAgain: @escaping () -> Void, dismissCompletion: @escaping () -> Void) {
+        self.errorFromServerSidePaymentCapture = error
+        retryFromServerSidePaymentCaptureError = tryAgain
+        dismissServerSidePaymentCaptureErrorCompletion = dismissCompletion
     }
 
     func nonRetryableError(from: UIViewController?, error: Error, dismissCompletion: @escaping () -> Void) {

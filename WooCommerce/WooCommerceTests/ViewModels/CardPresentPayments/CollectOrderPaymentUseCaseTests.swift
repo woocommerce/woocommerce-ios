@@ -30,6 +30,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                              rootViewController: .init(),
                                              alerts: alerts,
                                              configuration: Mocks.configuration,
+                                             paymentReceiptEmailParameterDeterminer: MockReceiptEmailParameterDeterminer(),
                                              stores: stores,
                                              analytics: analytics)
     }
@@ -207,6 +208,89 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         XCTAssertEqual(eventProperties["country"] as? String, "US")
         XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayAccount)
     }
+
+    func test_retrying_from_server_side_payment_capture_failure_successfully_triggers_onCompleted() throws {
+        // Given
+        let paymentIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case let .publishCardReaderConnections(completion) = action {
+                completion(Just<[CardReader]>([MockCardReader.wisePad3()]).eraseToAnyPublisher())
+            } else if case let .observeConnectedReaders(completion) = action {
+                completion([MockCardReader.wisePad3()])
+            } else if case let .collectPayment(_, _, _, _, _, completion) = action {
+                completion(.failure(ServerSidePaymentCaptureError.paymentGateway(error: .orderPaymentCaptureError(message: nil), paymentIntent: paymentIntent)))
+            } else if case let .capturePaymentOnSite(_, _, _, completion) = action {
+                // Called on retry.
+                completion(Just<Result<Void, Error>>(.success(())).eraseToAnyPublisher())
+            }
+        }
+
+        // When
+        var completed: Bool = false
+        let result: Result<Void, Error> = waitFor { [weak self] promise in
+            self?.useCase.collectPayment(backButtonTitle: "", onCollect: { result in
+                promise(result)
+            }, onCompleted: {
+                completed = true
+            })
+            self?.alerts.retryFromServerSidePaymentCaptureError?()
+        }
+        // Taps on one of the actions on the success alert to trigger completion.
+        alerts.printReceiptFromSuccessAlert?()
+
+        // Then
+        XCTAssertTrue(completed)
+        XCTAssertTrue(result.isSuccess)
+
+        let indexOfFailureEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "card_present_collect_payment_failed"}))
+        let eventPropertiesOfFailureEvent = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfFailureEvent])
+        XCTAssertEqual(eventPropertiesOfFailureEvent["country"] as? String, "US")
+        XCTAssertEqual(eventPropertiesOfFailureEvent["plugin_slug"] as? String, Mocks.paymentGatewayAccount)
+        XCTAssertEqual(eventPropertiesOfFailureEvent["card_reader_model"] as? String, Mocks.cardReaderModel)
+
+        let indexOfSuccessEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "card_present_collect_payment_success"}))
+        let eventPropertiesOfSuccessEvent = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfSuccessEvent])
+        XCTAssertEqual(eventPropertiesOfSuccessEvent["country"] as? String, "US")
+        XCTAssertEqual(eventPropertiesOfSuccessEvent["plugin_slug"] as? String, Mocks.paymentGatewayAccount)
+        XCTAssertEqual(eventPropertiesOfSuccessEvent["card_reader_model"] as? String, Mocks.cardReaderModel)
+
+        XCTAssertLessThan(indexOfFailureEvent, indexOfSuccessEvent)
+    }
+
+    func test_retrying_from_server_side_payment_capture_failure_with_failure_shows_retry_alert_again() throws {
+        // Given
+        let paymentIntent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case let .publishCardReaderConnections(completion) = action {
+                completion(Just<[CardReader]>([MockCardReader.wisePad3()]).eraseToAnyPublisher())
+            } else if case let .observeConnectedReaders(completion) = action {
+                completion([MockCardReader.wisePad3()])
+            } else if case let .collectPayment(_, _, _, _, _, completion) = action {
+                completion(.failure(ServerSidePaymentCaptureError.paymentGateway(error: .orderPaymentCaptureError(message: nil), paymentIntent: paymentIntent)))
+            } else if case let .capturePaymentOnSite(_, _, paymentIntent, completion) = action {
+                // Called on retry.
+                let error = ServerSidePaymentCaptureError.paymentGateway(error: .orderPaymentCaptureError(message: nil), paymentIntent: paymentIntent)
+                completion(Just<Result<Void, Error>>(.failure(error)).eraseToAnyPublisher())
+            }
+        }
+
+        // When
+        let _: Void = waitFor { [weak self] promise in
+            self?.useCase.collectPayment(backButtonTitle: "", onCollect: { _ in }, onCompleted: {
+                promise(())
+            })
+            // Taps retry on the first retry alert.
+            self?.alerts.retryFromServerSidePaymentCaptureError?()
+            // Triggers dismiss action on the second retry alert to complete the IPP flow.
+            self?.alerts.dismissServerSidePaymentCaptureErrorCompletion?()
+        }
+
+        // Then
+        let failureEvents = analyticsProvider.receivedEvents.filter { $0 == "card_present_collect_payment_failed"}
+        XCTAssertEqual(failureEvents.count, 2)
+    }
+
+    // MARK: Interac handling
 
     func test_collectPayment_with_interac_dispatches_markOrderAsPaidLocally_after_successful_client_side_capture() throws {
         // Given

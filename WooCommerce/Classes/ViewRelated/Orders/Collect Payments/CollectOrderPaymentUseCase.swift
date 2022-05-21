@@ -80,9 +80,14 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     ///
     private let configuration: CardPresentPaymentsConfiguration
 
+    /// For payment receipt generation in `PaymentCaptureOrchestrator`.
+    ///
+    private let paymentReceiptEmailParameterDeterminer: ReceiptEmailParameterDeterminer
+
     /// IPP payments collector.
     ///
-    private lazy var paymentOrchestrator = PaymentCaptureOrchestrator(stores: stores)
+    private lazy var paymentOrchestrator = PaymentCaptureOrchestrator(stores: stores,
+                                                                      paymentReceiptEmailParameterDeterminer: paymentReceiptEmailParameterDeterminer)
 
     /// Controller to connect a card reader.
     ///
@@ -106,6 +111,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
          rootViewController: UIViewController,
          alerts: OrderDetailsPaymentAlertsProtocol,
          configuration: CardPresentPaymentsConfiguration,
+         paymentReceiptEmailParameterDeterminer: ReceiptEmailParameterDeterminer = PaymentReceiptEmailParameterDeterminer(),
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
@@ -115,6 +121,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         self.rootViewController = rootViewController
         self.alerts = alerts
         self.configuration = configuration
+        self.paymentReceiptEmailParameterDeterminer = paymentReceiptEmailParameterDeterminer
         self.stores = stores
         self.analytics = analytics
     }
@@ -443,7 +450,7 @@ private extension CollectOrderPaymentUseCase {
             guard let self = self else { return }
             switch result {
             case .success(let data):
-                onCompletion(result)
+                self.handleSuccessfulPayment(capturedPaymentData: data, onCompletion: onCompletion)
             case .failure(let error):
                 self.handlePaymentFailureAndRetryPayment(error, onCompletion: onCompletion)
             }

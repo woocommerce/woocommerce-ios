@@ -728,4 +728,74 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         let errorFromResult = try XCTUnwrap(result.failure)
         XCTAssertEqual(errorFromResult as? UnderlyingError, error)
     }
+
+    // MARK: - `capturePaymentOnSite`
+
+    /// Verifies that when the remote returns a successful response for server-side payment capture, `capturePaymentOnSite` action returns a successful result.
+    func test_capturePaymentOnSite_publisher_returns_success_on_successful_network_response() throws {
+        // Given
+        let store = CardPresentPaymentStore(dispatcher: dispatcher,
+                                            storageManager: storageManager,
+                                            network: network,
+                                            cardReaderService: mockCardReaderService)
+        let intent = PaymentIntent.fake()
+        mockCardReaderService.whenCapturingPayment(thenReturn: Just(intent)
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher())
+        mockCardReaderService.whenWaitForInsertedCardToBeRemoved(thenReturn: Future<Void, Never> { promise in
+            promise(.success(()))
+        })
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
+                                 filename: "wcpay-payment-intent-succeeded")
+
+        // When
+        var subscription: AnyCancellable?
+        let result: Result<Void, Error> = waitFor { [self] promise in
+            let action = CardPresentPaymentAction
+                .capturePaymentOnSite(siteID: self.sampleSiteID, orderID: self.sampleOrderID, paymentIntent: intent) { publisher in
+                    subscription = publisher.sink { result in
+                        promise(result)
+                    }
+                }
+            store.onAction(action)
+        }
+        subscription?.cancel()
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    /// Verifies that when the remote returns an error for server-side payment capture, `capturePaymentOnSite` action returns a failure result.
+    func test_capturePaymentOnSite_publisher_returns_failure_on_error_network_response() throws {
+        // Given
+        let store = CardPresentPaymentStore(dispatcher: dispatcher,
+                                            storageManager: storageManager,
+                                            network: network,
+                                            cardReaderService: mockCardReaderService)
+        let intent = PaymentIntent.fake()
+        mockCardReaderService.whenCapturingPayment(thenReturn: Just(intent)
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher())
+        mockCardReaderService.whenWaitForInsertedCardToBeRemoved(thenReturn: Future<Void, Never> { promise in
+            promise(.success(()))
+        })
+        // Error on server-side processing.
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment", filename: "generic_error")
+
+        // When
+        var subscription: AnyCancellable?
+        let result: Result<Void, Error> = waitFor { [self] promise in
+            let action = CardPresentPaymentAction
+                .capturePaymentOnSite(siteID: self.sampleSiteID, orderID: self.sampleOrderID, paymentIntent: intent) { publisher in
+                    subscription = publisher.sink { result in
+                        promise(result)
+                    }
+                }
+            store.onAction(action)
+        }
+        subscription?.cancel()
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
 }

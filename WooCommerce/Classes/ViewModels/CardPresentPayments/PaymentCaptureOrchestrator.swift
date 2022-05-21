@@ -29,7 +29,7 @@ final class PaymentCaptureOrchestrator {
     private let stores: StoresManager
 
     init(stores: StoresManager = ServiceLocator.stores,
-         paymentReceiptEmailParameterDeterminer: ReceiptEmailParameterDeterminer = PaymentReceiptEmailParameterDeterminer()) {
+         paymentReceiptEmailParameterDeterminer: ReceiptEmailParameterDeterminer) {
         self.stores = stores
         self.paymentReceiptEmailParameterDeterminer = paymentReceiptEmailParameterDeterminer
     }

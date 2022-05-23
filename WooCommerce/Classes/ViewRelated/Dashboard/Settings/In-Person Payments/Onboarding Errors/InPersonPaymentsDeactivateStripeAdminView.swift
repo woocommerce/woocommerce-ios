@@ -15,7 +15,7 @@ struct InPersonPaymentsDeactivateStripeAdmin: View {
                 message: Localization.message,
                 image: InPersonPaymentsOnboardingError.ImageInfo(
                     image: .paymentErrorImage,
-                    height: 108.0
+                    height: Constants.height
                 ),
                 supportLink: false
             )

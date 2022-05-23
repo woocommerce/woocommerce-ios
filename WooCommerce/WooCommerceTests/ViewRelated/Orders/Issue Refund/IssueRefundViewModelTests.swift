@@ -256,22 +256,21 @@ final class IssueRefundViewModelTests: XCTestCase {
 
     func test_viewModel_correctly_adds_item_selections_to_title() {
         // Given
-        let item1Price: Decimal = 11.50
+        let item1Price: NSDecimalNumber = 11.50
         let item1Quantity: Decimal  = 3
 
-        let item2Price: Decimal = 12.50
+        let item2Price: NSDecimalNumber = 12.50
         let item2Quantity: Decimal  = 2
 
-        let item3Price: Decimal  = 13.50
+        let item3Price: NSDecimalNumber  = 13.50
         let item3Quantity: Decimal  = 1
 
 
         let currencySettings = CurrencySettings()
-        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         let items = [
-            MockOrderItem.sampleItem(itemID: 1, quantity: 3, total: currencyFormatter.localize(item1Price * item1Quantity) ?? "0"),
-            MockOrderItem.sampleItem(itemID: 2, quantity: 2, total: currencyFormatter.localize(item2Price * item2Quantity) ?? "0"),
-            MockOrderItem.sampleItem(itemID: 3, quantity: 1, total: currencyFormatter.localize(item3Price * item3Quantity) ?? "0"),
+            MockOrderItem.sampleItemWithCalculatedTotal(itemID: 1, quantity: item1Quantity, price: item1Price),
+            MockOrderItem.sampleItemWithCalculatedTotal(itemID: 2, quantity: item2Quantity, price: item2Price),
+            MockOrderItem.sampleItemWithCalculatedTotal(itemID: 2, quantity: item3Quantity, price: item3Price),
         ]
         let order = MockOrders().makeOrder(items: items)
         let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
@@ -289,21 +288,20 @@ final class IssueRefundViewModelTests: XCTestCase {
 
     func test_viewModel_correctly_adds_shipping_selection_to_title() {
         // Given
-        let item1Price: Decimal = 11.50
+        let item1Price: NSDecimalNumber = 11.50
         let item1Quantity: Decimal  = 3
 
-        let item2Price: Decimal = 12.50
+        let item2Price: NSDecimalNumber = 12.50
         let item2Quantity: Decimal  = 2
 
-        let item3Price: Decimal  = 13.50
+        let item3Price: NSDecimalNumber  = 13.50
         let item3Quantity: Decimal  = 1
 
         let currencySettings = CurrencySettings()
-        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         let items = [
-            MockOrderItem.sampleItem(itemID: 1, quantity: item1Quantity, total: currencyFormatter.localize(item1Price * item1Quantity) ?? "0"),
-            MockOrderItem.sampleItem(itemID: 2, quantity: item2Quantity, total: currencyFormatter.localize(item2Price * item2Quantity) ?? "0"),
-            MockOrderItem.sampleItem(itemID: 3, quantity: item3Quantity, total: currencyFormatter.localize(item3Price * item3Quantity) ?? "0"),
+            MockOrderItem.sampleItemWithCalculatedTotal(itemID: 1, quantity: item1Quantity, price: item1Price),
+            MockOrderItem.sampleItemWithCalculatedTotal(itemID: 2, quantity: item2Quantity, price: item2Price),
+            MockOrderItem.sampleItemWithCalculatedTotal(itemID: 2, quantity: item3Quantity, price: item3Price),
         ]
         let shippingLines = MockOrders.sampleShippingLines(cost: "7.00", tax: "0.62")
         let order = MockOrders().makeOrder(items: items, shippingLines: shippingLines)
@@ -772,5 +770,19 @@ private extension IssueRefundViewModelTests {
         storageManager.reset()
         let newAccount = storageManager.viewStorage.insertNewObject(ofType: StoragePaymentGatewayAccount.self)
         newAccount.update(with: paymentGatewayAccount)
+    }
+}
+
+private extension MockOrderItem {
+    static func sampleItemWithCalculatedTotal(itemID: Int64,
+                                    quantity: Decimal,
+                                    price: NSDecimalNumber) -> OrderItem {
+        let currencySettings = CurrencySettings()
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+
+        return MockOrderItem.sampleItem(itemID: itemID,
+                                        quantity: quantity,
+                                        price: price,
+                                        total: currencyFormatter.localize((price as Decimal) * quantity) ?? "0")
     }
 }

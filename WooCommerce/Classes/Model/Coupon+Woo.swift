@@ -18,11 +18,44 @@ extension Coupon.DiscountType {
         }
     }
 
+    /// Description to be displayed on the discount type list selector.
+    ///
+    var actionSheetDescription: String {
+        switch self {
+        case .percent:
+            return Localization.percentageDiscountDescription
+        case .fixedCart:
+            return Localization.fixedCartDiscountDescription
+        case .fixedProduct:
+            return Localization.fixedProductDiscountDescription
+        case .other:
+            return "" // This case should not be displayed
+        }
+    }
+
+    /// Image to be displayed on the discount type list selector
+    ///
+    var actionSheetIcon: UIImage {
+        UIImage.addImage // TODO: update this
+    }
+
     private enum Localization {
         static let percentageDiscount = NSLocalizedString("Percentage Discount", comment: "Name of percentage discount type")
         static let fixedCartDiscount = NSLocalizedString("Fixed Cart Discount", comment: "Name of fixed cart discount type")
         static let fixedProductDiscount = NSLocalizedString("Fixed Product Discount", comment: "Name of fixed product discount type")
         static let otherDiscount = NSLocalizedString("Other", comment: "Generic name of non-default discount types")
+        static let percentageDiscountDescription = NSLocalizedString(
+            "Create a percentage discount for selected products",
+            comment: "Description for percentage discount type on the action sheet presented from Add or Edit coupon screen"
+        )
+        static let fixedCartDiscountDescription = NSLocalizedString(
+            "Create a fixed total discount for the entire cart",
+            comment: "Description for fixed cart discount type on the action sheet presented from Add or Edit coupon screen"
+        )
+        static let fixedProductDiscountDescription = NSLocalizedString(
+            "Create a fixed total discount for selected products",
+            comment: "Description for fixed product discount type on the action sheet presented from Add or Edit coupon screen"
+        )
     }
 }
 

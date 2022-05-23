@@ -20,7 +20,7 @@ extension Coupon.DiscountType {
 
     /// Description to be displayed on the discount type list selector.
     ///
-    var actionSheetDescription: String {
+    var actionSheetDescription: String? {
         switch self {
         case .percent:
             return Localization.percentageDiscountDescription
@@ -29,14 +29,23 @@ extension Coupon.DiscountType {
         case .fixedProduct:
             return Localization.fixedProductDiscountDescription
         case .other:
-            return "" // This case should not be displayed
+            return nil
         }
     }
 
     /// Image to be displayed on the discount type list selector
     ///
-    var actionSheetIcon: UIImage {
-        UIImage.addImage // TODO: update this
+    var actionSheetIcon: UIImage? {
+        switch self {
+        case .percent:
+            return UIImage.percentageDiscountIcon
+        case .fixedCart:
+            return UIImage.fixedCartDiscountIcon
+        case .fixedProduct:
+            return UIImage.fixedProductDiscountIcon
+        case .other:
+            return nil
+        }
     }
 
     private enum Localization {

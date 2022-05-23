@@ -126,6 +126,7 @@ final class CouponRestrictionsViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         currencySymbol = currencySettings.symbol(from: currencySettings.currencyCode)
+        shouldDisplayLimitUsageToXItemsRow = false
         minimumSpend = ""
         maximumSpend = ""
         usageLimitPerCoupon = ""

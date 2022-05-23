@@ -9,6 +9,8 @@ final class CouponRestrictionsViewModel: ObservableObject {
 
     let currencySymbol: String
 
+    let shouldDisplayLimitUsageToXItemsRow: Bool
+
     var excludeProductsButtonIcon: UIImage {
         excludedProductOrVariationIDs.isEmpty ? .plusImage : .pencilImage
     }
@@ -115,6 +117,8 @@ final class CouponRestrictionsViewModel: ObservableObject {
         excludeSaleItems = coupon.excludeSaleItems
         excludedProductOrVariationIDs = coupon.excludedProductIds
         excludedCategoryIDs = coupon.excludedProductCategories
+
+        shouldDisplayLimitUsageToXItemsRow = coupon.discountType == .fixedCart
     }
 
     init(siteID: Int64,

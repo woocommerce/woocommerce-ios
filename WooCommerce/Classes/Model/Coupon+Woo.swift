@@ -23,30 +23,6 @@ extension Coupon.DiscountType {
         static let fixedCartDiscount = NSLocalizedString("Fixed Cart Discount", comment: "Name of fixed cart discount type")
         static let fixedProductDiscount = NSLocalizedString("Fixed Product Discount", comment: "Name of fixed product discount type")
         static let otherDiscount = NSLocalizedString("Other", comment: "Generic name of non-default discount types")
-        static let titleEditPercentageDiscount = NSLocalizedString(
-            "Edit percentage discount",
-            comment: "Title of the view for editing a coupon with percentage discount.")
-        static let titleEditFixedCartDiscount = NSLocalizedString(
-            "Edit fixed cart discount",
-            comment: "Title of the view for editing a coupon with fixed cart discount.")
-        static let titleEditFixedProductDiscount = NSLocalizedString(
-            "Edit fixed product discount",
-            comment: "Title of the view for editing a coupon with fixed product discount.")
-        static let titleEditGenericDiscount = NSLocalizedString(
-            "Edit discount",
-            comment: "Title of the view for editing a coupon with generic discount.")
-        static let titleCreatePercentageDiscount = NSLocalizedString(
-            "Create percentage discount",
-            comment: "Title of the view for creating a coupon with percentage discount.")
-        static let titleCreateFixedCartDiscount = NSLocalizedString(
-            "Create fixed cart discount",
-            comment: "Title of the view for creating a coupon with fixed cart discount.")
-        static let titleCreateFixedProductDiscount = NSLocalizedString(
-            "Create fixed product discount",
-            comment: "Title of the view for creating a coupon with fixed product discount.")
-        static let titleCreateGenericDiscount = NSLocalizedString(
-            "Create discount",
-            comment: "Title of the view for creating a coupon with generic discount.")
     }
 }
 

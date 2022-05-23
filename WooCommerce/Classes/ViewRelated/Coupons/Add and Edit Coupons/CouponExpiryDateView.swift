@@ -7,7 +7,7 @@ struct CouponExpiryDateView: View {
 
     @State var date: Date = Date()
     var timezone: TimeZone
-    let onSelection: ((Date) -> Void)
+    let completion: ((Date) -> Void)
 
     var body: some View {
         GeometryReader { geometry in
@@ -16,9 +16,6 @@ struct CouponExpiryDateView: View {
                     DatePicker("Date picker", selection: $date, displayedComponents: .date)
                         .environment(\.timeZone, timezone)
                         .datePickerStyle(GraphicalDatePickerStyle())
-                        .onChange(of: date) { newDate in
-                            onSelection(newDate)
-                        }
                     Spacer()
                 }
             }
@@ -26,8 +23,8 @@ struct CouponExpiryDateView: View {
         .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(Localization.title)
-        .onAppear {
-            onSelection(date)
+        .onDisappear {
+            completion(date)
         }
     }
 }
@@ -44,6 +41,6 @@ private extension CouponExpiryDateView {
 
 struct CouponExpiryDateView_Previews: PreviewProvider {
     static var previews: some View {
-        CouponExpiryDateView(date: Date(), timezone: TimeZone.siteTimezone, onSelection: { _ in })
+        CouponExpiryDateView(date: Date(), timezone: TimeZone.siteTimezone, completion: { _ in })
     }
 }

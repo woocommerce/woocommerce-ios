@@ -129,7 +129,8 @@ final class AddEditCouponViewModel: ObservableObject {
 
     var hasChangesMade: Bool {
         let coupon = populatedCoupon
-        return checkAmountUpdated(for: coupon) ||
+        return checkDiscountTypeUpdated(for: coupon) ||
+        checkAmountUpdated(for: coupon) ||
         checkDescriptionUpdated(for: coupon) ||
         checkCouponCodeUpdated(for: coupon) ||
         checkAllowedProductsAndCategoriesUpdated(for: coupon) ||
@@ -316,6 +317,13 @@ final class AddEditCouponViewModel: ObservableObject {
 // MARK: - Helpers
 //
 private extension AddEditCouponViewModel {
+    func checkDiscountTypeUpdated(for coupon: Coupon) -> Bool {
+        guard let initialCoupon = self.coupon else {
+            return false
+        }
+        return coupon.discountType != initialCoupon.discountType
+    }
+
     func checkUsageRestrictionsUpdated(for coupon: Coupon) -> Bool {
         guard let initialCoupon = self.coupon else {
             return false

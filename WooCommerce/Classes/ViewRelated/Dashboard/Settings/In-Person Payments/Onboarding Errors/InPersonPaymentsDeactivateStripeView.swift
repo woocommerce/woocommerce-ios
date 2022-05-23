@@ -1,8 +1,9 @@
 import SwiftUI
 import Yosemite
 
-struct InPersonPaymentsDeactivateStripeAdminView: View {
+struct InPersonPaymentsDeactivateStripeView: View {
     let onRefresh: () -> Void
+    let showSetupPluginsButton: Bool
     @State private var presentedSetupURL: URL? = nil
 
     var body: some View {
@@ -11,7 +12,7 @@ struct InPersonPaymentsDeactivateStripeAdminView: View {
 
             InPersonPaymentsOnboardingError.MainContent(
                 title: Localization.title,
-                message: Localization.message,
+                message: showSetupPluginsButton ? Localization.buttonMessage : Localization.message,
                 image: InPersonPaymentsOnboardingError.ImageInfo(
                     image: .paymentErrorImage,
                     height: Constants.height
@@ -23,16 +24,18 @@ struct InPersonPaymentsDeactivateStripeAdminView: View {
 
             Spacer()
 
-            Button {
-                presentedSetupURL = setupURL
-            } label: {
-                HStack {
-                    Text(Localization.primaryButton)
-                    Image(uiImage: .externalImage)
+            if showSetupPluginsButton {
+                Button {
+                    presentedSetupURL = setupURL
+                } label: {
+                    HStack {
+                        Text(Localization.primaryButton)
+                        Image(uiImage: .externalImage)
+                    }
                 }
+                .buttonStyle(PrimaryButtonStyle())
+                .padding(.bottom, Constants.padding)
             }
-            .buttonStyle(PrimaryButtonStyle())
-            .padding(.bottom, Constants.padding)
 
             InPersonPaymentsLearnMore()
         }
@@ -55,8 +58,13 @@ private enum Localization {
         "and the Stripe plugin should be deactivated"
     )
 
-    static let message = NSLocalizedString(
+    static let buttonMessage = NSLocalizedString(
         "Please deactivate WooCommerce Stripe Gateway to collect payments.",
+        comment: "Message prompting an administrator to deactivate Stripe plugin"
+    )
+
+    static let message = NSLocalizedString(
+        "Please contact a site administrator to deactivate WooCommerce Stripe Gateway to collect payments.",
         comment: "Message prompting an administrator to deactivate Stripe plugin"
     )
 

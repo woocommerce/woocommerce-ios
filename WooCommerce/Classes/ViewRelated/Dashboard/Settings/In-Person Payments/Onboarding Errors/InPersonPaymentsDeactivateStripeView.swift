@@ -59,12 +59,12 @@ private enum Localization {
     )
 
     static let buttonMessage = NSLocalizedString(
-        "Please deactivate WooCommerce Stripe Gateway to collect payments.",
+        "To collect payments, please deactivate WooCommerce Stripe Gateway.",
         comment: "Message prompting an administrator to deactivate Stripe plugin"
     )
 
     static let message = NSLocalizedString(
-        "Please contact a site administrator to deactivate WooCommerce Stripe Gateway to collect payments.",
+        "To collect payments, please ask an administrator to deactivate WooCommerce Stripe Gateway.",
         comment: "Message prompting an administrator to deactivate Stripe plugin"
     )
 

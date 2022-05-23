@@ -68,4 +68,12 @@ final class CouponRestrictionsViewModelTests: XCTestCase {
         let expectedTitle = String.localizedStringWithFormat(NSLocalizedString("Exclude Product Categories (%1$d)", comment: ""), 2)
         XCTAssertEqual(viewModel.excludeCategoriesButtonTitle, expectedTitle)
     }
+
+    func test_shouldDisplayLimitUsageToXItemsRow_is_false_when_fixed_cart_discount_type_is_set() {
+        let sampleCoupon = Coupon.fake().copy(discountType: .fixedCart)
+        let viewModel = CouponRestrictionsViewModel(coupon: sampleCoupon)
+
+        // Then
+        XCTAssertFalse(viewModel.shouldDisplayLimitUsageToXItemsRow)
+    }
 }

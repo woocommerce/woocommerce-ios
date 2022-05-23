@@ -16,6 +16,9 @@ struct CouponExpiryDateView: View {
                     DatePicker("Date picker", selection: $date, displayedComponents: .date)
                         .environment(\.timeZone, timezone)
                         .datePickerStyle(GraphicalDatePickerStyle())
+                        .onChange(of: date) { newDate in
+                            completion(newDate)
+                        }
                     Spacer()
                 }
             }
@@ -23,9 +26,6 @@ struct CouponExpiryDateView: View {
         .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(Localization.title)
-        .onDisappear {
-            completion(date)
-        }
     }
 }
 

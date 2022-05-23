@@ -15,10 +15,9 @@ protocol CollectOrderPaymentProtocol {
     /// Starts the collect payment flow.
     ///
     ///
-    /// - Parameter backButtonTitle: Title for the back button after a payment is successful.
     /// - Parameter onCollect: Closure Invoked after the collect process has finished.
     /// - Parameter onCompleted: Closure Invoked after the flow has been totally completed.
-    func collectPayment(backButtonTitle: String, onCollect: @escaping (Result<Void, Error>) -> (), onCompleted: @escaping () -> ())
+    func collectPayment(onCollect: @escaping (Result<Void, Error>) -> (), onCompleted: @escaping () -> ())
 }
 
 /// Use case to collect payments from an order.
@@ -126,10 +125,9 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     /// 4. If failure: Allows retry
     ///
     ///
-    /// - Parameter backButtonTitle: Title for the back button after a payment is successful.
     /// - Parameter onCollect: Closure Invoked after the collect process has finished.
     /// - Parameter onCompleted: Closure Invoked after the flow has been totally completed, Currently after merchant has handled the receipt.
-    func collectPayment(backButtonTitle: String, onCollect: @escaping (Result<Void, Error>) -> (), onCompleted: @escaping () -> ()) {
+    func collectPayment(onCollect: @escaping (Result<Void, Error>) -> (), onCompleted: @escaping () -> ()) {
         guard isTotalAmountValid() else {
             let error = totalAmountInvalidError()
             onCollect(.failure(error))
@@ -150,7 +148,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                     guard let paymentData = try? result.get() else {
                         return onCompleted()
                     }
-                    self?.presentReceiptAlert(receiptParameters: paymentData.receiptParameters, backButtonTitle: backButtonTitle, onCompleted: onCompleted)
+                    self?.presentReceiptAlert(receiptParameters: paymentData.receiptParameters, onCompleted: onCompleted)
                 })
             case .failure(let error):
                 onCollect(.failure(error))
@@ -377,7 +375,7 @@ private extension CollectOrderPaymentUseCase {
 
     /// Allow merchants to print or email the payment receipt.
     ///
-    func presentReceiptAlert(receiptParameters: CardPresentReceiptParameters, backButtonTitle: String, onCompleted: @escaping () -> ()) {
+    func presentReceiptAlert(receiptParameters: CardPresentReceiptParameters, onCompleted: @escaping () -> ()) {
         // Present receipt alert
         alerts.success(printReceipt: { [order, configuration, weak self] in
             guard let self = self else { return }
@@ -405,8 +403,7 @@ private extension CollectOrderPaymentUseCase {
             paymentOrchestrator.emailReceipt(for: order, params: receiptParameters) { [weak self] emailContent in
                 self?.presentEmailForm(content: emailContent, onCompleted: onCompleted)
             }
-        }, noReceiptTitle: backButtonTitle,
-           noReceiptAction: {
+        }, noReceiptAction: {
             // Inform about flow completion.
             onCompleted()
         })

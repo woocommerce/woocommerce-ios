@@ -725,7 +725,7 @@ private extension OrderDetailsViewController {
     }
 
     @objc private func collectPaymentTapped() {
-        viewModel.collectPayment(rootViewController: self, backButtonTitle: Localization.Payments.backToOrder) { [weak self] result in
+        viewModel.collectPayment(rootViewController: self) { [weak self] result in
             guard let self = self else { return }
             // Refresh date & view once payment has been collected.
             if result.isSuccess {
@@ -978,11 +978,6 @@ private extension OrderDetailsViewController {
             static let trackShipmentAction =
                 NSLocalizedString("Track shipment",
                                   comment: "Track shipment of a shipping label from the shipping label tracking more menu action sheet")
-        }
-
-        enum Payments {
-            static let backToOrder = NSLocalizedString("Back to Order",
-                                                       comment: "Button to dismiss modal overlay and go back to the order after a sucessful payment")
         }
 
         enum ActionsMenu {

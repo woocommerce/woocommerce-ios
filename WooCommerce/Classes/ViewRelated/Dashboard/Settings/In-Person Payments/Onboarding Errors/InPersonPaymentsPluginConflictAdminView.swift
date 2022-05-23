@@ -47,7 +47,7 @@ struct InPersonPaymentsPluginConflictAdmin: View {
         .safariSheet(url: $presentedSetupURL, onDismiss: onRefresh)
     }
 
-    var setupURL: URL? {
+    private var setupURL: URL? {
         guard let adminURL = ServiceLocator.stores.sessionManager.defaultSite?.adminURL else {
             return nil
         }

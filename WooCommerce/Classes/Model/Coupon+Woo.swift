@@ -18,36 +18,6 @@ extension Coupon.DiscountType {
         }
     }
 
-    /// Localized title to be displayed for the discount type in `AddEditCoupon` when in creation mode.
-    ///
-    var titleCreateCoupon: String {
-        switch self {
-        case .percent:
-            return Localization.titleCreatePercentageDiscount
-        case .fixedCart:
-            return Localization.titleCreateFixedCartDiscount
-        case .fixedProduct:
-            return Localization.titleCreateFixedProductDiscount
-        default:
-            return Localization.titleCreateGenericDiscount
-        }
-    }
-
-    /// Localized title to be displayed for the discount type in `AddEditCoupon` when in editing mode.
-    ///
-    var titleEditCoupon: String {
-        switch self {
-        case .percent:
-            return Localization.titleEditPercentageDiscount
-        case .fixedCart:
-            return Localization.titleEditFixedCartDiscount
-        case .fixedProduct:
-            return Localization.titleEditFixedProductDiscount
-        default:
-            return Localization.titleEditGenericDiscount
-        }
-    }
-
     private enum Localization {
         static let percentageDiscount = NSLocalizedString("Percentage Discount", comment: "Name of percentage discount type")
         static let fixedCartDiscount = NSLocalizedString("Fixed Cart Discount", comment: "Name of fixed cart discount type")

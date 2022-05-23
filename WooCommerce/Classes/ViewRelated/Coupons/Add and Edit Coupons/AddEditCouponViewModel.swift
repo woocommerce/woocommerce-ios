@@ -25,9 +25,9 @@ final class AddEditCouponViewModel: ObservableObject {
     var title: String {
         switch editingOption {
         case .creation:
-            return discountType.titleCreateCoupon
+            return Localization.createCouponTitle
         case .editing:
-            return discountType.titleEditCoupon
+            return Localization.editCouponTitle
         }
     }
 
@@ -453,5 +453,7 @@ private extension AddEditCouponViewModel {
             "Edit Product Categories (%1$d)",
             comment: "Button for specify the product categories where a coupon can be applied in the view for adding or editing a coupon. " +
             "Reads like: Edit Categories")
+        static let createCouponTitle = NSLocalizedString("Create coupon", comment: "Title of the Create coupon screen")
+        static let editCouponTitle = NSLocalizedString("Edit coupon", comment: "Title of the Edit coupon screen")
     }
 }

@@ -4,7 +4,6 @@ import Yosemite
 struct InPersonPaymentsDeactivateStripeAdminView: View {
     let onRefresh: () -> Void
     @State private var presentedSetupURL: URL? = nil
-    @Environment(\.verticalSizeClass) var verticalSizeClass
 
     var body: some View {
         ScrollableVStack {

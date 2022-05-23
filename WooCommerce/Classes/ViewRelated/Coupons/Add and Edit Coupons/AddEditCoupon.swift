@@ -12,6 +12,7 @@ struct AddEditCoupon: View {
     @State private var showingCouponRestrictions: Bool = false
     @State private var showingSelectProducts: Bool = false
     @State private var showingSelectCategories: Bool = false
+    @State private var showingDiscountTypeSheet: Bool = false
     @Environment(\.presentationMode) var presentation
 
     private var expiryDateActionSheetButtons: [Alert.Button] {
@@ -56,6 +57,14 @@ struct AddEditCoupon: View {
                             ListHeaderView(text: Localization.headerCouponDetails.uppercased(), alignment: .left)
 
                             Group {
+                                TitleAndValueRow(title: Localization.discountType,
+                                                 value: viewModel.discountTypeValue,
+                                                 selectionStyle: .disclosure, action: {
+                                    showingDiscountTypeSheet = true
+                                })
+                                Divider()
+                                    .padding(.leading, Constants.margin)
+
                                 TitleAndTextFieldRow(title: viewModel.amountLabel,
                                                      placeholder: "0",
                                                      text: $viewModel.amountField,
@@ -285,7 +294,7 @@ private extension AddEditCoupon {
             comment: "Header of the coupon details in the view for adding or editing a coupon.")
         static let couponCode = NSLocalizedString(
             "Coupon Code",
-            comment: "Text field coupon code in the view for adding or editing a coupon.")
+            comment: "Text field coupon code in the view for adding or editing a coupon code.")
         static let couponCodePlaceholder = NSLocalizedString(
             "Enter a coupon",
             comment: "Text field coupon code placeholder in the view for adding or editing a coupon.")
@@ -294,16 +303,20 @@ private extension AddEditCoupon {
             comment: "The footer of the text field coupon code in the view for adding or editing a coupon.")
         static let regenerateCouponCodeButton = NSLocalizedString(
             "Regenerate Coupon Code",
-            comment: "Button in the view for adding or editing a coupon.")
+            comment: "Button in the view for adding or editing a coupon code.")
         static let couponExpiryDate = NSLocalizedString(
             "Coupon Expiry Date",
-            comment: "Field in the view for adding or editing a coupon.")
+            comment: "Field in the view for adding or editing a coupon's expiry date.")
+        static let discountType = NSLocalizedString(
+            "Discount Type",
+            comment: "Field in the view for adding or editing a coupon's discount type.")
         static let includeFreeShipping = NSLocalizedString(
             "Include Free Shipping?",
-            comment: "Toggle field in the view for adding or editing a coupon.")
+            comment: "Toggle field in the view for adding or editing a coupon's free shipping support.")
         static let headerApplyCouponTo = NSLocalizedString(
             "Apply this coupon to",
-            comment: "Header of the section for applying a coupon to specific products or categories in the view for adding or editing a coupon.")
+            comment: "Header of the section for applying a coupon to specific products or categories in the view " +
+            "for adding or editing a coupon's product and category restrictions.")
         static let allProductsButton = NSLocalizedString(
             "All Products",
             comment: "Button indicating that coupon can be applied to all products in the view for adding or editing a coupon.")

@@ -47,9 +47,9 @@ struct InPersonPaymentsView: View {
                 }
             case let .pluginShouldBeDeactivated(plugin) where plugin == .stripe:
                 if viewModel.userIsAdministrator {
-                    InPersonPaymentsDeactivateStripeAdmin(onRefresh: viewModel.refresh)
+                    InPersonPaymentsDeactivateStripeAdminView(onRefresh: viewModel.refresh)
                 } else {
-                    InPersonPaymentsDeactivateStripeShopManager(onRefresh: viewModel.refresh)
+                    InPersonPaymentsDeactivateStripeShopManagerView(onRefresh: viewModel.refresh)
                 }
             case .countryNotSupported(let countryCode):
                 InPersonPaymentsCountryNotSupported(countryCode: countryCode)

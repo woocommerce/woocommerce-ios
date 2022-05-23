@@ -1,7 +1,7 @@
 import SwiftUI
 import Yosemite
 
-struct InPersonPaymentsDeactivateStripeShopManager: View {
+struct InPersonPaymentsDeactivateStripeShopManagerView: View {
     let onRefresh: () -> Void
     @State private var presentedSetupURL: URL? = nil
     @Environment(\.verticalSizeClass) var verticalSizeClass

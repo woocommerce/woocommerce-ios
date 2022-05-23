@@ -52,7 +52,7 @@ struct InPersonPaymentsDeactivateStripeAdmin: View {
 private enum Localization {
     static let title = NSLocalizedString(
         "In-Person Payments are processed through WooCommerce Payments.",
-        comment: "Title for the error screen when there is more than one plugin active" +
+        comment: "Title for the error screen when there is more than one plugin active " +
         "and the Stripe plugin should be deactivated"
     )
 

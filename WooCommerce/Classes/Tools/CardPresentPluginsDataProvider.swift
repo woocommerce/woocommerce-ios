@@ -13,10 +13,6 @@ enum PaymentPluginsInstalledAndActiveStatus {
     case onlyStripeIsInstalledAndActive
     // Both are installed and active
     case bothAreInstalledAndActive
-
-    var stripeIsInstalledAndActive: Bool {
-        self == .onlyStripeIsInstalledAndActive || self == .bothAreInstalledAndActive
-    }
 }
 
 /// Provides data and helper methods related to the Payments Plugins (WCPay, Stripe).

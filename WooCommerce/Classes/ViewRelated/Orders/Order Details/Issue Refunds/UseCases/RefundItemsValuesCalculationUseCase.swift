@@ -19,8 +19,13 @@ struct RefundItemsValuesCalculationUseCase {
         let zero = RefundValues(subtotal: 0, tax: 0)
         return refundItems.reduce(zero) { previousValues, refundItem -> RefundValues in
 
-            let itemPrice = refundItem.item.price as Decimal
-            let quantityToRefund = Decimal(refundItem.quantity)
+            // Figure out `itemTotal` by dividing `item.total` by the purchased `quantity`.
+            // Using price is not safe right now.
+            // See: https://github.com/woocommerce/woocommerce-ios/issues/6885
+            let itemTotal: Decimal = {
+                let refundItemTotal = currencyFormatter.convertToDecimal(from: refundItem.item.total) ?? 0
+                return (refundItemTotal as Decimal) / refundItem.item.quantity
+            }()
 
             // Figure out `itemTax` by dividing `totalTax` by the purchased `quantity`.
             let itemTax: Decimal = {
@@ -28,8 +33,10 @@ struct RefundItemsValuesCalculationUseCase {
                 return (totalTax as Decimal) / refundItem.item.quantity
             }()
 
+            let quantityToRefund = Decimal(refundItem.quantity)
+
             // Accumulate the evaluated item values
-            let subtotal = previousValues.subtotal + (itemPrice * quantityToRefund)
+            let subtotal = previousValues.subtotal + (itemTotal * quantityToRefund)
             let tax = previousValues.tax + (itemTax * quantityToRefund)
 
             return RefundValues(subtotal: subtotal, tax: tax)

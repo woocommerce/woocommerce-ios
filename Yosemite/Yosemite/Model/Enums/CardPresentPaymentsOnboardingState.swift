@@ -12,11 +12,17 @@ public enum CardPresentPaymentOnboardingState: Equatable {
     /// 
     case selectPlugin
 
+    /// The passed plugin should be deactivated. E.g. this state can happen when WCPay and Stripe
+    /// are both installed and activated in a country that doesn't support Stripe. In that case
+    /// Stripe should be deactivated.
+    ///
+    case pluginShouldBeDeactivated(plugin: CardPresentPaymentsPlugin)
+
     /// Store is not located in one of the supported countries.
     ///
     case countryNotSupported(countryCode: String)
 
-    /// Store is not located in one of the supported countries for Stripe (but it is for WCPay).
+    /// Only Stripe is installed and activated, but the store is not located in one of the supported countries for Stripe (but it is for WCPay).
     ///
     case countryNotSupportedStripe(plugin: CardPresentPaymentsPlugin, countryCode: String)
 
@@ -77,6 +83,8 @@ extension CardPresentPaymentOnboardingState {
             return nil
         case .selectPlugin:
             return "multiple_plugins_installed"
+        case .pluginShouldBeDeactivated:
+            return "plugin_should_be_deactivated"
         case .countryNotSupported(countryCode: _):
             return "country_not_supported"
         case .countryNotSupportedStripe(countryCode: _):

@@ -13,7 +13,6 @@ struct InPersonPaymentsLearnMore: View {
                 .foregroundColor(Color(.neutral(.shade60)))
                 .frame(width: iconSize, height: iconSize)
             AttributedText(learnMoreAttributedString)
-                .font(.footnote)
         }
             .padding(.vertical, Constants.verticalPadding)
             .onTapGesture {
@@ -38,6 +37,9 @@ struct InPersonPaymentsLearnMore: View {
                 string: Localization.learnMoreLink,
                 attributes: [.foregroundColor: UIColor.textLink]
             ))
+
+        // https://github.com/gonzalezreal/AttributedText/issues/11
+        result.addAttribute(.font, value: UIFont.footnote, range: NSRange(location: 0, length: result.length))
         return result
     }
 }

@@ -279,8 +279,8 @@ private extension CardPresentPaymentsModalViewController {
             return
         }
 
+        auxiliaryButton.setTitleWithoutAnimation(viewModel.auxiliaryButtonTitle, for: .normal)
         auxiliaryButton.isHidden = false
-        auxiliaryButton.setTitle(viewModel.auxiliaryButtonTitle, for: .normal)
     }
 
     func configureSpacer() {

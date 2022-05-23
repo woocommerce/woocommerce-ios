@@ -393,6 +393,7 @@ private extension AddEditCouponViewModel {
 
     func trackCouponUpdateInitiated(with coupon: Coupon) {
         ServiceLocator.analytics.track(.couponUpdateInitiated, withProperties: [
+            "discount_type_updated": checkDiscountTypeUpdated(for: coupon),
             "coupon_code_updated": checkCouponCodeUpdated(for: coupon),
             "amount_updated": checkAmountUpdated(for: coupon),
             "description_updated": checkDescriptionUpdated(for: coupon),

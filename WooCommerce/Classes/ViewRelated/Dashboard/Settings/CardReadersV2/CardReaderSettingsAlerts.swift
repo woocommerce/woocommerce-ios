@@ -58,7 +58,8 @@ final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         setViewModelAndPresent(from: from,
                                viewModel: foundReader(name: name,
                                                       connect: connect,
-                                                      continueSearch: continueSearch
+                                                      continueSearch: continueSearch,
+                                                      cancel: { from.dismiss(animated: true) }
                                )
         )
     }
@@ -208,8 +209,10 @@ private extension CardReaderSettingsAlerts {
         }
     }
 
-    func foundReader(name: String, connect: @escaping () -> Void, continueSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalFoundReader(name: name, connect: connect, continueSearch: continueSearch)
+    func foundReader(name: String, connect: @escaping () -> Void,
+                     continueSearch: @escaping () -> Void,
+                     cancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalFoundReader(name: name, connect: connect, continueSearch: continueSearch, cancel: cancel)
     }
 
     func setViewModelAndPresent(from: UIViewController, viewModel: CardPresentPaymentsModalViewModel) {

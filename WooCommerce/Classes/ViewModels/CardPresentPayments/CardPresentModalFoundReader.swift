@@ -9,8 +9,11 @@ final class CardPresentModalFoundReader: CardPresentPaymentsModalViewModel {
     /// Called when keep searching button is tapped
     private let continueSearchAction: () -> Void
 
+    /// Called when the cancel button is tapped
+    private let cancelAction: () -> Void
+
     let textMode: PaymentsModalTextMode = .noBottomInfo
-    let actionsMode: PaymentsModalActionsMode = .twoAction
+    let actionsMode: PaymentsModalActionsMode = .twoActionAndAuxiliary
 
     var topTitle: String
 
@@ -22,7 +25,7 @@ final class CardPresentModalFoundReader: CardPresentPaymentsModalViewModel {
 
     let secondaryButtonTitle: String? = Localization.continueSearching
 
-    let auxiliaryButtonTitle: String? = nil
+    let auxiliaryButtonTitle: String? = Localization.cancel
 
     let bottomTitle: String? = nil
 
@@ -32,10 +35,11 @@ final class CardPresentModalFoundReader: CardPresentPaymentsModalViewModel {
         return Localization.connect
     }
 
-    init(name: String, connect: @escaping () -> Void, continueSearch: @escaping () -> Void) {
+    init(name: String, connect: @escaping () -> Void, continueSearch: @escaping () -> Void, cancel: @escaping () -> Void) {
         self.topTitle = String.localizedStringWithFormat(Localization.title, name)
         self.connectAction = connect
         self.continueSearchAction = continueSearch
+        self.cancelAction = cancel
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
@@ -46,7 +50,9 @@ final class CardPresentModalFoundReader: CardPresentPaymentsModalViewModel {
         continueSearchAction()
     }
 
-    func didTapAuxiliaryButton(in viewController: UIViewController?) {}
+    func didTapAuxiliaryButton(in viewController: UIViewController?) {
+        cancelAction()
+    }
 }
 
 private extension CardPresentModalFoundReader {
@@ -64,6 +70,11 @@ private extension CardPresentModalFoundReader {
         static let continueSearching = NSLocalizedString(
             "Keep Searching",
             comment: "Label for a button that when tapped, continues searching for card readers"
+        )
+
+        static let cancel = NSLocalizedString(
+            "Cancel",
+            comment: "Label for a button that when tapped, cancels the process of connecting to a card reader "
         )
     }
 }

@@ -6,12 +6,6 @@ struct InPersonPaymentsDeactivateStripeAdmin: View {
     @State private var presentedSetupURL: URL? = nil
     @Environment(\.verticalSizeClass) var verticalSizeClass
 
-    var isCompact: Bool {
-        get {
-            verticalSizeClass == .compact
-        }
-    }
-
     var body: some View {
         ScrollableVStack {
             Spacer()

@@ -118,7 +118,7 @@ final class CouponRestrictionsViewModel: ObservableObject {
         excludedProductOrVariationIDs = coupon.excludedProductIds
         excludedCategoryIDs = coupon.excludedProductCategories
 
-        shouldDisplayLimitUsageToXItemsRow = coupon.discountType == .fixedCart
+        shouldDisplayLimitUsageToXItemsRow = coupon.discountType != .fixedCart
     }
 
     init(siteID: Int64,

@@ -3,7 +3,7 @@ import Yosemite
 
 struct InPersonPaymentsDeactivateStripeShopManager: View {
     let onRefresh: () -> Void
-    @State var presentedSetupURL: URL? = nil
+    @State private var presentedSetupURL: URL? = nil
     @Environment(\.verticalSizeClass) var verticalSizeClass
 
     var isCompact: Bool {

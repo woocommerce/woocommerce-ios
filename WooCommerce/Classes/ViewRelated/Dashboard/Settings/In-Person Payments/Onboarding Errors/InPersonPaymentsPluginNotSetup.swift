@@ -4,7 +4,7 @@ import Yosemite
 struct InPersonPaymentsPluginNotSetup: View {
     let plugin: CardPresentPaymentsPlugin
     let onRefresh: () -> Void
-    @State var presentedSetupURL: URL? = nil
+    @State private var presentedSetupURL: URL? = nil
 
     var body: some View {
         ScrollableVStack {

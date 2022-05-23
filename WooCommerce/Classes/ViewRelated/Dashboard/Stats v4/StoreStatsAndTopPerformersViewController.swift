@@ -125,13 +125,14 @@ private extension StoreStatsAndTopPerformersViewController {
 
         var syncError: Error? = nil
 
-        ensureGhostContentIsDisplayed()
-        showSpinner(shouldShowSpinner: true)
+        let viewControllerToSync = visibleChildViewController
+        ensureGhostContentIsDisplayed(for: viewControllerToSync)
+        showSpinner(for: viewControllerToSync, shouldShowSpinner: true)
 
         defer {
             group.notify(queue: .main) { [weak self] in
                 self?.isSyncing = false
-                self?.showSpinner(shouldShowSpinner: false)
+                self?.showSpinner(for: viewControllerToSync, shouldShowSpinner: false)
                 if let error = syncError {
                     DDLogError("⛔️ Error loading dashboard: \(error)")
                     self?.handleSyncError(error: error)
@@ -149,7 +150,7 @@ private extension StoreStatsAndTopPerformersViewController {
         let timezoneForStatsDates = TimeZone.siteTimezone
         let timezoneForSync = TimeZone.current
 
-        [visibleChildViewController].forEach { [weak self] vc in
+        [viewControllerToSync].forEach { [weak self] vc in
             guard let self = self else {
                 return
             }
@@ -240,13 +241,11 @@ private extension StoreStatsAndTopPerformersViewController {
         }
     }
 
-    func showSpinner(shouldShowSpinner: Bool) {
-        periodVCs.forEach { (vc) in
-            if shouldShowSpinner {
-                vc.refreshControl.beginRefreshing()
-            } else {
-                vc.refreshControl.endRefreshing()
-            }
+    func showSpinner(for periodViewController: StoreStatsAndTopPerformersPeriodViewController, shouldShowSpinner: Bool) {
+        if shouldShowSpinner {
+            periodViewController.refreshControl.beginRefreshing()
+        } else {
+            periodViewController.refreshControl.endRefreshing()
         }
     }
 }
@@ -257,13 +256,11 @@ private extension StoreStatsAndTopPerformersViewController {
 
     /// Displays the Ghost Placeholder whenever there is no visible data.
     ///
-    func ensureGhostContentIsDisplayed() {
-        periodVCs.forEach { periodVC in
-            guard periodVC.shouldDisplayStoreStatsGhostContent else {
-                return
-            }
-            periodVC.displayGhostContent()
+    func ensureGhostContentIsDisplayed(for periodViewController: StoreStatsAndTopPerformersPeriodViewController) {
+        guard periodViewController.shouldDisplayStoreStatsGhostContent else {
+            return
         }
+        periodViewController.displayGhostContent()
     }
 
     /// If the Ghost Content was previously onscreen, this method will restart the animations.

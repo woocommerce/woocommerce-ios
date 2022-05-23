@@ -76,4 +76,12 @@ final class CouponRestrictionsViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(viewModel.shouldDisplayLimitUsageToXItemsRow)
     }
+
+    func test_shouldDisplayLimitUsageToXItemsRow_is_true_when_fixed_cart_discount_type_is_NOT_set() {
+        let sampleCoupon = Coupon.fake().copy(discountType: .percent)
+        let viewModel = CouponRestrictionsViewModel(coupon: sampleCoupon)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldDisplayLimitUsageToXItemsRow)
+    }
 }

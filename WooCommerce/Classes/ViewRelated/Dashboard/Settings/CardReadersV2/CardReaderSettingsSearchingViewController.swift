@@ -121,9 +121,7 @@ struct CardReaderSettingsSearchingView: View {
     }
 
     var isSizeCategoryLargeThanExtraLarge: Bool {
-        get {
-            sizeCategory >= .accessibilityMedium
-        }
+        sizeCategory >= .accessibilityMedium
     }
 
     var body: some View {

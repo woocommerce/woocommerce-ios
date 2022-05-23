@@ -33,7 +33,7 @@
                 "customer_id": 0,
                 "order_key": "abc123",
                 "billing": {
-                    "first_name": "",
+                    "first_name": "Mira",
                     "last_name": "",
                     "company": "",
                     "address_1": "",

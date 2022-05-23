@@ -1,1 +1,0 @@
-We spent some time fixing those bugs that made the app harder to use. One of those involved weight and shipping package dimensions on a product. Entering values with commas to separate decimal values works as expected now. Thanks to everyone who reported this! Your feedback is vital to us!

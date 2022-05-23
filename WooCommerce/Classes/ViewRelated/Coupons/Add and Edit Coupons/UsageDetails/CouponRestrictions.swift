@@ -72,7 +72,7 @@ struct CouponRestrictions: View {
                             Divider()
                                     .padding(.leading, Constants.margin)
                                     .padding(.leading, insets: geometry.safeAreaInsets)
-                        }
+                        }.renderedIf(viewModel.shouldDisplayLimitUsageToXItemsRow)
                         TitleAndValueRow(title: Localization.allowedEmails,
                                          value: viewModel.allowedEmails.isNotEmpty ?
                                             .content(viewModel.allowedEmails) :

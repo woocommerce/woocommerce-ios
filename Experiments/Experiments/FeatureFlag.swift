@@ -65,4 +65,8 @@ public enum FeatureFlag: Int {
     /// Enable optimistic updates for orders
     ///
     case updateOrderOptimistically
+
+    /// Enable Shipping Labels Onboarding M1 (display the banner in Order Detail screen for installing the WCShip plugin)
+    ///
+    case shippingLabelsOnboardingM1
 }

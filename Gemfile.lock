@@ -281,7 +281,7 @@ GEM
       uber (< 0.2.0)
     retriable (3.1.2)
     rexml (3.2.5)
-    rmagick (3.2.0)
+    rmagick (4.2.5)
     rouge (2.0.7)
     rubocop (1.25.1)
       parallel (~> 1.10)
@@ -361,7 +361,7 @@ DEPENDENCIES
   fastlane-plugin-sentry (~> 1.0)
   fastlane-plugin-wpmreleasetoolkit (~> 4.1)
   rake (~> 12.3)
-  rmagick (~> 3.2.0)
+  rmagick (~> 4.1)
   rubocop (~> 1.25)
   rubocop-rake (~> 0.6)
   xcode-install

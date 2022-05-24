@@ -91,10 +91,6 @@ final class CouponDetailsViewModel: ObservableObject {
     ///
     @Published private(set) var isDeletionInProgress: Bool = false
 
-    /// Handle when the Edit Coupon Screen should be shown.
-    ///
-    @Published var showingEditCoupon: Bool = false
-
     private(set) lazy var addEditCouponViewModel: AddEditCouponViewModel = createAddEditCouponViewModel(with: coupon)
 
     /// The message to be shared about the coupon
@@ -290,7 +286,6 @@ private extension CouponDetailsViewModel {
             switch result {
             case .success(let updatedCoupon):
                 self.updateCoupon(updatedCoupon)
-                self.showingEditCoupon = false
                 self.onUpdate()
             default:
                 break

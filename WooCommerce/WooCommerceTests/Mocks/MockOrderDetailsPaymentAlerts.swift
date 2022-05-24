@@ -45,7 +45,7 @@ extension MockOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
         // no-op
     }
 
-    func success(printReceipt: @escaping () -> Void, emailReceipt: @escaping () -> Void, noReceiptTitle: String, noReceiptAction: @escaping () -> Void) {
+    func success(printReceipt: @escaping () -> Void, emailReceipt: @escaping () -> Void, noReceiptAction: @escaping () -> Void) {
         printReceiptFromSuccessAlert = printReceipt
         emailReceiptFromSuccessAlert = emailReceipt
     }

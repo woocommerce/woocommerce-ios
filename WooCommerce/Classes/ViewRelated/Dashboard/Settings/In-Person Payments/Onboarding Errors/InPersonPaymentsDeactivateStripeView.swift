@@ -1,15 +1,10 @@
 import SwiftUI
+import Yosemite
 
-struct InPersonPaymentsPluginConflictAdmin: View {
+struct InPersonPaymentsDeactivateStripeView: View {
     let onRefresh: () -> Void
+    let showSetupPluginsButton: Bool
     @State private var presentedSetupURL: URL? = nil
-    @Environment(\.verticalSizeClass) var verticalSizeClass
-
-    var isCompact: Bool {
-        get {
-            verticalSizeClass == .compact
-        }
-    }
 
     var body: some View {
         ScrollableVStack {
@@ -17,30 +12,30 @@ struct InPersonPaymentsPluginConflictAdmin: View {
 
             InPersonPaymentsOnboardingError.MainContent(
                 title: Localization.title,
-                message: Localization.message,
+                message: showSetupPluginsButton ? Localization.buttonMessage : Localization.message,
                 image: InPersonPaymentsOnboardingError.ImageInfo(
                     image: .paymentErrorImage,
-                    height: 108.0
+                    height: Constants.height
                 ),
                 supportLink: false
             )
-
-            InPersonPaymentsPluginChoicesView()
 
             InPersonPaymentsSupportLink()
 
             Spacer()
 
-            Button {
-                presentedSetupURL = setupURL
-            } label: {
-                HStack {
-                    Text(Localization.primaryButton)
-                    Image(uiImage: .externalImage)
+            if showSetupPluginsButton {
+                Button {
+                    presentedSetupURL = setupURL
+                } label: {
+                    HStack {
+                        Text(Localization.primaryButton)
+                        Image(uiImage: .externalImage)
+                    }
                 }
+                .buttonStyle(PrimaryButtonStyle())
+                .padding(.bottom, Constants.padding)
             }
-            .buttonStyle(PrimaryButtonStyle())
-            .padding(.bottom, Constants.padding)
 
             InPersonPaymentsLearnMore()
         }
@@ -58,13 +53,19 @@ struct InPersonPaymentsPluginConflictAdmin: View {
 
 private enum Localization {
     static let title = NSLocalizedString(
-        "Conflicting payment plugins detected",
-        comment: "Title for the error screen when there is more than one plugin active that supports in-person payments."
+        "In-Person Payments are processed through WooCommerce Payments.",
+        comment: "Title for the error screen when there is more than one plugin active " +
+        "and the Stripe plugin should be deactivated"
+    )
+
+    static let buttonMessage = NSLocalizedString(
+        "To collect payments, please deactivate WooCommerce Stripe Gateway.",
+        comment: "Message prompting an administrator to deactivate Stripe plugin"
     )
 
     static let message = NSLocalizedString(
-        "In-Person Payments will only work with one of following plugins activated. Please deactivate one of these plugins to continue:",
-        comment: "Message prompting an administrator to deactivate one of two plugins"
+        "To collect payments, please ask an administrator to deactivate WooCommerce Stripe Gateway.",
+        comment: "Message prompting an administrator to deactivate Stripe plugin"
     )
 
     static let primaryButton = NSLocalizedString(
@@ -78,7 +79,7 @@ private enum Constants {
     static let padding: CGFloat = 24.0
 }
 
-struct InPersonPaymentsPluginConfictAdmin_Previews: PreviewProvider {
+struct InPersonPaymentsDeactivateStripeAdmin_Previews: PreviewProvider {
     static var previews: some View {
         InPersonPaymentsPluginConflictAdmin(onRefresh: {})
     }

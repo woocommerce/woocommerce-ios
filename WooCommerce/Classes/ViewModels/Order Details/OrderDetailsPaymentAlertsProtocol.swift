@@ -12,7 +12,7 @@ protocol OrderDetailsPaymentAlertsProtocol {
 
     func processingPayment()
 
-    func success(printReceipt: @escaping () -> Void, emailReceipt: @escaping () -> Void, noReceiptTitle: String, noReceiptAction: @escaping () -> Void)
+    func success(printReceipt: @escaping () -> Void, emailReceipt: @escaping () -> Void, noReceiptAction: @escaping () -> Void)
 
     func error(error: Error, tryAgain: @escaping () -> Void, dismissCompletion: @escaping () -> Void)
 

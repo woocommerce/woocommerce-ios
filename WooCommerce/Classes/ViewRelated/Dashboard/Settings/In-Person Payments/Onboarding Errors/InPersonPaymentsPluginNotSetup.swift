@@ -4,7 +4,7 @@ import Yosemite
 struct InPersonPaymentsPluginNotSetup: View {
     let plugin: CardPresentPaymentsPlugin
     let onRefresh: () -> Void
-    @State var presentedSetupURL: URL? = nil
+    @State private var presentedSetupURL: URL? = nil
 
     var body: some View {
         ScrollableVStack {
@@ -38,7 +38,7 @@ struct InPersonPaymentsPluginNotSetup: View {
         .safariSheet(url: $presentedSetupURL, onDismiss: onRefresh)
     }
 
-    var setupURL: URL? {
+    private var setupURL: URL? {
         guard let adminURL = ServiceLocator.stores.sessionManager.defaultSite?.adminURL else {
             return nil
         }

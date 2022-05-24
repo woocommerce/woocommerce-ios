@@ -3,7 +3,7 @@ import Yosemite
 
 struct InPersonPaymentsPluginConflictShopManager: View {
     let onRefresh: () -> Void
-    @State var presentedSetupURL: URL? = nil
+    @State private var presentedSetupURL: URL? = nil
     @Environment(\.verticalSizeClass) var verticalSizeClass
 
     var isCompact: Bool {
@@ -37,7 +37,7 @@ struct InPersonPaymentsPluginConflictShopManager: View {
         .safariSheet(url: $presentedSetupURL, onDismiss: onRefresh)
     }
 
-    var setupURL: URL? {
+    private var setupURL: URL? {
         guard let adminURL = ServiceLocator.stores.sessionManager.defaultSite?.adminURL else {
             return nil
         }

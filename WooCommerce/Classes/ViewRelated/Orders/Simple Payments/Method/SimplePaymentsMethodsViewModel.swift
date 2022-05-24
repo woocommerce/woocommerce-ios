@@ -209,7 +209,6 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
                     configuration: CardPresentConfigurationLoader().configuration)
 
                 self.collectPaymentsUseCase?.collectPayment(
-                    backButtonTitle: Localization.continueToOrders,
                     onCollect: { [weak self] result in
                         guard case let .failure(error) = result else { return }
 
@@ -299,8 +298,6 @@ private extension SimplePaymentsMethodsViewModel {
                                                        comment: "Text when there is an error while marking the order as paid for simple payments.")
         static let genericCollectError = NSLocalizedString("There was an error while trying to collect the payment.",
                                                        comment: "Text when there is an unknown error while trying to collect payments")
-        static let continueToOrders = NSLocalizedString("Continue To Orders",
-                                                        comment: "Button to dismiss modal overlay and go back to the orders list after a sucessful payment")
 
         static let title = NSLocalizedString("Take Payment (%1$@)",
                                              comment: "Navigation bar title for the Simple Payments Methods screens. " +

@@ -138,7 +138,6 @@
 		023EC2E224DA8BAB0021DA91 /* MockProductSKUValidationStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023EC2E124DA8BAB0021DA91 /* MockProductSKUValidationStoresManager.swift */; };
 		023EC2E424DA95DB0021DA91 /* ProductInventorySettingsViewModel+VariationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023EC2E324DA95DB0021DA91 /* ProductInventorySettingsViewModel+VariationTests.swift */; };
 		023EC2E624DAB1270021DA91 /* EditableProductVariationModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023EC2E524DAB1270021DA91 /* EditableProductVariationModelTests.swift */; };
-		02404EE42315151400FF1170 /* MockStatsVersionStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404EE32315151400FF1170 /* MockStatsVersionStoresManager.swift */; };
 		0240B3AC230A910C000A866C /* StoreStatsV4ChartAxisHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0240B3AB230A910C000A866C /* StoreStatsV4ChartAxisHelper.swift */; };
 		0245465B24EE7637004F531C /* ProductFormEventLoggerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0245465A24EE7637004F531C /* ProductFormEventLoggerProtocol.swift */; };
 		0245465D24EE779D004F531C /* ProductFormEventLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0245465C24EE779D004F531C /* ProductFormEventLogger.swift */; };
@@ -1881,7 +1880,6 @@
 		023EC2E124DA8BAB0021DA91 /* MockProductSKUValidationStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductSKUValidationStoresManager.swift; sourceTree = "<group>"; };
 		023EC2E324DA95DB0021DA91 /* ProductInventorySettingsViewModel+VariationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductInventorySettingsViewModel+VariationTests.swift"; sourceTree = "<group>"; };
 		023EC2E524DAB1270021DA91 /* EditableProductVariationModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableProductVariationModelTests.swift; sourceTree = "<group>"; };
-		02404EE32315151400FF1170 /* MockStatsVersionStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockStatsVersionStoresManager.swift; sourceTree = "<group>"; };
 		0240B3AB230A910C000A866C /* StoreStatsV4ChartAxisHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsV4ChartAxisHelper.swift; sourceTree = "<group>"; };
 		0245465A24EE7637004F531C /* ProductFormEventLoggerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormEventLoggerProtocol.swift; sourceTree = "<group>"; };
 		0245465C24EE779D004F531C /* ProductFormEventLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormEventLogger.swift; sourceTree = "<group>"; };
@@ -5717,7 +5715,6 @@
 				B53A569A21123E8E000776C9 /* MockTableView.swift */,
 				B509FED421C052D1000076A9 /* MockSupportManager.swift */,
 				B555531221B57E8800449E71 /* MockUserNotificationsCenterAdapter.swift */,
-				02404EE32315151400FF1170 /* MockStatsVersionStoresManager.swift */,
 				3198A1E72694DC7200597213 /* MockKnownReadersProvider.swift */,
 				027B8BBE23FE0F850040944E /* MockMediaStoresManager.swift */,
 				02A275BF23FE58F6005C560F /* MockImageCache.swift */,
@@ -9671,7 +9668,6 @@
 				D802548C26552F41001B2CC1 /* CardPresentModalProcessingTests.swift in Sources */,
 				02952B5127808B08008E9BA3 /* StoreStatsPeriodViewModelTests.swift in Sources */,
 				B57C5C9F21B80E8300FF82B2 /* SampleError.swift in Sources */,
-				02404EE42315151400FF1170 /* MockStatsVersionStoresManager.swift in Sources */,
 				02C2756D24F4EEBF00286C04 /* ProductShippingSettingsViewModelTests.swift in Sources */,
 				025678052575EA1B009D7E6C /* ProductDetailsCellViewModelTests.swift in Sources */,
 				0211252E25773FB00075AD2A /* MockAggregateOrderItem.swift in Sources */,

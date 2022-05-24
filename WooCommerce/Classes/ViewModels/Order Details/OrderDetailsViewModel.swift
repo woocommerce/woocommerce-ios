@@ -534,7 +534,7 @@ extension OrderDetailsViewModel {
     /// Checks onboarding status before connecting to a reader.
     /// Handles receipt sharing.
     ///
-    func collectPayment(rootViewController: UIViewController, backButtonTitle: String, onCollect: @escaping (Result<Void, Error>) -> Void) {
+    func collectPayment(rootViewController: UIViewController, onCollect: @escaping (Result<Void, Error>) -> Void) {
         cardPresentPaymentsOnboardingPresenter.showOnboardingIfRequired(from: rootViewController) { [weak self] in
             guard let self = self else { return }
             guard let paymentGateway = self.cardPresentPaymentGatewayAccounts.first else {
@@ -559,7 +559,6 @@ extension OrderDetailsViewModel {
                 configuration: self.configurationLoader.configuration)
 
             self.collectPaymentsUseCase?.collectPayment(
-                backButtonTitle: backButtonTitle,
                 onCollect: onCollect,
                 onCompleted: { [weak self] in
                     // Make sure we free all the resources

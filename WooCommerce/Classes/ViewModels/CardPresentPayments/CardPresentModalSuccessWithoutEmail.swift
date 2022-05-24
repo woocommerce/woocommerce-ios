@@ -67,7 +67,7 @@ private extension CardPresentModalSuccessWithoutEmail {
 
         static let saveReceiptAndContinue = NSLocalizedString(
             "Save receipt and continue",
-            comment: "Button when the user does not want to print or email receipt. Presented to users after a payment has been successfully collected"
+            comment: "Button when the user does not want to print the receipt. Presented to users after a payment has been successfully collected"
         )
     }
 }

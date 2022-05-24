@@ -8,7 +8,10 @@ final class CardPresentModalFoundReaderTests: XCTestCase {
     override func setUp() {
         super.setUp()
         closures = Closures()
-        viewModel = CardPresentModalFoundReader(name: Expectations.name, connect: closures.primaryAction(), continueSearch: closures.secondaryAction())
+        viewModel = CardPresentModalFoundReader(name: Expectations.name,
+                                                connect: closures.primaryAction(),
+                                                continueSearch: closures.secondaryAction(),
+                                                cancel: closures.auxiliaryAction())
     }
 
     override func tearDown() {
@@ -36,8 +39,8 @@ final class CardPresentModalFoundReaderTests: XCTestCase {
         XCTAssertNotNil(viewModel.secondaryButtonTitle)
     }
 
-    func test_auxiliary_button_title_is_nil() {
-        XCTAssertNil(viewModel.auxiliaryButtonTitle)
+    func test_auxiliary_button_title_is_not_nil() {
+        XCTAssertNotNil(viewModel.auxiliaryButtonTitle)
     }
 
     func test_bottom_title_is_nil() {
@@ -59,6 +62,12 @@ final class CardPresentModalFoundReaderTests: XCTestCase {
 
         XCTAssertTrue(closures.didTapContinue)
     }
+
+    func test_auxiliary_button_action_calls_closure() {
+        viewModel.didTapAuxiliaryButton(in: nil)
+
+        XCTAssertTrue(closures.didTapCancel)
+    }
 }
 
 
@@ -74,6 +83,7 @@ private extension CardPresentModalFoundReaderTests {
 private final class Closures {
     var didTapConnect = false
     var didTapContinue = false
+    var didTapCancel = false
 
     func primaryAction() -> () -> Void {
         return {[weak self] in
@@ -84,6 +94,12 @@ private final class Closures {
     func secondaryAction() -> () -> Void {
         return {[weak self] in
             self?.didTapContinue = true
+        }
+    }
+
+    func auxiliaryAction() -> () -> Void {
+        return {[weak self] in
+            self?.didTapCancel = true
         }
     }
 }

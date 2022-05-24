@@ -13,6 +13,18 @@ final class CouponDetailsHostingController: UIHostingController<CouponDetails> {
 
         // Set presenting view controller to show the notice presenter here
         rootView.noticePresenter.presentingViewController = self
+
+        // Set manually the edit coupon button click event to present
+        // the AddEditCoupon view on top of the Coupon details
+        rootView.onEditCoupon = { [weak self] addEditCouponViewModel in
+            guard let self = self else { return }
+            let addEditHostingController = AddEditCouponHostingController(
+                viewModel: addEditCouponViewModel,
+                onDisappear: {
+                    viewModel.resetAddEditViewModel()
+                })
+            self.present(addEditHostingController, animated: true)
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -21,6 +33,9 @@ final class CouponDetailsHostingController: UIHostingController<CouponDetails> {
 }
 
 struct CouponDetails: View {
+
+    // Closure to be triggered when the edit coupon button is clicked
+    var onEditCoupon: (AddEditCouponViewModel) -> Void
 
     @ObservedObject private var viewModel: CouponDetailsViewModel
     @State private var showingActionSheet: Bool = false
@@ -36,8 +51,10 @@ struct CouponDetails: View {
     /// It is kept internal so that the hosting controller can update its presenting controller to itself.
     let noticePresenter: DefaultNoticePresenter
 
-    init(viewModel: CouponDetailsViewModel) {
+    init(viewModel: CouponDetailsViewModel,
+         onEditCoupon: @escaping (AddEditCouponViewModel) -> Void = {_ in }) {
         self.viewModel = viewModel
+        self.onEditCoupon = onEditCoupon
         self.noticePresenter = DefaultNoticePresenter()
         viewModel.syncCoupon()
         viewModel.loadCouponReport()
@@ -64,7 +81,7 @@ struct CouponDetails: View {
             buttons.append(contentsOf: [
                 .default(Text(Localization.editCoupon), action: {
                     ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "tapped_edit"])
-                    viewModel.showingEditCoupon = true
+                    onEditCoupon(viewModel.addEditCouponViewModel)
                 })
             ])
         }
@@ -183,12 +200,6 @@ struct CouponDetails: View {
                                     completionHandler: {
                     viewModel.loadCouponReport()
                 })
-            }
-            .sheet(isPresented: $viewModel.showingEditCoupon) {
-                AddEditCoupon(viewModel.addEditCouponViewModel)
-                    .onDisappear {
-                        viewModel.resetAddEditViewModel()
-                    }
             }
             .alert(isPresented: $showingDeletionConfirmAlert, content: {
                 Alert(title: Text(Localization.deleteCoupon),

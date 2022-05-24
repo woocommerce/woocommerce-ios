@@ -28,8 +28,8 @@ The following flows are covered/planned to be covered by UI tests. Tests that ar
      - [ ] Add shipping details
    - [ ] Create a new order:
      - [x] With a selected order status
-     - [ ] With a product
-     - [ ] With customer details
+     - [x] With a product
+     - [x] With customer details
      - [ ] With shipping
      - [ ] With a fee
      - [ ] With a customer note

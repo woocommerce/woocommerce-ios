@@ -134,6 +134,15 @@ extension UIButton {
         tintColor = .accent
     }
 
+    /// By default UIButton adds an animation when changing the title. Use this method to avoid that
+    /// 
+    func setTitleWithoutAnimation(_ title: String?, for state: UIControl.State) {
+        UIView.performWithoutAnimation {
+            setTitle(title, for: .normal)
+            layoutIfNeeded()
+        }
+    }
+
     /// Supports title of multiple lines, either from longer text than allocated width or text with line breaks.
     private func enableMultipleLines() {
         titleLabel?.lineBreakMode = .byWordWrapping

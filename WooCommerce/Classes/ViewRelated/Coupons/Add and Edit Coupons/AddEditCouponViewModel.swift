@@ -229,7 +229,7 @@ final class AddEditCouponViewModel: ObservableObject {
         codeField = code
     }
 
-    func updateCoupon(coupon: Coupon) {
+    func updateCoupon(coupon: Coupon, onUpdateFinished: @escaping () -> Void) {
         trackCouponUpdateInitiated(with: coupon)
 
         if let validationError = validateCouponLocally(coupon) {
@@ -247,6 +247,7 @@ final class AddEditCouponViewModel: ObservableObject {
             case .success(_):
                 ServiceLocator.analytics.track(.couponUpdateSuccess)
                 self.onCompletion(result)
+                onUpdateFinished()
             case .failure(let error):
                 DDLogError("⛔️ Error updating the coupon: \(error)")
                 ServiceLocator.analytics.track(.couponUpdateFailed, withError: error)

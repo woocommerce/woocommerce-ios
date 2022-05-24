@@ -1,9 +1,53 @@
 import SwiftUI
 import Yosemite
 
+final class AddEditCouponHostingController: UIHostingController<AddEditCoupon> {
+
+    private let viewModel: AddEditCouponViewModel
+
+    init(viewModel: AddEditCouponViewModel, onDisappear: @escaping () -> Void) {
+        self.viewModel = viewModel
+        super.init(rootView: AddEditCoupon(viewModel))
+
+        rootView.onDisappear = onDisappear
+        rootView.dismissHandler = { [weak self] in
+            self?.dismiss(animated: true)
+        }
+    }
+
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        presentationController?.delegate = self
+    }
+}
+
+extension AddEditCouponHostingController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+        return !viewModel.hasChangesMade
+    }
+
+    func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self) { [weak self] in
+            self?.dismiss(animated: true)
+        }
+    }
+}
+
 /// A view for Adding or Editing a Coupon.
 ///
 struct AddEditCoupon: View {
+    /// Set this closure with UIKit dismiss code. Needed because we need access to the UIHostingController `dismiss` method.
+    ///
+    var dismissHandler: () -> Void = {}
+
+    /// Set this closure with SwiftUI onDisappear code. Needed because we need to set this event from a UIKit object.
+    ///
+    var onDisappear: () -> Void = {}
 
     @ObservedObject private var viewModel: AddEditCouponViewModel
     @State private var showingEditDescription: Bool = false
@@ -13,7 +57,6 @@ struct AddEditCoupon: View {
     @State private var showingSelectProducts: Bool = false
     @State private var showingSelectCategories: Bool = false
     @State private var showingDiscountTypeSheet: Bool = false
-    @Environment(\.presentationMode) var presentation
 
     private var expiryDateActionSheetButtons: [Alert.Button] {
         var buttons: [Alert.Button] = []
@@ -214,7 +257,11 @@ struct AddEditCoupon: View {
                         .padding(.bottom, Constants.verticalSpacing)
 
                         Button {
-                            viewModel.updateCoupon(coupon: viewModel.populatedCoupon)
+                            // This should be replaced with `@FocusState` when we drop support for iOS 14
+                            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                            viewModel.updateCoupon(coupon: viewModel.populatedCoupon, onUpdateFinished: {
+                                dismissHandler()
+                            })
                         } label: {
                             Text(Localization.saveButton)
                         }
@@ -263,7 +310,7 @@ struct AddEditCoupon: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(Localization.cancelButton, action: {
-                        presentation.wrappedValue.dismiss()
+                        dismissHandler()
                     })
                 }
             }
@@ -271,6 +318,10 @@ struct AddEditCoupon: View {
             .navigationTitle(viewModel.title)
             .navigationBarTitleDisplayMode(.large)
             .wooNavigationBarStyle()
+        }
+        .navigationViewStyle(.stack)
+        .onDisappear {
+            onDisappear()
         }
     }
 }

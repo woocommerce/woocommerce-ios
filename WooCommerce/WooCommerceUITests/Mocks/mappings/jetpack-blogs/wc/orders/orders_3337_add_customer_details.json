@@ -1,15 +1,47 @@
 {
     "request": {
-        "method": "GET",
+        "method": "POST",
         "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
-        "queryParameters": {
-            "json": {
-                "equalTo": "true"
-            },
-            "path": {
-                "matches": "/wc/v3/orders/3337&_method=get"
-            }
-        }
+        "bodyPatterns": [ {
+                "matches": ".*path=/wc/v3/orders/3337%26_method%3Dpost.*",
+                "equalToJson": {
+                    "line_items": [{
+                        "quantity": 1,
+                        "total": "110.00",
+                        "subtotal": "110.00",
+                        "id": 1,
+                        "product_id": 2129
+                    }],
+                    "fee_lines": [],
+                    "shipping_lines": [],
+                    "billing": {
+                        "first_name": "Mira",
+                        "last_name": "",
+                        "company": "",
+                        "address_1": "",
+                        "address_2": "",
+                        "city": "",
+                        "state": "",
+                        "postcode": "",
+                        "country": "",
+                        "email": null,
+                        "phone": ""
+                    },
+                    "shipping": {
+                        "first_name": "Mira",
+                        "last_name": "",
+                        "company": "",
+                        "address_1": "",
+                        "address_2": "",
+                        "city": "",
+                        "state": "",
+                        "postcode": "",
+                        "country": "",
+                        "email": null,
+                        "phone": ""
+                    }
+                }
+        } ]
     },
     "response": {
         "status": 200,
@@ -17,7 +49,7 @@
             "data": {
                 "id": 3337,
                 "parent_id": 0,
-                "status": "processing",
+                "status": "auto-draft",
                 "currency": "USD",
                 "version": "6.3.1",
                 "prices_include_tax": true,

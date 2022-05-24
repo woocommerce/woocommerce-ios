@@ -12,8 +12,10 @@ final class DashboardViewController: UIViewController {
 
     private let siteID: Int64
 
-    private let dashboardUIFactory: DashboardUIFactory
     @Published private var dashboardUI: DashboardUI?
+
+    private lazy var deprecatedStatsViewController = DeprecatedDashboardStatsViewController()
+    private lazy var storeStatsAndTopPerformersViewController = StoreStatsAndTopPerformersViewController(siteID: siteID, dashboardViewModel: viewModel)
 
     // Used to enable subtitle with store name
     private var shouldShowStoreNameAsSubtitle: Bool = false
@@ -88,13 +90,14 @@ final class DashboardViewController: UIViewController {
         return view
     }()
 
+    private let viewModel: DashboardViewModel = .init()
+
     private var subscriptions = Set<AnyCancellable>()
 
     // MARK: View Lifecycle
 
     init(siteID: Int64) {
         self.siteID = siteID
-        dashboardUIFactory = DashboardUIFactory(siteID: siteID)
         super.init(nibName: nil, bundle: nil)
         configureTabBarItem()
     }
@@ -112,13 +115,16 @@ final class DashboardViewController: UIViewController {
         observeSiteForUIUpdates()
         observeBottomJetpackBenefitsBannerVisibilityUpdates()
         observeNavigationBarHeightForStoreNameLabelVisibility()
+        observeStatsVersionForDashboardUIUpdates()
+        Task { @MainActor in
+            await reloadDashboardUIStatsVersion(forced: true)
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // Reset title to prevent it from being empty right after login
         configureTitle()
-        reloadDashboardUIStatsVersion(forced: false)
     }
 
     override func viewDidLayoutSubviews() {
@@ -256,11 +262,23 @@ private extension DashboardViewController {
         }
     }
 
-    func reloadDashboardUIStatsVersion(forced: Bool) {
-        dashboardUIFactory.reloadDashboardUI(onUIUpdate: { [weak self] dashboardUI in
+    func reloadDashboardUIStatsVersion(forced: Bool) async {
+        await storeStatsAndTopPerformersViewController.reloadData(forced: forced)
+    }
+
+    func observeStatsVersionForDashboardUIUpdates() {
+        viewModel.$statsVersion.removeDuplicates().sink { [weak self] statsVersion in
+            guard let self = self else { return }
+            let dashboardUI: DashboardUI
+            switch statsVersion {
+            case .v3:
+                dashboardUI = self.deprecatedStatsViewController
+            case .v4:
+                dashboardUI = self.storeStatsAndTopPerformersViewController
+            }
             dashboardUI.scrollDelegate = self
-            self?.onDashboardUIUpdate(forced: forced, updatedDashboardUI: dashboardUI)
-        })
+            self.onDashboardUIUpdate(forced: false, updatedDashboardUI: dashboardUI)
+        }.store(in: &subscriptions)
     }
 
     /// Display the error banner at the top of the dashboard content (below the site title)
@@ -300,8 +318,10 @@ extension DashboardViewController: DashboardUIScrollDelegate {
 private extension DashboardViewController {
     func onDashboardUIUpdate(forced: Bool, updatedDashboardUI: DashboardUI) {
         defer {
-            // Reloads data of the updated dashboard UI at the end.
-            reloadData(forced: forced)
+            Task { @MainActor [weak self] in
+                // Reloads data of the updated dashboard UI at the end.
+                await self?.reloadData(forced: true)
+            }
         }
 
         // Optimistically hide the error banner any time the dashboard UI updates (not just pull to refresh)
@@ -327,7 +347,7 @@ private extension DashboardViewController {
         dashboardUI = updatedDashboardUI
 
         updatedDashboardUI.onPullToRefresh = { [weak self] in
-            self?.pullToRefresh()
+            await self?.pullToRefresh()
         }
         updatedDashboardUI.displaySyncingError = { [weak self] in
             self?.showTopBannerView()
@@ -399,20 +419,20 @@ private extension DashboardViewController {
         show(settingsViewController, sender: self)
     }
 
-    func pullToRefresh() {
+    func pullToRefresh() async {
         ServiceLocator.analytics.track(.dashboardPulledToRefresh)
-        reloadDashboardUIStatsVersion(forced: true)
+        await reloadDashboardUIStatsVersion(forced: true)
     }
 }
 
 // MARK: - Private Helpers
 //
 private extension DashboardViewController {
-    func reloadData(forced: Bool) {
+    @MainActor
+    func reloadData(forced: Bool) async {
         DDLogInfo("♻️ Requesting dashboard data be reloaded...")
-        dashboardUI?.reloadData(forced: forced, completion: { [weak self] in
-            self?.configureTitle()
-        })
+        await dashboardUI?.reloadData(forced: forced)
+        configureTitle()
     }
 
     func observeSiteForUIUpdates() {
@@ -424,7 +444,9 @@ private extension DashboardViewController {
                 return
             }
             self.updateUI(site: site)
-            self.reloadData(forced: true)
+            Task { @MainActor [weak self] in
+                await self?.reloadData(forced: true)
+            }
         }.store(in: &subscriptions)
     }
 

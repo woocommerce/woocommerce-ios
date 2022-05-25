@@ -189,11 +189,9 @@ private extension RemoteOrderSynchronizer {
                 case .syncing(blocking: true):
                     return nil // Don't continue if the current state is `blocking`.
                 default:
-                    self.state = .syncing(blocking: self.order.containsLocalLines()) // Set a `blocking` state if the order contains new lines
                     return order
                 }
             }
-            .debounce(for: 1.0, scheduler: DispatchQueue.main) // Group & wait for 1.0 since the last signal was emitted.
             .share()
             .eraseToAnyPublisher()
 
@@ -211,6 +209,7 @@ private extension RemoteOrderSynchronizer {
             }
             .flatMap(maxPublishers: .max(1)) { [weak self] order -> AnyPublisher<Order, Never> in // Only allow one request at a time.
                 guard let self = self else { return Empty().eraseToAnyPublisher() }
+                self.state = .syncing(blocking: true) // Creating an order is always a blocking operation
 
                 return self.createOrderRemotely(order, type: .sync)
                     .catch { [weak self] error -> AnyPublisher<Order, Never> in // When an error occurs, update state & finish.
@@ -234,6 +233,10 @@ private extension RemoteOrderSynchronizer {
             .filter { // Only continue if the order has been created.
                 $0.orderID != .zero
             }
+            .handleEvents(receiveOutput: { order in
+                self.state = .syncing(blocking: order.containsLocalLines()) // Set a `blocking` state if the order contains new lines
+            })
+            .debounce(for: 1.0, scheduler: DispatchQueue.main) // Group & wait for 1.0 since the last signal was emitted.
             .map { [weak self] order -> AnyPublisher<Order, Never> in // Allow multiple requests, once per update request.
                 guard let self = self else { return Empty().eraseToAnyPublisher() }
 

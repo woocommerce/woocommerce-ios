@@ -86,7 +86,7 @@
 			"device": "iPhone 11 Pro Max",
 			"filename": "iPhone 11 Pro Max-04.png",
 			"background": "#C9356E",
-			"screenshot": "iPhone 11 Pro Max-7-light-product-list.png",
+			"screenshot": "iPhone 11 Pro Max-5-light-product-list.png",
 			"text": "metadata/{locale}/app_store_screenshot_4.txt"
 		},
 		// Get notified about new reviews
@@ -94,7 +94,7 @@
 			"device": "iPhone 11 Pro Max",
 			"filename": "iPhone 11 Pro Max-05.png",
 			"background": "#674399",
-			"screenshot": "iPhone 11 Pro Max-5-dark-review-list.png",
+			"screenshot": "iPhone 11 Pro Max-7-dark-review-list.png",
 			"text": "metadata/{locale}/app_store_screenshot_5.txt"
 		},
 
@@ -128,7 +128,7 @@
 			"device": "iPhone 8 Plus",
 			"filename": "iPhone 8 Plus-04.png",
 			"background": "#C9356E",
-			"screenshot": "iPhone 8 Plus-7-light-product-list.png",
+			"screenshot": "iPhone 8 Plus-5-light-product-list.png",
 			"text": "metadata/{locale}/app_store_screenshot_4.txt"
 		},
 		// Get notified about new reviews
@@ -136,7 +136,7 @@
 			"device": "iPhone 8 Plus",
 			"filename": "iPhone 8 Plus-05.png",
 			"background": "#674399",
-			"screenshot": "iPhone 8 Plus-5-dark-review-list.png",
+			"screenshot": "iPhone 8 Plus-7-dark-review-list.png",
 			"text": "metadata/{locale}/app_store_screenshot_5.txt"
 		},
 
@@ -171,7 +171,7 @@
 			"device": "iPad Pro 12.9 (2nd Generation)",
 			"filename": "iPad Pro (12.9-inch) (2nd generation)-04.png",
 			"background": "#C9356E",
-			"screenshot": "iPad Pro (12.9-inch) (2nd generation)-7-light-product-list.png",
+			"screenshot": "iPad Pro (12.9-inch) (2nd generation)-5-light-product-list.png",
 			"text": "metadata/{locale}/app_store_screenshot_4.txt"
 		},
 		// Get notified about new reviews
@@ -179,7 +179,7 @@
 			"device": "iPad Pro 12.9 (2nd Generation)",
 			"filename": "iPad Pro (12.9-inch) (2nd generation)-05.png",
 			"background": "#674399",
-			"screenshot": "iPad Pro (12.9-inch) (2nd generation)-5-dark-review-list.png",
+			"screenshot": "iPad Pro (12.9-inch) (2nd generation)-7-dark-review-list.png",
 			"text": "metadata/{locale}/app_store_screenshot_5.txt"
 		},
 
@@ -213,7 +213,7 @@
 			"device": "iPad Pro 12.9 (3rd Generation)",
 			"filename": "iPad Pro (12.9-inch) (3rd generation)-04.png",
 			"background": "#C9356E",
-			"screenshot": "iPad Pro (12.9-inch) (3rd generation)-7-light-product-list.png",
+			"screenshot": "iPad Pro (12.9-inch) (3rd generation)-5-light-product-list.png",
 			"text": "metadata/{locale}/app_store_screenshot_4.txt"
 		},
 		// Get notified about new reviews
@@ -221,7 +221,7 @@
 			"device": "iPad Pro 12.9 (3rd Generation)",
 			"filename": "iPad Pro (12.9-inch) (3rd generation)-05.png",
 			"background": "#674399",
-			"screenshot": "iPad Pro (12.9-inch) (3rd generation)-5-dark-review-list.png",
+			"screenshot": "iPad Pro (12.9-inch) (3rd generation)-7-dark-review-list.png",
 			"text": "metadata/{locale}/app_store_screenshot_5.txt"
 		}
 	]

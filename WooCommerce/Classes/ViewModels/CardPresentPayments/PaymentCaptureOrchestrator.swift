@@ -108,9 +108,9 @@ final class PaymentCaptureOrchestrator {
     ///   - order: the order to capture payment.
     ///   - paymentIntent: the payment intent after a successful payment capture on the client side.
     ///   - onCompletion: called when the server-side payment capture completes.
-    func retryServerSidePaymentCapture(order: Order,
-                                       paymentIntent: PaymentIntent,
-                                       onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
+    func retryPaymentCapture(order: Order,
+                             paymentIntent: PaymentIntent,
+                             onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
         let action = CardPresentPaymentAction.capturePayment(siteID: order.siteID,
                                                              orderID: order.orderID,
                                                              paymentIntent: paymentIntent) { [weak self] publisher in
@@ -123,9 +123,9 @@ final class PaymentCaptureOrchestrator {
                 } receiveValue: { [weak self] result in
                     guard let self = self else { return }
                     switch result {
-                    case .success:
+                    case .success(let intent):
                         self.completePaymentIntentCapture(order: order,
-                                                          captureResult: .success(paymentIntent),
+                                                          captureResult: .success(intent),
                                                           onCompletion: onCompletion)
                     case .failure(let error):
                         onCompletion(.failure(error))

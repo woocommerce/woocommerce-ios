@@ -443,7 +443,7 @@ private extension CollectOrderPaymentUseCase {
 private extension CollectOrderPaymentUseCase {
     func retryPaymentCapture(paymentIntent: PaymentIntent, onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
         alerts.processingPayment()
-        paymentOrchestrator.retryServerSidePaymentCapture(order: order, paymentIntent: paymentIntent) { [weak self] result in
+        paymentOrchestrator.retryPaymentCapture(order: order, paymentIntent: paymentIntent) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let data):

@@ -1,3 +1,4 @@
+import Combine
 import XCTest
 import Yosemite
 @testable import WooCommerce
@@ -90,6 +91,29 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
         // Then
         let expectedFee = NSDecimalNumber(string: "0.15").decimalValue
         assertEqual(expectedFee, parameters.applicationFee)
+    }
+
+    func test_retryPaymentCapture_successfully_returns_paymentIntent_from_CardPresentPaymentAction_capturePayment() throws {
+        // Given
+        let paymentIntent = PaymentIntent.fake()
+        let paymentIntentOnSuccess = paymentIntent.copy(charges: [.fake().copy(paymentMethod: .interacPresent(details: .fake()))])
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case let .capturePayment(_, _, _, onCompletion) = action {
+                onCompletion(Just<Result<PaymentIntent, Error>>(.success(paymentIntentOnSuccess)).eraseToAnyPublisher())
+            }
+        }
+
+        // When
+        let result: Result<CardPresentCapturedPaymentData, Error> = waitFor { promise in
+            self.sut.retryPaymentCapture(order: .fake(),
+                                         paymentIntent: paymentIntent) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let paymentData = try XCTUnwrap(result.get())
+        XCTAssertEqual(paymentData.paymentMethod, .interacPresent(details: .fake()))
     }
 }
 

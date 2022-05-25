@@ -32,30 +32,6 @@ public enum AppSettingsAction: Action {
     ///
     case resetStoredProviders(onCompletion: ((Error?) -> Void)?)
 
-    // MARK: - Stats version
-
-    /// Loads the stats version to be shown given the latest app settings associated with the `siteID`
-    ///
-    case loadInitialStatsVersionToShow(siteID: Int64,
-        onCompletion: (StatsVersion?) -> Void)
-
-    /// Loads whether a stats verion banner should be shown
-    ///
-    case loadStatsVersionBannerVisibility(banner: StatsVersionBannerVisibility.StatsVersionBanner, onCompletion: (Bool) -> Void)
-
-    /// Sets whether a stats version banner should be shown
-    ///
-    case setStatsVersionBannerVisibility(banner: StatsVersionBannerVisibility.StatsVersionBanner, shouldShowBanner: Bool)
-
-    /// Sets the last shown stats version associated with the `siteID`
-    ///
-    case setStatsVersionLastShown(siteID: Int64,
-        statsVersion: StatsVersion)
-
-    /// Clears all the states related to stats version
-    ///
-    case resetStatsVersionStates
-
     // MARK: - Orders Settings
 
     /// Loads the orders settings

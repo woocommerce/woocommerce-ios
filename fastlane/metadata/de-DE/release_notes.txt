@@ -1,0 +1,3 @@
+Wir fügen weiterhin neue Funktionen zu unserer experimentellen Gutscheinmanagement-Funktion hinzu!  Diese Version enthält Optionen zum Bearbeiten und Löschen von Gutscheinen sowie mehrere Verbesserungen bei der Anzeige. Aktiviere diese Funktion, um frühzeitigen Zugriff im Tab „Mehr“ zu erhalten sowie auf Einstellungen und Experimentelle Funktionen.
+
+Diese Version enthält außerdem mehrere Behebungen für die Erstellung von Bestellungen, für persönliche Zahlungen und die Produktverwaltung. Noch einmal vielen Dank an alle für das wertvolle Feedback!

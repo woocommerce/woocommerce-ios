@@ -1571,6 +1571,7 @@
 		DE279BB126EA184A002BA963 /* ShippingLabelPackageListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE279BB026EA184A002BA963 /* ShippingLabelPackageListViewModel.swift */; };
 		DE34771327F174C8009CA300 /* StatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE34771227F174C8009CA300 /* StatusView.swift */; };
 		DE3877E0283B68CF0075D87E /* DiscountTypeBottomSheetListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3877DF283B68CF0075D87E /* DiscountTypeBottomSheetListSelectorCommand.swift */; };
+		DE3877E2283CCBC20075D87E /* BottomSheetListSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3877E1283CCBC20075D87E /* BottomSheetListSelector.swift */; };
 		DE46133926B2BEB8001DE59C /* ShippingLabelCountryListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE46133826B2BEB8001DE59C /* ShippingLabelCountryListSelectorCommand.swift */; };
 		DE4B3B2C2692DC2200EEF2D8 /* ReviewOrderViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4B3B2B2692DC2200EEF2D8 /* ReviewOrderViewModelTests.swift */; };
 		DE4B3B2E269455D400EEF2D8 /* MockShipmentActionStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4B3B2D269455D400EEF2D8 /* MockShipmentActionStoresManager.swift */; };
@@ -3321,6 +3322,7 @@
 		DE279BB026EA184A002BA963 /* ShippingLabelPackageListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackageListViewModel.swift; sourceTree = "<group>"; };
 		DE34771227F174C8009CA300 /* StatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusView.swift; sourceTree = "<group>"; };
 		DE3877DF283B68CF0075D87E /* DiscountTypeBottomSheetListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscountTypeBottomSheetListSelectorCommand.swift; sourceTree = "<group>"; };
+		DE3877E1283CCBC20075D87E /* BottomSheetListSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetListSelector.swift; sourceTree = "<group>"; };
 		DE46133826B2BEB8001DE59C /* ShippingLabelCountryListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCountryListSelectorCommand.swift; sourceTree = "<group>"; };
 		DE4B3B2B2692DC2200EEF2D8 /* ReviewOrderViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewOrderViewModelTests.swift; sourceTree = "<group>"; };
 		DE4B3B2D269455D400EEF2D8 /* MockShipmentActionStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockShipmentActionStoresManager.swift; sourceTree = "<group>"; };
@@ -3784,6 +3786,7 @@
 			isa = PBXGroup;
 			children = (
 				0235595624496C08004BE2B8 /* ListSelector */,
+				DE3877E1283CCBC20075D87E /* BottomSheetListSelector.swift */,
 			);
 			path = BottomSheet;
 			sourceTree = "<group>";
@@ -8928,6 +8931,7 @@
 				773077EC251E943700178696 /* ProductDownloadFileViewModel.swift in Sources */,
 				0273708024C0094500167204 /* ProductListMultiSelectorDataSource.swift in Sources */,
 				459D324327849B0B001155AA /* ReviewDetailView.swift in Sources */,
+				DE3877E2283CCBC20075D87E /* BottomSheetListSelector.swift in Sources */,
 				E1ED16E4266E10A10037B8DB /* ApplicationLogViewModel.swift in Sources */,
 				02F6800925807CD300C3BAD2 /* GridStackView.swift in Sources */,
 				DE279BB126EA184A002BA963 /* ShippingLabelPackageListViewModel.swift in Sources */,

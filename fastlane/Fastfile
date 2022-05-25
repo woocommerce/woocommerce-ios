@@ -972,14 +972,14 @@ platform :ios do
       ],
       exclude: [
         '*Vendor*',
-        'WooCommerce/WooCommerceTests/**', # Some unit tests include localized strings
+        'WooCommerce/WooCommerceTests/**', # Some unit tests include localized strings, but we don't want to crowd GlotPress with them
       ],
       output_dir: en_lproj_path
     )
 
     # Merge various manually-maintained `.strings` files into the previously generated `Localizable.strings` so their extra keys are also imported in GlotPress.
     #
-    # Note: We will re-extract the translations back during `TODO` (via a call to `ios_extract_keys_from_strings_files`)
+    # Note: We will re-extract the translations back during `download_localized_strings_from_glotpress` (via a call to `ios_extract_keys_from_strings_files`)
     ios_merge_strings_files(
       paths_to_merge: MANUALLY_MAINTAINED_STRINGS_FILES,
       destination: File.join(en_lproj_path, 'Localizable.strings')

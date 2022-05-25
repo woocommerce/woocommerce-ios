@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-05-05 09:54:03+0000 */
+/* Translation-Revision-Date: 2022-05-20 11:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -300,7 +300,7 @@
 "Account Type" = "帳戶類型";
 
 /* Title when a payments account is successfully connected for Card Present Payments */
-"Account connected" = "Account connected";
+"Account connected" = "已連結的帳號";
 
 /* Title for the error screen when a Card Present Payments extension is installed but not activated */
 "Activate %1$@" = "啟用 %1$@";
@@ -810,7 +810,7 @@
 "CUSTOM PACKAGES" = "自訂包裹";
 
 /* Title for the helper field describing calculated amount for given percentage */
-"Calculated amount" = "Calculated amount";
+"Calculated amount" = "已計金額";
 
 /* Call phone number button title */
 "Call" = "致電";
@@ -822,10 +822,10 @@
 "Can Not Request Link" = "無法要求連結";
 
 /* The singular total limit where the same coupon can be applied for everyone, reads like: Can be used 1 time */
-"Can be used %1$d time" = "Can be used %1$d time";
+"Can be used %1$d time" = "可使用 %1$d 次";
 
 /* The plural total limit where the same coupon can be applied for everyone, reads like: Can be used 10 times */
-"Can be used %1$d times" = "Can be used %1$d times";
+"Can be used %1$d times" = "可使用 %1$d 次";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
    Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title that closes the action sheet in product variations - Button title that closes the presented screen - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to cancel an in-person payment or refund - Button to cancel the creation of an order on the New Order screen - Button to dismiss Select Categories screen - Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button in the navigation bar of the view for adding or editing a coupon. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the main more actions menu sheet. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - Text for the cancel button in the Exclude Products screen - Text for the cancel button in the Select Products screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
@@ -885,7 +885,7 @@
 "Categories" = "分類";
 
 /* Error message when local validation fails in Shipping Label Address Validation */
-"Certain required fields need attention." = "Certain required fields need attention.";
+"Certain required fields need attention." = "請注意部分必填欄位。";
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "憑證錯誤";
@@ -947,7 +947,7 @@
 "Clear Filters" = "清除篩選條件";
 
 /* Button to clear selection on the product categories list */
-"Clear Selection" = "Clear Selection";
+"Clear Selection" = "清除選取項目";
 
 /* Button title for clearing all filters for the list. */
 "Clear all" = "全部清除";
@@ -1156,9 +1156,6 @@
 /* Title of the view for editing the coupon description. */
 "Coupon Description" = "優惠券說明。";
 
-/* Field in the view for adding or editing a coupon. */
-"Coupon Expiry Date" = "Coupon Expiry Date";
-
 /* Cell title on beta features screen to enable coupon management */
 "Coupon Management" = "優惠券管理";
 
@@ -1219,7 +1216,7 @@
 "Create order" = "建立訂單";
 
 /* Title of the banner notice in the Orders tab */
-"Create orders & take payments!" = "Create orders & take payments!";
+"Create orders & take payments!" = "建立訂單和收取款項！";
 
 /* Title of the view for creating a coupon with percentage discount. */
 "Create percentage discount" = "建立折扣百分比";
@@ -1528,7 +1525,7 @@
 "Edit Description" = "編輯說明";
 
 /* Button for specify the product categories where a coupon can be applied in the view for adding or editing a coupon. Reads like: Edit Categories */
-"Edit Product Categories (%1$d)" = "Edit Product Categories (%1$d)";
+"Edit Product Categories (%1$d)" = "編輯商品類別 (%1$d)";
 
 /* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "編輯產品";
@@ -1750,10 +1747,10 @@
 "Everyone loves a deal" = "人人都喜歡優惠";
 
 /* Button to submit selection on the Exclude Categories screen when more than 1 item is selected. Reads like: Exclude 10 Categories */
-"Exclude %1$d Categories" = "Exclude %1$d Categories";
+"Exclude %1$d Categories" = "排除 %1$d 個類別";
 
 /* Button to submit selection on the Exclude Categories screen when 1 item is selected */
-"Exclude %1$d Category" = "Exclude %1$d Category";
+"Exclude %1$d Category" = "排除 %1$d 個類別";
 
 /* Title of the action button at the bottom of the Exclude Products screen when more than 1 item is selected, reads like: Exclude 5 Products */
 "Exclude %1$d Products" = "排除 %1$d 個產品";
@@ -1765,20 +1762,20 @@
 "Exclude Product Categories" = "排除商品類別";
 
 /* Title of the action button to add excluded product categories on Coupon Usage Restrictions screen. The number of selected items is mentioned between the brackets. Reads like: Exclude Product Categories (4) */
-"Exclude Product Categories (%1$d)" = "Exclude Product Categories (%1$d)";
+"Exclude Product Categories (%1$d)" = "排除商品類別 (%1$d)";
 
 /* Title for the screen to exclude products for a coupon
    Title of the action button to add products to the exclusion list in Coupon Usage Restrictions screen */
 "Exclude Products" = "排除商品";
 
 /* Title of the action button to add excluded products on Coupon Usage Restrictions screen. The number of selected items is included between the brackets. Reads like: Exclude Products (2) */
-"Exclude Products (%1$d)" = "Exclude Products (%1$d)";
+"Exclude Products (%1$d)" = "排除商品 (%1$d)";
 
 /* Title for the exclude sale items row in coupon usage restrictions screen. */
 "Exclude Sale Items" = "排除特價商品";
 
 /* Title for the Exclude Categories screen */
-"Exclude categories" = "Exclude categories";
+"Exclude categories" = "排除類別";
 
 /* Text on Coupon Details screen to indicate that the coupon can not be applied to sale items */
 "Excludes sale items" = "排除特價商品";
@@ -1812,7 +1809,7 @@
 "Failed to delete coupon. Please try again." = "刪除優惠券失敗。 請再試一次。";
 
 /* Error message on the Issue Refund screen when fetching the charge details failed */
-"Failed to fetch your charge details. Please try again." = "Failed to fetch your charge details. Please try again.";
+"Failed to fetch your charge details. Please try again." = "擷取您的收費詳細資訊時失敗。 請再試一次。";
 
 /* An error message shown when failing to retrieve information to present a view for a review push notification. */
 "Failed to retrieve the review notification details." = "無法擷取評論通知詳細資訊。";
@@ -2377,10 +2374,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "已達限制。你可以在 1 分鐘後再試一次。如果在 1 分鐘不到之前重試，只會延長你必須等候繼續進行的時間。如果你覺得這是錯誤，請聯絡支援團隊。";
 
 /* The required number of items in the cart to apply a coupon in singular form, reads like: Limited to 1 item in cart */
-"Limited to %1$d item in cart" = "Limited to %1$d item in cart";
+"Limited to %1$d item in cart" = "限用於購物車中的 %1$d 個商品";
 
 /* The required number of items in the cart to apply a coupon in plural form, reads like: Limited to 10 items in cart */
-"Limited to %1$d items in cart" = "Limited to %1$d items in cart";
+"Limited to %1$d items in cart" = "限用於購物車中的 %1$d 個商品";
 
 /* Title for screen in editor that allows to configure link options */
 "Link Settings" = "連結設定";
@@ -2718,7 +2715,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No price set" = "未設定價格";
 
 /* Message on the empty view when the category list or its search result is empty. */
-"No product categories found" = "No product categories found";
+"No product categories found" = "沒有找到商品類別";
 
 /* Message displayed if there are no product variations for a product. */
 "No product variations found" = "找不到任何產品款式";
@@ -3013,7 +3010,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Pending review" = "待審中";
 
 /* Title for the amount field on the Fee Details screen during order creationParameters: %1$@ - percent sign */
-"Percentage (%1$@)" = "Percentage (%1$@)";
+"Percentage (%1$@)" = "百分比 (%1$@)";
 
 /* Name of percentage discount type */
 "Percentage Discount" = "百分比折扣";
@@ -3683,7 +3680,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Schedule sale" = "排程折扣";
 
 /* Placeholder text on the search bar on the category list */
-"Search Categories" = "Search Categories";
+"Search Categories" = "搜尋類別";
 
 /* Placeholder on the search field to search for a specific product */
 "Search Products" = "搜尋商品";
@@ -3725,10 +3722,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "See the benefits" = "查看優勢";
 
 /* Button to submit selection on the Select Categories screen when more than 1 item is selected. Reads like: Select 10 Categories */
-"Select %1$d Categories" = "Select %1$d Categories";
+"Select %1$d Categories" = "選取 %1$d 個類別";
 
 /* Button to submit selection on the Select Categories screen when 1 item is selected */
-"Select %1$d Category" = "Select %1$d Category";
+"Select %1$d Category" = "選取 %1$d 個類別";
 
 /* Title of the action button at the bottom of the Select Products screen when more than 1 item is selected, reads like: Select 5 Products */
 "Select %1$d Products" = "選擇 %1$d 個產品";
@@ -3743,7 +3740,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Select Parent Category" = "選取上層類別";
 
 /* Button to select specific categories applicable for a coupon in the view for adding or editing a coupon. */
-"Select Product Categories" = "Select Product Categories";
+"Select Product Categories" = "選取商品類別";
 
 /* Title for the screen to select products for a coupon */
 "Select Products" = "選擇產品";
@@ -3767,7 +3764,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Select carrier" = "選擇貨運業者";
 
 /* Title for the Select Categories screen */
-"Select categories" = "Select categories";
+"Select categories" = "選取類別";
 
 /* Placeholder value of the cell in Product Price Settings > Schedule sale to a certain date */
 "Select end date" = "選擇結束日期";
@@ -4011,10 +4008,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Something went wrong" = "發生錯誤";
 
 /* Error message in the Add Edit Coupon screen when the creation of the coupon goes in error. */
-"Something went wrong while creating the coupon." = "Something went wrong while creating the coupon.";
+"Something went wrong while creating the coupon." = "建立優惠券時發生錯誤。";
 
 /* Error message in the Add Edit Coupon screen when the update of the coupon goes in error. */
-"Something went wrong while updating the coupon." = "Something went wrong while updating the coupon.";
+"Something went wrong while updating the coupon." = "更新優惠券時發生錯誤。";
 
 /* Notice format when a shipping label refund request fails. */
 "Something went wrong with the refund. Please try again." = "退款發生錯誤。 請再試一次。";
@@ -4221,7 +4218,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Take a photo" = "拍攝相片";
 
 /* Message when a payments account is successfully connected for Card Present Payments */
-"Taking you back to collect a payment" = "Taking you back to collect a payment";
+"Taking you back to collect a payment" = "即將讓您返回以收取款項";
 
 /* Accessibility hint for the More button on formatting toolbar. */
 "Tap for more formatting options" = "點選以取得更多格式選項";
@@ -4455,7 +4452,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "此伺服器的憑證無效。你可能正連線至冒充為「%@」的伺服器，而這可能洩漏你的機密資料。\n\n是否仍然要信任憑證？";
 
 /* Error message in the Add Edit Coupon screen when the coupon code is empty. */
-"The coupon code couldn't be empty" = "The coupon code couldn't be empty";
+"The coupon code couldn't be empty" = "優惠券代碼不得為空白";
 
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
 "The customer will receive an email once order is completed" = "訂單完成後，客戶會收到電子郵件";
@@ -4958,7 +4955,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to search for card readers - Bluetooth timed out - please try again" = "無法搜尋讀卡機 - 藍牙逾時 - 請再試一次";
 
 /* Error notice title when we fail to update an address when creating an order. */
-"Unable to set customer details." = "Unable to set customer details.";
+"Unable to set customer details." = "無法設定顧客詳細資訊。";
 
 /* Error notice title when we fail to update an address in the edit address screen. */
 "Unable to update address." = "無法更新地址。";
@@ -5334,7 +5331,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "We're sorry, we were unable to verify In-Person Payments for this store." = "很抱歉，我們無法驗證此商店的親自收款功能。";
 
 /* Content of the banner notice in the Orders tab */
-"We've been working on making it possible to create orders and take payments from your device! You can try these features out by tapping on the \"+\" button" = "We've been working on making it possible to create orders and take payments from your device! You can try these features out by tapping on the \"+\" button";
+"We've been working on making it possible to create orders and take payments from your device! You can try these features out by tapping on the \"+\" button" = "我們致力於開發各種功能，讓你能夠透過裝置建立訂單和收取款項！ 點選「+」按鈕即可體驗這些功能";
 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "我們已透過電子郵件傳送註冊連結給你，使用此連結即可建立新的 WordPress.com 帳號。 請使用此裝置查看電子郵件，並點選 WordPress.com 所傳送電子郵件中的連結。";

@@ -290,9 +290,6 @@
 /* Details section title in the Edit Address Form */
 "ADDRESS" = "العنوان";
 
-/* Reads as 'AID'. Part of the mandatory data in receipts */
-"AID" = "AID";
-
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "حول التطبيق";
 
@@ -1155,9 +1152,6 @@
 
 /* Title of the view for editing the coupon description. */
 "Coupon Description" = "وصف القسيمة";
-
-/* Field in the view for adding or editing a coupon. */
-"Coupon Expiry Date" = "Coupon Expiry Date";
 
 /* Cell title on beta features screen to enable coupon management */
 "Coupon Management" = "إدارة القسائم";

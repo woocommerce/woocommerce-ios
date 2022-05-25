@@ -1156,9 +1156,6 @@
 /* Title of the view for editing the coupon description. */
 "Coupon Description" = "Descripción del cupón";
 
-/* Field in the view for adding or editing a coupon. */
-"Coupon Expiry Date" = "Coupon Expiry Date";
-
 /* Cell title on beta features screen to enable coupon management */
 "Coupon Management" = "Gestión de cupones";
 
@@ -1639,9 +1636,6 @@
 /* Email field placeholder in Edit Address Form
    Placeholder of the row that holds the provided email when creating a simple payment */
 "Enter Email" = "Introducir correo electrónico";
-
-/* Placeholder for the required ITN row in Customs screen of Shipping Label flow */
-"Enter ITN" = "Enter ITN";
 
 /* Placeholder for the ITN row in Customs screen of Shippling Label flow */
 "Enter ITN (Optional)" = "Introduce un número de transacción internacional (opcional)";

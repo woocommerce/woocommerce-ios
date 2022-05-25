@@ -1156,9 +1156,6 @@
 /* Title of the view for editing the coupon description. */
 "Coupon Description" = "תיאור קופון";
 
-/* Field in the view for adding or editing a coupon. */
-"Coupon Expiry Date" = "Coupon Expiry Date";
-
 /* Cell title on beta features screen to enable coupon management */
 "Coupon Management" = "ניהול קופונים";
 

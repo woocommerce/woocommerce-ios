@@ -277,7 +277,7 @@ platform :ios do
 
     UI.message('Checking release notes strings translation status...')
     check_translation_progress(
-      glotpress_url: 'https://translate.wordpress.com/projects/woocommerce/woocommerce-ios/release-notes/',
+      glotpress_url: GLOTPRESS_METADATA_PROJECT_URL,
       abort_on_violations: false
     )
 

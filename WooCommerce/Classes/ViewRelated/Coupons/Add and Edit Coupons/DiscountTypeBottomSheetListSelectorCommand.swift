@@ -7,7 +7,7 @@ final class DiscountTypeBottomSheetListSelectorCommand: BottomSheetListSelectorC
     typealias Model = Coupon.DiscountType
     typealias Cell = ImageAndTitleAndTextTableViewCell
 
-    var data: [Coupon.DiscountType] = [
+    let data: [Coupon.DiscountType] = [
         .percent,
         .fixedCart,
         .fixedProduct
@@ -19,11 +19,7 @@ final class DiscountTypeBottomSheetListSelectorCommand: BottomSheetListSelectorC
 
     init(selected: Coupon.DiscountType?, onSelection: @escaping (Coupon.DiscountType) -> Void) {
         self.onSelection = onSelection
-
-        /// Remove from `data` the selected discount type, so that it is not shown in the list.
-        data.removeAll { (productType) -> Bool in
-            productType == selected
-        }
+        self.selected = selected
     }
 
     func configureCell(cell: ImageAndTitleAndTextTableViewCell, model: Coupon.DiscountType) {
@@ -32,6 +28,7 @@ final class DiscountTypeBottomSheetListSelectorCommand: BottomSheetListSelectorC
                                                                     image: model.actionSheetIcon,
                                                                     imageTintColor: .gray(.shade20),
                                                                     numberOfLinesForText: 0,
+                                                                    isSelected: isSelected(model: model),
                                                                     isActionable: false)
         cell.updateUI(viewModel: viewModel)
     }

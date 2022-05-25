@@ -13,8 +13,6 @@ final class AddEditCouponViewModel: ObservableObject {
     ///
     private let editingOption: EditingOption
 
-    private let discountType: Coupon.DiscountType
-
     private let onCompletion: ((Result<Coupon, Error>) -> Void)
 
     /// Defines the current notice that should be shown.
@@ -144,6 +142,7 @@ final class AddEditCouponViewModel: ObservableObject {
     @Published var isLoading: Bool = false
 
     // Fields
+    @Published var discountType: Coupon.DiscountType
     @Published var amountField: String
     @Published var codeField: String
     @Published var descriptionField: String

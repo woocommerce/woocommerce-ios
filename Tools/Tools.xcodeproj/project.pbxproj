@@ -10,7 +10,6 @@
 		0094F3FC05C5B7F48858C07B /* Pods_Tools.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C77F4820ECD07E6357F84866 /* Pods_Tools.framework */; };
 		B166180C6375C3E2922FEBA2 /* Pods_ToolsTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1EA6741FAEB41E4AAA1D029 /* Pods_ToolsTests.framework */; };
 		B9AED559283E7553002A2668 /* Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9AED558283E7553002A2668 /* Yosemite.framework */; };
-		B9AED55C283E755A002A2668 /* Hardware.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9AED55B283E755A002A2668 /* Hardware.framework */; };
 		B9C9C63F283E703C001B879F /* Tools.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9C9C635283E703C001B879F /* Tools.framework */; };
 		B9C9C659283E7195001B879F /* NSDecimalNumber+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C9C658283E7195001B879F /* NSDecimalNumber+Helpers.swift */; };
 		B9C9C65D283E71C8001B879F /* CurrencyFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C9C65B283E71C8001B879F /* CurrencyFormatter.swift */; };
@@ -53,7 +52,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B9AED55C283E755A002A2668 /* Hardware.framework in Frameworks */,
 				0094F3FC05C5B7F48858C07B /* Pods_Tools.framework in Frameworks */,
 				B9AED559283E7553002A2668 /* Yosemite.framework in Frameworks */,
 			);

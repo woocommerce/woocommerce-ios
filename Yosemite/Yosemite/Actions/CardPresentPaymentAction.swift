@@ -52,10 +52,10 @@ public enum CardPresentPaymentAction: Action {
 
     /// Returns a publisher that captures payment on the server side after successful payment capture on the client side.
     /// Currently used for retry after receiving an error from server-side payment capture.
-    case capturePaymentOnSite(siteID: Int64,
-                              orderID: Int64,
-                              paymentIntent: PaymentIntent,
-                              onCompletion: (AnyPublisher<Result<PaymentIntent, Error>, Never>) -> Void)
+    case capturePayment(siteID: Int64,
+                        orderID: Int64,
+                        paymentIntent: PaymentIntent,
+                        onCompletion: (AnyPublisher<Result<PaymentIntent, Error>, Never>) -> Void)
 
     /// Cancels an active attempt to collect a payment.
     case cancelPayment(onCompletion: ((Result<Void, Error>) -> Void)?)

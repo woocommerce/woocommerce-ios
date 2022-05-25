@@ -219,16 +219,16 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                 completion([MockCardReader.wisePad3()])
             } else if case let .collectPayment(_, _, _, _, _, completion) = action {
                 completion(.failure(ServerSidePaymentCaptureError.paymentGateway(error: .orderPaymentCaptureError(message: nil), paymentIntent: paymentIntent)))
-            } else if case let .capturePaymentOnSite(_, _, _, completion) = action {
+            } else if case let .capturePayment(_, _, _, completion) = action {
                 // Called on retry.
-                completion(Just<Result<Void, Error>>(.success(())).eraseToAnyPublisher())
+                completion(Just<Result<PaymentIntent, Error>>(.success(paymentIntent)).eraseToAnyPublisher())
             }
         }
 
         // When
         var completed: Bool = false
         let result: Result<Void, Error> = waitFor { [weak self] promise in
-            self?.useCase.collectPayment(backButtonTitle: "", onCollect: { result in
+            self?.useCase.collectPayment(onCollect: { result in
                 promise(result)
             }, onCompleted: {
                 completed = true
@@ -267,16 +267,16 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                 completion([MockCardReader.wisePad3()])
             } else if case let .collectPayment(_, _, _, _, _, completion) = action {
                 completion(.failure(ServerSidePaymentCaptureError.paymentGateway(error: .orderPaymentCaptureError(message: nil), paymentIntent: paymentIntent)))
-            } else if case let .capturePaymentOnSite(_, _, paymentIntent, completion) = action {
+            } else if case let .capturePayment(_, _, paymentIntent, completion) = action {
                 // Called on retry.
                 let error = ServerSidePaymentCaptureError.paymentGateway(error: .orderPaymentCaptureError(message: nil), paymentIntent: paymentIntent)
-                completion(Just<Result<Void, Error>>(.failure(error)).eraseToAnyPublisher())
+                completion(Just<Result<PaymentIntent, Error>>(.failure(error)).eraseToAnyPublisher())
             }
         }
 
         // When
         let _: Void = waitFor { [weak self] promise in
-            self?.useCase.collectPayment(backButtonTitle: "", onCollect: { _ in }, onCompleted: {
+            self?.useCase.collectPayment(onCollect: { _ in }, onCompleted: {
                 promise(())
             })
             // Taps retry on the first retry alert.

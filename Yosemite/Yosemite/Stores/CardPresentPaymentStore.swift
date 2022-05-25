@@ -83,10 +83,10 @@ public final class CardPresentPaymentStore: Store {
                            onCardReaderMessage: event,
                            onProcessingCompletion: processPaymentCompletion,
                            onCompletion: completion)
-        case .capturePaymentOnSite(let siteID,
-                                   let orderID,
-                                   let paymentIntent,
-                                   let onCompletion):
+        case .capturePayment(let siteID,
+                             let orderID,
+                             let paymentIntent,
+                             let onCompletion):
             capturePaymentOnSite(siteID: siteID,
                                  orderID: orderID,
                                  paymentIntent: paymentIntent,

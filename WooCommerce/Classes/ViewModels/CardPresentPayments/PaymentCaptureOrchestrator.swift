@@ -111,9 +111,9 @@ final class PaymentCaptureOrchestrator {
     func retryServerSidePaymentCapture(order: Order,
                                        paymentIntent: PaymentIntent,
                                        onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
-        let action = CardPresentPaymentAction.capturePaymentOnSite(siteID: order.siteID,
-                                                                   orderID: order.orderID,
-                                                                   paymentIntent: paymentIntent) { [weak self] publisher in
+        let action = CardPresentPaymentAction.capturePayment(siteID: order.siteID,
+                                                             orderID: order.orderID,
+                                                             paymentIntent: paymentIntent) { [weak self] publisher in
             guard let self = self else { return }
 
             var subscription: AnyCancellable?

@@ -338,7 +338,7 @@ private extension CollectOrderPaymentUseCase {
         // Inform about the error
         if let error = error as? ServerSidePaymentCaptureError, case let .paymentGateway(_, paymentIntent) = error {
             alerts.serverSidePaymentCaptureError(error: error) { [weak self] in
-                self?.retryServerSidePaymentCapture(paymentIntent: paymentIntent, onCompletion: onCompletion)
+                self?.retryPaymentCapture(paymentIntent: paymentIntent, onCompletion: onCompletion)
             } dismissCompletion: {
                 onCompletion(.failure(error))
             }
@@ -441,7 +441,7 @@ private extension CollectOrderPaymentUseCase {
 
 // MARK: Error handling
 private extension CollectOrderPaymentUseCase {
-    func retryServerSidePaymentCapture(paymentIntent: PaymentIntent, onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
+    func retryPaymentCapture(paymentIntent: PaymentIntent, onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
         alerts.processingPayment()
         paymentOrchestrator.retryServerSidePaymentCapture(order: order, paymentIntent: paymentIntent) { [weak self] result in
             guard let self = self else { return }

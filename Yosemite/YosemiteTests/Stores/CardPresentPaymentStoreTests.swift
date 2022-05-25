@@ -750,9 +750,9 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
         // When
         var subscription: AnyCancellable?
-        let result: Result<Void, Error> = waitFor { [self] promise in
+        let result: Result<PaymentIntent, Error> = waitFor { [self] promise in
             let action = CardPresentPaymentAction
-                .capturePaymentOnSite(siteID: self.sampleSiteID, orderID: self.sampleOrderID, paymentIntent: intent) { publisher in
+                .capturePayment(siteID: self.sampleSiteID, orderID: self.sampleOrderID, paymentIntent: intent) { publisher in
                     subscription = publisher.sink { result in
                         promise(result)
                     }
@@ -762,7 +762,11 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         subscription?.cancel()
 
         // Then
+        let successIntent = try XCTUnwrap(result.get())
         XCTAssertTrue(result.isSuccess)
+        // Matches the `wcpay-payment-intent-succeeded` response.
+        XCTAssertEqual(successIntent.id, "pi_123456789012345678901234")
+        XCTAssertEqual(successIntent.status, .succeeded)
     }
 
     /// Verifies that when the remote returns an error for server-side payment capture, `capturePaymentOnSite` action returns a failure result.
@@ -784,9 +788,9 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
         // When
         var subscription: AnyCancellable?
-        let result: Result<Void, Error> = waitFor { [self] promise in
+        let result: Result<PaymentIntent, Error> = waitFor { [self] promise in
             let action = CardPresentPaymentAction
-                .capturePaymentOnSite(siteID: self.sampleSiteID, orderID: self.sampleOrderID, paymentIntent: intent) { publisher in
+                .capturePayment(siteID: self.sampleSiteID, orderID: self.sampleOrderID, paymentIntent: intent) { publisher in
                     subscription = publisher.sink { result in
                         promise(result)
                     }

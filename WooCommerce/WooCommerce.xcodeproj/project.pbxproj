@@ -756,6 +756,8 @@
 		4569D3C325DC008700CDC3E2 /* SiteAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4569D3C225DC008700CDC3E2 /* SiteAddress.swift */; };
 		4569D3C925DC065B00CDC3E2 /* SiteAddressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4569D3C825DC065B00CDC3E2 /* SiteAddressTests.swift */; };
 		4569D3F425DC1BFF00CDC3E2 /* ShippingLabelFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4569D3F325DC1BFF00CDC3E2 /* ShippingLabelFormViewModelTests.swift */; };
+		456AB0E7283E610500019CFF /* WCShipInstallTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456AB0E5283E610500019CFF /* WCShipInstallTableViewCell.swift */; };
+		456AB0E8283E610500019CFF /* WCShipInstallTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 456AB0E6283E610500019CFF /* WCShipInstallTableViewCell.xib */; };
 		456BEFB626D912EC002AC16C /* AuthenticatedWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456BEFB526D912EC002AC16C /* AuthenticatedWebView.swift */; };
 		456C7EEB25EE71F10016CBC6 /* ShippingLabelSuggestedAddressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456C7EE925EE71F10016CBC6 /* ShippingLabelSuggestedAddressViewController.swift */; };
 		456C7EEC25EE71F10016CBC6 /* ShippingLabelSuggestedAddressViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 456C7EEA25EE71F10016CBC6 /* ShippingLabelSuggestedAddressViewController.xib */; };
@@ -2467,6 +2469,8 @@
 		4569D3C225DC008700CDC3E2 /* SiteAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteAddress.swift; sourceTree = "<group>"; };
 		4569D3C825DC065B00CDC3E2 /* SiteAddressTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteAddressTests.swift; sourceTree = "<group>"; };
 		4569D3F325DC1BFF00CDC3E2 /* ShippingLabelFormViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelFormViewModelTests.swift; sourceTree = "<group>"; };
+		456AB0E5283E610500019CFF /* WCShipInstallTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCShipInstallTableViewCell.swift; sourceTree = "<group>"; };
+		456AB0E6283E610500019CFF /* WCShipInstallTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WCShipInstallTableViewCell.xib; sourceTree = "<group>"; };
 		456BEFB526D912EC002AC16C /* AuthenticatedWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedWebView.swift; sourceTree = "<group>"; };
 		456C7EE925EE71F10016CBC6 /* ShippingLabelSuggestedAddressViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelSuggestedAddressViewController.swift; sourceTree = "<group>"; };
 		456C7EEA25EE71F10016CBC6 /* ShippingLabelSuggestedAddressViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShippingLabelSuggestedAddressViewController.xib; sourceTree = "<group>"; };
@@ -5182,6 +5186,15 @@
 			path = "Create Shipping Label";
 			sourceTree = "<group>";
 		};
+		456AB0E2283E60BC00019CFF /* WCShip Installation Section */ = {
+			isa = PBXGroup;
+			children = (
+				456AB0E5283E610500019CFF /* WCShipInstallTableViewCell.swift */,
+				456AB0E6283E610500019CFF /* WCShipInstallTableViewCell.xib */,
+			);
+			path = "WCShip Installation Section";
+			sourceTree = "<group>";
+		};
 		456C7EE825EE71C10016CBC6 /* Shipping Address Suggested Address */ = {
 			isa = PBXGroup;
 			children = (
@@ -7094,6 +7107,7 @@
 				CE35F1142343E832007B2A6B /* Payment Section */,
 				CE35F10D2343E613007B2A6B /* Shipment Tracking Section */,
 				02F67FEC25805F7400C3BAD2 /* Shipping Label Section */,
+				456AB0E2283E60BC00019CFF /* WCShip Installation Section */,
 				26E1BEC7251BE50C0096D0A1 /* Issue Refunds */,
 				CE35F10A2343E4E6007B2A6B /* Order Notes Section */,
 				021A84DD257DFBDA00BC71D1 /* Shipping Labels */,
@@ -8308,6 +8322,7 @@
 				D843D5D422485009001BFA55 /* ShipmentProvidersViewController.xib in Resources */,
 				CE227099228F180B00C0626C /* WooBasicTableViewCell.xib in Resources */,
 				93BCF01F20DC2CE200EBF7A1 /* bash_secrets.tpl in Resources */,
+				456AB0E8283E610500019CFF /* WCShipInstallTableViewCell.xib in Resources */,
 				02162727237963AF000208D2 /* ProductFormViewController.xib in Resources */,
 				D8EE9693264D328A0033B2F9 /* ReceiptViewController.xib in Resources */,
 				B56DB3D42049BFAA00D4AA8E /* Assets.xcassets in Resources */,
@@ -8770,6 +8785,7 @@
 				AEE2610F26E664CE00B142A0 /* EditOrderAddressFormViewModel.swift in Sources */,
 				025C00BA25514A7100FAC222 /* BarcodeScannerFrameScaler.swift in Sources */,
 				02913E9723A774E600707A0C /* DecimalInputFormatter.swift in Sources */,
+				456AB0E7283E610500019CFF /* WCShipInstallTableViewCell.swift in Sources */,
 				D89FAF4E2795BDFF00D8DA66 /* InPersonPaymentsPluginConflictAdminView.swift in Sources */,
 				E15F163126C5117300D3059B /* InPersonPaymentsNoConnectionView.swift in Sources */,
 				456CB50D2444BFAC00992A05 /* ProductPurchaseNoteViewController.swift in Sources */,

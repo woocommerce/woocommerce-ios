@@ -1,7 +1,7 @@
 GIT
   remote: git@github.com:wordpress-mobile/release-toolkit
-  revision: d204c8e772cd2c1cde855c06f0baab8d0be4aa9a
-  branch: fix/promo-screenshots
+  revision: 48bf4f8ee18079154b2054b3014bed9f114416d6
+  branch: trunk
   specs:
     fastlane-plugin-wpmreleasetoolkit (4.1.0)
       activesupport (~> 5)

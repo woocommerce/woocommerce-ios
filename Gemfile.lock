@@ -1,3 +1,23 @@
+GIT
+  remote: git@github.com:wordpress-mobile/release-toolkit
+  revision: d204c8e772cd2c1cde855c06f0baab8d0be4aa9a
+  branch: fix/promo-screenshots
+  specs:
+    fastlane-plugin-wpmreleasetoolkit (4.1.0)
+      activesupport (~> 5)
+      bigdecimal (~> 1.4)
+      buildkit (~> 1.5)
+      chroma (= 0.2.0)
+      diffy (~> 3.3)
+      git (~> 1.3)
+      jsonlint (~> 0.3)
+      nokogiri (~> 1.11)
+      octokit (~> 4.18)
+      parallel (~> 1.14)
+      progress_bar (~> 1.3)
+      rake (>= 12.3, < 14.0)
+      rake-compiler (~> 1.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -165,20 +185,6 @@ GEM
       xcpretty-travis-formatter (>= 0.0.3)
     fastlane-plugin-appcenter (1.11.1)
     fastlane-plugin-sentry (1.11.1)
-    fastlane-plugin-wpmreleasetoolkit (4.1.0)
-      activesupport (~> 5)
-      bigdecimal (~> 1.4)
-      buildkit (~> 1.5)
-      chroma (= 0.2.0)
-      diffy (~> 3.3)
-      git (~> 1.3)
-      jsonlint (~> 0.3)
-      nokogiri (~> 1.11)
-      octokit (~> 4.18)
-      parallel (~> 1.14)
-      progress_bar (~> 1.3)
-      rake (>= 12.3, < 14.0)
-      rake-compiler (~> 1.0)
     ffi (1.15.4)
     fourflusher (2.3.1)
     fuzzy_match (2.0.4)
@@ -247,15 +253,15 @@ GEM
     nap (1.1.0)
     naturally (2.2.1)
     netrc (0.11.0)
-    nokogiri (1.13.4)
+    nokogiri (1.13.6)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
-    nokogiri (1.13.4-x86_64-darwin)
+    nokogiri (1.13.6-x86_64-darwin)
       racc (~> 1.4)
     octokit (4.22.0)
       faraday (>= 0.9)
       sawyer (~> 0.8.0, >= 0.5.3)
-    oj (3.13.11)
+    oj (3.13.13)
     optimist (3.0.1)
     options (2.3.2)
     optparse (0.1.1)
@@ -359,7 +365,7 @@ DEPENDENCIES
   fastlane (~> 2)
   fastlane-plugin-appcenter (~> 1.6)
   fastlane-plugin-sentry (~> 1.0)
-  fastlane-plugin-wpmreleasetoolkit (~> 4.1)
+  fastlane-plugin-wpmreleasetoolkit!
   rake (~> 12.3)
   rmagick (~> 4.1)
   rubocop (~> 1.25)

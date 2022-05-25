@@ -2,8 +2,8 @@ import SwiftUI
 
 /// SwiftUI wrapper of `BottomSheetListSelectorViewController`.
 ///
-struct BottomSheetListSelector<Command: BottomSheetListSelectorCommand, Model, Cell>:
-    UIViewControllerRepresentable where Command.Model == Model, Command.Cell == Cell {
+struct BottomSheetListSelector<Command: BottomSheetListSelectorCommand, Model, Cell>: UIViewControllerRepresentable
+    where Command.Model == Model, Command.Cell == Cell {
 
     private let viewProperties: BottomSheetListSelectorViewProperties
     private let command: Command

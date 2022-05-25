@@ -13,7 +13,7 @@ final class AddEditCouponHostingController: UIHostingController<AddEditCoupon> {
         rootView.dismissHandler = { [weak self] in
             self?.dismiss(animated: true)
         }
-        
+
         rootView.discountTypeHandler = { [weak self] viewProperties in
             guard let self = self else { return }
             let command = DiscountTypeBottomSheetListSelectorCommand(selected: self.viewModel.discountType) { [weak self] selectedType in

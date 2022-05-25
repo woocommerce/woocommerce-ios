@@ -29,22 +29,25 @@ private extension WCShipInstallTableViewCell {
     }
 
     func configurePlaceholderImageView() {
-        placeholderImageView.image = UIImage.productPlaceholderImage
+        placeholderImageView.image = UIImage.gravatarPlaceholderImage
         placeholderImageView.contentMode = .scaleAspectFit
         placeholderImageView.clipsToBounds = true
     }
 
     func configureTitleLabel() {
-        title.applyTitleStyle()
+        title.applyHeadlineStyle()
+        title.text = ""
     }
 
     func configureBodyLabel() {
         body.applyBodyStyle()
         body.numberOfLines = 0
+        body.text = ""
     }
 
     func configureActionLabel() {
         action.applyActionableStyle()
+        action.text = ""
     }
 
 }

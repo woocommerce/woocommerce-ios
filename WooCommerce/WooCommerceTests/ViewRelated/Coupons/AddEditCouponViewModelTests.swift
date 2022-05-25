@@ -108,6 +108,19 @@ final class AddEditCouponViewModelTests: XCTestCase {
         XCTAssertNil(result)
     }
 
+    func test_hasChangesMade_is_correct_for_discount_type() {
+        // Given
+        let coupon = Coupon.sampleCoupon.copy(discountType: .percent)
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+        XCTAssertFalse(viewModel.hasChangesMade) // confidence check
+
+        // When
+        viewModel.discountType = .fixedProduct
+
+        // Then
+        XCTAssertTrue(viewModel.hasChangesMade)
+    }
+
     func test_hasChangesMade_is_correct_for_coupon_code() {
         // Given
         let coupon = Coupon.sampleCoupon.copy(code: "ABCDEF")

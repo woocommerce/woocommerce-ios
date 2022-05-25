@@ -48,6 +48,8 @@ final class ULErrorViewController: UIViewController {
         configurePrimaryButton()
         configureSecondaryButton()
 
+        configureButtonLabels()
+
         setUnifiedMargins(forWidth: view.frame.width)
 
         viewModel.viewDidLoad()
@@ -86,8 +88,6 @@ private extension ULErrorViewController {
         extraInfoButton.applyLinkButtonStyle()
         extraInfoButton.contentEdgeInsets = Constants.extraInfoCustomInsets
         extraInfoButton.setTitle(viewModel.auxiliaryButtonTitle, for: .normal)
-        extraInfoButton.titleLabel?.numberOfLines = 0
-        extraInfoButton.titleLabel?.lineBreakMode = .byWordWrapping
         extraInfoButton.titleLabel?.textAlignment = .center
         extraInfoButton.on(.touchUpInside) { [weak self] _ in
             self?.didTapAuxiliaryButton()
@@ -106,6 +106,14 @@ private extension ULErrorViewController {
         secondaryButton.setTitle(viewModel.secondaryButtonTitle, for: .normal)
         secondaryButton.on(.touchUpInside) { [weak self] _ in
             self?.didTapSecondaryButton()
+        }
+    }
+
+    func configureButtonLabels() {
+        let buttons = [extraInfoButton, primaryButton, secondaryButton]
+        for button in buttons {
+            button?.titleLabel?.numberOfLines = 0
+            button?.titleLabel?.lineBreakMode = .byWordWrapping
         }
     }
 

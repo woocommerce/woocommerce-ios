@@ -22,6 +22,6 @@ struct BottomSheetListSelector<Command: BottomSheetListSelectorCommand, Model, C
     }
 
     func updateUIViewController(_ uiViewController: BottomSheetListSelectorViewController<Command, Model, Cell>, context: Context) {
-        // no=op
+        // no-op
     }
 }

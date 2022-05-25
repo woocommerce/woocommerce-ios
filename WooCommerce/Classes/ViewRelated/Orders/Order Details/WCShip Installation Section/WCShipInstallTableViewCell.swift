@@ -29,7 +29,6 @@ private extension WCShipInstallTableViewCell {
     }
 
     func configurePlaceholderImageView() {
-        placeholderImageView.image = UIImage.gravatarPlaceholderImage
         placeholderImageView.contentMode = .scaleAspectFit
         placeholderImageView.clipsToBounds = true
     }

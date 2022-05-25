@@ -56,7 +56,7 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 
     // MARK: Subviews
 
-    var refreshControl: UIRefreshControl = {
+    lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl(frame: .zero)
         refreshControl.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
         return refreshControl

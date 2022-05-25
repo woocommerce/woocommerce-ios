@@ -55,7 +55,7 @@ public enum CardPresentPaymentAction: Action {
     case capturePaymentOnSite(siteID: Int64,
                               orderID: Int64,
                               paymentIntent: PaymentIntent,
-                              onCompletion: (AnyPublisher<Result<Void, Error>, Never>) -> Void)
+                              onCompletion: (AnyPublisher<Result<PaymentIntent, Error>, Never>) -> Void)
 
     /// Cancels an active attempt to collect a payment.
     case cancelPayment(onCompletion: ((Result<Void, Error>) -> Void)?)

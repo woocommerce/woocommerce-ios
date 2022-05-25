@@ -251,7 +251,7 @@ private extension CardPresentPaymentStore {
     func capturePaymentOnSite(siteID: Int64,
                               orderID: Int64,
                               paymentIntent: PaymentIntent,
-                              onCompletion: (AnyPublisher<Result<Void, Error>, Never>) -> Void) {
+                              onCompletion: (AnyPublisher<Result<PaymentIntent, Error>, Never>) -> Void) {
         onCompletion(captureOrderPaymentOnSite(siteID: siteID, orderID: orderID, paymentIntent: paymentIntent))
     }
 
@@ -511,7 +511,7 @@ private extension CardPresentPaymentStore {
     /// Submits order to the site for server-side processing.
     func captureOrderPaymentOnSite(siteID: Int64,
                                    orderID: Int64,
-                                   paymentIntent: PaymentIntent) -> AnyPublisher<Result<Void, Error>, Never> {
+                                   paymentIntent: PaymentIntent) -> AnyPublisher<Result<PaymentIntent, Error>, Never> {
         let captureOrderPaymentPublisher: AnyPublisher<Result<RemotePaymentIntent, Error>, Never>
         switch usingBackend {
         case .wcpay:
@@ -522,12 +522,12 @@ private extension CardPresentPaymentStore {
         return captureOrderPaymentPublisher
             .map { result in
                 switch result {
-                case .success(let intent):
-                    guard intent.status == .succeeded else {
-                        DDLogDebug("Unexpected payment intent status \(intent.status) after attempting capture")
+                case .success(let remotePaymentIntent):
+                    guard remotePaymentIntent.status == .succeeded else {
+                        DDLogDebug("Unexpected payment intent status \(remotePaymentIntent.status) after attempting capture")
                         return .failure(ServerSidePaymentCaptureError.paymentIntentNotSuccessful)
                     }
-                    return .success(())
+                    return .success(paymentIntent.copy(id: remotePaymentIntent.id, status: remotePaymentIntent.status.toPaymentIntentStatus))
                 case .failure(let error):
                     let error = PaymentGatewayAccountError(underlyingError: error)
                     return .failure(ServerSidePaymentCaptureError.paymentGateway(error: error, paymentIntent: paymentIntent))
@@ -744,6 +744,29 @@ public enum WCPayChargesError: Error, LocalizedError {
             return message
         case .otherError(let error):
             return error.localizedDescription
+        }
+    }
+}
+
+private extension WCPayPaymentIntentStatusEnum {
+    var toPaymentIntentStatus: PaymentIntentStatus {
+        switch self {
+        case .requiresPaymentMethod:
+            return .requiresPaymentMethod
+        case .requiresConfirmation:
+            return .requiresConfirmation
+        case .requiresAction:
+            return .requiresAction
+        case .processing:
+            return .processing
+        case .requiresCapture:
+            return .requiresCapture
+        case .canceled:
+            return .canceled
+        case .succeeded:
+            return .succeeded
+        case .unknown:
+            return .unknown
         }
     }
 }

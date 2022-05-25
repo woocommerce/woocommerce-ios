@@ -13,6 +13,17 @@ final class AddEditCouponHostingController: UIHostingController<AddEditCoupon> {
         rootView.dismissHandler = { [weak self] in
             self?.dismiss(animated: true)
         }
+        
+        rootView.discountTypeHandler = { [weak self] viewProperties in
+            guard let self = self else { return }
+            let command = DiscountTypeBottomSheetListSelectorCommand(selected: self.viewModel.discountType) { [weak self] selectedType in
+                guard let self = self else { return }
+                viewModel.discountType = selectedType
+                self.presentedViewController?.dismiss(animated: true, completion: nil)
+            }
+            let presenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
+            presenter.show(from: self, sourceView: self.view, sourceBarButtonItem: nil, arrowDirections: .any)
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -49,6 +60,10 @@ struct AddEditCoupon: View {
     ///
     var onDisappear: () -> Void = {}
 
+    /// Set this closure to display the bottom sheet for discount type selection the UIKit way.
+    ///
+    var discountTypeHandler: (BottomSheetListSelectorViewProperties) -> Void = { _ in }
+
     @ObservedObject private var viewModel: AddEditCouponViewModel
     @State private var showingEditDescription: Bool = false
     @State private var showingCouponExpiryActionSheet: Bool = false
@@ -56,7 +71,7 @@ struct AddEditCoupon: View {
     @State private var showingCouponRestrictions: Bool = false
     @State private var showingSelectProducts: Bool = false
     @State private var showingSelectCategories: Bool = false
-    @State private var showingDiscountTypeSheet: Bool = false
+    @State private var showingDiscountType: Bool = false
 
     private var expiryDateActionSheetButtons: [Alert.Button] {
         var buttons: [Alert.Button] = []
@@ -84,6 +99,9 @@ struct AddEditCoupon: View {
         return buttons
     }
 
+    private var idiom: UIUserInterfaceIdiom { UIDevice.current.userInterfaceIdiom }
+    private let viewProperties = BottomSheetListSelectorViewProperties(title: Localization.discountTypeSheetTitle)
+
     private let categorySelectorConfig = ProductCategorySelector.Configuration.categoriesForCoupons
     private let categoryListConfig = ProductCategoryListViewController.Configuration(searchEnabled: true, clearSelectionEnabled: true)
 
@@ -103,8 +121,19 @@ struct AddEditCoupon: View {
                                 TitleAndValueRow(title: Localization.discountType,
                                                  value: viewModel.discountTypeValue,
                                                  selectionStyle: .disclosure, action: {
-                                    showingDiscountTypeSheet = true
-                                })
+                                    if idiom == .pad {
+                                        showingDiscountType.toggle()
+                                    } else {
+                                        discountTypeHandler(viewProperties)
+                                    }
+                                }).popover(isPresented: $showingDiscountType) {
+                                    let command = DiscountTypeBottomSheetListSelectorCommand(selected: viewModel.discountType) { selectedType in
+                                        viewModel.discountType = selectedType
+                                        showingDiscountType.toggle()
+                                    }
+                                    BottomSheetListSelector(viewProperties: viewProperties, command: command, onDismiss: nil)
+                                }
+
                                 Divider()
                                     .padding(.leading, Constants.margin)
 
@@ -394,6 +423,10 @@ private extension AddEditCoupon {
                                                                      comment: "Button in the action sheet for adding the expiration date for a coupon.")
         static let titleEditDescriptionView = NSLocalizedString("Coupon Description",
                                                                 comment: "Title of the view for editing the coupon description.")
+        static let discountTypeSheetTitle = NSLocalizedString(
+            "Discount Type",
+            comment: "Title for the sheet to select discount type on the Add or Edit coupon screen."
+        )
     }
 }
 

@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 import Combine
 import Experiments
+import Tools
 
 /// View Model for the `SimplePaymentsAmount` view.
 ///

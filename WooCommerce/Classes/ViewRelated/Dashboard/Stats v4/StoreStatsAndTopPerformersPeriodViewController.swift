@@ -3,6 +3,7 @@ import UIKit
 import struct WordPressUI.GhostStyle
 import XLPagerTabStrip
 import Yosemite
+import Tools
 
 /// Container view controller for a stats v4 time range that consists of a scrollable stack view of:
 /// - Store stats data view (managed by child view controller `StoreStatsV4PeriodViewController`)

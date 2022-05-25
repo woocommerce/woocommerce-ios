@@ -8,6 +8,9 @@
       location = "group:Yosemite/Yosemite.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:Tools/Tools.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Storage/Storage.xcodeproj">
    </FileRef>
    <FileRef
@@ -30,5 +33,8 @@
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Tools/Tools.xcodeproj">
    </FileRef>
 </Workspace>

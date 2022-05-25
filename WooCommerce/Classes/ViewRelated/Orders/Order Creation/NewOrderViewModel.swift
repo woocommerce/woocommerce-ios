@@ -2,6 +2,7 @@ import Yosemite
 import Combine
 import protocol Storage.StorageManagerType
 import Experiments
+import Tools
 import enum Networking.DotcomError
 
 /// View model for `NewOrder`.

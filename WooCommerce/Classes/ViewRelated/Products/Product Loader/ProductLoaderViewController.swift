@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 import Yosemite
-
+import Tools
 
 /// ProductLoaderViewController: Loads product and/or product variation async and render its details.
 ///

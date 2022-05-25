@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 import Combine
 import Experiments
+import Tools
 import class WordPressShared.EmailFormatValidator
 
 /// `ViewModel` to drive the content of the `SimplePaymentsSummary` view.

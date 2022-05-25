@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import Tools
 
 /// Represents an order item to be refunded. Meant to be rendered by `RefundItemTableViewCell`
 ///

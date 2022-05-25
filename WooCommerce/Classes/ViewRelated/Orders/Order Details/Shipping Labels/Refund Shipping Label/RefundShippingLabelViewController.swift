@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import Tools
 
 /// Displays information about the refund with a CTA to request a refund.
 final class RefundShippingLabelViewController: UIViewController {

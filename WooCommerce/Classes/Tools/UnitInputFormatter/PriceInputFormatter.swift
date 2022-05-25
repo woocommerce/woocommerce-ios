@@ -1,4 +1,5 @@
 import Foundation
+import Tools
 
 /// `UnitInputFormatter` implementation for decimal price input.
 ///

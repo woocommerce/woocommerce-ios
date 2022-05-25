@@ -1,4 +1,5 @@
 import Yosemite
+import Tools
 
 /// Provides data needed for price settings.
 ///

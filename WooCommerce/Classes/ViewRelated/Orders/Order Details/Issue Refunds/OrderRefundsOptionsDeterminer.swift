@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import Tools
 
 /// Encapsulates the logic related with the refunding options of an Order
 ///

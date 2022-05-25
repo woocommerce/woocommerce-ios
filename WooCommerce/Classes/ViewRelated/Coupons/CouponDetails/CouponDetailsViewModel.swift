@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import Experiments
+import Tools
 
 /// View model for `CouponDetails` view
 ///

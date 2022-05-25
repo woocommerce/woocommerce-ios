@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import Tools
 
 /// ViewModel for presenting refund confirmation to the user.
 ///

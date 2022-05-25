@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import Tools
 
 /// Creates a `Refund` object ready to be used  on `RefundStore.createRefund` action
 ///

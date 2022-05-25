@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import Tools
 
 /// Helper to calculate the totals on an `Order`.
 ///

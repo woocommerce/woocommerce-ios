@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import Tools
 
 /// View Model logic for the bulk price setting screen
 ///

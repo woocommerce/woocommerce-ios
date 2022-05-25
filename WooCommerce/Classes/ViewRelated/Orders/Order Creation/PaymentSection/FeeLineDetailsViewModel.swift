@@ -1,5 +1,6 @@
 import SwiftUI
 import Yosemite
+import Tools
 
 class FeeLineDetailsViewModel: ObservableObject {
 

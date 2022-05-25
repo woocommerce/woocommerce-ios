@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import Yosemite
+import Tools
 import protocol Storage.StorageManagerType
 
 /// View Model for `CouponRestriction`

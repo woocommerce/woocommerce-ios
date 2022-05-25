@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import Tools
 
 
 // MARK: - A helper class for calculating aggregate data

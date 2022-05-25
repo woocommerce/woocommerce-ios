@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import Tools
 
 extension ProductsTabProductViewModel {
     init(productVariationModel: EditableProductVariationModel,

@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import Tools
 
 /// Calculates the total refunded value of an `Order`.
 ///

@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import Tools
 
 struct ProductDetailsFactory {
     /// Creates a product details view controller asynchronously based on the app settings.

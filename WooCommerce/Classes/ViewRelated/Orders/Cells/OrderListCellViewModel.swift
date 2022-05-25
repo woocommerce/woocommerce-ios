@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import Tools
 
 // MARK: - View Model for individual cells on the Order List screen
 //

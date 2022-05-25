@@ -110,6 +110,30 @@ target 'YosemiteTests' do
   yosemite_pods
 end
 
+# Tools Layer:
+# ===============
+#
+def tools_pods
+  pod 'CocoaLumberjack', '~> 3.7.4'
+  pod 'CocoaLumberjack/Swift', '~> 3.7.4'
+end
+
+# Tools Target:
+# ================
+#
+target 'Tools' do
+  project 'Tools/Tools.xcodeproj'
+  tools_pods
+end
+
+# Unit Tests
+# ==========
+#
+target 'ToolsTests' do
+  project 'Tools/Tools.xcodeproj'
+  tools_pods
+end
+
 # Networking Layer:
 # =================
 #

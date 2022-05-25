@@ -4,6 +4,7 @@ import Experiments
 import Storage
 import Yosemite
 import Hardware
+import Tools
 
 /// Provides global dependencies.
 ///

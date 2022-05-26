@@ -22,7 +22,7 @@ struct CouponExpiryDateView: View {
                     Button(action: {
                         onRemoval()
                         presentationMode.wrappedValue.dismiss()
-                    }, label: { Text("Remove") })
+                    }, label: { Text(Localization.removeButton) })
                     .buttonStyle(SecondaryButtonStyle())
                 }
             }
@@ -32,10 +32,10 @@ struct CouponExpiryDateView: View {
         .navigationTitle(Localization.title)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button("Done") {
+                Button(action: {
                     onCompletion(date)
                     presentationMode.wrappedValue.dismiss()
-                }
+                }, label: { Text(Localization.doneButton) })
             }
         }
     }
@@ -48,6 +48,8 @@ private extension CouponExpiryDateView {
     enum Localization {
         static let title = NSLocalizedString("Coupon expiry date",
                                              comment: "Title of the view for selecting an expiry date for a coupon.")
+        static let doneButton = NSLocalizedString("Done", comment: "Button to finish selecting the Coupon expiry date in the AddEditCoupon screen")
+        static let removeButton = NSLocalizedString("Remove", comment: "Button to remove the Coupon expiry date in the AddEditCoupon screen")
     }
 }
 

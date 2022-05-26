@@ -74,7 +74,6 @@ private extension BetaFeaturesViewController {
     func configureSections() {
         self.sections = [
             productsSection(),
-            inPersonPaymentsSection(),
             productSKUInputScannerSection(),
             couponManagementSection()
         ].compactMap { $0 }
@@ -83,16 +82,6 @@ private extension BetaFeaturesViewController {
     func productsSection() -> Section {
         return Section(rows: [.orderAddOns,
                               .orderAddOnsDescription])
-    }
-
-    func inPersonPaymentsSection() -> Section? {
-        var rows: [Row] = []
-
-        guard rows.isNotEmpty else {
-            return nil
-        }
-
-        return Section(rows: rows)
     }
 
     func productSKUInputScannerSection() -> Section? {

@@ -165,10 +165,6 @@ public class AppSettingsStore: Store {
             getSimplePaymentsTaxesToggleState(siteID: siteID, onCompletion: onCompletion)
         case .resetGeneralStoreSettings:
             resetGeneralStoreSettings()
-        case .loadCanadaInPersonPaymentsSwitchState(onCompletion: let onCompletion):
-            loadCanadaInPersonPaymentsSwitchState(onCompletion: onCompletion)
-        case .setCanadaInPersonPaymentsSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
-            setCanadaInPersonPaymentsSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .setProductSKUInputScannerFeatureSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
             setProductSKUInputScannerFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadProductSKUInputScannerFeatureSwitchState(onCompletion: let onCompletion):
@@ -250,25 +246,6 @@ private extension AppSettingsStore {
     func loadOrderAddOnsSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
         let settings = loadOrCreateGeneralAppSettings()
         onCompletion(.success(settings.isViewAddOnsSwitchEnabled))
-    }
-
-    /// Loads the current In-Person Payments in Canada beta feature switch state from `GeneralAppSettings`
-    ///
-    func loadCanadaInPersonPaymentsSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
-        let settings = loadOrCreateGeneralAppSettings()
-        onCompletion(.success(settings.isCanadaInPersonPaymentsSwitchEnabled))
-    }
-
-    /// Sets the provided In-Person Payments in Canada beta feature switch state into `GeneralAppSettings`
-    ///
-    func setCanadaInPersonPaymentsSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
-        do {
-            let settings = loadOrCreateGeneralAppSettings().copy(isCanadaInPersonPaymentsSwitchEnabled: isEnabled)
-            try saveGeneralAppSettings(settings)
-            onCompletion(.success(()))
-        } catch {
-            onCompletion(.failure(error))
-        }
     }
 
     /// Sets the state for the Product SKU Input Scanner beta feature switch into `GeneralAppSettings`.

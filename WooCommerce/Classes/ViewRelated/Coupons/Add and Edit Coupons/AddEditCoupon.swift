@@ -121,6 +121,7 @@ struct AddEditCoupon: View {
                                 TitleAndValueRow(title: Localization.discountType,
                                                  value: viewModel.discountTypeValue,
                                                  selectionStyle: .disclosure, action: {
+                                    // TODO: remove this workaround with `adaptiveSheetPresentationController` when we drop support for iOS 14
                                     if idiom == .pad {
                                         showingDiscountType.toggle()
                                     } else {

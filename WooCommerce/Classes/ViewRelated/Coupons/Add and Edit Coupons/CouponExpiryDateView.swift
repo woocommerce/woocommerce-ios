@@ -36,6 +36,7 @@ struct CouponExpiryDateView: View {
                     onCompletion(date)
                     presentationMode.wrappedValue.dismiss()
                 }, label: { Text(Localization.doneButton) })
+                        .foregroundColor(Color(.accent))
             }
         }
     }

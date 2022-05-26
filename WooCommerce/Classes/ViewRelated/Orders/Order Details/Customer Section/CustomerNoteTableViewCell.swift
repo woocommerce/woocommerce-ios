@@ -142,7 +142,7 @@ private extension CustomerNoteTableViewCell {
 }
 
 
-/// MARK: - Testability
+// MARK: - Testability
 extension CustomerNoteTableViewCell {
     func getHeadlineLabel() -> UILabel {
         return headlineLabel

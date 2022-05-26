@@ -78,8 +78,8 @@ final class LeaderboardStatsConverterTest: XCTestCase {
     }
 }
 
-/// MARK: Test functions to generate sample data
-///
+// MARK: Test functions to generate sample data
+//
 private extension LeaderboardStatsConverterTest {
 
     func sampleLeaderboard(productIDs: [Int64]) -> Leaderboard {

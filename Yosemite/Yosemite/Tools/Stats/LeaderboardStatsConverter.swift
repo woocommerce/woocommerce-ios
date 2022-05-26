@@ -38,7 +38,7 @@ struct LeaderboardStatsConverter {
     }
 }
 
-/// MARK: Private helpers
+// MARK: Private helpers
 private extension LeaderboardStatsConverter {
 
     /// Infers a product-id from an specific html string type

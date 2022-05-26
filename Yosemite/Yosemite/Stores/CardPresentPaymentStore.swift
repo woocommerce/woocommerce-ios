@@ -5,8 +5,8 @@ import Combine
 
 
 
-/// MARK: CardPresentPaymentStore
-///
+// MARK: CardPresentPaymentStore
+//
 public final class CardPresentPaymentStore: Store {
     // Retaining the reference to the card reader service might end up being problematic.
     // At this point though, the ServiceLocator is part of the WooCommerce binary, so this is a good starting point.

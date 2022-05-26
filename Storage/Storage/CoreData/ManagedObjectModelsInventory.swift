@@ -164,7 +164,7 @@ private extension ManagedObjectModelsInventory {
     }
 }
 
-/// MARK: - Sorting
+// MARK: - Sorting
 
 private extension Array where Element == ManagedObjectModelsInventory.ModelVersion {
     /// Sort the `ModelVersion` based on the convention that model versions are incremented

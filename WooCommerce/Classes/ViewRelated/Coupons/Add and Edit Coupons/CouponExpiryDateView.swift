@@ -19,11 +19,13 @@ struct CouponExpiryDateView: View {
                         .environment(\.timeZone, timezone)
                         .datePickerStyle(GraphicalDatePickerStyle())
                     Spacer()
+                    Divider()
                     Button(action: {
                         onRemoval()
                         presentationMode.wrappedValue.dismiss()
                     }, label: { Text(Localization.removeButton) })
-                    .buttonStyle(SecondaryButtonStyle())
+                    .buttonStyle(LinkButtonStyle())
+                    Divider()
                 }
             }
         }
@@ -50,7 +52,7 @@ private extension CouponExpiryDateView {
         static let title = NSLocalizedString("Coupon expiry date",
                                              comment: "Title of the view for selecting an expiry date for a coupon.")
         static let doneButton = NSLocalizedString("Done", comment: "Button to finish selecting the Coupon expiry date in the AddEditCoupon screen")
-        static let removeButton = NSLocalizedString("Remove", comment: "Button to remove the Coupon expiry date in the AddEditCoupon screen")
+        static let removeButton = NSLocalizedString("Remove Expiry Date", comment: "Button to remove the Coupon expiry date in the AddEditCoupon screen")
     }
 }
 

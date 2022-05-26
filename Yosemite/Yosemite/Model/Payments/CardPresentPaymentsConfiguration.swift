@@ -1,8 +1,6 @@
 import Foundation
 
 public struct CardPresentPaymentsConfiguration {
-    private let stripeTerminalforCanadaEnabled: Bool
-
     public let countryCode: String
     public let paymentMethods: [WCPayPaymentMethodType]
     public let currencies: [CurrencyCode]
@@ -13,7 +11,6 @@ public struct CardPresentPaymentsConfiguration {
     public let stripeSmallestCurrencyUnitMultiplier: Decimal
 
     init(countryCode: String,
-         stripeTerminalforCanadaEnabled: Bool,
          paymentMethods: [WCPayPaymentMethodType],
          currencies: [CurrencyCode],
          paymentGateways: [String],
@@ -22,7 +19,6 @@ public struct CardPresentPaymentsConfiguration {
          minimumAllowedChargeAmount: NSDecimalNumber,
          stripeSmallestCurrencyUnitMultiplier: Decimal) {
         self.countryCode = countryCode
-        self.stripeTerminalforCanadaEnabled = stripeTerminalforCanadaEnabled
         self.paymentMethods = paymentMethods
         self.currencies = currencies
         self.paymentGateways = paymentGateways
@@ -38,7 +34,6 @@ public struct CardPresentPaymentsConfiguration {
         case "US":
             self.init(
                 countryCode: country,
-                stripeTerminalforCanadaEnabled: canadaEnabled,
                 paymentMethods: [.cardPresent],
                 currencies: [.USD],
                 paymentGateways: [WCPayAccount.gatewayID, StripeAccount.gatewayID],
@@ -53,7 +48,6 @@ public struct CardPresentPaymentsConfiguration {
         case "CA" where canadaEnabled == true:
             self.init(
                 countryCode: country,
-                stripeTerminalforCanadaEnabled: true,
                 paymentMethods: [.cardPresent, .interacPresent],
                 currencies: [.CAD],
                 paymentGateways: [WCPayAccount.gatewayID],
@@ -65,7 +59,6 @@ public struct CardPresentPaymentsConfiguration {
         default:
             self.init(
                 countryCode: country,
-                stripeTerminalforCanadaEnabled: canadaEnabled,
                 paymentMethods: [],
                 currencies: [],
                 paymentGateways: [],

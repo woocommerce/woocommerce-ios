@@ -142,7 +142,11 @@ final class AddEditCouponViewModel: ObservableObject {
     @Published var isLoading: Bool = false
 
     // Fields
-    @Published var discountType: Coupon.DiscountType
+    @Published var discountType: Coupon.DiscountType {
+        didSet {
+            couponRestrictionsViewModel.onDiscountTypeChanged(discountType: discountType)
+        }
+    }
     @Published var amountField: String
     @Published var codeField: String
     @Published var descriptionField: String

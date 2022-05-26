@@ -19,12 +19,15 @@ struct CouponExpiryDateView: View {
                         .environment(\.timeZone, timezone)
                         .datePickerStyle(GraphicalDatePickerStyle())
                     Spacer()
+                    
                     Divider()
                     Button(action: {
                         onRemoval()
                         presentationMode.wrappedValue.dismiss()
                     }, label: { Text(Localization.removeButton) })
-                    .buttonStyle(LinkButtonStyle())
+                    .buttonStyle(PlainButtonStyle())
+                    .padding(.vertical, Constants.margin)
+                    .foregroundColor(Color(.error))
                     Divider()
                 }
             }
@@ -47,6 +50,9 @@ struct CouponExpiryDateView: View {
 // MARK: - Constants
 //
 private extension CouponExpiryDateView {
+    enum Constants {
+        static let margin: CGFloat = 16
+    }
 
     enum Localization {
         static let title = NSLocalizedString("Coupon expiry date",

@@ -95,6 +95,7 @@ final class CouponRestrictionsViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.shouldDisplayLimitUsageToXItemsRow)
 
+        // When
         viewModel.onDiscountTypeChanged(discountType: .fixedCart)
 
         XCTAssertFalse(viewModel.shouldDisplayLimitUsageToXItemsRow)

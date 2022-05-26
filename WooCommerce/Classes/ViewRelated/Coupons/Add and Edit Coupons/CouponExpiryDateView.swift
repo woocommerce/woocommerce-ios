@@ -8,8 +8,7 @@ struct CouponExpiryDateView: View {
 
     @State var date: Date = Date()
     var timezone: TimeZone
-    let onCompletion: (Date) -> Void
-    let onRemoval: () -> Void
+    let onCompletion: (Date?) -> Void
 
     var body: some View {
         GeometryReader { geometry in
@@ -22,7 +21,7 @@ struct CouponExpiryDateView: View {
                     VStack {
                         Divider()
                         Button(action: {
-                            onRemoval()
+                            onCompletion(nil)
                             presentationMode.wrappedValue.dismiss()
                         }, label: { Text(Localization.removeButton) })
                         .buttonStyle(PlainButtonStyle())
@@ -67,6 +66,6 @@ private extension CouponExpiryDateView {
 
 struct CouponExpiryDateView_Previews: PreviewProvider {
     static var previews: some View {
-        CouponExpiryDateView(date: Date(), timezone: TimeZone.siteTimezone, onCompletion: { _ in }, onRemoval: {})
+        CouponExpiryDateView(date: Date(), timezone: TimeZone.siteTimezone, onCompletion: { _ in })
     }
 }

@@ -274,17 +274,13 @@ struct AddEditCoupon: View {
                             EmptyView()
                         }
 
-                        LazyNavigationLink(destination: CouponExpiryDateView(
-                            date: viewModel.expiryDateField ?? Date(),
-                            timezone: viewModel.timezone,
-                            onCompletion: { updatedExpiryDate in
-                                viewModel.expiryDateField = updatedExpiryDate
-                            },
-                            onRemoval: {
-                                viewModel.expiryDateField = nil
-                            }), isActive: $showingCouponExpiryDate) {
-                                EmptyView()
-                            }
+                        LazyNavigationLink(destination: CouponExpiryDateView(date: viewModel.expiryDateField ?? Date(),
+                                                                             timezone: viewModel.timezone,
+                                                                             onCompletion: { updatedExpiryDate in
+                            viewModel.expiryDateField = updatedExpiryDate
+                        }), isActive: $showingCouponExpiryDate) {
+                            EmptyView()
+                        }
 
                         LazyNavigationLink(destination: CouponRestrictions(viewModel: viewModel.couponRestrictionsViewModel),
                                            isActive: $showingCouponRestrictions) {

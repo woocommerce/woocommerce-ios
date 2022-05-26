@@ -19,16 +19,18 @@ struct CouponExpiryDateView: View {
                         .environment(\.timeZone, timezone)
                         .datePickerStyle(GraphicalDatePickerStyle())
                     Spacer()
-                    
-                    Divider()
-                    Button(action: {
-                        onRemoval()
-                        presentationMode.wrappedValue.dismiss()
-                    }, label: { Text(Localization.removeButton) })
-                    .buttonStyle(PlainButtonStyle())
-                    .padding(.vertical, Constants.margin)
-                    .foregroundColor(Color(.error))
-                    Divider()
+                    VStack {
+                        Divider()
+                        Button(action: {
+                            onRemoval()
+                            presentationMode.wrappedValue.dismiss()
+                        }, label: { Text(Localization.removeButton) })
+                        .buttonStyle(PlainButtonStyle())
+                        .padding(.vertical, Constants.margin)
+                        .foregroundColor(Color(.error))
+                        Divider()
+                    }
+                    .padding(.top, Constants.verticalMargin)
                 }
             }
         }
@@ -51,7 +53,8 @@ struct CouponExpiryDateView: View {
 //
 private extension CouponExpiryDateView {
     enum Constants {
-        static let margin: CGFloat = 16
+        static let margin: CGFloat = 8
+        static let verticalMargin: CGFloat = 40
     }
 
     enum Localization {

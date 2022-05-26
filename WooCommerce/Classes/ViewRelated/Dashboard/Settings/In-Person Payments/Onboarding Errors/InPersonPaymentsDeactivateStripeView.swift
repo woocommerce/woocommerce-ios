@@ -43,11 +43,11 @@ struct InPersonPaymentsDeactivateStripeView: View {
     }
 
     private var setupURL: URL? {
-        guard let adminURL = ServiceLocator.stores.sessionManager.defaultSite?.adminURL else {
+        guard let pluginsURL = ServiceLocator.stores.sessionManager.defaultSite?.pluginsURL else {
             return nil
         }
 
-        return URL(string: adminURL)
+        return URL(string: pluginsURL)
     }
 }
 

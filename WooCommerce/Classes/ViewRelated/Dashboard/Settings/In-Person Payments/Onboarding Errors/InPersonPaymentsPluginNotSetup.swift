@@ -39,11 +39,11 @@ struct InPersonPaymentsPluginNotSetup: View {
     }
 
     private var setupURL: URL? {
-        guard let adminURL = ServiceLocator.stores.sessionManager.defaultSite?.adminURL else {
+        guard let pluginSectionURL = ServiceLocator.stores.sessionManager.defaultSite?.pluginSettingsSectionURL(from: plugin) else {
             return nil
         }
 
-        return URL(string: adminURL)
+        return URL(string: pluginSectionURL)
     }
 }
 

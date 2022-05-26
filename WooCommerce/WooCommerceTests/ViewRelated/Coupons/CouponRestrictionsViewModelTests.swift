@@ -110,6 +110,7 @@ final class CouponRestrictionsViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(viewModel.shouldDisplayLimitUsageToXItemsRow)
 
+        // When
         viewModel.onDiscountTypeChanged(discountType: .percent)
 
         XCTAssertTrue(viewModel.shouldDisplayLimitUsageToXItemsRow)

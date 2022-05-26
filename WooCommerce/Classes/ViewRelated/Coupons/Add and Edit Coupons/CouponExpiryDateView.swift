@@ -7,6 +7,7 @@ struct CouponExpiryDateView: View {
     @Environment(\.presentationMode) var presentationMode
 
     @State var date: Date = Date()
+    @State var isRemovalEnabled: Bool = false
     var timezone: TimeZone
     let onCompletion: (Date?) -> Void
 
@@ -17,6 +18,9 @@ struct CouponExpiryDateView: View {
                     DatePicker("Date picker", selection: $date, displayedComponents: .date)
                         .environment(\.timeZone, timezone)
                         .datePickerStyle(GraphicalDatePickerStyle())
+                        .onChange(of: date, perform: { newDate in
+                                isRemovalEnabled = true
+                            })
                     Spacer()
                     VStack {
                         Divider()
@@ -30,6 +34,7 @@ struct CouponExpiryDateView: View {
                         Divider()
                     }
                     .padding(.top, Constants.verticalMargin)
+                    .renderedIf(isRemovalEnabled)
                 }
             }
         }

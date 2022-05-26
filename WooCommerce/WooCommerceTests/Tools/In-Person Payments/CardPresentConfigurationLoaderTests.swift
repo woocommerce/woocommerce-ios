@@ -19,14 +19,6 @@ final class CardPresentConfigurationLoaderTests: XCTestCase {
         try super.setUpWithError()
         storageManager = MockStorageManager()
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case .loadCanadaInPersonPaymentsSwitchState(let completion):
-                completion(.success(true))
-            default:
-                break
-            }
-        }
         stores.sessionManager.setStoreId(sampleSiteID)
         ServiceLocator.setSelectedSiteSettings(SelectedSiteSettings(stores: stores, storageManager: storageManager))
     }
@@ -39,9 +31,8 @@ final class CardPresentConfigurationLoaderTests: XCTestCase {
         try super.tearDownWithError()
     }
 
-    func test_configuration_for_US_with_stripe_enabled_and_canada_enabled() {
+    func test_configuration_for_US() {
         // Given
-        setupFeatures(stripe: true, canada: true)
         setupCountry(country: .us)
 
         // When
@@ -52,9 +43,8 @@ final class CardPresentConfigurationLoaderTests: XCTestCase {
         XCTAssertTrue(configuration.isSupportedCountry)
     }
 
-    func test_configuration_for_Canada_with_stripe_enabled_and_canada_enabled() {
+    func test_configuration_for_Canada() {
         // Given
-        setupFeatures(stripe: true, canada: true)
         setupCountry(country: .ca)
 
         // When
@@ -65,9 +55,8 @@ final class CardPresentConfigurationLoaderTests: XCTestCase {
         XCTAssertTrue(configuration.isSupportedCountry)
     }
 
-    func test_configuration_for_Spain_with_stripe_enabled_and_canada_enabled() {
+    func test_configuration_for_Spain() {
         // Given
-        setupFeatures(stripe: true, canada: true)
         setupCountry(country: .es)
 
         // When
@@ -96,16 +85,5 @@ private extension CardPresentConfigurationLoaderTests {
         case us = "US:CA"
         case ca = "CA:NS"
         case es = "ES"
-    }
-
-    func setupFeatures(stripe: Bool, canada: Bool) {
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case .loadCanadaInPersonPaymentsSwitchState(onCompletion: let completion):
-                completion(.success(canada))
-            default:
-                break
-            }
-        }
     }
 }

@@ -159,7 +159,6 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         // Given
         let settings = GeneralAppSettings(installationDate: nil,
                                           feedbacks: [:], isViewAddOnsSwitchEnabled: false,
-                                          isCanadaInPersonPaymentsSwitchEnabled: false,
                                           isProductSKUInputScannerSwitchEnabled: false,
                                           isCouponManagementSwitchEnabled: false,
                                           knownCardReaders: [])
@@ -226,7 +225,6 @@ private extension InAppFeedbackCardVisibilityUseCaseTests {
             installationDate: installationDate,
             feedbacks: [feedback.name: feedback],
             isViewAddOnsSwitchEnabled: false,
-            isCanadaInPersonPaymentsSwitchEnabled: false,
             isProductSKUInputScannerSwitchEnabled: false,
             isCouponManagementSwitchEnabled: false,
             knownCardReaders: []

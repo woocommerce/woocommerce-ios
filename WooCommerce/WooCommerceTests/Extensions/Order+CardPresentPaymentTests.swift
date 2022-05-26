@@ -7,7 +7,7 @@ import XCTest
 
 final class Order_CardPresentPaymentTests: XCTestCase {
     private static let currency = "US"
-    private let configuration = CardPresentPaymentsConfiguration(country: Order_CardPresentPaymentTests.currency, canadaEnabled: true)
+    private let configuration = CardPresentPaymentsConfiguration(country: Order_CardPresentPaymentTests.currency)
     private let eligibleOrder = Order.fake().copy(status: .pending,
                                                currency: Order_CardPresentPaymentTests.currency,
                                                datePaid: nil,

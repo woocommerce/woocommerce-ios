@@ -6,7 +6,7 @@ included:
   - Yosemite
 
 # Rules
-whitelist_rules:
+only_rules:
   # Closing brace with closing parenthesis should not have any whitespaces in
   # the middle.
   # - closing_brace

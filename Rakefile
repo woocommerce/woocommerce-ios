@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-SWIFTLINT_VERSION = '0.27.0'
+SWIFTLINT_VERSION = '0.47.1'
 XCODE_WORKSPACE = 'WooCommerce.xcworkspace'
 XCODE_SCHEME = 'WooCommerce'
 XCODE_CONFIGURATION = 'Debug'

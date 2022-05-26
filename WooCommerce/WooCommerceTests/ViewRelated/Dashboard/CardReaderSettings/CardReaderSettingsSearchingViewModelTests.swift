@@ -4,7 +4,7 @@ import XCTest
 
 private struct TestConstants {
     static let mockReaderID = "CHB204909005931"
-    static let mockConfiguration = CardPresentPaymentsConfiguration(country: "US", canadaEnabled: true)
+    static let mockConfiguration = CardPresentPaymentsConfiguration(country: "US")
 }
 
 final class CardReaderSettingsSearchingViewModelTests: XCTestCase {

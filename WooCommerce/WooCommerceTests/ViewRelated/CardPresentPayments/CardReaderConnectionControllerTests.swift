@@ -419,6 +419,6 @@ final class CardReaderConnectionControllerTests: XCTestCase {
 
 private extension CardReaderConnectionControllerTests {
     enum Mocks {
-        static let configuration = CardPresentPaymentsConfiguration(country: "US", canadaEnabled: true)
+        static let configuration = CardPresentPaymentsConfiguration(country: "US")
     }
 }

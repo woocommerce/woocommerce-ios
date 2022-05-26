@@ -381,8 +381,6 @@ private extension AddEditCoupon {
         static let addDescriptionPlaceholder = NSLocalizedString("Add the description of the coupon.",
                                                                  comment: "Placeholder text that will be shown in the view" +
                                                                  " for adding the description of a coupon.")
-        static let expiryDateActionSheetTitle = NSLocalizedString("Set an expiry date for this coupon",
-                                                                  comment: "Title of the action sheet for setting an expiry date for a coupon.")
         static let actionSheetEditExpirationDate = NSLocalizedString("Edit expiration date",
                                                                      comment: "Button in the action sheet for editing the expiration date of a coupon.")
         static let actionSheetDeleteExpirationDate = NSLocalizedString("Delete expiration date",

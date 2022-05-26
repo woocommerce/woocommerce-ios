@@ -7,7 +7,8 @@ struct CouponExpiryDateView: View {
 
     @State var date: Date = Date()
     var timezone: TimeZone
-    let completion: ((Date) -> Void)
+    let onCompletion: (Date) -> Void
+    let onRemoval: () -> Void
 
     var body: some View {
         GeometryReader { geometry in
@@ -17,7 +18,7 @@ struct CouponExpiryDateView: View {
                         .environment(\.timeZone, timezone)
                         .datePickerStyle(GraphicalDatePickerStyle())
                         .onChange(of: date) { newDate in
-                            completion(newDate)
+                            onCompletion(newDate)
                         }
                     Spacer()
                 }

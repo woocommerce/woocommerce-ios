@@ -70,6 +70,7 @@ final class CouponRestrictionsViewModelTests: XCTestCase {
     }
 
     func test_shouldDisplayLimitUsageToXItemsRow_is_false_when_fixed_cart_discount_type_is_set() {
+        // Given
         let sampleCoupon = Coupon.fake().copy(discountType: .fixedCart)
         let viewModel = CouponRestrictionsViewModel(coupon: sampleCoupon)
 

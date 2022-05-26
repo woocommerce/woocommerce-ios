@@ -18,33 +18,33 @@ extension Coupon.DiscountType {
         }
     }
 
-    /// Localized title to be displayed for the discount type in `AddEditCoupon` when in creation mode.
+    /// Description to be displayed on the discount type list selector.
     ///
-    var titleCreateCoupon: String {
+    var actionSheetDescription: String? {
         switch self {
         case .percent:
-            return Localization.titleCreatePercentageDiscount
+            return Localization.percentageDiscountDescription
         case .fixedCart:
-            return Localization.titleCreateFixedCartDiscount
+            return Localization.fixedCartDiscountDescription
         case .fixedProduct:
-            return Localization.titleCreateFixedProductDiscount
-        default:
-            return Localization.titleCreateGenericDiscount
+            return Localization.fixedProductDiscountDescription
+        case .other:
+            return nil
         }
     }
 
-    /// Localized title to be displayed for the discount type in `AddEditCoupon` when in editing mode.
+    /// Image to be displayed on the discount type list selector
     ///
-    var titleEditCoupon: String {
+    var actionSheetIcon: UIImage? {
         switch self {
         case .percent:
-            return Localization.titleEditPercentageDiscount
+            return UIImage.percentageDiscountIcon
         case .fixedCart:
-            return Localization.titleEditFixedCartDiscount
+            return UIImage.fixedCartDiscountIcon
         case .fixedProduct:
-            return Localization.titleEditFixedProductDiscount
-        default:
-            return Localization.titleEditGenericDiscount
+            return UIImage.fixedProductDiscountIcon
+        case .other:
+            return nil
         }
     }
 
@@ -53,30 +53,18 @@ extension Coupon.DiscountType {
         static let fixedCartDiscount = NSLocalizedString("Fixed Cart Discount", comment: "Name of fixed cart discount type")
         static let fixedProductDiscount = NSLocalizedString("Fixed Product Discount", comment: "Name of fixed product discount type")
         static let otherDiscount = NSLocalizedString("Other", comment: "Generic name of non-default discount types")
-        static let titleEditPercentageDiscount = NSLocalizedString(
-            "Edit percentage discount",
-            comment: "Title of the view for editing a coupon with percentage discount.")
-        static let titleEditFixedCartDiscount = NSLocalizedString(
-            "Edit fixed cart discount",
-            comment: "Title of the view for editing a coupon with fixed cart discount.")
-        static let titleEditFixedProductDiscount = NSLocalizedString(
-            "Edit fixed product discount",
-            comment: "Title of the view for editing a coupon with fixed product discount.")
-        static let titleEditGenericDiscount = NSLocalizedString(
-            "Edit discount",
-            comment: "Title of the view for editing a coupon with generic discount.")
-        static let titleCreatePercentageDiscount = NSLocalizedString(
-            "Create percentage discount",
-            comment: "Title of the view for creating a coupon with percentage discount.")
-        static let titleCreateFixedCartDiscount = NSLocalizedString(
-            "Create fixed cart discount",
-            comment: "Title of the view for creating a coupon with fixed cart discount.")
-        static let titleCreateFixedProductDiscount = NSLocalizedString(
-            "Create fixed product discount",
-            comment: "Title of the view for creating a coupon with fixed product discount.")
-        static let titleCreateGenericDiscount = NSLocalizedString(
-            "Create discount",
-            comment: "Title of the view for creating a coupon with generic discount.")
+        static let percentageDiscountDescription = NSLocalizedString(
+            "Create a percentage discount for selected products",
+            comment: "Description for percentage discount type on the action sheet presented from Add or Edit coupon screen"
+        )
+        static let fixedCartDiscountDescription = NSLocalizedString(
+            "Create a fixed total discount for the entire cart",
+            comment: "Description for fixed cart discount type on the action sheet presented from Add or Edit coupon screen"
+        )
+        static let fixedProductDiscountDescription = NSLocalizedString(
+            "Create a fixed total discount for selected products",
+            comment: "Description for fixed product discount type on the action sheet presented from Add or Edit coupon screen"
+        )
     }
 }
 

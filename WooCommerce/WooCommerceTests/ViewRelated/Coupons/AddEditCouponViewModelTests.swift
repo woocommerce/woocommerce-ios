@@ -4,32 +4,14 @@ import XCTest
 
 final class AddEditCouponViewModelTests: XCTestCase {
 
-    func test_titleView_property_return_expected_values_on_creation_depending_on_discountType() {
+    func test_titleView_property_return_expected_values_on_creation() {
         let viewModel1 = AddEditCouponViewModel(siteID: 123, discountType: .percent, onCompletion: { _ in })
-        XCTAssertEqual(viewModel1.title, Localization.titleCreatePercentageDiscount)
-
-        let viewModel2 = AddEditCouponViewModel(siteID: 123, discountType: .fixedCart, onCompletion: { _ in })
-        XCTAssertEqual(viewModel2.title, Localization.titleCreateFixedCartDiscount)
-
-        let viewModel3 = AddEditCouponViewModel(siteID: 123, discountType: .fixedProduct, onCompletion: { _ in })
-        XCTAssertEqual(viewModel3.title, Localization.titleCreateFixedProductDiscount)
-
-        let viewModel4 = AddEditCouponViewModel(siteID: 123, discountType: .other, onCompletion: { _ in })
-        XCTAssertEqual(viewModel4.title, Localization.titleCreateGenericDiscount)
+        XCTAssertEqual(viewModel1.title, NSLocalizedString("Create coupon", comment: ""))
     }
 
-    func test_titleView_property_return_expected_values_on_editing_depending_on_discountType() {
+    func test_titleView_property_return_expected_values_on_editing() {
         let viewModel1 = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(discountType: .percent), onCompletion: { _ in })
-        XCTAssertEqual(viewModel1.title, Localization.titleEditPercentageDiscount)
-
-        let viewModel2 = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(discountType: .fixedCart), onCompletion: { _ in })
-        XCTAssertEqual(viewModel2.title, Localization.titleEditFixedCartDiscount)
-
-        let viewModel3 = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(discountType: .fixedProduct), onCompletion: { _ in })
-        XCTAssertEqual(viewModel3.title, Localization.titleEditFixedProductDiscount)
-
-        let viewModel4 = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(discountType: .other), onCompletion: { _ in })
-        XCTAssertEqual(viewModel4.title, Localization.titleEditGenericDiscount)
+        XCTAssertEqual(viewModel1.title, NSLocalizedString("Edit coupon", comment: ""))
     }
 
     func test_generateRandomCouponCode_populate_correctly_the_codeField() {
@@ -124,6 +106,19 @@ final class AddEditCouponViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNil(result)
+    }
+
+    func test_hasChangesMade_is_correct_for_discount_type() {
+        // Given
+        let coupon = Coupon.sampleCoupon.copy(discountType: .percent)
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+        XCTAssertFalse(viewModel.hasChangesMade) // confidence check
+
+        // When
+        viewModel.discountType = .fixedProduct
+
+        // Then
+        XCTAssertTrue(viewModel.hasChangesMade)
     }
 
     func test_hasChangesMade_is_correct_for_coupon_code() {
@@ -241,34 +236,5 @@ final class AddEditCouponViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.hasChangesMade)
-    }
-}
-
-private extension AddEditCouponViewModelTests {
-    enum Localization {
-        static let titleCreatePercentageDiscount = NSLocalizedString(
-            "Create percentage discount",
-            comment: "Title of the view for creating a coupon with percentage discount.")
-        static let titleCreateFixedCartDiscount = NSLocalizedString(
-            "Create fixed cart discount",
-            comment: "Title of the view for creating a coupon with fixed cart discount.")
-        static let titleCreateFixedProductDiscount = NSLocalizedString(
-            "Create fixed product discount",
-            comment: "Title of the view for creating a coupon with fixed product discount.")
-        static let titleCreateGenericDiscount = NSLocalizedString(
-            "Create discount",
-            comment: "Title of the view for creating a coupon with generic discount.")
-        static let titleEditPercentageDiscount = NSLocalizedString(
-            "Edit percentage discount",
-            comment: "Title of the view for editing a coupon with percentage discount.")
-        static let titleEditFixedCartDiscount = NSLocalizedString(
-            "Edit fixed cart discount",
-            comment: "Title of the view for editing a coupon with fixed cart discount.")
-        static let titleEditFixedProductDiscount = NSLocalizedString(
-            "Edit fixed product discount",
-            comment: "Title of the view for editing a coupon with fixed product discount.")
-        static let titleEditGenericDiscount = NSLocalizedString(
-            "Edit discount",
-            comment: "Title of the view for editing a coupon with generic discount.")
     }
 }

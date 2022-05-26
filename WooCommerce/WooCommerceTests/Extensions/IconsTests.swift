@@ -172,6 +172,18 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.filterImage)
     }
 
+    func test_fixed_cart_discount_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.fixedCartDiscountIcon)
+    }
+
+    func test_fixed_product_discount_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.fixedProductDiscountIcon)
+    }
+
+    func test_percentage_discount_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.percentageDiscountIcon)
+    }
+
     func testGiftWithTopRightRedDotImageIsNotNil() {
         XCTAssertNotNil(UIImage.giftWithTopRightRedDotImage)
     }

@@ -4,6 +4,7 @@ import WordPressAuthenticator
 /// View for selecting a date in SwiftUI.
 ///
 struct CouponExpiryDateView: View {
+    @Environment(\.presentationMode) var presentationMode
 
     @State var date: Date = Date()
     var timezone: TimeZone
@@ -21,6 +22,11 @@ struct CouponExpiryDateView: View {
                             onCompletion(newDate)
                         }
                     Spacer()
+                    Button(action: {
+                        onRemoval()
+                        presentationMode.wrappedValue.dismiss()
+                    }, label: { Text("Remove") })
+                    .buttonStyle(SecondaryButtonStyle())
                 }
             }
         }

@@ -1,6 +1,6 @@
 swiftlint:
     config_file: .swiftlint.yml
-    version: 0.41.0
+    version: 0.43.1
 ruby:
   enabled: false
 

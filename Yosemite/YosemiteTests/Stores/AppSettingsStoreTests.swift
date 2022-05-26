@@ -801,7 +801,6 @@ private extension AppSettingsStoreTests {
             installationDate: installationDate,
             feedbacks: [feedback.name: feedback],
             isViewAddOnsSwitchEnabled: false,
-            isCanadaInPersonPaymentsSwitchEnabled: false,
             isProductSKUInputScannerSwitchEnabled: false,
             isCouponManagementSwitchEnabled: false,
             knownCardReaders: []

@@ -342,7 +342,6 @@ private extension AppSettingsStore {
             return GeneralAppSettings(installationDate: nil,
                                       feedbacks: [:],
                                       isViewAddOnsSwitchEnabled: false,
-                                      isCanadaInPersonPaymentsSwitchEnabled: false,
                                       isProductSKUInputScannerSwitchEnabled: false,
                                       isCouponManagementSwitchEnabled: false,
                                       knownCardReaders: [],

@@ -2,21 +2,15 @@ import Foundation
 import Yosemite
 
 final class CardPresentConfigurationLoader {
-    private var canadaIPPEnabled: Bool = false
-
     init(stores: StoresManager = ServiceLocator.stores) {
-        let canadaAction = AppSettingsAction.loadCanadaInPersonPaymentsSwitchState(onCompletion: { [weak self]  result in
-            if case .success(let canadaIPPEnabled) = result {
-                self?.canadaIPPEnabled = canadaIPPEnabled
-            }
-        })
-        stores.dispatch(canadaAction)
+        // This initialized is kept since this is where we'd check for
+        // feature flags while developing support for a new country
+        // See https://github.com/woocommerce/woocommerce-ios/pull/6954
     }
 
     var configuration: CardPresentPaymentsConfiguration {
         .init(
-            country: SiteAddress().countryCode,
-            canadaEnabled: canadaIPPEnabled
+            country: SiteAddress().countryCode
         )
     }
 }

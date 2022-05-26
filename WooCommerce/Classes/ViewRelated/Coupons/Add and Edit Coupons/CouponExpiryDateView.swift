@@ -18,9 +18,6 @@ struct CouponExpiryDateView: View {
                     DatePicker("Date picker", selection: $date, displayedComponents: .date)
                         .environment(\.timeZone, timezone)
                         .datePickerStyle(GraphicalDatePickerStyle())
-                        .onChange(of: date) { newDate in
-                            onCompletion(newDate)
-                        }
                     Spacer()
                     Button(action: {
                         onRemoval()
@@ -33,6 +30,14 @@ struct CouponExpiryDateView: View {
         .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(Localization.title)
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button("Done") {
+                    onCompletion(date)
+                    presentationMode.wrappedValue.dismiss()
+                }
+            }
+        }
     }
 }
 

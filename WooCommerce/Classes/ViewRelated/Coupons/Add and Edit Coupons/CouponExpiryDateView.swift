@@ -42,6 +42,6 @@ private extension CouponExpiryDateView {
 
 struct CouponExpiryDateView_Previews: PreviewProvider {
     static var previews: some View {
-        CouponExpiryDateView(date: Date(), timezone: TimeZone.siteTimezone, completion: { _ in })
+        CouponExpiryDateView(date: Date(), timezone: TimeZone.siteTimezone, onCompletion: { _ in }, onRemoval: {})
     }
 }

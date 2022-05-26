@@ -275,6 +275,7 @@ struct AddEditCoupon: View {
                         }
 
                         LazyNavigationLink(destination: CouponExpiryDateView(date: viewModel.expiryDateField ?? Date(),
+                                                                             isRemovalEnabled: viewModel.expiryDateField != nil,
                                                                              timezone: viewModel.timezone,
                                                                              onCompletion: { updatedExpiryDate in
                             viewModel.expiryDateField = updatedExpiryDate

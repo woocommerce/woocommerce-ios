@@ -11,7 +11,7 @@ struct MockCollectOrderPaymentUseCase: CollectOrderPaymentProtocol {
 
     /// Calls `onCollect` and `onCompleted` secuencially.
     ///
-    func collectPayment(backButtonTitle: String, onCollect: @escaping (Result<Void, Error>) -> (), onCompleted: @escaping () -> ()) {
+    func collectPayment(onCollect: @escaping (Result<Void, Error>) -> (), onCompleted: @escaping () -> ()) {
         onCollect(onCollectResult)
         if onCollectResult.isSuccess {
             onCompleted()

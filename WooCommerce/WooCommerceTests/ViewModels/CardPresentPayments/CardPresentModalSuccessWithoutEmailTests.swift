@@ -9,7 +9,6 @@ final class CardPresentModalSuccessWithoutEmailTests: XCTestCase {
         super.setUp()
         closures = Closures()
         viewModel = CardPresentModalSuccessWithoutEmail(printReceipt: closures.printReceipt(),
-                                                        noReceiptTitle: "Back",
                                                         noReceiptAction: closures.noReceiptAction())
     }
 
@@ -37,7 +36,6 @@ final class CardPresentModalSuccessWithoutEmailTests: XCTestCase {
 
     func test_secondary_button_title_is_not_nil() {
         XCTAssertNotNil(viewModel.secondaryButtonTitle)
-        XCTAssertEqual(viewModel.secondaryButtonTitle, "Back")
     }
 
     func test_auxiliary_button_title_is_nil() {

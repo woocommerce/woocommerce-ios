@@ -398,4 +398,46 @@ final class CouponDetailsViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(viewModel.isDeletionInProgress)
     }
+
+    func test_shouldDisplayLimitUsageToXItems_should_be_false_when_discount_type_is_fixed_cart() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(
+            siteID: 123,
+            couponID: 456,
+            discountType: .fixedCart,
+            limitUsageToXItems: 5
+        )
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon)
+
+        // Then
+        XCTAssertFalse(viewModel.shouldDisplayLimitUsageToXItems)
+    }
+
+    func test_shouldDisplayLimitUsageToXItems_should_be_false_when_limitUsageToXItems_is_zero() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(
+            siteID: 123,
+            couponID: 456,
+            discountType: .percent,
+            limitUsageToXItems: 0
+        )
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon)
+
+        // Then
+        XCTAssertFalse(viewModel.shouldDisplayLimitUsageToXItems)
+    }
+
+    func test_shouldDisplayLimitUsageToXItems_should_be_true() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(
+            siteID: 123,
+            couponID: 456,
+            discountType: .percent,
+            limitUsageToXItems: 5
+        )
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldDisplayLimitUsageToXItems)
+    }
 }

@@ -56,6 +56,34 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertEqual(actualTitles, expectedTitles)
     }
 
+    func test_reloadSections_when_there_is_no_paid_date_then_customer_paid_row_is_hidden() throws {
+        // Given
+        let order = Order.fake()
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
+        let customerPaidRow = row(row: .customerPaid, in: paymentSection)
+        XCTAssertNil(customerPaidRow)
+    }
+
+    func test_reloadSections_when_there_is_a_paid_date_then_customer_paid_row_is_visible() throws {
+        // Given
+        let order = Order.fake().copy(datePaid: Date())
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
+        let customerPaidRow = row(row: .customerPaid, in: paymentSection)
+        XCTAssertNotNil(customerPaidRow)
+    }
+
     func test_refund_button_is_visible() throws {
         // Given
         let order = makeOrder()

@@ -45,7 +45,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
     func test_collectPayment_without_reader_connection_does_not_track_collectPaymentTapped_event() {
         // When
-        useCase.collectPayment(backButtonTitle: "", onCollect: { _ in }, onCompleted: {})
+        useCase.collectPayment(onCollect: { _ in }, onCompleted: {})
 
         // Then
         XCTAssertFalse(analyticsProvider.receivedEvents.contains("card_present_collect_payment_tapped"))
@@ -54,7 +54,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
     func test_collectPayment_tracks_collectPaymentTapped_event() throws {
         // When
         mockCardPresentPaymentActions()
-        useCase.collectPayment(backButtonTitle: "", onCollect: { _ in }, onCompleted: {})
+        useCase.collectPayment(onCollect: { _ in }, onCompleted: {})
 
         // Then
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "card_present_collect_payment_tapped"}))
@@ -71,7 +71,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         // When
         mockCardPresentPaymentActions()
         let _: Void = waitFor { promise in
-            self.useCase.collectPayment(backButtonTitle: "", onCollect: { _ in }, onCompleted: {
+            self.useCase.collectPayment(onCollect: { _ in }, onCompleted: {
                 promise(())
             })
             self.alerts.cancelReaderIsReadyAlert?()
@@ -100,7 +100,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         // When
         waitFor { promise in
-            self.useCase.collectPayment(backButtonTitle: "", onCollect: { _ in
+            self.useCase.collectPayment(onCollect: { _ in
                 promise(())
             }, onCompleted: {})
         }
@@ -120,7 +120,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         // When
         waitFor { promise in
-            self.useCase.collectPayment(backButtonTitle: "", onCollect: { _ in
+            self.useCase.collectPayment(onCollect: { _ in
                 promise(())
             }, onCompleted: {})
         }
@@ -138,7 +138,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         // When
         waitFor { promise in
-            self.useCase.collectPayment(backButtonTitle: "", onCollect: { _ in
+            self.useCase.collectPayment(onCollect: { _ in
                 promise(())
             }, onCompleted: {})
         }
@@ -158,7 +158,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         // When
         waitFor { promise in
-            self.useCase.collectPayment(backButtonTitle: "", onCollect: { _ in
+            self.useCase.collectPayment(onCollect: { _ in
                 promise(())
             }, onCompleted: {})
         }
@@ -190,7 +190,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         mockCardPresentPaymentActions()
         var result: Result<Void, Error>? = nil
         let _: Void = waitFor { [weak self] promise in
-            useCase.collectPayment(backButtonTitle: "", onCollect: { collectPaymentResult in
+            useCase.collectPayment(onCollect: { collectPaymentResult in
                 result = collectPaymentResult
             }, onCompleted: {
                 promise(())
@@ -221,7 +221,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         // When
         waitFor { promise in
-            self.useCase.collectPayment(backButtonTitle: "", onCollect: { _ in
+            self.useCase.collectPayment(onCollect: { _ in
                 promise(())
             }, onCompleted: {})
         }
@@ -245,7 +245,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         // When
         waitFor { promise in
-            self.useCase.collectPayment(backButtonTitle: "", onCollect: { _ in
+            self.useCase.collectPayment(onCollect: { _ in
                 promise(())
             }, onCompleted: {})
         }

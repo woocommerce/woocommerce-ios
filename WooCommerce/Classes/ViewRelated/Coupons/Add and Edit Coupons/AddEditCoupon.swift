@@ -73,32 +73,6 @@ struct AddEditCoupon: View {
     @State private var showingSelectCategories: Bool = false
     @State private var showingDiscountType: Bool = false
 
-    private var expiryDateActionSheetButtons: [Alert.Button] {
-        var buttons: [Alert.Button] = []
-
-        if viewModel.expiryDateField != nil {
-            buttons = [
-                .default(Text(Localization.actionSheetEditExpirationDate), action: {
-                    showingCouponExpiryDate = true
-                }),
-                .destructive(Text(Localization.actionSheetDeleteExpirationDate), action: {
-                    viewModel.expiryDateField = nil
-                })
-            ]
-        }
-        else {
-            buttons = [
-                .default(Text(Localization.actionSheetAddExpirationDate), action: {
-                    showingCouponExpiryDate = true
-                })
-            ]
-        }
-
-        buttons.append(.cancel())
-
-        return buttons
-    }
-
     private var idiom: UIUserInterfaceIdiom { UIDevice.current.userInterfaceIdiom }
     private let viewProperties = BottomSheetListSelectorViewProperties(title: Localization.discountTypeSheetTitle)
 
@@ -201,14 +175,8 @@ struct AddEditCoupon: View {
                                 TitleAndValueRow(title: Localization.couponExpiryDate,
                                                  value: viewModel.expiryDateValue,
                                                  selectionStyle: .disclosure, action: {
-                                    showingCouponExpiryActionSheet = true
+                                    showingCouponExpiryDate = true
                                 })
-                                    .actionSheet(isPresented: $showingCouponExpiryActionSheet) {
-                                        ActionSheet(
-                                            title: Text(Localization.expiryDateActionSheetTitle),
-                                            buttons: expiryDateActionSheetButtons
-                                        )
-                                    }
                                 Divider()
                                     .padding(.leading, Constants.margin)
                             }

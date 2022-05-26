@@ -987,7 +987,7 @@ platform :ios do
 
     git_commit(
       path: en_lproj_path,
-      message: 'Update strings for localization',
+      message: 'Freeze strings for localization',
       allow_nothing_to_commit: true
     )
   end

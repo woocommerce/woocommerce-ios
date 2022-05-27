@@ -27,7 +27,10 @@ struct CouponExpiryDateView: View {
                         Button(action: {
                             onCompletion(nil)
                             presentationMode.wrappedValue.dismiss()
-                        }, label: { Text(Localization.removeButton) })
+                        }, label: {
+                            Text(Localization.removeButton)
+                                .bold()
+                        })
                         .buttonStyle(PlainButtonStyle())
                         .padding(.vertical, Constants.margin)
                         .foregroundColor(Color(.error))

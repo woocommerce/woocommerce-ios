@@ -56,53 +56,6 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
     ///
     private let localIDStore = LocalIDStore()
 
-    // MARK: Private publishers for significant order input
-
-    private lazy var productInput: AnyPublisher<Order, Never> = {
-        setProduct.withLatestFrom(orderPublisher)
-            .map { [weak self] productInput, order -> Order in
-                guard let self = self else { return order }
-                let localInput = self.replaceInputWithLocalIDIfNeeded(productInput)
-                let updatedOrder = ProductInputTransformer.update(input: localInput, on: order, updateZeroQuantities: true)
-                // Calculate order total locally while order is being synced
-                return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
-            }
-            .share()
-            .eraseToAnyPublisher()
-    }()
-
-    private lazy var addressInput: AnyPublisher<Order, Never> = {
-        setAddresses.withLatestFrom(orderPublisher)
-            .map { addressesInput, order in
-                order.copy(billingAddress: .some(addressesInput?.billing), shippingAddress: .some(addressesInput?.shipping))
-            }
-            .share()
-            .eraseToAnyPublisher()
-    }()
-
-    private lazy var shippingInput: AnyPublisher<Order, Never> = { setShipping.withLatestFrom(orderPublisher)
-            .map { [weak self] shippingLineInput, order -> Order in
-                guard let self = self else { return order }
-                let updatedOrder = ShippingInputTransformer.update(input: shippingLineInput, on: order)
-                // Calculate order total locally while order is being synced
-                return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
-            }
-            .share()
-            .eraseToAnyPublisher()
-    }()
-
-    private lazy var feeInput: AnyPublisher<Order, Never> = {
-        setFee.withLatestFrom(orderPublisher)
-            .map { [weak self] feeLineInput, order -> Order in
-                guard let self = self else { return order }
-                let updatedOrder = FeesInputTransformer.update(input: feeLineInput, on: order)
-                // Calculate order total locally while order is being synced
-                return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
-            }
-            .share()
-            .eraseToAnyPublisher()
-    }()
-
     // MARK: Initializers
 
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
@@ -112,7 +65,6 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
 
         updateBaseSyncOrderStatus()
         bindInputs()
-        bindOrderSync()
     }
 
     // MARK: Methods
@@ -159,28 +111,66 @@ private extension RemoteOrderSynchronizer {
             }
             .assign(to: &$order)
 
-        productInput.assign(to: &$order)
+        let setProduct: AnyPublisher<Order, Never> = setProduct.withLatestFrom(orderPublisher)
+            .map { [weak self] productInput, order -> Order in
+                guard let self = self else { return order }
+                let localInput = self.replaceInputWithLocalIDIfNeeded(productInput)
+                let updatedOrder = ProductInputTransformer.update(input: localInput, on: order, updateZeroQuantities: true)
+                // Calculate order total locally while order is being synced
+                return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
+            }
+            .share()
+            .eraseToAnyPublisher()
+        setProduct.assign(to: &$order)
 
-        addressInput.assign(to: &$order)
+        let setAddress: AnyPublisher<Order, Never> = setAddresses.withLatestFrom(orderPublisher)
+            .map { addressesInput, order in
+                order.copy(billingAddress: .some(addressesInput?.billing), shippingAddress: .some(addressesInput?.shipping))
+            }
+            .share()
+            .eraseToAnyPublisher()
+        setAddress.assign(to: &$order)
 
-        shippingInput.assign(to: &$order)
+        let setShipping: AnyPublisher<Order, Never> = setShipping.withLatestFrom(orderPublisher)
+            .map { [weak self] shippingLineInput, order -> Order in
+                guard let self = self else { return order }
+                let updatedOrder = ShippingInputTransformer.update(input: shippingLineInput, on: order)
+                // Calculate order total locally while order is being synced
+                return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
+            }
+            .share()
+            .eraseToAnyPublisher()
+        setShipping.assign(to: &$order)
 
-        feeInput.assign(to: &$order)
+        let setFee: AnyPublisher<Order, Never> = setFee.withLatestFrom(orderPublisher)
+            .map { [weak self] feeLineInput, order -> Order in
+                guard let self = self else { return order }
+                let updatedOrder = FeesInputTransformer.update(input: feeLineInput, on: order)
+                // Calculate order total locally while order is being synced
+                return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
+            }
+            .share()
+            .eraseToAnyPublisher()
+        setFee.assign(to: &$order)
 
         setNote.withLatestFrom(orderPublisher)
             .map { notes, order in
                 order.copy(customerNote: notes)
             }
             .assign(to: &$order)
+
+        // Combine inputs that should trigger an order sync operation.
+        let syncTrigger: AnyPublisher<Order, Never> = setProduct
+            .merge(with: setAddress, setShipping, setFee)
+            .merge(with: retryTrigger.compactMap { [weak self] in self?.order })
+            .eraseToAnyPublisher()
+        bindOrderSync(trigger: syncTrigger)
     }
 
     /// Creates or updates the order when a significant order input occurs.
     ///
-    func bindOrderSync() {
-        // Combine inputs that should trigger an order sync operation.
-        let syncTrigger: AnyPublisher<Order, Never> = productInput
-            .merge(with: addressInput, shippingInput, feeInput)
-            .merge(with: retryTrigger.compactMap { [weak self] in self?.order })
+    func bindOrderSync(trigger: AnyPublisher<Order, Never>) {
+        let syncTrigger: AnyPublisher<Order, Never> = trigger
             .debounce(for: 0.5, scheduler: DispatchQueue.main) // Group & wait for 0.5 since the last signal was emitted.
             .compactMap { [weak self] order in
                 guard let self = self else { return nil }

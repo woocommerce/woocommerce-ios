@@ -1,6 +1,6 @@
 import Foundation
 import Yosemite
-import Tools
+import WooFoundation
 
 /// Calculates the total value(cost + tax) to be refunded from a shipping line.
 ///

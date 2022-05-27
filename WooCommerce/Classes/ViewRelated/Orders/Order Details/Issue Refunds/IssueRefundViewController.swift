@@ -1,6 +1,6 @@
 import UIKit
 import Yosemite
-import Tools
+import WooFoundation
 
 /// Screen that allows the user to refund items (products and shipping) of an order
 ///

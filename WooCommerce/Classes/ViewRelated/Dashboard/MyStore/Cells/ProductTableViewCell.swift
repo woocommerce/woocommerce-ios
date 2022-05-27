@@ -2,7 +2,7 @@ import UIKit
 import Yosemite
 import WordPressUI
 import Gridicons
-import Tools
+import WooFoundation
 
 final class ProductTableViewCell: UITableViewCell {
 

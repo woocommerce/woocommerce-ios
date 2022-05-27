@@ -1,6 +1,6 @@
 import Foundation
 import Yosemite
-import Tools
+import WooFoundation
 
 /// ViewModel for presenting refund confirmation to the user.
 ///

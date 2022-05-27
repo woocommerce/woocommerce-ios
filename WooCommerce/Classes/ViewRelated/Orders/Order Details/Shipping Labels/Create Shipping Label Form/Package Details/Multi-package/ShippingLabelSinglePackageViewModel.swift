@@ -2,7 +2,7 @@ import Combine
 import UIKit
 import SwiftUI
 import Yosemite
-import Tools
+import WooFoundation
 
 /// View model for `ShippingLabelSinglePackage`.
 ///

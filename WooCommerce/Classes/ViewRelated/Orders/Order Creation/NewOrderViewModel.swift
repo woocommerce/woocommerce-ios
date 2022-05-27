@@ -2,7 +2,7 @@ import Yosemite
 import Combine
 import protocol Storage.StorageManagerType
 import Experiments
-import Tools
+import WooFoundation
 import enum Networking.DotcomError
 
 /// View model for `NewOrder`.

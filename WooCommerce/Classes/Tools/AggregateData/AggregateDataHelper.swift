@@ -1,6 +1,6 @@
 import Foundation
 import Yosemite
-import Tools
+import WooFoundation
 
 
 // MARK: - A helper class for calculating aggregate data

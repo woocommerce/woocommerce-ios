@@ -1,6 +1,6 @@
 import Foundation
 import Yosemite
-import Tools
+import WooFoundation
 @testable import WooCommerce
 
 struct MockOrderRefundsOptionsDeterminer: OrderRefundsOptionsDeterminerProtocol {

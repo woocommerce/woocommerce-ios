@@ -1,5 +1,5 @@
 import Yosemite
-import Tools
+import WooFoundation
 
 /// Aggregates the order items included in a shipping label for UI display given the currently available `OrderItem`s, `Product`s,
 /// and `ProductVariation`s from an `Order`.

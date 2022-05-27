@@ -1,7 +1,7 @@
 import Combine
 import Foundation
 import Yosemite
-import Tools
+import WooFoundation
 import protocol Storage.StorageManagerType
 
 /// View Model for `CouponRestriction`

@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 import Yosemite
-import Tools
+import WooFoundation
 
 /// The main file for Refund Details data.
 /// Must conform to NSObject so it can be the UITableViewDataSource.

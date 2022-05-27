@@ -1,7 +1,7 @@
 import XCTest
 @testable import WooCommerce
 import Yosemite
-import Tools
+import WooFoundation
 
 class ShippingLabelSinglePackageViewModelTests: XCTestCase {
 

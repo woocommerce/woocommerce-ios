@@ -1,7 +1,7 @@
 import XCTest
 import Yosemite
 import Foundation
-import Tools
+import WooFoundation
 @testable import WooCommerce
 
 final class OrderRefundsOptionsDeterminerTests: XCTestCase {

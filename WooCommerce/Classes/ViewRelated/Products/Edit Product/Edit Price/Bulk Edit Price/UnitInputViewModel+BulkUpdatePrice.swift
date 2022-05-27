@@ -1,5 +1,5 @@
 import Foundation
-import Tools
+import WooFoundation
 
 extension UnitInputViewModel {
     /// Creates a `UnitInputViewModel` for configuring the cell for the bulk price update.

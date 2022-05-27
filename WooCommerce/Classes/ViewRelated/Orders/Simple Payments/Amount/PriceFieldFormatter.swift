@@ -1,5 +1,5 @@
 import Foundation
-import Tools
+import WooFoundation
 
 class PriceFieldFormatter {
 

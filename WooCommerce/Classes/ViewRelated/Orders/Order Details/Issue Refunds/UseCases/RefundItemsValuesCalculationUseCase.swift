@@ -1,6 +1,6 @@
 import Foundation
 import Yosemite
-import Tools
+import WooFoundation
 
 /// Calculates the values(subtotal, total and tax) to be refunded.
 ///

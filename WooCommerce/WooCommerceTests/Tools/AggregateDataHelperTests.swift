@@ -2,7 +2,7 @@ import XCTest
 import Foundation
 @testable import WooCommerce
 @testable import Networking
-@testable import Tools
+@testable import WooFoundation
 
 
 /// AggregateOrderItem Tests

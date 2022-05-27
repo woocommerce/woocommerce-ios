@@ -1,7 +1,7 @@
 import Foundation
 import Yosemite
 import Combine
-import Tools
+import WooFoundation
 
 /// Type that syncs the order with the remote server.
 ///

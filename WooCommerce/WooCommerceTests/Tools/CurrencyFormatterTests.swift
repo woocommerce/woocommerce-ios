@@ -2,7 +2,7 @@ import XCTest
 @testable import WooCommerce
 @testable import Networking
 import Yosemite
-import Tools
+import WooFoundation
 
 /// Currency Formatter Tests - Decimals
 ///

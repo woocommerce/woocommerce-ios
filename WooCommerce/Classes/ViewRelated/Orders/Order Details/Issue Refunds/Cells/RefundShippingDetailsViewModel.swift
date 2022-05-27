@@ -1,6 +1,6 @@
 import Foundation
 import Yosemite
-import Tools
+import WooFoundation
 
 /// Represents shipping details for an order to be refunded. Meant to be rendered by `RefundShippingDetailsTableViewCell`
 ///

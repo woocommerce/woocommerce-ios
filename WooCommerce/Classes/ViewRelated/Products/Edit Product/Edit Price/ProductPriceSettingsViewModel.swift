@@ -1,5 +1,5 @@
 import Yosemite
-import Tools
+import WooFoundation
 
 /// Provides data needed for price settings.
 ///

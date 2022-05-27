@@ -1,6 +1,6 @@
 import Foundation
 import Yosemite
-import Tools
+import WooFoundation
 
 // MARK: - View Model for a Variation Attribute
 //

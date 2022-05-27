@@ -3,7 +3,7 @@ import Combine
 import UIKit
 import struct WordPressUI.GhostStyle
 import Yosemite
-import Tools
+import WooFoundation
 
 /// Different display modes of site visit stats
 ///

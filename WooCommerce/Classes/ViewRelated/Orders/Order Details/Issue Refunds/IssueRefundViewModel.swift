@@ -1,6 +1,6 @@
 import Foundation
 import Yosemite
-import Tools
+import WooFoundation
 import protocol Storage.StorageManagerType
 
 /// ViewModel for presenting the issue refund screen to the user.

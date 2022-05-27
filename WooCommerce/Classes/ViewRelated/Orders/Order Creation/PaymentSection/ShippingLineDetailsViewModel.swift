@@ -1,5 +1,5 @@
 import SwiftUI
-import Tools
+import WooFoundation
 import struct Yosemite.ShippingLine
 
 class ShippingLineDetailsViewModel: ObservableObject {

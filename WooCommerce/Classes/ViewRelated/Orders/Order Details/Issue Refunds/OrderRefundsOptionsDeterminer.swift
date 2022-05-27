@@ -1,6 +1,6 @@
 import Foundation
 import Yosemite
-import Tools
+import WooFoundation
 
 /// Encapsulates the logic related with the refunding options of an Order
 ///

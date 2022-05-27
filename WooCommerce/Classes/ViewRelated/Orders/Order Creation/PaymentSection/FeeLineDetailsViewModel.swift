@@ -1,6 +1,6 @@
 import SwiftUI
 import Yosemite
-import Tools
+import WooFoundation
 
 class FeeLineDetailsViewModel: ObservableObject {
 

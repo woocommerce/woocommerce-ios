@@ -2,7 +2,7 @@ import Combine
 import protocol Storage.StorageManagerType
 import Yosemite
 import Foundation
-import Tools
+import WooFoundation
 
 /// Provides data and observables for UI in `StoreStatsV4PeriodViewController`.
 final class StoreStatsPeriodViewModel {

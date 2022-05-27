@@ -1,6 +1,6 @@
 import SwiftUI
 import Yosemite
-import Tools
+import WooFoundation
 
 struct ShippingLabelCarrierRowViewModel: Identifiable {
     internal let id = UUID()

@@ -1,6 +1,6 @@
 import Foundation
 import Yosemite
-import Tools
+import WooFoundation
 
 /// Represents an order item to be refunded. Meant to be rendered by `RefundItemTableViewCell`
 ///

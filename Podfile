@@ -110,10 +110,10 @@ target 'YosemiteTests' do
   yosemite_pods
 end
 
-# Tools Layer:
+# WooFoundation Layer:
 # ===============
 #
-def tools_pods
+def woofoundation_pods
   pod 'CocoaLumberjack', '~> 3.7.4'
   pod 'CocoaLumberjack/Swift', '~> 3.7.4'
 end
@@ -121,17 +121,17 @@ end
 # Tools Target:
 # ================
 #
-target 'Tools' do
-  project 'Tools/Tools.xcodeproj'
-  tools_pods
+target 'WooFoundation' do
+  project 'WooFoundation/WooFoundation.xcodeproj'
+  woofoundation_pods
 end
 
 # Unit Tests
 # ==========
 #
-target 'ToolsTests' do
-  project 'Tools/Tools.xcodeproj'
-  tools_pods
+target 'WooFoundationTests' do
+  project 'WooFoundation/WooFoundation.xcodeproj'
+  woofoundation_pods
 end
 
 # Networking Layer:

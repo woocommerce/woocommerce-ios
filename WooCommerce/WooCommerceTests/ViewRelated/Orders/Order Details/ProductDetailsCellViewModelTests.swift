@@ -1,7 +1,7 @@
 import XCTest
 @testable import WooCommerce
 import Yosemite
-import Tools
+import WooFoundation
 
 final class ProductDetailsCellViewModelTests: XCTestCase {
     private let currencyFormatter = CurrencyFormatter(currencySettings: .init())

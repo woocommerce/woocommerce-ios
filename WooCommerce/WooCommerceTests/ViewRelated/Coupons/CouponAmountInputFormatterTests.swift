@@ -1,5 +1,5 @@
 import XCTest
-import Tools
+import WooFoundation
 @testable import WooCommerce
 
 final class CouponAmountInputFormatterTests: XCTestCase {

@@ -4,7 +4,7 @@ import Experiments
 import Storage
 import Yosemite
 import Hardware
-import Tools
+import WooFoundation
 
 /// Provides global dependencies.
 ///

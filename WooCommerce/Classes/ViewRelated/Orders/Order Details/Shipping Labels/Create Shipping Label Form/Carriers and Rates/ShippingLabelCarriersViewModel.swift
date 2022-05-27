@@ -1,7 +1,7 @@
 import UIKit
 import SwiftUI
 import Yosemite
-import Tools
+import WooFoundation
 
 final class ShippingLabelCarriersViewModel: ObservableObject {
 

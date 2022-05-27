@@ -1,5 +1,5 @@
 import Foundation
-import Tools
+import WooFoundation
 
 /// `UnitInputFormatter` implementation for decimal price input.
 ///

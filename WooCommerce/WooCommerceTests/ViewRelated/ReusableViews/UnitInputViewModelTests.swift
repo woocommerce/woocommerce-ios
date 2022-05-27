@@ -1,6 +1,6 @@
 import Combine
 import XCTest
-import Tools
+import WooFoundation
 @testable import WooCommerce
 
 /// Test cases for `UnitInputViewModelTests`.

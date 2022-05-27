@@ -1,5 +1,5 @@
 import Yosemite
-import Tools
+import WooFoundation
 
 extension Product {
 

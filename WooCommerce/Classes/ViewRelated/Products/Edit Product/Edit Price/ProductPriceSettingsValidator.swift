@@ -1,5 +1,5 @@
 import Foundation
-import Tools
+import WooFoundation
 
 /// Error cases that could occur in product price settings.
 ///

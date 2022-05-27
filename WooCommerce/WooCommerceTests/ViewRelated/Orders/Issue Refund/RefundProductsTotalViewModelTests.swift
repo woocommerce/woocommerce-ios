@@ -1,6 +1,6 @@
 import XCTest
 import Yosemite
-import Tools
+import WooFoundation
 @testable import WooCommerce
 
 /// Test cases for `RefundProductsTotalViewModel`

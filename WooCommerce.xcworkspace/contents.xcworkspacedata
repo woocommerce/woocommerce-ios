@@ -8,7 +8,7 @@
       location = "group:Yosemite/Yosemite.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:Tools/Tools.xcodeproj">
+      location = "group:/Users/toupper/Projects/Repos/woocommerce-ios/Tools/WooFoundation.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Storage/Storage.xcodeproj">
@@ -35,6 +35,6 @@
       location = "group:Pods/Pods.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:Tools/Tools.xcodeproj">
+      location = "group:WooFoundation/WooFoundation.xcodeproj">
    </FileRef>
 </Workspace>

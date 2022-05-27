@@ -1,5 +1,5 @@
 import UIKit
-import Tools
+import WooFoundation
 import struct Yosemite.ShippingLabel
 
 /// Displays a list of shipping label details like shipping addresses, carrier and rates, payment method.

@@ -123,100 +123,79 @@ extension StripeCardReaderService: CardReaderService {
         })
     }
 
-    public func cancelDiscovery() -> Future <Void, Error> {
-        Future { [weak self] promise in
-            /**
-             *https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)discoverReaders:delegate:completion:
-             *
-             * The discovery process will stop on its own when the terminal
-             * successfully connects to a reader, if the command is
-             * canceled, or if a discovery error occurs.
-             * So it does not hurt to check that we are actually in
-             * discovering mode before attempting a cancellation
-             *
-             */
-            guard let self = self,
-                  let discoveryCancellable = self.discoveryCancellable,
-                  self.discoveryStatusSubject.value == .discovering else {
-                return promise(.success(()))
-            }
+    public func cancelDiscovery() async throws {
+        /**
+         *https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)discoverReaders:delegate:completion:
+         *
+         * The discovery process will stop on its own when the terminal
+         * successfully connects to a reader, if the command is
+         * canceled, or if a discovery error occurs.
+         * So it does not hurt to check that we are actually in
+         * discovering mode before attempting a cancellation
+         *
+         */
+        guard let discoveryCancellable = self.discoveryCancellable,
+              self.discoveryStatusSubject.value == .discovering else {
+            return
+        }
 
-            // If all the previous checks are ok, and we are going to definitely cancel an existing
-            // cancelable, then we attempt to grab a lock on the discovery process.
-            // If it's not possible, then another start or cancel might be in progress, so we'll fail right away.
-            guard self.discoveryLock.lock(before: Date().addingTimeInterval(1)) else {
-                return promise(.failure(CardReaderServiceError.discovery(underlyingError: .busy)))
-            }
+        // If all the previous checks are ok, and we are going to definitely cancel an existing
+        // cancelable, then we attempt to grab a lock on the discovery process.
+        // If it's not possible, then another start or cancel might be in progress, so we'll fail right away.
+        guard self.discoveryLock.lock(before: Date().addingTimeInterval(1)) else {
+            throw(CardReaderServiceError.discovery(underlyingError: .busy))
+        }
 
-            // The completion block for cancel, apparently, is called when
-            // the SDK has not really transitioned to an idle state.
-            // Clients might need to dispatch operations that rely on this completion block
-            // to start a second operation on the card reader.
-            // (for example, starting an operation after discovery has been cancelled)
-            //
-            discoveryCancellable.cancel { [discoveryLock = self.discoveryLock, weak self] error in
-                // Horrible, terrible workaround.
-                // And yet, it is the classic "dispatch to the next run cycle".
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [discoveryLock] in
-                    guard let error = error else {
-                        self?.switchStatusToIdle()
-                        discoveryLock.unlock()
-                        return promise(.success(()))
-                    }
+        // The completion block for cancel, apparently, is called when
+        // the SDK has not really transitioned to an idle state.
+        // Clients might need to dispatch operations that rely on this completion block
+        // to start a second operation on the card reader.
+        // (for example, starting an operation after discovery has been cancelled)
+        //
 
-                    self?.internalError(error)
-                    discoveryLock.unlock()
-                    promise(.failure(error))
-                }
+        do {
+            try await discoveryCancellable.cancel()
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+                self?.switchStatusToIdle()
+                self?.discoveryLock.unlock()
             }
+        } catch {
+            internalError(error)
+            discoveryLock.unlock()
+            throw(error)
         }
     }
 
-    public func disconnect() -> Future<Void, Error> {
-        return Future() { promise in
-            // Throw an error if the SDK has not been initialized.
-            // This prevent a crash when logging out or switching stores before
-            // the SDK has been initialized.
-            // Why? https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(cpy)shared
-            // `Before accessing the singleton for the first time, you must first call setTokenProvider: and setDelegate:.`
-            guard Terminal.hasTokenProvider() else {
-                promise(.failure(CardReaderServiceError.disconnection()))
-                return
-            }
+    public func disconnect() async throws {
+        // Throw an error if the SDK has not been initialized.
+        // This prevent a crash when logging out or switching stores before
+        // the SDK has been initialized.
+        // Why? https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(cpy)shared
+        // `Before accessing the singleton for the first time, you must first call setTokenProvider: and setDelegate:.`
+        guard Terminal.hasTokenProvider() else {
+            throw(CardReaderServiceError.disconnection())
+        }
 
-            // Throw an error if we try to disconnect from nothing
-            guard Terminal.shared.connectionStatus == .connected else {
-                promise(.failure(CardReaderServiceError.disconnection()))
-                return
-            }
+        // Throw an error if we try to disconnect from nothing
+        guard Terminal.shared.connectionStatus == .connected else {
+            throw(CardReaderServiceError.disconnection())
+        }
 
-            /// If the disconnect succeeds, the completion block is called with nil.
-            /// If the disconnect fails, the completion block is called with an error.
-            /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)disconnectReader:
-            Terminal.shared.disconnectReader { error in
-
-                if let error = error {
-                    let underlyingError = UnderlyingError(with: error)
-                    promise(.failure(CardReaderServiceError.disconnection(underlyingError: underlyingError)))
-                }
-
-                if error == nil {
-                    self.connectedReadersSubject.send([])
-                    promise(.success(()))
-                }
-            }
+        do {
+            try await Terminal.shared.disconnectReader()
+            connectedReadersSubject.send([])
+        } catch {
+            let underlyingError = UnderlyingError(with: error)
+            throw(CardReaderServiceError.disconnection(underlyingError: underlyingError))
         }
     }
 
-    public func waitForInsertedCardToBeRemoved() -> Future<Void, Never> {
-        return Future() { [weak self] promise in
-            guard let self = self else {
-                return
-            }
-
+    public func waitForInsertedCardToBeRemoved() async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) -> Void in
             // If there is no chip card inserted, it is ok to immediately return. The payment method may have been swipe or tap.
             guard self.isChipCardInserted else {
-                return promise(.success(()))
+                return continuation.resume(returning: ())
             }
 
             self.timerCancellable = Timer.publish(every: 1, tolerance: 0.1, on: .main, in: .default)
@@ -225,7 +204,7 @@ extension StripeCardReaderService: CardReaderService {
                 .sink(receiveValue: { _ in
                     if !self.isChipCardInserted {
                         self.timerCancellable?.cancel()
-                        return promise(.success(()))
+                        continuation.resume(returning: ())
                     }
                 })
         }
@@ -244,7 +223,7 @@ extension StripeCardReaderService: CardReaderService {
         Terminal.shared.clearCachedCredentials()
     }
 
-    public func capturePayment(_ parameters: PaymentIntentParameters) -> AnyPublisher<PaymentIntent, Error> {
+    public func capturePayment(_ parameters: PaymentIntentParameters) async throws -> PaymentIntent {
         // The documentation for this protocol method promises that this will produce either
         // a single value or it will fail.
         // This isn't enforced by the type system, but it is guaranteed as long as all the
@@ -257,6 +236,10 @@ extension StripeCardReaderService: CardReaderService {
         if isChipCardInserted {
             sendReaderEvent(CardReaderEvent.make(displayMessage: .removeCard))
         }
+
+        await waitForInsertedCardToBeRemoved()
+        let intent = try await createPaymentIntent(parameters)
+
         return waitForInsertedCardToBeRemoved()
             .flatMap {
                 self.createPaymentIntent(parameters)
@@ -394,40 +377,36 @@ private extension StripeCardReaderService {
         connectedReadersSubject.value.first?.readerType.model
     }
 
-    func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future<StripeTerminal.PaymentIntent, Error> {
-        return Future() { [weak self] promise in
-            // Shortcircuit if we have an inconsistent set of parameters
-            guard let parameters = parameters.toStripe() else {
-                promise(.failure(CardReaderServiceError.intentCreation()))
-                return
-            }
+    func createPaymentIntent(_ parameters: PaymentIntentParameters) async throws -> StripeTerminal.PaymentIntent {
+        // Shortcircuit if we have an inconsistent set of parameters
+        guard let parameters = parameters.toStripe() else {
+            throw(CardReaderServiceError.intentCreation())
+        }
 
-            /// Add the reader_ID to the request metadata so we can attribute this intent to the connected reader
-            ///
-            parameters.metadata?[Constants.readerIDMetadataKey] = self?.readerIDForIntent()
-            parameters.metadata?[Constants.readerModelMetadataKey] = self?.readerModelForIntent()
+        /// Add the reader_ID to the request metadata so we can attribute this intent to the connected reader
+        ///
+        parameters.metadata?[Constants.readerIDMetadataKey] = readerIDForIntent()
+        parameters.metadata?[Constants.readerModelMetadataKey] = readerModelForIntent()
 
-            Terminal.shared.createPaymentIntent(parameters) { (intent, error) in
-                if let error = error {
-                    let underlyingError = UnderlyingError(with: error)
-                    promise(.failure(CardReaderServiceError.intentCreation(underlyingError: underlyingError)))
-                }
+        do {
+            let intent: StripeTerminal.PaymentIntent = try await Terminal.shared.createPaymentIntent(parameters)
+            activePaymentIntent = intent
 
-                self?.activePaymentIntent = intent
-
-                if let intent = intent {
-                    promise(.success(intent))
-                }
-            }
+            return intent
+        } catch {
+            let underlyingError = UnderlyingError(with: error)
+            throw(CardReaderServiceError.intentCreation(underlyingError: underlyingError))
         }
     }
 
-    func collectPaymentMethod(intent: StripeTerminal.PaymentIntent) -> Future<StripeTerminal.PaymentIntent, Error> {
-        return Future() { [weak self] promise in
+    func collectPaymentMethod(intent: StripeTerminal.PaymentIntent) async throws -> StripeTerminal.PaymentIntent {
+        //eturn Future() { [weak self] promise in
             /// Collect Payment method returns a cancellable
             /// Because we are chaining promises, we need to retain a reference
-            /// to this cancellable if we want to cancel 
-            self?.paymentCancellable = Terminal.shared.collectPaymentMethod(intent) { (intent, error) in
+            /// to this cancellable if we want to cancel
+        ///
+
+          paymentCancellable = Terminal.shared.collectPaymentMethod(intent) { (intent, error) in
                 self?.paymentCancellable = nil
 
                 if let error = error {
@@ -451,7 +430,7 @@ private extension StripeCardReaderService {
                     promise(.success(intent))
                 }
             }
-        }
+        //}
     }
 
     func processPayment(intent: StripeTerminal.PaymentIntent) -> Future<StripeTerminal.PaymentIntent, Error> {

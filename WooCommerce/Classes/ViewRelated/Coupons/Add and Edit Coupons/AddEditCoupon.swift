@@ -281,7 +281,7 @@ struct AddEditCoupon: View {
                             viewModel.expiryDateField = updatedExpiryDate
                         }), isActive: $showingCouponExpiryDate) {
                             EmptyView()
-                        }.navigationBarTitle(Localization.expiryDateBackButton)
+                        }
 
                         LazyNavigationLink(destination: CouponRestrictions(viewModel: viewModel.couponRestrictionsViewModel),
                                            isActive: $showingCouponRestrictions) {
@@ -378,10 +378,6 @@ private extension AddEditCoupon {
             "Usage Restrictions",
             comment: "Field in the view for adding or editing a coupon.")
         static let saveButton = NSLocalizedString("Save", comment: "Action for saving a Coupon remotely")
-        static let expiryDateBackButton = NSLocalizedString(
-                "Back",
-                comment: "Dismisses the Coupon expiry date picker"
-        )
         static let addDescriptionPlaceholder = NSLocalizedString("Add the description of the coupon.",
                                                                  comment: "Placeholder text that will be shown in the view" +
                                                                  " for adding the description of a coupon.")

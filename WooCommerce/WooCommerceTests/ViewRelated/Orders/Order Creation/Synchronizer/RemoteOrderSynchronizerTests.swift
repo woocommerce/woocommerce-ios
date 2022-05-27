@@ -443,9 +443,6 @@ class RemoteOrderSynchronizerTests: XCTestCase {
         }
 
         // When
-        let input = OrderSyncProductInput(product: .product(product), quantity: 1)
-        synchronizer.setProduct.send(input)
-
         let states: [OrderSyncState] = waitFor { promise in
             synchronizer.statePublisher
                 .dropFirst()
@@ -454,6 +451,9 @@ class RemoteOrderSynchronizerTests: XCTestCase {
                     promise(states)
                 }
                 .store(in: &self.subscriptions)
+
+            let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+            synchronizer.setProduct.send(input)
         }
 
         // Then
@@ -476,11 +476,9 @@ class RemoteOrderSynchronizerTests: XCTestCase {
             }
         }
 
+        // Wait for order creation
         let input = OrderSyncProductInput(product: .product(product), quantity: 1)
         createOrder(on: synchronizer, input: input)
-
-        let input2 = OrderSyncProductInput(product: .product(product), quantity: 2)
-        synchronizer.setProduct.send(input2)
 
         let states: [OrderSyncState] = waitFor { promise in
             synchronizer.statePublisher
@@ -490,6 +488,10 @@ class RemoteOrderSynchronizerTests: XCTestCase {
                     promise(states)
                 }
                 .store(in: &self.subscriptions)
+
+            // Trigger order update
+            let input2 = OrderSyncProductInput(product: .product(product), quantity: 2)
+            synchronizer.setProduct.send(input2)
         }
 
         // Then
@@ -513,11 +515,9 @@ class RemoteOrderSynchronizerTests: XCTestCase {
             }
         }
 
+        // Wait for order creation
         let input = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1)
         createOrder(on: synchronizer, input: input)
-
-        let input2 = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 2)
-        synchronizer.setProduct.send(input2)
 
         let states: [OrderSyncState] = waitFor { promise in
             synchronizer.statePublisher
@@ -527,6 +527,10 @@ class RemoteOrderSynchronizerTests: XCTestCase {
                     promise(states)
                 }
                 .store(in: &self.subscriptions)
+
+            // Trigger order update
+            let input2 = OrderSyncProductInput(id: self.sampleInputID, product: .product(product), quantity: 2)
+            synchronizer.setProduct.send(input2)
         }
 
         // Then
@@ -591,9 +595,6 @@ class RemoteOrderSynchronizerTests: XCTestCase {
         }
 
         // When
-        let input = OrderSyncProductInput(product: .product(product), quantity: 1)
-        synchronizer.setProduct.send(input)
-
         let states: [OrderSyncState] = waitFor { promise in
             synchronizer.statePublisher
                 .dropFirst()
@@ -602,6 +603,9 @@ class RemoteOrderSynchronizerTests: XCTestCase {
                     promise(states)
                 }
                 .store(in: &self.subscriptions)
+
+            let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+            synchronizer.setProduct.send(input)
         }
 
         // Then
@@ -625,11 +629,9 @@ class RemoteOrderSynchronizerTests: XCTestCase {
             }
         }
 
+        // Wait for order creation
         let input = OrderSyncProductInput(product: .product(product), quantity: 1)
         createOrder(on: synchronizer, input: input)
-
-        let input2 = OrderSyncProductInput(product: .product(product), quantity: 2)
-        synchronizer.setProduct.send(input2)
 
         let states: [OrderSyncState] = waitFor { promise in
             synchronizer.statePublisher
@@ -639,6 +641,10 @@ class RemoteOrderSynchronizerTests: XCTestCase {
                     promise(states)
                 }
                 .store(in: &self.subscriptions)
+
+            // Trigger order update
+            let input2 = OrderSyncProductInput(product: .product(product), quantity: 2)
+            synchronizer.setProduct.send(input2)
         }
 
         // Then

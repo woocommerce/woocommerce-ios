@@ -169,7 +169,18 @@ final class OrdersRootViewController: UIViewController {
 
     /// This is to update the order detail in split view
     ///
-    private func handleSwitchingDetails(viewModel: OrderDetailsViewModel) {
+    private func handleSwitchingDetails(viewModel: OrderDetailsViewModel?) {
+        guard let viewModel = viewModel else {
+            let emptyStateViewController = EmptyStateViewController(style: .basic)
+            let config = EmptyStateViewController.Config.simple(
+                message: .init(string: Localization.emptyOrderDetails),
+                image: .emptySearchResultsImage
+            )
+            emptyStateViewController.configure(config)
+            splitViewController?.showDetailViewController(emptyStateViewController, sender: nil)
+            return
+        }
+
         let orderDetailsViewController = OrderDetailsViewController(viewModel: viewModel)
         let orderDetailsNavigationController = WooNavigationController(rootViewController: orderDetailsViewController)
 
@@ -393,5 +404,7 @@ private extension OrdersRootViewController {
         )
         static let accessibilityLabelAddSimplePayment = NSLocalizedString("Add simple payments order",
                                                                           comment: "Navigates to a screen to create a simple payments order")
+        static let emptyOrderDetails = NSLocalizedString("No order selected",
+                                                         comment: "Message on the detail view of the Orders tab before any order is selected")
     }
 }

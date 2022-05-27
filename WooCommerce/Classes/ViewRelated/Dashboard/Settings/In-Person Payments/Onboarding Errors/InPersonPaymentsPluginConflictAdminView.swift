@@ -48,7 +48,7 @@ struct InPersonPaymentsPluginConflictAdmin: View {
     }
 
     private var setupURL: URL? {
-        guard let adminURL = ServiceLocator.stores.sessionManager.defaultSite?.adminURL else {
+        guard let adminURL = ServiceLocator.stores.sessionManager.defaultSite?.pluginsURL else {
             return nil
         }
 

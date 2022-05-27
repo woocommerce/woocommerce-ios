@@ -38,10 +38,6 @@ public enum FeatureFlag: Int {
     ///
     case productSKUInputScanner
 
-    /// Support for In-Person Payments in Canada
-    ///
-    case canadaInPersonPayments
-
     /// Displays the Inbox option under the Hub Menu.
     ///
     case inbox

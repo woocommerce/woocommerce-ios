@@ -56,6 +56,34 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertEqual(actualTitles, expectedTitles)
     }
 
+    func test_reloadSections_when_there_is_no_paid_date_then_customer_paid_row_is_hidden() throws {
+        // Given
+        let order = Order.fake()
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
+        let customerPaidRow = row(row: .customerPaid, in: paymentSection)
+        XCTAssertNil(customerPaidRow)
+    }
+
+    func test_reloadSections_when_there_is_a_paid_date_then_customer_paid_row_is_visible() throws {
+        // Given
+        let order = Order.fake().copy(datePaid: Date())
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
+        let customerPaidRow = row(row: .customerPaid, in: paymentSection)
+        XCTAssertNotNil(customerPaidRow)
+    }
+
     func test_refund_button_is_visible() throws {
         // Given
         let order = makeOrder()
@@ -394,7 +422,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         storageManager.viewStorage.saveIfNeeded()
 
         // Given
-        let configuration = CardPresentPaymentsConfiguration(country: "CA", canadaEnabled: true)
+        let configuration = CardPresentPaymentsConfiguration(country: "CA")
         let order = makeOrder().copy(status: .processing, currency: "cad", datePaid: .some(nil), total: "100", paymentMethodID: "cod")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: configuration)
         dataSource.configureResultsControllers { }
@@ -417,30 +445,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         storageManager.viewStorage.saveIfNeeded()
 
         // Given
-        let configuration = CardPresentPaymentsConfiguration(country: "US", canadaEnabled: true)
-        let order = makeOrder().copy(status: .processing, currency: "cad", datePaid: .some(nil), total: "100", paymentMethodID: "cod")
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: configuration)
-        dataSource.configureResultsControllers { }
-
-        // When
-        dataSource.reloadSections()
-
-        // Then
-        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
-        XCTAssertNil(row(row: .collectCardPaymentButton, in: paymentSection))
-
-        // Clean up
-        storageManager.viewStorage.deleteObject(account)
-        storageManager.viewStorage.saveIfNeeded()
-    }
-
-    func test_collect_payment_button_is_not_visible_if_order_currency_would_be_in_configuration_but_not_enabled() throws {
-        // Setup
-        let account = storageManager.insertCardPresentEligibleAccount()
-        storageManager.viewStorage.saveIfNeeded()
-
-        // Given
-        let configuration = CardPresentPaymentsConfiguration(country: "CA", canadaEnabled: false)
+        let configuration = CardPresentPaymentsConfiguration(country: "US")
         let order = makeOrder().copy(status: .processing, currency: "cad", datePaid: .some(nil), total: "100", paymentMethodID: "cod")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: configuration)
         dataSource.configureResultsControllers { }
@@ -782,6 +787,6 @@ private final class MockPaymentGatewayAccountStoresManager: MockStorageManager {
 
 private extension OrderDetailsDataSourceTests {
     enum Mocks {
-        static let configuration = CardPresentPaymentsConfiguration(country: "US", canadaEnabled: true)
+        static let configuration = CardPresentPaymentsConfiguration(country: "US")
     }
 }

@@ -62,15 +62,17 @@ struct CouponRestrictions: View {
                     .background(Color(.listForeground))
 
                     VStack(alignment: .leading, spacing: 0) {
-                        TitleAndTextFieldRow(title: Localization.limitUsageToXItems,
-                                             placeholder: Localization.allQualifyingInCart,
-                                             text: $viewModel.limitUsageToXItems,
-                                             keyboardType: .asciiCapableNumberPad,
-                                             inputFormatter: IntegerInputFormatter(defaultValue: ""))
-                            .padding(.horizontal, insets: geometry.safeAreaInsets)
-                        Divider()
-                            .padding(.leading, Constants.margin)
-                            .padding(.leading, insets: geometry.safeAreaInsets)
+                        VStack {
+                            TitleAndTextFieldRow(title: Localization.limitUsageToXItems,
+                                    placeholder: Localization.allQualifyingInCart,
+                                    text: $viewModel.limitUsageToXItems,
+                                    keyboardType: .asciiCapableNumberPad,
+                                    inputFormatter: IntegerInputFormatter(defaultValue: ""))
+                                    .padding(.horizontal, insets: geometry.safeAreaInsets)
+                            Divider()
+                                    .padding(.leading, Constants.margin)
+                                    .padding(.leading, insets: geometry.safeAreaInsets)
+                        }.renderedIf(viewModel.shouldDisplayLimitUsageToXItemsRow)
                         TitleAndValueRow(title: Localization.allowedEmails,
                                          value: viewModel.allowedEmails.isNotEmpty ?
                                             .content(viewModel.allowedEmails) :

@@ -13,6 +13,17 @@ final class AddEditCouponHostingController: UIHostingController<AddEditCoupon> {
         rootView.dismissHandler = { [weak self] in
             self?.dismiss(animated: true)
         }
+
+        rootView.discountTypeHandler = { [weak self] viewProperties in
+            guard let self = self else { return }
+            let command = DiscountTypeBottomSheetListSelectorCommand(selected: self.viewModel.discountType) { [weak self] selectedType in
+                guard let self = self else { return }
+                viewModel.discountType = selectedType
+                self.presentedViewController?.dismiss(animated: true, completion: nil)
+            }
+            let presenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
+            presenter.show(from: self, sourceView: self.view, sourceBarButtonItem: nil, arrowDirections: .any)
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -49,39 +60,20 @@ struct AddEditCoupon: View {
     ///
     var onDisappear: () -> Void = {}
 
+    /// Set this closure to display the bottom sheet for discount type selection the UIKit way.
+    ///
+    var discountTypeHandler: (BottomSheetListSelectorViewProperties) -> Void = { _ in }
+
     @ObservedObject private var viewModel: AddEditCouponViewModel
     @State private var showingEditDescription: Bool = false
-    @State private var showingCouponExpiryActionSheet: Bool = false
     @State private var showingCouponExpiryDate: Bool = false
     @State private var showingCouponRestrictions: Bool = false
     @State private var showingSelectProducts: Bool = false
     @State private var showingSelectCategories: Bool = false
+    @State private var showingDiscountType: Bool = false
 
-    private var expiryDateActionSheetButtons: [Alert.Button] {
-        var buttons: [Alert.Button] = []
-
-        if viewModel.expiryDateField != nil {
-            buttons = [
-                .default(Text(Localization.actionSheetEditExpirationDate), action: {
-                    showingCouponExpiryDate = true
-                }),
-                .destructive(Text(Localization.actionSheetDeleteExpirationDate), action: {
-                    viewModel.expiryDateField = nil
-                })
-            ]
-        }
-        else {
-            buttons = [
-                .default(Text(Localization.actionSheetAddExpirationDate), action: {
-                    showingCouponExpiryDate = true
-                })
-            ]
-        }
-
-        buttons.append(.cancel())
-
-        return buttons
-    }
+    private var idiom: UIUserInterfaceIdiom { UIDevice.current.userInterfaceIdiom }
+    private let viewProperties = BottomSheetListSelectorViewProperties(title: Localization.discountTypeSheetTitle)
 
     private let categorySelectorConfig = ProductCategorySelector.Configuration.categoriesForCoupons
     private let categoryListConfig = ProductCategoryListViewController.Configuration(searchEnabled: true, clearSelectionEnabled: true)
@@ -99,6 +91,26 @@ struct AddEditCoupon: View {
                             ListHeaderView(text: Localization.headerCouponDetails.uppercased(), alignment: .left)
 
                             Group {
+                                TitleAndValueRow(title: Localization.discountType,
+                                                 value: viewModel.discountTypeValue,
+                                                 selectionStyle: .disclosure, action: {
+                                    // TODO: remove this workaround with `adaptiveSheetPresentationController` when we drop support for iOS 14
+                                    if idiom == .pad {
+                                        showingDiscountType.toggle()
+                                    } else {
+                                        discountTypeHandler(viewProperties)
+                                    }
+                                }).popover(isPresented: $showingDiscountType) {
+                                    let command = DiscountTypeBottomSheetListSelectorCommand(selected: viewModel.discountType) { selectedType in
+                                        viewModel.discountType = selectedType
+                                        showingDiscountType.toggle()
+                                    }
+                                    BottomSheetListSelector(viewProperties: viewProperties, command: command, onDismiss: nil)
+                                }
+
+                                Divider()
+                                    .padding(.leading, Constants.margin)
+
                                 TitleAndTextFieldRow(title: viewModel.amountLabel,
                                                      placeholder: "0",
                                                      text: $viewModel.amountField,
@@ -162,14 +174,8 @@ struct AddEditCoupon: View {
                                 TitleAndValueRow(title: Localization.couponExpiryDate,
                                                  value: viewModel.expiryDateValue,
                                                  selectionStyle: .disclosure, action: {
-                                    showingCouponExpiryActionSheet = true
+                                    showingCouponExpiryDate = true
                                 })
-                                    .actionSheet(isPresented: $showingCouponExpiryActionSheet) {
-                                        ActionSheet(
-                                            title: Text(Localization.expiryDateActionSheetTitle),
-                                            buttons: expiryDateActionSheetButtons
-                                        )
-                                    }
                                 Divider()
                                     .padding(.leading, Constants.margin)
                             }
@@ -269,11 +275,11 @@ struct AddEditCoupon: View {
                         }
 
                         LazyNavigationLink(destination: CouponExpiryDateView(date: viewModel.expiryDateField ?? Date(),
+                                                                             isRemovalEnabled: viewModel.expiryDateField != nil,
                                                                              timezone: viewModel.timezone,
-                                                                             completion: { updatedExpiryDate in
+                                                                             onCompletion: { updatedExpiryDate in
                             viewModel.expiryDateField = updatedExpiryDate
-                        }),
-                                           isActive: $showingCouponExpiryDate) {
+                        }), isActive: $showingCouponExpiryDate) {
                             EmptyView()
                         }
 
@@ -336,7 +342,7 @@ private extension AddEditCoupon {
             comment: "Header of the coupon details in the view for adding or editing a coupon.")
         static let couponCode = NSLocalizedString(
             "Coupon Code",
-            comment: "Text field coupon code in the view for adding or editing a coupon.")
+            comment: "Text field coupon code in the view for adding or editing a coupon code.")
         static let couponCodePlaceholder = NSLocalizedString(
             "Enter a coupon",
             comment: "Text field coupon code placeholder in the view for adding or editing a coupon.")
@@ -345,16 +351,20 @@ private extension AddEditCoupon {
             comment: "The footer of the text field coupon code in the view for adding or editing a coupon.")
         static let regenerateCouponCodeButton = NSLocalizedString(
             "Regenerate Coupon Code",
-            comment: "Button in the view for adding or editing a coupon.")
+            comment: "Button in the view for adding or editing a coupon code.")
         static let couponExpiryDate = NSLocalizedString(
             "Coupon Expiry Date",
-            comment: "Field in the view for adding or editing a coupon.")
+            comment: "Field in the view for adding or editing a coupon's expiry date.")
+        static let discountType = NSLocalizedString(
+            "Discount Type",
+            comment: "Field in the view for adding or editing a coupon's discount type.")
         static let includeFreeShipping = NSLocalizedString(
             "Include Free Shipping?",
-            comment: "Toggle field in the view for adding or editing a coupon.")
+            comment: "Toggle field in the view for adding or editing a coupon's free shipping support.")
         static let headerApplyCouponTo = NSLocalizedString(
             "Apply this coupon to",
-            comment: "Header of the section for applying a coupon to specific products or categories in the view for adding or editing a coupon.")
+            comment: "Header of the section for applying a coupon to specific products or categories in the view " +
+            "for adding or editing a coupon's product and category restrictions.")
         static let allProductsButton = NSLocalizedString(
             "All Products",
             comment: "Button indicating that coupon can be applied to all products in the view for adding or editing a coupon.")
@@ -371,16 +381,12 @@ private extension AddEditCoupon {
         static let addDescriptionPlaceholder = NSLocalizedString("Add the description of the coupon.",
                                                                  comment: "Placeholder text that will be shown in the view" +
                                                                  " for adding the description of a coupon.")
-        static let expiryDateActionSheetTitle = NSLocalizedString("Set an expiry date for this coupon",
-                                                                  comment: "Title of the action sheet for setting an expiry date for a coupon.")
-        static let actionSheetEditExpirationDate = NSLocalizedString("Edit expiration date",
-                                                                     comment: "Button in the action sheet for editing the expiration date of a coupon.")
-        static let actionSheetDeleteExpirationDate = NSLocalizedString("Delete expiration date",
-                                                                     comment: "Button in the action sheet for deleting the expiration date of a coupon.")
-        static let actionSheetAddExpirationDate = NSLocalizedString("Add expiration date",
-                                                                     comment: "Button in the action sheet for adding the expiration date for a coupon.")
         static let titleEditDescriptionView = NSLocalizedString("Coupon Description",
                                                                 comment: "Title of the view for editing the coupon description.")
+        static let discountTypeSheetTitle = NSLocalizedString(
+            "Discount Type",
+            comment: "Title for the sheet to select discount type on the Add or Edit coupon screen."
+        )
     }
 }
 

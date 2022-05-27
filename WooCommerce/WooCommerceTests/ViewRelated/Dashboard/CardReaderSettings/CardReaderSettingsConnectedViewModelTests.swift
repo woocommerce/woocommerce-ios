@@ -491,6 +491,6 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
 
 private extension CardReaderSettingsConnectedViewModelTests {
     enum Mocks {
-        static let configuration = CardPresentPaymentsConfiguration(country: "US", canadaEnabled: true)
+        static let configuration = CardPresentPaymentsConfiguration(country: "US")
     }
 }

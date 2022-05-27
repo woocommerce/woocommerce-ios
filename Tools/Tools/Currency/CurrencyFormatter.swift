@@ -1,5 +1,4 @@
 import Foundation
-import Yosemite
 
 // MARK: - Manual currency formatting
 //

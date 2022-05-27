@@ -1,4 +1,5 @@
 import Foundation
+import Tools
 
 public struct CardPresentPaymentsConfiguration {
     private let stripeTerminalforCanadaEnabled: Bool

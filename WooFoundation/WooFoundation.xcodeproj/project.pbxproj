@@ -29,12 +29,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		30CDE1C4706B343168D0474D /* Pods-Tools.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tools.debug.xcconfig"; path = "Target Support Files/Pods-Tools/Pods-Tools.debug.xcconfig"; sourceTree = "<group>"; };
 		532D4D63493CE8FA6F13C85B /* Pods_WooFoundationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooFoundationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BC355411C0A805BF29F38A6 /* Pods-WooFoundationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundationTests.release.xcconfig"; path = "Target Support Files/Pods-WooFoundationTests/Pods-WooFoundationTests.release.xcconfig"; sourceTree = "<group>"; };
-		8E9D0A19E551920EED48AAAC /* Pods-Tools.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tools.release.xcconfig"; path = "Target Support Files/Pods-Tools/Pods-Tools.release.xcconfig"; sourceTree = "<group>"; };
 		99861FECBD0975C25DA03D80 /* Pods-WooFoundation.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundation.debug.xcconfig"; path = "Target Support Files/Pods-WooFoundation/Pods-WooFoundation.debug.xcconfig"; sourceTree = "<group>"; };
-		B369BC8F59789547C1E1305E /* Pods-ToolsTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ToolsTests.release.xcconfig"; path = "Target Support Files/Pods-ToolsTests/Pods-ToolsTests.release.xcconfig"; sourceTree = "<group>"; };
 		B9AED558283E7553002A2668 /* Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9AED55B283E755A002A2668 /* Hardware.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Hardware.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9C9C635283E703C001B879F /* WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -48,7 +45,6 @@
 		BCA82452EA8EE0170C1AA258 /* Pods-WooFoundationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundationTests.debug.xcconfig"; path = "Target Support Files/Pods-WooFoundationTests/Pods-WooFoundationTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C1733C61561AE3A1AD3C16B7 /* Pods_WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D64F2A76E9373989B3F181FC /* Pods-WooFoundation.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundation.release.xcconfig"; path = "Target Support Files/Pods-WooFoundation/Pods-WooFoundation.release.xcconfig"; sourceTree = "<group>"; };
-		DA2B719698837C3A5E83E814 /* Pods-ToolsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ToolsTests.debug.xcconfig"; path = "Target Support Files/Pods-ToolsTests/Pods-ToolsTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,10 +147,6 @@
 		C8E281DD95DE8EF39194328A /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				30CDE1C4706B343168D0474D /* Pods-Tools.debug.xcconfig */,
-				8E9D0A19E551920EED48AAAC /* Pods-Tools.release.xcconfig */,
-				DA2B719698837C3A5E83E814 /* Pods-ToolsTests.debug.xcconfig */,
-				B369BC8F59789547C1E1305E /* Pods-ToolsTests.release.xcconfig */,
 				99861FECBD0975C25DA03D80 /* Pods-WooFoundation.debug.xcconfig */,
 				D64F2A76E9373989B3F181FC /* Pods-WooFoundation.release.xcconfig */,
 				BCA82452EA8EE0170C1AA258 /* Pods-WooFoundationTests.debug.xcconfig */,

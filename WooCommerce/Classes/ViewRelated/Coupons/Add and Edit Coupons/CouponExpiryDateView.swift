@@ -18,9 +18,9 @@ struct CouponExpiryDateView: View {
                     DatePicker("Date picker", selection: $date, displayedComponents: .date)
                         .environment(\.timeZone, timezone)
                         .datePickerStyle(GraphicalDatePickerStyle())
-                        .onChange(of: date, perform: { newDate in
-                                isRemovalEnabled = true
-                            })
+                        .onChange(of: date) { _ in
+                            isRemovalEnabled = true
+                        }
                     Spacer()
                     VStack {
                         Divider()

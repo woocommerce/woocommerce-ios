@@ -18,6 +18,7 @@ struct CouponExpiryDateView: View {
                     DatePicker("Date picker", selection: $date, displayedComponents: .date)
                         .environment(\.timeZone, timezone)
                         .datePickerStyle(GraphicalDatePickerStyle())
+                        .padding(.vertical, Constants.datePickerVerticalMargin)
                         .onChange(of: date) { _ in
                             isRemovalEnabled = true
                         }
@@ -35,7 +36,7 @@ struct CouponExpiryDateView: View {
                         .foregroundColor(Color(.error))
                         Divider()
                     }
-                    .padding(.top, Constants.verticalMargin)
+                    .padding(.top, Constants.removeDateButtonVerticalMargin)
                     .renderedIf(isRemovalEnabled)
                 }
             }
@@ -60,7 +61,8 @@ struct CouponExpiryDateView: View {
 private extension CouponExpiryDateView {
     enum Constants {
         static let margin: CGFloat = 8
-        static let verticalMargin: CGFloat = 40
+        static let removeDateButtonVerticalMargin: CGFloat = 40
+        static let datePickerVerticalMargin: CGFloat = 20
     }
 
     enum Localization {

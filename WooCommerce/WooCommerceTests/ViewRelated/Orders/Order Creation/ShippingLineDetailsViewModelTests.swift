@@ -1,6 +1,7 @@
 import XCTest
 import Combine
 
+import Tools
 @testable import WooCommerce
 @testable import struct Yosemite.ShippingLine
 

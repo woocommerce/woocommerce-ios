@@ -1,5 +1,6 @@
 import XCTest
 import Yosemite
+import Tools
 import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
 

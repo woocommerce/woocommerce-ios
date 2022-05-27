@@ -1,7 +1,7 @@
 
 import XCTest
 import Combine
-
+import Tools
 @testable import WooCommerce
 
 final class PriceFieldFormatterTests: XCTestCase {

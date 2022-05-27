@@ -1,4 +1,5 @@
 import XCTest
+import Tools
 @testable import WooCommerce
 @testable import Yosemite
 

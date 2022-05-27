@@ -1,6 +1,7 @@
 import XCTest
 import Yosemite
 import Fakes
+import Tools
 @testable import WooCommerce
 
 class ProductRowViewModelTests: XCTestCase {

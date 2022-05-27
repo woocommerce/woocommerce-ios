@@ -1,7 +1,7 @@
 import XCTest
 
 @testable import WooCommerce
-
+import Tools
 import Yosemite
 
 /// Test cases for `TotalRefundedCalculationUseCase`.

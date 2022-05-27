@@ -1,7 +1,7 @@
 import XCTest
 import Yosemite
 import Fakes
-
+import Tools
 @testable import WooCommerce
 
 /// Test cases for `RefundItemViewModel`

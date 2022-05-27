@@ -1,7 +1,7 @@
 import Foundation
 import XCTest
 import Combine
-
+import Tools
 @testable import WooCommerce
 @testable import Yosemite
 

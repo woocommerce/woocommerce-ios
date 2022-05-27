@@ -1,4 +1,6 @@
 import XCTest
+
+import Tools
 @testable import Networking
 @testable import WooCommerce
 

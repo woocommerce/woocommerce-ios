@@ -2,6 +2,7 @@ import Combine
 import TestKit
 import XCTest
 import Yosemite
+import Tools
 @testable import WooCommerce
 import protocol Storage.StorageManagerType
 import protocol Storage.StorageType

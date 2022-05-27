@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-05-23 09:54:03+0000 */
+/* Translation-Revision-Date: 2022-05-27 17:12:28+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -3013,7 +3013,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Pending review" = "Beoordeling in behandeling";
 
 /* Title for the amount field on the Fee Details screen during order creationParameters: %1$@ - percent sign */
-"Percentage (%1$@)" = "Percentage (%$1@)";
+"Percentage (%1$@)" = "Percentage (%1$@)";
 
 /* Name of percentage discount type */
 "Percentage Discount" = "Procentuele korting";

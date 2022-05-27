@@ -21,7 +21,6 @@ struct CouponExpiryDateView: View {
                         .onChange(of: date) { _ in
                             isRemovalEnabled = true
                         }
-                    Spacer()
                     VStack {
                         Divider()
                         Button(action: {

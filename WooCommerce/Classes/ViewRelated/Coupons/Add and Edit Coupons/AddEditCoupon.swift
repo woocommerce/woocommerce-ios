@@ -66,38 +66,11 @@ struct AddEditCoupon: View {
 
     @ObservedObject private var viewModel: AddEditCouponViewModel
     @State private var showingEditDescription: Bool = false
-    @State private var showingCouponExpiryActionSheet: Bool = false
     @State private var showingCouponExpiryDate: Bool = false
     @State private var showingCouponRestrictions: Bool = false
     @State private var showingSelectProducts: Bool = false
     @State private var showingSelectCategories: Bool = false
     @State private var showingDiscountType: Bool = false
-
-    private var expiryDateActionSheetButtons: [Alert.Button] {
-        var buttons: [Alert.Button] = []
-
-        if viewModel.expiryDateField != nil {
-            buttons = [
-                .default(Text(Localization.actionSheetEditExpirationDate), action: {
-                    showingCouponExpiryDate = true
-                }),
-                .destructive(Text(Localization.actionSheetDeleteExpirationDate), action: {
-                    viewModel.expiryDateField = nil
-                })
-            ]
-        }
-        else {
-            buttons = [
-                .default(Text(Localization.actionSheetAddExpirationDate), action: {
-                    showingCouponExpiryDate = true
-                })
-            ]
-        }
-
-        buttons.append(.cancel())
-
-        return buttons
-    }
 
     private var idiom: UIUserInterfaceIdiom { UIDevice.current.userInterfaceIdiom }
     private let viewProperties = BottomSheetListSelectorViewProperties(title: Localization.discountTypeSheetTitle)
@@ -201,14 +174,8 @@ struct AddEditCoupon: View {
                                 TitleAndValueRow(title: Localization.couponExpiryDate,
                                                  value: viewModel.expiryDateValue,
                                                  selectionStyle: .disclosure, action: {
-                                    showingCouponExpiryActionSheet = true
+                                    showingCouponExpiryDate = true
                                 })
-                                    .actionSheet(isPresented: $showingCouponExpiryActionSheet) {
-                                        ActionSheet(
-                                            title: Text(Localization.expiryDateActionSheetTitle),
-                                            buttons: expiryDateActionSheetButtons
-                                        )
-                                    }
                                 Divider()
                                     .padding(.leading, Constants.margin)
                             }
@@ -308,11 +275,11 @@ struct AddEditCoupon: View {
                         }
 
                         LazyNavigationLink(destination: CouponExpiryDateView(date: viewModel.expiryDateField ?? Date(),
+                                                                             isRemovalEnabled: viewModel.expiryDateField != nil,
                                                                              timezone: viewModel.timezone,
-                                                                             completion: { updatedExpiryDate in
+                                                                             onCompletion: { updatedExpiryDate in
                             viewModel.expiryDateField = updatedExpiryDate
-                        }),
-                                           isActive: $showingCouponExpiryDate) {
+                        }), isActive: $showingCouponExpiryDate) {
                             EmptyView()
                         }
 
@@ -414,14 +381,6 @@ private extension AddEditCoupon {
         static let addDescriptionPlaceholder = NSLocalizedString("Add the description of the coupon.",
                                                                  comment: "Placeholder text that will be shown in the view" +
                                                                  " for adding the description of a coupon.")
-        static let expiryDateActionSheetTitle = NSLocalizedString("Set an expiry date for this coupon",
-                                                                  comment: "Title of the action sheet for setting an expiry date for a coupon.")
-        static let actionSheetEditExpirationDate = NSLocalizedString("Edit expiration date",
-                                                                     comment: "Button in the action sheet for editing the expiration date of a coupon.")
-        static let actionSheetDeleteExpirationDate = NSLocalizedString("Delete expiration date",
-                                                                     comment: "Button in the action sheet for deleting the expiration date of a coupon.")
-        static let actionSheetAddExpirationDate = NSLocalizedString("Add expiration date",
-                                                                     comment: "Button in the action sheet for adding the expiration date for a coupon.")
         static let titleEditDescriptionView = NSLocalizedString("Coupon Description",
                                                                 comment: "Title of the view for editing the coupon description.")
         static let discountTypeSheetTitle = NSLocalizedString(

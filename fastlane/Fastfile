@@ -549,7 +549,8 @@ platform :ios do
       register_device(
         name: device_name,
         udid: device_id,
-        team_id: get_required_env('EXT_EXPORT_TEAM_ID')
+        team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
+        api_key_path: ASC_KEY_PATH
       )
     end
 

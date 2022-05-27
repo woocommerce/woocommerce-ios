@@ -18,7 +18,7 @@ extension Site {
     /// Site's plugins section in wp-admin.
     ///
     var pluginsURL: String {
-        adminURL + "/plugins.php"
+        adminURL + "plugins.php"
     }
 
     /// Payment plugin settings in wp-admin. This can be helpful when the plugin needs to be setup completely.

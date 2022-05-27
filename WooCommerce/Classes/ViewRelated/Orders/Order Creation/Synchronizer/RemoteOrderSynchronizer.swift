@@ -183,7 +183,6 @@ private extension RemoteOrderSynchronizer {
     ///
     func bindOrderSync() {
         let syncTrigger: AnyPublisher<Order, Never> = orderSyncTrigger
-            .debounce(for: 0.5, scheduler: DispatchQueue.main) // Group & wait for 0.5 since the last signal was emitted.
             .compactMap { [weak self] order in
                 guard let self = self else { return nil }
                 switch self.state {
@@ -210,7 +209,7 @@ private extension RemoteOrderSynchronizer {
             }
             .flatMap(maxPublishers: .max(1)) { [weak self] order -> AnyPublisher<Order, Never> in // Only allow one request at a time.
                 guard let self = self else { return Empty().eraseToAnyPublisher() }
-                self.state = .syncing(blocking: true) // Creating an oder is always a blocking operation
+                self.state = .syncing(blocking: true) // Creating an order is always a blocking operation
 
                 return self.createOrderRemotely(order, type: .sync)
                     .catch { [weak self] error -> AnyPublisher<Order, Never> in // When an error occurs, update state & finish.
@@ -234,9 +233,13 @@ private extension RemoteOrderSynchronizer {
             .filter { // Only continue if the order has been created.
                 $0.orderID != .zero
             }
+            .handleEvents(receiveOutput: { order in
+                self.state = .syncing(blocking: order.containsLocalLines()) // Set a `blocking` state if the order contains new lines
+            })
+            .debounce(for: 1.0, scheduler: DispatchQueue.main) // Group & wait for 1.0 since the last signal was emitted.
             .map { [weak self] order -> AnyPublisher<Order, Never> in // Allow multiple requests, once per update request.
                 guard let self = self else { return Empty().eraseToAnyPublisher() }
-                self.state = .syncing(blocking: order.containsLocalLines()) // Set a `blocking` state if the order contains new lines
+
                 return self.updateOrderRemotely(order, type: .sync)
                     .catch { [weak self] error -> AnyPublisher<Order, Never> in // When an error occurs, update state & finish.
                         self?.state = .error(error)

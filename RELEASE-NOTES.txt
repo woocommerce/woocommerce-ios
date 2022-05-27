@@ -7,6 +7,8 @@
 - [*] Orders: Now it's possible to select and copy text from the notes on an order. [https://github.com/woocommerce/woocommerce-ios/pull/6894]
 - [*] Support Arabic numerals on amount fields. [https://github.com/woocommerce/woocommerce-ios/pull/6891]
 - [*] Product Selector: Enabled selecting all variations on variable product rows. [https://github.com/woocommerce/woocommerce-ios/pull/6899]
+- [internal] Order Creation: Adding new products, shipping, fee, or customer details to an order now blocks the UI immediately while the order is syncing remotely. [https://github.com/woocommerce/woocommerce-ios/pull/6974]
+
 - [*] Coupons: Now it's possible to update discount types for coupons. [https://github.com/woocommerce/woocommerce-ios/pull/6935]
  
 9.2

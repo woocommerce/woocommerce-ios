@@ -12,7 +12,7 @@ final class Site_PluginsURLTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        adminURL = "https://testshop.com/wp-admin"
+        adminURL = "https://testshop.com/wp-admin/"
         site = Site.fake().copy(adminURL: adminURL)
     }
 
@@ -24,7 +24,7 @@ final class Site_PluginsURLTests: XCTestCase {
     }
 
     func test_pluginsURL_then_returns_right_URL() {
-        let expectedURL = adminURL + "/plugins.php"
+        let expectedURL = adminURL + "plugins.php"
 
         // Then
         XCTAssertEqual(site.pluginsURL, expectedURL)

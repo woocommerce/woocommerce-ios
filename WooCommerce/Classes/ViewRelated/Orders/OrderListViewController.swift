@@ -453,6 +453,8 @@ private extension OrderListViewController {
         let firstIndexPath = IndexPath(row: 0, section: 0)
         guard let objectID = dataSource.itemIdentifier(for: firstIndexPath),
             let orderDetailsViewModel = viewModel.detailsViewModel(withID: objectID) else {
+            selectedOrderId = nil
+            selectedIndexPath = nil
             return switchDetailsHandler(nil)
         }
         selectedOrderId = orderDetailsViewModel.order.orderID

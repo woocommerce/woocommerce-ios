@@ -1,0 +1,3 @@
+Nous ajoutons continuellement de nouvelles fonctions à notre fonctionnalité expérimentale de gestion des codes promo ! Cette version comprend la modification et la suppression de codes promo ainsi que plusieurs améliorations de l’affichage. Activez cette fonctionnalité pour accéder en avant-première aux fonctionnalités expérimentales sous l’onglet Plus > Réglages. 
+
+Cette version comporte également plusieurs corrections pour la création de commandes, les paiements en personne et la gestion des produits. Une fois encore, merci à tous pour vos précieux commentaires !

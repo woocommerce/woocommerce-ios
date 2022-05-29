@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+9.4
+-----
+
+
 9.3
 -----
 - [***] In-Person Payments is now available for merchants using WooCommerce Payments in Canada. [https://github.com/woocommerce/woocommerce-ios/pull/6954]

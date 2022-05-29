@@ -1,0 +1,3 @@
+Estamos sempre adicionando novos recursos à nossa funcionalidade experimental de gerenciamento de cupons. Esta versão inclui opções de edição e exclusão de cupons, além de diversas melhorias na visualização. Ative esta funcionalidade na guia Mais > Configurações > Funcionalidades experimentais para receber acesso antecipado.
+
+Esta versão inclui também várias correções para criação de pedidos, pagamentos presenciais e gerenciamento de produto. Mais uma vez, obrigado pelo seu inestimável feedback!

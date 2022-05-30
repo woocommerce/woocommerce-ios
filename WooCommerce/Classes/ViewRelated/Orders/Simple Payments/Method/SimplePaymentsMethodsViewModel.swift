@@ -282,7 +282,7 @@ private extension SimplePaymentsMethodsViewModel {
             return
         }
 
-        showPayWithCardRow = order.isEligibleForCardPresentPayment(
+        showPayWithCardRow = cardPresentPaymentsConfiguration.isSupportedCountry && order.isEligibleForCardPresentPayment(
             cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration,
             products: productResultsController.fetchedObjects)
     }

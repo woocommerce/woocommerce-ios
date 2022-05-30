@@ -125,6 +125,10 @@ final class CouponDetailsViewModel: ObservableObject {
         (hasErrorLoadingAmount || hasWCAnalyticsDisabled) && discountedAmount == nil
     }
 
+    var shouldDisplayLimitUsageToXItems: Bool {
+        limitUsageToXItems > 0 && coupon.discountType != .fixedCart
+    }
+
     private let stores: StoresManager
     private let currencySettings: CurrencySettings
 

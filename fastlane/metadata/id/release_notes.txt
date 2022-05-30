@@ -1,0 +1,3 @@
+Kami terus menambahkan fungsionalitas baru ke fitur Manajemen Kupon eksperimental! Rilis ini mencakup kupon penyuntingan dan penghapusan serta dengan beberapa peningkatan tampilan. Aktifkan fitur ini untuk mendapatkan akses awal di tab Lainnya, Pengaturan, Fitur Eksperimental.
+
+Rilis ini juga mencakup beberapa perbaikan untuk pembuatan pesanan, pembayaran langsung, dan manajemen produk. Sekali lagi terima kasih atas feedback Anda yang sangat berharga!

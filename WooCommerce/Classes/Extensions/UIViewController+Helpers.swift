@@ -24,12 +24,15 @@ extension UIViewController {
 
     /// Show the X close button or a custom close button with title on the left bar button item position
     ///
-    func addCloseNavigationBarButton(title: String? = nil, target: Any? = self, action: Selector? = #selector(dismissVC)) {
+    func addCloseNavigationBarButton(title: String? = nil, target: Any? = nil, action: Selector? = #selector(dismissVC)) {
+        /// We can't make self the default value for the `target` parameter without a warning being added.
+        /// The compiler-recommended fix for the warning causes a crash when the button is tapped.
+        let targetOrSelf = target ?? self
         if let title = title {
-            navigationItem.leftBarButtonItem = UIBarButtonItem(title: title, style: .plain, target: target, action: action)
+            navigationItem.leftBarButtonItem = UIBarButtonItem(title: title, style: .plain, target: targetOrSelf, action: action)
         }
         else {
-            navigationItem.leftBarButtonItem = UIBarButtonItem(image: .closeButton, style: .plain, target: target, action: action)
+            navigationItem.leftBarButtonItem = UIBarButtonItem(image: .closeButton, style: .plain, target: targetOrSelf, action: action)
             navigationItem.leftBarButtonItem?.accessibilityLabel = Localization.close
         }
     }

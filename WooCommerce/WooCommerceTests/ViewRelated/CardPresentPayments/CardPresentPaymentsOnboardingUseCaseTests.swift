@@ -20,14 +20,6 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         try super.setUpWithError()
         storageManager = MockStorageManager()
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case .loadCanadaInPersonPaymentsSwitchState(let completion):
-                completion(.success(true))
-            default:
-                break
-            }
-        }
         stores.sessionManager.setStoreId(sampleSiteID)
         ServiceLocator.setSelectedSiteSettings(SelectedSiteSettings(stores: stores, storageManager: storageManager))
     }

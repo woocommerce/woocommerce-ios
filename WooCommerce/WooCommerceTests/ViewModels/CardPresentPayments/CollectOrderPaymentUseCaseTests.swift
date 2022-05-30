@@ -284,7 +284,7 @@ private extension CollectOrderPaymentUseCaseTests {
 
 private extension CollectOrderPaymentUseCaseTests {
     enum Mocks {
-        static let configuration = CardPresentPaymentsConfiguration(country: "US", canadaEnabled: true)
+        static let configuration = CardPresentPaymentsConfiguration(country: "US")
         static let cardReaderModel: String = "WISEPAD_3"
         static let paymentGatewayAccount: String = "woocommerce-payments"
     }

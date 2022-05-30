@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-05-17 13:01:52+0000 */
+/* Translation-Revision-Date: 2022-05-20 11:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -810,7 +810,7 @@
 "CUSTOM PACKAGES" = "ANPASSADE PAKET";
 
 /* Title for the helper field describing calculated amount for given percentage */
-"Calculated amount" = "Calculated amount";
+"Calculated amount" = "Beräknat belopp";
 
 /* Call phone number button title */
 "Call" = "Ring";
@@ -822,10 +822,10 @@
 "Can Not Request Link" = "Kan inte begära länk";
 
 /* The singular total limit where the same coupon can be applied for everyone, reads like: Can be used 1 time */
-"Can be used %1$d time" = "Can be used %1$d time";
+"Can be used %1$d time" = "Kan användas %1$d gång";
 
 /* The plural total limit where the same coupon can be applied for everyone, reads like: Can be used 10 times */
-"Can be used %1$d times" = "Can be used %1$d times";
+"Can be used %1$d times" = "Kan användas %1$d gånger";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
    Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title that closes the action sheet in product variations - Button title that closes the presented screen - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to cancel an in-person payment or refund - Button to cancel the creation of an order on the New Order screen - Button to dismiss Select Categories screen - Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button in the navigation bar of the view for adding or editing a coupon. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the main more actions menu sheet. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - Text for the cancel button in the Exclude Products screen - Text for the cancel button in the Select Products screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
@@ -885,7 +885,7 @@
 "Categories" = "Kategorier";
 
 /* Error message when local validation fails in Shipping Label Address Validation */
-"Certain required fields need attention." = "Certain required fields need attention.";
+"Certain required fields need attention." = "Vissa obligatoriska fält kräver uppmärksamhet.";
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "Certifikat-fel";
@@ -947,7 +947,7 @@
 "Clear Filters" = "Rensa filter";
 
 /* Button to clear selection on the product categories list */
-"Clear Selection" = "Clear Selection";
+"Clear Selection" = "Rensa val";
 
 /* Button title for clearing all filters for the list. */
 "Clear all" = "Rensa allt";
@@ -1528,7 +1528,7 @@
 "Edit Description" = "Redigera beskrivning";
 
 /* Button for specify the product categories where a coupon can be applied in the view for adding or editing a coupon. Reads like: Edit Categories */
-"Edit Product Categories (%1$d)" = "Edit Product Categories (%1$d)";
+"Edit Product Categories (%1$d)" = "Redigera produktkategorier (%1$d)";
 
 /* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "Redigera produkter";
@@ -1750,10 +1750,10 @@
 "Everyone loves a deal" = "Alla gillar ett erbjudande";
 
 /* Button to submit selection on the Exclude Categories screen when more than 1 item is selected. Reads like: Exclude 10 Categories */
-"Exclude %1$d Categories" = "Exclude %1$d Categories";
+"Exclude %1$d Categories" = "Exkludera %1$d kategorier";
 
 /* Button to submit selection on the Exclude Categories screen when 1 item is selected */
-"Exclude %1$d Category" = "Exclude %1$d Category";
+"Exclude %1$d Category" = "Exkludera %1$d kategori";
 
 /* Title of the action button at the bottom of the Exclude Products screen when more than 1 item is selected, reads like: Exclude 5 Products */
 "Exclude %1$d Products" = "Exkludera %1$d produkter";
@@ -1765,14 +1765,14 @@
 "Exclude Product Categories" = "Exkludera produktkategorier";
 
 /* Title of the action button to add excluded product categories on Coupon Usage Restrictions screen. The number of selected items is mentioned between the brackets. Reads like: Exclude Product Categories (4) */
-"Exclude Product Categories (%1$d)" = "Exclude Product Categories (%1$d)";
+"Exclude Product Categories (%1$d)" = "Exkludera produktkategorier (%1$d)";
 
 /* Title for the screen to exclude products for a coupon
    Title of the action button to add products to the exclusion list in Coupon Usage Restrictions screen */
 "Exclude Products" = "Exkludera produkter";
 
 /* Title of the action button to add excluded products on Coupon Usage Restrictions screen. The number of selected items is included between the brackets. Reads like: Exclude Products (2) */
-"Exclude Products (%1$d)" = "Exclude Products (%1$d)";
+"Exclude Products (%1$d)" = "Exkludera produkter (%1$d)";
 
 /* Title for the exclude sale items row in coupon usage restrictions screen. */
 "Exclude Sale Items" = "Exkludera artiklar på rea";
@@ -1812,7 +1812,7 @@
 "Failed to delete coupon. Please try again." = "Misslyckades att ta bort rabattkod. Försök igen.";
 
 /* Error message on the Issue Refund screen when fetching the charge details failed */
-"Failed to fetch your charge details. Please try again." = "Failed to fetch your charge details. Please try again.";
+"Failed to fetch your charge details. Please try again." = "Det gick inte att hämta din debiteringsinformation. Försök igen.";
 
 /* An error message shown when failing to retrieve information to present a view for a review push notification. */
 "Failed to retrieve the review notification details." = "Kunde inte hämta information om recensionsnotis.";
@@ -3725,10 +3725,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "See the benefits" = "Se fördelarna";
 
 /* Button to submit selection on the Select Categories screen when more than 1 item is selected. Reads like: Select 10 Categories */
-"Select %1$d Categories" = "Select %1$d Categories";
+"Select %1$d Categories" = "Välj %1$d kategorier";
 
 /* Button to submit selection on the Select Categories screen when 1 item is selected */
-"Select %1$d Category" = "Select %1$d Category";
+"Select %1$d Category" = "Välj %1$d kategori";
 
 /* Title of the action button at the bottom of the Select Products screen when more than 1 item is selected, reads like: Select 5 Products */
 "Select %1$d Products" = "Välj %1$d produkter";
@@ -4011,10 +4011,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Something went wrong" = "Något gick fel";
 
 /* Error message in the Add Edit Coupon screen when the creation of the coupon goes in error. */
-"Something went wrong while creating the coupon." = "Something went wrong while creating the coupon.";
+"Something went wrong while creating the coupon." = "Ett fel inträffade vid skapandet av rabattkoden.";
 
 /* Error message in the Add Edit Coupon screen when the update of the coupon goes in error. */
-"Something went wrong while updating the coupon." = "Something went wrong while updating the coupon.";
+"Something went wrong while updating the coupon." = "Ett fel inträffade vid uppdateringen av rabattkoden.";
 
 /* Notice format when a shipping label refund request fails. */
 "Something went wrong with the refund. Please try again." = "Något gick fel med återbetalningen. Försök igen.";
@@ -4221,7 +4221,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Take a photo" = "Ta ett foto";
 
 /* Message when a payments account is successfully connected for Card Present Payments */
-"Taking you back to collect a payment" = "Taking you back to collect a payment";
+"Taking you back to collect a payment" = "Omdirigerar dig till betalningsmottagning";
 
 /* Accessibility hint for the More button on formatting toolbar. */
 "Tap for more formatting options" = "Tryck för fler formateringsalternativ";
@@ -4455,7 +4455,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Certifikatet för den här servern är inte giltigt. Det kan hända att du ansluter till en server som påstår sig vara \"%@\", vilket kan försätta din sekretessbelagda information i fara.\n\nVill du lita på certifikatet i alla fall?";
 
 /* Error message in the Add Edit Coupon screen when the coupon code is empty. */
-"The coupon code couldn't be empty" = "The coupon code couldn't be empty";
+"The coupon code couldn't be empty" = "Rabattkoden kan inte vara tom";
 
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
 "The customer will receive an email once order is completed" = "Kunden kommer att få e-post när beställningen är slutförd";
@@ -4958,7 +4958,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to search for card readers - Bluetooth timed out - please try again" = "Det gick inte att söka efter kortläsare – Bluetooth-tidsgränsen uppnåddes – försök igen";
 
 /* Error notice title when we fail to update an address when creating an order. */
-"Unable to set customer details." = "Unable to set customer details.";
+"Unable to set customer details." = "Det går inte att ange kundinformation.";
 
 /* Error notice title when we fail to update an address in the edit address screen. */
 "Unable to update address." = "Kan inte uppdatera adress.";

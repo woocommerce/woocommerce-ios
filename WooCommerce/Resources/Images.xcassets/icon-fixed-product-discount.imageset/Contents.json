@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "icon-fixed-product-discount.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

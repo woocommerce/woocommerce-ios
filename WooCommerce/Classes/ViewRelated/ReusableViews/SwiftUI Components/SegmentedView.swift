@@ -24,7 +24,7 @@ struct SegmentedView<Content: View>: View {
 
     var body: some View {
         HStack(spacing: 0) {
-            ForEach(0..<views.count) { (index) in
+            ForEach(0..<views.count, id: \.self) { (index) in
                 VStack(spacing: 0) {
                     getContentView(index)
                     if index == selection {

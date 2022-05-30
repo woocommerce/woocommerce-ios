@@ -55,7 +55,6 @@ extension AggregateOrderItem: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(productID)
         hasher.combine(variationID)
-        hasher.combine(attributes)
     }
 }
 

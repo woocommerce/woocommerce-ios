@@ -1,3 +1,9 @@
-We keep adding new functionality to our experimental Coupon Management feature! This release includes editing and deleting coupons along with several improvements on viewing. Turn this feature on for early access in the More tab, Settings, Experimental Features.
+- [***] In-Person Payments is now available for merchants using WooCommerce Payments in Canada. [https://github.com/woocommerce/woocommerce-ios/pull/6954]
+- [*] In-Person Payments: Accessibility improvement [https://github.com/woocommerce/woocommerce-ios/pull/6869, https://github.com/woocommerce/woocommerce-ios/pull/6886, https://github.com/woocommerce/woocommerce-ios/pull/6906]
+- [*] Orders: Now it's possible to select and copy text from the notes on an order. [https://github.com/woocommerce/woocommerce-ios/pull/6894]
+- [*] Support Arabic numerals on amount fields. [https://github.com/woocommerce/woocommerce-ios/pull/6891]
+- [*] Product Selector: Enabled selecting all variations on variable product rows. [https://github.com/woocommerce/woocommerce-ios/pull/6899]
+- [internal] Order Creation: Adding new products, shipping, fee, or customer details to an order now blocks the UI immediately while the order is syncing remotely. [https://github.com/woocommerce/woocommerce-ios/pull/6974]
 
-This release also has several fixes for order creation, in-person payments, and product management. Thank you all again for your invaluable feedback!
+- [*] Coupons: Now it's possible to update discount types for coupons. [https://github.com/woocommerce/woocommerce-ios/pull/6935]
+ 

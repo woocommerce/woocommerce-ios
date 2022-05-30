@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import Storage
+import WooFoundation
 
 /// Settings for the selected Site
 ///
@@ -60,6 +61,39 @@ extension SelectedSiteSettings {
         siteSettings = fetchedObjects
         fetchedObjects.forEach {
             ServiceLocator.currencySettings.updateCurrencyOptions(with: $0)
+        }
+    }
+}
+
+extension CurrencySettings {
+    /// Convenience Initializer:
+    /// This is the preferred way to create an instance with the settings coming from the site.
+    ///
+    public convenience init(siteSettings: [Yosemite.SiteSetting]) {
+        self.init()
+
+        siteSettings.forEach { updateCurrencyOptions(with: $0) }
+    }
+
+    public func updateCurrencyOptions(with siteSetting: Yosemite.SiteSetting) {
+        let value = siteSetting.value
+
+        switch siteSetting.settingID {
+        case Constants.currencyCodeKey:
+            let currencyCode = CurrencyCode(rawValue: value) ?? CurrencySettings.Default.code
+            self.currencyCode = currencyCode
+        case Constants.currencyPositionKey:
+            let currencyPosition = CurrencyPosition(rawValue: value) ?? CurrencySettings.Default.position
+            self.currencyPosition = currencyPosition
+        case Constants.thousandSeparatorKey:
+            self.thousandSeparator = value
+        case Constants.decimalSeparatorKey:
+            self.decimalSeparator = value
+        case Constants.numberOfDecimalsKey:
+            let numberOfDecimals = Int(value) ?? CurrencySettings.Default.decimalPosition
+            self.numberOfDecimals = numberOfDecimals
+        default:
+            break
         }
     }
 }

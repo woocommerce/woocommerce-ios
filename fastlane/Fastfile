@@ -767,6 +767,9 @@ platform :ios do
 
   desc 'Download App Store Translations'
   lane :download_app_store_translations do
+    # FIXME: `download_localized_metadata_from_glotpress` makes this lane almost redundant,
+    # but we need to carefully adjust the screenshots metadata locations to complete the process.
+    # See https://github.com/woocommerce/woocommerce-ios/issues/6987
     files = {
 
       # Metadata fields

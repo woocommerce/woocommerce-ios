@@ -2,7 +2,7 @@
 
 9.4
 -----
-
+- [*] Orders: Order details now displays both the date and time for all orders. [https://github.com/woocommerce/woocommerce-ios/pull/6996]
 
 9.3
 -----

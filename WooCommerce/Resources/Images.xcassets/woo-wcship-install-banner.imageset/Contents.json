@@ -3,6 +3,16 @@
     {
       "filename" : "woo-wcship-install-banner-light.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "woo-wcship-install-banner-dark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

@@ -4,6 +4,7 @@ included:
   - Networking
   - Storage
   - Yosemite
+  - WooFoundation
 
 # Rules
 whitelist_rules:

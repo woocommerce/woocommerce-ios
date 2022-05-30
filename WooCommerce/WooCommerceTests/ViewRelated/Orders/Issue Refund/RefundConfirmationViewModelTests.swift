@@ -1,7 +1,7 @@
 import XCTest
 
 @testable import WooCommerce
-
+import WooFoundation
 import Yosemite
 
 /// Tests for `RefundConfirmationViewModel`.

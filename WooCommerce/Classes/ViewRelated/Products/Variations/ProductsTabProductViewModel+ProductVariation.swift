@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import WooFoundation
 
 extension ProductsTabProductViewModel {
     init(productVariationModel: EditableProductVariationModel,

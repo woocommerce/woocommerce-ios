@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import WooFoundation
 /// Calculates the Order fee values(subtotal, total and tax) to be refunded.
 ///
 struct RefundFeesCalculationUseCase {

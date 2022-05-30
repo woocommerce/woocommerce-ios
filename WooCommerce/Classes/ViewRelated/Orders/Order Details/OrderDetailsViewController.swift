@@ -6,6 +6,7 @@ import SafariServices
 import MessageUI
 import Combine
 import SwiftUI
+import WooFoundation
 
 // MARK: - OrderDetailsViewController: Displays the details for a given Order.
 //

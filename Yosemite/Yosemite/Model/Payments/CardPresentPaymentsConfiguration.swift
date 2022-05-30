@@ -1,4 +1,5 @@
 import Foundation
+import WooFoundation
 
 public struct CardPresentPaymentsConfiguration {
     public let countryCode: String

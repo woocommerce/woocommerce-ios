@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import WooFoundation
 
 // MARK: - View Model for individual cells on the Order List screen
 //

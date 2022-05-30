@@ -46,19 +46,10 @@ struct SummaryTableViewCellViewModel {
         }
     }
 
-    /// The date and the order number concatenated together. Example, “Jan 22, 2018 • #1587”.
-    ///
-    /// If the date is today, the time will be returned instead.
+    /// The date, time, and the order number concatenated together. Example, “Jan 22, 2018, 11:23 AM • #1587”.
     ///
     var subtitle: String {
-        let formatter: DateFormatter = {
-            if dateCreated.isSameDay(as: Date(), using: calendar) {
-                return DateFormatter.timeFormatter
-            } else {
-                return DateFormatter.mediumLengthLocalizedDateFormatter
-            }
-        }()
-
+        let formatter = DateFormatter.dateAndTimeFormatter
         return "\(formatter.string(from: dateCreated)) • #\(orderNumber)"
     }
 }

@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import Yosemite
+import WooFoundation
 import protocol Storage.StorageManagerType
 
 /// Protocol to abstract the `RefundSubmissionUseCase`.

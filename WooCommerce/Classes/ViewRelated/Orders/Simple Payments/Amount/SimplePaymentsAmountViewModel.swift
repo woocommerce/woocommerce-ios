@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 import Combine
 import Experiments
+import WooFoundation
 
 /// View Model for the `SimplePaymentsAmount` view.
 ///

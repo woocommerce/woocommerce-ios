@@ -31,4 +31,7 @@
    <FileRef
       location = "group:Pods/Pods.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:WooFoundation/WooFoundation.xcodeproj">
+   </FileRef>
 </Workspace>

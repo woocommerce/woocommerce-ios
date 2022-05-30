@@ -1,7 +1,7 @@
 import Foundation
 
 
-extension Double {
+public extension Double {
 
     /// Provides a short, friendly, and *localized* representation of the receiver.
     ///

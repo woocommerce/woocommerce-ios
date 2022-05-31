@@ -4,6 +4,7 @@ import SwiftUI
 ///
 struct CouponAllowedEmails: View {
     @ObservedObject private var viewModel: CouponAllowedEmailsViewModel
+    @Environment(\.presentationMode) var presentation
 
     init(viewModel: CouponAllowedEmailsViewModel) {
         self.viewModel = viewModel
@@ -31,11 +32,14 @@ struct CouponAllowedEmails: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    viewModel.validateEmails()
-                }, label: Localization.done)
+                Button(Localization.done) {
+                    viewModel.validateEmails {
+                        presentation.wrappedValue.dismiss()
+                    }
+                }
             }
         }
+        .wooNavigationBarStyle()
     }
 }
 

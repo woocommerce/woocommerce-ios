@@ -1,4 +1,5 @@
 import Foundation
+import WordPressShared
 
 /// View model for `CouponAllowedEmails` view.
 ///
@@ -16,8 +17,12 @@ final class CouponAllowedEmailsViewModel: ObservableObject {
 
     /// Validate the input
     ///
-    func validateEmails() -> Bool {
-        // TODO: implement this
-        return true
+    func validateEmails(dismissHandler: @escaping () -> Void) {
+        let emails = emailPatterns.components(separatedBy: ", ")
+        foundInvalidPatterns = emails.contains(where: { !EmailFormatValidator.validate(string: $0) })
+        if !foundInvalidPatterns {
+            onCompletion(emailPatterns)
+            dismissHandler()
+        }
     }
 }

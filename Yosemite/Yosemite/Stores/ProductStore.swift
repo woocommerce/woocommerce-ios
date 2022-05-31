@@ -92,6 +92,8 @@ public class ProductStore: Store {
             requestMissingProducts(for: order, onCompletion: onCompletion)
         case .updateProduct(let product, let onCompletion):
             updateProduct(product: product, onCompletion: onCompletion)
+        case .updateProductImages(let siteID, let productID, let images, let onCompletion):
+            updateProductImages(siteID: siteID, productID: productID, images: images, onCompletion: onCompletion)
         case .validateProductSKU(let sku, let siteID, let onCompletion):
             validateProductSKU(sku, siteID: siteID, onCompletion: onCompletion)
         case let .replaceProductLocally(product, onCompletion):
@@ -313,6 +315,23 @@ private extension ProductStore {
     ///
     func updateProduct(product: Product, onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
         remote.updateProduct(product: product) { [weak self] result in
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(ProductUpdateError(error: error)))
+            case .success(let product):
+                self?.upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: product.siteID) { [weak self] in
+                    guard let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: product.siteID, productID: product.productID) else {
+                        onCompletion(.failure(.notFoundInStorage))
+                        return
+                    }
+                    onCompletion(.success(storageProduct.toReadOnly()))
+                }
+            }
+        }
+    }
+
+    func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
+        remote.updateProductImages(siteID: siteID, productID: productID, images: images) { [weak self] result in
             switch result {
             case .failure(let error):
                 onCompletion(.failure(ProductUpdateError(error: error)))

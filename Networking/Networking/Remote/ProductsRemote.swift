@@ -35,6 +35,7 @@ public protocol ProductsRemoteProtocol {
                    sku: String,
                    completion: @escaping (Result<String, Error>) -> Void)
     func updateProduct(product: Product, completion: @escaping (Result<Product, Error>) -> Void)
+    func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], completion: @escaping (Result<Product, Error>) -> Void)
 }
 
 extension ProductsRemoteProtocol {
@@ -270,6 +271,19 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             let parameters = try product.toDictionary()
             let productID = product.productID
             let siteID = product.siteID
+            let path = "\(Path.products)/\(productID)"
+            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+            let mapper = ProductMapper(siteID: siteID)
+
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
+    }
+
+    public func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], completion: @escaping (Result<Product, Error>) -> Void) {
+        do {
+            let parameters = try (["images": images]).toDictionary()
             let path = "\(Path.products)/\(productID)"
             let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
             let mapper = ProductMapper(siteID: siteID)

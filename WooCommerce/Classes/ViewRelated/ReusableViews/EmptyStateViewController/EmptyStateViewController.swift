@@ -218,18 +218,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
             }
         }()
 
-        pullToRefreshActionHandler = {
-            switch config {
-            case .simple(_, _, let pullToRefreshClosure):
-                return pullToRefreshClosure
-            case .withLink(_, _, _, _, _, let pullToRefreshClosure):
-                return pullToRefreshClosure
-            case .withButton(_, _, _, _, _, let pullToRefreshClosure):
-                return pullToRefreshClosure
-            case .withSupportRequest(_, _, _, _, let pullToRefreshClosure):
-                return pullToRefreshClosure
-            }
-        }()
+        configurePullToRefresh(config)
     }
 
     /// Watch for device orientation changes and update the `imageView`'s visibility accordingly.
@@ -302,6 +291,10 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
 // MARK: - Configuration
 
 private extension EmptyStateViewController {
+    @objc func onPullToRefresh(sender: UIRefreshControl) {
+        pullToRefreshActionHandler?(sender)
+    }
+
     /// Configures the `actionButton` based on the given `config`.
     func configureActionButton(_ config: Config) {
         switch config {
@@ -317,6 +310,34 @@ private extension EmptyStateViewController {
             actionButton.contentEdgeInsets = .zero
             actionButton.setTitle(buttonTitle, for: .normal)
         }
+    }
+
+    /// Configures pull to refresh based on the given `config`
+    func configurePullToRefresh(_ config: Config) {
+        pullToRefreshActionHandler = {
+            switch config {
+            case .simple(_, _, let pullToRefreshClosure):
+                return pullToRefreshClosure
+            case .withLink(_, _, _, _, _, let pullToRefreshClosure):
+                return pullToRefreshClosure
+            case .withButton(_, _, _, _, _, let pullToRefreshClosure):
+                return pullToRefreshClosure
+            case .withSupportRequest(_, _, _, _, let pullToRefreshClosure):
+                return pullToRefreshClosure
+            }
+        }()
+
+        guard pullToRefreshActionHandler != nil else {
+            // Remove refresh control if config doesn't have action handler
+            scrollView.refreshControl = nil
+            return
+        }
+
+        // Create refresh control if needed
+        if scrollView.refreshControl == nil {
+            scrollView.refreshControl = UIRefreshControl()
+        }
+        scrollView.refreshControl?.addTarget(self, action: #selector(onPullToRefresh(sender:)), for: .valueChanged)
     }
 }
 

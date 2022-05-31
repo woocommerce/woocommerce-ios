@@ -17,14 +17,13 @@ public class CurrencySettings {
 
     /// Default currency settings
     ///
-    public enum Default {
+    enum Default {
         public static let code = CurrencyCode.USD
         public static let position = CurrencyPosition.left
         static let thousandSeparator = ","
         public static let decimalSeparator = "."
         public static let decimalPosition = 2
     }
-
 
     // MARK: - Variables
 

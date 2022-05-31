@@ -80,18 +80,21 @@ extension CurrencySettings {
 
         switch siteSetting.settingID {
         case Constants.currencyCodeKey:
-            let currencyCode = CurrencyCode(rawValue: value) ?? CurrencySettings.Default.code
-            self.currencyCode = currencyCode
+            if let currencyCode = CurrencyCode(rawValue: value) {
+                self.currencyCode = currencyCode
+            }
         case Constants.currencyPositionKey:
-            let currencyPosition = CurrencyPosition(rawValue: value) ?? CurrencySettings.Default.position
-            self.currencyPosition = currencyPosition
+            if let currencyPosition = CurrencyPosition(rawValue: value) {
+                self.currencyPosition = currencyPosition
+            }
         case Constants.thousandSeparatorKey:
             self.thousandSeparator = value
         case Constants.decimalSeparatorKey:
             self.decimalSeparator = value
         case Constants.numberOfDecimalsKey:
-            let numberOfDecimals = Int(value) ?? CurrencySettings.Default.decimalPosition
-            self.numberOfDecimals = numberOfDecimals
+            if let numberOfDecimals = Int(value) {
+                self.numberOfDecimals = numberOfDecimals
+            }
         default:
             break
         }

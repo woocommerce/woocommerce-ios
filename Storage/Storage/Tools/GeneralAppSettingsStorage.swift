@@ -7,7 +7,7 @@ import Foundation
 public struct GeneralAppSettingsStorage {
     private let fileStorage: FileStorage
 
-    public init(fileStorage: FileStorage) {
+    public init(fileStorage: FileStorage = PListFileStorage()) {
         self.fileStorage = fileStorage
     }
 

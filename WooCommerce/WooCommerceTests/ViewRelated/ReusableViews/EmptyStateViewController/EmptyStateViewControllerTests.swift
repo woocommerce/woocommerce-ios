@@ -185,6 +185,34 @@ final class EmptyStateViewControllerTests: XCTestCase {
         XCTAssertEqual(invocation.controller, viewController)
         XCTAssertNil(invocation.sourceTag)
     }
+
+    // MARK: - Pull to refresh
+
+    func test_given_a_simple_config_with_pull_to_refresh_handler_when_pulled_to_refresh_fires_callback() throws {
+        // Given
+        let viewController = EmptyStateViewController()
+        XCTAssertNotNil(viewController.view)
+
+        let mirror = try self.mirror(of: viewController)
+
+        let exp = expectation(description: "Pull to refresh callback executed.")
+        let completionHandler: ((UIRefreshControl) -> Void) = { _ in
+            exp.fulfill()
+        }
+        // When
+        viewController.configure(.simple(message: NSAttributedString(string: "Ola"),
+                                         image: .infoImage,
+                                         onPullToRefresh: completionHandler))
+
+        // Then
+        XCTAssertNotNil(mirror.scrollView.refreshControl)
+
+        // When
+        mirror.scrollView.refreshControl?.sendActions(for: .valueChanged)
+
+        // Then
+        waitForExpectations(timeout: Constants.expectationTimeout)
+    }
 }
 
 // MARK: - Mirroring

@@ -275,6 +275,38 @@ final class EmptyStateViewControllerTests: XCTestCase {
         // Then
         waitForExpectations(timeout: Constants.expectationTimeout)
     }
+
+    func test_given_a_supportRequest_config_with_pull_to_refresh_handler_when_pulled_to_refresh_fires_callback() throws {
+        // Given
+        let zendeskManager = MockZendeskManager()
+        let viewController = EmptyStateViewController(style: .basic, zendeskManager: zendeskManager)
+        XCTAssertNotNil(viewController.view)
+
+        let mirror = try self.mirror(of: viewController)
+
+        let exp = expectation(description: "Pull to refresh callback executed.")
+        let completionHandler: ((UIRefreshControl) -> Void) = { _ in
+            exp.fulfill()
+        }
+
+        // When
+        viewController.configure(.withSupportRequest(
+            message: NSAttributedString(string: ""),
+            image: .infoImage,
+            details: "",
+            buttonTitle: "Dolores",
+            onPullToRefresh: completionHandler
+        ))
+
+        // Then
+        XCTAssertNotNil(mirror.scrollView.refreshControl)
+
+        // When
+        mirror.scrollView.refreshControl?.sendActions(for: .valueChanged)
+
+        // Then
+        waitForExpectations(timeout: Constants.expectationTimeout)
+    }
 }
 
 // MARK: - Mirroring

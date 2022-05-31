@@ -9,12 +9,15 @@ final class OrderStatusListViewController: UIViewController {
     /// The index of the status stored in the database when list view is presented
     ///
     private var initialStatus: IndexPath?
+
     /// The index of (new) order status selected by the user tapping on a table row.
     ///
     private var indexOfSelectedStatus: IndexPath? {
         didSet {
-            if initialStatus != indexOfSelectedStatus {
+            if initialStatus != indexOfSelectedStatus, !isSelectionAutoConfirmed {
                 activateApplyButton()
+            } else if initialStatus != indexOfSelectedStatus, isSelectionAutoConfirmed {
+                confirmSelectedStatus()
             } else {
                 deActivateApplyButton()
             }
@@ -116,7 +119,7 @@ extension OrderStatusListViewController {
         let rightBarButton = UIBarButtonItem(title: applyButtonTitle,
                                              style: .done,
                                              target: self,
-                                             action: #selector(applyButtonTapped))
+                                             action: #selector(confirmSelectedStatus))
         navigationItem.setRightBarButton(rightBarButton, animated: false)
         navigationItem.rightBarButtonItem?.accessibilityIdentifier = "order-status-list-apply-button"
         deActivateApplyButton()
@@ -134,7 +137,7 @@ extension OrderStatusListViewController {
         didSelectCancel?()
     }
 
-    @objc func applyButtonTapped() {
+    @objc func confirmSelectedStatus() {
         guard let indexOfSelectedStatus = indexOfSelectedStatus else {
             didSelectCancel?()
             return

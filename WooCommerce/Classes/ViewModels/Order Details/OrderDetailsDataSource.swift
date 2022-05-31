@@ -93,19 +93,23 @@ final class OrderDetailsDataSource: NSObject {
         let plugin = resultsControllers.sitePlugins.first { $0.name == "WooCommerce Shipping & Tax" }
         let isPluginInstalled = plugin != nil
         let isPluginActive = plugin?.status.isActive ?? false
-        let isCountryCodeUS = SiteAddress().countryCode == SiteAddress.CountryCode.US.rawValue
+        let isCountryCodeUS = SiteAddress(siteSettings: siteSettings).countryCode == SiteAddress.CountryCode.US.rawValue
         let isCurrencyUSD = currencySettings.currencyCode == .USD
-        let orderContainsOnlyVirtualProducts = products.filter { (product) -> Bool in
-            return items.first(where: { $0.productID == product.productID}) != nil
-        }.allSatisfy { $0.virtual == true }
+
+        print("ecco cosa non va", isFeatureFlagEnabled,
+              !isPluginInstalled,
+              !isPluginActive,
+              isCountryCodeUS,
+              isCurrencyUSD,
+              !isEligibleForCardPresentPayment)
+
 
         guard isFeatureFlagEnabled,
-                isPluginInstalled,
+                !isPluginInstalled,
                 !isPluginActive,
                 isCountryCodeUS,
                 isCurrencyUSD,
-                !isEligibleForCardPresentPayment,
-                !orderContainsOnlyVirtualProducts else {
+                !isEligibleForCardPresentPayment else {
             return false
         }
 
@@ -257,6 +261,8 @@ final class OrderDetailsDataSource: NSObject {
 
     private let currencySettings: CurrencySettings
 
+    private let siteSettings: [SiteSetting]
+
     private let featureFlags: FeatureFlagService
 
     init(order: Order,
@@ -264,6 +270,7 @@ final class OrderDetailsDataSource: NSObject {
          cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
          refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol = OrderRefundsOptionsDeterminer(),
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings,
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.storageManager = storageManager
         self.order = order
@@ -271,6 +278,7 @@ final class OrderDetailsDataSource: NSObject {
         self.couponLines = order.coupons
         self.refundableOrderItemsDeterminer = refundableOrderItemsDeterminer
         self.currencySettings = currencySettings
+        self.siteSettings = siteSettings
         self.featureFlags = featureFlags
 
         super.init()

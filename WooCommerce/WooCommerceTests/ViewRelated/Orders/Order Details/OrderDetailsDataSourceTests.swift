@@ -603,8 +603,6 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Given
         let sampleSiteID: Int64 = 1234
         let order = makeOrder()
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: 100, virtual: false)
-        insert(product)
 
         let currencySettings = CurrencySettings(currencyCode: .USD,
                                                 currencyPosition: .leftSpace,
@@ -796,12 +794,6 @@ private extension OrderDetailsDataSourceTests {
     func insert(_ readOnlyPlugin: Yosemite.SitePlugin) {
         let plugin = storage.insertNewObject(ofType: StorageSitePlugin.self)
         plugin.update(with: readOnlyPlugin)
-        storage.saveIfNeeded()
-    }
-
-    func insert(_ product: Product) {
-        let storageProduct = storage.insertNewObject(ofType: StorageProduct.self)
-        storageProduct.update(with: product)
         storage.saveIfNeeded()
     }
 

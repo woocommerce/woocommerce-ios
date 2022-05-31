@@ -276,7 +276,6 @@ private extension SimplePaymentsMethodsViewModel {
     }
 
     func updateCardPaymentVisibility() {
-        print("💳 Updating visibility")
         guard let order = ordersResultController.fetchedObjects.first else {
             showPayWithCardRow = false
             return

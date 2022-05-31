@@ -39,6 +39,7 @@ struct CouponAllowedEmails: View {
                 }
             }
         }
+        .notice($viewModel.notice)
         .wooNavigationBarStyle()
     }
 }

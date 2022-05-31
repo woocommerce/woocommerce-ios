@@ -6,7 +6,11 @@ import WordPressShared
 final class CouponAllowedEmailsViewModel: ObservableObject {
 
     @Published var emailPatterns: String
-    @Published var foundInvalidPatterns: Bool = false
+
+    /// Defines the current notice that should be shown.
+    /// Defaults to `nil`.
+    ///
+    @Published var notice: Notice?
 
     private let onCompletion: (String) -> Void
 
@@ -19,10 +23,21 @@ final class CouponAllowedEmailsViewModel: ObservableObject {
     ///
     func validateEmails(dismissHandler: @escaping () -> Void) {
         let emails = emailPatterns.components(separatedBy: ", ")
-        foundInvalidPatterns = emails.contains(where: { !EmailFormatValidator.validate(string: $0) })
+        let foundInvalidPatterns = emails.contains(where: { !EmailFormatValidator.validate(string: $0) })
         if !foundInvalidPatterns {
             onCompletion(emailPatterns)
             dismissHandler()
+        } else {
+            notice = Notice(title: Localization.failedEmailValidation, feedbackType: .error)
         }
+    }
+}
+
+private extension CouponAllowedEmailsViewModel {
+    enum Localization {
+        static let failedEmailValidation = NSLocalizedString(
+            "Some email address is not valid.",
+            comment: "Error message when at least an address on the Coupon Allowed Emails screen is not valid."
+        )
     }
 }

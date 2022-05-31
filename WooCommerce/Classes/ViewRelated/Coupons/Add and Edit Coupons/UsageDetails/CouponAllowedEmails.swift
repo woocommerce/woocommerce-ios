@@ -3,12 +3,16 @@ import SwiftUI
 /// View to input allowed email formats for coupons
 ///
 struct CouponAllowedEmails: View {
-    @Binding var emailFormats: String
+    @ObservedObject private var viewModel: CouponAllowedEmailsViewModel
+
+    init(viewModel: CouponAllowedEmailsViewModel) {
+        self.viewModel = viewModel
+    }
 
     var body: some View {
         GeometryReader { geometry in
             VStack(alignment: .leading) {
-                TextField("", text: $emailFormats)
+                TextField("", text: $viewModel.emailPatterns)
                     .labelsHidden()
                     .padding(.horizontal, Constants.margin)
                     .padding(.horizontal, insets: geometry.safeAreaInsets)
@@ -28,7 +32,7 @@ struct CouponAllowedEmails: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    // TODO: validate
+                    viewModel.validateEmails()
                 }, label: Localization.done)
             }
         }
@@ -54,6 +58,7 @@ private extension CouponAllowedEmails {
 
 struct CouponAllowedEmails_Previews: PreviewProvider {
     static var previews: some View {
-        CouponAllowedEmails(emailFormats: .constant("*gmail.com, *@me.com"))
+        let viewModel = CouponAllowedEmailsViewModel(allowedEmails: "*gmail.com, *@me.com") { _ in }
+        CouponAllowedEmails(viewModel: viewModel)
     }
 }

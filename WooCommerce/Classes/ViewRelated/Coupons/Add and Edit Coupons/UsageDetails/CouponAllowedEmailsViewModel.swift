@@ -4,17 +4,20 @@ import Foundation
 ///
 final class CouponAllowedEmailsViewModel: ObservableObject {
 
-    @Published var allowedEmails: String
+    @Published var emailPatterns: String
+    @Published var foundInvalidPatterns: Bool = false
 
-    @Published private(set) var foundInvalidPatterns: Bool = false
+    private let onCompletion: (String) -> Void
 
-    init(allowedEmails: String) {
-        self.allowedEmails = allowedEmails
+    init(allowedEmails: String, onCompletion: @escaping (String) -> Void) {
+        self.emailPatterns = allowedEmails
+        self.onCompletion = onCompletion
     }
 
     /// Validate the input
     ///
-    func validateEmails() {
-        
+    func validateEmails() -> Bool {
+        // TODO: implement this
+        return true
     }
 }

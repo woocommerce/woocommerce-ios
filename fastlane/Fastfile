@@ -54,6 +54,8 @@ GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES = {
   'zh-tw' => 'zh-Hant',
 }.freeze
 
+ASC_KEY_PATH = File.join(SECRETS_DIR, 'app_store_connect_fastlane_api_key.json')
+
 # Use this instead of getting values from ENV directly
 # It will throw an error if the requested value is missing
 def get_required_env(key)
@@ -397,7 +399,7 @@ platform :ios do
 
     testflight(
       skip_waiting_for_build_processing: true,
-      api_key_path: File.join(SECRETS_DIR, 'app_store_connect_fastlane_api_key.json')
+      api_key_path: ASC_KEY_PATH
     )
     sh('cd .. && rm WooCommerce.ipa')
 
@@ -546,7 +548,8 @@ platform :ios do
       register_device(
         name: device_name,
         udid: device_id,
-        team_id: get_required_env('EXT_EXPORT_TEAM_ID')
+        team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
+        api_key_path: ASC_KEY_PATH
       )
     end
 

@@ -1,4 +1,5 @@
 import Hardware
+import WooFoundation
 
 public extension PaymentIntent {
     /// Maps a PaymentIntent into an struct that contains only the data we need to
@@ -22,16 +23,12 @@ public extension PaymentIntent {
     }
 
     private func formattedAmount(_ amount: UInt) -> String {
-        // We should use CurrencyFormatter instead for consistency
-        let formatter = NumberFormatter()
-
-        let fractionDigits = 2 // TODO - support non cent currencies like JPY - see #3948
-        formatter.minimumFractionDigits = fractionDigits
-        formatter.maximumFractionDigits = fractionDigits
+        let formatter = CurrencyFormatter(currencySettings: CurrencySettings())
+        let decimalPosition = 2
 
         var amount: Decimal = Decimal(amount)
-        amount = amount / pow(10, fractionDigits)
+        amount = amount / pow(10, decimalPosition)
 
-        return formatter.string(for: amount) ?? ""
+        return formatter.localize(amount, in: decimalPosition) ?? ""
     }
 }

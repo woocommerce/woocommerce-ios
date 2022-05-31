@@ -1,6 +1,7 @@
 import Storage
 import Networking
 import Hardware
+import WooFoundation
 
 
 // MARK: - ReceiptStore
@@ -13,14 +14,8 @@ public class ReceiptStore: Store {
         storageManager.writerDerivedStorage
     }()
 
-    private lazy var receiptNumberFormatter: NumberFormatter = {
-        // We should use CurrencyFormatter instead for consistency
-        let formatter = NumberFormatter()
-
-        let fractionDigits = 2 // TODO - support non cent currencies like JPY - see #3948
-        formatter.minimumFractionDigits = fractionDigits
-        formatter.maximumFractionDigits = fractionDigits
-        return formatter
+    private lazy var currencyFormatter: CurrencyFormatter = {
+        CurrencyFormatter(currencySettings: CurrencySettings())
     }()
 
     public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, receiptPrinterService: PrinterService, fileStorage: FileStorage) {
@@ -122,7 +117,7 @@ private extension ReceiptStore {
             result += NSDecimalNumber(apiAmount: item.subtotal).decimalValue
         }
         return ReceiptTotalLine(description: ReceiptContent.Localization.productTotalLineDescription,
-                                amount: receiptNumberFormatter.string(from: lineItemsTotal as NSNumber) ?? "")
+                                amount: currencyFormatter.localize(lineItemsTotal) ?? "")
     }
 
     func discountLine(order: Order) -> ReceiptTotalLine? {
@@ -158,7 +153,7 @@ private extension ReceiptStore {
         let feeTotal = fees.reduce(into: Decimal(0)) { result, fee in
             result += NSDecimalNumber(apiAmount: fee.total).decimalValue
         }
-        return receiptNumberFormatter.string(from: feeTotal as NSNumber) ?? ""
+        return currencyFormatter.localize(feeTotal) ?? ""
     }
 
     func lineIfNonZero(description: String, amount: String) -> ReceiptTotalLine? {

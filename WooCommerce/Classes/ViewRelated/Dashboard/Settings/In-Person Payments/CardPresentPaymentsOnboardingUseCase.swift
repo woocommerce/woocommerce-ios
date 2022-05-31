@@ -48,10 +48,6 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         self.configurationLoader = .init(stores: stores)
         self.cardPresentPluginsDataProvider = .init(storageManager: storageManager, stores: stores, configuration: configurationLoader.configuration)
 
-
-        // At the time of writing, actions are dispatched and processed synchronously, so the completion blocks for
-        // loadStripeInPersonPaymentsSwitchState and loadCanadaInPersonPaymentsSwitchState should have been called already.
-        // We defer updating the state until all settings are read to prevent unnecessary checks.
         updateState()
     }
 

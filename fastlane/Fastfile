@@ -90,7 +90,6 @@ platform :ios do
   ENV[GHHELPER_REPO = 'woocommerce/woocommerce-iOS']
   ENV['PROJECT_NAME'] = 'WooCommerce'
   ENV['PUBLIC_CONFIG_FILE'] = 'config/Version.Public.xcconfig'
-  ENV['DOWNLOAD_METADATA'] = 'fastlane/download_metadata.swift'
   ENV['PROJECT_ROOT_FOLDER'] = './'
   ENV['APP_STORE_STRINGS_FILE_NAME'] = 'AppStoreStrings.pot'
   ENV['FL_RELEASE_TOOLKIT_DEFAULT_BRANCH'] = 'trunk'
@@ -278,7 +277,7 @@ platform :ios do
 
     UI.message('Checking release notes strings translation status...')
     check_translation_progress(
-      glotpress_url: 'https://translate.wordpress.com/projects/woocommerce/woocommerce-ios/release-notes/',
+      glotpress_url: GLOTPRESS_METADATA_PROJECT_URL,
       abort_on_violations: false
     )
 
@@ -768,6 +767,9 @@ platform :ios do
 
   desc 'Download App Store Translations'
   lane :download_app_store_translations do
+    # FIXME: `download_localized_metadata_from_glotpress` makes this lane almost redundant,
+    # but we need to carefully adjust the screenshots metadata locations to complete the process.
+    # See https://github.com/woocommerce/woocommerce-ios/issues/6987
     files = {
 
       # Metadata fields
@@ -841,7 +843,7 @@ platform :ios do
 
   desc 'Create Promo Screenshots'
   lane :create_promo_screenshots do |options|
-    unless Fastlane::Helper::GitHelper.has_git_lfs
+    unless Fastlane::Helper::GitHelper.has_git_lfs?
       UI.user_error!('LFS not enabled – unable to generate promo screenshots. Run `git lfs install && git lfs fetch && git lfs pull` to fix this.')
     end
 

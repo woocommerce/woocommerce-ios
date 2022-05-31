@@ -9,10 +9,6 @@ struct MockAppSettingsActionHandler: MockActionHandler {
 
     func handle(action: ActionType) {
         switch action {
-        case .loadInitialStatsVersionToShow(let siteId, let onCompletion):
-            loadInitialStatsVersionToShow(siteId: siteId, onCompletion: onCompletion)
-        case .setStatsVersionLastShown:
-            success()
         case .loadFeedbackVisibility(let type, let onCompletion):
             loadFeedbackVisibility(type: type, onCompletion: onCompletion)
         case .setInstallationDateIfNecessary(let date, let onCompletion):
@@ -29,15 +25,10 @@ struct MockAppSettingsActionHandler: MockActionHandler {
                 .setTelemetryAvailability,
                 .loadOrdersSettings,
                 .upsertProductsSettings,
-                .loadCanadaInPersonPaymentsSwitchState,
                 .loadCouponManagementFeatureSwitchState:
             break
         default: unimplementedAction(action: action)
         }
-    }
-
-    func loadInitialStatsVersionToShow(siteId: Int64, onCompletion: (StatsVersion?) -> Void) {
-        onCompletion(.v4)
     }
 
     func loadFeedbackVisibility(type: FeedbackType, onCompletion: (Result<Bool, Error>) -> Void) {

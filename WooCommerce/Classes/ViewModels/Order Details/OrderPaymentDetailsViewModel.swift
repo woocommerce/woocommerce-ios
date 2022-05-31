@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import WooFoundation
 
 final class OrderPaymentDetailsViewModel {
     private let order: Order

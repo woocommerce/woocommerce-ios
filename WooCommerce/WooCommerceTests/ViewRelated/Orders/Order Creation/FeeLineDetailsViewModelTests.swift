@@ -1,6 +1,7 @@
 import XCTest
 import Combine
 
+import WooFoundation
 @testable import WooCommerce
 @testable import struct Yosemite.OrderFeeLine
 

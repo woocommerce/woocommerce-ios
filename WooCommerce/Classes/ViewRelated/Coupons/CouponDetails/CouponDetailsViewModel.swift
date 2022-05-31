@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import Experiments
+import WooFoundation
 
 /// View model for `CouponDetails` view
 ///
@@ -123,6 +124,10 @@ final class CouponDetailsViewModel: ObservableObject {
 
     var shouldShowErrorLoadingAmount: Bool {
         (hasErrorLoadingAmount || hasWCAnalyticsDisabled) && discountedAmount == nil
+    }
+
+    var shouldDisplayLimitUsageToXItems: Bool {
+        limitUsageToXItems > 0 && coupon.discountType != .fixedCart
     }
 
     private let stores: StoresManager

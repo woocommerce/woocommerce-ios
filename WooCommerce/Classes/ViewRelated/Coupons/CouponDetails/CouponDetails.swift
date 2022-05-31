@@ -267,7 +267,7 @@ struct CouponDetails: View {
                 Text(String.pluralize(Int(viewModel.limitUsageToXItems),
                                       singular: Localization.singularItemsInCartUsageLimit,
                                       plural: Localization.pluralItemsInCartUsageLimit))
-                .renderedIf(viewModel.limitUsageToXItems > 0)
+                .renderedIf(viewModel.shouldDisplayLimitUsageToXItems)
             }
             .renderedIf(viewModel.minimumAmount.isNotEmpty ||
                         viewModel.maximumAmount.isNotEmpty ||

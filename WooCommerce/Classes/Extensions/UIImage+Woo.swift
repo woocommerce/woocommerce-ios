@@ -293,6 +293,24 @@ extension UIImage {
         return UIImage.gridicon(.filter)
     }
 
+    /// Fixed cart discount icon
+    ///
+    static var fixedCartDiscountIcon: UIImage {
+        return UIImage(named: "icon-fixed-cart-discount")!
+    }
+
+    /// Fixed product discount icon
+    ///
+    static var fixedProductDiscountIcon: UIImage {
+        return UIImage(named: "icon-fixed-product-discount")!
+    }
+
+    /// Percentage discount icon
+    ///
+    static var percentageDiscountIcon: UIImage {
+        return UIImage(named: "icon-percentage-discount")!
+    }
+
     /// Gift Icon (with a red dot at the top right corner)
     ///
     static var giftWithTopRightRedDotImage: UIImage {
@@ -671,7 +689,7 @@ extension UIImage {
     /// Simple Payments Icon
     ///
     static var simplePaymentsImage: UIImage {
-        return UIImage(named: "icon-simple-payments")!
+        return UIImage(named: "icon-simple-payments")!.withRenderingMode(.alwaysTemplate)
     }
 
     /// Work In Progress banner icon on the Products Tab

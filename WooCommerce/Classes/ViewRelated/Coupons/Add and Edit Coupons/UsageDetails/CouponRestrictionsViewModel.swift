@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import Yosemite
+import WooFoundation
 import protocol Storage.StorageManagerType
 
 /// View Model for `CouponRestriction`
@@ -8,6 +9,8 @@ import protocol Storage.StorageManagerType
 final class CouponRestrictionsViewModel: ObservableObject {
 
     let currencySymbol: String
+
+    private(set) var shouldDisplayLimitUsageToXItemsRow: Bool
 
     var excludeProductsButtonIcon: UIImage {
         excludedProductOrVariationIDs.isEmpty ? .plusImage : .pencilImage
@@ -115,6 +118,8 @@ final class CouponRestrictionsViewModel: ObservableObject {
         excludeSaleItems = coupon.excludeSaleItems
         excludedProductOrVariationIDs = coupon.excludedProductIds
         excludedCategoryIDs = coupon.excludedProductCategories
+
+        shouldDisplayLimitUsageToXItemsRow = coupon.discountType != .fixedCart
     }
 
     init(siteID: Int64,
@@ -122,6 +127,7 @@ final class CouponRestrictionsViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         currencySymbol = currencySettings.symbol(from: currencySettings.currencyCode)
+        shouldDisplayLimitUsageToXItemsRow = false
         minimumSpend = ""
         maximumSpend = ""
         usageLimitPerCoupon = ""
@@ -135,6 +141,10 @@ final class CouponRestrictionsViewModel: ObservableObject {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
+    }
+
+    func onDiscountTypeChanged(discountType: Coupon.DiscountType) {
+        shouldDisplayLimitUsageToXItemsRow = discountType != .fixedCart
     }
 }
 

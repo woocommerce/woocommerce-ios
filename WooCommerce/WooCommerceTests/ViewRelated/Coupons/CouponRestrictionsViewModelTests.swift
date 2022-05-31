@@ -1,4 +1,5 @@
 import XCTest
+import WooFoundation
 @testable import WooCommerce
 @testable import Yosemite
 
@@ -67,5 +68,53 @@ final class CouponRestrictionsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.excludeCategoriesButtonIcon.pngData(), UIImage.pencilImage.pngData())
         let expectedTitle = String.localizedStringWithFormat(NSLocalizedString("Exclude Product Categories (%1$d)", comment: ""), 2)
         XCTAssertEqual(viewModel.excludeCategoriesButtonTitle, expectedTitle)
+    }
+
+    func test_shouldDisplayLimitUsageToXItemsRow_is_false_when_fixed_cart_discount_type_is_set() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(discountType: .fixedCart)
+        let viewModel = CouponRestrictionsViewModel(coupon: sampleCoupon)
+
+        // Then
+        XCTAssertFalse(viewModel.shouldDisplayLimitUsageToXItemsRow)
+    }
+
+    func test_shouldDisplayLimitUsageToXItemsRow_is_true_when_fixed_cart_discount_type_is_NOT_set() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(discountType: .percent)
+        let viewModel = CouponRestrictionsViewModel(coupon: sampleCoupon)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldDisplayLimitUsageToXItemsRow)
+    }
+
+    func test_shouldDisplayLimitUsageToXItemsRow_is_false_when_discount_type_is_changed_to_fixed_cart() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(discountType: .percent)
+        let viewModel = CouponRestrictionsViewModel(coupon: sampleCoupon)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldDisplayLimitUsageToXItemsRow)
+
+        // When
+        viewModel.onDiscountTypeChanged(discountType: .fixedCart)
+
+        // Then
+        XCTAssertFalse(viewModel.shouldDisplayLimitUsageToXItemsRow)
+    }
+
+    func test_shouldDisplayLimitUsageToXItemsRow_is_true_when_discount_type_is_changed_from_fixed_cart() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(discountType: .fixedCart)
+        let viewModel = CouponRestrictionsViewModel(coupon: sampleCoupon)
+
+        // Then
+        XCTAssertFalse(viewModel.shouldDisplayLimitUsageToXItemsRow)
+
+        // When
+        viewModel.onDiscountTypeChanged(discountType: .percent)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldDisplayLimitUsageToXItemsRow)
     }
 }

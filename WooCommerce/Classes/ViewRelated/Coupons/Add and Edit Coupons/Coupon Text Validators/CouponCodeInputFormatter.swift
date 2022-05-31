@@ -9,6 +9,6 @@ struct CouponCodeInputFormatter: UnitInputFormatter {
     }
 
     func format(input text: String?) -> String {
-        text?.uppercased() ?? ""
+        text?.lowercased() ?? ""
     }
 }

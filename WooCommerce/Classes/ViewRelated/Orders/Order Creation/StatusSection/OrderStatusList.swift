@@ -19,18 +19,14 @@ struct OrderStatusList: UIViewControllerRepresentable {
 
     /// Closure to be invoked when the status is updated.
     ///
-    var didSelectApply: ((OrderStatusEnum) -> Void)
+    var didConfirmSelection: ((OrderStatusEnum) -> Void)
 
     func makeUIViewController(context: Context) -> WooNavigationController {
         let statusList = OrderStatusListViewController(siteID: siteID, status: status, isSelectionAutoConfirmed: isSelectionAutoConfirmed)
 
-        statusList.didSelectCancel = { [weak statusList] in
-            statusList?.dismiss(animated: true, completion: nil)
-        }
-
-        statusList.didSelectApply = { [weak statusList] selectedStatus in
+        statusList.didConfirmSelection = { [weak statusList] selectedStatus in
             statusList?.dismiss(animated: true) {
-                didSelectApply(selectedStatus)
+                didConfirmSelection(selectedStatus)
             }
         }
 

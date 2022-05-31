@@ -34,7 +34,7 @@ final class OrderStatusListViewController: UIViewController {
 
     /// A closure to be  called when this VC wants its creator to change the order status to the selected status and dismiss it.
     ///
-    var didSelectApply: ((OrderStatusEnum) -> Void)?
+    var didConfirmSelection: ((OrderStatusEnum) -> Void)?
 
     /// Whether to automatically confirm the order status when it is selected.
     ///
@@ -104,6 +104,10 @@ extension OrderStatusListViewController {
     }
 
     func configureLeftButton() {
+        guard !isSelectionAutoConfirmed else {
+            return
+        }
+
         let dismissButtonTitle = NSLocalizedString("Cancel",
                                                    comment: "Change order status screen - button title for closing the view")
         let leftBarButton = UIBarButtonItem(title: dismissButtonTitle,
@@ -114,6 +118,10 @@ extension OrderStatusListViewController {
     }
 
     func configureRightButton() {
+        guard !isSelectionAutoConfirmed else {
+            return
+        }
+
         let applyButtonTitle = NSLocalizedString("Apply",
                                                comment: "Change order status screen - button title to apply selection")
         let rightBarButton = UIBarButtonItem(title: applyButtonTitle,
@@ -146,7 +154,7 @@ extension OrderStatusListViewController {
             didSelectCancel?()
             return
         }
-        didSelectApply?(selectedStatus)
+        didConfirmSelection?(selectedStatus)
     }
 }
 

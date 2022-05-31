@@ -864,7 +864,7 @@ private extension OrderDetailsViewController {
             statusList?.dismiss(animated: true, completion: nil)
         }
 
-        statusList.didSelectApply = { [weak statusList] (selectedStatus) in
+        statusList.didConfirmSelection = { [weak statusList] (selectedStatus) in
             statusList?.dismiss(animated: true) {
                 self.setOrderStatus(to: selectedStatus)
             }

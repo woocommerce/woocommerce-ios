@@ -64,10 +64,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     ///
     private lazy var footerSpinnerView = FooterSpinnerView()
 
-    /// The configuration to use for the view if the list is empty.
-    ///
-    private let emptyStateConfig: EmptyStateViewController.Config
-
     /// The view shown if the list is empty.
     ///
     private lazy var emptyStateViewController = EmptyStateViewController(style: .list)
@@ -122,11 +118,9 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     init(siteID: Int64,
          title: String,
          viewModel: OrderListViewModel,
-         emptyStateConfig: EmptyStateViewController.Config,
          switchDetailsHandler: @escaping (OrderDetailsViewModel) -> Void) {
         self.siteID = siteID
         self.viewModel = viewModel
-        self.emptyStateConfig = emptyStateConfig
         self.switchDetailsHandler = switchDetailsHandler
 
         super.init(nibName: type(of: self).nibName, bundle: nil)
@@ -436,7 +430,11 @@ private extension OrderListViewController {
     func removePlaceholderOrders() {
         removeGhostContent()
     }
+}
 
+// MARK: - Empty state view configuration
+//
+private extension OrderListViewController {
     /// Shows the EmptyStateViewController
     ///
     func displayEmptyViewController() {
@@ -489,10 +487,18 @@ private extension OrderListViewController {
     ///
     func createFilterConfig() ->  EmptyStateViewController.Config {
         guard let filters = viewModel.filters, filters.numberOfActiveFilters != 0 else {
-            return emptyStateConfig
+            return noOrdersInStoreConfig()
         }
 
         return noOrdersMatchFilterConfig()
+    }
+
+    /// Creates EmptyStateViewController.Config when there are no orders in the store
+    ///
+    func noOrdersInStoreConfig() -> EmptyStateViewController.Config {
+        .simple(
+            message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
+            image: .waitingForCustomersImage)
     }
 
     /// Creates EmptyStateViewController.Config for no orders matching the filter empty view
@@ -512,7 +518,6 @@ private extension OrderListViewController {
             }
     }
 }
-
 
 // MARK: - UITableViewDelegate Conformance
 //
@@ -676,6 +681,9 @@ private extension OrderListViewController {
 //
 private extension OrderListViewController {
     enum Localization {
+        static let allOrdersEmptyStateMessage =
+        NSLocalizedString("Waiting for your first order",
+                          comment: "The message shown in the Orders → All Orders tab if the list is empty.")
         static let filteredOrdersEmptyStateMessage = NSLocalizedString("We're sorry, we couldn't find any order that match %@",
                    comment: "Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user.")
         static let clearButton = NSLocalizedString("Clear Filters",

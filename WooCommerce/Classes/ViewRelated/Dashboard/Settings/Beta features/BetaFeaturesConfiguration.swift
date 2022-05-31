@@ -17,10 +17,11 @@ struct BetaFeaturesConfiguration: View {
         List {
             ForEach(BetaFeature.allCases) { feature in
                 Section(footer: Text(feature.description)) {
-                    Toggle(feature.title, isOn: feature.isEnabledBinding())
+                    TitleAndToggleRow(title: feature.title, isOn: feature.isEnabledBinding())
                 }
             }
         }
+        .background(Color(.listForeground))
         .listStyle(.grouped)
         .navigationTitle(Localization.title)
     }

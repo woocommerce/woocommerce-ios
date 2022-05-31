@@ -307,6 +307,29 @@ final class EmptyStateViewControllerTests: XCTestCase {
         // Then
         waitForExpectations(timeout: Constants.expectationTimeout)
     }
+
+    func test_pull_to_refresh_control_is_removed_when_reconfigured_using_nil_onPullToRefresh_value() throws {
+        // Given
+        let viewController = EmptyStateViewController()
+        XCTAssertNotNil(viewController.view)
+
+        let mirror = try self.mirror(of: viewController)
+
+        // When
+        viewController.configure(.simple(message: NSAttributedString(string: "Ola"),
+                                         image: .infoImage,
+                                         onPullToRefresh: { _ in }))
+
+        // Then
+        XCTAssertNotNil(mirror.scrollView.refreshControl)
+
+        // When
+        viewController.configure(.simple(message: NSAttributedString(string: "Ola"),
+                                         image: .infoImage))
+
+        // Then
+        XCTAssertNil(mirror.scrollView.refreshControl)
+    }
 }
 
 // MARK: - Mirroring

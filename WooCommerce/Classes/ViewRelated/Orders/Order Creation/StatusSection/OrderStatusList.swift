@@ -11,12 +11,18 @@ struct OrderStatusList: UIViewControllerRepresentable {
     ///
     let status: OrderStatusEnum
 
+    /// Whether to automatically confirm the order status when it is selected.
+    ///
+    /// Defaults to `false`.
+    ///
+    let isSelectionAutoConfirmed: Bool
+
     /// Closure to be invoked when the status is updated.
     ///
     var didSelectApply: ((OrderStatusEnum) -> Void)
 
     func makeUIViewController(context: Context) -> WooNavigationController {
-        let statusList = OrderStatusListViewController(siteID: siteID, status: status)
+        let statusList = OrderStatusListViewController(siteID: siteID, status: status, isSelectionAutoConfirmed: isSelectionAutoConfirmed)
 
         statusList.didSelectCancel = { [weak statusList] in
             statusList?.dismiss(animated: true, completion: nil)

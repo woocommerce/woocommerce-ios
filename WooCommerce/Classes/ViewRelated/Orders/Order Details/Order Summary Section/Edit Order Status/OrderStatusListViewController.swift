@@ -33,9 +33,16 @@ final class OrderStatusListViewController: UIViewController {
     ///
     var didSelectApply: ((OrderStatusEnum) -> Void)?
 
-    init(siteID: Int64, status: OrderStatusEnum) {
+    /// Whether to automatically confirm the order status when it is selected.
+    ///
+    /// Defaults to `false`.
+    ///
+    private let isSelectionAutoConfirmed: Bool
+
+    init(siteID: Int64, status: OrderStatusEnum, isSelectionAutoConfirmed: Bool = false) {
         self.viewModel = OrderStatusListViewModel(status: status,
                                                   dataSource: OrderStatusListDataSource(siteID: siteID))
+        self.isSelectionAutoConfirmed = isSelectionAutoConfirmed
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 

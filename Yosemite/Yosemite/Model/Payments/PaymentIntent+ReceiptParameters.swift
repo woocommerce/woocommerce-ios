@@ -24,7 +24,7 @@ public extension PaymentIntent {
 
     private func formattedAmount(_ amount: UInt) -> String {
         let formatter = CurrencyFormatter(currencySettings: CurrencySettings())
-        let decimalPosition = 2
+        let decimalPosition = 2 // TODO - support non cent currencies like JPY - see #3948
 
         var amount: Decimal = Decimal(amount)
         amount = amount / pow(10, decimalPosition)

@@ -2,6 +2,7 @@ import Foundation
 import XCTest
 
 import Yosemite
+import WooFoundation
 
 import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
@@ -624,7 +625,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration(country: "US", canadaEnabled: false),
+                                                cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration(country: "US"),
                                                 currencySettings: currencySettings,
                                                 siteSettings: [siteSetting], featureFlags: MockFeatureFlagService(shippingLabelsOnboardingM1: true))
         dataSource.configureResultsControllers { }

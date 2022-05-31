@@ -86,6 +86,10 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     ///
     private var lastActionButtonTapHandler: (() -> ())?
 
+    /// The handler to execute when the view is pulled to refresh.
+    ///
+    private var pullToRefreshActionHandler: ((UIRefreshControl) -> ())?
+
     private lazy var keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: { [weak self] frame in
         self?.handleKeyboardFrameUpdate(keyboardFrame: frame)
         self?.verticallyAlignStackViewUsing(keyboardHeight: frame.height)
@@ -191,13 +195,13 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
 
         lastActionButtonTapHandler = {
             switch config {
-            case .withLink(_, _, _, _, let linkURL):
+            case .withLink(_, _, _, _, let linkURL, _):
                 return { [weak self] in
                     if let self = self {
                         WebviewHelper.launch(linkURL, with: self)
                     }
                 }
-            case .withButton(_, _, _, _, let tapClosure):
+            case .withButton(_, _, _, _, let tapClosure, _):
                 return { [weak self] in
                     if let self = self {
                         tapClosure(self.actionButton)
@@ -211,6 +215,19 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
                 }
             default:
                 return nil
+            }
+        }()
+
+        pullToRefreshActionHandler = {
+            switch config {
+            case .simple(_, _, let pullToRefreshClosure):
+                return pullToRefreshClosure
+            case .withLink(_, _, _, _, _, let pullToRefreshClosure):
+                return pullToRefreshClosure
+            case .withButton(_, _, _, _, _, let pullToRefreshClosure):
+                return pullToRefreshClosure
+            case .withSupportRequest(_, _, _, _, let pullToRefreshClosure):
+                return pullToRefreshClosure
             }
         }()
     }
@@ -290,11 +307,11 @@ private extension EmptyStateViewController {
         switch config {
         case .simple:
             actionButton.isHidden = true
-        case .withLink(_, _, _, let title, _), .withButton(_, _, _, let title, _):
+        case .withLink(_, _, _, let title, _, _), .withButton(_, _, _, let title, _, _):
             actionButton.isHidden = false
             actionButton.applyPrimaryButtonStyle()
             actionButton.setTitle(title, for: .normal)
-        case .withSupportRequest(_, _, _, let buttonTitle):
+        case .withSupportRequest(_, _, _, let buttonTitle, _):
             actionButton.isHidden = false
             actionButton.applyLinkButtonStyle()
             actionButton.contentEdgeInsets = .zero
@@ -345,9 +362,10 @@ extension EmptyStateViewController {
     /// having a high degree of customizability.
     ///
     enum Config {
+        typealias PullToRequestActionHandler = ((UIRefreshControl) -> Void)
         /// Show a message and image only.
         ///
-        case simple(message: NSAttributedString, image: UIImage)
+        case simple(message: NSAttributedString, image: UIImage, onPullToRefresh: PullToRequestActionHandler? = nil)
 
         /// Show all the elements and a prominent button which navigates to a URL when activated.
         ///
@@ -355,7 +373,12 @@ extension EmptyStateViewController {
         ///     - linkTitle: The content shown on the `actionButton`.
         ///     - linkURL: The URL that will be navigated to when the `actionButton` is activated.
         ///
-        case withLink(message: NSAttributedString, image: UIImage, details: String, linkTitle: String, linkURL: URL)
+        case withLink(message: NSAttributedString,
+                      image: UIImage,
+                      details: String,
+                      linkTitle: String,
+                      linkURL: URL,
+                      onPullToRefresh: PullToRequestActionHandler? = nil)
 
         /// Show all the elements and a prominent button which calls back the provided closure when tapped.
         ///
@@ -363,13 +386,22 @@ extension EmptyStateViewController {
         ///     - buttonTitle: The content shown on the `actionButton`.
         ///     - onTap: Closure to be executed when the button is tapped.
         ///
-        case withButton(message: NSAttributedString, image: UIImage, details: String, buttonTitle: String, onTap: (UIButton) -> Void)
+        case withButton(message: NSAttributedString,
+                        image: UIImage,
+                        details: String,
+                        buttonTitle: String,
+                        onTap: (UIButton) -> Void,
+                        onPullToRefresh: PullToRequestActionHandler? = nil)
 
         /// Shows all the elements and a text-style button which shows the Contact Us dialog when activated.
         ///
         /// - Parameter buttonTitle: The content shown on the button that displays the Contact Support dialog.
         ///
-        case withSupportRequest(message: NSAttributedString, image: UIImage, details: String, buttonTitle: String)
+        case withSupportRequest(message: NSAttributedString,
+                                image: UIImage,
+                                details: String,
+                                buttonTitle: String,
+                                onPullToRefresh: PullToRequestActionHandler? = nil)
 
         /// The font used by the message's `UILabel`.
         ///
@@ -382,20 +414,20 @@ extension EmptyStateViewController {
 
         fileprivate var message: NSAttributedString {
             switch self {
-            case .simple(let message, _),
-                 .withLink(let message, _, _, _, _),
-                 .withButton(let message, _, _, _, _),
-                 .withSupportRequest(let message, _, _, _):
+            case .simple(let message, _, _),
+                 .withLink(let message, _, _, _, _, _),
+                 .withButton(let message, _, _, _, _, _),
+                 .withSupportRequest(let message, _, _, _, _):
                 return message
             }
         }
 
         fileprivate var image: UIImage {
             switch self {
-            case .simple(_, let image),
-                 .withLink(_, let image, _, _, _),
-                 .withButton(_, let image, _, _, _),
-                 .withSupportRequest(_, let image, _, _):
+            case .simple(_, let image, _),
+                 .withLink(_, let image, _, _, _, _),
+                 .withButton(_, let image, _, _, _, _),
+                 .withSupportRequest(_, let image, _, _, _):
                 return image
             }
         }
@@ -404,9 +436,9 @@ extension EmptyStateViewController {
             switch self {
             case .simple:
                 return nil
-            case .withLink(_, _, let detail, _, _),
-                 .withButton(_, _, let detail, _, _),
-                 .withSupportRequest(_, _, let detail, _):
+            case .withLink(_, _, let detail, _, _, _),
+                 .withButton(_, _, let detail, _, _, _),
+                 .withSupportRequest(_, _, let detail, _, _):
                 return detail
             }
         }

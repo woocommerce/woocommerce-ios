@@ -195,6 +195,7 @@ private extension EmptyStateViewControllerTests {
         let imageView: UIImageView
         let detailsLabel: UILabel
         let actionButton: UIButton
+        let scrollView: UIScrollView
     }
 
     func mirror(of viewController: EmptyStateViewController) throws -> EmptyStateViewControllerMirror {
@@ -204,7 +205,8 @@ private extension EmptyStateViewControllerTests {
             messageLabel: try XCTUnwrap(mirror.descendant("messageLabel") as? UILabel),
             imageView: try XCTUnwrap(mirror.descendant("imageView") as? UIImageView),
             detailsLabel: try XCTUnwrap(mirror.descendant("detailsLabel") as? UILabel),
-            actionButton: try XCTUnwrap(mirror.descendant("actionButton") as? UIButton)
+            actionButton: try XCTUnwrap(mirror.descendant("actionButton") as? UIButton),
+            scrollView: try XCTUnwrap(mirror.descendant("scrollView") as? UIScrollView)
         )
     }
 }

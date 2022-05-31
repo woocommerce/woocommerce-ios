@@ -95,15 +95,19 @@ final class OrderDetailsDataSource: NSObject {
         let isPluginActive = plugin?.status.isActive ?? false
         let isCountryCodeUS = SiteAddress(siteSettings: siteSettings).countryCode == SiteAddress.CountryCode.US.rawValue
         let isCurrencyUSD = currencySettings.currencyCode == .USD
+        let orderContainsOnlyVirtualProducts = products.filter { (product) -> Bool in
+            return items.first(where: { $0.productID == product.productID}) != nil
+        }.allSatisfy { $0.virtual == true }
 
         guard isFeatureFlagEnabled,
-                !isPluginInstalled,
-                !isPluginActive,
-                isCountryCodeUS,
-                isCurrencyUSD,
-                !isEligibleForCardPresentPayment else {
-            return false
-        }
+              !isPluginInstalled,
+              !isPluginActive,
+              isCountryCodeUS,
+              isCurrencyUSD,
+              !isEligibleForCardPresentPayment,
+              !orderContainsOnlyVirtualProducts else {
+                  return false
+              }
 
         return true
     }

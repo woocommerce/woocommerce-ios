@@ -96,14 +96,6 @@ final class OrderDetailsDataSource: NSObject {
         let isCountryCodeUS = SiteAddress(siteSettings: siteSettings).countryCode == SiteAddress.CountryCode.US.rawValue
         let isCurrencyUSD = currencySettings.currencyCode == .USD
 
-        print("ecco cosa non va", isFeatureFlagEnabled,
-              !isPluginInstalled,
-              !isPluginActive,
-              isCountryCodeUS,
-              isCurrencyUSD,
-              !isEligibleForCardPresentPayment)
-
-
         guard isFeatureFlagEnabled,
                 !isPluginInstalled,
                 !isPluginActive,

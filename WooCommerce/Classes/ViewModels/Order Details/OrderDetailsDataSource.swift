@@ -502,13 +502,13 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureInstallWCShip(cell: WCShipInstallTableViewCell) {
-        cell.title.text = NSLocalizedString("Need a shipping label?",
-                                            comment: "Title of the banner in the Order Detail for suggesting to install WCShip extension.")
-        cell.body.text = NSLocalizedString("Print labels from your phone, with WooCommerce Shipping.",
-                                           comment: "Body of the banner in the Order Detail for suggesting to install WCShip extension.")
-        cell.action.text = NSLocalizedString("Get WooCommerce Shipping",
-                                             comment: "Action of the banner in the Order Detail for suggesting to install WCShip extension.")
-        cell.placeholderImageView.image = .installWCShipImage
+        cell.update(title: NSLocalizedString("Need a shipping label?",
+                                             comment: "Title of the banner in the Order Detail for suggesting to install WCShip extension."),
+                    body: NSLocalizedString("Print labels from your phone, with WooCommerce Shipping.",
+                                            comment: "Body of the banner in the Order Detail for suggesting to install WCShip extension."),
+                    action: NSLocalizedString("Get WooCommerce Shipping",
+                                              comment: "Action of the banner in the Order Detail for suggesting to install WCShip extension."),
+                    image: .installWCShipImage)
 
         cell.selectionStyle = .none
 

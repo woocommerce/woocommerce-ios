@@ -4,10 +4,10 @@ import UIKit
 ///
 final class WCShipInstallTableViewCell: UITableViewCell {
 
-    @IBOutlet weak var title: UILabel!
-    @IBOutlet weak var body: UILabel!
-    @IBOutlet weak var action: UILabel!
-    @IBOutlet weak var placeholderImageView: UIImageView!
+    @IBOutlet private weak var title: UILabel!
+    @IBOutlet private weak var body: UILabel!
+    @IBOutlet private weak var action: UILabel!
+    @IBOutlet private weak var placeholderImageView: UIImageView!
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -15,6 +15,13 @@ final class WCShipInstallTableViewCell: UITableViewCell {
         configureTitleLabel()
         configureBodyLabel()
         configureActionLabel()
+    }
+
+    func update(title: String, body: String, action: String, image: UIImage) {
+        self.title.text = title
+        self.body.text = body
+        self.action.text = action
+        placeholderImageView.image = image
     }
 }
 

@@ -218,6 +218,7 @@
 		DEC51AE0275B41BE009F3DF4 /* WooCommerce.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DEC51AA4275B41BE009F3DF4 /* WooCommerce.xcdatamodeld */; };
 		DEFD6D422641B70400E51E0D /* SitePlugin+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D412641B70400E51E0D /* SitePlugin+CoreDataProperties.swift */; };
 		DEFD6D432641B70400E51E0D /* SitePlugin+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D402641B70400E51E0D /* SitePlugin+CoreDataClass.swift */; };
+		E1E632C02846245D00878082 /* GeneralAppSettingsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E632BF2846245D00878082 /* GeneralAppSettingsStorage.swift */; };
 		FEDD70AD26A5DBDD00194C3A /* EligibilityErrorInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEDD70AC26A5DBDD00194C3A /* EligibilityErrorInfo.swift */; };
 /* End PBXBuildFile section */
 
@@ -530,6 +531,7 @@
 		DEFD6D402641B70400E51E0D /* SitePlugin+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SitePlugin+CoreDataClass.swift"; sourceTree = "<group>"; };
 		DEFD6D412641B70400E51E0D /* SitePlugin+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SitePlugin+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DF3D3B298350F68191CD1DAD /* Pods_Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E1E632BF2846245D00878082 /* GeneralAppSettingsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralAppSettingsStorage.swift; sourceTree = "<group>"; };
 		F0439F2ADB3B211DF5C44D83 /* Pods-StorageTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StorageTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-StorageTests/Pods-StorageTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		FEDD70AC26A5DBDD00194C3A /* EligibilityErrorInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EligibilityErrorInfo.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -679,6 +681,7 @@
 				2619F72425B236E60006DAFF /* TypedPredicates.swift */,
 				D87F61542265AA900031A13B /* PListFileStorage.swift */,
 				027D3E6D23A0EEA4007D91B0 /* StorageType+Deletions.swift */,
+				E1E632BF2846245D00878082 /* GeneralAppSettingsStorage.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -1219,6 +1222,7 @@
 				02C254EC2563B12E00A04423 /* ShippingLabelSettings+CoreDataProperties.swift in Sources */,
 				B5FD111E21D4046E00560344 /* OrderSearchResults+CoreDataProperties.swift in Sources */,
 				7471A515216CF0FE00219F7E /* SiteVisitStatsItem+CoreDataProperties.swift in Sources */,
+				E1E632C02846245D00878082 /* GeneralAppSettingsStorage.swift in Sources */,
 				031C1EA627AD3AFE00298699 /* WCPayCardPaymentDetails+CoreDataProperties.swift in Sources */,
 				B54CA5BD20A4BD3B00F38CD1 /* NSManagedObjectContext+Storage.swift in Sources */,
 				455C0C9125DD6D93007B6F38 /* AccountSettings+CoreDataProperties.swift in Sources */,

@@ -40,7 +40,10 @@ private extension ProductVariationDetailsFactory {
                                                                   allAttributes: parentProduct.attributes,
                                                                   parentProductSKU: parentProduct.sku)
         // TODO: test variation
-        let productImageActionHandler = productImageUploader.actionHandler(siteID: productVariation.siteID, productID: productVariation.productVariationID)
+        let productImageActionHandler = productImageUploader.actionHandler(siteID: productVariation.siteID,
+                                                                           productID: productVariation.productVariationID,
+                                                                           isLocalID: !productVariationModel.existsRemotely,
+                                                                           originalStatuses: productVariationModel.imageStatuses)
         let formType: ProductFormType = isEditProductsEnabled ? .edit: .readonly
         let viewModel = ProductVariationFormViewModel(productVariation: productVariationModel,
                                                       allAttributes: parentProduct.attributes,

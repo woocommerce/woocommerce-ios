@@ -38,7 +38,11 @@ final class ProductDownloadListViewController: UIViewController {
         self.product = product
         viewModel = ProductDownloadListViewModel(product: product)
         onCompletion = completion
-        productImageActionHandler = productImageUploader.actionHandler(siteID: product.siteID, productID: product.productID)
+        // TODO: test downloadable product images
+        productImageActionHandler = productImageUploader.actionHandler(siteID: product.siteID,
+                                                                       productID: product.productID,
+                                                                       isLocalID: !product.existsRemotely,
+                                                                       originalStatuses: product.imageStatuses)
         super.init(nibName: type(of: self).nibName, bundle: nil)
 
         onDeviceMediaLibraryPickerCompletion = { [weak self] assets in

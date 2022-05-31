@@ -522,7 +522,11 @@ private extension ProductVariationsViewController {
 
         let currencyCode = ServiceLocator.currencySettings.currencyCode
         let currency = ServiceLocator.currencySettings.symbol(from: currencyCode)
-        let productImageActionHandler = productImageUploader.actionHandler(siteID: siteID, productID: productID)
+        // TODO: variation ID?
+        let productImageActionHandler = productImageUploader.actionHandler(siteID: siteID,
+                                                                           productID: productID,
+                                                                           isLocalID: !model.existsRemotely,
+                                                                           originalStatuses: model.imageStatuses)
 
         let viewModel = ProductVariationFormViewModel(productVariation: model,
                                                       allAttributes: allAttributes,

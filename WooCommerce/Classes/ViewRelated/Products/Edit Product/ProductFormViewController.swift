@@ -643,62 +643,30 @@ private extension ProductFormViewController {
         let productStatus = status ?? product.status
         let messageType = viewModel.saveMessageType(for: productStatus)
         showSavingProgress(messageType)
-        saveImagesAndProductRemotely(status: status)
-    }
-
-    func saveImagesAndProductRemotely(status: ProductStatus?) {
-        waitUntilAllImagesAreUploaded { [weak self] in
-            self?.saveProductRemotely(status: status)
-        }
-    }
-
-    func waitUntilAllImagesAreUploaded(onCompletion: @escaping () -> Void) {
-        let group = DispatchGroup()
-
-        // Waits for all product images to be uploaded before updating the product remotely.
-        group.enter()
-        // Since `group.leave()` should only be called once to balance `group.enter()`, we track whether there are images pending upload in the image closure.
-        var hasNoImagesPendingUpload = false
-        let observationToken = productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
-            guard hasNoImagesPendingUpload == false else {
-                return
-            }
-
-            guard let self = self else {
-                group.leave()
-                return
-            }
-
-            guard productImageStatuses.hasPendingUpload == false else {
-                return
-            }
-
-            hasNoImagesPendingUpload = true
-
-            self.viewModel.updateImages(productImageStatuses.images)
-            group.leave()
-        }
-
-        group.notify(queue: .main) {
-            observationToken.cancel()
-            onCompletion()
-        }
+        saveProductRemotely(status: status)
     }
 
     func saveProductRemotely(status: ProductStatus?) {
+        let productIDBeforeSave = viewModel.productModel.productID
+        let productExistsRemotelyBeforeSave = viewModel.productModel.existsRemotely
         viewModel.saveProductRemotely(status: status) { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case .failure(let error):
                 DDLogError("⛔️ Error updating Product: \(error)")
 
                 // Dismisses the in-progress UI then presents the error alert.
-                self?.navigationController?.dismiss(animated: true) {
+                self.navigationController?.dismiss(animated: true) { [weak self] in
                     self?.displayError(error: error)
                 }
-            case .success:
+            case .success(let product):
+                if !productExistsRemotelyBeforeSave && product.productID != productIDBeforeSave {
+                    // TODO: DI productImageUploader
+                    ServiceLocator.productImageUploader.updateProductID(siteID: product.siteID, localProductID: productIDBeforeSave, remoteProductID: product.productID)
+                }
                 // Dismisses the in-progress UI, then presents the confirmation alert.
-                self?.navigationController?.dismiss(animated: true, completion: nil)
-                self?.presentProductConfirmationSaveAlert()
+                self.navigationController?.dismiss(animated: true, completion: nil)
+                self.presentProductConfirmationSaveAlert()
             }
         }
     }

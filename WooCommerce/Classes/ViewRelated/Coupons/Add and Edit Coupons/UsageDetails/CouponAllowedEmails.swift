@@ -25,6 +25,13 @@ struct CouponAllowedEmails: View {
         }
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    // TODO: validate
+                }, label: Localization.done)
+            }
+        }
     }
 }
 
@@ -41,6 +48,7 @@ private extension CouponAllowedEmails {
             "Separate email addresses with commas. You can also use an asterisk (*) " +
             "to match parts of an email. For example \"*@gmail.com\" would match all gmail addresses.",
             comment: "Description of the allowed emails field for coupons")
+        static let done = NSLocalizedString("Done", comment: "Done button on the Allowed Emails screen")
     }
 }
 

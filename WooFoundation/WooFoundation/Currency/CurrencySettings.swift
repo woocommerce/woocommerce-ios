@@ -396,16 +396,3 @@ public class CurrencySettings {
         }
     }
 }
-
-
-// MARK: - Constants!
-//
-public extension CurrencySettings {
-    enum Constants {
-        public static let currencyCodeKey = "woocommerce_currency"
-        public static let currencyPositionKey = "woocommerce_currency_pos"
-        public static let thousandSeparatorKey = "woocommerce_price_thousand_sep"
-        public static let decimalSeparatorKey = "woocommerce_price_decimal_sep"
-        public static let numberOfDecimalsKey = "woocommerce_price_num_decimals"
-    }
-}

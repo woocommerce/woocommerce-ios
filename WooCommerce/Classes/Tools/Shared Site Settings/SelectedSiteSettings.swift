@@ -69,13 +69,13 @@ extension CurrencySettings {
     /// Convenience Initializer:
     /// This is the preferred way to create an instance with the settings coming from the site.
     ///
-    public convenience init(siteSettings: [Yosemite.SiteSetting]) {
+    convenience init(siteSettings: [Yosemite.SiteSetting]) {
         self.init()
 
         siteSettings.forEach { updateCurrencyOptions(with: $0) }
     }
 
-    public func updateCurrencyOptions(with siteSetting: Yosemite.SiteSetting) {
+    func updateCurrencyOptions(with siteSetting: Yosemite.SiteSetting) {
         let value = siteSetting.value
 
         switch siteSetting.settingID {
@@ -95,5 +95,13 @@ extension CurrencySettings {
         default:
             break
         }
+    }
+
+    enum Constants {
+        static let currencyCodeKey = "woocommerce_currency"
+        static let currencyPositionKey = "woocommerce_currency_pos"
+        static let thousandSeparatorKey = "woocommerce_price_thousand_sep"
+        static let decimalSeparatorKey = "woocommerce_price_decimal_sep"
+        static let numberOfDecimalsKey = "woocommerce_price_num_decimals"
     }
 }

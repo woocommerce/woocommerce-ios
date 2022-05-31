@@ -767,6 +767,49 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertTrue(try result.get())
     }
 
+    func test_saving_preferredInPersonPaymentGateway_works_correctly() throws {
+        // Given
+        let siteID: Int64 = 1234
+        let initialTime = Date(timeIntervalSince1970: 100)
+        let preferredGateway = "woocommerce-payments"
+
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings(isTelemetryAvailable: true,
+                                                                                                             telemetryLastReportedTime: initialTime)])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setPreferredInPersonPaymentGateway(siteID: siteID, gateway: preferredGateway)
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
+        let settingsForSite = savedSettings.storeSettingsBySite[siteID]
+
+        XCTAssertEqual(preferredGateway, settingsForSite?.preferredInPersonPaymentGateway)
+
+        // The other properties should be kept
+        XCTAssertEqual(initialTime, settingsForSite?.telemetryLastReportedTime)
+    }
+
+    func test_saving_preferredInPersonPaymentGateway_works_correctly_when_the_settings_file_does_not_exist() throws {
+        // Given
+        let siteID: Int64 = 1234
+        let preferredGateway = "woocommerce-payments"
+
+        try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setPreferredInPersonPaymentGateway(siteID: siteID, gateway: preferredGateway)
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
+        let settingsForSite = savedSettings.storeSettingsBySite[siteID]
+
+        XCTAssertEqual(preferredGateway, settingsForSite?.preferredInPersonPaymentGateway)
+
+    }
+
     func test_resetGeneralStoreSettings_resets_all_settings() throws {
         // Given
         let siteID: Int64 = 1234

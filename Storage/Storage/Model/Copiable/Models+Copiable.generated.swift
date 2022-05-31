@@ -41,16 +41,19 @@ extension GeneralStoreSettings {
     public func copy(
         isTelemetryAvailable: CopiableProp<Bool> = .copy,
         telemetryLastReportedTime: NullableCopiableProp<Date> = .copy,
-        areSimplePaymentTaxesEnabled: CopiableProp<Bool> = .copy
+        areSimplePaymentTaxesEnabled: CopiableProp<Bool> = .copy,
+        preferredInPersonPaymentGateway: NullableCopiableProp<String> = .copy
     ) -> GeneralStoreSettings {
         let isTelemetryAvailable = isTelemetryAvailable ?? self.isTelemetryAvailable
         let telemetryLastReportedTime = telemetryLastReportedTime ?? self.telemetryLastReportedTime
         let areSimplePaymentTaxesEnabled = areSimplePaymentTaxesEnabled ?? self.areSimplePaymentTaxesEnabled
+        let preferredInPersonPaymentGateway = preferredInPersonPaymentGateway ?? self.preferredInPersonPaymentGateway
 
         return GeneralStoreSettings(
             isTelemetryAvailable: isTelemetryAvailable,
             telemetryLastReportedTime: telemetryLastReportedTime,
-            areSimplePaymentTaxesEnabled: areSimplePaymentTaxesEnabled
+            areSimplePaymentTaxesEnabled: areSimplePaymentTaxesEnabled,
+            preferredInPersonPaymentGateway: preferredInPersonPaymentGateway
         )
     }
 }

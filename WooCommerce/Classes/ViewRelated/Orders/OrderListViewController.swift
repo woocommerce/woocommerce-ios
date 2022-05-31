@@ -498,7 +498,10 @@ private extension OrderListViewController {
     func noOrdersInStoreConfig() -> EmptyStateViewController.Config {
         .simple(
             message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
-            image: .waitingForCustomersImage)
+            image: .waitingForCustomersImage,
+            onPullToRefresh: { [weak self] refreshControl in
+                self?.pullToRefresh(sender: refreshControl)
+            })
     }
 
     /// Creates EmptyStateViewController.Config for no orders matching the filter empty view

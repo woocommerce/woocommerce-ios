@@ -363,7 +363,6 @@
 		02CEBB8224C98861002EDF35 /* ProductFormDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CEBB8124C98861002EDF35 /* ProductFormDataModel.swift */; };
 		02CEBB8424C99A10002EDF35 /* Product+ShippingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CEBB8324C99A10002EDF35 /* Product+ShippingTests.swift */; };
 		02D45647231CB1FB008CF0A9 /* UIImage+Dot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D45646231CB1FB008CF0A9 /* UIImage+Dot.swift */; };
-		02D4564C231D05E2008CF0A9 /* BetaFeaturesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D4564B231D05E1008CF0A9 /* BetaFeaturesViewController.swift */; };
 		02DC2ED2242061BF002F9676 /* ProductPriceSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DC2ED1242061BE002F9676 /* ProductPriceSettingsViewModel.swift */; };
 		02DD81F9242CAA400060E50B /* WordPressMediaLibraryImagePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DD81F5242CAA3F0060E50B /* WordPressMediaLibraryImagePickerViewController.swift */; };
 		02DD81FA242CAA400060E50B /* Media+WPMediaAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DD81F6242CAA3F0060E50B /* Media+WPMediaAsset.swift */; };
@@ -1669,6 +1668,8 @@
 		E1E125B226EB8EE80068A9B0 /* UpdateProgressImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E125B126EB8EE80068A9B0 /* UpdateProgressImage.swift */; };
 		E1E50D4B26FCC7C200D65F91 /* MockFallibleCancelable.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E50D4A26FCC7C200D65F91 /* MockFallibleCancelable.swift */; };
 		E1E636BB26FB467A00C9D0D7 /* Comparable+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E636BA26FB467A00C9D0D7 /* Comparable+Woo.swift */; };
+		E1E649E92846188C0070B194 /* BetaFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E649E82846188C0070B194 /* BetaFeature.swift */; };
+		E1E649EB28461EDF0070B194 /* BetaFeaturesConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E649EA28461EDF0070B194 /* BetaFeaturesConfiguration.swift */; };
 		E1ED16E4266E10A10037B8DB /* ApplicationLogViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1ED16E3266E10A10037B8DB /* ApplicationLogViewModel.swift */; };
 		E1F52DC62668E03B00349D75 /* CardPresentModalBluetoothRequired.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F52DC52668E03B00349D75 /* CardPresentModalBluetoothRequired.swift */; };
 		EEADF622281A40CB001B40F1 /* ShippingValueLocalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEADF621281A40CB001B40F1 /* ShippingValueLocalizer.swift */; };
@@ -2109,7 +2110,6 @@
 		02CEBB8124C98861002EDF35 /* ProductFormDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormDataModel.swift; sourceTree = "<group>"; };
 		02CEBB8324C99A10002EDF35 /* Product+ShippingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+ShippingTests.swift"; sourceTree = "<group>"; };
 		02D45646231CB1FB008CF0A9 /* UIImage+Dot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Dot.swift"; sourceTree = "<group>"; };
-		02D4564B231D05E1008CF0A9 /* BetaFeaturesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BetaFeaturesViewController.swift; sourceTree = "<group>"; };
 		02DC2ED1242061BE002F9676 /* ProductPriceSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductPriceSettingsViewModel.swift; sourceTree = "<group>"; };
 		02DD81F5242CAA3F0060E50B /* WordPressMediaLibraryImagePickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordPressMediaLibraryImagePickerViewController.swift; sourceTree = "<group>"; };
 		02DD81F6242CAA3F0060E50B /* Media+WPMediaAsset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Media+WPMediaAsset.swift"; sourceTree = "<group>"; };
@@ -3420,6 +3420,8 @@
 		E1E125B126EB8EE80068A9B0 /* UpdateProgressImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateProgressImage.swift; sourceTree = "<group>"; };
 		E1E50D4A26FCC7C200D65F91 /* MockFallibleCancelable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFallibleCancelable.swift; sourceTree = "<group>"; };
 		E1E636BA26FB467A00C9D0D7 /* Comparable+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Comparable+Woo.swift"; sourceTree = "<group>"; };
+		E1E649E82846188C0070B194 /* BetaFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BetaFeature.swift; sourceTree = "<group>"; };
+		E1E649EA28461EDF0070B194 /* BetaFeaturesConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BetaFeaturesConfiguration.swift; sourceTree = "<group>"; };
 		E1ED16E3266E10A10037B8DB /* ApplicationLogViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLogViewModel.swift; sourceTree = "<group>"; };
 		E1F52DC52668E03B00349D75 /* CardPresentModalBluetoothRequired.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalBluetoothRequired.swift; sourceTree = "<group>"; };
 		EEADF621281A40CB001B40F1 /* ShippingValueLocalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingValueLocalizer.swift; sourceTree = "<group>"; };
@@ -4385,7 +4387,7 @@
 		02D4564A231D059E008CF0A9 /* Beta features */ = {
 			isa = PBXGroup;
 			children = (
-				02D4564B231D05E1008CF0A9 /* BetaFeaturesViewController.swift */,
+				E1E649EA28461EDF0070B194 /* BetaFeaturesConfiguration.swift */,
 			);
 			path = "Beta features";
 			sourceTree = "<group>";
@@ -6357,6 +6359,7 @@
 				DE77889926FD7EF0008DFF44 /* ShippingLabelPackageItem.swift */,
 				DEF3300B270444060073AE29 /* ShippingLabelSelectedRate.swift */,
 				DECE13FF279A595200816ECD /* Coupon+Woo.swift */,
+				E1E649E82846188C0070B194 /* BetaFeature.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -9143,6 +9146,7 @@
 				02EA6BFA2435E92600FFF90A /* KingfisherImageDownloader+ImageDownloadable.swift in Sources */,
 				7E7C5F8F2719BA7300315B61 /* ProductCategoryCellViewModel.swift in Sources */,
 				DEC2962326BD4E6E005A056B /* ShippingLabelCustomsFormInput.swift in Sources */,
+				E1E649EB28461EDF0070B194 /* BetaFeaturesConfiguration.swift in Sources */,
 				26309F17277D0AEA0012797F /* SafeAreaInsetsKey.swift in Sources */,
 				023D1DD124AB2D05002B03A3 /* ProductListSelectorViewController.swift in Sources */,
 				0206483A23FA4160008441BB /* OrdersRootViewController.swift in Sources */,
@@ -9207,6 +9211,7 @@
 				CE855366209BA6A700938BDC /* CustomerInfoTableViewCell.swift in Sources */,
 				4521396E27FEE55200964ED3 /* FullScreenTextView.swift in Sources */,
 				DE126D0B26CA2331007F901D /* ValidationErrorRow.swift in Sources */,
+				E1E649E92846188C0070B194 /* BetaFeature.swift in Sources */,
 				0286B27B23C7051F003D784B /* ProductImagesCollectionViewController.swift in Sources */,
 				E107FCE126C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift in Sources */,
 				027A2E142513124E00DA6ACB /* Keychain+Entries.swift in Sources */,
@@ -9358,7 +9363,6 @@
 				2667BFE1252FA117008099D4 /* RefundItemQuantityListSelectorCommand.swift in Sources */,
 				261AA30C2753119E009530FE /* SimplePaymentsMethodsViewModel.swift in Sources */,
 				DE68B81F26F86B1700C86CFB /* OfflineBannerView.swift in Sources */,
-				02D4564C231D05E2008CF0A9 /* BetaFeaturesViewController.swift in Sources */,
 				D8610BCC256F284700A5DF27 /* ULErrorViewModel.swift in Sources */,
 				CCFC50552743BC0D001E505F /* NewOrder.swift in Sources */,
 				4590CEE4249BA46700949F05 /* AddProductCategoryViewController.swift in Sources */,

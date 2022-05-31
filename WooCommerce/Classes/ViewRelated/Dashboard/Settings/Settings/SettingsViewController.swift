@@ -330,7 +330,7 @@ private extension SettingsViewController {
 
     func betaFeaturesWasPressed() {
         ServiceLocator.analytics.track(.settingsBetaFeaturesButtonTapped)
-        let betaFeaturesViewController = BetaFeaturesViewController()
+        let betaFeaturesViewController = BetaFeaturesConfigurationViewController()
         navigationController?.pushViewController(betaFeaturesViewController, animated: true)
     }
 

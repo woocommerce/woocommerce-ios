@@ -14,18 +14,28 @@ final class AddProductCoordinator: Coordinator {
     private let sourceBarButtonItem: UIBarButtonItem?
     private let sourceView: UIView?
 
-    init(siteID: Int64, sourceBarButtonItem: UIBarButtonItem, sourceNavigationController: UINavigationController) {
+    private let productImageUploader: ProductImageUploaderProtocol
+
+    init(siteID: Int64,
+         sourceBarButtonItem: UIBarButtonItem,
+         sourceNavigationController: UINavigationController,
+         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
         self.siteID = siteID
         self.sourceBarButtonItem = sourceBarButtonItem
         self.sourceView = nil
         self.navigationController = sourceNavigationController
+        self.productImageUploader = productImageUploader
     }
 
-    init(siteID: Int64, sourceView: UIView, sourceNavigationController: UINavigationController) {
+    init(siteID: Int64,
+         sourceView: UIView,
+         sourceNavigationController: UINavigationController,
+         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
         self.siteID = siteID
         self.sourceBarButtonItem = nil
         self.sourceView = sourceView
         self.navigationController = sourceNavigationController
+        self.productImageUploader = productImageUploader
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -64,8 +74,8 @@ private extension AddProductCoordinator {
 
         let currencyCode = ServiceLocator.currencySettings.currencyCode
         let currency = ServiceLocator.currencySettings.symbol(from: currencyCode)
-        let productImageActionHandler = ProductImageActionHandler(siteID: product.siteID,
-                                                                  product: model)
+        let productImageActionHandler = productImageUploader.actionHandler(siteID: product.siteID,
+                                                                           productID: model.productID)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .add,
                                              productImageActionHandler: productImageActionHandler)

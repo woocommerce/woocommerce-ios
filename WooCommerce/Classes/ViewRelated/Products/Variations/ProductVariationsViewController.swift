@@ -100,6 +100,7 @@ final class ProductVariationsViewController: UIViewController, GhostableViewCont
     }
 
     private let imageService: ImageService = ServiceLocator.imageService
+    private let productImageUploader: ProductImageUploaderProtocol
 
     private let viewModel: ProductVariationsViewModel
     private let noticePresenter: NoticePresenter
@@ -119,13 +120,15 @@ final class ProductVariationsViewController: UIViewController, GhostableViewCont
          product: Product,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
          analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
         self.initialViewController = initialViewController
         self.product = product
         self.viewModel = viewModel
         self.noticePresenter = noticePresenter
         self.analytics = analytics
         self.featureFlagService = featureFlagService
+        self.productImageUploader = productImageUploader
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -519,8 +522,7 @@ private extension ProductVariationsViewController {
 
         let currencyCode = ServiceLocator.currencySettings.currencyCode
         let currency = ServiceLocator.currencySettings.symbol(from: currencyCode)
-        let productImageActionHandler = ProductImageActionHandler(siteID: productVariation.siteID,
-                                                                  product: model)
+        let productImageActionHandler = productImageUploader.actionHandler(siteID: siteID, productID: productID)
 
         let viewModel = ProductVariationFormViewModel(productVariation: model,
                                                       allAttributes: allAttributes,

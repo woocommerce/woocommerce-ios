@@ -8,6 +8,7 @@ import WooFoundation
 import enum Networking.DotcomError
 
 final class OrderDetailsViewModel {
+
     /// Retains the use-case so it can perform all of its async tasks.
     ///
     private var collectPaymentsUseCase: CollectOrderPaymentUseCase?
@@ -15,6 +16,10 @@ final class OrderDetailsViewModel {
     private let stores: StoresManager
 
     private(set) var order: Order
+
+    /// Defines the current sync states of the view model data.
+    ///
+    private var syncState: SyncState = .notSynced
 
     private let cardPresentPaymentsOnboardingPresenter = CardPresentPaymentsOnboardingPresenter()
 
@@ -566,5 +571,16 @@ extension OrderDetailsViewModel {
                     self?.collectPaymentsUseCase = nil
                 })
         }
+    }
+}
+
+// MARK: Definitions
+private extension OrderDetailsViewModel {
+    /// Defines the possible sync states of the view model data.
+    ///
+    enum SyncState {
+        case notSynced
+        case syncing
+        case synced
     }
 }

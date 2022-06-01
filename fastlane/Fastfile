@@ -54,6 +54,8 @@ GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES = {
   'zh-tw' => 'zh-Hant',
 }.freeze
 
+ASC_KEY_PATH = File.join(SECRETS_DIR, 'app_store_connect_fastlane_api_key.json')
+
 # Use this instead of getting values from ENV directly
 # It will throw an error if the requested value is missing
 def get_required_env(key)
@@ -90,7 +92,6 @@ platform :ios do
   ENV[GHHELPER_REPO = 'woocommerce/woocommerce-iOS']
   ENV['PROJECT_NAME'] = 'WooCommerce'
   ENV['PUBLIC_CONFIG_FILE'] = 'config/Version.Public.xcconfig'
-  ENV['DOWNLOAD_METADATA'] = 'fastlane/download_metadata.swift'
   ENV['PROJECT_ROOT_FOLDER'] = './'
   ENV['APP_STORE_STRINGS_FILE_NAME'] = 'AppStoreStrings.pot'
   ENV['FL_RELEASE_TOOLKIT_DEFAULT_BRANCH'] = 'trunk'
@@ -278,7 +279,7 @@ platform :ios do
 
     UI.message('Checking release notes strings translation status...')
     check_translation_progress(
-      glotpress_url: 'https://translate.wordpress.com/projects/woocommerce/woocommerce-ios/release-notes/',
+      glotpress_url: GLOTPRESS_METADATA_PROJECT_URL,
       abort_on_violations: false
     )
 
@@ -398,7 +399,7 @@ platform :ios do
 
     testflight(
       skip_waiting_for_build_processing: true,
-      api_key_path: File.join(SECRETS_DIR, 'app_store_connect_fastlane_api_key.json')
+      api_key_path: ASC_KEY_PATH
     )
     sh('cd .. && rm WooCommerce.ipa')
 
@@ -547,7 +548,8 @@ platform :ios do
       register_device(
         name: device_name,
         udid: device_id,
-        team_id: get_required_env('EXT_EXPORT_TEAM_ID')
+        team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
+        api_key_path: ASC_KEY_PATH
       )
     end
 
@@ -768,6 +770,9 @@ platform :ios do
 
   desc 'Download App Store Translations'
   lane :download_app_store_translations do
+    # FIXME: `download_localized_metadata_from_glotpress` makes this lane almost redundant,
+    # but we need to carefully adjust the screenshots metadata locations to complete the process.
+    # See https://github.com/woocommerce/woocommerce-ios/issues/6987
     files = {
 
       # Metadata fields

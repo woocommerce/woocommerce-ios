@@ -689,7 +689,7 @@ extension UIImage {
     /// Simple Payments Icon
     ///
     static var simplePaymentsImage: UIImage {
-        return UIImage(named: "icon-simple-payments")!
+        return UIImage(named: "icon-simple-payments")!.withRenderingMode(.alwaysTemplate)
     }
 
     /// Work In Progress banner icon on the Products Tab

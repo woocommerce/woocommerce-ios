@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import UIKit
+import WooFoundation
 
 extension Coupon.DiscountType {
     /// Localized name to be displayed for the discount type.

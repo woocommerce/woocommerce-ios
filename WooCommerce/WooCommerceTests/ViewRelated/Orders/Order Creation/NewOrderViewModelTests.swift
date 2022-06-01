@@ -1,6 +1,7 @@
 import XCTest
 @testable import WooCommerce
 import Yosemite
+import WooFoundation
 
 final class NewOrderViewModelTests: XCTestCase {
 

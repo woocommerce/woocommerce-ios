@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import WooFoundation
 import protocol Storage.StorageManagerType
 
 /// Extension helpers for `Order` related with Card Present Payments

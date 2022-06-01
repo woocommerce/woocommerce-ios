@@ -1,5 +1,6 @@
 import Yosemite
 import PassKit
+import WooFoundation
 
 /// Contains data associated with a payment that has been collected, processed, and captured.
 struct CardPresentCapturedPaymentData {

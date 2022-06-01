@@ -1,4 +1,5 @@
 import Foundation
+import WooFoundation
 
 /// Error cases that could occur in product price settings.
 ///

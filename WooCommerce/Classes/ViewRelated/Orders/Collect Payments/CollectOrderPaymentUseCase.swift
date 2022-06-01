@@ -2,6 +2,7 @@ import Foundation
 import Combine
 import Yosemite
 import MessageUI
+import WooFoundation
 import protocol Storage.StorageManagerType
 
 enum CollectOrderPaymentUseCaseError: Error {

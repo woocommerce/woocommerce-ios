@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import WooFoundation
 
 /// Represents fees details for an order to be refunded. Meant to be rendered by `RefundFeesDetailsTableViewCell`
 ///

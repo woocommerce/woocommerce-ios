@@ -21,8 +21,8 @@ struct HubMenu: View {
     ///
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
-    init(siteID: Int64, navigationController: UINavigationController? = nil) {
-        viewModel = HubMenuViewModel(siteID: siteID, navigationController: navigationController)
+    init(viewModel: HubMenuViewModel) {
+        self.viewModel = viewModel
     }
 
     var body: some View {
@@ -109,10 +109,6 @@ struct HubMenu: View {
             // fall back method in case menu disabled state is not reset properly
             enableMenuItemTaps()
         }
-    }
-
-    func pushReviewDetailsView(using parcel: ProductReviewFromNoteParcel) {
-        viewModel.showReviewDetails(using: parcel)
     }
 
     /// Reset state to make the menu items tappable
@@ -213,17 +209,17 @@ struct HubMenu: View {
 
 struct HubMenu_Previews: PreviewProvider {
     static var previews: some View {
-        HubMenu(siteID: 123)
+        HubMenu(viewModel: .init(siteID: 123))
             .environment(\.colorScheme, .light)
 
-        HubMenu(siteID: 123)
+        HubMenu(viewModel: .init(siteID: 123))
             .environment(\.colorScheme, .dark)
 
-        HubMenu(siteID: 123)
+        HubMenu(viewModel: .init(siteID: 123))
             .previewLayout(.fixed(width: 312, height: 528))
             .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
 
-        HubMenu(siteID: 123)
+        HubMenu(viewModel: .init(siteID: 123))
             .previewLayout(.fixed(width: 1024, height: 768))
     }
 }

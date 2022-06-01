@@ -198,6 +198,10 @@ extension OrderDetailsViewModel {
     func syncEverything(onReloadSections: (() -> ())? = nil, onCompletion: (() -> ())? = nil) {
         let group = DispatchGroup()
 
+        /// Update state to syncing
+        ///
+        syncState = .syncing
+
         group.enter()
         syncOrder { _ in
             group.leave()
@@ -258,7 +262,12 @@ extension OrderDetailsViewModel {
             group.leave()
         }
 
-        group.notify(queue: .main) {
+        group.notify(queue: .main) { [weak self] in
+
+            /// Update state to synced
+            ///
+            self?.syncState = .synced
+
             onCompletion?()
         }
     }

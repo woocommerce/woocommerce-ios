@@ -361,8 +361,6 @@ private extension OrderDetailsViewController {
             self?.reloadSections()
         }
     }
-
-    
 }
 
 // MARK: - Actions

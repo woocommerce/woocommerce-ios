@@ -760,9 +760,13 @@ private extension ProductsViewController {
             message: .init(string: message),
             image: .emptyProductsTabImage,
             details: details,
-            buttonTitle: buttonTitle) { [weak self] button in
-            self?.addProduct(sourceView: button)
-        }
+            buttonTitle: buttonTitle,
+            onTap: { [weak self] button in
+                self?.addProduct(sourceView: button)
+            },
+            onPullToRefresh: { [weak self] refreshControl in
+                self?.pullToRefresh(sender: refreshControl)
+            })
     }
 
     /// Creates EmptyStateViewController.Config for no products match the filter empty view

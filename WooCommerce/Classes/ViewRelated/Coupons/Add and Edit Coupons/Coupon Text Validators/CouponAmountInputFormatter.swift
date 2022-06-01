@@ -5,16 +5,24 @@ import WooFoundation
 ///
 struct CouponAmountInputFormatter: UnitInputFormatter {
     let priceInputFormatter: PriceInputFormatter
+    let isPercentage: Bool
 
     init(currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          isPercentage: Bool = false) {
         self.priceInputFormatter = PriceInputFormatter(currencySettings: currencySettings)
+        self.isPercentage = isPercentage
     }
 
     func isValid(input: String) -> Bool {
         guard input.isNotEmpty else {
             return false
         }
+
+        if isPercentage && (Double(input) ?? 0) > 100 {
+            return false
+        }
+
+
         return priceInputFormatter.isValid(input: input)
     }
 

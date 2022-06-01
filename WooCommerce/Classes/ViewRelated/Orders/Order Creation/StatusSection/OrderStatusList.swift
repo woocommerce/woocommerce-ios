@@ -16,13 +16,15 @@ struct OrderStatusList: UIViewControllerRepresentable {
     var didSelectApply: ((OrderStatusEnum) -> Void)
 
     func makeUIViewController(context: Context) -> WooNavigationController {
-        let statusList = OrderStatusListViewController(siteID: siteID, status: status)
+        let viewModel = OrderStatusListViewModel(siteID: siteID,
+                                                 status: status)
+        let statusList = OrderStatusListViewController(viewModel: viewModel)
 
-        statusList.didSelectCancel = { [weak statusList] in
+        viewModel.didSelectCancel = { [weak statusList] in
             statusList?.dismiss(animated: true, completion: nil)
         }
 
-        statusList.didSelectApply = { [weak statusList] selectedStatus in
+        viewModel.didSelectApply = { [weak statusList] selectedStatus in
             statusList?.dismiss(animated: true) {
                 didSelectApply(selectedStatus)
             }

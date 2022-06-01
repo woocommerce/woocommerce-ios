@@ -69,4 +69,8 @@ public enum FeatureFlag: Int {
     /// Enable selection of payment gateway to use for In-Person Payments when there is more than one available
     ///
     case inPersonPaymentGatewaySelection
+
+    /// Enable order editing from the order detailed screen.
+    ///
+    case unifiedOrderEditing
 }

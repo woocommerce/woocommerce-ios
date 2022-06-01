@@ -2,7 +2,7 @@
 
 9.4
 -----
-- [*] Orders tab: Now, we can pull to refresh from an empty view. [https://github.com/woocommerce/woocommerce-ios/pull/6935]
+- [*] Orders tab: Now, we can pull to refresh from an empty view. [https://github.com/woocommerce/woocommerce-ios/pull/7023]
 
 
 9.3

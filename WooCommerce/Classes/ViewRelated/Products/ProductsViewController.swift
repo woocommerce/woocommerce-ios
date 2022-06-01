@@ -729,6 +729,10 @@ private extension ProductsViewController {
     /// Displays the overlay when there are no results.
     ///
     func displayNoResultsOverlay() {
+        // Abort if we are already displaying this childController
+        guard emptyStateViewController?.parent == nil else {
+            return
+        }
         let emptyStateViewController = EmptyStateViewController(style: .list)
         let config = createFilterConfig()
         displayEmptyStateViewController(emptyStateViewController)

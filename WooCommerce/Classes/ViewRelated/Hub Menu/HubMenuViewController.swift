@@ -4,9 +4,11 @@ import Yosemite
 
 /// Displays a grid view of all available menu in the "Menu" tab (eg. View Store, Reviews, Coupons, etc...)
 final class HubMenuViewController: UIHostingController<HubMenu> {
+    private let viewModel: HubMenuViewModel
 
     init(siteID: Int64, navigationController: UINavigationController?) {
-        super.init(rootView: HubMenu(siteID: siteID, navigationController: navigationController))
+        self.viewModel = HubMenuViewModel(siteID: siteID, navigationController: navigationController)
+        super.init(rootView: HubMenu(viewModel: viewModel))
         configureTabBarItem()
     }
 
@@ -17,7 +19,7 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
     /// Present the specific Review Details View from a push notification
     ///
     func pushReviewDetailsViewController(using parcel: ProductReviewFromNoteParcel) {
-        rootView.pushReviewDetailsView(using: parcel)
+        viewModel.showReviewDetails(using: parcel)
     }
 }
 

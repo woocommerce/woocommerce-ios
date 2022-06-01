@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import WooFoundation
 
 /// Helper to calculate the totals on an `Order`.
 ///

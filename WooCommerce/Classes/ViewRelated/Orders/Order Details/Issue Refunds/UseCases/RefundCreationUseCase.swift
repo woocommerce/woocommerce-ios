@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import WooFoundation
 
 /// Creates a `Refund` object ready to be used  on `RefundStore.createRefund` action
 ///

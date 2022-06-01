@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import WooFoundation
 
 /// View Model logic for the bulk price setting screen
 ///

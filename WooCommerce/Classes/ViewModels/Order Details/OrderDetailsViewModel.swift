@@ -4,6 +4,7 @@ import Gridicons
 import Yosemite
 import MessageUI
 import Combine
+import WooFoundation
 import enum Networking.DotcomError
 
 final class OrderDetailsViewModel {

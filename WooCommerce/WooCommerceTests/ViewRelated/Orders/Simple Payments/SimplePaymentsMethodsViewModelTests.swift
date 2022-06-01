@@ -336,42 +336,145 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedProperties.last?["payment_method"] as? String, "card")
     }
 
-    func test_card_row_is_shown_for_cpp_store() {
+    func test_card_row_is_shown_for_eligible_order() {
         // Given
-        let cppStateObserver = MockCardPresentPaymentsOnboardingUseCase(initial: .completed(plugin: .wcPay))
-        let dependencies = Dependencies(cppStoreStateObserver: cppStateObserver)
-        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00",
-                                                       dependencies: dependencies)
+        let storage = MockStorageManager()
+        let orderItem = OrderItem.fake().copy(itemID: 1234,
+                                              name: "Chocolate cake",
+                                              productID: 678,
+                                              quantity: 1.0)
+        let cppEligibleOrder = Order.fake().copy(siteID: 1212,
+                                                 orderID: 111,
+                                                 status: .pending,
+                                                 currency: "USD",
+                                                 datePaid: nil,
+                                                 total: "5.00",
+                                                 paymentMethodID: "woocommerce_payments",
+                                                 items: [orderItem])
+        let nonSubscriptionProduct = Product.fake().copy(siteID: 1212,
+                                                         productID: 678,
+                                                         name: "Chocolate cake",
+                                                         productTypeKey: "simple")
+
+        storage.insertSampleProduct(readOnlyProduct: nonSubscriptionProduct)
+        storage.insertSampleOrder(readOnlyOrder: cppEligibleOrder)
+
+        let configuration = CardPresentPaymentsConfiguration.init(country: "US")
+
+        let dependencies = Dependencies(storage: storage, cardPresentPaymentsConfiguration: configuration)
+        let viewModel = SimplePaymentsMethodsViewModel(siteID: 1212, orderID: 111, formattedTotal: "$5.00", dependencies: dependencies)
 
         // Then
         XCTAssertTrue(viewModel.showPayWithCardRow)
     }
 
-    func test_card_row_is_not_shown_for_non_cpp_store() {
+    func test_card_row_is_not_shown_for_eligible_order_but_ineligible_country() {
         // Given
-        let cppStateObserver = MockCardPresentPaymentsOnboardingUseCase(initial: .pluginNotInstalled)
-        let dependencies = Dependencies(cppStoreStateObserver: cppStateObserver)
-        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00",
-                                                       dependencies: dependencies)
+        let storage = MockStorageManager()
+        let orderItem = OrderItem.fake().copy(itemID: 1234,
+                                              name: "Chocolate cake",
+                                              productID: 678,
+                                              quantity: 1.0)
+        let cppEligibleOrder = Order.fake().copy(siteID: 1212,
+                                                 orderID: 111,
+                                                 status: .pending,
+                                                 currency: "USD",
+                                                 datePaid: nil,
+                                                 total: "5.00",
+                                                 paymentMethodID: "woocommerce_payments",
+                                                 items: [orderItem])
+        let nonSubscriptionProduct = Product.fake().copy(siteID: 1212,
+                                                         productID: 678,
+                                                         name: "Chocolate cake",
+                                                         productTypeKey: "simple")
+
+        storage.insertSampleProduct(readOnlyProduct: nonSubscriptionProduct)
+        storage.insertSampleOrder(readOnlyOrder: cppEligibleOrder)
+
+        // Antarctica 🤞 (it's actually based on the lack of the following 4 properties)
+        let configuration = CardPresentPaymentsConfiguration.init(countryCode: "AQ",
+                                                                  paymentMethods: [],
+                                                                  currencies: [],
+                                                                  paymentGateways: [],
+                                                                  supportedReaders: [],
+                                                                  supportedPluginVersions: [
+                                                                      .init(plugin: .wcPay, minimumVersion: "3.2.1"),
+                                                                      .init(plugin: .stripe, minimumVersion: "6.2.0")
+                                                                  ],
+                                                                  minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
+                                                                  stripeSmallestCurrencyUnitMultiplier: 100)
+
+        let dependencies = Dependencies(storage: storage, cardPresentPaymentsConfiguration: configuration)
+        let viewModel = SimplePaymentsMethodsViewModel(siteID: 1212, orderID: 111, formattedTotal: "$5.00", dependencies: dependencies)
 
         // Then
         XCTAssertFalse(viewModel.showPayWithCardRow)
     }
 
-    func test_card_row_state_changes_when_store_state_changes() {
+    func test_card_row_is_not_shown_for_non_cpp_eligible_order_payment_method() {
         // Given
-        let subject = PassthroughSubject<CardPresentPaymentOnboardingState, Never>()
-        let cppStateObserver = MockCardPresentPaymentsOnboardingUseCase(initial: .pluginNotInstalled, publisher: subject.eraseToAnyPublisher())
-        let dependencies = Dependencies(cppStoreStateObserver: cppStateObserver)
-        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00",
-                                                       dependencies: dependencies)
-        XCTAssertFalse(viewModel.showPayWithCardRow)
 
-        // When
-        subject.send(.completed(plugin: .wcPay))
+        let storage = MockStorageManager()
+        let orderItem = OrderItem.fake().copy(itemID: 1234,
+                                              name: "Chocolate cake",
+                                              productID: 678,
+                                              quantity: 1.0)
+        let cppEligibleOrder = Order.fake().copy(siteID: 1212,
+                                                 orderID: 111,
+                                                 status: .pending,
+                                                 currency: "USD",
+                                                 datePaid: nil,
+                                                 total: "5.00",
+                                                 paymentMethodID: "some_other_payment_method",
+                                                 items: [orderItem])
+        let nonSubscriptionProduct = Product.fake().copy(siteID: 1212,
+                                                         productID: 678,
+                                                         name: "Chocolate cake",
+                                                         productTypeKey: "simple")
+
+        storage.insertSampleProduct(readOnlyProduct: nonSubscriptionProduct)
+        storage.insertSampleOrder(readOnlyOrder: cppEligibleOrder)
+
+        let configuration = CardPresentPaymentsConfiguration.init(country: "US")
+
+        let dependencies = Dependencies(storage: storage, cardPresentPaymentsConfiguration: configuration)
+        let viewModel = SimplePaymentsMethodsViewModel(siteID: 1212, orderID: 111, formattedTotal: "$5.00", dependencies: dependencies)
 
         // Then
-        XCTAssertTrue(viewModel.showPayWithCardRow)
+        XCTAssertFalse(viewModel.showPayWithCardRow)
+    }
+
+    func test_card_row_is_not_shown_for_non_cpp_eligible_order_currency() {
+        // Given
+
+        let storage = MockStorageManager()
+        let orderItem = OrderItem.fake().copy(itemID: 1234,
+                                              name: "Chocolate cake",
+                                              productID: 678,
+                                              quantity: 1.0)
+        let cppEligibleOrder = Order.fake().copy(siteID: 1212,
+                                                 orderID: 111,
+                                                 status: .pending,
+                                                 currency: "ZZZ",
+                                                 datePaid: nil,
+                                                 total: "5.00",
+                                                 paymentMethodID: "woocommerce_payments",
+                                                 items: [orderItem])
+        let nonSubscriptionProduct = Product.fake().copy(siteID: 1212,
+                                                         productID: 678,
+                                                         name: "Chocolate cake",
+                                                         productTypeKey: "simple")
+
+        storage.insertSampleProduct(readOnlyProduct: nonSubscriptionProduct)
+        storage.insertSampleOrder(readOnlyOrder: cppEligibleOrder)
+
+        let configuration = CardPresentPaymentsConfiguration.init(country: "US")
+
+        let dependencies = Dependencies(storage: storage, cardPresentPaymentsConfiguration: configuration)
+        let viewModel = SimplePaymentsMethodsViewModel(siteID: 1212, orderID: 111, formattedTotal: "$5.00", dependencies: dependencies)
+
+        // Then
+        XCTAssertFalse(viewModel.showPayWithCardRow)
     }
 
     func test_paymentLinkRow_is_hidden_if_payment_link_is_not_available() {

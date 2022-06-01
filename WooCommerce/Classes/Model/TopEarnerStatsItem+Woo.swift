@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import WooFoundation
 
 
 // MARK: - TopEarnerStatsItem Helper Methods

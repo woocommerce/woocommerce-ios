@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import Yosemite
+import WooFoundation
 
 /// View model for ShippingLabelsCustomsFormList
 ///

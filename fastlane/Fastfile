@@ -840,25 +840,6 @@ platform :ios do
                         source_locale: 'en-US',
                         download_path: './fastlane/metadata')
 
-    # Ensure that localizations are present in the right places (some locale codes aren't correct)
-    {
-      'ar' => 'ar-SA',
-      'de' => 'de-DE',
-      'es' => 'es-ES',
-      'fr' => 'fr-FR',
-      'nl' => 'nl-NL',
-      'zh-cn' => 'zh-Hans',
-      'zh-tw' => 'zh-Hant'
-    }.each do |source, destination|
-      source_dir = File.join(Dir.pwd, 'metadata', source)
-      Dir.children(source_dir).each do |file|
-        source_file = File.join(source_dir, file)
-        destination_file = File.join(Dir.pwd, 'metadata', destination, file)
-        FileUtils.mv(source_file, destination_file)
-      end
-      FileUtils.remove_dir(source_dir)
-    end
-
     # Copy source files into `en-US`
     enUS_path = File.join(Dir.pwd, 'metadata', 'en-US')
 

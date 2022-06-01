@@ -346,3 +346,9 @@ private extension ProductFormViewModel_UpdatesTests {
         return date
     }
 }
+
+extension ProductImageActionHandler {
+    convenience init(siteID: Int64, product: ProductFormDataModel) {
+        self.init(siteID: siteID, productID: product.productID, imageStatuses: product.imageStatuses)
+    }
+}

@@ -38,11 +38,12 @@ struct InPersonPaymentsSelectPlugin: View {
                     .foregroundColor(Color(.primary))
 
                 Text(Localization.title)
-                    .font(.largeTitle)
+                    .font(.largeTitle.bold())
                 Text(Localization.prompt)
-                    .font(.body)
+                    .bodyStyle()
                 Text(Localization.notice)
                     .font(.caption)
+                    .foregroundColor(Color(.text))
 
                 InPersonPaymentsSelectPluginRow(icon: .wcpayIcon, name: "WooCommerce Payments", selected: selectedPlugin == .wcPay)
                     .onTapGesture {

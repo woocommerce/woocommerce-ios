@@ -7,9 +7,10 @@ struct InPersonPaymentsSelectPluginRow: View {
     let selected: Bool
 
     var body: some View {
-        HStack {
+        HStack(spacing: 16) {
             Image(uiImage: icon)
             Text(name)
+                .headlineStyle()
                 .fixedSize(horizontal: false, vertical: true)
             Spacer()
             if selected {

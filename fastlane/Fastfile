@@ -857,11 +857,6 @@ platform :ios do
       FileUtils.cp(source, destination)
     end
 
-    # Replace the `default` directory with the contents of `en-US`
-    default_path = File.join(Dir.pwd, 'metadata', 'default')
-    FileUtils.remove_dir(default_path) if File.directory?(default_path)
-    FileUtils.copy_entry(enUS_path, default_path)
-
     # Never store review information (it contains passwords and PII)
     review_info_path = File.join(Dir.pwd, 'metadata', 'review_information')
     FileUtils.remove_dir(review_info_path) if File.directory?(review_info_path)

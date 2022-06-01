@@ -6,46 +6,12 @@ final class OrderStatusListViewController: UIViewController {
     ///
     @IBOutlet private var tableView: UITableView!
 
-    /// The index of the status stored in the database when list view is presented
-    ///
-    private var initialStatus: IndexPath?
-
-    /// The index of (new) order status selected by the user tapping on a table row.
-    ///
-    private var indexOfSelectedStatus: IndexPath? {
-        didSet {
-            if initialStatus != indexOfSelectedStatus, !isSelectionAutoConfirmed {
-                activateApplyButton()
-            } else if initialStatus != indexOfSelectedStatus, isSelectionAutoConfirmed {
-                confirmSelectedStatus()
-            } else {
-                deActivateApplyButton()
-            }
-        }
-    }
-
-    /// A cview model containing all possible order statuses and the selected one.
+    /// A view model containing all possible order statuses and the selected one.
     ///
     private let viewModel: OrderStatusListViewModel
 
-    /// A closure to be called when this VC wants its creator to dismiss it without saving changes.
-    ///
-    var didSelectCancel: (() -> Void)?
-
-    /// A closure to be  called when this VC wants its creator to change the order status to the selected status and dismiss it.
-    ///
-    var didConfirmSelection: ((OrderStatusEnum) -> Void)?
-
-    /// Whether to automatically confirm the order status when it is selected.
-    ///
-    /// Defaults to `false`.
-    ///
-    private let isSelectionAutoConfirmed: Bool
-
-    init(siteID: Int64, status: OrderStatusEnum, isSelectionAutoConfirmed: Bool = false) {
-        self.viewModel = OrderStatusListViewModel(status: status,
-                                                  dataSource: OrderStatusListDataSource(siteID: siteID))
-        self.isSelectionAutoConfirmed = isSelectionAutoConfirmed
+    init(viewModel: OrderStatusListViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -70,7 +36,6 @@ final class OrderStatusListViewController: UIViewController {
             return
         }
         tableView.selectRow(at: selectedStatusIndex, animated: false, scrollPosition: .none)
-        initialStatus = selectedStatusIndex
     }
 
     /// Registers all of the available TableViewCells
@@ -104,7 +69,7 @@ extension OrderStatusListViewController {
     }
 
     func configureLeftButton() {
-        guard !isSelectionAutoConfirmed else {
+        guard !viewModel.isSelectionAutoConfirmed else {
             return
         }
 
@@ -118,7 +83,7 @@ extension OrderStatusListViewController {
     }
 
     func configureRightButton() {
-        guard !isSelectionAutoConfirmed else {
+        guard !viewModel.isSelectionAutoConfirmed else {
             return
         }
 
@@ -127,34 +92,22 @@ extension OrderStatusListViewController {
         let rightBarButton = UIBarButtonItem(title: applyButtonTitle,
                                              style: .done,
                                              target: self,
-                                             action: #selector(confirmSelectedStatus))
+                                             action: #selector(applyButtonTapped))
         navigationItem.setRightBarButton(rightBarButton, animated: false)
         navigationItem.rightBarButtonItem?.accessibilityIdentifier = "order-status-list-apply-button"
-        deActivateApplyButton()
+        enableApplyButton(viewModel.shouldEnableApplyButton)
     }
 
-    func activateApplyButton() {
-        navigationItem.rightBarButtonItem?.isEnabled = true
-    }
-
-    func deActivateApplyButton() {
-        navigationItem.rightBarButtonItem?.isEnabled = false
+    func enableApplyButton(_ enabled: Bool) {
+        navigationItem.rightBarButtonItem?.isEnabled = enabled
     }
 
     @objc func dismissButtonTapped() {
-        didSelectCancel?()
+        viewModel.didCancelSelection?()
     }
 
-    @objc func confirmSelectedStatus() {
-        guard let indexOfSelectedStatus = indexOfSelectedStatus else {
-            didSelectCancel?()
-            return
-        }
-        guard let selectedStatus = viewModel.status(at: indexOfSelectedStatus) else {
-            didSelectCancel?()
-            return
-        }
-        didConfirmSelection?(selectedStatus)
+    @objc func applyButtonTapped() {
+        viewModel.confirmSelectedStatus()
     }
 }
 
@@ -189,6 +142,7 @@ extension OrderStatusListViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        indexOfSelectedStatus = indexPath
+        viewModel.indexOfSelectedStatus = indexPath
+        enableApplyButton(viewModel.shouldEnableApplyButton)
     }
 }

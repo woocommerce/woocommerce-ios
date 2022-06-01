@@ -1,23 +1,62 @@
 import Foundation
 import Yosemite
 import class AutomatticTracks.CrashLogging
+import protocol Storage.StorageManagerType
 
 final class OrderStatusListViewModel {
-    private var status: OrderStatusEnum?
+    private let status: OrderStatusEnum?
     private var dataSource: OrderStatusListDataSource
 
-    init(status: OrderStatusEnum, dataSource: OrderStatusListDataSource) {
+    /// The index of the status stored in the database when list view is presented
+    ///
+    private(set) var initialStatus: IndexPath?
+
+    /// The index of (new) order status selected by the user tapping on a table row.
+    ///
+    var indexOfSelectedStatus: IndexPath? {
+        didSet {
+            if initialStatus != indexOfSelectedStatus, !isSelectionAutoConfirmed {
+                shouldEnableApplyButton = true
+            } else if initialStatus != indexOfSelectedStatus, isSelectionAutoConfirmed {
+                confirmSelectedStatus()
+            } else {
+                shouldEnableApplyButton = false
+            }
+        }
+    }
+
+    /// Whether the Apply button should be enabled.
+    ///
+    private(set) var shouldEnableApplyButton: Bool = false
+
+    /// Whether to automatically confirm the order status when it is selected.
+    ///
+    /// Defaults to `false`.
+    ///
+    let isSelectionAutoConfirmed: Bool
+
+    /// A closure to be called when the VC wants its creator to dismiss it without saving changes.
+    ///
+    var didCancelSelection: (() -> Void)?
+
+    /// A closure to be called when the VC wants its creator to change the order status to the selected status and dismiss it.
+    ///
+    var didApplySelection: ((OrderStatusEnum) -> Void)?
+
+    init(siteID: Int64,
+         status: OrderStatusEnum,
+         isSelectionAutoConfirmed: Bool = false,
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.status = status
-        self.dataSource = dataSource
+        self.dataSource = OrderStatusListDataSource(siteID: siteID, storageManager: storageManager)
+        self.isSelectionAutoConfirmed = isSelectionAutoConfirmed
+
+        configureDataSource()
+        configureInitialStatus()
     }
 
     func configureResultsController(tableView: UITableView) {
         dataSource.startForwardingEvents(to: tableView)
-        do {
-            try dataSource.performFetch()
-        } catch {
-            ServiceLocator.crashLogging.logError(error)
-        }
         tableView.reloadData()
     }
 
@@ -63,5 +102,35 @@ final class OrderStatusListViewModel {
         }
         let status = dataSource.statuses()[indexPath.row]
         return status.name
+    }
+
+    func confirmSelectedStatus() {
+        guard let indexOfSelectedStatus = indexOfSelectedStatus else {
+            didCancelSelection?()
+            return
+        }
+        guard let selectedStatus = status(at: indexOfSelectedStatus) else {
+            didCancelSelection?()
+            return
+        }
+        didApplySelection?(selectedStatus)
+    }
+}
+
+private extension OrderStatusListViewModel {
+    /// Fetches the list of order statuses.
+    ///
+    func configureDataSource() {
+        do {
+            try dataSource.performFetch()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
+    }
+
+    /// Sets the index of the initial order status.
+    ///
+    func configureInitialStatus() {
+        initialStatus = indexOfCurrentOrderStatus()
     }
 }

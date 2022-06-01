@@ -857,14 +857,15 @@ private extension OrderDetailsViewController {
         ServiceLocator.analytics.track(.orderDetailOrderStatusEditButtonTapped,
                                        withProperties: ["status": viewModel.order.status.rawValue])
 
-        let statusList = OrderStatusListViewController(siteID: viewModel.order.siteID,
-                                                       status: viewModel.order.status)
+        let statusListViewModel = OrderStatusListViewModel(siteID: viewModel.order.siteID,
+                                                           status: viewModel.order.status)
+        let statusList = OrderStatusListViewController(viewModel: statusListViewModel)
 
-        statusList.didSelectCancel = { [weak statusList] in
+        statusListViewModel.didCancelSelection = { [weak statusList] in
             statusList?.dismiss(animated: true, completion: nil)
         }
 
-        statusList.didConfirmSelection = { [weak statusList] (selectedStatus) in
+        statusListViewModel.didApplySelection = { [weak statusList] (selectedStatus) in
             statusList?.dismiss(animated: true) {
                 self.setOrderStatus(to: selectedStatus)
             }

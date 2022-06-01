@@ -88,7 +88,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
 
     /// The handler to execute when the view is pulled to refresh.
     ///
-    private var pullToRefreshActionHandler: ((UIRefreshControl) -> ())?
+    private var pullToRefreshHandler: ((UIRefreshControl) -> ())?
 
     private lazy var keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: { [weak self] frame in
         self?.handleKeyboardFrameUpdate(keyboardFrame: frame)
@@ -292,7 +292,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
 
 private extension EmptyStateViewController {
     @objc func onPullToRefresh(sender: UIRefreshControl) {
-        pullToRefreshActionHandler?(sender)
+        pullToRefreshHandler?(sender)
     }
 
     /// Configures the `actionButton` based on the given `config`.
@@ -314,7 +314,7 @@ private extension EmptyStateViewController {
 
     /// Configures pull to refresh based on the given `config`
     func configurePullToRefresh(_ config: Config) {
-        pullToRefreshActionHandler = {
+        pullToRefreshHandler = {
             switch config {
             case .simple(_, _, let pullToRefreshClosure):
                 return pullToRefreshClosure
@@ -327,7 +327,7 @@ private extension EmptyStateViewController {
             }
         }()
 
-        guard pullToRefreshActionHandler != nil else {
+        guard pullToRefreshHandler != nil else {
             // Remove refresh control if config doesn't have action handler
             scrollView.refreshControl = nil
             return

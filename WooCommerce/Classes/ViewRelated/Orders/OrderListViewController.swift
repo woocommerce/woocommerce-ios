@@ -487,15 +487,15 @@ private extension OrderListViewController {
     ///
     func createFilterConfig() ->  EmptyStateViewController.Config {
         guard let filters = viewModel.filters, filters.numberOfActiveFilters != 0 else {
-            return noOrdersInStoreConfig()
+            return noOrdersAvailableConfig()
         }
 
         return noOrdersMatchFilterConfig()
     }
 
-    /// Creates EmptyStateViewController.Config when there are no orders in the store
+    /// Creates EmptyStateViewController.Config when there are no orders available
     ///
-    func noOrdersInStoreConfig() -> EmptyStateViewController.Config {
+    func noOrdersAvailableConfig() -> EmptyStateViewController.Config {
         .simple(
             message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
             image: .waitingForCustomersImage,

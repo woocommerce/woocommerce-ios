@@ -14,7 +14,6 @@ struct SummaryTableViewCellViewModel {
 
     private let billingAddress: Address?
     private let dateCreated: Date
-    private let orderNumber: String
 
     fileprivate let presentation: OrderStatusPresentation
 
@@ -26,7 +25,6 @@ struct SummaryTableViewCellViewModel {
 
         billingAddress = order.billingAddress
         dateCreated = order.dateCreated
-        orderNumber = order.number
 
         presentation = OrderStatusPresentation(
             style: status?.status ?? order.status,
@@ -46,11 +44,11 @@ struct SummaryTableViewCellViewModel {
         }
     }
 
-    /// The date, time, and the order number concatenated together. Example, “Jan 22, 2018, 11:23 AM • #1587”.
+    /// The date, time, and the order number concatenated together. Example, “Jan 22, 2018, 11:23 AM”.
     ///
     var subtitle: String {
         let formatter = DateFormatter.dateAndTimeFormatter
-        return "\(formatter.string(from: dateCreated)) • #\(orderNumber)"
+        return "\(formatter.string(from: dateCreated))"
     }
 }
 

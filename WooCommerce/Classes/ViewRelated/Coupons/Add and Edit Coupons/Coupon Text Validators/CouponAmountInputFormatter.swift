@@ -6,7 +6,8 @@ import WooFoundation
 struct CouponAmountInputFormatter: UnitInputFormatter {
     let priceInputFormatter: PriceInputFormatter
 
-    init(currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+    init(currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         isPercentage: Bool = false) {
         self.priceInputFormatter = PriceInputFormatter(currencySettings: currencySettings)
     }
 

@@ -191,6 +191,125 @@ final class OrderDetailsViewModel {
     }
 }
 
+// MARK: Syncing
+extension OrderDetailsViewModel {
+    /// Syncs all data related to the current order.
+    ///
+    func syncEverything(onReloadSections: (() -> ())? = nil, onCompletion: (() -> ())? = nil) {
+        let group = DispatchGroup()
+
+        group.enter()
+        syncOrder { _ in
+            group.leave()
+        }
+
+        group.enter()
+        syncProducts { _ in
+            group.leave()
+        }
+
+        group.enter()
+        syncProductVariations { _ in
+            group.leave()
+        }
+
+        group.enter()
+        syncRefunds() { _ in
+            group.leave()
+        }
+
+        group.enter()
+        syncShippingLabels() { _ in
+            group.leave()
+        }
+
+        group.enter()
+        syncNotes { _ in
+            group.leave()
+        }
+
+        group.enter()
+        syncTrackingsEnablingAddButtonIfReachable(onReloadSections: onReloadSections) {
+            group.leave()
+        }
+
+        group.enter()
+        checkShippingLabelCreationEligibility {
+            onReloadSections?()
+            group.leave()
+        }
+
+        group.enter()
+        refreshCardPresentPaymentEligibility()
+        group.leave()
+
+        group.enter()
+        refreshCardPresentPaymentOnboarding()
+        group.leave()
+
+        group.enter()
+        syncSavedReceipts {_ in
+            group.leave()
+        }
+
+        group.enter()
+        checkOrderAddOnFeatureSwitchState {
+            onReloadSections?()
+            group.leave()
+        }
+
+        group.notify(queue: .main) {
+            onCompletion?()
+        }
+    }
+
+    func syncOrder(onCompletion: ((Error?) -> ())? = nil) {
+        syncOrder { [weak self] (order, error) in
+            guard let self = self, let order = order else {
+                onCompletion?(error)
+                return
+            }
+
+            self.update(order: order)
+
+            onCompletion?(nil)
+        }
+    }
+
+    func syncTrackingsEnablingAddButtonIfReachable(onReloadSections: (() -> ())? = nil, onCompletion: (() -> Void)? = nil) {
+        syncTracking { [weak self] error in
+            if error == nil {
+                self?.trackingIsReachable = true
+            }
+            onReloadSections?()
+            onCompletion?()
+        }
+    }
+
+    func syncOrderAfterPaymentCollection(onCompletion: @escaping ()-> Void) {
+        let group = DispatchGroup()
+
+        group.enter()
+        syncOrder { _ in
+            group.leave()
+        }
+
+        group.enter()
+        syncNotes { _ in
+            group.leave()
+        }
+
+        group.enter()
+        syncSavedReceipts { _ in
+            group.leave()
+        }
+
+        group.notify(queue: .main) {
+            NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
+            onCompletion()
+        }
+    }
+}
 
 // MARK: - Configuring results controllers
 //

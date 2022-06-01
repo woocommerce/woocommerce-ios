@@ -117,7 +117,8 @@ struct AddEditCoupon: View {
                                                      editable: true,
                                                      fieldAlignment: .leading,
                                                      keyboardType: .decimalPad,
-                                                     inputFormatter: CouponAmountInputFormatter())
+                                                     inputFormatter: CouponAmountInputFormatter(
+                                                        isPercentage: viewModel.discountType == .percent))
                                 Divider()
                                     .padding(.leading, Constants.margin)
 

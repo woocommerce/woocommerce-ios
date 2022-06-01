@@ -329,8 +329,7 @@ private extension EmptyStateViewController {
 
         guard pullToRefreshHandler != nil else {
             // Remove refresh control if config doesn't have action handler
-            scrollView.refreshControl = nil
-            return
+            return scrollView.refreshControl = nil
         }
 
         // Create refresh control if needed

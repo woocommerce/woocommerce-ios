@@ -707,6 +707,14 @@ extension OrderDetailsViewModel {
     /// Defines an action button that resides inside the more action menu.
     ///
     struct MoreActionButton {
+
+        /// Defines all possible more action button types.
+        ///
+        enum ButtonType: CaseIterable {
+            case editOrder
+            case sharePaymentLink
+        }
+
         /// ID of the button.
         ///
         let id: ButtonType
@@ -714,11 +722,6 @@ extension OrderDetailsViewModel {
         /// Title of the button.
         ///
         let title: String
-
-        enum ButtonType: CaseIterable {
-            case sharePaymentLink
-            case editOrder
-        }
 
         fileprivate static func availableButtons(order: Order, syncState: SyncState) -> [MoreActionButton] {
             ButtonType.allCases.compactMap { buttonType in

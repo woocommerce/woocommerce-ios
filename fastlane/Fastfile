@@ -35,7 +35,7 @@ ALPHA_BUNDLE_IDENTIFIERS = %w[com.automattic.alpha.woocommerce].freeze # Registe
 #
 # See calls to `ios_merge_strings_files` and `ios_extract_keys_from_strings_files` for usage.
 #
-# Note that, yes, we currently have only one file, but it's still worth defining this constant because it's used across more than one lane, as describe above.
+# Note that, yes, we currently have only one file, but it's still worth defining this constant because it's used across more than one lane, as described above.
 #
 MANUALLY_MAINTAINED_STRINGS_FILES = {
   File.join(RESOURCES_FOLDER, 'en.lproj', 'InfoPlist.strings') => 'infoplist.'

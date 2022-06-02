@@ -308,13 +308,13 @@ platform :ios do
 
     UI.message('Checking app strings translation status...')
     check_translation_progress(
-      glotpress_url: 'https://translate.wordpress.com/projects/woocommerce/woocommerce-ios/',
+      glotpress_url: GLOTPRESS_APP_STRINGS_PROJECT_URL,
       abort_on_violations: false
     )
 
     UI.message('Checking release notes strings translation status...')
     check_translation_progress(
-      glotpress_url: 'https://translate.wordpress.com/projects/woocommerce/woocommerce-ios/release-notes/',
+      glotpress_url: GLOTPRESS_APP_STORE_METADATA_PROJECT_URL,
       abort_on_violations: false
     )
 
@@ -834,7 +834,7 @@ platform :ios do
 
     metadata_locales = GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES
 
-    gp_downloadmetadata(project_url: 'https://translate.wordpress.com/projects/woocommerce%2Fwoocommerce-ios%2Frelease-notes/',
+    gp_downloadmetadata(project_url: GLOTPRESS_APP_STORE_METADATA_PROJECT_URL,
                         target_files: files,
                         locales: metadata_locales,
                         source_locale: 'en-US',

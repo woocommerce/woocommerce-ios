@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 // MARK: - Public API
 
@@ -6,6 +7,15 @@ import Foundation
 ///
 public struct GeneralAppSettingsStorage {
     private let fileStorage: FileStorage
+
+    /// This subject is used internally to force a refresh of any settings publisher.
+    /// Every time the underlying settings change, we should emit a value here.
+    ///
+    /// Since there is no guarantee that there will be a single instance of GeneralAppSettingsStorage,
+    /// we use a shared static property so that any instance that writes changes to settings emits a
+    /// value that would refresh the data on any other instance.
+    ///
+    private static let refreshSubject = CurrentValueSubject<Void, Never>(())
 
     public init(fileStorage: FileStorage = PListFileStorage()) {
         self.fileStorage = fileStorage
@@ -16,6 +26,15 @@ public struct GeneralAppSettingsStorage {
     public func value<T>(for setting: KeyPath<GeneralAppSettings, T>) -> T {
         let settings = loadOrCreateGeneralAppSettings()
         return settings[keyPath: setting]
+    }
+
+    /// Returns a publisher that emits updates every time the value at the given key path changes.
+    ///
+    public func publisher<T>(for setting: KeyPath<GeneralAppSettings, T>) -> AnyPublisher<T, Never> where T: Equatable {
+        settingsPublisher
+            .map(setting)
+            .removeDuplicates()
+            .eraseToAnyPublisher()
     }
 
     /// Writes the value to the stored setting for the given key path
@@ -32,10 +51,20 @@ public struct GeneralAppSettingsStorage {
         loadOrCreateGeneralAppSettings()
     }
 
+    /// Returns a publisher that emits updates every time the settings change..
+    ///
+    public var settingsPublisher: AnyPublisher<GeneralAppSettings, Never> {
+        Self.refreshSubject
+            .map({ settings })
+            .removeDuplicates()
+            .eraseToAnyPublisher()
+    }
+
     /// Writes a new GeneralAppSettings object to storage
     ///
     public func saveSettings(_ settings: GeneralAppSettings) throws {
         try saveGeneralAppSettings(settings)
+        Self.refreshSubject.send(())
     }
 }
 

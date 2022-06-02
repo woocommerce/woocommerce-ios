@@ -822,7 +822,7 @@ platform :ios do
       'app_store_keywords' => { desc: 'keywords.txt' },
       'app_store_subtitle' => { desc: 'subtitle.txt' },
       'app_store_promo_text' => { desc: 'promotional_text.txt' },
-      'whats_new' => { desc: 'whats_new.txt' },
+      "v#{ios_get_app_version}-whats-new" => { desc: 'whats_new.txt' },
 
       # Screenshots
       'app_store_screenshot-1' => { desc: 'app_store_screenshot_1.txt' },

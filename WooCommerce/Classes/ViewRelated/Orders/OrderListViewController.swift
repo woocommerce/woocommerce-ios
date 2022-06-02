@@ -516,9 +516,13 @@ private extension OrderListViewController {
             message: message,
             image: .emptySearchResultsImage,
             details: "",
-            buttonTitle: Localization.clearButton) { [weak self] button in
+            buttonTitle: Localization.clearButton,
+            onTap: { [weak self] button in
                 self?.delegate?.clearFilters()
-            }
+            },
+            onPullToRefresh: { [weak self] refreshControl in
+                self?.pullToRefresh(sender: refreshControl)
+            })
     }
 }
 

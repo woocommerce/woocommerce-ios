@@ -840,9 +840,8 @@ platform :ios do
                         source_locale: 'en-US',
                         download_path: './fastlane/metadata')
 
-    # Copy source files into `en-US`
+    # Copy appstoreres (screenshot-related) txt files into `en-US`
     enUS_path = File.join(Dir.pwd, 'metadata', 'en-US')
-
     FileUtils.mkdir_p(enUS_path)
 
     [

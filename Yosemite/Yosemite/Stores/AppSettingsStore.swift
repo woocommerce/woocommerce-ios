@@ -14,9 +14,10 @@ public class AppSettingsStore: Store {
     ///
     public init(dispatcher: Dispatcher,
                 storageManager: StorageManagerType,
-                fileStorage: FileStorage) {
+                fileStorage: FileStorage,
+                generalAppSettings: GeneralAppSettingsStorage) {
         self.fileStorage = fileStorage
-        self.generalAppSettings = GeneralAppSettingsStorage(fileStorage: fileStorage)
+        self.generalAppSettings = generalAppSettings
         super.init(dispatcher: dispatcher,
                    storageManager: storageManager,
                    network: NullNetwork())

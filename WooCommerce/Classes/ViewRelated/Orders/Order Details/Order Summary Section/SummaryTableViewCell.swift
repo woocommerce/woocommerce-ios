@@ -48,7 +48,7 @@ struct SummaryTableViewCellViewModel {
     ///
     var subtitle: String {
         let formatter = DateFormatter.dateAndTimeFormatter
-        return "\(formatter.string(from: dateCreated))"
+        return formatter.string(from: dateCreated)
     }
 }
 

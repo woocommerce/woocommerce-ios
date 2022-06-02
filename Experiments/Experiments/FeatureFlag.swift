@@ -70,6 +70,10 @@ public enum FeatureFlag: Int {
     ///
     case inPersonPaymentGatewaySelection
 
+    /// Enable order editing from the order detailed screen.
+    ///
+    case unifiedOrderEditing
+
     /// Enable image upload after leaving the product form
     ///
     case backgroundProductImageUpload

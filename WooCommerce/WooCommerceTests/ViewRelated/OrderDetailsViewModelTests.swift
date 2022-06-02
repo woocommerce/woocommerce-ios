@@ -129,22 +129,4 @@ final class OrderDetailsViewModelTests: XCTestCase {
         let actionButtonIDs = viewModel.moreActionsButtons.map { $0.id }
         XCTAssertFalse(actionButtonIDs.contains(.editOrder))
     }
-
-    func test_there_should_be_edit_order_action_if_order_is_synced() {
-        // Given
-        let order = Order.fake().copy(total: "10.0")
-
-        // When
-        let viewModel = OrderDetailsViewModel(order: order)
-        let synced: Bool = waitFor { promise in
-            viewModel.syncEverything(onCompletion: {
-                promise(true)
-            })
-        }
-
-        // Then
-        let actionButtonIDs = viewModel.moreActionsButtons.map { $0.id }
-        XCTAssertTrue(synced)
-        XCTAssertTrue(actionButtonIDs.contains(.editOrder))
-    }
 }

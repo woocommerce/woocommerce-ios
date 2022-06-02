@@ -4,6 +4,7 @@ import Gridicons
 import Yosemite
 import MessageUI
 import Combine
+import Experiments
 import WooFoundation
 import enum Networking.DotcomError
 
@@ -734,7 +735,7 @@ extension OrderDetailsViewModel {
                     return .init(id: buttonType, title: Localization.sharePaymentLink)
 
                 case .editOrder:
-                    guard syncState == .synced else {
+                    guard syncState == .synced, ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing) else {
                         return nil
                     }
                     return .init(id: buttonType, title: Localization.editOrder)

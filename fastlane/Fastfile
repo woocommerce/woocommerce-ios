@@ -44,7 +44,7 @@ MANUALLY_MAINTAINED_STRINGS_FILES = {
 # URL of the GlotPress project containing the strings used in the app
 GLOTPRESS_APP_STRINGS_PROJECT_URL = 'https://translate.wordpress.com/projects/woocommerce/woocommerce-ios/'
 # URL of the GlotPress project containing App Store Connect metadata
-GLOTPRESS_METADATA_PROJECT_URL = 'https://translate.wordpress.com/projects/woocommerce/woocommerce-ios/release-notes/'
+GLOTPRESS_APP_STORE_METADATA_PROJECT_URL = 'https://translate.wordpress.com/projects/woocommerce/woocommerce-ios/release-notes/'
 
 # List of locales used for the app strings (GlotPress code => `*.lproj` folder name`)
 #
@@ -781,7 +781,7 @@ platform :ios do
     }
 
     gp_downloadmetadata(
-      project_url: GLOTPRESS_METADATA_PROJECT_URL,
+      project_url: GLOTPRESS_APP_STORE_METADATA_PROJECT_URL,
       target_files: target_files,
       locales: locales_map,
       download_path: metadata_directory

@@ -1306,6 +1306,61 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(productMutated.tags.map { $0.tagID }, productMutatedStored?.tagsArray.map { $0.tagID })
     }
 
+    // MARK: - ProductAction.updateProductImages
+
+    /// Verifies that `ProductAction.updateProductImages` effectively persists the returned product.
+    ///
+    func test_updateProductImages_with_success_persists_returned_product() throws {
+        // Given
+        let remote = MockProductsRemote()
+        let expectedProduct = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID)
+        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        remote.whenUpdatingProductImages(siteID: sampleSiteID, productID: sampleProductID, thenReturn: .success(expectedProduct))
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+
+        // When
+        let result: Result<Yosemite.Product, ProductUpdateError> = waitFor { promise in
+            let action = ProductAction.updateProductImages(siteID: self.sampleSiteID,
+                                                           productID: self.sampleProductID,
+                                                           images: []) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let returnedProduct = try XCTUnwrap(result.get())
+        assertEqual(expectedProduct, returnedProduct)
+        let productFromStorage = try XCTUnwrap(viewStorage.loadProduct(siteID: sampleSiteID, productID: sampleProductID)?.toReadOnly())
+        assertEqual(expectedProduct, productFromStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
+    }
+
+    func test_updateProductImages_with_failure_returns_error() {
+        // Given
+        let remote = MockProductsRemote()
+        let networkError = ProductUpdateError.passwordCannotBeUpdated
+        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        remote.whenUpdatingProductImages(siteID: sampleSiteID, productID: sampleProductID, thenReturn: .failure(networkError))
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+
+        // When
+        let result: Result<Yosemite.Product, ProductUpdateError> = waitFor { promise in
+            let action = ProductAction.updateProductImages(siteID: self.sampleSiteID,
+                                                           productID: self.sampleProductID,
+                                                           images: []) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure, .init(error: networkError))
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+    }
+
     // MARK: - ProductAction.retrieveProducts
 
     /// Verifies that ProductAction.retrieveProducts effectively persists any retrieved products.

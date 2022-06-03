@@ -932,7 +932,7 @@ platform :ios do
     configure_validate
   end
 
-  desc 'Run localization only'
+  desc 'Updates the main `Localizable.strings` file — that will be imported by GlotPress — from code and `Info.plist` files'
   lane :generate_strings_file_for_glotpress do
     cocoapods
 

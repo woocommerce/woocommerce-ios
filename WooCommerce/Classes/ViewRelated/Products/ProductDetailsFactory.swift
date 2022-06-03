@@ -14,11 +14,13 @@ struct ProductDetailsFactory {
                                presentationStyle: ProductFormPresentationStyle,
                                currencySettings: CurrencySettings = ServiceLocator.currencySettings,
                                forceReadOnly: Bool,
+                               productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
                                onCompletion: @escaping (UIViewController) -> Void) {
         let vc = productDetails(product: product,
                                 presentationStyle: presentationStyle,
                                 currencySettings: currencySettings,
-                                isEditProductsEnabled: forceReadOnly ? false: true)
+                                isEditProductsEnabled: forceReadOnly ? false: true,
+                                productImageUploader: productImageUploader)
         onCompletion(vc)
     }
 }
@@ -27,11 +29,14 @@ private extension ProductDetailsFactory {
     static func productDetails(product: Product,
                                presentationStyle: ProductFormPresentationStyle,
                                currencySettings: CurrencySettings,
-                               isEditProductsEnabled: Bool) -> UIViewController {
+                               isEditProductsEnabled: Bool,
+                               productImageUploader: ProductImageUploaderProtocol) -> UIViewController {
         let vc: UIViewController
         let productModel = EditableProductModel(product: product)
-        let productImageActionHandler = ProductImageActionHandler(siteID: product.siteID,
-                                                                  product: productModel)
+        let productImageActionHandler = productImageUploader.actionHandler(siteID: product.siteID,
+                                                                           productID: productModel.productID,
+                                                                           isLocalID: false,
+                                                                           originalStatuses: productModel.imageStatuses)
         let formType: ProductFormType = isEditProductsEnabled ? .edit: .readonly
         let viewModel = ProductFormViewModel(product: productModel,
                                              formType: formType,

@@ -372,6 +372,8 @@
 		02DE5CA9279F857D007CBEF3 /* Double+Rounding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DE5CA8279F857D007CBEF3 /* Double+Rounding.swift */; };
 		02DE5CAB279F8754007CBEF3 /* Double+RoundingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DE5CAA279F8754007CBEF3 /* Double+RoundingTests.swift */; };
 		02DFECE725EE338F0070F212 /* ShippingLabelCreationInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DFECE625EE338F0070F212 /* ShippingLabelCreationInfoViewController.swift */; };
+		02E19B9C284743A40010B254 /* ProductImageUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E19B9B284743A40010B254 /* ProductImageUploader.swift */; };
+		02E19B9E284745210010B254 /* LegacyProductImageUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E19B9D284745210010B254 /* LegacyProductImageUploader.swift */; };
 		02E262C9238D0AD300B79588 /* ProductStockStatusListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E262C8238D0AD300B79588 /* ProductStockStatusListSelectorCommand.swift */; };
 		02E493EF245C1087000AEA9E /* ProductFormBottomSheetListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E493EE245C1087000AEA9E /* ProductFormBottomSheetListSelectorCommandTests.swift */; };
 		02E4AF7126FC4F16002AD9F4 /* ProductReviewFromNoteParcelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4AF7026FC4F16002AD9F4 /* ProductReviewFromNoteParcelFactory.swift */; };
@@ -2118,6 +2120,8 @@
 		02DE5CA8279F857D007CBEF3 /* Double+Rounding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Rounding.swift"; sourceTree = "<group>"; };
 		02DE5CAA279F8754007CBEF3 /* Double+RoundingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+RoundingTests.swift"; sourceTree = "<group>"; };
 		02DFECE625EE338F0070F212 /* ShippingLabelCreationInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCreationInfoViewController.swift; sourceTree = "<group>"; };
+		02E19B9B284743A40010B254 /* ProductImageUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageUploader.swift; sourceTree = "<group>"; };
+		02E19B9D284745210010B254 /* LegacyProductImageUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyProductImageUploader.swift; sourceTree = "<group>"; };
 		02E262C8238D0AD300B79588 /* ProductStockStatusListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockStatusListSelectorCommand.swift; sourceTree = "<group>"; };
 		02E493EE245C1087000AEA9E /* ProductFormBottomSheetListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormBottomSheetListSelectorCommandTests.swift; sourceTree = "<group>"; };
 		02E4AF7026FC4F16002AD9F4 /* ProductReviewFromNoteParcelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductReviewFromNoteParcelFactory.swift; sourceTree = "<group>"; };
@@ -7648,6 +7652,8 @@
 				D831E2DF230E0BA7000037D0 /* Logs.swift */,
 				575472802452185300A94C3C /* PushNotification.swift */,
 				57532CAB24BFF4DA0032B84E /* MessageComposerPresenter.swift */,
+				02E19B9B284743A40010B254 /* ProductImageUploader.swift */,
+				02E19B9D284745210010B254 /* LegacyProductImageUploader.swift */,
 			);
 			path = ServiceLocator;
 			sourceTree = "<group>";
@@ -9036,6 +9042,7 @@
 				DE34771327F174C8009CA300 /* StatusView.swift in Sources */,
 				45DB704A26121F3C0064A6CF /* TitleAndValueRow.swift in Sources */,
 				451A04E62386CE8700E368C9 /* ProductImagesHeaderTableViewCell.swift in Sources */,
+				02E19B9C284743A40010B254 /* ProductImageUploader.swift in Sources */,
 				B59C09D92188CBB100AB41D6 /* Array+Notes.swift in Sources */,
 				31EF399C26430C6D0093C6F6 /* CardReaderSettingsPrioritizedViewModelsProvider.swift in Sources */,
 				D85136C1231E09C300DD0539 /* ReviewsDataSourceProtocol.swift in Sources */,
@@ -9418,6 +9425,7 @@
 				D85136B9231CED5800DD0539 /* ReviewAge.swift in Sources */,
 				5718852C2465D9EC00E2486F /* ReviewsCoordinator.swift in Sources */,
 				26E1BECA251BE5390096D0A1 /* RefundItemTableViewCell.swift in Sources */,
+				02E19B9E284745210010B254 /* LegacyProductImageUploader.swift in Sources */,
 				DE7B479527A38B8F0018742E /* CouponDetailsViewModel.swift in Sources */,
 				DEC2962926C20ECB005A056B /* CollapsibleView.swift in Sources */,
 				AEDDDA0A25CA9C980077F9B2 /* AttributePickerViewController.swift in Sources */,

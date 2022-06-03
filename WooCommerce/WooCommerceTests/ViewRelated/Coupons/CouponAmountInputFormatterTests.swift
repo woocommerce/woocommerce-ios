@@ -158,4 +158,22 @@ final class CouponAmountInputFormatterTests: XCTestCase {
         input = "101"
         XCTAssertEqual(formatter.format(input: input), "100")
     }
+
+    func test_non_percentage_input_higher_than_100_is_NOT_formatted_back_to_100() {
+        formatter = CouponAmountInputFormatter(isPercentage: false)
+        var input = "100.0000000000001"
+        XCTAssertEqual(formatter.format(input: input), "100.0000000000001")
+
+        input = "101"
+        XCTAssertEqual(formatter.format(input: input), "101")
+    }
+
+    func test_percentage_input_lower_or_equal_than_100_is_NOT_formatted_to_100() {
+        formatter = CouponAmountInputFormatter(isPercentage: true)
+        var input = "0"
+        XCTAssertEqual(formatter.format(input: input), "0")
+
+        input = "99.9999999999999"
+        XCTAssertEqual(formatter.format(input: input), "99.9999999999999")
+    }
 }

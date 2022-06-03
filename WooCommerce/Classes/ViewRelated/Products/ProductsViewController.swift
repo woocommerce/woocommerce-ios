@@ -780,9 +780,13 @@ private extension ProductsViewController {
             message: .init(string: message),
             image: .emptyProductsTabImage,
             details: "",
-            buttonTitle: buttonTitle) { [weak self] button in
+            buttonTitle: buttonTitle,
+            onTap: { [weak self] button in
                 self?.clearFilter(sourceView: button)
-        }
+            },
+            onPullToRefresh: { [weak self] refreshControl in
+                self?.pullToRefresh(sender: refreshControl)
+            })
     }
 
     /// Shows the EmptyStateViewController as a child view controller.

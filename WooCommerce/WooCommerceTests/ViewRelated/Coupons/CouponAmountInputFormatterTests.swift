@@ -3,7 +3,7 @@ import WooFoundation
 @testable import WooCommerce
 
 final class CouponAmountInputFormatterTests: XCTestCase {
-    private let formatter = CouponAmountInputFormatter()
+    private var formatter = CouponAmountInputFormatter()
 
     // MARK: test cases for `isValid(input:)`
 
@@ -148,5 +148,14 @@ final class CouponAmountInputFormatterTests: XCTestCase {
 
         // Then
         XCTAssertEqual(formatter.value(from: emptyValue), NSNumber(value: 0))
+    }
+
+    func test_percentage_input_higher_than_100_is_formatted_back_to_100() {
+        formatter = CouponAmountInputFormatter(isPercentage: true)
+        var input = "100.0000000000001"
+        XCTAssertEqual(formatter.format(input: input), "100")
+
+        input = "101"
+        XCTAssertEqual(formatter.format(input: input), "100")
     }
 }

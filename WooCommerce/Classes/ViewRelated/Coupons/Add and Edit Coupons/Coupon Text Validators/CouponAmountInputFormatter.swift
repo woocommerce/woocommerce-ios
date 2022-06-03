@@ -18,8 +18,9 @@ struct CouponAmountInputFormatter: UnitInputFormatter {
             return false
         }
 
-        if isPercentage && (Double(input) ?? 0) > 100 {
-            return false
+        if isPercentage {
+            let percentageInput = Double(input) ?? 0
+            guard percentageInput <= 100 else { return false }
         }
 
 

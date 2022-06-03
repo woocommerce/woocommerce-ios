@@ -18,20 +18,21 @@ struct CouponAmountInputFormatter: UnitInputFormatter {
             return false
         }
 
-        if isPercentage {
-            let percentageInput = Double(input) ?? 0
-            guard percentageInput <= 100 else { return false }
-        }
-
 
         return priceInputFormatter.isValid(input: input)
     }
 
     func format(input text: String?) -> String {
-        guard text.isNilOrEmpty else {
-            return priceInputFormatter.format(input: text)
+        guard !text.isNilOrEmpty else {
+            return "0"
         }
-        return "0"
+
+        if isPercentage {
+            let percentageInput = Double(text ?? "0") ?? 0
+            guard percentageInput <= 100 else { return "100" }
+        }
+
+        return priceInputFormatter.format(input: text)
     }
 }
 

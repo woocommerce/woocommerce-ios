@@ -311,6 +311,16 @@ final class AddEditCouponViewModel: ObservableObject {
         }
     }
 
+    func convertFixedAmountToPercent(amount: Double?) -> String {
+        guard let amount = amount else { return "0" }
+
+        if amount > 100 {
+            return "100"
+        } else {
+            return String(amount)
+        }
+    }
+
     enum EditingOption {
         case creation
         case editing

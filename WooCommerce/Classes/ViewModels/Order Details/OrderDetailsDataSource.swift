@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import Yosemite
+import Experiments
 import WooFoundation
 import protocol Storage.StorageManagerType
 
@@ -409,6 +410,12 @@ private extension OrderDetailsDataSource {
             cell.onAddTapped = { [weak self] in
                 self?.onCellAction?(.editCustomerNote, nil)
             }
+        }
+
+        // TODO: Before releasing the feature, please the delete closures assignation above.
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing) {
+            cell.onEditTapped = nil
+            cell.onAddTapped = nil
         }
 
         cell.addButtonTitle = NSLocalizedString("Add Customer Note", comment: "Title for the button to add the Customer Provided Note in Order Details")
@@ -1010,8 +1017,16 @@ extension OrderDetailsDataSource {
         let customerInformation: Section = {
             var rows: [Row] = []
 
-            /// Always visible to allow editing.
-            rows.append(.customerNote)
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing) {
+                if order.customerNote?.isNotEmpty == true {
+                    /// When inside `.unifiedOrderEditing` only show the note if there is content for it.
+                    rows.append(.customerNote)
+                }
+
+            } else {
+                /// Always visible to allow editing.
+                rows.append(.customerNote)
+            }
 
             let orderContainsOnlyVirtualProducts = self.products.filter { (product) -> Bool in
                 return items.first(where: { $0.productID == product.productID}) != nil

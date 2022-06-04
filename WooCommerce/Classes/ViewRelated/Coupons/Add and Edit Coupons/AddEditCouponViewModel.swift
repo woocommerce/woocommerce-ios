@@ -151,6 +151,7 @@ final class AddEditCouponViewModel: ObservableObject {
     // Fields
     @Published var discountType: Coupon.DiscountType {
         didSet {
+            onCouponDiscountTypeChanged(discountType: discountType)
             couponRestrictionsViewModel.onDiscountTypeChanged(discountType: discountType)
         }
     }
@@ -302,6 +303,12 @@ final class AddEditCouponViewModel: ObservableObject {
         }
 
         return nil
+    }
+
+    func onCouponDiscountTypeChanged(discountType: Coupon.DiscountType) {
+        if discountType == .percent {
+            amountField = "0"
+        }
     }
 
     enum EditingOption {

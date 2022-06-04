@@ -307,7 +307,7 @@ final class AddEditCouponViewModel: ObservableObject {
 
     func onCouponDiscountTypeChanged(discountType: Coupon.DiscountType) {
         if discountType == .percent {
-            amountField = "0"
+            amountField = convertFixedAmountToPercent(amount: Double(amountField))
         }
     }
 

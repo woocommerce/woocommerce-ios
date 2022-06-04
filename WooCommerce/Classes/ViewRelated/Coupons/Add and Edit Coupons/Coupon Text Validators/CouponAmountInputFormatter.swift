@@ -18,7 +18,6 @@ struct CouponAmountInputFormatter: UnitInputFormatter {
             return false
         }
 
-
         return priceInputFormatter.isValid(input: input)
     }
 

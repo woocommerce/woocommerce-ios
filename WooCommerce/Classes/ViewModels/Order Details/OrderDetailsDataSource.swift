@@ -837,6 +837,12 @@ private extension OrderDetailsDataSource {
             }
         }
 
+        // TODO: Before releasing the feature, please the delete closures assignation above.
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing) {
+            cell.onEditTapped = nil
+            cell.onAddTapped = nil
+        }
+
         cell.addButtonTitle = NSLocalizedString("Add Shipping Address", comment: "Title for the button to add the Shipping Address in Order Details")
         cell.editButtonAccessibilityLabel = NSLocalizedString(
             "Update Address",

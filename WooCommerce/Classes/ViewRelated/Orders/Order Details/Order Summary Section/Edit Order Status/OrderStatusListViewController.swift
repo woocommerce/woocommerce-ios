@@ -69,10 +69,6 @@ extension OrderStatusListViewController {
     }
 
     func configureLeftButton() {
-        guard !viewModel.autoConfirmSelection else {
-            return
-        }
-
         let dismissButtonTitle = NSLocalizedString("Cancel",
                                                    comment: "Change order status screen - button title for closing the view")
         let leftBarButton = UIBarButtonItem(title: dismissButtonTitle,

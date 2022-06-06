@@ -15,10 +15,14 @@ final class OrderStatusListViewModel {
     ///
     var indexOfSelectedStatus: IndexPath? {
         didSet {
-            if initialStatus != indexOfSelectedStatus {
-                shouldEnableApplyButton = true
-            } else {
-                shouldEnableApplyButton = false
+            let selectedNewStatus = initialStatus != indexOfSelectedStatus
+            switch (selectedNewStatus, autoConfirmSelection) {
+            case (true, false):
+                shouldEnableApplyButton = true // New status with manual confirmation
+            case (true, true):
+                confirmSelectedStatus() // New status with automatic confirmation
+            case (false, _):
+                shouldEnableApplyButton = false // No new status
             }
         }
     }
@@ -27,19 +31,27 @@ final class OrderStatusListViewModel {
     ///
     private(set) var shouldEnableApplyButton: Bool = false
 
+    /// Whether to automatically confirm the order status when it is selected.
+    ///
+    /// Defaults to `false`.
+    ///
+    let autoConfirmSelection: Bool
+
     /// A closure to be called when the VC wants its creator to dismiss it without saving changes.
     ///
-    var didSelectCancel: (() -> Void)?
+    var didCancelSelection: (() -> Void)?
 
     /// A closure to be called when the VC wants its creator to change the order status to the selected status and dismiss it.
     ///
-    var didSelectApply: ((OrderStatusEnum) -> Void)?
+    var didApplySelection: ((OrderStatusEnum) -> Void)?
 
     init(siteID: Int64,
          status: OrderStatusEnum,
+         autoConfirmSelection: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.status = status
         self.dataSource = OrderStatusListDataSource(siteID: siteID, storageManager: storageManager)
+        self.autoConfirmSelection = autoConfirmSelection
 
         configureDataSource()
         configureInitialStatus()
@@ -96,14 +108,14 @@ final class OrderStatusListViewModel {
 
     func confirmSelectedStatus() {
         guard let indexOfSelectedStatus = indexOfSelectedStatus else {
-            didSelectCancel?()
+            didCancelSelection?()
             return
         }
         guard let selectedStatus = status(at: indexOfSelectedStatus) else {
-            didSelectCancel?()
+            didCancelSelection?()
             return
         }
-        didSelectApply?(selectedStatus)
+        didApplySelection?(selectedStatus)
     }
 }
 

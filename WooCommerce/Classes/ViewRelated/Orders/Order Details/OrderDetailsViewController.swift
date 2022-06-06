@@ -730,11 +730,11 @@ private extension OrderDetailsViewController {
                                                            status: viewModel.order.status)
         let statusList = OrderStatusListViewController(viewModel: statusListViewModel)
 
-        statusListViewModel.didSelectCancel = { [weak statusList] in
+        statusListViewModel.didCancelSelection = { [weak statusList] in
             statusList?.dismiss(animated: true, completion: nil)
         }
 
-        statusListViewModel.didSelectApply = { [weak statusList] (selectedStatus) in
+        statusListViewModel.didApplySelection = { [weak statusList] (selectedStatus) in
             statusList?.dismiss(animated: true) {
                 self.setOrderStatus(to: selectedStatus)
             }

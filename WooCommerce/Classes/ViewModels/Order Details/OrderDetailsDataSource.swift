@@ -82,7 +82,7 @@ final class OrderDetailsDataSource: NSObject {
 
     /// Whether the option to install the WCShip extension should be visible.
     /// This feature is hidden behind a feature flag `shippingLabelsOnboardingM1`.
-    /// Checks:
+    /// We do those check because we are going to display the feature only to US store owners:
     /// - WCShip is not installed or not enabled.
     /// - The store is located in US.
     /// - The currency is USD.

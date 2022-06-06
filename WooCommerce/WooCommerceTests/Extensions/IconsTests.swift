@@ -499,6 +499,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.waitingForCustomersImage)
     }
 
+    func testInstallWCShipImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.installWCShipImage)
+    }
+
     func testWidgetsImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.widgetsImage)
     }

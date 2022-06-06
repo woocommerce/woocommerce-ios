@@ -26,7 +26,6 @@ final class WCShipInstallTableViewCell: UITableViewCell {
 }
 
 private extension WCShipInstallTableViewCell {
-
     func configureBackground() {
         applyDefaultBackgroundStyle()
 

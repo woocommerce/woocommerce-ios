@@ -837,6 +837,12 @@ private extension OrderDetailsDataSource {
             }
         }
 
+        // TODO: Before releasing the feature, please the delete closures assignation above.
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing) {
+            cell.onEditTapped = nil
+            cell.onAddTapped = nil
+        }
+
         cell.addButtonTitle = NSLocalizedString("Add Shipping Address", comment: "Title for the button to add the Shipping Address in Order Details")
         cell.editButtonAccessibilityLabel = NSLocalizedString(
             "Update Address",
@@ -1017,12 +1023,14 @@ extension OrderDetailsDataSource {
         let customerInformation: Section = {
             var rows: [Row] = []
 
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing) {
+            let isUnifiedEditingEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing)
+
+            /// Customer Note
+            if isUnifiedEditingEnabled {
                 if order.customerNote?.isNotEmpty == true {
                     /// When inside `.unifiedOrderEditing` only show the note if there is content for it.
                     rows.append(.customerNote)
                 }
-
             } else {
                 /// Always visible to allow editing.
                 rows.append(.customerNote)
@@ -1032,13 +1040,34 @@ extension OrderDetailsDataSource {
                 return items.first(where: { $0.productID == product.productID}) != nil
             }.allSatisfy { $0.virtual == true }
 
-            if order.shippingAddress != nil && orderContainsOnlyVirtualProducts == false {
-                rows.append(.shippingAddress)
+            /// Shipping Address
+            if isUnifiedEditingEnabled {
+                /// When inside `.unifiedOrderEditing` only show the billing address if there is content for it.
+                if order.shippingAddress?.isEmpty == false {
+                    rows.append(.shippingAddress)
+                }
+            } else {
+                /// Almost always visible to allow editing.
+                if order.shippingAddress != nil && orderContainsOnlyVirtualProducts == false {
+                    rows.append(.shippingAddress)
+                }
             }
+
+            /// Shipping Lines
             if shippingLines.count > 0 {
                 rows.append(.shippingMethod)
             }
-            rows.append(.billingDetail)
+
+            /// Billing Address
+            if isUnifiedEditingEnabled {
+                /// When inside `.unifiedOrderEditing` only show the billing address if there is content for it.
+                if order.billingAddress?.isEmpty == false {
+                    rows.append(.billingDetail)
+                }
+            } else {
+                /// Always visible to allow editing.
+                rows.append(.billingDetail)
+            }
 
             return Section(category: .customerInformation, title: Title.information, rows: rows)
         }()

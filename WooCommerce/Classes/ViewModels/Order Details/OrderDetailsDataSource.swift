@@ -53,7 +53,7 @@ final class OrderDetailsDataSource: NSObject {
 
     var isEligibleForRefund: Bool {
         guard !isRefundedStatus,
-              !isEligibleForCardPresentPayment,
+              order.datePaid != nil,
               refundableOrderItemsDeterminer.isAnythingToRefund(from: order, with: refunds, currencyFormatter: currencyFormatter) else {
             return false
         }

@@ -98,6 +98,24 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNotNil(issueRefundRow)
     }
 
+    func test_refund_button_is_not_visible_when_there_is_no_date_paid() throws {
+        // Given
+        let order = makeOrder().copy(datePaid: .some(nil))
+        let orderRefundsOptionsDeterminer = MockOrderRefundsOptionsDeterminer(isAnythingToRefund: true)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                refundableOrderItemsDeterminer: orderRefundsOptionsDeterminer)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
+        let issueRefundRow = row(row: .issueRefundButton, in: paymentSection)
+        XCTAssertNil(issueRefundRow)
+    }
+
     func test_refund_button_is_not_visible_when_the_order_status_is_refunded() throws {
         // Given
         let order = MockOrders().makeOrder(status: .refunded, items: [makeOrderItem()])
@@ -217,7 +235,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
     func test_collect_payment_button_is_not_visible_if_order_is_processing_and_order_is_not_eligible_for_cash_on_delivery() throws {
         // Given
-        let order = makeOrder().copy(status: .processing, datePaid: nil, paymentMethodID: "stripe")
+        let order = makeOrder().copy(status: .processing, datePaid: .some(nil), paymentMethodID: "cash")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.configureResultsControllers { }
 
@@ -231,7 +249,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
     func test_collect_payment_button_is_not_visible_if_order_is_eligible_for_cash_on_delivery_and_total_amount_is_zero() throws {
         // Given
-        let order = makeOrder().copy(status: .processing, datePaid: nil, total: "0", paymentMethodID: "cod")
+        let order = makeOrder().copy(status: .processing, datePaid: .some(nil), total: "0", paymentMethodID: "cod")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.configureResultsControllers { }
 
@@ -259,7 +277,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
     func test_collect_payment_button_is_not_visible_if_order_is_a_confirmed_booking_and_total_amount_is_zero() throws {
         // Given
-        let order = makeOrder().copy(status: .processing, datePaid: nil, total: "0", paymentMethodID: "wc-booking-gateway")
+        let order = makeOrder().copy(status: .processing, datePaid: .some(nil), total: "0", paymentMethodID: "wc-booking-gateway")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.configureResultsControllers { }
 

@@ -261,28 +261,6 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         storageManager.viewStorage.saveIfNeeded()
     }
 
-    func test_collect_payment_button_is_not_visible_if_account_not_eligible_for_card_present_payments() throws {
-        // Setup
-        let account = storageManager.insertCardPresentIneligibleAccount()
-        storageManager.viewStorage.saveIfNeeded()
-
-        // Given
-        let order = makeOrder().copy(status: .processing, datePaid: nil, paymentMethodID: "stripe")
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
-        dataSource.configureResultsControllers { }
-
-        // When
-        dataSource.reloadSections()
-
-        // Then
-        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
-        XCTAssertNil(row(row: .collectCardPaymentButton, in: paymentSection))
-
-        // Clean up
-        storageManager.viewStorage.deleteObject(account)
-        storageManager.viewStorage.saveIfNeeded()
-    }
-
     func test_collect_payment_button_is_not_visible_if_order_is_eligible_for_cash_on_delivery_and_total_amount_is_zero() throws {
         // Setup
         let account = storageManager.insertCardPresentEligibleAccount()
@@ -759,26 +737,6 @@ private final class MockPaymentGatewayAccountStoresManager: MockStorageManager {
         newAccount.supportedCurrencies = ["USD"]
         newAccount.country = "US"
         newAccount.isCardPresentEligible = true
-
-        return newAccount
-    }
-
-    /// Inserts an account into the specified context that IS NOT eligible for card present payments
-    ///
-    @discardableResult
-    func insertCardPresentIneligibleAccount() -> StoragePaymentGatewayAccount {
-        let newAccount = viewStorage.insertNewObject(ofType: StoragePaymentGatewayAccount.self)
-        newAccount.siteID = 1234
-        newAccount.gatewayID = "woocommerce-payments"
-        newAccount.status = "complete"
-        newAccount.hasPendingRequirements = false
-        newAccount.hasOverdueRequirements = false
-        newAccount.currentDeadline = nil
-        newAccount.statementDescriptor = "STAGING.BAZ"
-        newAccount.defaultCurrency = "USD"
-        newAccount.supportedCurrencies = ["USD"]
-        newAccount.country = "US"
-        newAccount.isCardPresentEligible = false
 
         return newAccount
     }

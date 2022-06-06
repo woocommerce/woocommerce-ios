@@ -46,13 +46,9 @@ final class OrderDetailsDataSource: NSObject {
     /// Whether the order is eligible for card present payment.
     ///
     var isEligibleForCardPresentPayment: Bool {
-        let hasCardPresentEligiblePaymentGatewayAccount = resultsControllers
-            .paymentGatewayAccounts
-            .contains(where: \.isCardPresentEligible)
-        let orderIsEligibleForCardPresentPayment = order.isEligibleForCardPresentPayment(cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration,
-                                                                                         products: resultsControllers.products)
-
-        return hasCardPresentEligiblePaymentGatewayAccount && orderIsEligibleForCardPresentPayment
+        return cardPresentPaymentsConfiguration.isSupportedCountry &&
+        order.isEligibleForCardPresentPayment(cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration,
+                                              products: resultsControllers.products)
     }
 
     var isEligibleForRefund: Bool {

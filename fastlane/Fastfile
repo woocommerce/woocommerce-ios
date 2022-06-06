@@ -42,9 +42,9 @@ MANUALLY_MAINTAINED_STRINGS_FILES = {
 }.freeze
 
 # URL of the GlotPress project containing the strings used in the app
-GLOTPRESS_APP_STRINGS_URL = 'https://translate.wordpress.com/projects/woocommerce/woocommerce-ios/'
+GLOTPRESS_APP_STRINGS_PROJECT_URL = 'https://translate.wordpress.com/projects/woocommerce/woocommerce-ios/'
 # URL of the GlotPress project containing App Store Connect metadata
-GLOTPRESS_METADATA_PROJECT_URL = 'https://translate.wordpress.com/projects/woocommerce/woocommerce-ios/release-notes/'
+GLOTPRESS_APP_STORE_METADATA_PROJECT_URL = 'https://translate.wordpress.com/projects/woocommerce/woocommerce-ios/release-notes/'
 
 # List of locales used for the app strings (GlotPress code => `*.lproj` folder name`)
 #
@@ -309,13 +309,13 @@ platform :ios do
 
     UI.message('Checking app strings translation status...')
     check_translation_progress(
-      glotpress_url: 'https://translate.wordpress.com/projects/woocommerce/woocommerce-ios/',
+      glotpress_url: GLOTPRESS_APP_STRINGS_PROJECT_URL,
       abort_on_violations: false
     )
 
     UI.message('Checking release notes strings translation status...')
     check_translation_progress(
-      glotpress_url: GLOTPRESS_METADATA_PROJECT_URL,
+      glotpress_url: GLOTPRESS_APP_STORE_METADATA_PROJECT_URL,
       abort_on_violations: false
     )
 
@@ -738,7 +738,7 @@ platform :ios do
   desc 'Downloads localized `.strings` from GlotPress'
   lane :download_localized_strings_from_glotpress do
     ios_download_strings_files_from_glotpress(
-      project_url: GLOTPRESS_APP_STRINGS_URL,
+      project_url: GLOTPRESS_APP_STRINGS_PROJECT_URL,
       locales: GLOTPRESS_TO_LPROJ_APP_LOCALE_CODES,
       download_dir: RESOURCES_FOLDER
     )
@@ -783,7 +783,7 @@ platform :ios do
     }
 
     gp_downloadmetadata(
-      project_url: GLOTPRESS_METADATA_PROJECT_URL,
+      project_url: GLOTPRESS_APP_STORE_METADATA_PROJECT_URL,
       target_files: target_files,
       locales: locales_map,
       download_path: metadata_directory
@@ -839,7 +839,7 @@ platform :ios do
 
     metadata_locales = GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES
 
-    gp_downloadmetadata(project_url: 'https://translate.wordpress.com/projects/woocommerce%2Fwoocommerce-ios%2Frelease-notes/',
+    gp_downloadmetadata(project_url: GLOTPRESS_APP_STORE_METADATA_PROJECT_URL,
                         target_files: files,
                         locales: metadata_locales,
                         source_locale: 'en-US',

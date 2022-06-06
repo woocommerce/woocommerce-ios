@@ -15,9 +15,9 @@ final class OrderStatusListViewModel {
     ///
     var indexOfSelectedStatus: IndexPath? {
         didSet {
-            if initialStatus != indexOfSelectedStatus, !isSelectionAutoConfirmed {
+            if initialStatus != indexOfSelectedStatus, !autoConfirmSelection {
                 shouldEnableApplyButton = true
-            } else if initialStatus != indexOfSelectedStatus, isSelectionAutoConfirmed {
+            } else if initialStatus != indexOfSelectedStatus, autoConfirmSelection {
                 confirmSelectedStatus()
             } else {
                 shouldEnableApplyButton = false
@@ -33,7 +33,7 @@ final class OrderStatusListViewModel {
     ///
     /// Defaults to `false`.
     ///
-    let isSelectionAutoConfirmed: Bool
+    let autoConfirmSelection: Bool
 
     /// A closure to be called when the VC wants its creator to dismiss it without saving changes.
     ///
@@ -45,11 +45,11 @@ final class OrderStatusListViewModel {
 
     init(siteID: Int64,
          status: OrderStatusEnum,
-         isSelectionAutoConfirmed: Bool = false,
+         autoConfirmSelection: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.status = status
         self.dataSource = OrderStatusListDataSource(siteID: siteID, storageManager: storageManager)
-        self.isSelectionAutoConfirmed = isSelectionAutoConfirmed
+        self.autoConfirmSelection = autoConfirmSelection
 
         configureDataSource()
         configureInitialStatus()

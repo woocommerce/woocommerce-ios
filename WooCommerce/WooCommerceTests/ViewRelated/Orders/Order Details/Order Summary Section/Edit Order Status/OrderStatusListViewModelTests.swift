@@ -31,7 +31,7 @@ class OrderStatusListViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.initialStatus, IndexPath(row: expectedIndex, section: 0))
         XCTAssertFalse(viewModel.shouldEnableApplyButton)
-        XCTAssertFalse(viewModel.isSelectionAutoConfirmed)
+        XCTAssertFalse(viewModel.autoConfirmSelection)
     }
 
     func test_statusCount_returns_expected_count() {
@@ -99,11 +99,11 @@ class OrderStatusListViewModelTests: XCTestCase {
         XCTAssertTrue(didCancel)
     }
 
-    func test_selected_status_is_autoconfirmed_when_isSelectionAutoConfirmed_is_true() {
+    func test_selected_status_is_autoconfirmed_when_autoConfirmSelection_is_true() {
         // Given
         let viewModel = OrderStatusListViewModel(siteID: sampleSiteID,
                                                  status: sampleOrderStatuses[0],
-                                                 isSelectionAutoConfirmed: true, storageManager: storageManager)
+                                                 autoConfirmSelection: true, storageManager: storageManager)
         let expectedStatusIndex = 1
         var selectedStatus: OrderStatusEnum?
         viewModel.didApplySelection = {

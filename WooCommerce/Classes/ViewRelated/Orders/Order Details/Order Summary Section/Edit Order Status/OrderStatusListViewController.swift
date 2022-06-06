@@ -69,7 +69,7 @@ extension OrderStatusListViewController {
     }
 
     func configureLeftButton() {
-        guard !viewModel.isSelectionAutoConfirmed else {
+        guard !viewModel.autoConfirmSelection else {
             return
         }
 
@@ -83,7 +83,7 @@ extension OrderStatusListViewController {
     }
 
     func configureRightButton() {
-        guard !viewModel.isSelectionAutoConfirmed else {
+        guard !viewModel.autoConfirmSelection else {
             return
         }
 

@@ -1281,6 +1281,7 @@
 		CC77488E2719A07D0043CDD7 /* ShippingLabelAddressTopBannerFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC77488D2719A07D0043CDD7 /* ShippingLabelAddressTopBannerFactoryTests.swift */; };
 		CC8413E423F5C48E00EFC277 /* stop.sh in Resources */ = {isa = PBXBuildFile; fileRef = CCFC011123E9E40B00157A78 /* stop.sh */; };
 		CC8413E523F5C49100EFC277 /* start.sh in Resources */ = {isa = PBXBuildFile; fileRef = CCFC011023E9E3F400157A78 /* start.sh */; };
+		CC923A1D2847A8E0008EEEBE /* OrderStatusListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC923A1C2847A8E0008EEEBE /* OrderStatusListViewModelTests.swift */; };
 		CCB366AF274518EC007D437A /* NewOrderViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB366AE274518EC007D437A /* NewOrderViewModelTests.swift */; };
 		CCC284112768C18500F6CC8B /* ProductInOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC284102768C18500F6CC8B /* ProductInOrder.swift */; };
 		CCCC29DD25E5757C0046B96F /* RenameAttributesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CCCC29DC25E5757C0046B96F /* RenameAttributesViewController.xib */; };
@@ -3039,6 +3040,7 @@
 		CC72BB6327BD842500837876 /* DisclosureIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisclosureIndicator.swift; sourceTree = "<group>"; };
 		CC770C8927B1497700CE6ABC /* SearchHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchHeader.swift; sourceTree = "<group>"; };
 		CC77488D2719A07D0043CDD7 /* ShippingLabelAddressTopBannerFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddressTopBannerFactoryTests.swift; sourceTree = "<group>"; };
+		CC923A1C2847A8E0008EEEBE /* OrderStatusListViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderStatusListViewModelTests.swift; sourceTree = "<group>"; };
 		CCB366AE274518EC007D437A /* NewOrderViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewOrderViewModelTests.swift; sourceTree = "<group>"; };
 		CCC284102768C18500F6CC8B /* ProductInOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInOrder.swift; sourceTree = "<group>"; };
 		CCCC29DC25E5757C0046B96F /* RenameAttributesViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RenameAttributesViewController.xib; sourceTree = "<group>"; };
@@ -4541,6 +4543,7 @@
 		098FFA1527AD7F40002EBEE4 /* Edit Order Status */ = {
 			isa = PBXGroup;
 			children = (
+				CC923A1C2847A8E0008EEEBE /* OrderStatusListViewModelTests.swift */,
 				098FFA1627AD7F5D002EBEE4 /* OrderStatusListDataSourceTests.swift */,
 			);
 			path = "Edit Order Status";
@@ -10062,6 +10065,7 @@
 				D85136DD231E613900DD0539 /* ReviewsViewModelTests.swift in Sources */,
 				DEFD6E61264990FB00E51E0D /* SitePluginListViewModelTests.swift in Sources */,
 				02B2C831249C4C8D0040C83C /* TextFieldTextAlignmentTests.swift in Sources */,
+				CC923A1D2847A8E0008EEEBE /* OrderStatusListViewModelTests.swift in Sources */,
 				D85B833D2230DC9D002168F3 /* StringWooTests.swift in Sources */,
 				02BC5AA524D27F8900C43326 /* ProductVariationFormViewModel+UpdatesTests.swift in Sources */,
 				D8736B5122EB69E300A14A29 /* OrderDetailsViewModelTests.swift in Sources */,

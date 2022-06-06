@@ -77,18 +77,6 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
             return
         }
 
-        let wcPayPlugin = cardPresentPluginsDataProvider.getWCPayPlugin()
-        let stripePlugin = cardPresentPluginsDataProvider.getStripePlugin()
-        let paymentPluginsInstalledAndActiveStatus = cardPresentPluginsDataProvider.paymentPluginsInstalledAndActiveStatus(wcPay: wcPayPlugin,
-                                                                                                                           stripe: stripePlugin)
-
-        /// If both plugins are active, don't bother initializing the backend nor fetching
-        /// accounts. Fall through to updateState so the end user can fix the problem.
-        guard paymentPluginsInstalledAndActiveStatus != .bothAreInstalledAndActive else {
-            self.updateState()
-            return
-        }
-
         let paymentGatewayAccountsAction = CardPresentPaymentAction.loadAccounts(siteID: siteID) { [weak self] result in
             self?.updateState()
         }
@@ -155,7 +143,6 @@ private extension CardPresentPaymentsOnboardingUseCase {
 
         let wcPay = cardPresentPluginsDataProvider.getWCPayPlugin()
         let stripe = cardPresentPluginsDataProvider.getStripePlugin()
-        let isStripeSupported = configuration.paymentGateways.contains(StripeAccount.gatewayID)
 
         // If isSupportedCountry is false, IPP is not supported in the country through any
         // payment gateway
@@ -163,44 +150,41 @@ private extension CardPresentPaymentsOnboardingUseCase {
             return .countryNotSupported(countryCode: countryCode)
         }
 
-        let paymentPluginsInstalledAndActiveStatus = cardPresentPluginsDataProvider.paymentPluginsInstalledAndActiveStatus(wcPay: wcPay, stripe: stripe)
-
-        // If it is supported in the country, we might or might not support Stripe yet, only WCPay
-        guard isStripeSupported else {
-            if paymentPluginsInstalledAndActiveStatus == .bothAreInstalledAndActive {
-                // They have WCPay and Stripe installed and active at the same time.
-                // Deactivating Stripe is the advised way to proceed.
-                return .pluginShouldBeDeactivated(plugin: .stripe)
-            } else if paymentPluginsInstalledAndActiveStatus == .onlyStripeIsInstalledAndActive {
-                // If we only support WCPay, we don't want to ask users to set up WCPay if they already
-                // have Stripe. In that case, we can tell them that IPP is not supported for Stripe in
-                // their country yet.
-                return .countryNotSupportedStripe(plugin: .stripe, countryCode: countryCode)
-            } else {
-                return wcPayOnlyOnboardingState(plugin: wcPay)
-            }
-        }
-
-        // If both the Stripe plugin and WCPay are installed and activated, the user needs
-        // to deactivate one: pdfdoF-fW-p2#comment-683
-        if paymentPluginsInstalledAndActiveStatus == .bothAreInstalledAndActive {
-            return .selectPlugin
-        }
-
-        // If only the Stripe extension is installed, skip to checking Stripe activation and version
-        if let stripe = stripe,
-           paymentPluginsInstalledAndActiveStatus != .onlyWCPayIsInstalledAndActive {
-            return stripeGatewayOnlyOnboardingState(plugin: stripe)
-        } else {
+        switch (wcPay, stripe) {
+        case (.some(let wcPay), nil):
             return wcPayOnlyOnboardingState(plugin: wcPay)
+        case (nil, .some(let stripe)):
+            return stripeGatewayOnlyOnboardingState(plugin: stripe)
+        case (.some(let wcPay), .some(let stripe)):
+            return bothPluginsInstalledOnboardingState(wcPay: wcPay, stripe: stripe)
+        case (nil, nil):
+            return .pluginNotInstalled
         }
     }
 
-    func wcPayOnlyOnboardingState(plugin: SystemPlugin?) -> CardPresentPaymentOnboardingState {
-        // Plugin checks
-        guard let plugin = plugin else {
-            return .pluginNotInstalled
+    func bothPluginsInstalledOnboardingState(wcPay: SystemPlugin, stripe: SystemPlugin) -> CardPresentPaymentOnboardingState {
+        switch (wcPay.active, stripe.active) {
+        case (true, true):
+            return bothPluginsInstalledAndActiveOnboardingState(wcPay: wcPay, stripe: stripe)
+        case (true, false):
+            return wcPayOnlyOnboardingState(plugin: wcPay)
+        case (false, true):
+            return stripeGatewayOnlyOnboardingState(plugin: stripe)
+        case (false, false):
+            return .pluginNotActivated(plugin: .wcPay)
         }
+    }
+
+    func bothPluginsInstalledAndActiveOnboardingState(wcPay: SystemPlugin, stripe: SystemPlugin) -> CardPresentPaymentOnboardingState {
+        if !isStripeSupportedInCountry {
+            return .pluginShouldBeDeactivated(plugin: .stripe)
+        }
+
+        return .selectPlugin
+    }
+
+    func wcPayOnlyOnboardingState(plugin: SystemPlugin) -> CardPresentPaymentOnboardingState {
+        // Plugin checks
         guard cardPresentPluginsDataProvider.isWCPayVersionSupported(plugin: plugin)
         else {
             return .pluginUnsupportedVersion(plugin: .wcPay)
@@ -214,6 +198,14 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func stripeGatewayOnlyOnboardingState(plugin: SystemPlugin) -> CardPresentPaymentOnboardingState {
+        guard isStripeSupportedInCountry else {
+            guard let countryCode = storeCountryCode else {
+                DDLogError("[CardPresentPaymentsOnboarding] Couldn't determine country for store")
+                return .genericError
+            }
+            return .countryNotSupportedStripe(plugin: .stripe, countryCode: countryCode)
+        }
+
         guard cardPresentPluginsDataProvider.isStripeVersionSupported(plugin: plugin)
         else {
             return .pluginUnsupportedVersion(plugin: .stripe)
@@ -272,6 +264,10 @@ private extension CardPresentPaymentsOnboardingUseCase {
         let storeCountryCode = storeAddress.countryCode
 
         return storeCountryCode.nonEmptyString()
+    }
+
+    var isStripeSupportedInCountry: Bool {
+        configurationLoader.configuration.paymentGateways.contains(StripeAccount.gatewayID)
     }
 
     // Note: This counts on synchronizeStoreCountryAndPlugins having been called to get

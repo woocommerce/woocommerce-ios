@@ -93,42 +93,19 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(orderID, order.orderID)
     }
 
-    func test_should_show_actions_menu_is_false_if_there_is_no_payment_link() {
+    func test_there_should_not_be_share_link_action_if_order_is_not_pending_payment() {
         // Given
-        let order = Order.fake().copy(status: .pending, total: "10.0", paymentURL: nil)
+        let order = Order.fake().copy(status: .processing, total: "10.0", paymentURL: nil)
 
         // When
         let viewModel = OrderDetailsViewModel(order: order)
 
         // Then
-        XCTAssertFalse(viewModel.shouldShowActionsMenuItem)
+        let actionButtonIDs = viewModel.moreActionsButtons.map { $0.id }
+        XCTAssertFalse(actionButtonIDs.contains(.sharePaymentLink))
     }
 
-    func test_should_show_actions_menu_is_false_if_there_is_payment_link_but_total_is_zero() {
-        // Given
-        let paymentURL = URL(string: "http://www.automattic.com")
-        let order = Order.fake().copy(status: .pending, total: "0.0", paymentURL: paymentURL)
-
-        // When
-        let viewModel = OrderDetailsViewModel(order: order)
-
-        // Then
-        XCTAssertFalse(viewModel.shouldShowActionsMenuItem)
-    }
-
-    func test_should_show_actions_menu_is_false_if_there_is_payment_link_total_is_not_zero_but_status_is_not_pending_or_failed() {
-        // Given
-        let paymentURL = URL(string: "http://www.automattic.com")
-        let order = Order.fake().copy(status: .completed, total: "0.0", paymentURL: paymentURL)
-
-        // When
-        let viewModel = OrderDetailsViewModel(order: order)
-
-        // Then
-        XCTAssertFalse(viewModel.shouldShowActionsMenuItem)
-    }
-
-    func test_should_show_actions_menu_is_true_if_there_is_payment_link_total_is_not_zero_and_status_is_pending() {
+    func test_there_should_be_share_link_action_if_order_is_pending_payment() {
         // Given
         let paymentURL = URL(string: "http://www.automattic.com")
         let order = Order.fake().copy(status: .pending, total: "10.0", paymentURL: paymentURL)
@@ -137,18 +114,19 @@ final class OrderDetailsViewModelTests: XCTestCase {
         let viewModel = OrderDetailsViewModel(order: order)
 
         // Then
-        XCTAssertTrue(viewModel.shouldShowActionsMenuItem)
+        let actionButtonIDs = viewModel.moreActionsButtons.map { $0.id }
+        XCTAssertTrue(actionButtonIDs.contains(.sharePaymentLink))
     }
 
-    func test_should_show_actions_menu_is_true_if_there_is_payment_link_total_is_not_zero_and_status_is_failed() {
+    func test_there_should_not_be_edit_order_action_if_order_is_not_synced() {
         // Given
-        let paymentURL = URL(string: "http://www.automattic.com")
-        let order = Order.fake().copy(status: .failed, total: "10.0", paymentURL: paymentURL)
+        let order = Order.fake().copy(total: "10.0")
 
         // When
         let viewModel = OrderDetailsViewModel(order: order)
 
         // Then
-        XCTAssertTrue(viewModel.shouldShowActionsMenuItem)
+        let actionButtonIDs = viewModel.moreActionsButtons.map { $0.id }
+        XCTAssertFalse(actionButtonIDs.contains(.editOrder))
     }
 }

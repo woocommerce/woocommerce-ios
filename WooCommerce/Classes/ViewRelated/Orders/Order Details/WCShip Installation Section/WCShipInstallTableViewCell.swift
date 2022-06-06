@@ -55,5 +55,4 @@ private extension WCShipInstallTableViewCell {
         action.applyActionableStyle()
         action.text = ""
     }
-
 }

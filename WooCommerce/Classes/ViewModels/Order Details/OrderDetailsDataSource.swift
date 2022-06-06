@@ -513,7 +513,7 @@ private extension OrderDetailsDataSource {
 
         cell.selectionStyle = .none
 
-        cell.accessibilityTraits = .staticText
+        cell.accessibilityTraits = .button
         cell.accessibilityLabel = NSLocalizedString(
             "Install the WCShip extension.",
             comment: "Accessibility label for the Install WCShip banner in the Order Detail")

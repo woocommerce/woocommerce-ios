@@ -1090,7 +1090,7 @@ extension OrderDetailsDataSource {
             return sections
         }()
 
-        let customerInformation: Section = {
+        let customerInformation: Section? = {
             var rows: [Row] = []
 
             let isUnifiedEditingEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing)
@@ -1137,6 +1137,11 @@ extension OrderDetailsDataSource {
             } else {
                 /// Always visible to allow editing.
                 rows.append(.billingDetail)
+            }
+
+            /// Return `nil` if there is no rows to display.
+            guard rows.isNotEmpty else {
+                return nil
             }
 
             return Section(category: .customerInformation, title: Title.information, rows: rows)

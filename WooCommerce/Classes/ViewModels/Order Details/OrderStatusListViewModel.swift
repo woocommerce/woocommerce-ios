@@ -15,12 +15,14 @@ final class OrderStatusListViewModel {
     ///
     var indexOfSelectedStatus: IndexPath? {
         didSet {
-            if initialStatus != indexOfSelectedStatus, !autoConfirmSelection {
-                shouldEnableApplyButton = true
-            } else if initialStatus != indexOfSelectedStatus, autoConfirmSelection {
-                confirmSelectedStatus()
-            } else {
-                shouldEnableApplyButton = false
+            let selectedNewStatus = initialStatus != indexOfSelectedStatus
+            switch (selectedNewStatus, autoConfirmSelection) {
+            case (true, false):
+                shouldEnableApplyButton = true // New status with manual confirmation
+            case (true, true):
+                confirmSelectedStatus() // New status with automatic confirmation
+            case (false, _):
+                shouldEnableApplyButton = false // No new status
             }
         }
     }

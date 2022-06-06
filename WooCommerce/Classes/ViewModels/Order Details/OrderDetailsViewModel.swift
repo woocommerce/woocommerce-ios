@@ -4,6 +4,7 @@ import Gridicons
 import Yosemite
 import MessageUI
 import Combine
+import Experiments
 import WooFoundation
 import enum Networking.DotcomError
 
@@ -427,7 +428,8 @@ extension OrderDetailsViewModel {
             viewController.show(productListVC, sender: nil)
         case .billingDetail:
             ServiceLocator.analytics.track(.orderDetailShowBillingTapped)
-            let billingInformationViewController = BillingInformationViewController(order: order, editingEnabled: true)
+            let isUnifiedEditingEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing)
+            let billingInformationViewController = BillingInformationViewController(order: order, editingEnabled: !isUnifiedEditingEnabled)
             viewController.navigationController?.pushViewController(billingInformationViewController, animated: true)
         case .seeReceipt:
             let countryCode = configurationLoader.configuration.countryCode

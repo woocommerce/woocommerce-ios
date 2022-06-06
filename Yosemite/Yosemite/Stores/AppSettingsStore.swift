@@ -163,12 +163,12 @@ public class AppSettingsStore: Store {
             setSimplePaymentsTaxesToggleState(siteID: siteID, isOn: isOn, onCompletion: onCompletion)
         case let .getSimplePaymentsTaxesToggleState(siteID, onCompletion):
             getSimplePaymentsTaxesToggleState(siteID: siteID, onCompletion: onCompletion)
+        case let .setPreferredInPersonPaymentGateway(siteID: siteID, gateway: gateway):
+            setPreferredInPersonPaymentGateway(siteID: siteID, gateway: gateway)
+        case let .getPreferredInPersonPaymentGateway(siteID: siteID, onCompletion: onCompletion):
+            getPreferredInPersonPaymentGateway(siteID: siteID, onCompletion: onCompletion)
         case .resetGeneralStoreSettings:
             resetGeneralStoreSettings()
-        case .loadCanadaInPersonPaymentsSwitchState(onCompletion: let onCompletion):
-            loadCanadaInPersonPaymentsSwitchState(onCompletion: onCompletion)
-        case .setCanadaInPersonPaymentsSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
-            setCanadaInPersonPaymentsSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .setProductSKUInputScannerFeatureSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
             setProductSKUInputScannerFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadProductSKUInputScannerFeatureSwitchState(onCompletion: let onCompletion):
@@ -250,25 +250,6 @@ private extension AppSettingsStore {
     func loadOrderAddOnsSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
         let settings = loadOrCreateGeneralAppSettings()
         onCompletion(.success(settings.isViewAddOnsSwitchEnabled))
-    }
-
-    /// Loads the current In-Person Payments in Canada beta feature switch state from `GeneralAppSettings`
-    ///
-    func loadCanadaInPersonPaymentsSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
-        let settings = loadOrCreateGeneralAppSettings()
-        onCompletion(.success(settings.isCanadaInPersonPaymentsSwitchEnabled))
-    }
-
-    /// Sets the provided In-Person Payments in Canada beta feature switch state into `GeneralAppSettings`
-    ///
-    func setCanadaInPersonPaymentsSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
-        do {
-            let settings = loadOrCreateGeneralAppSettings().copy(isCanadaInPersonPaymentsSwitchEnabled: isEnabled)
-            try saveGeneralAppSettings(settings)
-            onCompletion(.success(()))
-        } catch {
-            onCompletion(.failure(error))
-        }
     }
 
     /// Sets the state for the Product SKU Input Scanner beta feature switch into `GeneralAppSettings`.
@@ -365,7 +346,6 @@ private extension AppSettingsStore {
             return GeneralAppSettings(installationDate: nil,
                                       feedbacks: [:],
                                       isViewAddOnsSwitchEnabled: false,
-                                      isCanadaInPersonPaymentsSwitchEnabled: false,
                                       isProductSKUInputScannerSwitchEnabled: false,
                                       isCouponManagementSwitchEnabled: false,
                                       knownCardReaders: [],
@@ -770,6 +750,23 @@ private extension AppSettingsStore {
         let storeSettings = getStoreSettings(for: siteID)
         onCompletion(.success(storeSettings.areSimplePaymentTaxesEnabled))
     }
+
+    /// Sets the preferred payment gateway for In-Person Payments
+    ///
+    func setPreferredInPersonPaymentGateway(siteID: Int64, gateway: String) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let newSettings = storeSettings.copy(preferredInPersonPaymentGateway: gateway)
+        setStoreSettings(settings: newSettings, for: siteID, onCompletion: nil)
+    }
+
+    /// Gets the preferred payment gateway for In-Person Payments
+    ///
+    func getPreferredInPersonPaymentGateway(siteID: Int64, onCompletion: (String?) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        onCompletion(storeSettings.preferredInPersonPaymentGateway)
+
+    }
+
 }
 
 // MARK: - Errors

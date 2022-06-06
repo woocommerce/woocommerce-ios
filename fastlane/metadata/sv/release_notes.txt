@@ -1,0 +1,3 @@
+Vi fortsätter att lägga till ny funktionalitet till vår experimentella funktion för rabattkodshantering. Den här versionen inkluderar redigering och borttagning av rabattkoder samt flertalet visningsförbättringar. Aktivera den här funktionen via fliken Mer, Inställningar, Experimentella funktioner för att få tidig åtkomst.
+
+Den här versionen innehåller även flertalet korrigeringar för beställningsskapande, personliga betalningar och produkthantering. Tack igen allihop för er ovärderliga feedback.

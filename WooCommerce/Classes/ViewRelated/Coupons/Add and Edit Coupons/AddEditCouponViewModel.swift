@@ -13,8 +13,6 @@ final class AddEditCouponViewModel: ObservableObject {
     ///
     private let editingOption: EditingOption
 
-    private let discountType: Coupon.DiscountType
-
     private let onCompletion: ((Result<Coupon, Error>) -> Void)
 
     /// Defines the current notice that should be shown.
@@ -25,10 +23,16 @@ final class AddEditCouponViewModel: ObservableObject {
     var title: String {
         switch editingOption {
         case .creation:
-            return discountType.titleCreateCoupon
+            return Localization.createCouponTitle
         case .editing:
-            return discountType.titleEditCoupon
+            return Localization.editCouponTitle
         }
+    }
+
+    /// The value for populating the coupon discount type field based on the `discountType`.
+    ///
+    var discountTypeValue: TitleAndValueRow.Value {
+        return .content(discountType.localizedName)
     }
 
     /// Label representing the label of the amount field, localized based on discount type.
@@ -125,7 +129,8 @@ final class AddEditCouponViewModel: ObservableObject {
 
     var hasChangesMade: Bool {
         let coupon = populatedCoupon
-        return checkAmountUpdated(for: coupon) ||
+        return checkDiscountTypeUpdated(for: coupon) ||
+        checkAmountUpdated(for: coupon) ||
         checkDescriptionUpdated(for: coupon) ||
         checkCouponCodeUpdated(for: coupon) ||
         checkAllowedProductsAndCategoriesUpdated(for: coupon) ||
@@ -144,6 +149,11 @@ final class AddEditCouponViewModel: ObservableObject {
     @Published var isLoading: Bool = false
 
     // Fields
+    @Published var discountType: Coupon.DiscountType {
+        didSet {
+            couponRestrictionsViewModel.onDiscountTypeChanged(discountType: discountType)
+        }
+    }
     @Published var amountField: String
     @Published var codeField: String
     @Published var descriptionField: String
@@ -312,6 +322,13 @@ final class AddEditCouponViewModel: ObservableObject {
 // MARK: - Helpers
 //
 private extension AddEditCouponViewModel {
+    func checkDiscountTypeUpdated(for coupon: Coupon) -> Bool {
+        guard let initialCoupon = self.coupon else {
+            return false
+        }
+        return coupon.discountType != initialCoupon.discountType
+    }
+
     func checkUsageRestrictionsUpdated(for coupon: Coupon) -> Bool {
         guard let initialCoupon = self.coupon else {
             return false
@@ -381,6 +398,7 @@ private extension AddEditCouponViewModel {
 
     func trackCouponUpdateInitiated(with coupon: Coupon) {
         ServiceLocator.analytics.track(.couponUpdateInitiated, withProperties: [
+            "discount_type_updated": checkDiscountTypeUpdated(for: coupon),
             "coupon_code_updated": checkCouponCodeUpdated(for: coupon),
             "amount_updated": checkAmountUpdated(for: coupon),
             "description_updated": checkDescriptionUpdated(for: coupon),
@@ -454,5 +472,7 @@ private extension AddEditCouponViewModel {
             "Edit Product Categories (%1$d)",
             comment: "Button for specify the product categories where a coupon can be applied in the view for adding or editing a coupon. " +
             "Reads like: Edit Categories")
+        static let createCouponTitle = NSLocalizedString("Create coupon", comment: "Title of the Create coupon screen")
+        static let editCouponTitle = NSLocalizedString("Edit coupon", comment: "Title of the Edit coupon screen")
     }
 }

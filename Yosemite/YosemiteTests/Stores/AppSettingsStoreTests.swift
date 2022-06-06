@@ -571,42 +571,6 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertFalse(isVisible)
     }
 
-    func test_loadCanadaInPersonPaymentsSwitchState_returns_false_on_new_generalAppSettings() throws {
-        // Given
-        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
-
-        // When
-        let result: Result<Bool, Error> = waitFor { promise in
-            let action = AppSettingsAction.loadCanadaInPersonPaymentsSwitchState { result in
-                promise(result)
-            }
-            self.subject?.onAction(action)
-        }
-
-        // Then
-        let isEnabled = try result.get()
-        XCTAssertFalse(isEnabled)
-    }
-
-    func test_loadCanadaInPersonPaymentsSwitchState_returns_true_after_updating_switch_state_to_true() throws {
-        // Given
-        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
-        let updateAction = AppSettingsAction.setCanadaInPersonPaymentsSwitchState(isEnabled: true, onCompletion: { _ in })
-        subject?.onAction(updateAction)
-
-        // When
-        let result: Result<Bool, Error> = waitFor { promise in
-            let action = AppSettingsAction.loadCanadaInPersonPaymentsSwitchState { result in
-                promise(result)
-            }
-            self.subject?.onAction(action)
-        }
-
-        // Then
-        let isEnabled = try result.get()
-        XCTAssertTrue(isEnabled)
-    }
-
     func test_loadCouponManagementFeatureSwitchState_returns_false_on_new_generalAppSettings() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
@@ -803,6 +767,49 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertTrue(try result.get())
     }
 
+    func test_saving_preferredInPersonPaymentGateway_works_correctly() throws {
+        // Given
+        let siteID: Int64 = 1234
+        let initialTime = Date(timeIntervalSince1970: 100)
+        let preferredGateway = "woocommerce-payments"
+
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings(isTelemetryAvailable: true,
+                                                                                                             telemetryLastReportedTime: initialTime)])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setPreferredInPersonPaymentGateway(siteID: siteID, gateway: preferredGateway)
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
+        let settingsForSite = savedSettings.storeSettingsBySite[siteID]
+
+        XCTAssertEqual(preferredGateway, settingsForSite?.preferredInPersonPaymentGateway)
+
+        // The other properties should be kept
+        XCTAssertEqual(initialTime, settingsForSite?.telemetryLastReportedTime)
+    }
+
+    func test_saving_preferredInPersonPaymentGateway_works_correctly_when_the_settings_file_does_not_exist() throws {
+        // Given
+        let siteID: Int64 = 1234
+        let preferredGateway = "woocommerce-payments"
+
+        try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setPreferredInPersonPaymentGateway(siteID: siteID, gateway: preferredGateway)
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
+        let settingsForSite = savedSettings.storeSettingsBySite[siteID]
+
+        XCTAssertEqual(preferredGateway, settingsForSite?.preferredInPersonPaymentGateway)
+
+    }
+
     func test_resetGeneralStoreSettings_resets_all_settings() throws {
         // Given
         let siteID: Int64 = 1234
@@ -837,7 +844,6 @@ private extension AppSettingsStoreTests {
             installationDate: installationDate,
             feedbacks: [feedback.name: feedback],
             isViewAddOnsSwitchEnabled: false,
-            isCanadaInPersonPaymentsSwitchEnabled: false,
             isProductSKUInputScannerSwitchEnabled: false,
             isCouponManagementSwitchEnabled: false,
             knownCardReaders: []

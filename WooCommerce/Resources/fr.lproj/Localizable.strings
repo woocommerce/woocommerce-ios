@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-05-10 06:08:14+0000 */
+/* Translation-Revision-Date: 2022-05-20 09:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -300,7 +300,7 @@
 "Account Type" = "Type de compte";
 
 /* Title when a payments account is successfully connected for Card Present Payments */
-"Account connected" = "Account connected";
+"Account connected" = "Compte connecté";
 
 /* Title for the error screen when a Card Present Payments extension is installed but not activated */
 "Activate %1$@" = "Activer %1$@";
@@ -810,7 +810,7 @@
 "CUSTOM PACKAGES" = "COLIS PERSONNALISÉS";
 
 /* Title for the helper field describing calculated amount for given percentage */
-"Calculated amount" = "Calculated amount";
+"Calculated amount" = "Montant calculé";
 
 /* Call phone number button title */
 "Call" = "Appel";
@@ -822,10 +822,10 @@
 "Can Not Request Link" = "Impossible de faire une requête sur le lien";
 
 /* The singular total limit where the same coupon can be applied for everyone, reads like: Can be used 1 time */
-"Can be used %1$d time" = "Can be used %1$d time";
+"Can be used %1$d time" = "Peut être utilisé %1$d fois";
 
 /* The plural total limit where the same coupon can be applied for everyone, reads like: Can be used 10 times */
-"Can be used %1$d times" = "Can be used %1$d times";
+"Can be used %1$d times" = "Peut être utilisé %1$d fois";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
    Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title that closes the action sheet in product variations - Button title that closes the presented screen - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to cancel an in-person payment or refund - Button to cancel the creation of an order on the New Order screen - Button to dismiss Select Categories screen - Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button in the navigation bar of the view for adding or editing a coupon. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the main more actions menu sheet. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - Text for the cancel button in the Exclude Products screen - Text for the cancel button in the Select Products screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
@@ -885,7 +885,7 @@
 "Categories" = "Catégories";
 
 /* Error message when local validation fails in Shipping Label Address Validation */
-"Certain required fields need attention." = "Certain required fields need attention.";
+"Certain required fields need attention." = "Certains champs obligatoires requièrent votre attention.";
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "Erreur de certificat";
@@ -947,7 +947,7 @@
 "Clear Filters" = "Effacer les filtres";
 
 /* Button to clear selection on the product categories list */
-"Clear Selection" = "Clear Selection";
+"Clear Selection" = "Effacer la sélection";
 
 /* Button title for clearing all filters for the list. */
 "Clear all" = "Tout effacer";
@@ -1219,7 +1219,7 @@
 "Create order" = "Créer une commande";
 
 /* Title of the banner notice in the Orders tab */
-"Create orders & take payments!" = "Create orders & take payments!";
+"Create orders & take payments!" = "Créez des commandes et recevez des paiements !";
 
 /* Title of the view for creating a coupon with percentage discount. */
 "Create percentage discount" = "Créer une remise en pourcentage";
@@ -1528,7 +1528,7 @@
 "Edit Description" = "Modifier la description";
 
 /* Button for specify the product categories where a coupon can be applied in the view for adding or editing a coupon. Reads like: Edit Categories */
-"Edit Product Categories (%1$d)" = "Edit Product Categories (%1$d)";
+"Edit Product Categories (%1$d)" = "Modifier des catégories de produits (%1$d)";
 
 /* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "Modifier les produits";
@@ -1750,10 +1750,10 @@
 "Everyone loves a deal" = "On ne dit jamais non aux bonnes affaires";
 
 /* Button to submit selection on the Exclude Categories screen when more than 1 item is selected. Reads like: Exclude 10 Categories */
-"Exclude %1$d Categories" = "Exclude %1$d Categories";
+"Exclude %1$d Categories" = "Exclure %1$d catégories";
 
 /* Button to submit selection on the Exclude Categories screen when 1 item is selected */
-"Exclude %1$d Category" = "Exclude %1$d Category";
+"Exclude %1$d Category" = "Exclure %1$d catégorie";
 
 /* Title of the action button at the bottom of the Exclude Products screen when more than 1 item is selected, reads like: Exclude 5 Products */
 "Exclude %1$d Products" = "Exclure %1$d produits";
@@ -1765,20 +1765,20 @@
 "Exclude Product Categories" = "Exclure des catégories de produits";
 
 /* Title of the action button to add excluded product categories on Coupon Usage Restrictions screen. The number of selected items is mentioned between the brackets. Reads like: Exclude Product Categories (4) */
-"Exclude Product Categories (%1$d)" = "Exclude Product Categories (%1$d)";
+"Exclude Product Categories (%1$d)" = "Exclure des catégories de produits (%1$d)";
 
 /* Title for the screen to exclude products for a coupon
    Title of the action button to add products to the exclusion list in Coupon Usage Restrictions screen */
 "Exclude Products" = "Exclure des produits";
 
 /* Title of the action button to add excluded products on Coupon Usage Restrictions screen. The number of selected items is included between the brackets. Reads like: Exclude Products (2) */
-"Exclude Products (%1$d)" = "Exclude Products (%1$d)";
+"Exclude Products (%1$d)" = "Exclure des produits (%1$d)";
 
 /* Title for the exclude sale items row in coupon usage restrictions screen. */
 "Exclude Sale Items" = "Exclure les articles en promo";
 
 /* Title for the Exclude Categories screen */
-"Exclude categories" = "Exclude categories";
+"Exclude categories" = "Exclure les catégories";
 
 /* Text on Coupon Details screen to indicate that the coupon can not be applied to sale items */
 "Excludes sale items" = "Exclut les articles en promo";
@@ -1812,7 +1812,7 @@
 "Failed to delete coupon. Please try again." = "Échec de la suppression du code promo. Veuillez réessayer.";
 
 /* Error message on the Issue Refund screen when fetching the charge details failed */
-"Failed to fetch your charge details. Please try again." = "Failed to fetch your charge details. Please try again.";
+"Failed to fetch your charge details. Please try again." = "Impossible d’extraire vos données de facturation. Veuillez réessayer.";
 
 /* An error message shown when failing to retrieve information to present a view for a review push notification. */
 "Failed to retrieve the review notification details." = "Échec de la récupération des détails de la notification d’avis.";
@@ -2377,10 +2377,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Limite atteinte. Vous pouvez ressayer dans 1 minute. Avant cela, un nouvelle tentative ne fera qu'augmenter l'attente avant que l'interdiction soit levée. Si vous pensez qu'il s'agît d'une erreur, contactez le support.";
 
 /* The required number of items in the cart to apply a coupon in singular form, reads like: Limited to 1 item in cart */
-"Limited to %1$d item in cart" = "Limited to %1$d item in cart";
+"Limited to %1$d item in cart" = "Limité à %1$d article par panier";
 
 /* The required number of items in the cart to apply a coupon in plural form, reads like: Limited to 10 items in cart */
-"Limited to %1$d items in cart" = "Limited to %1$d items in cart";
+"Limited to %1$d items in cart" = "Limité à %1$d articles par panier";
 
 /* Title for screen in editor that allows to configure link options */
 "Link Settings" = "Réglages du lien";
@@ -2718,7 +2718,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No price set" = "Aucun prix défini";
 
 /* Message on the empty view when the category list or its search result is empty. */
-"No product categories found" = "No product categories found";
+"No product categories found" = "Aucune catégorie de produits trouvée";
 
 /* Message displayed if there are no product variations for a product. */
 "No product variations found" = "Aucune variante du produit trouvée";
@@ -3013,7 +3013,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Pending review" = "En attente de relecture";
 
 /* Title for the amount field on the Fee Details screen during order creationParameters: %1$@ - percent sign */
-"Percentage (%1$@)" = "Percentage (%1$@)";
+"Percentage (%1$@)" = "Pourcentage (%1$@)";
 
 /* Name of percentage discount type */
 "Percentage Discount" = "Remise en pourcentage";
@@ -3683,7 +3683,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Schedule sale" = "Planifier une vente";
 
 /* Placeholder text on the search bar on the category list */
-"Search Categories" = "Search Categories";
+"Search Categories" = "Rechercher dans les catégories";
 
 /* Placeholder on the search field to search for a specific product */
 "Search Products" = "Recherche de produits…";
@@ -3725,10 +3725,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "See the benefits" = "Voir les avantages";
 
 /* Button to submit selection on the Select Categories screen when more than 1 item is selected. Reads like: Select 10 Categories */
-"Select %1$d Categories" = "Select %1$d Categories";
+"Select %1$d Categories" = "Sélectionner %1$d catégories";
 
 /* Button to submit selection on the Select Categories screen when 1 item is selected */
-"Select %1$d Category" = "Select %1$d Category";
+"Select %1$d Category" = "Sélectionner %1$d catégorie";
 
 /* Title of the action button at the bottom of the Select Products screen when more than 1 item is selected, reads like: Select 5 Products */
 "Select %1$d Products" = "Sélectionner %1$d produits";
@@ -3743,7 +3743,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Select Parent Category" = "Sélectionner la catégorie parente";
 
 /* Button to select specific categories applicable for a coupon in the view for adding or editing a coupon. */
-"Select Product Categories" = "Select Product Categories";
+"Select Product Categories" = "Sélectionner des catégories de produits";
 
 /* Title for the screen to select products for a coupon */
 "Select Products" = "Sélectionner les produits";
@@ -3767,7 +3767,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Select carrier" = "Sélectionnez un transporteur";
 
 /* Title for the Select Categories screen */
-"Select categories" = "Select categories";
+"Select categories" = "Sélectionner les catégories";
 
 /* Placeholder value of the cell in Product Price Settings > Schedule sale to a certain date */
 "Select end date" = "Sélectionner la date de fin";
@@ -4011,10 +4011,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Something went wrong" = "Un problème est survenu";
 
 /* Error message in the Add Edit Coupon screen when the creation of the coupon goes in error. */
-"Something went wrong while creating the coupon." = "Something went wrong while creating the coupon.";
+"Something went wrong while creating the coupon." = "Un problème est survenu lors de la création du code promo.";
 
 /* Error message in the Add Edit Coupon screen when the update of the coupon goes in error. */
-"Something went wrong while updating the coupon." = "Something went wrong while updating the coupon.";
+"Something went wrong while updating the coupon." = "Un problème est survenu lors de l’actualisation du code promo.";
 
 /* Notice format when a shipping label refund request fails. */
 "Something went wrong with the refund. Please try again." = "Un problème est survenu lors du remboursement. Veuillez réessayer.";
@@ -4221,7 +4221,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Take a photo" = "Prendre une photo";
 
 /* Message when a payments account is successfully connected for Card Present Payments */
-"Taking you back to collect a payment" = "Taking you back to collect a payment";
+"Taking you back to collect a payment" = "Retour vers la perception d’un paiement";
 
 /* Accessibility hint for the More button on formatting toolbar. */
 "Tap for more formatting options" = "Appuyer pour obtenir plus d'options de formatage";
@@ -4455,7 +4455,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Le certificat de ce serveur n’est pas valide. Le serveur auquel vous vous connectez prétend être « %@ », ce qui peut constituer un risque de sécurité pour vos données confidentielles.\n\nSouhaitez-vous faire confiance au certificat malgré tout ?";
 
 /* Error message in the Add Edit Coupon screen when the coupon code is empty. */
-"The coupon code couldn't be empty" = "The coupon code couldn't be empty";
+"The coupon code couldn't be empty" = "Le code promo ne pouvait pas être vide";
 
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
 "The customer will receive an email once order is completed" = "Le client recevra un e-mail une fois la commande validée";
@@ -4958,7 +4958,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to search for card readers - Bluetooth timed out - please try again" = "Impossible de détecter des lecteurs de cartes. Le Bluetooth a été déconnecté. Réessayez ultérieurement";
 
 /* Error notice title when we fail to update an address when creating an order. */
-"Unable to set customer details." = "Unable to set customer details.";
+"Unable to set customer details." = "Impossible de définir les détails client.";
 
 /* Error notice title when we fail to update an address in the edit address screen. */
 "Unable to update address." = "Impossible de mettre à jour l’adresse.";
@@ -5334,7 +5334,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "We're sorry, we were unable to verify In-Person Payments for this store." = "Désolé, nous n’avons pas pu vérifier les paiements en personne pour cette boutique.";
 
 /* Content of the banner notice in the Orders tab */
-"We've been working on making it possible to create orders and take payments from your device! You can try these features out by tapping on the \"+\" button" = "We've been working on making it possible to create orders and take payments from your device! You can try these features out by tapping on the \"+\" button";
+"We've been working on making it possible to create orders and take payments from your device! You can try these features out by tapping on the \"+\" button" = "Nous avons fait en sorte qu’il soit possible de créer des commandes et de recevoir des paiements depuis votre appareil ! Vous pouvez essayer ces fonctionnalités en appuyant sur le bouton « + »";
 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Nous vous avons envoyé un lien d’inscription pour créer votre nouveau compte WordPress.com. Consultez vos e-mails sur cet appareil et appuyez sur le lien dans l’e-mail que vous avez reçu de WordPress.com.";

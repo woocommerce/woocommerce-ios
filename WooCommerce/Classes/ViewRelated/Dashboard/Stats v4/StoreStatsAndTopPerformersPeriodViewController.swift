@@ -3,6 +3,7 @@ import UIKit
 import struct WordPressUI.GhostStyle
 import XLPagerTabStrip
 import Yosemite
+import WooFoundation
 
 /// Container view controller for a stats v4 time range that consists of a scrollable stack view of:
 /// - Store stats data view (managed by child view controller `StoreStatsV4PeriodViewController`)
@@ -56,7 +57,7 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 
     // MARK: Subviews
 
-    var refreshControl: UIRefreshControl = {
+    lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl(frame: .zero)
         refreshControl.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
         return refreshControl

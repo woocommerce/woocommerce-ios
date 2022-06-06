@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-05-19 15:54:03+0000 */
+/* Translation-Revision-Date: 2022-05-20 09:54:03+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -300,7 +300,7 @@
 "Account Type" = "Тип счёта";
 
 /* Title when a payments account is successfully connected for Card Present Payments */
-"Account connected" = "Учетная запись подключена";
+"Account connected" = "Учётная запись подключена";
 
 /* Title for the error screen when a Card Present Payments extension is installed but not activated */
 "Activate %1$@" = "Активировать %1$@";

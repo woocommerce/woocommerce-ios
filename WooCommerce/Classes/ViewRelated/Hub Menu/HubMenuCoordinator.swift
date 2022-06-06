@@ -20,14 +20,14 @@ final class HubMenuCoordinator: Coordinator {
 
     private var notificationsSubscription: AnyCancellable?
 
-    private let willPresentReviewDetailsFromPushNotification: () -> Void
+    private let willPresentReviewDetailsFromPushNotification: () async -> Void
 
     init(navigationController: UINavigationController,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          storesManager: StoresManager = ServiceLocator.stores,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
          switchStoreUseCase: SwitchStoreUseCaseProtocol,
-         willPresentReviewDetailsFromPushNotification: @escaping () -> Void) {
+         willPresentReviewDetailsFromPushNotification: @escaping () async -> Void) {
 
         self.pushNotificationsManager = pushNotificationsManager
         self.storesManager = storesManager
@@ -37,7 +37,7 @@ final class HubMenuCoordinator: Coordinator {
         self.navigationController = navigationController
     }
 
-    convenience init(navigationController: UINavigationController, willPresentReviewDetailsFromPushNotification: @escaping () -> Void) {
+    convenience init(navigationController: UINavigationController, willPresentReviewDetailsFromPushNotification: @escaping () async -> Void) {
         let storesManager = ServiceLocator.stores
         self.init(navigationController: navigationController,
                   storesManager: storesManager,
@@ -94,13 +94,15 @@ final class HubMenuCoordinator: Coordinator {
                         return
                     }
 
-                    self.willPresentReviewDetailsFromPushNotification()
-                    self.pushReviewDetailsViewController(using: parcel)
+                    Task { @MainActor in
+                        await self.willPresentReviewDetailsFromPushNotification()
+                        self.pushReviewDetailsViewController(using: parcel)
 
-                    if siteChanged {
-                        let presenter = SwitchStoreNoticePresenter(siteID: Int64(siteID),
-                                                                   noticePresenter: self.noticePresenter)
-                        presenter.presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: .switchingStores)
+                        if siteChanged {
+                            let presenter = SwitchStoreNoticePresenter(siteID: Int64(siteID),
+                                                                       noticePresenter: self.noticePresenter)
+                            presenter.presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: .switchingStores)
+                        }
                     }
                 }
             }

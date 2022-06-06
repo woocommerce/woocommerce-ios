@@ -19,8 +19,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .productSKUInputScanner:
             return true
-        case .canadaInPersonPayments:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .inbox:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .bulkEditProductVariations:
@@ -34,6 +32,12 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .updateOrderOptimistically:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .shippingLabelsOnboardingM1:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .inPersonPaymentGatewaySelection:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .unifiedOrderEditing:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .backgroundProductImageUpload:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

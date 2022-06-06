@@ -27,12 +27,11 @@ final class ProductDownloadFileViewController: UIViewController {
         self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
     }
 
-    private let updateBarButton: UIBarButtonItem = {
-        let button = UIBarButtonItem(title: nil,
-                                     style: .done,
-                                     target: self,
-                                     action: #selector(completeUpdating))
-        return button
+    private lazy var updateBarButton: UIBarButtonItem = {
+        UIBarButtonItem(title: nil,
+                        style: .done,
+                        target: self,
+                        action: #selector(completeUpdating))
     }()
 
     /// Init

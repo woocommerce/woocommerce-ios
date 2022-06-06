@@ -96,14 +96,6 @@ public enum AppSettingsAction: Action {
     ///
     case loadOrderAddOnsSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
 
-    /// Loads the most recent state for the In-Person Payments in Canada beta feature switch
-    ///
-    case loadCanadaInPersonPaymentsSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
-
-    /// Sets the state for the In-Person Payments in Canada beta feature switch
-    ///
-    case setCanadaInPersonPaymentsSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
-
     /// Sets the state for the Product SKU Input Scanner beta feature switch.
     ///
     case setProductSKUInputScannerFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
@@ -178,6 +170,14 @@ public enum AppSettingsAction: Action {
     /// Get the last state of the simple payments taxes toggle for a provided store.
     ///
     case getSimplePaymentsTaxesToggleState(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Sets the preferred payment gateway for In-Person Payments
+    ///
+    case setPreferredInPersonPaymentGateway(siteID: Int64, gateway: String)
+
+    /// Gets the preferred payment gateway for In-Person Payments
+    ///
+    case getPreferredInPersonPaymentGateway(siteID: Int64, onCompletion: (String?) -> Void)
 
     /// Clears all the products settings
     ///

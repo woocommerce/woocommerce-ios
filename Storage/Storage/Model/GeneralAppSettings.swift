@@ -24,10 +24,6 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public let isViewAddOnsSwitchEnabled: Bool
 
-    /// The state for the In-Person Payments in Canada feature switch
-    ///
-    public let isCanadaInPersonPaymentsSwitchEnabled: Bool
-
     /// The state(`true` or `false`) for the Product SKU Input Scanner feature switch.
     ///
     public let isProductSKUInputScannerSwitchEnabled: Bool
@@ -51,7 +47,6 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     public init(installationDate: Date?,
                 feedbacks: [FeedbackType: FeedbackSettings],
                 isViewAddOnsSwitchEnabled: Bool,
-                isCanadaInPersonPaymentsSwitchEnabled: Bool,
                 isProductSKUInputScannerSwitchEnabled: Bool,
                 isCouponManagementSwitchEnabled: Bool,
                 knownCardReaders: [String],
@@ -60,7 +55,6 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
         self.installationDate = installationDate
         self.feedbacks = feedbacks
         self.isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled
-        self.isCanadaInPersonPaymentsSwitchEnabled = isCanadaInPersonPaymentsSwitchEnabled
         self.isProductSKUInputScannerSwitchEnabled = isProductSKUInputScannerSwitchEnabled
         self.isCouponManagementSwitchEnabled = isCouponManagementSwitchEnabled
         self.knownCardReaders = knownCardReaders
@@ -89,7 +83,6 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             installationDate: installationDate,
             feedbacks: updatedFeedbacks,
             isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
-            isCanadaInPersonPaymentsSwitchEnabled: isCanadaInPersonPaymentsSwitchEnabled,
             isProductSKUInputScannerSwitchEnabled: isProductSKUInputScannerSwitchEnabled,
             isCouponManagementSwitchEnabled: isCouponManagementSwitchEnabled,
             knownCardReaders: knownCardReaders,
@@ -108,7 +101,6 @@ extension GeneralAppSettings {
         self.installationDate = try container.decodeIfPresent(Date.self, forKey: .installationDate)
         self.feedbacks = try container.decodeIfPresent([FeedbackType: FeedbackSettings].self, forKey: .feedbacks) ?? [:]
         self.isViewAddOnsSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isViewAddOnsSwitchEnabled) ?? false
-        self.isCanadaInPersonPaymentsSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isCanadaInPersonPaymentsSwitchEnabled) ?? false
         self.isProductSKUInputScannerSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isProductSKUInputScannerSwitchEnabled) ?? false
         self.isCouponManagementSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isCouponManagementSwitchEnabled) ?? false
         self.knownCardReaders = try container.decodeIfPresent([String].self, forKey: .knownCardReaders) ?? []

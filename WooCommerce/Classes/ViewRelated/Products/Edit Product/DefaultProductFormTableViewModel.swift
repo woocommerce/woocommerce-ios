@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import WooFoundation
 
 /// The Product form contains 2 sections: primary fields, and details.
 struct DefaultProductFormTableViewModel: ProductFormTableViewModel {

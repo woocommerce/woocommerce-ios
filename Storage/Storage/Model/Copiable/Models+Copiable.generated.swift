@@ -9,7 +9,6 @@ extension GeneralAppSettings {
         installationDate: NullableCopiableProp<Date> = .copy,
         feedbacks: CopiableProp<[FeedbackType: FeedbackSettings]> = .copy,
         isViewAddOnsSwitchEnabled: CopiableProp<Bool> = .copy,
-        isCanadaInPersonPaymentsSwitchEnabled: CopiableProp<Bool> = .copy,
         isProductSKUInputScannerSwitchEnabled: CopiableProp<Bool> = .copy,
         isCouponManagementSwitchEnabled: CopiableProp<Bool> = .copy,
         knownCardReaders: CopiableProp<[String]> = .copy,
@@ -19,7 +18,6 @@ extension GeneralAppSettings {
         let installationDate = installationDate ?? self.installationDate
         let feedbacks = feedbacks ?? self.feedbacks
         let isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled ?? self.isViewAddOnsSwitchEnabled
-        let isCanadaInPersonPaymentsSwitchEnabled = isCanadaInPersonPaymentsSwitchEnabled ?? self.isCanadaInPersonPaymentsSwitchEnabled
         let isProductSKUInputScannerSwitchEnabled = isProductSKUInputScannerSwitchEnabled ?? self.isProductSKUInputScannerSwitchEnabled
         let isCouponManagementSwitchEnabled = isCouponManagementSwitchEnabled ?? self.isCouponManagementSwitchEnabled
         let knownCardReaders = knownCardReaders ?? self.knownCardReaders
@@ -30,7 +28,6 @@ extension GeneralAppSettings {
             installationDate: installationDate,
             feedbacks: feedbacks,
             isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
-            isCanadaInPersonPaymentsSwitchEnabled: isCanadaInPersonPaymentsSwitchEnabled,
             isProductSKUInputScannerSwitchEnabled: isProductSKUInputScannerSwitchEnabled,
             isCouponManagementSwitchEnabled: isCouponManagementSwitchEnabled,
             knownCardReaders: knownCardReaders,
@@ -44,16 +41,19 @@ extension GeneralStoreSettings {
     public func copy(
         isTelemetryAvailable: CopiableProp<Bool> = .copy,
         telemetryLastReportedTime: NullableCopiableProp<Date> = .copy,
-        areSimplePaymentTaxesEnabled: CopiableProp<Bool> = .copy
+        areSimplePaymentTaxesEnabled: CopiableProp<Bool> = .copy,
+        preferredInPersonPaymentGateway: NullableCopiableProp<String> = .copy
     ) -> GeneralStoreSettings {
         let isTelemetryAvailable = isTelemetryAvailable ?? self.isTelemetryAvailable
         let telemetryLastReportedTime = telemetryLastReportedTime ?? self.telemetryLastReportedTime
         let areSimplePaymentTaxesEnabled = areSimplePaymentTaxesEnabled ?? self.areSimplePaymentTaxesEnabled
+        let preferredInPersonPaymentGateway = preferredInPersonPaymentGateway ?? self.preferredInPersonPaymentGateway
 
         return GeneralStoreSettings(
             isTelemetryAvailable: isTelemetryAvailable,
             telemetryLastReportedTime: telemetryLastReportedTime,
-            areSimplePaymentTaxesEnabled: areSimplePaymentTaxesEnabled
+            areSimplePaymentTaxesEnabled: areSimplePaymentTaxesEnabled,
+            preferredInPersonPaymentGateway: preferredInPersonPaymentGateway
         )
     }
 }

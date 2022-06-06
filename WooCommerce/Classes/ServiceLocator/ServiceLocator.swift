@@ -4,6 +4,7 @@ import Experiments
 import Storage
 import Yosemite
 import Hardware
+import WooFoundation
 
 /// Provides global dependencies.
 ///
@@ -34,6 +35,11 @@ final class ServiceLocator {
     /// In-App Notifications Presenter
     ///
     private static var _noticePresenter: NoticePresenter = DefaultNoticePresenter()
+
+    /// Product image uploader
+    ///
+    private static var _productImageUploader: ProductImageUploaderProtocol =
+    featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) ? ProductImageUploader(): LegacyProductImageUploader()
 
     /// Push Notifications Manager
     ///
@@ -109,6 +115,12 @@ final class ServiceLocator {
     /// - Returns: An implementation of the NoticePresenter protocol. It defaults to DefaultNoticePresenter
     static var noticePresenter: NoticePresenter {
         return _noticePresenter
+    }
+
+    /// Provides the access point to the ProductImageUploaderProtocol.
+    /// - Returns: An implementation of the ProductImageUploaderProtocol. It defaults to ProductImageUploader
+    static var productImageUploader: ProductImageUploaderProtocol {
+        return _productImageUploader
     }
 
     /// Provides the access point to the PushNotesManager.

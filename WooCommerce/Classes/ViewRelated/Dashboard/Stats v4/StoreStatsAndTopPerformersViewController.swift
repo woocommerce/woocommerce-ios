@@ -79,20 +79,14 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
         }
     }
 
-    override func updateIndicator(for viewController: PagerTabStripViewController,
-                                  fromIndex: Int,
-                                  toIndex: Int,
-                                  withProgressPercentage progressPercentage: CGFloat,
-                                  indexWasChanged: Bool) {
-        super.updateIndicator(for: viewController,
-                              fromIndex: fromIndex,
-                              toIndex: toIndex,
-                              withProgressPercentage: progressPercentage,
-                              indexWasChanged: indexWasChanged)
-        guard fromIndex != toIndex, toIndex < periodVCs.count else {
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        super.collectionView(collectionView, didSelectItemAt: indexPath)
+        let timeRangeTabIndex = indexPath.item
+        guard let periodViewController = viewControllers[timeRangeTabIndex] as? StoreStatsAndTopPerformersPeriodViewController,
+              timeRangeTabIndex != currentIndex else {
             return
         }
-        syncAllStats(forced: false)
+        syncStats(forced: false, viewControllerToSync: periodViewController)
     }
 }
 
@@ -115,6 +109,10 @@ extension StoreStatsAndTopPerformersViewController: DashboardUI {
 //
 private extension StoreStatsAndTopPerformersViewController {
     func syncAllStats(forced: Bool, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
+        syncStats(forced: forced, viewControllerToSync: visibleChildViewController, onCompletion: onCompletion)
+    }
+
+    func syncStats(forced: Bool, viewControllerToSync: StoreStatsAndTopPerformersPeriodViewController, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
         guard !isSyncing else {
             return
         }
@@ -125,7 +123,6 @@ private extension StoreStatsAndTopPerformersViewController {
 
         var syncError: Error? = nil
 
-        let viewControllerToSync = visibleChildViewController
         ensureGhostContentIsDisplayed(for: viewControllerToSync)
         showSpinner(for: viewControllerToSync, shouldShowSpinner: true)
 

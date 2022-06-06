@@ -4,17 +4,8 @@ import XCTest
 
 class CardPresentConfigurationTests: XCTestCase {
     // MARK: - US Tests
-    func test_configuration_for_US_with_Canada_enabled() throws {
-        let configuration = CardPresentPaymentsConfiguration(country: "US", canadaEnabled: true)
-        XCTAssertTrue(configuration.isSupportedCountry)
-        XCTAssertEqual(configuration.currencies, [.USD])
-        XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay, Constants.PaymentGateway.stripe])
-        XCTAssertEqual(configuration.paymentMethods, [.cardPresent])
-        XCTAssertEqual(configuration.purchaseCardReaderUrl().absoluteString, Constants.PurchaseURL.us)
-    }
-
-    func test_configuration_for_US_with_Canada_disabled() throws {
-        let configuration = CardPresentPaymentsConfiguration(country: "US", canadaEnabled: false)
+    func test_configuration_for_US() throws {
+        let configuration = CardPresentPaymentsConfiguration(country: "US")
         XCTAssertTrue(configuration.isSupportedCountry)
         XCTAssertEqual(configuration.currencies, [.USD])
         XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay, Constants.PaymentGateway.stripe])
@@ -23,18 +14,12 @@ class CardPresentConfigurationTests: XCTestCase {
     }
 
     // MARK: - Canada Tests
-    func test_configuration_for_Canada_with_Canada_enabled() throws {
-        let configuration = CardPresentPaymentsConfiguration(country: "CA", canadaEnabled: true)
+    func test_configuration_for_Canada() throws {
+        let configuration = CardPresentPaymentsConfiguration(country: "CA")
         XCTAssertTrue(configuration.isSupportedCountry)
         XCTAssertEqual(configuration.currencies, [.CAD])
         XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay])
         XCTAssertEqual(configuration.paymentMethods, [.cardPresent, .interacPresent])
-        XCTAssertEqual(configuration.purchaseCardReaderUrl().absoluteString, Constants.PurchaseURL.ca)
-    }
-
-    func test_configuration_for_Canada_with_Canada_disabled() {
-        let configuration = CardPresentPaymentsConfiguration(country: "CA", canadaEnabled: false)
-        XCTAssertFalse(configuration.isSupportedCountry)
         XCTAssertEqual(configuration.purchaseCardReaderUrl().absoluteString, Constants.PurchaseURL.ca)
     }
 

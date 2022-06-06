@@ -2,6 +2,7 @@ import Combine
 import TestKit
 import XCTest
 import Yosemite
+import WooFoundation
 @testable import WooCommerce
 import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
@@ -517,7 +518,7 @@ private extension RefundSubmissionUseCaseTests {
 
 private extension RefundSubmissionUseCaseTests {
     enum Mocks {
-        static let configuration = CardPresentPaymentsConfiguration(country: "US", canadaEnabled: true)
+        static let configuration = CardPresentPaymentsConfiguration(country: "US")
         static let cardReaderModel: String = "WISEPAD_3"
         static let paymentGatewayID: String = "woocommerce-payments"
         static let siteID: Int64 = 322

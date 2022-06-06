@@ -1,12 +1,23 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+9.4
+-----
+- [*] Orders: Order details now displays both the date and time for all orders. [https://github.com/woocommerce/woocommerce-ios/pull/6996]
+- [*] Simple payments have the `Card` option available for stores with configuration issues to resolve, and show onboarding to help resolve them [https://github.com/woocommerce/woocommerce-ios/pull/7002]
+- [*] Order & Product list: Now, we can pull to refresh from an empty view. [https://github.com/woocommerce/woocommerce-ios/pull/7023, https://github.com/woocommerce/woocommerce-ios/pull/7030]
+
 9.3
 -----
+- [***] In-Person Payments is now available for merchants using WooCommerce Payments in Canada. [https://github.com/woocommerce/woocommerce-ios/pull/6954]
 - [*] In-Person Payments: Accessibility improvement [https://github.com/woocommerce/woocommerce-ios/pull/6869, https://github.com/woocommerce/woocommerce-ios/pull/6886, https://github.com/woocommerce/woocommerce-ios/pull/6906]
 - [*] Orders: Now it's possible to select and copy text from the notes on an order. [https://github.com/woocommerce/woocommerce-ios/pull/6894]
 - [*] Support Arabic numerals on amount fields. [https://github.com/woocommerce/woocommerce-ios/pull/6891]
 - [*] Product Selector: Enabled selecting all variations on variable product rows. [https://github.com/woocommerce/woocommerce-ios/pull/6899]
+- [internal] Order Creation: Adding new products, shipping, fee, or customer details to an order now blocks the UI immediately while the order is syncing remotely. [https://github.com/woocommerce/woocommerce-ios/pull/6974]
 
+- [*] Coupons: Now it's possible to update discount types for coupons. [https://github.com/woocommerce/woocommerce-ios/pull/6935]
+- [*] Orders tab: the view width now adjusts to the app in tablet split view on iOS 15. [https://github.com/woocommerce/woocommerce-ios/pull/6951]
+ 
 9.2
 -----
 - [***] Experimental Features: Coupons editing and deletion features are now enabled as part of coupon management. [https://github.com/woocommerce/woocommerce-ios/pull/6853]

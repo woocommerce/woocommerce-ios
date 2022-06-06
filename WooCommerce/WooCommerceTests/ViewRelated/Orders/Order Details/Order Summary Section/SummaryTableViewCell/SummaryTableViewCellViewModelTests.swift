@@ -32,28 +32,9 @@ final class SummaryTableViewCellViewModelTests: XCTestCase {
         XCTAssertEqual(personName, "Skylar Ferry")
     }
 
-    func test_subtitle_returns_the_date_and_order_number() throws {
+    func test_subtitle_returns_the_date_and_time() throws {
         // Given
-        let expectedFormatter = DateFormatter.mediumLengthLocalizedDateFormatter
-        let calendar = Calendar(identifier: .gregorian, timeZone: expectedFormatter.timeZone)
-
-        let order = makeOrder(dateCreated: try XCTUnwrap(Date().adding(days: -2, using: calendar)))
-
-        let viewModel = SummaryTableViewCellViewModel(order: order,
-                                                      status: nil,
-                                                      calendar: calendar)
-
-        // When
-        let subtitle = viewModel.subtitle
-
-        // Then
-        let expectedSubtitle = expectedFormatter.string(from: order.dateCreated) + " • #\(order.number)"
-        XCTAssertEqual(subtitle, expectedSubtitle)
-    }
-
-    func test_given_an_order_created_today_then_subtitle_returns_the_time_and_order_number() {
-        // Given
-        let expectedFormatter = DateFormatter.timeFormatter
+        let expectedFormatter = DateFormatter.dateAndTimeFormatter
         let calendar = Calendar(identifier: .gregorian, timeZone: expectedFormatter.timeZone)
 
         let order = makeOrder(dateCreated: Date())
@@ -66,7 +47,7 @@ final class SummaryTableViewCellViewModelTests: XCTestCase {
         let subtitle = viewModel.subtitle
 
         // Then
-        let expectedSubtitle = expectedFormatter.string(from: order.dateCreated) + " • #\(order.number)"
+        let expectedSubtitle = expectedFormatter.string(from: order.dateCreated)
         XCTAssertEqual(subtitle, expectedSubtitle)
     }
 }

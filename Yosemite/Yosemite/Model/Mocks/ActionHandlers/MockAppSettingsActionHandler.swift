@@ -25,7 +25,6 @@ struct MockAppSettingsActionHandler: MockActionHandler {
                 .setTelemetryAvailability,
                 .loadOrdersSettings,
                 .upsertProductsSettings,
-                .loadCanadaInPersonPaymentsSwitchState,
                 .loadCouponManagementFeatureSwitchState:
             break
         default: unimplementedAction(action: action)

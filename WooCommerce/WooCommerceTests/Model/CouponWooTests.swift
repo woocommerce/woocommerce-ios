@@ -1,4 +1,6 @@
 import XCTest
+
+import WooFoundation
 @testable import Networking
 @testable import WooCommerce
 

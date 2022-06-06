@@ -514,9 +514,8 @@ private extension OrderDetailsDataSource {
         cell.selectionStyle = .none
 
         cell.accessibilityTraits = .button
-        cell.accessibilityLabel = NSLocalizedString(
-            "Install the WCShip extension.",
-            comment: "Accessibility label for the Install WCShip banner in the Order Detail")
+        cell.accessibilityLabel = NSLocalizedString("Install the WCShip extension.",
+                                                    comment: "Accessibility label for the Install WCShip banner in the Order Detail")
         cell.accessibilityHint = NSLocalizedString("Open the flow for installing the WCShip extension.",
                                                    comment: "VoiceOver accessibility label for the Install WCShip banner in the Order Detail")
     }

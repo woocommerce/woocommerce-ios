@@ -570,7 +570,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         }
     }
 
-    func test_WCShip_installation_section_is_not_visible_for_ineligible_order() throws {
+    func test_WCShip_installation_section_is_not_visible_when_WCShip_plugin_is_installed_and_active() throws {
         // Given
         let sampleSiteID: Int64 = 1234
         let order = makeOrder()

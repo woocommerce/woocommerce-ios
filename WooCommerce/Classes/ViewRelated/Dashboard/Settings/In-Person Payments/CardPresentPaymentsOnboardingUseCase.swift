@@ -96,7 +96,8 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         precondition(state == .selectPlugin)
         preferredPluginLocal = plugin
         updateState()
-        if state == .completed(plugin: plugin) {
+        if case .completed(let pluginState) = state,
+           pluginState.preferred == plugin {
             savePreferredPlugin(plugin)
         }
     }
@@ -202,11 +203,12 @@ private extension CardPresentPaymentsOnboardingUseCase {
             return wcPayOnlyOnboardingState(plugin: wcPay)
         }
 
-        if let preferredPlugin = preferredPluginLocal {
-            return onboardingStateForPlugin(preferredPlugin, wcPay: wcPay, stripe: stripe)
+        guard let preferredPlugin = preferredPluginLocal else {
+            return .selectPlugin
         }
 
-        return .selectPlugin
+        let state = onboardingStateForPlugin(preferredPlugin, wcPay: wcPay, stripe: stripe)
+        return augmentStateWithAvailablePlugins(state: state, available: [.wcPay, .stripe])
     }
 
     func legacyBothPluginsInstalledAndActiveOnboardingState(wcPay: SystemPlugin, stripe: SystemPlugin) -> CardPresentPaymentOnboardingState {
@@ -291,7 +293,18 @@ private extension CardPresentPaymentsOnboardingUseCase {
         let setAccount = CardPresentPaymentAction.use(paymentGatewayAccount: account)
         stores.dispatch(setAccount)
 
-        return .completed(plugin: plugin)
+        return .completed(plugin: CardPresentPaymentsPluginState(plugin: plugin))
+    }
+
+    func augmentStateWithAvailablePlugins(
+        state: CardPresentPaymentOnboardingState,
+        available: [CardPresentPaymentsPlugin]
+    ) -> CardPresentPaymentOnboardingState {
+        guard case .completed(let pluginState) = state else {
+            return state
+        }
+
+        return .completed(plugin: .init(preferred: pluginState.preferred, available: available))
     }
 }
 

@@ -70,9 +70,9 @@ struct InPersonPaymentsView: View {
                 InPersonPaymentsStripeAccountReview()
             case .stripeAccountRejected:
                 InPersonPaymentsStripeRejected()
-            case .completed(let plugin):
+            case .completed(let pluginState):
                 if viewModel.showMenuOnCompletion {
-                    InPersonPaymentsMenu(plugin: plugin)
+                    InPersonPaymentsMenu(pluginState: pluginState)
                 } else {
                     InPersonPaymentsCompleted()
                 }
@@ -108,7 +108,7 @@ private enum Localization {
 struct InPersonPaymentsView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            InPersonPaymentsView(viewModel: InPersonPaymentsViewModel(fixedState: .completed(plugin: .stripe)))
+            InPersonPaymentsView(viewModel: InPersonPaymentsViewModel(fixedState: .completed(plugin: .stripeOnly)))
         }
     }
 }

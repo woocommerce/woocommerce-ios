@@ -87,7 +87,7 @@ private extension PriceFieldFormatter {
 
         let deviceDecimalSeparator = userLocale.decimalSeparator ?? "."
         let storeDecimalSeparator = storeCurrencySettings.decimalSeparator
-        let storeNumberOfDecimals = storeCurrencySettings.numberOfDecimals
+        let storeNumberOfDecimals = storeCurrencySettings.fractionDigits
 
         // Removes any unwanted character & makes sure to use the store decimal separator
         let sanitized = amount
@@ -115,8 +115,8 @@ private extension PriceFieldFormatter {
     ///
     func setCurrencySymbol(to amount: String) -> String {
         currencyFormatter.formatCurrency(using: amount,
-                                         at: storeCurrencySettings.currencyPosition,
-                                         with: storeCurrencySymbol,
+                                         currencyPosition: storeCurrencySettings.currencyPosition,
+                                         currencySymbol: storeCurrencySymbol,
                                          isNegative: allowNegativeNumber && amount.hasPrefix(minusSign))
     }
 }

@@ -76,7 +76,7 @@ class CurrencyFormatterTests: XCTestCase {
             return
         }
 
-        let actualResult = CurrencyFormatter(currencySettings: sampleCurrencySettings).localize(convertedDecimal, with: separator)
+        let actualResult = CurrencyFormatter(currencySettings: sampleCurrencySettings).localize(convertedDecimal, decimalSeparator: separator)
 
         XCTAssertEqual(expectedResult, actualResult)
     }
@@ -118,7 +118,7 @@ class CurrencyFormatterTests: XCTestCase {
             return
         }
 
-        let formattedString = CurrencyFormatter(currencySettings: sampleCurrencySettings).localize(decimal, including: comma)
+        let formattedString = CurrencyFormatter(currencySettings: sampleCurrencySettings).localize(decimal, groupingSeparator: comma)
         guard let actualResult = formattedString else {
             XCTFail()
             return
@@ -142,8 +142,8 @@ class CurrencyFormatterTests: XCTestCase {
         }
 
         let localizedAmount = CurrencyFormatter(currencySettings: sampleCurrencySettings).localize(decimal,
-                                                           with: decimalSeparator,
-                                                           including: thousandSeparator)
+                                                                                                   decimalSeparator: decimalSeparator,
+                                                                                                   groupingSeparator: thousandSeparator)
 
         guard let actualResult = localizedAmount else {
             XCTFail()
@@ -168,9 +168,9 @@ class CurrencyFormatterTests: XCTestCase {
 
         let position = 2
         let localizedAmount = CurrencyFormatter(currencySettings: sampleCurrencySettings).localize(convertedDecimal,
-                                                           with: separator,
-                                                           in: position,
-                                                           including: separator)
+                                                                                                   decimalSeparator: separator,
+                                                                                                   fractionDigits: position,
+                                                                                                   groupingSeparator: separator)
         guard let actualResult = localizedAmount else {
             XCTFail()
             return
@@ -194,9 +194,9 @@ class CurrencyFormatterTests: XCTestCase {
         }
 
         let formattedAmount = CurrencyFormatter(currencySettings: sampleCurrencySettings).localize(convertedDecimal,
-                                                           with: separator,
-                                                           in: position,
-                                                           including: separator)
+                                                                                                   decimalSeparator: separator,
+                                                                                                   fractionDigits: position,
+                                                                                                   groupingSeparator: separator)
 
         guard let actualResult = formattedAmount else {
             XCTFail()
@@ -230,9 +230,9 @@ class CurrencyFormatterTests: XCTestCase {
 
         let amount = CurrencyFormatter(currencySettings: sampleCurrencySettings)
             .localize(decimalAmount,
-                      with: decimalSeparator,
-                      in: decimalPosition,
-                      including: thousandSeparator)
+                      decimalSeparator: decimalSeparator,
+                      fractionDigits: decimalPosition,
+                      groupingSeparator: thousandSeparator)
 
         guard let localizedAmount = amount else {
             XCTFail()
@@ -243,8 +243,8 @@ class CurrencyFormatterTests: XCTestCase {
         let isNegative = decimalAmount.isNegative()
         let actualResult = CurrencyFormatter(currencySettings: sampleCurrencySettings)
             .formatCurrency(using: localizedAmount,
-                            at: currencyPosition,
-                            with: symbol,
+                            currencyPosition: currencyPosition,
+                            currencySymbol: symbol,
                             isNegative: isNegative,
                             locale: locale)
 
@@ -264,9 +264,9 @@ class CurrencyFormatterTests: XCTestCase {
 
         let amount = CurrencyFormatter(currencySettings: sampleCurrencySettings)
             .localize(decimalAmount,
-                      with: decimalSeparator,
-                      in: decimalPosition,
-                      including: thousandSeparator)
+                      decimalSeparator: decimalSeparator,
+                      fractionDigits: decimalPosition,
+                      groupingSeparator: thousandSeparator)
 
         guard let localizedAmount = amount else {
             XCTFail()
@@ -278,8 +278,8 @@ class CurrencyFormatterTests: XCTestCase {
         let locale = sampleLocale
         let actualResult = CurrencyFormatter(currencySettings: sampleCurrencySettings)
             .formatCurrency(using: localizedAmount,
-                            at: currencyPosition,
-                            with: symbol,
+                            currencyPosition: currencyPosition,
+                            currencySymbol: symbol,
                             isNegative: isNegative,
                             locale: locale)
 
@@ -298,8 +298,8 @@ class CurrencyFormatterTests: XCTestCase {
         let isNegative = true
         let actualResult = CurrencyFormatter(currencySettings: sampleCurrencySettings)
             .formatCurrency(using: stringAmount,
-                            at: currencyPosition,
-                            with: symbol,
+                            currencyPosition: currencyPosition,
+                            currencySymbol: symbol,
                             isNegative: isNegative,
                             locale: sampleLocale)
 

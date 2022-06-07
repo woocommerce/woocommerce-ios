@@ -507,8 +507,8 @@ extension StoreStatsV4PeriodViewController: IAxisValueFormatter {
             } else {
                 return CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
                     .formatCurrency(using: value.humanReadableString(shouldHideDecimalsForIntegerAbbreviatedValue: true),
-                                    at: ServiceLocator.currencySettings.currencyPosition,
-                                    with: currencySymbol,
+                                    currencyPosition: ServiceLocator.currencySettings.currencyPosition,
+                                    currencySymbol: currencySymbol,
                                     isNegative: value.sign == .minus)
             }
         }

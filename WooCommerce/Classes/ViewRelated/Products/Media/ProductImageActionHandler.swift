@@ -100,7 +100,6 @@ final class ProductImageActionHandler {
     /// - Parameters:
     ///   - observer: the observer that `onAssetUpload` is associated with.
     ///   - onAssetUpload: called when an asset has been uploaded, if `observer` is not nil.
-    @discardableResult
     func addAssetUploadObserver<T: AnyObject>(_ observer: T,
                                               onAssetUpload: @escaping OnAssetUpload) -> AnyCancellable {
         let id = UUID()

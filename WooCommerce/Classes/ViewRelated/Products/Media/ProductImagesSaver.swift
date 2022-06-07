@@ -4,11 +4,17 @@ import Yosemite
 final class ProductImagesSaver {
     /// Initially set when product save is requested when all images at the time of request are uploaded.
     /// As each pending image is uploaded, the statuses are also updated and ready to save when none is pending upload.
-    @Published private(set) var imageStatusesToSave: [ProductImageStatus] = []
+    private(set) var imageStatusesToSave: [ProductImageStatus] = [] {
+        didSet {
+            imageStatusesToSaveSubject.send(imageStatusesToSave)
+        }
+    }
+    // The use of a `PassthroughSubject` sent on variable `didSet` instead of a `@Published` is because `@Published`
+    // subscription happens in `willSet` while we want to update the statuses after `didSet`.
+    private let imageStatusesToSaveSubject: PassthroughSubject<[ProductImageStatus], Never> = .init()
 
     private var uploadStatusesSubscription: AnyCancellable?
     private var assetUploadSubscription: AnyCancellable?
-    private var imageStatusesSubscription: AnyCancellable?
 
     private let siteID: Int64
     private let productID: Int64
@@ -33,7 +39,7 @@ final class ProductImagesSaver {
 
         imageStatusesToSave = imageStatuses
 
-        uploadStatusesSubscription = $imageStatusesToSave
+        uploadStatusesSubscription = imageStatusesToSaveSubject
             .filter { $0.hasPendingUpload == false }
             .map { $0.images }
             .filter { $0.isNotEmpty }
@@ -74,6 +80,8 @@ private extension ProductImagesSaver {
             case .success(let product):
                 onProductSave(.success(product.images))
                 self.imageStatusesToSave = []
+                self.assetUploadSubscription = nil
+                self.uploadStatusesSubscription = nil
             case .failure(let error):
                 onProductSave(.failure(error))
             }

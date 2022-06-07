@@ -89,20 +89,14 @@ final class ProductImageUploaderTests: XCTestCase {
         XCTAssertFalse(imageUploader.hasUnsavedChangesOnImages(siteID: siteID, productID: productID, isLocalID: false, originalImages: []))
 
         // When
-        // Uploads an image.
-        var imageUploadCompletion: ((Result<Media, Error>) -> Void)?
-        stores.whenReceivingAction(ofType: MediaAction.self) { action in
-            if case let .uploadMedia(_, _, _, onCompletion) = action {
-                imageUploadCompletion = onCompletion
+        // Uploads an image and waits for the image upload completion closure to be called later.
+        let imageUploadCompletion: ((Result<Media, Error>) -> Void) = waitFor { promise in
+            stores.whenReceivingAction(ofType: MediaAction.self) { action in
+                if case let .uploadMedia(_, _, _, onCompletion) = action {
+                    promise(onCompletion)
+                }
             }
-        }
-        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: asset)
-
-        // Waits for the image upload completion closure.
-        waitFor { promise in
-            actionHandler.addUpdateObserver(self) { statuses in
-                promise(())
-            }
+            actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: asset)
         }
 
         XCTAssertTrue(imageUploader.hasUnsavedChangesOnImages(siteID: siteID, productID: productID, isLocalID: false, originalImages: []))
@@ -126,7 +120,7 @@ final class ProductImageUploaderTests: XCTestCase {
                 promise(result)
             }
             // Triggers success from image upload.
-            imageUploadCompletion?(.success(.fake().copy(mediaID: 645)))
+            imageUploadCompletion(.success(.fake().copy(mediaID: 645)))
         }
 
         // Then

@@ -149,6 +149,7 @@
 		02482A8E237BEAE9007E73ED /* AztecLinkFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02482A8D237BEAE9007E73ED /* AztecLinkFormatBarCommand.swift */; };
 		02490D1A284DE664002096EF /* ProductImagesSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02490D19284DE664002096EF /* ProductImagesSaver.swift */; };
 		02490D1C284EEFC2002096EF /* ProductImageUploaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02490D1B284EEFC2002096EF /* ProductImageUploaderTests.swift */; };
+		02490D1E284F3226002096EF /* ProductImagesSaverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02490D1D284F3226002096EF /* ProductImagesSaverTests.swift */; };
 		024A543422BA6F8F00F4F38E /* DeveloperEmailChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024A543322BA6F8F00F4F38E /* DeveloperEmailChecker.swift */; };
 		024A543622BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024A543522BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift */; };
 		024DF3052372ADCD006658FE /* KeyboardScrollable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024DF3042372ADCD006658FE /* KeyboardScrollable.swift */; };
@@ -1905,6 +1906,7 @@
 		02482A8D237BEAE9007E73ED /* AztecLinkFormatBarCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecLinkFormatBarCommand.swift; sourceTree = "<group>"; };
 		02490D19284DE664002096EF /* ProductImagesSaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagesSaver.swift; sourceTree = "<group>"; };
 		02490D1B284EEFC2002096EF /* ProductImageUploaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageUploaderTests.swift; sourceTree = "<group>"; };
+		02490D1D284F3226002096EF /* ProductImagesSaverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagesSaverTests.swift; sourceTree = "<group>"; };
 		024A543322BA6F8F00F4F38E /* DeveloperEmailChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperEmailChecker.swift; sourceTree = "<group>"; };
 		024A543522BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperEmailCheckerTests.swift; sourceTree = "<group>"; };
 		024DF3042372ADCD006658FE /* KeyboardScrollable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardScrollable.swift; sourceTree = "<group>"; };
@@ -4144,6 +4146,7 @@
 				02A275BD23FE57DC005C560F /* ProductUIImageLoaderTests.swift */,
 				021AEF9B2407B07300029D28 /* ProductImageStatus+HelpersTests.swift */,
 				02490D1B284EEFC2002096EF /* ProductImageUploaderTests.swift */,
+				02490D1D284F3226002096EF /* ProductImagesSaverTests.swift */,
 			);
 			path = Media;
 			sourceTree = "<group>";
@@ -10001,6 +10004,7 @@
 				B5C6CE612190D28E00515926 /* NSAttributedStringHelperTests.swift in Sources */,
 				CC07860526736B6500BA9AC1 /* ErrorTopBannerFactoryTests.swift in Sources */,
 				CE50345A21B1F8F7007573C6 /* ZendeskManagerTests.swift in Sources */,
+				02490D1E284F3226002096EF /* ProductImagesSaverTests.swift in Sources */,
 				02A9A496244D84AB00757B99 /* ProductsSortOrderBottomSheetListSelectorCommandTests.swift in Sources */,
 				B9B6DEF1283F8EB100901FB7 /* SitePluginsURLTests.swift in Sources */,
 				D83F5935225B3CDD00626E75 /* DatePickerTableViewCellTests.swift in Sources */,

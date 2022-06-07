@@ -70,6 +70,10 @@ public enum ProductAction: Action {
     ///
     case updateProduct(product: Product, onCompletion: (Result<Product, ProductUpdateError>) -> Void)
 
+    /// Updates a specified Product's images.
+    ///
+    case updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], onCompletion: (Result<Product, ProductUpdateError>) -> Void)
+
     /// Checks whether a Product SKU is valid against other Products in the store.
     ///
     case validateProductSKU(_ sku: String?, siteID: Int64, onCompletion: (Bool) -> Void)

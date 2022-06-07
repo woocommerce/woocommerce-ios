@@ -32,11 +32,16 @@ final class ProductDownloadListViewController: UIViewController {
     private let loadingView = LoadingView(waitMessage: Localization.loadingMessage,
                                           backgroundColor: UIColor.black.withAlphaComponent(0.4))
 
-    init(product: ProductFormDataModel, completion: @escaping Completion) {
+    init(product: ProductFormDataModel,
+         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+         completion: @escaping Completion) {
         self.product = product
         viewModel = ProductDownloadListViewModel(product: product)
         onCompletion = completion
-        productImageActionHandler = ProductImageActionHandler(siteID: product.siteID, product: product)
+        productImageActionHandler = productImageUploader.actionHandler(siteID: product.siteID,
+                                                                       productID: product.productID,
+                                                                       isLocalID: !product.existsRemotely,
+                                                                       originalStatuses: product.imageStatuses)
         super.init(nibName: type(of: self).nibName, bundle: nil)
 
         onDeviceMediaLibraryPickerCompletion = { [weak self] assets in

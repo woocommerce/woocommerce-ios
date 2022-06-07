@@ -221,6 +221,7 @@
 		E16D3741284F1CDA005676BC /* GeneralAppSettingsStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16D3740284F1CDA005676BC /* GeneralAppSettingsStorageTests.swift */; };
 		E16D3743284F1E76005676BC /* MockInMemoryStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16D3742284F1E76005676BC /* MockInMemoryStorage.swift */; };
 		E1E632C02846245D00878082 /* GeneralAppSettingsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E632BF2846245D00878082 /* GeneralAppSettingsStorage.swift */; };
+		E1BCBE842844D35E00087C33 /* GeneralStoreSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BCBE832844D35E00087C33 /* GeneralStoreSettingsTests.swift */; };
 		FEDD70AD26A5DBDD00194C3A /* EligibilityErrorInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEDD70AC26A5DBDD00194C3A /* EligibilityErrorInfo.swift */; };
 /* End PBXBuildFile section */
 
@@ -536,6 +537,7 @@
 		E16D3740284F1CDA005676BC /* GeneralAppSettingsStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralAppSettingsStorageTests.swift; sourceTree = "<group>"; };
 		E16D3742284F1E76005676BC /* MockInMemoryStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInMemoryStorage.swift; sourceTree = "<group>"; };
 		E1E632BF2846245D00878082 /* GeneralAppSettingsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralAppSettingsStorage.swift; sourceTree = "<group>"; };
+		E1BCBE832844D35E00087C33 /* GeneralStoreSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralStoreSettingsTests.swift; sourceTree = "<group>"; };
 		F0439F2ADB3B211DF5C44D83 /* Pods-StorageTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StorageTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-StorageTests/Pods-StorageTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		FEDD70AC26A5DBDD00194C3A /* EligibilityErrorInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EligibilityErrorInfo.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -597,6 +599,7 @@
 			isa = PBXGroup;
 			children = (
 				26EA01D424EC44B300176A57 /* GeneralAppSettingsTests.swift */,
+				E1BCBE832844D35E00087C33 /* GeneralStoreSettingsTests.swift */,
 			);
 			path = AppSettings;
 			sourceTree = "<group>";
@@ -1383,6 +1386,7 @@
 				2619F78625B5D29B0006DAFF /* TypedPredicateTests.swift in Sources */,
 				E16D3741284F1CDA005676BC /* GeneralAppSettingsStorageTests.swift in Sources */,
 				5772842725BF5BFB0092FB2C /* SpyPersistentStoreCoordinator.swift in Sources */,
+				E1BCBE842844D35E00087C33 /* GeneralStoreSettingsTests.swift in Sources */,
 				5772842C25BF62A90092FB2C /* Assertions.swift in Sources */,
 				26EA01D524EC44B300176A57 /* GeneralAppSettingsTests.swift in Sources */,
 			);

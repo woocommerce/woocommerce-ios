@@ -930,6 +930,12 @@ extension UIImage {
         return UIImage(named: "woo-waiting-customers")!
     }
 
+    /// Install WCShip banner Image
+    ///
+    static var installWCShipImage: UIImage {
+        return UIImage(named: "woo-wcship-install-banner")!
+    }
+
     /// What is Jetpack Image
     ///
     static var whatIsJetpackImage: UIImage {

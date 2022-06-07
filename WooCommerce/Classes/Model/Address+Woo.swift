@@ -79,6 +79,12 @@ extension Address {
     var hasEmailAddress: Bool {
         return email?.isEmpty == false
     }
+
+    /// Indicates if an address has only empty values.
+    ///
+    var isEmpty: Bool {
+        self == .empty
+    }
 }
 
 

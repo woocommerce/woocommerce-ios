@@ -24,9 +24,6 @@ public final class SingleOrderScreen: ScreenObject {
         orderDetailTableView.assertTextVisibilityCount(textToFind: order.status, expectedCount: 1)
         orderDetailTableView.assertTextVisibilityCount(textToFind: order.total, expectedCount: 1)
 
-        // Expects 1 instance of order.number in Summary
-        orderDetailTableView.assertTextVisibilityCount(textToFind: "#\(order.number)", expectedCount: 1)
-
         // Expects 2 instances of first_name - one in Summary and one in Shipping details
         orderDetailTableView.assertTextVisibilityCount(textToFind: order.billing.first_name, expectedCount: 2)
         orderDetailTableView.assertElement(matching: "summary-table-view-cell",

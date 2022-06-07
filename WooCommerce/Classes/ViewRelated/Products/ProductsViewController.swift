@@ -729,6 +729,10 @@ private extension ProductsViewController {
     /// Displays the overlay when there are no results.
     ///
     func displayNoResultsOverlay() {
+        // Abort if we are already displaying this childController
+        guard emptyStateViewController?.parent == nil else {
+            return
+        }
         let emptyStateViewController = EmptyStateViewController(style: .list)
         let config = createFilterConfig()
         displayEmptyStateViewController(emptyStateViewController)
@@ -756,9 +760,13 @@ private extension ProductsViewController {
             message: .init(string: message),
             image: .emptyProductsTabImage,
             details: details,
-            buttonTitle: buttonTitle) { [weak self] button in
-            self?.addProduct(sourceView: button)
-        }
+            buttonTitle: buttonTitle,
+            onTap: { [weak self] button in
+                self?.addProduct(sourceView: button)
+            },
+            onPullToRefresh: { [weak self] refreshControl in
+                self?.pullToRefresh(sender: refreshControl)
+            })
     }
 
     /// Creates EmptyStateViewController.Config for no products match the filter empty view
@@ -772,9 +780,13 @@ private extension ProductsViewController {
             message: .init(string: message),
             image: .emptyProductsTabImage,
             details: "",
-            buttonTitle: buttonTitle) { [weak self] button in
+            buttonTitle: buttonTitle,
+            onTap: { [weak self] button in
                 self?.clearFilter(sourceView: button)
-        }
+            },
+            onPullToRefresh: { [weak self] refreshControl in
+                self?.pullToRefresh(sender: refreshControl)
+            })
     }
 
     /// Shows the EmptyStateViewController as a child view controller.

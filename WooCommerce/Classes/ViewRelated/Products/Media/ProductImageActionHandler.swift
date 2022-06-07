@@ -39,13 +39,14 @@ final class ProductImageActionHandler {
 
     /// - Parameters:
     ///   - siteID: the ID of a site/store where the product belongs to.
-    ///   - product: the product whose image statuses and actions are of concern.
+    ///   - productID: the ID of the product whose image statuses and actions are of concern.
+    ///   - imageStatuses: the current image statuses of the product.
     ///   - queue: the queue where the update callbacks are called on. Default to be the main queue.
-    init(siteID: Int64, product: ProductFormDataModel, queue: DispatchQueue = .main) {
+    init(siteID: Int64, productID: Int64, imageStatuses: [ProductImageStatus], queue: DispatchQueue = .main) {
         self.siteID = siteID
-        self.productID = product.productID
+        self.productID = productID
         self.queue = queue
-        self.allStatuses = (productImageStatuses: product.imageStatuses, error: nil)
+        self.allStatuses = (productImageStatuses: imageStatuses, error: nil)
     }
 
     /// Observes when the image statuses have been updated.

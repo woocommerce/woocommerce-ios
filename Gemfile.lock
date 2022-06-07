@@ -1,9 +1,9 @@
 GIT
   remote: git@github.com:wordpress-mobile/release-toolkit
-  revision: 48bf4f8ee18079154b2054b3014bed9f114416d6
+  revision: a4d04a43125d84288e46ea38b893d001cd660a3b
   branch: trunk
   specs:
-    fastlane-plugin-wpmreleasetoolkit (4.1.0)
+    fastlane-plugin-wpmreleasetoolkit (4.2.0)
       activesupport (~> 5)
       bigdecimal (~> 1.4)
       buildkit (~> 1.5)
@@ -23,7 +23,7 @@ GEM
   specs:
     CFPropertyList (3.0.5)
       rexml
-    activesupport (5.2.7)
+    activesupport (5.2.8)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 0.7, < 2)
       minitest (~> 5.1)
@@ -258,9 +258,9 @@ GEM
       racc (~> 1.4)
     nokogiri (1.13.6-x86_64-darwin)
       racc (~> 1.4)
-    octokit (4.22.0)
-      faraday (>= 0.9)
-      sawyer (~> 0.8.0, >= 0.5.3)
+    octokit (4.23.0)
+      faraday (>= 1, < 3)
+      sawyer (~> 0.9)
     oj (3.13.13)
     optimist (3.0.1)
     options (2.3.2)
@@ -306,9 +306,9 @@ GEM
     ruby-progressbar (1.11.0)
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
-    sawyer (0.8.2)
+    sawyer (0.9.1)
       addressable (>= 2.3.5)
-      faraday (> 0.8, < 2.0)
+      faraday (>= 0.17.3, < 3)
     security (0.1.3)
     signet (0.16.1)
       addressable (~> 2.8)

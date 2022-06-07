@@ -35,6 +35,7 @@ public protocol ProductsRemoteProtocol {
                    sku: String,
                    completion: @escaping (Result<String, Error>) -> Void)
     func updateProduct(product: Product, completion: @escaping (Result<Product, Error>) -> Void)
+    func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], completion: @escaping (Result<Product, Error>) -> Void)
 }
 
 extension ProductsRemoteProtocol {
@@ -279,6 +280,19 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             completion(.failure(error))
         }
     }
+
+    public func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], completion: @escaping (Result<Product, Error>) -> Void) {
+        do {
+            let parameters = try ([ParameterKey.images: images]).toDictionary()
+            let path = "\(Path.products)/\(productID)"
+            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+            let mapper = ProductMapper(siteID: siteID)
+
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
+    }
 }
 
 
@@ -320,6 +334,7 @@ public extension ProductsRemote {
         static let stockStatus: String = "stock_status"
         static let category: String   = "category"
         static let fields: String     = "_fields"
+        static let images: String = "images"
     }
 
     private enum ParameterValues {

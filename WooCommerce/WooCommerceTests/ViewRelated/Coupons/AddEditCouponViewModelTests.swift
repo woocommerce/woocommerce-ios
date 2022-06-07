@@ -237,4 +237,17 @@ final class AddEditCouponViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.hasChangesMade)
     }
+
+    func test_discount_type_changed_triggers_percent_adjustment() {
+        // Given
+        let coupon = Coupon.sampleCoupon.copy(amount: "20000")
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+
+        // When
+        viewModel.discountType = .percent
+
+        // Then
+        XCTAssertEqual(viewModel.amountField, "100")
+    }
+    }
 }

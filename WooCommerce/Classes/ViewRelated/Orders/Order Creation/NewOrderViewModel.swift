@@ -224,7 +224,7 @@ final class NewOrderViewModel: ObservableObject {
         self.storageManager = storageManager
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.analytics = analytics
-        self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, stores: stores, currencySettings: currencySettings)
+        self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, initialOrder: initialOrder, stores: stores, currencySettings: currencySettings)
         self.featureFlagService = featureFlagService
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.

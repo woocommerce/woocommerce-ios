@@ -39,6 +39,7 @@ struct InPersonPaymentsSelectPluginRow: View {
 
 struct InPersonPaymentsSelectPlugin: View {
     @State var selectedPlugin: CardPresentPaymentsPlugin?
+    let onPluginSelected: (CardPresentPaymentsPlugin) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -65,7 +66,9 @@ struct InPersonPaymentsSelectPlugin: View {
             Spacer()
 
             Button(Localization.confirm) {
-                // TODO
+                if let selectedPlugin = selectedPlugin {
+                    onPluginSelected(selectedPlugin)
+                }
             }
             .disabled(selectedPlugin == nil)
             .buttonStyle(PrimaryButtonStyle())
@@ -91,9 +94,9 @@ private enum Localization {
 
 struct InPersonPaymentsSelectPlugin_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsSelectPlugin()
-        InPersonPaymentsSelectPlugin(selectedPlugin: .wcPay)
-        InPersonPaymentsSelectPlugin(selectedPlugin: .stripe)
+        InPersonPaymentsSelectPlugin(onPluginSelected: { _ in })
+        InPersonPaymentsSelectPlugin(selectedPlugin: .wcPay, onPluginSelected: { _ in })
+        InPersonPaymentsSelectPlugin(selectedPlugin: .stripe, onPluginSelected: { _ in })
             .preferredColorScheme(.dark)
     }
 }

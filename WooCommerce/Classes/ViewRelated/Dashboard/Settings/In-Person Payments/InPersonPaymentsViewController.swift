@@ -40,7 +40,11 @@ struct InPersonPaymentsView: View {
             case .loading:
                 InPersonPaymentsLoading()
             case .selectPlugin:
-                if viewModel.userIsAdministrator {
+                if viewModel.gatewaySelectionAvailable {
+                    InPersonPaymentsSelectPlugin(selectedPlugin: nil) { plugin in
+                        viewModel.selectPlugin(plugin)
+                    }
+                } else if viewModel.userIsAdministrator {
                     InPersonPaymentsPluginConflictAdmin(onRefresh: viewModel.refresh)
                 } else {
                     InPersonPaymentsPluginConflictShopManager(onRefresh: viewModel.refresh)

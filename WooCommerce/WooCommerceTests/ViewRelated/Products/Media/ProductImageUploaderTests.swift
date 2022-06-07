@@ -72,4 +72,67 @@ final class ProductImageUploaderTests: XCTestCase {
         let images = try XCTUnwrap(resultOfSavedImages.get())
         XCTAssertEqual(images.map { $0.imageID }, [uploadedMedia.mediaID])
     }
+
+    func test_when_saving_product_twice_the_latest_images_are_saved() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let imageUploader = ProductImageUploader(stores: stores)
+        let actionHandler = imageUploader.actionHandler(siteID: siteID, productID: productID, isLocalID: false, originalStatuses: [])
+        let asset = PHAsset()
+
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            if case let .updateProductImages(_, _, images, onCompletion) = action {
+                onCompletion(.success(.fake().copy(images: images)))
+            }
+        }
+
+        XCTAssertFalse(imageUploader.hasUnsavedChangesOnImages(siteID: siteID, productID: productID, isLocalID: false, originalImages: []))
+
+        // When
+        // Uploads an image.
+        var imageUploadCompletion: ((Result<Media, Error>) -> Void)?
+        stores.whenReceivingAction(ofType: MediaAction.self) { action in
+            if case let .uploadMedia(_, _, _, onCompletion) = action {
+                imageUploadCompletion = onCompletion
+            }
+        }
+        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: asset)
+
+        // Waits for the image upload completion closure.
+        waitFor { promise in
+            actionHandler.addUpdateObserver(self) { statuses in
+                promise(())
+            }
+        }
+
+        XCTAssertTrue(imageUploader.hasUnsavedChangesOnImages(siteID: siteID, productID: productID, isLocalID: false, originalImages: []))
+
+        // The first save.
+        imageUploader.saveProductImagesWhenNoneIsPendingUploadAnymore(siteID: self.siteID, productID: self.productID, isLocalID: false) { result in
+            XCTFail("The product save callback should not be triggered after another save request.")
+        }
+
+        // Adds a remote image.
+        actionHandler.addSiteMediaLibraryImagesToProduct(mediaItems: [.fake().copy(mediaID: 606)])
+        waitFor { promise in
+            actionHandler.addUpdateObserver(self) { statuses in
+                promise(())
+            }
+        }
+
+        let resultOfSavedImages: Result<[ProductImage], Error> = waitFor { promise in
+            // The second save.
+            imageUploader.saveProductImagesWhenNoneIsPendingUploadAnymore(siteID: self.siteID, productID: self.productID, isLocalID: false) { result in
+                promise(result)
+            }
+            // Triggers success from image upload.
+            imageUploadCompletion?(.success(.fake().copy(mediaID: 645)))
+        }
+
+        // Then
+        XCTAssertFalse(imageUploader.hasUnsavedChangesOnImages(siteID: siteID, productID: productID, isLocalID: false, originalImages: []))
+        XCTAssertTrue(resultOfSavedImages.isSuccess)
+        let images = try XCTUnwrap(resultOfSavedImages.get())
+        XCTAssertEqual(images.map { $0.imageID }, [606, 645])
+    }
 }

@@ -74,13 +74,7 @@ private extension GeneralAppSettingsStorage {
     /// Load the `GeneralAppSettings` from file or create an empty one if it doesn't exist.
     func loadOrCreateGeneralAppSettings() -> GeneralAppSettings {
         guard let settings: GeneralAppSettings = try? fileStorage.data(for: Constants.generalAppSettingsFileURL) else {
-            return GeneralAppSettings(installationDate: nil,
-                                      feedbacks: [:],
-                                      isViewAddOnsSwitchEnabled: false,
-                                      isProductSKUInputScannerSwitchEnabled: false,
-                                      isCouponManagementSwitchEnabled: false,
-                                      knownCardReaders: [],
-                                      lastEligibilityErrorInfo: nil)
+            return GeneralAppSettings.default
         }
 
         return settings

@@ -235,6 +235,48 @@ extension InboxNote {
     }
 }
 
+extension Media {
+    public func copy(
+        mediaID: CopiableProp<Int64> = .copy,
+        date: CopiableProp<Date> = .copy,
+        fileExtension: CopiableProp<String> = .copy,
+        filename: CopiableProp<String> = .copy,
+        mimeType: CopiableProp<String> = .copy,
+        src: CopiableProp<String> = .copy,
+        thumbnailURL: NullableCopiableProp<String> = .copy,
+        name: NullableCopiableProp<String> = .copy,
+        alt: NullableCopiableProp<String> = .copy,
+        height: NullableCopiableProp<Double> = .copy,
+        width: NullableCopiableProp<Double> = .copy
+    ) -> Media {
+        let mediaID = mediaID ?? self.mediaID
+        let date = date ?? self.date
+        let fileExtension = fileExtension ?? self.fileExtension
+        let filename = filename ?? self.filename
+        let mimeType = mimeType ?? self.mimeType
+        let src = src ?? self.src
+        let thumbnailURL = thumbnailURL ?? self.thumbnailURL
+        let name = name ?? self.name
+        let alt = alt ?? self.alt
+        let height = height ?? self.height
+        let width = width ?? self.width
+
+        return Media(
+            mediaID: mediaID,
+            date: date,
+            fileExtension: fileExtension,
+            filename: filename,
+            mimeType: mimeType,
+            src: src,
+            thumbnailURL: thumbnailURL,
+            name: name,
+            alt: alt,
+            height: height,
+            width: width
+        )
+    }
+}
+
 extension Order {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,

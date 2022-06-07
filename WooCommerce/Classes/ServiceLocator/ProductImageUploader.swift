@@ -11,6 +11,10 @@ protocol ProductImageUploaderProtocol {
     ///   - isLocalID: whether the product ID is a local ID like in product creation.
     ///   - originalStatuses: the current image statuses of the product for initialization.
     func actionHandler(siteID: Int64, productID: Int64, isLocalID: Bool, originalStatuses: [ProductImageStatus]) -> ProductImageActionHandler
+
+    func saveProductImagesWhenNoneIsPendingUploadAnymore(siteID: Int64, productID: Int64, isLocalID: Bool, onProductSave: @escaping (Result<[ProductImage], Error>) -> Void)
+
+    func hasUnsavedChangesOnImages(siteID: Int64, productID: Int64, isLocalID: Bool, originalImages: [ProductImage]) -> Bool
 }
 
 /// Supports background image upload and product images update after the user leaves the product form.
@@ -22,6 +26,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
     }
 
     private var actionHandlersByProduct: [ProductKey: ProductImageActionHandler] = [:]
+    private var imagesSaverByProduct: [ProductKey: ProductImagesSaver] = [:]
     private let stores: StoresManager
 
     init(stores: StoresManager = ServiceLocator.stores) {
@@ -38,5 +43,37 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
             actionHandlersByProduct[key] = actionHandler
         }
         return actionHandler
+    }
+
+    func hasUnsavedChangesOnImages(siteID: Int64, productID: Int64, isLocalID: Bool, originalImages: [ProductImage]) -> Bool {
+        let key = ProductKey(siteID: siteID, productID: productID, isLocalID: isLocalID)
+        guard let handler = actionHandlersByProduct[key] else {
+            return false
+        }
+        // If there are images scheduled to be saved, there are no unsaved changes if the image statuses to save match the latest image statuses.
+        if let productImagesSaver = imagesSaverByProduct[key], productImagesSaver.imageStatusesToSave.isNotEmpty {
+            return handler.productImageStatuses != productImagesSaver.imageStatusesToSave
+        } else {
+            return handler.productImageStatuses.hasPendingUpload ||
+            handler.productImageStatuses.images.map { $0.imageID } != originalImages.map { $0.imageID }
+        }
+    }
+
+    func saveProductImagesWhenNoneIsPendingUploadAnymore(siteID: Int64, productID: Int64, isLocalID: Bool, onProductSave: @escaping (Result<[ProductImage], Error>) -> Void) {
+        guard isLocalID == false else {
+            return
+        }
+        let key = ProductKey(siteID: siteID, productID: productID, isLocalID: isLocalID)
+        guard let handler = actionHandlersByProduct[key], handler.productImageStatuses.hasPendingUpload else {
+            return
+        }
+        let imagesSaver: ProductImagesSaver
+        if let productImagesSaver = imagesSaverByProduct[key] {
+            imagesSaver = productImagesSaver
+        } else {
+            imagesSaver = ProductImagesSaver(siteID: siteID, productID: productID, stores: stores)
+            imagesSaverByProduct[key] = imagesSaver
+        }
+        imagesSaver.saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: handler, onProductSave: onProductSave)
     }
 }

@@ -22,6 +22,11 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
     }
 
     private var actionHandlersByProduct: [ProductKey: ProductImageActionHandler] = [:]
+    private let stores: StoresManager
+
+    init(stores: StoresManager = ServiceLocator.stores) {
+        self.stores = stores
+    }
 
     func actionHandler(siteID: Int64, productID: Int64, isLocalID: Bool, originalStatuses: [ProductImageStatus]) -> ProductImageActionHandler {
         let key = ProductKey(siteID: siteID, productID: productID, isLocalID: isLocalID)
@@ -29,7 +34,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         if let handler = actionHandlersByProduct[key], handler.productImageStatuses.hasPendingUpload {
             actionHandler = handler
         } else {
-            actionHandler = ProductImageActionHandler(siteID: siteID, productID: productID, imageStatuses: originalStatuses)
+            actionHandler = ProductImageActionHandler(siteID: siteID, productID: productID, imageStatuses: originalStatuses, stores: stores)
             actionHandlersByProduct[key] = actionHandler
         }
         return actionHandler

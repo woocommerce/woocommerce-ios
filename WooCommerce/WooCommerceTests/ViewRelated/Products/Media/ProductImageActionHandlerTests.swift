@@ -4,19 +4,6 @@ import XCTest
 @testable import WooCommerce
 @testable import Yosemite
 
-extension ProductImageStatus: Equatable {
-    public static func == (lhs: ProductImageStatus, rhs: ProductImageStatus) -> Bool {
-        switch (lhs, rhs) {
-        case let (.remote(lhsImage), .remote(rhsImage)):
-            return lhsImage == rhsImage
-        case let (.uploading(lhsAsset), .uploading(rhsAsset)):
-            return lhsAsset == rhsAsset
-        default:
-            return false
-        }
-    }
-}
-
 final class ProductImageActionHandlerTests: XCTestCase {
     private var productImageStatusesSubscription: AnyCancellable?
     private var assetUploadSubscription: AnyCancellable?

@@ -16,6 +16,15 @@ final class NewOrderViewModel: ObservableObject {
 
     private var cancellables: Set<AnyCancellable> = []
 
+    enum Flow: Equatable {
+        case creation
+        case editing(initialOrder: Order)
+    }
+
+    /// Current flow. For editing stores existing order state prior to applying any edits.
+    ///
+    let flow: Flow
+
     /// Indicates whether user has made any changes
     ///
     var hasChanges: Bool {
@@ -199,12 +208,18 @@ final class NewOrderViewModel: ObservableObject {
     private let orderSynchronizer: OrderSynchronizer
 
     init(siteID: Int64,
+         initialOrder: Order? = nil,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
+        if let initialOrder = initialOrder {
+            self.flow = .editing(initialOrder: initialOrder)
+        } else {
+            self.flow = .creation
+        }
         self.stores = stores
         self.storageManager = storageManager
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)

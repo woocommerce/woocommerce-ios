@@ -218,7 +218,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func accountChecks(plugin: CardPresentPaymentsPlugin) -> CardPresentPaymentOnboardingState {
-        guard let account = getPaymentGatewayAccount() else {
+        guard let account = getPaymentGatewayAccount(plugin: plugin) else {
             /// Active plugin but unable to fetch an account? Prompt the merchant to finish setting it up.
             return .pluginSetupNotCompleted(plugin: plugin)
         }
@@ -272,13 +272,13 @@ private extension CardPresentPaymentsOnboardingUseCase {
 
     // Note: This counts on synchronizeStoreCountryAndPlugins having been called to get
     // the appropriate account for the site, be that Stripe or WCPay
-    func getPaymentGatewayAccount() -> PaymentGatewayAccount? {
+    func getPaymentGatewayAccount(plugin: CardPresentPaymentsPlugin) -> PaymentGatewayAccount? {
         guard let siteID = siteID else {
             return nil
         }
         return storageManager.viewStorage
             .loadPaymentGatewayAccounts(siteID: siteID)
-            .first(where: \.isCardPresentEligible)?
+            .first(where: { $0.isCardPresentEligible && $0.gatewayID == plugin.gatewayID })?
             .toReadOnly()
     }
 

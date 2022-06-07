@@ -235,7 +235,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         // Given
         setupCountry(country: .us)
         setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
-        setupPaymentGatewayAccount(accountType: StripeAccount.self, status: .complete, isLive: true, isInTestMode: true)
+        setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .complete, isLive: true, isInTestMode: true)
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
@@ -334,7 +334,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         setupCountry(country: .us)
         setupWCPayPlugin(status: .inactive, version: WCPayPluginVersion.minimumSupportedVersion)
         setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
-        setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .complete)
+        setupPaymentGatewayAccount(accountType: StripeAccount.self, status: .complete)
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)

@@ -14,7 +14,7 @@ public extension PaymentIntent {
             .flatMap { Int64($0) }
 
         return CardPresentReceiptParameters(amount: amount,
-                                            formattedAmount: formattedAmount(amount),
+                                            formattedAmount: formattedAmount(amount, currency: currency),
                                             currency: currency,
                                             date: created,
                                             storeName: metadata?[CardPresentReceiptParameters.MetadataKeys.store],
@@ -22,13 +22,13 @@ public extension PaymentIntent {
                                             orderID: orderID)
     }
 
-    private func formattedAmount(_ amount: UInt) -> String {
+    private func formattedAmount(_ amount: UInt, currency: String) -> String {
         let formatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let decimalPosition = 2 // TODO - support non cent currencies like JPY - see #3948
 
         var amount: Decimal = Decimal(amount)
         amount = amount / pow(10, decimalPosition)
 
-        return formatter.localize(amount, in: decimalPosition) ?? ""
+        return formatter.formatAmount(amount, with: currency) ?? ""
     }
 }

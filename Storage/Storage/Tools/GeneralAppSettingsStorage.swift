@@ -42,7 +42,7 @@ public struct GeneralAppSettingsStorage {
     public func setValue<T>(_ value: T, for setting: WritableKeyPath<GeneralAppSettings, T>) throws {
         var settings = loadOrCreateGeneralAppSettings()
         settings[keyPath: setting] = value
-        try saveGeneralAppSettings(settings)
+        try saveSettings(settings)
     }
 
     /// Returns the GeneralAppSettings object

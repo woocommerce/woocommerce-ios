@@ -44,6 +44,51 @@ class GeneralAppSettingsStorageTests: XCTestCase {
         XCTAssertEqual(storage.settings, settings)
     }
 
+    func test_settings_publisher_publishes_values() throws {
+        // Given
+        var receivedSettings = [GeneralAppSettings]()
+        let cancelable = storage.settingsPublisher.sink { settings in
+            receivedSettings.append(settings)
+        }
+
+        let settings1 = GeneralAppSettings.default
+        var settings2 = settings1
+        settings2.knownCardReaders = ["READER2"]
+
+        // When
+        try storage.saveSettings(settings1)
+        try storage.saveSettings(settings2)
+
+        // Then
+        XCTAssertEqual(receivedSettings.count, 2)
+        XCTAssertEqual(receivedSettings, [settings1, settings2])
+
+        // Tear down
+        cancelable.cancel()
+    }
+
+    func test_settings_publisher_does_not_publish_duplicates() throws {
+        // Given
+        var receivedSettings = [GeneralAppSettings]()
+        let cancelable = storage.settingsPublisher.sink { settings in
+            receivedSettings.append(settings)
+        }
+
+        let settings1 = GeneralAppSettings.default
+        let settings2 = GeneralAppSettings.default
+
+        // When
+        try storage.saveSettings(settings1)
+        try storage.saveSettings(settings2)
+
+        // Then
+        XCTAssertEqual(receivedSettings.count, 1)
+        XCTAssertEqual(receivedSettings, [settings1])
+
+        // Tear down
+        cancelable.cancel()
+    }
+
     func test_value_reads_settings_default_value() {
         // Given
 
@@ -63,5 +108,72 @@ class GeneralAppSettingsStorageTests: XCTestCase {
 
         // Then
         XCTAssertEqual(storage.value(for: \.installationDate), date)
+    }
+
+    func test_value_publisher_publishes_values() throws {
+        // Given
+        var receivedValues = [[String]]()
+
+        let value1 = ["READER1"]
+        let value2 = ["READER2"]
+        try storage.setValue(value1, for: \.knownCardReaders)
+
+        // When
+        let cancelable = storage.publisher(for: \.knownCardReaders).sink { value in
+            receivedValues.append(value)
+        }
+        try storage.setValue(value2, for: \.knownCardReaders)
+
+        // Then
+        XCTAssertEqual(receivedValues.count, 2)
+        XCTAssertEqual(receivedValues, [value1, value2])
+
+        // Tear down
+        cancelable.cancel()
+    }
+
+    func test_value_publisher_does_not_publish_duplicates() throws {
+        // Given
+        var receivedValues = [[String]]()
+
+        let value1 = ["READER1"]
+        let value2 = ["READER1"]
+        try storage.setValue(value1, for: \.knownCardReaders)
+        let cancelable = storage.publisher(for: \.knownCardReaders).sink { value in
+            receivedValues.append(value)
+        }
+
+        // When
+        try storage.setValue(value2, for: \.knownCardReaders)
+
+        // Then
+        XCTAssertEqual(receivedValues.count, 1)
+        XCTAssertEqual(receivedValues, [value1])
+
+        // Tear down
+        cancelable.cancel()
+    }
+
+    func test_value_publisher_does_not_publish_values_for_other_settings() throws {
+        // Given
+        var receivedValues = [[String]]()
+
+        let value1 = ["READER1"]
+        let value2 = Date()
+
+        try storage.setValue(value1, for: \.knownCardReaders)
+        let cancelable = storage.publisher(for: \.knownCardReaders).sink { value in
+            receivedValues.append(value)
+        }
+
+        // When
+        try storage.setValue(value2, for: \.installationDate)
+
+        // Then
+        XCTAssertEqual(receivedValues.count, 1)
+        XCTAssertEqual(receivedValues, [value1])
+
+        // Tear down
+        cancelable.cancel()
     }
 }

@@ -67,7 +67,10 @@ final class ProductImageUploaderTests: XCTestCase {
         }
 
         // Then
-        XCTAssertFalse(imageUploader.hasUnsavedChangesOnImages(siteID: siteID, productID: productID, isLocalID: false, originalImages: []))
+        XCTAssertFalse(imageUploader.hasUnsavedChangesOnImages(siteID: siteID,
+                                                               productID: productID,
+                                                               isLocalID: false,
+                                                               originalImages: [.fake().copy(imageID: 645)]))
         XCTAssertTrue(resultOfSavedImages.isSuccess)
         let images = try XCTUnwrap(resultOfSavedImages.get())
         XCTAssertEqual(images.map { $0.imageID }, [uploadedMedia.mediaID])
@@ -124,7 +127,10 @@ final class ProductImageUploaderTests: XCTestCase {
         }
 
         // Then
-        XCTAssertFalse(imageUploader.hasUnsavedChangesOnImages(siteID: siteID, productID: productID, isLocalID: false, originalImages: []))
+        XCTAssertFalse(imageUploader.hasUnsavedChangesOnImages(siteID: siteID,
+                                                               productID: productID,
+                                                               isLocalID: false,
+                                                               originalImages: [.fake().copy(imageID: 606), .fake().copy(imageID: 645)]))
         XCTAssertTrue(resultOfSavedImages.isSuccess)
         let images = try XCTUnwrap(resultOfSavedImages.get())
         XCTAssertEqual(images.map { $0.imageID }, [606, 645])

@@ -1,6 +1,16 @@
 import SwiftUI
 import Yosemite
 
+final class InPersonPaymentsSelectPluginViewController: UIHostingController<InPersonPaymentsSelectPluginView> {
+    init(selectedPlugin: CardPresentPaymentsPlugin?, onPluginSelected: @escaping (CardPresentPaymentsPlugin) -> Void) {
+        super.init(rootView: InPersonPaymentsSelectPluginView(selectedPlugin: selectedPlugin, onPluginSelected: onPluginSelected))
+    }
+
+    @objc required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 struct InPersonPaymentsSelectPluginRow: View {
     let icon: UIImage
     let name: String

@@ -6,9 +6,17 @@ final class InPersonPaymentsMenuViewController: UITableViewController {
     private let pluginState: CardPresentPaymentsPluginState
     private var rows = [Row]()
     private let configurationLoader: CardPresentConfigurationLoader
+    private let onPluginSelected: (CardPresentPaymentsPlugin) -> Void
+    private let onPluginSelectionCleared: () -> Void
 
-    init(pluginState: CardPresentPaymentsPluginState) {
+    init(
+        pluginState: CardPresentPaymentsPluginState,
+        onPluginSelected: @escaping (CardPresentPaymentsPlugin) -> Void,
+        onPluginSelectionCleared: @escaping () -> Void
+    ) {
         self.pluginState = pluginState
+        self.onPluginSelected = onPluginSelected
+        self.onPluginSelectionCleared = onPluginSelectionCleared
         configurationLoader = CardPresentConfigurationLoader()
         super.init(style: .grouped)
     }
@@ -34,7 +42,16 @@ private extension InPersonPaymentsMenuViewController {
         rows = [
             .orderCardReader,
             .manageCardReader
-        ] + readerManualRows()
+        ]
+        + manageGatewayRows()
+        + readerManualRows()
+    }
+
+    func manageGatewayRows() -> [Row] {
+        guard pluginState.available.containsMoreThanOne else {
+            return []
+        }
+        return [.managePaymentGateways]
     }
 
     func readerManualRows() -> [Row] {
@@ -73,6 +90,8 @@ private extension InPersonPaymentsMenuViewController {
             configureOrderCardReader(cell: cell)
         case let cell as LeftImageTableViewCell where row == .manageCardReader:
             configureManageCardReader(cell: cell)
+        case let cell as LeftImageTableViewCell where row == .managePaymentGateways:
+            configureManagePaymentGateways(cell: cell)
         case let cell as LeftImageTableViewCell where row == .bbposChipper2XBTManual:
             configureChipper2XManual(cell: cell)
         case let cell as LeftImageTableViewCell where row == .stripeM2Manual:
@@ -96,6 +115,13 @@ private extension InPersonPaymentsMenuViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.configure(image: .creditCardIcon, text: Localization.manageCardReader)
+    }
+
+    func configureManagePaymentGateways(cell: LeftImageTableViewCell) {
+        cell.imageView?.tintColor = .text
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.configure(image: .creditCardIcon, text: Localization.managePaymentGateways)
     }
 
     func configureChipper2XManual(cell: LeftImageTableViewCell) {
@@ -146,6 +172,10 @@ extension InPersonPaymentsMenuViewController {
         show(viewController, sender: self)
     }
 
+    func managePaymentGatewaysWasPressed() {
+        onPluginSelectionCleared()
+    }
+
     func bbposChipper2XBTManualWasPressed() {
         WebviewHelper.launch(Constants.bbposChipper2XBTManualURL, with: self)
     }
@@ -190,6 +220,8 @@ extension InPersonPaymentsMenuViewController {
             orderCardReaderWasPressed()
         case .manageCardReader:
             manageCardReaderWasPressed()
+        case .managePaymentGateways:
+            managePaymentGatewaysWasPressed()
         case .bbposChipper2XBTManual:
             bbposChipper2XBTManualWasPressed()
         case .stripeM2Manual:
@@ -214,6 +246,11 @@ private extension InPersonPaymentsMenuViewController {
             comment: "Navigates to Card Reader management screen"
         )
 
+        static let managePaymentGateways = NSLocalizedString(
+            "Manage payment gateways",
+            comment: "Navigates to Payment Gateway management screen"
+        )
+
         static let chipperCardReaderManual = NSLocalizedString(
             "Chipper 2X card reader manual",
             comment: "Navigates to Chipper Card Reader manual"
@@ -234,6 +271,7 @@ private extension InPersonPaymentsMenuViewController {
 private enum Row: CaseIterable {
     case orderCardReader
     case manageCardReader
+    case managePaymentGateways
     case bbposChipper2XBTManual
     case stripeM2Manual
     case wisepad3Manual
@@ -260,9 +298,11 @@ private enum Constants {
 ///
 struct InPersonPaymentsMenu: UIViewControllerRepresentable {
     let pluginState: CardPresentPaymentsPluginState
+    let onPluginSelected: (CardPresentPaymentsPlugin) -> Void
+    let onPluginSelectionCleared: () -> Void
 
     func makeUIViewController(context: Context) -> some UIViewController {
-        InPersonPaymentsMenuViewController(pluginState: pluginState)
+        InPersonPaymentsMenuViewController(pluginState: pluginState, onPluginSelected: onPluginSelected, onPluginSelectionCleared: onPluginSelectionCleared)
     }
 
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {

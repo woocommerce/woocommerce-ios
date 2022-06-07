@@ -179,6 +179,10 @@ public enum AppSettingsAction: Action {
     ///
     case getPreferredInPersonPaymentGateway(siteID: Int64, onCompletion: (String?) -> Void)
 
+    /// Forgets the preferred payment gateway for In-Person Payments
+    ///
+    case forgetPreferredInPersonPaymentGateway(siteID: Int64)
+
     /// Clears all the products settings
     ///
     case resetGeneralStoreSettings

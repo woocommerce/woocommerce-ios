@@ -91,7 +91,7 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var shouldAllowWCShipInstallation: Bool {
         let isFeatureFlagEnabled = featureFlags.isFeatureFlagEnabled(.shippingLabelsOnboardingM1)
-        let plugin = resultsControllers.sitePlugins.first { $0.name == "WooCommerce Shipping & Tax" }
+        let plugin = resultsControllers.sitePlugins.first { $0.name == SitePlugin.SupportedPlugin.WCShip }
         let isPluginInstalled = plugin != nil
         let isPluginActive = plugin?.status.isActive ?? false
         let isCountryCodeUS = SiteAddress(siteSettings: siteSettings).countryCode == SiteAddress.CountryCode.US.rawValue

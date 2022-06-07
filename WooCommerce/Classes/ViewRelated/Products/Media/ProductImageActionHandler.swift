@@ -7,7 +7,7 @@ import Yosemite
 final class ProductImageActionHandler {
     typealias AllStatuses = (productImageStatuses: [ProductImageStatus], error: Error?)
     typealias OnAllStatusesUpdate = (AllStatuses) -> Void
-    typealias OnAssetUpload = (PHAsset, ProductImage) -> Void
+    typealias OnAssetUpload = (PHAsset, Result<ProductImage, Error>) -> Void
 
     private let siteID: Int64
     private let productID: Int64
@@ -106,7 +106,7 @@ final class ProductImageActionHandler {
                 return
             }
 
-            self.observations.assetUploaded[id] = { [weak self, weak observer] asset, productImage in
+            self.observations.assetUploaded[id] = { [weak self, weak observer] asset, result in
                 // If the observer has been deallocated, we can
                 // automatically remove the observation closure.
                 guard observer != nil else {
@@ -114,7 +114,7 @@ final class ProductImageActionHandler {
                     return
                 }
 
-                onAssetUpload(asset, productImage)
+                onAssetUpload(asset, result)
             }
         }
 
@@ -242,7 +242,7 @@ private extension ProductImageActionHandler {
     func updateProductImageStatus(at index: Int, productImage: ProductImage) {
         if case .uploading(let asset) = allStatuses.productImageStatuses[safe: index] {
             observations.assetUploaded.values.forEach { closure in
-                closure(asset, productImage)
+                closure(asset, .success(productImage))
             }
         }
 
@@ -251,7 +251,13 @@ private extension ProductImageActionHandler {
         allStatuses = (productImageStatuses: imageStatuses, error: nil)
     }
 
-    func updateProductImageStatus(at index: Int, error: Error?) {
+    func updateProductImageStatus(at index: Int, error: Error) {
+        if case .uploading(let asset) = allStatuses.productImageStatuses[safe: index] {
+            observations.assetUploaded.values.forEach { closure in
+                closure(asset, .failure(error))
+            }
+        }
+
         var imageStatuses = allStatuses.productImageStatuses
         imageStatuses.remove(at: index)
         allStatuses = (productImageStatuses: imageStatuses, error: error)

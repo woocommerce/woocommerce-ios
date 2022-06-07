@@ -50,7 +50,10 @@ final class ProductDownloadListViewController: UIViewController {
         onWPMediaPickerCompletion = { [weak self] mediaItems in
             self?.onWPMediaPickerCompletion(mediaItems: mediaItems)
         }
-        cancellable = productImageActionHandler?.addAssetUploadObserver(self) { [weak self] asset, productImage in
+        cancellable = productImageActionHandler?.addAssetUploadObserver(self) { [weak self] asset, result in
+            guard case let .success(productImage) = result else {
+                return
+            }
             self?.addDownloadableFile(fileName: productImage.name, fileURL: productImage.src)
             self?.loadingView.hideLoader()
         }

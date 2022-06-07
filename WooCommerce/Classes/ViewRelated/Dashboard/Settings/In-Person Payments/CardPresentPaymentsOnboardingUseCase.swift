@@ -93,13 +93,22 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     }
 
     func selectPlugin(_ selectedPlugin: CardPresentPaymentsPlugin) {
-        assert(state == .selectPlugin)
         preferredPluginLocal = selectedPlugin
         updateState()
         if case .completed(let pluginState) = state,
            pluginState.preferred == selectedPlugin {
             savePreferredPlugin(selectedPlugin)
         }
+    }
+
+    func clearPluginSelection() {
+        guard let siteID = siteID else {
+            return
+        }
+        preferredPluginLocal = nil
+        let action = AppSettingsAction.forgetPreferredInPersonPaymentGateway(siteID: siteID)
+        stores.dispatch(action)
+        updateState()
     }
 }
 

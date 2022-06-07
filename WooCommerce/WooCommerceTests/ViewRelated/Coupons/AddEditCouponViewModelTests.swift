@@ -249,5 +249,16 @@ final class AddEditCouponViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.amountField, "100")
     }
+
+    func test_discount_type_changed_converts_invalid_amount_to_zero() {
+        // Given
+        let coupon = Coupon.sampleCoupon.copy(amount: "invalid")
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+
+        // When
+        viewModel.discountType = .percent
+
+        // Then
+        XCTAssertEqual(viewModel.amountField, "0")
     }
 }

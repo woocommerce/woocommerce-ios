@@ -24,7 +24,8 @@ final class ProductImagesSaver {
     /// - Parameters:
     ///   - imageActionHandler: action handler that provides the latest image statuses and image asset upload subscription.
     ///   - onProductSave: called after the product is updated remotely with the uploaded images.
-    func saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: ProductImageActionHandler, onProductSave: @escaping (Result<[ProductImage], Error>) -> Void) {
+    func saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: ProductImageActionHandler,
+                                                         onProductSave: @escaping (Result<[ProductImage], Error>) -> Void) {
         let imageStatuses = imageActionHandler.productImageStatuses
         guard imageStatuses.hasPendingUpload else {
             return

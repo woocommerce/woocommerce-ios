@@ -12,8 +12,25 @@ protocol ProductImageUploaderProtocol {
     ///   - originalStatuses: the current image statuses of the product for initialization.
     func actionHandler(siteID: Int64, productID: Int64, isLocalID: Bool, originalStatuses: [ProductImageStatus]) -> ProductImageActionHandler
 
-    func saveProductImagesWhenNoneIsPendingUploadAnymore(siteID: Int64, productID: Int64, isLocalID: Bool, onProductSave: @escaping (Result<[ProductImage], Error>) -> Void)
+    /// Saves the product remotely with the images after none is pending upload.
+    /// - Parameters:
+    ///   - siteID: the ID of the site where images are uploaded to.
+    ///   - productID: the ID of the product where images are added to.
+    ///   - isLocalID: whether the product ID is a local ID like in product creation.
+    ///   - onProductSave: called after the product is saved remotely with the uploaded images.
+    func saveProductImagesWhenNoneIsPendingUploadAnymore(siteID: Int64,
+                                                         productID: Int64,
+                                                         isLocalID: Bool,
+                                                         onProductSave: @escaping (Result<[ProductImage], Error>) -> Void)
 
+    /// Determines whether there are unsaved changes on a product's images.
+    /// If the product had any save request before, it checks whether the image statuses to save match the latest image statuses.
+    /// Otherwise, it checks whether there is any pending upload or the image statuses match the given original image statuses.
+    /// - Parameters:
+    ///   - siteID: the ID of the site where images are uploaded to.
+    ///   - productID: the ID of the product where images are added to.
+    ///   - isLocalID: whether the product ID is a local ID like in product creation.
+    ///   - originalImages: the image statuses before any edits.
     func hasUnsavedChangesOnImages(siteID: Int64, productID: Int64, isLocalID: Bool, originalImages: [ProductImage]) -> Bool
 }
 
@@ -59,7 +76,10 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         }
     }
 
-    func saveProductImagesWhenNoneIsPendingUploadAnymore(siteID: Int64, productID: Int64, isLocalID: Bool, onProductSave: @escaping (Result<[ProductImage], Error>) -> Void) {
+    func saveProductImagesWhenNoneIsPendingUploadAnymore(siteID: Int64,
+                                                         productID: Int64,
+                                                         isLocalID: Bool,
+                                                         onProductSave: @escaping (Result<[ProductImage], Error>) -> Void) {
         guard isLocalID == false else {
             return
         }

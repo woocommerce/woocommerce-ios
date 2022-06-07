@@ -6,12 +6,15 @@ final class LegacyProductImageUploader: ProductImageUploaderProtocol {
         ProductImageActionHandler(siteID: siteID, productID: productID, imageStatuses: originalStatuses)
     }
 
-    func saveProductImagesWhenNoneIsPendingUploadAnymore(siteID: Int64, productID: Int64, isLocalID: Bool, onProductSave: @escaping (Result<[ProductImage], Error>) -> Void) {
+    func saveProductImagesWhenNoneIsPendingUploadAnymore(siteID: Int64,
+                                                         productID: Int64,
+                                                         isLocalID: Bool,
+                                                         onProductSave: @escaping (Result<[ProductImage], Error>) -> Void) {
         // no-op
     }
 
     func hasUnsavedChangesOnImages(siteID: Int64, productID: Int64, isLocalID: Bool, originalImages: [ProductImage]) -> Bool {
-        // no-op
+        // The result is not used.
         return false
     }
 }

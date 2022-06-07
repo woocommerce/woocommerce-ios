@@ -14,7 +14,7 @@ public class CurrencyFormatter {
     ///   - stringValue: the string received from the API
     ///   - locale: the locale that the currency string is based on.
     ///
-    public func convertToDecimal(from stringValue: String, locale: Locale = .current) -> NSDecimalNumber? {
+    public func convertToDecimal(_ stringValue: String, locale: Locale = .current) -> NSDecimalNumber? {
 
         // NSDecimalNumber use by default the local decimal separator to evaluate a decimal amount.
         // We substitute the current decimal separator with the locale decimal separator.
@@ -150,7 +150,7 @@ public class CurrencyFormatter {
     ///     - locale: the locale that is used to format the currency amount string.
     ///
     public func formatAmount(_ amount: String, with currency: String? = nil, locale: Locale = .current) -> String? {
-        guard let decimalAmount = convertToDecimal(from: amount, locale: locale) else {
+        guard let decimalAmount = convertToDecimal(amount, locale: locale) else {
             return nil
         }
 
@@ -193,7 +193,7 @@ public class CurrencyFormatter {
                                    with currency: String? = nil,
                                    roundSmallNumbers: Bool = true,
                                    locale: Locale = .current) -> String? {
-        guard let amount = convertToDecimal(from: stringAmount, locale: locale) else {
+        guard let amount = convertToDecimal(stringAmount, locale: locale) else {
             assertionFailure("Cannot convert the amount \"\(stringAmount)\" to decimal value with locale \(locale.identifier)")
             return nil
         }

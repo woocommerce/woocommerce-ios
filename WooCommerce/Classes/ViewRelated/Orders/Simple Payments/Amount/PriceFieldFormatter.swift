@@ -15,7 +15,7 @@ class PriceFieldFormatter {
     /// Current amount converted to Decimal.
     ///
     var amountDecimal: Decimal? {
-        guard let amountDecimal = currencyFormatter.convertToDecimal(from: amount) else {
+        guard let amountDecimal = currencyFormatter.convertToDecimal(amount) else {
             return nil
         }
 

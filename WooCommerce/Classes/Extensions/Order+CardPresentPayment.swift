@@ -28,7 +28,7 @@ extension Order {
         }
 
         let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
-        guard let totalAmount = currencyFormatter.convertToDecimal(from: total), totalAmount.decimalValue > 0 else {
+        guard let totalAmount = currencyFormatter.convertToDecimal(total), totalAmount.decimalValue > 0 else {
             return false
         }
 

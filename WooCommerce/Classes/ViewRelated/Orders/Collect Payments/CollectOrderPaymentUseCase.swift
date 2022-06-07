@@ -42,7 +42,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     /// fired and disposed, not reused for multiple payment flows).
     ///
     private lazy var orderTotal: NSDecimalNumber? = {
-        currencyFormatter.convertToDecimal(from: order.total)
+        currencyFormatter.convertToDecimal(order.total)
     }()
 
     /// Formatted amount to collect.

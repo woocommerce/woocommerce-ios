@@ -255,6 +255,7 @@ private extension SettingsViewController {
         let wpcomAPI = WordPressComRestApi(oAuthToken: credentials.authToken,
                                            userAgent: UserAgent.defaultUserAgent,
                                            baseUrlString: Settings.wordpressApiBaseURL)
+        // TODO: show in-progress UI while waiting for API response
         AccountServiceRemoteREST(wordPressComRestApi: wpcomAPI)
             .disconnectFromSocialService(.apple,
                                          oAuthClientID: ApiCredentials.dotcomAppId,

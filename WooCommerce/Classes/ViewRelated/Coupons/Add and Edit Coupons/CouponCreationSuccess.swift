@@ -56,7 +56,7 @@ struct CouponCreationSuccess: View {
         }
     }
 
-    func animateEntry() {
+    private func animateEntry() {
         let buttonGroupAnimation = Animation.easeIn(duration: Constants.buttonGroupAnimationDuration)
 
         let imageAnimation = Animation

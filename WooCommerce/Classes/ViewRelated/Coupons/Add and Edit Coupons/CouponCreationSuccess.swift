@@ -9,14 +9,24 @@ struct CouponCreationSuccess: View {
         VStack(alignment: .leading, spacing: 0) {
             VStack(alignment: .leading, spacing: 0) {
                 Image(uiImage: UIImage.checkSuccessImage)
-                    .padding(.bottom, 40)
-                Text("Your new coupon was created!")
+                    .padding(.bottom, Constants.imageBottomSpacing)
+                Text(Localization.successMessage)
                     .font(.largeTitle)
                     .bold()
                 Text(couponCode)
                     .font(.largeTitle)
             }
         }
+    }
+}
+
+private extension CouponCreationSuccess {
+    enum Constants {
+        static let imageBottomSpacing: CGFloat = 40
+    }
+
+    enum Localization {
+        static let successMessage = NSLocalizedString("Your new coupon was created!", comment: "Message displayed when a coupon was successfully created")
     }
 }
 

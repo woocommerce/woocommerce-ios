@@ -231,7 +231,7 @@ private extension CouponListViewController {
     }
 
     func configureNavigationBarItems(hasCoupons: Bool) {
-        navigationItem.rightBarButtonItems = hasCoupons ? [searchBarButtonItem] : []
+        navigationItem.rightBarButtonItems = hasCoupons ? [createCouponButtonItem, searchBarButtonItem] : [createCouponButtonItem]
     }
 
     func configureTableView() {
@@ -275,7 +275,7 @@ private extension CouponListViewController {
         present(navigationController, animated: true, completion: nil)
     }
 
-    private func displayCouponTypeBottomSheet() {
+    @objc private func displayCouponTypeBottomSheet() {
         ServiceLocator.analytics.track(.couponsListCreateTapped)
     }
 

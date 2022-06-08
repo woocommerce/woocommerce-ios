@@ -233,6 +233,19 @@ final class AddEditCouponViewModel: ObservableObject {
         codeField = code
     }
 
+    func createCoupon(coupon: Coupon) {
+        let action = CouponAction.createCoupon(coupon, siteTimezone: timezone) { [weak self] result in
+            guard let self = self else { return }
+            self.isLoading = false
+            switch result {
+            case .success(_):
+                self.onCompletion(result)
+            case .failure:
+                DDLogError("⛔️ Error creating the coupon: \(error)")
+            }
+        }
+    }
+
     func updateCoupon(coupon: Coupon, onUpdateFinished: @escaping () -> Void) {
         trackCouponUpdateInitiated(with: coupon)
 

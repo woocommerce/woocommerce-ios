@@ -130,6 +130,7 @@ final class AddEditCouponViewModel: ObservableObject {
     }
 
     var hasChangesMade: Bool {
+        guard !isCreationFlow else { return true }
         let coupon = populatedCoupon
         return checkDiscountTypeUpdated(for: coupon) ||
         checkAmountUpdated(for: coupon) ||
@@ -246,13 +247,14 @@ final class AddEditCouponViewModel: ObservableObject {
     }
 
     private func createCoupon(coupon: Coupon) {
+        isLoading = true
         let action = CouponAction.createCoupon(coupon, siteTimezone: timezone) { [weak self] result in
             guard let self = self else { return }
             self.isLoading = false
             switch result {
             case .success(_):
                 self.onCompletion(result)
-            case .failure:
+            case .failure(let error):
                 DDLogError("⛔️ Error creating the coupon: \(error)")
             }
         }

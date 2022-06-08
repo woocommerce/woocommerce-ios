@@ -278,8 +278,9 @@ private extension CouponListViewController {
     @objc private func displayCouponTypeBottomSheet() {
         ServiceLocator.analytics.track(.couponsListCreateTapped)
         let viewProperties = BottomSheetListSelectorViewProperties(title: "Select something")
-        let command = DiscountTypeBottomSheetListSelectorCommand(selected: nil) { selectedType in
-
+        let command = DiscountTypeBottomSheetListSelectorCommand(selected: nil) { [weak self] selectedType in
+            guard let self = self else { return }
+            self.presentedViewController?.dismiss(animated: true, completion: nil)
         }
 
         let bottomSheet = BottomSheetListSelectorViewController(viewProperties: viewProperties, command: command, onDismiss: nil)

@@ -48,6 +48,21 @@ final class CouponListViewController: UIViewController, GhostableViewController 
         return button
     }()
 
+    /// Create a `UIBarButtonItem` to be used as the create coupon button on the top-right.
+    ///
+    private lazy var createCouponButtonItem: UIBarButtonItem = {
+        let button = UIBarButtonItem(image: .plusImage,
+                style: .plain,
+                target: self,
+                action: #selector(displayCouponTypeBottomSheet))
+        button.accessibilityTraits = .button
+        button.accessibilityLabel = Localization.accessibilityLabelCreateCoupons
+        button.accessibilityHint = Localization.accessibilityHintCreateCoupons
+        button.accessibilityIdentifier = "coupon-create-button"
+
+        return button
+    }()
+
     private var subscriptions: Set<AnyCancellable> = []
 
     private lazy var dataSource: UITableViewDiffableDataSource<Section, CouponListViewModel.CellViewModel> = makeDataSource()

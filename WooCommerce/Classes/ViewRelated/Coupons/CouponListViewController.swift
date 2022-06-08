@@ -260,6 +260,10 @@ private extension CouponListViewController {
         present(navigationController, animated: true, completion: nil)
     }
 
+    private func displayCouponTypeBottomSheet() {
+        ServiceLocator.analytics.track(.couponsListCreateTapped)
+    }
+
     func createFeedbackBannerView() -> TopBannerView {
         let giveFeedbackAction = TopBannerViewModel.ActionButton(title: Localization.giveFeedbackAction) { [weak self] _ in
             ServiceLocator.analytics.track(event: .featureFeedbackBanner(context: .couponManagement, action: .gaveFeedback))
@@ -389,8 +393,8 @@ private extension CouponListViewController {
 private extension CouponListViewController {
     enum Localization {
         static let title = NSLocalizedString(
-            "Coupons",
-            comment: "Coupon management coupon list screen title")
+                "Coupons",
+                comment: "Coupon management coupon list screen title")
 
         static let emptyStateMessage = NSLocalizedString(
             "No coupons found",

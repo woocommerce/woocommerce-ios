@@ -6,7 +6,9 @@ struct CouponCreationSuccess: View {
     let couponCode: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .center, spacing: 0) {
+            Spacer()
+
             VStack(alignment: .leading, spacing: 0) {
                 Image(uiImage: UIImage.checkSuccessImage)
                     .padding(.bottom, Constants.imageBottomSpacing)
@@ -16,6 +18,22 @@ struct CouponCreationSuccess: View {
                 Text(couponCode)
                     .font(.largeTitle)
             }
+            .padding(Constants.contentPadding)
+
+            Spacer()
+
+            VStack(alignment: .center, spacing: Constants.contentPadding) {
+                Button(Localization.shareCoupon) {
+                    // TODO
+                }
+                .buttonStyle(PrimaryButtonStyle())
+
+                Button(Localization.close) {
+                    // TODO
+                }
+                .buttonStyle(SecondaryButtonStyle())
+            }
+            .padding(Constants.contentPadding)
         }
     }
 }
@@ -23,6 +41,7 @@ struct CouponCreationSuccess: View {
 private extension CouponCreationSuccess {
     enum Constants {
         static let imageBottomSpacing: CGFloat = 40
+        static let contentPadding: CGFloat = 16
     }
 
     enum Localization {

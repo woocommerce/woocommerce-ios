@@ -258,6 +258,7 @@ final class AddEditCouponViewModel: ObservableObject {
                 DDLogError("⛔️ Error creating the coupon: \(error)")
             }
         }
+        stores.dispatch(action)
     }
 
     private func updateCoupon(coupon: Coupon, onUpdateFinished: @escaping () -> Void) {

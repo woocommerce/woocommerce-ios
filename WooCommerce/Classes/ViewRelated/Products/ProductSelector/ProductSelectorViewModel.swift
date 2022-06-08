@@ -2,6 +2,7 @@ import Yosemite
 import protocol Storage.StorageManagerType
 import Combine
 import Foundation
+import WooFoundation
 
 /// View model for `ProductSelector`.
 ///

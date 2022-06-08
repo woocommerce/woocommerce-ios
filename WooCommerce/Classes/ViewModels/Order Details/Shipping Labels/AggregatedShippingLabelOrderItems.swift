@@ -1,4 +1,5 @@
 import Yosemite
+import WooFoundation
 
 /// Aggregates the order items included in a shipping label for UI display given the currently available `OrderItem`s, `Product`s,
 /// and `ProductVariation`s from an `Order`.
@@ -112,7 +113,7 @@ private extension AggregatedShippingLabelOrderItems {
         case .product(let product, let orderItem, let name):
             let productName = orderItem?.name ?? name
             let price = orderItem?.price ??
-                currencyFormatter.convertToDecimal(from: product.price) ?? 0
+                currencyFormatter.convertToDecimal(product.price) ?? 0
             let totalPrice = price.multiplying(by: .init(decimal: Decimal(quantity)))
             let imageURL: URL?
             if let encodedImageURLString = product.images.first?.src.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
@@ -132,7 +133,7 @@ private extension AggregatedShippingLabelOrderItems {
         case .productVariation(let variation, let orderItem, let name):
             let productName = orderItem?.name ?? name
             let price = orderItem?.price ??
-                currencyFormatter.convertToDecimal(from: variation.price) ?? 0
+                currencyFormatter.convertToDecimal(variation.price) ?? 0
             let totalPrice = price.multiplying(by: .init(decimal: Decimal(quantity)))
             let imageURL: URL?
             if let encodedImageURLString = variation.image?.src.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {

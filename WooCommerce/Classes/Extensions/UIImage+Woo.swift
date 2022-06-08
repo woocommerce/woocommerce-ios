@@ -689,7 +689,7 @@ extension UIImage {
     /// Simple Payments Icon
     ///
     static var simplePaymentsImage: UIImage {
-        return UIImage(named: "icon-simple-payments")!
+        return UIImage(named: "icon-simple-payments")!.withRenderingMode(.alwaysTemplate)
     }
 
     /// Work In Progress banner icon on the Products Tab
@@ -928,6 +928,12 @@ extension UIImage {
     ///
     static var waitingForCustomersImage: UIImage {
         return UIImage(named: "woo-waiting-customers")!
+    }
+
+    /// Install WCShip banner Image
+    ///
+    static var installWCShipImage: UIImage {
+        return UIImage(named: "woo-wcship-install-banner")!
     }
 
     /// What is Jetpack Image

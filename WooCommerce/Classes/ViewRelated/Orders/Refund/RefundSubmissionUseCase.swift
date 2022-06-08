@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import Yosemite
+import WooFoundation
 import protocol Storage.StorageManagerType
 
 /// Protocol to abstract the `RefundSubmissionUseCase`.
@@ -157,7 +158,7 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
             cardPresentPaymentsOnboardingPresenter.showOnboardingIfRequired(
                 from: rootViewController) { [weak self] in
                 guard let self = self else { return }
-                guard let refundAmount = self.currencyFormatter.convertToDecimal(from: self.details.amount) else {
+                guard let refundAmount = self.currencyFormatter.convertToDecimal(self.details.amount) else {
                     DDLogError("Error: attempted to refund an order without a valid amount.")
                     return onCompletion(.failure(RefundSubmissionError.invalidRefundAmount))
                 }

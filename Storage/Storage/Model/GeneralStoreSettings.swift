@@ -29,12 +29,18 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public let areSimplePaymentTaxesEnabled: Bool
 
+    /// Stores the preferred payment gateway for In-Person Payments
+    ///
+    public let preferredInPersonPaymentGateway: String?
+
     public init(isTelemetryAvailable: Bool = false,
                 telemetryLastReportedTime: Date? = nil,
-                areSimplePaymentTaxesEnabled: Bool = false) {
+                areSimplePaymentTaxesEnabled: Bool = false,
+                preferredInPersonPaymentGateway: String? = nil) {
         self.isTelemetryAvailable = isTelemetryAvailable
         self.telemetryLastReportedTime = telemetryLastReportedTime
         self.areSimplePaymentTaxesEnabled = areSimplePaymentTaxesEnabled
+        self.preferredInPersonPaymentGateway = preferredInPersonPaymentGateway
     }
 }
 
@@ -48,6 +54,7 @@ extension GeneralStoreSettings {
         self.isTelemetryAvailable = try container.decodeIfPresent(Bool.self, forKey: .isTelemetryAvailable) ?? false
         self.telemetryLastReportedTime = try container.decodeIfPresent(Date.self, forKey: .telemetryLastReportedTime)
         self.areSimplePaymentTaxesEnabled = try container.decodeIfPresent(Bool.self, forKey: .areSimplePaymentTaxesEnabled) ?? false
+        self.preferredInPersonPaymentGateway = try container.decodeIfPresent(String.self, forKey: .preferredInPersonPaymentGateway)
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import WooFoundation
 
 /// Calculates the total refunded value of an `Order`.
 ///
@@ -19,7 +20,7 @@ struct TotalRefundedCalculationUseCase {
     /// **negative** number because that's how the API returns them as.
     func totalRefunded() -> NSDecimalNumber {
         order.refunds.reduce(NSDecimalNumber.zero) { result, refundCondensed -> NSDecimalNumber in
-            let totalAsDecimal = currencyFormatter.convertToDecimal(from: refundCondensed.total, locale: locale) ?? .zero
+            let totalAsDecimal = currencyFormatter.convertToDecimal(refundCondensed.total, locale: locale) ?? .zero
 
             /// Even though the API returns refunds as negative, there is one case
             /// where the refund is a positive number: right between issuing the refund

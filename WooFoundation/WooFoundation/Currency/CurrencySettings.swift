@@ -1,5 +1,4 @@
 import Foundation
-import Yosemite
 
 /// Site-wide settings for displaying prices/money
 ///
@@ -18,43 +17,42 @@ public class CurrencySettings {
 
     /// Default currency settings
     ///
-    public enum Default {
-        static let code = CurrencyCode.USD
-        static let position = CurrencyPosition.left
+    enum Default {
+        public static let code = CurrencyCode.USD
+        public static let position = CurrencyPosition.left
         static let thousandSeparator = ","
-        static let decimalSeparator = "."
-        static let decimalPosition = 2
+        public static let decimalSeparator = "."
+        public static let decimalPosition = 2
     }
-
 
     // MARK: - Variables
 
     /// Public variables, privately set
     ///
-    @Published public private(set) var currencyCode: CurrencyCode
-    public private(set) var currencyPosition: CurrencyPosition
-    public private(set) var thousandSeparator: String
-    public private(set) var decimalSeparator: String
-    public private(set) var numberOfDecimals: Int
+    @Published public var currencyCode: CurrencyCode
+    public var currencyPosition: CurrencyPosition
+    public var groupingSeparator: String
+    public var decimalSeparator: String
+    public var fractionDigits: Int
 
     // MARK: - Initializers & Methods
 
     /// Designated Initializer:
     /// Used primarily for testing and by the convenience initializers.
     ///
-    init(currencyCode: CurrencyCode, currencyPosition: CurrencyPosition, thousandSeparator: String, decimalSeparator: String, numberOfDecimals: Int) {
+    public init(currencyCode: CurrencyCode, currencyPosition: CurrencyPosition, thousandSeparator: String, decimalSeparator: String, numberOfDecimals: Int) {
         self.currencyCode = currencyCode
         self.currencyPosition = currencyPosition
-        self.thousandSeparator = thousandSeparator
+        self.groupingSeparator = thousandSeparator
         self.decimalSeparator = decimalSeparator
-        self.numberOfDecimals = numberOfDecimals
+        self.fractionDigits = numberOfDecimals
     }
 
 
     /// Convenience Initializer:
     /// Provides some defaults for when site settings aren't available
     ///
-    convenience init() {
+    public convenience init() {
         self.init(currencyCode: CurrencySettings.Default.code,
                   currencyPosition: CurrencySettings.Default.position,
                   thousandSeparator: CurrencySettings.Default.thousandSeparator,
@@ -62,40 +60,9 @@ public class CurrencySettings {
                   numberOfDecimals: CurrencySettings.Default.decimalPosition)
     }
 
-    /// Convenience Initializer:
-    /// This is the preferred way to create an instance with the settings coming from the site.
-    ///
-    convenience init(siteSettings: [SiteSetting]) {
-        self.init()
-
-        siteSettings.forEach { updateCurrencyOptions(with: $0) }
-    }
-
-    func updateCurrencyOptions(with siteSetting: SiteSetting) {
-        let value = siteSetting.value
-
-        switch siteSetting.settingID {
-        case Constants.currencyCodeKey:
-            let currencyCode = CurrencyCode(rawValue: value) ?? CurrencySettings.Default.code
-            self.currencyCode = currencyCode
-        case Constants.currencyPositionKey:
-            let currencyPosition = CurrencyPosition(rawValue: value) ?? CurrencySettings.Default.position
-            self.currencyPosition = currencyPosition
-        case Constants.thousandSeparatorKey:
-            self.thousandSeparator = value
-        case Constants.decimalSeparatorKey:
-            self.decimalSeparator = value
-        case Constants.numberOfDecimalsKey:
-            let numberOfDecimals = Int(value) ?? CurrencySettings.Default.decimalPosition
-            self.numberOfDecimals = numberOfDecimals
-        default:
-            break
-        }
-    }
-
     /// Returns the currency symbol associated with the specified country code.
     ///
-    func symbol(from code: CurrencyCode) -> String {
+    public func symbol(from code: CurrencyCode) -> String {
         // Currency codes pulled from WC:
         // https://docs.woocommerce.com/wc-apidocs/source-function-get_woocommerce_currency.html#473
         switch code {
@@ -426,19 +393,5 @@ public class CurrencySettings {
         case .ZMW:
             return "ZK"
         }
-    }
-}
-
-
-// MARK: - Constants!
-//
-private extension CurrencySettings {
-
-    enum Constants {
-        static let currencyCodeKey = "woocommerce_currency"
-        static let currencyPositionKey = "woocommerce_currency_pos"
-        static let thousandSeparatorKey = "woocommerce_price_thousand_sep"
-        static let decimalSeparatorKey = "woocommerce_price_decimal_sep"
-        static let numberOfDecimalsKey = "woocommerce_price_num_decimals"
     }
 }

@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import WooFoundation
 
 /// Helper to calculate the totals on an `Order`.
 ///
@@ -13,13 +14,13 @@ final class OrderTotalsCalculator {
     /// Total shipping amount on an order.
     ///
     private var shippingTotal: NSDecimalNumber {
-        currencyFormatter.convertToDecimal(from: order.shippingTotal) ?? .zero
+        currencyFormatter.convertToDecimal(order.shippingTotal) ?? .zero
     }
 
     /// Total taxes amount on an order.
     ///
     private var taxesTotal: NSDecimalNumber {
-        currencyFormatter.convertToDecimal(from: order.totalTax) ?? .zero
+        currencyFormatter.convertToDecimal(order.totalTax) ?? .zero
     }
 
     // MARK: Calculated totals
@@ -29,7 +30,7 @@ final class OrderTotalsCalculator {
     var itemsTotal: NSDecimalNumber {
         order.items
             .map { $0.subtotal }
-            .compactMap { currencyFormatter.convertToDecimal(from: $0) }
+            .compactMap { currencyFormatter.convertToDecimal($0) }
             .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
     }
 
@@ -44,7 +45,7 @@ final class OrderTotalsCalculator {
     var feesTotal: NSDecimalNumber {
         order.fees
             .map { $0.total }
-            .compactMap { currencyFormatter.convertToDecimal(from: $0) }
+            .compactMap { currencyFormatter.convertToDecimal($0) }
             .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
     }
 

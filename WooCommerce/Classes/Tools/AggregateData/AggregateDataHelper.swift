@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import WooFoundation
 
 
 // MARK: - A helper class for calculating aggregate data
@@ -45,7 +46,7 @@ final class AggregateDataHelper {
             let totalQuantity = items.sum(\.quantity)
             // Sum the refunded product amount
             let total = items
-                .compactMap { currency.convertToDecimal(from: $0.total) }
+                .compactMap { currency.convertToDecimal($0.total) }
                 .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
 
             return AggregateOrderItem(
@@ -76,7 +77,7 @@ final class AggregateDataHelper {
         let currency = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
         // Convert the order items into a mutable type
         let convertedItems = items.map { item -> AggregateOrderItem in
-            let total = currency.convertToDecimal(from: item.total) ?? NSDecimalNumber.zero
+            let total = currency.convertToDecimal(item.total) ?? NSDecimalNumber.zero
             return AggregateOrderItem(
                 productID: item.productID,
                 variationID: item.variationID,

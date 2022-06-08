@@ -1,6 +1,7 @@
 import Yosemite
 import protocol Storage.StorageManagerType
 import Combine
+import WooFoundation
 
 /// View model for `ProductVariationSelector`.
 ///
@@ -30,7 +31,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
 
     /// The ID of the parent variable product
     ///
-    private let productID: Int64
+    let productID: Int64
 
     /// The name of the parent variable product
     ///

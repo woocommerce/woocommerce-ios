@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import WooFoundation
 
 struct ProductVariationDetailsFactory {
     /// Creates a view controller asynchronously that shows product variation details based on feature flags.
@@ -15,12 +16,14 @@ struct ProductVariationDetailsFactory {
                                         presentationStyle: ProductFormPresentationStyle,
                                         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
                                         forceReadOnly: Bool,
+                                        productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
                                         onCompletion: @escaping (UIViewController) -> Void) {
         let vc = productVariationDetails(productVariation: productVariation,
                                          parentProduct: parentProduct,
                                          presentationStyle: presentationStyle,
                                          currencySettings: currencySettings,
-                                         isEditProductsEnabled: forceReadOnly ? false: true)
+                                         isEditProductsEnabled: forceReadOnly ? false: true,
+                                         productImageUploader: productImageUploader)
         onCompletion(vc)
     }
 }
@@ -30,13 +33,16 @@ private extension ProductVariationDetailsFactory {
                                         parentProduct: Product,
                                         presentationStyle: ProductFormPresentationStyle,
                                         currencySettings: CurrencySettings,
-                                        isEditProductsEnabled: Bool) -> UIViewController {
+                                        isEditProductsEnabled: Bool,
+                                        productImageUploader: ProductImageUploaderProtocol) -> UIViewController {
         let vc: UIViewController
         let productVariationModel = EditableProductVariationModel(productVariation: productVariation,
                                                                   allAttributes: parentProduct.attributes,
                                                                   parentProductSKU: parentProduct.sku)
-        let productImageActionHandler = ProductImageActionHandler(siteID: productVariation.siteID,
-                                                                  product: productVariationModel)
+        let productImageActionHandler = productImageUploader.actionHandler(siteID: productVariation.siteID,
+                                                                           productID: productVariationModel.productID,
+                                                                           isLocalID: !productVariationModel.existsRemotely,
+                                                                           originalStatuses: productVariationModel.imageStatuses)
         let formType: ProductFormType = isEditProductsEnabled ? .edit: .readonly
         let viewModel = ProductVariationFormViewModel(productVariation: productVariationModel,
                                                       allAttributes: parentProduct.attributes,

@@ -65,4 +65,16 @@ public enum FeatureFlag: Int {
     /// Enable Shipping Labels Onboarding M1 (display the banner in Order Detail screen for installing the WCShip plugin)
     ///
     case shippingLabelsOnboardingM1
+
+    /// Enable selection of payment gateway to use for In-Person Payments when there is more than one available
+    ///
+    case inPersonPaymentGatewaySelection
+
+    /// Enable order editing from the order detailed screen.
+    ///
+    case unifiedOrderEditing
+
+    /// Enable image upload after leaving the product form
+    ///
+    case backgroundProductImageUpload
 }

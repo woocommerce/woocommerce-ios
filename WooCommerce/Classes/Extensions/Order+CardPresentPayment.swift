@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import WooFoundation
 import protocol Storage.StorageManagerType
 
 /// Extension helpers for `Order` related with Card Present Payments
@@ -27,7 +28,7 @@ extension Order {
         }
 
         let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
-        guard let totalAmount = currencyFormatter.convertToDecimal(from: total), totalAmount.decimalValue > 0 else {
+        guard let totalAmount = currencyFormatter.convertToDecimal(total), totalAmount.decimalValue > 0 else {
             return false
         }
 

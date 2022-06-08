@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import WooFoundation
 
 // MARK: - View Model for a Variation Attribute
 //
@@ -130,7 +131,7 @@ struct ProductDetailsCellViewModel {
                   imageURL: product?.imageURL,
                   name: item.name,
                   positiveQuantity: abs(item.quantity),
-                  total: formatter.convertToDecimal(from: item.total) ?? NSDecimalNumber.zero,
+                  total: formatter.convertToDecimal(item.total) ?? NSDecimalNumber.zero,
                   price: item.price,
                   skuText: item.sku,
                   attributes: item.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) },
@@ -167,7 +168,7 @@ struct ProductDetailsCellViewModel {
                   imageURL: product?.imageURL,
                   name: refundedItem.name,
                   positiveQuantity: abs(refundedItem.quantity),
-                  total: formatter.convertToDecimal(from: refundedItem.total) ?? NSDecimalNumber.zero,
+                  total: formatter.convertToDecimal(refundedItem.total) ?? NSDecimalNumber.zero,
                   price: refundedItem.price,
                   skuText: refundedItem.sku,
                   attributes: [], // Attributes are not supported for a refund item yet.

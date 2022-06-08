@@ -481,7 +481,11 @@ private extension MainTabBarController {
     func createHubMenuTabCoordinator() -> HubMenuCoordinator {
         HubMenuCoordinator(navigationController: hubMenuNavigationController,
                            willPresentReviewDetailsFromPushNotification: { [weak self] in
-            self?.navigateTo(.hubMenu)
+            await withCheckedContinuation { [weak self] continuation in
+                self?.navigateTo(.hubMenu) {
+                    continuation.resume(returning: ())
+                }
+            }
         })
     }
 }

@@ -3,6 +3,10 @@
 9.4
 -----
 - [*] Orders: Order details now displays both the date and time for all orders. [https://github.com/woocommerce/woocommerce-ios/pull/6996]
+- [*] Simple payments have the `Card` option available for stores with configuration issues to resolve, and show onboarding to help resolve them [https://github.com/woocommerce/woocommerce-ios/pull/7002]
+- [*] Order & Product list: Now, we can pull to refresh from an empty view. [https://github.com/woocommerce/woocommerce-ios/pull/7023, https://github.com/woocommerce/woocommerce-ios/pull/7030]
+- [*] Order Creation: Fixes a bug where selecting a variable product to add to a new order would sometimes open the wrong list of product variations. [https://github.com/woocommerce/woocommerce-ios/pull/7042]
+- [*] Collect payment button on Order Details no longer flickers when the screen loads [https://github.com/woocommerce/woocommerce-ios/pull/7043]
 
 9.3
 -----

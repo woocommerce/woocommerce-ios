@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundation
 import struct Yosemite.ShippingLine
 
 class ShippingLineDetailsViewModel: ObservableObject {
@@ -77,7 +78,7 @@ class ShippingLineDetailsViewModel: ObservableObject {
         self.methodTitle = initialMethodTitle
 
         let currencyFormatter = CurrencyFormatter(currencySettings: storeCurrencySettings)
-        if isExistingShippingLine, let initialAmount = currencyFormatter.convertToDecimal(from: shippingTotal) {
+        if isExistingShippingLine, let initialAmount = currencyFormatter.convertToDecimal(shippingTotal) {
             self.initialAmount = initialAmount as Decimal
         } else {
             self.initialAmount = nil

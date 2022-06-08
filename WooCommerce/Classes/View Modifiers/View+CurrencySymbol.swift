@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundation
 
 /// Adds a currency symbol to the left or right of the provided content
 ///

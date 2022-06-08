@@ -1,4 +1,5 @@
 import Foundation
+import WooFoundation
 
 extension UnitInputViewModel {
     /// Creates a `UnitInputViewModel` for configuring the cell for the bulk price update.
@@ -12,9 +13,9 @@ extension UnitInputViewModel {
         let unit = currencySettings.symbol(from: currencyCode)
         /// Depending on the currency settings we might have different decimal seperator or number of digits
         let formattedPlaceholder = currencyFormatter.localize(Decimal.zero,
-                                                              with: currencySettings.decimalSeparator,
-                                                              in: currencySettings.numberOfDecimals,
-                                                              including: currencySettings.thousandSeparator)
+                                                              decimalSeparator: currencySettings.decimalSeparator,
+                                                              fractionDigits: currencySettings.fractionDigits,
+                                                              groupingSeparator: currencySettings.groupingSeparator)
         return UnitInputViewModel(title: "",
                                   unit: unit,
                                   value: nil,

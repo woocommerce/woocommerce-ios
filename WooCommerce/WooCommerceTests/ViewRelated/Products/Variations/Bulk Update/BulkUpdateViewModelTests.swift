@@ -1,6 +1,7 @@
 import XCTest
 import Yosemite
 import Combine
+import WooFoundation
 @testable import Storage
 
 @testable import WooCommerce

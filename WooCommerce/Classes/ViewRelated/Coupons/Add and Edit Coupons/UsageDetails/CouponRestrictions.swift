@@ -167,7 +167,7 @@ struct CouponRestrictions: View {
                                         categoryListConfig: categoryListConfig,
                                         viewModel: viewModel.categorySelectorViewModel)
             }
-            LazyNavigationLink(destination: CouponAllowedEmails(emailFormats: $viewModel.allowedEmails), isActive: $showingAllowedEmails) {
+            LazyNavigationLink(destination: CouponAllowedEmails(viewModel: viewModel.allowedEmailsViewModel), isActive: $showingAllowedEmails) {
                 EmptyView()
             }
         }

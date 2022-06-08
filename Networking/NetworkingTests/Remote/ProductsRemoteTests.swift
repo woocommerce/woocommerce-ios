@@ -503,6 +503,44 @@ final class ProductsRemoteTests: XCTestCase {
             }
         }
     }
+
+    // MARK: - Update Product Images
+
+    /// Verifies that updateProductImages properly parses the `product-update` sample response.
+    ///
+    func test_updateProductImages_properly_returns_parsed_product() throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "product-update")
+
+        // When
+        let result = waitFor { promise in
+            remote.updateProductImages(siteID: self.sampleSiteID, productID: self.sampleProductID, images: []) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let product = try XCTUnwrap(result.get())
+        XCTAssertEqual(product.images.map { $0.imageID }, [1043, 1064])
+    }
+
+    /// Verifies that updateProductImages properly relays Networking Layer errors.
+    ///
+    func test_updateProductImages_properly_relays_networking_error() {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When
+        let result = waitFor { promise in
+            remote.updateProductImages(siteID: self.sampleSiteID, productID: self.sampleProductID, images: []) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
 }
 
 // MARK: - Private Helpers

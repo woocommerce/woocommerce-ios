@@ -1,4 +1,5 @@
 import Yosemite
+import WooFoundation
 
 extension Product {
 

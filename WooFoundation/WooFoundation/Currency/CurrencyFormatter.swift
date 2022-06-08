@@ -1,13 +1,11 @@
 import Foundation
-import Yosemite
-
 
 // MARK: - Manual currency formatting
 //
 public class CurrencyFormatter {
     private let currencySettings: CurrencySettings
 
-    init(currencySettings: CurrencySettings) {
+    public init(currencySettings: CurrencySettings) {
         self.currencySettings = currencySettings
     }
 
@@ -16,7 +14,7 @@ public class CurrencyFormatter {
     ///   - stringValue: the string received from the API
     ///   - locale: the locale that the currency string is based on.
     ///
-    func convertToDecimal(from stringValue: String, locale: Locale = .current) -> NSDecimalNumber? {
+    public func convertToDecimal(_ stringValue: String, locale: Locale = .current) -> NSDecimalNumber? {
 
         // NSDecimalNumber use by default the local decimal separator to evaluate a decimal amount.
         // We substitute the current decimal separator with the locale decimal separator.
@@ -43,15 +41,15 @@ public class CurrencyFormatter {
     /// - Parameters:
     ///     - decimal: a valid NSDecimalNumber, preferably converted using `convertToDecimal()`
     ///     - decimalSeparator: a string representing the user's preferred decimal symbol
-    ///     - decimalPosition: an int for positioning the decimal symbol
-    ///     - thousandSeparator: a string representing the user's preferred thousand symbol*
+    ///     - fractionDigits: how many fraction digits do we want to show
+    ///     - groupingSeparator: a string representing the user's preferred thousand symbol*
     ///       *Assumes thousands grouped by 3, because a user can't indicate a preference and it's a majority default.
     ///       Note this assumption will be wrong for India.
     ///
-    func localize(_ decimalAmount: NSDecimalNumber,
-                  with decimalSeparator: String? = ".",
-                  in decimalPosition: Int = 2,
-                  including thousandSeparator: String? = ",") -> String? {
+    public func localize(_ decimalAmount: NSDecimalNumber,
+                         decimalSeparator: String? = ".",
+                         fractionDigits: Int = 2,
+                         groupingSeparator: String? = ",") -> String? {
 
         // If the decimal amount is negative, change it to a positive.
         // We'll add our own custom negative sign in `formatAmount(with:)`
@@ -59,14 +57,14 @@ public class CurrencyFormatter {
 
         let numberFormatter = NumberFormatter()
         numberFormatter.usesGroupingSeparator = true
-        numberFormatter.groupingSeparator = thousandSeparator
+        numberFormatter.groupingSeparator = groupingSeparator
         numberFormatter.decimalSeparator = decimalSeparator
         numberFormatter.groupingSize = 3
         numberFormatter.formatterBehavior = .behavior10_4
         numberFormatter.numberStyle = .decimal
         numberFormatter.generatesDecimalNumbers = true
-        numberFormatter.minimumFractionDigits = decimalPosition
-        numberFormatter.maximumFractionDigits = decimalPosition
+        numberFormatter.minimumFractionDigits = fractionDigits
+        numberFormatter.maximumFractionDigits = fractionDigits
         numberFormatter.roundingMode = .halfUp
 
         return numberFormatter.string(from: absoluteAmount)
@@ -76,31 +74,31 @@ public class CurrencyFormatter {
     /// - Parameters:
     ///     - decimal: a valid Decimal number
     ///     - decimalSeparator: a string representing the user's preferred decimal symbol
-    ///     - decimalPosition: an int for positioning the decimal symbol
-    ///     - thousandSeparator: a string representing the user's preferred thousand symbol*
+    ///     - fractionDigits: how many fraction digits do we want to show
+    ///     - groupingSeparator: a string representing the user's preferred thousand symbol*
     ///       *Assumes thousands grouped by 3, because a user can't indicate a preference and it's a majority default.
     ///       Note this assumption will be wrong for India.
     ///
-    func localize(_ decimalAmount: Decimal,
-                  with decimalSeparator: String? = ".",
-                  in decimalPosition: Int = 2,
-                  including thousandSeparator: String? = ",") -> String? {
-        localize(decimalAmount as NSDecimalNumber, with: decimalSeparator, in: decimalPosition, including: thousandSeparator)
+    public func localize(_ decimalAmount: Decimal,
+                         decimalSeparator: String? = ".",
+                         fractionDigits: Int = 2,
+                         groupingSeparator: String? = ",") -> String? {
+        localize(decimalAmount as NSDecimalNumber, decimalSeparator: decimalSeparator, fractionDigits: fractionDigits, groupingSeparator: groupingSeparator)
     }
 
     /// Returns a string that displays the amount using all of the specified currency settings
     /// - Parameters:
     ///     - stringValue: a formatted string, preferably converted using `localize(_:in:with:including:)`.
-    ///     - position: the currency position enum, either right, left, right_space, or left_space.
-    ///     - symbol: the currency symbol as a string, to be used with the amount.
+    ///     - currencyPosition: the currency position enum, either right, left, right_space, or left_space.
+    ///     - currencySymbol: the currency symbol as a string, to be used with the amount.
     ///     - isNegative: whether the value is negative or not.
     ///     - locale: the locale that is used to format the currency amount string.
     ///
-    func formatCurrency(using amount: String,
-                        at position: CurrencySettings.CurrencyPosition,
-                        with symbol: String,
-                        isNegative: Bool,
-                        locale: Locale = .current) -> String {
+    public func formatCurrency(using amount: String,
+                               currencyPosition position: CurrencySettings.CurrencyPosition,
+                               currencySymbol symbol: String,
+                               isNegative: Bool,
+                               locale: Locale = .current) -> String {
         let space = "\u{00a0}" // unicode equivalent of &nbsp;
         let negative = isNegative ? "-" : ""
 
@@ -151,8 +149,8 @@ public class CurrencyFormatter {
     ///     - currency: a 3-letter country code for currencies that are supported in the API. e.g. "USD"
     ///     - locale: the locale that is used to format the currency amount string.
     ///
-    func formatAmount(_ amount: String, with currency: String? = nil, locale: Locale = .current) -> String? {
-        guard let decimalAmount = convertToDecimal(from: amount, locale: locale) else {
+    public func formatAmount(_ amount: String, with currency: String? = nil, locale: Locale = .current) -> String? {
+        guard let decimalAmount = convertToDecimal(amount, locale: locale) else {
             return nil
         }
 
@@ -191,11 +189,11 @@ public class CurrencyFormatter {
     ///  - 1000 becomes "$1.0k"
     ///  - 5800199.56 becomes "$5.8m"
     ///
-    func formatHumanReadableAmount(_ stringAmount: String,
+    public func formatHumanReadableAmount(_ stringAmount: String,
                                    with currency: String? = nil,
                                    roundSmallNumbers: Bool = true,
                                    locale: Locale = .current) -> String? {
-        guard let amount = convertToDecimal(from: stringAmount, locale: locale) else {
+        guard let amount = convertToDecimal(stringAmount, locale: locale) else {
             assertionFailure("Cannot convert the amount \"\(stringAmount)\" to decimal value with locale \(locale.identifier)")
             return nil
         }
@@ -217,8 +215,8 @@ public class CurrencyFormatter {
         let isNegative = amount.isNegative()
 
         return formatCurrency(using: humanReadableAmount,
-                              at: position,
-                              with: symbol,
+                              currencyPosition: position,
+                              currencySymbol: symbol,
                               isNegative: isNegative,
                               locale: locale)
     }
@@ -230,23 +228,23 @@ public class CurrencyFormatter {
     ///     - locale: the locale that is used to format the currency amount string.
     ///     - numberOfDecimals: optional number of decimal points to show for the amount. If nil, the currency settings value is used.
     ///
-    func formatAmount(_ amount: NSDecimalNumber, with currency: String? = nil, locale: Locale = .current, numberOfDecimals: Int? = nil) -> String? {
+    public func formatAmount(_ amount: NSDecimalNumber, with currency: String? = nil, locale: Locale = .current, numberOfDecimals: Int? = nil) -> String? {
         let currency = currency ?? currencySettings.currencyCode.rawValue
         // Get the currency code
         let code = CurrencyCode(rawValue: currency) ?? currencySettings.currencyCode
         // Grab the read-only currency options. These are set by the user in Site > Settings.
         let symbol = currencySettings.symbol(from: code)
         let separator = currencySettings.decimalSeparator
-        let numberOfDecimals = numberOfDecimals ?? currencySettings.numberOfDecimals
+        let numberOfDecimals = numberOfDecimals ?? currencySettings.fractionDigits
         let position = currencySettings.currencyPosition
-        let thousandSeparator = currencySettings.thousandSeparator
+        let thousandSeparator = currencySettings.groupingSeparator
 
         // Put all the pieces of user preferences on currency formatting together
         // and spit out a string that has the formatted amount.
         let localized = localize(amount,
-                                 with: separator,
-                                 in: numberOfDecimals,
-                                 including: thousandSeparator)
+                                 decimalSeparator: separator,
+                                 fractionDigits: numberOfDecimals,
+                                 groupingSeparator: thousandSeparator)
 
         guard let localizedAmount = localized else {
             return nil
@@ -255,8 +253,8 @@ public class CurrencyFormatter {
         // Now take the formatted amount and piece it together with
         // the currency symbol, negative sign, and any requisite spaces.
         let formattedAmount = formatCurrency(using: localizedAmount,
-                                             at: position,
-                                             with: symbol,
+                                             currencyPosition: position,
+                                             currencySymbol: symbol,
                                              isNegative: amount.isNegative(),
                                              locale: locale)
 
@@ -269,7 +267,7 @@ public class CurrencyFormatter {
     ///     - currency: a 3-letter country code for currencies that are supported in the API. e.g. "USD"
     ///     - locale: the locale that is used to format the currency amount string.
     ///     - numberOfDecimals: optional number of decimal points to show for the amount. If nil, the currency settings value is used.
-    func formatAmount(_ amount: Decimal, with currency: String? = nil, locale: Locale = .current, numberOfDecimals: Int? = nil) -> String? {
+    public func formatAmount(_ amount: Decimal, with currency: String? = nil, locale: Locale = .current, numberOfDecimals: Int? = nil) -> String? {
         formatAmount(amount as NSDecimalNumber, with: currency, locale: locale, numberOfDecimals: numberOfDecimals)
     }
 }

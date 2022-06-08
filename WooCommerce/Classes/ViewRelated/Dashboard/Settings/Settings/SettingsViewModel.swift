@@ -3,6 +3,7 @@ import Yosemite
 import Storage
 import class Networking.UserAgent
 import Experiments
+import KeychainAccess
 
 protocol SettingsViewModelOutput {
     typealias Section = SettingsViewController.Section
@@ -266,6 +267,17 @@ private extension SettingsViewModel {
                            footerHeight: CGFloat.leastNonzeroMagnitude)
         }()
 
+        // Remove Apple ID Access
+        let removeAppleIDAccessSection: Section? = {
+            let keychain = Keychain(service: WooConstants.keychainServiceName)
+            guard keychain.wooAppleID != nil else {
+                return nil
+            }
+            return Section(title: nil,
+                           rows: [.removeAppleIDAccess],
+                           footerHeight: CGFloat.leastNonzeroMagnitude)
+        }()
+
         // Logout
         let logoutSection = Section(title: nil,
                                     rows: [.logout],
@@ -279,6 +291,7 @@ private extension SettingsViewModel {
             appSettingsSection,
             aboutTheAppSection,
             otherSection,
+            removeAppleIDAccessSection,
             logoutSection
         ]
         .compactMap { $0 }

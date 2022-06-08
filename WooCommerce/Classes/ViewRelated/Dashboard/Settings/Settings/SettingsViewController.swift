@@ -3,6 +3,8 @@ import MessageUI
 import Gridicons
 import SafariServices
 import AutomatticAbout
+import Networking
+import WordPressKit
 
 protocol SettingsViewPresenter: AnyObject {
     func refreshViewContent()
@@ -129,6 +131,8 @@ private extension SettingsViewController {
             configureAppSettings(cell: cell)
         case let cell as BasicTableViewCell where row == .wormholy:
             configureWormholy(cell: cell)
+        case let cell as BasicTableViewCell where row == .removeAppleIDAccess:
+            configureRemoveAppleIDAccess(cell: cell)
         case let cell as BasicTableViewCell where row == .logout:
             configureLogout(cell: cell)
         default:
@@ -213,6 +217,13 @@ private extension SettingsViewController {
         cell.textLabel?.text = Localization.whatsNew
     }
 
+    func configureRemoveAppleIDAccess(cell: BasicTableViewCell) {
+        cell.selectionStyle = .default
+        cell.textLabel?.textAlignment = .center
+        cell.textLabel?.textColor = .error
+        cell.textLabel?.text = Localization.removeAppleIDAccess
+    }
+
     func configureLogout(cell: BasicTableViewCell) {
         cell.selectionStyle = .default
         cell.textLabel?.textAlignment = .center
@@ -236,6 +247,43 @@ private extension SettingsViewController {
 // MARK: - Actions
 //
 private extension SettingsViewController {
+    func removeAppleIDAccess() {
+        guard let credentials = ServiceLocator.stores.sessionManager.defaultCredentials else {
+            return
+        }
+        // TODO: move logic to Yosemite
+        let wpcomAPI = WordPressComRestApi(oAuthToken: credentials.authToken,
+                                           userAgent: UserAgent.defaultUserAgent,
+                                           baseUrlString: Settings.wordpressApiBaseURL)
+        AccountServiceRemoteREST(wordPressComRestApi: wpcomAPI)
+            .disconnectFromSocialService(.apple,
+                                         oAuthClientID: ApiCredentials.dotcomAppId,
+                                         oAuthClientSecret: ApiCredentials.dotcomSecret) { [weak self] in
+                self?.logOutUser()
+            } failure: { error in
+                // TODO: show an error alert
+                DDLogError("⛔️ Cannot remove Apple ID access: \(error)")
+            }
+    }
+
+    func removeAppleIDAccessWasPressed() {
+        // TODO: analytics
+//        ServiceLocator.analytics.track(.settingsLogoutTapped)
+        let alertController = UIAlertController(title: Localization.RemoveAppleIDAccessAlert.alertTitle,
+                                                message: Localization.RemoveAppleIDAccessAlert.alertMessage,
+                                                preferredStyle: .alert)
+
+        alertController.addActionWithTitle(Localization.RemoveAppleIDAccessAlert.cancelButtonTitle, style: .cancel) { _ in
+//            ServiceLocator.analytics.track(.settingsLogoutConfirmation, withProperties: ["result": "negative"])
+        }
+
+        alertController.addActionWithTitle(Localization.RemoveAppleIDAccessAlert.removeButtonTitle, style: .destructive) { [weak self] _ in
+//            ServiceLocator.analytics.track(.settingsLogoutConfirmation, withProperties: ["result": "positive"])
+            self?.removeAppleIDAccess()
+        }
+
+        present(alertController, animated: true)
+    }
 
     func logoutWasPressed() {
         ServiceLocator.analytics.track(.settingsLogoutTapped)
@@ -494,6 +542,8 @@ extension SettingsViewController: UITableViewDelegate {
             wormholyWasPressed()
         case .whatsNew:
             whatsNewWasPressed()
+        case .removeAppleIDAccess:
+            removeAppleIDAccessWasPressed()
         case .logout:
             logoutWasPressed()
         default:
@@ -569,6 +619,9 @@ extension SettingsViewController {
         case deviceSettings
         case wormholy
 
+        // Account deletion
+        case removeAppleIDAccess
+
         // Logout
         case logout
 
@@ -587,7 +640,7 @@ extension SettingsViewController {
                 return BasicTableViewCell.self
             case .installJetpack:
                 return BasicTableViewCell.self
-            case .logout:
+            case .logout, .removeAppleIDAccess:
                 return BasicTableViewCell.self
             case .privacy:
                 return BasicTableViewCell.self
@@ -690,6 +743,11 @@ private extension SettingsViewController {
             comment: "Navigates to screen containing the latest WooCommerce Features"
         )
 
+        static let removeAppleIDAccess = NSLocalizedString(
+            "Remove Apple ID Access",
+            comment: "Remove Apple ID Access button title to revoke Apple ID token"
+        )
+
         static let logout = NSLocalizedString(
             "Log Out",
             comment: "Log out button title"
@@ -714,6 +772,26 @@ private extension SettingsViewController {
             static let cancel = NSLocalizedString(
                 "Cancel",
                 comment: "The title for a button that dismisses the crash debug menu"
+            )
+        }
+
+        enum RemoveAppleIDAccessAlert {
+            static let alertTitle = NSLocalizedString(
+                "Remove Apple ID Access",
+                comment: "Remove Apple ID Access button title - confirms and revokes Apple ID token"
+            )
+            static let alertMessage = NSLocalizedString(
+                "This will log you out and reset your Sign In With Apple access token. You will be asked to re-enter your WordPress.com password if you Sign In With Apple again.",
+                comment: "Alert message to confirm a user meant to remove Apple ID access."
+            )
+            static let cancelButtonTitle = NSLocalizedString(
+                "Cancel",
+                comment: "Alert button title - dismisses alert, which cancels the Remove Apple ID Access attempt."
+            )
+
+            static let removeButtonTitle = NSLocalizedString(
+                "Remove",
+                comment: "Remove Apple ID Access button title - confirms and revokes Apple ID token."
             )
         }
 

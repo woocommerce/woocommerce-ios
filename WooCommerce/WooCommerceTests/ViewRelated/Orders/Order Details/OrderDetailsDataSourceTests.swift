@@ -2,6 +2,7 @@ import Foundation
 import XCTest
 
 import Yosemite
+import WooFoundation
 
 import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
@@ -449,6 +450,78 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         }
     }
 
+    func test_WCShip_installation_section_is_not_visible_when_WCShip_plugin_is_installed_and_active() throws {
+        // Given
+        let sampleSiteID: Int64 = 1234
+        let order = makeOrder()
+        let activePlugin = SitePlugin.fake().copy(siteID: sampleSiteID, status: .active, name: "WooCommerce Shipping & Tax")
+        insert(activePlugin)
+
+        let currencySettings = CurrencySettings(currencyCode: .USD,
+                                                currencyPosition: .leftSpace,
+                                                thousandSeparator: "",
+                                                decimalSeparator: ".",
+                                                numberOfDecimals: 3)
+        let siteSetting = SiteSetting.fake()
+            .copy(
+                siteID: sampleSiteID,
+                settingID: "woocommerce_default_country",
+                value: SiteAddress.CountryCode.US.rawValue,
+                settingGroupKey: SiteSettingGroup.general.rawValue
+            )
+
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                currencySettings: currencySettings,
+                                                siteSettings: [siteSetting], featureFlags: MockFeatureFlagService(shippingLabelsOnboardingM1: true))
+        dataSource.configureResultsControllers { }
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let wcShipSection = section(withCategory: .installWCShip, from: dataSource)
+        XCTAssertNil(wcShipSection)
+    }
+
+    func test_WCShip_installation_section_is_visible_for_eligible_order() throws {
+        // Given
+        let sampleSiteID: Int64 = 1234
+        let order = makeOrder()
+
+        let currencySettings = CurrencySettings(currencyCode: .USD,
+                                                currencyPosition: .leftSpace,
+                                                thousandSeparator: "",
+                                                decimalSeparator: ".",
+                                                numberOfDecimals: 3)
+        let siteSetting = SiteSetting.fake()
+            .copy(
+                siteID: sampleSiteID,
+                settingID: "woocommerce_default_country",
+                value: SiteAddress.CountryCode.US.rawValue,
+                settingGroupKey: SiteSettingGroup.general.rawValue
+            )
+
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration(country: "US"),
+                                                currencySettings: currencySettings,
+                                                siteSettings: [siteSetting], featureFlags: MockFeatureFlagService(shippingLabelsOnboardingM1: true))
+        dataSource.configureResultsControllers { }
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        guard let wcShipSection = section(withCategory: .installWCShip, from: dataSource) else {
+            XCTFail("WCShip install section should be visible")
+            return
+        }
+        let wcShipRow = row(row: .installWCShip, in: wcShipSection)
+        XCTAssertNotNil(wcShipRow)
+    }
+
     func test_more_button_is_visible_in_product_section_for_eligible_order_with_refunded_labels() throws {
         // Given
         let order = makeOrder()
@@ -537,7 +610,7 @@ private extension OrderDetailsDataSourceTests {
     func makeOrderItem() -> OrderItem {
         OrderItem(itemID: 1,
                   name: "Order Item Name",
-                  productID: 1_00,
+                  productID: 100,
                   variationID: 0,
                   quantity: 1,
                   price: NSDecimalNumber(integerLiteral: 1),
@@ -602,11 +675,25 @@ private extension OrderDetailsDataSourceTests {
         }
     }
 
+    func insert(_ readOnlyPlugin: Yosemite.SitePlugin) {
+        let plugin = storage.insertNewObject(ofType: StorageSitePlugin.self)
+        plugin.update(with: readOnlyPlugin)
+        storage.saveIfNeeded()
+    }
+
     /// Finds first section with a given title from the provided data source.
     ///
     private func section(withTitle title: String, from dataSource: OrderDetailsDataSource) throws -> OrderDetailsDataSource.Section {
         let section = dataSource.sections.first { $0.title == title }
         return try XCTUnwrap(section)
+    }
+
+    /// Finds first section with a given category from the provided data source.
+    ///
+    private func section(withCategory category: OrderDetailsDataSource.Section.Category,
+                         from dataSource: OrderDetailsDataSource) -> OrderDetailsDataSource.Section? {
+        let section = dataSource.sections.first { $0.category == category }
+        return section
     }
 
     /// Finds the first row that matches the given row from the provided section.

@@ -4,6 +4,7 @@ import Gridicons
 import Yosemite
 import MessageUI
 import Combine
+import Experiments
 import WooFoundation
 import enum Networking.DotcomError
 
@@ -151,22 +152,10 @@ final class OrderDetailsViewModel {
 
     private var receipt: CardPresentReceiptParameters? = nil
 
-    /// Defines if the actions menu item should be shown.
-    /// Currently the only action should be to share a payment link.
+    /// Returns available action buttons given the internal state.
     ///
-    var shouldShowActionsMenuItem: Bool {
-        needsPayment && paymentLink != nil
-    }
-
-    /// This check is temporary, we are working on knowing if an order needs payment directly from the API.
-    /// Conditions copied from:
-    /// https://github.com/woocommerce/woocommerce/blob/3611d4643791bad87a0d3e6e73e031bb80447417/plugins/woocommerce/includes/class-wc-order.php#L1520-L1523
-    ///
-    private var needsPayment: Bool {
-        guard let total = Double(order.total) else {
-            return false
-        }
-        return total > .zero && (order.status == .pending || order.status == .failed)
+    var moreActionsButtons: [MoreActionButton] {
+        MoreActionButton.availableButtons(order: order, syncState: syncState)
     }
 
     /// Returns the order payment link.
@@ -349,7 +338,8 @@ extension OrderDetailsViewModel {
             SummaryTableViewCell.self,
             ButtonTableViewCell.self,
             IssueRefundTableViewCell.self,
-            ImageAndTitleAndTextTableViewCell.self
+            ImageAndTitleAndTextTableViewCell.self,
+            WCShipInstallTableViewCell.self
         ]
 
         for cellClass in cells {
@@ -427,7 +417,8 @@ extension OrderDetailsViewModel {
             viewController.show(productListVC, sender: nil)
         case .billingDetail:
             ServiceLocator.analytics.track(.orderDetailShowBillingTapped)
-            let billingInformationViewController = BillingInformationViewController(order: order, editingEnabled: true)
+            let isUnifiedEditingEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing)
+            let billingInformationViewController = BillingInformationViewController(order: order, editingEnabled: !isUnifiedEditingEnabled)
             viewController.navigationController?.pushViewController(billingInformationViewController, animated: true)
         case .seeReceipt:
             let countryCode = configurationLoader.configuration.countryCode
@@ -710,5 +701,66 @@ private extension OrderDetailsViewModel {
         case notSynced
         case syncing
         case synced
+    }
+}
+
+// MARK: More Action Buttons Definition
+extension OrderDetailsViewModel {
+
+    /// Defines an action button that resides inside the more action menu.
+    ///
+    struct MoreActionButton {
+
+        /// Defines all possible more action button types.
+        ///
+        enum ButtonType: CaseIterable {
+            case editOrder
+            case sharePaymentLink
+        }
+
+        /// ID of the button.
+        ///
+        let id: ButtonType
+
+        /// Title of the button.
+        ///
+        let title: String
+
+        fileprivate static func availableButtons(order: Order, syncState: SyncState) -> [MoreActionButton] {
+            ButtonType.allCases.compactMap { buttonType in
+                switch buttonType {
+
+                case .sharePaymentLink:
+                    guard order.needsPayment && order.paymentURL != nil else {
+                        return nil
+                    }
+                    return .init(id: buttonType, title: Localization.sharePaymentLink)
+
+                case .editOrder:
+                    guard syncState == .synced, ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing) else {
+                        return nil
+                    }
+                    return .init(id: buttonType, title: Localization.editOrder)
+                }
+            }
+        }
+
+        enum Localization {
+            static let sharePaymentLink = NSLocalizedString("Share Payment Link", comment: "Title to share an order payment link.")
+            static let editOrder = NSLocalizedString("Edit", comment: "Title to edit an order")
+        }
+    }
+}
+
+private extension Order {
+    /// This check is temporary, we are working on knowing if an order needs payment directly from the API.
+    /// Conditions copied from:
+    /// https://github.com/woocommerce/woocommerce/blob/3611d4643791bad87a0d3e6e73e031bb80447417/plugins/woocommerce/includes/class-wc-order.php#L1520-L1523
+    ///
+    var needsPayment: Bool {
+        guard let total = Double(total) else {
+            return false
+        }
+        return total > .zero && (status == .pending || status == .failed)
     }
 }

@@ -90,7 +90,6 @@ public final class NewOrderScreen: ScreenObject {
     public func editOrderStatus() throws -> NewOrderScreen {
       return try openOrderStatusScreen()
             .selectOrderStatus(atIndex: 1)
-            .confirmSelectedOrderStatus()
     }
 
     /// Select the first product from the addProductScreen

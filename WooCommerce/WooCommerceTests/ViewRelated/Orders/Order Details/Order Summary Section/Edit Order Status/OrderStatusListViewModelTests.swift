@@ -31,6 +31,7 @@ class OrderStatusListViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.initialStatus, IndexPath(row: expectedIndex, section: 0))
         XCTAssertFalse(viewModel.shouldEnableApplyButton)
+        XCTAssertFalse(viewModel.autoConfirmSelection)
     }
 
     func test_statusCount_returns_expected_count() {
@@ -70,15 +71,16 @@ class OrderStatusListViewModelTests: XCTestCase {
         let viewModel = OrderStatusListViewModel(siteID: sampleSiteID, status: sampleOrderStatuses[0], storageManager: storageManager)
         let expectedStatusIndex = 1
         var selectedStatus: OrderStatusEnum?
-        viewModel.didSelectApply = {
+        viewModel.didApplySelection = {
             selectedStatus = $0
         }
 
-        // When
+        // When & Then
         viewModel.indexOfSelectedStatus = IndexPath(row: expectedStatusIndex, section: 0)
-        viewModel.confirmSelectedStatus()
+        XCTAssertNil(selectedStatus)
 
-        // Then
+        // When & Then
+        viewModel.confirmSelectedStatus()
         XCTAssertEqual(selectedStatus, sampleOrderStatuses[expectedStatusIndex])
     }
 
@@ -86,7 +88,7 @@ class OrderStatusListViewModelTests: XCTestCase {
         // Given
         let viewModel = OrderStatusListViewModel(siteID: sampleSiteID, status: sampleOrderStatuses[0], storageManager: storageManager)
         var didCancel = false
-        viewModel.didSelectCancel = {
+        viewModel.didCancelSelection = {
             didCancel = true
         }
 
@@ -95,6 +97,24 @@ class OrderStatusListViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(didCancel)
+    }
+
+    func test_selected_status_is_autoconfirmed_when_autoConfirmSelection_is_true() {
+        // Given
+        let viewModel = OrderStatusListViewModel(siteID: sampleSiteID,
+                                                 status: sampleOrderStatuses[0],
+                                                 autoConfirmSelection: true, storageManager: storageManager)
+        let expectedStatusIndex = 1
+        var selectedStatus: OrderStatusEnum?
+        viewModel.didApplySelection = {
+            selectedStatus = $0
+        }
+
+        // When
+        viewModel.indexOfSelectedStatus = IndexPath(row: expectedStatusIndex, section: 0)
+
+        // Then
+        XCTAssertEqual(selectedStatus, sampleOrderStatuses[expectedStatusIndex])
     }
 }
 

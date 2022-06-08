@@ -134,7 +134,7 @@ private extension OrderDetailsViewController {
         title = String.localizedStringWithFormat(titleFormat, viewModel.order.number)
 
         // Actions menu
-        if viewModel.shouldShowActionsMenuItem {
+        if viewModel.moreActionsButtons.isNotEmpty {
             navigationItem.rightBarButtonItem = UIBarButtonItem(image: .moreImage,
                                                                 style: .plain,
                                                                 target: self,
@@ -312,20 +312,20 @@ private extension OrderDetailsViewController {
     ///
     @objc func presentActionMenuSheet(_ sender: UIBarButtonItem) {
         let sheetTitle = "#" + viewModel.order.number
-        guard let paymentLink = viewModel.paymentLink else {
-            return DDLogError("⛔️ No payment link for order: \(sheetTitle)")
-        }
 
         // Configure share sheet
         let actionSheet = UIAlertController(title: nil, message: sheetTitle, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
         actionSheet.addCancelActionWithTitle(Localization.ActionsMenu.cancelAction)
-        actionSheet.addDefaultActionWithTitle(Localization.ActionsMenu.paymentLink) { [weak self] _ in
-            guard let self = self else { return }
 
-            SharingHelper.shareURL(url: paymentLink, title: nil, from: sender, in: self) { _, completed, _, _ in
-                if completed {
-                    ServiceLocator.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailPaymentLinkShared())
+        // Create action buttons
+        for button in viewModel.moreActionsButtons {
+            actionSheet.addDefaultActionWithTitle(button.title) { [weak self] _ in
+                switch button.id {
+                case .sharePaymentLink:
+                    self?.sharePaymentLink(sender)
+                case .editOrder:
+                    self?.editOrder()
                 }
             }
         }
@@ -334,6 +334,26 @@ private extension OrderDetailsViewController {
         let popoverController = actionSheet.popoverPresentationController
         popoverController?.barButtonItem = sender
         present(actionSheet, animated: true)
+    }
+
+    /// Shares the payment link(if it exists) using the native sharing helper.
+    ///
+    private func sharePaymentLink(_ sender: UIBarButtonItem) {
+        guard let paymentLink = viewModel.paymentLink else {
+            return DDLogError("⛔️ No payment link for order: \(viewModel.order.orderID)")
+        }
+
+        SharingHelper.shareURL(url: paymentLink, title: nil, from: sender, in: self) { _, completed, _, _ in
+            if completed {
+                ServiceLocator.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailPaymentLinkShared())
+            }
+        }
+    }
+
+    /// Presents the order edit form
+    ///
+    private func editOrder() {
+        // TODO: Implement
     }
 }
 
@@ -710,11 +730,11 @@ private extension OrderDetailsViewController {
                                                            status: viewModel.order.status)
         let statusList = OrderStatusListViewController(viewModel: statusListViewModel)
 
-        statusListViewModel.didSelectCancel = { [weak statusList] in
+        statusListViewModel.didCancelSelection = { [weak statusList] in
             statusList?.dismiss(animated: true, completion: nil)
         }
 
-        statusListViewModel.didSelectApply = { [weak statusList] (selectedStatus) in
+        statusListViewModel.didApplySelection = { [weak statusList] (selectedStatus) in
             statusList?.dismiss(animated: true) {
                 self.setOrderStatus(to: selectedStatus)
             }

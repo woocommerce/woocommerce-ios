@@ -79,6 +79,10 @@ extension OrderStatusListViewController {
     }
 
     func configureRightButton() {
+        guard !viewModel.autoConfirmSelection else {
+            return
+        }
+
         let applyButtonTitle = NSLocalizedString("Apply",
                                                comment: "Change order status screen - button title to apply selection")
         let rightBarButton = UIBarButtonItem(title: applyButtonTitle,
@@ -95,7 +99,7 @@ extension OrderStatusListViewController {
     }
 
     @objc func dismissButtonTapped() {
-        viewModel.didSelectCancel?()
+        viewModel.didCancelSelection?()
     }
 
     @objc func applyButtonTapped() {

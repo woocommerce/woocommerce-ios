@@ -14,6 +14,10 @@ struct ProductSelector: View {
     ///
     @State var isShowingVariationList: Bool = false
 
+    /// View model to use for the variation list, when it is shown.
+    ///
+    @State var variationListViewModel: ProductVariationSelectorViewModel?
+
     /// View model to drive the view.
     ///
     @ObservedObject var viewModel: ProductSelectorViewModel
@@ -80,6 +84,17 @@ struct ProductSelector: View {
                             .buttonStyle(PrimaryButtonStyle())
                             .padding(Constants.defaultPadding)
                         }
+                        if let variationListViewModel = variationListViewModel {
+                            LazyNavigationLink(destination: ProductVariationSelector(
+                                isPresented: $isPresented,
+                                viewModel: variationListViewModel,
+                                multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
+                                onMultipleSelections: { selectedIDs in
+                                    viewModel.updateSelectedVariations(productID: variationListViewModel.productID, selectedVariationIDs: selectedIDs)
+                                }), isActive: $isShowingVariationList) {
+                                EmptyView()
+                            }
+                        }
                     }
                     .padding(.horizontal, insets: safeAreaInsets)
                     .background(Color(.listForeground).ignoresSafeArea())
@@ -133,7 +148,7 @@ struct ProductSelector: View {
     /// Creates the `ProductRow` for a product, depending on whether the product is variable.
     ///
     @ViewBuilder private func createProductRow(rowViewModel: ProductRowViewModel) -> some View {
-        if let addVariationToOrderVM = viewModel.getVariationsViewModel(for: rowViewModel.productOrVariationID) {
+        if let variationListViewModel = viewModel.getVariationsViewModel(for: rowViewModel.productOrVariationID) {
             HStack {
                 ProductRow(multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
                            viewModel: rowViewModel) {
@@ -142,19 +157,10 @@ struct ProductSelector: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .onTapGesture {
                     isShowingVariationList.toggle()
+                    self.variationListViewModel = variationListViewModel
                 }
 
                 DisclosureIndicator()
-
-                LazyNavigationLink(destination: ProductVariationSelector(
-                    isPresented: $isPresented,
-                    viewModel: addVariationToOrderVM,
-                    multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
-                    onMultipleSelections: { selectedIDs in
-                        viewModel.updateSelectedVariations(productID: rowViewModel.productOrVariationID, selectedVariationIDs: selectedIDs)
-                    }), isActive: $isShowingVariationList) {
-                    EmptyView()
-                }
             }
             .accessibilityHint(configuration.variableProductRowAccessibilityHint)
         } else {

@@ -30,7 +30,7 @@ final class OrderPaymentDetailsViewModel {
     }
 
     var discountValue: String? {
-        guard let discount = currencyFormatter.convertToDecimal(from: order.discountTotal), discount.isZero() == false else {
+        guard let discount = currencyFormatter.convertToDecimal(order.discountTotal), discount.isZero() == false else {
             return nil
         }
 
@@ -208,7 +208,7 @@ final class OrderPaymentDetailsViewModel {
     /// Calculate the net amount after refunds
     ///
     private func calculateNetAmount() -> NSDecimalNumber? {
-        guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
+        guard let orderTotal = currencyFormatter.convertToDecimal(order.total) else {
             return .zero
         }
 

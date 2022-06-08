@@ -73,7 +73,7 @@ public extension ReceiptRenderer {
                         <h1>\(receiptTitle)</h1>
                         <h3>\(Localization.amountPaidSectionTitle.uppercased())</h3>
                         <p>
-                            \(content.parameters.formattedAmount) \(content.parameters.currency.uppercased())
+                            \(content.parameters.formattedAmount)
                         </p>
                         <h3>\(Localization.datePaidSectionTitle.uppercased())</h3>
                         <p>
@@ -126,7 +126,7 @@ private extension ReceiptRenderer {
                 title.append(". \(variations.trimmingCharacters(in: .whitespaces))")
             }
             let stripedTitle = title.htmlStripped()
-            summaryContent += "<tr><td>\(stripedTitle) × \(line.quantity)</td><td>\(line.amount) \(content.parameters.currency.uppercased())</td></tr>"
+            summaryContent += "<tr><td>\(stripedTitle) × \(line.quantity)</td><td>\(line.amount)</td></tr>"
         }
         summaryContent += totalRows()
         summaryContent += "</table>"
@@ -149,7 +149,7 @@ private extension ReceiptRenderer {
                     \(title)
                 </td>
                 <td>
-                    \(amount) \(content.parameters.currency.uppercased())
+                    \(amount)
                 </td>
             </tr>
         """

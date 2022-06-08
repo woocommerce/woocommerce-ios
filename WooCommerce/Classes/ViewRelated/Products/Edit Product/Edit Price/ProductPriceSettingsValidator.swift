@@ -25,7 +25,7 @@ final class ProductPriceSettingsValidator {
         guard let price = price else {
             return nil
         }
-        return currencyFormatter.convertToDecimal(from: price)
+        return currencyFormatter.convertToDecimal(price)
     }
 
     /// Validates a selection for price settings.

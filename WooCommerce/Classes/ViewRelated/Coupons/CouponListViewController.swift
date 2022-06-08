@@ -1,6 +1,7 @@
 import Combine
 import UIKit
 import WordPressUI
+import Yosemite
 import class SwiftUI.UIHostingController
 
 final class CouponListViewController: UIViewController, GhostableViewController {
@@ -194,6 +195,12 @@ private extension CouponListViewController {
         footerSpinnerView.stopAnimating()
         tableView?.tableFooterView = footerEmptyView
     }
+
+    func startCouponCreation(discountType: Coupon.DiscountType) {
+        let viewModel = AddEditCouponViewModel(siteID: siteID, discountType: discountType) { result in  }
+        let hostingController = AddEditCouponHostingController(viewModel: viewModel, onDisappear: {})
+        present(hostingController, animated: true)
+    }
 }
 
 // MARK: - TableView Delegate
@@ -281,6 +288,7 @@ private extension CouponListViewController {
         let command = DiscountTypeBottomSheetListSelectorCommand(selected: nil) { [weak self] selectedType in
             guard let self = self else { return }
             self.presentedViewController?.dismiss(animated: true, completion: nil)
+            self.startCouponCreation(discountType: selectedType)
         }
 
         let bottomSheet = BottomSheetListSelectorViewController(viewProperties: viewProperties, command: command, onDismiss: nil)

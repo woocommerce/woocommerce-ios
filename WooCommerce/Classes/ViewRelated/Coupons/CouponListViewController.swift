@@ -75,6 +75,8 @@ final class CouponListViewController: UIViewController, GhostableViewController 
         return noticePresenter
     }()
 
+    private var addEditHostingController: AddEditCouponHostingController?
+
     init(siteID: Int64) {
         self.siteID = siteID
         self.viewModel = CouponListViewModel(siteID: siteID)
@@ -197,9 +199,13 @@ private extension CouponListViewController {
     }
 
     func startCouponCreation(discountType: Coupon.DiscountType) {
-        let viewModel = AddEditCouponViewModel(siteID: siteID, discountType: discountType) { result in  }
-        let hostingController = AddEditCouponHostingController(viewModel: viewModel, onDisappear: {})
-        present(hostingController, animated: true)
+        let viewModel = AddEditCouponViewModel(siteID: siteID, discountType: discountType) { [weak self] result in
+            guard let self = self else { return }
+            self.addEditHostingController?.dismiss(animated: true)
+            self.refreshCouponList()
+        }
+        addEditHostingController = AddEditCouponHostingController(viewModel: viewModel, onDisappear: {})
+        present(addEditHostingController!, animated: true)
     }
 }
 

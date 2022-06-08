@@ -237,7 +237,15 @@ final class AddEditCouponViewModel: ObservableObject {
         codeField = code
     }
 
-    func createCoupon(coupon: Coupon) {
+    func completeCouponAddEdit(coupon: Coupon, onUpdateFinished: @escaping () -> Void) {
+        if isCreationFlow {
+            createCoupon(coupon: coupon)
+        } else {
+            updateCoupon(coupon: coupon, onUpdateFinished: onUpdateFinished)
+        }
+    }
+
+    private func createCoupon(coupon: Coupon) {
         let action = CouponAction.createCoupon(coupon, siteTimezone: timezone) { [weak self] result in
             guard let self = self else { return }
             self.isLoading = false
@@ -250,7 +258,7 @@ final class AddEditCouponViewModel: ObservableObject {
         }
     }
 
-    func updateCoupon(coupon: Coupon, onUpdateFinished: @escaping () -> Void) {
+    private func updateCoupon(coupon: Coupon, onUpdateFinished: @escaping () -> Void) {
         trackCouponUpdateInitiated(with: coupon)
 
         if let validationError = validateCouponLocally(coupon) {

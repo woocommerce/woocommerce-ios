@@ -578,6 +578,7 @@ public enum WooAnalyticsStat: String {
     case couponsLoaded = "coupons_loaded"
     case couponsLoadedFailed = "coupons_loaded_failed"
     case couponsListSearchTapped = "coupons_list_search_tapped"
+    case couponsListCreateTapped = "coupons_list_create_tapped"
     case couponDetails = "coupon_details"
     case couponSettingDisabled = "coupon_settings_disabled"
     case couponSettingEnabled = "coupon_settings_enabled"

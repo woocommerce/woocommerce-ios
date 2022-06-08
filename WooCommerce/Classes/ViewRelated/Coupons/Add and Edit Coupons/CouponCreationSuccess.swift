@@ -27,6 +27,8 @@ private extension CouponCreationSuccess {
 
     enum Localization {
         static let successMessage = NSLocalizedString("Your new coupon was created!", comment: "Message displayed when a coupon was successfully created")
+        static let shareCoupon = NSLocalizedString("Share Coupon", comment: "Button to share coupon from the Coupon Creation Success screen.")
+        static let close = NSLocalizedString("Close", comment: "Button to dismiss the Coupon Creation Success screen")
     }
 }
 

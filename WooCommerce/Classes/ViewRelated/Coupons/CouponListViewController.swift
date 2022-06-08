@@ -414,6 +414,9 @@ private extension CouponListViewController {
             "Retrieves a list of coupons that contain a given keyword.",
             comment: "VoiceOver accessibility hint, informing the user the button can be used to search coupons."
         )
+        static let accessibilityLabelCreateCoupons = NSLocalizedString("Create coupons", comment: "Accessibility label for the Create Coupons button")
+        static let accessibilityHintCreateCoupons = NSLocalizedString("Start a Coupon creation by selecting a discount type in a bottom sheet",
+                comment: "VoiceOver accessibility hint, informing the user the button can be used to create coupons.")
         static let feedbackBannerTitle = NSLocalizedString("View and edit coupons", comment: "Title of the feedback banner on the coupon list screen")
         static let feedbackBannerContent = NSLocalizedString(
             "We’ve been working on making it possible to view and edit coupons from your device!",

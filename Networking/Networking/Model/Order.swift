@@ -10,6 +10,9 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
     public let customerID: Int64
     public let orderKey: String
 
+    public let isEditable: Bool
+    public let needsPayment: Bool
+    public let needsProcessing: Bool
     public let number: String
     /// The Order status.
     ///
@@ -50,6 +53,9 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                 parentID: Int64,
                 customerID: Int64,
                 orderKey: String,
+                isEditable: Bool,
+                needsPayment: Bool,
+                needsProcessing: Bool,
                 number: String,
                 status: OrderStatusEnum,
                 currency: String,
@@ -82,6 +88,9 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         self.customerID = customerID
         self.orderKey = orderKey
 
+        self.isEditable = isEditable
+        self.needsPayment = needsPayment
+        self.needsProcessing = needsProcessing
         self.number = number
         self.status = status
         self.currency = currency
@@ -126,6 +135,11 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         let parentID = try container.decode(Int64.self, forKey: .parentID)
         let customerID = try container.decode(Int64.self, forKey: .customerID)
         let orderKey = try container.decode(String.self, forKey: .orderKey)
+
+        // TODO: Update with local fallback implementation https://github.com/woocommerce/woocommerce-ios/issues/6977
+        let isEditable = try container.decodeIfPresent(Bool.self, forKey: .isEditable) ?? false
+        let needsPayment = try container.decodeIfPresent(Bool.self, forKey: .needsPayment) ?? false
+        let needsProcessing = try container.decodeIfPresent(Bool.self, forKey: .needsProcessing) ?? false
 
         let number = try container.decode(String.self, forKey: .number)
         let status = try container.decode(OrderStatusEnum.self, forKey: .status)
@@ -183,6 +197,9 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                   parentID: parentID,
                   customerID: customerID,
                   orderKey: orderKey,
+                  isEditable: isEditable,
+                  needsPayment: needsPayment,
+                  needsProcessing: needsProcessing,
                   number: number,
                   status: status,
                   currency: currency,
@@ -216,6 +233,9 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                   parentID: 0,
                   customerID: 0,
                   orderKey: "",
+                  isEditable: false,
+                  needsPayment: false,
+                  needsProcessing: false,
                   number: "",
                   status: .pending,
                   currency: "",
@@ -255,6 +275,9 @@ internal extension Order {
         case customerID         = "customer_id"
         case orderKey           = "order_key"
 
+        case isEditable         = "is_editable"
+        case needsPayment       = "needs_payment"
+        case needsProcessing    = "needs_processing"
         case number             = "number"
         case status             = "status"
         case currency           = "currency"
@@ -297,6 +320,9 @@ extension Order: Equatable {
             lhs.parentID == rhs.parentID &&
             lhs.customerID == rhs.customerID &&
             lhs.orderKey == rhs.orderKey &&
+            lhs.isEditable == rhs.isEditable &&
+            lhs.needsPayment == rhs.needsPayment &&
+            lhs.needsProcessing == rhs.needsProcessing &&
             lhs.number == rhs.number &&
             lhs.status == rhs.status &&
             lhs.dateCreated == rhs.dateCreated &&

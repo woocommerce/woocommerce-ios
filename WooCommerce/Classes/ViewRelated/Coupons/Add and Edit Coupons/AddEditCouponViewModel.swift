@@ -15,6 +15,8 @@ final class AddEditCouponViewModel: ObservableObject {
 
     private let onCompletion: ((Result<Coupon, Error>) -> Void)
 
+    private let isCreationFlow: Bool
+
     /// Defines the current notice that should be shown.
     /// Defaults to `nil`.
     ///
@@ -128,6 +130,7 @@ final class AddEditCouponViewModel: ObservableObject {
     }
 
     var hasChangesMade: Bool {
+        guard !isCreationFlow else { return true }
         let coupon = populatedCoupon
         return checkDiscountTypeUpdated(for: coupon) ||
         checkAmountUpdated(for: coupon) ||
@@ -178,6 +181,7 @@ final class AddEditCouponViewModel: ObservableObject {
         self.storageManager = storageManager
         self.timezone = timezone
         self.onCompletion = onCompletion
+        isCreationFlow = true
 
         amountField = String()
         codeField = String()
@@ -204,6 +208,7 @@ final class AddEditCouponViewModel: ObservableObject {
         self.storageManager = storageManager
         self.timezone = timezone
         self.onCompletion = onCompletion
+        isCreationFlow = false
 
         // Populate fields
         amountField = existingCoupon.amount
@@ -233,7 +238,30 @@ final class AddEditCouponViewModel: ObservableObject {
         codeField = code
     }
 
-    func updateCoupon(coupon: Coupon, onUpdateFinished: @escaping () -> Void) {
+    func completeCouponAddEdit(coupon: Coupon, onUpdateFinished: @escaping () -> Void) {
+        if isCreationFlow {
+            createCoupon(coupon: coupon)
+        } else {
+            updateCoupon(coupon: coupon, onUpdateFinished: onUpdateFinished)
+        }
+    }
+
+    private func createCoupon(coupon: Coupon) {
+        isLoading = true
+        let action = CouponAction.createCoupon(coupon, siteTimezone: timezone) { [weak self] result in
+            guard let self = self else { return }
+            self.isLoading = false
+            switch result {
+            case .success(_):
+                self.onCompletion(result)
+            case .failure(let error):
+                DDLogError("⛔️ Error creating the coupon: \(error)")
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    private func updateCoupon(coupon: Coupon, onUpdateFinished: @escaping () -> Void) {
         trackCouponUpdateInitiated(with: coupon)
 
         if let validationError = validateCouponLocally(coupon) {

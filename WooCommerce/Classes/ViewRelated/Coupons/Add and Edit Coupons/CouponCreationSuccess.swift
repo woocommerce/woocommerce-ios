@@ -4,9 +4,19 @@ import SwiftUI
 ///
 struct CouponCreationSuccess: View {
     let couponCode: String
+    let shareMessage: String
+    let onDismiss: () -> Void
+    @State private var showingShareSheet: Bool = false
+
 
     var body: some View {
         VStack(alignment: .center, spacing: 0) {
+            // Anchor the action sheet at the top to be able to show the popover on iPad in the most appropriate position
+            Divider()
+                .shareSheet(isPresented: $showingShareSheet) {
+                    ShareSheet(activityItems: [shareMessage])
+                }
+
             Spacer()
 
             VStack(alignment: .leading, spacing: 0) {
@@ -24,12 +34,13 @@ struct CouponCreationSuccess: View {
 
             VStack(alignment: .center, spacing: Constants.contentPadding) {
                 Button(Localization.shareCoupon) {
-                    // TODO
+                    showingShareSheet = true
+                    // TODO: add analytics
                 }
                 .buttonStyle(PrimaryButtonStyle())
 
                 Button(Localization.close) {
-                    // TODO
+                    onDismiss()
                 }
                 .buttonStyle(SecondaryButtonStyle())
             }
@@ -53,6 +64,6 @@ private extension CouponCreationSuccess {
 
 struct CouponCreationSuccess_Previews: PreviewProvider {
     static var previews: some View {
-        CouponCreationSuccess(couponCode: "34sdfg")
+        CouponCreationSuccess(couponCode: "34sdfg", shareMessage: "Use this coupon to get 10% off all products") {}
     }
 }

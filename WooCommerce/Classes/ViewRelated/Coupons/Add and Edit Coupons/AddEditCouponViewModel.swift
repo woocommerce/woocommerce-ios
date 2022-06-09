@@ -255,6 +255,8 @@ final class AddEditCouponViewModel: ObservableObject {
     }
 
     private func createCoupon(coupon: Coupon) {
+        ServiceLocator.analytics.track(.couponUpdateInitiated)
+
         if let validationError = validateCouponLocally(coupon) {
             notice = NoticeFactory.createCouponErrorNotice(validationError,
                     editingOption: editingOption)
@@ -268,9 +270,11 @@ final class AddEditCouponViewModel: ObservableObject {
             self.isLoading = false
             switch result {
             case .success(_):
+                ServiceLocator.analytics.track(.couponCreationSuccess)
                 self.onCompletion(result)
             case .failure(let error):
                 DDLogError("⛔️ Error creating the coupon: \(error)")
+                ServiceLocator.analytics.track(.couponCreationFailed, withError: error)
                 self.notice = NoticeFactory.createCouponErrorNotice(.other(error: error),
                         editingOption: self.editingOption)
             }

@@ -118,12 +118,19 @@ extension UIImage {
         return UIImage(named: "check-circle-partial")!
     }
 
+    /// Large checkmark image that is shown upon success
+    ///
+    static var checkSuccessImage: UIImage {
+        return UIImage(named: "check-success")!
+    }
+
     /// WooCommerce Styled Checkmark
     ///
     static var checkmarkStyledImage: UIImage {
         let tintColor = UIColor.primary
         return checkmarkImage.imageWithTintColor(tintColor)!
     }
+
 
     /// Chevron Pointing Right
     ///

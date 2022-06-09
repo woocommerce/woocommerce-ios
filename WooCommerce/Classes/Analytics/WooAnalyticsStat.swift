@@ -587,6 +587,8 @@ public enum WooAnalyticsStat: String {
     case couponUpdateInitiated = "coupon_update_initiated"
     case couponUpdateSuccess = "coupon_update_success"
     case couponUpdateFailed = "coupon_update_failed"
+    case couponCreationSuccess = "coupon_creation_success"
+    case couponCreationFailed = "coupon_creation_failed"
 
     // MARK: Inbox Notes
     case inboxNotesLoaded = "inbox_notes_loaded"

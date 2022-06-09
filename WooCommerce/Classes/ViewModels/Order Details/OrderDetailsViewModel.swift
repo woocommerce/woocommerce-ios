@@ -751,16 +751,3 @@ extension OrderDetailsViewModel {
         }
     }
 }
-
-private extension Order {
-    /// This check is temporary, we are working on knowing if an order needs payment directly from the API.
-    /// Conditions copied from:
-    /// https://github.com/woocommerce/woocommerce/blob/3611d4643791bad87a0d3e6e73e031bb80447417/plugins/woocommerce/includes/class-wc-order.php#L1520-L1523
-    ///
-    var needsPayment: Bool {
-        guard let total = Double(total) else {
-            return false
-        }
-        return total > .zero && (status == .pending || status == .failed)
-    }
-}

@@ -22,9 +22,10 @@ struct InPersonPaymentsSelectPluginRow: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity, minHeight: 72, alignment: .leading)
-        .overlay(
+        .background(
             RoundedRectangle(cornerRadius: 8)
                 .stroke(borderColor, lineWidth: 1)
+                .background(Color(.tertiarySystemBackground))
                )
     }
 

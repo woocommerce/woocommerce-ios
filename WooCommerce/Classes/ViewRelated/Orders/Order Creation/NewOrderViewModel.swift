@@ -64,9 +64,15 @@ final class NewOrderViewModel: ObservableObject {
 
     /// Order creation date. For new order flow it's always current date.
     ///
-    let dateString: String = {
-        DateFormatter.mediumLengthLocalizedDateFormatter.string(from: Date())
-    }()
+    var dateString: String {
+        switch flow {
+        case .creation:
+            return DateFormatter.mediumLengthLocalizedDateFormatter.string(from: Date())
+        case .editing(let order):
+            let formatter = DateFormatter.dateAndTimeFormatter
+            return formatter.string(from: order.dateCreated)
+        }
+    }
 
     /// Representation of order status display properties.
     ///

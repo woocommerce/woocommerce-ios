@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 69 (Release 9.4.0.0)
+- @ecarrion 2022-06-08
+    - Update `Order` entity to include the `needsProcessing`, `needsPayment`, and `isEditable` properties.
+
 ## Model 68 (Release 9.2.0.0)
 - @pmusolino 2022-05-05
     - Update `Coupon` entity and make `usageLimit`, `usageLimitPerUser` and `limitUsageToXItems` properties as optional with default value equal to `null`.

@@ -24,13 +24,13 @@ struct RefundItemsValuesCalculationUseCase {
             // Using price is not safe right now.
             // See: https://github.com/woocommerce/woocommerce-ios/issues/6885
             let itemTotal: Decimal = {
-                let refundItemTotal = currencyFormatter.convertToDecimal(from: refundItem.item.total) ?? 0
+                let refundItemTotal = currencyFormatter.convertToDecimal(refundItem.item.total) ?? 0
                 return (refundItemTotal as Decimal) / refundItem.item.quantity
             }()
 
             // Figure out `itemTax` by dividing `totalTax` by the purchased `quantity`.
             let itemTax: Decimal = {
-                let totalTax = currencyFormatter.convertToDecimal(from: refundItem.item.totalTax) ?? 0
+                let totalTax = currencyFormatter.convertToDecimal(refundItem.item.totalTax) ?? 0
                 return (totalTax as Decimal) / refundItem.item.quantity
             }()
 

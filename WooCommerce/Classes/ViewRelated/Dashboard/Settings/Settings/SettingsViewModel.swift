@@ -98,13 +98,16 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let featureFlagService: FeatureFlagService
+    private let appleIDCredentialChecker: AppleIDCredentialCheckerProtocol
 
     init(stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         appleIDCredentialChecker: AppleIDCredentialCheckerProtocol = AppleIDCredentialChecker()) {
         self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
+        self.appleIDCredentialChecker = appleIDCredentialChecker
 
         /// Initialize Sites Results Controller
         ///
@@ -269,7 +272,7 @@ private extension SettingsViewModel {
 
         // Remove Apple ID Access
         let removeAppleIDAccessSection: Section? = {
-            guard AppleIDCredentialChecker().hasAppleUserID() else {
+            guard appleIDCredentialChecker.hasAppleUserID(), featureFlagService.isFeatureFlagEnabled(.appleIDAccountDeletion) else {
                 return nil
             }
             return Section(title: nil,

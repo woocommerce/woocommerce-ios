@@ -77,4 +77,8 @@ public enum FeatureFlag: Int {
     /// Enable image upload after leaving the product form
     ///
     case backgroundProductImageUpload
+
+    /// Apple ID account deletion
+    ///
+    case appleIDAccountDeletion
 }

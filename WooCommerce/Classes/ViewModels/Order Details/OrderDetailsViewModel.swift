@@ -607,12 +607,12 @@ extension OrderDetailsViewModel {
         stores.dispatch(action)
     }
 
-    func checkCardPresentPaymentEligibility(onCompletion: (() -> Void)? = nil) {
+    func checkCardPresentPaymentEligibility(onCompletion: @escaping (() -> Void)) {
         let configuration = configurationLoader.configuration
 
         guard configuration.isSupportedCountry else {
             dataSource.isEligibleForCardPresentPayment = false
-            onCompletion?()
+            onCompletion()
             return
         }
 
@@ -627,7 +627,7 @@ extension OrderDetailsViewModel {
                 self?.dataSource.isEligibleForCardPresentPayment = false
             }
 
-            onCompletion?()
+            onCompletion()
         }
 
         stores.dispatch(action)

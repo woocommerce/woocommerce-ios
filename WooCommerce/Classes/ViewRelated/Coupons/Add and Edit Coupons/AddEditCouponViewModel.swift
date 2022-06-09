@@ -263,6 +263,8 @@ final class AddEditCouponViewModel: ObservableObject {
                 self.onCompletion(result)
             case .failure(let error):
                 DDLogError("⛔️ Error creating the coupon: \(error)")
+                notice = NoticeFactory.createCouponErrorNotice(validationError,
+                        editingOption: editingOption)
             }
         }
         stores.dispatch(action)

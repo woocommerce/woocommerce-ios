@@ -41,7 +41,7 @@ struct InPersonPaymentsView: View {
                 InPersonPaymentsLoading()
             case .selectPlugin:
                 if viewModel.gatewaySelectionAvailable {
-                    InPersonPaymentsSelectPlugin(selectedPlugin: nil) { plugin in
+                    InPersonPaymentsSelectPluginView(selectedPlugin: nil) { plugin in
                         viewModel.selectPlugin(plugin)
                     }
                 } else if viewModel.userIsAdministrator {

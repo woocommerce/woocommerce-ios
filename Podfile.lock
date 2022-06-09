@@ -10,9 +10,10 @@ PODS:
     - Sentry (~> 6)
     - Sodium (>= 0.9.1)
     - UIDeviceIdentifier (~> 2.0)
-  - Charts (3.6.0):
-    - Charts/Core (= 3.6.0)
-  - Charts/Core (3.6.0)
+  - Charts (4.0.3):
+    - Charts/Core (= 4.0.3)
+  - Charts/Core (4.0.3):
+    - SwiftAlgorithms (~> 1.0)
   - CocoaLumberjack (3.7.4):
     - CocoaLumberjack/Core (= 3.7.4)
   - CocoaLumberjack/Core (3.7.4)
@@ -41,6 +42,7 @@ PODS:
   - Sourcery (1.0.3)
   - StripeTerminal (2.7.0)
   - SVProgressHUD (2.2.5)
+  - SwiftAlgorithms (1.0.0)
   - UIDeviceIdentifier (2.0.0)
   - WordPress-Aztec-iOS (1.11.0)
   - WordPress-Editor-iOS (1.11.0):
@@ -87,7 +89,7 @@ PODS:
 DEPENDENCIES:
   - Alamofire (~> 4.8)
   - Automattic-Tracks-iOS (~> 0.11.1)
-  - Charts (~> 3.6.0)
+  - Charts (~> 4.0)
   - CocoaLumberjack (~> 3.7.4)
   - CocoaLumberjack/Swift (~> 3.7.4)
   - Gridicons (~> 1.2.0)
@@ -128,6 +130,7 @@ SPEC REPOS:
     - Sourcery
     - StripeTerminal
     - SVProgressHUD
+    - SwiftAlgorithms
     - UIDeviceIdentifier
     - WordPress-Aztec-iOS
     - WordPress-Editor-iOS
@@ -150,7 +153,7 @@ SPEC CHECKSUMS:
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
   AppAuth: 80317d99ac7ff2801a2f18ff86b48cd315ed465d
   Automattic-Tracks-iOS: 5cd49d3acf76c26b92b4094d34ba84e6b55e5425
-  Charts: b1e3a1f5a1c9ba5394438ca3b91bd8c9076310af
+  Charts: d959d6723c8eedfdd0735dfc28cb0a71762ac4d9
   CocoaLumberjack: 543c79c114dadc3b1aba95641d8738b06b05b646
   FormatterKit: 184db51bf120b633693a73624a4cede89ec51a41
   GoogleSignIn: fd381840dbe7c1137aa6dc30849a5c3e070c034a
@@ -166,6 +169,7 @@ SPEC CHECKSUMS:
   Sourcery: 70a6048014bd4f37ea80e6bd4354d47bf3b760e1
   StripeTerminal: 237b759168a00c7f55b97c743cd8a4921866c46b
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
+  SwiftAlgorithms: 38dda4731d19027fdeee1125f973111bf3386b53
   UIDeviceIdentifier: af4e11e25a2ea670078e2bd677bb0e8144f9f063
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
   WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
@@ -185,6 +189,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
   ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
-PODFILE CHECKSUM: 5159eb591fc5a50785fa061b8be01bc1bca1938b
+PODFILE CHECKSUM: 663aea2da9c51e9d79910b4fe455dd587df6324b
 
 COCOAPODS: 1.11.2

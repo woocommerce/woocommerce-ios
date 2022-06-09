@@ -251,6 +251,12 @@ private extension SettingsViewController {
         guard let credentials = ServiceLocator.stores.sessionManager.defaultCredentials else {
             return
         }
+
+        let viewProperties = InProgressViewProperties(title: Localization.RemoveAppleIDAccessInProgressView.title, message: "")
+        let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
+        inProgressViewController.modalPresentationStyle = .overFullScreen
+        present(inProgressViewController, animated: true)
+
         // TODO: move logic to Yosemite
         let wpcomAPI = WordPressComRestApi(oAuthToken: credentials.authToken,
                                            userAgent: UserAgent.defaultUserAgent,
@@ -773,6 +779,13 @@ private extension SettingsViewController {
             static let cancel = NSLocalizedString(
                 "Cancel",
                 comment: "The title for a button that dismisses the crash debug menu"
+            )
+        }
+
+        enum RemoveAppleIDAccessInProgressView {
+            static let title = NSLocalizedString(
+                "Removing Apple ID Access...",
+                comment: "Title of the Remove Apple ID Access in-progress view."
             )
         }
 

@@ -46,11 +46,7 @@ final class OrderDetailsDataSource: NSObject {
 
     /// Whether the order is eligible for card present payment.
     ///
-    var isEligibleForCardPresentPayment: Bool {
-        return cardPresentPaymentsConfiguration.isSupportedCountry &&
-        order.isEligibleForCardPresentPayment(cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration,
-                                              products: resultsControllers.products)
-    }
+    var isEligibleForCardPresentPayment: Bool = false
 
     var isEligibleForRefund: Bool {
         guard !isRefundedStatus,

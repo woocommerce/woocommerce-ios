@@ -1,7 +1,13 @@
 
 import Foundation
 
-final class OrderCardPresentPaymentEligibilityStore: Store {
+public final class OrderCardPresentPaymentEligibilityStore: Store {
+    /// Registers for supported Actions.
+    ///
+    override public func registerSupportedActions(in dispatcher: Dispatcher) {
+        dispatcher.register(processor: self, for: OrderCardPresentPaymentEligibilityAction.self)
+    }
+
     /// Receives and executes Actions.
     ///
     override public func onAction(_ action: Action) {

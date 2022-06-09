@@ -28,7 +28,7 @@ final class NewOrderViewModel: ObservableObject {
     /// Indicates whether user has made any changes
     ///
     var hasChanges: Bool {
-        orderSynchronizer.order != OrderFactory.emptyNewOrder
+        orderSynchronizer.order != OrderFactory.emptyNewOrder && flow == .creation
     }
 
     /// Indicates whether the cancel button is visible.

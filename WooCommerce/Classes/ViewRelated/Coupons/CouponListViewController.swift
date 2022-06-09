@@ -202,18 +202,22 @@ private extension CouponListViewController {
         let viewModel = AddEditCouponViewModel(siteID: siteID, discountType: discountType) { [weak self] result in
             guard let self = self else { return }
             switch result {
-            case .success(let updatedCoupon):
-                let view = CouponCreationSuccess(couponCode: updatedCoupon.code, shareMessage: "") {
-                    self.dismiss(animated: true)
-                    self.refreshCouponList()
-                }
-                self.addEditHostingController?.present(UIHostingController(rootView: view), animated: true)
+            case .success(let createdCoupon):
+                self.showCouponCreationSuccess(couponCode: createdCoupon.code)
             default:
                 break
             }
         }
         addEditHostingController = AddEditCouponHostingController(viewModel: viewModel, onDisappear: {})
         present(addEditHostingController!, animated: true)
+    }
+
+    private func showCouponCreationSuccess(couponCode: String) {
+        let view = CouponCreationSuccess(couponCode: couponCode, shareMessage: "") {
+            self.dismiss(animated: true)
+            self.refreshCouponList()
+        }
+        addEditHostingController?.present(UIHostingController(rootView: view), animated: true)
     }
 }
 

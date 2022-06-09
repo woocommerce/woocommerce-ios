@@ -372,10 +372,10 @@ private extension CouponListViewController {
     func displayNoResultsOverlay() {
         let emptyStateViewController = EmptyStateViewController(style: .list)
         let config: EmptyStateViewController.Config = .withButton(
-            message: .init(string: "Create something"),
+            message: .init(string: Localization.emptyStateMessage),
             image: .emptyCouponsImage,
-            details: "Details",
-            buttonTitle: "Create Coupon"
+            details: Localization.emptyStateDetails,
+            buttonTitle: Localization.createCouponAction
         ) { button in
             self.displayCouponTypeBottomSheet()
         }
@@ -449,8 +449,12 @@ private extension CouponListViewController {
                 comment: "Coupon management coupon list screen title")
 
         static let emptyStateMessage = NSLocalizedString(
-            "No coupons found",
+            "Everyone loves a deal",
             comment: "The title on the placeholder overlay when there are no coupons on the coupon list screen.")
+        
+        static let emptyStateDetails = NSLocalizedString(
+            "Boost your business by sending customers special offers and discounts.",
+            comment: "The details text on the placeholder overlay when there are no coupons on the coupon list screen.")
 
         static let couponsDisabledMessage = NSLocalizedString(
             "Everyone loves a deal",
@@ -478,6 +482,7 @@ private extension CouponListViewController {
             "We’ve been working on making it possible to view and edit coupons from your device!",
             comment: "Content of the feedback banner on the coupon list screen"
         )
+        static let createCouponAction = NSLocalizedString("Create Coupon", comment: "Title of the create coupon button on the coupon list screen when it's empty")
         static let giveFeedbackAction = NSLocalizedString("Give Feedback", comment: "Title of the feedback action button on the coupon list screen")
         static let dismissAction = NSLocalizedString("Dismiss", comment: "Title of the dismiss action button on the coupon list screen")
         static let couponDeleted = NSLocalizedString("Coupon deleted", comment: "Notice message after deleting coupon from the Coupon Details screen")

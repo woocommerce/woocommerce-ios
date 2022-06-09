@@ -14,6 +14,9 @@ extension Storage.Order: ReadOnlyConvertible {
         parentID = order.parentID
         customerID = order.customerID
         orderKey = order.orderKey
+        isEditable = order.isEditable
+        needsPayment = order.needsPayment
+        needsProcessing = order.needsProcessing
         number = order.number
         statusKey = order.status.rawValue
         currency = order.currency
@@ -79,6 +82,9 @@ extension Storage.Order: ReadOnlyConvertible {
                      parentID: parentID,
                      customerID: customerID,
                      orderKey: orderKey,
+                     isEditable: isEditable,
+                     needsPayment: needsPayment,
+                     needsProcessing: needsPayment,
                      number: number ?? "",
                      status: OrderStatusEnum(rawValue: statusKey),
                      currency: currency ?? "",

@@ -31,6 +31,14 @@ final class AddEditCouponViewModel: ObservableObject {
         }
     }
 
+    var addEditCouponButtonText: String {
+        if isCreationFlow {
+            return Localization.createButton
+        } else {
+            return Localization.saveButton
+        }
+    }
+
     /// The value for populating the coupon discount type field based on the `discountType`.
     ///
     var discountTypeValue: TitleAndValueRow.Value {
@@ -511,5 +519,7 @@ private extension AddEditCouponViewModel {
             "Reads like: Edit Categories")
         static let createCouponTitle = NSLocalizedString("Create coupon", comment: "Title of the Create coupon screen")
         static let editCouponTitle = NSLocalizedString("Edit coupon", comment: "Title of the Edit coupon screen")
+        static let saveButton = NSLocalizedString("Save", comment: "Action for saving a Coupon remotely")
+        static let createButton = NSLocalizedString("Create", comment: "Action for creating a Coupon remotely")
     }
 }

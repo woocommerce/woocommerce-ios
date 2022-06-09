@@ -34,7 +34,7 @@ final class NewOrderViewModel: ObservableObject {
     /// Indicates whether the cancel button is visible.
     ///
     var shouldShowCancelButton: Bool {
-        featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
+        featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) && flow == .creation
     }
 
     /// Active navigation bar trailing item.

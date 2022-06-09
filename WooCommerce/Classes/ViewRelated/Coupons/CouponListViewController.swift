@@ -201,8 +201,12 @@ private extension CouponListViewController {
     func startCouponCreation(discountType: Coupon.DiscountType) {
         let viewModel = AddEditCouponViewModel(siteID: siteID, discountType: discountType) { [weak self] result in
             guard let self = self else { return }
-            self.addEditHostingController?.dismiss(animated: true)
-            self.refreshCouponList()
+            switch result {
+            case .success(let updatedCoupon):
+                break
+            default:
+                break
+            }
         }
         addEditHostingController = AddEditCouponHostingController(viewModel: viewModel, onDisappear: {})
         present(addEditHostingController!, animated: true)

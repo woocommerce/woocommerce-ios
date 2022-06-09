@@ -567,7 +567,7 @@ private extension OrderDetailsDataSource {
     private func configureCustomerPaid(cell: TwoColumnHeadlineFootnoteTableViewCell) {
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
         cell.leftText = Titles.paidByCustomer
-        cell.rightText = paymentViewModel.paymentTotal
+        cell.rightText = order.paymentTotal
         cell.updateFootnoteText(paymentViewModel.paymentSummary)
     }
 
@@ -603,10 +603,8 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureNetAmount(cell: TwoColumnHeadlineFootnoteTableViewCell) {
-        let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
-
         cell.leftText = Titles.netAmount
-        cell.rightText = paymentViewModel.netAmount
+        cell.rightText = order.netAmount
         cell.hideFootnote()
     }
 

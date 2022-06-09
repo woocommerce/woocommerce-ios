@@ -1,11 +1,14 @@
 import Foundation
-import Yosemite
 import WooFoundation
 import protocol Storage.StorageManagerType
 
 /// Extension helpers for `Order` related with Card Present Payments
 ///
-extension Order {
+ extension Order {
+    private var currencyFormatter: CurrencyFormatter {
+        CurrencyFormatter(currencySettings: CurrencySettings())
+    }
+
     /// Determines whether this order can be paid with card
     ///
     /// - Parameters:
@@ -27,7 +30,6 @@ extension Order {
             return false
         }
 
-        let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
         guard let totalAmount = currencyFormatter.convertToDecimal(total), totalAmount.decimalValue > 0 else {
             return false
         }
@@ -37,9 +39,10 @@ extension Order {
         // * orders that have been partially refunded.
         // * orders where the merchant has applied a discount manually
         // * in general, all orders where we might want to capture a payment for less than the total order amount
-        let paymentViewModel = OrderPaymentDetailsViewModel(order: self)
-        return !paymentViewModel.hasBeenPartiallyCharged
+        let hasBeenPartiallyCharged = totalValue != netAmount
+        return !hasBeenPartiallyCharged
     }
+
 
     private var isStatusEligibleForCardPayment: Bool {
         (status == .pending || status == .onHold || status == .processing)
@@ -63,9 +66,6 @@ extension Order {
     }
 
     private func containsAnySubscription(from products: [Product]) -> Bool {
-        items.contains { item in
-            let product = products.filter({ item.productID == $0.productID }).first
-            return product?.productType == .subscription
-        }
+        products.contains { $0.productType == .subscription }
     }
 }

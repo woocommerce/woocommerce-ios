@@ -371,10 +371,15 @@ private extension CouponListViewController {
     ///
     func displayNoResultsOverlay() {
         let emptyStateViewController = EmptyStateViewController(style: .list)
-        let config: EmptyStateViewController.Config = .simple(
-            message: .init(string: Localization.emptyStateMessage),
-            image: .emptyCouponsImage
-        )
+        let config: EmptyStateViewController.Config = .withButton(
+            message: .init(string: "Create something"),
+            image: .emptyCouponsImage,
+            details: "Details",
+            buttonTitle: "Create Coupon"
+        ) { [weak self] button in
+            guard let self = self else { return }
+            self.displayCouponTypeBottomSheet()
+        }
 
         displayEmptyStateViewController(emptyStateViewController)
         emptyStateViewController.configure(config)

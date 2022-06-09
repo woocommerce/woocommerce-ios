@@ -1,6 +1,8 @@
 
 import Foundation
 
+/// Determines whether an order is eligible for card present payment or not
+///
 public final class OrderCardPresentPaymentEligibilityStore: Store {
     /// Registers for supported Actions.
     ///
@@ -38,7 +40,7 @@ private extension OrderCardPresentPaymentEligibilityStore {
         }
 
 
-        let orderProductsIDs = order.items.map(\.variationID)
+        let orderProductsIDs = order.items.map(\.productID)
         let products = storage.loadProducts(siteID: siteID, productsIDs: orderProductsIDs).map { $0.toReadOnly() }
 
         onCompletion(.success(order.isEligibleForCardPresentPayment(cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration, products: products)))

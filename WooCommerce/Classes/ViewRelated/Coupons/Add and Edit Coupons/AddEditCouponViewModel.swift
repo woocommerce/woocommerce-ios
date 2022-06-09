@@ -247,6 +247,13 @@ final class AddEditCouponViewModel: ObservableObject {
     }
 
     private func createCoupon(coupon: Coupon) {
+        if let validationError = validateCouponLocally(coupon) {
+            notice = NoticeFactory.createCouponErrorNotice(validationError,
+                    editingOption: editingOption)
+            onCompletion(.failure(validationError))
+            return
+        }
+
         isLoading = true
         let action = CouponAction.createCoupon(coupon, siteTimezone: timezone) { [weak self] result in
             guard let self = self else { return }

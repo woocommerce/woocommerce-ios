@@ -28,6 +28,11 @@ final class AppleIDCredentialChecker {
         }
     }
 
+    /// Checks whether the user signed in with Apple.
+    func hasAppleUserID() -> Bool {
+        keychain.wooAppleID != nil
+    }
+
     func observeLoggedInStateForAppleIDObservations() {
         cancellable = stores.isLoggedInPublisher.sink { [weak self] isLoggedIn in
             if isLoggedIn {

@@ -269,8 +269,7 @@ private extension SettingsViewModel {
 
         // Remove Apple ID Access
         let removeAppleIDAccessSection: Section? = {
-            let keychain = Keychain(service: WooConstants.keychainServiceName)
-            guard keychain.wooAppleID != nil else {
+            guard AppleIDCredentialChecker().hasAppleUserID() else {
                 return nil
             }
             return Section(title: nil,

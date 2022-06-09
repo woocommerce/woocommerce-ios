@@ -150,7 +150,10 @@ struct NewOrder: View {
                     .id(navigationButtonID)
                     .accessibilityIdentifier(Accessibility.createButtonIdentifier)
                     .disabled(viewModel.disabled)
-
+                case .done:
+                    Button(Localization.doneButton) {
+                        dismissHandler()
+                    }
                 case .loading:
                     ProgressView()
                 }
@@ -244,6 +247,7 @@ private extension NewOrder {
     enum Localization {
         static let title = NSLocalizedString("New Order", comment: "Title for the order creation screen")
         static let createButton = NSLocalizedString("Create", comment: "Button to create an order on the New Order screen")
+        static let doneButton = NSLocalizedString("Done", comment: "Button to dismiss the Order Editing screen")
         static let cancelButton = NSLocalizedString("Cancel", comment: "Button to cancel the creation of an order on the New Order screen")
         static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating a new order")
         static let addProduct = NSLocalizedString("Add Product", comment: "Title text of the button that adds a product when creating a new order")

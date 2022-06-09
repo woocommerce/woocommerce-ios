@@ -368,6 +368,7 @@ extension NewOrderViewModel {
     ///
     enum NavigationItem: Equatable {
         case create
+        case done
         case loading
     }
 
@@ -520,12 +521,17 @@ private extension NewOrderViewModel {
     ///
     func configureNavigationTrailingItem() {
         Publishers.CombineLatest(orderSynchronizer.orderPublisher, $performingNetworkRequest)
-            .map { order, performingNetworkRequest -> NavigationItem in
-                guard !performingNetworkRequest else {
+            .map { [weak self] order, performingNetworkRequest -> NavigationItem in
+                guard let self = self, !performingNetworkRequest else {
                     return .loading
                 }
 
-                return .create
+                switch self.flow {
+                case .creation:
+                    return .create
+                case .editing:
+                    return .done
+                }
             }
             .assign(to: &$navigationTrailingItem)
     }

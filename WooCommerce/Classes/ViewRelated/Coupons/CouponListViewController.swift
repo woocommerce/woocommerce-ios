@@ -376,8 +376,7 @@ private extension CouponListViewController {
             image: .emptyCouponsImage,
             details: "Details",
             buttonTitle: "Create Coupon"
-        ) { [weak self] button in
-            guard let self = self else { return }
+        ) { button in
             self.displayCouponTypeBottomSheet()
         }
 

@@ -88,7 +88,7 @@ final class CouponListViewModel {
     }
 
     func createAddEditCouponViewModel(with discountType: Coupon.DiscountType,
-                                      onCreationSuccess: (Coupon) -> Void) -> AddEditCouponViewModel {
+                                      onCreationSuccess: @escaping (Coupon) -> Void) -> AddEditCouponViewModel {
         .init(siteID: siteID, discountType: discountType, onCompletion: { [weak self] result in
             guard let self = self else { return }
             switch result {

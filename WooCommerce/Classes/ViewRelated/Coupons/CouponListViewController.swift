@@ -202,7 +202,7 @@ private extension CouponListViewController {
     ///
     func startCouponCreation(discountType: Coupon.DiscountType) {
         let viewModel = viewModel.createAddEditCouponViewModel(with: discountType) { createdCoupon in
-            showCouponCreationSuccess(couponCode: createdCoupon.code)
+            self.showCouponCreationSuccess(couponCode: createdCoupon.code)
         }
         addEditHostingController = AddEditCouponHostingController(viewModel: viewModel, onDisappear: {})
         present(addEditHostingController!, animated: true)

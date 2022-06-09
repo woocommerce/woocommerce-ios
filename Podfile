@@ -64,7 +64,6 @@ target 'WooCommerce' do
   pod 'CocoaLumberjack', '~> 3.7.4'
   pod 'CocoaLumberjack/Swift', '~> 3.7.4'
   pod 'XLPagerTabStrip', '~> 9.0'
-  pod 'Charts', '~> 3.6.0'
   pod 'ZendeskSupportSDK', '~> 5.0'
   pod 'StripeTerminal', '~> 2.7'
   pod 'Kingfisher', '~> 7.2.2'

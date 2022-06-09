@@ -374,7 +374,7 @@ private extension StoreStatsV4PeriodViewController {
 
     func configureChart() {
         lineChartView.marker = StoreStatsChartCircleMarker()
-        lineChartView.chartDescription?.enabled = false
+        lineChartView.chartDescription.enabled = false
         lineChartView.dragXEnabled = true
         lineChartView.dragYEnabled = false
         lineChartView.setScaleEnabled(false)
@@ -482,9 +482,9 @@ private extension StoreStatsV4PeriodViewController {
     }
 }
 
-// MARK: - IAxisValueFormatter Conformance (Charts)
+// MARK: - AxisValueFormatter Conformance (Charts)
 //
-extension StoreStatsV4PeriodViewController: IAxisValueFormatter {
+extension StoreStatsV4PeriodViewController: AxisValueFormatter {
     func stringForValue(_ value: Double, axis: AxisBase?) -> String {
         guard let axis = axis else {
             return ""
@@ -669,7 +669,7 @@ private extension StoreStatsV4PeriodViewController {
             let gradientColorSpace = CGColorSpaceCreateDeviceRGB()
             let locations: [CGFloat] = [0.0, 1.0]
             if let gradient = CGGradient(colorsSpace: gradientColorSpace, colors: gradientColors, locations: locations) {
-                dataSet.fill = .init(linearGradient: gradient, angle: 90.0)
+                dataSet.fill = LinearGradientFill(gradient: gradient, angle: 90.0)
                 dataSet.fillAlpha = 1.0
                 dataSet.drawFilledEnabled = true
             }

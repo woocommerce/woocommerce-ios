@@ -260,7 +260,7 @@ struct AddEditCoupon: View {
                                 dismissHandler()
                             })
                         } label: {
-                            Text(Localization.saveButton)
+                            Text(viewModel.addEditCouponButtonText)
                         }
                         .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoading))
                         .padding(.horizontal, Constants.margin)
@@ -377,7 +377,6 @@ private extension AddEditCoupon {
         static let usageRestrictions = NSLocalizedString(
             "Usage Restrictions",
             comment: "Field in the view for adding or editing a coupon.")
-        static let saveButton = NSLocalizedString("Save", comment: "Action for saving a Coupon remotely")
         static let addDescriptionPlaceholder = NSLocalizedString("Add the description of the coupon.",
                                                                  comment: "Placeholder text that will be shown in the view" +
                                                                  " for adding the description of a coupon.")

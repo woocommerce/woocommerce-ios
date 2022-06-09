@@ -203,7 +203,11 @@ private extension CouponListViewController {
             guard let self = self else { return }
             switch result {
             case .success(let updatedCoupon):
-                break
+                let view = CouponCreationSuccess(couponCode: updatedCoupon.code, shareMessage: "") {
+                    self.dismiss(animated: true)
+                    self.refreshCouponList()
+                }
+                self.addEditHostingController?.present(UIHostingController(rootView: view), animated: true)
             default:
                 break
             }

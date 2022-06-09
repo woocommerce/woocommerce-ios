@@ -198,6 +198,8 @@ private extension CouponListViewController {
         tableView?.tableFooterView = footerEmptyView
     }
 
+    /// Triggers the coupon creation flow
+    ///
     func startCouponCreation(discountType: Coupon.DiscountType) {
         let viewModel = viewModel.createAddEditCouponViewModel(with: discountType) { createdCoupon in
             showCouponCreationSuccess(couponCode: createdCoupon.code)
@@ -206,6 +208,8 @@ private extension CouponListViewController {
         present(addEditHostingController!, animated: true)
     }
 
+    /// Display the Coupon creation success view
+    ///
     func showCouponCreationSuccess(couponCode: String) {
         let view = CouponCreationSuccess(couponCode: couponCode, shareMessage: "") {
             self.dismiss(animated: true)

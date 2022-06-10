@@ -111,7 +111,7 @@ struct CouponDetails: View {
                             )
                         }
                         .shareSheet(isPresented: $showingShareSheet) {
-                            ShareSheet(activityItems: [viewModel.coupon.shareMessage])
+                            ShareSheet(activityItems: [viewModel.shareMessage])
                         }
 
                     VStack(alignment: .leading, spacing: Constants.verticalSpacing) {

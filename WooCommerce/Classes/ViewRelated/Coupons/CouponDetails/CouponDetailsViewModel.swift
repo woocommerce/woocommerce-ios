@@ -97,13 +97,7 @@ final class CouponDetailsViewModel: ObservableObject {
     /// The message to be shared about the coupon
     ///
     var shareMessage: String {
-        if coupon.productIds.isNotEmpty ||
-            coupon.productCategories.isNotEmpty ||
-            coupon.excludedProductIds.isNotEmpty ||
-            coupon.excludedProductCategories.isNotEmpty {
-            return String.localizedStringWithFormat(Localization.shareMessageSomeProducts, amount, couponCode)
-        }
-        return String.localizedStringWithFormat(Localization.shareMessageAllProducts, amount, couponCode)
+        coupon.generateShareMessage(couponAmount: amount)
     }
 
     /// Total number of orders that applied the coupon

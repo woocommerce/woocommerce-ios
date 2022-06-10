@@ -257,38 +257,19 @@ private extension SettingsViewController {
         inProgressViewController.modalPresentationStyle = .overFullScreen
         present(inProgressViewController, animated: true)
 
-        // TODO: move logic to Yosemite
-        let wpcomAPI = WordPressComRestApi(oAuthToken: credentials.authToken,
-                                           userAgent: UserAgent.defaultUserAgent,
-                                           baseUrlString: Settings.wordpressApiBaseURL)
-        // TODO: show in-progress UI while waiting for API response
-        AccountServiceRemoteREST(wordPressComRestApi: wpcomAPI)
-            .disconnectFromSocialService(.apple,
-                                         oAuthClientID: ApiCredentials.dotcomAppId,
-                                         oAuthClientSecret: ApiCredentials.dotcomSecret) { [weak self] in
-                self?.logOutUser()
-            } failure: { error in
-                // TODO: show an error alert
-                DDLogError("⛔️ Cannot remove Apple ID access: \(error)")
-            }
+        // TODO: 7068 - remove Apple ID access action
     }
 
     func removeAppleIDAccessWasPressed() {
-        // TODO: analytics
-//        ServiceLocator.analytics.track(.settingsLogoutTapped)
+        // TODO: 7068 - analytics
         let alertController = UIAlertController(title: Localization.RemoveAppleIDAccessAlert.alertTitle,
                                                 message: Localization.RemoveAppleIDAccessAlert.alertMessage,
                                                 preferredStyle: .alert)
-
-        alertController.addActionWithTitle(Localization.RemoveAppleIDAccessAlert.cancelButtonTitle, style: .cancel) { _ in
-//            ServiceLocator.analytics.track(.settingsLogoutConfirmation, withProperties: ["result": "negative"])
-        }
-
+        alertController.addActionWithTitle(Localization.RemoveAppleIDAccessAlert.cancelButtonTitle, style: .cancel) { _ in }
         alertController.addActionWithTitle(Localization.RemoveAppleIDAccessAlert.removeButtonTitle, style: .destructive) { [weak self] _ in
-//            ServiceLocator.analytics.track(.settingsLogoutConfirmation, withProperties: ["result": "positive"])
+            // TODO: 7068 - analytics
             self?.removeAppleIDAccess()
         }
-
         present(alertController, animated: true)
     }
 
@@ -792,10 +773,11 @@ private extension SettingsViewController {
         enum RemoveAppleIDAccessAlert {
             static let alertTitle = NSLocalizedString(
                 "Remove Apple ID Access",
-                comment: "Remove Apple ID Access button title - confirms and revokes Apple ID token"
+                comment: "Remove Apple ID Access confirmation alert title - confirms and revokes Apple ID token."
             )
             static let alertMessage = NSLocalizedString(
-                "This will log you out and reset your Sign In With Apple access token. You will be asked to re-enter your WordPress.com password if you Sign In With Apple again.",
+                "This will log you out and reset your Sign In With Apple access token. " +
+                "You will be asked to re-enter your WordPress.com password if you Sign In With Apple again.",
                 comment: "Alert message to confirm a user meant to remove Apple ID access."
             )
             static let cancelButtonTitle = NSLocalizedString(

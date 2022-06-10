@@ -622,10 +622,8 @@ extension StorePickerViewController: UITableViewDataSource {
             let isRemoveAppleIDAccessButtonVisible = AppleIDCredentialChecker().hasAppleUserID()
             cell.updateRemoveAppleIDAccessButtonVisibility(isVisible: isRemoveAppleIDAccessButtonVisible)
             if isRemoveAppleIDAccessButtonVisible {
-                cell.onRemoveAppleIDAccessButtonTapped = { [weak self] in
-                    guard let self = self else { return }
-
-                    // TODO
+                cell.onRemoveAppleIDAccessButtonTapped = {
+                    // TODO: 7068 - remove Apple ID access
                 }
             }
             return cell

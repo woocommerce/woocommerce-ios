@@ -98,7 +98,7 @@ final class CouponListViewModel {
         .init(siteID: siteID, discountType: discountType, onCompletion: { result in
             switch result {
             case .success(let createdCoupon):
-                let formattedAmount = createdCoupon.formattedAmount(currencySettings: ServiceLocator.currencySettings)
+                let formattedAmount = createdCoupon.formattedAmount(currencySettings: currencySettings)
                 let amount = formattedAmount.isEmpty ? createdCoupon.amount : formattedAmount
                 let shareMessage = createdCoupon.generateShareMessage(couponAmount: amount)
                 onCreationSuccess(createdCoupon, shareMessage)

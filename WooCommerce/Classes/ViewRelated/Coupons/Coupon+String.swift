@@ -4,14 +4,14 @@ import Yosemite
 extension Coupon {
     /// The message to be shared about the coupon
     ///
-    var shareMessage: String {
+    func generateShareMessage(couponAmount: String) -> String {
         if productIds.isNotEmpty ||
                    productCategories.isNotEmpty ||
                    excludedProductIds.isNotEmpty ||
                    excludedProductCategories.isNotEmpty {
-            return String.localizedStringWithFormat(Localization.shareMessageSomeProducts, amount, code)
+            return String.localizedStringWithFormat(Localization.shareMessageSomeProducts, couponAmount, code)
         }
-        return String.localizedStringWithFormat(Localization.shareMessageAllProducts, amount, code)
+        return String.localizedStringWithFormat(Localization.shareMessageAllProducts, couponAmount, code)
     }
 }
 

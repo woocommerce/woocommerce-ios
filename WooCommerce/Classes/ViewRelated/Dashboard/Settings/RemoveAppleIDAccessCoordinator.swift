@@ -31,14 +31,20 @@ private extension RemoveAppleIDAccessCoordinator {
                                                 preferredStyle: .alert)
         alertController.addActionWithTitle(Localization.ConfirmationAlert.cancelButtonTitle, style: .cancel) { _ in }
         alertController.addActionWithTitle(Localization.ConfirmationAlert.removeButtonTitle, style: .destructive) { [weak self] _ in
+            guard let self = self else { return }
+
             // TODO: 7068 - analytics
+
+            self.presentInProgressUI()
 
             Task { @MainActor [weak self] in
                 guard let self = self else { return }
                 let result = await self.removeAction()
                 switch result {
                 case .success:
-                    self.onRemoveSuccess()
+                    self.dismissInProgressUI {
+                        self.onRemoveSuccess()
+                    }
                 case .failure(let error):
                     DDLogError("⛔️ Cannot remove Apple ID access: \(error)")
                     self.presentErrorAlert()
@@ -46,6 +52,17 @@ private extension RemoveAppleIDAccessCoordinator {
             }
         }
         sourceViewController.present(alertController, animated: true)
+    }
+
+    func presentInProgressUI() {
+        let viewProperties = InProgressViewProperties(title: Localization.RemoveAppleIDAccessInProgressView.title, message: "")
+        let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
+        inProgressViewController.modalPresentationStyle = .overFullScreen
+        sourceViewController.present(inProgressViewController, animated: true)
+    }
+
+    func dismissInProgressUI(completion: @escaping () -> Void) {
+        sourceViewController.dismiss(animated: true, completion: completion)
     }
 
     func presentErrorAlert() {
@@ -59,6 +76,13 @@ private extension RemoveAppleIDAccessCoordinator {
 
 private extension RemoveAppleIDAccessCoordinator {
     enum Localization {
+        enum RemoveAppleIDAccessInProgressView {
+            static let title = NSLocalizedString(
+                "Removing Apple ID Access...",
+                comment: "Title of the Remove Apple ID Access in-progress view."
+            )
+        }
+
         enum ConfirmationAlert {
             static let alertTitle = NSLocalizedString(
                 "Remove Apple ID Access",

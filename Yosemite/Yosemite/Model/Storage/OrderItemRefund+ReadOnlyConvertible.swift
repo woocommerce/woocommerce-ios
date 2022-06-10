@@ -32,6 +32,7 @@ extension Storage.OrderItemRefund: ReadOnlyConvertible {
                                name: name ?? "",
                                productID: productID,
                                variationID: variationID,
+                               refundedItemID: refundedItemID,
                                quantity: quantity?.decimalValue ?? Decimal.zero,
                                price: price ?? NSDecimalNumber(integerLiteral: 0),
                                sku: sku,

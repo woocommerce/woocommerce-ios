@@ -451,6 +451,7 @@ extension OrderItemRefund {
         name: CopiableProp<String> = .copy,
         productID: CopiableProp<Int64> = .copy,
         variationID: CopiableProp<Int64> = .copy,
+        refundedItemID: CopiableProp<Int64> = .copy,
         quantity: CopiableProp<Decimal> = .copy,
         price: CopiableProp<NSDecimalNumber> = .copy,
         sku: NullableCopiableProp<String> = .copy,
@@ -465,6 +466,7 @@ extension OrderItemRefund {
         let name = name ?? self.name
         let productID = productID ?? self.productID
         let variationID = variationID ?? self.variationID
+        let refundedItemID = refundedItemID ?? self.refundedItemID
         let quantity = quantity ?? self.quantity
         let price = price ?? self.price
         let sku = sku ?? self.sku
@@ -480,6 +482,7 @@ extension OrderItemRefund {
             name: name,
             productID: productID,
             variationID: variationID,
+            refundedItemID: refundedItemID,
             quantity: quantity,
             price: price,
             sku: sku,

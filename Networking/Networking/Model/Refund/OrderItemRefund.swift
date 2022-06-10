@@ -8,6 +8,7 @@ public struct OrderItemRefund: Codable, Equatable, GeneratedFakeable, GeneratedC
     public let name: String
     public let productID: Int64
     public let variationID: Int64
+    public let refundedItemID: Int64?
     public let quantity: Decimal
 
     /// Price is a currency.
@@ -30,6 +31,7 @@ public struct OrderItemRefund: Codable, Equatable, GeneratedFakeable, GeneratedC
                 name: String,
                 productID: Int64,
                 variationID: Int64,
+                refundedItemID: Int64?,
                 quantity: Decimal,
                 price: NSDecimalNumber,
                 sku: String?,
@@ -43,6 +45,7 @@ public struct OrderItemRefund: Codable, Equatable, GeneratedFakeable, GeneratedC
         self.name = name
         self.productID = productID
         self.variationID = variationID
+        self.refundedItemID = refundedItemID
         self.quantity = quantity
         self.price = price
         self.sku = sku
@@ -76,11 +79,20 @@ public struct OrderItemRefund: Codable, Equatable, GeneratedFakeable, GeneratedC
         let total = try container.decode(String.self, forKey: .total)
         let totalTax = try container.decode(String.self, forKey: .totalTax)
 
+        let metaData = try? container.decode(OrderItemRefundMetaData.self, forKey: .metadata)
+
+        var refundedItemID: Int64?
+        if  let metaData = metaData,
+            metaData.key == "_refunded_item_id" {
+            refundedItemID = Int64(metaData.value)
+        }
+
         // initialize the struct
         self.init(itemID: itemID,
                   name: name,
                   productID: productID,
                   variationID: variationID,
+                  refundedItemID: refundedItemID,
                   quantity: quantity,
                   price: price,
                   sku: sku,
@@ -131,6 +143,7 @@ private extension OrderItemRefund {
         case total
         case totalTax       = "total_tax"
         case taxes
+        case metadata       = "meta_data"
     }
 
     enum EncodingKeys: String, CodingKey {

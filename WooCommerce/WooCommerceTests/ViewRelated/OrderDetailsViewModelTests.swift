@@ -95,7 +95,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
     func test_there_should_not_be_share_link_action_if_order_is_not_pending_payment() {
         // Given
-        let order = Order.fake().copy(status: .processing, total: "10.0", paymentURL: nil)
+        let order = Order.fake().copy(needsPayment: false, status: .processing, total: "10.0", paymentURL: nil)
 
         // When
         let viewModel = OrderDetailsViewModel(order: order)
@@ -108,7 +108,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
     func test_there_should_be_share_link_action_if_order_is_pending_payment() {
         // Given
         let paymentURL = URL(string: "http://www.automattic.com")
-        let order = Order.fake().copy(status: .pending, total: "10.0", paymentURL: paymentURL)
+        let order = Order.fake().copy(needsPayment: true, status: .pending, total: "10.0", paymentURL: paymentURL)
 
         // When
         let viewModel = OrderDetailsViewModel(order: order)

@@ -135,12 +135,6 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         let parentID = try container.decode(Int64.self, forKey: .parentID)
         let customerID = try container.decode(Int64.self, forKey: .customerID)
         let orderKey = try container.decode(String.self, forKey: .orderKey)
-
-        // TODO: Update with local fallback implementation https://github.com/woocommerce/woocommerce-ios/issues/6977
-        let isEditable = try container.decodeIfPresent(Bool.self, forKey: .isEditable) ?? false
-        let needsPayment = try container.decodeIfPresent(Bool.self, forKey: .needsPayment) ?? false
-        let needsProcessing = try container.decodeIfPresent(Bool.self, forKey: .needsProcessing) ?? false
-
         let number = try container.decode(String.self, forKey: .number)
         let status = try container.decode(OrderStatusEnum.self, forKey: .status)
 
@@ -191,6 +185,14 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         let fees = try container.decode([OrderFeeLine].self, forKey: .feeLines)
 
         let taxes = try container.decode([OrderTaxLine].self, forKey: .taxLines)
+
+        // Properties added on WC 6.6, we provide a local fallback for older stores.
+        let isEditable = try container.decodeIfPresent(Bool.self, forKey: .isEditable) ?? Self.inferIsEditable(status: status)
+        let needsPayment = try container.decodeIfPresent(Bool.self, forKey: .needsPayment) ?? Self.inferNeedsPayment(status: status, total: total)
+
+        // TODO: Update with local fallback when required.
+        // https://github.com/woocommerce/woocommerce/blob/3611d4643791bad87a0d3e6e73e031bb80447417/plugins/woocommerce/includes/class-wc-order.php#L1537-L1561
+        let needsProcessing = try container.decodeIfPresent(Bool.self, forKey: .needsProcessing) ?? false
 
         self.init(siteID: siteID,
                   orderID: orderID,

@@ -233,7 +233,13 @@ extension OrderDetailsViewModel {
         }
 
         group.enter()
-        refreshCardPresentPaymentEligibility()
+        checkCardPresentPaymentEligibility() {
+            onReloadSections?()
+            group.leave()
+        }
+
+        group.enter()
+        loadPaymentGatewayAccounts()
         group.leave()
 
         group.enter()
@@ -601,7 +607,33 @@ extension OrderDetailsViewModel {
         stores.dispatch(action)
     }
 
-    func refreshCardPresentPaymentEligibility() {
+    func checkCardPresentPaymentEligibility(onCompletion: @escaping (() -> Void)) {
+        let configuration = configurationLoader.configuration
+
+        guard configuration.isSupportedCountry else {
+            dataSource.isEligibleForCardPresentPayment = false
+            onCompletion()
+            return
+        }
+
+        let action = OrderCardPresentPaymentEligibilityAction
+            .orderIsEligibleForCardPresentPayment(orderID: order.orderID,
+                                                  siteID: order.siteID,
+                                                  cardPresentPaymentsConfiguration: configurationLoader.configuration) { [weak self] result in
+            switch result {
+            case .success(let eligible):
+                self?.dataSource.isEligibleForCardPresentPayment = eligible
+            case .failure(_):
+                self?.dataSource.isEligibleForCardPresentPayment = false
+            }
+
+            onCompletion()
+        }
+
+        stores.dispatch(action)
+    }
+
+    func loadPaymentGatewayAccounts() {
         /// No need for a completion here. The VC will be notified of changes to the stored paymentGatewayAccounts
         /// by the viewModel (after passing up through the dataSource and originating in the resultsControllers)
         ///

@@ -255,7 +255,7 @@ final class AddEditCouponViewModel: ObservableObject {
     }
 
     private func createCoupon(coupon: Coupon) {
-        ServiceLocator.analytics.track(.couponUpdateInitiated)
+        ServiceLocator.analytics.track(.couponCreationInitiated)
 
         if let validationError = validateCouponLocally(coupon) {
             notice = NoticeFactory.createCouponErrorNotice(validationError,

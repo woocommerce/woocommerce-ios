@@ -140,12 +140,13 @@ final class StorePickerViewController: UIViewController {
 
     private var removeAppleIDAccessCoordinator: RemoveAppleIDAccessCoordinator?
 
-    private let stores: StoresManager
     private let appleIDCredentialChecker: AppleIDCredentialCheckerProtocol
+    private let featureFlagService: FeatureFlagService
 
-    init(stores: StoresManager = ServiceLocator.stores, appleIDCredentialChecker: AppleIDCredentialCheckerProtocol = AppleIDCredentialChecker()) {
-        self.stores = stores
+    init(appleIDCredentialChecker: AppleIDCredentialCheckerProtocol = AppleIDCredentialChecker(),
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.appleIDCredentialChecker = appleIDCredentialChecker
+        self.featureFlagService = featureFlagService
         super.init(nibName: Self.nibName, bundle: nil)
     }
 
@@ -635,6 +636,7 @@ extension StorePickerViewController: UITableViewDataSource {
                 WebviewHelper.launch(WooConstants.URLs.emptyStoresJetpackSetup.asURL(), with: self)
             }
             let isRemoveAppleIDAccessButtonVisible = appleIDCredentialChecker.hasAppleUserID()
+            && featureFlagService.isFeatureFlagEnabled(.appleIDAccountDeletion)
             cell.updateRemoveAppleIDAccessButtonVisibility(isVisible: isRemoveAppleIDAccessButtonVisible)
             if isRemoveAppleIDAccessButtonVisible {
                 cell.onRemoveAppleIDAccessButtonTapped = { [weak self] in

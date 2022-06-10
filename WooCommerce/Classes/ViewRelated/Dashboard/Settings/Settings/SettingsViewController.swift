@@ -3,8 +3,6 @@ import MessageUI
 import Gridicons
 import SafariServices
 import AutomatticAbout
-import Networking
-import WordPressKit
 
 protocol SettingsViewPresenter: AnyObject {
     func refreshViewContent()

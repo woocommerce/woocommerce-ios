@@ -3,7 +3,6 @@ import Yosemite
 import Storage
 import class Networking.UserAgent
 import Experiments
-import KeychainAccess
 
 protocol SettingsViewModelOutput {
     typealias Section = SettingsViewController.Section

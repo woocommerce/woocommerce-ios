@@ -302,6 +302,7 @@
 		02A9A496244D84AB00757B99 /* ProductsSortOrderBottomSheetListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A9A495244D84AB00757B99 /* ProductsSortOrderBottomSheetListSelectorCommandTests.swift */; };
 		02A9BCD42737DE0D00159C79 /* JetpackBenefitsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A9BCD32737DE0D00159C79 /* JetpackBenefitsView.swift */; };
 		02A9BCD62737F73C00159C79 /* JetpackBenefitItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A9BCD52737F73C00159C79 /* JetpackBenefitItem.swift */; };
+		02AA586628531D0E0068B6F0 /* RemoveAppleIDAccessCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AA586528531D0E0068B6F0 /* RemoveAppleIDAccessCoordinatorTests.swift */; };
 		02AAD54525023A8300BA1E26 /* ProductFormRemoteActionUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AAD54425023A8300BA1E26 /* ProductFormRemoteActionUseCase.swift */; };
 		02AB407B27827C9100929CF3 /* ChartPlaceholderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02AB407927827C9000929CF3 /* ChartPlaceholderView.xib */; };
 		02AB407C27827C9100929CF3 /* ChartPlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AB407A27827C9100929CF3 /* ChartPlaceholderView.swift */; };
@@ -2059,6 +2060,7 @@
 		02A9A495244D84AB00757B99 /* ProductsSortOrderBottomSheetListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsSortOrderBottomSheetListSelectorCommandTests.swift; sourceTree = "<group>"; };
 		02A9BCD32737DE0D00159C79 /* JetpackBenefitsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackBenefitsView.swift; sourceTree = "<group>"; };
 		02A9BCD52737F73C00159C79 /* JetpackBenefitItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackBenefitItem.swift; sourceTree = "<group>"; };
+		02AA586528531D0E0068B6F0 /* RemoveAppleIDAccessCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoveAppleIDAccessCoordinatorTests.swift; sourceTree = "<group>"; };
 		02AAD54425023A8300BA1E26 /* ProductFormRemoteActionUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormRemoteActionUseCase.swift; sourceTree = "<group>"; };
 		02AB407927827C9000929CF3 /* ChartPlaceholderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChartPlaceholderView.xib; sourceTree = "<group>"; };
 		02AB407A27827C9100929CF3 /* ChartPlaceholderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartPlaceholderView.swift; sourceTree = "<group>"; };
@@ -6628,6 +6630,7 @@
 			isa = PBXGroup;
 			children = (
 				BAFEF51D273C2151005F94CC /* SettingsViewModelTests.swift */,
+				02AA586528531D0E0068B6F0 /* RemoveAppleIDAccessCoordinatorTests.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -9922,6 +9925,7 @@
 				B57C5C9A21B80E7100FF82B2 /* DataWooTests.swift in Sources */,
 				B53A56A42112483E000776C9 /* Constants.swift in Sources */,
 				2667BFE72530E78F008099D4 /* RefundItemsValuesCalculationUseCaseTests.swift in Sources */,
+				02AA586628531D0E0068B6F0 /* RemoveAppleIDAccessCoordinatorTests.swift in Sources */,
 				E12AF69B26BA8B2000C371C1 /* CardPresentPaymentsOnboardingUseCaseTests.swift in Sources */,
 				D802549B265531D4001B2CC1 /* CardPresentModalConnectingToReaderTests.swift in Sources */,
 				4572641B27F1FDF2004E1F95 /* AddEditCouponViewModelTests.swift in Sources */,

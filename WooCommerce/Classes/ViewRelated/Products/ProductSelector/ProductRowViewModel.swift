@@ -73,7 +73,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         guard let price = price else {
             return nil
         }
-        let productSubtotal = quantity * (currencyFormatter.convertToDecimal(from: price)?.decimalValue ?? Decimal.zero)
+        let productSubtotal = quantity * (currencyFormatter.convertToDecimal(price)?.decimalValue ?? Decimal.zero)
         return currencyFormatter.formatAmount(productSubtotal)
     }
 

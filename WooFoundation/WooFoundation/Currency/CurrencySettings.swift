@@ -31,9 +31,9 @@ public class CurrencySettings {
     ///
     @Published public var currencyCode: CurrencyCode
     public var currencyPosition: CurrencyPosition
-    public var thousandSeparator: String
+    public var groupingSeparator: String
     public var decimalSeparator: String
-    public var numberOfDecimals: Int
+    public var fractionDigits: Int
 
     // MARK: - Initializers & Methods
 
@@ -43,9 +43,9 @@ public class CurrencySettings {
     public init(currencyCode: CurrencyCode, currencyPosition: CurrencyPosition, thousandSeparator: String, decimalSeparator: String, numberOfDecimals: Int) {
         self.currencyCode = currencyCode
         self.currencyPosition = currencyPosition
-        self.thousandSeparator = thousandSeparator
+        self.groupingSeparator = thousandSeparator
         self.decimalSeparator = decimalSeparator
-        self.numberOfDecimals = numberOfDecimals
+        self.fractionDigits = numberOfDecimals
     }
 
 

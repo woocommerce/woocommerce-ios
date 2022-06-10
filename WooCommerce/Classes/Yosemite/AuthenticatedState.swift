@@ -28,7 +28,10 @@ class AuthenticatedState: StoresManagerState {
 
         services = [
             AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            AppSettingsStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: PListFileStorage()),
+            AppSettingsStore(dispatcher: dispatcher,
+                             storageManager: storageManager,
+                             fileStorage: PListFileStorage(),
+                             generalAppSettings: ServiceLocator.generalAppSettings),
             AddOnGroupStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             AvailabilityStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
@@ -38,6 +41,7 @@ class AuthenticatedState: StoresManagerState {
             MediaStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             NotificationCountStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: PListFileStorage()),
+            OrderCardPresentPaymentEligibilityStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),

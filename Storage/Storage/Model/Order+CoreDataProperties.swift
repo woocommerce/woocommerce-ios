@@ -30,6 +30,9 @@ extension Order {
     @NSManaged public var discountTotal: String?
     @NSManaged public var exclusiveForSearch: Bool
     @NSManaged public var fees: Set<OrderFeeLine>?
+    @NSManaged public var isEditable: Bool
+    @NSManaged public var needsPayment: Bool
+    @NSManaged public var needsProcessing: Bool
     @NSManaged public var number: String?
     @NSManaged public var orderID: Int64
     @NSManaged public var parentID: Int64

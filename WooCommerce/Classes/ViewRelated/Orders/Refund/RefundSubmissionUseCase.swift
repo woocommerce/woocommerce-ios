@@ -377,8 +377,16 @@ private extension RefundSubmissionUseCase {
     ///   - refund: the refund to submit.
     ///   - onCompletion: called when the submission completes.
     func submitRefundToSite(refund: Refund, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        let action = RefundAction.createRefund(siteID: details.order.siteID, orderID: details.order.orderID, refund: refund) { [weak self] _, error  in
+
+        let action = RefundAction.createRefund(siteID: details.order.siteID, orderID: details.order.orderID, refund: refund) { [weak self]
+            refundData, error  in
+
             guard let self = self else { return }
+
+            if let refundData = refundData {
+                // Workaround for https://github.com/woocommerce/woocommerce-ios/issues/6704. It can be removed when the API issue is fixed (Link TBD)
+                self.getLatestRefundData(refund: refundData){ [weak self] _ in }
+            }
             if let error = error {
                 DDLogError("Error creating refund: \(refund)\nWith Error: \(error)")
                 self.trackCreateRefundRequestFailed(error: error)
@@ -389,6 +397,21 @@ private extension RefundSubmissionUseCase {
         }
         stores.dispatch(action)
         trackCreateRefundRequest()
+    }
+
+    /// Retrieves the up-to-date refund data
+    /// - Parameters:
+    ///   - refund: the refund to retrieve details from.
+    ///   - onCompletion: called when the submission completes.
+    func getLatestRefundData(refund: Refund, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        let action = RefundAction.retrieveRefund(siteID: details.order.siteID, orderID: details.order.orderID, refundID: refund.refundID) {
+                (refundDataFromGETreq, error) in
+            if let error = error {
+                DDLogError("Error retrieving refund data: \(String(describing: refundDataFromGETreq))\nWith Error: \(error)")
+                return onCompletion(.failure(error))
+            }
+        }
+        stores.dispatch(action)
     }
 }
 

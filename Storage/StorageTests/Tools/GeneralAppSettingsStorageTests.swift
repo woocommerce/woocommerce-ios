@@ -1,7 +1,7 @@
 import XCTest
 import Storage
 
-class GeneralAppSettingsStorageTests: XCTestCase {
+final class GeneralAppSettingsStorageTests: XCTestCase {
     private var fileStorage: MockInMemoryStorage!
     private var storage: GeneralAppSettingsStorage!
 

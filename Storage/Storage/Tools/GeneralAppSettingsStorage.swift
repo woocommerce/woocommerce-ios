@@ -24,7 +24,6 @@ public struct GeneralAppSettingsStorage {
     /// Reads the value of the stored setting for the given key path
     ///
     public func value<T>(for setting: KeyPath<GeneralAppSettings, T>) -> T {
-        let settings = loadOrCreateGeneralAppSettings()
         return settings[keyPath: setting]
     }
 
@@ -40,7 +39,7 @@ public struct GeneralAppSettingsStorage {
     /// Writes the value to the stored setting for the given key path
     ///
     public func setValue<T>(_ value: T, for setting: WritableKeyPath<GeneralAppSettings, T>) throws {
-        var settings = loadOrCreateGeneralAppSettings()
+        var settings = settings
         settings[keyPath: setting] = value
         try saveSettings(settings)
     }
@@ -55,7 +54,7 @@ public struct GeneralAppSettingsStorage {
     ///
     public var settingsPublisher: AnyPublisher<GeneralAppSettings, Never> {
         Self.refreshSubject
-            .map({ settings })
+            .map { settings }
             .removeDuplicates()
             .eraseToAnyPublisher()
     }

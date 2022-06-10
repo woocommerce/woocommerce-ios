@@ -25,6 +25,8 @@ final class SettingsViewController: UIViewController {
     ///
     private var storePickerCoordinator: StorePickerCoordinator?
 
+    private var removeAppleIDAccessCoordinator: RemoveAppleIDAccessCoordinator?
+
     init(viewModel: ViewModel = SettingsViewModel()) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -247,30 +249,20 @@ private extension SettingsViewController {
 // MARK: - Actions
 //
 private extension SettingsViewController {
-    func removeAppleIDAccess() {
-        guard let credentials = ServiceLocator.stores.sessionManager.defaultCredentials else {
-            return
+    func removeAppleIDAccessWasPressed() {
+        let coordinator = RemoveAppleIDAccessCoordinator(sourceViewController: self) { [weak self] in
+            guard let self = self else { return .failure(RemoveAppleIDAccessError.presenterDeallocated) }
+            return await self.removeAppleIDAccess()
+        } onRemoveSuccess: { [weak self] in
+            self?.logOutUser()
         }
-
-        let viewProperties = InProgressViewProperties(title: Localization.RemoveAppleIDAccessInProgressView.title, message: "")
-        let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
-        inProgressViewController.modalPresentationStyle = .overFullScreen
-        present(inProgressViewController, animated: true)
-
-        // TODO: 7068 - remove Apple ID access action
+        self.removeAppleIDAccessCoordinator = coordinator
+        coordinator.start()
     }
 
-    func removeAppleIDAccessWasPressed() {
-        // TODO: 7068 - analytics
-        let alertController = UIAlertController(title: Localization.RemoveAppleIDAccessAlert.alertTitle,
-                                                message: Localization.RemoveAppleIDAccessAlert.alertMessage,
-                                                preferredStyle: .alert)
-        alertController.addActionWithTitle(Localization.RemoveAppleIDAccessAlert.cancelButtonTitle, style: .cancel) { _ in }
-        alertController.addActionWithTitle(Localization.RemoveAppleIDAccessAlert.removeButtonTitle, style: .destructive) { [weak self] _ in
-            // TODO: 7068 - analytics
-            self?.removeAppleIDAccess()
-        }
-        present(alertController, animated: true)
+    func removeAppleIDAccess() async -> Result<Void, Error> {
+        // TODO: 7068 - remove Apple ID access action
+        return .success(())
     }
 
     func logoutWasPressed() {
@@ -760,34 +752,6 @@ private extension SettingsViewController {
             static let cancel = NSLocalizedString(
                 "Cancel",
                 comment: "The title for a button that dismisses the crash debug menu"
-            )
-        }
-
-        enum RemoveAppleIDAccessInProgressView {
-            static let title = NSLocalizedString(
-                "Removing Apple ID Access...",
-                comment: "Title of the Remove Apple ID Access in-progress view."
-            )
-        }
-
-        enum RemoveAppleIDAccessAlert {
-            static let alertTitle = NSLocalizedString(
-                "Remove Apple ID Access",
-                comment: "Remove Apple ID Access confirmation alert title - confirms and revokes Apple ID token."
-            )
-            static let alertMessage = NSLocalizedString(
-                "This will log you out and reset your Sign In With Apple access token. " +
-                "You will be asked to re-enter your WordPress.com password if you Sign In With Apple again.",
-                comment: "Alert message to confirm a user meant to remove Apple ID access."
-            )
-            static let cancelButtonTitle = NSLocalizedString(
-                "Cancel",
-                comment: "Alert button title - dismisses alert, which cancels the Remove Apple ID Access attempt."
-            )
-
-            static let removeButtonTitle = NSLocalizedString(
-                "Remove",
-                comment: "Remove Apple ID Access button title - confirms and revokes Apple ID token."
             )
         }
 

@@ -202,7 +202,10 @@ private extension CouponListViewController {
     ///
     func startCouponCreation(discountType: Coupon.DiscountType) {
         let viewModel = viewModel.createAddEditCouponViewModel(with: discountType) { createdCoupon in
-            self.showCouponCreationSuccess(couponCode: createdCoupon.code)
+            let formattedAmount = createdCoupon.formattedAmount(currencySettings: ServiceLocator.currencySettings)
+            let amount = formattedAmount.isEmpty ? createdCoupon.amount : formattedAmount
+            let shareMessage = createdCoupon.generateShareMessage(couponAmount: amount)
+            self.showCouponCreationSuccess(couponCode: createdCoupon.code, shareMessage: shareMessage)
         }
         addEditHostingController = AddEditCouponHostingController(viewModel: viewModel, onDisappear: {})
         present(addEditHostingController!, animated: true)
@@ -210,8 +213,8 @@ private extension CouponListViewController {
 
     /// Display the Coupon creation success view
     ///
-    func showCouponCreationSuccess(couponCode: String) {
-        let view = CouponCreationSuccess(couponCode: couponCode, shareMessage: "") {
+    func showCouponCreationSuccess(couponCode: String, shareMessage: String) {
+        let view = CouponCreationSuccess(couponCode: couponCode, shareMessage: shareMessage) {
             self.dismiss(animated: true)
             self.refreshCouponList()
         }

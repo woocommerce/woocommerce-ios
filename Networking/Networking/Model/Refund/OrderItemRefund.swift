@@ -79,12 +79,11 @@ public struct OrderItemRefund: Codable, Equatable, GeneratedFakeable, GeneratedC
         let total = try container.decode(String.self, forKey: .total)
         let totalTax = try container.decode(String.self, forKey: .totalTax)
 
-        let metaData = try? container.decode(OrderItemRefundMetaData.self, forKey: .metadata)
+        let allOrderItemRefundMetaData = try container.decode([OrderItemRefundMetaData].self, forKey: .metadata)
 
         var refundedItemID: Int64?
-        if  let metaData = metaData,
-            metaData.key == "_refunded_item_id" {
-            refundedItemID = Int64(metaData.value)
+        if let refundedItemIDString = allOrderItemRefundMetaData.first(where: { $0.key == "_refunded_item_id" })?.value {
+            refundedItemID = Int64(refundedItemIDString)
         }
 
         // initialize the struct

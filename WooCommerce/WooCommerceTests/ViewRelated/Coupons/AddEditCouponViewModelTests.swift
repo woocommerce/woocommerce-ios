@@ -237,4 +237,12 @@ final class AddEditCouponViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.hasChangesMade)
     }
+
+    func test_hasChangesMade_is_always_true_when_isCreationFlow() {
+        // Given
+        let viewModel = AddEditCouponViewModel(siteID: 123, discountType: .percent, onCompletion: {_ in })
+
+        // Then
+        XCTAssertTrue(viewModel.hasChangesMade)
+    }
 }

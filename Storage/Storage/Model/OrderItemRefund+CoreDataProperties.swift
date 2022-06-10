@@ -12,6 +12,7 @@ extension OrderItemRefund {
     @NSManaged public var name: String?
     @NSManaged public var productID: Int64
     @NSManaged public var variationID: Int64
+    @NSManaged public var refundedItemID: Int64
     @NSManaged public var quantity: NSDecimalNumber?
     @NSManaged public var price: NSDecimalNumber?
     @NSManaged public var sku: String?

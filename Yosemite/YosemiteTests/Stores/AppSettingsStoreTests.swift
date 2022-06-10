@@ -35,6 +35,10 @@ final class AppSettingsStoreTests: XCTestCase {
     ///
     private var fileStorage: MockInMemoryStorage?
 
+    /// Mock General Settings Storage: Load data in memory
+    ///
+    private var generalAppSettings: GeneralAppSettingsStorage?
+
     /// Test subject
     ///
     private var subject: AppSettingsStore?
@@ -44,7 +48,8 @@ final class AppSettingsStoreTests: XCTestCase {
         dispatcher = Dispatcher()
         storageManager = MockStorageManager()
         fileStorage = MockInMemoryStorage()
-        subject = AppSettingsStore(dispatcher: dispatcher!, storageManager: storageManager!, fileStorage: fileStorage!)
+        generalAppSettings = GeneralAppSettingsStorage(fileStorage: fileStorage!)
+        subject = AppSettingsStore(dispatcher: dispatcher!, storageManager: storageManager!, fileStorage: fileStorage!, generalAppSettings: generalAppSettings!)
         subject?.selectedProvidersURL = TestConstants.fileURL!
         subject?.customSelectedProvidersURL = TestConstants.customFileURL!
     }
@@ -53,6 +58,7 @@ final class AppSettingsStoreTests: XCTestCase {
         dispatcher = nil
         storageManager = nil
         fileStorage = nil
+        generalAppSettings = nil
         subject = nil
         super.tearDown()
     }
@@ -227,8 +233,9 @@ final class AppSettingsStoreTests: XCTestCase {
         // Create our own infrastructure so we can inject `PListFileStorage`.
         let fileStorage = PListFileStorage()
         let storageManager = MockStorageManager()
+        let generalAppSettings = GeneralAppSettingsStorage(fileStorage: fileStorage)
         let dispatcher = Dispatcher()
-        let store = AppSettingsStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: fileStorage)
+        let store = AppSettingsStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: fileStorage, generalAppSettings: generalAppSettings)
 
         if FileManager.default.fileExists(atPath: expectedGeneralAppSettingsFileURL.path) {
             try fileStorage.deleteFile(at: expectedGeneralAppSettingsFileURL)

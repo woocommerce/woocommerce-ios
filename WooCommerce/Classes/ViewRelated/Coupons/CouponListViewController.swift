@@ -211,11 +211,11 @@ private extension CouponListViewController {
     /// Display the Coupon creation success view
     ///
     func showCouponCreationSuccess(couponCode: String, shareMessage: String) {
-        let view = CouponCreationSuccess(couponCode: couponCode, shareMessage: shareMessage) {
+        let creationSuccessView = CouponCreationSuccess(couponCode: couponCode, shareMessage: shareMessage) {
             self.dismiss(animated: true)
             self.refreshCouponList()
         }
-        addEditHostingController?.present(UIHostingController(rootView: view), animated: true)
+        addEditHostingController?.present(UIHostingController(rootView: creationSuccessView), animated: true)
     }
 }
 
@@ -445,8 +445,8 @@ private extension CouponListViewController {
 private extension CouponListViewController {
     enum Localization {
         static let title = NSLocalizedString(
-                "Coupons",
-                comment: "Coupon management coupon list screen title")
+            "Coupons",
+            comment: "Coupon management coupon list screen title")
 
         static let emptyStateMessage = NSLocalizedString(
             "Everyone loves a deal",

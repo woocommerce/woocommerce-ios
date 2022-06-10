@@ -3,6 +3,7 @@ import Yosemite
 import protocol Storage.StorageManagerType
 import class AutomatticTracks.CrashLogging
 import UIKit
+import WooFoundation
 
 enum CouponListState {
     case initialized // ViewModel ready to receive actions
@@ -60,16 +61,21 @@ final class CouponListViewModel {
     ///
     private let storageManager: StorageManagerType
 
+    /// currencySettings: provides the currency configuration settings from the store
+    private let currencySettings: CurrencySettings
+
     // MARK: - Initialization and setup
     //
     init(siteID: Int64,
          syncingCoordinator: SyncingCoordinatorProtocol = SyncingCoordinator(),
          storesManager: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.siteID = siteID
         self.syncingCoordinator = syncingCoordinator
         self.storesManager = storesManager
         self.storageManager = storageManager
+        self.currencySettings = currencySettings
         self.resultsController = Self.createResultsController(siteID: siteID,
                                                               storageManager: storageManager)
         configureSyncingCoordinator()
@@ -88,11 +94,14 @@ final class CouponListViewModel {
     }
 
     func createAddEditCouponViewModel(with discountType: Coupon.DiscountType,
-                                      onCreationSuccess: @escaping (Coupon) -> Void) -> AddEditCouponViewModel {
+                                      onCreationSuccess: @escaping (Coupon, String) -> Void) -> AddEditCouponViewModel {
         .init(siteID: siteID, discountType: discountType, onCompletion: { result in
             switch result {
             case .success(let createdCoupon):
-                onCreationSuccess(createdCoupon)
+                let formattedAmount = createdCoupon.formattedAmount(currencySettings: ServiceLocator.currencySettings)
+                let amount = formattedAmount.isEmpty ? createdCoupon.amount : formattedAmount
+                let shareMessage = createdCoupon.generateShareMessage(couponAmount: amount)
+                onCreationSuccess(createdCoupon, shareMessage)
             default:
                 break
             }

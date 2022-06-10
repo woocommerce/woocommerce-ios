@@ -201,10 +201,7 @@ private extension CouponListViewController {
     /// Triggers the coupon creation flow
     ///
     func startCouponCreation(discountType: Coupon.DiscountType) {
-        let viewModel = viewModel.createAddEditCouponViewModel(with: discountType) { createdCoupon in
-            let formattedAmount = createdCoupon.formattedAmount(currencySettings: ServiceLocator.currencySettings)
-            let amount = formattedAmount.isEmpty ? createdCoupon.amount : formattedAmount
-            let shareMessage = createdCoupon.generateShareMessage(couponAmount: amount)
+        let viewModel = viewModel.createAddEditCouponViewModel(with: discountType) { createdCoupon, shareMessage in
             self.showCouponCreationSuccess(couponCode: createdCoupon.code, shareMessage: shareMessage)
         }
         addEditHostingController = AddEditCouponHostingController(viewModel: viewModel, onDisappear: {})

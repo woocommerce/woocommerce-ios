@@ -81,7 +81,37 @@ final class AddEditCouponViewModelTests: XCTestCase {
     }
 
     func test_populatedCoupon_return_expected_coupon_during_creation() {
-        //TODO: implement this test method in the implementation of coupon creation (M3)
+        // Given
+        let viewModel = AddEditCouponViewModel(siteID: 0, discountType: .fixedCart, onCompletion: { _ in })
+
+        // When
+        let populatedCoupon = viewModel.populatedCoupon
+        let newCoupon = Coupon(couponID: -1,
+                               code: "",
+                               amount: "",
+                               dateCreated: populatedCoupon.dateCreated,
+                               dateModified: populatedCoupon.dateModified,
+                               discountType: .fixedCart,
+                               description: "",
+                               dateExpires: nil,
+                               usageCount: 0,
+                               individualUse: false,
+                               productIds: [],
+                               excludedProductIds: [],
+                               usageLimit: nil,
+                               usageLimitPerUser: nil,
+                               limitUsageToXItems: nil,
+                               freeShipping: false,
+                               productCategories: [],
+                               excludedProductCategories: [],
+                               excludeSaleItems: false,
+                               minimumAmount: "",
+                               maximumAmount: "",
+                               emailRestrictions: [],
+                               usedBy: [])
+
+        // Then
+        XCTAssertEqual(populatedCoupon, newCoupon)
     }
 
     func test_validateCouponLocally_return_expected_error_if_coupon_code_is_empty() {

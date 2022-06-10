@@ -99,9 +99,7 @@ final class CouponListViewModel {
             guard let self = self else { return }
             switch result {
             case .success(let createdCoupon):
-                let formattedAmount = createdCoupon.formattedAmount(currencySettings: self.currencySettings)
-                let amount = formattedAmount.isEmpty ? createdCoupon.amount : formattedAmount
-                let shareMessage = createdCoupon.generateShareMessage(couponAmount: amount)
+                let shareMessage = createdCoupon.generateShareMessage(currencySettings: self.currencySettings)
                 onCreationSuccess(createdCoupon, shareMessage)
             default:
                 break

@@ -97,7 +97,7 @@ final class CouponDetailsViewModel: ObservableObject {
     /// The message to be shared about the coupon
     ///
     var shareMessage: String {
-        coupon.generateShareMessage(couponAmount: amount)
+        coupon.generateShareMessage(currencySettings: currencySettings)
     }
 
     /// Total number of orders that applied the coupon

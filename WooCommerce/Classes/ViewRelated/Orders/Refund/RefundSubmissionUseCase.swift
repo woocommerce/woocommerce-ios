@@ -385,7 +385,7 @@ private extension RefundSubmissionUseCase {
 
             if let refundData = refundData {
                 // Workaround for https://github.com/woocommerce/woocommerce-ios/issues/6704. It can be removed when the API issue is fixed (Link TBD)
-                self.getLatestRefundData(refund: refundData){ [weak self] _ in }
+                self.getLatestRefundData(refund: refundData) { [weak self] _ in }
             }
             if let error = error {
                 DDLogError("Error creating refund: \(refund)\nWith Error: \(error)")

@@ -1,6 +1,4 @@
-import Yosemite
-
-@testable import WooCommerce
+@testable import Yosemite
 
 import Foundation
 import XCTest

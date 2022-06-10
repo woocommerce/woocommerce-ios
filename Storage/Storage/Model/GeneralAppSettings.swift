@@ -13,36 +13,36 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     /// Note that this is not accurate because this property/setting was created when we have
     /// thousands of users already.
     ///
-    public let installationDate: Date?
+    public var installationDate: Date?
 
     /// Key/Value type to store feedback settings
     /// Key: A `FeedbackType` to identify the feedback
     /// Value: A `FeedbackSetting` to store the feedback state
-    public let feedbacks: [FeedbackType: FeedbackSettings]
+    public var feedbacks: [FeedbackType: FeedbackSettings]
 
     /// The state(`true` or `false`) for the view add-on beta feature switch.
     ///
-    public let isViewAddOnsSwitchEnabled: Bool
+    public var isViewAddOnsSwitchEnabled: Bool
 
     /// The state(`true` or `false`) for the Product SKU Input Scanner feature switch.
     ///
-    public let isProductSKUInputScannerSwitchEnabled: Bool
+    public var isProductSKUInputScannerSwitchEnabled: Bool
 
     /// The state for the Coupon Management feature switch.
     ///
-    public let isCouponManagementSwitchEnabled: Bool
+    public var isCouponManagementSwitchEnabled: Bool
 
     /// A list (possibly empty) of known card reader IDs - i.e. IDs of card readers that should be reconnected to automatically
     /// e.g. ["CHB204909005931"]
     ///
-    public let knownCardReaders: [String]
+    public var knownCardReaders: [String]
 
     /// The last known eligibility error information persisted locally.
     ///
-    public let lastEligibilityErrorInfo: EligibilityErrorInfo?
+    public var lastEligibilityErrorInfo: EligibilityErrorInfo?
 
     /// The last time the Jetpack benefits banner is dismissed.
-    public let lastJetpackBenefitsBannerDismissedTime: Date?
+    public var lastJetpackBenefitsBannerDismissedTime: Date?
 
     public init(installationDate: Date?,
                 feedbacks: [FeedbackType: FeedbackSettings],
@@ -60,6 +60,16 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
         self.knownCardReaders = knownCardReaders
         self.lastEligibilityErrorInfo = lastEligibilityErrorInfo
         self.lastJetpackBenefitsBannerDismissedTime = lastJetpackBenefitsBannerDismissedTime
+    }
+
+    public static var `default`: Self {
+        .init(installationDate: nil,
+              feedbacks: [:],
+              isViewAddOnsSwitchEnabled: false,
+              isProductSKUInputScannerSwitchEnabled: false,
+              isCouponManagementSwitchEnabled: false,
+              knownCardReaders: [],
+              lastEligibilityErrorInfo: nil)
     }
 
     /// Returns the status of a given feedback type. If the feedback is not stored in the feedback array. it is assumed that it has a pending status.

@@ -95,10 +95,11 @@ final class CouponListViewModel {
 
     func createAddEditCouponViewModel(with discountType: Coupon.DiscountType,
                                       onCreationSuccess: @escaping (Coupon, String) -> Void) -> AddEditCouponViewModel {
-        .init(siteID: siteID, discountType: discountType, onCompletion: { result in
+        .init(siteID: siteID, discountType: discountType, onCompletion: { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case .success(let createdCoupon):
-                let formattedAmount = createdCoupon.formattedAmount(currencySettings: currencySettings)
+                let formattedAmount = createdCoupon.formattedAmount(currencySettings: self.currencySettings)
                 let amount = formattedAmount.isEmpty ? createdCoupon.amount : formattedAmount
                 let shareMessage = createdCoupon.generateShareMessage(couponAmount: amount)
                 onCreationSuccess(createdCoupon, shareMessage)

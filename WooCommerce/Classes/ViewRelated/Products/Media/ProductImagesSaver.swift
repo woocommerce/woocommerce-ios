@@ -39,6 +39,15 @@ final class ProductImagesSaver {
 
         imageStatusesToSave = imageStatuses
 
+        observeImageStatusesToSaveProductRemotelyWhenNoneIsPendingUploadAnymore(onProductSave: onProductSave)
+        observeAssetUploadsToUpdateImageStatuses(imageActionHandler: imageActionHandler)
+    }
+}
+
+private extension ProductImagesSaver {
+    func observeImageStatusesToSaveProductRemotelyWhenNoneIsPendingUploadAnymore(
+        onProductSave: @escaping (Result<[ProductImage], Error>) -> Void
+    ) {
         uploadStatusesSubscription = imageStatusesToSaveSubject
             .filter { $0.hasPendingUpload == false }
             .map { $0.images }
@@ -46,7 +55,27 @@ final class ProductImagesSaver {
             .sink(receiveValue: { [weak self] images in
                 self?.saveProductImages(images, onProductSave: onProductSave)
             })
+    }
 
+    func saveProductImages(_ images: [ProductImage], onProductSave: @escaping (Result<[ProductImage], Error>) -> Void) {
+        let action = ProductAction.updateProductImages(siteID: siteID,
+                                                       productID: productID,
+                                                       images: images) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let product):
+                onProductSave(.success(product.images))
+                self.imageStatusesToSave = []
+                self.assetUploadSubscription = nil
+                self.uploadStatusesSubscription = nil
+            case .failure(let error):
+                onProductSave(.failure(error))
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    func observeAssetUploadsToUpdateImageStatuses(imageActionHandler: ProductImageActionHandler) {
         assetUploadSubscription = imageActionHandler.addAssetUploadObserver(self) { [weak self] asset, result in
             guard let self = self else { return }
             guard let index = self.imageStatusesToSave.firstIndex(where: { status -> Bool in
@@ -67,26 +96,6 @@ final class ProductImagesSaver {
                 self.updateProductImageStatus(at: index, error: error)
             }
         }
-    }
-}
-
-private extension ProductImagesSaver {
-    func saveProductImages(_ images: [ProductImage], onProductSave: @escaping (Result<[ProductImage], Error>) -> Void) {
-        let action = ProductAction.updateProductImages(siteID: siteID,
-                                                       productID: productID,
-                                                       images: images) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let product):
-                onProductSave(.success(product.images))
-                self.imageStatusesToSave = []
-                self.assetUploadSubscription = nil
-                self.uploadStatusesSubscription = nil
-            case .failure(let error):
-                onProductSave(.failure(error))
-            }
-        }
-        stores.dispatch(action)
     }
 
     func updateProductImageStatus(at index: Int, productImage: ProductImage) {

@@ -201,12 +201,12 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         guard isBackgroundImageUploadEnabled else {
             return product != originalProduct || productImageActionHandler.productImageStatuses.hasPendingUpload || password != originalPassword
         }
-        let hasProductChanges = product.product.copy(images: []) != originalProduct.product.copy(images: [])
+        let hasProductChangesExcludingImages = product.product.copy(images: []) != originalProduct.product.copy(images: [])
         let hasImageChanges = productImagesUploader.hasUnsavedChangesOnImages(siteID: product.siteID,
                                                                               productID: product.productID,
                                                                               isLocalID: !product.existsRemotely,
                                                                               originalImages: originalProduct.images)
-        return hasProductChanges || hasImageChanges || password != originalPassword
+        return hasProductChangesExcludingImages || hasImageChanges || password != originalPassword
     }
 }
 
@@ -429,7 +429,7 @@ extension ProductFormViewModel {
                     self.resetPassword(data.password)
                     onCompletion(.success(data.product))
                     if self.isBackgroundImageUploadEnabled {
-                        self.saveProductImagesWhenAllAreUploaded()
+                        self.saveProductImagesWhenNoneIsPendingUploadAnymore()
                     }
                 }
             }
@@ -447,7 +447,7 @@ extension ProductFormViewModel {
                                                     self.resetPassword(data.password)
                                                     onCompletion(.success(data.product))
                                                     if self.isBackgroundImageUploadEnabled {
-                                                        self.saveProductImagesWhenAllAreUploaded()
+                                                        self.saveProductImagesWhenNoneIsPendingUploadAnymore()
                                                     }
                                                 case .failure(let error):
                                                     onCompletion(.failure(error))
@@ -458,7 +458,7 @@ extension ProductFormViewModel {
         }
     }
 
-    func saveProductImagesWhenAllAreUploaded() {
+    func saveProductImagesWhenNoneIsPendingUploadAnymore() {
         productImagesUploader.saveProductImagesWhenNoneIsPendingUploadAnymore(siteID: product.siteID,
                                                                               productID: product.productID,
                                                                               isLocalID: !product.existsRemotely) { [weak self] result in
@@ -466,12 +466,19 @@ extension ProductFormViewModel {
             switch result {
             case .success(let images):
                 let currentProduct = self.product
-                self.originalProduct = .init(product: self.originalProduct.product.copy(images: images))
+                self.resetProduct(.init(product: self.originalProduct.product.copy(images: images)))
+                // Because `resetProduct` also internally updates the latest `product`, the `product` is set with the value before `resetProduct` to
+                // retain any local changes.
                 self.product = .init(product: currentProduct.product)
             case .failure:
+                // If the product images update request fails, the update CTA visibility is refreshed again so that the merchant can save the
+                // product images again along with any other potential local changes.
                 self.isUpdateEnabledSubject.send(self.hasUnsavedChanges())
             }
         }
+        // Updates the update CTA visibility after scheduling a save request when no images are pending upload anymore, so that the update CTA
+        // isn't shown right after the save request from pending image upload.
+        // The save request keeps track of the latest image statuses at the time of the call and their upload progress over time.
         isUpdateEnabledSubject.send(hasUnsavedChanges())
     }
 

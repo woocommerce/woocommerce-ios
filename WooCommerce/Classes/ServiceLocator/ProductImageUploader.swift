@@ -67,10 +67,12 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         guard let handler = actionHandlersByProduct[key] else {
             return false
         }
-        // If there are images scheduled to be saved, there are no unsaved changes if the image statuses to save match the latest image statuses.
         if let productImagesSaver = imagesSaverByProduct[key], productImagesSaver.imageStatusesToSave.isNotEmpty {
+            // If there are images scheduled to be saved, there are no unsaved changes if the image statuses to save match the latest image statuses.
             return handler.productImageStatuses != productImagesSaver.imageStatusesToSave
         } else {
+            // Otherwise, there are unsaved changes if there is any pending image upload or any difference in the remote image IDs between the
+            // original and latest product.
             return handler.productImageStatuses.hasPendingUpload ||
             handler.productImageStatuses.images.map { $0.imageID } != originalImages.map { $0.imageID }
         }
@@ -80,6 +82,8 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
                                                          productID: Int64,
                                                          isLocalID: Bool,
                                                          onProductSave: @escaping (Result<[ProductImage], Error>) -> Void) {
+        // The product has to exist remotely in order to save its images remotely.
+        // In product creation, this save function should be called after a new product is saved remotely for the first time.
         guard isLocalID == false else {
             return
         }

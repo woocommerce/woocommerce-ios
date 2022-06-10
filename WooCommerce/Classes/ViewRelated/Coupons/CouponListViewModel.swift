@@ -107,6 +107,12 @@ final class CouponListViewModel {
         })
     }
 
+    func onCouponDeleted() {
+        if couponViewModels.isEmpty {
+            state = .empty
+        }
+    }
+
     // MARK: - ViewController actions
     //
     /// The ViewController calls `viewDidLoad` to notify the view model it's ready to receive results

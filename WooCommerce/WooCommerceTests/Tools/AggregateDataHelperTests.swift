@@ -41,7 +41,7 @@ final class AggregateDataHelperTests: XCTestCase {
     func testRefundedProductsSortedSuccessfully() {
         let refunds = mapLoadAllRefundsResponse()
         let expectedProducts = expectedRefundedProducts()
-        guard let actualProducts = AggregateDataHelper.combineRefundedProducts(from: refunds) else {
+        guard let actualProducts = AggregateDataHelper.combineRefundedProducts(from: refunds, orderItems: []) else {
             XCTFail("Error: failed to combine products.")
             return
         }

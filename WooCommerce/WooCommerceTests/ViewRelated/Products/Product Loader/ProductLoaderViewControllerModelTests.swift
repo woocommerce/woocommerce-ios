@@ -112,6 +112,7 @@ private extension ProductLoaderViewControllerModelTests {
                         name: "Ninja Silhouette",
                         productID: productID,
                         variationID: variationID,
+                        refundedItemID: 1,
                         quantity: -1,
                         price: 18,
                         sku: "T-SHIRT-NINJA-SILHOUETTE",

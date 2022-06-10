@@ -45,6 +45,7 @@ public struct MockRefunds {
                                name: name,
                                productID: productID,
                                variationID: variationID,
+                               refundedItemID: 1,
                                quantity: quantity,
                                price: price,
                                sku: sku,

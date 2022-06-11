@@ -3,6 +3,7 @@ import MessageUI
 import Gridicons
 import SafariServices
 import AutomatticAbout
+import Yosemite
 
 protocol SettingsViewPresenter: AnyObject {
     func refreshViewContent()
@@ -31,8 +32,11 @@ final class SettingsViewController: UIViewController {
         self?.logOutUser()
     }
 
-    init(viewModel: ViewModel = SettingsViewModel()) {
+    private let stores: StoresManager
+
+    init(viewModel: ViewModel = SettingsViewModel(), stores: StoresManager = ServiceLocator.stores) {
         self.viewModel = viewModel
+        self.stores = stores
         super.init(nibName: nil, bundle: nil)
         self.viewModel.presenter = self
     }
@@ -258,8 +262,18 @@ private extension SettingsViewController {
     }
 
     func removeAppleIDAccess() async -> Result<Void, Error> {
-        // TODO: 7068 - remove Apple ID access action
-        return .success(())
+        await withCheckedContinuation { [weak self] continuation in
+            guard let self = self else { return }
+            guard let credentials = self.stores.sessionManager.defaultCredentials else {
+                return continuation.resume(returning: .failure(RemoveAppleIDAccessError.noCredentials))
+            }
+            let action = AccountAction.removeAppleIDAccess(dotcomAppID: ApiCredentials.dotcomAppId,
+                                                           dotcomSecret: ApiCredentials.dotcomSecret,
+                                                           authToken: credentials.authToken) { result in
+                continuation.resume(returning: result)
+            }
+            self.stores.dispatch(action)
+        }
     }
 
     func logoutWasPressed() {

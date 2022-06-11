@@ -40,14 +40,15 @@ private extension RemoveAppleIDAccessCoordinator {
             Task { @MainActor [weak self] in
                 guard let self = self else { return }
                 let result = await self.removeAction()
-                switch result {
-                case .success:
-                    self.dismissInProgressUI {
+                self.dismissInProgressUI { [weak self] in
+                    guard let self = self else { return }
+                    switch result {
+                    case .success:
                         self.onRemoveSuccess()
+                    case .failure(let error):
+                        DDLogError("⛔️ Cannot remove Apple ID access: \(error)")
+                        self.presentErrorAlert()
                     }
-                case .failure(let error):
-                    DDLogError("⛔️ Cannot remove Apple ID access: \(error)")
-                    self.presentErrorAlert()
                 }
             }
         }

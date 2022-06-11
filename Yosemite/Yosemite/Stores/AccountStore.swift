@@ -2,7 +2,7 @@ import Combine
 import Foundation
 import Networking
 import Storage
-
+import WordPressKit
 
 // MARK: - AccountStore
 //
@@ -60,6 +60,8 @@ public class AccountStore: Store {
             synchronizeSitePlan(siteID: siteID, onCompletion: onCompletion)
         case .updateAccountSettings(let userID, let tracksOptOut, let onCompletion):
             updateAccountSettings(userID: userID, tracksOptOut: tracksOptOut, onCompletion: onCompletion)
+        case .removeAppleIDAccess(let dotcomAppID, let dotcomSecret, let authToken, let onCompletion):
+            removeAppleIDAccess(dotcomAppID: dotcomAppID, dotcomSecret: dotcomSecret, authToken: authToken, onCompletion: onCompletion)
         }
     }
 }
@@ -202,6 +204,20 @@ private extension AccountStore {
                 onCompletion(.failure(error))
             }
         }
+    }
+
+    func removeAppleIDAccess(dotcomAppID: String, dotcomSecret: String, authToken: String, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        let wpcomAPI = WordPressComRestApi(oAuthToken: authToken,
+                                           userAgent: UserAgent.defaultUserAgent,
+                                           baseUrlString: Settings.wordpressApiBaseURL)
+        AccountServiceRemoteREST(wordPressComRestApi: wpcomAPI)
+            .disconnectFromSocialService(.apple,
+                                         oAuthClientID: dotcomAppID,
+                                         oAuthClientSecret: dotcomSecret) {
+                onCompletion(.success(()))
+            } failure: { error in
+                onCompletion(.failure(error))
+            }
     }
 }
 

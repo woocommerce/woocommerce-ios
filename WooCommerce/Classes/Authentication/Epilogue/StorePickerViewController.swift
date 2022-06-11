@@ -147,11 +147,14 @@ final class StorePickerViewController: UIViewController {
     }
 
     private let appleIDCredentialChecker: AppleIDCredentialCheckerProtocol
+    private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
 
     init(appleIDCredentialChecker: AppleIDCredentialCheckerProtocol = AppleIDCredentialChecker(),
+         stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.appleIDCredentialChecker = appleIDCredentialChecker
+        self.stores = stores
         self.featureFlagService = featureFlagService
         super.init(nibName: Self.nibName, bundle: nil)
     }
@@ -711,8 +714,18 @@ extension StorePickerViewController: UITableViewDelegate {
 
 private extension StorePickerViewController {
     func removeAppleIDAccess() async -> Result<Void, Error> {
-        // TODO: 7068 - remove Apple ID access
-        return .success(())
+        await withCheckedContinuation { [weak self] continuation in
+            guard let self = self else { return }
+            guard let credentials = self.stores.sessionManager.defaultCredentials else {
+                return continuation.resume(returning: .failure(RemoveAppleIDAccessError.noCredentials))
+            }
+            let action = AccountAction.removeAppleIDAccess(dotcomAppID: ApiCredentials.dotcomAppId,
+                                                           dotcomSecret: ApiCredentials.dotcomSecret,
+                                                           authToken: credentials.authToken) { result in
+                continuation.resume(returning: result)
+            }
+            self.stores.dispatch(action)
+        }
     }
 }
 

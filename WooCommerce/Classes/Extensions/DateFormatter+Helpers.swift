@@ -166,10 +166,11 @@ extension DateFormatter {
         return formatter
     }()
 
-    /// Date formatter used for converting String to Date
+    /// Date formatter used for converting from String to GMT Date
     ///
-    /// Example: "2018-04-03T23:05:12" is converted into "Apr 4, 2018 at 6:05 AM"
-    public static func stringToDateFormatter(with dateString: String) -> Date {
+    /// Example: "2018-04-03T23:05:12" is converted into "Apr 3, 2018 at 23:05 PM" if GMT+0, or "Apr 4, 2018 at 6:05 AM" if GMT+7
+    /// 
+    public static func stringToGMTDateFormatter(with dateString: String) -> Date {
         guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
             return Date()
     }

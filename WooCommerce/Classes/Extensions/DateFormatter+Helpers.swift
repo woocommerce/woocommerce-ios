@@ -165,4 +165,14 @@ extension DateFormatter {
 
         return formatter
     }()
+
+    /// Date formatter used for converting String to Date
+    ///
+    /// Example: "2018-04-03T23:05:12" is converted into "Apr 4, 2018 at 6:05 AM"
+    public static func stringToDateFormatter(with dateString: String) -> Date {
+        guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
+            return Date()
+    }
+        return date
+    }
 }

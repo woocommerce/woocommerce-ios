@@ -454,9 +454,9 @@ extension ShippingLabelPackagesFormViewModel {
                      status: .processing,
                      currency: "USD",
                      customerNote: "",
-                     dateCreated: date(with: "2018-04-03T23:05:12"),
-                     dateModified: date(with: "2018-04-03T23:05:14"),
-                     datePaid: date(with: "2018-04-03T23:05:14"),
+                     dateCreated: DateFormatter.stringToDateFormatter(with: "2018-04-03T23:05:12"),
+                     dateModified: DateFormatter.stringToDateFormatter(with: "2018-04-03T23:05:14"),
+                     datePaid: DateFormatter.stringToDateFormatter(with: "2018-04-03T23:05:14"),
                      discountTotal: "30.00",
                      discountTax: "1.20",
                      shippingTotal: "0.00",
@@ -543,12 +543,12 @@ extension ShippingLabelPackagesFormViewModel {
         return [item1, item2]
     }
 
-    static func date(with dateString: String) -> Date {
-        guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
-            return Date()
-        }
-        return date
-    }
+//    static func date(with dateString: String) -> Date {
+//        guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
+//            return Date()
+//        }
+//        return date
+//    }
 
     static func taxes() -> [OrderItemTax] {
         return [OrderItemTax(taxID: 75, subtotal: "0.45", total: "0.45")]

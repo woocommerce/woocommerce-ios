@@ -2,6 +2,7 @@ import Combine
 import UIKit
 import Yosemite
 import WordPressUI
+import AsyncAlgorithms
 
 /// ProductCategoryListViewController: Displays the list of ProductCategories associated to the active Account.
 /// Please note that this class cannot be used as is, since there is not configuration for navigation.
@@ -102,15 +103,29 @@ private extension ProductCategoryListViewController {
             self?.viewModel.resetSelectedCategoriesAndReload()
         }, for: .touchUpInside)
 
-        viewModel.$selectedCategories.combineLatest(viewModel.$categoryViewModels)
-            .map { [weak self] selectedItems, models -> Bool in
-                guard let self = self, self.configuration.clearSelectionEnabled else {
-                    return true
+        if #available(iOS 15, *) {
+            // ✨✨ ASYNC ALGORITHMS MAGIC STARTS ✨✨
+            Task {
+                for await (selectedItems, models) in combineLatest(viewModel.$selectedCategories.values, viewModel.$categoryViewModels.values) {
+                    guard configuration.clearSelectionEnabled else {
+                        clearSelectionButtonBarView.isHidden = true
+                        break
+                    }
+                    clearSelectionButtonBarView.isHidden = selectedItems.isEmpty || models.isEmpty
                 }
-                return selectedItems.isEmpty || models.isEmpty
             }
-            .assign(to: \.isHidden, on: clearSelectionButtonBarView)
-            .store(in: &subscriptions)
+        } else {
+            viewModel.$selectedCategories.combineLatest(viewModel.$categoryViewModels)
+                .map { [weak self] selectedItems, models -> Bool in
+                    guard let self = self, self.configuration.clearSelectionEnabled else {
+                        return true
+                    }
+                    return selectedItems.isEmpty || models.isEmpty
+                }
+                .assign(to: \.isHidden, on: clearSelectionButtonBarView)
+                .store(in: &subscriptions)
+        }
+
     }
 
     func configureEmptyView() {

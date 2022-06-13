@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import Yosemite
+import AsyncAlgorithms
 
 /// View model for ShippingLabelCustomsFormInput
 final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
@@ -209,6 +210,35 @@ private extension ShippingLabelCustomsFormInputViewModel {
     /// Observe all fields and item validation states to decide validity of the form.
     ///
     func configureFormValidation() {
+
+        guard #unavailable(iOS 15) else {
+            // ✨✨ ASYNC ALGORITHMS MAGIC STARTS ✨✨
+            Task { @MainActor in
+                let groupOne = combineLatest($classesAbove2500usd.values, $contentsType.values, $contentExplanation.values)
+                let groupTwo = combineLatest($itn.values, $itemsValidation.values)
+                let groupThree = combineLatest($restrictionComments.values, $restrictionType.values)
+                for await (group1, group2, group3) in combineLatest(groupOne, groupTwo, groupThree) {
+                    let (classesAbove2500usd, contentsType, contentExplanation) = group1
+                    let (itn, itemsValidation) = group2
+                    let (restrictionComments, restrictionType) = group3
+
+                    let isValid = !checkMissingContentExplanation(contentExplanation, with: contentsType) &&
+                        !checkMissingRestrictionComment(restrictionComments, with: restrictionType) &&
+                        !checkMissingITNForDestination(itn) &&
+                        !checkMissingITN(itn, for: classesAbove2500usd) &&
+                        !checkInvalidITN(itn) &&
+                        itemsValidation.values.first(where: { !$0 }) == nil
+
+                    // do not set the value again to avoid triggering subscriptions downstream
+                    if validForm != isValid {
+                        validForm = isValid
+                    }
+                }
+            }
+            return
+        }
+
+        // Plain old Combine code
         let groupOne = $classesAbove2500usd.combineLatest($contentsType, $contentExplanation)
         let groupTwo = $itn.combineLatest($restrictionType, $restrictionComments, $itemsValidation)
         groupOne.combineLatest(groupTwo)

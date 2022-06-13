@@ -217,22 +217,26 @@ private extension ShippingLabelCustomsFormInputViewModel {
                 let groupOne = combineLatest($classesAbove2500usd.values, $contentsType.values, $contentExplanation.values)
                 let groupTwo = combineLatest($itn.values, $itemsValidation.values)
                 let groupThree = combineLatest($restrictionComments.values, $restrictionType.values)
-                for await (group1, group2, group3) in combineLatest(groupOne, groupTwo, groupThree) {
-                    let (classesAbove2500usd, contentsType, contentExplanation) = group1
-                    let (itn, itemsValidation) = group2
-                    let (restrictionComments, restrictionType) = group3
+                let validation = combineLatest(groupOne, groupTwo, groupThree)
+                    .map { [weak self] groupOne, groupTwo, groupThree -> Bool in
+                        guard let self = self else {
+                            return false
+                        }
+                        let (classesAbove2500usd, contentsType, contentExplanation) = groupOne
+                        let (itn, itemsValidation) = groupTwo
+                        let (restrictionComments, restrictionType) = groupThree
 
-                    let isValid = !checkMissingContentExplanation(contentExplanation, with: contentsType) &&
-                        !checkMissingRestrictionComment(restrictionComments, with: restrictionType) &&
-                        !checkMissingITNForDestination(itn) &&
-                        !checkMissingITN(itn, for: classesAbove2500usd) &&
-                        !checkInvalidITN(itn) &&
+                        return !self.checkMissingContentExplanation(contentExplanation, with: contentsType) &&
+                        !self.checkMissingRestrictionComment(restrictionComments, with: restrictionType) &&
+                        !self.checkMissingITNForDestination(itn) &&
+                        !self.checkMissingITN(itn, for: classesAbove2500usd) &&
+                        !self.checkInvalidITN(itn) &&
                         itemsValidation.values.first(where: { !$0 }) == nil
-
-                    // do not set the value again to avoid triggering subscriptions downstream
-                    if validForm != isValid {
-                        validForm = isValid
                     }
+                    .removeDuplicates()
+
+                for await isValid in validation {
+                    validForm = isValid
                 }
             }
             return

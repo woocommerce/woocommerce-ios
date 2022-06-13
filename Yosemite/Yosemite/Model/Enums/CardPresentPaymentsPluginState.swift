@@ -18,7 +18,7 @@ public struct CardPresentPaymentsPluginState: Equatable {
     /// - Important: The available parameter must also contain the preferred plugin
     ///
     public init(preferred: CardPresentPaymentsPlugin, available: [CardPresentPaymentsPlugin]) {
-        precondition(available.contains(preferred))
+        assert(available.contains(preferred))
         self.preferred = preferred
         self.available = available
     }

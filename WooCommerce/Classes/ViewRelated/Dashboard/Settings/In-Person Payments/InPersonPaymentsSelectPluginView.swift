@@ -66,11 +66,7 @@ struct InPersonPaymentsSelectPluginView: View {
 
             Spacer()
 
-            Button(Localization.confirm) {
-                if let selectedPlugin = selectedPlugin {
-                    onPluginSelected(selectedPlugin)
-                }
-            }
+            Button(Localization.confirm, action: confirmPluginSelection)
             .disabled(selectedPlugin == nil)
             .buttonStyle(PrimaryButtonStyle())
         }
@@ -78,6 +74,15 @@ struct InPersonPaymentsSelectPluginView: View {
         .padding(.horizontal, 16)
         .padding(.bottom, 24)
         .background(Color(.tertiarySystemBackground).ignoresSafeArea())
+    }
+
+    private func confirmPluginSelection() {
+        guard let selectedPlugin = selectedPlugin else {
+            // This should not be possible
+            assertionFailure()
+            return DDLogError("Attempt to confirm a payment gateway selection with no gateway selected")
+        }
+        onPluginSelected(selectedPlugin)
     }
 }
 

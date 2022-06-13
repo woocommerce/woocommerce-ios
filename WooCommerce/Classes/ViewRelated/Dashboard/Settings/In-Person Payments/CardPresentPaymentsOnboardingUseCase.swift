@@ -92,13 +92,13 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         state = checkOnboardingState()
     }
 
-    func selectPlugin(_ plugin: CardPresentPaymentsPlugin) {
-        precondition(state == .selectPlugin)
-        preferredPluginLocal = plugin
+    func selectPlugin(_ selectedPlugin: CardPresentPaymentsPlugin) {
+        assert(state == .selectPlugin)
+        preferredPluginLocal = selectedPlugin
         updateState()
         if case .completed(let pluginState) = state,
-           pluginState.preferred == plugin {
-            savePreferredPlugin(plugin)
+           pluginState.preferred == selectedPlugin {
+            savePreferredPlugin(selectedPlugin)
         }
     }
 }
@@ -327,12 +327,12 @@ private extension CardPresentPaymentsOnboardingUseCase {
             return nil
         }
 
-        var plugin: String?
+        var gatewayID: String?
         let action = AppSettingsAction.getPreferredInPersonPaymentGateway(siteID: siteID) {
-            plugin = $0
+            gatewayID = $0
         }
         stores.dispatch(action)
-        return plugin.flatMap(CardPresentPaymentsPlugin.with(gatewayID:))
+        return gatewayID.flatMap(CardPresentPaymentsPlugin.with(gatewayID:))
     }
 
     func savePreferredPlugin(_ plugin: CardPresentPaymentsPlugin) {

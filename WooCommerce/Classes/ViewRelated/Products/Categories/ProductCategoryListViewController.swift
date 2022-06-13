@@ -103,7 +103,7 @@ private extension ProductCategoryListViewController {
             self?.viewModel.resetSelectedCategoriesAndReload()
         }, for: .touchUpInside)
 
-        if #available(iOS 15, *) {
+        guard #unavailable(iOS 15) else {
             // ✨✨ ASYNC ALGORITHMS MAGIC STARTS ✨✨
             Task {
                 for await (selectedItems, models) in combineLatest(viewModel.$selectedCategories.values, viewModel.$categoryViewModels.values) {
@@ -114,17 +114,18 @@ private extension ProductCategoryListViewController {
                     clearSelectionButtonBarView.isHidden = selectedItems.isEmpty || models.isEmpty
                 }
             }
-        } else {
-            viewModel.$selectedCategories.combineLatest(viewModel.$categoryViewModels)
-                .map { [weak self] selectedItems, models -> Bool in
-                    guard let self = self, self.configuration.clearSelectionEnabled else {
-                        return true
-                    }
-                    return selectedItems.isEmpty || models.isEmpty
-                }
-                .assign(to: \.isHidden, on: clearSelectionButtonBarView)
-                .store(in: &subscriptions)
+            return
         }
+
+        viewModel.$selectedCategories.combineLatest(viewModel.$categoryViewModels)
+            .map { [weak self] selectedItems, models -> Bool in
+                guard let self = self, self.configuration.clearSelectionEnabled else {
+                    return true
+                }
+                return selectedItems.isEmpty || models.isEmpty
+            }
+            .assign(to: \.isHidden, on: clearSelectionButtonBarView)
+            .store(in: &subscriptions)
 
     }
 

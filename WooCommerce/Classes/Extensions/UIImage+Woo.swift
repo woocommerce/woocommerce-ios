@@ -529,6 +529,14 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Credit card give icon
+    ///
+    static var creditCardGiveIcon: UIImage {
+        return UIImage(named: "credit-card-give")!
+            .withRenderingMode(.alwaysTemplate)
+            .imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Files Download Icon
     ///
     static var cloudImage: UIImage {
@@ -829,6 +837,12 @@ extension UIImage {
         return UIImage.gridicon(.starOutline, size: starSize)
     }
 
+    /// Stripe icon
+    ///
+    static var stripeIcon: UIImage {
+        return UIImage(named: "stripe-icon")!
+    }
+
     /// Sync Icon
     ///
     static var syncIcon: UIImage {
@@ -875,6 +889,12 @@ extension UIImage {
     ///
     static var visibilityImage: UIImage {
         return UIImage.gridicon(.visible)
+    }
+
+    /// Stripe icon
+    ///
+    static var wcpayIcon: UIImage {
+        return UIImage(named: "wcpay-icon")!
     }
 
     /// No store image

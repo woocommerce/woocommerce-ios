@@ -23,7 +23,13 @@ final class SettingsViewController: UIViewController {
     ///
     private var storePickerCoordinator: StorePickerCoordinator?
 
-    private var removeAppleIDAccessCoordinator: RemoveAppleIDAccessCoordinator?
+    private lazy var removeAppleIDAccessCoordinator: RemoveAppleIDAccessCoordinator =
+    RemoveAppleIDAccessCoordinator(sourceViewController: self) { [weak self] in
+        guard let self = self else { return .failure(RemoveAppleIDAccessError.presenterDeallocated) }
+        return await self.removeAppleIDAccess()
+    } onRemoveSuccess: { [weak self] in
+        self?.logOutUser()
+    }
 
     init(viewModel: ViewModel = SettingsViewModel()) {
         self.viewModel = viewModel
@@ -248,14 +254,7 @@ private extension SettingsViewController {
 //
 private extension SettingsViewController {
     func removeAppleIDAccessWasPressed() {
-        let coordinator = RemoveAppleIDAccessCoordinator(sourceViewController: self) { [weak self] in
-            guard let self = self else { return .failure(RemoveAppleIDAccessError.presenterDeallocated) }
-            return await self.removeAppleIDAccess()
-        } onRemoveSuccess: { [weak self] in
-            self?.logOutUser()
-        }
-        self.removeAppleIDAccessCoordinator = coordinator
-        coordinator.start()
+        removeAppleIDAccessCoordinator.start()
     }
 
     func removeAppleIDAccess() async -> Result<Void, Error> {

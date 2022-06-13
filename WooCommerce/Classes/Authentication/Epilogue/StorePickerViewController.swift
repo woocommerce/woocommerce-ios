@@ -138,7 +138,13 @@ final class StorePickerViewController: UIViewController {
         }
     }
 
-    private var removeAppleIDAccessCoordinator: RemoveAppleIDAccessCoordinator?
+    private lazy var removeAppleIDAccessCoordinator: RemoveAppleIDAccessCoordinator =
+    RemoveAppleIDAccessCoordinator(sourceViewController: self) { [weak self] in
+        guard let self = self else { return .failure(RemoveAppleIDAccessError.presenterDeallocated) }
+        return await self.removeAppleIDAccess()
+    } onRemoveSuccess: { [weak self] in
+        self?.restartAuthentication()
+    }
 
     private let appleIDCredentialChecker: AppleIDCredentialCheckerProtocol
     private let featureFlagService: FeatureFlagService
@@ -641,14 +647,7 @@ extension StorePickerViewController: UITableViewDataSource {
             if isRemoveAppleIDAccessButtonVisible {
                 cell.onRemoveAppleIDAccessButtonTapped = { [weak self] in
                     guard let self = self else { return }
-                    let coordinator = RemoveAppleIDAccessCoordinator(sourceViewController: self) { [weak self] in
-                        guard let self = self else { return .failure(RemoveAppleIDAccessError.presenterDeallocated) }
-                        return await self.removeAppleIDAccess()
-                    } onRemoveSuccess: { [weak self] in
-                        self?.restartAuthentication()
-                    }
-                    self.removeAppleIDAccessCoordinator = coordinator
-                    coordinator.start()
+                    self.removeAppleIDAccessCoordinator.start()
                 }
             }
             return cell

@@ -31,6 +31,12 @@ public protocol ProductsRemoteProtocol {
                         productCategory: ProductCategory?,
                         excludedProductIDs: [Int64],
                         completion: @escaping (Result<[Product], Error>) -> Void)
+    func searchProductsBySKU(for siteID: Int64,
+                             keyword: String,
+                             useLegacyEndpoint: Bool,
+                             pageNumber: Int,
+                             pageSize: Int,
+                             completion: @escaping (Result<[Product], Error>) -> Void)
     func searchSku(for siteID: Int64,
                    sku: String,
                    completion: @escaping (Result<String, Error>) -> Void)
@@ -235,6 +241,23 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
         let mapper = ProductListMapper(siteID: siteID)
 
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    public func searchProductsBySKU(for siteID: Int64,
+                                    keyword: String,
+                                    useLegacyEndpoint: Bool,
+                                    pageNumber: Int,
+                                    pageSize: Int,
+                                    completion: @escaping (Result<[Product], Error>) -> Void) {
+        let parameters = [
+            ParameterKey.sku: keyword,
+            ParameterKey.page: String(pageNumber),
+            ParameterKey.perPage: String(pageSize)
+        ]
+        let path = Path.products
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let mapper = ProductListMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)
     }
 

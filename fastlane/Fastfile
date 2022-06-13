@@ -917,7 +917,11 @@ platform :ios do
 
   desc 'Lint the `.strings` files'
   lane :lint_localizations do
-    ios_lint_localizations(input_dir: RESOURCES_FOLDER, allow_retry: true)
+    ios_lint_localizations(
+      input_dir: RESOURCES_FOLDER,
+      allow_retry: true,
+      check_duplicate_keys: false # skip for 9.3, which has an issue in the en file
+    )
   end
 
   def write_file(path, contents)

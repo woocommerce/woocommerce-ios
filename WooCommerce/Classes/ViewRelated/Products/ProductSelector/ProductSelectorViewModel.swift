@@ -3,6 +3,7 @@ import protocol Storage.StorageManagerType
 import Combine
 import Foundation
 import WooFoundation
+import AsyncAlgorithms
 
 /// View model for `ProductSelector`.
 ///
@@ -428,6 +429,30 @@ private extension ProductSelectorViewModel {
     /// Updates the product results predicate & triggers a new sync when search term changes
     ///
     func configureProductSearch() {
+        guard #unavailable(iOS 15) else {
+            Task { @MainActor in
+                let filteredSearchTerm = $searchTerm.values
+                    .dropFirst()
+                    .removeDuplicates()
+//                    .debounce(for: .milliseconds(500)) // not available at the time of writing
+
+                for await newSearchTerm in filteredSearchTerm {
+                    if newSearchTerm.isNotEmpty {
+                        // When the search query changes, also includes the original results predicate in addition to the search keyword.
+                        let searchResultsPredicate = NSPredicate(format: "ANY searchResults.keyword = %@", newSearchTerm)
+                        let subpredicates = [resultsPredicate, searchResultsPredicate].compactMap { $0 }
+                        productsResultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: subpredicates)
+                    } else {
+                        // Resets the results to the full product list when there is no search query.
+                        productsResultsController.predicate = self.resultsPredicate
+                    }
+
+                    syncingCoordinator.resynchronize()
+                }
+            }
+            return
+        }
+
         $searchTerm
             .dropFirst() // Drop initial value
             .removeDuplicates()

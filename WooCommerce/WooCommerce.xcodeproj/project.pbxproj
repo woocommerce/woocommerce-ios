@@ -1639,6 +1639,7 @@
 		DEDB886B26E8531E00981595 /* ShippingLabelPackageAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDB886A26E8531E00981595 /* ShippingLabelPackageAttributes.swift */; };
 		DEE6437626D87C4100888A75 /* PrintCustomsFormsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE6437526D87C4100888A75 /* PrintCustomsFormsView.swift */; };
 		DEE6437826D8DAD900888A75 /* InProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE6437726D8DAD900888A75 /* InProgressView.swift */; };
+		DEED0EBC28571CFA00C177FC /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = DEED0EBB28571CFA00C177FC /* AsyncAlgorithms */; };
 		DEF3300C270444070073AE29 /* ShippingLabelSelectedRate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF3300B270444060073AE29 /* ShippingLabelSelectedRate.swift */; };
 		DEFD6E61264990FB00E51E0D /* SitePluginListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6E60264990FB00E51E0D /* SitePluginListViewModelTests.swift */; };
 		DEFD6E86264ABFB700E51E0D /* PluginListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DEFD6E85264ABFB700E51E0D /* PluginListViewController.xib */; };
@@ -3525,6 +3526,7 @@
 				45455E322657C3F300BBB0C4 /* Shimmer in Frameworks */,
 				86DBBB0BDEA3488E2BEBB314 /* Pods_WooCommerce.framework in Frameworks */,
 				02AB82EC27069D5D008D7334 /* Experiments.framework in Frameworks */,
+				DEED0EBC28571CFA00C177FC /* AsyncAlgorithms in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8144,6 +8146,7 @@
 				45455E312657C3F300BBB0C4 /* Shimmer */,
 				174CA86927D90A6200126524 /* AutomatticAbout */,
 				3FFC5EAB2851942F00563C48 /* Charts */,
+				DEED0EBB28571CFA00C177FC /* AsyncAlgorithms */,
 			);
 			productName = WooCommerce;
 			productReference = B56DB3C62049BFAA00D4AA8E /* WooCommerce.app */;
@@ -8306,6 +8309,7 @@
 				3F1CA81B26C3542600228BF2 /* XCRemoteSwiftPackageReference "XCUITestHelpers" */,
 				174CA86827D90A6200126524 /* XCRemoteSwiftPackageReference "AutomatticAbout-swift" */,
 				3FFC5EAA2851942F00563C48 /* XCRemoteSwiftPackageReference "Charts" */,
+				DEED0EBA28571CFA00C177FC /* XCRemoteSwiftPackageReference "swift-async-algorithms" */,
 			);
 			productRefGroup = B56DB3C72049BFAA00D4AA8E /* Products */;
 			projectDirPath = "";
@@ -10966,6 +10970,14 @@
 				minimumVersion = 1.0.0;
 			};
 		};
+		DEED0EBA28571CFA00C177FC /* XCRemoteSwiftPackageReference "swift-async-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-async-algorithms";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.0.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -11030,6 +11042,11 @@
 		57150E0E24F462C200E81611 /* TestKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TestKit;
+		};
+		DEED0EBB28571CFA00C177FC /* AsyncAlgorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DEED0EBA28571CFA00C177FC /* XCRemoteSwiftPackageReference "swift-async-algorithms" */;
+			productName = AsyncAlgorithms;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

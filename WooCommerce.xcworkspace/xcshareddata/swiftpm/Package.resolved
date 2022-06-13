@@ -56,6 +56,15 @@
         }
       },
       {
+        "package": "AsyncAlgorithms",
+        "repositoryURL": "https://github.com/apple/swift-async-algorithms",
+        "state": {
+          "branch": null,
+          "revision": "98d42293179ddd7f8c516eae8bec7b4e014d911a",
+          "version": "0.0.1"
+        }
+      },
+      {
         "package": "swift-numerics",
         "repositoryURL": "https://github.com/apple/swift-numerics",
         "state": {

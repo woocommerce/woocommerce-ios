@@ -244,7 +244,7 @@ platform :ios do
   lane :new_beta_release do |options|
     ios_betabuild_prechecks(options)
     download_localized_strings_and_metadata_from_glotpress
-    ios_lint_localizations(input_dir: 'WooCommerce/Resources', allow_retry: true)
+    lint_localizations
     ios_bump_version_beta
     version = ios_get_app_version
     trigger_beta_build(branch_to_build: "release/#{version}")
@@ -320,7 +320,7 @@ platform :ios do
     )
 
     download_localized_strings_and_metadata_from_glotpress
-    ios_lint_localizations(input_dir: 'WooCommerce/Resources', allow_retry: true)
+    lint_localizations
     ios_bump_version_beta
 
     # Wrap up
@@ -970,6 +970,11 @@ platform :ios do
       message: 'Freeze strings for localization',
       allow_nothing_to_commit: true
     )
+  end
+
+  desc 'Lint the `.strings` files'
+  lane :lint_localizations do
+    ios_lint_localizations(input_dir: RESOURCES_FOLDER, allow_retry: true)
   end
 
   def write_file(path, contents)

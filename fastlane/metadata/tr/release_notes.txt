@@ -1,3 +1,3 @@
-Deneysel Kupon Yönetimi özelliğimize yeni işlevler eklemeye devam ediyoruz! Bu sürümde, kuponların düzenlenmesi, silinmesi ve ayrıca görüntülemeyle ilgili çeşitli iyileştirmeler yapılmıştır. Erken erişim bu özelliği Diğer sekmesindeki Ayarlar, Deneysel Özellikler'den açın.
+Merhaba Kanada! Şu anda WooCommerce Payments'ı kullanan Kanadalı satıcıların artık şahsen ödemeleri de kabul edebileceğini duyurmaktan heyecan duyuyoruz.
 
-Bu sürümde ayrıca sipariş oluşturma, şahsen ödeme ve ürün yönetimi için çeşitli düzeltmeler yapıldı. Değerli geri bildiriminiz için hepinize tekrar teşekkür ederiz!
+Ayrıca tutar alanlarında Arapça rakam desteği, kupon indirim türlerini güncelleme olanağı ve sipariş notları için kopyala/yapıştır desteği de dahil olmak üzere uygulamanın başka kısımlarında da çeşitli iyileştirmeler yaptık. Geri bildirimleriniz için teşekkürler. Gerçekten uygulamayı herkes için daha iyi hale getirmemize yardımcı oluyor.

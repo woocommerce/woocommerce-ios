@@ -22,9 +22,10 @@ struct InPersonPaymentsSelectPluginRow: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity, minHeight: 72, alignment: .leading)
-        .overlay(
+        .background(
             RoundedRectangle(cornerRadius: 8)
                 .stroke(borderColor, lineWidth: 1)
+                .background(Color(.tertiarySystemBackground))
                )
     }
 
@@ -37,8 +38,9 @@ struct InPersonPaymentsSelectPluginRow: View {
     }
 }
 
-struct InPersonPaymentsSelectPlugin: View {
+struct InPersonPaymentsSelectPluginView: View {
     @State var selectedPlugin: CardPresentPaymentsPlugin?
+    let onPluginSelected: (CardPresentPaymentsPlugin) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -64,9 +66,7 @@ struct InPersonPaymentsSelectPlugin: View {
 
             Spacer()
 
-            Button(Localization.confirm) {
-                // TODO
-            }
+            Button(Localization.confirm, action: confirmPluginSelection)
             .disabled(selectedPlugin == nil)
             .buttonStyle(PrimaryButtonStyle())
         }
@@ -74,6 +74,15 @@ struct InPersonPaymentsSelectPlugin: View {
         .padding(.horizontal, 16)
         .padding(.bottom, 24)
         .background(Color(.tertiarySystemBackground).ignoresSafeArea())
+    }
+
+    private func confirmPluginSelection() {
+        guard let selectedPlugin = selectedPlugin else {
+            // This should not be possible
+            assertionFailure()
+            return DDLogError("Attempt to confirm a payment gateway selection with no gateway selected")
+        }
+        onPluginSelected(selectedPlugin)
     }
 }
 
@@ -91,9 +100,9 @@ private enum Localization {
 
 struct InPersonPaymentsSelectPlugin_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsSelectPlugin()
-        InPersonPaymentsSelectPlugin(selectedPlugin: .wcPay)
-        InPersonPaymentsSelectPlugin(selectedPlugin: .stripe)
+        InPersonPaymentsSelectPluginView(onPluginSelected: { _ in })
+        InPersonPaymentsSelectPluginView(selectedPlugin: .wcPay, onPluginSelected: { _ in })
+        InPersonPaymentsSelectPluginView(selectedPlugin: .stripe, onPluginSelected: { _ in })
             .preferredColorScheme(.dark)
     }
 }

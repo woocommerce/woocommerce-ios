@@ -2,6 +2,7 @@ import Combine
 import Foundation
 import Storage
 import Yosemite
+import Experiments
 
 private typealias SystemPlugin = Yosemite.SystemPlugin
 private typealias PaymentGatewayAccount = Yosemite.PaymentGatewayAccount
@@ -31,7 +32,9 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     let storageManager: StorageManagerType
     let stores: StoresManager
     let configurationLoader: CardPresentConfigurationLoader
+    let featureFlagService: FeatureFlagService
     private let cardPresentPluginsDataProvider: CardPresentPluginsDataProvider
+    private var preferredPluginLocal: CardPresentPaymentsPlugin?
 
     @Published var state: CardPresentPaymentOnboardingState = .loading
 
@@ -41,12 +44,14 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
 
     init(
         storageManager: StorageManagerType = ServiceLocator.storageManager,
-        stores: StoresManager = ServiceLocator.stores
+        stores: StoresManager = ServiceLocator.stores,
+        featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService
     ) {
         self.storageManager = storageManager
         self.stores = stores
         self.configurationLoader = .init(stores: stores)
         self.cardPresentPluginsDataProvider = .init(storageManager: storageManager, stores: stores, configuration: configurationLoader.configuration)
+        self.featureFlagService = featureFlagService
 
         updateState()
     }
@@ -85,6 +90,16 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
 
     func updateState() {
         state = checkOnboardingState()
+    }
+
+    func selectPlugin(_ selectedPlugin: CardPresentPaymentsPlugin) {
+        assert(state == .selectPlugin)
+        preferredPluginLocal = selectedPlugin
+        updateState()
+        if case .completed(let pluginState) = state,
+           pluginState.preferred == selectedPlugin {
+            savePreferredPlugin(selectedPlugin)
+        }
     }
 }
 
@@ -176,11 +191,41 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func bothPluginsInstalledAndActiveOnboardingState(wcPay: SystemPlugin, stripe: SystemPlugin) -> CardPresentPaymentOnboardingState {
+        guard featureFlagService.isFeatureFlagEnabled(.inPersonPaymentGatewaySelection) else {
+            return legacyBothPluginsInstalledAndActiveOnboardingState(wcPay: wcPay, stripe: stripe)
+        }
+
+        if preferredPluginLocal == nil {
+            preferredPluginLocal = storedPreferredPlugin
+        }
+
+        if !isStripeSupportedInCountry {
+            return wcPayOnlyOnboardingState(plugin: wcPay)
+        }
+
+        guard let preferredPlugin = preferredPluginLocal else {
+            return .selectPlugin
+        }
+
+        let state = onboardingStateForPlugin(preferredPlugin, wcPay: wcPay, stripe: stripe)
+        return augmentStateWithAvailablePlugins(state: state, available: [.wcPay, .stripe])
+    }
+
+    func legacyBothPluginsInstalledAndActiveOnboardingState(wcPay: SystemPlugin, stripe: SystemPlugin) -> CardPresentPaymentOnboardingState {
         if !isStripeSupportedInCountry {
             return .pluginShouldBeDeactivated(plugin: .stripe)
         }
 
         return .selectPlugin
+    }
+
+    func onboardingStateForPlugin(_ plugin: CardPresentPaymentsPlugin, wcPay: SystemPlugin, stripe: SystemPlugin) -> CardPresentPaymentOnboardingState {
+        switch plugin {
+        case .wcPay:
+            return wcPayOnlyOnboardingState(plugin: wcPay)
+        case .stripe:
+            return stripeGatewayOnlyOnboardingState(plugin: stripe)
+        }
     }
 
     func wcPayOnlyOnboardingState(plugin: SystemPlugin) -> CardPresentPaymentOnboardingState {
@@ -248,7 +293,18 @@ private extension CardPresentPaymentsOnboardingUseCase {
         let setAccount = CardPresentPaymentAction.use(paymentGatewayAccount: account)
         stores.dispatch(setAccount)
 
-        return .completed(plugin: plugin)
+        return .completed(plugin: CardPresentPaymentsPluginState(plugin: plugin))
+    }
+
+    func augmentStateWithAvailablePlugins(
+        state: CardPresentPaymentOnboardingState,
+        available: [CardPresentPaymentsPlugin]
+    ) -> CardPresentPaymentOnboardingState {
+        guard case .completed(let pluginState) = state else {
+            return state
+        }
+
+        return .completed(plugin: .init(preferred: pluginState.preferred, available: available))
     }
 }
 
@@ -264,6 +320,27 @@ private extension CardPresentPaymentsOnboardingUseCase {
         let storeCountryCode = storeAddress.countryCode
 
         return storeCountryCode.nonEmptyString()
+    }
+
+    var storedPreferredPlugin: CardPresentPaymentsPlugin? {
+        guard let siteID = siteID else {
+            return nil
+        }
+
+        var gatewayID: String?
+        let action = AppSettingsAction.getPreferredInPersonPaymentGateway(siteID: siteID) {
+            gatewayID = $0
+        }
+        stores.dispatch(action)
+        return gatewayID.flatMap(CardPresentPaymentsPlugin.with(gatewayID:))
+    }
+
+    func savePreferredPlugin(_ plugin: CardPresentPaymentsPlugin) {
+        guard let siteID = siteID else {
+            return
+        }
+        let action = AppSettingsAction.setPreferredInPersonPaymentGateway(siteID: siteID, gateway: plugin.gatewayID)
+        stores.dispatch(action)
     }
 
     var isStripeSupportedInCountry: Bool {

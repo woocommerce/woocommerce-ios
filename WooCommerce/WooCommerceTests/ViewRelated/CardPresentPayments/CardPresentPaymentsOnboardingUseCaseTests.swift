@@ -16,12 +16,27 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
     ///
     private let sampleSiteID: Int64 = 1234
 
+    /// Preferred payment gateways
+    ///
+    private var preferredInPersonPaymentGatewayBySite = [Int64: String]()
+
+
     override func setUpWithError() throws {
         try super.setUpWithError()
         storageManager = MockStorageManager()
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.sessionManager.setStoreId(sampleSiteID)
         ServiceLocator.setSelectedSiteSettings(SelectedSiteSettings(stores: stores, storageManager: storageManager))
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case .setPreferredInPersonPaymentGateway(let siteID, let gateway):
+                self.preferredInPersonPaymentGatewayBySite[siteID] = gateway
+            case .getPreferredInPersonPaymentGateway(let siteID, let onCompletion):
+                onCompletion(self.preferredInPersonPaymentGatewayBySite[siteID])
+            default:
+                fatalError("Not available")
+            }
+        }
     }
 
     override func tearDownWithError() throws {
@@ -29,6 +44,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         storageManager.reset()
         storageManager = nil
         stores = nil
+        preferredInPersonPaymentGatewayBySite.removeAll()
         try super.tearDownWithError()
     }
 
@@ -82,18 +98,33 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .countryNotSupportedStripe(plugin: .stripe, countryCode: "CA"))
     }
 
-    func test_onboarding_returns_deactivate_stripe_when_stripe_and_wcPay_plugins_are_installed_in_Canada() {
+    func test_onboarding_returns_deactivate_stripe_when_stripe_and_wcPay_plugins_are_installed_in_Canada_with_inPersonPaymentGatewaySelection_false() {
         // Given
         setupCountry(country: .ca)
         setupStripePlugin(status: .active, version: .minimumSupportedVersion)
-        setupWCPayPlugin(status: .active, version: .minimumSupportedVersion)
+        setupWCPayPlugin(status: .active, version: .minimumSupportedVersionCanada)
+
+        // When
+        let featureFlagService = MockFeatureFlagService(inPersonPaymentGatewaySelection: false)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores, featureFlagService: featureFlagService)
+        let state = useCase.state
+
+        // Then
+        XCTAssertEqual(state, .pluginShouldBeDeactivated(plugin: .stripe))
+    }
+
+    func test_onboarding_returns_setup_not_completed_stripe_when_stripe_and_wcPay_plugins_are_installed_in_Canada() {
+        // Given
+        setupCountry(country: .ca)
+        setupStripePlugin(status: .active, version: .minimumSupportedVersion)
+        setupWCPayPlugin(status: .active, version: .minimumSupportedVersionCanada)
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .pluginShouldBeDeactivated(plugin: .stripe))
+        XCTAssertEqual(state, .pluginSetupNotCompleted(plugin: .wcPay))
     }
 
     func test_onboarding_returns_wcpay_plugin_unsupported_version_for_canada_when_version_unsupported() {
@@ -205,6 +236,118 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .selectPlugin)
     }
 
+    func test_onboarding_returns_select_plugin_when_both_stripe_and_wcpay_plugins_are_active_ignoring_preference_if_inPersonPaymentGatewaySelection_false() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
+        setupPreferredPaymentGateway(.stripe)
+
+        // When
+        let featureFlagService = MockFeatureFlagService(inPersonPaymentGatewaySelection: false)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores, featureFlagService: featureFlagService)
+        let state = useCase.state
+
+        // Then
+        XCTAssertEqual(state, .selectPlugin)
+    }
+
+    func test_onboarding_uses_selected_plugin_wcpay_when_both_stripe_and_wcpay_plugins_are_active() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        XCTAssertEqual(useCase.state, .selectPlugin)
+        useCase.selectPlugin(.wcPay)
+        let state = useCase.state
+
+        // Then
+        XCTAssertEqual(state, .pluginSetupNotCompleted(plugin: .wcPay))
+    }
+
+    func test_onboarding_uses_selected_plugin_stripe_when_both_stripe_and_wcpay_plugins_are_active() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        XCTAssertEqual(useCase.state, .selectPlugin)
+        useCase.selectPlugin(.stripe)
+        let state = useCase.state
+
+        // Then
+        XCTAssertEqual(state, .pluginSetupNotCompleted(plugin: .stripe))
+    }
+    func test_onboarding_uses_preferred_plugin_wcpay_when_both_stripe_and_wcpay_plugins_are_active_and_preferred_plugin_is_not_complete() {
+        // Given
+        setupCountry(country: .us)
+        // Stripe is fully set up and WCPay isn't but there's a stored preference to use WCPay
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: StripeAccount.self, status: .complete)
+        setupPreferredPaymentGateway(.wcPay)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.state
+
+        // Then
+        XCTAssertEqual(state, .pluginSetupNotCompleted(plugin: .wcPay))
+    }
+
+    func test_onboarding_returns_complete_with_wcpay_when_both_stripe_and_wcpay_plugins_are_active_and_has_stored_preference() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .complete)
+        setupPreferredPaymentGateway(.wcPay)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.state
+
+        // Then
+        XCTAssertEqual(state, .completed(plugin: .wcPayPreferred))
+    }
+
+    func test_onboarding_uses_preferred_plugin_stripe_when_both_stripe_and_wcpay_plugins_are_active_and_preferred_plugin_is_not_complete() {
+        // Given
+        setupCountry(country: .us)
+        // WCPay is fully set up and Stripe isn't but there's a stored preference to use Stripe
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .complete)
+        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
+        setupPreferredPaymentGateway(.stripe)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.state
+
+        // Then
+        XCTAssertEqual(state, .pluginSetupNotCompleted(plugin: .stripe))
+    }
+
+    func test_onboarding_returns_complete_with_stripe_when_both_stripe_and_wcpay_plugins_are_active_and_has_stored_preference() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: StripeAccount.self, status: .complete)
+        setupPreferredPaymentGateway(.stripe)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.state
+
+        // Then
+        XCTAssertEqual(state, .completed(plugin: .stripePreferred))
+    }
     func test_onboarding_returns_wcpay_plugin_unsupported_version_when_unpatched_wcpay_outdated() {
         // Given
         setupCountry(country: .us)
@@ -283,7 +426,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .completed(plugin: .wcPay))
+        XCTAssertEqual(state, .completed(plugin: .wcPayOnly))
     }
 
     func test_onboarding_returns_complete_when_wcpay_plugin_version_has_newer_patch_release() {
@@ -297,7 +440,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .completed(plugin: .wcPay))
+        XCTAssertEqual(state, .completed(plugin: .wcPayOnly))
     }
 
     func test_onboarding_returns_complete_when_wcpay_plugin_version_has_newer_unpatched_release() {
@@ -311,7 +454,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .completed(plugin: .wcPay))
+        XCTAssertEqual(state, .completed(plugin: .wcPayOnly))
     }
 
     func test_onboarding_returns_complete_when_wcpay_active_and_stripe_plugin_installed_but_not_active() {
@@ -326,7 +469,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .completed(plugin: .wcPay))
+        XCTAssertEqual(state, .completed(plugin: .wcPayOnly))
     }
 
     func test_onboarding_returns_complete_when_stripe_active_and_wcpay_plugin_installed_but_not_active() {
@@ -341,7 +484,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .completed(plugin: .stripe))
+        XCTAssertEqual(state, .completed(plugin: .stripeOnly))
     }
 
     func test_onboarding_returns_complete_when_wcpay_plugin_active() {
@@ -355,7 +498,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .completed(plugin: .wcPay))
+        XCTAssertEqual(state, .completed(plugin: .wcPayOnly))
     }
 
     func test_onboarding_returns_complete_when_wcpay_plugin_is_network_active() {
@@ -369,7 +512,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .completed(plugin: .wcPay))
+        XCTAssertEqual(state, .completed(plugin: .wcPayOnly))
     }
 
     func test_onboarding_sends_use_wcpay_account_action_when_wcpay_plugin_is_used_with_an_account_meeting_requirements() throws {
@@ -415,7 +558,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .completed(plugin: .stripe))
+        XCTAssertEqual(state, .completed(plugin: .stripeOnly))
     }
 
     func test_onboarding_sends_use_stripe_account_action_when_stripe_plugin_is_used_with_an_account_meeting_requirements() throws {
@@ -655,7 +798,15 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .completed(plugin: .wcPay))
+        XCTAssertEqual(state, .completed(plugin: .wcPayOnly))
+    }
+}
+
+// MARK: - Settings helpers
+private extension CardPresentPaymentsOnboardingUseCaseTests {
+    func setupPreferredPaymentGateway(_ gateway: CardPresentPaymentsPlugin) {
+        let action = AppSettingsAction.setPreferredInPersonPaymentGateway(siteID: sampleSiteID, gateway: gateway.gatewayID)
+        stores.dispatch(action)
     }
 }
 

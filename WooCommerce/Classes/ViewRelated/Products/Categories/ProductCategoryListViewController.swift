@@ -105,7 +105,7 @@ private extension ProductCategoryListViewController {
 
         guard #unavailable(iOS 15) else {
             // ✨✨ ASYNC ALGORITHMS MAGIC STARTS ✨✨
-            Task {
+            Task { @MainActor in
                 for await (selectedItems, models) in combineLatest(viewModel.$selectedCategories.values, viewModel.$categoryViewModels.values) {
                     guard configuration.clearSelectionEnabled else {
                         clearSelectionButtonBarView.isHidden = true

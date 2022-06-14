@@ -384,18 +384,27 @@ private extension CouponListViewController {
     ///
     func displayNoResultsOverlay() {
         let emptyStateViewController = EmptyStateViewController(style: .list)
-        let config: EmptyStateViewController.Config = .withButton(
-            message: .init(string: Localization.emptyStateMessage),
-            image: .emptyCouponsImage,
-            details: Localization.emptyStateDetails,
-            buttonTitle: Localization.createCouponAction
-        ) { [weak self] button in
-            guard let self = self else { return }
-            self.displayCouponTypeBottomSheet()
-        }
-
         displayEmptyStateViewController(emptyStateViewController)
-        emptyStateViewController.configure(config)
+        emptyStateViewController.configure(buildNoResultConfig())
+    }
+
+    func buildNoResultConfig() -> mptyStateViewController.Config {
+        if viewModel.isCreationEnabled {
+            return .withButton(
+                    message: .init(string: Localization.emptyStateMessage),
+                    image: .emptyCouponsImage,
+                    details: Localization.emptyStateDetails,
+                    buttonTitle: Localization.createCouponAction
+            ) { [weak self] button in
+                guard let self = self else { return }
+                self.displayCouponTypeBottomSheet()
+            }
+        } else {
+            return .simple(
+                    message: .init(string: Localization.emptyStateMessage),
+                    image: .emptyCouponsImage
+            )
+        }
     }
 
     /// Displays the overlay when coupons are disabled for the store.

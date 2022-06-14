@@ -233,7 +233,13 @@ extension OrderDetailsViewModel {
         }
 
         group.enter()
-        refreshCardPresentPaymentEligibility()
+        checkCardPresentPaymentEligibility() {
+            onReloadSections?()
+            group.leave()
+        }
+
+        group.enter()
+        loadPaymentGatewayAccounts()
         group.leave()
 
         group.enter()
@@ -601,7 +607,33 @@ extension OrderDetailsViewModel {
         stores.dispatch(action)
     }
 
-    func refreshCardPresentPaymentEligibility() {
+    func checkCardPresentPaymentEligibility(onCompletion: @escaping (() -> Void)) {
+        let configuration = configurationLoader.configuration
+
+        guard configuration.isSupportedCountry else {
+            dataSource.isEligibleForCardPresentPayment = false
+            onCompletion()
+            return
+        }
+
+        let action = OrderCardPresentPaymentEligibilityAction
+            .orderIsEligibleForCardPresentPayment(orderID: order.orderID,
+                                                  siteID: order.siteID,
+                                                  cardPresentPaymentsConfiguration: configurationLoader.configuration) { [weak self] result in
+            switch result {
+            case .success(let eligible):
+                self?.dataSource.isEligibleForCardPresentPayment = eligible
+            case .failure(_):
+                self?.dataSource.isEligibleForCardPresentPayment = false
+            }
+
+            onCompletion()
+        }
+
+        stores.dispatch(action)
+    }
+
+    func loadPaymentGatewayAccounts() {
         /// No need for a completion here. The VC will be notified of changes to the stored paymentGatewayAccounts
         /// by the viewModel (after passing up through the dataSource and originating in the resultsControllers)
         ///
@@ -749,18 +781,5 @@ extension OrderDetailsViewModel {
             static let sharePaymentLink = NSLocalizedString("Share Payment Link", comment: "Title to share an order payment link.")
             static let editOrder = NSLocalizedString("Edit", comment: "Title to edit an order")
         }
-    }
-}
-
-private extension Order {
-    /// This check is temporary, we are working on knowing if an order needs payment directly from the API.
-    /// Conditions copied from:
-    /// https://github.com/woocommerce/woocommerce/blob/3611d4643791bad87a0d3e6e73e031bb80447417/plugins/woocommerce/includes/class-wc-order.php#L1520-L1523
-    ///
-    var needsPayment: Bool {
-        guard let total = Double(total) else {
-            return false
-        }
-        return total > .zero && (status == .pending || status == .failed)
     }
 }

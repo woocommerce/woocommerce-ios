@@ -32,7 +32,7 @@ class CurrencyFormatterTests: XCTestCase {
         let stringValue = "9.99"
         let expectedResult = NSDecimalNumber(string: stringValue)
 
-        let converted = CurrencyFormatter(currencySettings: sampleCurrencySettings).convertToDecimal(from: stringValue)
+        let converted = CurrencyFormatter(currencySettings: sampleCurrencySettings).convertToDecimal(stringValue)
 
         // check the formatted decimal exists
         guard let actualResult = converted else {
@@ -59,7 +59,7 @@ class CurrencyFormatterTests: XCTestCase {
         let stringValue = "9.9999"
         let expectedResult = NSDecimalNumber(string: stringValue)
 
-        let actualResult = CurrencyFormatter(currencySettings: sampleCurrencySettings).convertToDecimal(from: stringValue)
+        let actualResult = CurrencyFormatter(currencySettings: sampleCurrencySettings).convertToDecimal(stringValue)
         XCTAssertEqual(expectedResult, actualResult)
     }
 
@@ -69,14 +69,14 @@ class CurrencyFormatterTests: XCTestCase {
         let separator = ","
         let stringValue = "1.17"
         let expectedResult = "1,17"
-        let converted = CurrencyFormatter(currencySettings: sampleCurrencySettings).convertToDecimal(from: stringValue)
+        let converted = CurrencyFormatter(currencySettings: sampleCurrencySettings).convertToDecimal(stringValue)
 
         guard let convertedDecimal = converted else {
             XCTFail()
             return
         }
 
-        let actualResult = CurrencyFormatter(currencySettings: sampleCurrencySettings).localize(convertedDecimal, with: separator)
+        let actualResult = CurrencyFormatter(currencySettings: sampleCurrencySettings).localize(convertedDecimal, decimalSeparator: separator)
 
         XCTAssertEqual(expectedResult, actualResult)
     }
@@ -85,7 +85,7 @@ class CurrencyFormatterTests: XCTestCase {
     ///
     func testBadDataInStringDoesNotConvertToDecimal() {
         let badInput = "~HUKh*(&Y3HkJ8"
-        let actualResult = CurrencyFormatter(currencySettings: sampleCurrencySettings).convertToDecimal(from: badInput)
+        let actualResult = CurrencyFormatter(currencySettings: sampleCurrencySettings).convertToDecimal(badInput)
 
         XCTAssertNil(actualResult)
     }
@@ -95,7 +95,7 @@ class CurrencyFormatterTests: XCTestCase {
     func testNegativeNumbersSuccessfullyConvertToDecimal() {
         let negativeNumber = "-81346.45"
         let expectedResult = NSDecimalNumber(string: negativeNumber)
-        let actualResult = CurrencyFormatter(currencySettings: sampleCurrencySettings).convertToDecimal(from: negativeNumber)
+        let actualResult = CurrencyFormatter(currencySettings: sampleCurrencySettings).convertToDecimal(negativeNumber)
 
         XCTAssertEqual(expectedResult, actualResult)
     }
@@ -111,14 +111,14 @@ class CurrencyFormatterTests: XCTestCase {
         let stringValue = "1204.67"
         let expectedResult = "1,204.67"
 
-        let convertedDecimal = CurrencyFormatter(currencySettings: sampleCurrencySettings).convertToDecimal(from: stringValue)
+        let convertedDecimal = CurrencyFormatter(currencySettings: sampleCurrencySettings).convertToDecimal(stringValue)
 
         guard let decimal = convertedDecimal else {
             XCTFail()
             return
         }
 
-        let formattedString = CurrencyFormatter(currencySettings: sampleCurrencySettings).localize(decimal, including: comma)
+        let formattedString = CurrencyFormatter(currencySettings: sampleCurrencySettings).localize(decimal, groupingSeparator: comma)
         guard let actualResult = formattedString else {
             XCTFail()
             return
@@ -135,15 +135,15 @@ class CurrencyFormatterTests: XCTestCase {
         let stringValue = "1204.67"
         let expectedResult = "1204.67"
 
-        let convertedDecimal = CurrencyFormatter(currencySettings: sampleCurrencySettings).convertToDecimal(from: stringValue)
+        let convertedDecimal = CurrencyFormatter(currencySettings: sampleCurrencySettings).convertToDecimal(stringValue)
         guard let decimal = convertedDecimal else {
             XCTFail()
             return
         }
 
         let localizedAmount = CurrencyFormatter(currencySettings: sampleCurrencySettings).localize(decimal,
-                                                           with: decimalSeparator,
-                                                           including: thousandSeparator)
+                                                                                                   decimalSeparator: decimalSeparator,
+                                                                                                   groupingSeparator: thousandSeparator)
 
         guard let actualResult = localizedAmount else {
             XCTFail()
@@ -160,7 +160,7 @@ class CurrencyFormatterTests: XCTestCase {
         let stringValue = "45958320.97"
         let expectedResult = "45,958,320,97"
 
-        let converted = CurrencyFormatter(currencySettings: sampleCurrencySettings).convertToDecimal(from: stringValue)
+        let converted = CurrencyFormatter(currencySettings: sampleCurrencySettings).convertToDecimal(stringValue)
         guard let convertedDecimal = converted else {
             XCTFail()
             return
@@ -168,9 +168,9 @@ class CurrencyFormatterTests: XCTestCase {
 
         let position = 2
         let localizedAmount = CurrencyFormatter(currencySettings: sampleCurrencySettings).localize(convertedDecimal,
-                                                           with: separator,
-                                                           in: position,
-                                                           including: separator)
+                                                                                                   decimalSeparator: separator,
+                                                                                                   fractionDigits: position,
+                                                                                                   groupingSeparator: separator)
         guard let actualResult = localizedAmount else {
             XCTFail()
             return
@@ -187,16 +187,16 @@ class CurrencyFormatterTests: XCTestCase {
         let stringValue = "45958320.97"
         let expectedResult = "45,958,320,970"
 
-        let converted = CurrencyFormatter(currencySettings: sampleCurrencySettings).convertToDecimal(from: stringValue)
+        let converted = CurrencyFormatter(currencySettings: sampleCurrencySettings).convertToDecimal(stringValue)
         guard let convertedDecimal = converted else {
             XCTFail()
             return
         }
 
         let formattedAmount = CurrencyFormatter(currencySettings: sampleCurrencySettings).localize(convertedDecimal,
-                                                           with: separator,
-                                                           in: position,
-                                                           including: separator)
+                                                                                                   decimalSeparator: separator,
+                                                                                                   fractionDigits: position,
+                                                                                                   groupingSeparator: separator)
 
         guard let actualResult = formattedAmount else {
             XCTFail()
@@ -222,7 +222,7 @@ class CurrencyFormatterTests: XCTestCase {
         let expectedResult = "-7.867.818.684,640 £"
 
         let locale = sampleLocale
-        let decimal = CurrencyFormatter(currencySettings: sampleCurrencySettings).convertToDecimal(from: stringAmount, locale: locale)
+        let decimal = CurrencyFormatter(currencySettings: sampleCurrencySettings).convertToDecimal(stringAmount, locale: locale)
         guard let decimalAmount = decimal else {
             XCTFail("Error: invalid string amount. Cannot convert to decimal.")
             return
@@ -230,9 +230,9 @@ class CurrencyFormatterTests: XCTestCase {
 
         let amount = CurrencyFormatter(currencySettings: sampleCurrencySettings)
             .localize(decimalAmount,
-                      with: decimalSeparator,
-                      in: decimalPosition,
-                      including: thousandSeparator)
+                      decimalSeparator: decimalSeparator,
+                      fractionDigits: decimalPosition,
+                      groupingSeparator: thousandSeparator)
 
         guard let localizedAmount = amount else {
             XCTFail()
@@ -243,8 +243,8 @@ class CurrencyFormatterTests: XCTestCase {
         let isNegative = decimalAmount.isNegative()
         let actualResult = CurrencyFormatter(currencySettings: sampleCurrencySettings)
             .formatCurrency(using: localizedAmount,
-                            at: currencyPosition,
-                            with: symbol,
+                            currencyPosition: currencyPosition,
+                            currencySymbol: symbol,
                             isNegative: isNegative,
                             locale: locale)
 
@@ -264,9 +264,9 @@ class CurrencyFormatterTests: XCTestCase {
 
         let amount = CurrencyFormatter(currencySettings: sampleCurrencySettings)
             .localize(decimalAmount,
-                      with: decimalSeparator,
-                      in: decimalPosition,
-                      including: thousandSeparator)
+                      decimalSeparator: decimalSeparator,
+                      fractionDigits: decimalPosition,
+                      groupingSeparator: thousandSeparator)
 
         guard let localizedAmount = amount else {
             XCTFail()
@@ -278,8 +278,8 @@ class CurrencyFormatterTests: XCTestCase {
         let locale = sampleLocale
         let actualResult = CurrencyFormatter(currencySettings: sampleCurrencySettings)
             .formatCurrency(using: localizedAmount,
-                            at: currencyPosition,
-                            with: symbol,
+                            currencyPosition: currencyPosition,
+                            currencySymbol: symbol,
                             isNegative: isNegative,
                             locale: locale)
 
@@ -298,8 +298,8 @@ class CurrencyFormatterTests: XCTestCase {
         let isNegative = true
         let actualResult = CurrencyFormatter(currencySettings: sampleCurrencySettings)
             .formatCurrency(using: stringAmount,
-                            at: currencyPosition,
-                            with: symbol,
+                            currencyPosition: currencyPosition,
+                            currencySymbol: symbol,
                             isNegative: isNegative,
                             locale: sampleLocale)
 

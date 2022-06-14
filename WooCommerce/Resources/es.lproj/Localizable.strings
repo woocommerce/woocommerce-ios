@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-05-19 12:54:03+0000 */
+/* Translation-Revision-Date: 2022-06-06 15:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -432,9 +432,6 @@
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press enter" = "Añade cada opción y pulsa Intro";
 
-/* Button in the action sheet for adding the expiration date for a coupon. */
-"Add expiration date" = "Añadir fecha de caducidad";
-
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
 "Add more details" = "Añadir más detalles";
@@ -659,7 +656,7 @@
 /* No comment provided by engineer. */
 "Apply %@ off to some products with the promo code “%@”." = "Aplica un descuento del %1$@ a algunos productos con el código promocional “%2$@”.";
 
-/* Header of the section for applying a coupon to specific products or categories in the view for adding or editing a coupon. */
+/* Header of the section for applying a coupon to specific products or categories in the view for adding or editing a coupon's product and category restrictions. */
 "Apply this coupon to" = "Aplicar este cupón para";
 
 /* Approve a comment */
@@ -748,8 +745,7 @@
 /* Accessibility announcement message when device goes back online */
 "Back online" = "Vuelve a estar conectado a Internet";
 
-/* Button to dismiss modal overlay and go back to the order after a sucessful payment
-   Button to dismiss modal overlay. Presented to users after collecting a payment fails */
+/* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
 "Back to Order" = "Volver al pedido";
 
 /* Text for the button to dismiss the store picker error screen */
@@ -828,7 +824,7 @@
 "Can be used %1$d times" = "Se puede utilizar %1$d veces";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title that closes the action sheet in product variations - Button title that closes the presented screen - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to cancel an in-person payment or refund - Button to cancel the creation of an order on the New Order screen - Button to dismiss Select Categories screen - Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button in the navigation bar of the view for adding or editing a coupon. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the main more actions menu sheet. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - Text for the cancel button in the Exclude Products screen - Text for the cancel button in the Select Products screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
+   Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title that closes the action sheet in product variations - Button title that closes the presented screen - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to cancel an in-person payment or refund - Button to cancel the creation of an order on the New Order screen - Button to dismiss Select Categories screen - Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button in the navigation bar of the view for adding or editing a coupon. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the main more actions menu sheet. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a button that when tapped, cancels the process of connecting to a card reader  - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - Text for the cancel button in the Exclude Products screen - Text for the cancel button in the Select Products screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
 "Cancel" = "Cancelar";
 
 /* Display label for cancelled order status. */
@@ -1077,9 +1073,6 @@
    The button title text when there is a next step for logging in or signing up. - Title of continue button - Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
 "Continue" = "Continuar";
 
-/* Button to dismiss modal overlay and go back to the orders list after a sucessful payment */
-"Continue To Orders" = "Continuar a Pedidos";
-
 /* Button title. Takes the user to the login with WordPress.com flow. */
 "Continue With WordPress.com" = "Acceder a WordPress.com";
 
@@ -1150,14 +1143,14 @@
 /* Description for the Origin Country row in Customs screen of Shipping Label flow */
 "Country where the product was manufactured or assembled" = "País en el que se fabricó o montó el producto";
 
-/* Text field coupon code in the view for adding or editing a coupon. */
+/* Text field coupon code in the view for adding or editing a coupon code. */
 "Coupon Code" = "Código de cupón";
 
 /* Title of the view for editing the coupon description. */
 "Coupon Description" = "Descripción del cupón";
 
-/* Field in the view for adding or editing a coupon. */
-"Coupon Expiry Date" = "Coupon Expiry Date";
+/* Field in the view for adding or editing a coupon's expiry date. */
+"Coupon Expiry Date" = "Fecha de caducidad del cupón";
 
 /* Cell title on beta features screen to enable coupon management */
 "Coupon Management" = "Gestión de cupones";
@@ -1197,20 +1190,23 @@
    Option to create new shipping label from the action sheet on Products section of Order Details screen - Text on the button that starts shipping label creation */
 "Create Shipping Label" = "Crear etiqueta de envío";
 
+/* Description for fixed product discount type on the action sheet presented from Add or Edit coupon screen */
+"Create a fixed total discount for selected products" = "Crear un descuento total fijo para los productos elegidos";
+
+/* Description for fixed cart discount type on the action sheet presented from Add or Edit coupon screen */
+"Create a fixed total discount for the entire cart" = "Crear un descuento total fijo para todo el carro de compra";
+
 /* Description of the Action sheet option when the user wants to create full manual order */
 "Create a new manual order" = "Crear un nuevo pedido manual";
+
+/* Description for percentage discount type on the action sheet presented from Add or Edit coupon screen */
+"Create a percentage discount for selected products" = "Crear un porcentaje de descuento para los productos elegidos";
 
 /* Description of the Action sheet option when the user wants to create Simple Payments order */
 "Create an order with minimal information" = "Crear un pedido con la información mínima";
 
-/* Title of the view for creating a coupon with generic discount. */
-"Create discount" = "Crear descuento";
-
-/* Title of the view for creating a coupon with fixed cart discount. */
-"Create fixed cart discount" = "Crear descuento fijo en el carro de compra";
-
-/* Title of the view for creating a coupon with fixed product discount. */
-"Create fixed product discount" = "Crear descuento fijo de producto";
+/* Title of the Create coupon screen */
+"Create coupon" = "Crear cupón";
 
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "Crear nuevo paquete";
@@ -1220,9 +1216,6 @@
 
 /* Title of the banner notice in the Orders tab */
 "Create orders & take payments!" = "¡Crea pedidos y acepta pagos!";
-
-/* Title of the view for creating a coupon with percentage discount. */
-"Create percentage discount" = "Crear descuento en porcentaje";
 
 /* The title of the shipping labels top banner in order details */
 "Create shipping labels from your device!" = "¡Crea etiquetas de envío desde tu dispositivo!";
@@ -1346,9 +1339,6 @@
 /* Delete tracking button title */
 "Delete Tracking" = "Eliminar seguimiento";
 
-/* Button in the action sheet for deleting the expiration date of a coupon. */
-"Delete expiration date" = "Eliminar fecha de caducidad";
-
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "Describe tu producto";
 
@@ -1392,6 +1382,10 @@
 /* Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s) */
 "Discount %1$@" = "Descuento %1$@";
 
+/* Field in the view for adding or editing a coupon's discount type.
+   Title for the sheet to select discount type on the Add or Edit coupon screen. */
+"Discount Type" = "Tipo de descuento";
+
 /* Title of the Discounted Orders label on Coupon Details screen */
 "Discounted Orders" = "Pedidos con descuento";
 
@@ -1424,7 +1418,7 @@
 "Don't have an account? _Sign up_" = "¿No tienes una cuenta? _Regístrate_";
 
 /* Action title to select products to add to a grouped product from search results
-   Button to submit selection on Select Categories screen - Button to submit the product selector without any product selected. - Done button on the Jetpack Install Progress screen. - Done navigation button in Inbox Notes webview - Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - Text for the done button in the Fee Details screen - Text for the done button in the Shipping Line Details screen - The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again. */
+   Button to finish selecting the Coupon expiry date in the Add or Edit Coupon screen - Button to submit selection on Select Categories screen - Button to submit the product selector without any product selected. - Done button on the Jetpack Install Progress screen. - Done navigation button in Inbox Notes webview - Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - Text for the done button in the Fee Details screen - Text for the done button in the Shipping Line Details screen - The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again. */
 "Done" = "Listo";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -1542,23 +1536,11 @@
 /* Caption displayed in promotional screens shown during the login flow. */
 "Edit and add new products from anywhere" = "Edita y añade nuevos productos desde cualquier lugar";
 
+/* Title of the Edit coupon screen */
+"Edit coupon" = "Editar cupón";
+
 /* Accessibility label for the button to edit customer note on the New Order screen */
 "Edit customer note" = "Editar nota para el cliente";
-
-/* Title of the view for editing a coupon with generic discount. */
-"Edit discount" = "Editar descuento";
-
-/* Button in the action sheet for editing the expiration date of a coupon. */
-"Edit expiration date" = "Editar fecha de caducidad";
-
-/* Title of the view for editing a coupon with fixed cart discount. */
-"Edit fixed cart discount" = "Editar descuento fijo en el carro de compra";
-
-/* Title of the view for editing a coupon with fixed product discount. */
-"Edit fixed product discount" = "Editar descuento fijo de producto";
-
-/* Title of the view for editing a coupon with percentage discount. */
-"Edit percentage discount" = "Editar descuento en porcentaje";
 
 /* Carrier eligible for free pickup in Shipping Labels > Carrier and Rates */
 "Eligible for free pickup" = "Reúne los requisitos para la recogida gratuita";
@@ -2115,8 +2097,8 @@
    Title for the In-Person Payments settings screen */
 "In-Person Payments" = "Pagos en Persona";
 
-/* Cell title on beta features screen to enable accepting in-person payments for stores in Canada */
-"In-Person Payments in Canada" = "Pagos en Persona para Canadá";
+/* Title for the error screen when there is more than one plugin active and the Stripe plugin should be deactivated */
+"In-Person Payments are processed through WooCommerce Payments." = "Los pagos en persona se procesan a través de WooCommerce Payments.";
 
 /* Title for the error screen when In-Person Payments is unavailable
    Title for the error screen when the merchant's payment account is restricted because it's under reviw - Title for the error screen when the Stripe account is restricted because there are overdue requirements. */
@@ -2147,7 +2129,7 @@
    Title for the screen that shows inbox notes. - Title of the Inbox menu in the hub menu */
 "Inbox" = "Bandeja de entrada";
 
-/* Toggle field in the view for adding or editing a coupon. */
+/* Toggle field in the view for adding or editing a coupon's free shipping support. */
 "Include Free Shipping?" = "¿Incluir envío gratuito?";
 
 /* Describes a standard *.wordpress.com site domain */
@@ -3470,7 +3452,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility label. Indicates that an in-person refund is being processed */
 "Refunding payment" = "Realizando el reembolso";
 
-/* Button in the view for adding or editing a coupon. */
+/* Button in the view for adding or editing a coupon code. */
 "Regenerate Coupon Code" = "Regenerar código del cupón";
 
 /* Describes a domain that was registered with WordPress.com */
@@ -3491,6 +3473,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message from the in-person payment card reader prompting user to remove their card */
 "Remove Card" = "Retira la tarjeta.";
+
+/* Button to remove the Coupon expiry date in the Add or Edit Coupon screen */
+"Remove Expiry Date" = "Eliminar la fecha de caducidad";
 
 /* Text for the button to remove a fee from the order during order creation */
 "Remove Fee from Order" = "Eliminar la tasa del pedido";
@@ -3652,6 +3637,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Save for later button on Print Customs Invoice screen of Shipping Label flow */
 "Save for later" = "Guardar para más adelante";
 
+/* Button when the user does not want to print or email receipt. Presented to users after a payment has been successfully collected
+   Button when the user does not want to print the receipt. Presented to users after a payment has been successfully collected */
+"Save receipt and continue" = "Guardar recibo y continuar";
+
 /* Message text in the shipping label creation info screen */
 "Save time and money by fulfilling with WooCommerce Shipping" = "Ahorra tiempo y dinero con los envíos de WooCommerce Shipping";
 
@@ -3801,9 +3790,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Service Package menu in Shipping Label Add New Package flow */
 "Service Package" = "Paquete de servicios";
-
-/* Title of the action sheet for setting an expiry date for a coupon. */
-"Set an expiry date for this coupon" = "Establecer fecha de caducidad del cupón";
 
 /* Tells user to set an email that support can use for replies */
 "Set email" = "Configurar correo electrónico";
@@ -4333,9 +4319,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of button that displays the App's terms of service */
 "Terms of Service" = "Condiciones del servicio";
 
-/* Cell description on beta features screen to enable accepting in-person payments for stores in Canada */
-"Test out In-Person Payments in Canada" = "Prueba los Pagos en Persona para Canadá.";
-
 /* Cell description on beta features screen to enable coupon management */
 "Test out managing coupons as we get ready to launch" = "Prueba la gestión de cupones mientras nos preparamos para el lanzamiento";
 
@@ -4705,6 +4688,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle on the variations list screen when there are no variations and attributes */
 "To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "Para añadir una variación, primero tendrás que definir los atributos (color, tamaño, etc.)";
+
+/* Message prompting an administrator to deactivate Stripe plugin */
+"To collect payments, please ask an administrator to deactivate WooCommerce Stripe Gateway." = "Para aceptar pagos, pide a un administrador que desactive WooCommerce Stripe Gateway.";
+
+/* Message prompting an administrator to deactivate Stripe plugin */
+"To collect payments, please deactivate WooCommerce Stripe Gateway." = "Para aceptar pagos, desactiva WooCommerce Stripe Gateway.";
 
 /* Footer of text field section in Add Attribute screen */
 "To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "Para crear una variación, primero deberás especificar los atributos (p. ej., \"Color\" y \"Talla\")";

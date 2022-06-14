@@ -31,11 +31,11 @@ final class OrderRefundsOptionsDeterminer: OrderRefundsOptionsDeterminerProtocol
     func isAnythingToRefund(from order: Order, with refunds: [Refund], currencyFormatter: CurrencyFormatter) -> Bool {
         let alreadyRefundedTotal = refunds
             .map {
-                (currencyFormatter.convertToDecimal(from: $0.amount) ?? 0) as Decimal
+                (currencyFormatter.convertToDecimal($0.amount) ?? 0) as Decimal
             }
             .reduce(Decimal(0), +)
 
-        let orderTotal = (currencyFormatter.convertToDecimal(from: order.total) ?? 0) as Decimal
+        let orderTotal = (currencyFormatter.convertToDecimal(order.total) ?? 0) as Decimal
 
         let thereIsSomeAmountToRefund = orderTotal - alreadyRefundedTotal > 0
         let thereAreItemsToRefund = determineRefundableOrderItems(from: order, with: refunds).count > 0

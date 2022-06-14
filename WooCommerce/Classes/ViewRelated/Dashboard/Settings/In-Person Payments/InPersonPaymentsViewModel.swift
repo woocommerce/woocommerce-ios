@@ -1,22 +1,26 @@
 import Combine
 import Yosemite
+import Experiments
 
 final class InPersonPaymentsViewModel: ObservableObject {
     @Published var state: CardPresentPaymentOnboardingState
     var userIsAdministrator: Bool
     var learnMoreURL: URL? = nil
     let showMenuOnCompletion: Bool
+    let gatewaySelectionAvailable: Bool
     private let useCase: CardPresentPaymentsOnboardingUseCase
     let stores: StoresManager
 
     /// Initializes the view model for a specific site
     ///
     init(stores: StoresManager = ServiceLocator.stores,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          useCase: CardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase(),
          showMenuOnCompletion: Bool = true) {
         self.stores = stores
         self.useCase = useCase
         self.showMenuOnCompletion = showMenuOnCompletion
+        gatewaySelectionAvailable = featureFlagService.isFeatureFlagEnabled(.inPersonPaymentGatewaySelection)
         state = useCase.state
         userIsAdministrator = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator)
 
@@ -37,9 +41,11 @@ final class InPersonPaymentsViewModel: ObservableObject {
     init(
         fixedState: CardPresentPaymentOnboardingState,
         fixedUserIsAdministrator: Bool = false,
-        stores: StoresManager = ServiceLocator.stores) {
+        stores: StoresManager = ServiceLocator.stores,
+        featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
             self.stores = stores
             self.showMenuOnCompletion = false
+            gatewaySelectionAvailable = featureFlagService.isFeatureFlagEnabled(.inPersonPaymentGatewaySelection)
             state = fixedState
             useCase = CardPresentPaymentsOnboardingUseCase()
             userIsAdministrator = fixedUserIsAdministrator
@@ -50,6 +56,12 @@ final class InPersonPaymentsViewModel: ObservableObject {
     ///
     func refresh() {
         useCase.refresh()
+    }
+
+    /// Selects the plugin to use as a payment gateway when there are multiple available
+    ///
+    func selectPlugin(_ plugin: CardPresentPaymentsPlugin) {
+        useCase.selectPlugin(plugin)
     }
 
     private func updateLearnMoreURL(state: CardPresentPaymentOnboardingState) {

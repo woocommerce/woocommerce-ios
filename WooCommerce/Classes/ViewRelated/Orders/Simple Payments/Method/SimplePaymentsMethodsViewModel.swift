@@ -185,7 +185,7 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
         }
 
         cardPresentPaymentsOnboardingPresenter.showOnboardingIfRequired(
-            from: rootViewController) { [weak self] in
+            from: rootViewController) { [weak self] plugin in
                 guard let self = self else { return }
 
                 guard let order = self.ordersResultController.fetchedObjects.first else {
@@ -193,7 +193,7 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
                     return self.presentNoticeSubject.send(.error(Localization.genericCollectError))
                 }
 
-                guard let paymentGateway = self.gatewayAccountResultsController.fetchedObjects.first else {
+                guard let paymentGateway = self.gatewayAccountResultsController.fetchedObjects.first(where: { $0.gatewayID == plugin.gatewayID}) else {
                     DDLogError("⛔️ Payment Gateway not found, can't collect payment.")
                     return self.presentNoticeSubject.send(.error(Localization.genericCollectError))
                 }

@@ -4,7 +4,7 @@ import Combine
 
 protocol CardPresentPaymentsOnboardingPresenting {
     func showOnboardingIfRequired(from: UIViewController,
-                                  readyToCollectPayment: @escaping (() -> ()))
+                                  readyToCollectPayment: @escaping (CardPresentPaymentsPlugin) -> Void)
 
     func refresh()
 }
@@ -29,15 +29,15 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
     }
 
     func showOnboardingIfRequired(from viewController: UIViewController,
-                                  readyToCollectPayment completion: @escaping (() -> ())) {
-        guard case .ready = readinessUseCase.readiness else {
+                                  readyToCollectPayment completion: @escaping (CardPresentPaymentsPlugin) -> Void) {
+        guard case let .ready(plugin) = readinessUseCase.readiness else {
             return showOnboarding(from: viewController, readyToCollectPayment: completion)
         }
-        completion()
+        completion(plugin)
     }
 
     private func showOnboarding(from viewController: UIViewController,
-                                readyToCollectPayment completion: @escaping (() -> ())) {
+                                readyToCollectPayment completion: @escaping (CardPresentPaymentsPlugin) -> Void) {
         let onboardingViewController = InPersonPaymentsViewController(viewModel: onboardingViewModel,
                                                                       onWillDisappear: { [weak self] in
             self?.readinessSubscription?.cancel()
@@ -46,7 +46,7 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
 
         readinessSubscription = readinessUseCase.$readiness
             .sink(receiveValue: { readiness in
-                guard case .ready = readiness else {
+                guard case let .ready(plugin) = readiness else {
                     return
                 }
 
@@ -56,7 +56,7 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
                     viewController.navigationController?.popViewController(animated: true)
                 }
 
-                completion()
+                completion(plugin)
             })
     }
 

@@ -692,9 +692,9 @@ extension OrderDetailsViewModel {
     /// Handles receipt sharing.
     ///
     func collectPayment(rootViewController: UIViewController, onCollect: @escaping (Result<Void, Error>) -> Void) {
-        cardPresentPaymentsOnboardingPresenter.showOnboardingIfRequired(from: rootViewController) { [weak self] in
+        cardPresentPaymentsOnboardingPresenter.showOnboardingIfRequired(from: rootViewController) { [weak self] plugin in
             guard let self = self else { return }
-            guard let paymentGateway = self.cardPresentPaymentGatewayAccounts.first else {
+            guard let paymentGateway = self.cardPresentPaymentGatewayAccounts.first(where: { $0.gatewayID == plugin.gatewayID }) else {
                 return DDLogError("⛔️ Payment Gateway not found, can't collect payment.")
             }
 

@@ -33,6 +33,7 @@ final class StatsProvider: TimelineProvider {
 //            return
 //        }
 
+        let siteName = defaults.string(forKey: "siteName")
         let credentials = Credentials(authToken: authToken)
 
         let network = AlamofireNetwork(credentials: credentials)
@@ -53,7 +54,7 @@ final class StatsProvider: TimelineProvider {
                                 quantity: 20) { result in
             switch result {
             case .success(let stats):
-                privateCompletion(StatsWidgetEntry.siteSelected(stats))
+                privateCompletion(StatsWidgetEntry.siteSelected(siteName: siteName, stats: stats))
             case .failure(_):
                 privateCompletion(.noSite)
             }
@@ -62,7 +63,7 @@ final class StatsProvider: TimelineProvider {
 }
 
 enum StatsWidgetEntry: TimelineEntry {
-    case siteSelected(OrderStatsV4)
+    case siteSelected(siteName: String?, stats: OrderStatsV4)
     case noSite
 
     var date: Date {
@@ -76,9 +77,9 @@ struct WooCommerceStatsWidgetsEntryView: View {
 
     var body: some View {
         switch entry {
-        case .siteSelected(let stats):
+        case let .siteSelected(siteName, stats):
             SingleStatView(viewData: GroupedViewData(widgetTitle: "Today",
-                                                     siteName: "The American WooTester",
+                                                     siteName: siteName ?? "Your Woo Commerce Store",
                                                      bottomTitle: "Revenue",
                                                      bottomValue: currencyFormatter.formatAmount(stats.totals.netRevenue) ?? "-"))
             .padding()

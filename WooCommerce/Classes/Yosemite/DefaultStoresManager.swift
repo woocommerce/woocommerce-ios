@@ -7,6 +7,7 @@ import class Networking.UserAgent
 // MARK: - DefaultStoresManager
 //
 class DefaultStoresManager: StoresManager {
+    let defaults = UserDefaults(suiteName: "group.org.wordpress")
 
     private let sessionManagerLockQueue = DispatchQueue(label: "StoresManager.sessionManagerLockQueue")
 
@@ -178,7 +179,7 @@ class DefaultStoresManager: StoresManager {
     ///
     func updateDefaultStore(storeID: Int64) {
         sessionManager.defaultStoreID = storeID
-        let defaults = UserDefaults(suiteName: "group.org.wordpress")
+
         defaults?.set(storeID, forKey: "storeID")
 
         let credentials = sessionManager.defaultCredentials
@@ -492,6 +493,7 @@ private extension DefaultStoresManager {
                 return
             }
             self.sessionManager.defaultSite = site
+            self.defaults?.set(site.name, forKey: "siteName")
         }
         dispatch(action)
     }

@@ -123,6 +123,5 @@ private extension RemoveAppleIDAccessCoordinator {
 }
 
 enum RemoveAppleIDAccessError: Error {
-    case noCredentials
     case presenterDeallocated
 }

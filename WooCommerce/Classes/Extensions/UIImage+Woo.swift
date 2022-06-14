@@ -771,7 +771,8 @@ extension UIImage {
     /// Rectangle on rectangle, angled
     ///
     static var rectangleOnRectangleAngled: UIImage {
-        return UIImage(systemName: "rectangle.on.rectangle.angled")!
+        return UIImage(systemName: "rectangle.on.rectangle.angled", withConfiguration: Configurations.barButtonItemSymbol)!
+            .imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Search Icon - used in `UIBarButtonItem`

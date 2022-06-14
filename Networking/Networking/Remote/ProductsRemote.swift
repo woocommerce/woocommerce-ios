@@ -250,8 +250,9 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
                                     pageNumber: Int,
                                     pageSize: Int,
                                     completion: @escaping (Result<[Product], Error>) -> Void) {
+        let skuParameterKey = useLegacyEndpoint ? ParameterKey.sku: ParameterKey.partialSKUSearch
         let parameters = [
-            ParameterKey.sku: keyword,
+            skuParameterKey: keyword,
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize)
         ]
@@ -352,6 +353,7 @@ public extension ProductsRemote {
         static let orderBy: String    = "orderby"
         static let order: String      = "order"
         static let sku: String        = "sku"
+        static let partialSKUSearch: String = "search_sku"
         static let productStatus: String = "status"
         static let productType: String = "type"
         static let stockStatus: String = "stock_status"

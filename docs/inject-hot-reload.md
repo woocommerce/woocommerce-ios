@@ -17,15 +17,15 @@ The library is imported using SPM.
 ## Setup
 For enabling the hot reload, there is a small individual developer setup that you should follow on your machine.
 
-1) Download the newest version of **Xcode Injection** app from it's [GitHub page](https://github.com/johnno1962/InjectionIII/releases) or from the [Mac App Store](https://apps.apple.com/app/injectioniii/id1380446739?mt=12) and install it.
+1) Download the newest version of **Xcode Injection** app from its [GitHub page](https://github.com/johnno1962/InjectionIII/releases) or from the [Mac App Store](https://apps.apple.com/app/injectioniii/id1380446739?mt=12) and install it.
 
 2) Unpack it and place it under `/Applications`.
 
-3) Make sure that the Xcode version you are using to compile our projects is under the default location: `/Applications/Xcode.app`. This is super important, unfortunately Xcode Injection doesn't work if your Xcode is not under this path or it's called with a different name.
+3) Make sure that the Xcode version you are using to compile our projects is under the default location: `/Applications/Xcode.app`. This is super important, unfortunately, Xcode Injection doesn't work if your Xcode is not under this path or it's called with a different name.
 
 4) Run the injection application.
 
-5) From the injection application in the manu bar, select open project from it's menu and pick the right workspace file you are using.
+5) From the injection application in the menu bar, select "open project" from its menu and pick the right workspace file you are using.
 
 6) Launch the WCiOS app from Xcode. If everything works properly, you should see in the console log something similar:
 ```

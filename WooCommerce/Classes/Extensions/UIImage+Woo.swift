@@ -768,6 +768,12 @@ extension UIImage {
         return UIImage.gridicon(.minusSmall)
     }
 
+    /// Rectangle on rectangle, angled
+    ///
+    static var rectangleOnRectangleAngled: UIImage {
+        return UIImage(systemName: "rectangle.on.rectangle.angled")!
+    }
+
     /// Search Icon - used in `UIBarButtonItem`
     ///
     static var searchBarButtonItemImage: UIImage {

@@ -182,7 +182,7 @@ platform :ios do
   #####################################################################################
   desc 'Creates a new release branch from the current trunk'
   lane :complete_code_freeze do |options|
-    ios_completecodefreeze_prechecks(options)
+    # ios_completecodefreeze_prechecks(options)
     generate_strings_file_for_glotpress
 
     if ENV.fetch('RELEASE_TOOLKIT_SKIP_PUSH_CONFIRM', false) || UI.confirm('Push changes to the remote and trigger the beta build?')
@@ -393,7 +393,8 @@ platform :ios do
   #
   #####################################################################################
   lane :trigger_beta_build do |options|
-    trigger_buildkite_release_build(branch: options[:branch_to_build], beta: true)
+    UI.message("On a real branch, this would call `trigger_buildkite_release_build` with #{options}")
+    # trigger_buildkite_release_build(branch: options[:branch_to_build], beta: true)
   end
 
   #####################################################################################

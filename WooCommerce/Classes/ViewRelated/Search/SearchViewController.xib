@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -11,6 +13,7 @@
             <connections>
                 <outlet property="bordersView" destination="Ncr-u2-zVd" id="S5W-h1-qR2"/>
                 <outlet property="cancelButton" destination="YBC-g3-0LP" id="rmu-WT-3G1"/>
+                <outlet property="headerView" destination="3D3-Fa-C7n" id="WP4-6d-ICd"/>
                 <outlet property="searchBar" destination="cOC-iR-MJr" id="usQ-SP-NSs"/>
                 <outlet property="tableView" destination="y9n-QI-xEB" id="WSo-bN-Vnv"/>
                 <outlet property="view" destination="chb-2b-70h" id="wNB-f6-JWl"/>
@@ -43,7 +46,11 @@
                         <action selector="dismissWasPressed" destination="-1" eventType="touchUpInside" id="xwh-lf-NJz"/>
                     </connections>
                 </button>
-                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="y9n-QI-xEB">
+                <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3D3-Fa-C7n">
+                    <rect key="frame" x="0.0" y="10" width="375" height="41"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                </view>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="y9n-QI-xEB">
                     <rect key="frame" x="0.0" y="51" width="375" height="616"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <connections>
@@ -55,13 +62,16 @@
             <viewLayoutGuide key="safeArea" id="l4O-t2-oPf"/>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
+                <constraint firstItem="3D3-Fa-C7n" firstAttribute="top" secondItem="cOC-iR-MJr" secondAttribute="bottom" id="1cN-Hx-OP0"/>
                 <constraint firstItem="Ncr-u2-zVd" firstAttribute="leading" secondItem="chb-2b-70h" secondAttribute="leading" id="3GU-ol-Uc5"/>
+                <constraint firstItem="l4O-t2-oPf" firstAttribute="trailing" secondItem="3D3-Fa-C7n" secondAttribute="trailing" id="74H-a0-TJ8"/>
                 <constraint firstItem="cOC-iR-MJr" firstAttribute="bottom" secondItem="Ncr-u2-zVd" secondAttribute="bottom" id="A3E-fX-OKH"/>
                 <constraint firstItem="y9n-QI-xEB" firstAttribute="leading" secondItem="chb-2b-70h" secondAttribute="leading" id="B3k-rC-VuB"/>
                 <constraint firstItem="l4O-t2-oPf" firstAttribute="trailing" secondItem="YBC-g3-0LP" secondAttribute="trailing" constant="16" id="Dvf-RD-FUS"/>
                 <constraint firstItem="YBC-g3-0LP" firstAttribute="centerY" secondItem="cOC-iR-MJr" secondAttribute="centerY" constant="-1" id="JLs-22-kWd"/>
-                <constraint firstItem="y9n-QI-xEB" firstAttribute="top" secondItem="cOC-iR-MJr" secondAttribute="bottom" id="QMH-4a-wFC"/>
                 <constraint firstItem="cOC-iR-MJr" firstAttribute="top" secondItem="l4O-t2-oPf" secondAttribute="top" id="c7h-ay-W2D"/>
+                <constraint firstItem="3D3-Fa-C7n" firstAttribute="bottom" secondItem="y9n-QI-xEB" secondAttribute="top" id="eKa-Nm-JUM"/>
+                <constraint firstItem="3D3-Fa-C7n" firstAttribute="leading" secondItem="l4O-t2-oPf" secondAttribute="leading" id="elN-rT-CdI"/>
                 <constraint firstItem="YBC-g3-0LP" firstAttribute="leading" secondItem="cOC-iR-MJr" secondAttribute="trailing" constant="3" id="nSK-Od-9bp"/>
                 <constraint firstAttribute="trailing" secondItem="y9n-QI-xEB" secondAttribute="trailing" id="qbt-la-21b"/>
                 <constraint firstItem="l4O-t2-oPf" firstAttribute="bottom" secondItem="y9n-QI-xEB" secondAttribute="bottom" id="rig-yz-o3K"/>
@@ -73,4 +83,9 @@
             <point key="canvasLocation" x="108" y="139.880059970015"/>
         </view>
     </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
 </document>

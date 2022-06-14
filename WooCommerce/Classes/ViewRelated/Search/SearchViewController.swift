@@ -21,6 +21,9 @@ where Cell.SearchModel == Command.CellViewModel {
     ///
     @IBOutlet private var searchBar: UISearchBar!
 
+    /// Optional header view between the search bar and table view.
+    @IBOutlet private weak var headerView: UIView!
+
     /// TableView
     ///
     @IBOutlet private var tableView: UITableView!
@@ -131,6 +134,7 @@ where Cell.SearchModel == Command.CellViewModel {
         configureMainView()
         configureSearchBar()
         configureSearchBarBordersView()
+        configureHeaderView()
         configureTableView()
         configureResultsController()
         configureStarterViewController()
@@ -288,6 +292,19 @@ private extension SearchViewController {
     func configureCancelButton() {
         cancelButton.applyModalCancelButtonStyle()
         cancelButton.accessibilityIdentifier = searchUICommand.cancelButtonAccessibilityIdentifier
+    }
+
+    func configureHeaderView() {
+        if let searchHeaderView = searchUICommand.createHeaderView() {
+            headerView.addSubview(searchHeaderView)
+            searchHeaderView.translatesAutoresizingMaskIntoConstraints = false
+            headerView.pinSubviewToSafeArea(searchHeaderView)
+        } else {
+            headerView.isHidden = true
+            NSLayoutConstraint.activate([
+                headerView.heightAnchor.constraint(equalToConstant: 0)
+            ])
+        }
     }
 
     /// Setup: Actions
@@ -485,7 +502,7 @@ private extension SearchViewController {
         NSLayoutConstraint.activate([
             childView.leadingAnchor.constraint(equalTo: tableView.leadingAnchor),
             childView.trailingAnchor.constraint(equalTo: tableView.trailingAnchor),
-            childView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
+            childView.topAnchor.constraint(equalTo: headerView.bottomAnchor),
             childView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
 

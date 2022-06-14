@@ -15,8 +15,6 @@ final class AddEditCouponViewModel: ObservableObject {
 
     private let onCompletion: ((Result<Coupon, Error>) -> Void)
 
-    private let isCreationFlow: Bool
-
     /// Defines the current notice that should be shown.
     /// Defaults to `nil`.
     ///
@@ -35,9 +33,10 @@ final class AddEditCouponViewModel: ObservableObject {
     /// Switching between `Create` or `Save` action.
     ///
     var addEditCouponButtonText: String {
-        if isCreationFlow {
+        switch editingOption {
+        case .creation:
             return Localization.createButton
-        } else {
+        case .editing:
             return Localization.saveButton
         }
     }
@@ -141,7 +140,7 @@ final class AddEditCouponViewModel: ObservableObject {
     }
 
     var hasChangesMade: Bool {
-        guard !isCreationFlow else { return true }
+        guard editingOption == .editing else { return true }
         let coupon = populatedCoupon
         return checkDiscountTypeUpdated(for: coupon) ||
         checkAmountUpdated(for: coupon) ||
@@ -192,7 +191,6 @@ final class AddEditCouponViewModel: ObservableObject {
         self.storageManager = storageManager
         self.timezone = timezone
         self.onCompletion = onCompletion
-        isCreationFlow = true
 
         amountField = String()
         codeField = String()
@@ -219,7 +217,6 @@ final class AddEditCouponViewModel: ObservableObject {
         self.storageManager = storageManager
         self.timezone = timezone
         self.onCompletion = onCompletion
-        isCreationFlow = false
 
         // Populate fields
         amountField = existingCoupon.amount
@@ -250,9 +247,10 @@ final class AddEditCouponViewModel: ObservableObject {
     }
 
     func completeCouponAddEdit(coupon: Coupon, onUpdateFinished: @escaping () -> Void) {
-        if isCreationFlow {
+        switch editingOption {
+        case .creation:
             createCoupon(coupon: coupon)
-        } else {
+        case .editing:
             updateCoupon(coupon: coupon, onUpdateFinished: onUpdateFinished)
         }
     }

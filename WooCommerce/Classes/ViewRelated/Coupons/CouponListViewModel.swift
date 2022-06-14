@@ -3,6 +3,7 @@ import Yosemite
 import protocol Storage.StorageManagerType
 import class AutomatticTracks.CrashLogging
 import UIKit
+import Experiments
 import WooFoundation
 
 enum CouponListState {
@@ -64,13 +65,17 @@ final class CouponListViewModel {
     /// currencySettings: provides the currency configuration settings from the store
     private let currencySettings: CurrencySettings
 
+    /// Marks if the Coupon Creation feature is enabled or not
+    let isCreationEnabled: Bool
+
     // MARK: - Initialization and setup
     //
     init(siteID: Int64,
          syncingCoordinator: SyncingCoordinatorProtocol = SyncingCoordinator(),
          storesManager: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         featureFlags: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.syncingCoordinator = syncingCoordinator
         self.storesManager = storesManager
@@ -78,6 +83,8 @@ final class CouponListViewModel {
         self.currencySettings = currencySettings
         self.resultsController = Self.createResultsController(siteID: siteID,
                                                               storageManager: storageManager)
+
+        isCreationEnabled = featureFlags.isFeatureFlagEnabled(.couponCreation)
         configureSyncingCoordinator()
         configureResultsController()
         configureFeedbackBannerVisibility()

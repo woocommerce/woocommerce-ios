@@ -14,6 +14,8 @@ final class OrderSearchUICommand: SearchUICommand {
 
     let cancelButtonAccessibilityIdentifier = "order-search-screen-cancel-button"
 
+    var resynchronizeModels: (() -> Void) = {}
+
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
@@ -90,6 +92,10 @@ final class OrderSearchUICommand: SearchUICommand {
             return keyword.removing(at: keyword.startIndex)
         }
         return keyword
+    }
+
+    func searchResultsPredicate(keyword: String) -> NSPredicate {
+        NSPredicate(format: "ANY searchResults.keyword = %@", keyword)
     }
 }
 

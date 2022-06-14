@@ -95,7 +95,7 @@ where Cell.SearchModel == Command.CellViewModel {
         return keyboardFrameObserver
     }()
 
-    private let searchUICommand: Command
+    private var searchUICommand: Command
     private let tableViewSeparatorStyle: UITableViewCell.SeparatorStyle
 
 
@@ -138,6 +138,7 @@ where Cell.SearchModel == Command.CellViewModel {
         configureTableView()
         configureResultsController()
         configureStarterViewController()
+        configureSearchResync()
 
         startListeningToNotifications()
 
@@ -385,6 +386,13 @@ private extension SearchViewController {
                 self?.synchronizeSearchResults(with: query)
             }
     }
+
+    func configureSearchResync() {
+        searchUICommand.resynchronizeModels = { [weak self] in
+            guard let self = self else { return }
+            self.synchronizeSearchResults(with: self.searchQuery)
+        }
+    }
 }
 
 
@@ -395,6 +403,7 @@ extension SearchViewController: SyncingCoordinatorDelegate {
     /// Synchronizes the models for the Default Store (if any).
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: ((Bool) -> Void)? = nil) {
+        transitionToSyncingState()
         let keyword = searchUICommand.sanitizeKeyword(searchQuery)
         searchUICommand.synchronizeModels(siteID: storeID,
                                           keyword: keyword,
@@ -408,7 +417,6 @@ extension SearchViewController: SyncingCoordinatorDelegate {
             }
             onCompletion?(isCompleted)
         })
-        transitionToSyncingState()
     }
 }
 
@@ -422,7 +430,7 @@ private extension SearchViewController {
     func synchronizeSearchResults(with keyword: String) {
         // When the search query changes, also includes the original results predicate in addition to the search keyword.
         let keyword = searchUICommand.sanitizeKeyword(keyword)
-        let searchResultsPredicate = NSPredicate(format: "ANY searchResults.keyword = %@", keyword)
+        let searchResultsPredicate = searchUICommand.searchResultsPredicate(keyword: keyword)
         let subpredicates = [resultsPredicate].compactMap { $0 } + [searchResultsPredicate]
         resultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: subpredicates)
 

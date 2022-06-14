@@ -15,6 +15,8 @@ final class CouponSearchUICommand: SearchUICommand {
 
     let cancelButtonAccessibilityIdentifier = "coupon-search-screen-cancel-button"
 
+    var resynchronizeModels: (() -> Void) = {}
+
     private let siteID: Int64
 
     init(siteID: Int64) {
@@ -78,6 +80,10 @@ final class CouponSearchUICommand: SearchUICommand {
         message.replaceFirstOccurrence(of: "%@", with: boldSearchKeyword)
 
         viewController.configure(.simple(message: message, image: .emptySearchResultsImage))
+    }
+
+    func searchResultsPredicate(keyword: String) -> NSPredicate {
+        NSPredicate(format: "ANY searchResults.keyword = %@", keyword)
     }
 }
 

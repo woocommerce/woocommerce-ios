@@ -10,6 +10,9 @@ protocol SearchUICommand {
     /// The placeholder of the search bar.
     var searchBarPlaceholder: String { get }
 
+    /// A closure to resynchronize models if the data source changes (e.g. when the filter changes in products search).
+    var resynchronizeModels: (() -> Void) { get set }
+
     associatedtype ResultsControllerModel: ResultsControllerMutableType where ResultsControllerModel.ReadOnlyType == Model
     /// Creates a results controller for the search results. The result model's readonly type matches the search result model.
     func createResultsController() -> ResultsController<ResultsControllerModel>
@@ -51,6 +54,10 @@ protocol SearchUICommand {
     func configureEmptyStateViewControllerBeforeDisplay(viewController: EmptyStateViewControllerType,
                                                         searchKeyword: String)
 
+    /// The optional view to show between the search bar and search results table view.
+    /// If `nil`, the search bar is right above the search results.
+    func createHeaderView() -> UIView?
+
     /// Optionally configures the action button that dismisses the search UI.
     /// - Parameters:
     ///   - button: the button in the navigation bar that dismisses the search UI. Shows "Cancel" by default.
@@ -90,6 +97,11 @@ protocol SearchUICommand {
     /// - Parameter keyword: user-entered search keyword.
     /// - Returns: sanitized search keyword.
     func sanitizeKeyword(_ keyword: String) -> String
+
+    /// The predicate to fetch product search results based on the keyword.
+    /// - Parameter keyword: search query.
+    /// - Returns: predicate that is based on the search keyword.
+    func searchResultsPredicate(keyword: String) -> NSPredicate
 }
 
 // MARK: - Default implementation
@@ -101,6 +113,11 @@ extension SearchUICommand {
     func sanitizeKeyword(_ keyword: String) -> String {
         // If not implemented, returns the keyword as entered
         return keyword
+    }
+
+    func createHeaderView() -> UIView? {
+        // If not implemented, returns `nil` to not show the header.
+        nil
     }
 }
 

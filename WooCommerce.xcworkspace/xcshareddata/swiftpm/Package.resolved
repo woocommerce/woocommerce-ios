@@ -38,6 +38,15 @@
         }
       },
       {
+        "package": "Inject",
+        "repositoryURL": "https://github.com/krzysztofzablocki/Inject.git",
+        "state": {
+          "branch": null,
+          "revision": "c0ed5f5de62475e286a3b7c676cec99fa34533ce",
+          "version": "1.1.1"
+        }
+      },
+      {
         "package": "ScreenObject",
         "repositoryURL": "https://github.com/Automattic/ScreenObject",
         "state": {

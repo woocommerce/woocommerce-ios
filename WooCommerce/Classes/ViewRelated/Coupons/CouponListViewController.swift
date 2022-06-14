@@ -257,6 +257,16 @@ private extension CouponListViewController {
     }
 
     func configureNavigationBarItems(hasCoupons: Bool) {
+        if hasCoupons {
+            navigationItem.rightBarButtonItems = viewModel.isCreationEnabled
+                    ? [createCouponButtonItem, searchBarButtonItem]
+                    : [searchBarButtonItem]
+        } else {
+            navigationItem.rightBarButtonItems = viewModel.isCreationEnabled
+                    ? [createCouponButtonItem]
+                    : []
+        }
+
         navigationItem.rightBarButtonItems = hasCoupons ? [createCouponButtonItem, searchBarButtonItem] : [createCouponButtonItem]
     }
 

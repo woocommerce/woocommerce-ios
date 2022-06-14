@@ -9,9 +9,13 @@ final class CardPresentPaymentsReadinessUseCase {
         /// Current state is being fetched
         case loading
 
+        /// Onboarding is complete but we haven't connected to a reader yet
+        ///
+        case connecting
+
         /// Onboarding has been successfully completed, and reader connection can be triggered.
         /// N.B. A reader may already be connected.
-        case ready
+        case ready(CardPresentPaymentsPlugin)
 
         /// Onboarding is in an incomplete/error state, so should be displayed instead of attempting a reader connection
         case onboardingRequired
@@ -24,8 +28,6 @@ final class CardPresentPaymentsReadinessUseCase {
     private let onboardingUseCase: CardPresentPaymentsOnboardingUseCase
 
     private let stores: StoresManager
-
-    private var cancellables: [AnyCancellable] = []
 
     init(onboardingUseCase: CardPresentPaymentsOnboardingUseCase,
          stores: StoresManager = ServiceLocator.stores) {
@@ -40,24 +42,6 @@ final class CardPresentPaymentsReadinessUseCase {
     private func checkCardPaymentReadiness() {
         let readerConnected = CardPresentPaymentAction.publishCardReaderConnections { [weak self] connectPublisher in
             guard let self = self else { return }
-            let readerConnectedReadiness = connectPublisher
-                .map { readers -> CardPaymentReadiness in
-                    if readers.isNotEmpty {
-                        return .ready
-                    } else {
-                        /// Since there are no readers connected, we'll load the onboarding state
-                        return .loading
-                    }
-                }
-                .removeDuplicates()
-                .share()
-
-            readerConnectedReadiness.sink { [weak self] readiness in
-                if case .loading = readiness {
-                    self?.onboardingUseCase.forceRefresh()
-                }
-            }
-            .store(in: &self.cancellables)
 
             let onboardingReadiness = self.onboardingUseCase.statePublisher
                 .compactMap({ state -> CardPaymentReadiness? in
@@ -66,16 +50,46 @@ final class CardPresentPaymentsReadinessUseCase {
                         /// Ignoring intermediate loading steps simplifies the logic.
                         /// We already know about initial loading from the readerConnectedReadiness stream
                         return nil
-                    case .completed:
-                        return .ready
+                    case let .completed(pluginState):
+                        return .ready(pluginState.preferred)
                     default:
                         return .onboardingRequired
                     }
                 })
 
-            readerConnectedReadiness
-                .merge(with: onboardingReadiness)
+            let readerConnectedReadiness = connectPublisher
+                .map(\.isNotEmpty)
                 .removeDuplicates()
+
+            let combinedReadiness = readerConnectedReadiness
+                .combineLatest(onboardingReadiness)
+                .share()
+
+            combinedReadiness
+                .first()
+                .subscribe(Subscribers.Sink(
+                    receiveCompletion: { _ in },
+                    receiveValue: { [weak self] connected, onboardingState in
+                        guard case .ready = onboardingState, connected else {
+                            self?.onboardingUseCase.forceRefresh()
+                            return
+                        }
+                    }))
+
+
+            combinedReadiness
+                .map { connected, onboardingState -> CardPaymentReadiness in
+                    // If onboarding isn't complete yet, its state takes priority
+                    guard case .ready = onboardingState else {
+                        return onboardingState
+                    }
+                    // If we are onboarding, return readiness depending on reader connection
+                    if connected {
+                        return onboardingState
+                    } else {
+                        return .connecting
+                    }
+                }
                 .assign(to: &self.$readiness)
         }
         stores.dispatch(readerConnected)

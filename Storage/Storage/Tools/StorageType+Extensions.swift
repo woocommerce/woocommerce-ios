@@ -337,8 +337,8 @@ public extension StorageType {
 
     /// Retrieves the Stored ProductSearchResults Lookup.
     ///
-    func loadProductSearchResults(keyword: String) -> ProductSearchResults? {
-        let predicate = \ProductSearchResults.keyword == keyword
+    func loadProductSearchResults(keyword: String, filterKey: String) -> ProductSearchResults? {
+        let predicate = \ProductSearchResults.keyword == keyword && \ProductSearchResults.filterKey == filterKey
         return firstObject(ofType: ProductSearchResults.self, matching: predicate)
     }
 

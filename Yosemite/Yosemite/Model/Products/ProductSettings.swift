@@ -1,5 +1,10 @@
 import Foundation
 
+// TODO: move to a separate file
+public enum ProductSearchFilter: String, Equatable {
+    case all
+    case sku
+}
 
 /// Represents a Product Settings Entity of editable data
 ///

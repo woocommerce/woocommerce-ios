@@ -391,7 +391,7 @@ private extension CouponListViewController {
     func buildNoResultConfig() -> mptyStateViewController.Config {
         if viewModel.isCreationEnabled {
             return .withButton(
-                    message: .init(string: Localization.emptyStateMessage),
+                    message: .init(string: Localization.couponCreationSuggestionMessage),
                     image: .emptyCouponsImage,
                     details: Localization.emptyStateDetails,
                     buttonTitle: Localization.createCouponAction
@@ -472,8 +472,11 @@ private extension CouponListViewController {
             comment: "Coupon management coupon list screen title")
 
         static let emptyStateMessage = NSLocalizedString(
+                "No coupons found",
+                comment: "The title on the placeholder overlay when there are no coupons on the coupon list screen.")
+        static let couponCreationSuggestionMessage = NSLocalizedString(
             "Everyone loves a deal",
-            comment: "The title on the placeholder overlay when there are no coupons on the coupon list screen.")
+            comment: "The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible.")
         static let emptyStateDetails = NSLocalizedString(
             "Boost your business by sending customers special offers and discounts.",
             comment: "The details text on the placeholder overlay when there are no coupons on the coupon list screen.")

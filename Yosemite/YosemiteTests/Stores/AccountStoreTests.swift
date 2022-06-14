@@ -44,7 +44,7 @@ final class AccountStoreTests: XCTestCase {
     ///
     func test_synchronizeAccount_returns_error_upon_empty_response() {
         // Given
-        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
 
         // When
         let result: Result<Yosemite.Account, Error> = waitFor { promise in
@@ -63,7 +63,7 @@ final class AccountStoreTests: XCTestCase {
     ///
     func test_synchronizeAccount_returns_error_upon_reponse_error() {
         // Given
-        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
         network.simulateResponse(requestUrlSuffix: "me", filename: "generic_error")
 
         // When
@@ -83,7 +83,7 @@ final class AccountStoreTests: XCTestCase {
     ///
     func test_synchronizeAccount_returns_expected_account_details() throws {
         // Given
-        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
         network.simulateResponse(requestUrlSuffix: "me", filename: "me")
         XCTAssertNil(viewStorage.firstObject(ofType: Storage.Account.self, matching: nil))
 
@@ -109,7 +109,7 @@ final class AccountStoreTests: XCTestCase {
     ///
     func test_upsertStoredAccount_effectively_updates_preexistant_accounts() {
         // Given
-        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
         XCTAssertNil(viewStorage.firstObject(ofType: Storage.Account.self, matching: nil))
 
         // When
@@ -128,7 +128,7 @@ final class AccountStoreTests: XCTestCase {
     ///
     func test_upsertStoredAccount_effectively_persists_new_accounts() {
         // Given
-        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
         let remoteAccount = sampleAccountPristine()
         XCTAssertNil(viewStorage.loadAccount(userID: remoteAccount.userID))
 
@@ -146,7 +146,7 @@ final class AccountStoreTests: XCTestCase {
     ///
     func test_synchronizeAccountSettings_returns_error_on_empty_response() {
         // Given
-        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
 
         // When
         let result: Result<Yosemite.AccountSettings, Error> = waitFor { promise in
@@ -164,7 +164,7 @@ final class AccountStoreTests: XCTestCase {
     ///
     func test_synchronizeAccountSettings_effectively_persists_retrieved_settings() {
         // Given
-        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
         network.simulateResponse(requestUrlSuffix: "me/settings", filename: "me-settings")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.AccountSettings.self), 0)
 
@@ -185,7 +185,7 @@ final class AccountStoreTests: XCTestCase {
     ///
     func test_synchronizeAccountSettings_effectively_update_retrieved_settings() throws {
         // Given
-        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
         storageManager.insertSampleAccountSettings(readOnlyAccountSettings: sampleAccountSettings())
         network.simulateResponse(requestUrlSuffix: "me/settings", filename: "me-settings")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.AccountSettings.self), 1)
@@ -215,7 +215,7 @@ final class AccountStoreTests: XCTestCase {
     ///
     func test_synchronizeSites_returns_error_on_empty_response() {
         // Given
-        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
 
         // When
         let result: Result<Bool, Error> = waitFor { promise in
@@ -450,7 +450,7 @@ final class AccountStoreTests: XCTestCase {
     ///
     func test_synchronizeSites_deletes_sites_that_do_not_exist_remotely() {
         // Given
-        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
         let siteIDInStorageOnly = Int64(127)
         storageManager.insertSampleSite(readOnlySite: Site.fake().copy(siteID: siteIDInStorageOnly))
         network.simulateResponse(requestUrlSuffix: "me/sites", filename: "sites")
@@ -476,7 +476,7 @@ final class AccountStoreTests: XCTestCase {
     ///
     func test_synchronizeSites_does_not_delete_selected_site_that_does_not_exist_remotely() {
         // Given
-        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
         let selectedSiteID = Int64(127)
         storageManager.insertSampleSite(readOnlySite: Site.fake().copy(siteID: selectedSiteID))
         network.simulateResponse(requestUrlSuffix: "me/sites", filename: "sites")
@@ -550,7 +550,7 @@ final class AccountStoreTests: XCTestCase {
 
     func test_loadAccount_returns_expected_account() {
         // Given
-        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
 
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Account.self), 0)
         store.upsertStoredAccount(readOnlyAccount: sampleAccountPristine())
@@ -571,7 +571,7 @@ final class AccountStoreTests: XCTestCase {
 
     func test_loadAccount_returns_nil_for_unknown_account() {
         // Given
-        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
 
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Account.self), 0)
         store.upsertStoredAccount(readOnlyAccount: sampleAccountPristine())
@@ -594,7 +594,7 @@ final class AccountStoreTests: XCTestCase {
     func test_loadAndSynchronizeSite_returns_site_already_in_storage_without_making_network_request_if_forcedUpdate_is_false() throws {
         // Given
         let network = MockNetwork()
-        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
 
         let siteID = Int64(999)
@@ -627,7 +627,7 @@ final class AccountStoreTests: XCTestCase {
         // Given
         let network = MockNetwork()
         network.simulateResponse(requestUrlSuffix: "me/sites", filename: "sites")
-        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
 
         // The site ID value is in `sites.json` used in the mock network.
@@ -661,7 +661,7 @@ final class AccountStoreTests: XCTestCase {
 
     func test_loadAndSynchronizeSite_returns_unknown_site_error_after_syncing_failure() throws {
         // Given
-        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
         let group = DispatchGroup()
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
 
@@ -693,7 +693,7 @@ final class AccountStoreTests: XCTestCase {
         // Given
         let network = MockNetwork()
         network.simulateResponse(requestUrlSuffix: "me/sites", filename: "sites")
-        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: "")
         let group = DispatchGroup()
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
 
@@ -793,8 +793,61 @@ final class AccountStoreTests: XCTestCase {
         // Then
         XCTAssertEqual(remote.invocations, [.loadSites])
     }
+
+    func test_disconnectFromSocialService_returns_success_on_dotcom_remote_success() throws {
+        // Given
+        let network = MockNetwork()
+        let dotcomRemote = MockDotcomAccountRemote()
+        dotcomRemote.whenDisconnectingFromSocialService(thenReturn: .success(()))
+        let accountStore = AccountStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockAccountRemote(),
+                                        dotcomRemote: dotcomRemote)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = AccountAction.removeAppleIDAccess(dotcomAppID: "", dotcomSecret: "", authToken: "") { result in
+                promise(result)
+            }
+            accountStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_disconnectFromSocialService_returns_failure_on_dotcom_remote_failure() throws {
+        // Given
+        let network = MockNetwork()
+        let dotcomRemote = MockDotcomAccountRemote()
+        let error = NSError(domain: "disconnect", code: 134)
+        dotcomRemote.whenDisconnectingFromSocialService(thenReturn: .failure(error))
+        let accountStore = AccountStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockAccountRemote(),
+                                        dotcomRemote: dotcomRemote)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = AccountAction.removeAppleIDAccess(dotcomAppID: "", dotcomSecret: "", authToken: "") { result in
+                promise(result)
+            }
+            accountStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NSError, error)
+    }
 }
 
+private extension AccountStore {
+    convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: AccountRemoteProtocol) {
+        self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote, dotcomRemote: MockDotcomAccountRemote())
+    }
+}
 
 // MARK: - Private Methods
 //

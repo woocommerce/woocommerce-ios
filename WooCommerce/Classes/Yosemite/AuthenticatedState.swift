@@ -27,7 +27,7 @@ class AuthenticatedState: StoresManagerState {
         let network = AlamofireNetwork(credentials: credentials)
 
         services = [
-            AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, dotcomAuthToken: credentials.authToken),
             AppSettingsStore(dispatcher: dispatcher,
                              storageManager: storageManager,
                              fileStorage: PListFileStorage(),

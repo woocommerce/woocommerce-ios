@@ -4,10 +4,22 @@ import Networking
 import Storage
 import WordPressKit
 
+/// For mocking `WordPressKit.AccountServiceRemoteREST`.
+protocol DotcomAccountRemoteProtocol {
+    func disconnectFromSocialService(_ service: SocialServiceName,
+                                     oAuthClientID: String,
+                                     oAuthClientSecret: String,
+                                     success: @escaping () -> Void,
+                                     failure: @escaping (NSError) -> Void)
+}
+
+extension AccountServiceRemoteREST: DotcomAccountRemoteProtocol {}
+
 // MARK: - AccountStore
 //
 public class AccountStore: Store {
     private let remote: AccountRemoteProtocol
+    private let dotcomRemote: DotcomAccountRemoteProtocol
     private var cancellables = Set<AnyCancellable>()
 
     /// Shared private StorageType for use during synchronizeSites and synchronizeSitePlan processes
@@ -16,13 +28,22 @@ public class AccountStore: Store {
         return storageManager.writerDerivedStorage
     }()
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
-        self.remote = AccountRemote(network: network)
-        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    public convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, dotcomAuthToken: String) {
+        let remote = AccountRemote(network: network)
+        let dotcomAPI = WordPressComRestApi(oAuthToken: dotcomAuthToken,
+                                            userAgent: UserAgent.defaultUserAgent,
+                                            baseUrlString: Settings.wordpressApiBaseURL)
+        let dotcomRemote = AccountServiceRemoteREST(wordPressComRestApi: dotcomAPI)
+        self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote, dotcomRemote: dotcomRemote)
     }
 
-    public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: AccountRemoteProtocol) {
+    init(dispatcher: Dispatcher,
+         storageManager: StorageManagerType,
+         network: Network,
+         remote: AccountRemoteProtocol,
+         dotcomRemote: DotcomAccountRemoteProtocol) {
         self.remote = remote
+        self.dotcomRemote = dotcomRemote
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -207,10 +228,7 @@ private extension AccountStore {
     }
 
     func removeAppleIDAccess(dotcomAppID: String, dotcomSecret: String, authToken: String, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        let wpcomAPI = WordPressComRestApi(oAuthToken: authToken,
-                                           userAgent: UserAgent.defaultUserAgent,
-                                           baseUrlString: Settings.wordpressApiBaseURL)
-        AccountServiceRemoteREST(wordPressComRestApi: wpcomAPI)
+        dotcomRemote
             .disconnectFromSocialService(.apple,
                                          oAuthClientID: dotcomAppID,
                                          oAuthClientSecret: dotcomSecret) {

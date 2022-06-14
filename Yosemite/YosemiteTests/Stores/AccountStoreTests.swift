@@ -807,7 +807,7 @@ final class AccountStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            let action = AccountAction.removeAppleIDAccess(dotcomAppID: "", dotcomSecret: "", authToken: "") { result in
+            let action = AccountAction.removeAppleIDAccess(dotcomAppID: "", dotcomSecret: "") { result in
                 promise(result)
             }
             accountStore.onAction(action)
@@ -831,7 +831,7 @@ final class AccountStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            let action = AccountAction.removeAppleIDAccess(dotcomAppID: "", dotcomSecret: "", authToken: "") { result in
+            let action = AccountAction.removeAppleIDAccess(dotcomAppID: "", dotcomSecret: "") { result in
                 promise(result)
             }
             accountStore.onAction(action)

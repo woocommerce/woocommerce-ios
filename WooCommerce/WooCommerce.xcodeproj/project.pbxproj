@@ -1229,6 +1229,8 @@
 		B963A609285733F800EFADA0 /* WooCommerceStatsWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B963A608285733F800EFADA0 /* WooCommerceStatsWidgets.swift */; };
 		B963A60B285733F900EFADA0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B963A60A285733F900EFADA0 /* Assets.xcassets */; };
 		B963A60F285733F900EFADA0 /* WooCommerceStatsWidgetsExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B963A603285733F800EFADA0 /* WooCommerceStatsWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B963A61A2857559E00EFADA0 /* Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B963A6192857559E00EFADA0 /* Yosemite.framework */; };
+		B963A61E2857714000EFADA0 /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B963A61D2857714000EFADA0 /* Networking.framework */; };
 		B96B536B2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96B536A2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift */; };
 		B979A9BA282D62A500EBB383 /* InPersonPaymentsDeactivateStripeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B979A9B9282D62A500EBB383 /* InPersonPaymentsDeactivateStripeView.swift */; };
 		B9B6DEEF283F8B9F00901FB7 /* Site+PluginsURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B6DEEE283F8B9F00901FB7 /* Site+PluginsURL.swift */; };
@@ -1240,6 +1242,12 @@
 		B9DA153C280EC7D700FC67DD /* OrderRefundsOptionsDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DA153B280EC7D700FC67DD /* OrderRefundsOptionsDeterminer.swift */; };
 		B9DA153E28101BE100FC67DD /* MockOrderRefundsOptionsDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DA153D28101BE100FC67DD /* MockOrderRefundsOptionsDeterminer.swift */; };
 		B9DA154028103ABE00FC67DD /* OrderRefundsOptionsDeterminerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DA153F28103ABE00FC67DD /* OrderRefundsOptionsDeterminerTests.swift */; };
+		B9E98B462858B7F0009EEA71 /* UnconfiguredView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E98B3A2858B7F0009EEA71 /* UnconfiguredView.swift */; };
+		B9E98B482858B7F0009EEA71 /* VerticalCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E98B3D2858B7F0009EEA71 /* VerticalCard.swift */; };
+		B9E98B4A2858B7F0009EEA71 /* FlexibleCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E98B3F2858B7F0009EEA71 /* FlexibleCard.swift */; };
+		B9E98B4B2858B7F0009EEA71 /* StatsValueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E98B402858B7F0009EEA71 /* StatsValueView.swift */; };
+		B9E98B4E2858B7F0009EEA71 /* SingleStatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E98B432858B7F0009EEA71 /* SingleStatView.swift */; };
+		B9E98B522858B887009EEA71 /* GroupedViewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E98B512858B887009EEA71 /* GroupedViewData.swift */; };
 		BAA34C202787494300846F3C /* ReviewsViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAA34C1F2787494300846F3C /* ReviewsViewControllerTests.swift */; };
 		BAE4F8432734325C00871344 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE4F8422734325C00871344 /* SettingsViewModel.swift */; };
 		BAFEF51E273C2151005F94CC /* SettingsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAFEF51D273C2151005F94CC /* SettingsViewModelTests.swift */; };
@@ -1787,7 +1795,7 @@
 		};
 		B963A610285733F900EFADA0 /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
@@ -3016,6 +3024,8 @@
 		B963A608285733F800EFADA0 /* WooCommerceStatsWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooCommerceStatsWidgets.swift; sourceTree = "<group>"; };
 		B963A60A285733F900EFADA0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B963A60C285733F900EFADA0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B963A6192857559E00EFADA0 /* Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B963A61D2857714000EFADA0 /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B96B536A2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPluginsDataProviderTests.swift; sourceTree = "<group>"; };
 		B979A9B9282D62A500EBB383 /* InPersonPaymentsDeactivateStripeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsDeactivateStripeView.swift; sourceTree = "<group>"; };
 		B9B6DEEE283F8B9F00901FB7 /* Site+PluginsURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Site+PluginsURL.swift"; sourceTree = "<group>"; };
@@ -3027,6 +3037,14 @@
 		B9DA153B280EC7D700FC67DD /* OrderRefundsOptionsDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderRefundsOptionsDeterminer.swift; sourceTree = "<group>"; };
 		B9DA153D28101BE100FC67DD /* MockOrderRefundsOptionsDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockOrderRefundsOptionsDeterminer.swift; sourceTree = "<group>"; };
 		B9DA153F28103ABE00FC67DD /* OrderRefundsOptionsDeterminerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderRefundsOptionsDeterminerTests.swift; sourceTree = "<group>"; };
+		B9E98B2E28589CB5009EEA71 /* WooCommerceStatsWidgetsExtensionDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WooCommerceStatsWidgetsExtensionDebug.entitlements; sourceTree = "<group>"; };
+		B9E98B2F2858A714009EEA71 /* WooCommerceStatsWidgetsExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WooCommerceStatsWidgetsExtension.entitlements; sourceTree = "<group>"; };
+		B9E98B3A2858B7F0009EEA71 /* UnconfiguredView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnconfiguredView.swift; sourceTree = "<group>"; };
+		B9E98B3D2858B7F0009EEA71 /* VerticalCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VerticalCard.swift; sourceTree = "<group>"; };
+		B9E98B3F2858B7F0009EEA71 /* FlexibleCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexibleCard.swift; sourceTree = "<group>"; };
+		B9E98B402858B7F0009EEA71 /* StatsValueView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatsValueView.swift; sourceTree = "<group>"; };
+		B9E98B432858B7F0009EEA71 /* SingleStatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleStatView.swift; sourceTree = "<group>"; };
+		B9E98B512858B887009EEA71 /* GroupedViewData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupedViewData.swift; sourceTree = "<group>"; };
 		BAA34C1F2787494300846F3C /* ReviewsViewControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReviewsViewControllerTests.swift; sourceTree = "<group>"; };
 		BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerce.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAE4F8422734325C00871344 /* SettingsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
@@ -3572,7 +3590,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				B963A606285733F800EFADA0 /* SwiftUI.framework in Frameworks */,
+				B963A61A2857559E00EFADA0 /* Yosemite.framework in Frameworks */,
 				B963A605285733F800EFADA0 /* WidgetKit.framework in Frameworks */,
+				B963A61E2857714000EFADA0 /* Networking.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6017,6 +6037,8 @@
 		88A44ABE866401E6DB03AC60 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B963A61D2857714000EFADA0 /* Networking.framework */,
+				B963A6192857559E00EFADA0 /* Yosemite.framework */,
 				B9151B3E2840EB330036180F /* WooFoundation.framework */,
 				80E6FC6E276325F60086CD67 /* Clibsodium.xcframework */,
 				02AB82EB27069D5D008D7334 /* Experiments.framework */,
@@ -6272,6 +6294,8 @@
 		B56DB3BD2049BFAA00D4AA8E = {
 			isa = PBXGroup;
 			children = (
+				B9E98B2F2858A714009EEA71 /* WooCommerceStatsWidgetsExtension.entitlements */,
+				B9E98B2E28589CB5009EEA71 /* WooCommerceStatsWidgetsExtensionDebug.entitlements */,
 				D8FBFF1622D4CC2F006E3336 /* docs */,
 				8CA4F6DC220B24EB00A47B5D /* config */,
 				B55D4BF920B5CDE600D7A50F /* Credentials */,
@@ -6665,11 +6689,41 @@
 		B963A607285733F800EFADA0 /* WooCommerceStatsWidgets */ = {
 			isa = PBXGroup;
 			children = (
+				B9E98B502858B86C009EEA71 /* Model */,
+				B9E98B392858B7F0009EEA71 /* Views */,
 				B963A608285733F800EFADA0 /* WooCommerceStatsWidgets.swift */,
 				B963A60A285733F900EFADA0 /* Assets.xcassets */,
 				B963A60C285733F900EFADA0 /* Info.plist */,
 			);
 			path = WooCommerceStatsWidgets;
+			sourceTree = "<group>";
+		};
+		B9E98B392858B7F0009EEA71 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				B9E98B3A2858B7F0009EEA71 /* UnconfiguredView.swift */,
+				B9E98B3C2858B7F0009EEA71 /* Cards */,
+				B9E98B432858B7F0009EEA71 /* SingleStatView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		B9E98B3C2858B7F0009EEA71 /* Cards */ = {
+			isa = PBXGroup;
+			children = (
+				B9E98B3D2858B7F0009EEA71 /* VerticalCard.swift */,
+				B9E98B3F2858B7F0009EEA71 /* FlexibleCard.swift */,
+				B9E98B402858B7F0009EEA71 /* StatsValueView.swift */,
+			);
+			path = Cards;
+			sourceTree = "<group>";
+		};
+		B9E98B502858B86C009EEA71 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				B9E98B512858B887009EEA71 /* GroupedViewData.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		BA143222273662DE00E4B3AB /* Settings */ = {
@@ -8309,7 +8363,6 @@
 					B56DB3C52049BFAA00D4AA8E = {
 						CreatedOnToolsVersion = 9.2;
 						LastSwiftMigration = 1020;
-						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -10208,6 +10261,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				B963A609285733F800EFADA0 /* WooCommerceStatsWidgets.swift in Sources */,
+				B9E98B482858B7F0009EEA71 /* VerticalCard.swift in Sources */,
+				B9E98B462858B7F0009EEA71 /* UnconfiguredView.swift in Sources */,
+				B9E98B4A2858B7F0009EEA71 /* FlexibleCard.swift in Sources */,
+				B9E98B4E2858B7F0009EEA71 /* SingleStatView.swift in Sources */,
+				B9E98B4B2858B7F0009EEA71 /* StatsValueView.swift in Sources */,
+				B9E98B522858B887009EEA71 /* GroupedViewData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -10702,6 +10761,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "Resources/Woo-Debug.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Resources/Woo-Debug-macOS.entitlements";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
@@ -10714,10 +10774,10 @@
 					"@executable_path/Frameworks",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wordpress;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "WooCommerce Development";
+				PROVISIONING_PROFILE_SPECIFIER = "WordPress Development";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "WooCommerce Catalyst Development";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
@@ -10812,24 +10872,26 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CODE_SIGN_ENTITLEMENTS = WooCommerceStatsWidgetsExtensionDebug.entitlements;
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 9.3.0.0;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WooCommerceStatsWidgets/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = WooCommerceStatsWidgets;
+				INFOPLIST_KEY_CFBundleDisplayName = "WooCommerce Stats Widgets";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 Automattic. All rights reserved.";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 9.3;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce.WooCommerceStatsWidgets;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wordpress.WordPressStatsWidgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "WordPress Stats Widgets Development";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -10844,23 +10906,24 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = WooCommerceStatsWidgetsExtension.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 9.3.0.0;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WooCommerceStatsWidgets/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = WooCommerceStatsWidgets;
+				INFOPLIST_KEY_CFBundleDisplayName = "WooCommerce Stats Widgets";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 Automattic. All rights reserved.";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 9.3;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce.WooCommerceStatsWidgets;
+				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce.WooCommerceStatsWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -10876,23 +10939,24 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = WooCommerceStatsWidgetsExtension.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 9.3.0.0;
 				DEVELOPMENT_TEAM = 99KV9Z6BKV;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WooCommerceStatsWidgets/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = WooCommerceStatsWidgets;
+				INFOPLIST_KEY_CFBundleDisplayName = "WooCommerce Stats Widgets";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 Automattic. All rights reserved.";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 9.3;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce.WooCommerceStatsWidgets;
+				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce.WooCommerceStatsWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;

@@ -1,49 +1,90 @@
-//
-//  WooCommerceStatsWidgets.swift
-//  WooCommerceStatsWidgets
-//
-//  Created by César Vargas Casaseca on 13/6/22.
-//  Copyright © 2022 Automattic. All rights reserved.
-//
 
 import WidgetKit
 import SwiftUI
+import Yosemite
+import Networking
+import WooFoundation
 
-struct Provider: TimelineProvider {
-    func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date())
+final class StatsProvider: TimelineProvider {
+    // refresh interval of the widget, in minutes
+    let refreshInterval = 60
+
+    var service: OrderStatsRemoteV4?
+
+    func placeholder(in context: Context) -> StatsWidgetEntry {
+        StatsWidgetEntry.noSite
     }
 
-    func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let entry = SimpleEntry(date: Date())
-        completion(entry)
+    func getSnapshot(in context: Context, completion: @escaping (StatsWidgetEntry) -> ()) {
+        completion(StatsWidgetEntry.noSite)
     }
 
-    func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
-        var entries: [SimpleEntry] = []
-
-        // Generate a timeline consisting of five entries an hour apart, starting from the current date.
-        let currentDate = Date()
-        for hourOffset in 0 ..< 5 {
-            let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = SimpleEntry(date: entryDate)
-            entries.append(entry)
+    func getTimeline(in context: Context, completion: @escaping (Timeline<StatsWidgetEntry>) -> ()) {
+        guard let defaults = UserDefaults(suiteName: "group.org.wordpress"),
+              let storeID = defaults.object(forKey: "storeID") as? Int64,
+              let authToken = defaults.string(forKey: "authToken") else {
+            debugPrint("no user name found")
+            return
         }
 
-        let timeline = Timeline(entries: entries, policy: .atEnd)
-        completion(timeline)
+//        let keychain = Keychain(service: "com.automattic.woocommerce")
+//        guard let authToken = keychain[username] else {
+//            print("no token")
+//            return
+//        }
+
+        let credentials = Credentials(authToken: authToken)
+
+        let network = AlamofireNetwork(credentials: credentials)
+        service = OrderStatsRemoteV4(network: network)
+        let date = Date()
+        let nextRefreshDate = Calendar.current.date(byAdding: .minute, value: refreshInterval, to: date) ?? date
+
+        let privateCompletion = { (timelineEntry: StatsWidgetEntry) in
+            let timeline = Timeline(entries: [timelineEntry], policy: .after(nextRefreshDate))
+            completion(timeline)
+        }
+
+
+        service?.loadOrderStats(for: storeID,
+                                unit: .daily,
+                                earliestDateToInclude: Date().addingTimeInterval(-60*60*24),
+                                latestDateToInclude: Date(),
+                                quantity: 20) { result in
+            switch result {
+            case .success(let stats):
+                privateCompletion(StatsWidgetEntry.siteSelected(stats))
+            case .failure(_):
+                privateCompletion(.noSite)
+            }
+        }
     }
 }
 
-struct SimpleEntry: TimelineEntry {
-    let date: Date
+enum StatsWidgetEntry: TimelineEntry {
+    case siteSelected(OrderStatsV4)
+    case noSite
+
+    var date: Date {
+        Date()
+    }
 }
 
-struct WooCommerceStatsWidgetsEntryView : View {
-    var entry: Provider.Entry
+struct WooCommerceStatsWidgetsEntryView: View {
+    var entry: StatsProvider.Entry
+    let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
 
     var body: some View {
-        Text(entry.date, style: .time)
+        switch entry {
+        case .siteSelected(let stats):
+            SingleStatView(viewData: GroupedViewData(widgetTitle: "Today",
+                                                     siteName: "The American WooTester",
+                                                     bottomTitle: "Revenue",
+                                                     bottomValue: currencyFormatter.formatAmount(stats.totals.netRevenue) ?? "-"))
+            .padding()
+        case .noSite:
+            UnconfiguredView()
+        }
     }
 }
 
@@ -52,17 +93,15 @@ struct WooCommerceStatsWidgets: Widget {
     let kind: String = "WooCommerceStatsWidgets"
 
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: Provider()) { entry in
+        StaticConfiguration(kind: kind, provider: StatsProvider()) { entry in
             WooCommerceStatsWidgetsEntryView(entry: entry)
         }
-        .configurationDisplayName("My Widget")
-        .description("This is an example widget.")
     }
 }
 
 struct WooCommerceStatsWidgets_Previews: PreviewProvider {
     static var previews: some View {
-        WooCommerceStatsWidgetsEntryView(entry: SimpleEntry(date: Date()))
+        WooCommerceStatsWidgetsEntryView(entry: StatsWidgetEntry.noSite)
             .previewContext(WidgetPreviewContext(family: .systemSmall))
     }
 }

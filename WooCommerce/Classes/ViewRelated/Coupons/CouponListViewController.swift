@@ -388,7 +388,7 @@ private extension CouponListViewController {
         emptyStateViewController.configure(buildNoResultConfig())
     }
 
-    func buildNoResultConfig() -> mptyStateViewController.Config {
+    func buildNoResultConfig() -> EmptyStateViewController.Config {
         if viewModel.isCreationEnabled {
             return .withButton(
                     message: .init(string: Localization.couponCreationSuggestionMessage),

@@ -1179,6 +1179,29 @@ final class MigrationTests: XCTestCase {
         XCTAssertNil(couponFetched.value(forKey: "usageLimit"))
         XCTAssertEqual(try XCTUnwrap(targetContext.firstObject(ofType: Coupon.self)), coupon)
     }
+
+    func test_migrating_from_68_to_69_adds_new_order_properties() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 68")
+        let sourceContext = sourceContainer.viewContext
+
+        let _ = insertOrder(to: sourceContext)
+
+        try sourceContext.save()
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 69")
+        let targetContext = targetContainer.viewContext
+
+        // Then
+        XCTAssertEqual(try targetContext.count(entityName: "Order"), 1)
+        let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
+
+        // Checks for default values.
+        XCTAssertEqual(migratedOrder.value(forKey: "isEditable") as? Bool, false)
+        XCTAssertEqual(migratedOrder.value(forKey: "needsPayment") as? Bool, false)
+        XCTAssertEqual(migratedOrder.value(forKey: "needsProcessing") as? Bool, false)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

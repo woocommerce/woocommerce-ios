@@ -87,7 +87,7 @@ final class ReceiptStoreTests: XCTestCase {
 
         XCTAssertEqual(mockParameters.amount, parametersProvided?.parameters.amount)
         XCTAssertEqual(mockOrder.currency, parametersProvided?.parameters.currency)
-        XCTAssertEqual("100.00", parametersProvided?.parameters.formattedAmount)
+        XCTAssertEqual("$100.00", parametersProvided?.parameters.formattedAmount)
     }
 
     func test_print_callsPrint_passing_TotalAmountPaid() throws {
@@ -111,12 +111,12 @@ final class ReceiptStoreTests: XCTestCase {
         let amountPaidLine = receiptPrinterService.contentProvided?.cartTotals.first {
             $0.description == ReceiptContent.Localization.amountPaidLineDescription
         }
-        XCTAssertEqual("100.00", amountPaidLine?.amount)
+        XCTAssertEqual("$100.00", amountPaidLine?.amount)
     }
 
     func test_print_callsPrint_passing_TotalTaxes() throws {
         // Given
-        let mockIntent = PaymentIntent.fake().copy(charges: [Mocks.cardPresentCharge])
+        let mockIntent = PaymentIntent.fake().copy(currency: "USD", charges: [Mocks.cardPresentCharge])
         let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let mockOrder = makeOrder(discountTax: "1.21", shippingTax: "0.50", totalTax: "10.71")
 
@@ -135,7 +135,8 @@ final class ReceiptStoreTests: XCTestCase {
         let actualTaxLine = receiptPrinterService.contentProvided?.cartTotals.first {
             $0.description == ReceiptContent.Localization.totalTaxLineDescription
         }
-        XCTAssertEqual(mockOrder.totalTax, actualTaxLine?.amount)
+        let expectedValue = "$\(mockOrder.totalTax)"
+        XCTAssertEqual(expectedValue, actualTaxLine?.amount)
     }
 
     func test_print_OrderWithoutTaxes_DoesNotIncludeTaxesInReceiptContent() throws {
@@ -164,7 +165,7 @@ final class ReceiptStoreTests: XCTestCase {
 
     func test_print_callsPrint_passing_Shipping() throws {
         // Given
-        let mockIntent = PaymentIntent.fake().copy(charges: [Mocks.cardPresentCharge])
+        let mockIntent = PaymentIntent.fake().copy(currency: "USD", charges: [Mocks.cardPresentCharge])
         let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())
         let mockOrder = makeOrder(shippingTotal: "5.50")
 
@@ -183,7 +184,9 @@ final class ReceiptStoreTests: XCTestCase {
         let actualShippingLine = receiptPrinterService.contentProvided?.cartTotals.first {
             $0.description == ReceiptContent.Localization.shippingLineDescription
         }
-        XCTAssertEqual(mockOrder.shippingTotal, actualShippingLine?.amount)
+        let expectedValue = "$\(mockOrder.shippingTotal)"
+
+        XCTAssertEqual(expectedValue, actualShippingLine?.amount)
     }
 
     func test_print_OrderWithoutShipping_DoesNotIncludeShippingInReceiptContent() throws {
@@ -335,7 +338,7 @@ final class ReceiptStoreTests: XCTestCase {
         let actualFeesLine = receiptPrinterService.contentProvided?.cartTotals.first {
             $0.description == ReceiptContent.Localization.feesLineDescription
         }
-        XCTAssertEqual(actualFeesLine?.amount, "20.50")
+        XCTAssertEqual(actualFeesLine?.amount, "$20.50")
     }
 
     func test_print_OrderWithoutFees_DoesNotIncludeFeesInReceiptContent() throws {
@@ -408,7 +411,7 @@ final class ReceiptStoreTests: XCTestCase {
         let lineItemsTotalLine = receiptPrinterService.contentProvided?.cartTotals.first {
             $0.description == ReceiptContent.Localization.productTotalLineDescription
         }
-        XCTAssertEqual("30.00", lineItemsTotalLine?.amount)
+        XCTAssertEqual("$30.00", lineItemsTotalLine?.amount)
     }
 
     func test_generateContent_callsGenerate_passingUnmodified_customerNote() throws {

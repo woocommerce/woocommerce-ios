@@ -17,8 +17,8 @@ struct RefundShippingCalculationUseCase {
     /// Calculates the total value(cost + tax) to be refunded.
     ///
     func calculateRefundValue() -> Decimal {
-        guard let cost = currencyFormatter.convertToDecimal(from: shippingLine.total) as Decimal?,
-            let tax = currencyFormatter.convertToDecimal(from: shippingLine.totalTax) as Decimal? else {
+        guard let cost = currencyFormatter.convertToDecimal(shippingLine.total) as Decimal?,
+            let tax = currencyFormatter.convertToDecimal(shippingLine.totalTax) as Decimal? else {
                 return .zero
         }
         return cost + tax

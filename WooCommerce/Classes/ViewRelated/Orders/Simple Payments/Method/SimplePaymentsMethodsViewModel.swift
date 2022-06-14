@@ -93,15 +93,6 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
         return controller
     }()
 
-    /// Product ResultsController.
-    ///
-    private lazy var productResultsController: ResultsController<StorageProduct> = {
-        let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let descriptor = NSSortDescriptor(key: "name", ascending: true)
-
-        return ResultsController<StorageProduct>(storageManager: storage, matching: predicate, sortedBy: [descriptor])
-    }()
-
     /// Retains the use-case so it can perform all of its async tasks.
     ///
     private var collectPaymentsUseCase: CollectOrderPaymentProtocol?
@@ -270,20 +261,29 @@ private extension SimplePaymentsMethodsViewModel {
     ///
     func bindStoreCPPState() {
         ordersResultController.onDidChangeContent = updateCardPaymentVisibility
-        productResultsController.onDidChangeContent = updateCardPaymentVisibility
         try? ordersResultController.performFetch()
-        try? productResultsController.performFetch()
     }
 
     func updateCardPaymentVisibility() {
-        guard let order = ordersResultController.fetchedObjects.first else {
+        guard cardPresentPaymentsConfiguration.isSupportedCountry else {
             showPayWithCardRow = false
+
             return
         }
 
-        showPayWithCardRow = cardPresentPaymentsConfiguration.isSupportedCountry && order.isEligibleForCardPresentPayment(
-            cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration,
-            products: productResultsController.fetchedObjects)
+        let action = OrderCardPresentPaymentEligibilityAction
+            .orderIsEligibleForCardPresentPayment(orderID: orderID,
+                                                  siteID: siteID,
+                                                  cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration) { [weak self] result in
+            switch result {
+            case .success(let eligible):
+                self?.showPayWithCardRow = eligible
+            case .failure(_):
+                self?.showPayWithCardRow = false
+            }
+        }
+
+        stores.dispatch(action)
     }
 
     func updateOrderAsynchronously() {

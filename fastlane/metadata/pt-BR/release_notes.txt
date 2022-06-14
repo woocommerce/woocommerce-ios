@@ -1,3 +1,3 @@
-Estamos sempre adicionando novos recursos à nossa funcionalidade experimental de gerenciamento de cupons. Esta versão inclui opções de edição e exclusão de cupons, além de diversas melhorias na visualização. Ative esta funcionalidade na guia Mais > Configurações > Funcionalidades experimentais para receber acesso antecipado.
+Olá, Canadá! Temos o prazer de anunciar que os pagamentos presenciais agora estão disponíveis para vendedores canadenses que usem o WooCommerce Payments.
 
-Esta versão inclui também várias correções para criação de pedidos, pagamentos presenciais e gerenciamento de produto. Mais uma vez, obrigado pelo seu inestimável feedback!
+Além disso, fizemos várias melhorias em outros locais do aplicativo, incluindo compatibilidade com números arábicos em campos de valor, capacidade de atualizar os tipos de desconto de cupom e função de copiar e colar em anotações de pedido. Obrigado a todos pelo feedback. Isso nos ajuda a tornar o aplicativo melhor para todos.

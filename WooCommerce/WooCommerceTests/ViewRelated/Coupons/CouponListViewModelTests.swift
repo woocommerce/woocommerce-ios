@@ -455,11 +455,10 @@ final class CouponListViewModelTests: XCTestCase {
 
     func test_state_is_empty_when_onCouponDeleted_is_called_with_empty_list() {
         // Given
-        sut = CouponListViewModel(siteID: 123)
-        assertEqual(sut.state, .initialized)
+        sut = CouponListViewModel(siteID: 123, storageManager: mockStorageManager)
 
         // When
-        sut.onCouponDeleted()
+        sut.buildCouponViewModels()
 
         // Then
         assertEqual(sut.state, .empty)

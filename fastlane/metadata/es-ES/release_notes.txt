@@ -1,3 +1,3 @@
-Seguimos añadiendo nuevas funcionalidades a nuestra función experimental Gestión de cupones. Esta versión incluye la edición y eliminación de cupones, así como varias mejoras en la visualización. Activa esta función para obtener acceso anticipado en la pestaña Más, Ajustes, Funciones experimentales.
+¡Hola, Canadá! Estamos encantados de anunciar que los pagos en persona se encuentran ahora disponibles para los vendedores de Canadá que usan actualmente WooCommerce Payments.
 
-Además, esta versión cuenta con varias correcciones en la creación de pedidos, los pagos en persona y la gestión de productos. ¡Gracias de nuevo a todos por los valiosos comentarios!
+También hemos mejorado otros aspectos de la aplicación, como la posibilidad de introducir números arábigos en los campos de las cantidades, la capacidad de actualizar los tipos de descuento de los cupones y la posibilidad de utilizar la opción de copiar y pegar en las notas del pedido. Gracias por todos tus comentarios. Realmente nos ayudan a hacer una aplicación mejor para todos.

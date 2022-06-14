@@ -1,5 +1,6 @@
 import Hardware
 import XCTest
+import WooFoundation
 @testable import Yosemite
 
 final class PaymentIntent_ReceiptParametersTests: XCTestCase {
@@ -41,10 +42,10 @@ final class PaymentIntent_ReceiptParametersTests: XCTestCase {
 
     func test_receiptParameters_Includes_formattedAmount_WithDecimalFormatting() {
         // Given
-        let intent = PaymentIntent.fake().copy(amount: 10000, charges: [Mocks.cardPresentCharge])
+        let intent = PaymentIntent.fake().copy(amount: 10000, currency: "usd", charges: [Mocks.cardPresentCharge])
 
         // Then
-        XCTAssertEqual(intent.receiptParameters()?.formattedAmount, "100.00")
+        XCTAssertEqual(intent.receiptParameters()?.formattedAmount, "$100.00")
     }
 }
 

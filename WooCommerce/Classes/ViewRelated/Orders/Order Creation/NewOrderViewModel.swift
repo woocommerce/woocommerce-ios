@@ -95,9 +95,7 @@ final class NewOrderViewModel: ObservableObject {
 
     /// Products list
     ///
-    private var allProducts: [Product] {
-        productsResultsController.fetchedObjects
-    }
+    private var allProducts: [Product] = []
 
     /// Product Variations Results Controller.
     ///
@@ -109,9 +107,7 @@ final class NewOrderViewModel: ObservableObject {
 
     /// Product Variations list
     ///
-    private var allProductVariations: [ProductVariation] {
-        productVariationsResultsController.fetchedObjects
-    }
+    private var allProductVariations: [ProductVariation] = []
 
     /// View model for the product list
     ///
@@ -549,6 +545,10 @@ private extension NewOrderViewModel {
     /// Adds a selected product (from the product list) to the order.
     ///
     func addProductToOrder(_ product: Product) {
+        if !allProducts.contains(product) {
+            allProducts.append(product)
+        }
+
         let input = OrderSyncProductInput(product: .product(product), quantity: 1)
         orderSynchronizer.setProduct.send(input)
 
@@ -558,6 +558,10 @@ private extension NewOrderViewModel {
     /// Adds a selected product variation (from the product list) to the order.
     ///
     func addProductVariationToOrder(_ variation: ProductVariation) {
+        if !allProductVariations.contains(variation) {
+            allProductVariations.append(variation)
+        }
+
         let input = OrderSyncProductInput(product: .variation(variation), quantity: 1)
         orderSynchronizer.setProduct.send(input)
 
@@ -777,6 +781,7 @@ private extension NewOrderViewModel {
     func updateProductsResultsController() {
         do {
             try productsResultsController.performFetch()
+            allProducts = productsResultsController.fetchedObjects
         } catch {
             DDLogError("⛔️ Error fetching products for new order: \(error)")
         }
@@ -787,6 +792,7 @@ private extension NewOrderViewModel {
     func updateProductVariationsResultsController() {
         do {
             try productVariationsResultsController.performFetch()
+            allProductVariations = productVariationsResultsController.fetchedObjects
         } catch {
             DDLogError("⛔️ Error fetching product variations for new order: \(error)")
         }

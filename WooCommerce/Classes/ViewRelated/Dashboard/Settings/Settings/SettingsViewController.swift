@@ -23,6 +23,14 @@ final class SettingsViewController: UIViewController {
     ///
     private var storePickerCoordinator: StorePickerCoordinator?
 
+    private lazy var removeAppleIDAccessCoordinator: RemoveAppleIDAccessCoordinator =
+    RemoveAppleIDAccessCoordinator(sourceViewController: self) { [weak self] in
+        guard let self = self else { return .failure(RemoveAppleIDAccessError.presenterDeallocated) }
+        return await self.removeAppleIDAccess()
+    } onRemoveSuccess: { [weak self] in
+        self?.logOutUser()
+    }
+
     init(viewModel: ViewModel = SettingsViewModel()) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -129,6 +137,8 @@ private extension SettingsViewController {
             configureAppSettings(cell: cell)
         case let cell as BasicTableViewCell where row == .wormholy:
             configureWormholy(cell: cell)
+        case let cell as BasicTableViewCell where row == .removeAppleIDAccess:
+            configureRemoveAppleIDAccess(cell: cell)
         case let cell as BasicTableViewCell where row == .logout:
             configureLogout(cell: cell)
         default:
@@ -213,6 +223,13 @@ private extension SettingsViewController {
         cell.textLabel?.text = Localization.whatsNew
     }
 
+    func configureRemoveAppleIDAccess(cell: BasicTableViewCell) {
+        cell.selectionStyle = .default
+        cell.textLabel?.textAlignment = .center
+        cell.textLabel?.textColor = .error
+        cell.textLabel?.text = Localization.removeAppleIDAccess
+    }
+
     func configureLogout(cell: BasicTableViewCell) {
         cell.selectionStyle = .default
         cell.textLabel?.textAlignment = .center
@@ -236,6 +253,14 @@ private extension SettingsViewController {
 // MARK: - Actions
 //
 private extension SettingsViewController {
+    func removeAppleIDAccessWasPressed() {
+        removeAppleIDAccessCoordinator.start()
+    }
+
+    func removeAppleIDAccess() async -> Result<Void, Error> {
+        // TODO: 7068 - remove Apple ID access action
+        return .success(())
+    }
 
     func logoutWasPressed() {
         ServiceLocator.analytics.track(.settingsLogoutTapped)
@@ -494,6 +519,8 @@ extension SettingsViewController: UITableViewDelegate {
             wormholyWasPressed()
         case .whatsNew:
             whatsNewWasPressed()
+        case .removeAppleIDAccess:
+            removeAppleIDAccessWasPressed()
         case .logout:
             logoutWasPressed()
         default:
@@ -569,6 +596,9 @@ extension SettingsViewController {
         case deviceSettings
         case wormholy
 
+        // Account deletion
+        case removeAppleIDAccess
+
         // Logout
         case logout
 
@@ -587,7 +617,7 @@ extension SettingsViewController {
                 return BasicTableViewCell.self
             case .installJetpack:
                 return BasicTableViewCell.self
-            case .logout:
+            case .logout, .removeAppleIDAccess:
                 return BasicTableViewCell.self
             case .privacy:
                 return BasicTableViewCell.self
@@ -688,6 +718,11 @@ private extension SettingsViewController {
         static let whatsNew = NSLocalizedString(
             "What's New in WooCommerce",
             comment: "Navigates to screen containing the latest WooCommerce Features"
+        )
+
+        static let removeAppleIDAccess = NSLocalizedString(
+            "Remove Apple ID Access",
+            comment: "Remove Apple ID Access button title to revoke Apple ID token"
         )
 
         static let logout = NSLocalizedString(

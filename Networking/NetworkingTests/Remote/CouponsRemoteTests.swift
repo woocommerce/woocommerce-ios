@@ -405,11 +405,11 @@ private extension CouponsRemoteTests {
                couponID: 720,
                code: "free shipping",
                amount: "10.00",
-               dateCreated: date(with: "2017-03-21T18:25:02"),
-               dateModified: date(with: "2017-03-21T18:25:02"),
+               dateCreated: DateFormatter.dateFromString(with: "2017-03-21T18:25:02"),
+               dateModified: DateFormatter.dateFromString(with: "2017-03-21T18:25:02"),
                discountType: .fixedCart,
                description: "Coupon description",
-               dateExpires: date(with: "2017-03-31T15:25:02"),
+               dateExpires: DateFormatter.dateFromString(with: "2017-03-31T15:25:02"),
                usageCount: 10,
                individualUse: true, productIds: [12893712, 12389],
                excludedProductIds: [12213],
@@ -424,12 +424,5 @@ private extension CouponsRemoteTests {
                maximumAmount: "500.00",
                emailRestrictions: ["*@a8c.com", "someone.else@example.com"],
                usedBy: ["someone.else@example.com", "person@a8c.com"])
-    }
-
-    func date(with dateString: String) -> Date {
-        guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
-            return Date()
-        }
-        return date
     }
 }

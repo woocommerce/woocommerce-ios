@@ -58,6 +58,10 @@ public enum FeatureFlag: Int {
     ///
     case couponEditing
 
+    /// Displays the option to create a coupon
+    ///
+    case couponCreation
+
     /// Enable optimistic updates for orders
     ///
     case updateOrderOptimistically
@@ -77,4 +81,8 @@ public enum FeatureFlag: Int {
     /// Enable image upload after leaving the product form
     ///
     case backgroundProductImageUpload
+
+    /// Apple ID account deletion
+    ///
+    case appleIDAccountDeletion
 }

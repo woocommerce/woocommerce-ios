@@ -46,19 +46,11 @@ final class OrderDetailsDataSource: NSObject {
 
     /// Whether the order is eligible for card present payment.
     ///
-    var isEligibleForCardPresentPayment: Bool {
-        let hasCardPresentEligiblePaymentGatewayAccount = resultsControllers
-            .paymentGatewayAccounts
-            .contains(where: \.isCardPresentEligible)
-        let orderIsEligibleForCardPresentPayment = order.isEligibleForCardPresentPayment(cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration,
-                                                                                         products: resultsControllers.products)
-
-        return hasCardPresentEligiblePaymentGatewayAccount && orderIsEligibleForCardPresentPayment
-    }
+    var isEligibleForCardPresentPayment: Bool = false
 
     var isEligibleForRefund: Bool {
         guard !isRefundedStatus,
-              !isEligibleForCardPresentPayment,
+              order.datePaid != nil,
               refundableOrderItemsDeterminer.isAnythingToRefund(from: order, with: refunds, currencyFormatter: currencyFormatter) else {
             return false
         }
@@ -571,7 +563,7 @@ private extension OrderDetailsDataSource {
     private func configureCustomerPaid(cell: TwoColumnHeadlineFootnoteTableViewCell) {
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
         cell.leftText = Titles.paidByCustomer
-        cell.rightText = paymentViewModel.paymentTotal
+        cell.rightText = order.paymentTotal
         cell.updateFootnoteText(paymentViewModel.paymentSummary)
     }
 
@@ -607,10 +599,8 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureNetAmount(cell: TwoColumnHeadlineFootnoteTableViewCell) {
-        let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
-
         cell.leftText = Titles.netAmount
-        cell.rightText = paymentViewModel.netAmount
+        cell.rightText = order.netAmount
         cell.hideFootnote()
     }
 

@@ -138,6 +138,28 @@ final class StorePickerViewController: UIViewController {
         }
     }
 
+    private lazy var removeAppleIDAccessCoordinator: RemoveAppleIDAccessCoordinator =
+    RemoveAppleIDAccessCoordinator(sourceViewController: self) { [weak self] in
+        guard let self = self else { return .failure(RemoveAppleIDAccessError.presenterDeallocated) }
+        return await self.removeAppleIDAccess()
+    } onRemoveSuccess: { [weak self] in
+        self?.restartAuthentication()
+    }
+
+    private let appleIDCredentialChecker: AppleIDCredentialCheckerProtocol
+    private let featureFlagService: FeatureFlagService
+
+    init(appleIDCredentialChecker: AppleIDCredentialCheckerProtocol = AppleIDCredentialChecker(),
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+        self.appleIDCredentialChecker = appleIDCredentialChecker
+        self.featureFlagService = featureFlagService
+        super.init(nibName: Self.nibName, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
@@ -619,6 +641,15 @@ extension StorePickerViewController: UITableViewDataSource {
 
                 WebviewHelper.launch(WooConstants.URLs.emptyStoresJetpackSetup.asURL(), with: self)
             }
+            let isRemoveAppleIDAccessButtonVisible = appleIDCredentialChecker.hasAppleUserID()
+            && featureFlagService.isFeatureFlagEnabled(.appleIDAccountDeletion)
+            cell.updateRemoveAppleIDAccessButtonVisibility(isVisible: isRemoveAppleIDAccessButtonVisible)
+            if isRemoveAppleIDAccessButtonVisible {
+                cell.onRemoveAppleIDAccessButtonTapped = { [weak self] in
+                    guard let self = self else { return }
+                    self.removeAppleIDAccessCoordinator.start()
+                }
+            }
             return cell
         }
         let cell = tableView.dequeueReusableCell(StoreTableViewCell.self, for: indexPath)
@@ -678,6 +709,12 @@ extension StorePickerViewController: UITableViewDelegate {
     }
 }
 
+private extension StorePickerViewController {
+    func removeAppleIDAccess() async -> Result<Void, Error> {
+        // TODO: 7068 - remove Apple ID access
+        return .success(())
+    }
+}
 
 // MARK: - StorePickerConstants: Contains all of the constants required by the Picker.
 //

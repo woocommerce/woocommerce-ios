@@ -31,6 +31,9 @@ final class AddEditCouponViewModel: ObservableObject {
         }
     }
 
+    /// Defines the main action button text that should be shown.
+    /// Switching between `Create` or `Save` action.
+    ///
     var addEditCouponButtonText: String {
         if isCreationFlow {
             return Localization.createButton

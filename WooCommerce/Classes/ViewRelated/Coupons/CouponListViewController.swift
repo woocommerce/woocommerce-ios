@@ -215,7 +215,6 @@ private extension CouponListViewController {
         let creationSuccessView = CouponCreationSuccess(couponCode: couponCode, shareMessage: shareMessage) { [weak self] in
             guard let self = self else { return }
             self.dismiss(animated: true)
-            self.refreshCouponList()
         }
         addEditHostingController?.present(UIHostingController(rootView: creationSuccessView), animated: true)
     }

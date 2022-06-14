@@ -178,6 +178,14 @@ class DefaultStoresManager: StoresManager {
     ///
     func updateDefaultStore(storeID: Int64) {
         sessionManager.defaultStoreID = storeID
+        let defaults = UserDefaults(suiteName: "group.org.wordpress")
+        defaults?.set(storeID, forKey: "storeID")
+
+        let credentials = sessionManager.defaultCredentials
+
+        /// Temporary Hack: We store the token here instead of Keychain to make the iOS 14 investigation simpler. This is not safe and thus not releaseable.
+        defaults?.set(credentials?.authToken, forKey: "authToken")
+
         // Because `defaultSite` is loaded or synced asynchronously, it is reset here so that any UI that calls this does not show outdated data.
         // For example, `sessionManager.defaultSite` is used to show site name in various screens in the app.
         sessionManager.defaultSite = nil

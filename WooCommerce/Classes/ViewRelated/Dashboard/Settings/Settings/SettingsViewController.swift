@@ -264,12 +264,8 @@ private extension SettingsViewController {
     func removeAppleIDAccess() async -> Result<Void, Error> {
         await withCheckedContinuation { [weak self] continuation in
             guard let self = self else { return }
-            guard let credentials = self.stores.sessionManager.defaultCredentials else {
-                return continuation.resume(returning: .failure(RemoveAppleIDAccessError.noCredentials))
-            }
             let action = AccountAction.removeAppleIDAccess(dotcomAppID: ApiCredentials.dotcomAppId,
-                                                           dotcomSecret: ApiCredentials.dotcomSecret,
-                                                           authToken: credentials.authToken) { result in
+                                                           dotcomSecret: ApiCredentials.dotcomSecret) { result in
                 continuation.resume(returning: result)
             }
             self.stores.dispatch(action)

@@ -48,9 +48,9 @@ final class ProductsRemoteTests: XCTestCase {
                                       name: "Product",
                                       slug: "product",
                                       permalink: "https://example.com/product/product/",
-                                      date: date(with: "2020-09-03T02:52:44"),
-                                      dateCreated: date(with: "2020-09-03T02:52:44"),
-                                      dateModified: date(with: "2020-09-03T02:52:44"),
+                                      date: DateFormatter.dateFromString(with: "2020-09-03T02:52:44"),
+                                      dateCreated: DateFormatter.dateFromString(with: "2020-09-03T02:52:44"),
+                                      dateModified: DateFormatter.dateFromString(with: "2020-09-03T02:52:44"),
                                       dateOnSaleStart: nil,
                                       dateOnSaleEnd: nil,
                                       productTypeKey: ProductType.simple.rawValue,
@@ -151,9 +151,9 @@ final class ProductsRemoteTests: XCTestCase {
                                       name: "Product",
                                       slug: "product",
                                       permalink: "https://example.com/product/product/",
-                                      date: date(with: "2020-09-03T02:52:44"),
-                                      dateCreated: date(with: "2020-09-03T02:52:44"),
-                                      dateModified: date(with: "2020-09-03T02:52:44"),
+                                      date: DateFormatter.dateFromString(with: "2020-09-03T02:52:44"),
+                                      dateCreated: DateFormatter.dateFromString(with: "2020-09-03T02:52:44"),
+                                      dateModified: DateFormatter.dateFromString(with: "2020-09-03T02:52:44"),
                                       dateOnSaleStart: nil,
                                       dateOnSaleEnd: nil,
                                       productTypeKey: ProductType.simple.rawValue,
@@ -553,11 +553,11 @@ private extension ProductsRemoteTests {
                        name: "Book the Green Room",
                        slug: "book-the-green-room",
                        permalink: "https://example.com/product/book-the-green-room/",
-                       date: date(with: "2019-02-19T17:33:31"),
-                       dateCreated: date(with: "2019-02-19T17:33:31"),
-                       dateModified: date(with: "2019-02-19T17:48:01"),
-                       dateOnSaleStart: date(with: "2019-10-15T21:30:00"),
-                       dateOnSaleEnd: date(with: "2019-10-27T21:29:59"),
+                       date: DateFormatter.dateFromString(with: "2019-02-19T17:33:31"),
+                       dateCreated: DateFormatter.dateFromString(with: "2019-02-19T17:33:31"),
+                       dateModified: DateFormatter.dateFromString(with: "2019-02-19T17:48:01"),
+                       dateOnSaleStart: DateFormatter.dateFromString(with: "2019-10-15T21:30:00"),
+                       dateOnSaleEnd: DateFormatter.dateFromString(with: "2019-10-27T21:29:59"),
                        productTypeKey: "booking",
                        statusKey: "publish",
                        featured: false,
@@ -643,8 +643,8 @@ private extension ProductsRemoteTests {
 
     func sampleImages() -> [Networking.ProductImage] {
         let image1 = ProductImage(imageID: 19,
-                                  dateCreated: date(with: "2018-01-26T21:49:45"),
-                                  dateModified: date(with: "2018-01-26T21:50:11"),
+                                  dateCreated: DateFormatter.dateFromString(with: "2018-01-26T21:49:45"),
+                                  dateModified: DateFormatter.dateFromString(with: "2018-01-26T21:50:11"),
                                   src: "https://somewebsite.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/01/vneck-tee.jpg.png",
                                   name: "Vneck Tshirt",
                                   alt: "")
@@ -676,12 +676,5 @@ private extension ProductsRemoteTests {
         let defaultAttribute2 = ProductDefaultAttribute(attributeID: 0, name: "Size", option: "Medium")
 
         return [defaultAttribute1, defaultAttribute2]
-    }
-
-    func date(with dateString: String) -> Date {
-        guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
-            return Date()
-        }
-        return date
     }
 }

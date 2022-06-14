@@ -10,6 +10,7 @@ extension ProductSearchResults {
 
     @NSManaged public var keyword: String?
     @NSManaged public var products: Set<Product>?
+    @NSManaged public var filterKey: String?
 
 }
 
@@ -27,5 +28,9 @@ extension ProductSearchResults {
 
     @objc(removeProducts:)
     @NSManaged public func removeFromProducts(_ values: NSSet)
+
+}
+
+extension ProductSearchResults: Identifiable {
 
 }

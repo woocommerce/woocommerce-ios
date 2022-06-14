@@ -201,7 +201,8 @@ private extension CouponListViewController {
     /// Triggers the coupon creation flow
     ///
     func startCouponCreation(discountType: Coupon.DiscountType) {
-        let viewModel = viewModel.createAddEditCouponViewModel(with: discountType) { createdCoupon, shareMessage in
+        let viewModel = viewModel.createAddEditCouponViewModel(with: discountType) { [weak self] createdCoupon, shareMessage in
+            guard let self = self else { return }
             self.showCouponCreationSuccess(couponCode: createdCoupon.code, shareMessage: shareMessage)
         }
         addEditHostingController = AddEditCouponHostingController(viewModel: viewModel, onDisappear: {})
@@ -211,7 +212,8 @@ private extension CouponListViewController {
     /// Display the Coupon creation success view
     ///
     func showCouponCreationSuccess(couponCode: String, shareMessage: String) {
-        let creationSuccessView = CouponCreationSuccess(couponCode: couponCode, shareMessage: shareMessage) {
+        let creationSuccessView = CouponCreationSuccess(couponCode: couponCode, shareMessage: shareMessage) { [weak self] in
+            guard let self = self else { return }
             self.dismiss(animated: true)
             self.refreshCouponList()
         }
@@ -377,7 +379,8 @@ private extension CouponListViewController {
             image: .emptyCouponsImage,
             details: Localization.emptyStateDetails,
             buttonTitle: Localization.createCouponAction
-        ) { button in
+        ) { [weak self] button in
+            guard let self = self else { return }
             self.displayCouponTypeBottomSheet()
         }
 

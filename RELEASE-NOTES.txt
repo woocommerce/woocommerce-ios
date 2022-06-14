@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+9.5
+-----
+
+
 9.4
 -----
 - [*] Orders: Order details now displays both the date and time for all orders. [https://github.com/woocommerce/woocommerce-ios/pull/6996]

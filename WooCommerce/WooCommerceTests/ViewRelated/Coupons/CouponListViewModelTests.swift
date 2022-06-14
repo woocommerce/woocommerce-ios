@@ -453,14 +453,17 @@ final class CouponListViewModelTests: XCTestCase {
         assertEqual(.couponsDisabled, sut.state)
     }
 
-    func test_state_is_empty_when_onCouponDeleted_is_called_with_empty_list() {
+    func test_state_is_empty_when_all_coupons_gets_deleted() {
         // Given
+        mockStorageManager.insertSampleCoupon(readOnlyCoupon: Coupon.fake().copy(siteID: 123))
         sut = CouponListViewModel(siteID: 123, storageManager: mockStorageManager)
+        assertEqual(.coupons, sut.state)
 
         // When
+        mockStorageManager.reset()
         sut.buildCouponViewModels()
 
         // Then
-        assertEqual(sut.state, .empty)
+        assertEqual(.empty, sut.state)
     }
 }

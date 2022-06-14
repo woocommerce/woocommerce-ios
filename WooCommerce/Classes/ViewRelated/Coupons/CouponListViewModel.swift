@@ -98,6 +98,12 @@ final class CouponListViewModel {
                           status: coupon.expiryStatus().localizedName,
                           statusBackgroundColor: coupon.expiryStatus().statusBackgroundColor)
         }
+
+        if couponViewModels.isNotEmpty {
+            state = .coupons
+        } else {
+            state = .empty
+        }
     }
 
     func createAddEditCouponViewModel(with discountType: Coupon.DiscountType,

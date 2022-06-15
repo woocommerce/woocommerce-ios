@@ -52,7 +52,7 @@ final class StatsProvider: TimelineProvider {
 
                 privateCompletion(StatsWidgetEntry.siteSelected(siteName: siteName, orderStats: try await orderStats, visitStat: try? await visitStats))
             } catch {
-                privateCompletion(.noSite)
+                privateCompletion(.error)
             }
         }
     }

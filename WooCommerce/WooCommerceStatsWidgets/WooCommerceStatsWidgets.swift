@@ -199,6 +199,7 @@ struct WooCommerceStatsWidgets: Widget {
         StaticConfiguration(kind: kind, provider: StatsProvider()) { entry in
             WooCommerceStatsWidgetsEntryView(entry: entry)
         }
+        .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
 

@@ -133,8 +133,8 @@ struct WooCommerceStatsWidgetsEntryView: View {
 
     var entry: StatsProvider.Entry
     let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
-    let darkPurple = Color(red: 104, green: 69, blue: 154)
-    let lightPurple = Color(red: 133, green: 96, blue: 179)
+    let darkPurple = Color(red: 0.407, green: 0.27, blue: 0.603)
+    let lightPurple = Color(red: 0.521, green: 0.376, blue: 0.701)
 
     var body: some View {
         switch entry {
@@ -148,7 +148,7 @@ struct WooCommerceStatsWidgetsEntryView: View {
                                                          bottomTitle: "Revenue",
                                                          bottomValue: currencyFormatter.formatAmount(orderStats.totals.netRevenue) ?? "-"))
                 .padding()
-                //.background(lightPurple)
+                .background(LinearGradient(gradient: Gradient(colors: [darkPurple, lightPurple]), startPoint: .top, endPoint: .bottom))
             case .systemMedium:
                 MultiStatsView(viewData: MultiStatViewModel(widgetTitle: "Today",
                                                             siteName: siteName ?? "Your Woo Commerce Store",
@@ -159,9 +159,9 @@ struct WooCommerceStatsWidgetsEntryView: View {
                                                             lowerLeftTitle: "Orders",
                                                             lowerLeftValue: String(orderStats.totals.totalOrders),
                                                             lowerRightTitle: "Conversion",
-                                                            lowerRightValue: "23%"))
+                                                            lowerRightValue: conversionRate(from: orderStats, visitStats: visitStats)))
                 .padding()
-                //.background(lightPurple)
+                .background(LinearGradient(gradient: Gradient(colors: [darkPurple, lightPurple]), startPoint: .top, endPoint: .bottom))
             default:
                 Text("View is unavailable")
             }
@@ -178,6 +178,16 @@ struct WooCommerceStatsWidgetsEntryView: View {
         }
 
         return String(visitors)
+    }
+
+    private func conversionRate(from orderStats: OrderStatsV4, visitStats: SiteVisitStats?) -> String {
+        guard let visitors = visitStats?.items?.first?.visitors else {
+            return "-"
+        }
+
+        let conversionRate = visitors > 0 ? min(orderStats.totals.totalOrders/visitors, 1): 0
+
+        return "\(conversionRate * 100) %"
     }
 }
 

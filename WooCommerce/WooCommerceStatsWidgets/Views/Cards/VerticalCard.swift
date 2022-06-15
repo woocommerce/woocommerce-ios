@@ -20,6 +20,7 @@ struct VerticalCard: View {
             Text(title)
                 .font(Appearance.titleFont)
                 .fontWeight(Appearance.titleFontWeight)
+                .foregroundColor(Appearance.titleColor)
                 .accessibility(hidden: true)
             StatsValueView(value: value,
                            font: titleFont,
@@ -42,6 +43,7 @@ extension VerticalCard {
 
         static let largeTextFont = Font.largeTitle
         static let textFont = Font.title
-        static let textColor = Color(.label)
+        static let textColor = Color.white
+        static let titleColor = Color(red: 0.635, green: 0.549, blue: 0.768)
     }
 }

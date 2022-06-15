@@ -72,10 +72,10 @@ extension FlexibleCard {
     private enum Appearance {
         static let textFont = Font.footnote
         static let textFontWeight = Font.Weight.semibold
-        static let textColor = Color(.label)
+        static let textColor = Color.white
 
         static let titleFont = Font.caption
-        static let titleColor = Color(.secondaryLabel)
+        static let titleColor = Color(red: 0.635, green: 0.549, blue: 0.768)
 
     }
 }

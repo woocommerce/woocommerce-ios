@@ -13,17 +13,20 @@ final class StatsProvider: TimelineProvider {
     // refresh interval of the widget, in minutes
     let refreshInterval = 60
 
-    var orderStatsRemoteV4: OrderStatsRemoteV4?
-    var siteVisitStatsRemote: SiteVisitStatsRemote?
-    var network: AlamofireNetwork?
+    private let placeholderData: StatsWidgetData
+    private let earliestDateToInclude: Date
+
+    private var orderStatsRemoteV4: OrderStatsRemoteV4?
+    private var siteVisitStatsRemote: SiteVisitStatsRemote?
+    private var network: AlamofireNetwork?
+
+    init(placeholderData: StatsWidgetData, earliestDateToInclude: Date) {
+        self.placeholderData = placeholderData
+        self.earliestDateToInclude = earliestDateToInclude
+    }
 
     func placeholder(in context: Context) -> StatsWidgetEntry {
-        let data = StatsWidgetData(siteName: "Your Woo Commerce Store",
-                                   revenue: 323.12,
-                                   orders: 54,
-                                   visitors: 143)
-
-        return StatsWidgetEntry.siteSelected(data)
+        StatsWidgetEntry.siteSelected(placeholderData)
     }
 
     func getSnapshot(in context: Context, completion: @escaping (StatsWidgetEntry) -> ()) {
@@ -55,7 +58,7 @@ final class StatsProvider: TimelineProvider {
                 async let orderStats = loadOrderStats(for: storeID)
                 async let visitStats = loadSiteVisitorStats(for: storeID)
 
-                let data = StatsWidgetData(siteName: siteName ?? "Your Woo Commerce Store",
+                let data = StatsWidgetData(siteName: siteName ?? "Your WooCommerce Store",
                                            revenue: try await orderStats.totals.netRevenue,
                                            orders: try await orderStats.totals.totalOrders,
                                            visitors: try? await visitStats.totalVisitors)
@@ -81,9 +84,9 @@ final class StatsProvider: TimelineProvider {
         return try await withCheckedThrowingContinuation { continuation in
             Task { @MainActor in
                 siteVisitStatsRemote?.loadSiteVisitorStats(for: storeID,
-                                        unit: .day,
-                                        latestDateToInclude: Date(),
-                                        quantity: 1) { result in
+                                                           unit: .week,
+                                                           latestDateToInclude: Date(),
+                                                           quantity: 1) { result in
                     switch result {
                     case .success(_):
                         continuation.resume(with: result)
@@ -111,10 +114,10 @@ final class StatsProvider: TimelineProvider {
         return try await withCheckedThrowingContinuation { continuation in
             Task { @MainActor in
                 orderStatsRemoteV4?.loadOrderStats(for: storeID,
-                                        unit: .daily,
-                                        earliestDateToInclude: Date().addingTimeInterval(-60*60*24),
+                                                   unit: .weekly,
+                                                   earliestDateToInclude: earliestDateToInclude,
                                         latestDateToInclude: Date(),
-                                        quantity: 20) { result in
+                                        quantity: 1) { result in
                     switch result {
                     case .success(_):
                         continuation.resume(with: result)
@@ -141,7 +144,8 @@ enum StatsWidgetEntry: TimelineEntry {
 struct WooCommerceStatsWidgetsEntryView: View {
     @Environment(\.widgetFamily) var family: WidgetFamily
 
-    var entry: StatsProvider.Entry
+    let entry: StatsProvider.Entry
+    let title: String
     let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
     let darkPurple = Color(red: 0.407, green: 0.27, blue: 0.603)
     let lightPurple = Color(red: 0.521, green: 0.376, blue: 0.701)
@@ -153,14 +157,14 @@ struct WooCommerceStatsWidgetsEntryView: View {
         case let .siteSelected(data):
             switch family {
             case .systemSmall:
-                SingleStatView(viewData: SingleStatViewModel(widgetTitle: "Today",
+                SingleStatView(viewData: SingleStatViewModel(widgetTitle: title,
                                                              siteName: data.siteName,
                                                              bottomTitle: "Revenue",
                                                              bottomValue: currencyFormatter.formatAmount(data.revenue) ?? "-"))
                 .padding()
                 .background(LinearGradient(gradient: Gradient(colors: [darkPurple, lightPurple]), startPoint: .top, endPoint: .bottom))
             case .systemMedium:
-                MultiStatsView(viewData: MultiStatViewModel(widgetTitle: "Today",
+                MultiStatsView(viewData: MultiStatViewModel(widgetTitle: title,
                                                             siteName: data.siteName,
                                                             upperLeftTitle: "Revenue",
                                                             upperLeftValue: currencyFormatter.formatAmount(data.revenue) ?? "-",
@@ -206,13 +210,33 @@ struct WooCommerceStatsWidgetsEntryView: View {
     }
 }
 
-@main
-struct WooCommerceStatsWidgets: Widget {
-    let kind: String = "WooCommerceStatsWidgets"
+struct WooCommerceTodayStatsWidget: Widget {
+    let kind: String = "WooCommerceTodayStatsWidget"
+    let placeholderData = StatsWidgetData(siteName: "Your WooCommerce Store",
+                                          revenue: 323.12,
+                                          orders: 54,
+                                          visitors: 143)
 
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: StatsProvider()) { entry in
-            WooCommerceStatsWidgetsEntryView(entry: entry)
+        StaticConfiguration(kind: kind,
+                            provider: StatsProvider(placeholderData: placeholderData, earliestDateToInclude: Date().startOfDay())) { entry in
+            WooCommerceStatsWidgetsEntryView(entry: entry, title: "Today")
+        }
+        .supportedFamilies([.systemSmall, .systemMedium])
+    }
+}
+
+struct WooCommerceThisWeekStatsWidget: Widget {
+    let kind: String = "WooCommerceThisWeekStatsWidget"
+    let placeholderData = StatsWidgetData(siteName: "Your WooCommerce Store",
+                                          revenue: 1349.21,
+                                          orders: 154,
+                                          visitors: 686)
+
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: kind,
+                            provider: StatsProvider(placeholderData: placeholderData, earliestDateToInclude: Date().startOfWeek())) { entry in
+            WooCommerceStatsWidgetsEntryView(entry: entry, title: "This Week")
         }
         .supportedFamilies([.systemSmall, .systemMedium])
     }
@@ -220,7 +244,15 @@ struct WooCommerceStatsWidgets: Widget {
 
 struct WooCommerceStatsWidgets_Previews: PreviewProvider {
     static var previews: some View {
-        WooCommerceStatsWidgetsEntryView(entry: StatsWidgetEntry.noSite)
+        WooCommerceStatsWidgetsEntryView(entry: StatsWidgetEntry.noSite, title: "Today")
             .previewContext(WidgetPreviewContext(family: .systemSmall))
+    }
+}
+
+@main
+struct WordPressStatsWidgets: WidgetBundle {
+    var body: some Widget {
+        WooCommerceTodayStatsWidget()
+        WooCommerceThisWeekStatsWidget()
     }
 }

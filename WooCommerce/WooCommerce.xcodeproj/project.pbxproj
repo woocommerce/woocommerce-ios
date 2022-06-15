@@ -1251,6 +1251,7 @@
 		B9E98B562858DD2E009EEA71 /* MultiStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E98B552858DD2E009EEA71 /* MultiStatsView.swift */; };
 		B9E98B582859FC57009EEA71 /* MultiStatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E98B572859FC57009EEA71 /* MultiStatViewModel.swift */; };
 		B9E98B5A285A2256009EEA71 /* StatsWidgetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E98B59285A2256009EEA71 /* StatsWidgetData.swift */; };
+		B9E98B5E285A3986009EEA71 /* Date+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E98B5D285A3986009EEA71 /* Date+Helpers.swift */; };
 		BAA34C202787494300846F3C /* ReviewsViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAA34C1F2787494300846F3C /* ReviewsViewControllerTests.swift */; };
 		BAE4F8432734325C00871344 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE4F8422734325C00871344 /* SettingsViewModel.swift */; };
 		BAFEF51E273C2151005F94CC /* SettingsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAFEF51D273C2151005F94CC /* SettingsViewModelTests.swift */; };
@@ -3051,6 +3052,7 @@
 		B9E98B552858DD2E009EEA71 /* MultiStatsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiStatsView.swift; sourceTree = "<group>"; };
 		B9E98B572859FC57009EEA71 /* MultiStatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiStatViewModel.swift; sourceTree = "<group>"; };
 		B9E98B59285A2256009EEA71 /* StatsWidgetData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsWidgetData.swift; sourceTree = "<group>"; };
+		B9E98B5D285A3986009EEA71 /* Date+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Helpers.swift"; sourceTree = "<group>"; };
 		BAA34C1F2787494300846F3C /* ReviewsViewControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReviewsViewControllerTests.swift; sourceTree = "<group>"; };
 		BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerce.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAE4F8422734325C00871344 /* SettingsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
@@ -6695,6 +6697,7 @@
 		B963A607285733F800EFADA0 /* WooCommerceStatsWidgets */ = {
 			isa = PBXGroup;
 			children = (
+				B9E98B5C285A3951009EEA71 /* Helper */,
 				B9E98B5B285A2948009EEA71 /* Model */,
 				B9E98B502858B86C009EEA71 /* ViewModels */,
 				B9E98B392858B7F0009EEA71 /* Views */,
@@ -6741,6 +6744,14 @@
 				B9E98B59285A2256009EEA71 /* StatsWidgetData.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		B9E98B5C285A3951009EEA71 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				B9E98B5D285A3986009EEA71 /* Date+Helpers.swift */,
+			);
+			path = Helper;
 			sourceTree = "<group>";
 		};
 		BA143222273662DE00E4B3AB /* Settings */ = {
@@ -10284,6 +10295,7 @@
 				B9E98B562858DD2E009EEA71 /* MultiStatsView.swift in Sources */,
 				B9E98B5A285A2256009EEA71 /* StatsWidgetData.swift in Sources */,
 				B9E98B4E2858B7F0009EEA71 /* SingleStatView.swift in Sources */,
+				B9E98B5E285A3986009EEA71 /* Date+Helpers.swift in Sources */,
 				B9E98B582859FC57009EEA71 /* MultiStatViewModel.swift in Sources */,
 				B9E98B4B2858B7F0009EEA71 /* StatsValueView.swift in Sources */,
 				B9E98B522858B887009EEA71 /* SingleStatViewModel.swift in Sources */,

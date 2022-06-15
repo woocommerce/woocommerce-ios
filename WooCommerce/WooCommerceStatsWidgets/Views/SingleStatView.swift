@@ -2,7 +2,7 @@ import SwiftUI
 
 struct SingleStatView: View {
 
-    let viewData: GroupedViewData
+    let viewData: SingleStatViewModel
 
 
     var body: some View {

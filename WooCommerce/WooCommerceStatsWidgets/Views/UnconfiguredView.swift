@@ -11,7 +11,7 @@ struct UnconfiguredView: View {
     }
 
     var unconfiguredMessage: String {
-        "not configured"
+        "Log in to WooCommerce to see today's stats."
     }
 }
 

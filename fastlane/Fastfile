@@ -155,7 +155,7 @@ platform :ios do
   lane :code_freeze do |options|
     ios_codefreeze_prechecks(options)
 
-    ios_bump_version_release
+    ios_bump_version_release(skip_glotpress: true)
     new_version = ios_get_app_version
     extract_release_notes_for_version(
       version: new_version,
@@ -184,8 +184,13 @@ platform :ios do
   lane :complete_code_freeze do |options|
     ios_completecodefreeze_prechecks(options)
     generate_strings_file_for_glotpress
-    version = ios_get_app_version
-    trigger_beta_build(branch_to_build: "release/#{version}")
+
+    if ENV.fetch('RELEASE_TOOLKIT_SKIP_PUSH_CONFIRM', false) || UI.confirm('Push changes to the remote and trigger the beta build?')
+      push_to_git_remote(tags: false)
+      trigger_beta_build(branch_to_build: "release/#{ios_get_app_version}")
+    else
+      UI.message('Aborting code freeze completion as requested.')
+    end
   end
 
   #####################################################################################
@@ -244,7 +249,7 @@ platform :ios do
   lane :new_beta_release do |options|
     ios_betabuild_prechecks(options)
     download_localized_strings_and_metadata_from_glotpress
-    ios_lint_localizations(input_dir: 'WooCommerce/Resources', allow_retry: true)
+    lint_localizations
     ios_bump_version_beta
     version = ios_get_app_version
     trigger_beta_build(branch_to_build: "release/#{version}")
@@ -320,7 +325,7 @@ platform :ios do
     )
 
     download_localized_strings_and_metadata_from_glotpress
-    ios_lint_localizations(input_dir: 'WooCommerce/Resources', allow_retry: true)
+    lint_localizations
     ios_bump_version_beta
 
     # Wrap up
@@ -970,6 +975,11 @@ platform :ios do
       message: 'Freeze strings for localization',
       allow_nothing_to_commit: true
     )
+  end
+
+  desc 'Lint the `.strings` files'
+  lane :lint_localizations do
+    ios_lint_localizations(input_dir: RESOURCES_FOLDER, allow_retry: true)
   end
 
   def write_file(path, contents)

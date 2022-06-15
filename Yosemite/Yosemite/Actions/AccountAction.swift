@@ -14,4 +14,5 @@ public enum AccountAction: Action {
     case synchronizeSites(selectedSiteID: Int64?, isJetpackConnectionPackageSupported: Bool, onCompletion: (Result<Bool, Error>) -> Void)
     case synchronizeSitePlan(siteID: Int64, onCompletion: (Result<Void, Error>) -> Void)
     case updateAccountSettings(userID: Int64, tracksOptOut: Bool, onCompletion: (Result<Void, Error>) -> Void)
+    case removeAppleIDAccess(dotcomAppID: String, dotcomSecret: String, onCompletion: (Result<Void, Error>) -> Void)
 }

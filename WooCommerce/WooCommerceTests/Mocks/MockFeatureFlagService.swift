@@ -9,6 +9,7 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isUpdateOrderOptimisticallyOn: Bool
     private let shippingLabelsOnboardingM1: Bool
     private let inPersonPaymentGatewaySelection: Bool
+    private let isAppleIDAccountDeletionEnabled: Bool
 
     init(isJetpackConnectionPackageSupportOn: Bool = false,
          isHubMenuOn: Bool = false,
@@ -16,7 +17,8 @@ struct MockFeatureFlagService: FeatureFlagService {
          isSplitViewInOrdersTabOn: Bool = false,
          isUpdateOrderOptimisticallyOn: Bool = false,
          shippingLabelsOnboardingM1: Bool = false,
-         inPersonPaymentGatewaySelection: Bool = false) {
+         inPersonPaymentGatewaySelection: Bool = false,
+         isAppleIDAccountDeletionEnabled: Bool = false) {
         self.isJetpackConnectionPackageSupportOn = isJetpackConnectionPackageSupportOn
         self.isHubMenuOn = isHubMenuOn
         self.isInboxOn = isInboxOn
@@ -24,6 +26,7 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
         self.shippingLabelsOnboardingM1 = shippingLabelsOnboardingM1
         self.inPersonPaymentGatewaySelection = inPersonPaymentGatewaySelection
+        self.isAppleIDAccountDeletionEnabled = isAppleIDAccountDeletionEnabled
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -42,6 +45,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return shippingLabelsOnboardingM1
         case .inPersonPaymentGatewaySelection:
             return inPersonPaymentGatewaySelection
+        case .appleIDAccountDeletion:
+            return isAppleIDAccountDeletionEnabled
         default:
             return false
         }

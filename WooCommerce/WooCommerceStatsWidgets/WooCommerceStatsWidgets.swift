@@ -119,6 +119,7 @@ final class StatsProvider: TimelineProvider {
 }
 
 enum StatsWidgetEntry: TimelineEntry {
+    case error
     case siteSelected(siteName: String?, orderStats: OrderStatsV4, visitStat: SiteVisitStats?)
     case noSite
 
@@ -137,6 +138,8 @@ struct WooCommerceStatsWidgetsEntryView: View {
 
     var body: some View {
         switch entry {
+        case .error:
+            UnconfiguredView(message: "Error loading data. Please try again later.")
         case let .siteSelected(siteName, orderStats, visitStats):
             switch family {
             case .systemSmall:
@@ -164,7 +167,7 @@ struct WooCommerceStatsWidgetsEntryView: View {
             }
 
         case .noSite:
-            UnconfiguredView()
+            UnconfiguredView(message: "Log in to WooCommerce to see today's stats.")
         }
     }
 

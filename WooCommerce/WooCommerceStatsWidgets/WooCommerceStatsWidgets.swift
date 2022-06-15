@@ -97,7 +97,6 @@ final class StatsProvider: TimelineProvider {
                 }
             }
         }
-
     }
 
     func loadOrderStats(for storeID: Int64) async throws -> OrderStatsV4 {

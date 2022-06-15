@@ -68,6 +68,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
         let numberOfLinesForText: Int
         let isActionable: Bool
         let isSelected: Bool
+        let showsDisclosureIndicator: Bool
         let showsSeparator: Bool
 
         init(title: String?,
@@ -80,6 +81,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
              numberOfLinesForText: Int = 1,
              isSelected: Bool = false,
              isActionable: Bool = true,
+             showsDisclosureIndicator: Bool = false,
              showsSeparator: Bool = true) {
             self.title = title
             self.titleFontStyle = titleFontStyle
@@ -91,6 +93,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
             self.numberOfLinesForText = numberOfLinesForText
             self.isSelected = isSelected
             self.isActionable = isActionable
+            self.showsDisclosureIndicator = showsDisclosureIndicator
             self.showsSeparator = showsSeparator
         }
     }
@@ -157,7 +160,7 @@ extension ImageAndTitleAndTextTableViewCell {
         descriptionLabel.numberOfLines = viewModel.numberOfLinesForText
         contentImageView.image = viewModel.image
         contentImageStackView.isHidden = viewModel.image == nil
-        accessoryType = viewModel.isActionable ? .disclosureIndicator : (viewModel.isSelected ? .checkmark : .none)
+        accessoryType = viewModel.showsDisclosureIndicator ? .disclosureIndicator : .none
         selectionStyle = viewModel.isActionable ? .default: .none
         accessoryView = nil
 

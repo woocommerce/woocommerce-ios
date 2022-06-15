@@ -78,7 +78,7 @@ final class OrderTypeBottomSheetListSelectorCommand: BottomSheetListSelectorComm
                                                                     imageTintColor: .gray(.shade20),
                                                                     numberOfLinesForTitle: 0,
                                                                     numberOfLinesForText: 0,
-                                                                    isActionable: false)
+                                                                    isActionable: true)
         cell.updateUI(viewModel: viewModel)
     }
 

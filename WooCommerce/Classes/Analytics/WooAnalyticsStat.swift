@@ -548,12 +548,15 @@ public enum WooAnalyticsStat: String {
     // MARK: Simple Payments events
     //
     case simplePaymentsFlowStarted = "simple_payments_flow_started"
-    case simplePaymentsFlowCompleted = "simple_payments_flow_completed"
-    case simplePaymentsFlowCanceled = "simple_payments_flow_canceled"
-    case simplePaymentsFlowFailed = "simple_payments_flow_failed"
     case simplePaymentsFlowNoteAdded = "simple_payments_flow_note_added"
     case simplePaymentsFlowTaxesToggled = "simple_payments_flow_taxes_toggled"
-    case simplePaymentsFlowCollect = "simple_payments_flow_collect"
+
+    // MARK: Payment Methods events
+    //
+    case paymentsFlowCompleted = "payments_flow_completed"
+    case paymentsFlowCanceled = "payments_flow_canceled"
+    case paymentsFlowFailed = "payments_flow_failed"
+    case paymentsFlowCollect = "payments_flow_collect"
 
     // MARK: Jetpack-the-plugin events
     //

@@ -451,8 +451,9 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         viewModel.updateOrder()
 
         // Then
-        assertEqual(mockAnalytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowFailed.rawValue])
+        assertEqual(mockAnalytics.receivedEvents, [WooAnalyticsStat.paymentsFlowFailed.rawValue])
         assertEqual(mockAnalytics.receivedProperties.first?["source"] as? String, "summary")
+        assertEqual(mockAnalytics.receivedProperties.first?["flow"] as? String, "simple_payment")
     }
 
     func test_taxes_toggle_state_is_properly_loaded() {

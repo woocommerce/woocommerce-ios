@@ -19,7 +19,7 @@ class WooCommerceScreenshots: XCTestCase {
         stopWebServer()
     }
 
-    func testScreenshots() throws {
+    func test_screenshots() throws {
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
         setupSnapshot(app)

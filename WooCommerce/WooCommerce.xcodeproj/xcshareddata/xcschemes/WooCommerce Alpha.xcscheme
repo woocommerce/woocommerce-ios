@@ -47,6 +47,17 @@
                BlueprintName = "WooCommerceUITests"
                ReferencedContainer = "container:WooCommerce.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "LoginTests/test_WordPress_login_logout()">
+               </Test>
+               <Test
+                  Identifier = "LoginTests/test_site_address_login_logout()">
+               </Test>
+               <Test
+                  Identifier = "StatsTests/test_load_stats_screen()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>

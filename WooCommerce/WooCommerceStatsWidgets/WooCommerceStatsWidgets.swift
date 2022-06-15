@@ -18,11 +18,16 @@ final class StatsProvider: TimelineProvider {
     var network: AlamofireNetwork?
 
     func placeholder(in context: Context) -> StatsWidgetEntry {
-        StatsWidgetEntry.noSite
+        let data = StatsWidgetData(siteName: "Your Woo Commerce Store",
+                                   revenue: 323.12,
+                                   orders: 54,
+                                   visitors: 143)
+
+        return StatsWidgetEntry.siteSelected(data)
     }
 
     func getSnapshot(in context: Context, completion: @escaping (StatsWidgetEntry) -> ()) {
-        completion(StatsWidgetEntry.noSite)
+        completion(placeholder(in: context))
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<StatsWidgetEntry>) -> ()) {
@@ -50,7 +55,12 @@ final class StatsProvider: TimelineProvider {
                 async let orderStats = loadOrderStats(for: storeID)
                 async let visitStats = loadSiteVisitorStats(for: storeID)
 
-                privateCompletion(StatsWidgetEntry.siteSelected(siteName: siteName, orderStats: try await orderStats, visitStat: try? await visitStats))
+                let data = StatsWidgetData(siteName: siteName ?? "Your Woo Commerce Store",
+                                           revenue: try await orderStats.totals.netRevenue,
+                                           orders: try await orderStats.totals.totalOrders,
+                                           visitors: try? await visitStats.totalVisitors)
+
+                privateCompletion(StatsWidgetEntry.siteSelected(data))
             } catch {
                 privateCompletion(.error)
             }
@@ -120,7 +130,7 @@ final class StatsProvider: TimelineProvider {
 
 enum StatsWidgetEntry: TimelineEntry {
     case error
-    case siteSelected(siteName: String?, orderStats: OrderStatsV4, visitStat: SiteVisitStats?)
+    case siteSelected(StatsWidgetData)
     case noSite
 
     var date: Date {
@@ -140,26 +150,26 @@ struct WooCommerceStatsWidgetsEntryView: View {
         switch entry {
         case .error:
             UnconfiguredView(message: "Error loading data. Please try again later.")
-        case let .siteSelected(siteName, orderStats, visitStats):
+        case let .siteSelected(data):
             switch family {
             case .systemSmall:
                 SingleStatView(viewData: SingleStatViewModel(widgetTitle: "Today",
-                                                         siteName: siteName ?? "Your Woo Commerce Store",
-                                                         bottomTitle: "Revenue",
-                                                         bottomValue: currencyFormatter.formatAmount(orderStats.totals.netRevenue) ?? "-"))
+                                                             siteName: data.siteName,
+                                                             bottomTitle: "Revenue",
+                                                             bottomValue: currencyFormatter.formatAmount(data.revenue) ?? "-"))
                 .padding()
                 .background(LinearGradient(gradient: Gradient(colors: [darkPurple, lightPurple]), startPoint: .top, endPoint: .bottom))
             case .systemMedium:
                 MultiStatsView(viewData: MultiStatViewModel(widgetTitle: "Today",
-                                                            siteName: siteName ?? "Your Woo Commerce Store",
+                                                            siteName: data.siteName,
                                                             upperLeftTitle: "Revenue",
-                                                            upperLeftValue: currencyFormatter.formatAmount(orderStats.totals.netRevenue) ?? "-",
+                                                            upperLeftValue: currencyFormatter.formatAmount(data.revenue) ?? "-",
                                                             upperRightTitle: "Visitors",
-                                                            upperRightValue: visitorsString(from: visitStats),
+                                                            upperRightValue: visitorsString(from: data.visitors),
                                                             lowerLeftTitle: "Orders",
-                                                            lowerLeftValue: String(orderStats.totals.totalOrders),
+                                                            lowerLeftValue: String(data.orders),
                                                             lowerRightTitle: "Conversion",
-                                                            lowerRightValue: conversionRate(from: orderStats, visitStats: visitStats)))
+                                                            lowerRightValue: conversionRate(from: data.orders, visitors: data.visitors)))
                 .padding()
                 .background(LinearGradient(gradient: Gradient(colors: [darkPurple, lightPurple]), startPoint: .top, endPoint: .bottom))
             default:
@@ -171,8 +181,8 @@ struct WooCommerceStatsWidgetsEntryView: View {
         }
     }
 
-    private func visitorsString(from visitStats: SiteVisitStats?) -> String {
-        guard let visitors = visitStats?.items?.first?.visitors else {
+    private func visitorsString(from visitors: Int?) -> String {
+        guard let visitors = visitors else {
             return "-"
 
         }
@@ -180,14 +190,19 @@ struct WooCommerceStatsWidgetsEntryView: View {
         return String(visitors)
     }
 
-    private func conversionRate(from orderStats: OrderStatsV4, visitStats: SiteVisitStats?) -> String {
-        guard let visitors = visitStats?.items?.first?.visitors else {
+    private func conversionRate(from orders: Int, visitors: Int?) -> String {
+        guard let visitors = visitors else {
             return "-"
         }
 
-        let conversionRate = visitors > 0 ? min(orderStats.totals.totalOrders/visitors, 1): 0
+        guard visitors > 0 else {
+            return "0 %"
+        }
 
-        return "\(conversionRate * 100) %"
+        let conversionRate: Double = min(Double(orders) / Double(visitors), 1)
+        let rateString = String(format: "%.2f", (conversionRate * 100))
+
+        return "\(rateString)%"
     }
 }
 

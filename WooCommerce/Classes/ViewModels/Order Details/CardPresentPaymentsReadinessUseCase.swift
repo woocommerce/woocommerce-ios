@@ -57,38 +57,24 @@ final class CardPresentPaymentsReadinessUseCase {
                     }
                 })
 
-            let readerConnectedReadiness = connectPublisher
-                .map(\.isNotEmpty)
-                .removeDuplicates()
-
-            let combinedReadiness = readerConnectedReadiness
-                .combineLatest(onboardingReadiness)
-                .share()
-
-            combinedReadiness
+            // This would be easier if there was a direct way to read if there's a reader connected right now
+            // Instead, this will emit once whether there is a reader connected
+            let isReaderConnected = connectPublisher
                 .first()
-                .subscribe(Subscribers.Sink(
-                    receiveCompletion: { _ in },
-                    receiveValue: { [weak self] connected, onboardingState in
-                        guard case .ready = onboardingState, connected else {
-                            self?.onboardingUseCase.forceRefresh()
-                            return
-                        }
-                    }))
+                .map(\.isNotEmpty)
 
-
-            combinedReadiness
-                .map { connected, onboardingState -> CardPaymentReadiness in
-                    // If onboarding isn't complete yet, its state takes priority
-                    guard case .ready = onboardingState else {
-                        return onboardingState
+            // The goal here is to make sure that we call a forceRefresh if there is no reader connected
+            // *before* we emit any values from onboardingReadiness.
+            // By using a flat map, we ensure that the current onboarding state is ignored if we're about
+            // to refresh, because forceRefresh sets the state to .loading
+            isReaderConnected
+                .handleEvents(receiveOutput: { [weak self] isReaderConnected in
+                    if !isReaderConnected {
+                        self?.onboardingUseCase.forceRefresh()
                     }
-                    // If we are onboarding, return readiness depending on reader connection
-                    if connected {
-                        return onboardingState
-                    } else {
-                        return .connecting
-                    }
+                })
+                .flatMap { _ in
+                    onboardingReadiness
                 }
                 .assign(to: &self.$readiness)
         }

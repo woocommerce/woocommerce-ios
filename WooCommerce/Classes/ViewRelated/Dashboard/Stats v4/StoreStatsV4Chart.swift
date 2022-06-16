@@ -1,12 +1,13 @@
 import Charts
+import Yosemite
 import SwiftUI
 
 /// A UIKit-wrapper for the store stats chart.
 ///
 @available(iOS 16, *)
 final class StoreStatsV4ChartHostingController: UIHostingController<StoreStatsV4Chart> {
-    init(intervals: [ChartData]) {
-        super.init(rootView: StoreStatsV4Chart(intervals: intervals))
+    init(intervals: [ChartData], timeRange: StatsTimeRangeV4) {
+        super.init(rootView: StoreStatsV4Chart(intervals: intervals, timeRange: timeRange))
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -15,13 +16,12 @@ final class StoreStatsV4ChartHostingController: UIHostingController<StoreStatsV4
 }
 
 /// A struct for data to be displayed on a Swift chart.
-/// In need of a better name.
 ///
 struct ChartData: Identifiable {
     var id: String { UUID().uuidString }
 
-    let xValue: String
-    let yValue: Double
+    let date: Date
+    let revenue: Double
 }
 
 /// Chart for store stats build with Swift Charts.
@@ -29,31 +29,79 @@ struct ChartData: Identifiable {
 @available(iOS 16, *)
 struct StoreStatsV4Chart: View {
     let intervals: [ChartData]
+    let timeRange: StatsTimeRangeV4
 
-    var hasRevenue: Bool {
-        intervals.map { $0.yValue }.contains { $0 != 0 }
+    private var hasRevenue: Bool {
+        intervals.map { $0.revenue }.contains { $0 != 0 }
+    }
+
+    private var xAxisStride: Calendar.Component {
+        switch timeRange {
+        case .today:
+            return .hour
+        case .thisWeek, .thisMonth:
+            return .day
+        case .thisYear:
+            return .month
+        }
+    }
+
+    private var xAxisStrideCount: Int {
+        switch timeRange {
+        case .today:
+            return 5
+        case .thisWeek:
+            return 1
+        case .thisMonth:
+            return 5
+        case .thisYear:
+            return 3
+        }
+    }
+
+    private func xAxisLabelFormatStyle(for date: Date) -> Date.FormatStyle {
+        switch timeRange {
+        case .today:
+            return .dateTime.hour()
+        case .thisWeek, .thisMonth:
+            if date == intervals.first?.date {
+                return .dateTime.month(.abbreviated).day(.twoDigits)
+            }
+            return .dateTime.day(.twoDigits)
+        case .thisYear:
+            return .dateTime.month(.abbreviated)
+        }
     }
 
     var body: some View {
         Chart(intervals) { item in
-            LineMark(x: .value("Time", item.xValue),
-                     y: .value("Revenue", item.yValue))
+            LineMark(x: .value("Time", item.date),
+                     y: .value("Revenue", item.revenue))
             .foregroundStyle(Color(Constants.chartLineColor))
 
             if !hasRevenue {
                 RuleMark(y: .value("Average value", 0))
                     .annotation(position: .overlay, alignment: .center) {
                         Text("No revenue this period")
+                            .font(.footnote)
                             .padding(4)
                             .background(Color(UIColor.systemBackground))
                     }
             }
 
-            AreaMark(x: .value("Time", item.xValue),
-                     y: .value("Revenue", item.yValue))
-            .foregroundStyle(.linearGradient(colors: [Color(Constants.chartGradientTopColor), Color(Constants.chartGradientBottomColor)], startPoint: .top, endPoint: .bottom))
+            AreaMark(x: .value("Time", item.date),
+                     y: .value("Revenue", item.revenue))
+            .foregroundStyle(.linearGradient(colors: [Color(Constants.chartGradientTopColor), Color(Constants.chartGradientBottomColor)],
+                                             startPoint: .top,
+                                             endPoint: .bottom))
         }
         .chartYAxis(hasRevenue ? .visible : .hidden)
+        .chartXAxis {
+            AxisMarks(values: .stride(by: xAxisStride, count: xAxisStrideCount)) { date in
+                AxisValueLabel(format: xAxisLabelFormatStyle(for: date.as(Date.self) ?? Date()))
+            }
+        }
+        .padding(16)
     }
 }
 
@@ -75,10 +123,9 @@ private extension StoreStatsV4Chart {
 struct StoreStatsV4Chart_Previews: PreviewProvider {
     static var previews: some View {
         let data: [ChartData] = [
-            .init(xValue: "Jan", yValue: 1299),
-            .init(xValue: "Feb", yValue: 1000),
-            .init(xValue: "Mar", yValue: 3084)
+            .init(date: Date(), revenue: 1299),
+            .init(date: Date().addingTimeInterval(3000), revenue: 3245),
         ]
-        StoreStatsV4Chart(intervals: data)
+        StoreStatsV4Chart(intervals: data, timeRange: .thisWeek)
     }
 }

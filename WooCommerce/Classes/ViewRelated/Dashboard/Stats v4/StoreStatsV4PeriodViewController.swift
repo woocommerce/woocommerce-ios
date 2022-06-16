@@ -362,7 +362,7 @@ private extension StoreStatsV4PeriodViewController {
             remove(hostingController)
         }
 
-        let hostingController = StoreStatsV4ChartHostingController(intervals: orderStatsIntervalData)
+        let hostingController = StoreStatsV4ChartHostingController(intervals: orderStatsIntervalData, timeRange: timeRange)
         hostingController.view.translatesAutoresizingMaskIntoConstraints = false
         lineChartView.addSubview(hostingController.view)
         addChild(hostingController)
@@ -391,15 +391,11 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     private func createOrderStatsIntervalData(orderStatsIntervals: [OrderStatsV4Interval]) -> [ChartData] {
-        let helper = StoreStatsV4ChartAxisHelper()
         let intervalDates = orderStatsIntervals.map { $0.dateStart(timeZone: siteTimezone) }
-        let xValues =  helper.generateLabelText(for: intervalDates,
-                                                timeRange: timeRange,
-                                                siteTimezone: siteTimezone)
-        let yValues = orderStatsIntervals.map { ($0.revenueValue as NSDecimalNumber).doubleValue }
-        return zip(xValues, yValues)
+        let revenues = orderStatsIntervals.map { ($0.revenueValue as NSDecimalNumber).doubleValue }
+        return zip(intervalDates, revenues)
             .map { x, y -> ChartData in
-                .init(xValue: x, yValue: y)
+                .init(date: x, revenue: y)
             }
     }
 }

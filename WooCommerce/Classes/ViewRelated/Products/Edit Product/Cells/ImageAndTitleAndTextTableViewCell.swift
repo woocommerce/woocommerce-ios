@@ -163,6 +163,10 @@ extension ImageAndTitleAndTextTableViewCell {
         accessoryType = viewModel.showsDisclosureIndicator ? .disclosureIndicator : .none
         if viewModel.isActionable && viewModel.showsDisclosureIndicator == false {
             accessoryType = .none
+        } else if viewModel.isActionable == false && viewModel.showsDisclosureIndicator && viewModel.isSelected {
+            accessoryType = .checkmark
+        } else if viewModel.isActionable == false && viewModel.showsDisclosureIndicator && viewModel.isSelected == false {
+            accessoryType = .none
         }
         selectionStyle = viewModel.isActionable ? .default: .none
         accessoryView = nil

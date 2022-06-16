@@ -29,7 +29,8 @@ final class DiscountTypeBottomSheetListSelectorCommand: BottomSheetListSelectorC
                                                                     imageTintColor: .gray(.shade20),
                                                                     numberOfLinesForText: 0,
                                                                     isSelected: isSelected(model: model),
-                                                                    isActionable: false)
+                                                                    isActionable: false,
+                                                                    showsDisclosureIndicator: true)
         cell.updateUI(viewModel: viewModel)
     }
 

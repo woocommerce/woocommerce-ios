@@ -5,10 +5,6 @@ import Yosemite
 import Networking
 import WooFoundation
 
-enum StatsProviderError: Error {
-    case attemptToRequestWithoutNetworkSet
-}
-
 final class StatsProvider: TimelineProvider {
     // refresh interval of the widget, in minutes
     let refreshInterval = 60
@@ -23,7 +19,7 @@ final class StatsProvider: TimelineProvider {
     }
 
     func placeholder(in context: Context) -> StatsWidgetEntry {
-        StatsWidgetEntry.siteSelected(siteName: "Your WooCommerce Store", data: placeholderData)
+        StatsWidgetEntry.siteSelected(siteName: Localization.placeholderSiteName, data: placeholderData)
     }
 
     func getSnapshot(in context: Context, completion: @escaping (StatsWidgetEntry) -> ()) {
@@ -54,5 +50,11 @@ final class StatsProvider: TimelineProvider {
         let nextRefreshDate = Calendar.current.date(byAdding: .minute, value: refreshInterval, to: date) ?? date
 
          return Timeline(entries: [timelineEntry], policy: .after(nextRefreshDate))
+    }
+}
+
+private extension StatsProvider {
+    enum Localization {
+        static let placeholderSiteName = NSLocalizedString("Your WooCommerce Store", comment: "Site name shown in the homescreen widget preview placeholder.")
     }
 }

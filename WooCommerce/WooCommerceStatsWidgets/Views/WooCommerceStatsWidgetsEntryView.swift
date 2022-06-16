@@ -15,26 +15,26 @@ struct WooCommerceStatsWidgetsEntryView: View {
     var body: some View {
         switch entry {
         case .error:
-            UnconfiguredView(message: "Error loading data. Please try again later.")
+            UnconfiguredView(message: Localization.errorMessage)
         case let .siteSelected(siteName, data):
             switch family {
             case .systemSmall:
                 SingleStatView(viewData: SingleStatViewModel(widgetTitle: title,
                                                              siteName: siteName,
-                                                             bottomTitle: "Revenue",
+                                                             bottomTitle: Localization.revenueTitle,
                                                              bottomValue: currencyFormatter.formatAmount(data.revenue) ?? "-"))
                 .padding()
                 .background(LinearGradient(gradient: Gradient(colors: [darkPurple, lightPurple]), startPoint: .top, endPoint: .bottom))
             case .systemMedium:
                 MultiStatsView(viewData: MultiStatViewModel(widgetTitle: title,
                                                             siteName: siteName,
-                                                            upperLeftTitle: "Revenue",
+                                                            upperLeftTitle: Localization.revenueTitle,
                                                             upperLeftValue: currencyFormatter.formatAmount(data.revenue) ?? "-",
-                                                            upperRightTitle: "Visitors",
+                                                            upperRightTitle: Localization.visitorsTitle,
                                                             upperRightValue: visitorsString(from: data.visitors),
-                                                            lowerLeftTitle: "Orders",
+                                                            lowerLeftTitle: Localization.ordersTitle,
                                                             lowerLeftValue: String(data.orders),
-                                                            lowerRightTitle: "Conversion",
+                                                            lowerRightTitle: Localization.conversionTitle,
                                                             lowerRightValue: conversionRate(from: data.orders, visitors: data.visitors)))
                 .padding()
                 .background(LinearGradient(gradient: Gradient(colors: [darkPurple, lightPurple]), startPoint: .top, endPoint: .bottom))
@@ -69,6 +69,17 @@ struct WooCommerceStatsWidgetsEntryView: View {
         let rateString = String(format: "%.2f", (conversionRate * 100))
 
         return "\(rateString)%"
+    }
+}
+
+private extension WooCommerceStatsWidgetsEntryView {
+    enum Localization {
+        static let errorMessage     = NSLocalizedString("Error loading data. Please try again later.",
+                                                        comment: "Message when the stats homes creen widget fails to load its data.")
+        static let revenueTitle     = NSLocalizedString("Revenue", comment: "Title for the revenue value in the stats home screen widget.")
+        static let visitorsTitle    = NSLocalizedString("Visitors", comment: "Title for the visitors value in the stats home screen widget.")
+        static let ordersTitle      = NSLocalizedString("Orders", comment: "Title for the orders value in the stats home screen widget.")
+        static let conversionTitle  = NSLocalizedString("Conversion", comment: "Title for the conversion value in the stats home screen widget.")
     }
 }
 

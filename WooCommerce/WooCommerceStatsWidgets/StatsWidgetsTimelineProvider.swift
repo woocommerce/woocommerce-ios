@@ -21,7 +21,7 @@ final class StatsWidgetsTimelineProvider: TimelineProvider {
     }
 
     func placeholder(in context: Context) -> StatsWidgetEntry {
-        StatsWidgetEntry.siteSelected(siteName: Localization.placeholderSiteName, data: placeholderData)
+        StatsWidgetEntry.storeSelected(storeName: Localization.placeholderSiteName, data: placeholderData)
     }
 
     func getSnapshot(in context: Context, completion: @escaping (StatsWidgetEntry) -> ()) {
@@ -30,7 +30,7 @@ final class StatsWidgetsTimelineProvider: TimelineProvider {
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<StatsWidgetEntry>) -> ()) {
         guard let sharedData = try? StatsWidgetsSharedDataManager.retrieveSharedData() else {
-            return completion(timeline(from: .noSite))
+            return completion(timeline(from: .noStoreSelected))
         }
 
         let service = StatsWidgetsService(authToken: sharedData.authToken)
@@ -40,7 +40,7 @@ final class StatsWidgetsTimelineProvider: TimelineProvider {
             do {
                 let statsWidgetData = try await service.fetchStatsWidgetData(for: sharedData.storeID, earliestDateToInclude: earliestStatsDateToFetch)
 
-                completion(timeline(from: .siteSelected(siteName: sharedData.siteName, data: statsWidgetData)))
+                completion(timeline(from: .storeSelected(storeName: sharedData.siteName, data: statsWidgetData)))
             } catch {
                 completion(timeline(from: .error))
             }

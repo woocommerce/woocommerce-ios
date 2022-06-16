@@ -15,7 +15,7 @@ struct WooCommerceStatsWidgetsEntryView: View {
         switch entry {
         case .error:
             UnconfiguredView(message: Localization.errorMessage)
-        case let .siteSelected(siteName, data):
+        case let .storeSelected(siteName, data):
             switch family {
             case .systemSmall:
                 SingleStatView(viewData: SingleStatViewModel(widgetTitle: title,
@@ -41,7 +41,7 @@ struct WooCommerceStatsWidgetsEntryView: View {
                 Text("View is unavailable")
             }
 
-        case .noSite:
+        case .noStoreSelected:
             UnconfiguredView(message: Localization.noStoreFoundMessage)
         }
     }
@@ -94,7 +94,7 @@ private extension WooCommerceStatsWidgetsEntryView {
 
 struct WooCommerceStatsWidgets_Previews: PreviewProvider {
     static var previews: some View {
-        WooCommerceStatsWidgetsEntryView(entry: StatsWidgetEntry.noSite, title: "Today")
+        WooCommerceStatsWidgetsEntryView(entry: StatsWidgetEntry.noStoreSelected, title: "Today")
             .previewContext(WidgetPreviewContext(family: .systemSmall))
     }
 }

@@ -9,8 +9,6 @@ struct WooCommerceStatsWidgetsEntryView: View {
     let entry: StatsWidgetsTimelineProvider.Entry
     let title: String
     let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
-    let darkPurple = Color(red: 0.407, green: 0.27, blue: 0.603)
-    let lightPurple = Color(red: 0.521, green: 0.376, blue: 0.701)
 
     var body: some View {
         switch entry {
@@ -24,7 +22,7 @@ struct WooCommerceStatsWidgetsEntryView: View {
                                                              bottomTitle: Localization.revenueTitle,
                                                              bottomValue: currencyFormatter.formatAmount(data.revenue) ?? "-"))
                 .padding()
-                .background(LinearGradient(gradient: Gradient(colors: [darkPurple, lightPurple]), startPoint: .top, endPoint: .bottom))
+                .background(backgroundGradient)
             case .systemMedium:
                 MultiStatsView(viewData: MultiStatViewModel(widgetTitle: title,
                                                             siteName: siteName,
@@ -37,14 +35,21 @@ struct WooCommerceStatsWidgetsEntryView: View {
                                                             lowerRightTitle: Localization.conversionTitle,
                                                             lowerRightValue: conversionRate(from: data.orders, visitors: data.visitors)))
                 .padding()
-                .background(LinearGradient(gradient: Gradient(colors: [darkPurple, lightPurple]), startPoint: .top, endPoint: .bottom))
+                .background(backgroundGradient)
             default:
                 Text("View is unavailable")
             }
 
         case .noSite:
-            UnconfiguredView(message: "Log in to WooCommerce to see today's stats.")
+            UnconfiguredView(message: "Log in to WooCommerce to see stats.")
         }
+    }
+
+    var backgroundGradient: LinearGradient {
+        let darkPurple = Color(red: 0.407, green: 0.27, blue: 0.603)
+        let lightPurple = Color(red: 0.521, green: 0.376, blue: 0.701)
+
+        return LinearGradient(gradient: Gradient(colors: [darkPurple, lightPurple]), startPoint: .top, endPoint: .bottom)
     }
 
     private func visitorsString(from visitors: Int?) -> String {
@@ -74,12 +79,15 @@ struct WooCommerceStatsWidgetsEntryView: View {
 
 private extension WooCommerceStatsWidgetsEntryView {
     enum Localization {
-        static let errorMessage     = NSLocalizedString("Error loading data. Please try again later.",
+        static let errorMessage            = NSLocalizedString("Error loading data. Please try again later.",
                                                         comment: "Message when the stats homes creen widget fails to load its data.")
+        static let noStoreFoundMessage     = NSLocalizedString("Log in to WooCommerce to see stats.",
+                                                               comment: "Message for the logged out state in the stats home screen widget.")
         static let revenueTitle     = NSLocalizedString("Revenue", comment: "Title for the revenue value in the stats home screen widget.")
         static let visitorsTitle    = NSLocalizedString("Visitors", comment: "Title for the visitors value in the stats home screen widget.")
         static let ordersTitle      = NSLocalizedString("Orders", comment: "Title for the orders value in the stats home screen widget.")
         static let conversionTitle  = NSLocalizedString("Conversion", comment: "Title for the conversion value in the stats home screen widget.")
+
     }
 }
 

@@ -1,4 +1,5 @@
 import Charts
+import WooFoundation
 import Yosemite
 import SwiftUI
 
@@ -73,6 +74,26 @@ struct StoreStatsV4Chart: View {
         }
     }
 
+    private var yAxisStride: Double {
+        let minValue = intervals.map { $0.revenue }.min() ?? 0
+        let maxValue = intervals.map { $0.revenue }.max() ?? 0
+        return (minValue + maxValue) / 2
+    }
+
+    private func yAxisLabel(for revenue: Double) -> String {
+        if revenue == 0.0 {
+            // Do not show the "0" label on the Y axis
+            return ""
+        } else {
+            let currencySymbol = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
+            return CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+                .formatCurrency(using: revenue.humanReadableString(shouldHideDecimalsForIntegerAbbreviatedValue: true),
+                                currencyPosition: ServiceLocator.currencySettings.currencyPosition,
+                                currencySymbol: currencySymbol,
+                                isNegative: revenue.sign == .minus)
+        }
+    }
+
     var body: some View {
         Chart(intervals) { item in
             LineMark(x: .value("Time", item.date),
@@ -95,12 +116,18 @@ struct StoreStatsV4Chart: View {
                                              startPoint: .top,
                                              endPoint: .bottom))
         }
-        .chartYAxis(hasRevenue ? .visible : .hidden)
         .chartXAxis {
             AxisMarks(values: .stride(by: xAxisStride, count: xAxisStrideCount)) { date in
                 AxisValueLabel(format: xAxisLabelFormatStyle(for: date.as(Date.self) ?? Date()))
             }
         }
+        .chartYAxis {
+            AxisMarks(position: .leading, values: .stride(by: yAxisStride)) { value in
+                AxisGridLine()
+                AxisValueLabel(yAxisLabel(for: value.as(Double.self) ?? 0))
+            }
+        }
+        .chartYAxis(hasRevenue ? .visible : .hidden)
         .padding(16)
     }
 }

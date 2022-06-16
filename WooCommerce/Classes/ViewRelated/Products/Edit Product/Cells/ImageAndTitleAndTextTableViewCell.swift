@@ -160,7 +160,15 @@ extension ImageAndTitleAndTextTableViewCell {
         descriptionLabel.numberOfLines = viewModel.numberOfLinesForText
         contentImageView.image = viewModel.image
         contentImageStackView.isHidden = viewModel.image == nil
+        
         accessoryType = viewModel.showsDisclosureIndicator ? .disclosureIndicator : .none
+        
+        if viewModel.isActionable == false && viewModel.isSelected {
+            accessoryType = .checkmark
+        } else if viewModel.isActionable == false && viewModel.isSelected == false {
+            accessoryType = .none
+        }
+
         selectionStyle = viewModel.isActionable ? .default: .none
         accessoryView = nil
 

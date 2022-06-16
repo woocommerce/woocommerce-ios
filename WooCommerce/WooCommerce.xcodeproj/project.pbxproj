@@ -1224,6 +1224,8 @@
 		B9151B402840EB340036180F /* WooFoundation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B9151B3E2840EB330036180F /* WooFoundation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B92FF9AE27FC7217005C34E3 /* OrderListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B92FF9AD27FC7217005C34E3 /* OrderListViewController.xib */; };
 		B92FF9B027FC7821005C34E3 /* ProductsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B92FF9AF27FC7821005C34E3 /* ProductsViewController.xib */; };
+		B962BA0A285B4B060011869F /* StatsWidgetsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B962BA08285B49E30011869F /* StatsWidgetsService.swift */; };
+		B962BA0D285B507D0011869F /* SharedDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B962BA0C285B507D0011869F /* SharedDataManager.swift */; };
 		B963A605285733F800EFADA0 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B963A604285733F800EFADA0 /* WidgetKit.framework */; };
 		B963A606285733F800EFADA0 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5744BEB0248FE44C000A6FE2 /* SwiftUI.framework */; };
 		B963A609285733F800EFADA0 /* WooCommerceStatsWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B963A608285733F800EFADA0 /* WooCommerceStatsWidgets.swift */; };
@@ -3023,6 +3025,8 @@
 		B9151B3E2840EB330036180F /* WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B92FF9AD27FC7217005C34E3 /* OrderListViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderListViewController.xib; sourceTree = "<group>"; };
 		B92FF9AF27FC7821005C34E3 /* ProductsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProductsViewController.xib; sourceTree = "<group>"; };
+		B962BA08285B49E30011869F /* StatsWidgetsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsWidgetsService.swift; sourceTree = "<group>"; };
+		B962BA0C285B507D0011869F /* SharedDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedDataManager.swift; sourceTree = "<group>"; };
 		B963A603285733F800EFADA0 /* WooCommerceStatsWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WooCommerceStatsWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B963A604285733F800EFADA0 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		B963A608285733F800EFADA0 /* WooCommerceStatsWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooCommerceStatsWidgets.swift; sourceTree = "<group>"; };
@@ -6694,9 +6698,27 @@
 			path = CustomerNoteSection;
 			sourceTree = "<group>";
 		};
+		B962BA07285B49B00011869F /* RemoteService */ = {
+			isa = PBXGroup;
+			children = (
+				B962BA08285B49E30011869F /* StatsWidgetsService.swift */,
+			);
+			path = RemoteService;
+			sourceTree = "<group>";
+		};
+		B962BA0B285B50600011869F /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				B962BA0C285B507D0011869F /* SharedDataManager.swift */,
+			);
+			path = Storage;
+			sourceTree = "<group>";
+		};
 		B963A607285733F800EFADA0 /* WooCommerceStatsWidgets */ = {
 			isa = PBXGroup;
 			children = (
+				B962BA0B285B50600011869F /* Storage */,
+				B962BA07285B49B00011869F /* RemoteService */,
 				B9E98B5C285A3951009EEA71 /* Helper */,
 				B9E98B5B285A2948009EEA71 /* Model */,
 				B9E98B502858B86C009EEA71 /* ViewModels */,
@@ -10295,10 +10317,12 @@
 				B9E98B562858DD2E009EEA71 /* MultiStatsView.swift in Sources */,
 				B9E98B5A285A2256009EEA71 /* StatsWidgetData.swift in Sources */,
 				B9E98B4E2858B7F0009EEA71 /* SingleStatView.swift in Sources */,
+				B962BA0D285B507D0011869F /* SharedDataManager.swift in Sources */,
 				B9E98B5E285A3986009EEA71 /* Date+Helpers.swift in Sources */,
 				B9E98B582859FC57009EEA71 /* MultiStatViewModel.swift in Sources */,
 				B9E98B4B2858B7F0009EEA71 /* StatsValueView.swift in Sources */,
 				B9E98B522858B887009EEA71 /* SingleStatViewModel.swift in Sources */,
+				B962BA0A285B4B060011869F /* StatsWidgetsService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

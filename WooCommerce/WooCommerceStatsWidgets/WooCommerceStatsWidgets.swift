@@ -15,6 +15,8 @@ final class StatsProvider: TimelineProvider {
 
     private let placeholderData: StatsWidgetData
     private let earliestDateToInclude: Date
+    private var sharedData: SharedData?
+    private var statsWidgetsService: StatsWidgetsService?
 
     private var orderStatsRemoteV4: OrderStatsRemoteV4?
     private var siteVisitStatsRemote: SiteVisitStatsRemote?
@@ -23,10 +25,15 @@ final class StatsProvider: TimelineProvider {
     init(placeholderData: StatsWidgetData, earliestDateToInclude: Date) {
         self.placeholderData = placeholderData
         self.earliestDateToInclude = earliestDateToInclude
+        self.sharedData = try? SharedDataManager.retrieveSharedData()
+
+        if let authToken = sharedData?.authToken {
+            statsWidgetsService = StatsWidgetsService(authToken: authToken)
+        }
     }
 
     func placeholder(in context: Context) -> StatsWidgetEntry {
-        StatsWidgetEntry.siteSelected(placeholderData)
+        StatsWidgetEntry.siteSelected(siteName: "Your WooCommerce Store", data: placeholderData)
     }
 
     func getSnapshot(in context: Context, completion: @escaping (StatsWidgetEntry) -> ()) {
@@ -36,103 +43,31 @@ final class StatsProvider: TimelineProvider {
     func getTimeline(in context: Context, completion: @escaping (Timeline<StatsWidgetEntry>) -> ()) {
         let date = Date()
         let nextRefreshDate = Calendar.current.date(byAdding: .minute, value: refreshInterval, to: date) ?? date
-
         let privateCompletion = { (timelineEntry: StatsWidgetEntry) in
             let timeline = Timeline(entries: [timelineEntry], policy: .after(nextRefreshDate))
                     completion(timeline)
         }
 
-        guard let defaults = UserDefaults(suiteName: "group.org.wordpress"),
-              let storeID = defaults.object(forKey: "storeID") as? Int64,
-              let authToken = defaults.string(forKey: "authToken") else {
-            debugPrint("no user name found")
+        guard let sharedData = sharedData,
+              let service = statsWidgetsService else {
             return privateCompletion(.noSite)
         }
 
-        let siteName = defaults.string(forKey: "siteName")
-        let credentials = Credentials(authToken: authToken)
-
-        network = AlamofireNetwork(credentials: credentials)
         Task {
             do {
-                async let orderStats = loadOrderStats(for: storeID)
-                async let visitStats = loadSiteVisitorStats(for: storeID)
+                let statsWidgetData = try await service.fetchStatsWidgetData(for: sharedData.storeID, earliestDateToInclude: earliestDateToInclude)
 
-                let data = StatsWidgetData(siteName: siteName ?? "Your WooCommerce Store",
-                                           revenue: try await orderStats.totals.netRevenue,
-                                           orders: try await orderStats.totals.totalOrders,
-                                           visitors: try? await visitStats.totalVisitors)
-
-                privateCompletion(StatsWidgetEntry.siteSelected(data))
+                privateCompletion(StatsWidgetEntry.siteSelected(siteName: sharedData.siteName, data: statsWidgetData))
             } catch {
                 privateCompletion(.error)
             }
         }
     }
-
-    func loadSiteVisitorStats(for storeID: Int64) async throws -> SiteVisitStats {
-        if siteVisitStatsRemote == nil {
-            guard let network = network else {
-                throw StatsProviderError.attemptToRequestWithoutNetworkSet
-            }
-
-
-            siteVisitStatsRemote = SiteVisitStatsRemote(network: network)
-        }
-
-
-        return try await withCheckedThrowingContinuation { continuation in
-            Task { @MainActor in
-                siteVisitStatsRemote?.loadSiteVisitorStats(for: storeID,
-                                                           unit: .week,
-                                                           latestDateToInclude: Date(),
-                                                           quantity: 1) { result in
-                    switch result {
-                    case .success(_):
-                        continuation.resume(with: result)
-
-                    case .failure(let error):
-                        continuation.resume(throwing: error)
-                    }
-                }
-            }
-        }
-    }
-
-    func loadOrderStats(for storeID: Int64) async throws -> OrderStatsV4 {
-        if orderStatsRemoteV4 == nil {
-            guard let network = network else {
-                throw StatsProviderError.attemptToRequestWithoutNetworkSet
-            }
-
-
-            orderStatsRemoteV4 = OrderStatsRemoteV4(network: network)
-        }
-
-
-        return try await withCheckedThrowingContinuation { continuation in
-            Task { @MainActor in
-                orderStatsRemoteV4?.loadOrderStats(for: storeID,
-                                                   unit: .weekly,
-                                                   earliestDateToInclude: earliestDateToInclude,
-                                        latestDateToInclude: Date(),
-                                        quantity: 1) { result in
-                    switch result {
-                    case .success(_):
-                        continuation.resume(with: result)
-                    case .failure(let error):
-                        continuation.resume(throwing: error)
-                    }
-                }
-            }
-        }
-    }
-
 }
 
 enum StatsWidgetEntry: TimelineEntry {
     case error
-    case siteSelected(StatsWidgetData)
+    case siteSelected(siteName: String, data: StatsWidgetData)
     case noSite
 
     var date: Date {
@@ -153,18 +88,18 @@ struct WooCommerceStatsWidgetsEntryView: View {
         switch entry {
         case .error:
             UnconfiguredView(message: "Error loading data. Please try again later.")
-        case let .siteSelected(data):
+        case let .siteSelected(siteName, data):
             switch family {
             case .systemSmall:
                 SingleStatView(viewData: SingleStatViewModel(widgetTitle: title,
-                                                             siteName: data.siteName,
+                                                             siteName: siteName,
                                                              bottomTitle: "Revenue",
                                                              bottomValue: currencyFormatter.formatAmount(data.revenue) ?? "-"))
                 .padding()
                 .background(LinearGradient(gradient: Gradient(colors: [darkPurple, lightPurple]), startPoint: .top, endPoint: .bottom))
             case .systemMedium:
                 MultiStatsView(viewData: MultiStatViewModel(widgetTitle: title,
-                                                            siteName: data.siteName,
+                                                            siteName: siteName,
                                                             upperLeftTitle: "Revenue",
                                                             upperLeftValue: currencyFormatter.formatAmount(data.revenue) ?? "-",
                                                             upperRightTitle: "Visitors",
@@ -211,8 +146,7 @@ struct WooCommerceStatsWidgetsEntryView: View {
 
 struct WooCommerceTodayStatsWidget: Widget {
     let kind: String = "WooCommerceTodayStatsWidget"
-    let placeholderData = StatsWidgetData(siteName: "Your WooCommerce Store",
-                                          revenue: 323.12,
+    let placeholderData = StatsWidgetData(revenue: 323.12,
                                           orders: 54,
                                           visitors: 143)
 
@@ -227,8 +161,7 @@ struct WooCommerceTodayStatsWidget: Widget {
 
 struct WooCommerceThisWeekStatsWidget: Widget {
     let kind: String = "WooCommerceThisWeekStatsWidget"
-    let placeholderData = StatsWidgetData(siteName: "Your WooCommerce Store",
-                                          revenue: 1349.21,
+    let placeholderData = StatsWidgetData(revenue: 1349.21,
                                           orders: 154,
                                           visitors: 686)
 

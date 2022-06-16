@@ -65,10 +65,12 @@ final class StoreStatsV4PeriodViewController: UIViewController {
 
     private var orderStatsIntervals: [OrderStatsV4Interval] = [] {
         didSet {
-            orderStatsIntervalLabels = createOrderStatsIntervalLabels(orderStatsIntervals: orderStatsIntervals)
+            orderStatsIntervalData = createOrderStatsIntervalData(orderStatsIntervals: orderStatsIntervals)
+            configureChart()
         }
     }
-    private var orderStatsIntervalLabels: [String] = []
+    private var orderStatsIntervalData: [ChartData] = []
+    private var chartHostingController: UIViewController?
 
     private var revenueItems: [Double] {
         orderStatsIntervals.map({ ($0.revenueValue as NSDecimalNumber).doubleValue })
@@ -348,6 +350,26 @@ private extension StoreStatsV4PeriodViewController {
         noRevenueLabel.font = StyleManager.subheadlineFont
         noRevenueLabel.textColor = .text
     }
+
+    func configureChart() {
+        guard #available(iOS 16, *) else {
+            return // fallback to old chart
+        }
+
+        if let hostingController = chartHostingController {
+            hostingController.removeFromParent()
+            hostingController.view.removeFromSuperview()
+            remove(hostingController)
+        }
+
+        let hostingController = StoreStatsV4ChartHostingController(intervals: orderStatsIntervalData)
+        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
+        lineChartView.addSubview(hostingController.view)
+        addChild(hostingController)
+        hostingController.didMove(toParent: self)
+        lineChartView.pinSubviewToAllEdges(hostingController.view)
+        self.chartHostingController = hostingController
+    }
 }
 
 // MARK: - Internal Updates
@@ -368,12 +390,17 @@ private extension StoreStatsV4PeriodViewController {
         viewModel.selectedIntervalIndex = selectedIndex
     }
 
-    private func createOrderStatsIntervalLabels(orderStatsIntervals: [OrderStatsV4Interval]) -> [String] {
+    private func createOrderStatsIntervalData(orderStatsIntervals: [OrderStatsV4Interval]) -> [ChartData] {
         let helper = StoreStatsV4ChartAxisHelper()
-        let intervalDates = orderStatsIntervals.map({ $0.dateStart(timeZone: siteTimezone) })
-        return helper.generateLabelText(for: intervalDates,
-                                           timeRange: timeRange,
-                                           siteTimezone: siteTimezone)
+        let intervalDates = orderStatsIntervals.map { $0.dateStart(timeZone: siteTimezone) }
+        let xValues =  helper.generateLabelText(for: intervalDates,
+                                                timeRange: timeRange,
+                                                siteTimezone: siteTimezone)
+        let yValues = orderStatsIntervals.map { ($0.revenueValue as NSDecimalNumber).doubleValue }
+        return zip(xValues, yValues)
+            .map { x, y -> ChartData in
+                .init(xValue: x, yValue: y)
+            }
     }
 }
 

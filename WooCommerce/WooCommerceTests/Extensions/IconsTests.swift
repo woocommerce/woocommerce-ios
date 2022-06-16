@@ -644,4 +644,8 @@ final class IconsTests: XCTestCase {
     func test_wcpayIconImage_is_not_nil() {
         XCTAssertNotNil(UIImage.wcpayIcon)
     }
+
+    func test_rectangle_on_rectangle_angled_is_not_nil() {
+        XCTAssertNotNil(UIImage.rectangleOnRectangleAngled)
+    }
 }

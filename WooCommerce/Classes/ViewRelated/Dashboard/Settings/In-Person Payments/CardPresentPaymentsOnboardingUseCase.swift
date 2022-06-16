@@ -101,6 +101,16 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
             savePreferredPlugin(selectedPlugin)
         }
     }
+
+    func clearPluginSelection() {
+        guard let siteID = siteID else {
+            return
+        }
+        preferredPluginLocal = nil
+        let action = AppSettingsAction.forgetPreferredInPersonPaymentGateway(siteID: siteID)
+        stores.dispatch(action)
+        updateState()
+    }
 }
 
 // MARK: - Internal state

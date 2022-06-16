@@ -15,21 +15,11 @@ final class StatsProvider: TimelineProvider {
 
     private let placeholderData: StatsWidgetData
     private let earliestDateToInclude: Date
-    private var sharedData: SharedData?
     private var statsWidgetsService: StatsWidgetsService?
-
-    private var orderStatsRemoteV4: OrderStatsRemoteV4?
-    private var siteVisitStatsRemote: SiteVisitStatsRemote?
-    private var network: AlamofireNetwork?
 
     init(placeholderData: StatsWidgetData, earliestDateToInclude: Date) {
         self.placeholderData = placeholderData
         self.earliestDateToInclude = earliestDateToInclude
-        self.sharedData = try? SharedDataManager.retrieveSharedData()
-
-        if let authToken = sharedData?.authToken {
-            statsWidgetsService = StatsWidgetsService(authToken: authToken)
-        }
     }
 
     func placeholder(in context: Context) -> StatsWidgetEntry {
@@ -41,26 +31,28 @@ final class StatsProvider: TimelineProvider {
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<StatsWidgetEntry>) -> ()) {
-        let date = Date()
-        let nextRefreshDate = Calendar.current.date(byAdding: .minute, value: refreshInterval, to: date) ?? date
-        let privateCompletion = { (timelineEntry: StatsWidgetEntry) in
-            let timeline = Timeline(entries: [timelineEntry], policy: .after(nextRefreshDate))
-                    completion(timeline)
+        guard let sharedData = try? SharedDataManager.retrieveSharedData() else {
+            return completion(timeline(from: .noSite))
         }
 
-        guard let sharedData = sharedData,
-              let service = statsWidgetsService else {
-            return privateCompletion(.noSite)
-        }
+        let service = StatsWidgetsService(authToken: sharedData.authToken)
+        statsWidgetsService = service
 
         Task {
             do {
                 let statsWidgetData = try await service.fetchStatsWidgetData(for: sharedData.storeID, earliestDateToInclude: earliestDateToInclude)
 
-                privateCompletion(StatsWidgetEntry.siteSelected(siteName: sharedData.siteName, data: statsWidgetData))
+                completion(timeline(from: .siteSelected(siteName: sharedData.siteName, data: statsWidgetData)))
             } catch {
-                privateCompletion(.error)
+                completion(timeline(from: .error))
             }
         }
+    }
+
+    private func timeline(from timelineEntry: StatsWidgetEntry) -> Timeline<StatsWidgetEntry> {
+        let date = Date()
+        let nextRefreshDate = Calendar.current.date(byAdding: .minute, value: refreshInterval, to: date) ?? date
+
+         return Timeline(entries: [timelineEntry], policy: .after(nextRefreshDate))
     }
 }

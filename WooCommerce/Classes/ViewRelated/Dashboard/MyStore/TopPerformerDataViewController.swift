@@ -1,6 +1,5 @@
 import UIKit
 import Yosemite
-import Charts
 import Experiments
 import XLPagerTabStrip
 import WordPressUI

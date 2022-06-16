@@ -5,17 +5,19 @@ import Yosemite
 import Networking
 import WooFoundation
 
+/// Determines when and with what content to update the Stats home screen widget
 final class StatsWidgetsTimelineProvider: TimelineProvider {
     // refresh interval of the widget, in minutes
     let refreshInterval = 60
-
+    // Data to be shown on placeholder widget, shown e.g when the iOS previews the widget
     private let placeholderData: StatsWidgetData
-    private let earliestDateToInclude: Date
+    // Earliest stats date to be fetched
+    private let earliestStatsDateToFetch: Date
     private var statsWidgetsService: StatsWidgetsService?
 
-    init(placeholderData: StatsWidgetData, earliestDateToInclude: Date) {
+    init(placeholderData: StatsWidgetData, earliestStatsDateToFetch: Date) {
         self.placeholderData = placeholderData
-        self.earliestDateToInclude = earliestDateToInclude
+        self.earliestStatsDateToFetch = earliestStatsDateToFetch
     }
 
     func placeholder(in context: Context) -> StatsWidgetEntry {
@@ -36,7 +38,7 @@ final class StatsWidgetsTimelineProvider: TimelineProvider {
 
         Task {
             do {
-                let statsWidgetData = try await service.fetchStatsWidgetData(for: sharedData.storeID, earliestDateToInclude: earliestDateToInclude)
+                let statsWidgetData = try await service.fetchStatsWidgetData(for: sharedData.storeID, earliestDateToInclude: earliestStatsDateToFetch)
 
                 completion(timeline(from: .siteSelected(siteName: sharedData.siteName, data: statsWidgetData)))
             } catch {

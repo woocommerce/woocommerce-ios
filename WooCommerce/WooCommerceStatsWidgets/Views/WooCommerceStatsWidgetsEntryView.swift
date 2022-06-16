@@ -3,6 +3,7 @@ import Foundation
 import SwiftUI
 import WooFoundation
 
+/// Renders the homescreen widget UI Content, taking into account the currentwidget family
 struct WooCommerceStatsWidgetsEntryView: View {
     @Environment(\.widgetFamily) var family: WidgetFamily
 
@@ -41,7 +42,7 @@ struct WooCommerceStatsWidgetsEntryView: View {
             }
 
         case .noSite:
-            UnconfiguredView(message: "Log in to WooCommerce to see stats.")
+            UnconfiguredView(message: Localization.noStoreFoundMessage)
         }
     }
 

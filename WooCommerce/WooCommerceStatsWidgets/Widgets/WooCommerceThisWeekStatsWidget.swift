@@ -10,7 +10,7 @@ struct WooCommerceThisWeekStatsWidget: Widget {
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind,
-                            provider: StatsWidgetsTimelineProvider(placeholderData: placeholderData, earliestDateToInclude: Date().startOfWeek())) { entry in
+                            provider: StatsWidgetsTimelineProvider(placeholderData: placeholderData, earliestStatsDateToFetch: Date().startOfWeek())) { entry in
             WooCommerceStatsWidgetsEntryView(entry: entry, title: Localization.title)
         }
                             .supportedFamilies(FeatureFlagService().widgetsFeatureIsEnabled ? [.systemSmall, .systemMedium] : [])

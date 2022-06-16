@@ -1,6 +1,7 @@
 import Networking
 import Foundation
 
+/// Fetches the remote relevant stats data from server, combines and provides it in a `StatsWidgetData` instance
 final class StatsWidgetsService {
     private var orderStatsRemoteV4: OrderStatsRemoteV4
     private var siteVisitStatsRemote: SiteVisitStatsRemote
@@ -21,7 +22,7 @@ final class StatsWidgetsService {
                                visitors: try? await visitStats.totalVisitors)
     }
 
-    func loadSiteVisitorStats(for storeID: Int64) async throws -> SiteVisitStats {
+    private func loadSiteVisitorStats(for storeID: Int64) async throws -> SiteVisitStats {
         return try await withCheckedThrowingContinuation { continuation in
             Task { @MainActor in
                 siteVisitStatsRemote.loadSiteVisitorStats(for: storeID,
@@ -40,8 +41,9 @@ final class StatsWidgetsService {
         }
     }
 
-    func loadOrderStats(for storeID: Int64, earliestDateToInclude: Date) async throws -> OrderStatsV4 {
+    private func loadOrderStats(for storeID: Int64, earliestDateToInclude: Date) async throws -> OrderStatsV4 {
         return try await withCheckedThrowingContinuation { continuation in
+            // Internally it uses WKWebView, that's why we need to run it on the main thread
             Task { @MainActor in
                 orderStatsRemoteV4.loadOrderStats(for: storeID,
                                                    unit: .weekly,

@@ -13,7 +13,7 @@ struct WooCommerceTodayStatsWidget: Widget {
                             provider: StatsWidgetsTimelineProvider(placeholderData: placeholderData, earliestStatsDateToFetch: Date().startOfDay())) { entry in
             WooCommerceStatsWidgetsEntryView(entry: entry, title: Localization.title)
         }
-                            .supportedFamilies(FeatureFlagService().widgetsFeatureIsEnabled ? [.systemSmall, .systemMedium] : [])
+                            .supportedFamilies(FeatureFlagService.widgetsFeatureIsEnabled ? [.systemSmall, .systemMedium] : [])
     }
 }
 

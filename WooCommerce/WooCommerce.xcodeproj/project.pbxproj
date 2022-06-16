@@ -662,6 +662,9 @@
 		3F0CF3142704494A00EF3D71 /* TabNavComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997172F23DBCEB200592D8E /* TabNavComponent.swift */; };
 		3F1CA81D26C3542600228BF2 /* XCUITestHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 3F1CA81C26C3542600228BF2 /* XCUITestHelpers */; };
 		3F1CA81F26C3543C00228BF2 /* XCUITestHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 3F1CA81E26C3543C00228BF2 /* XCUITestHelpers */; };
+		3F2C8A19285B038800B1A5BB /* BuildkiteTestCollector in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2C8A18285B038800B1A5BB /* BuildkiteTestCollector */; };
+		3F2C8A1B285B039900B1A5BB /* BuildkiteTestCollector in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2C8A1A285B039900B1A5BB /* BuildkiteTestCollector */; };
+		3F2C8A1D285B03A400B1A5BB /* BuildkiteTestCollector in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2C8A1C285B03A400B1A5BB /* BuildkiteTestCollector */; };
 		3F58701F281B947E004F7556 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F58701E281B947E004F7556 /* Main.storyboard */; };
 		3F587021281B9494004F7556 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F587020281B9494004F7556 /* LaunchScreen.storyboard */; };
 		3F587026281B9C19004F7556 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3F587028281B9C19004F7556 /* InfoPlist.strings */; };
@@ -3547,6 +3550,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				263E38462641FF3400260D3B /* Codegen in Frameworks */,
+				3F2C8A19285B038800B1A5BB /* BuildkiteTestCollector in Frameworks */,
 				26FB056825F6CB6000A40B26 /* Fakes.framework in Frameworks */,
 				B873E8F8E103966D2182EE67 /* Pods_WooCommerceTests.framework in Frameworks */,
 				57150E0F24F462C200E81611 /* TestKit in Frameworks */,
@@ -3558,6 +3562,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3FF314F526FD4F430012E68E /* UITestsFoundation.framework in Frameworks */,
+				3F2C8A1D285B03A400B1A5BB /* BuildkiteTestCollector in Frameworks */,
 				247CE89C2583402A00F9D9D1 /* Embassy in Frameworks */,
 				3F1CA81D26C3542600228BF2 /* XCUITestHelpers in Frameworks */,
 				3FF2247326706AA3008FFA87 /* ScreenObject in Frameworks */,
@@ -3569,6 +3574,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3FF314F626FD4F490012E68E /* UITestsFoundation.framework in Frameworks */,
+				3F2C8A1B285B039900B1A5BB /* BuildkiteTestCollector in Frameworks */,
 				24C5AC7625A53021008FD769 /* Embassy in Frameworks */,
 				3F1CA81F26C3543C00228BF2 /* XCUITestHelpers in Frameworks */,
 				3FF2248A267073AE008FFA87 /* ScreenObject in Frameworks */,
@@ -8189,6 +8195,7 @@
 			packageProductDependencies = (
 				57150E0E24F462C200E81611 /* TestKit */,
 				263E38452641FF3400260D3B /* Codegen */,
+				3F2C8A18285B038800B1A5BB /* BuildkiteTestCollector */,
 			);
 			productName = WooCommerceTests;
 			productReference = B56DB3DD2049BFAA00D4AA8E /* WooCommerceTests.xctest */;
@@ -8212,6 +8219,7 @@
 			packageProductDependencies = (
 				3FF2247226706AA3008FFA87 /* ScreenObject */,
 				3F1CA81C26C3542600228BF2 /* XCUITestHelpers */,
+				3F2C8A1C285B03A400B1A5BB /* BuildkiteTestCollector */,
 			);
 			productName = WooCommerceUITests;
 			productReference = CCDC49CA23FFFFF4003166BA /* WooCommerceUITests.xctest */;
@@ -8236,6 +8244,7 @@
 				247CE89B2583402A00F9D9D1 /* Embassy */,
 				3FF22489267073AE008FFA87 /* ScreenObject */,
 				3F1CA81E26C3543C00228BF2 /* XCUITestHelpers */,
+				3F2C8A1A285B039900B1A5BB /* BuildkiteTestCollector */,
 			);
 			productName = WooCommerceScreenshots;
 			productReference = F997170223DBB97500592D8E /* WooCommerceScreenshots.xctest */;
@@ -8328,6 +8337,7 @@
 				174CA86827D90A6200126524 /* XCRemoteSwiftPackageReference "AutomatticAbout-swift" */,
 				3FFC5EAA2851942F00563C48 /* XCRemoteSwiftPackageReference "Charts" */,
 				4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject" */,
+				3F2C8A17285B038800B1A5BB /* XCRemoteSwiftPackageReference "test-collector-swift" */,
 			);
 			productRefGroup = B56DB3C72049BFAA00D4AA8E /* Products */;
 			projectDirPath = "";
@@ -10974,6 +10984,14 @@
 				minimumVersion = 0.3.0;
 			};
 		};
+		3F2C8A17285B038800B1A5BB /* XCRemoteSwiftPackageReference "test-collector-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/buildkite/test-collector-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.1;
+			};
+		};
 		3FF2247126706AA3008FFA87 /* XCRemoteSwiftPackageReference "ScreenObject" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Automattic/ScreenObject";
@@ -11036,6 +11054,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3F1CA81B26C3542600228BF2 /* XCRemoteSwiftPackageReference "XCUITestHelpers" */;
 			productName = XCUITestHelpers;
+		};
+		3F2C8A18285B038800B1A5BB /* BuildkiteTestCollector */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3F2C8A17285B038800B1A5BB /* XCRemoteSwiftPackageReference "test-collector-swift" */;
+			productName = BuildkiteTestCollector;
+		};
+		3F2C8A1A285B039900B1A5BB /* BuildkiteTestCollector */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3F2C8A17285B038800B1A5BB /* XCRemoteSwiftPackageReference "test-collector-swift" */;
+			productName = BuildkiteTestCollector;
+		};
+		3F2C8A1C285B03A400B1A5BB /* BuildkiteTestCollector */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3F2C8A17285B038800B1A5BB /* XCRemoteSwiftPackageReference "test-collector-swift" */;
+			productName = BuildkiteTestCollector;
 		};
 		3FF2247226706AA3008FFA87 /* ScreenObject */ = {
 			isa = XCSwiftPackageProductDependency;

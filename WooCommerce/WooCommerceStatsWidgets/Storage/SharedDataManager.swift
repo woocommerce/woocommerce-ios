@@ -13,13 +13,20 @@ struct SharedData {
 
 struct SharedDataManager {
     static func retrieveSharedData() throws -> SharedData {
-        guard let defaults = UserDefaults(suiteName: "group.org.wordpress"),
-              let storeID = defaults.object(forKey: "storeID") as? Int64,
-              let authToken = defaults.string(forKey: "authToken"),
-              let siteName = defaults.string(forKey: "siteName") else {
+        guard let defaults = UserDefaults(suiteName: SharedDataKeys.suiteName),
+              let storeID = defaults.object(forKey: SharedDataKeys.storeID) as? Int64,
+              let authToken = defaults.string(forKey: SharedDataKeys.authToken),
+              let siteName = defaults.string(forKey: SharedDataKeys.siteName) else {
             throw SharedDataManagerError.noSharedDataFound
         }
 
         return SharedData(storeID: storeID, siteName: siteName, authToken: authToken)
     }
+}
+
+private enum SharedDataKeys {
+    static let suiteName = "group.org.wordpress"
+    static let storeID = "storeID"
+    static let authToken = "authToken"
+    static let siteName = "siteName"
 }

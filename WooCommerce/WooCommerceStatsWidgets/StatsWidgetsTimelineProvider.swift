@@ -5,7 +5,7 @@ import Yosemite
 import Networking
 import WooFoundation
 
-final class StatsProvider: TimelineProvider {
+final class StatsWidgetsTimelineProvider: TimelineProvider {
     // refresh interval of the widget, in minutes
     let refreshInterval = 60
 
@@ -27,7 +27,7 @@ final class StatsProvider: TimelineProvider {
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<StatsWidgetEntry>) -> ()) {
-        guard let sharedData = try? SharedDataManager.retrieveSharedData() else {
+        guard let sharedData = try? StatsWidgetsSharedDataManager.retrieveSharedData() else {
             return completion(timeline(from: .noSite))
         }
 
@@ -53,7 +53,7 @@ final class StatsProvider: TimelineProvider {
     }
 }
 
-private extension StatsProvider {
+private extension StatsWidgetsTimelineProvider {
     enum Localization {
         static let placeholderSiteName = NSLocalizedString("Your WooCommerce Store", comment: "Site name shown in the homescreen widget preview placeholder.")
     }

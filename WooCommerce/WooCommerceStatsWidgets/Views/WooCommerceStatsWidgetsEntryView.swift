@@ -6,7 +6,7 @@ import WooFoundation
 struct WooCommerceStatsWidgetsEntryView: View {
     @Environment(\.widgetFamily) var family: WidgetFamily
 
-    let entry: StatsProvider.Entry
+    let entry: StatsWidgetsTimelineProvider.Entry
     let title: String
     let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
     let darkPurple = Color(red: 0.407, green: 0.27, blue: 0.603)

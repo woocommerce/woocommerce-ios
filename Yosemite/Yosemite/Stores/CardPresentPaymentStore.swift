@@ -18,7 +18,15 @@ public final class CardPresentPaymentStore: Store {
     private let commonReaderConfigProvider: CommonReaderConfigProvider
 
     /// Which backend is the store using? Default to WCPay until told otherwise
-    private var usingBackend: CardPresentPaymentGatewayExtension = .wcpay
+    private var usingBackend: CardPresentPaymentGatewayExtension = .wcpay {
+        didSet {
+            if usingBackend != oldValue {
+                // If we switched backends, disconnect any connected reader
+                // as its connection token would be tied to the old backend
+                disconnect(onCompletion: { _ in })
+            }
+        }
+    }
 
     private let remote: WCPayRemote
     private let stripeRemote: StripeRemote

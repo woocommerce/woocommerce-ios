@@ -30,16 +30,30 @@ struct ChartData: Identifiable {
 struct StoreStatsV4Chart: View {
     let intervals: [ChartData]
 
+    var hasRevenue: Bool {
+        intervals.map { $0.yValue }.contains { $0 != 0 }
+    }
+
     var body: some View {
         Chart(intervals) { item in
             LineMark(x: .value("Time", item.xValue),
                      y: .value("Revenue", item.yValue))
             .foregroundStyle(Color(Constants.chartLineColor))
 
+            if !hasRevenue {
+                RuleMark(y: .value("Average value", 0))
+                    .annotation(position: .overlay, alignment: .center) {
+                        Text("No revenue this period")
+                            .padding(4)
+                            .background(Color(UIColor.systemBackground))
+                    }
+            }
+
             AreaMark(x: .value("Time", item.xValue),
                      y: .value("Revenue", item.yValue))
             .foregroundStyle(.linearGradient(colors: [Color(Constants.chartGradientTopColor), Color(Constants.chartGradientBottomColor)], startPoint: .top, endPoint: .bottom))
         }
+        .chartYAxis(hasRevenue ? .visible : .hidden)
     }
 }
 

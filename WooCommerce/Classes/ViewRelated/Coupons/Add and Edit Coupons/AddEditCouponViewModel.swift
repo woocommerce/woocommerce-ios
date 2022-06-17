@@ -139,7 +139,7 @@ final class AddEditCouponViewModel: ObservableObject {
     var hasSelectedCategories: Bool {
         categoryIDs.isNotEmpty
     }
-    
+
     var shareCouponMessage: String {
         coupon?.generateShareMessage(currencySettings: currencySettings) ?? ""
     }
@@ -255,12 +255,6 @@ final class AddEditCouponViewModel: ObservableObject {
         }
 
         codeField = code
-    }
-
-    /// Display the Coupon creation success view
-    ///
-    func showCouponCreationSuccess(couponCode: String, shareMessage: String) {
-        let creationSuccessView = CouponCreationSuccess(couponCode: couponCode, shareMessage: shareMessage) {}
     }
 
     func completeCouponAddEdit(coupon: Coupon, onUpdateFinished: @escaping () -> Void) {

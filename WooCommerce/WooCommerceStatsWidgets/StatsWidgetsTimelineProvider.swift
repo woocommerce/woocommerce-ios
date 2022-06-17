@@ -1,18 +1,17 @@
 
 import WidgetKit
-import SwiftUI
-import Yosemite
-import Networking
-import WooFoundation
+import Foundation
 
-/// Determines when and with what content to update the Stats home screen widget
+
+/// Determines when and with what content the stats home screen widget is updated
 final class StatsWidgetsTimelineProvider: TimelineProvider {
     // refresh interval of the widget, in minutes
-    let refreshInterval = 60
+    private let refreshInterval = 60
     // Data to be shown on placeholder widget, shown e.g when the iOS previews the widget
     private let placeholderData: StatsWidgetData
     // Earliest stats date to be fetched
     private let earliestStatsDateToFetch: Date
+    // Network service to fetch the data
     private var statsWidgetsService: StatsWidgetsService?
 
     init(placeholderData: StatsWidgetData, earliestStatsDateToFetch: Date) {

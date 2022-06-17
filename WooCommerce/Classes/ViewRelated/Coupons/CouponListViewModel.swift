@@ -4,7 +4,6 @@ import protocol Storage.StorageManagerType
 import class AutomatticTracks.CrashLogging
 import UIKit
 import Experiments
-import WooFoundation
 
 enum CouponListState {
     case initialized // ViewModel ready to receive actions

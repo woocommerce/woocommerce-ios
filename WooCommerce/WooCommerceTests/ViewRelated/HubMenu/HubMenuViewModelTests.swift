@@ -160,6 +160,58 @@ final class HubMenuViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.menuElements, [.woocommerceAdmin, .viewStore, .reviews])
     }
+    func test_hub_menu_returns_expected_store_and_woocommerce_admin_url() {
+        // Given
+        let sampleURL = "https://testshop.com/"
+        let sampleAdminURL = "https://testshop.com/wp-admin/"
+        let sessionManager = SessionManager.testingInstance
+        let site = Site.fake().copy(url: sampleURL,
+                                    adminURL: sampleAdminURL)
+        sessionManager.defaultSite = site
+        let stores = MockStoresManager(sessionManager: sessionManager)
+
+        // When
+        let viewModel = HubMenuViewModel(siteID: site.siteID,
+                                         stores: stores)
+
+        // Then
+        XCTAssertEqual(viewModel.storeURL, try sampleURL.asURL())
+        XCTAssertEqual(viewModel.woocommerceAdminURL, try sampleAdminURL.asURL())
+    }
+    func test_hub_menu_returns_default_woocommerce_url_if_store_url_is_empty() {
+        // Given
+        let sampleURL = ""
+        let sampleAdminURL = ""
+        let sessionManager = SessionManager.testingInstance
+        let site = Site.fake().copy(url: sampleURL,
+                                    adminURL: sampleAdminURL)
+        sessionManager.defaultSite = site
+        let stores = MockStoresManager(sessionManager: sessionManager)
+
+        // When
+        let viewModel = HubMenuViewModel(siteID: site.siteID,
+                                         stores: stores)
+        // Then
+        XCTAssertEqual(viewModel.storeURL, WooConstants.URLs.blog.asURL())
+        XCTAssertEqual(viewModel.woocommerceAdminURL, WooConstants.URLs.blog.asURL())
+    }
+    func test_that_store_and_admin_url_do_not_return_nil_if_store_url_is_nil() {
+        // Given
+        let sampleURL: String? = nil
+        let sampleAdminURL: String? = nil
+        let sessionManager = SessionManager.testingInstance
+        let site = Site.fake().copy(url: sampleURL,
+                                    adminURL: sampleAdminURL)
+        sessionManager.defaultSite = site
+        let stores = MockStoresManager(sessionManager: sessionManager)
+
+        // When
+        let viewModel = HubMenuViewModel(siteID: site.siteID,
+                                         stores: stores)
+        // Then
+        XCTAssertNotNil(viewModel.storeURL)
+        XCTAssertNotNil(viewModel.woocommerceAdminURL)
+    }
 }
 
 private extension HubMenuViewModelTests {

@@ -34,8 +34,12 @@ final class HubMenuViewModel: ObservableObject {
     }
 
     var woocommerceAdminURL: URL {
-        guard let urlString = stores.sessionManager.defaultSite?.adminURL, let url = URL(string: urlString) else {
+        guard let defaultSite = stores.sessionManager.defaultSite else {
             return WooConstants.URLs.blog.asURL()
+        }
+        guard let url = URL(string: defaultSite.adminURL) else {
+            let adminURLFromSiteURLString = defaultSite.url + "\\wp-admin"
+            return URL(string: adminURLFromSiteURLString) ?? WooConstants.URLs.blog.asURL()
         }
         return url
     }

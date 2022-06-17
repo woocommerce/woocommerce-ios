@@ -1,8 +1,8 @@
 import SwiftUI
 
-final class PaymentMethodsHostingController: UIHostingController<PaymentMethodsView> {
+final class PaymentMethodsHostingController: UIHostingController<HostedPaymentMethodsView> {
     init(viewModel: PaymentMethodsViewModel) {
-        super.init(rootView: PaymentMethodsView(viewModel: viewModel))
+        super.init(rootView: HostedPaymentMethodsView(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
         rootView.dismiss = { [weak self] in
@@ -27,6 +27,34 @@ final class PaymentMethodsHostingController: UIHostingController<PaymentMethodsV
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+}
+
+struct HostedPaymentMethodsView: View {
+    /// Set this closure with UIKit dismiss code. Needed because we need access to the UIHostingController `dismiss` method.
+    ///
+    var dismiss: (() -> Void) = {}
+
+    /// Needed because IPP capture payments using a UIViewController for providing user feedback.
+    ///
+    weak var rootViewController: UIViewController?
+
+    /// ViewModel to render the view content.
+    ///
+    var viewModel: PaymentMethodsViewModel
+
+    var body: some View {
+        PaymentMethodsView(dismiss: dismiss, rootViewController: rootViewController, viewModel: viewModel)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(PaymentMethodsHostingController.Localization.cancelTitle, action: {
+                        dismiss()
+                        viewModel.userDidCancelFlow()
+                    })
+                }
+            }
+            .wooNavigationBarStyle()
+    }
+
 }
 
 /// Intercepts to the dismiss drag gesture.

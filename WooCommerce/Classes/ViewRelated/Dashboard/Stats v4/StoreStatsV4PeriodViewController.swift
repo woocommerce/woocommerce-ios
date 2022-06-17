@@ -69,7 +69,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
             configureChart()
         }
     }
-    private var orderStatsIntervalData: [ChartData] = []
+    private var orderStatsIntervalData: [StoreStatsChartData] = []
     private var chartHostingController: UIViewController?
 
     private var revenueItems: [Double] {
@@ -390,11 +390,11 @@ private extension StoreStatsV4PeriodViewController {
         viewModel.selectedIntervalIndex = selectedIndex
     }
 
-    private func createOrderStatsIntervalData(orderStatsIntervals: [OrderStatsV4Interval]) -> [ChartData] {
+    private func createOrderStatsIntervalData(orderStatsIntervals: [OrderStatsV4Interval]) -> [StoreStatsChartData] {
         let intervalDates = orderStatsIntervals.map { $0.dateStart(timeZone: siteTimezone) }
         let revenues = orderStatsIntervals.map { ($0.revenueValue as NSDecimalNumber).doubleValue }
         return zip(intervalDates, revenues)
-            .map { x, y -> ChartData in
+            .map { x, y -> StoreStatsChartData in
                 .init(date: x, revenue: y)
             }
     }

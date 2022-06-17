@@ -6,9 +6,9 @@ import SwiftUI
 /// A UIKit-wrapper for the store stats chart.
 ///
 @available(iOS 16, *)
-final class StoreStatsV4ChartHostingController: UIHostingController<StoreStatsV4Chart> {
-    init(intervals: [ChartData], timeRange: StatsTimeRangeV4) {
-        super.init(rootView: StoreStatsV4Chart(intervals: intervals, timeRange: timeRange))
+final class StoreStatsV4ChartHostingController: UIHostingController<StoreStatsChart> {
+    init(intervals: [StoreStatsChartData], timeRange: StatsTimeRangeV4) {
+        super.init(rootView: StoreStatsChart(intervals: intervals, timeRange: timeRange))
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -18,7 +18,7 @@ final class StoreStatsV4ChartHostingController: UIHostingController<StoreStatsV4
 
 /// A struct for data to be displayed on a Swift chart.
 ///
-struct ChartData: Identifiable {
+struct StoreStatsChartData: Identifiable {
     var id: String { UUID().uuidString }
 
     let date: Date
@@ -28,8 +28,8 @@ struct ChartData: Identifiable {
 /// Chart for store stats build with Swift Charts.
 ///
 @available(iOS 16, *)
-struct StoreStatsV4Chart: View {
-    let intervals: [ChartData]
+struct StoreStatsChart: View {
+    let intervals: [StoreStatsChartData]
     let timeRange: StatsTimeRangeV4
 
     @State private var selectedDate: Date?
@@ -99,21 +99,21 @@ struct StoreStatsV4Chart: View {
 
     var body: some View {
         Chart(intervals) { item in
-            LineMark(x: .value("Time", item.date),
+            LineMark(x: .value("Date", item.date),
                      y: .value("Revenue", item.revenue))
             .foregroundStyle(Color(Constants.chartLineColor))
 
             if !hasRevenue {
-                RuleMark(y: .value("Average value", 0))
+                RuleMark(y: .value("Zero revenue", 0))
                     .annotation(position: .overlay, alignment: .center) {
                         Text("No revenue this period")
                             .font(.footnote)
-                            .padding(4)
+                            .padding(Constants.annotationPadding)
                             .background(Color(UIColor.systemBackground))
                     }
             }
 
-            AreaMark(x: .value("Time", item.date),
+            AreaMark(x: .value("Date", item.date),
                      y: .value("Revenue", item.revenue))
             .foregroundStyle(.linearGradient(colors: [Color(Constants.chartGradientTopColor), Color(Constants.chartGradientBottomColor)],
                                              startPoint: .top,
@@ -159,7 +159,7 @@ struct StoreStatsV4Chart: View {
                     }
             }
         }
-        .padding(16)
+        .padding(Constants.chartPadding)
     }
 
     private func updateSelectedDate(at location: CGPoint, proxy: ChartProxy, geometry: GeometryProxy) {
@@ -173,12 +173,11 @@ struct StoreStatsV4Chart: View {
             })
             .first?.date
         selectedRevenue = intervals.first(where: { $0.date == selectedDate })?.revenue
-        print("Selected Date: \(selectedDate), revenue: \(selectedRevenue)")
     }
 }
 
 @available(iOS 16, *)
-private extension StoreStatsV4Chart {
+private extension StoreStatsChart {
     enum Constants {
         static var chartLineColor: UIColor {
             UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade50),
@@ -188,16 +187,18 @@ private extension StoreStatsV4Chart {
         static let chartGradientTopColor: UIColor = UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade50).withAlphaComponent(0.1),
                                                             dark: UIColor(red: 204.0/256, green: 204.0/256, blue: 204.0/256, alpha: 0.3))
         static let chartGradientBottomColor: UIColor = .clear.withAlphaComponent(0)
+        static let chartPadding: CGFloat = 8
+        static let annotationPadding: CGFloat = 4
     }
 }
 
 @available(iOS 16, *)
 struct StoreStatsV4Chart_Previews: PreviewProvider {
     static var previews: some View {
-        let data: [ChartData] = [
+        let data: [StoreStatsChartData] = [
             .init(date: Date(), revenue: 1299),
             .init(date: Date().addingTimeInterval(3000), revenue: 3245),
         ]
-        StoreStatsV4Chart(intervals: data, timeRange: .thisWeek)
+        StoreStatsChart(intervals: data, timeRange: .thisWeek)
     }
 }

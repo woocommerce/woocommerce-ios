@@ -198,9 +198,11 @@ private extension CouponListViewController {
     /// Triggers the coupon creation flow
     ///
     func startCouponCreation(discountType: Coupon.DiscountType) {
-        let viewModel = viewModel.createAddEditCouponViewModel(with: discountType) { createdCoupon, shareMessage in
-        }
-        let addEditHostingController = AddEditCouponHostingController(viewModel: viewModel, onDisappear: {})
+        let viewModel = AddEditCouponViewModel(siteID: siteID, discountType: discountType, onCompletion: {_ in })
+        let addEditHostingController = AddEditCouponHostingController(viewModel: viewModel, onDisappear: { [weak self] in
+            guard let self = self else { return }
+            self.dismiss(animated: true)
+        })
         present(addEditHostingController, animated: true)
     }
 }

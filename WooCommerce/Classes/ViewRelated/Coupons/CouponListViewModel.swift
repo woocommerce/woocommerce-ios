@@ -106,20 +106,6 @@ final class CouponListViewModel {
         }
     }
 
-    func createAddEditCouponViewModel(with discountType: Coupon.DiscountType,
-                                      onCreationSuccess: @escaping (Coupon, String) -> Void) -> AddEditCouponViewModel {
-        .init(siteID: siteID, discountType: discountType, onCompletion: { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let createdCoupon):
-                let shareMessage = createdCoupon.generateShareMessage(currencySettings: self.currencySettings)
-                onCreationSuccess(createdCoupon, shareMessage)
-            default:
-                break
-            }
-        })
-    }
-
     // MARK: - ViewController actions
     //
     /// The ViewController calls `viewDidLoad` to notify the view model it's ready to receive results

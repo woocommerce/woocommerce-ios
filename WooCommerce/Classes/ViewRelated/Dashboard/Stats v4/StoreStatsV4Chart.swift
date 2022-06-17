@@ -32,6 +32,9 @@ struct StoreStatsV4Chart: View {
     let intervals: [ChartData]
     let timeRange: StatsTimeRangeV4
 
+    @State private var selectedDate: Date?
+    @State private var selectedRevenue: Double?
+
     private var hasRevenue: Bool {
         intervals.map { $0.revenue }.contains { $0 != 0 }
     }
@@ -115,6 +118,17 @@ struct StoreStatsV4Chart: View {
             .foregroundStyle(.linearGradient(colors: [Color(Constants.chartGradientTopColor), Color(Constants.chartGradientBottomColor)],
                                              startPoint: .top,
                                              endPoint: .bottom))
+
+            if let selectedDate = selectedDate, hasRevenue {
+                RuleMark(x: .value("Selected date", selectedDate))
+                    .foregroundStyle(Color(Constants.chartHighlightLineColor))
+
+                if let selectedRevenue = selectedRevenue {
+                    PointMark(x: .value("Selected date", selectedDate),
+                              y: .value("Selected revenue", selectedRevenue))
+                    .foregroundStyle(Color(Constants.chartHighlightLineColor))
+                }
+            }
         }
         .chartXAxis {
             AxisMarks(values: .stride(by: xAxisStride, count: xAxisStrideCount)) { date in
@@ -128,7 +142,38 @@ struct StoreStatsV4Chart: View {
             }
         }
         .chartYAxis(hasRevenue ? .visible : .hidden)
+        .chartOverlay { proxy in
+            GeometryReader { geometry in
+                Rectangle().fill(.clear).contentShape(Rectangle())
+                    .gesture(DragGesture()
+                        .onChanged { value in
+                            updateSelectedDate(at: value.location,
+                                               proxy: proxy,
+                                               geometry: geometry)
+                        }
+                    )
+                    .onTapGesture { location in
+                        updateSelectedDate(at: location,
+                                           proxy: proxy,
+                                           geometry: geometry)
+                    }
+            }
+        }
         .padding(16)
+    }
+
+    private func updateSelectedDate(at location: CGPoint, proxy: ChartProxy, geometry: GeometryProxy) {
+        let xPosition = location.x - geometry[proxy.plotAreaFrame].origin.x
+        guard let date: Date = proxy.value(atX: xPosition) else {
+            return
+        }
+        selectedDate = intervals
+            .sorted(by: {
+                abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date))
+            })
+            .first?.date
+        selectedRevenue = intervals.first(where: { $0.date == selectedDate })?.revenue
+        print("Selected Date: \(selectedDate), revenue: \(selectedRevenue)")
     }
 }
 

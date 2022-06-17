@@ -306,7 +306,9 @@ struct AddEditCoupon: View {
             }
             .sheet(isPresented: $viewModel.showingCouponCreationSuccess) {
                 let couponCode = viewModel.coupon?.code ?? ""
-                CouponCreationSuccess(couponCode: couponCode, shareMessage: viewModel.shareCouponMessage, onDismiss: {})
+                CouponCreationSuccess(couponCode: couponCode, shareMessage: viewModel.shareCouponMessage, onDismiss: {
+                    onDisappear()
+                })
             }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

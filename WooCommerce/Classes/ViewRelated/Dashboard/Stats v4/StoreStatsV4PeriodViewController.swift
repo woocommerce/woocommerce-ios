@@ -362,7 +362,9 @@ private extension StoreStatsV4PeriodViewController {
             remove(hostingController)
         }
 
-        let hostingController = StoreStatsV4ChartHostingController(intervals: orderStatsIntervalData, timeRange: timeRange)
+        let hostingController = StoreStatsV4ChartHostingController(intervals: orderStatsIntervalData, timeRange: timeRange) { [weak self] selectedIndex in
+            self?.viewModel.selectedIntervalIndex = selectedIndex
+        }
         hostingController.view.translatesAutoresizingMaskIntoConstraints = false
         lineChartView.addSubview(hostingController.view)
         addChild(hostingController)

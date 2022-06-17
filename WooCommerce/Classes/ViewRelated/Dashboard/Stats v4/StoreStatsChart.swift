@@ -7,8 +7,12 @@ import SwiftUI
 ///
 @available(iOS 16, *)
 final class StoreStatsV4ChartHostingController: UIHostingController<StoreStatsChart> {
-    init(intervals: [StoreStatsChartData], timeRange: StatsTimeRangeV4) {
-        super.init(rootView: StoreStatsChart(intervals: intervals, timeRange: timeRange))
+    init(intervals: [StoreStatsChartData],
+         timeRange: StatsTimeRangeV4,
+         intervalSelectionHandler: @escaping (Int) -> Void) {
+        super.init(rootView: StoreStatsChart(intervals: intervals,
+                                             timeRange: timeRange,
+                                             onIntervalSelected: intervalSelectionHandler))
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -31,6 +35,7 @@ struct StoreStatsChartData: Identifiable {
 struct StoreStatsChart: View {
     let intervals: [StoreStatsChartData]
     let timeRange: StatsTimeRangeV4
+    let onIntervalSelected: (Int) -> Void
 
     @State private var selectedDate: Date?
     @State private var selectedRevenue: Double?
@@ -173,6 +178,9 @@ struct StoreStatsChart: View {
             })
             .first?.date
         selectedRevenue = intervals.first(where: { $0.date == selectedDate })?.revenue
+        if let index = intervals.firstIndex(where: { $0.date == selectedDate }) {
+            onIntervalSelected(index)
+        }
     }
 }
 
@@ -199,6 +207,6 @@ struct StoreStatsV4Chart_Previews: PreviewProvider {
             .init(date: Date(), revenue: 1299),
             .init(date: Date().addingTimeInterval(3000), revenue: 3245),
         ]
-        StoreStatsChart(intervals: data, timeRange: .thisWeek)
+        StoreStatsChart(intervals: data, timeRange: .thisWeek) { _ in }
     }
 }

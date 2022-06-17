@@ -37,7 +37,7 @@ For enabling the hot reload, there is a small individual developer setup that yo
 
 Just 2 steps to enable injection in your SwiftUI Views
 
-- Add `@ObservedObject private var iO = Inject.observer` yo your view struct.
+- Add `@ObservedObject private var iO = Inject.observer` to your view struct.
 - Call `.enableInjection()` at the end of your body definition.
 
 **Remember you don't need to remove this code when you are done, it's NO-OP in production builds.**

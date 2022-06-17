@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import Yosemite
+import WidgetKit
 import enum Networking.DotcomError
 import class Networking.UserAgent
 
@@ -179,13 +180,7 @@ class DefaultStoresManager: StoresManager {
     ///
     func updateDefaultStore(storeID: Int64) {
         sessionManager.defaultStoreID = storeID
-
-        defaults?.set(storeID, forKey: "storeID")
-
-        let credentials = sessionManager.defaultCredentials
-
-        /// Temporary Hack: We store the token here instead of Keychain to make the iOS 14 investigation simpler. This is not safe and thus not releaseable.
-        defaults?.set(credentials?.authToken, forKey: "authToken")
+        updateWidgetInformation(with: storeID)
 
         // Because `defaultSite` is loaded or synced asynchronously, it is reset here so that any UI that calls this does not show outdated data.
         // For example, `sessionManager.defaultSite` is used to show site name in various screens in the app.
@@ -216,6 +211,19 @@ class DefaultStoresManager: StoresManager {
 // MARK: - Private Methods
 //
 private extension DefaultStoresManager {
+
+    /// Refreshes the widget content with the new site
+    /// 
+    func updateWidgetInformation(with storeID: Int64) {
+        defaults?.set(storeID, forKey: "storeID")
+
+        let credentials = sessionManager.defaultCredentials
+
+        /// Temporary Hack: We store the token here instead of Keychain to make the iOS 14 Widgets investigation simpler. This is not safe and thus not releaseable.
+        defaults?.set(credentials?.authToken, forKey: "authToken")
+
+        WidgetCenter.shared.reloadAllTimelines()
+    }
 
     /// Loads the Default Account into the current Session, if possible.
     ///

@@ -13,11 +13,13 @@ final class BetaFeaturesConfigurationViewController: UIHostingController<BetaFea
 }
 
 struct BetaFeaturesConfiguration: View {
+    let appSettings = ServiceLocator.generalAppSettings
+
     var body: some View {
         List {
             ForEach(BetaFeature.allCases) { feature in
                 Section(footer: Text(feature.description)) {
-                    TitleAndToggleRow(title: feature.title, isOn: feature.isEnabledBinding())
+                    TitleAndToggleRow(title: feature.title, isOn: appSettings.betaFeatureEnabledBinding(feature))
                 }
             }
         }

@@ -1645,6 +1645,7 @@
 		DEFD6E61264990FB00E51E0D /* SitePluginListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6E60264990FB00E51E0D /* SitePluginListViewModelTests.swift */; };
 		DEFD6E86264ABFB700E51E0D /* PluginListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DEFD6E85264ABFB700E51E0D /* PluginListViewController.xib */; };
 		E10459C627BBC22E00C1DCBA /* CardPresentConfigurationLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10459C527BBC22E00C1DCBA /* CardPresentConfigurationLoader.swift */; };
+		E1068058285C787100668B46 /* BetaFeaturesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1068057285C787100668B46 /* BetaFeaturesTests.swift */; };
 		E107FCE126C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift in Sources */ = {isa = PBXBuildFile; fileRef = E107FCE026C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift */; };
 		E107FCE326C13A0D00BAF51B /* InPersonPaymentsSupportLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = E107FCE226C13A0D00BAF51B /* InPersonPaymentsSupportLink.swift */; };
 		E10BC15E26CC06970064F5E2 /* ScrollableVStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10BC15D26CC06970064F5E2 /* ScrollableVStack.swift */; };
@@ -3427,6 +3428,7 @@
 		DEFD6E60264990FB00E51E0D /* SitePluginListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginListViewModelTests.swift; sourceTree = "<group>"; };
 		DEFD6E85264ABFB700E51E0D /* PluginListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PluginListViewController.xib; sourceTree = "<group>"; };
 		E10459C527BBC22E00C1DCBA /* CardPresentConfigurationLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentConfigurationLoader.swift; sourceTree = "<group>"; };
+		E1068057285C787100668B46 /* BetaFeaturesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BetaFeaturesTests.swift; sourceTree = "<group>"; };
 		E107FCE026C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCountryNotSupported.swift; sourceTree = "<group>"; };
 		E107FCE226C13A0D00BAF51B /* InPersonPaymentsSupportLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsSupportLink.swift; sourceTree = "<group>"; };
 		E10BC15D26CC06970064F5E2 /* ScrollableVStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollableVStack.swift; sourceTree = "<group>"; };
@@ -6625,6 +6627,7 @@
 				455A2FDA246B1349000CA72C /* ProductVisibilityTests.swift */,
 				FEEB2F60268A215E0075A6E0 /* StorageEligibilityErrorInfoWooTests.swift */,
 				DE001322279A793A00EB0350 /* CouponWooTests.swift */,
+				E1068057285C787100668B46 /* BetaFeaturesTests.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -9828,6 +9831,7 @@
 				B57C5C9E21B80E8300FF82B2 /* SessionManager+Internal.swift in Sources */,
 				2667BFDB252E659A008099D4 /* MockOrderItem.swift in Sources */,
 				DEC51AA0274F9922009F3DF4 /* JetpackInstallStepsViewModelTests.swift in Sources */,
+				E1068058285C787100668B46 /* BetaFeaturesTests.swift in Sources */,
 				26C6E8E426E2D87C00C7BB0F /* CountrySelectorViewModelTests.swift in Sources */,
 				02CE4307276994920006EAEF /* ProductSKUBarcodeScannerCoordinatorTests.swift in Sources */,
 				0999877427D2819F00F82C65 /* BulkUpdateViewControllerTests.swift in Sources */,

@@ -1,4 +1,4 @@
-import Experiments
+//import Experiments
 import Foundation
 import Yosemite
 import Combine
@@ -6,9 +6,9 @@ import UIKit
 
 import protocol Storage.StorageManagerType
 
-/// ViewModel for the `SimplePaymentsMethods` view.
+/// ViewModel for the `PaymentsMethodsView`
 ///
-final class SimplePaymentsMethodsViewModel: ObservableObject {
+final class PaymentMethodsViewModel: ObservableObject {
 
     /// Navigation bar title.
     ///
@@ -72,6 +72,10 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     ///
     private let analytics: Analytics
 
+    /// Defines the flow to be reported in Analytics
+    ///
+    private let flow: WooAnalyticsEvent.PaymentsFlow.Flow
+
     /// Stored payment gateways accounts.
     /// We will care about the first one because only one is supported right now.
     ///
@@ -127,11 +131,13 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
          orderID: Int64 = 0,
          paymentLink: URL? = nil,
          formattedTotal: String,
+         flow: WooAnalyticsEvent.PaymentsFlow.Flow,
          dependencies: Dependencies = Dependencies()) {
         self.siteID = siteID
         self.orderID = orderID
         self.paymentLink = paymentLink
         self.formattedTotal = formattedTotal
+        self.flow = flow
         presentNoticeSubject = dependencies.presentNoticeSubject
         cardPresentPaymentsOnboardingPresenter = dependencies.cardPresentPaymentsOnboardingPresenter
         stores = dependencies.stores
@@ -161,7 +167,7 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
             if let error = error {
                 self.presentNoticeSubject.send(.error(Localization.markAsPaidError))
                 self.trackFlowFailed()
-                return DDLogError("⛔️ Error updating simple payments order: \(error)")
+                return DDLogError("⛔️ Error updating order: \(error)")
             }
 
             onSuccess()
@@ -252,10 +258,24 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
         presentNoticeSubject.send(.created)
         trackFlowCompleted(method: .paymentLink)
     }
+
+    /// Track the flow cancel scenario.
+    ///
+    func userDidCancelFlow() {
+        analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCanceled(flow: flow))
+    }
+
+
+
+    /// Defines if the swipe-to-dismiss gesture on the payment flow should be enabled
+    ///
+    var shouldEnableSwipeToDismiss: Bool {
+        true
+    }
 }
 
 // MARK: Helpers
-private extension SimplePaymentsMethodsViewModel {
+private extension PaymentMethodsViewModel {
 
     /// Observes the store CPP state and update publish variables accordingly.
     ///
@@ -291,39 +311,39 @@ private extension SimplePaymentsMethodsViewModel {
         stores.dispatch(action)
     }
 
-    /// Tracks the `simplePaymentsFlowCompleted` event.
+    /// Tracks the `paymentsFlowCompleted` event.
     ///
     func trackFlowCompleted(method: WooAnalyticsEvent.PaymentsFlow.PaymentMethod) {
-        analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCompleted(flow: .simplePayment, amount: formattedTotal, method: method))
+        analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCompleted(flow: flow, amount: formattedTotal, method: method))
     }
 
-    /// Tracks the `simplePaymentsFlowFailed` event.
+    /// Tracks the `paymentsFlowFailed` event.
     ///
     func trackFlowFailed() {
-        analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowFailed(flow: .simplePayment, source: .paymentMethod))
+        analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowFailed(flow: flow, source: .paymentMethod))
     }
 
-    /// Tracks `simplePaymentsFlowCollect` event.
+    /// Tracks `paymentsFlowCollect` event.
     ///
     func trackCollectIntention(method: WooAnalyticsEvent.PaymentsFlow.PaymentMethod) {
-        analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCollect(flow: .simplePayment, method: method))
+        analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCollect(flow: flow, method: method))
     }
 }
 
-private extension SimplePaymentsMethodsViewModel {
+private extension PaymentMethodsViewModel {
     enum Localization {
         static let markAsPaidError = NSLocalizedString("There was an error while marking the order as paid.",
-                                                       comment: "Text when there is an error while marking the order as paid for simple payments.")
+                                                       comment: "Text when there is an error while marking the order as paid for during payment.")
         static let genericCollectError = NSLocalizedString("There was an error while trying to collect the payment.",
                                                        comment: "Text when there is an unknown error while trying to collect payments")
 
         static let title = NSLocalizedString("Take Payment (%1$@)",
-                                             comment: "Navigation bar title for the Simple Payments Methods screens. " +
+                                             comment: "Navigation bar title for the Payment Methods screens. " +
                                              "%1$@ is a placeholder for the total amount to collect")
 
         static func markAsPaidInfo(total: String) -> String {
             NSLocalizedString("This will mark your order as complete if you received \(total) outside of WooCommerce",
-                              comment: "Alert info when selecting the cash payment method for simple payments")
+                              comment: "Alert info when selecting the cash payment method during payments")
         }
     }
 }

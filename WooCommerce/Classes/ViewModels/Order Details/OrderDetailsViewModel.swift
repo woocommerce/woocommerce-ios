@@ -692,36 +692,14 @@ extension OrderDetailsViewModel {
     /// Handles receipt sharing.
     ///
     func collectPayment(rootViewController: UIViewController, onCollect: @escaping (Result<Void, Error>) -> Void) {
-        cardPresentPaymentsOnboardingPresenter.showOnboardingIfRequired(from: rootViewController) { [weak self] in
-            guard let self = self else { return }
-            guard let paymentGateway = self.cardPresentPaymentGatewayAccounts.first else {
-                return DDLogError("⛔️ Payment Gateway not found, can't collect payment.")
-            }
-
-            let formattedTotal: String = {
-                let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
-                let currencyCode = ServiceLocator.currencySettings.currencyCode
-                let unit = ServiceLocator.currencySettings.symbol(from: currencyCode)
-                return currencyFormatter.formatAmount(self.order.total, with: unit) ?? ""
-            }()
-
-            self.collectPaymentsUseCase = CollectOrderPaymentUseCase(
-                siteID: self.order.siteID,
-                order: self.order,
-                formattedAmount: formattedTotal,
-                paymentGatewayAccount: paymentGateway,
-                rootViewController: rootViewController,
-                alerts: OrderDetailsPaymentAlerts(transactionType: .collectPayment,
-                                                  presentingController: rootViewController),
-                configuration: self.configurationLoader.configuration)
-
-            self.collectPaymentsUseCase?.collectPayment(
-                onCollect: onCollect,
-                onCompleted: { [weak self] in
-                    // Make sure we free all the resources
-                    self?.collectPaymentsUseCase = nil
-                })
-        }
+        let paymentMethodsViewModel = PaymentMethodsViewModel(siteID: order.siteID,
+                                                              orderID: order.orderID,
+                                                              paymentLink: order.paymentURL,
+                                                              formattedTotal: order.total,
+                                                              flow: .orderPayment)
+        let paymentMethodsViewController = PaymentMethodsHostingController(viewModel: paymentMethodsViewModel)
+        let paymentMethodsNC = WooNavigationController(rootViewController: paymentMethodsViewController)
+        rootViewController.navigationController?.present(paymentMethodsNC, animated: true)
     }
 }
 

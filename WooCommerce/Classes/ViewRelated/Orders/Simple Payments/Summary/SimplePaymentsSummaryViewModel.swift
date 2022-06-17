@@ -248,14 +248,15 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
 
     /// Creates a view model for the `SimplePaymentsMethods` screen.
     ///
-    func createMethodsViewModel() -> SimplePaymentsMethodsViewModel {
-        SimplePaymentsMethodsViewModel(siteID: siteID,
-                                       orderID: orderID,
-                                       paymentLink: paymentLink,
-                                       formattedTotal: total,
-                                       dependencies: .init(
-                                        presentNoticeSubject: presentNoticeSubject,
-                                        stores: stores))
+    func createMethodsViewModel() -> PaymentMethodsViewModel {
+        PaymentMethodsViewModel(siteID: siteID,
+                                orderID: orderID,
+                                paymentLink: paymentLink,
+                                formattedTotal: total,
+                                flow: .simplePayment,
+                                dependencies: .init(
+                                    presentNoticeSubject: presentNoticeSubject,
+                                    stores: stores))
     }
 }
 

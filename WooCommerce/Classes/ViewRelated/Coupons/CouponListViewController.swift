@@ -2,7 +2,6 @@ import Combine
 import UIKit
 import WordPressUI
 import Yosemite
-import class SwiftUI.UIHostingController
 
 final class CouponListViewController: UIViewController, GhostableViewController {
     @IBOutlet private weak var tableView: UITableView!
@@ -74,8 +73,6 @@ final class CouponListViewController: UIViewController, GhostableViewController 
         noticePresenter.presentingViewController = self
         return noticePresenter
     }()
-
-    private var addEditHostingController: AddEditCouponHostingController?
 
     init(siteID: Int64) {
         self.siteID = siteID
@@ -201,22 +198,10 @@ private extension CouponListViewController {
     /// Triggers the coupon creation flow
     ///
     func startCouponCreation(discountType: Coupon.DiscountType) {
-        let viewModel = viewModel.createAddEditCouponViewModel(with: discountType) { [weak self] createdCoupon, shareMessage in
-            guard let self = self else { return }
-            self.showCouponCreationSuccess(couponCode: createdCoupon.code, shareMessage: shareMessage)
+        let viewModel = viewModel.createAddEditCouponViewModel(with: discountType) { createdCoupon, shareMessage in
         }
-        addEditHostingController = AddEditCouponHostingController(viewModel: viewModel, onDisappear: {})
-        present(addEditHostingController!, animated: true)
-    }
-
-    /// Display the Coupon creation success view
-    ///
-    func showCouponCreationSuccess(couponCode: String, shareMessage: String) {
-        let creationSuccessView = CouponCreationSuccess(couponCode: couponCode, shareMessage: shareMessage) { [weak self] in
-            guard let self = self else { return }
-            self.dismiss(animated: true)
-        }
-        addEditHostingController?.present(UIHostingController(rootView: creationSuccessView), animated: true)
+        let addEditHostingController = AddEditCouponHostingController(viewModel: viewModel, onDisappear: {})
+        present(addEditHostingController, animated: true)
     }
 }
 

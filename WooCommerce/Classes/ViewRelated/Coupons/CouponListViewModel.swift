@@ -62,9 +62,6 @@ final class CouponListViewModel {
     ///
     private let storageManager: StorageManagerType
 
-    /// currencySettings: provides the currency configuration settings from the store
-    private let currencySettings: CurrencySettings
-
     /// Marks if the Coupon Creation feature is enabled or not
     let isCreationEnabled: Bool
 
@@ -74,13 +71,11 @@ final class CouponListViewModel {
          syncingCoordinator: SyncingCoordinatorProtocol = SyncingCoordinator(),
          storesManager: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.syncingCoordinator = syncingCoordinator
         self.storesManager = storesManager
         self.storageManager = storageManager
-        self.currencySettings = currencySettings
         self.resultsController = Self.createResultsController(siteID: siteID,
                                                               storageManager: storageManager)
 

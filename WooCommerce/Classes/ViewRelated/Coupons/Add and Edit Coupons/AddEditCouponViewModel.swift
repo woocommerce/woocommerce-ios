@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import UIKit
+import WooFoundation
 import protocol Storage.StorageManagerType
 
 /// View model for `AddEditCoupon` view
@@ -138,6 +139,10 @@ final class AddEditCouponViewModel: ObservableObject {
     var hasSelectedCategories: Bool {
         categoryIDs.isNotEmpty
     }
+    
+    var shareCouponMessage: String {
+        coupon?.generateShareMessage(currencySettings: currencySettings) ?? ""
+    }
 
     var hasChangesMade: Bool {
         guard editingOption == .editing else { return true }
@@ -155,6 +160,7 @@ final class AddEditCouponViewModel: ObservableObject {
     private(set) var coupon: Coupon?
     private let stores: StoresManager
     private let storageManager: StorageManagerType
+    private let currencySettings: CurrencySettings
     let timezone: TimeZone
 
     /// When the view is updating or creating a new Coupon remotely.
@@ -175,6 +181,7 @@ final class AddEditCouponViewModel: ObservableObject {
     @Published var couponRestrictionsViewModel: CouponRestrictionsViewModel
     @Published var productOrVariationIDs: [Int64]
     @Published var categoryIDs: [Int64]
+    @Published var showingCouponCreationSuccess: Bool = false
 
     /// Init method for coupon creation
     ///
@@ -182,6 +189,7 @@ final class AddEditCouponViewModel: ObservableObject {
          discountType: Coupon.DiscountType,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          timezone: TimeZone = .siteTimezone,
          onCompletion: @escaping ((Result<Coupon, Error>) -> Void)) {
         self.siteID = siteID
@@ -189,6 +197,7 @@ final class AddEditCouponViewModel: ObservableObject {
         self.discountType = discountType
         self.stores = stores
         self.storageManager = storageManager
+        self.currencySettings = currencySettings
         self.timezone = timezone
         self.onCompletion = onCompletion
 
@@ -207,6 +216,7 @@ final class AddEditCouponViewModel: ObservableObject {
     init(existingCoupon: Coupon,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          timezone: TimeZone = .siteTimezone,
          onCompletion: @escaping ((Result<Coupon, Error>) -> Void)) {
         siteID = existingCoupon.siteID
@@ -215,6 +225,7 @@ final class AddEditCouponViewModel: ObservableObject {
         discountType = existingCoupon.discountType
         self.stores = stores
         self.storageManager = storageManager
+        self.currencySettings = currencySettings
         self.timezone = timezone
         self.onCompletion = onCompletion
 
@@ -246,6 +257,12 @@ final class AddEditCouponViewModel: ObservableObject {
         codeField = code
     }
 
+    /// Display the Coupon creation success view
+    ///
+    func showCouponCreationSuccess(couponCode: String, shareMessage: String) {
+        let creationSuccessView = CouponCreationSuccess(couponCode: couponCode, shareMessage: shareMessage) {}
+    }
+
     func completeCouponAddEdit(coupon: Coupon, onUpdateFinished: @escaping () -> Void) {
         switch editingOption {
         case .creation:
@@ -270,9 +287,11 @@ final class AddEditCouponViewModel: ObservableObject {
             guard let self = self else { return }
             self.isLoading = false
             switch result {
-            case .success(_):
+            case .success(let coupon):
                 ServiceLocator.analytics.track(.couponCreationSuccess)
+                self.coupon = coupon
                 self.onCompletion(result)
+                self.showingCouponCreationSuccess = true
             case .failure(let error):
                 DDLogError("⛔️ Error creating the coupon: \(error)")
                 ServiceLocator.analytics.track(.couponCreationFailed, withError: error)

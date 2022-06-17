@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		397702D42D32EAEEEA3B29FC /* Pods_WooFoundationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 532D4D63493CE8FA6F13C85B /* Pods_WooFoundationTests.framework */; };
 		9FA5113235035AC9A6079B0D /* Pods_WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1733C61561AE3A1AD3C16B7 /* Pods_WooFoundation.framework */; };
-		B9AED559283E7553002A2668 /* Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9AED558283E7553002A2668 /* Yosemite.framework */; };
+		B987B06F284540D300C53CF6 /* CurrencyCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B987B06E284540D300C53CF6 /* CurrencyCode.swift */; };
 		B9C9C63F283E703C001B879F /* WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9C9C635283E703C001B879F /* WooFoundation.framework */; };
 		B9C9C659283E7195001B879F /* NSDecimalNumber+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C9C658283E7195001B879F /* NSDecimalNumber+Helpers.swift */; };
 		B9C9C65D283E71C8001B879F /* CurrencyFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C9C65B283E71C8001B879F /* CurrencyFormatter.swift */; };
@@ -34,6 +34,7 @@
 		81B8569CD52D20EAE64EE737 /* Pods-WooFoundation.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundation.release-alpha.xcconfig"; path = "Target Support Files/Pods-WooFoundation/Pods-WooFoundation.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		99861FECBD0975C25DA03D80 /* Pods-WooFoundation.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundation.debug.xcconfig"; path = "Target Support Files/Pods-WooFoundation/Pods-WooFoundation.debug.xcconfig"; sourceTree = "<group>"; };
 		A21D73D352B4162AB096E276 /* Pods-WooFoundationTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundationTests.release-alpha.xcconfig"; path = "Target Support Files/Pods-WooFoundationTests/Pods-WooFoundationTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		B987B06E284540D300C53CF6 /* CurrencyCode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrencyCode.swift; sourceTree = "<group>"; };
 		B9AED558283E7553002A2668 /* Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9AED55B283E755A002A2668 /* Hardware.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Hardware.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9C9C635283E703C001B879F /* WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -54,7 +55,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B9AED559283E7553002A2668 /* Yosemite.framework in Frameworks */,
 				9FA5113235035AC9A6079B0D /* Pods_WooFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -120,6 +120,7 @@
 		B9C9C65A283E71C8001B879F /* Currency */ = {
 			isa = PBXGroup;
 			children = (
+				B987B06E284540D300C53CF6 /* CurrencyCode.swift */,
 				B9C9C65B283E71C8001B879F /* CurrencyFormatter.swift */,
 				B9C9C65C283E71C8001B879F /* CurrencySettings.swift */,
 			);
@@ -338,6 +339,7 @@
 				B9C9C659283E7195001B879F /* NSDecimalNumber+Helpers.swift in Sources */,
 				B9C9C663283E7296001B879F /* Logging.swift in Sources */,
 				B9C9C65D283E71C8001B879F /* CurrencyFormatter.swift in Sources */,
+				B987B06F284540D300C53CF6 /* CurrencyCode.swift in Sources */,
 				B9C9C660283E71F4001B879F /* Double+Woo.swift in Sources */,
 				B9C9C65E283E71C8001B879F /* CurrencySettings.swift in Sources */,
 			);

@@ -21,8 +21,8 @@ final class ProductPriceSettingsValidatorTests: XCTestCase {
 
     func test_validation_with_sale_date_range_with_nil_regular_price() {
         // Given
-        let dateOnSaleStart = date(from: "2019-09-02T21:30:00")
-        let dateOnSaleEnd = date(from: "2019-09-27T21:30:00")
+        let dateOnSaleStart = DateFormatter.dateFromString(with: "2019-09-02T21:30:00")
+        let dateOnSaleEnd = DateFormatter.dateFromString(with: "2019-09-27T21:30:00")
         let regularPrice: String? = nil
         let salePrice = "10.0"
 
@@ -35,8 +35,8 @@ final class ProductPriceSettingsValidatorTests: XCTestCase {
 
     func test_validation_with_sale_date_range_with_nil_sale_price() {
         // Given
-        let dateOnSaleStart = date(from: "2019-09-02T21:30:00")
-        let dateOnSaleEnd = date(from: "2019-09-27T21:30:00")
+        let dateOnSaleStart = DateFormatter.dateFromString(with: "2019-09-02T21:30:00")
+        let dateOnSaleEnd = DateFormatter.dateFromString(with: "2019-09-27T21:30:00")
         let regularPrice = "10.0"
         let salePrice: String? = nil
 
@@ -49,8 +49,8 @@ final class ProductPriceSettingsValidatorTests: XCTestCase {
 
     func test_validation_with_sale_date_range_with_nil_sale_and_regular_price() {
         // Given
-        let dateOnSaleStart = date(from: "2019-09-02T21:30:00")
-        let dateOnSaleEnd = date(from: "2019-09-27T21:30:00")
+        let dateOnSaleStart = DateFormatter.dateFromString(with: "2019-09-02T21:30:00")
+        let dateOnSaleEnd = DateFormatter.dateFromString(with: "2019-09-27T21:30:00")
         let regularPrice: String? = nil
         let salePrice: String? = nil
 
@@ -63,8 +63,8 @@ final class ProductPriceSettingsValidatorTests: XCTestCase {
 
     func test_validation_with_sale_date_range_and_sale_price_higher_than_regular_price() {
         // Given
-        let dateOnSaleStart = date(from: "2019-09-02T21:30:00")
-        let dateOnSaleEnd = date(from: "2019-09-27T21:30:00")
+        let dateOnSaleStart = DateFormatter.dateFromString(with: "2019-09-02T21:30:00")
+        let dateOnSaleEnd = DateFormatter.dateFromString(with: "2019-09-27T21:30:00")
         let regularPrice = "10.0"
         let salePrice = "20.0"
 
@@ -118,8 +118,8 @@ final class ProductPriceSettingsValidatorTests: XCTestCase {
 
     func test_validation_with_sale_date_range_and_regular_price_higher_than_sale_price() {
         // Given
-        let dateOnSaleStart = date(from: "2019-09-02T21:30:00")
-        let dateOnSaleEnd = date(from: "2019-09-27T21:30:00")
+        let dateOnSaleStart = DateFormatter.dateFromString(with: "2019-09-02T21:30:00")
+        let dateOnSaleEnd = DateFormatter.dateFromString(with: "2019-09-27T21:30:00")
         let regularPrice = "20.0"
         let salePrice = "10.0"
 
@@ -139,12 +139,5 @@ final class ProductPriceSettingsValidatorTests: XCTestCase {
 
         // Then
         XCTAssertEqual(priceDecimal, 42.0)
-    }
-}
-
-private extension ProductPriceSettingsValidatorTests {
-
-    func date(from dateString: String) -> Date? {
-        DateFormatter.Defaults.dateTimeFormatter.date(from: dateString)
     }
 }

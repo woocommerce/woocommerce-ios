@@ -3,7 +3,7 @@ import Yosemite
 
 /// The status of a Product image.
 ///
-enum ProductImageStatus {
+enum ProductImageStatus: Equatable {
     /// A `PHAsset` is being uploaded.
     ///
     case uploading(asset: PHAsset)

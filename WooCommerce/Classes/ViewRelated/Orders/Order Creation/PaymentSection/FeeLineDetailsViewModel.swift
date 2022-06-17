@@ -34,7 +34,7 @@ class FeeLineDetailsViewModel: ObservableObject {
     ///
     private var finalAmountDecimal: Decimal {
         let inputString = feeType == .fixed ? amount : percentage
-        guard let decimalInput = currencyFormatter.convertToDecimal(from: inputString) else {
+        guard let decimalInput = currencyFormatter.convertToDecimal(inputString) else {
             return .zero
         }
 
@@ -125,7 +125,7 @@ class FeeLineDetailsViewModel: ObservableObject {
         self.isExistingFeeLine = isExistingFeeLine
         self.baseAmountForPercentage = baseAmountForPercentage
 
-        if let initialAmount = currencyFormatter.convertToDecimal(from: feesTotal) {
+        if let initialAmount = currencyFormatter.convertToDecimal(feesTotal) {
             self.initialAmount = initialAmount as Decimal
         } else {
             self.initialAmount = .zero

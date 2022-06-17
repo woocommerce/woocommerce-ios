@@ -4,9 +4,11 @@ import UIKit
 
 /// Empty Stores: Displayed whenever there are no available WooCommerce Stores associated with the active account.
 ///
-class EmptyStoresTableViewCell: UITableViewCell {
+final class EmptyStoresTableViewCell: UITableViewCell {
 
     var onJetpackSetupButtonTapped: (() -> Void)?
+
+    var onRemoveAppleIDAccessButtonTapped: (() -> Void)?
 
     /// LegendLabel: To be displayed below the ImageView.
     ///
@@ -21,6 +23,7 @@ class EmptyStoresTableViewCell: UITableViewCell {
     @IBOutlet private weak var stackView: UIStackView!
     @IBOutlet private weak var emptyStoresImageView: UIImageView!
     @IBOutlet private weak var actionButton: UIButton!
+    @IBOutlet private weak var removeAppleIDAccessButton: UIButton!
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -29,6 +32,12 @@ class EmptyStoresTableViewCell: UITableViewCell {
         configureStackView()
         configureImageView()
         configureActionButton()
+        configureRemoveAppleIDAccessButton()
+        updateRemoveAppleIDAccessButtonVisibility(isVisible: false)
+    }
+
+    func updateRemoveAppleIDAccessButtonVisibility(isVisible: Bool) {
+        removeAppleIDAccessButton.isHidden = !isVisible
     }
 }
 
@@ -54,12 +63,24 @@ private extension EmptyStoresTableViewCell {
             self?.onJetpackSetupButtonTapped?()
         }
     }
+
+    func configureRemoveAppleIDAccessButton() {
+        removeAppleIDAccessButton.applyLinkButtonStyle()
+        removeAppleIDAccessButton.setTitle(Localization.removeAppleIDAccessTitle, for: .normal)
+        removeAppleIDAccessButton.on(.touchUpInside) { [weak self] _ in
+            self?.onRemoveAppleIDAccessButtonTapped?()
+        }
+    }
 }
 
 private extension EmptyStoresTableViewCell {
     enum Localization {
         static let actionTitle = NSLocalizedString("Connect your store with Jetpack",
                                                    comment: "Link on the store picker when there are no stores available. Opens a webview about Jetpack setup.")
+        static let removeAppleIDAccessTitle = NSLocalizedString(
+            "Remove Apple ID access",
+            comment: "Link on the store picker for users who signed in with Apple to disconnect their Apple ID from the app."
+        )
         static let legend =
             NSLocalizedString("If you already have a store, you’ll need to install the free Jetpack plugin and connect it to your WordPress.com account.",
                               comment: "Displayed during the Login flow, whenever the user has no woo stores associated.")

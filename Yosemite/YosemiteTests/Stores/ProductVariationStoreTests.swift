@@ -841,16 +841,16 @@ private extension ProductVariationStoreTests {
                                 productVariationID: id,
                                 attributes: sampleProductVariationAttributes(),
                                 image: ProductImage(imageID: 1063,
-                                                    dateCreated: dateFromGMT("2019-11-01T04:12:05"),
-                                                    dateModified: dateFromGMT("2019-11-01T04:12:05"),
+                                                    dateCreated: DateFormatter.dateFromString(with: "2019-11-01T04:12:05"),
+                                                    dateModified: DateFormatter.dateFromString(with: "2019-11-01T04:12:05"),
                                                     src: imageSource,
                                                     name: "DSC_0010",
                                                     alt: ""),
                                 permalink: "https://chocolate.com/marble",
-                                dateCreated: dateFromGMT("2019-11-14T12:40:55"),
-                                dateModified: dateFromGMT("2019-11-14T13:06:42"),
-                                dateOnSaleStart: dateFromGMT("2019-10-15T21:30:00"),
-                                dateOnSaleEnd: dateFromGMT("2019-10-27T21:29:59"),
+                                dateCreated: DateFormatter.dateFromString(with: "2019-11-14T12:40:55"),
+                                dateModified: DateFormatter.dateFromString(with: "2019-11-14T13:06:42"),
+                                dateOnSaleStart: DateFormatter.dateFromString(with: "2019-10-15T21:30:00"),
+                                dateOnSaleEnd: DateFormatter.dateFromString(with: "2019-10-27T21:29:59"),
                                 status: .published,
                                 description: "<p>Nutty chocolate marble, 99% and organic.</p>\n",
                                 sku: "99%-nuts-marble",
@@ -890,9 +890,9 @@ private extension ProductVariationStoreTests {
                           status: .processing,
                           currency: "USD",
                           customerNote: "",
-                          dateCreated: dateFromGMT("2018-04-03T23:05:12"),
-                          dateModified: dateFromGMT("2018-04-03T23:05:14"),
-                          datePaid: dateFromGMT("2018-04-03T23:05:14"),
+                          dateCreated: DateFormatter.dateFromString(with: "2018-04-03T23:05:12"),
+                          dateModified: DateFormatter.dateFromString(with: "2018-04-03T23:05:14"),
+                          datePaid: DateFormatter.dateFromString(with: "2018-04-03T23:05:14"),
                           discountTotal: "30.00",
                           discountTax: "1.20",
                           shippingTotal: "0.00",
@@ -919,10 +919,5 @@ private extension ProductVariationStoreTests {
               total: "30.00",
               totalTax: "1.20",
               attributes: [])
-    }
-
-    func dateFromGMT(_ dateStringInGMT: String) -> Date {
-        let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
-        return dateFormatter.date(from: dateStringInGMT)!
     }
 }

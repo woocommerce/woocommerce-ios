@@ -71,6 +71,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.checkPartialCircleImage)
     }
 
+    func test_check_success_image_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.checkSuccessImage)
+    }
+
     func testChevronImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.chevronImage)
     }
@@ -499,6 +503,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.waitingForCustomersImage)
     }
 
+    func testInstallWCShipImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.installWCShipImage)
+    }
+
     func testWidgetsImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.widgetsImage)
     }
@@ -623,5 +631,21 @@ final class IconsTests: XCTestCase {
 
     func test_enableAnalyticsImage_is_not_nil() {
         XCTAssertNotNil(UIImage.enableAnalyticsImage)
+    }
+
+    func test_creditCardGiveImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.creditCardGiveIcon)
+    }
+
+    func test_stripeIconImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.stripeIcon)
+    }
+
+    func test_wcpayIconImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.wcpayIcon)
+    }
+
+    func test_rectangle_on_rectangle_angled_is_not_nil() {
+        XCTAssertNotNil(UIImage.rectangleOnRectangleAngled)
     }
 }

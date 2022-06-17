@@ -14,9 +14,10 @@ public class AppSettingsStore: Store {
     ///
     public init(dispatcher: Dispatcher,
                 storageManager: StorageManagerType,
-                fileStorage: FileStorage) {
+                fileStorage: FileStorage,
+                generalAppSettings: GeneralAppSettingsStorage) {
         self.fileStorage = fileStorage
-        self.generalAppSettings = GeneralAppSettingsStorage(fileStorage: fileStorage)
+        self.generalAppSettings = generalAppSettings
         super.init(dispatcher: dispatcher,
                    storageManager: storageManager,
                    network: NullNetwork())
@@ -161,6 +162,12 @@ public class AppSettingsStore: Store {
             setSimplePaymentsTaxesToggleState(siteID: siteID, isOn: isOn, onCompletion: onCompletion)
         case let .getSimplePaymentsTaxesToggleState(siteID, onCompletion):
             getSimplePaymentsTaxesToggleState(siteID: siteID, onCompletion: onCompletion)
+        case let .setPreferredInPersonPaymentGateway(siteID: siteID, gateway: gateway):
+            setPreferredInPersonPaymentGateway(siteID: siteID, gateway: gateway)
+        case let .getPreferredInPersonPaymentGateway(siteID: siteID, onCompletion: onCompletion):
+            getPreferredInPersonPaymentGateway(siteID: siteID, onCompletion: onCompletion)
+        case let .forgetPreferredInPersonPaymentGateway(siteID: siteID):
+            forgetPreferredInPersonPaymentGateway(siteID: siteID)
         case .resetGeneralStoreSettings:
             resetGeneralStoreSettings()
         case .setProductSKUInputScannerFeatureSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
@@ -701,6 +708,31 @@ private extension AppSettingsStore {
         let storeSettings = getStoreSettings(for: siteID)
         onCompletion(.success(storeSettings.areSimplePaymentTaxesEnabled))
     }
+
+    /// Sets the preferred payment gateway for In-Person Payments
+    ///
+    func setPreferredInPersonPaymentGateway(siteID: Int64, gateway: String) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let newSettings = storeSettings.copy(preferredInPersonPaymentGateway: gateway)
+        setStoreSettings(settings: newSettings, for: siteID, onCompletion: nil)
+    }
+
+    /// Gets the preferred payment gateway for In-Person Payments
+    ///
+    func getPreferredInPersonPaymentGateway(siteID: Int64, onCompletion: (String?) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        onCompletion(storeSettings.preferredInPersonPaymentGateway)
+
+    }
+
+    /// Forgets the preferred payment gateway for In-Person Payments
+    ///
+    func forgetPreferredInPersonPaymentGateway(siteID: Int64) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let newSettings = storeSettings.copy(preferredInPersonPaymentGateway: .some(nil))
+        setStoreSettings(settings: newSettings, for: siteID, onCompletion: nil)
+    }
+
 }
 
 // MARK: - Errors

@@ -133,6 +133,7 @@
 		26455E2725F669EA008A1D32 /* ProductAttributeTermListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B64543259BCE0F00EF3FB3 /* ProductAttributeTermListMapper.swift */; };
 		26455E2A25F669F0008A1D32 /* ProductAttributeTermMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B6453F259BCDFE00EF3FB3 /* ProductAttributeTermMapper.swift */; };
 		265BCA02243056E3004E53EE /* categories-all.json in Resources */ = {isa = PBXBuildFile; fileRef = 265BCA01243056E3004E53EE /* categories-all.json */; };
+		265EFBDC285257950033BD33 /* Order+Fallbacks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265EFBDB285257950033BD33 /* Order+Fallbacks.swift */; };
 		26615473242D596B00A31661 /* ProductCategoriesRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26615472242D596B00A31661 /* ProductCategoriesRemote.swift */; };
 		26615475242D7C9500A31661 /* ProductCategoryListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26615474242D7C9500A31661 /* ProductCategoryListMapper.swift */; };
 		26615479242DA54D00A31661 /* ProductCategoyListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26615478242DA54D00A31661 /* ProductCategoyListMapperTests.swift */; };
@@ -801,6 +802,7 @@
 		261CF2CA255C50010090D8D3 /* payment-gateway-list-half.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "payment-gateway-list-half.json"; sourceTree = "<group>"; };
 		262E5AD4255ACD6F000B2416 /* PaymentGatewayListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentGatewayListMapperTests.swift; sourceTree = "<group>"; };
 		265BCA01243056E3004E53EE /* categories-all.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "categories-all.json"; sourceTree = "<group>"; };
+		265EFBDB285257950033BD33 /* Order+Fallbacks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+Fallbacks.swift"; sourceTree = "<group>"; };
 		26615472242D596B00A31661 /* ProductCategoriesRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoriesRemote.swift; sourceTree = "<group>"; };
 		26615474242D7C9500A31661 /* ProductCategoryListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryListMapper.swift; sourceTree = "<group>"; };
 		26615478242DA54D00A31661 /* ProductCategoyListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoyListMapperTests.swift; sourceTree = "<group>"; };
@@ -2161,6 +2163,7 @@
 				02BDB83423EA98C800BCC63E /* String+HTML.swift */,
 				57E8FED2246616AC0057CD68 /* Result+Extensions.swift */,
 				24F98C532502E8DD00F49B68 /* Bundle+Woo.swift */,
+				265EFBDB285257950033BD33 /* Order+Fallbacks.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2775,6 +2778,7 @@
 				025CA2C2238EBBAA00B05C81 /* ProductShippingClassListMapper.swift in Sources */,
 				74ABA1CD213F1B6B00FFAD30 /* TopEarnerStats.swift in Sources */,
 				CCAAD10F2683974000909664 /* ShippingLabelPackagePurchase.swift in Sources */,
+				265EFBDC285257950033BD33 /* Order+Fallbacks.swift in Sources */,
 				B557DA0220975500005962F4 /* JetpackRequest.swift in Sources */,
 				D88E229025AC990A0023F3B1 /* OrderFeeLine.swift in Sources */,
 				74046E1F217A6B70007DD7BF /* SiteSettingsMapper.swift in Sources */,

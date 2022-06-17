@@ -177,7 +177,7 @@ final class CouponListViewModelTests: XCTestCase {
     func test_shouldDisplayFeedbackBanner_returns_false_if_state_is_initialized() {
         // Given
         sut = CouponListViewModel(siteID: 123, syncingCoordinator: mockSyncingCoordinator)
-        XCTAssertEqual(sut.state, .initialized) // confidence check
+        XCTAssertEqual(sut.state, .empty) // confidence check
 
         // Then
         XCTAssertFalse(sut.shouldDisplayFeedbackBanner)

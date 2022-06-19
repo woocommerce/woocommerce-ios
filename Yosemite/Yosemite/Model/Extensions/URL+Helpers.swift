@@ -12,8 +12,12 @@ extension URL {
             return wooCommerceFallbackURL!
         }
         guard let url = URL(string: defaultSite.adminURL) else {
-            let adminURLFromSiteURLString = defaultSite.url + "/wp-admin"
-            return URL(string: adminURLFromSiteURLString) ?? wooCommerceFallbackURL!
+            if defaultSite.url.isEmpty {
+                return wooCommerceFallbackURL!
+            } else {
+                let adminURLFromSiteURLString = defaultSite.url + "/wp-admin"
+                return URL(string: adminURLFromSiteURLString)!
+            }
         }
         return url
     }

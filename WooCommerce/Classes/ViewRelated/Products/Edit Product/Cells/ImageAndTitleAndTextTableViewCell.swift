@@ -161,11 +161,11 @@ extension ImageAndTitleAndTextTableViewCell {
         contentImageView.image = viewModel.image
         contentImageStackView.isHidden = viewModel.image == nil
         accessoryType = viewModel.showsDisclosureIndicator ? .disclosureIndicator : .none
-        if viewModel.isActionable && viewModel.showsDisclosureIndicator == false {
-            accessoryType = .none
-        } else if viewModel.isActionable == false && viewModel.showsDisclosureIndicator && viewModel.isSelected {
+        if viewModel.showsDisclosureIndicator {
+            accessoryType = .disclosureIndicator
+        } else if viewModel.isSelected {
             accessoryType = .checkmark
-        } else if viewModel.isActionable == false && viewModel.showsDisclosureIndicator && viewModel.isSelected == false {
+        } else {
             accessoryType = .none
         }
         selectionStyle = viewModel.isActionable ? .default: .none

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -20,17 +20,22 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="222"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="woo-no-store" translatesAutoresizingMaskIntoConstraints="NO" id="uuh-xp-DA5">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="152"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="140.5"/>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bPV-bJ-GBz">
-                                <rect key="frame" x="0.0" y="152" width="375" height="20.5"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="751" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bPV-bJ-GBz">
+                                <rect key="frame" x="0.0" y="140.5" width="375" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vE6-Wu-Y7b">
-                                <rect key="frame" x="0.0" y="172.5" width="375" height="49.5"/>
+                            <button opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vE6-Wu-Y7b">
+                                <rect key="frame" x="0.0" y="161" width="375" height="30"/>
                                 <state key="normal" title="Button"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XF9-r3-Vq9" userLabel="Remove Apple ID Access Button">
+                                <rect key="frame" x="0.0" y="191" width="375" height="31"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Button"/>
                             </button>
                         </subviews>
                     </stackView>
@@ -48,6 +53,7 @@
                 <outlet property="actionButton" destination="vE6-Wu-Y7b" id="ecz-oF-tox"/>
                 <outlet property="emptyStoresImageView" destination="uuh-xp-DA5" id="4yf-Rz-3c2"/>
                 <outlet property="legendLabel" destination="bPV-bJ-GBz" id="sQX-ir-ghQ"/>
+                <outlet property="removeAppleIDAccessButton" destination="XF9-r3-Vq9" id="sLP-Jl-0hK"/>
                 <outlet property="stackView" destination="pky-np-rBc" id="vRx-dY-Ma9"/>
             </connections>
             <point key="canvasLocation" x="-162.5" y="-12"/>

@@ -26,6 +26,7 @@
 		0218B4EE242E08B20083A847 /* MediaType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0218B4ED242E08B20083A847 /* MediaType.swift */; };
 		0218B4F0242E091C0083A847 /* Media+MediaType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0218B4EF242E091C0083A847 /* Media+MediaType.swift */; };
 		0218B4F2242E09E80083A847 /* MediaTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0218B4F1242E09E80083A847 /* MediaTypeTests.swift */; };
+		021BA0C428576940006E9886 /* MockDotcomAccountRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021BA0C328576940006E9886 /* MockDotcomAccountRemote.swift */; };
 		021EAA5C25493E9300AA8CCD /* OrderItemAttribute+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021EAA5B25493E9300AA8CCD /* OrderItemAttribute+ReadOnlyConvertible.swift */; };
 		0225512122FC2F3000D98613 /* OrderStatsV4Interval+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0225512022FC2F3000D98613 /* OrderStatsV4Interval+Date.swift */; };
 		0225512522FC312400D98613 /* OrderStatsV4Interval+DateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0225512422FC312400D98613 /* OrderStatsV4Interval+DateTests.swift */; };
@@ -367,6 +368,7 @@
 		DEFD6D9326443A4000E51E0D /* SitePluginAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D9226443A4000E51E0D /* SitePluginAction.swift */; };
 		DEFD6D9526443CA100E51E0D /* SitePluginStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D9426443CA100E51E0D /* SitePluginStore.swift */; };
 		DEFD6D972644423100E51E0D /* SitePlugin+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D962644423100E51E0D /* SitePlugin+ReadOnlyConvertible.swift */; };
+		E109876C284F6EEB002EBB05 /* CardPresentPaymentsPluginState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109876B284F6EEB002EBB05 /* CardPresentPaymentsPluginState.swift */; };
 		E138D4FA269EE5BD006EA5C6 /* CardPresentPaymentsOnboardingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E138D4F9269EE5BD006EA5C6 /* CardPresentPaymentsOnboardingState.swift */; };
 		E1BD4D0027ABF84D006416D9 /* CardPresentPaymentsConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BD4CFF27ABF84D006416D9 /* CardPresentPaymentsConfiguration.swift */; };
 		E1F54D0427AD4DAF00012983 /* CardPresentConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F54D0327AD4DAF00012983 /* CardPresentConfigurationTests.swift */; };
@@ -431,6 +433,7 @@
 		0218B4ED242E08B20083A847 /* MediaType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaType.swift; sourceTree = "<group>"; };
 		0218B4EF242E091C0083A847 /* Media+MediaType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Media+MediaType.swift"; sourceTree = "<group>"; };
 		0218B4F1242E09E80083A847 /* MediaTypeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaTypeTests.swift; sourceTree = "<group>"; };
+		021BA0C328576940006E9886 /* MockDotcomAccountRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDotcomAccountRemote.swift; sourceTree = "<group>"; };
 		021EAA5B25493E9300AA8CCD /* OrderItemAttribute+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItemAttribute+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		0225512022FC2F3000D98613 /* OrderStatsV4Interval+Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4Interval+Date.swift"; sourceTree = "<group>"; };
 		0225512422FC312400D98613 /* OrderStatsV4Interval+DateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4Interval+DateTests.swift"; sourceTree = "<group>"; };
@@ -777,6 +780,7 @@
 		DEFD6D9226443A4000E51E0D /* SitePluginAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginAction.swift; sourceTree = "<group>"; };
 		DEFD6D9426443CA100E51E0D /* SitePluginStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginStore.swift; sourceTree = "<group>"; };
 		DEFD6D962644423100E51E0D /* SitePlugin+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SitePlugin+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
+		E109876B284F6EEB002EBB05 /* CardPresentPaymentsPluginState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsPluginState.swift; sourceTree = "<group>"; };
 		E138D4F9269EE5BD006EA5C6 /* CardPresentPaymentsOnboardingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsOnboardingState.swift; sourceTree = "<group>"; };
 		E1BD4CFF27ABF84D006416D9 /* CardPresentPaymentsConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsConfiguration.swift; sourceTree = "<group>"; };
 		E1F54D0327AD4DAF00012983 /* CardPresentConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentConfigurationTests.swift; sourceTree = "<group>"; };
@@ -903,6 +907,7 @@
 				0232372822F7DA6E00715FAB /* StatsTimeRangeV4.swift */,
 				E138D4F9269EE5BD006EA5C6 /* CardPresentPaymentsOnboardingState.swift */,
 				03F3AFE628097D6400E328BE /* CardPresentPaymentsPlugin.swift */,
+				E109876B284F6EEB002EBB05 /* CardPresentPaymentsPluginState.swift */,
 			);
 			path = Enums;
 			sourceTree = "<group>";
@@ -1148,6 +1153,7 @@
 				D4CBAE5F26D440FA00BBE6D1 /* MockAnnouncementsRemote.swift */,
 				02A26F1D2744FE97008E4EDB /* MockAccountRemote.swift */,
 				029249E7274B8AEE002E9C34 /* MockMediaRemote.swift */,
+				021BA0C328576940006E9886 /* MockDotcomAccountRemote.swift */,
 			);
 			path = Remote;
 			sourceTree = "<group>";
@@ -2047,6 +2053,7 @@
 				02E4F5E423CD5628003B0010 /* NSOrderedSet+Array.swift in Sources */,
 				749737672141CC8C0008C490 /* TopEarnerStats+ReadOnlyType.swift in Sources */,
 				7493751222498B2C007D85D1 /* ProductTag+ReadOnlyConvertible.swift in Sources */,
+				E109876C284F6EEB002EBB05 /* CardPresentPaymentsPluginState.swift in Sources */,
 				03FBDA26263296A100ACE257 /* CouponStore.swift in Sources */,
 				7499936420EFBC1B00CF01CD /* OrderNoteAction.swift in Sources */,
 				7455D4692141B59E00FA8C1F /* TopEarnerStatsItem+ReadOnlyConvertible.swift in Sources */,
@@ -2105,6 +2112,7 @@
 				74A7688E20D45ED400F9D437 /* OrderStoreTests.swift in Sources */,
 				D8652E322630741000350F37 /* PaymentIntent+ReceiptParametersTests.swift in Sources */,
 				029249E8274B8AEE002E9C34 /* MockMediaRemote.swift in Sources */,
+				021BA0C428576940006E9886 /* MockDotcomAccountRemote.swift in Sources */,
 				022F00C72472963E008CD97F /* NotificationCountStoreTests.swift in Sources */,
 				578CE7882475D70F00492EBF /* RetrieveProductReviewFromNoteUseCaseTests.swift in Sources */,
 				02FF056723DEB2180058E6E7 /* MediaStoreTests.swift in Sources */,

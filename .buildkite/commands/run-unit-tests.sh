@@ -4,7 +4,7 @@ echo "--- 📦 Downloading Build Artifacts"
 buildkite-agent artifact download build-products.tar .
 tar -xf build-products.tar
 
-# FIXIT-13.1: Temporary fix until we're on the Xcode 13.1 VM
+# Workaround for https://github.com/Automattic/buildkite-ci/issues/79
 echo "--- :rubygems: Fixing Ruby Setup"
 gem install bundler
 

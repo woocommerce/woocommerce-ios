@@ -1,3 +1,3 @@
-We blijven nieuwe functionaliteit toevoegen aan onze experimentele functie Couponbeheer! Deze release omvat het bewerken en verwijderen van coupons en verschillende verbeteringen voor de weergave. Schakel deze functie in voor vroege toegang in het tabblad Meer, Instellingen, Experimentele functies.
+Hallo Canada! We zijn blij te kunnen vertellen dat fysieke betalingen nu beschikbaar zijn voor Canadese verkopers die nu WooCommerce Payments gebruiken.
 
-Deze release bevat ook verschillende oplossingen voor het aanmaken van bestellingen, fysieke betalingen en productbeheer. Wederom bedankt voor jullie feedback!
+We hebben op andere plekken in de app ook verschillende verbeteringen aangebracht, waaronder ondersteuning van Arabische cijfers in bedragvelden, de mogelijkheid om het kortingstype van een coupon bij te werken en knip- en plakondersteuning voor opmerkingen bij bestellingen. Bedankt voor je feedback. Zo kunnen we voor iedereen een betere app maken.

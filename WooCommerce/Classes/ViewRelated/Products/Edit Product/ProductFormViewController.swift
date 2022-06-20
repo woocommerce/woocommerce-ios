@@ -643,7 +643,11 @@ private extension ProductFormViewController {
         let productStatus = status ?? product.status
         let messageType = viewModel.saveMessageType(for: productStatus)
         showSavingProgress(messageType)
-        saveImagesAndProductRemotely(status: status)
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
+            saveProductRemotely(status: status)
+        } else {
+            saveImagesAndProductRemotely(status: status)
+        }
     }
 
     func saveImagesAndProductRemotely(status: ProductStatus?) {

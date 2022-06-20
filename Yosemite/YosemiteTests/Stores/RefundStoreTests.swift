@@ -476,7 +476,7 @@ private extension RefundStoreTests {
     ///
     func sampleRefund(_ siteID: Int64? = nil, refundID: Int64? = nil) -> Networking.Refund {
         let testSiteID = siteID ?? sampleSiteID
-        let testDate = date(with: "2019-10-09T16:18:23")
+        let testDate = DateFormatter.dateFromString(with: "2019-10-09T16:18:23")
         return Refund(refundID: refundID ?? sampleRefundID,
                       orderID: sampleOrderID,
                       siteID: testSiteID,
@@ -494,7 +494,7 @@ private extension RefundStoreTests {
     ///
     func sampleRefundMutated(_ siteID: Int64? = nil) -> Networking.Refund {
         let testSiteID = siteID ?? sampleSiteID
-        let testDate = date(with: "2019-10-09T16:18:23")
+        let testDate = DateFormatter.dateFromString(with: "2019-10-09T16:18:23")
         return Refund(refundID: sampleRefundID,
                       orderID: sampleOrderID,
                       siteID: testSiteID,
@@ -512,7 +512,7 @@ private extension RefundStoreTests {
     ///
     func sampleRefund2(_ siteID: Int64? = nil) -> Networking.Refund {
         let testSiteID = siteID ?? sampleSiteID
-        let testDate = date(with: "2019-10-01T19:33:46")
+        let testDate = DateFormatter.dateFromString(with: "2019-10-01T19:33:46")
         return Refund(refundID: refundID,
                       orderID: sampleOrderID,
                       siteID: testSiteID,
@@ -581,14 +581,5 @@ private extension RefundStoreTests {
                      total: "-7.00",
                      totalTax: "-0.62",
                      taxes: [.init(taxID: 1, subtotal: "", total: "-0.62")])
-    }
-
-    /// Format GMT string to Date type
-    ///
-    func date(with dateString: String) -> Date {
-        guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
-            return Date()
-        }
-        return date
     }
 }

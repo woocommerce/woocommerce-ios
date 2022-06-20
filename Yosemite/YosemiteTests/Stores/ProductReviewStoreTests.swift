@@ -441,7 +441,7 @@ private extension ProductReviewStoreTests {
         return Networking.ProductReview(siteID: sampleSiteID,
                                         reviewID: reviewID ?? sampleReviewID,
                                         productID: sampleProductID,
-                                        dateCreated: dateFromGMT("2019-08-20T06:06:29"),
+                                        dateCreated: DateFormatter.dateFromString(with: "2019-08-20T06:06:29"),
                                         statusKey: "approved",
                                         reviewer: "somereviewer",
                                         reviewerEmail: "somewhere@intheinternet.com",
@@ -455,7 +455,7 @@ private extension ProductReviewStoreTests {
         return Networking.ProductReview(siteID: sampleSiteID,
                                         reviewID: sampleReviewID,
                                         productID: sampleProductID,
-                                        dateCreated: dateFromGMT("2019-08-20T06:06:29"),
+                                        dateCreated: DateFormatter.dateFromString(with: "2019-08-20T06:06:29"),
                                         statusKey: "hold",
                                         reviewer: "someone else mutated",
                                         reviewerEmail: "somewhere@theinternet.com",
@@ -463,10 +463,5 @@ private extension ProductReviewStoreTests {
                                         review: "Meh",
                                         rating: 1,
                                         verified: true)
-    }
-
-    func dateFromGMT(_ dateStringInGMT: String) -> Date {
-        let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
-        return dateFormatter.date(from: dateStringInGMT)!
     }
 }

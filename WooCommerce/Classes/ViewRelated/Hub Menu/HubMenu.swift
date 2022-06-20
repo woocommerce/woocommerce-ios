@@ -6,6 +6,8 @@ import Yosemite
 /// and will be the entry point of the `Menu` Tab.
 ///
 struct HubMenu: View {
+    @ObservedObject private var iO = Inject.observer
+
     @ObservedObject private var viewModel: HubMenuViewModel
     @State private var showingWooCommerceAdmin = false
     @State private var showingViewStore = false
@@ -99,6 +101,7 @@ struct HubMenu: View {
                 EmptyView()
             }
         }
+        .enableInjection()
         .navigationBarHidden(true)
         .background(Color(.listBackground).edgesIgnoringSafeArea(.all))
         .onAppear {

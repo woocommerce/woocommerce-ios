@@ -465,7 +465,7 @@ private extension AddEditCouponViewModel {
             "has_expiry_date": coupon.dateExpires != nil,
             "includes_free_shipping": coupon.freeShipping,
             "has_product_or_category_restrictions": coupon.excludedProductCategories.isNotEmpty || coupon.excludedProductIds.isNotEmpty,
-            "has_usage_restrictions": coupon.usageLimit != nil && coupon.usageLimit > 0
+            "has_usage_restrictions": (coupon.usageLimit ?? 0) > 0
         ])
     }
 

@@ -87,7 +87,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
         // When
         let populatedCoupon = viewModel.populatedCoupon
         let newCoupon = Coupon(couponID: -1,
-                               code: "",
+                               code: populatedCoupon.code,
                                amount: "",
                                dateCreated: populatedCoupon.dateCreated,
                                dateModified: populatedCoupon.dateModified,

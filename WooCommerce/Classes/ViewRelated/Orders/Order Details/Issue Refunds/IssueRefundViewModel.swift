@@ -114,6 +114,19 @@ final class IssueRefundViewModel {
         return resultsController.fetchedObjects.first
     }()
 
+    /// PaymentGatewayAccount Results Controller.
+    private lazy var paymentGatewayAccountResultsController: ResultsController<StoragePaymentGatewayAccount> = {
+        let predicate = NSPredicate(format: "siteID = %ld", state.order.siteID)
+        let resultsController = ResultsController<StoragePaymentGatewayAccount>(storageManager: storage, matching: predicate, sortedBy: [])
+        try? resultsController.performFetch()
+        return resultsController
+    }()
+
+    /// Payment Gateway Accounts for the site (i.e. that can be used to refund)
+    private var paymentGatewayAccounts: [PaymentGatewayAccount] {
+        paymentGatewayAccountResultsController.fetchedObjects
+    }
+
     /// Charge related to the order. Used to show card details in the `Refund Via` section, and the refund confirmation screen.
     ///
     private var charge: WCPayCharge? {
@@ -167,7 +180,8 @@ final class IssueRefundViewModel {
                                                           refundsShipping: state.shouldRefundShipping,
                                                           refundsFees: state.shouldRefundFees,
                                                           items: state.refundQuantityStore.refundableItems(),
-                                                          paymentGateway: paymentGateway)
+                                                          paymentGateway: paymentGateway,
+                                                          paymentGatewayAccount: paymentGatewayAccounts.first)
         return RefundConfirmationViewModel(details: details, currencySettings: state.currencySettings)
     }
 }
@@ -298,6 +312,14 @@ private extension IssueRefundViewModel {
         guard let chargeID = state.order.chargeID else {
             return
         }
+        guard let paymentGatewayAccount = paymentGatewayAccounts.first else {
+            return state.fetchChargeError = .unknownPaymentGatewayAccount
+        }
+
+        state.fetchChargeError = nil
+
+        let setPaymentGatewayAccountAction = CardPresentPaymentAction.use(paymentGatewayAccount: paymentGatewayAccount)
+        stores.dispatch(setPaymentGatewayAccountAction)
 
         let action = CardPresentPaymentAction.fetchWCPayCharge(siteID: state.order.siteID, chargeID: chargeID, onCompletion: { [weak self] result in
             if case .failure = result {

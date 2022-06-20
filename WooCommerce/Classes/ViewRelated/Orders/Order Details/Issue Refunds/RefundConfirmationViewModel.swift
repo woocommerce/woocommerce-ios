@@ -88,47 +88,39 @@ final class RefundConfirmationViewModel {
                                             currencyFormatter: currencyFormatter)
         let refund = useCase.createRefund()
 
-        let action = CardPresentPaymentAction.selectedPaymentGatewayAccount { [weak self] paymentGatewayAccount in
-            guard let self = self else {
-                return
+        // Submits refund.
+        let submissionUseCase = RefundSubmissionUseCase(
+            details: .init(order: details.order,
+                           charge: details.charge,
+                           amount: details.amount,
+                           paymentGatewayAccount: details.paymentGatewayAccount),
+            rootViewController: rootViewController,
+            alerts: OrderDetailsPaymentAlerts(transactionType: .refund,
+                                              presentingController: rootViewController),
+            cardPresentConfiguration: CardPresentConfigurationLoader(stores: actionProcessor).configuration,
+            dependencies: RefundSubmissionUseCase.Dependencies(
+                currencyFormatter: currencyFormatter,
+                cardPresentPaymentsOnboardingPresenter: cardPresentPaymentsOnboardingPresenter,
+                stores: actionProcessor,
+                analytics: analytics))
 
-            }
-            // Submits refund.
-            let submissionUseCase = RefundSubmissionUseCase(
-                details: .init(order: self.details.order,
-                               charge: self.details.charge,
-                               amount: self.details.amount,
-                               paymentGatewayAccount: paymentGatewayAccount),
-                rootViewController: rootViewController,
-                alerts: OrderDetailsPaymentAlerts(transactionType: .refund,
-                                                  presentingController: rootViewController),
-                cardPresentConfiguration: CardPresentConfigurationLoader(stores: self.actionProcessor).configuration,
-                dependencies: RefundSubmissionUseCase.Dependencies(
-                    currencyFormatter: self.currencyFormatter,
-                    cardPresentPaymentsOnboardingPresenter: self.cardPresentPaymentsOnboardingPresenter,
-                    stores: self.actionProcessor,
-                    analytics: self.analytics))
+        self.submissionUseCase = submissionUseCase
+        submissionUseCase.submitRefund(refund,
+                                       showInProgressUI: showInProgressUI,
+                                       onCompletion: { [weak self] result in
+            guard let self = self else { return }
 
-            self.submissionUseCase = submissionUseCase
-            submissionUseCase.submitRefund(refund,
-                                           showInProgressUI: showInProgressUI,
-                                           onCompletion: { [weak self] result in
-                guard let self = self else { return }
-
-                switch result {
-                case .success:
-                    // We don't care if the "update order" fails. We return .success() as the refund creation already succeeded.
-                    self.updateOrder { _ in
-                        onCompletion(.success(()))
-                    }
-                default:
-                    onCompletion(result)
+            switch result {
+            case .success:
+                // We don't care if the "update order" fails. We return .success() as the refund creation already succeeded.
+                self.updateOrder { _ in
+                    onCompletion(.success(()))
                 }
-                self.submissionUseCase = nil
-            })
-        }
-
-        actionProcessor.dispatch(action)
+            default:
+                onCompletion(result)
+            }
+            self.submissionUseCase = nil
+        })
     }
 
     /// Updates the order associated with the refund to reflect the latest refund status.
@@ -174,6 +166,10 @@ extension RefundConfirmationViewModel {
         /// Payment gateway used with the order
         ///
         let paymentGateway: PaymentGateway?
+
+        /// Payment gateway account of the site (e.g. WCPay or Stripe extension)
+        ///
+        let paymentGatewayAccount: PaymentGatewayAccount?
     }
 }
 

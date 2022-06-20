@@ -209,6 +209,7 @@ final class AddEditCouponViewModel: ObservableObject {
         couponRestrictionsViewModel = CouponRestrictionsViewModel(siteID: siteID)
         productOrVariationIDs = []
         categoryIDs = []
+        generateRandomCouponCode()
     }
 
     /// Init method for coupon editing

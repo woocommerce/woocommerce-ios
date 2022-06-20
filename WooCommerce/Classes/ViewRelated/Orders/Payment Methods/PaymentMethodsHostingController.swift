@@ -79,6 +79,7 @@ extension PaymentMethodsHostingController: UIAdaptivePresentationControllerDeleg
 
         presentCancelOrderActionSheet(viewController: self) { [weak self] _ in
             self?.dismiss(animated: true, completion: nil)
+            self?.rootView.viewModel.userDidCancelFlow()
         }
     }
 

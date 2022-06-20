@@ -132,6 +132,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
         configureContentStackView()
         configureTitleAndTextStackView()
         applyDefaultBackgroundStyle()
+        configureBackground()
     }
 
     override func prepareForReuse() {
@@ -160,7 +161,6 @@ extension ImageAndTitleAndTextTableViewCell {
         descriptionLabel.numberOfLines = viewModel.numberOfLinesForText
         contentImageView.image = viewModel.image
         contentImageStackView.isHidden = viewModel.image == nil
-        accessoryType = viewModel.showsDisclosureIndicator ? .disclosureIndicator : .none
         if viewModel.showsDisclosureIndicator {
             accessoryType = .disclosureIndicator
         } else if viewModel.isSelected {
@@ -299,6 +299,10 @@ private extension ImageAndTitleAndTextTableViewCell {
 
     func configureTitleAndTextStackView() {
         titleAndTextStackView.spacing = 2
+    }
+    func configureBackground() {
+        selectedBackgroundView = UIView()
+        selectedBackgroundView?.backgroundColor = .listBackground
     }
 }
 

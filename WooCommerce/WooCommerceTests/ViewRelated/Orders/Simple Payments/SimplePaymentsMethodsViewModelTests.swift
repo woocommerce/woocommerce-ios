@@ -196,13 +196,19 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         // Given
         let storage = MockStorageManager()
         storage.insertSampleOrder(readOnlyOrder: .fake())
-        storage.insertSamplePaymentGatewayAccount(readOnlyAccount: .fake())
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case let .selectedPaymentGatewayAccount(onCompletion) = action {
+                onCompletion(PaymentGatewayAccount.fake())
+            }
+        }
 
         let analytics = MockAnalyticsProvider()
         let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()))
         let onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
         let dependencies = Dependencies(
             cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
+            stores: stores,
             storage: storage,
             analytics: WooAnalytics(analyticsProvider: analytics))
         let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00",
@@ -263,13 +269,19 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         // Given
         let storage = MockStorageManager()
         storage.insertSampleOrder(readOnlyOrder: .fake())
-        storage.insertSamplePaymentGatewayAccount(readOnlyAccount: .fake())
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case let .selectedPaymentGatewayAccount(onCompletion) = action {
+                onCompletion(PaymentGatewayAccount.fake())
+            }
+        }
 
         let analytics = MockAnalyticsProvider()
         let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .failure(NSError(domain: "Error", code: 0, userInfo: nil)))
         let onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
         let dependencies = Dependencies(
             cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
+            stores: stores,
             storage: storage,
             analytics: WooAnalytics(analyticsProvider: analytics))
         let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00",
@@ -526,13 +538,23 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         // Given
         let storage = MockStorageManager()
         storage.insertSampleOrder(readOnlyOrder: .fake())
-        storage.insertSamplePaymentGatewayAccount(readOnlyAccount: .fake())
+
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            switch action {
+            case let .selectedPaymentGatewayAccount(onCompletion):
+                onCompletion(PaymentGatewayAccount.fake())
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
 
         let noticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
         let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()))
         let onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
         let dependencies = Dependencies(presentNoticeSubject: noticeSubject,
                                         cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
+                                        stores: stores,
                                         storage: storage)
         let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00",
                                                        dependencies: dependencies)
@@ -560,11 +582,17 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         // Given
         let storage = MockStorageManager()
         storage.insertSampleOrder(readOnlyOrder: .fake())
-        storage.insertSamplePaymentGatewayAccount(readOnlyAccount: .fake())
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case let .selectedPaymentGatewayAccount(onCompletion) = action {
+                onCompletion(PaymentGatewayAccount.fake())
+            }
+        }
 
         let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()))
         let onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
         let dependencies = Dependencies(cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
+                                        stores: stores,
                                         storage: storage)
         let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00",
                                                        dependencies: dependencies)
@@ -585,9 +613,13 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         let storage = MockStorageManager()
         let order = Order.fake().copy(status: .pending)
         storage.insertSampleOrder(readOnlyOrder: order)
-        storage.insertSamplePaymentGatewayAccount(readOnlyAccount: .fake())
 
         let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case let .selectedPaymentGatewayAccount(onCompletion) = action {
+                onCompletion(PaymentGatewayAccount.fake())
+            }
+        }
 
         let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()))
         let onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()

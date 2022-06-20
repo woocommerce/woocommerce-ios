@@ -462,7 +462,7 @@ private extension AddEditCouponViewModel {
 
     func trackCouponCreateInitiated(with coupon: Coupon) {
         ServiceLocator.analytics.track(.couponCreationInitiated, withProperties: [
-            "discount_type": coupon.discountType,
+            "discount_type": coupon.discountType.rawValue,
             "has_expiry_date": coupon.dateExpires != nil,
             "includes_free_shipping": coupon.freeShipping,
             "has_product_or_category_restrictions": coupon.excludedProductCategories.isNotEmpty || coupon.excludedProductIds.isNotEmpty,

@@ -41,6 +41,8 @@ Just 2 steps to enable injection in your SwiftUI Views
 - Call `.enableInjection()` at the end of your body definition.
 
 **Remember you don't need to remove this code when you are done, it's NO-OP in production builds.**
+** Keep also in mind that if you try to add the injection in a view while the app is running, you will experience a crash **
+
 
 ## Enable hot reload in UIKit / AppKit
 
@@ -62,6 +64,7 @@ rootViewController.pushViewController(viewController, animated: true)
 ```
 
 **Remember you don't need to remove this code when you are done, it's NO-OP in production builds.**
+** Keep also in mind that if you try to add the injection in a view while the app is running, you will experience a crash **
 
 
 ## Questions

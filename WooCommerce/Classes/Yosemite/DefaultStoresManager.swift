@@ -406,6 +406,10 @@ private extension DefaultStoresManager {
     /// Synchronizes all site plugins for the store with specified ID
     ///
     func synchronizeSitePlugins(siteID: Int64) {
+        // Check if the user is an admin, otherwise they can't fetch plugins.
+        guard sessionManager.defaultRoles.contains(.administrator) == true else {
+            return
+        }
         let action = SitePluginAction.synchronizeSitePlugins(siteID: siteID) { result in
             if let error = result.failure {
                 DDLogError("⛔️ Failed to sync site plugins for siteID: \(siteID). Error: \(error)")

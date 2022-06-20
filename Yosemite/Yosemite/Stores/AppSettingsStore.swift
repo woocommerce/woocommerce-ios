@@ -166,6 +166,8 @@ public class AppSettingsStore: Store {
             setPreferredInPersonPaymentGateway(siteID: siteID, gateway: gateway)
         case let .getPreferredInPersonPaymentGateway(siteID: siteID, onCompletion: onCompletion):
             getPreferredInPersonPaymentGateway(siteID: siteID, onCompletion: onCompletion)
+        case let .forgetPreferredInPersonPaymentGateway(siteID: siteID):
+            forgetPreferredInPersonPaymentGateway(siteID: siteID)
         case .resetGeneralStoreSettings:
             resetGeneralStoreSettings()
         case .setProductSKUInputScannerFeatureSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
@@ -721,6 +723,14 @@ private extension AppSettingsStore {
         let storeSettings = getStoreSettings(for: siteID)
         onCompletion(storeSettings.preferredInPersonPaymentGateway)
 
+    }
+
+    /// Forgets the preferred payment gateway for In-Person Payments
+    ///
+    func forgetPreferredInPersonPaymentGateway(siteID: Int64) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let newSettings = storeSettings.copy(preferredInPersonPaymentGateway: .some(nil))
+        setStoreSettings(settings: newSettings, for: siteID, onCompletion: nil)
     }
 
 }

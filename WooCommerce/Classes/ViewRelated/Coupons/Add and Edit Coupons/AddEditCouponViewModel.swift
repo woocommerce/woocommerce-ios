@@ -267,7 +267,7 @@ final class AddEditCouponViewModel: ObservableObject {
     }
 
     private func createCoupon(coupon: Coupon) {
-        ServiceLocator.analytics.track(.couponCreationInitiated)
+        trackCouponCreateInitiated(with: coupon)
 
         if let validationError = validateCouponLocally(coupon) {
             notice = NoticeFactory.createCouponErrorNotice(validationError,
@@ -457,6 +457,16 @@ private extension AddEditCouponViewModel {
             return false
         }
         return coupon.freeShipping != initialCoupon.freeShipping
+    }
+
+    func trackCouponCreateInitiated(with coupon: Coupon) {
+        ServiceLocator.analytics.track(.couponCreationInitiated, withProperties: [
+            "discount_type": coupon.discountType,
+            "has_expiry_date": coupon.dateExpires != nil,
+            "includes_free_shipping": coupon.freeShipping,
+            "has_product_or_category_restrictions": coupon.excludedProductCategories.isNotEmpty || coupon.excludedProductIds.isNotEmpty,
+            "has_usage_restrictions": coupon.usageLimit != nil && coupon.usageLimit > 0
+        ])
     }
 
     func trackCouponUpdateInitiated(with coupon: Coupon) {

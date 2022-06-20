@@ -173,16 +173,22 @@ final class IssueRefundViewModel {
 
     /// Creates the `ViewModel` to be used when navigating to the page where the user can
     /// confirm and submit the refund.
-    func createRefundConfirmationViewModel() -> RefundConfirmationViewModel {
-        let details = RefundConfirmationViewModel.Details(order: state.order,
-                                                          charge: state.charge,
-                                                          amount: "\(calculateRefundTotal())",
-                                                          refundsShipping: state.shouldRefundShipping,
-                                                          refundsFees: state.shouldRefundFees,
-                                                          items: state.refundQuantityStore.refundableItems(),
-                                                          paymentGateway: paymentGateway,
-                                                          paymentGatewayAccount: paymentGatewayAccounts.first)
-        return RefundConfirmationViewModel(details: details, currencySettings: state.currencySettings)
+    func createRefundConfirmationViewModel(onCompletion: @escaping ((RefundConfirmationViewModel) -> Void)) {
+        let action = CardPresentPaymentAction.selectedPaymentGatewayAccount { [weak self] paymentGatewayAccount in
+            guard let self = self else { return }
+            let details = RefundConfirmationViewModel.Details(order: self.state.order,
+                                                              charge: self.state.charge,
+                                                              amount: "\(self.calculateRefundTotal())",
+                                                              refundsShipping: self.state.shouldRefundShipping,
+                                                              refundsFees: self.state.shouldRefundFees,
+                                                              items: self.state.refundQuantityStore.refundableItems(),
+                                                              paymentGateway: self.paymentGateway,
+                                                              paymentGatewayAccount: paymentGatewayAccount)
+
+            onCompletion(RefundConfirmationViewModel(details: details, currencySettings: self.state.currencySettings))
+        }
+
+        stores.dispatch(action)
     }
 }
 

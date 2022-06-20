@@ -817,6 +817,7 @@
 		45AF9DAA265CEAA3001EB794 /* ShippingLabelCarrierRowViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AF9DA9265CEAA3001EB794 /* ShippingLabelCarrierRowViewModelTests.swift */; };
 		45AF9DAF265CFAB4001EB794 /* MockShippingLabelCarrierRate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AF9DAE265CFAB4001EB794 /* MockShippingLabelCarrierRate.swift */; };
 		45B0DF3B273C20120026DC61 /* OrdersRootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45B0DF39273C20120026DC61 /* OrdersRootViewController.xib */; };
+		45B4F0262860BD0A00F3B16E /* WCShipCTAView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B4F0252860BD0A00F3B16E /* WCShipCTAView.swift */; };
 		45B6F4EF27592A4000C18782 /* ReviewsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B6F4EE27592A4000C18782 /* ReviewsView.swift */; };
 		45B98E1F25DECC1C00A1232B /* ShippingLabelAddressFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B98E1E25DECC1C00A1232B /* ShippingLabelAddressFormViewModelTests.swift */; };
 		45B9C63E23A8E50D007FC4C5 /* ProductPriceSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B9C63C23A8E50D007FC4C5 /* ProductPriceSettingsViewController.swift */; };
@@ -2561,6 +2562,7 @@
 		45AF9DA9265CEAA3001EB794 /* ShippingLabelCarrierRowViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCarrierRowViewModelTests.swift; sourceTree = "<group>"; };
 		45AF9DAE265CFAB4001EB794 /* MockShippingLabelCarrierRate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockShippingLabelCarrierRate.swift; sourceTree = "<group>"; };
 		45B0DF39273C20120026DC61 /* OrdersRootViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrdersRootViewController.xib; sourceTree = "<group>"; };
+		45B4F0252860BD0A00F3B16E /* WCShipCTAView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCShipCTAView.swift; sourceTree = "<group>"; };
 		45B6F4EE27592A4000C18782 /* ReviewsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsView.swift; sourceTree = "<group>"; };
 		45B98E1E25DECC1C00A1232B /* ShippingLabelAddressFormViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddressFormViewModelTests.swift; sourceTree = "<group>"; };
 		45B9C63C23A8E50D007FC4C5 /* ProductPriceSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductPriceSettingsViewController.swift; sourceTree = "<group>"; };
@@ -5375,6 +5377,14 @@
 			path = "Menu Order";
 			sourceTree = "<group>";
 		};
+		45B4F0242860BCCA00F3B16E /* WCShip Installation Process */ = {
+			isa = PBXGroup;
+			children = (
+				45B4F0252860BD0A00F3B16E /* WCShipCTAView.swift */,
+			);
+			path = "WCShip Installation Process";
+			sourceTree = "<group>";
+		};
 		45B9C63B23A8E4DB007FC4C5 /* Edit Price */ = {
 			isa = PBXGroup;
 			children = (
@@ -7167,6 +7177,7 @@
 				26E1BEC7251BE50C0096D0A1 /* Issue Refunds */,
 				CE35F10A2343E4E6007B2A6B /* Order Notes Section */,
 				021A84DD257DFBDA00BC71D1 /* Shipping Labels */,
+				45B4F0242860BCCA00F3B16E /* WCShip Installation Process */,
 				57A25C7525ACE9BC00A54A62 /* OrderFulfillmentUseCase.swift */,
 				57A25C7B25ACFAEC00A54A62 /* OrderFulfillmentNoticePresenter.swift */,
 			);
@@ -9575,6 +9586,7 @@
 				DE74F2A327E41D650002FE59 /* EnableAnalyticsViewModel.swift in Sources */,
 				AE77EA5027A47C99006A21BD /* View+AddingDividers.swift in Sources */,
 				0298430C259351F100979CAE /* ShippingLabelsTopBannerFactory.swift in Sources */,
+				45B4F0262860BD0A00F3B16E /* WCShipCTAView.swift in Sources */,
 				020BE74D23B1F5EB007FE54C /* TitleAndTextFieldTableViewCell.swift in Sources */,
 				023D692E2588BF0900F7DA72 /* ShippingLabelPaperSizeListSelectorCommand.swift in Sources */,
 				CC72BB6427BD842500837876 /* DisclosureIndicator.swift in Sources */,

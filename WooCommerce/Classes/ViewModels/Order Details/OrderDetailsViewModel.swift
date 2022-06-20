@@ -453,6 +453,10 @@ extension OrderDetailsViewModel {
             let viewModel = RefundedProductsViewModel(order: order, refundedProducts: refundedProducts)
             let refundedProductsDetailViewController = RefundedProductsViewController(viewModel: viewModel)
             viewController.navigationController?.pushViewController(refundedProductsDetailViewController, animated: true)
+        case .installWCShip:
+            //TODO: add analytics
+            let wcShipInstallationFlowVC = Inject.ViewControllerHost(WCShipCTAHostingController())
+            viewController.present(wcShipInstallationFlowVC, animated: true)
         default:
             break
         }

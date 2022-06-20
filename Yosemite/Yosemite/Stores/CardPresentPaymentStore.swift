@@ -17,7 +17,15 @@ public final class CardPresentPaymentStore: Store {
     ///
     private let commonReaderConfigProvider: CommonReaderConfigProvider
 
-    private var paymentGatewayAccount: PaymentGatewayAccount?
+    private var paymentGatewayAccount: PaymentGatewayAccount? {
+        didSet {
+            if paymentGatewayAccount != oldValue {
+                // If we switched accounts, disconnect any connected reader
+                // as its connection token would be tied to the other account
+                disconnect(onCompletion: { _ in })
+            }
+        }
+    }
 
     /// Which backend is the store using? Default to WCPay until told otherwise
     private var usingBackend: CardPresentPaymentGatewayExtension {

@@ -13,7 +13,7 @@ final class OrdersTests: XCTestCase {
         try LoginFlow.logInWithWPcom()
     }
 
-    func testOrdersScreenLoads() throws {
+    func test_load_orders_screen() throws {
         let orders = try GetMocks.readOrdersData()
 
         try TabNavComponent().goToOrdersScreen()

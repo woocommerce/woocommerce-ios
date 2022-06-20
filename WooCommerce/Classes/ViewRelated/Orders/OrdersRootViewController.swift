@@ -166,7 +166,7 @@ final class OrdersRootViewController: UIViewController {
     /// This is to update the order detail in split view
     ///
     private func handleSwitchingDetails(viewModel: OrderDetailsViewModel) {
-        let orderDetailsViewController = OrderDetailsViewController(viewModel: viewModel)
+        let orderDetailsViewController = Inject.ViewControllerHost(OrderDetailsViewController(viewModel: viewModel))
         let orderDetailsNavigationController = WooNavigationController(rootViewController: orderDetailsViewController)
 
         splitViewController?.showDetailViewController(orderDetailsNavigationController, sender: nil)
@@ -361,7 +361,7 @@ private extension OrdersRootViewController {
     ///
     private func navigateToOrderDetail(_ order: Order) {
         let viewModel = OrderDetailsViewModel(order: order)
-        let orderViewController = OrderDetailsViewController(viewModel: viewModel)
+        let orderViewController = Inject.ViewControllerHost(OrderDetailsViewController(viewModel: viewModel))
 
         // Cleanup navigation (remove new order flow views) before navigating to order details
         if let navigationController = navigationController, let indexOfSelf = navigationController.viewControllers.firstIndex(of: self) {

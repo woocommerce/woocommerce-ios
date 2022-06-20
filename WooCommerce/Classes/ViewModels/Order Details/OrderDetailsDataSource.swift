@@ -101,11 +101,6 @@ final class OrderDetailsDataSource: NSObject {
         return true
     }
 
-    func cardPresentPaymentGatewayAccounts() -> [PaymentGatewayAccount] {
-        resultsControllers.paymentGatewayAccounts.filter { $0.isCardPresentEligible }
-    }
-
-
     /// Whether the order has a receipt associated.
     ///
     var shouldShowReceipts: Bool = false

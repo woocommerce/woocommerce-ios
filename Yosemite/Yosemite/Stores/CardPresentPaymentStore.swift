@@ -17,8 +17,16 @@ public final class CardPresentPaymentStore: Store {
     ///
     private let commonReaderConfigProvider: CommonReaderConfigProvider
 
+    private var paymentGatewayAccount: PaymentGatewayAccount?
+
     /// Which backend is the store using? Default to WCPay until told otherwise
-    private var usingBackend: CardPresentPaymentGatewayExtension = .wcpay
+    private var usingBackend: CardPresentPaymentGatewayExtension {
+        guard let paymentGatewayAccount = paymentGatewayAccount else {
+            return .wcpay
+        }
+
+        return paymentGatewayAccount.isWCPay ? .wcpay : .stripe
+    }
 
     private let remote: WCPayRemote
     private let stripeRemote: StripeRemote
@@ -61,6 +69,8 @@ public final class CardPresentPaymentStore: Store {
         switch action {
         case .use(let account):
             use(paymentGatewayAccount: account)
+        case .selectedPaymentGatewayAccount(let completion):
+            completion(paymentGatewayAccount)
         case .loadActivePaymentGatewayExtension(let completion):
             loadActivePaymentGateway(onCompletion: completion)
         case .loadAccounts(let siteID, let onCompletion):
@@ -399,12 +409,7 @@ private extension CardPresentPaymentStore {
     /// Sets the store to use a given payment gateway
     ///
     func use(paymentGatewayAccount: PaymentGatewayAccount) {
-        guard paymentGatewayAccount.isWCPay else {
-            usingBackend = .stripe
-            return
-        }
-
-        usingBackend = .wcpay
+        self.paymentGatewayAccount = paymentGatewayAccount
     }
 
     func loadActivePaymentGateway(onCompletion: (CardPresentPaymentGatewayExtension) -> Void) {

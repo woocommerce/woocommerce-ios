@@ -78,3 +78,7 @@ There are several reasons. I'd like to test everything in SwiftUI preview, but t
 If you need to test something fast, with real data, maybe in multiple flows, it's not the ideal solution. It's useful for small components (like a table row) but not too much useful for entire views or flows.
 Using hot reloading, allow us to have a faster workflow, and you don't need to restart the app in the simulator every time, which save you a lot of time.
 
+
+## Tips
+
+- If a view embedded in a `UIHostingController` is not refreshing properly, it's because you should wrap the view controller under `Inject.ViewControllerHost`.

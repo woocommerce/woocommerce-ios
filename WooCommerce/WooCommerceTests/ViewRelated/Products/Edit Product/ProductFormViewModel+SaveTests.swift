@@ -118,11 +118,18 @@ final class ProductFormViewModel_SaveTests: XCTestCase {
 }
 
 private extension ProductFormViewModel_SaveTests {
-    func createViewModel(product: Product, formType: ProductFormType) -> ProductFormViewModel {
+    func createViewModel(
+        product: Product,
+        formType: ProductFormType,
+        productImagesUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+        isBackgroundImageUploadEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload)
+    ) -> ProductFormViewModel {
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         return ProductFormViewModel(product: model,
                                     formType: formType,
-                                    productImageActionHandler: productImageActionHandler)
+                                    productImageActionHandler: productImageActionHandler,
+                                    productImagesUploader: productImagesUploader,
+                                    isBackgroundImageUploadEnabled: isBackgroundImageUploadEnabled)
     }
 }

@@ -426,6 +426,13 @@ extension WooAnalyticsEvent {
                 Keys.errorDescription: errorDescription
             ])
         }
+
+        /// Tracked when the user taps to collect a payment
+        ///
+        static func collectPaymentTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .collectPaymentTapped,
+                              properties: [:])
+        }
     }
 }
 
@@ -856,22 +863,6 @@ extension WooAnalyticsEvent {
                                 Keys.softwareUpdateType: updateType.rawValue
                               ]
             )
-        }
-
-        /// Tracked when the user taps to collect a payment
-        ///
-        /// - Parameters:
-        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
-        ///   - countryCode: the country code of the store.
-        ///   - cardReaderModel: the model type of the card reader.
-        ///
-        static func collectPaymentTapped(forGatewayID: String?, countryCode: String, cardReaderModel: String) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .collectPaymentTapped,
-                              properties: [
-                                Keys.cardReaderModel: cardReaderModel,
-                                Keys.countryCode: countryCode,
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
-                              ])
         }
 
         /// Tracked when the payment collection fails

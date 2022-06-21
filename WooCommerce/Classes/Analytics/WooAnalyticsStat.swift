@@ -237,6 +237,7 @@ public enum WooAnalyticsStat: String {
     case orderFeeAdd = "order_fee_add"
     case orderShippingMethodAdd = "order_shipping_method_add"
     case orderSyncFailed = "order_sync_failed"
+    case collectPaymentTapped = "payments_flow_order_collect_payment_tapped"
 
     // MARK: Order List Sorting/Filtering
     //
@@ -286,7 +287,6 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Payment Events
     //
-    case collectPaymentTapped = "card_present_collect_payment_tapped"
     case collectPaymentCanceled = "card_present_collect_payment_canceled"
     case collectPaymentFailed = "card_present_collect_payment_failed"
     case collectPaymentSuccess = "card_present_collect_payment_success"

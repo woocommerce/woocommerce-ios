@@ -851,8 +851,8 @@ platform :ios do
                         download_path: './fastlane/metadata')
 
     # Copy appstoreres (screenshot-related) txt files into `en-US`
-    enUS_path = File.join(Dir.pwd, 'metadata', 'en-US')
-    FileUtils.mkdir_p(enUS_path)
+    en_us_path = File.join(Dir.pwd, 'metadata', 'en-US')
+    FileUtils.mkdir_p(en_us_path)
 
     [
       'promo_screenshot_1.txt',
@@ -862,7 +862,7 @@ platform :ios do
       'promo_screenshot_5.txt'
     ].each do |filename|
       source = File.join(Dir.pwd, 'appstoreres', 'metadata', 'source', filename)
-      destination = File.join(enUS_path, filename)
+      destination = File.join(en_us_path, filename)
       FileUtils.cp(source, destination)
     end
 

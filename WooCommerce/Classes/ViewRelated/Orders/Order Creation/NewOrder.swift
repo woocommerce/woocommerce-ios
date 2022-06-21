@@ -44,7 +44,7 @@ final class NewOrderHostingController: UIHostingController<NewOrder> {
 ///
 extension NewOrderHostingController {
     override func shouldPopOnBackButton() -> Bool {
-        guard !viewModel.hasChanges else {
+        guard viewModel.canBeDismissed || !viewModel.hasChanges else {
             presentDiscardChangesActionSheet(onDiscard: { [weak self] in
                 self?.discardOrderAndPop()
             })
@@ -62,7 +62,7 @@ extension NewOrderHostingController {
 ///
 extension NewOrderHostingController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
-        return !viewModel.hasChanges
+        return viewModel.canBeDismissed || !viewModel.hasChanges
     }
 
     func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {

@@ -28,7 +28,18 @@ final class NewOrderViewModel: ObservableObject {
     /// Indicates whether user has made any changes
     ///
     var hasChanges: Bool {
-        orderSynchronizer.order != OrderFactory.emptyNewOrder && flow == .creation
+        switch flow {
+        case .creation:
+            return orderSynchronizer.order != OrderFactory.emptyNewOrder
+        case .editing(let initialOrder):
+            return orderSynchronizer.order != initialOrder
+        }
+    }
+
+    /// Indicates whether view can be dismissed. If the value is `false` - confirmation alert will be displayd depending on `hasChanges` value.
+    ///
+    var canBeDismissed: Bool {
+        flow == .creation
     }
 
     /// Indicates whether the cancel button is visible.

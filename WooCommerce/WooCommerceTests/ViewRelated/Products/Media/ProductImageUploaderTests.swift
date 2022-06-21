@@ -135,4 +135,37 @@ final class ProductImageUploaderTests: XCTestCase {
         let images = try XCTUnwrap(resultOfSavedImages.get())
         XCTAssertEqual(images.map { $0.imageID }, [606, 645])
     }
+
+    func test_replaceLocalID_replaces_productID_properly() {
+        // Given
+        let imageUploader = ProductImageUploader()
+        let localProductID: Int64 = 0
+        let remoteProductID = productID
+        let originalStatuses: [ProductImageStatus] = [.remote(image: ProductImage.fake()),
+                                                      .uploading(asset: PHAsset()),
+                                                      .uploading(asset: PHAsset())]
+        _ = imageUploader.actionHandler(siteID: siteID,
+                                        productID: localProductID,
+                                        isLocalID: true,
+                                        originalStatuses: originalStatuses)
+
+        // Before replacing product ID
+
+        // Pass empty statuses to get the `actionHandler`, and validate that `actionHandler` with `originalStatuses` is returned.
+        XCTAssertEqual(originalStatuses, imageUploader.actionHandler(siteID: siteID,
+                                                                     productID: localProductID,
+                                                                     isLocalID: true,
+                                                                     originalStatuses: []).productImageStatuses)
+
+        // When
+        imageUploader.replaceLocalID(siteID: siteID, localProductID: localProductID, remoteProductID: remoteProductID)
+
+        // After replacing local product ID with remote product ID
+
+        // Pass empty statuses and `remoteProductID` to get the `actionHandler`, and validate that `actionHandler` with `originalStatuses` is returned.
+        XCTAssertEqual(originalStatuses, imageUploader.actionHandler(siteID: siteID,
+                                                                     productID: remoteProductID,
+                                                                     isLocalID: false,
+                                                                     originalStatuses: []).productImageStatuses)
+    }
 }

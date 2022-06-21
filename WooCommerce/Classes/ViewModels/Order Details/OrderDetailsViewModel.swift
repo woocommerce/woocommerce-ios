@@ -10,10 +10,6 @@ import enum Networking.DotcomError
 
 final class OrderDetailsViewModel {
 
-    /// Retains the use-case so it can perform all of its async tasks.
-    ///
-    private var collectPaymentsUseCase: CollectOrderPaymentUseCase?
-
     private let stores: StoresManager
 
     private(set) var order: Order
@@ -165,6 +161,14 @@ final class OrderDetailsViewModel {
         return order.paymentURL
     }
 
+    var paymentMethodsViewModel: PaymentMethodsViewModel {
+        PaymentMethodsViewModel(siteID: order.siteID,
+                                orderID: order.orderID,
+                                paymentLink: order.paymentURL,
+                                formattedTotal: order.total,
+                                flow: .orderPayment)
+    }
+
     /// Helpers
     ///
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
@@ -228,12 +232,6 @@ extension OrderDetailsViewModel {
 
         group.enter()
         checkShippingLabelCreationEligibility {
-            onReloadSections?()
-            group.leave()
-        }
-
-        group.enter()
-        checkCardPresentPaymentEligibility() {
             onReloadSections?()
             group.leave()
         }
@@ -607,32 +605,6 @@ extension OrderDetailsViewModel {
         stores.dispatch(action)
     }
 
-    func checkCardPresentPaymentEligibility(onCompletion: @escaping (() -> Void)) {
-        let configuration = configurationLoader.configuration
-
-        guard configuration.isSupportedCountry else {
-            dataSource.isEligibleForCardPresentPayment = false
-            onCompletion()
-            return
-        }
-
-        let action = OrderCardPresentPaymentEligibilityAction
-            .orderIsEligibleForCardPresentPayment(orderID: order.orderID,
-                                                  siteID: order.siteID,
-                                                  cardPresentPaymentsConfiguration: configurationLoader.configuration) { [weak self] result in
-            switch result {
-            case .success(let eligible):
-                self?.dataSource.isEligibleForCardPresentPayment = eligible
-            case .failure(_):
-                self?.dataSource.isEligibleForCardPresentPayment = false
-            }
-
-            onCompletion()
-        }
-
-        stores.dispatch(action)
-    }
-
     func loadPaymentGatewayAccounts() {
         /// No need for a completion here. The VC will be notified of changes to the stored paymentGatewayAccounts
         /// by the viewModel (after passing up through the dataSource and originating in the resultsControllers)
@@ -684,22 +656,6 @@ extension OrderDetailsViewModel {
         }
 
         stores.dispatch(deleteTrackingAction)
-    }
-
-    /// Collects payments for the current order.
-    /// Tries to connect to a reader if necessary.
-    /// Checks onboarding status before connecting to a reader.
-    /// Handles receipt sharing.
-    ///
-    func collectPayment(rootViewController: UIViewController, onCollect: @escaping (Result<Void, Error>) -> Void) {
-        let paymentMethodsViewModel = PaymentMethodsViewModel(siteID: order.siteID,
-                                                              orderID: order.orderID,
-                                                              paymentLink: order.paymentURL,
-                                                              formattedTotal: order.total,
-                                                              flow: .orderPayment)
-        let paymentMethodsViewController = PaymentMethodsHostingController(viewModel: paymentMethodsViewModel)
-        let paymentMethodsNavigationController = WooNavigationController(rootViewController: paymentMethodsViewController)
-        rootViewController.navigationController?.present(paymentMethodsNavigationController, animated: true)
     }
 }
 

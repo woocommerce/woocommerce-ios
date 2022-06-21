@@ -595,17 +595,17 @@ private extension OrderDetailsViewController {
     }
 
     @objc private func collectPaymentTapped() {
-        viewModel.collectPayment(rootViewController: self) { [weak self] result in
-            guard let self = self else { return }
-            // Refresh date & view once payment has been collected.
-            if result.isSuccess {
-                self.viewModel.syncOrderAfterPaymentCollection {
-                    self.viewModel.checkCardPresentPaymentEligibility {
-                        self.reloadTableViewSectionsAndData()
-                    }
-                }
-            }
+        collectPayment()
+    }
+
+    private func collectPayment() {
+        let paymentMethodsViewController = PaymentMethodsHostingController(viewModel: viewModel.paymentMethodsViewModel) { [weak self] in
+            self?.syncEverything(onCompletion: { [weak self] in
+                self?.reloadTableViewSectionsAndData()
+            })
         }
+        let paymentMethodsNavigationController = WooNavigationController(rootViewController: paymentMethodsViewController)
+        present(paymentMethodsNavigationController, animated: true)
     }
 
     private func itemAddOnsButtonTapped(addOns: [OrderItemAttribute]) {

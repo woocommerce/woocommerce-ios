@@ -43,6 +43,6 @@ final class OrdersTests: XCTestCase {
             .startOrderCreation()
             .cancelOrderCreation()
 
-        XCTAssertTrue(try SingleOrderScreen().isLoaded)
+        XCTAssertTrue(try OrdersScreen().isLoaded)
     }
 }

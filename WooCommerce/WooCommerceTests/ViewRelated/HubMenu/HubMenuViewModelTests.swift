@@ -222,6 +222,23 @@ final class HubMenuViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.woocommerceAdminURL)
         XCTAssertEqual(viewModel.woocommerceAdminURL, try URL(string: expectedAdminURL)?.asURL())
     }
+    func test_hubMenu_returns_adminURL_fallback_when_site_adminURL_is_empty() {
+        // Given
+        let sampleStoreURL = "https://testshop.com"
+        let sampleAdminURL = ""
+        let expectedAdminURL = "https://testshop.com/wp-admin"
+        let sessionManager = SessionManager.testingInstance
+        let site = Site.fake().copy(url: sampleStoreURL, adminURL: sampleAdminURL)
+        sessionManager.defaultSite = site
+        let stores = MockStoresManager(sessionManager: sessionManager)
+
+        // When
+        let viewModel = HubMenuViewModel(siteID: site.siteID,
+                                         stores: stores)
+        // Then
+        XCTAssertNotNil(viewModel.woocommerceAdminURL)
+        XCTAssertEqual(viewModel.woocommerceAdminURL, try URL(string: expectedAdminURL)?.asURL())
+    }
 }
 
 private extension HubMenuViewModelTests {

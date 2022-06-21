@@ -92,8 +92,8 @@ struct AddEditCoupon: View {
 
                             Group {
                                 TitleAndValueRow(title: Localization.discountType,
-                                        value: viewModel.discountTypeValue,
-                                        selectionStyle: .disclosure, action: {
+                                                 value: viewModel.discountTypeValue,
+                                                 selectionStyle: .disclosure, action: {
                                     // TODO: remove this workaround with `adaptiveSheetPresentationController` when we drop support for iOS 14
                                     if idiom == .pad {
                                         showingDiscountType.toggle()
@@ -101,98 +101,98 @@ struct AddEditCoupon: View {
                                         discountTypeHandler(viewProperties)
                                     }
                                 }).popover(isPresented: $showingDiscountType) {
-                                            let command = DiscountTypeBottomSheetListSelectorCommand(selected: viewModel.discountType) { selectedType in
-                                                viewModel.discountType = selectedType
-                                                showingDiscountType.toggle()
-                                            }
-                                            BottomSheetListSelector(viewProperties: viewProperties, command: command, onDismiss: nil)
-                                        }
+                                    let command = DiscountTypeBottomSheetListSelectorCommand(selected: viewModel.discountType) { selectedType in
+                                        viewModel.discountType = selectedType
+                                        showingDiscountType.toggle()
+                                    }
+                                    BottomSheetListSelector(viewProperties: viewProperties, command: command, onDismiss: nil)
+                                }
 
                                 Divider()
-                                        .padding(.leading, Constants.margin)
+                                    .padding(.leading, Constants.margin)
 
                                 TitleAndTextFieldRow(title: viewModel.amountLabel,
-                                        placeholder: "0",
-                                        text: $viewModel.amountField,
-                                        editable: true,
-                                        fieldAlignment: .leading,
-                                        keyboardType: .decimalPad,
-                                        inputFormatter: CouponAmountInputFormatter())
+                                                     placeholder: "0",
+                                                     text: $viewModel.amountField,
+                                                     editable: true,
+                                                     fieldAlignment: .leading,
+                                                     keyboardType: .decimalPad,
+                                                     inputFormatter: CouponAmountInputFormatter())
                                 Divider()
-                                        .padding(.leading, Constants.margin)
+                                    .padding(.leading, Constants.margin)
 
                                 Text(viewModel.amountSubtitleLabel)
-                                        .subheadlineStyle()
-                                        .padding(.horizontal, Constants.margin)
+                                    .subheadlineStyle()
+                                    .padding(.horizontal, Constants.margin)
                             }
-                                    .padding(.bottom, Constants.verticalSpacing)
+                            .padding(.bottom, Constants.verticalSpacing)
 
                             Group {
                                 TitleAndTextFieldRow(title: Localization.couponCode,
-                                        placeholder: Localization.couponCodePlaceholder,
-                                        text: $viewModel.codeField,
-                                        editable: true,
-                                        fieldAlignment: .leading,
-                                        keyboardType: .default,
-                                        inputFormatter: CouponCodeInputFormatter())
+                                                     placeholder: Localization.couponCodePlaceholder,
+                                                     text: $viewModel.codeField,
+                                                     editable: true,
+                                                     fieldAlignment: .leading,
+                                                     keyboardType: .default,
+                                                     inputFormatter: CouponCodeInputFormatter())
                                 Divider()
-                                        .padding(.leading, Constants.margin)
-                                        .padding(.bottom, Constants.verticalSpacing)
-                                Text(Localization.footerCouponCode)
-                                        .subheadlineStyle()
-                                        .padding(.horizontal, Constants.margin)
-                            }
+                                    .padding(.leading, Constants.margin)
                                     .padding(.bottom, Constants.verticalSpacing)
+                                Text(Localization.footerCouponCode)
+                                    .subheadlineStyle()
+                                    .padding(.horizontal, Constants.margin)
+                            }
+                            .padding(.bottom, Constants.verticalSpacing)
 
                             Button {
                                 viewModel.generateRandomCouponCode()
                             } label: {
                                 Text(Localization.regenerateCouponCodeButton)
                             }
-                                    .buttonStyle(LinkButtonStyle())
-                                    .fixedSize()
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .padding(.bottom, Constants.verticalSpacing)
+                            .buttonStyle(LinkButtonStyle())
+                            .fixedSize()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.bottom, Constants.verticalSpacing)
 
                             Button {
                                 showingEditDescription = true
                             } label: {
                                 HStack {
                                     Image(uiImage: viewModel.editDescriptionIcon)
-                                            .resizable()
-                                            .colorMultiply(Color(.text))
-                                            .frame(width: Constants.iconSize, height: Constants.iconSize)
+                                        .resizable()
+                                        .colorMultiply(Color(.text))
+                                        .frame(width: Constants.iconSize, height: Constants.iconSize)
                                     Text(viewModel.editDescriptionLabel)
-                                            .bodyStyle()
+                                        .bodyStyle()
                                 }
                             }
-                                    .buttonStyle(SecondaryButtonStyle())
-                                    .padding(.horizontal, Constants.margin)
-                                    .padding(.bottom, Constants.verticalSpacing)
+                            .buttonStyle(SecondaryButtonStyle())
+                            .padding(.horizontal, Constants.margin)
+                            .padding(.bottom, Constants.verticalSpacing)
 
                             Group {
                                 TitleAndValueRow(title: Localization.couponExpiryDate,
-                                        value: viewModel.expiryDateValue,
-                                        selectionStyle: .disclosure, action: {
+                                                 value: viewModel.expiryDateValue,
+                                                 selectionStyle: .disclosure, action: {
                                     showingCouponExpiryDate = true
                                 })
                                 Divider()
-                                        .padding(.leading, Constants.margin)
+                                    .padding(.leading, Constants.margin)
                             }
-                                    .padding(.bottom, Constants.verticalSpacing)
+                            .padding(.bottom, Constants.verticalSpacing)
 
                             Group {
                                 TitleAndToggleRow(title: Localization.includeFreeShipping, isOn: $viewModel.freeShipping)
-                                        .padding(.horizontal, Constants.margin)
+                                    .padding(.horizontal, Constants.margin)
                                 Divider()
-                                        .padding(.leading, Constants.margin)
+                                    .padding(.leading, Constants.margin)
                             }
-                                    .padding(.bottom, Constants.verticalSpacing)
+                            .padding(.bottom, Constants.verticalSpacing)
                         }
 
                         Group {
                             ListHeaderView(text: Localization.headerApplyCouponTo.uppercased(), alignment: .left)
-                                    .padding(.bottom, Constants.verticalSpacing)
+                                .padding(.bottom, Constants.verticalSpacing)
 
                             Button {
                                 showingSelectProducts = true
@@ -200,20 +200,20 @@ struct AddEditCoupon: View {
                                 HStack {
                                     if viewModel.hasSelectedProducts {
                                         Image(uiImage: .pencilImage)
-                                                .resizable()
-                                                .colorMultiply(Color(.text))
-                                                .frame(width: Constants.iconSize, height: Constants.iconSize)
+                                            .resizable()
+                                            .colorMultiply(Color(.text))
+                                            .frame(width: Constants.iconSize, height: Constants.iconSize)
                                         Text(viewModel.editProductsButtonTitle)
-                                                .bodyStyle()
+                                            .bodyStyle()
                                     } else {
                                         Text(Localization.allProductsButton)
-                                                .bodyStyle()
+                                            .bodyStyle()
                                     }
                                 }
                             }
-                                    .buttonStyle(SecondaryButtonStyle())
-                                    .padding(.horizontal, Constants.margin)
-                                    .padding(.bottom, Constants.verticalSpacing)
+                            .buttonStyle(SecondaryButtonStyle())
+                            .padding(.horizontal, Constants.margin)
+                            .padding(.bottom, Constants.verticalSpacing)
 
                             Button {
                                 showingSelectCategories = true
@@ -221,37 +221,37 @@ struct AddEditCoupon: View {
                                 HStack {
                                     if viewModel.hasSelectedCategories {
                                         Image(uiImage: .pencilImage)
-                                                .resizable()
-                                                .colorMultiply(Color(.text))
-                                                .frame(width: Constants.iconSize, height: Constants.iconSize)
+                                            .resizable()
+                                            .colorMultiply(Color(.text))
+                                            .frame(width: Constants.iconSize, height: Constants.iconSize)
                                         Text(viewModel.editCategoriesButtonTitle)
-                                                .bodyStyle()
+                                            .bodyStyle()
                                     } else {
                                         Image(uiImage: .plusImage)
-                                                .resizable()
-                                                .frame(width: Constants.iconSize, height: Constants.iconSize)
+                                            .resizable()
+                                            .frame(width: Constants.iconSize, height: Constants.iconSize)
                                         Text(Localization.selectCategoriesButton)
-                                                .bodyStyle()
+                                            .bodyStyle()
                                     }
                                 }
                             }
-                                    .buttonStyle(SecondaryButtonStyle())
-                                    .padding(.horizontal, Constants.margin)
+                            .buttonStyle(SecondaryButtonStyle())
+                            .padding(.horizontal, Constants.margin)
                         }
-                                .padding(.bottom, Constants.verticalSpacing)
+                        .padding(.bottom, Constants.verticalSpacing)
 
                         Group {
                             ListHeaderView(text: Localization.headerUsageDetails.uppercased(), alignment: .left)
 
                             TitleAndValueRow(title: Localization.usageRestrictions,
-                                    value: .placeholder(""),
-                                    selectionStyle: .disclosure, action: {
+                                             value: .placeholder(""),
+                                             selectionStyle: .disclosure, action: {
                                 showingCouponRestrictions = true
                             })
                             Divider()
-                                    .padding(.leading, Constants.margin)
+                                .padding(.leading, Constants.margin)
                         }
-                                .padding(.bottom, Constants.verticalSpacing)
+                        .padding(.bottom, Constants.verticalSpacing)
 
                         Button {
                             // This should be replaced with `@FocusState` when we drop support for iOS 14
@@ -262,29 +262,29 @@ struct AddEditCoupon: View {
                         } label: {
                             Text(viewModel.addEditCouponButtonText)
                         }
-                                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoading))
-                                .padding(.horizontal, Constants.margin)
-                                .padding([.top, .bottom], Constants.verticalSpacing)
-                                .disabled(!viewModel.hasChangesMade)
+                        .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoading))
+                        .padding(.horizontal, Constants.margin)
+                        .padding([.top, .bottom], Constants.verticalSpacing)
+                        .disabled(!viewModel.hasChangesMade)
 
                         LazyNavigationLink(destination: FullScreenTextView(title: Localization.titleEditDescriptionView,
-                                text: $viewModel.descriptionField,
-                                placeholder: Localization.addDescriptionPlaceholder),
-                                isActive: $showingEditDescription) {
+                                                                           text: $viewModel.descriptionField,
+                                                                           placeholder: Localization.addDescriptionPlaceholder),
+                                           isActive: $showingEditDescription) {
                             EmptyView()
                         }
 
                         LazyNavigationLink(destination: CouponExpiryDateView(date: viewModel.expiryDateField ?? Date(),
-                                isRemovalEnabled: viewModel.expiryDateField != nil,
-                                timezone: viewModel.timezone,
-                                onCompletion: { updatedExpiryDate in
-                                    viewModel.expiryDateField = updatedExpiryDate
-                                }), isActive: $showingCouponExpiryDate) {
+                                                                             isRemovalEnabled: viewModel.expiryDateField != nil,
+                                                                             timezone: viewModel.timezone,
+                                                                             onCompletion: { updatedExpiryDate in
+                            viewModel.expiryDateField = updatedExpiryDate
+                        }), isActive: $showingCouponExpiryDate) {
                             EmptyView()
                         }
 
                         LazyNavigationLink(destination: CouponRestrictions(viewModel: viewModel.couponRestrictionsViewModel),
-                                isActive: $showingCouponRestrictions) {
+                                           isActive: $showingCouponRestrictions) {
                             EmptyView()
                         }
                     }
@@ -292,17 +292,17 @@ struct AddEditCoupon: View {
             }
             .sheet(isPresented: $showingSelectProducts) {
                 ProductSelector(configuration: ProductSelector.Configuration.productsForCoupons,
-                        isPresented: $showingSelectProducts,
-                        viewModel: viewModel.productSelectorViewModel)
-                        .onDisappear {
-                            viewModel.productSelectorViewModel.clearSearchAndFilters()
-                        }
+                                isPresented: $showingSelectProducts,
+                                viewModel: viewModel.productSelectorViewModel)
+                    .onDisappear {
+                        viewModel.productSelectorViewModel.clearSearchAndFilters()
+                    }
             }
             .sheet(isPresented: $showingSelectCategories) {
                 ProductCategorySelector(isPresented: $showingSelectCategories,
-                        viewConfig: categorySelectorConfig,
-                        categoryListConfig: categoryListConfig,
-                        viewModel: viewModel.categorySelectorViewModel)
+                                        viewConfig: categorySelectorConfig,
+                                        categoryListConfig: categoryListConfig,
+                                        viewModel: viewModel.categorySelectorViewModel)
             }
             .sheet(isPresented: $viewModel.showingCouponCreationSuccess) {
                 let couponCode = viewModel.coupon?.code ?? ""

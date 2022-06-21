@@ -265,8 +265,6 @@ final class PaymentMethodsViewModel: ObservableObject {
         analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCanceled(flow: flow))
     }
 
-
-
     /// Defines if the swipe-to-dismiss gesture on the payment flow should be enabled
     ///
     var shouldEnableSwipeToDismiss: Bool {

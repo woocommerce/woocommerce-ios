@@ -698,8 +698,8 @@ extension OrderDetailsViewModel {
                                                               formattedTotal: order.total,
                                                               flow: .orderPayment)
         let paymentMethodsViewController = PaymentMethodsHostingController(viewModel: paymentMethodsViewModel)
-        let paymentMethodsNC = WooNavigationController(rootViewController: paymentMethodsViewController)
-        rootViewController.navigationController?.present(paymentMethodsNC, animated: true)
+        let paymentMethodsNavigationController = WooNavigationController(rootViewController: paymentMethodsViewController)
+        rootViewController.navigationController?.present(paymentMethodsNavigationController, animated: true)
     }
 }
 

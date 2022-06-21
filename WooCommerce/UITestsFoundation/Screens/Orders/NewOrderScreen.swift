@@ -23,6 +23,10 @@ public final class NewOrderScreen: ScreenObject {
         $0.staticTexts["Add Customer Details"]
     }
 
+    private let addShippingButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["add-shipping-button"]
+    }
+
     private var createButton: XCUIElement { createButtonGetter(app) }
 
     /// Cancel button in the Navigation bar.
@@ -40,6 +44,10 @@ public final class NewOrderScreen: ScreenObject {
     /// Add Customer Details button in the Customer Details section.
     ///
     private var addCustomerDetailsButton: XCUIElement { addCustomerDetailsButtonGetter(app) }
+
+    /// Add Shipping button in the Payment section.
+    ///
+    private var addShippingButton: XCUIElement { addShippingButtonGetter(app) }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
@@ -74,6 +82,14 @@ public final class NewOrderScreen: ScreenObject {
         return try CustomerDetailsScreen()
     }
 
+    /// Opens the Add Shipping screen.
+    /// - Returns: Add Shipping screen object.
+    @discardableResult
+    public func openAddShippingScreen() throws -> AddShippingScreen {
+        addShippingButton.tap()
+        return try AddShippingScreen()
+    }
+
 // MARK: - High-level Order Creation actions
 
     /// Creates a remote order with all of the entered order data.
@@ -105,6 +121,18 @@ public final class NewOrderScreen: ScreenObject {
     public func addCustomerDetails(name: String) throws -> NewOrderScreen {
         return try openCustomerDetailsScreen()
             .enterCustomerDetails(name: name)
+    }
+
+    /// Adds shipping on the Add Shipping screen.
+    /// - Parameters:
+    ///   - amount: Amount (in the store currency) to add for shipping.
+    ///   - name: Name of the shipping method (e.g. "Free Shipping" or "Flat Rate").
+    /// - Returns: New Order screen object.
+    public func addShipping(amount: String, name: String) throws -> NewOrderScreen {
+        return try openAddShippingScreen()
+            .enterShippingAmount(amount)
+            .enterShippingName(name)
+            .confirmShippingDetails()
     }
 
     /// Cancels Order Creation process

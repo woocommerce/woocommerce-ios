@@ -34,17 +34,17 @@ struct WCShipCTAView: View {
                 .padding([.leading, .trailing], Constants.horizontalMargin)
 
                 VStack (spacing: Constants.verticalSpacing) {
-                IconListItem(title: "Title",
-                             subtitle: "Subtitle",
-                             icon: .remote(URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")!))
+                IconListItem(title: "Buy postage when you need it",
+                             subtitle: "No need to wonder where that stampbook went",
+                             icon: .base64(.iconCircularTime))
 
-                IconListItem(title: "Title",
-                             subtitle: "Subtitle",
-                             icon: .remote(URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")!))
+                IconListItem(title: "Print from your phone",
+                             subtitle: "Pick up an order, then just pay, print, package, and post.",
+                             icon: .base64(.iconCircularDocument))
 
-                IconListItem(title: "Title",
-                             subtitle: "Subtitle",
-                             icon: .remote(URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")!))
+                IconListItem(title: "Discounted rates",
+                             subtitle: "Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!",
+                             icon: .base64(.iconCircularRateDiscount))
                 }
             }
             VStack {

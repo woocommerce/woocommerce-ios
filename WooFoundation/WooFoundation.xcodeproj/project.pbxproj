@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		397702D42D32EAEEEA3B29FC /* Pods_WooFoundationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 532D4D63493CE8FA6F13C85B /* Pods_WooFoundationTests.framework */; };
+		3F55176228628E0C002CF097 /* BuildkiteTestCollector in Frameworks */ = {isa = PBXBuildFile; productRef = 3F55176128628E0C002CF097 /* BuildkiteTestCollector */; };
 		9FA5113235035AC9A6079B0D /* Pods_WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1733C61561AE3A1AD3C16B7 /* Pods_WooFoundation.framework */; };
 		B987B06F284540D300C53CF6 /* CurrencyCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B987B06E284540D300C53CF6 /* CurrencyCode.swift */; };
 		B9C9C63F283E703C001B879F /* WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9C9C635283E703C001B879F /* WooFoundation.framework */; };
@@ -63,6 +64,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3F55176228628E0C002CF097 /* BuildkiteTestCollector in Frameworks */,
 				B9C9C63F283E703C001B879F /* WooFoundation.framework in Frameworks */,
 				397702D42D32EAEEEA3B29FC /* Pods_WooFoundationTests.framework in Frameworks */,
 			);
@@ -209,6 +211,9 @@
 				B9C9C641283E703C001B879F /* PBXTargetDependency */,
 			);
 			name = WooFoundationTests;
+			packageProductDependencies = (
+				3F55176128628E0C002CF097 /* BuildkiteTestCollector */,
+			);
 			productName = ToolsTests;
 			productReference = B9C9C63E283E703C001B879F /* WooFoundationTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -240,6 +245,9 @@
 				Base,
 			);
 			mainGroup = B9C9C5ED283E6FAA001B879F;
+			packageReferences = (
+				3F55176028628E0C002CF097 /* XCRemoteSwiftPackageReference "test-collector-swift" */,
+			);
 			productRefGroup = B9C9C5FB283E6FAB001B879F /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -711,6 +719,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		3F55176028628E0C002CF097 /* XCRemoteSwiftPackageReference "test-collector-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/buildkite/test-collector-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3F55176128628E0C002CF097 /* BuildkiteTestCollector */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3F55176028628E0C002CF097 /* XCRemoteSwiftPackageReference "test-collector-swift" */;
+			productName = BuildkiteTestCollector;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B9C9C5EE283E6FAA001B879F /* Project object */;
 }

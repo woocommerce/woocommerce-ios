@@ -353,7 +353,7 @@ private extension OrderDetailsViewController {
     /// Presents the order edit form
     ///
     private func editOrder() {
-        let viewModel = NewOrderViewModel(siteID: viewModel.order.siteID, initialOrder: viewModel.order)
+        let viewModel = NewOrderViewModel(siteID: viewModel.order.siteID, flow: .editing(initialOrder: viewModel.order))
         viewModel.onOrderCreated = { [weak self] order in
             guard let self = self else { return }
             self.dismiss(animated: true)

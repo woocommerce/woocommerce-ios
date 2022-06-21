@@ -234,23 +234,23 @@ final class NewOrderViewModel: ObservableObject {
     private let orderSynchronizer: OrderSynchronizer
 
     init(siteID: Int64,
-         initialOrder: Order? = nil,
+         flow: Flow = .creation,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
-        if let initialOrder = initialOrder {
-            self.flow = .editing(initialOrder: initialOrder)
-        } else {
-            self.flow = .creation
-        }
+        self.flow = flow
         self.stores = stores
         self.storageManager = storageManager
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.analytics = analytics
-        self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, initialOrder: initialOrder, stores: stores, currencySettings: currencySettings)
+        if case let .editing(initialOrder) = flow {
+            self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, initialOrder: initialOrder, stores: stores, currencySettings: currencySettings)
+        } else {
+            self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, initialOrder: nil, stores: stores, currencySettings: currencySettings)
+        }
         self.featureFlagService = featureFlagService
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.

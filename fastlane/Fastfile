@@ -1036,9 +1036,9 @@ end
 desc 'Run tests without building'
 lane :test_without_building do |options|
   # Find the referenced .xctestrun file based on its name
-  buildProductsPath = File.expand_path('DerivedData/Build/Products/', File.dirname(Dir.pwd))
+  build_products_path = File.expand_path('DerivedData/Build/Products/', File.dirname(Dir.pwd))
 
-  xctestrun_path = Dir.glob(File.join(buildProductsPath, '*.xctestrun')).select do |e|
+  xctestrun_path = Dir.glob(File.join(build_products_path, '*.xctestrun')).select do |e|
     e.include?(options[:name])
   end.first
 

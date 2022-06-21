@@ -160,13 +160,26 @@ final class HubMenuViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.menuElements, [.woocommerceAdmin, .viewStore, .reviews])
     }
-    func test_hub_menu_returns_expected_store_and_woocommerce_admin_url() {
+    func test_hubMenu_returns_storeURL_when_site_has_storeURL() {
         // Given
-        let sampleURL = "https://testshop.com/"
+        let sampleStoreURL = "https://testshop.com/"
+        let sessionManager = SessionManager.testingInstance
+        let site = Site.fake().copy(url: sampleStoreURL)
+        sessionManager.defaultSite = site
+        let stores = MockStoresManager(sessionManager: sessionManager)
+
+        // When
+        let viewModel = HubMenuViewModel(siteID: site.siteID,
+                                         stores: stores)
+
+        // Then
+        XCTAssertEqual(viewModel.storeURL, try sampleStoreURL.asURL())
+    }
+    func test_hubMenu_returns_adminURL_when_site_has_adminURL() {
+        // Given
         let sampleAdminURL = "https://testshop.com/wp-admin/"
         let sessionManager = SessionManager.testingInstance
-        let site = Site.fake().copy(url: sampleURL,
-                                    adminURL: sampleAdminURL)
+        let site = Site.fake().copy(adminURL: sampleAdminURL)
         sessionManager.defaultSite = site
         let stores = MockStoresManager(sessionManager: sessionManager)
 
@@ -175,33 +188,13 @@ final class HubMenuViewModelTests: XCTestCase {
                                          stores: stores)
 
         // Then
-        XCTAssertEqual(viewModel.storeURL, try sampleURL.asURL())
         XCTAssertEqual(viewModel.woocommerceAdminURL, try sampleAdminURL.asURL())
     }
-    func test_hub_menu_returns_default_woocommerce_url_if_store_url_is_empty() {
+    func test_hubMenu_returns_woocommerce_fallback_URL_when_site_storeURL_is_nil() {
         // Given
-        let sampleURL = ""
-        let sampleAdminURL = ""
+        let sampleStoreURL: String? = nil
         let sessionManager = SessionManager.testingInstance
-        let site = Site.fake().copy(url: sampleURL,
-                                    adminURL: sampleAdminURL)
-        sessionManager.defaultSite = site
-        let stores = MockStoresManager(sessionManager: sessionManager)
-
-        // When
-        let viewModel = HubMenuViewModel(siteID: site.siteID,
-                                         stores: stores)
-        // Then
-        XCTAssertEqual(viewModel.storeURL, WooConstants.URLs.blog.asURL())
-        XCTAssertEqual(viewModel.woocommerceAdminURL, WooConstants.URLs.blog.asURL())
-    }
-    func test_that_store_and_admin_url_do_not_return_nil_if_store_url_is_nil() {
-        // Given
-        let sampleURL: String? = nil
-        let sampleAdminURL: String? = nil
-        let sessionManager = SessionManager.testingInstance
-        let site = Site.fake().copy(url: sampleURL,
-                                    adminURL: sampleAdminURL)
+        let site = Site.fake().copy(url: sampleStoreURL)
         sessionManager.defaultSite = site
         let stores = MockStoresManager(sessionManager: sessionManager)
 
@@ -210,7 +203,24 @@ final class HubMenuViewModelTests: XCTestCase {
                                          stores: stores)
         // Then
         XCTAssertNotNil(viewModel.storeURL)
+        XCTAssertEqual(viewModel.storeURL, WooConstants.URLs.blog.asURL())
+    }
+    func test_hubMenu_returns_adminURL_fallback_when_site_adminURL_is_nil() {
+        // Given
+        let sampleStoreURL = "https://testshop.com"
+        let sampleAdminURL: String? = nil
+        let expectedAdminURL = "https://testshop.com/wp-admin"
+        let sessionManager = SessionManager.testingInstance
+        let site = Site.fake().copy(url: sampleStoreURL, adminURL: sampleAdminURL)
+        sessionManager.defaultSite = site
+        let stores = MockStoresManager(sessionManager: sessionManager)
+
+        // When
+        let viewModel = HubMenuViewModel(siteID: site.siteID,
+                                         stores: stores)
+        // Then
         XCTAssertNotNil(viewModel.woocommerceAdminURL)
+        XCTAssertEqual(viewModel.woocommerceAdminURL, try URL(string: expectedAdminURL)?.asURL())
     }
 }
 

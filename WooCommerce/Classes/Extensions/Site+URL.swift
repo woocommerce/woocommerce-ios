@@ -27,14 +27,10 @@ extension Site {
     }
     /// Returns the WooCommerce admin URL, or attempts to construct it from the site URL.
     ///
-    func adminURLWithFallback() -> URL {
+    func adminURLFromSiteURLString() -> URL? {
         guard let adminURL = URL(string: self.adminURL) else {
-            if self.url.isEmpty {
-                return WooConstants.URLs.blog.asURL()
-            } else {
-                let adminURLFromSiteURLString = self.url + "/wp-admin"
-                return URL(string: adminURLFromSiteURLString) ?? WooConstants.URLs.blog.asURL()
-            }
+            let adminURLFromSiteURLString = self.url + "/wp-admin"
+            return URL(string: adminURLFromSiteURLString) ?? nil
         }
         return adminURL
     }

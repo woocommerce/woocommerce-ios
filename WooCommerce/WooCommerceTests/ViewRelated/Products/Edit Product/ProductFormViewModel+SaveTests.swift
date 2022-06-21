@@ -158,6 +158,28 @@ final class ProductFormViewModel_SaveTests: XCTestCase {
         // Assert
         XCTAssertEqual(savedProduct, EditableProductModel(product: product.copy(statusKey: ProductStatus.pending.rawValue)))
     }
+
+    func test_editing_a_product_remotely_fires_method_to_save_images_in_background_using_productImagesUploader() throws {
+        // Given
+        let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
+        let productImagesUploader = MockProductImageUploader()
+        let viewModel = createViewModel(product: product, formType: .edit, productImagesUploader: productImagesUploader, isBackgroundImageUploadEnabled: true)
+        storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
+            if case let ProductAction.updateProduct(product, onCompletion) = action {
+                onCompletion(.success(product))
+            }
+        }
+
+        // When
+        waitForExpectation { expectation in
+            viewModel.saveProductRemotely(status: .pending) { result in
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertTrue(productImagesUploader.saveProductImagesWhenNoneIsPendingUploadAnymoreWasCalled)
+    }
 }
 
 private extension ProductFormViewModel_SaveTests {

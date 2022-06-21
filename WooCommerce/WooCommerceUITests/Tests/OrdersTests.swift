@@ -34,11 +34,15 @@ final class OrdersTests: XCTestCase {
             .addProduct(byName: products[0].name)
             .addCustomerDetails(name: "Mira")
             .createOrder()
+
+        XCTAssertTrue(try SingleOrderScreen().isLoaded)
     }
 
     func test_cancel_order_creation() throws {
         try TabNavComponent().goToOrdersScreen()
             .startOrderCreation()
             .cancelOrderCreation()
+
+        XCTAssertTrue(try SingleOrderScreen().isLoaded)
     }
 }

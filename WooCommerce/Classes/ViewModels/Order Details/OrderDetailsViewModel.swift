@@ -154,13 +154,6 @@ final class OrderDetailsViewModel {
         MoreActionButton.availableButtons(order: order, syncState: syncState)
     }
 
-    /// Returns the order payment link.
-    /// Should exists on `6.4+` stores.
-    ///
-    var paymentLink: URL? {
-        return order.paymentURL
-    }
-
     var paymentMethodsViewModel: PaymentMethodsViewModel {
         PaymentMethodsViewModel(siteID: order.siteID,
                                 orderID: order.orderID,
@@ -681,7 +674,6 @@ extension OrderDetailsViewModel {
         ///
         enum ButtonType: CaseIterable {
             case editOrder
-            case sharePaymentLink
         }
 
         /// ID of the button.
@@ -695,13 +687,6 @@ extension OrderDetailsViewModel {
         fileprivate static func availableButtons(order: Order, syncState: SyncState) -> [MoreActionButton] {
             ButtonType.allCases.compactMap { buttonType in
                 switch buttonType {
-
-                case .sharePaymentLink:
-                    guard order.needsPayment && order.paymentURL != nil else {
-                        return nil
-                    }
-                    return .init(id: buttonType, title: Localization.sharePaymentLink)
-
                 case .editOrder:
                     guard syncState == .synced, ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing) else {
                         return nil
@@ -712,7 +697,6 @@ extension OrderDetailsViewModel {
         }
 
         enum Localization {
-            static let sharePaymentLink = NSLocalizedString("Share Payment Link", comment: "Title to share an order payment link.")
             static let editOrder = NSLocalizedString("Edit", comment: "Title to edit an order")
         }
     }

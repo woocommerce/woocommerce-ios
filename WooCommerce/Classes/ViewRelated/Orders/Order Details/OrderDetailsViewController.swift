@@ -322,8 +322,6 @@ private extension OrderDetailsViewController {
         for button in viewModel.moreActionsButtons {
             actionSheet.addDefaultActionWithTitle(button.title) { [weak self] _ in
                 switch button.id {
-                case .sharePaymentLink:
-                    self?.sharePaymentLink(sender)
                 case .editOrder:
                     self?.editOrder()
                 }
@@ -334,20 +332,6 @@ private extension OrderDetailsViewController {
         let popoverController = actionSheet.popoverPresentationController
         popoverController?.barButtonItem = sender
         present(actionSheet, animated: true)
-    }
-
-    /// Shares the payment link(if it exists) using the native sharing helper.
-    ///
-    private func sharePaymentLink(_ sender: UIBarButtonItem) {
-        guard let paymentLink = viewModel.paymentLink else {
-            return DDLogError("⛔️ No payment link for order: \(viewModel.order.orderID)")
-        }
-
-        SharingHelper.shareURL(url: paymentLink, title: nil, from: sender, in: self) { _, completed, _, _ in
-            if completed {
-                ServiceLocator.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailPaymentLinkShared())
-            }
-        }
     }
 
     /// Presents the order edit form
@@ -851,7 +835,6 @@ private extension OrderDetailsViewController {
 
         enum ActionsMenu {
             static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel the main more actions menu sheet.")
-            static let paymentLink = NSLocalizedString("Share Payment Link", comment: "Title to share an order payment link.")
         }
     }
 

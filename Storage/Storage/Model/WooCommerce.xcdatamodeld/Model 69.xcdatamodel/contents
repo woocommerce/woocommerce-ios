@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19574" systemVersion="21C52" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
@@ -485,6 +485,7 @@
         <attribute name="verified" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
     </entity>
     <entity name="ProductSearchResults" representedClassName="ProductSearchResults" syncable="YES">
+        <attribute name="filterKey" optional="YES" attributeType="String"/>
         <attribute name="keyword" optional="YES" attributeType="String"/>
         <relationship name="products" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Product" inverseName="searchResults" inverseEntity="Product"/>
     </entity>
@@ -828,7 +829,7 @@
         <element name="ProductDownload" positionX="-684" positionY="45" width="128" height="118"/>
         <element name="ProductImage" positionX="-859.9296875" positionY="471.46484375" width="128" height="163"/>
         <element name="ProductReview" positionX="-693" positionY="36" width="128" height="210"/>
-        <element name="ProductSearchResults" positionX="-693" positionY="36" width="128" height="75"/>
+        <element name="ProductSearchResults" positionX="-693" positionY="36" width="128" height="74"/>
         <element name="ProductShippingClass" positionX="-693" positionY="36" width="128" height="148"/>
         <element name="ProductTag" positionX="-896.65234375" positionY="645.7421875" width="128" height="118"/>
         <element name="ProductVariation" positionX="-693" positionY="36" width="128" height="598"/>

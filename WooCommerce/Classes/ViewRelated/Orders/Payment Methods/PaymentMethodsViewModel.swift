@@ -170,6 +170,8 @@ final class PaymentMethodsViewModel: ObservableObject {
                 return DDLogError("⛔️ Error updating order: \(error)")
             }
 
+            self.updateOrderAsynchronously()
+
             onSuccess()
             self.presentNoticeSubject.send(.completed)
             self.trackFlowCompleted(method: .cash)

@@ -1,15 +1,11 @@
 import SwiftUI
 
 final class PaymentMethodsHostingController: UIHostingController<HostedPaymentMethodsView> {
-    let onDismiss: (() -> ())
-
-    init(viewModel: PaymentMethodsViewModel, onDismiss: @escaping (() -> ())) {
-        self.onDismiss = onDismiss
+    init(viewModel: PaymentMethodsViewModel) {
         super.init(rootView: HostedPaymentMethodsView(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
         rootView.dismiss = { [weak self] in
-            self?.onDismiss()
             self?.dismiss(animated: true, completion: nil)
         }
     }

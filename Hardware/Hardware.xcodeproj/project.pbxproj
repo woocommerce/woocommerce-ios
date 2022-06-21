@@ -20,6 +20,7 @@
 		317975C0274EB1F9004357B1 /* DeclineReason.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317975BF274EB1F9004357B1 /* DeclineReason.swift */; };
 		317975C2274EBC1F004357B1 /* DeclineReason+Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317975C1274EBC1F004357B1 /* DeclineReason+Stripe.swift */; };
 		317975C4274ED591004357B1 /* DeclineReasonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317975C3274ED591004357B1 /* DeclineReasonTests.swift */; };
+		3F55175F28628D98002CF097 /* BuildkiteTestCollector in Frameworks */ = {isa = PBXBuildFile; productRef = 3F55175E28628D98002CF097 /* BuildkiteTestCollector */; };
 		55CD4BB4273E617C007686D3 /* ReceiptRendererTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55CD4BB3273E617C007686D3 /* ReceiptRendererTest.swift */; };
 		5A747BE9FA06EC8752A35752 /* Pods_HardwareTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1DC5B6141B8184FAC29B0A4 /* Pods_HardwareTests.framework */; };
 		8FFAA245E257B9EB98E2FCBD /* Pods_SampleReceiptPrinter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AFA997D6786C67B0A061854 /* Pods_SampleReceiptPrinter.framework */; };
@@ -279,6 +280,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3F55175F28628D98002CF097 /* BuildkiteTestCollector in Frameworks */,
 				D88FDB0925DD216B00CB0DBD /* Hardware.framework in Frameworks */,
 				5A747BE9FA06EC8752A35752 /* Pods_HardwareTests.framework in Frameworks */,
 			);
@@ -605,6 +607,9 @@
 				D88FDB0B25DD216B00CB0DBD /* PBXTargetDependency */,
 			);
 			name = HardwareTests;
+			packageProductDependencies = (
+				3F55175E28628D98002CF097 /* BuildkiteTestCollector */,
+			);
 			productName = HardwareTests;
 			productReference = D88FDB0825DD216B00CB0DBD /* HardwareTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -661,6 +666,9 @@
 				Base,
 			);
 			mainGroup = D88FDAF525DD216B00CB0DBD;
+			packageReferences = (
+				3F55175D28628D98002CF097 /* XCRemoteSwiftPackageReference "test-collector-swift" */,
+			);
 			productRefGroup = D88FDB0025DD216B00CB0DBD /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -1371,10 +1379,26 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		3F55175D28628D98002CF097 /* XCRemoteSwiftPackageReference "test-collector-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/buildkite/test-collector-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		02B5147928254ED300750B71 /* Codegen */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Codegen;
+		};
+		3F55175E28628D98002CF097 /* BuildkiteTestCollector */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3F55175D28628D98002CF097 /* XCRemoteSwiftPackageReference "test-collector-swift" */;
+			productName = BuildkiteTestCollector;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

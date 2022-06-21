@@ -1038,16 +1038,16 @@ lane :test_without_building do |options|
   # Find the referenced .xctestrun file based on its name
   buildProductsPath = File.expand_path('DerivedData/Build/Products/', File.dirname(Dir.pwd))
 
-  testPlanPath = Dir.glob(File.join(buildProductsPath, '*.xctestrun')).select do |e|
+  xctestrun_path = Dir.glob(File.join(buildProductsPath, '*.xctestrun')).select do |e|
     e.include?(options[:name])
   end.first
 
   # FIXME: I do realize the variable is called "test plan path" but we're
   # actually dealing with an `xctestrun`. I'll rename them all once established
   # this approach works
-  add_buildkite_analytics_token(xctestrun_path: testPlanPath)
+  add_buildkite_analytics_token(xctestrun_path: xctestrun_path)
 
-  UI.user_error!('Unable to find .xctestrun file') unless !testPlanPath.nil? && File.exist?((testPlanPath))
+  UI.user_error!('Unable to find .xctestrun file') unless !xctestrun_path.nil? && File.exist?((xctestrun_path))
 
   run_tests(
     workspace: 'WooCommerce.xcworkspace',
@@ -1055,7 +1055,7 @@ lane :test_without_building do |options|
     device: options[:device],
     deployment_target_version: options[:ios_version],
     test_without_building: true,
-    xctestrun: testPlanPath,
+    xctestrun: xctestrun_path,
     result_bundle: true,
     # settins for XML test report generation via `trainer`
     output_types: '',

@@ -586,7 +586,12 @@ private extension OrderDetailsViewController {
     }
 
     private func collectPayment() {
-        let paymentMethodsViewController = PaymentMethodsHostingController(viewModel: viewModel.paymentMethodsViewModel)
+        let paymentMethodsViewController = PaymentMethodsHostingController(viewModel: viewModel.paymentMethodsViewModel) { [weak self] in
+            self?.syncEverything(onCompletion: { [weak self] in
+                self?.reloadTableViewSectionsAndData()
+            })
+        }
+
         let paymentMethodsNavigationController = WooNavigationController(rootViewController: paymentMethodsViewController)
         present(paymentMethodsNavigationController, animated: true)
     }

@@ -110,6 +110,26 @@ final class OrdersRemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    func test_load_single_order_properly_returns_WC6_6_new_fields() {
+        // Given
+        let remote = OrdersRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)", filename: "order")
+
+        // When
+        let order: Order = waitFor { promise in
+            remote.loadOrder(for: self.sampleSiteID, orderID: self.sampleOrderID) { order, error in
+                if let order = order {
+                    promise(order)
+                }
+            }
+        }
+
+        // Then
+        XCTAssertTrue(order.isEditable)
+        XCTAssertTrue(order.needsPayment)
+        XCTAssertTrue(order.needsProcessing)
+    }
+
     /// Verifies that loadOrder properly relays any Networking Layer errors.
     ///
     func testLoadSingleOrderProperlyRelaysNetworkingErrors() {

@@ -60,10 +60,6 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     ///
     private let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never>
 
-    /// Observes the store's current CPP state.
-    ///
-    private let cppStoreStateObserver: CardPresentPaymentsOnboardingUseCaseProtocol
-
     /// Store manager to update order.
     ///
     private let stores: StoresManager
@@ -101,26 +97,29 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     ///
     private var collectPaymentsUseCase: CollectOrderPaymentProtocol?
 
+    private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
+
     struct Dependencies {
         let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never>
-        let cppStoreStateObserver: CardPresentPaymentsOnboardingUseCaseProtocol
         let cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting
         let stores: StoresManager
         let storage: StorageManagerType
         let analytics: Analytics
+        let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
         init(presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
-             cppStoreStateObserver: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
              cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting = CardPresentPaymentsOnboardingPresenter(),
              stores: StoresManager = ServiceLocator.stores,
              storage: StorageManagerType = ServiceLocator.storageManager,
-             analytics: Analytics = ServiceLocator.analytics) {
+             analytics: Analytics = ServiceLocator.analytics,
+             cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration? = nil) {
             self.presentNoticeSubject = presentNoticeSubject
-            self.cppStoreStateObserver = cppStoreStateObserver
             self.cardPresentPaymentsOnboardingPresenter = cardPresentPaymentsOnboardingPresenter
             self.stores = stores
             self.storage = storage
             self.analytics = analytics
+            let configuration = cardPresentPaymentsConfiguration ?? CardPresentConfigurationLoader(stores: stores).configuration
+            self.cardPresentPaymentsConfiguration = configuration
         }
     }
 
@@ -134,14 +133,15 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
         self.paymentLink = paymentLink
         self.formattedTotal = formattedTotal
         presentNoticeSubject = dependencies.presentNoticeSubject
-        cppStoreStateObserver = dependencies.cppStoreStateObserver
         cardPresentPaymentsOnboardingPresenter = dependencies.cardPresentPaymentsOnboardingPresenter
         stores = dependencies.stores
         storage = dependencies.storage
         analytics = dependencies.analytics
+        cardPresentPaymentsConfiguration = dependencies.cardPresentPaymentsConfiguration
         title = String(format: Localization.title, formattedTotal)
 
         bindStoreCPPState()
+        updateCardPaymentVisibility()
     }
 
     /// Creates the info text when the merchant selects the cash payment method.
@@ -260,12 +260,30 @@ private extension SimplePaymentsMethodsViewModel {
     /// Observes the store CPP state and update publish variables accordingly.
     ///
     func bindStoreCPPState() {
-        cppStoreStateObserver
-            .statePublisher
-            .map { $0.isCompleted }
-            .removeDuplicates()
-            .assign(to: &$showPayWithCardRow)
-        cppStoreStateObserver.refresh()
+        ordersResultController.onDidChangeContent = updateCardPaymentVisibility
+        try? ordersResultController.performFetch()
+    }
+
+    func updateCardPaymentVisibility() {
+        guard cardPresentPaymentsConfiguration.isSupportedCountry else {
+            showPayWithCardRow = false
+
+            return
+        }
+
+        let action = OrderCardPresentPaymentEligibilityAction
+            .orderIsEligibleForCardPresentPayment(orderID: orderID,
+                                                  siteID: siteID,
+                                                  cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration) { [weak self] result in
+            switch result {
+            case .success(let eligible):
+                self?.showPayWithCardRow = eligible
+            case .failure(_):
+                self?.showPayWithCardRow = false
+            }
+        }
+
+        stores.dispatch(action)
     }
 
     func updateOrderAsynchronously() {

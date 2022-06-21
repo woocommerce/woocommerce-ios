@@ -6,6 +6,7 @@ import SafariServices
 import MessageUI
 import Combine
 import SwiftUI
+import WooFoundation
 
 // MARK: - OrderDetailsViewController: Displays the details for a given Order.
 //
@@ -80,6 +81,7 @@ final class OrderDetailsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         syncEverything { [weak self] in
+
             self?.topLoaderView.isHidden = true
 
             /// We add the refresh control to the tableview just after the `topLoaderView` disappear for the first time.
@@ -132,7 +134,7 @@ private extension OrderDetailsViewController {
         title = String.localizedStringWithFormat(titleFormat, viewModel.order.number)
 
         // Actions menu
-        if viewModel.shouldShowActionsMenuItem {
+        if viewModel.moreActionsButtons.isNotEmpty {
             navigationItem.rightBarButtonItem = UIBarButtonItem(image: .moreImage,
                                                                 style: .plain,
                                                                 target: self,
@@ -310,20 +312,20 @@ private extension OrderDetailsViewController {
     ///
     @objc func presentActionMenuSheet(_ sender: UIBarButtonItem) {
         let sheetTitle = "#" + viewModel.order.number
-        guard let paymentLink = viewModel.paymentLink else {
-            return DDLogError("⛔️ No payment link for order: \(sheetTitle)")
-        }
 
         // Configure share sheet
         let actionSheet = UIAlertController(title: nil, message: sheetTitle, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
         actionSheet.addCancelActionWithTitle(Localization.ActionsMenu.cancelAction)
-        actionSheet.addDefaultActionWithTitle(Localization.ActionsMenu.paymentLink) { [weak self] _ in
-            guard let self = self else { return }
 
-            SharingHelper.shareURL(url: paymentLink, title: nil, from: sender, in: self) { _, completed, _, _ in
-                if completed {
-                    ServiceLocator.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailPaymentLinkShared())
+        // Create action buttons
+        for button in viewModel.moreActionsButtons {
+            actionSheet.addDefaultActionWithTitle(button.title) { [weak self] _ in
+                switch button.id {
+                case .sharePaymentLink:
+                    self?.sharePaymentLink(sender)
+                case .editOrder:
+                    self?.editOrder()
                 }
             }
         }
@@ -333,146 +335,39 @@ private extension OrderDetailsViewController {
         popoverController?.barButtonItem = sender
         present(actionSheet, animated: true)
     }
+
+    /// Shares the payment link(if it exists) using the native sharing helper.
+    ///
+    private func sharePaymentLink(_ sender: UIBarButtonItem) {
+        guard let paymentLink = viewModel.paymentLink else {
+            return DDLogError("⛔️ No payment link for order: \(viewModel.order.orderID)")
+        }
+
+        SharingHelper.shareURL(url: paymentLink, title: nil, from: sender, in: self) { _, completed, _, _ in
+            if completed {
+                ServiceLocator.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailPaymentLinkShared())
+            }
+        }
+    }
+
+    /// Presents the order edit form
+    ///
+    private func editOrder() {
+        // TODO: Implement
+    }
 }
 
 
 // MARK: - Sync'ing Helpers
 //
 private extension OrderDetailsViewController {
+
+    /// Syncs all data related to the current order.
+    ///
     func syncEverything(onCompletion: (() -> ())? = nil) {
-        let group = DispatchGroup()
-
-        group.enter()
-        syncOrder { _ in
-            group.leave()
-        }
-
-        group.enter()
-        syncProducts { _ in
-            group.leave()
-        }
-
-        group.enter()
-        syncProductVariations { _ in
-            group.leave()
-        }
-
-        group.enter()
-        syncRefunds() { _ in
-            group.leave()
-        }
-
-        group.enter()
-        syncShippingLabels() { _ in
-            group.leave()
-        }
-
-        group.enter()
-        syncNotes { _ in
-            group.leave()
-        }
-
-        group.enter()
-        syncTrackingsEnablingAddButtonIfReachable {
-            group.leave()
-        }
-
-        group.enter()
-        checkShippingLabelCreationEligibility {
-            group.leave()
-        }
-
-        group.enter()
-        refreshCardPresentPaymentEligibility()
-        group.leave()
-
-        group.enter()
-        viewModel.refreshCardPresentPaymentOnboarding()
-        group.leave()
-
-        group.enter()
-        syncSavedReceipts {_ in
-            group.leave()
-        }
-
-        group.enter()
-        checkOrderAddOnFeatureSwitchState {
-            group.leave()
-        }
-
-        group.notify(queue: .main) {
-            onCompletion?()
-        }
-    }
-
-    func syncOrder(onCompletion: ((Error?) -> ())? = nil) {
-        viewModel.syncOrder { [weak self] (order, error) in
-            guard let self = self, let order = order else {
-                onCompletion?(error)
-                return
-            }
-
-            self.viewModel.update(order: order)
-
-            onCompletion?(nil)
-        }
-    }
-
-    func syncTracking(onCompletion: ((Error?) -> Void)? = nil) {
-        viewModel.syncTracking(onCompletion: onCompletion)
-    }
-
-    func syncNotes(onCompletion: ((Error?) -> ())? = nil) {
-        viewModel.syncNotes(onCompletion: onCompletion)
-    }
-
-    func syncProducts(onCompletion: ((Error?) -> ())? = nil) {
-        viewModel.syncProducts(onCompletion: onCompletion)
-    }
-
-    func syncProductVariations(onCompletion: ((Error?) -> ())? = nil) {
-        viewModel.syncProductVariations(onCompletion: onCompletion)
-    }
-
-    func syncRefunds(onCompletion: ((Error?) -> ())? = nil) {
-        viewModel.syncRefunds(onCompletion: onCompletion)
-    }
-
-    func syncShippingLabels(onCompletion: ((Error?) -> ())? = nil) {
-        viewModel.syncShippingLabels(onCompletion: onCompletion)
-    }
-
-    func syncSavedReceipts(onCompletion: ((Error?) -> ())? = nil) {
-        viewModel.syncSavedReceipts(onCompletion: onCompletion)
-    }
-
-    func syncTrackingsEnablingAddButtonIfReachable(onCompletion: (() -> Void)? = nil) {
-        syncTracking { [weak self] error in
-            if error == nil {
-                self?.viewModel.trackingIsReachable = true
-            }
-
+        viewModel.syncEverything(onReloadSections: { [weak self] in
             self?.reloadTableViewSectionsAndData()
-            onCompletion?()
-        }
-    }
-
-    func checkShippingLabelCreationEligibility(onCompletion: (() -> Void)? = nil) {
-        viewModel.checkShippingLabelCreationEligibility { [weak self] in
-            self?.reloadTableViewSectionsAndData()
-            onCompletion?()
-        }
-    }
-
-    func refreshCardPresentPaymentEligibility() {
-        viewModel.refreshCardPresentPaymentEligibility()
-    }
-
-    func checkOrderAddOnFeatureSwitchState(onCompletion: (() -> Void)? = nil) {
-        viewModel.checkOrderAddOnFeatureSwitchState { [weak self] in
-            self?.reloadTableViewSectionsAndData()
-            onCompletion?()
-        }
+        }, onCompletion: onCompletion)
     }
 
     func deleteTracking(_ tracking: ShipmentTracking) {
@@ -486,32 +381,7 @@ private extension OrderDetailsViewController {
             self?.reloadSections()
         }
     }
-
-    func syncOrderAfterPaymentCollection(onCompletion: @escaping ()-> Void) {
-        let group = DispatchGroup()
-
-        group.enter()
-        syncOrder { _ in
-            group.leave()
-        }
-
-        group.enter()
-        syncNotes { _ in
-            group.leave()
-        }
-
-        group.enter()
-        syncSavedReceipts { _ in
-            group.leave()
-        }
-
-        group.notify(queue: .main) {
-            NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
-            onCompletion()
-        }
-    }
 }
-
 
 // MARK: - Actions
 //
@@ -729,8 +599,10 @@ private extension OrderDetailsViewController {
             guard let self = self else { return }
             // Refresh date & view once payment has been collected.
             if result.isSuccess {
-                self.syncOrderAfterPaymentCollection {
-                    self.refreshCardPresentPaymentEligibility()
+                self.viewModel.syncOrderAfterPaymentCollection {
+                    self.viewModel.checkCardPresentPaymentEligibility {
+                        self.reloadTableViewSectionsAndData()
+                    }
                 }
             }
         }
@@ -856,14 +728,15 @@ private extension OrderDetailsViewController {
         ServiceLocator.analytics.track(.orderDetailOrderStatusEditButtonTapped,
                                        withProperties: ["status": viewModel.order.status.rawValue])
 
-        let statusList = OrderStatusListViewController(siteID: viewModel.order.siteID,
-                                                       status: viewModel.order.status)
+        let statusListViewModel = OrderStatusListViewModel(siteID: viewModel.order.siteID,
+                                                           status: viewModel.order.status)
+        let statusList = OrderStatusListViewController(viewModel: statusListViewModel)
 
-        statusList.didSelectCancel = { [weak statusList] in
+        statusListViewModel.didCancelSelection = { [weak statusList] in
             statusList?.dismiss(animated: true, completion: nil)
         }
 
-        statusList.didSelectApply = { [weak statusList] (selectedStatus) in
+        statusListViewModel.didApplySelection = { [weak statusList] (selectedStatus) in
             statusList?.dismiss(animated: true) {
                 self.setOrderStatus(to: selectedStatus)
             }
@@ -895,7 +768,7 @@ private extension OrderDetailsViewController {
         return OrderAction.updateOrderStatus(siteID: siteID, orderID: orderID, status: status, onCompletion: { [weak self] error in
             guard let error = error else {
                 NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
-                self?.syncNotes()
+                self?.viewModel.syncNotes()
                 ServiceLocator.analytics.track(.orderStatusChangeSuccess)
                 return
             }

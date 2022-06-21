@@ -218,6 +218,10 @@
 		DEC51AE0275B41BE009F3DF4 /* WooCommerce.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DEC51AA4275B41BE009F3DF4 /* WooCommerce.xcdatamodeld */; };
 		DEFD6D422641B70400E51E0D /* SitePlugin+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D412641B70400E51E0D /* SitePlugin+CoreDataProperties.swift */; };
 		DEFD6D432641B70400E51E0D /* SitePlugin+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D402641B70400E51E0D /* SitePlugin+CoreDataClass.swift */; };
+		E16D3741284F1CDA005676BC /* GeneralAppSettingsStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16D3740284F1CDA005676BC /* GeneralAppSettingsStorageTests.swift */; };
+		E16D3743284F1E76005676BC /* MockInMemoryStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16D3742284F1E76005676BC /* MockInMemoryStorage.swift */; };
+		E1E632C02846245D00878082 /* GeneralAppSettingsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E632BF2846245D00878082 /* GeneralAppSettingsStorage.swift */; };
+		E1BCBE842844D35E00087C33 /* GeneralStoreSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BCBE832844D35E00087C33 /* GeneralStoreSettingsTests.swift */; };
 		FEDD70AD26A5DBDD00194C3A /* EligibilityErrorInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEDD70AC26A5DBDD00194C3A /* EligibilityErrorInfo.swift */; };
 /* End PBXBuildFile section */
 
@@ -301,6 +305,7 @@
 		2685C107263C88B000D9EE97 /* AddOnGroup+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AddOnGroup+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		2685C11C263DEF0B00D9EE97 /* StorageTypeDeletionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageTypeDeletionsTests.swift; sourceTree = "<group>"; };
 		268BF6DA2642CBA5003948D8 /* Models+Copiable.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Models+Copiable.generated.swift"; sourceTree = "<group>"; };
+		268FEC8528513A470005E4C2 /* Model 69.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 69.xcdatamodel"; sourceTree = "<group>"; };
 		26B64554259CE7A800EF3FB3 /* ProductAttributeTerm+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ProductAttributeTerm+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		26B64555259CE7A800EF3FB3 /* ProductAttributeTerm+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ProductAttributeTerm+CoreDataClass.swift"; sourceTree = "<group>"; };
 		26EA01D024EC3AEA00176A57 /* FeedbackType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackType.swift; sourceTree = "<group>"; };
@@ -530,6 +535,10 @@
 		DEFD6D402641B70400E51E0D /* SitePlugin+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SitePlugin+CoreDataClass.swift"; sourceTree = "<group>"; };
 		DEFD6D412641B70400E51E0D /* SitePlugin+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SitePlugin+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DF3D3B298350F68191CD1DAD /* Pods_Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E16D3740284F1CDA005676BC /* GeneralAppSettingsStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralAppSettingsStorageTests.swift; sourceTree = "<group>"; };
+		E16D3742284F1E76005676BC /* MockInMemoryStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInMemoryStorage.swift; sourceTree = "<group>"; };
+		E1E632BF2846245D00878082 /* GeneralAppSettingsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralAppSettingsStorage.swift; sourceTree = "<group>"; };
+		E1BCBE832844D35E00087C33 /* GeneralStoreSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralStoreSettingsTests.swift; sourceTree = "<group>"; };
 		F0439F2ADB3B211DF5C44D83 /* Pods-StorageTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StorageTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-StorageTests/Pods-StorageTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		FEDD70AC26A5DBDD00194C3A /* EligibilityErrorInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EligibilityErrorInfo.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -565,6 +574,7 @@
 				574B774D24AA883D0042116F /* MockFileManager.swift */,
 				572C099525475208005372E1 /* SpyFileManager.swift */,
 				5772842625BF5BFB0092FB2C /* SpyPersistentStoreCoordinator.swift */,
+				E16D3742284F1E76005676BC /* MockInMemoryStorage.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -590,6 +600,7 @@
 			isa = PBXGroup;
 			children = (
 				26EA01D424EC44B300176A57 /* GeneralAppSettingsTests.swift */,
+				E1BCBE832844D35E00087C33 /* GeneralStoreSettingsTests.swift */,
 			);
 			path = AppSettings;
 			sourceTree = "<group>";
@@ -679,6 +690,7 @@
 				2619F72425B236E60006DAFF /* TypedPredicates.swift */,
 				D87F61542265AA900031A13B /* PListFileStorage.swift */,
 				027D3E6D23A0EEA4007D91B0 /* StorageType+Deletions.swift */,
+				E1E632BF2846245D00878082 /* GeneralAppSettingsStorage.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -799,6 +811,7 @@
 				2619F71825AF95020006DAFF /* StorageTypeExtensionsTests.swift */,
 				2685C11C263DEF0B00D9EE97 /* StorageTypeDeletionsTests.swift */,
 				2619F78525B5D29B0006DAFF /* TypedPredicateTests.swift */,
+				E16D3740284F1CDA005676BC /* GeneralAppSettingsStorageTests.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -1219,6 +1232,7 @@
 				02C254EC2563B12E00A04423 /* ShippingLabelSettings+CoreDataProperties.swift in Sources */,
 				B5FD111E21D4046E00560344 /* OrderSearchResults+CoreDataProperties.swift in Sources */,
 				7471A515216CF0FE00219F7E /* SiteVisitStatsItem+CoreDataProperties.swift in Sources */,
+				E1E632C02846245D00878082 /* GeneralAppSettingsStorage.swift in Sources */,
 				031C1EA627AD3AFE00298699 /* WCPayCardPaymentDetails+CoreDataProperties.swift in Sources */,
 				B54CA5BD20A4BD3B00F38CD1 /* NSManagedObjectContext+Storage.swift in Sources */,
 				455C0C9125DD6D93007B6F38 /* AccountSettings+CoreDataProperties.swift in Sources */,
@@ -1358,6 +1372,7 @@
 				B59E11E020A9F5E6004121A4 /* Constants.swift in Sources */,
 				B54CA5C320A4BF6900F38CD1 /* NSManagedObjectContextStorageTests.swift in Sources */,
 				02A098272480D160002F8C7A /* MockCrashLogger.swift in Sources */,
+				E16D3743284F1E76005676BC /* MockInMemoryStorage.swift in Sources */,
 				B54CA5C720A4BFDC00F38CD1 /* DummyStack.swift in Sources */,
 				574B774E24AA883D0042116F /* MockFileManager.swift in Sources */,
 				B54CA5C220A4BF6900F38CD1 /* NSManagedObjectStorageTests.swift in Sources */,
@@ -1370,7 +1385,9 @@
 				57A29FB825226BDC004DEE01 /* MigrationTests.swift in Sources */,
 				2685C11D263DEF0C00D9EE97 /* StorageTypeDeletionsTests.swift in Sources */,
 				2619F78625B5D29B0006DAFF /* TypedPredicateTests.swift in Sources */,
+				E16D3741284F1CDA005676BC /* GeneralAppSettingsStorageTests.swift in Sources */,
 				5772842725BF5BFB0092FB2C /* SpyPersistentStoreCoordinator.swift in Sources */,
+				E1BCBE842844D35E00087C33 /* GeneralStoreSettingsTests.swift in Sources */,
 				5772842C25BF62A90092FB2C /* Assertions.swift in Sources */,
 				26EA01D524EC44B300176A57 /* GeneralAppSettingsTests.swift in Sources */,
 			);
@@ -1775,6 +1792,7 @@
 		DEC51AA4275B41BE009F3DF4 /* WooCommerce.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				268FEC8528513A470005E4C2 /* Model 69.xcdatamodel */,
 				45260E412823E7990080C548 /* Model 68.xcdatamodel */,
 				265A462127FDDAAF003AB1DA /* Model 67.xcdatamodel */,
 				457E6E7F27D8B51E00173F69 /* Model 66.xcdatamodel */,
@@ -1844,7 +1862,7 @@
 				DEC51ADE275B41BE009F3DF4 /* Model 47.xcdatamodel */,
 				DEC51ADF275B41BE009F3DF4 /* Model 19.xcdatamodel */,
 			);
-			currentVersion = 45260E412823E7990080C548 /* Model 68.xcdatamodel */;
+			currentVersion = 268FEC8528513A470005E4C2 /* Model 69.xcdatamodel */;
 			path = WooCommerce.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

@@ -40,7 +40,11 @@ struct InPersonPaymentsView: View {
             case .loading:
                 InPersonPaymentsLoading()
             case .selectPlugin:
-                if viewModel.userIsAdministrator {
+                if viewModel.gatewaySelectionAvailable {
+                    InPersonPaymentsSelectPluginView(selectedPlugin: nil) { plugin in
+                        viewModel.selectPlugin(plugin)
+                    }
+                } else if viewModel.userIsAdministrator {
                     InPersonPaymentsPluginConflictAdmin(onRefresh: viewModel.refresh)
                 } else {
                     InPersonPaymentsPluginConflictShopManager(onRefresh: viewModel.refresh)
@@ -70,9 +74,9 @@ struct InPersonPaymentsView: View {
                 InPersonPaymentsStripeAccountReview()
             case .stripeAccountRejected:
                 InPersonPaymentsStripeRejected()
-            case .completed(let plugin):
+            case .completed(let pluginState):
                 if viewModel.showMenuOnCompletion {
-                    InPersonPaymentsMenu(plugin: plugin)
+                    InPersonPaymentsMenu(pluginState: pluginState)
                 } else {
                     InPersonPaymentsCompleted()
                 }
@@ -108,7 +112,7 @@ private enum Localization {
 struct InPersonPaymentsView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            InPersonPaymentsView(viewModel: InPersonPaymentsViewModel(fixedState: .completed(plugin: .stripe)))
+            InPersonPaymentsView(viewModel: InPersonPaymentsViewModel(fixedState: .completed(plugin: .stripeOnly)))
         }
     }
 }

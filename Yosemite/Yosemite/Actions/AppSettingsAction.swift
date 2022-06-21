@@ -171,6 +171,14 @@ public enum AppSettingsAction: Action {
     ///
     case getSimplePaymentsTaxesToggleState(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void)
 
+    /// Sets the preferred payment gateway for In-Person Payments
+    ///
+    case setPreferredInPersonPaymentGateway(siteID: Int64, gateway: String)
+
+    /// Gets the preferred payment gateway for In-Person Payments
+    ///
+    case getPreferredInPersonPaymentGateway(siteID: Int64, onCompletion: (String?) -> Void)
+
     /// Clears all the products settings
     ///
     case resetGeneralStoreSettings

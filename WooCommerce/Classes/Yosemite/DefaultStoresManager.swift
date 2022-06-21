@@ -392,12 +392,23 @@ private extension DefaultStoresManager {
         dispatch(action)
     }
 
-    /// Synchronizes all system plugins for the store with specifie ID
+    /// Synchronizes all system plugins for the store with specified ID
     ///
     func synchronizeSystemPlugins(siteID: Int64) {
         let action = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID) { result in
             if let error = result.failure {
                 DDLogError("⛔️ Failed to sync system plugins for siteID: \(siteID). Error: \(error)")
+            }
+        }
+        dispatch(action)
+    }
+
+    /// Synchronizes all site plugins for the store with specified ID
+    ///
+    func synchronizeSitePlugins(siteID: Int64) {
+        let action = SitePluginAction.synchronizeSitePlugins(siteID: siteID) { result in
+            if let error = result.failure {
+                DDLogError("⛔️ Failed to sync site plugins for siteID: \(siteID). Error: \(error)")
             }
         }
         dispatch(action)
@@ -454,6 +465,7 @@ private extension DefaultStoresManager {
         synchronizePaymentGateways(siteID: siteID)
         synchronizeAddOnsGroups(siteID: siteID)
         synchronizeSystemPlugins(siteID: siteID)
+        synchronizeSitePlugins(siteID: siteID)
 
         sendTelemetryIfNeeded(siteID: siteID)
     }

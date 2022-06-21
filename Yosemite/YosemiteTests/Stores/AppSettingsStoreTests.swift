@@ -35,6 +35,10 @@ final class AppSettingsStoreTests: XCTestCase {
     ///
     private var fileStorage: MockInMemoryStorage?
 
+    /// Mock General Settings Storage: Load data in memory
+    ///
+    private var generalAppSettings: GeneralAppSettingsStorage?
+
     /// Test subject
     ///
     private var subject: AppSettingsStore?
@@ -44,7 +48,8 @@ final class AppSettingsStoreTests: XCTestCase {
         dispatcher = Dispatcher()
         storageManager = MockStorageManager()
         fileStorage = MockInMemoryStorage()
-        subject = AppSettingsStore(dispatcher: dispatcher!, storageManager: storageManager!, fileStorage: fileStorage!)
+        generalAppSettings = GeneralAppSettingsStorage(fileStorage: fileStorage!)
+        subject = AppSettingsStore(dispatcher: dispatcher!, storageManager: storageManager!, fileStorage: fileStorage!, generalAppSettings: generalAppSettings!)
         subject?.selectedProvidersURL = TestConstants.fileURL!
         subject?.customSelectedProvidersURL = TestConstants.customFileURL!
     }
@@ -53,6 +58,7 @@ final class AppSettingsStoreTests: XCTestCase {
         dispatcher = nil
         storageManager = nil
         fileStorage = nil
+        generalAppSettings = nil
         subject = nil
         super.tearDown()
     }
@@ -227,8 +233,9 @@ final class AppSettingsStoreTests: XCTestCase {
         // Create our own infrastructure so we can inject `PListFileStorage`.
         let fileStorage = PListFileStorage()
         let storageManager = MockStorageManager()
+        let generalAppSettings = GeneralAppSettingsStorage(fileStorage: fileStorage)
         let dispatcher = Dispatcher()
-        let store = AppSettingsStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: fileStorage)
+        let store = AppSettingsStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: fileStorage, generalAppSettings: generalAppSettings)
 
         if FileManager.default.fileExists(atPath: expectedGeneralAppSettingsFileURL.path) {
             try fileStorage.deleteFile(at: expectedGeneralAppSettingsFileURL)
@@ -765,6 +772,49 @@ final class AppSettingsStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(try result.get())
+    }
+
+    func test_saving_preferredInPersonPaymentGateway_works_correctly() throws {
+        // Given
+        let siteID: Int64 = 1234
+        let initialTime = Date(timeIntervalSince1970: 100)
+        let preferredGateway = "woocommerce-payments"
+
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings(isTelemetryAvailable: true,
+                                                                                                             telemetryLastReportedTime: initialTime)])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setPreferredInPersonPaymentGateway(siteID: siteID, gateway: preferredGateway)
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
+        let settingsForSite = savedSettings.storeSettingsBySite[siteID]
+
+        XCTAssertEqual(preferredGateway, settingsForSite?.preferredInPersonPaymentGateway)
+
+        // The other properties should be kept
+        XCTAssertEqual(initialTime, settingsForSite?.telemetryLastReportedTime)
+    }
+
+    func test_saving_preferredInPersonPaymentGateway_works_correctly_when_the_settings_file_does_not_exist() throws {
+        // Given
+        let siteID: Int64 = 1234
+        let preferredGateway = "woocommerce-payments"
+
+        try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setPreferredInPersonPaymentGateway(siteID: siteID, gateway: preferredGateway)
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
+        let settingsForSite = savedSettings.storeSettingsBySite[siteID]
+
+        XCTAssertEqual(preferredGateway, settingsForSite?.preferredInPersonPaymentGateway)
+
     }
 
     func test_resetGeneralStoreSettings_resets_all_settings() throws {

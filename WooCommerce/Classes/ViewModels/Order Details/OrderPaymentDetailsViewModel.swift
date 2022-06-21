@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import WooFoundation
 
 final class OrderPaymentDetailsViewModel {
     private let order: Order
@@ -29,7 +30,7 @@ final class OrderPaymentDetailsViewModel {
     }
 
     var discountValue: String? {
-        guard let discount = currencyFormatter.convertToDecimal(from: order.discountTotal), discount.isZero() == false else {
+        guard let discount = currencyFormatter.convertToDecimal(order.discountTotal), discount.isZero() == false else {
             return nil
         }
 
@@ -57,15 +58,11 @@ final class OrderPaymentDetailsViewModel {
     }
 
     var totalValue: String {
-        return currencyFormatter.formatAmount(order.total, with: order.currency) ?? String()
+        order.totalValue
     }
 
     var paymentTotal: String {
-        if order.datePaid == nil {
-            return currencyFormatter.formatAmount("0.00", with: order.currency) ?? String()
-        }
-
-        return totalValue
+        order.paymentTotal
     }
 
     private var feesTotal: Decimal {
@@ -161,24 +158,8 @@ final class OrderPaymentDetailsViewModel {
         return currencyFormatter.formatAmount(condensedRefund.normalizedTotalAsNegative, with: order.currency)
     }
 
-    /// Format the net amount with the correct currency
-    ///
-    var netAmount: String? {
-        guard let netDecimal = calculateNetAmount() else {
-            return nil
-        }
-
-        return currencyFormatter.formatAmount(netDecimal, with: order.currency)
-    }
-
     var couponLines: [OrderCouponLine] {
         return order.coupons
-    }
-
-    /// Signals whether the net amount for the order matches the total order amount
-    ///
-    var hasBeenPartiallyCharged: Bool {
-        return totalValue != netAmount
     }
 
     init(order: Order, refund: Refund? = nil, currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
@@ -202,19 +183,6 @@ final class OrderPaymentDetailsViewModel {
         }
 
         return NSLocalizedString("Discount", comment: "Discount label for payment view") + " (" + output + ")"
-    }
-
-    /// Calculate the net amount after refunds
-    ///
-    private func calculateNetAmount() -> NSDecimalNumber? {
-        guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
-            return .zero
-        }
-
-        let totalRefundedUseCase = TotalRefundedCalculationUseCase(order: order, currencyFormatter: currencyFormatter)
-        let refundTotal = totalRefundedUseCase.totalRefunded()
-
-        return orderTotal.adding(refundTotal)
     }
 }
 

@@ -18,10 +18,6 @@ final class OrdersRootViewController: UIViewController {
         siteID: siteID,
         title: Localization.defaultOrderListTitle,
         viewModel: orderListViewModel,
-        emptyStateConfig: .simple(
-            message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
-            image: .waitingForCustomersImage
-        ),
         switchDetailsHandler: handleSwitchingDetails(viewModel:)
     )
 
@@ -383,9 +379,6 @@ private extension OrdersRootViewController {
 private extension OrdersRootViewController {
     enum Localization {
         static let defaultOrderListTitle = NSLocalizedString("Orders", comment: "The title of the Orders tab.")
-        static let allOrdersEmptyStateMessage =
-        NSLocalizedString("Waiting for your first order",
-                          comment: "The message shown in the Orders → All Orders tab if the list is empty.")
         static let accessibilityLabelSearchOrders = NSLocalizedString("Search orders", comment: "Search Orders")
         static let accessibilityHintSearchOrders = NSLocalizedString(
             "Retrieves a list of orders that contain a given keyword.",

@@ -1,6 +1,6 @@
 import Foundation
 import Charts
-
+import UIKit
 
 /// This class is a custom view which is displayed over a chart element (e.g. a Bar) when it is highlighted.
 ///

@@ -1,5 +1,6 @@
 import XCTest
 
+import WooFoundation
 @testable import WooCommerce
 
 final class PriceInputFormatterTests: XCTestCase {

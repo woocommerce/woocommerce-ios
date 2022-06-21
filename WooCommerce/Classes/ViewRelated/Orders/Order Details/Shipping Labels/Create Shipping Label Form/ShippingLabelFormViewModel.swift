@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import WooFoundation
 import protocol Storage.StorageManagerType
 
 /// Provides view data for Create Shipping Label, and handles init/UI/navigation actions needed.

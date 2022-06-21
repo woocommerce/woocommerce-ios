@@ -1,6 +1,7 @@
 import XCTest
 @testable import WooCommerce
 import Yosemite
+import WooFoundation
 
 /// CurrencySettings Tests
 ///
@@ -25,8 +26,8 @@ final class CurrencySettingsTests: XCTestCase {
         XCTAssertEqual(.USD, moneyFormat?.currencyCode)
         XCTAssertEqual(.left, moneyFormat?.currencyPosition)
         XCTAssertEqual(".", moneyFormat?.decimalSeparator)
-        XCTAssertEqual(2, moneyFormat?.numberOfDecimals)
-        XCTAssertEqual(",", moneyFormat?.thousandSeparator)
+        XCTAssertEqual(2, moneyFormat?.fractionDigits)
+        XCTAssertEqual(",", moneyFormat?.groupingSeparator)
     }
 
     func testInitWithIndividualParameters() {
@@ -39,8 +40,8 @@ final class CurrencySettingsTests: XCTestCase {
         XCTAssertEqual(.USD, moneyFormat?.currencyCode)
         XCTAssertEqual(.right, moneyFormat?.currencyPosition)
         XCTAssertEqual("X", moneyFormat?.decimalSeparator)
-        XCTAssertEqual(10, moneyFormat?.numberOfDecimals)
-        XCTAssertEqual("M", moneyFormat?.thousandSeparator)
+        XCTAssertEqual(10, moneyFormat?.fractionDigits)
+        XCTAssertEqual("M", moneyFormat?.groupingSeparator)
     }
 
     func testInitWithSiteSettingsEmptyArray() {
@@ -50,8 +51,8 @@ final class CurrencySettingsTests: XCTestCase {
         XCTAssertEqual(.USD, moneyFormat?.currencyCode)
         XCTAssertEqual(.left, moneyFormat?.currencyPosition)
         XCTAssertEqual(".", moneyFormat?.decimalSeparator)
-        XCTAssertEqual(2, moneyFormat?.numberOfDecimals)
-        XCTAssertEqual(",", moneyFormat?.thousandSeparator)
+        XCTAssertEqual(2, moneyFormat?.fractionDigits)
+        XCTAssertEqual(",", moneyFormat?.groupingSeparator)
     }
 
     func testInitWithSiteSettings() {
@@ -101,8 +102,8 @@ final class CurrencySettingsTests: XCTestCase {
         XCTAssertEqual(.SHP, moneyFormat?.currencyCode)
         XCTAssertEqual(.right, moneyFormat?.currencyPosition)
         XCTAssertEqual("Y", moneyFormat?.decimalSeparator)
-        XCTAssertEqual(3, moneyFormat?.numberOfDecimals)
-        XCTAssertEqual("X", moneyFormat?.thousandSeparator)
+        XCTAssertEqual(3, moneyFormat?.fractionDigits)
+        XCTAssertEqual("X", moneyFormat?.groupingSeparator)
     }
 
     func testInitWithIncompleteSiteSettings() {
@@ -146,8 +147,8 @@ final class CurrencySettingsTests: XCTestCase {
         XCTAssertEqual(.SHP, moneyFormat?.currencyCode)
         XCTAssertEqual(.right, moneyFormat?.currencyPosition)
         XCTAssertEqual("Y", moneyFormat?.decimalSeparator)
-        XCTAssertEqual(2, moneyFormat?.numberOfDecimals)
-        XCTAssertEqual("X", moneyFormat?.thousandSeparator)
+        XCTAssertEqual(2, moneyFormat?.fractionDigits)
+        XCTAssertEqual("X", moneyFormat?.groupingSeparator)
     }
 
     /// Test currency symbol lookup returns correctly encoded symbol.

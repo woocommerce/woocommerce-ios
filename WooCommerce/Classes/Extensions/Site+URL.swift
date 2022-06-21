@@ -12,7 +12,7 @@ private extension CardPresentPaymentsPlugin {
     }
 }
 
-/// Encapsulates the logic related to the provision of the Site URLs that point to plugins related content
+/// Encapsulates the logic related to the provision of the Site URLs
 ///
 extension Site {
     /// Site's plugins section in wp-admin.
@@ -20,10 +20,22 @@ extension Site {
     var pluginsURL: String {
         adminURL + "plugins.php"
     }
-
     /// Payment plugin settings in wp-admin. This can be helpful when the plugin needs to be setup completely.
     /// 
     func pluginSettingsSectionURL(from plugin: CardPresentPaymentsPlugin) -> String {
         adminURL + "admin.php?page=wc-settings&tab=checkout&section=" + plugin.setupURLSectionPath
+    }
+    /// Returns the WooCommerce admin URL, or attempts to construct it from the site URL.
+    ///
+    func adminURLWithFallback() -> URL {
+        guard let adminURL = URL(string: self.adminURL) else {
+            if self.url.isEmpty {
+                return WooConstants.URLs.blog.asURL()
+            } else {
+                let adminURLFromSiteURLString = self.url + "/wp-admin"
+                return URL(string: adminURLFromSiteURLString) ?? WooConstants.URLs.blog.asURL()
+            }
+        }
+        return adminURL
     }
 }

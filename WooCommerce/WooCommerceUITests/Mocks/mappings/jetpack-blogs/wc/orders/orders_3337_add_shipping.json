@@ -1,15 +1,14 @@
 {
     "request": {
-        "method": "GET",
+        "method": "POST",
         "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
-        "queryParameters": {
-            "json": {
-                "equalTo": "true"
-            },
-            "path": {
-                "matches": "/wc/v3/orders/3337&_method=get"
-            }
-        }
+        "bodyPatterns": [
+            { "matches": ".*path=/wc/v3/orders/3337%26_method%3Dpost.*" },
+            { "contains": "%22product_id%22%3A2129" },
+            { "contains": "%22fee_lines%22%3A%5B%5D" },
+            { "contains": "%22method_title%22%3A%22Flat%20Rate%22" },
+            { "contains": "%22first_name%22%3A%22Mira%22" }
+        ]
     },
     "response": {
         "status": 200,
@@ -17,7 +16,7 @@
             "data": {
                 "id": 3337,
                 "parent_id": 0,
-                "status": "processing",
+                "status": "auto-draft",
                 "currency": "USD",
                 "version": "6.3.1",
                 "prices_include_tax": true,

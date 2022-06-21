@@ -160,7 +160,7 @@ final class HubMenuViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.menuElements, [.woocommerceAdmin, .viewStore, .reviews])
     }
-    func test_hubMenu_returns_storeURL_when_site_has_storeURL() {
+    func test_storeURL_when_site_has_storeURL_then_returns_storeURL() {
         // Given
         let sampleStoreURL = "https://testshop.com/"
         let sessionManager = SessionManager.testingInstance
@@ -175,7 +175,7 @@ final class HubMenuViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.storeURL, try sampleStoreURL.asURL())
     }
-    func test_hubMenu_returns_adminURL_when_site_has_adminURL() {
+    func test_woocommerceAdminURL_when_site_has_adminURL_then_returns_adminURL() {
         // Given
         let sampleAdminURL = "https://testshop.com/wp-admin/"
         let sessionManager = SessionManager.testingInstance
@@ -190,7 +190,7 @@ final class HubMenuViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.woocommerceAdminURL, try sampleAdminURL.asURL())
     }
-    func test_hubMenu_returns_woocommerce_fallback_URL_when_site_storeURL_is_nil() {
+    func test_storeURL_when_storeURL_is_nil_then_returns_woocommerce_fallback_url() {
         // Given
         let sampleStoreURL: String? = nil
         let sessionManager = SessionManager.testingInstance
@@ -205,7 +205,7 @@ final class HubMenuViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.storeURL)
         XCTAssertEqual(viewModel.storeURL, WooConstants.URLs.blog.asURL())
     }
-    func test_hubMenu_returns_adminURL_fallback_when_site_adminURL_is_nil() {
+    func test_woocommerceAdminURL_when_adminURL_is_nil_then_returns_adminURL() {
         // Given
         let sampleStoreURL = "https://testshop.com"
         let sampleAdminURL: String? = nil
@@ -222,7 +222,7 @@ final class HubMenuViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.woocommerceAdminURL)
         XCTAssertEqual(viewModel.woocommerceAdminURL, try URL(string: expectedAdminURL)?.asURL())
     }
-    func test_hubMenu_returns_adminURL_fallback_when_site_adminURL_is_empty() {
+    func test_woocommerceAdminURL_when_adminURL_is_empty_then_returns_adminURL() {
         // Given
         let sampleStoreURL = "https://testshop.com"
         let sampleAdminURL = ""

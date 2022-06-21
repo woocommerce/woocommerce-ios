@@ -6,6 +6,10 @@ final class LegacyProductImageUploader: ProductImageUploaderProtocol {
         ProductImageActionHandler(siteID: siteID, productID: productID, imageStatuses: originalStatuses)
     }
 
+    func replaceLocalID(siteID: Int64, localProductID: Int64, remoteProductID: Int64) {
+        // no-op
+    }
+
     func saveProductImagesWhenNoneIsPendingUploadAnymore(siteID: Int64,
                                                          productID: Int64,
                                                          isLocalID: Bool,

@@ -77,4 +77,8 @@ public enum FeatureFlag: Int {
     /// Enable image upload after leaving the product form
     ///
     case backgroundProductImageUpload
+
+    /// Enable searching products by partial SKU for WC version 6.6+
+    ///
+    case searchProductsBySKU
 }

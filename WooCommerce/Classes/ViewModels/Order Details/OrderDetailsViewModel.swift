@@ -18,8 +18,6 @@ final class OrderDetailsViewModel {
     ///
     private var syncState: SyncState = .notSynced
 
-    private let cardPresentPaymentsOnboardingPresenter = CardPresentPaymentsOnboardingPresenter()
-
     var orderStatus: OrderStatus? {
         return lookUpOrderStatus(for: order)
     }
@@ -223,10 +221,6 @@ extension OrderDetailsViewModel {
             onReloadSections?()
             group.leave()
         }
-
-        group.enter()
-        refreshCardPresentPaymentOnboarding()
-        group.leave()
 
         group.enter()
         syncSavedReceipts {_ in
@@ -587,10 +581,6 @@ extension OrderDetailsViewModel {
             onCompletion?()
         }
         stores.dispatch(action)
-    }
-
-    func refreshCardPresentPaymentOnboarding() {
-        cardPresentPaymentsOnboardingPresenter.refresh()
     }
 
     func checkOrderAddOnFeatureSwitchState(onCompletion: (() -> Void)? = nil) {

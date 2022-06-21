@@ -132,7 +132,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
         configureContentStackView()
         configureTitleAndTextStackView()
         applyDefaultBackgroundStyle()
-        configureBackground()
+        configureSelectedBackground()
     }
 
     override func prepareForReuse() {
@@ -300,7 +300,8 @@ private extension ImageAndTitleAndTextTableViewCell {
     func configureTitleAndTextStackView() {
         titleAndTextStackView.spacing = 2
     }
-    func configureBackground() {
+
+    func configureSelectedBackground() {
         selectedBackgroundView = UIView()
         selectedBackgroundView?.backgroundColor = .listBackground
     }

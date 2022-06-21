@@ -229,6 +229,7 @@
 		31D27C8B26028D96002EDB1D /* SitePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D27C8A26028D96002EDB1D /* SitePlugin.swift */; };
 		31D27C8F2602B553002EDB1D /* plugins.json in Resources */ = {isa = PBXBuildFile; fileRef = 31D27C8E2602B553002EDB1D /* plugins.json */; };
 		31D27C952602B737002EDB1D /* SitePluginsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D27C942602B737002EDB1D /* SitePluginsRemoteTests.swift */; };
+		3F55175628628D12002CF097 /* BuildkiteTestCollector in Frameworks */ = {isa = PBXBuildFile; productRef = 3F55175528628D12002CF097 /* BuildkiteTestCollector */; };
 		450106852399A7CB00E24722 /* TaxClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106842399A7CB00E24722 /* TaxClass.swift */; };
 		4501068F2399B19500E24722 /* TaxClassRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4501068E2399B19500E24722 /* TaxClassRemote.swift */; };
 		450106912399B2C800E24722 /* TaxClassListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106902399B2C800E24722 /* TaxClassListMapper.swift */; };
@@ -1346,6 +1347,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3F55175628628D12002CF097 /* BuildkiteTestCollector in Frameworks */,
 				26FB056C25F6CB9100A40B26 /* Fakes.framework in Frameworks */,
 				57150E1524F462E600E81611 /* TestKit in Frameworks */,
 				B557D9ED209753AA005962F4 /* Networking.framework in Frameworks */,
@@ -2363,6 +2365,7 @@
 			packageProductDependencies = (
 				57150E1424F462E600E81611 /* TestKit */,
 				263E383E2641FF1600260D3B /* Codegen */,
+				3F55175528628D12002CF097 /* BuildkiteTestCollector */,
 			);
 			productName = NetworkingTests;
 			productReference = B557D9EC209753AA005962F4 /* NetworkingTests.xctest */;
@@ -2397,6 +2400,9 @@
 				Base,
 			);
 			mainGroup = B557D9D9209753AA005962F4;
+			packageReferences = (
+				3F55175428628D12002CF097 /* XCRemoteSwiftPackageReference "test-collector-swift" */,
+			);
 			productRefGroup = B557D9E4209753AA005962F4 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -3504,6 +3510,17 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		3F55175428628D12002CF097 /* XCRemoteSwiftPackageReference "test-collector-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/buildkite/test-collector-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		263E37D12641ACEA00260D3B /* Codegen */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -3512,6 +3529,11 @@
 		263E383E2641FF1600260D3B /* Codegen */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Codegen;
+		};
+		3F55175528628D12002CF097 /* BuildkiteTestCollector */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3F55175428628D12002CF097 /* XCRemoteSwiftPackageReference "test-collector-swift" */;
+			productName = BuildkiteTestCollector;
 		};
 		57150E1424F462E600E81611 /* TestKit */ = {
 			isa = XCSwiftPackageProductDependency;

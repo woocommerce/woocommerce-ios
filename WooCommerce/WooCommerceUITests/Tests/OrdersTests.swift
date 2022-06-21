@@ -33,6 +33,7 @@ final class OrdersTests: XCTestCase {
             .editOrderStatus()
             .addProduct(byName: products[0].name)
             .addCustomerDetails(name: "Mira")
+            .addShipping(amount: "1.25", name: "Flat Rate")
             .createOrder()
     }
 

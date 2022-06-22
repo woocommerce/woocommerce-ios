@@ -306,6 +306,9 @@ struct AddEditCoupon: View {
             }
             .sheet(isPresented: $viewModel.showingCouponCreationSuccess) {
                 let couponCode = viewModel.coupon?.code ?? ""
+                if couponCode.isEmpty {
+                    let _ = DDLogError("⛔️ Error acquiring the coupon code after creation")
+                }
                 CouponCreationSuccess(couponCode: couponCode, shareMessage: viewModel.shareCouponMessage) {
                     onDisappear()
                 }

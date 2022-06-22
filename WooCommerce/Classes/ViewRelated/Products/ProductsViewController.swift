@@ -439,21 +439,6 @@ private extension ProductsViewController {
             requestAndShowErrorTopBannerView()
             return
         }
-
-        let action = AppSettingsAction.loadFeedbackVisibility(type: .productsVariations) { [weak self] result in
-            switch result {
-            case .success(let visible):
-                if visible {
-                    self?.requestAndShowNewTopBannerView(for: .variations)
-                } else {
-                    self?.hideTopBannerView()
-                }
-            case.failure(let error):
-                self?.hideTopBannerView()
-                ServiceLocator.crashLogging.logError(error)
-            }
-        }
-        ServiceLocator.stores.dispatch(action)
     }
 
     /// Request a new product banner from `ProductsTopBannerFactory` and wire actionButtons actions
@@ -711,8 +696,7 @@ private extension ProductsViewController {
     /// Mark feedback request as dismissed and update banner visibility
     ///
     func dismissProductsBanner() {
-        let action = AppSettingsAction.updateFeedbackStatus(type: .productsVariations,
-                                                            status: .dismissed) { [weak self] result in
+        let action = AppSettingsAction.updateFeedbackStatus( status: .dismissed) { [weak self] result in
             if let error = result.failure {
                 ServiceLocator.crashLogging.logError(error)
             }

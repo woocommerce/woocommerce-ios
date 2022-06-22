@@ -20,4 +20,8 @@ public enum FeedbackType: String, Codable {
     /// Identifier for the orders creation feedback survey
     ///
     case ordersCreation
+
+    /// Identifier for no feedback survey
+    ///
+    case none
 }

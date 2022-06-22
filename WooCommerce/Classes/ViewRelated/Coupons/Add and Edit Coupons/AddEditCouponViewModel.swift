@@ -14,7 +14,7 @@ final class AddEditCouponViewModel: ObservableObject {
     ///
     private let editingOption: EditingOption
 
-    private let onSuccess: ((Result<Coupon, Error>) -> Void)
+    private let onSuccess: (Coupon) -> Void
 
     /// Defines the current notice that should be shown.
     /// Defaults to `nil`.
@@ -191,7 +191,7 @@ final class AddEditCouponViewModel: ObservableObject {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          timezone: TimeZone = .siteTimezone,
-         onSuccess: @escaping ((Result<Coupon, Error>) -> Void)) {
+         onSuccess: @escaping (Coupon) -> Void) {
         self.siteID = siteID
         editingOption = .creation
         self.discountType = discountType
@@ -219,7 +219,7 @@ final class AddEditCouponViewModel: ObservableObject {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          timezone: TimeZone = .siteTimezone,
-         onSuccess: @escaping ((Result<Coupon, Error>) -> Void)) {
+         onSuccess: @escaping (Coupon) -> Void) {
         siteID = existingCoupon.siteID
         coupon = existingCoupon
         editingOption = .editing
@@ -273,7 +273,6 @@ final class AddEditCouponViewModel: ObservableObject {
         if let validationError = validateCouponLocally(coupon) {
             notice = NoticeFactory.createCouponErrorNotice(validationError,
                     editingOption: editingOption)
-            onSuccess(.failure(validationError))
             return
         }
 
@@ -285,7 +284,7 @@ final class AddEditCouponViewModel: ObservableObject {
             case .success(let coupon):
                 ServiceLocator.analytics.track(.couponCreationSuccess)
                 self.coupon = coupon
-                self.onSuccess(result)
+                self.onSuccess(coupon)
                 self.showingCouponCreationSuccess = true
             case .failure(let error):
                 DDLogError("⛔️ Error creating the coupon: \(error)")
@@ -303,7 +302,6 @@ final class AddEditCouponViewModel: ObservableObject {
         if let validationError = validateCouponLocally(coupon) {
             notice = NoticeFactory.createCouponErrorNotice(validationError,
                                                            editingOption: editingOption)
-            onSuccess(.failure(validationError))
             return
         }
 
@@ -312,9 +310,9 @@ final class AddEditCouponViewModel: ObservableObject {
             guard let self = self else { return }
             self.isLoading = false
             switch result {
-            case .success(_):
+            case .success(let updatedCoupon):
                 ServiceLocator.analytics.track(.couponUpdateSuccess)
-                self.onSuccess(result)
+                self.onSuccess(updatedCoupon)
                 onUpdateFinished()
             case .failure(let error):
                 DDLogError("⛔️ Error updating the coupon: \(error)")

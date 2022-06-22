@@ -280,15 +280,10 @@ private extension CouponDetailsViewModel {
     }
 
     func createAddEditCouponViewModel(with coupon: Coupon) -> AddEditCouponViewModel {
-        .init(existingCoupon: coupon, onSuccess: { [weak self] result in
+        .init(existingCoupon: coupon, onSuccess: { [weak self] updatedCoupon in
             guard let self = self else { return }
-            switch result {
-            case .success(let updatedCoupon):
-                self.updateCoupon(updatedCoupon)
-                self.onUpdate()
-            default:
-                break
-            }
+            self.updateCoupon(updatedCoupon)
+            self.onUpdate()
         })
     }
 }

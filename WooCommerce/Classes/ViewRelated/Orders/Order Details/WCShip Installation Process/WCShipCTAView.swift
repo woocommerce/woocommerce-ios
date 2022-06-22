@@ -80,16 +80,26 @@ private extension WCShipCTAView {
     }
 
     enum Localization {
-        static let viewTitle = NSLocalizedString("Fullfill your orders with WooCommerce Shipping", comment: "Title of the CTA view for installing WCShip extension")
-        static let viewSubtitle = NSLocalizedString("Save time and money", comment: "Title of the CTA view for installing WCShip extension")
-        static let firstIconTitle = NSLocalizedString("Buy postage when you need it", comment: "Title of one of the elements in the CTA View for installing WCShip extension")
-        static let firstIconSubtitle = NSLocalizedString("No need to wonder where that stampbook went", comment: "Subtitle of one of the elements in the CTA View for installing WCShip extension")
-        static let secondIconTitle = NSLocalizedString("Print from your phone", comment: "Title of one of the elements in the CTA View for installing WCShip extension")
-        static let secondIconSubtitle = NSLocalizedString("Pick up an order, then just pay, print, package, and post.", comment: "Subtitle of one of the elements in the CTA View for installing WCShip extension")
-        static let thirdIconTitle = NSLocalizedString("Discounted rates", comment: "Title of one of the elements in the CTA View for installing WCShip extension")
-        static let thirdIconSubtitle = NSLocalizedString("Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!", comment: "Subtitle of one of the elements in the CTA View for installing WCShip extension")
-        static let buttonAddExtension = NSLocalizedString("Add Extension To Store", comment: "Button in the CTA View for installing WCShip extension")
-        static let buttonDismiss = NSLocalizedString("Not now", comment: "Button in the CTA View for installing WCShip extension for dismissing the view")
+        static let viewTitle = NSLocalizedString("Fullfill your orders with WooCommerce Shipping",
+                                                 comment: "Title of the CTA view for installing WCShip extension")
+        static let viewSubtitle = NSLocalizedString("Save time and money",
+                                                    comment: "Title of the CTA view for installing WCShip extension")
+        static let firstIconTitle = NSLocalizedString("Buy postage when you need it",
+                                                      comment: "Title of one of the elements in the CTA View for installing WCShip extension")
+        static let firstIconSubtitle = NSLocalizedString("No need to wonder where that stampbook went",
+                                                         comment: "Subtitle of one of the elements in the CTA View for installing WCShip extension")
+        static let secondIconTitle = NSLocalizedString("Print from your phone",
+                                                       comment: "Title of one of the elements in the CTA View for installing WCShip extension")
+        static let secondIconSubtitle = NSLocalizedString("Pick up an order, then just pay, print, package, and post.",
+                                                          comment: "Subtitle of one of the elements in the CTA View for installing WCShip extension")
+        static let thirdIconTitle = NSLocalizedString("Discounted rates",
+                                                      comment: "Title of one of the elements in the CTA View for installing WCShip extension")
+        static let thirdIconSubtitle = NSLocalizedString("Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!",
+                                                         comment: "Subtitle of one of the elements in the CTA View for installing WCShip extension")
+        static let buttonAddExtension = NSLocalizedString("Add Extension To Store",
+                                                          comment: "Button in the CTA View for installing WCShip extension")
+        static let buttonDismiss = NSLocalizedString("Not now",
+                                                     comment: "Button in the CTA View for installing WCShip extension for dismissing the view")
     }
 }
 struct WCShipCTAView_Previews: PreviewProvider {

@@ -35,6 +35,7 @@ final class OrdersTests: XCTestCase {
             .addCustomerDetails(name: "Mira")
             .addShipping(amount: "1.25", name: "Flat Rate")
             .addFee(amount: "2.34")
+            .addCustomerNote(getRandomPhrase())
             .createOrder()
     }
 

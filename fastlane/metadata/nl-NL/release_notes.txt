@@ -1,3 +1,2 @@
-Hallo Canada! We zijn blij te kunnen vertellen dat fysieke betalingen nu beschikbaar zijn voor Canadese verkopers die nu WooCommerce Payments gebruiken.
-
-We hebben op andere plekken in de app ook verschillende verbeteringen aangebracht, waaronder ondersteuning van Arabische cijfers in bedragvelden, de mogelijkheid om het kortingstype van een coupon bij te werken en knip- en plakondersteuning voor opmerkingen bij bestellingen. Bedankt voor je feedback. Zo kunnen we voor iedereen een betere app maken.
+Deze release bevat enkele verbeteringen voor het aanmaken van bestellingen en fysieke betalingen, waaronder een probleem waarbij het gedeelte producten niet de juiste volgorde van artikelen weergaf, waarbij de datum en tijd voor alle bestellingen werd weergegeven en waarbij de knop terugbetaling aanvragen werd weergegeven voor alle betaalde bestellingen.
+Blijf ons feedback sturen – wij luisteren!

@@ -1116,6 +1116,36 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(isCallbackCalled)
     }
+
+    func test_creating_order_does_not_shows_banner() {
+        // Given
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID)
+
+        // When & Then
+        XCTAssertFalse(viewModel.shouldShowNonEditableBanner)
+    }
+
+    func test_editing_a_non_editable_order_shows_banner() {
+        // Given
+        let order = Order.fake().copy(isEditable: false)
+
+        // When
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, initialOrder: order)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowNonEditableBanner)
+    }
+
+    func test_editing_an_editable_order_does_not_shows_banner() {
+        // Given
+        let order = Order.fake().copy(isEditable: true)
+
+        // When
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, initialOrder: order)
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowNonEditableBanner)
+    }
 }
 
 private extension MockStorageManager {

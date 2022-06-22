@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--Warning: Auto-generated file, do not edit.-->
+<plist version="1.0">
+  <dict>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>このアプリでは Bluetooth を使用してサポートされているカードリーダーに接続します。</string>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>サポートされているカードリーダーに接続するには、Bluetooth アクセスが必要です。</string>
+    <key>NSCameraUsageDescription</key>
+    <string>商品に追加する写真や動画を撮影するには、商品 SKU のバーコードまたはサポートチケットをスキャンします。</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>支払いを受け取るには位置情報へのアクセスが必要です。</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>商品画像用にカメラの写真を保存したり、商品やサポートチケットに写真や動画を追加したりするためです。</string>
+  </dict>
+</plist>

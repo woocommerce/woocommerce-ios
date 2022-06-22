@@ -103,8 +103,8 @@ private extension Product_ProductFormTests {
                        date: Date(),
                        dateCreated: Date(),
                        dateModified: Date(),
-                       dateOnSaleStart: date(with: "2019-10-15T21:30:00"),
-                       dateOnSaleEnd: date(with: "2019-10-27T21:29:59"),
+                       dateOnSaleStart: DateFormatter.dateFromString(with: "2019-10-15T21:30:00"),
+                       dateOnSaleEnd: DateFormatter.dateFromString(with: "2019-10-27T21:29:59"),
                        productTypeKey: "booking",
                        statusKey: "publish",
                        featured: false,
@@ -158,12 +158,5 @@ private extension Product_ProductFormTests {
                        groupedProducts: [],
                        menuOrder: 0,
                        addOns: [])
-    }
-
-    private func date(with dateString: String) -> Date {
-        guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
-            return Date()
-        }
-        return date
     }
 }

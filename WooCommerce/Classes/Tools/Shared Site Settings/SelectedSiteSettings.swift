@@ -88,12 +88,12 @@ extension CurrencySettings {
                 self.currencyPosition = currencyPosition
             }
         case Constants.thousandSeparatorKey:
-            self.thousandSeparator = value
+            self.groupingSeparator = value
         case Constants.decimalSeparatorKey:
             self.decimalSeparator = value
         case Constants.numberOfDecimalsKey:
             if let numberOfDecimals = Int(value) {
-                self.numberOfDecimals = numberOfDecimals
+                self.fractionDigits = numberOfDecimals
             }
         default:
             break

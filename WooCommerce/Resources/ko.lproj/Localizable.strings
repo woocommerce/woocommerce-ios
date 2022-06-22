@@ -1,9 +1,9 @@
-/* Translation-Revision-Date: 2022-05-20 16:54:16+0000 */
+/* Translation-Revision-Date: 2022-06-21 17:54:17+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
 
-/* No comment provided by engineer. */
+/* Variation ID. Parameters: %1$@ - Product variation ID */
 "#%1$@" = "#%1$@";
 
 /* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
@@ -34,7 +34,8 @@
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@(고객에게)";
 
 /* A label prompting users to learn more about card readers"
-%1$@ is a placeholder that always replaced with \"Learn more\" string, - which should be translated separately and considered part of this sentence. */
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with your mobile device and ordering card readers" = "모바일 장치로 결제 수락 및 카드 리더 주문에 대한 %1$@";
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
@@ -139,26 +140,8 @@
 /* Order refunded shipping label title. The string variable shows the shipping label service name (e.g. USPS). */
 "%@ label refund requested" = "%@ 레이블 환불 요청됨";
 
-/* Review title. Reads as {Review author} left a review on {Product}. */
-"%@ left a review on %@" = "%1$@ 님이 %2$@에 리뷰를 남겼습니다.";
-
 /* Label for a refund on an order, which reads \"<date> via <refund method type>\", e.g. \"25 Apr 2022 via WooCommerce In-Person Payments\". Shown in a cell with a title \"Refunded\" for context */
 "%@ via %@" = "%2$@을(를) 통한 %1$@";
-
-/* No comment provided by engineer. */
-"%d Categories excl. %d Products" = "%1$d 카테고리(%2$d 상품 제외)";
-
-/* No comment provided by engineer. */
-"%d Product" = "%d 상품";
-
-/* No comment provided by engineer. */
-"%d Products" = "%d 상품";
-
-/* No comment provided by engineer. */
-"%d Products excl. %d Category" = "%1$d 상품(%2$d 카테고리 제외)";
-
-/* No comment provided by engineer. */
-"%d Products, %d Categories" = "%1$d개 상품, %2$d개 카테고리";
 
 /* For example: `1 item` in Aggregated Product List */
 "%d item" = "%d개 아이템";
@@ -201,12 +184,10 @@
 /* Format of upsell linked products row in the plural form. Reads, `5 upsell products` */
 "%ld upsell products" = " 상향 판매 제품 %ld개";
 
-/* Label about one product variation shown on Products tab
-   Label for one product variation when showing details about a variable product */
+/* Label for one product variation when showing details about a variable product */
 "%ld variation" = "%ld개 변형";
 
-/* Label about number of variations shown on Products tab
-   Label for multiple product variations when showing details about a variable product */
+/* Label for multiple product variations when showing details about a variable product */
 "%ld variations" = "%ld개 변형";
 
 /* Product title in Products list when there is no title */
@@ -266,9 +247,6 @@
 /* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
 "A refund will not be issued to the customer. You will need to manually issue the refund through %1$@." = "고객에게는 환불이 발행되지 않습니다. %1$@을(를) 통해 수동으로 환불을 발행해야 합니다.";
 
-/* No comment provided by engineer. */
-"A refund will not be issued to the customer. You will need to manually issue the refund through Stripe." = "고객에게는 환불이 발행되지 않습니다. Stripe를 통해 수동으로 환불을 발행해야 합니다.";
-
 /* Message explaining that the site may have an invalid SSL certificate. */
 "A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate." = "사이트에 대한 보안 접속을 만들 수 없습니다. 유효한 SSL 인증서가 사이트에 있는지 확인하세요.";
 
@@ -324,8 +302,9 @@
 /* The plugin is active on the site and has enabled automatic updates */
 "Active, Autoupdates on" = "활성화, 자동 업데이트 켜기";
 
-/* A button title used for a shipment tracking unit test
-   A button title used for a unit test - Action for adding a Products' downloadable files' info remotely - Add a note screen - button title to send the note - Add tracking screen - button title to add a tracking */
+/* Action for adding a Products' downloadable files' info remotely
+   Add a note screen - button title to send the note
+   Add tracking screen - button title to add a tracking */
 "Add" = "추가";
 
 /* Title on empty state button when the product has no attributes and variations */
@@ -374,11 +353,13 @@
 "Add Price" = "가격 추가";
 
 /* Action to add product on the placeholder overlay when there are no products on the Products tab
-   Title for the screen to add a product to an order - Title text of the button that adds a product when creating a new order */
+   Title for the screen to add a product to an order
+   Title text of the button that adds a product when creating a new order */
 "Add Product" = "제품 추가";
 
 /* Action to add linked products to a product in the Linked Products List Selector screen
-   Add Products button inside the Linked Products screen. - Navigation bar title for selecting multiple products. */
+   Add Products button inside the Linked Products screen.
+   Navigation bar title for selecting multiple products. */
 "Add Products" = "제품 추가";
 
 /* Title for the Shipping Line screen during order creation
@@ -388,8 +369,8 @@
 /* Title for the button to add the Shipping Address in Order Details */
 "Add Shipping Address" = "배송 주소 추가";
 
-/* A title used for a shipment tracking unit test
-   Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
+/* Add Tracking row label
+   Add tracking screen - title. */
 "Add Tracking" = "추적 추가";
 
 /* Title on empty state button when the product has attributes but no variations */
@@ -404,6 +385,9 @@
 /* Accessibility label for the 'Add a note' button
    Button text for adding a new order note */
 "Add a note" = "메모 추가";
+
+/* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
+"Add a price to your variation to make it visible on your store" = "변형이 스토어에 표시되도록 가격 추가";
 
 /* The action to add a product */
 "Add a product" = "제품 추가";
@@ -432,18 +416,12 @@
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press enter" = "각 옵션 추가 및 Enter 키 누르기";
 
-/* Button in the action sheet for adding the expiration date for a coupon. */
-"Add expiration date" = "만료일 추가";
-
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
 "Add more details" = "세부사항 추가";
 
 /* Voiceover accessibility label for the tags field in product tags. */
 "Add new tags, separated by commas." = "새 태그를 쉼표로 구분하여 추가하세요.";
-
-/* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
-"Add price to your variations to make them visible on your store" = "변형이 스토어에 표시되도록 가격 추가";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "제품 링크 추가";
@@ -518,12 +496,6 @@
 
 /* Exception rule for a coupon. Reads like: All Products excl. 2 Products */
 "All Products excl. %1$@" = "모든 상품(%1$@ 제외)";
-
-/* No comment provided by engineer. */
-"All Products excl. %d Categories" = "모든 상품(%d 카테고리 제외)";
-
-/* No comment provided by engineer. */
-"All Products excl. %d Products" = "모든 상품(%d 상품 제외)";
 
 /* Value for the limit usage to X items row in Coupon Usage Restrictions screen when no limit is set */
 "All Qualifying" = "모든 적격 항목";
@@ -625,7 +597,10 @@
 "Analytics enabled successfully." = "분석이 활성화되었습니다.";
 
 /* Case Any in Order Filters for Order Statuses
-   Display label for all order statuses selected in Order Filters - Label for one of the filters in order date range - Product variation attribute description where the attribute is set to any value. - Title when there is no filter set. */
+   Display label for all order statuses selected in Order Filters
+   Label for one of the filters in order date range
+   Product variation attribute description where the attribute is set to any value.
+   Title when there is no filter set. */
 "Any" = "모두";
 
 /* Format of a product variation attribute description where the attribute is set to any value.
@@ -653,13 +628,7 @@
 /* Message to share the coupon code if it is applicable to some products. Reads like: Apply 10% off to some products with the promo code “20OFF”. */
 "Apply %1$@ off to some products with the promo code “%2$@”." = "프로모션 코드가 “%2$@”인 일부 상품에 %1$@ 할인을 적용합니다.";
 
-/* No comment provided by engineer. */
-"Apply %@ off to all products with the promo code “%@”." = "프로모션 코드가 “%2$@”인 모든 상품에 %1$@ 할인을 적용합니다.";
-
-/* No comment provided by engineer. */
-"Apply %@ off to some products with the promo code “%@”." = "프로모션 코드가 “%2$@”인 일부 상품에 %1$@ 할인을 적용합니다.";
-
-/* Header of the section for applying a coupon to specific products or categories in the view for adding or editing a coupon. */
+/* Header of the section for applying a coupon to specific products or categories in the view for adding or editing a coupon's product and category restrictions. */
 "Apply this coupon to" = "다음에 이 쿠폰 적용";
 
 /* Approve a comment */
@@ -734,8 +703,7 @@
 /* Title of a button linking to the Automattic website */
 "Automattic family" = "Automattic 가족";
 
-/* A unit test string. It reads: Awaiting payment via <payment method title>.A payment method example is: 'Credit Card (Stripe)'
-   Awaiting payment via (payment method title) */
+/* Awaiting payment via (payment method title) */
 "Awaiting payment via %@" = "%@을(를) 통한 결제 대기 중";
 
 /* Details section title in the Edit Address Form */
@@ -748,8 +716,7 @@
 /* Accessibility announcement message when device goes back online */
 "Back online" = "온라인 복구";
 
-/* Button to dismiss modal overlay and go back to the order after a sucessful payment
-   Button to dismiss modal overlay. Presented to users after collecting a payment fails */
+/* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
 "Back to Order" = "주문으로 돌아가기";
 
 /* Text for the button to dismiss the store picker error screen */
@@ -769,7 +736,8 @@
 "Bar number %i, %@, " = "표시줄 번호 %1$i, %2$@, ";
 
 /* Section header title for billing address in billing information
-   Title for the Billing Address section in order customer data - Title for the Edit Billing Address Form */
+   Title for the Billing Address section in order customer data
+   Title for the Edit Billing Address Form */
 "Billing Address" = "청구 주소";
 
 /* Billing Information view Title */
@@ -828,7 +796,55 @@
 "Can be used %1$d times" = "%1$d회 사용 가능";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title that closes the action sheet in product variations - Button title that closes the presented screen - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to cancel an in-person payment or refund - Button to cancel the creation of an order on the New Order screen - Button to dismiss Select Categories screen - Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button in the navigation bar of the view for adding or editing a coupon. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the main more actions menu sheet. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - Text for the cancel button in the Exclude Products screen - Text for the cancel button in the Select Products screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
+   Add Product Category. Cancel button title in navbar.
+   Alert button title - dismisses alert, which cancels marking all as read attempt.
+   Button title Cancel in Discard Changes Action Sheet
+   Button title Cancel in Downloadable File More Options Action Sheet
+   Button title Cancel in Downloadable Files More Options Action Sheet
+   Button title Cancel in Edit Product More Options Action Sheet
+   Button title that closes the action sheet in product variations
+   Button title that closes the presented screen
+   Button title to cancel opening device settings in an alert
+   Button title. Tapping it cancels the login flow.
+   Button to allow the user to close the modal without connecting.
+   Button to cancel (not try again). Presented to users after a failure occurs
+   Button to cancel a payment
+   Button to cancel an in-person payment or refund
+   Button to cancel the creation of an order on the New Order screen
+   Button to dismiss Select Categories screen
+   Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching.
+   Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching.
+   Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching.
+   Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching.
+   Button to dismiss the alert presented whenan update fails because the reader is low on battery.
+   Button to dismiss. Presented to users when updating the card reader software fails
+   Cancel button in the More Options action sheet
+   Cancel button in the navigation bar of the view for adding or editing a coupon.
+   Cancel button label
+   Cancel button on the alert when the user is cancelling the action on changing product type
+   Cancel button on the alert when the user is cancelling the action on deleting a variation
+   Cancel button on the alert when the user is cancelling the action on moving a product to the trash
+   Cancel button on the error alert when fetching system status report fails
+   Cancel button title in the issue refund screen
+   Cancel prompt for user information.
+   Cancel the main more actions menu sheet.
+   Cancel the more menu action sheet in Reviews screen.
+   Cancel the more menu action sheet on Products section
+   Cancel the shipping label more menu action sheet
+   Cancel the shipping label tracking more menu action sheet
+   Change order status screen - button title for closing the view
+   Close the action sheet
+   Dismiss button on the alert when the user taps to delete a Product image
+   Label for a button that when tapped, cancels the process of connecting to a card reader 
+   Label for a cancel button
+   Option to cancel the email app selection when logging in with magic links
+   Text for the cancel button in the edit customer provided note screen
+   Text for the cancel button in the Exclude Products screen
+   Text for the cancel button in the Select Products screen
+   The title for a button that dismisses the crash debug menu
+   The title of the button to cancel issuing a refund.
+   Title for canceling the edit attribute action sheet.
+   Title for the button to cancel the simple payments screen */
 "Cancel" = "취소";
 
 /* Display label for cancelled order status. */
@@ -881,7 +897,9 @@
 "Catalog Visibility" = "카탈로그 공개 설정";
 
 /* Edit product categories screen - Screen title
-   Filter product categories screen - Screen title - Title of the Categories row on Product main screen - Title of the product form bottom sheet action for editing categories. */
+   Filter product categories screen - Screen title
+   Title of the Categories row on Product main screen
+   Title of the product form bottom sheet action for editing categories. */
 "Categories" = "카테고리";
 
 /* Error message when local validation fails in Shipping Label Address Validation */
@@ -932,6 +950,9 @@
 /* Opens action sheet to choose a type of a new order */
 "Choose new order type" = "새 주문 유형 선택";
 
+/* Title for the screen to select the preferred provider for In-Person Payments */
+"Choose your Payment Provider" = "결제 제공업체 선택";
+
 /* Heading text on the select payment method screen for simple payments */
 "Choose your payment method" = "결제 수단 선택";
 
@@ -957,7 +978,14 @@
 "Clear selection" = "선택 지우기";
 
 /* Accessibility label for the close button
-   Button to dismiss modal overlay. Presented to users after refunding a payment fails - Text for the close button in the Add Product screen - Text for the close button in the Edit Address Form - Text for the close button in the Fee Details screen - Text for the close button in the Product screen - Text for the close button in the Shipping Line Details screen - Title of the Close action on the Jetpack Install view */
+   Button to dismiss modal overlay. Presented to users after refunding a payment fails
+   Button to dismiss the Coupon Creation Success screen
+   Text for the close button in the Add Product screen
+   Text for the close button in the Edit Address Form
+   Text for the close button in the Fee Details screen
+   Text for the close button in the Product screen
+   Text for the close button in the Shipping Line Details screen
+   Title of the Close action on the Jetpack Install view */
 "Close" = "닫기";
 
 /* Accessibility value when a banner is collapsed */
@@ -987,6 +1015,9 @@
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "새 주문 메모를 작성합니다.";
+
+/* Button to confirm the preferred provider for In-Person Payments */
+"Confirm Payment Method" = "결제 수단 확인";
 
 /* Title for the error screen when there is more than one plugin active that supports in-person payments. */
 "Conflicting payment plugins detected" = "충돌하는 결제 플러그인 감지됨";
@@ -1052,7 +1083,9 @@
 "Contact Email" = "연락처 이메일";
 
 /* Action button to contact support when Jetpack install fails
-   Contact Support title - Text for the button to contact support from the store picker error screen - The title of the button to contact support in the Error Loading Data banner */
+   Contact Support title
+   Text for the button to contact support from the store picker error screen
+   The title of the button to contact support in the Error Loading Data banner */
 "Contact Support" = "지원팀에 문의";
 
 /* Contact WooComerce Payments Support title */
@@ -1074,11 +1107,10 @@
 "Content Type" = "내용물 유형";
 
 /* Continue button inside every cell inside Create Shipping Label form
-   The button title text when there is a next step for logging in or signing up. - Title of continue button - Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
+   The button title text when there is a next step for logging in or signing up.
+   Title of continue button
+   Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
 "Continue" = "계속";
-
-/* Button to dismiss modal overlay and go back to the orders list after a sucessful payment */
-"Continue To Orders" = "주문 계속";
 
 /* Button title. Takes the user to the login with WordPress.com flow. */
 "Continue With WordPress.com" = "워드프레스닷컴 계속";
@@ -1141,7 +1173,8 @@
 "Couldn't load tags." = "태그를 로드할 수 없었습니다.";
 
 /* Text field country in Edit Address Form
-   Text field country in Shipping Label Address Validation - Title to select country from the edit address screen */
+   Text field country in Shipping Label Address Validation
+   Title to select country from the edit address screen */
 "Country" = "국가";
 
 /* Error showed in Shipping Label Address Validation for the country field */
@@ -1150,14 +1183,14 @@
 /* Description for the Origin Country row in Customs screen of Shipping Label flow */
 "Country where the product was manufactured or assembled" = "상품이 제조 또는 조립된 국가";
 
-/* Text field coupon code in the view for adding or editing a coupon. */
+/* Text field coupon code in the view for adding or editing a coupon code. */
 "Coupon Code" = "쿠폰 코드";
 
 /* Title of the view for editing the coupon description. */
 "Coupon Description" = "쿠폰 설명";
 
-/* Field in the view for adding or editing a coupon. */
-"Coupon Expiry Date" = "Coupon Expiry Date";
+/* Field in the view for adding or editing a coupon's expiry date. */
+"Coupon Expiry Date" = "쿠폰 만료일";
 
 /* Cell title on beta features screen to enable coupon management */
 "Coupon Management" = "쿠폰 관리";
@@ -1194,23 +1227,27 @@
 "Create Account" = "계정 생성";
 
 /* Create Shipping Label form navigation title
-   Option to create new shipping label from the action sheet on Products section of Order Details screen - Text on the button that starts shipping label creation */
+   Option to create new shipping label from the action sheet on Products section of Order Details screen
+   Text on the button that starts shipping label creation */
 "Create Shipping Label" = "배송 레이블 만들기";
+
+/* Description for fixed product discount type on the action sheet presented from Add or Edit coupon screen */
+"Create a fixed total discount for selected products" = "선택한 제품에 대해 전체 고정 할인을 설정하세요.";
+
+/* Description for fixed cart discount type on the action sheet presented from Add or Edit coupon screen */
+"Create a fixed total discount for the entire cart" = "장바구니에 있는 모든 항목에 대해 전체 고정 할인을 설정하세요.";
 
 /* Description of the Action sheet option when the user wants to create full manual order */
 "Create a new manual order" = "새 수동 주문 생성";
 
+/* Description for percentage discount type on the action sheet presented from Add or Edit coupon screen */
+"Create a percentage discount for selected products" = "선택한 제품에 대해 할인율을 설정하세요.";
+
 /* Description of the Action sheet option when the user wants to create Simple Payments order */
 "Create an order with minimal information" = "최소 정보로 주문 생성";
 
-/* Title of the view for creating a coupon with generic discount. */
-"Create discount" = "할인 생성";
-
-/* Title of the view for creating a coupon with fixed cart discount. */
-"Create fixed cart discount" = "고정 장바구니 할인 생성";
-
-/* Title of the view for creating a coupon with fixed product discount. */
-"Create fixed product discount" = "고정 상품 할인 생성";
+/* Title of the Create coupon screen */
+"Create coupon" = "쿠폰 만들기";
 
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "새 패키지 생성";
@@ -1220,9 +1257,6 @@
 
 /* Title of the banner notice in the Orders tab */
 "Create orders & take payments!" = "주문을 생성하고 결제를 진행하세요!";
-
-/* Title of the view for creating a coupon with percentage discount. */
-"Create percentage discount" = "비율(%) 할인 생성";
 
 /* The title of the shipping labels top banner in order details */
 "Create shipping labels from your device!" = "기기에서 배송 레이블을 만드세요!";
@@ -1262,7 +1296,8 @@
 "Custom Amount" = "사용자 정의 금액";
 
 /* Add custom shipping carrier. Content of cell titled Shipping Carrier
-   Placeholder name of a custom shipment tracking carrier - Title of button to add a custom tracking carrier if filtering the list yields no results. */
+   Placeholder name of a custom shipment tracking carrier
+   Title of button to add a custom tracking carrier if filtering the list yields no results. */
 "Custom Carrier" = "사용자 정의 운송업체";
 
 /* Custom line index in Customs Form of Shipping Label flow */
@@ -1279,7 +1314,8 @@
 "Custom forms require a 10-digit phone number" = "세관 양식에 10자리 전화번호 필요";
 
 /* Customer info section title
-   Customer info section title in Review Order screen - Title text of the section that shows Customer details when creating a new order */
+   Customer info section title in Review Order screen
+   Title text of the section that shows Customer details when creating a new order */
 "Customer" = "고객";
 
 /* Title for the Shipping Address Form for Customer Details */
@@ -1289,7 +1325,9 @@
 "Customer Note" = "고객 메모";
 
 /* Customer note row title
-   Customer note section title - Title for the edit customer provided note screen - Title text of the row that holds the order note when creating a simple payment */
+   Customer note section title
+   Title for the edit customer provided note screen
+   Title text of the row that holds the order note when creating a simple payment */
 "Customer Provided Note" = "고객이 남긴 메모";
 
 /* Title of the banner notice in Shipping Labels -> Carrier and Rates */
@@ -1337,7 +1375,8 @@
 "Default" = "기본";
 
 /* Button title Delete in Downloadable File Options Action Sheet
-   Button title Delete in Edit Product More Options Action Sheet - Title for the action button on the confirm alert for deleting coupon on the Coupon Details screen */
+   Button title Delete in Edit Product More Options Action Sheet
+   Title for the action button on the confirm alert for deleting coupon on the Coupon Details screen */
 "Delete" = "삭제";
 
 /* Action title for deleting coupon on the Coupon Details screen */
@@ -1346,9 +1385,6 @@
 /* Delete tracking button title */
 "Delete Tracking" = "추적 삭제";
 
-/* Button in the action sheet for deleting the expiration date of a coupon. */
-"Delete expiration date" = "만료일 삭제";
-
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "제품 설명";
 
@@ -1356,7 +1392,8 @@
 "Describe your product to your future customers..." = "미래 고객에게 제품 설명...";
 
 /* The navigation bar title of the Aztec editor screen.
-   Title in the Product description row on Product form screen when the description is non-empty. - Title of Description row of item details in Customs screen of Shipping Label flow */
+   Title in the Product description row on Product form screen when the description is non-empty.
+   Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "설명";
 
 /* Footer text in Product Menu order screen */
@@ -1392,11 +1429,33 @@
 /* Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s) */
 "Discount %1$@" = "할인 %1$@";
 
+/* Field in the view for adding or editing a coupon's discount type.
+   Title for the sheet to select discount type on the Add or Edit coupon screen. */
+"Discount Type" = "할인 유형";
+
 /* Title of the Discounted Orders label on Coupon Details screen */
 "Discounted Orders" = "할인된 주문";
 
-/* A unit test string for a button title
-   Accessibility label for button to dismiss a bottom sheet - Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Button to dismiss the alert presented when finding a reader to connect to fails - Button to dismiss. Presented to users after collecting a payment fails - Button to dismiss. Presented to users when updating the card reader software fails - Dismiss button in inbox note row. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab - The title of the button to dismiss the Orders top banner - Title of the button to dismiss the banner notice in the add-ons view - Title of the dismiss action button on the coupon list screen */
+/* Accessibility label for button to dismiss a bottom sheet
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog.
+   Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog.
+   Add a note screen - button title for closing the view
+   Button title for dismissing filtering a list.
+   Button to dismiss the alert presented when finding a reader to connect to fails
+   Button to dismiss. Presented to users after collecting a payment fails
+   Button to dismiss. Presented to users when updating the card reader software fails
+   Dismiss button in inbox note row.
+   Dismiss button in store picker
+   Dismiss button title shown in alert warning users to upgrade to WC 3.5.
+   Dismiss button title shown in an alert displaying full purchase note text.
+   Dismiss the action sheet
+   Dismiss the media picking action sheet
+   Dismiss the shipment tracking action sheet
+   The title of the button to dismiss the banner in order details
+   The title of the button to dismiss the banner on the products tab
+   The title of the button to dismiss the Orders top banner
+   Title of the button to dismiss the banner notice in the add-ons view
+   Title of the dismiss action button on the coupon list screen */
 "Dismiss" = "무시";
 
 /* Dismiss All button in Inbox Notes for dismissing all the notes. */
@@ -1424,7 +1483,27 @@
 "Don't have an account? _Sign up_" = "아직 계정이 없으신가요? _가입_";
 
 /* Action title to select products to add to a grouped product from search results
-   Button to submit selection on Select Categories screen - Button to submit the product selector without any product selected. - Done button on the Jetpack Install Progress screen. - Done navigation button in Inbox Notes webview - Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - Text for the done button in the Fee Details screen - Text for the done button in the Shipping Line Details screen - The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again. */
+   Button to finish selecting the Coupon expiry date in the Add or Edit Coupon screen
+   Button to submit selection on Select Categories screen
+   Button to submit the product selector without any product selected.
+   Done button on the Allowed Emails screen
+   Done button on the Jetpack Install Progress screen.
+   Done navigation button in Inbox Notes webview
+   Done navigation button in selection list screens
+   Done navigation button in Shipping Label add payment webview
+   Done navigation button in shipping label carrier and rates screen
+   Done navigation button in the Add New Package screen in Shipping Label flow
+   Done navigation button in the Customs screen in Shipping Label flow
+   Done navigation button in the Package Details screen in Shipping Label flow
+   Done navigation button in the Shipping Label Payment Method screen
+   Done navigation button under the Package Selected screen in Shipping Label flow
+   Edit product categories screen - button title to apply categories selection
+   Edit product downloadable files screen - button title to apply changes to downloadable files
+   Text for the done button in the Edit Address Form
+   Text for the done button in the edit customer provided note screen
+   Text for the done button in the Fee Details screen
+   Text for the done button in the Shipping Line Details screen
+   The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again. */
 "Done" = "완료";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -1508,7 +1587,10 @@
 "Easily identify your products with unique codes" = "고유 코드로 제품을 간편하게 식별합니다.";
 
 /* Button to edit a customer on the New Order screen
-   Button to edit an order status on the New Order screen - Button to edit the customer note on the New Order screen - Title text of the button that edits a note when creating a simple payment */
+   Button to edit an order status on the New Order screen
+   Button to edit the customer note on the New Order screen
+   Title text of the button that edits a note when creating a simple payment
+   Title to edit an order */
 "Edit" = "편집";
 
 /* Action to edit the address in Shipping Label Suggested screen */
@@ -1542,33 +1624,25 @@
 /* Caption displayed in promotional screens shown during the login flow. */
 "Edit and add new products from anywhere" = "어디서나 새 제품 편집 및 추가";
 
+/* Title of the Edit coupon screen */
+"Edit coupon" = "쿠폰 수정";
+
 /* Accessibility label for the button to edit customer note on the New Order screen */
 "Edit customer note" = "고객 메모 편집";
-
-/* Title of the view for editing a coupon with generic discount. */
-"Edit discount" = "할인 편집";
-
-/* Button in the action sheet for editing the expiration date of a coupon. */
-"Edit expiration date" = "만료일 편집";
-
-/* Title of the view for editing a coupon with fixed cart discount. */
-"Edit fixed cart discount" = "고정 장바구니 할인 편집";
-
-/* Title of the view for editing a coupon with fixed product discount. */
-"Edit fixed product discount" = "고정 상품 할인 편집";
-
-/* Title of the view for editing a coupon with percentage discount. */
-"Edit percentage discount" = "비율(%) 할인 편집";
 
 /* Carrier eligible for free pickup in Shipping Labels > Carrier and Rates */
 "Eligible for free pickup" = "무료 수령에 적합";
 
 /* Email address text field placeholder
-   Email button title - Text field email in Edit Address Form - Title of Email accessibility action, opens a compose view - Title text of the row that holds the provided email when creating a simple payment */
+   Email button title
+   Text field email in Edit Address Form
+   Title of Email accessibility action, opens a compose view
+   Title text of the row that holds the provided email when creating a simple payment */
 "Email" = "이메일";
 
 /* Accessibility label for the email address text field.
-   Placeholder for a textfield. The user may enter their email address. - Placeholder for the email address textfield. */
+   Placeholder for a textfield. The user may enter their email address.
+   Placeholder for the email address textfield. */
 "Email address" = "이메일 주소";
 
 /* Label for yes/no switch - emailing the note to customer. */
@@ -1836,7 +1910,8 @@
 "Feedback Sent!" = "피드백을 보냈습니다!";
 
 /* Fees label for payment view
-   Label for the row showing the cost of fees in the order - Line description for 'Fees' cart total on the receipt. Only shown when non-zero. */
+   Label for the row showing the cost of fees in the order
+   Line description for 'Fees' cart total on the receipt. Only shown when non-zero. */
 "Fees" = "수수료";
 
 /* Title on the refund screen that lists the fees total cost */
@@ -1854,11 +1929,14 @@
 "Fill out customs form" = "세관 양식 작성";
 
 /* Title of the button to select all products on the Select Product screen
-   Title of the toolbar button to filter orders without filters applied. - Title of the toolbar button to filter products by different attributes. - Title of the toolbar button to filter products without any filters applied. */
+   Title of the toolbar button to filter orders without filters applied.
+   Title of the toolbar button to filter products by different attributes.
+   Title of the toolbar button to filter products without any filters applied. */
 "Filter" = "필터";
 
 /* Title of the button to filter products with filters applied on the Select Product screen
-   Title of the toolbar button to filter orders with filters applied. - Title of the toolbar button to filter products with filters applied. */
+   Title of the toolbar button to filter orders with filters applied.
+   Title of the toolbar button to filter products with filters applied. */
 "Filter (%ld)" = "필터(%ld)";
 
 /* Placeholder on the search field to search for a specific country */
@@ -1929,6 +2007,9 @@
    View title for initial auth views. */
 "Get Started" = "시작하기";
 
+/* Action of the banner in the Order Detail for suggesting to install WCShip extension. */
+"Get WooCommerce Shipping" = "우커머스 배송 가져오기";
+
 /* The button title for a secondary call-to-action button. When the user wants to try sending a magic link instead of entering a password. */
 "Get a login link by email" = "이메일로 로그인 링크 받기";
 
@@ -1958,7 +2039,10 @@
 "Give Feedback" = "피드백 보내기";
 
 /* The title of the button to give feedback about products beta features on the banner on the products tab
-   The title of the button to give feedback about shipping labels features on the banner in order details - Title of the button to give feedback about the add-ons feature - Title of the button to give feedback about the Orders features - Title on the navigation bar for the products feedback survey */
+   The title of the button to give feedback about shipping labels features on the banner in order details
+   Title of the button to give feedback about the add-ons feature
+   Title of the button to give feedback about the Orders features
+   Title on the navigation bar for the products feedback survey */
 "Give feedback" = "피드백 보내기";
 
 /* Option to select the Gmail app when logging in with magic links */
@@ -2040,7 +2124,8 @@
 "Height" = "높이";
 
 /* Help and Support navigation title
-   Help button - Help button on store picker screen. */
+   Help button
+   Help button on store picker screen. */
 "Help" = "도움말";
 
 /* My Store > Settings > Help and Feedback settings section title */
@@ -2115,11 +2200,15 @@
    Title for the In-Person Payments settings screen */
 "In-Person Payments" = "대면 결제";
 
-/* Cell title on beta features screen to enable accepting in-person payments for stores in Canada */
-"In-Person Payments in Canada" = "캐나다의 직접 결제";
+/* Title for the error screen when there is more than one plugin active and the Stripe plugin should be deactivated */
+"In-Person Payments are processed through WooCommerce Payments." = "대면 결제는 WooCommerce Payments를 통해 처리됩니다.";
+
+/* Main prompt for the screen to select the preferred provider for In-Person Payments */
+"In-Person Payments can be processed through either of these payment providers. Which provider would you like to use?" = "이러한 결제 제공업체 중 하나를 통해 대면 결제를 처리할 수 있습니다. 어떤 제공업체를 사용하시겠어요?";
 
 /* Title for the error screen when In-Person Payments is unavailable
-   Title for the error screen when the merchant's payment account is restricted because it's under reviw - Title for the error screen when the Stripe account is restricted because there are overdue requirements. */
+   Title for the error screen when the merchant's payment account is restricted because it's under reviw
+   Title for the error screen when the Stripe account is restricted because there are overdue requirements. */
 "In-Person Payments is currently unavailable" = "현재 대면 결제 사용 불가능";
 
 /* Title for the error screen when the merchant's payment account has been rejected. */
@@ -2144,10 +2233,11 @@
 "Inactive, Autoupdates on" = "비활성화, 자동 업데이트 켜기";
 
 /* Navigation title of the webview which is used in Inbox Notes.
-   Title for the screen that shows inbox notes. - Title of the Inbox menu in the hub menu */
+   Title for the screen that shows inbox notes.
+   Title of the Inbox menu in the hub menu */
 "Inbox" = "받은 편지함";
 
-/* Toggle field in the view for adding or editing a coupon. */
+/* Toggle field in the view for adding or editing a coupon's free shipping support. */
 "Include Free Shipping?" = "무료 배송 포함 여부";
 
 /* Describes a standard *.wordpress.com site domain */
@@ -2190,7 +2280,9 @@
 "Instagram" = "Instagram";
 
 /* Navigates to Install Jetpack screen.
-   Title of install action in the Jetpack benefits view. - Title of the Install Jetpack intro view - Title of the Install Jetpack view */
+   Title of install action in the Jetpack benefits view.
+   Title of the Install Jetpack intro view
+   Title of the Install Jetpack view */
 "Install Jetpack" = "젯팩 설치";
 
 /* Action button to install Jetpack on WP-Admin instead of on app */
@@ -2198,6 +2290,9 @@
 
 /* Title for the error screen when WooCommerce Payments is not installed */
 "Install WooCommerce Payments" = "WooCommerce 결제 설치";
+
+/* Accessibility label for the Install WCShip banner in the Order Detail */
+"Install the WCShip extension." = "WCShip 확장 기능을 설치하세요.";
 
 /* Description of the Jetpack Install flow for the specified site. The %1$@ is the site address. */
 "Install the free Jetpack plugin to %1$@ and experience the best mobile experience." = "무료 젯팩 플러그인을 %1$@에 설치하고 최상의 모바일 환경을 경험해 보세요.";
@@ -2251,7 +2346,8 @@
 "Invalid weight" = "유효하지 않은 무게";
 
 /* Product Inventory Settings navigation title
-   Title of the Inventory Settings row on Product main screen - Title of the product form bottom sheet action for editing inventory settings. */
+   Title of the Inventory Settings row on Product main screen
+   Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "재고";
 
 /* Text on the button that starts a new refund process */
@@ -2336,7 +2432,11 @@
 "Launch Wormholy Debug" = "Wormholy 디버그 시작";
 
 /* A label prompting users to learn more about card readers.
-This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. - Button title in the shipping label creation info screen - Settings > Privacy Settings. A text link to the cookie policy. - Title of button shown in the Reviews tab if the list is empty - Title of button shown on the Product Reviews screen if the list is empty */
+This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
+   Button title in the shipping label creation info screen
+   Settings > Privacy Settings. A text link to the cookie policy.
+   Title of button shown in the Reviews tab if the list is empty
+   Title of button shown on the Product Reviews screen if the list is empty */
 "Learn more" = "더 알아보기";
 
 /* A label prompting users to learn more about HS Tariff Number in Customs screen of Shipping Label flow */
@@ -2424,15 +2524,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Loading products" = "상품 로드하기";
 
 /* Button title.  Tapping takes the user to the login form.
-   Log In button label. - View title during the log in process. */
+   Log In button label.
+   View title during the log in process. */
 "Log In" = "로그인";
 
 /* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
-   Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation - Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
+   Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
+   Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log In With Another Account" = "다른 계정으로 로그인";
 
 /* Action button triggering a Log Out.Presented when logging in with a store address that does not match the account entered
-   Alert button title - confirms and logs out the user - Log out button title */
+   Alert button title - confirms and logs out the user
+   Log out button title */
 "Log Out" = "로그아웃";
 
 /* Explains that the files are sorted by LIFO date: most recent day listed first. */
@@ -2480,7 +2583,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Make your products easier to find with tags" = "태그를 사용하여 제품을 더 쉽게 찾을 수 있습니다.";
 
 /* Card reader settings screen title
-   Settings > Manage Card Reader > Title for the no-reader-connected screen in settings. - Settings > Manage Card Reader > Title for the reader connected screen in settings. */
+   Settings > Manage Card Reader > Title for the no-reader-connected screen in settings.
+   Settings > Manage Card Reader > Title for the reader connected screen in settings. */
 "Manage Card Reader" = "카드 판독기 관리";
 
 /* Title of the action sheet displayed from the Coupon Details screen */
@@ -2503,9 +2607,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
 "Manual Refund via %1$@" = "%1$@을(를) 통한 수동 환불";
-
-/* No comment provided by engineer. */
-"Manual Refund via Stripe" = "Stripe를 통한 수동 환불";
 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "매핑된 도메인";
@@ -2617,7 +2718,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "My store" = "내 스토어";
 
 /* Name text field placeholder
-   Text field name in Shipping Label Address Validation - Title for the name field on the Shipping Line Details screen during order creation */
+   Text field name in Shipping Label Address Validation
+   Title for the name field on the Shipping Line Details screen during order creation */
 "Name" = "이름";
 
 /* Error showed in Shipping Label Address Validation for the name field */
@@ -2625,6 +2727,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
 "Navigates to Settings." = "설정으로 이동합니다.";
+
+/* Title of the banner in the Order Detail for suggesting to install WCShip extension. */
+"Need a shipping label?" = "배송 레이블이 필요하신가요?";
 
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
 "Need help finding the connected email?" = "연결된 이메일을 찾는 데 도움이 필요하신가요?";
@@ -2668,7 +2773,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 "New features available!" = "새 기능을 사용할 수 있습니다!";
 
 /* Action navigate to the variation creation screen
-   Next nav bar button title in Add Product Attribute Options screen - Next nav bar button title in Add Product Attribute screen - Title for the button to confirm the amount in the simple payments screen - Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
+   Next nav bar button title in Add Product Attribute Options screen
+   Next nav bar button title in Add Product Attribute screen
+   Title for the button to confirm the amount in the simple payments screen
+   Title of a button.
+   Title of a button. The text should be capitalized.
+   Title of the next button in the issue refund screen */
 "Next" = "다음";
 
 /* Value for the allowed emails row in Coupon Usage Restrictions screen when no restriction is set */
@@ -2678,7 +2788,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No activity this period" = "이 기간에 활동이 없음";
 
 /* Order details > customer info > billing information. This is where the address would normally display.
-   Order details > customer info > shipping details. This is where the address would normally display. - Placeholder for empty address in order customer data */
+   Order details > customer info > shipping details. This is where the address would normally display.
+   Placeholder for empty address in order customer data */
 "No address specified." = "주소가 지정되지 않았습니다.";
 
 /* Error message when a card reader was expected to already have been connected. */
@@ -2727,7 +2838,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No products found" = "제품을 찾을 수 없음";
 
 /* Placeholder for the linked products list selector screen
-   Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
+   Placeholder text when there are no products on the product list selector
+   The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "아직 제품이 없음";
 
 /* Placeholder for empty product ratings */
@@ -2752,7 +2864,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No tax classes yet" = "아직 세금 클래스가 없음";
 
 /* Coupon expiry date placeholder in the view for adding or editing a coupon
-   Display label for the order fee's tax status setting option - Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow - The description in product variations bulk update, of a value, that is missing from all variations - Value for fields in Coupon Usage Restrictions screen when no value is set */
+   Display label for the order fee's tax status setting option
+   Display label for the product's tax status setting option
+   Restriction type None for contents declared in the customs form for Shipping Label flow
+   The description in product variations bulk update, of a value, that is missing from all variations
+   Value for fields in Coupon Usage Restrictions screen when no value is set */
 "None" = "없음";
 
 /* Action title to dismiss enabling Analytics for a store
@@ -2775,7 +2891,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Now that you’ve added attributes, you can create your first variation!" = "이제 속성을 추가했으니 첫 번째 변형을 만드실 수 있습니다!";
 
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error requesting shipping label document for printing - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt.
+   Dismiss button on the alert when there is an error creating a new product category
+   Dismiss button on the alert when there is an error creating new product tags.
+   Dismiss button on the alert when there is an error requesting shipping label document for printing
+   Dismiss button on the alert when there is an error updating the product
+   Dismiss button on the alert when there is an error uploading image(s)
+   Dismisses the alert
+   Ok button for dismissing alert helping users understand their site address
+   Submit button on prompt for user information. */
 "OK" = "확인";
 
 /* Header of selected attribute options section in Add Attribute Options screen */
@@ -2834,11 +2958,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for the Menu button */
 "Open menu" = "메뉴 열기";
 
+/* VoiceOver accessibility label for the Install WCShip banner in the Order Detail */
+"Open the flow for installing the WCShip extension." = "WCShip 확장 기능을 설치하는 흐름을 여세요.";
+
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "사용 가능한 상태 목록을 엽니다.";
 
 /* Accessibility hint for excluding a variable product in the Exclude Products screen
-   Accessibility hint for selecting a variable product in the Add Product screen - Accessibility hint for selecting a variable product in the Select Products screen */
+   Accessibility hint for selecting a variable product in the Add Product screen
+   Accessibility hint for selecting a variable product in the Select Products screen */
 "Opens list of product variations." = "상품 변형 목록을 엽니다.";
 
 /* Accessibility hint for selecting a product in a new order */
@@ -2848,7 +2976,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Option name" = "옵션 이름";
 
 /* Add Product Category. Placeholder of cell presenting the parent category.
-   Name text field placeholder in Shipping Label Address Validation when it's optional - Placeholder of the cell text field in Product Inventory Settings > SKU - Text field placeholder in Edit Address Form - Text field placeholder in Shipping Label Address Validation - Text field placeholder in Shipping Label Address Validation when specified country has no state */
+   Name text field placeholder in Shipping Label Address Validation when it's optional
+   Placeholder of the cell text field in Product Inventory Settings > SKU
+   Text field placeholder in Edit Address Form
+   Text field placeholder in Shipping Label Address Validation
+   Text field placeholder in Shipping Label Address Validation when specified country has no state */
 "Optional" = "선택 사항";
 
 /* No comment provided by engineer. */
@@ -2874,11 +3006,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Order Notes" = "주문 메모";
 
 /* Change order status screen - Screen title
-   Navigation title of the orders filter selector screen for order statuses - Row title for filtering orders by order status. */
+   Navigation title of the orders filter selector screen for order statuses
+   Row title for filtering orders by order status. */
 "Order Status" = "주문 상태";
 
 /* Create Shipping Label form -> Order Total label
-   Label for the the row showing the total cost of the order - Order Total label for payment view - Title text of the row that shows the total to charge when creating a simple payment */
+   Label for the the row showing the total cost of the order
+   Order Total label for payment view
+   Title text of the row that shows the total to charge when creating a simple payment */
 "Order Total" = "주문 총계";
 
 /* Navigates to Card Reader ordering screen */
@@ -2907,7 +3042,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Original packaging" = "원래 포장";
 
 /* Generic name of non-default discount types
-   My Store > Settings > Other app section - Restriction type Other for contents declared in the customs form for Shipping Label flow - Type Other of content to be declared for the customs form in Shipping Label flow */
+   My Store > Settings > Other app section
+   Restriction type Other for contents declared in the customs form for Shipping Label flow
+   Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "기타";
 
 /* Display label for the product's inventory stock status */
@@ -2920,7 +3057,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 "PRODUCT" = "상품";
 
 /* Create Shipping Label form -> Package number
-   Package index in Customs screen of Shipping Label flow - Package index in Print Customs Invoice screen of Shipping Label flow if there are more than one invoice - Package term in Shipping Labels. Reads like Package 1 */
+   Package index in Customs screen of Shipping Label flow
+   Package index in Print Customs Invoice screen of Shipping Label flow if there are more than one invoice
+   Package term in Shipping Labels. Reads like Package 1 */
 "Package %1$d" = "패키지 %1$d";
 
 /* Name of package to be listed in Move Item action sheet on Package Details screen of Shipping Label flow. */
@@ -2933,7 +3072,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Package Content" = "패키지 내용물";
 
 /* Navigation bar title of shipping label package details screen
-   Title of package details in shipping label details - Title of the cell Package Details inside Create Shipping Label form */
+   Title of package details in shipping label details
+   Title of the cell Package Details inside Create Shipping Label form */
 "Package Details" = "패키지 상세 정보";
 
 /* Title for the row to enter the package name on the Add New Custom Package screen in Shipping Label flow */
@@ -2959,7 +3099,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Parent Category" = "상위 카테고리";
 
 /* Accessibility label for the password text field in the self-hosted login page.
-   Login dialog password placeholder - Password field title in Product Visibility - Password placeholder - Placeholder for the password textfield. */
+   Login dialog password placeholder
+   Password field title in Product Visibility
+   Password placeholder
+   Placeholder for the password textfield. */
 "Password" = "비밀번호";
 
 /* One of the possible options in Product Visibility */
@@ -2969,11 +3112,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Paste without Formatting" = "서식없이 붙여넣기";
 
 /* Payment section title
-   Title text of the row that shows the payment headline when creating a simple payment - Title text of the section that shows Payment details when creating a new order */
+   Title text of the row that shows the payment headline when creating a simple payment
+   Title text of the section that shows Payment details when creating a new order */
 "Payment" = "결제";
 
 /* Navigation bar title in the Shipping Label Payment Method screen
-   Title of payment method in shipping label details - Title of the cell Payment Method inside Create Shipping Label form */
+   Title of payment method in shipping label details
+   Title of the cell Payment Method inside Create Shipping Label form */
 "Payment Method" = "지불 수단";
 
 /* Header for list of payment methods in Payment Method screen */
@@ -3005,8 +3150,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Display label for the review's pending status */
 "Pending" = "대기중";
 
-/* A unit test string, appended before the title of a review.
-   Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
+/* Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
 "Pending Review" = "검토중";
 
 /* Display label for the product's pending status */
@@ -3140,7 +3284,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please update your reader software to keep accepting payments" = "결제를 계속 수락하려면 리더 소프트웨어를 업데이트하세요.";
 
 /* Message of in-progress modal when preparing for printing customs invoice
-   Message of in-progress modal when requesting shipping label document for printing - Message of the in-progress UI while purchasing a shipping label - Message when checking if WooCommerce Payments is supported - Text on the loading view of the survey screen indicating the user to wait - VoiceOver Accessibility label for the instruction */
+   Message of in-progress modal when requesting shipping label document for printing
+   Message of the in-progress UI while purchasing a shipping label
+   Message when checking if WooCommerce Payments is supported
+   Text on the loading view of the survey screen indicating the user to wait
+   VoiceOver Accessibility label for the instruction */
 "Please wait" = "기다려 주세요.";
 
 /* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
@@ -3170,7 +3318,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please, add a new payment method" = "새 결제 수단을 추가하세요.";
 
 /* My Store > Settings > Plugins section title
-   Navigates to Plugins screen. - Title of the Plugin List screen */
+   Navigates to Plugins screen.
+   Title of the Plugin List screen */
 "Plugins" = "플러그인";
 
 /* Text field postcode in Edit Address Form
@@ -3190,7 +3339,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Previously Refunded" = "이전에 환불됨";
 
 /* Product Price Settings navigation title
-   Section header title for product price - The title for the price settings section in the product variation bulk updatescreen - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
+   Section header title for product price
+   The title for the price settings section in the product variation bulk updatescreen
+   Title for editing the price settings row on Product main screen
+   Title of the cell in Product Price Settings > Price */
 "Price" = "가격";
 
 /* Title of print button on Print Customs Invoice screen of Shipping Label flow when there are more than one invoice */
@@ -3200,7 +3352,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Print Customs Form" = "세관 양식 인쇄";
 
 /* Button title to generate a shipping label document for printing
-   Navigation bar title to print a shipping label - Text on the button that prints a shipping label */
+   Navigation bar title to print a shipping label
+   Text on the button that prints a shipping label */
 "Print Shipping Label" = "배송 레이블 인쇄";
 
 /* Button title to generate a document with multiple shipping labels for printing
@@ -3215,6 +3368,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation bar title of shipping label printing instructions screen */
 "Print from your mobile device" = "모바일 장치에서 인쇄";
+
+/* Body of the banner in the Order Detail for suggesting to install WCShip extension. */
+"Print labels from your phone, with WooCommerce Shipping." = "우커머스 배송을 통해 스마트폰의 레이블을 인쇄하세요.";
 
 /* Button to print receipts. Presented to users after a payment has been successfully collected */
 "Print receipt" = "영수증 인쇄";
@@ -3257,11 +3413,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Processing refund" = "환불 처리하기";
 
 /* Product section title
-   Product section title if there is only one product. - Product section title in Review Order screen if there is one product. - Title for the Product screen during order creation */
+   Product section title if there is only one product.
+   Product section title in Review Order screen if there is one product.
+   Title for the Product screen during order creation */
 "Product" = "상품";
 
 /* The title on the navigation bar when viewing an order item add-ons
-   Title for Add-ons row in the product form screen. - Title for the product add-ons screen */
+   Title for Add-ons row in the product form screen.
+   Title for the product add-ons screen */
 "Product Add-ons" = "상품 애드온";
 
 /* Row title for filtering products by product category. */
@@ -3302,7 +3461,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Product type" = "제품 유형";
 
 /* Description for Top Performers left column header
-   Product section title if there is more than one product. - Product section title in Review Order screen if there is more than one product. - Title of the Products tab — plural form of Product - Title text of the section that shows the Products when creating a new order - Title that appears on top of the Product List screen (plural form of the word Product). */
+   Product section title if there is more than one product.
+   Product section title in Review Order screen if there is more than one product.
+   Title of the Products tab — plural form of Product
+   Title text of the section that shows the Products when creating a new order
+   Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "상품";
 
 /* Label for computed value `product refunds + taxes = subtotal`.
@@ -3359,7 +3522,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Qty" = "수량";
 
 /* Accessibility label for product quantity field
-   The accessibility label for the quantity button when selecting an item to refund - Title of the cell in Product Inventory Settings > Quantity */
+   The accessibility label for the quantity button when selecting an item to refund
+   Title of the cell in Product Inventory Settings > Quantity */
 "Quantity" = "수량";
 
 /* Navigation title on the quantity item selector screen */
@@ -3455,7 +3619,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Refunded" = "환불됨";
 
 /* Order > Order Details > 'N Items' cell tapped > Refunded Products title
-   Refunded Products section title - Section title */
+   Refunded Products section title
+   Section title */
 "Refunded Products" = "환불된 제품";
 
 /* Title of the refund detail cell when the refund was done manually. */
@@ -3470,7 +3635,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility label. Indicates that an in-person refund is being processed */
 "Refunding payment" = "결제 환불하기";
 
-/* Button in the view for adding or editing a coupon. */
+/* Button in the view for adding or editing a coupon code. */
 "Regenerate Coupon Code" = "쿠폰 코드 재생성";
 
 /* Describes a domain that was registered with WordPress.com */
@@ -3483,7 +3648,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Regular price: %@" = "정상 가격: %@";
 
 /* Confirm button on the alert when the user taps to delete a Product image
-   Confirmation button on the alert when the user is deleting a variation - Title for removing an attribute in the edit attribute action sheet. */
+   Confirmation button on the alert when the user is deleting a variation
+   Title for removing an attribute in the edit attribute action sheet. */
 "Remove" = "제거";
 
 /* Confirmation title before removing an attribute from a variation. */
@@ -3491,6 +3657,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message from the in-person payment card reader prompting user to remove their card */
 "Remove Card" = "카드 제거";
+
+/* Button to remove the Coupon expiry date in the Add or Edit Coupon screen */
+"Remove Expiry Date" = "만료 날짜 제거";
 
 /* Text for the button to remove a fee from the order during order creation */
 "Remove Fee from Order" = "주문에서 수수료 제거";
@@ -3536,7 +3705,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Request a Refund" = "환불 요청";
 
 /* Name text field placeholder in Shipping Label Address Validation when it's required
-   Text field placeholder in Shipping Label Address Validation - Text field placeholder in Shipping Label Address Validation when phone number is required */
+   Text field placeholder in Shipping Label Address Validation
+   Text field placeholder in Shipping Label Address Validation when phone number is required */
 "Required" = "필수 항목";
 
 /* Deletes all activity logs except for the marked 'Current'. */
@@ -3564,7 +3734,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Retrieves a list of products that contain a given keyword." = "지정된 키워드가 있는 제품 목록을 검색합니다.";
 
 /* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
-   Action button that will retry fetching the charge details on the Issue Refund screen - Action button to retry syncing the draft order - Button to retry when there was a network error checking In-Person Payments requirements - Retry Action - Retry action for an error notice - Retry Action on the notice when loading product categories fails - Retry the last action */
+   Action button that will retry fetching the charge details on the Issue Refund screen
+   Action button to retry syncing the draft order
+   Button to retry when there was a network error checking In-Person Payments requirements
+   Retry Action
+   Retry action for an error notice
+   Retry Action on the notice when loading product categories fails
+   Retry the last action */
 "Retry" = "재실행";
 
 /* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages.
@@ -3590,7 +3766,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Review marked as %@" = "리뷰를 %@(으)로 표시했습니다.";
 
 /* Title of one of the hub menu options
-   Title of the Reviews row on Product main screen - Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). - Title that appears on top of the Product Reviews screen. */
+   Title of the Reviews row on Product main screen
+   Title of the Reviews tab — plural form of Review
+   Title that appears on top of the main Reviews screen (plural form of the word Review).
+   Title that appears on top of the Product Reviews screen. */
 "Reviews" = "검토";
 
 /* Post Rich content */
@@ -3600,7 +3779,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 "SHIPPING ADDRESS" = "배송지";
 
 /* Edit Product SKU navigation title
-   Title of the cell in Product Inventory Settings > SKU - Title of the product form bottom sheet action for editing short description. - Title of the SKU row on Product main screen */
+   Title of the cell in Product Inventory Settings > SKU
+   Title of the product form bottom sheet action for editing short description.
+   Title of the SKU row on Product main screen */
 "SKU" = "SKU";
 
 /* The message of the alert when there is an error updating the product SKU */
@@ -3637,7 +3818,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Sanitary \/ Phytosanitary Inspection" = "위생\/식물검역 검사";
 
 /* Action for saving a Coupon remotely
-   Action for saving a Product remotely - Add Product Category. Save button title in navbar. - Add Product Tags. Save button title in navbar. - Button title that save the price selection for bulk variation update */
+   Action for saving a Product remotely
+   Add Product Category. Save button title in navbar.
+   Add Product Tags. Save button title in navbar.
+   Button title that save the price selection for bulk variation update */
 "Save" = "저장";
 
 /* Button title to save a product as draft in Discard Changes Action Sheet */
@@ -3651,6 +3835,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Save for later button on Print Customs Invoice screen of Shipping Label flow */
 "Save for later" = "나중을 위해 저장";
+
+/* Button when the user does not want to print or email receipt. Presented to users after a payment has been successfully collected
+   Button when the user does not want to print the receipt. Presented to users after a payment has been successfully collected */
+"Save receipt and continue" = "영수증 저장 및 계속";
 
 /* Message text in the shipping label creation info screen */
 "Save time and money by fulfilling with WooCommerce Shipping" = "WooCommerce 배송으로 처리하여 시간과 비용 절약";
@@ -3802,9 +3990,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Service Package menu in Shipping Label Add New Package flow */
 "Service Package" = "서비스 패키지";
 
-/* Title of the action sheet for setting an expiry date for a coupon. */
-"Set an expiry date for this coupon" = "이 쿠폰의 만료일 설정";
-
 /* Tells user to set an email that support can use for replies */
 "Set email" = "이메일 설정";
 
@@ -3819,7 +4004,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "상품 배송에 사용할 패키지를 설정하세요. 향후 주문을 위해 저장됩니다.";
 
 /* Accessibility label for the Settings button.
-   Settings button in the hub menu - Settings navigation title */
+   Settings button in the hub menu
+   Settings navigation title */
 "Settings" = "설정";
 
 /* Title of a modal presenting a list of readers to choose from. */
@@ -3828,7 +4014,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title Share in Edit Product More Options Action Sheet */
 "Share" = "공유";
 
-/* Action title for sharing coupon from the Coupon Details screen */
+/* Action title for sharing coupon from the Coupon Details screen
+   Button to share coupon from the Coupon Creation Success screen. */
 "Share Coupon" = "쿠폰 공유";
 
 /* Payment Link method title on the select payment method screen for simple payments
@@ -3842,18 +4029,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Share with Friends" = "친구와 공유";
 
 /* Shipping Label Address Validation navigation title
-   Shipping Label Suggested Address navigation title - Title of origin address in shipping label details - Title of the cell Ship from inside Create Shipping Label form */
+   Shipping Label Suggested Address navigation title
+   Title of origin address in shipping label details
+   Title of the cell Ship from inside Create Shipping Label form */
 "Ship from" = "출발지";
 
 /* Option to ship in original packaging on action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow. */
 "Ship in Original Packaging" = "원래 포장으로 배송";
 
 /* Shipping Label Address Validation navigation title
-   Shipping Label Suggested Address navigation title - Title of destination address in shipping label details - Title of the cell Ship From inside Create Shipping Label form */
+   Shipping Label Suggested Address navigation title
+   Title of destination address in shipping label details
+   Title of the cell Ship From inside Create Shipping Label form */
 "Ship to" = "배송지";
 
-/* A unit test string for order tracking. Reads as: 'Shipment Company HK Post'
-   Accessibility label for Shipment tracking company in Order details screen. Reads like: Shipment Company USPS */
+/* Accessibility label for Shipment tracking company in Order details screen. Reads like: Shipment Company USPS */
 "Shipment Company %@" = "배송 회사 %@";
 
 /* Navigation bar title of shipping label details */
@@ -3864,11 +4054,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Shipped %@" = "%@에 배송됨";
 
 /* Label for the row showing the cost of shipping in the order
-   Line description for 'Shipping' cart total on the receipt. Only shown when non-zero - Placeholder for the name field on the Shipping Line Details screen during order creation - Product Shipping Settings navigation title - Shipping label for payment view - Title for the Shipping Line Details screen during order creation - Title of the product form bottom sheet action for editing shipping settings. - Title of the Shipping Settings row on Product main screen */
+   Line description for 'Shipping' cart total on the receipt. Only shown when non-zero
+   Placeholder for the name field on the Shipping Line Details screen during order creation
+   Product Shipping Settings navigation title
+   Shipping label for payment view
+   Title for the Shipping Line Details screen during order creation
+   Title of the product form bottom sheet action for editing shipping settings.
+   Title of the Shipping Settings row on Product main screen */
 "Shipping" = "배송";
 
 /* Shipping Address title for customer info section
-   Title for the Edit Shipping Address Form - Title for the Edit Shipping Address section in order customer data */
+   Title for the Edit Shipping Address Form
+   Title for the Edit Shipping Address section in order customer data */
 "Shipping Address" = "배송 주소";
 
 /* Title of shipping carrier and rates in shipping label details
@@ -3919,7 +4116,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Shop only" = "상점만";
 
 /* The navigation bar title of the edit short description screen.
-   Title of the product form bottom sheet action for editing short description. - Title of the Short Description row on Product main screen */
+   Title of the product form bottom sheet action for editing short description.
+   Title of the Short Description row on Product main screen */
 "Short description" = "간단한 설명";
 
 /* Button title for applying filters to a list of orders. */
@@ -3996,14 +4194,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Site address must be at least 4 characters." = "사이트 주소는 최소한 4 글자 이상이어야 합니다.";
 
 /* Placeholder in the Product Slug row on Edit Product Slug screen.
-   Product Slug navigation title - Slug label in Product Settings */
+   Product Slug navigation title
+   Slug label in Product Settings */
 "Slug" = "슬러그";
 
 /* Dialog title that displays when a software update just finished installing */
 "Software updated" = "소프트웨어 업데이트됨";
 
-/* A unit test for reviews, checking that anonymous users are added as the author named `someone`
-   Indicates the reviewer does not have a name. It reads { Someone left a review} */
+/* Error message when at least an address on the Coupon Allowed Emails screen is not valid. */
+"Some email address is not valid." = "일부 이메일 주소가 유효하지 않습니다.";
+
+/* Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "다른 사람";
 
 /* Error message presented to users after a failure occurs
@@ -4103,7 +4304,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Starting period %@, ending period %@" = "시작 기간 %1$@, 종료 기간 %2$@";
 
 /* Text field state in Edit Address Form
-   Text field state in Shipping Label Address Validation - Title to select state from the edit address screen */
+   Text field state in Shipping Label Address Validation
+   Title to select state from the edit address screen */
 "State" = "주";
 
 /* Error showed in Shipping Label Address Validation for the state field */
@@ -4148,7 +4350,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Subscription" = "구독";
 
 /* Create Shipping Label form -> Subtotal label
-   Line description for 'Subtotal' cart total on the receipt. The subtotal of the products purchased before discounts. - Subtotal label for a refund details view - Title on the refund screen that lists the fees subtotal cost - Title on the refund screen that lists the products refund subtotal cost - Title on the refund screen that lists the shipping subtotal cost - Title text of the row that shows the subtotal when creating a simple payment */
+   Line description for 'Subtotal' cart total on the receipt. The subtotal of the products purchased before discounts.
+   Subtotal label for a refund details view
+   Title on the refund screen that lists the fees subtotal cost
+   Title on the refund screen that lists the products refund subtotal cost
+   Title on the refund screen that lists the shipping subtotal cost
+   Title text of the row that shows the subtotal when creating a simple payment */
 "Subtotal" = "소계";
 
 /* Notice text after updating the order successfully */
@@ -4207,7 +4414,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "System test cards are not permitted for payment. Try another means of payment" = "시스템 테스트 카드는 결제에 사용할 수 없습니다. 다른 결제 수단 시도";
 
 /* Product Tags navigation title
-   Title of the product form bottom sheet action for editing tags. - Title of the Tags row on Product main screen */
+   Title of the product form bottom sheet action for editing tags.
+   Title of the Tags row on Product main screen */
 "Tags" = "태그";
 
 /* Title for the simple payments screen */
@@ -4298,7 +4506,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Tap, insert or swipe to refund" = "누르거나 삽입하거나 살짝 밀어서 환불받기";
 
 /* Tax label for a refund details view
-   Tax label for the tax detail row. - Title on the refunds screen that lists the fees tax cost - Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
+   Tax label for the tax detail row.
+   Title on the refunds screen that lists the fees tax cost
+   Title on the refunds screen that lists the products refund tax cost
+   Title on the refunds screen that lists the shipping tax cost */
 "Tax" = "세금";
 
 /* Section header title for product tax settings */
@@ -4321,7 +4532,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Taxable" = "과세 가능";
 
 /* Label for the row showing the taxes in the order
-   Line description for tax charged on the whole cart. Only shown when non-zero - Taxes label for payment view */
+   Line description for tax charged on the whole cart. Only shown when non-zero
+   Taxes label for payment view */
 "Taxes" = "세금";
 
 /* Disclaimer in the simple payments summary screen about taxes. */
@@ -4332,9 +4544,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of button that displays the App's terms of service */
 "Terms of Service" = "서비스 약관";
-
-/* Cell description on beta features screen to enable accepting in-person payments for stores in Canada */
-"Test out In-Person Payments in Canada" = "캐나다에서 직접 결제 테스트";
 
 /* Cell description on beta features screen to enable coupon management */
 "Test out managing coupons as we get ready to launch" = "출시 준비가 끝나면 쿠폰 관리 테스트해 보기";
@@ -4706,6 +4915,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle on the variations list screen when there are no variations and attributes */
 "To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "변형을 추가하려면 속성(즉, \"색상\", \"사이즈\")을 먼저 설정해야 합니다.";
 
+/* Message prompting an administrator to deactivate Stripe plugin */
+"To collect payments, please ask an administrator to deactivate WooCommerce Stripe Gateway." = "결제 정보를 수집하려면 관리자에게 문의하여 WooCommerce Stripe Gateway를 비활성화하세요.";
+
+/* Message prompting an administrator to deactivate Stripe plugin */
+"To collect payments, please deactivate WooCommerce Stripe Gateway." = "결제 정보를 수집하려면 WooCommerce Stripe Gateway를 비활성화하세요.";
+
 /* Footer of text field section in Add Attribute screen */
 "To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "변형을 만들려면 속성(즉, \"색상\", \"사이즈\")을 먼저 설정해야 합니다. ";
 
@@ -4728,7 +4943,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "%@에 이 앱을 사용하려면 스토어에 설치되고 연결된 Jetpack 플러그인이 있어야 합니다.";
 
 /* Label for one of the filters in order date range
-   Tab selector title that shows the statistics for today - Today Section Header - Top Performers section title - today */
+   Tab selector title that shows the statistics for today
+   Today Section Header
+   Top Performers section title - today */
 "Today" = "오늘";
 
 /* Accessibility hint for selecting a product in the Select Products screen */
@@ -4775,8 +4992,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Order shipping label tracking number row title. */
 "Tracking number" = "추적 번호";
 
-/* A unit test string. Reads as: 'Trackin number XXX_YYY_ZZZ'
-   Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
+/* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "추적 번호 %@";
 
 /* Display label for the review's trash status
@@ -4790,7 +5006,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Trust" = "신뢰함";
 
 /* Action displayed in the error prompt when loading total discounted amount in Coupon Details screen fails
-   Button to retry a software update. Presented to users when updating the card reader software fails - Button to try again after connecting to a specific reader fails due to a critically low battery. - Button to try again. Presented to users after a failure occurs - Button to try to refund a payment again. Presented to users after refunding a payment fails - Try Again button on the error alert when fetching system status report fails */
+   Button to retry a software update. Presented to users when updating the card reader software fails
+   Button to try again after connecting to a specific reader fails due to a critically low battery.
+   Button to try again. Presented to users after a failure occurs
+   Button to try to refund a payment again. Presented to users after refunding a payment fails
+   Try Again button on the error alert when fetching system status report fails */
 "Try Again" = "재시도";
 
 /* Message from the in-person payment card reader prompting user to retry a payment using a different card */
@@ -4992,7 +5212,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unexpected error" = "예기치 않은 오류";
 
 /* Unknown Application State
-   Unknown product name, displayed in a review - Unknown Tag Name */
+   Unknown product name, displayed in a review
+   Unknown Tag Name */
 "Unknown" = "알 수 없음";
 
 /* Displayed in the unlikely event a card reader has an indeterminate battery status */
@@ -5066,27 +5287,22 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "이 앱을 계속 사용하려면 WooCommerce 3.5로 업데이트하세요.";
 
-/* A unit test string for a singular time interval
-   Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
+/* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
 "Updated %ld hour ago" = "%ld시간 전에 업데이트됨";
 
-/* A unit test string for 1 day, represented as plural time interval in hours
-   A unit test string for a plural time interval in hours - A unit test string for time interval just under 1 day - Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago */
+/* Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago */
 "Updated %ld hours ago" = "%ld시간 전에 업데이트됨";
 
 /* Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. Usage example: Updated 1 minute ago */
 "Updated %ld minute ago" = "%ld분 전에 업데이트됨";
 
-/* A unit test string for a plural time interval in minutes
-   A unit test string for time intervals - Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago */
+/* Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago */
 "Updated %ld minutes ago" = "%ld분 전에 업데이트됨";
 
-/* A unit test string for relative time intervals
-   Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
+/* Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
 "Updated moments ago" = "방금 업데이트됨";
 
-/* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM
-   Updated on <date> */
+/* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM */
 "Updated on %@" = "%@에 업데이트";
 
 /* Dialog title that displays when a software update is being installed */
@@ -5137,7 +5353,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 "User Profiles" = "사용자 프로필";
 
 /* Accessibility label for the username text field in the self-hosted login page.
-   Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */
+   Login dialog username placeholder
+   Placeholder for the username textfield.
+   Username placeholder */
 "Username" = "사용자명";
 
 /* No comment provided by engineer. */
@@ -5159,7 +5377,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Variation created" = "변형 생성됨";
 
 /* Title for the generate first variation screen
-   Title of the Product Variations row on Product main screen for a variable product - Title that appears on top of the Product Variation List screen. */
+   Title of the Product Variations row on Product main screen for a variable product
+   Title that appears on top of the Product Variation List screen. */
 "Variations" = "변형";
 
 /* Title of the variations attributes row on Product screen */
@@ -5181,7 +5400,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "View" = "보기";
 
 /* Cell title on the beta features screen to enable the order add-ons feature
-   Title of the button on the order detail item to navigate to add-ons - Title of the button on the order details product list item to navigate to add-ons */
+   Title of the button on the order detail item to navigate to add-ons
+   Title of the button on the order details product list item to navigate to add-ons */
 "View Add-Ons" = "애드온 보기";
 
 /* View application log cell title */
@@ -5327,7 +5547,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "We're sorry, we couldn't find any order that match %@" = "죄송합니다. %@과(와) 일치하는 주문을 찾을 수 없습니다.";
 
 /* Message for empty Coupons search results. The %@ is a placeholder for the text entered by the user.
-   Message for empty Orders search results. The %@ is a placeholder for the text entered by the user. - Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
+   Message for empty Orders search results. The %@ is a placeholder for the text entered by the user.
+   Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
 "We're sorry, we couldn't find results for “%@”" = "죄송합니다. “%@” 검색 결과를 찾을 수 없습니다.";
 
 /* Generic error message when In-Person Payments is unavailable */
@@ -5481,6 +5702,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "결제 대금을 수령하려면 카드 리더 소프트웨어를 업데이트해야 합니다. 취소하면 리더 연결이 차단됩니다.";
 
+/* Message displayed when a coupon was successfully created */
+"Your new coupon was created!" = "새 쿠폰이 생성되었습니다.";
+
 /* Title for the error screen when the merchant's In-Person Payments account is restricted because there are pending requirements */
 "Your payments account has pending requirements" = "결제 계정에 대기 중인 요구 사항이 있습니다.";
 
@@ -5508,6 +5732,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "example.com";
+
+/* A message that tells the user why the app needs access to Bluetooth. */
+"infoplist.NSBluetoothAlwaysUsageDescription" = "이 앱에서는 블루투스를 사용하여 지원되는 카드 리더에 연결합니다.";
+
+/* A message that tells the user why the app is requesting the ability to connect to Bluetooth peripherals. */
+"infoplist.NSBluetoothPeripheralUsageDescription" = "지원되는 카드 리더에 연결하려면 블루투스 접근 권한이 필요합니다.";
+
+/* A message that tells the user why the app is requesting access to the device’s camera. */
+"infoplist.NSCameraUsageDescription" = "사진 또는 비디오를 촬영하여 상품, 상품 SKU 스캔 바코드 또는 지원 티켓에 추가하는 방법입니다.";
+
+/* A message that tells the user why the app is requesting access to the user’s location information while the app is running in the foreground. */
+"infoplist.NSLocationWhenInUseUsageDescription" = "결제를 수락하려면 위치 접근 권한이 필요합니다.";
+
+/* A message that tells the user why the app is requesting access to the user’s photo library. */
+"infoplist.NSPhotoLibraryUsageDescription" = "상품 이미지의 카메라 사진을 저장하거나 사진 또는 비디오를 상품 또는 지원 티켓에 추가하는 방법입니다.";
 
 /* Later today */
 "later today" = "오늘 중";

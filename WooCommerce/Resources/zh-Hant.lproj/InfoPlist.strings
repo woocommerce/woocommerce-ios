@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--Warning: Auto-generated file, do not edit.-->
+<plist version="1.0">
+  <dict>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>此應用程式使用藍牙來與支援的讀卡機連線。</string>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>須提供藍牙權限才能連結支援的讀卡機。</string>
+    <key>NSCameraUsageDescription</key>
+    <string>用於拍攝要新增至商品的照片或影片、掃描商品貨號條碼，或用於支援票券。</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>須提供定位權限才能接受付款。</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>用於儲存相機照片做為商品圖片，或為商品或支援票證新增照片或影片。</string>
+  </dict>
+</plist>

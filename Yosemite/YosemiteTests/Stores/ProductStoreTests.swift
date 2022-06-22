@@ -1098,8 +1098,8 @@ final class ProductStoreTests: XCTestCase {
         let expectedStockStatus = ProductStockStatus.inStock
         let expectedProductRegularPrice = "12.00"
         let expectedProductSalePrice = "10.00"
-        let expectedProductSaleStart = date(with: "2019-10-15T21:30:11")
-        let expectedProductSaleEnd = date(with: "2019-10-27T21:29:50")
+        let expectedProductSaleStart = DateFormatter.dateFromString(with: "2019-10-15T21:30:11")
+        let expectedProductSaleEnd = DateFormatter.dateFromString(with: "2019-10-27T21:29:50")
         let expectedProductTaxStatus = "taxable"
         let expectedProductTaxClass = "reduced-rate"
         let expectedDownloadableFileCount = 0
@@ -1306,6 +1306,61 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(productMutated.tags.map { $0.tagID }, productMutatedStored?.tagsArray.map { $0.tagID })
     }
 
+    // MARK: - ProductAction.updateProductImages
+
+    /// Verifies that `ProductAction.updateProductImages` effectively persists the returned product.
+    ///
+    func test_updateProductImages_with_success_persists_returned_product() throws {
+        // Given
+        let remote = MockProductsRemote()
+        let expectedProduct = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID)
+        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        remote.whenUpdatingProductImages(siteID: sampleSiteID, productID: sampleProductID, thenReturn: .success(expectedProduct))
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+
+        // When
+        let result: Result<Yosemite.Product, ProductUpdateError> = waitFor { promise in
+            let action = ProductAction.updateProductImages(siteID: self.sampleSiteID,
+                                                           productID: self.sampleProductID,
+                                                           images: []) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let returnedProduct = try XCTUnwrap(result.get())
+        assertEqual(expectedProduct, returnedProduct)
+        let productFromStorage = try XCTUnwrap(viewStorage.loadProduct(siteID: sampleSiteID, productID: sampleProductID)?.toReadOnly())
+        assertEqual(expectedProduct, productFromStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
+    }
+
+    func test_updateProductImages_with_failure_returns_error() {
+        // Given
+        let remote = MockProductsRemote()
+        let networkError = ProductUpdateError.passwordCannotBeUpdated
+        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        remote.whenUpdatingProductImages(siteID: sampleSiteID, productID: sampleProductID, thenReturn: .failure(networkError))
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+
+        // When
+        let result: Result<Yosemite.Product, ProductUpdateError> = waitFor { promise in
+            let action = ProductAction.updateProductImages(siteID: self.sampleSiteID,
+                                                           productID: self.sampleProductID,
+                                                           images: []) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure, .init(error: networkError))
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+    }
+
     // MARK: - ProductAction.retrieveProducts
 
     /// Verifies that ProductAction.retrieveProducts effectively persists any retrieved products.
@@ -1491,11 +1546,11 @@ private extension ProductStoreTests {
                        name: "Book the Green Room",
                        slug: "book-the-green-room",
                        permalink: "https://example.com/product/book-the-green-room/",
-                       date: date(with: "2019-02-19T17:33:31"),
-                       dateCreated: date(with: "2019-02-19T17:33:31"),
-                       dateModified: date(with: "2019-02-19T17:48:01"),
-                       dateOnSaleStart: date(with: "2019-10-15T21:30:00"),
-                       dateOnSaleEnd: date(with: "2019-10-27T21:29:59"),
+                       date: DateFormatter.dateFromString(with: "2019-02-19T17:33:31"),
+                       dateCreated: DateFormatter.dateFromString(with: "2019-02-19T17:33:31"),
+                       dateModified: DateFormatter.dateFromString(with: "2019-02-19T17:48:01"),
+                       dateOnSaleStart: DateFormatter.dateFromString(with: "2019-10-15T21:30:00"),
+                       dateOnSaleEnd: DateFormatter.dateFromString(with: "2019-10-27T21:29:59"),
                        productTypeKey: "booking",
                        statusKey: "publish",
                        featured: false,
@@ -1581,8 +1636,8 @@ private extension ProductStoreTests {
 
     func sampleImages() -> [Networking.ProductImage] {
         let image1 = ProductImage(imageID: 19,
-                                  dateCreated: date(with: "2018-01-26T21:49:45"),
-                                  dateModified: date(with: "2018-01-26T21:50:11"),
+                                  dateCreated: DateFormatter.dateFromString(with: "2018-01-26T21:49:45"),
+                                  dateModified: DateFormatter.dateFromString(with: "2018-01-26T21:50:11"),
                                   src: "https://somewebsite.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/01/vneck-tee.jpg.png",
                                   name: "Vneck Tshirt",
                                   alt: "")
@@ -1647,11 +1702,11 @@ private extension ProductStoreTests {
                        name: "Book the Green Room",
                        slug: "book-the-green-room",
                        permalink: "https://example.com/product/book-the-green-room/",
-                       date: date(with: "2019-02-19T17:33:31"),
-                       dateCreated: date(with: "2019-02-19T17:33:31"),
-                       dateModified: date(with: "2019-02-19T17:48:01"),
-                       dateOnSaleStart: date(with: "2019-10-15T21:30:00"),
-                       dateOnSaleEnd: date(with: "2019-10-27T21:29:59"),
+                       date: DateFormatter.dateFromString(with: "2019-02-19T17:33:31"),
+                       dateCreated: DateFormatter.dateFromString(with: "2019-02-19T17:33:31"),
+                       dateModified: DateFormatter.dateFromString(with: "2019-02-19T17:48:01"),
+                       dateOnSaleStart: DateFormatter.dateFromString(with: "2019-10-15T21:30:00"),
+                       dateOnSaleEnd: DateFormatter.dateFromString(with: "2019-10-27T21:29:59"),
                        productTypeKey: "booking",
                        statusKey: "publish",
                        featured: false,
@@ -1734,14 +1789,14 @@ private extension ProductStoreTests {
 
     func sampleImagesMutated() -> [Networking.ProductImage] {
         let image1 = ProductImage(imageID: 19,
-                                  dateCreated: date(with: "2018-01-26T21:49:45"),
-                                  dateModified: date(with: "2018-01-26T21:50:11"),
+                                  dateCreated: DateFormatter.dateFromString(with: "2018-01-26T21:49:45"),
+                                  dateModified: DateFormatter.dateFromString(with: "2018-01-26T21:50:11"),
                                   src: "https://somewebsite.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/01/vneck-tee.jpg.png",
                                   name: "Vneck Tshirt",
                                   alt: "")
         let image2 = ProductImage(imageID: 999,
-                                  dateCreated: date(with: "2019-01-26T21:44:45"),
-                                  dateModified: date(with: "2019-01-26T21:54:11"),
+                                  dateCreated: DateFormatter.dateFromString(with: "2019-01-26T21:44:45"),
+                                  dateModified: DateFormatter.dateFromString(with: "2019-01-26T21:54:11"),
                                   src: "https://somewebsite.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/01/test.png",
                                   name: "ZZZTest Image",
                                   alt: "")
@@ -1782,9 +1837,9 @@ private extension ProductStoreTests {
                        name: "Paper Airplane - Black, Long",
                        slug: "paper-airplane-3",
                        permalink: "https://paperairplane.store/product/paper-airplane/?attribute_color=Black&attribute_length=Long",
-                       date: date(with: "2019-04-04T22:06:45"),
-                       dateCreated: date(with: "2019-04-04T22:06:45"),
-                       dateModified: date(with: "2019-04-09T20:24:03"),
+                       date: DateFormatter.dateFromString(with: "2019-04-04T22:06:45"),
+                       dateCreated: DateFormatter.dateFromString(with: "2019-04-04T22:06:45"),
+                       dateModified: DateFormatter.dateFromString(with: "2019-04-09T20:24:03"),
                        dateOnSaleStart: nil,
                        dateOnSaleEnd: nil,
                        productTypeKey: "variation",
@@ -1848,8 +1903,8 @@ private extension ProductStoreTests {
 
     func sampleVariationTypeImages() -> [Networking.ProductImage] {
         let image1 = ProductImage(imageID: 301,
-                                  dateCreated: date(with: "2019-04-09T20:23:58"),
-                                  dateModified: date(with: "2019-04-09T20:23:58"),
+                                  dateCreated: DateFormatter.dateFromString(with: "2019-04-09T20:23:58"),
+                                  dateModified: DateFormatter.dateFromString(with: "2019-04-09T20:23:58"),
                                   src: "https://i0.wp.com/paperairplane.store/wp-content/uploads/2019/04/paper_plane_black.png?fit=600%2C473&ssl=1",
                                   name: "paper_plane_black",
                                   alt: "")
@@ -1917,12 +1972,5 @@ private extension ProductStoreTests {
                                                             Networking.ProductAddOnOption.fake().copy(label: "No", price: "", priceType: .flatFee)
                                                            ])
         return [topping, soda, delivery]
-    }
-
-    func date(with dateString: String) -> Date {
-        guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
-            return Date()
-        }
-        return date
     }
 }

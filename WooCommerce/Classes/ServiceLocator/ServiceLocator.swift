@@ -36,6 +36,11 @@ final class ServiceLocator {
     ///
     private static var _noticePresenter: NoticePresenter = DefaultNoticePresenter()
 
+    /// Product image uploader
+    ///
+    private static var _productImageUploader: ProductImageUploaderProtocol =
+    featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) ? ProductImageUploader(): LegacyProductImageUploader()
+
     /// Push Notifications Manager
     ///
     private static var _pushNotesManager: PushNotesManager = PushNotificationsManager()
@@ -80,6 +85,10 @@ final class ServiceLocator {
     ///
     private static var _connectivityObserver: ConnectivityObserver = DefaultConnectivityObserver()
 
+    /// Storage for general app settings
+    ///
+    private static var _generalAppSettings: GeneralAppSettingsStorage = GeneralAppSettingsStorage()
+
     // MARK: - Getters
 
     /// Provides the access point to the analytics.
@@ -110,6 +119,12 @@ final class ServiceLocator {
     /// - Returns: An implementation of the NoticePresenter protocol. It defaults to DefaultNoticePresenter
     static var noticePresenter: NoticePresenter {
         return _noticePresenter
+    }
+
+    /// Provides the access point to the ProductImageUploaderProtocol.
+    /// - Returns: An implementation of the ProductImageUploaderProtocol. It defaults to ProductImageUploader
+    static var productImageUploader: ProductImageUploaderProtocol {
+        return _productImageUploader
     }
 
     /// Provides the access point to the PushNotesManager.
@@ -197,6 +212,12 @@ final class ServiceLocator {
     /// - Returns: An implementation of the ConnectivityObserver protocol.
     static var connectivityObserver: ConnectivityObserver {
         _connectivityObserver
+    }
+
+    /// Provides access point to GeneralAppSettingsStorage
+    /// - Returns: An instance of GeneralAppSetingsStorage
+    static var generalAppSettings: GeneralAppSettingsStorage {
+        _generalAppSettings
     }
 }
 
@@ -324,6 +345,14 @@ extension ServiceLocator {
         }
 
         _connectivityObserver = mock
+    }
+
+    static func setGeneralAppSettingsStorage(_ mock: GeneralAppSettingsStorage) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _generalAppSettings = mock
     }
 }
 

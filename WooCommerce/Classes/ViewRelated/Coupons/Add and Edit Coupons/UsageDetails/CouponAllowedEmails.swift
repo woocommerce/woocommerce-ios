@@ -3,12 +3,17 @@ import SwiftUI
 /// View to input allowed email formats for coupons
 ///
 struct CouponAllowedEmails: View {
-    @Binding var emailFormats: String
+    @ObservedObject private var viewModel: CouponAllowedEmailsViewModel
+    @Environment(\.presentationMode) var presentation
+
+    init(viewModel: CouponAllowedEmailsViewModel) {
+        self.viewModel = viewModel
+    }
 
     var body: some View {
         GeometryReader { geometry in
             VStack(alignment: .leading) {
-                TextField("", text: $emailFormats)
+                TextField("", text: $viewModel.emailPatterns)
                     .labelsHidden()
                     .padding(.horizontal, Constants.margin)
                     .padding(.horizontal, insets: geometry.safeAreaInsets)
@@ -25,6 +30,17 @@ struct CouponAllowedEmails: View {
         }
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(Localization.done) {
+                    viewModel.validateEmails {
+                        presentation.wrappedValue.dismiss()
+                    }
+                }
+            }
+        }
+        .notice($viewModel.notice)
+        .wooNavigationBarStyle()
     }
 }
 
@@ -41,11 +57,13 @@ private extension CouponAllowedEmails {
             "Separate email addresses with commas. You can also use an asterisk (*) " +
             "to match parts of an email. For example \"*@gmail.com\" would match all gmail addresses.",
             comment: "Description of the allowed emails field for coupons")
+        static let done = NSLocalizedString("Done", comment: "Done button on the Allowed Emails screen")
     }
 }
 
 struct CouponAllowedEmails_Previews: PreviewProvider {
     static var previews: some View {
-        CouponAllowedEmails(emailFormats: .constant("*gmail.com, *@me.com"))
+        let viewModel = CouponAllowedEmailsViewModel(allowedEmails: "*gmail.com, *@me.com") { _ in }
+        CouponAllowedEmails(viewModel: viewModel)
     }
 }

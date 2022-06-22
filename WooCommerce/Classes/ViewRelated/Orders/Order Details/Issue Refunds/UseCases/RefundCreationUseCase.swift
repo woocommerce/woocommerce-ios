@@ -58,6 +58,7 @@ struct RefundCreationUseCase {
                             name: "",
                             productID: .min,
                             variationID: .min,
+                            refundedItemID: nil,
                             quantity: Decimal(refundable.quantity),
                             price: .zero,
                             sku: nil,
@@ -87,6 +88,7 @@ struct RefundCreationUseCase {
                         name: "",
                         productID: .min,
                         variationID: .min,
+                        refundedItemID: nil,
                         quantity: .zero,
                         price: .zero,
                         sku: nil,
@@ -106,6 +108,7 @@ struct RefundCreationUseCase {
                             name: "",
                             productID: .min,
                             variationID: .min,
+                            refundedItemID: nil,
                             quantity: .zero,
                             price: .zero,
                             sku: nil,
@@ -148,7 +151,7 @@ struct RefundCreationUseCase {
     /// Calculates the refundable tax from a tax line by diving its total tax value by the purchased quantity and mutiplying it by the refunded quantity.
     ///
     private func calculateTax(of taxLine: OrderItemTax, purchasedQuantity: Decimal, refundQuantity: Decimal) -> String {
-        let totalTax = currencyFormatter.convertToDecimal(from: taxLine.total) ?? 0
+        let totalTax = currencyFormatter.convertToDecimal(taxLine.total) ?? 0
         let itemTax = (totalTax as Decimal) / purchasedQuantity
         let refundableTax = itemTax * refundQuantity
         return "\(refundableTax)"

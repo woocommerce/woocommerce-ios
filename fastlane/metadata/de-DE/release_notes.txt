@@ -1,3 +1,2 @@
-Wir fügen weiterhin neue Funktionen zu unserer experimentellen Gutscheinmanagement-Funktion hinzu!  Diese Version enthält Optionen zum Bearbeiten und Löschen von Gutscheinen sowie mehrere Verbesserungen bei der Anzeige. Aktiviere diese Funktion, um frühzeitigen Zugriff im Tab „Mehr“ zu erhalten sowie auf Einstellungen und Experimentelle Funktionen.
-
-Diese Version enthält außerdem mehrere Behebungen für die Erstellung von Bestellungen, für persönliche Zahlungen und die Produktverwaltung. Noch einmal vielen Dank an alle für das wertvolle Feedback!
+Diese Version beinhaltet mehrere Fehlerkorrekturen bei der Erstellung von Bestellungen und persönlichen Zahlungen. U. a. wurde ein Fehler im Abschnitt „Produkte“ behoben, bei dem nicht die korrekte Bestellung von Artikeln angezeigt wurde, Datum und Uhrzeit für alle Bestellungen zu sehen waren und der Button „Rückerstattung ausstellen“ für alle bezahlten Bestellungen angezeigt wurde.
+Sende uns bitte weiter Feedback – wir freuen uns darauf!

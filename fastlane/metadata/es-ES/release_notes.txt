@@ -1,3 +1,2 @@
-Seguimos añadiendo nuevas funcionalidades a nuestra función experimental Gestión de cupones. Esta versión incluye la edición y eliminación de cupones, así como varias mejoras en la visualización. Activa esta función para obtener acceso anticipado en la pestaña Más, Ajustes, Funciones experimentales.
-
-Además, esta versión cuenta con varias correcciones en la creación de pedidos, los pagos en persona y la gestión de productos. ¡Gracias de nuevo a todos por los valiosos comentarios!
+Esta versión tiene varias mejoras en la creación de pedidos y los pagos en persona: se ha corregido un error en la sección de productos que no mostraba el orden correcto de los elementos, se muestra la fecha y la hora en todos los pedidos y se muestra el botón de emisión del reembolso en todos los pedidos pagados.
+Sigue enviando tus comentarios: ¡te escuchamos!

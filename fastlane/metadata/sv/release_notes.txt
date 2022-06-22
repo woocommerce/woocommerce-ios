@@ -1,3 +1,2 @@
-Vi fortsätter att lägga till ny funktionalitet till vår experimentella funktion för rabattkodshantering. Den här versionen inkluderar redigering och borttagning av rabattkoder samt flertalet visningsförbättringar. Aktivera den här funktionen via fliken Mer, Inställningar, Experimentella funktioner för att få tidig åtkomst.
-
-Den här versionen innehåller även flertalet korrigeringar för beställningsskapande, personliga betalningar och produkthantering. Tack igen allihop för er ovärderliga feedback.
+Den här versionen innehåller flera olika korrigeringar för beställningsskapande och personliga betalningar, inklusive ett åtgärdat fel i produktsektionen som gjorde att artiklarna visades i fel ordning, att datum och tid visades för alla beställningar och att knappen Utfärda återbetalning visades för alla betalda beställningar.
+Fortsätt att skicka feedback till oss – vi lyssnar!

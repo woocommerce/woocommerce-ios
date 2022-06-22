@@ -17,11 +17,11 @@ struct RefundFeesCalculationUseCase {
     ///
     func calculateRefundValues() -> RefundValues {
         let totalTaxes = fees.compactMap {
-            currencyFormatter.convertToDecimal(from: $0.totalTax) as Decimal?
+            currencyFormatter.convertToDecimal($0.totalTax) as Decimal?
         }.reduce(0, +)
 
         let subtotal = fees.compactMap {
-            currencyFormatter.convertToDecimal(from: $0.total) as Decimal?
+            currencyFormatter.convertToDecimal($0.total) as Decimal?
         }.reduce(0, +)
 
         return RefundValues(subtotal: subtotal, tax: totalTaxes)

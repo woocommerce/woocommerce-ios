@@ -79,6 +79,13 @@ final class OrderDetailsResultsControllers {
         return ResultsController<StorageAddOnGroup>(storageManager: storageManager, matching: predicate, sortedBy: [])
     }()
 
+    /// Site Plugins ResultsController.
+    ///
+    private lazy var sitePluginsResultsController: ResultsController<StorageSitePlugin> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        return ResultsController<StorageSitePlugin>(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
+
     /// Order shipment tracking list
     ///
     var orderTracking: [ShipmentTracking] {
@@ -126,6 +133,10 @@ final class OrderDetailsResultsControllers {
         return addOnGroupResultsController.fetchedObjects
     }
 
+    var sitePlugins: [SitePlugin] {
+        return sitePluginsResultsController.fetchedObjects
+    }
+
     /// Completion handler for when results controllers reload.
     ///
     var onReload: (() -> Void)?
@@ -147,6 +158,7 @@ final class OrderDetailsResultsControllers {
         configureShippingLabelResultsController(onReload: onReload)
         configurePaymentGatewayAccountResultsController(onReload: onReload)
         configureAddOnGroupResultsController(onReload: onReload)
+        configureSitePluginsResultsController(onReload: onReload)
     }
 
     func update(order: Order) {
@@ -288,6 +300,20 @@ private extension OrderDetailsResultsControllers {
         try? addOnGroupResultsController.performFetch()
     }
 
+    private func configureSitePluginsResultsController(onReload: @escaping () -> Void) {
+        sitePluginsResultsController.onDidChangeContent = {
+            onReload()
+        }
+
+        sitePluginsResultsController.onDidResetContent = { [weak self] in
+            guard let self = self else { return }
+            self.refetchAllResultsControllers()
+            onReload()
+        }
+
+        try? sitePluginsResultsController.performFetch()
+    }
+
     /// Refetching all the results controllers is necessary after a storage reset in `onDidResetContent` callback and before reloading UI that
     /// involves more than one results controller.
     func refetchAllResultsControllers() {
@@ -299,5 +325,6 @@ private extension OrderDetailsResultsControllers {
         try? shippingLabelResultsController.performFetch()
         try? paymentGatewayAccountResultsController.performFetch()
         try? addOnGroupResultsController.performFetch()
+        try? sitePluginsResultsController.performFetch()
     }
 }

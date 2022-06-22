@@ -29,6 +29,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .couponEditing:
             return true
+        case .couponCreation:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .updateOrderOptimistically:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .shippingLabelsOnboardingM1:
@@ -36,6 +38,10 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .inPersonPaymentGatewaySelection:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .unifiedOrderEditing:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .backgroundProductImageUpload:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .appleIDAccountDeletion:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

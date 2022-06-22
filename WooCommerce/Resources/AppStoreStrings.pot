@@ -57,11 +57,10 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v9.3-whats-new"
+msgctxt "v9.4-whats-new"
 msgid ""
-"Hello Canada! We are thrilled to announce that in-person payments are now available to Canadian merchants currently using WooCommerce Payments.\n"
-"\n"
-"We also made several improvements elsewhere in the app, including support for Arabic numerals in amount fields, the ability to update coupon discount types, and copy & paste support for order notes. Thanks for all your feedback. It truly helps us make a better app for all.\n"
+"This release has several fixes for order creation and in person payments, including fixing a bug in the products section not showing the correct order of items, displaying the date and time for all orders and showing the issue refund button for all paid orders.\n"
+"Please continue to send us feedback – we are listening!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

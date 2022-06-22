@@ -26,6 +26,8 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
         return phAssetImageLoaderProvider()
     }()
 
+    private var assetUploadSubscription: AnyCancellable?
+
     /// - Parameters:
     ///   - productImageActionHandler: if non-nil, the asset image is used after being uploaded to a remote image to avoid an extra network call.
     ///     Set this property when images are being uploaded in the scope.
@@ -40,8 +42,12 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
         self.imageService = imageService
         self.phAssetImageLoaderProvider = phAssetImageLoaderProvider
 
-        productImageActionHandler?.addAssetUploadObserver(self) { [weak self] asset, productImage in
-            self?.update(from: asset, to: productImage)
+        assetUploadSubscription = productImageActionHandler?.addAssetUploadObserver(self) { [weak self] asset, result in
+            guard let self = self else { return }
+            guard case let .success(productImage) = result else {
+                return
+            }
+            self.update(from: asset, to: productImage)
         }
     }
 

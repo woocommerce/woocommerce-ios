@@ -68,6 +68,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
         let numberOfLinesForText: Int
         let isActionable: Bool
         let isSelected: Bool
+        let showsDisclosureIndicator: Bool
         let showsSeparator: Bool
 
         init(title: String?,
@@ -80,6 +81,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
              numberOfLinesForText: Int = 1,
              isSelected: Bool = false,
              isActionable: Bool = true,
+             showsDisclosureIndicator: Bool = false,
              showsSeparator: Bool = true) {
             self.title = title
             self.titleFontStyle = titleFontStyle
@@ -91,6 +93,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
             self.numberOfLinesForText = numberOfLinesForText
             self.isSelected = isSelected
             self.isActionable = isActionable
+            self.showsDisclosureIndicator = showsDisclosureIndicator
             self.showsSeparator = showsSeparator
         }
     }
@@ -129,6 +132,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
         configureContentStackView()
         configureTitleAndTextStackView()
         applyDefaultBackgroundStyle()
+        configureSelectedBackground()
     }
 
     override func prepareForReuse() {
@@ -157,7 +161,13 @@ extension ImageAndTitleAndTextTableViewCell {
         descriptionLabel.numberOfLines = viewModel.numberOfLinesForText
         contentImageView.image = viewModel.image
         contentImageStackView.isHidden = viewModel.image == nil
-        accessoryType = viewModel.isActionable ? .disclosureIndicator : (viewModel.isSelected ? .checkmark : .none)
+        if viewModel.showsDisclosureIndicator {
+            accessoryType = .disclosureIndicator
+        } else if viewModel.isSelected {
+            accessoryType = .checkmark
+        } else {
+            accessoryType = .none
+        }
         selectionStyle = viewModel.isActionable ? .default: .none
         accessoryView = nil
 
@@ -289,6 +299,11 @@ private extension ImageAndTitleAndTextTableViewCell {
 
     func configureTitleAndTextStackView() {
         titleAndTextStackView.spacing = 2
+    }
+
+    func configureSelectedBackground() {
+        selectedBackgroundView = UIView()
+        selectedBackgroundView?.backgroundColor = .listBackground
     }
 }
 

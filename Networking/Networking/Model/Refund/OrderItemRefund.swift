@@ -8,7 +8,7 @@ public struct OrderItemRefund: Codable, Equatable, GeneratedFakeable, GeneratedC
     public let name: String
     public let productID: Int64
     public let variationID: Int64
-    public let refundedItemID: Int64?
+    public let refundedItemID: String?
     public let quantity: Decimal
 
     /// Price is a currency.
@@ -31,7 +31,7 @@ public struct OrderItemRefund: Codable, Equatable, GeneratedFakeable, GeneratedC
                 name: String,
                 productID: Int64,
                 variationID: Int64,
-                refundedItemID: Int64?,
+                refundedItemID: String?,
                 quantity: Decimal,
                 price: NSDecimalNumber,
                 sku: String?,
@@ -80,11 +80,7 @@ public struct OrderItemRefund: Codable, Equatable, GeneratedFakeable, GeneratedC
         let totalTax = try container.decode(String.self, forKey: .totalTax)
 
         let allOrderItemRefundMetaData = try container.decode([OrderItemRefundMetaData].self, forKey: .metadata)
-
-        var refundedItemID: Int64?
-        if let refundedItemIDString = allOrderItemRefundMetaData.first(where: { $0.key == "_refunded_item_id" })?.value {
-            refundedItemID = Int64(refundedItemIDString)
-        }
+        let refundedItemID = allOrderItemRefundMetaData.first(where: { $0.key == "_refunded_item_id" })?.value
 
         // initialize the struct
         self.init(itemID: itemID,

@@ -493,7 +493,7 @@ extension OrderItemRefund {
         name: CopiableProp<String> = .copy,
         productID: CopiableProp<Int64> = .copy,
         variationID: CopiableProp<Int64> = .copy,
-        refundedItemID: CopiableProp<Int64> = .copy,
+        refundedItemID: CopiableProp<String> = .copy,
         quantity: CopiableProp<Decimal> = .copy,
         price: CopiableProp<NSDecimalNumber> = .copy,
         sku: NullableCopiableProp<String> = .copy,

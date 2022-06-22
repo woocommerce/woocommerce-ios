@@ -210,7 +210,7 @@
         <attribute name="price" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
         <attribute name="productID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="quantity" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
-        <attribute name="refundedItemID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="refundedItemID" optional="YES" attributeType="String"/>
         <attribute name="sku" optional="YES" attributeType="String"/>
         <attribute name="subtotal" optional="YES" attributeType="String"/>
         <attribute name="subtotalTax" optional="YES" attributeType="String"/>

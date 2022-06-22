@@ -49,7 +49,13 @@ final class AggregateDataHelper {
                 .compactMap { currency.convertToDecimal($0.total) }
                 .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
 
-            let attributes = orderItems.first(where: { $0.itemID == item.refundedItemID })?.attributes ?? []
+            let attributes = orderItems.first(where: {
+                guard let refundedItemID = item.refundedItemID else {
+                    return false
+                }
+
+                return $0.itemID == Int64(refundedItemID)
+            })?.attributes ?? []
 
             return AggregateOrderItem(
                 productID: item.productID,

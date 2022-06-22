@@ -13,7 +13,7 @@ extension Storage.OrderItemRefund: ReadOnlyConvertible {
         name = orderItemRefund.name
         productID = orderItemRefund.productID
         variationID = orderItemRefund.variationID
-        refundedItemID = orderItemRefund.refundedItemID ?? 0
+        refundedItemID = orderItemRefund.refundedItemID
         quantity = NSDecimalNumber(decimal: orderItemRefund.quantity)
         price = orderItemRefund.price
         sku = orderItemRefund.sku

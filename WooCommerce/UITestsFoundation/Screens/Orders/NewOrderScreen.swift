@@ -31,6 +31,10 @@ public final class NewOrderScreen: ScreenObject {
         $0.buttons["add-fee-button"]
     }
 
+    private let addNoteButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["add-customer-note-button"]
+    }
+
     private var createButton: XCUIElement { createButtonGetter(app) }
 
     /// Cancel button in the Navigation bar.
@@ -56,6 +60,10 @@ public final class NewOrderScreen: ScreenObject {
     /// Add Fee button in the Payment section.
     ///
     private var addFeeButton: XCUIElement { addFeeButtonGetter(app) }
+
+    /// Add Note button in the Customer Note section.
+    ///
+    private var addNoteButton: XCUIElement { addNoteButtonGetter(app) }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
@@ -104,6 +112,14 @@ public final class NewOrderScreen: ScreenObject {
     public func openAddFeeScreen() throws -> AddFeeScreen {
         addFeeButton.tap()
         return try AddFeeScreen()
+    }
+
+    /// Opens the Customer Note screen.
+    /// - Returns: Customer Note screen object.
+    @discardableResult
+    public func openCustomerNoteScreen() throws -> CustomerNoteScreen {
+        addNoteButton.tap()
+        return try CustomerNoteScreen()
     }
 
 // MARK: - High-level Order Creation actions
@@ -159,6 +175,15 @@ public final class NewOrderScreen: ScreenObject {
         return try openAddFeeScreen()
             .enterFixedFee(amount: amount)
             .confirmFee()
+    }
+
+    /// Adds a note on the Customer Note screen.
+    /// - Parameter text: Text to enter as the customer note.
+    /// - Returns: New Order screen object.
+    public func addCustomerNote(_ text: String) throws -> NewOrderScreen {
+        return try openCustomerNoteScreen()
+            .enterNote(text)
+            .confirmNote()
     }
 
     /// Cancels Order Creation process

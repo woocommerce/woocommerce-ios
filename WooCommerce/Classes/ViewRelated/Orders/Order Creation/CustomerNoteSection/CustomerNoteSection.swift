@@ -83,6 +83,7 @@ private struct CustomerNoteSectionContent: View {
             }
             .buttonStyle(PlusButtonStyle())
             .padding([.leading, .bottom, .trailing])
+            .accessibilityIdentifier("add-customer-note-button")
         }
     }
 

@@ -1,3 +1,2 @@
-Hello Canada! We are thrilled to announce that in-person payments are now available to Canadian merchants currently using WooCommerce Payments.
-
-We also made several improvements elsewhere in the app, including support for Arabic numerals in amount fields, the ability to update coupon discount types, and copy & paste support for order notes. Thanks for all your feedback. It truly helps us make a better app for all.
+This release has several fixes for order creation and in person payments, including fixing a bug in the products section not showing the correct order of items, displaying the date and time for all orders and showing the issue refund button for all paid orders.
+Please continue to send us feedback – we are listening!

@@ -1,3 +1,2 @@
-¡Hola, Canadá! Estamos encantados de anunciar que los pagos en persona se encuentran ahora disponibles para los vendedores de Canadá que usan actualmente WooCommerce Payments.
-
-También hemos mejorado otros aspectos de la aplicación, como la posibilidad de introducir números arábigos en los campos de las cantidades, la capacidad de actualizar los tipos de descuento de los cupones y la posibilidad de utilizar la opción de copiar y pegar en las notas del pedido. Gracias por todos tus comentarios. Realmente nos ayudan a hacer una aplicación mejor para todos.
+Esta versión tiene varias mejoras en la creación de pedidos y los pagos en persona: se ha corregido un error en la sección de productos que no mostraba el orden correcto de los elementos, se muestra la fecha y la hora en todos los pedidos y se muestra el botón de emisión del reembolso en todos los pedidos pagados.
+Sigue enviando tus comentarios: ¡te escuchamos!

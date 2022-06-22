@@ -2,6 +2,7 @@
 
 9.5
 -----
+- [*] Coupons: Fixed issue saving "Individual Use" and "Exclude Sale Items" fields. [https://github.com/woocommerce/woocommerce-ios/pull/7117]
 - [*] Orders: The customer shipping/billing address form now navigates back automatically after selecting a country or state. [https://github.com/woocommerce/woocommerce-ios/pull/7119]
 
 9.4

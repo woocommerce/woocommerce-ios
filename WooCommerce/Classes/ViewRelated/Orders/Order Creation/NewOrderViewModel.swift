@@ -549,13 +549,13 @@ private extension NewOrderViewModel {
     /// Calculates what navigation trailing item should be shown depending on our internal state.
     ///
     func configureNavigationTrailingItem() {
-        Publishers.CombineLatest(orderSynchronizer.orderPublisher, $performingNetworkRequest)
-            .map { [weak self] order, performingNetworkRequest -> NavigationItem in
-                guard let self = self, !performingNetworkRequest else {
+        Publishers.CombineLatest3(orderSynchronizer.orderPublisher, $performingNetworkRequest, Just(flow))
+            .map { order, performingNetworkRequest, flow -> NavigationItem in
+                guard !performingNetworkRequest else {
                     return .loading
                 }
 
-                switch self.flow {
+                switch flow {
                 case .creation:
                     return .create
                 case .editing:

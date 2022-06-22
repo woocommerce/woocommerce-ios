@@ -22,6 +22,17 @@ final class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows.count, 0)
     }
 
+    func test_edition_view_model_has_a_navigation_done_button() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+
+        // When
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: .fake()), stores: stores)
+
+        // Then
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done)
+    }
+
     func test_loading_indicator_is_enabled_during_network_request() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)

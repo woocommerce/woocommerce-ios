@@ -1,3 +1,2 @@
-Hallo Kanada! Wir freuen uns sehr, bekanntgeben zu dürfen, dass persönliche Zahlungen ab sofort kanadischen Verkäufern zur Verfügung stehen, die derzeit WooCommerce Payments nutzen.
-
-Wir haben auch weitere Verbesserungen in der App vorgenommen, darunter die Unterstützung für arabische Ziffern in Betragsfeldern, die Möglichkeit, Gutschein-Rabattarten zu aktualisieren sowie die Möglichkeit zum Kopieren und Einfügen bei Bestellhinweisen. Vielen Dank für dein Feedback. Es hilft uns dabei, die App für alle Benutzer zu verbessern.
+Diese Version beinhaltet mehrere Fehlerkorrekturen bei der Erstellung von Bestellungen und persönlichen Zahlungen. U. a. wurde ein Fehler im Abschnitt „Produkte“ behoben, bei dem nicht die korrekte Bestellung von Artikeln angezeigt wurde, Datum und Uhrzeit für alle Bestellungen zu sehen waren und der Button „Rückerstattung ausstellen“ für alle bezahlten Bestellungen angezeigt wurde.
+Sende uns bitte weiter Feedback – wir freuen uns darauf!

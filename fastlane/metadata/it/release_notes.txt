@@ -1,3 +1,2 @@
-Salve Canada. Siamo eccitati nell'annunciare che i pagamenti di persona sono ora disponibili per i rivenditori canadesi che attualmente usano WooCommerce Payments.
-
-Abbiamo anche apportato vari miglioramenti da qualche altra parte nell'app, incluso il supporto per numeri arabi nei campi dell'importo, la possibilità di aggiornare i tipi di sconto del codice promozionale e il supporto per copiare e incollare le note degli ordini. Grazie a tutti per il feedback. Ci aiuta a migliorare l'app per tutti gli utenti.
+This release has several fixes for order creation and in person payments, including fixing a bug in the products section not showing the correct order of items, displaying the date and time for all orders and showing the issue refund button for all paid orders.
+Continua a inviarci feedback: siamo lieti di ascoltarli.

@@ -279,7 +279,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
     func test_discount_type_changed_to_percent_triggers_amount_adjustment() {
         // Given
         let coupon = Coupon.sampleCoupon.copy(amount: "20000")
-        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onSuccess: { _ in })
 
         // When
         viewModel.discountType = .percent
@@ -291,7 +291,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
     func test_discount_type_changed_to_percent_doesnt_convert_valid_amount() {
         // Given
         let coupon = Coupon.sampleCoupon.copy(amount: "99.9")
-        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onSuccess: { _ in })
 
         // When
         viewModel.discountType = .percent
@@ -303,7 +303,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
     func test_discount_type_changed_to_percent_converts_invalid_amount_to_zero() {
         // Given
         let coupon = Coupon.sampleCoupon.copy(amount: "invalid")
-        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onSuccess: { _ in })
 
         // When
         viewModel.discountType = .percent

@@ -27,6 +27,7 @@ final class OrdersTests: XCTestCase {
 
     func test_create_new_order() throws {
         let products = try GetMocks.readProductsData()
+        let order = try GetMocks.readNewOrderData()
 
         try TabNavComponent().goToOrdersScreen()
             .startOrderCreation()
@@ -35,7 +36,7 @@ final class OrdersTests: XCTestCase {
             .addCustomerDetails(name: "Mira")
             .addShipping(amount: "1.25", name: "Flat Rate")
             .addFee(amount: "2.34")
-            .addCustomerNote(getRandomPhrase())
+            .addCustomerNote(order.customer_note)
             .createOrder()
     }
 

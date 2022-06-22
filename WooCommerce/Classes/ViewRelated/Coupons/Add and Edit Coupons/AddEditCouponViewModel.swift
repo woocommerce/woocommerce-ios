@@ -391,6 +391,19 @@ private extension AddEditCouponViewModel {
         return coupon.discountType != initialCoupon.discountType
     }
 
+    func checkUsageRestrictionsOnCreation(of coupon: Coupon) -> Bool {
+        coupon.maximumAmount.isNotEmpty ||
+                coupon.minimumAmount.isNotEmpty ||
+                (coupon.usageLimit ?? 0) > 0 ||
+                (coupon.usageLimitPerUser ?? 0) > 0 ||
+                (coupon.limitUsageToXItems ?? 0) > 0 ||
+                coupon.emailRestrictions.isNotEmpty ||
+                coupon.individualUse ||
+                coupon.excludeSaleItems ||
+                coupon.excludedProductIds.isNotEmpty ||
+                coupon.excludedProductCategories.isNotEmpty
+    }
+
     func checkUsageRestrictionsUpdated(for coupon: Coupon) -> Bool {
         guard let initialCoupon = self.coupon else {
             return false
@@ -465,9 +478,7 @@ private extension AddEditCouponViewModel {
             "includes_free_shipping": coupon.freeShipping,
             "has_description": coupon.description.isNotEmpty,
             "has_product_or_category_restrictions": coupon.excludedProductCategories.isNotEmpty || coupon.excludedProductIds.isNotEmpty,
-            "has_usage_restrictions": (coupon.usageLimit ?? 0) > 0
-            || (coupon.limitUsageToXItems ?? 0) > 0
-            || (coupon.usageLimitPerUser ?? 0) > 0
+            "has_usage_restrictions": checkUsageRestrictionsOnCreation(of: coupon)
         ])
     }
 

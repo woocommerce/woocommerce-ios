@@ -17,7 +17,7 @@ final class ReviewsTests: XCTestCase {
             .goToProductsScreen()
     }
 
-    func testReviewsScreenLoad() throws {
+    func test_load_reviews_screen() throws {
         let reviews = try GetMocks.readReviewsData()
 
         try TabNavComponent().goToMenuScreen()

@@ -235,6 +235,48 @@ extension InboxNote {
     }
 }
 
+extension Media {
+    public func copy(
+        mediaID: CopiableProp<Int64> = .copy,
+        date: CopiableProp<Date> = .copy,
+        fileExtension: CopiableProp<String> = .copy,
+        filename: CopiableProp<String> = .copy,
+        mimeType: CopiableProp<String> = .copy,
+        src: CopiableProp<String> = .copy,
+        thumbnailURL: NullableCopiableProp<String> = .copy,
+        name: NullableCopiableProp<String> = .copy,
+        alt: NullableCopiableProp<String> = .copy,
+        height: NullableCopiableProp<Double> = .copy,
+        width: NullableCopiableProp<Double> = .copy
+    ) -> Media {
+        let mediaID = mediaID ?? self.mediaID
+        let date = date ?? self.date
+        let fileExtension = fileExtension ?? self.fileExtension
+        let filename = filename ?? self.filename
+        let mimeType = mimeType ?? self.mimeType
+        let src = src ?? self.src
+        let thumbnailURL = thumbnailURL ?? self.thumbnailURL
+        let name = name ?? self.name
+        let alt = alt ?? self.alt
+        let height = height ?? self.height
+        let width = width ?? self.width
+
+        return Media(
+            mediaID: mediaID,
+            date: date,
+            fileExtension: fileExtension,
+            filename: filename,
+            mimeType: mimeType,
+            src: src,
+            thumbnailURL: thumbnailURL,
+            name: name,
+            alt: alt,
+            height: height,
+            width: width
+        )
+    }
+}
+
 extension Order {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
@@ -451,6 +493,7 @@ extension OrderItemRefund {
         name: CopiableProp<String> = .copy,
         productID: CopiableProp<Int64> = .copy,
         variationID: CopiableProp<Int64> = .copy,
+        refundedItemID: CopiableProp<String> = .copy,
         quantity: CopiableProp<Decimal> = .copy,
         price: CopiableProp<NSDecimalNumber> = .copy,
         sku: NullableCopiableProp<String> = .copy,
@@ -465,6 +508,7 @@ extension OrderItemRefund {
         let name = name ?? self.name
         let productID = productID ?? self.productID
         let variationID = variationID ?? self.variationID
+        let refundedItemID = refundedItemID ?? self.refundedItemID
         let quantity = quantity ?? self.quantity
         let price = price ?? self.price
         let sku = sku ?? self.sku
@@ -480,6 +524,7 @@ extension OrderItemRefund {
             name: name,
             productID: productID,
             variationID: variationID,
+            refundedItemID: refundedItemID,
             quantity: quantity,
             price: price,
             sku: sku,

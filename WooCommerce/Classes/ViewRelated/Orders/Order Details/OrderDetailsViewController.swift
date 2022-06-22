@@ -607,7 +607,9 @@ private extension OrderDetailsViewController {
             // Refresh date & view once payment has been collected.
             if result.isSuccess {
                 self.viewModel.syncOrderAfterPaymentCollection {
-                    self.viewModel.refreshCardPresentPaymentEligibility()
+                    self.viewModel.checkCardPresentPaymentEligibility {
+                        self.reloadTableViewSectionsAndData()
+                    }
                 }
             }
         }

@@ -51,8 +51,8 @@ final class StatsStoreV4Tests: XCTestCase {
         let result: Result<Void, Error> = waitFor { promise in
             let action = StatsActionV4.retrieveStats(siteID: self.sampleSiteID,
                                                      timeRange: .thisYear,
-                                                     earliestDateToInclude: self.date(with: "2018-06-23T17:06:55"),
-                                                     latestDateToInclude: self.date(with: "2018-06-23T17:06:55"),
+                                                     earliestDateToInclude: DateFormatter.dateFromString(with: "2018-06-23T17:06:55"),
+                                                     latestDateToInclude: DateFormatter.dateFromString(with: "2018-06-23T17:06:55"),
                                                      quantity: 2) { result in
                 promise(result)
             }
@@ -78,8 +78,8 @@ final class StatsStoreV4Tests: XCTestCase {
         let result: Result<Void, Error> = waitFor { promise in
             let action = StatsActionV4.retrieveStats(siteID: self.sampleSiteID,
                                                      timeRange: .thisYear,
-                                                     earliestDateToInclude: self.date(with: "2018-06-23T17:06:55"),
-                                                     latestDateToInclude: self.date(with: "2018-06-23T17:06:55"),
+                                                     earliestDateToInclude: DateFormatter.dateFromString(with: "2018-06-23T17:06:55"),
+                                                     latestDateToInclude: DateFormatter.dateFromString(with: "2018-06-23T17:06:55"),
                                                      quantity: 2) { result in
                 promise(result)
             }
@@ -100,8 +100,8 @@ final class StatsStoreV4Tests: XCTestCase {
         let result: Result<Void, Error> = waitFor { promise in
             let action = StatsActionV4.retrieveStats(siteID: self.sampleSiteID,
                                                      timeRange: .thisYear,
-                                                     earliestDateToInclude: self.date(with: "2018-06-23T17:06:55"),
-                                                     latestDateToInclude: self.date(with: "2018-06-23T17:06:55"),
+                                                     earliestDateToInclude: DateFormatter.dateFromString(with: "2018-06-23T17:06:55"),
+                                                     latestDateToInclude: DateFormatter.dateFromString(with: "2018-06-23T17:06:55"),
                                                      quantity: 2) { result in
                 promise(result)
             }
@@ -128,7 +128,7 @@ final class StatsStoreV4Tests: XCTestCase {
             let action = StatsActionV4.retrieveSiteVisitStats(siteID: self.sampleSiteID,
                                                               siteTimezone: .current,
                                                               timeRange: .thisWeek,
-                                                              latestDateToInclude: self.date(with: "2018-08-06T17:06:55")) { result in
+                                                              latestDateToInclude: DateFormatter.dateFromString(with: "2018-08-06T17:06:55")) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -158,7 +158,7 @@ final class StatsStoreV4Tests: XCTestCase {
             let action = StatsActionV4.retrieveSiteVisitStats(siteID: self.sampleSiteID,
                                                               siteTimezone: .current,
                                                               timeRange: .thisYear,
-                                                              latestDateToInclude: self.date(with: "2018-08-06T17:06:55")) { result in
+                                                              latestDateToInclude: DateFormatter.dateFromString(with: "2018-08-06T17:06:55")) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -184,7 +184,7 @@ final class StatsStoreV4Tests: XCTestCase {
             let action = StatsActionV4.retrieveSiteVisitStats(siteID: self.sampleSiteID,
                                                               siteTimezone: .current,
                                                               timeRange: .thisYear,
-                                                              latestDateToInclude: self.date(with: "2018-08-06T17:06:55")) { result in
+                                                              latestDateToInclude: DateFormatter.dateFromString(with: "2018-08-06T17:06:55")) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -205,7 +205,7 @@ final class StatsStoreV4Tests: XCTestCase {
             let action = StatsActionV4.retrieveSiteVisitStats(siteID: self.sampleSiteID,
                                                               siteTimezone: .current,
                                                               timeRange: .thisYear,
-                                                              latestDateToInclude: self.date(with: "2018-08-06T17:06:55")) { result in
+                                                              latestDateToInclude: DateFormatter.dateFromString(with: "2018-08-06T17:06:55")) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -264,8 +264,8 @@ final class StatsStoreV4Tests: XCTestCase {
         let result: Result<Void, Error> = waitFor { promise in
             let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
                                                               timeRange: .thisYear,
-                                                              earliestDateToInclude: self.date(with: "2020-01-01T00:00:00"),
-                                                              latestDateToInclude: self.date(with: "2020-07-22T12:00:00"),
+                                                              earliestDateToInclude: DateFormatter.dateFromString(with: "2020-01-01T00:00:00"),
+                                                              latestDateToInclude: DateFormatter.dateFromString(with: "2020-07-22T12:00:00"),
                                                               quantity: 3) { result in
                 promise(result)
             }
@@ -291,8 +291,8 @@ final class StatsStoreV4Tests: XCTestCase {
         let quantity = 6
         let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
                                                           timeRange: .thisYear,
-                                                          earliestDateToInclude: self.date(with: "2020-01-01T00:00:00"),
-                                                          latestDateToInclude: self.date(with: "2020-07-22T12:00:00"),
+                                                          earliestDateToInclude: DateFormatter.dateFromString(with: "2020-01-01T00:00:00"),
+                                                          latestDateToInclude: DateFormatter.dateFromString(with: "2020-07-22T12:00:00"),
                                                           quantity: quantity) { _ in }
         store.onAction(action)
 
@@ -314,8 +314,8 @@ final class StatsStoreV4Tests: XCTestCase {
         let result: Result<Void, Error> = waitFor { promise in
             let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
                                                               timeRange: .thisYear,
-                                                              earliestDateToInclude: self.date(with: "2020-01-01T00:00:00"),
-                                                              latestDateToInclude: self.date(with: "2020-07-22T12:00:00"),
+                                                              earliestDateToInclude: DateFormatter.dateFromString(with: "2020-01-01T00:00:00"),
+                                                              latestDateToInclude: DateFormatter.dateFromString(with: "2020-07-22T12:00:00"),
                                                               quantity: 3) { result in
                 promise(result)
             }
@@ -412,13 +412,6 @@ final class StatsStoreV4Tests: XCTestCase {
 // MARK: - Private Methods
 //
 private extension StatsStoreV4Tests {
-    func date(with dateString: String) -> Date {
-        guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
-            return Date()
-        }
-        return date
-    }
-
     // MARK: - Order Stats V4 Sample
 
     func sampleStats() -> Networking.OrderStatsV4 {

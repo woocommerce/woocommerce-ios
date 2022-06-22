@@ -1,3 +1,2 @@
-Continuiamo ad aggiungere nuove funzionalità alla nostra funzionalità sperimentale di gestione dei codici promozionali! Questa versione include la modifica e l'eliminazione dei codici promozionali insieme a numerosi miglioramenti alla visualizzazione. Attiva questa funzionalità per l'accesso anticipato nella scheda Altro, Impostazioni, Funzionalità sperimentali.
-
-Questo rilascio include anche diverse correzioni per la creazione degli ordini, i pagamenti di persona e la gestione dei prodotti. Grazie ancora a tutti per il vostro prezioso feedback!
+This release has several fixes for order creation and in person payments, including fixing a bug in the products section not showing the correct order of items, displaying the date and time for all orders and showing the issue refund button for all paid orders.
+Continua a inviarci feedback: siamo lieti di ascoltarli.

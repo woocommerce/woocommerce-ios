@@ -1,3 +1,2 @@
-We blijven nieuwe functionaliteit toevoegen aan onze experimentele functie Couponbeheer! Deze release omvat het bewerken en verwijderen van coupons en verschillende verbeteringen voor de weergave. Schakel deze functie in voor vroege toegang in het tabblad Meer, Instellingen, Experimentele functies.
-
-Deze release bevat ook verschillende oplossingen voor het aanmaken van bestellingen, fysieke betalingen en productbeheer. Wederom bedankt voor jullie feedback!
+Deze release bevat enkele verbeteringen voor het aanmaken van bestellingen en fysieke betalingen, waaronder een probleem waarbij het gedeelte producten niet de juiste volgorde van artikelen weergaf, waarbij de datum en tijd voor alle bestellingen werd weergegeven en waarbij de knop terugbetaling aanvragen werd weergegeven voor alle betaalde bestellingen.
+Blijf ons feedback sturen – wij luisteren!

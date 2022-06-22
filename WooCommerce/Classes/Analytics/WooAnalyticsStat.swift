@@ -578,6 +578,7 @@ public enum WooAnalyticsStat: String {
     case couponsLoaded = "coupons_loaded"
     case couponsLoadedFailed = "coupons_loaded_failed"
     case couponsListSearchTapped = "coupons_list_search_tapped"
+    case couponsListCreateTapped = "coupons_list_create_tapped"
     case couponDetails = "coupon_details"
     case couponSettingDisabled = "coupon_settings_disabled"
     case couponSettingEnabled = "coupon_settings_enabled"
@@ -586,6 +587,9 @@ public enum WooAnalyticsStat: String {
     case couponUpdateInitiated = "coupon_update_initiated"
     case couponUpdateSuccess = "coupon_update_success"
     case couponUpdateFailed = "coupon_update_failed"
+    case couponCreationInitiated = "coupon_creation_initiated"
+    case couponCreationSuccess = "coupon_creation_success"
+    case couponCreationFailed = "coupon_creation_failed"
 
     // MARK: Inbox Notes
     case inboxNotesLoaded = "inbox_notes_loaded"

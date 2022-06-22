@@ -46,11 +46,7 @@ final class OrderDetailsDataSource: NSObject {
 
     /// Whether the order is eligible for card present payment.
     ///
-    var isEligibleForCardPresentPayment: Bool {
-        return cardPresentPaymentsConfiguration.isSupportedCountry &&
-        order.isEligibleForCardPresentPayment(cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration,
-                                              products: resultsControllers.products)
-    }
+    var isEligibleForCardPresentPayment: Bool = false
 
     var isEligibleForRefund: Bool {
         guard !isRefundedStatus,
@@ -67,6 +63,12 @@ final class OrderDetailsDataSource: NSObject {
     var shouldShowShippingLabelCreation: Bool {
         return isEligibleForShippingLabelCreation && shippingLabels.nonRefunded.isEmpty &&
             !isEligibleForCardPresentPayment
+    }
+
+    /// Whether the row for amount paid should be visible.
+    ///
+    private var shouldShowCustomerPaidRow: Bool {
+        order.datePaid != nil
     }
 
     /// Whether the option to re-create shipping labels should be visible.
@@ -197,7 +199,7 @@ final class OrderDetailsDataSource: NSObject {
     /// Combine refunded order items to show refunded products
     ///
     var refundedProducts: [AggregateOrderItem]? {
-        return AggregateDataHelper.combineRefundedProducts(from: refunds)
+        return AggregateDataHelper.combineRefundedProducts(from: refunds, orderItems: items)
     }
 
     /// Calculate the new order item quantities and totals after refunded products have altered the fields
@@ -567,7 +569,7 @@ private extension OrderDetailsDataSource {
     private func configureCustomerPaid(cell: TwoColumnHeadlineFootnoteTableViewCell) {
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
         cell.leftText = Titles.paidByCustomer
-        cell.rightText = paymentViewModel.paymentTotal
+        cell.rightText = order.paymentTotal
         cell.updateFootnoteText(paymentViewModel.paymentSummary)
     }
 
@@ -580,7 +582,7 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureRefund(cell: TwoColumnHeadlineFootnoteTableViewCell, at indexPath: IndexPath) {
-        let index = indexPath.row - Constants.paymentCell - Constants.paidByCustomerCell
+        let index = indexPath.row - Constants.paymentCell - Constants.paidByCustomerCell(isDisplayed: shouldShowCustomerPaidRow)
         let condensedRefund = condensedRefunds[index]
         let refund = lookUpRefund(by: condensedRefund.refundID)
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order, refund: refund)
@@ -603,10 +605,8 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureNetAmount(cell: TwoColumnHeadlineFootnoteTableViewCell) {
-        let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
-
         cell.leftText = Titles.netAmount
-        cell.rightText = paymentViewModel.netAmount
+        cell.rightText = order.netAmount
         cell.hideFootnote()
     }
 
@@ -1146,8 +1146,6 @@ extension OrderDetailsDataSource {
         let payment: Section = {
             var rows: [Row] = [.payment]
 
-            let shouldShowCustomerPaidRow = order.datePaid != nil
-
             if shouldShowCustomerPaidRow {
                 rows.append(.customerPaid)
             }
@@ -1226,7 +1224,7 @@ extension OrderDetailsDataSource {
     }
 
     func refund(at indexPath: IndexPath) -> Refund? {
-        let index = indexPath.row - Constants.paymentCell - Constants.paidByCustomerCell
+        let index = indexPath.row - Constants.paymentCell - Constants.paidByCustomerCell(isDisplayed: shouldShowCustomerPaidRow)
         let condensedRefund = condensedRefunds[index]
         let refund = refunds.first { $0.refundID == condensedRefund.refundID }
 
@@ -1622,10 +1620,15 @@ extension OrderDetailsDataSource {
         case editShippingAddress
     }
 
-    struct Constants {
+    enum Constants {
         static let addOrderCell = 1
         static let paymentCell = 1
-        static let paidByCustomerCell = 1
+
+        /// Input value required because cell is displayed conditionally
+        ///
+        static func paidByCustomerCell(isDisplayed: Bool) -> Int {
+            isDisplayed ? 1 : 0
+        }
     }
 }
 

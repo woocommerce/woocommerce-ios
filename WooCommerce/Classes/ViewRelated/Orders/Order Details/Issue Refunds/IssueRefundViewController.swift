@@ -98,7 +98,7 @@ private extension IssueRefundViewController {
 private extension IssueRefundViewController {
     @IBAction func nextButtonWasPressed(_ sender: Any) {
         viewModel.createRefundConfirmationViewModel() { [weak self] confirmationViewModel in
-            Task { @MainActor in
+            DispatchQueue.main.async {
                 self?.onNextAction?(confirmationViewModel)
             }
         }

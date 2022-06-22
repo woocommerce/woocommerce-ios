@@ -36,10 +36,15 @@ final class NewOrderViewModel: ObservableObject {
         }
     }
 
-    /// Indicates whether view can be dismissed. If the value is `false` - confirmation alert will be displayd depending on `hasChanges` value.
+    /// Indicates whether view can be dismissed.
     ///
     var canBeDismissed: Bool {
-        flow == .creation
+        switch flow {
+        case .creation: // Creation can be dismissed when there aren't changes pending to commit.
+            return !hasChanges
+        case .editing: // Editing can always be dismissed because changes are committed instantly.
+            return true
+        }
     }
 
     /// Indicates whether the cancel button is visible.

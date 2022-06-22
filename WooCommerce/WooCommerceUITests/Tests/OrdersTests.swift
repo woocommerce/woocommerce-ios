@@ -33,9 +33,9 @@ final class OrdersTests: XCTestCase {
             .startOrderCreation()
             .editOrderStatus()
             .addProduct(byName: products[0].name)
-            .addCustomerDetails(name: "Mira")
-            .addShipping(amount: "1.25", name: "Flat Rate")
-            .addFee(amount: "2.34")
+            .addCustomerDetails(name: order.billing.first_name)
+            .addShipping(amount: order.shipping_lines[0].total, name: order.shipping_lines[0].method_title)
+            .addFee(amount: order.fee_lines[0].amount)
             .addCustomerNote(order.customer_note)
             .createOrder()
     }

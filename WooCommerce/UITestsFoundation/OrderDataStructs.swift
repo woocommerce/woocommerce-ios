@@ -33,6 +33,8 @@ public struct OrderData: Codable {
     public var total: String
     public let line_items: [LineItems]
     public let billing: BillingInformation
+    public let shipping_lines: [ShippingLine]
+    public let fee_lines: [FeeLine]
     public let customer_note: String
 }
 
@@ -44,4 +46,13 @@ public struct LineItems: Codable {
 public struct BillingInformation: Codable {
     public let first_name: String
     public let last_name: String
+}
+
+public struct ShippingLine: Codable {
+    public let method_title: String
+    public let total: String
+}
+
+public struct FeeLine: Codable {
+    public let amount: String
 }

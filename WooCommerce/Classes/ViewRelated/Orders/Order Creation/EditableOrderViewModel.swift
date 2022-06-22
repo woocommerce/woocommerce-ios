@@ -101,6 +101,9 @@ final class EditableOrderViewModel: ObservableObject {
     /// Defines if the view should be disabled.
     @Published private(set) var disabled: Bool = false
 
+    /// Defines if the non editable banner should be shown.
+    @Published private(set) var shouldShowNonEditableBanner: Bool = false
+
     /// Status Results Controller.
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
@@ -266,6 +269,7 @@ final class EditableOrderViewModel: ObservableObject {
         configureCustomerDataViewModel()
         configurePaymentDataViewModel()
         configureCustomerNoteDataViewModel()
+        configureNonEditableBanner()
         resetAddressForm()
     }
 
@@ -701,6 +705,21 @@ private extension EditableOrderViewModel {
                                             currencyFormatter: self.currencyFormatter)
             }
             .assign(to: &$paymentDataViewModel)
+    }
+
+    /// Binds the order state to the `shouldShowNonEditableBanner` property.
+    ///
+    func configureNonEditableBanner() {
+        Publishers.CombineLatest(orderSynchronizer.orderPublisher, Just(flow))
+            .map { order, flow in
+                switch flow {
+                case .creation:
+                    return false
+                case .editing:
+                    return !order.isEditable
+                }
+            }
+            .assign(to: &$shouldShowNonEditableBanner)
     }
 
     /// Tracks when customer details have been added

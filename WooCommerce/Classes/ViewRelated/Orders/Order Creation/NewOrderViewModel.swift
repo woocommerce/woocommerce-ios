@@ -346,7 +346,7 @@ final class NewOrderViewModel: ObservableObject {
 
             switch result {
             case .success(let newOrder):
-                self.onOrderCreated(newOrder)
+                self.onFinished(newOrder)
                 self.trackCreateOrderSuccess()
             case .failure(let error):
                 self.notice = NoticeFactory.createOrderErrorNotice(error, order: self.orderSynchronizer.order)
@@ -357,9 +357,11 @@ final class NewOrderViewModel: ObservableObject {
         trackCreateButtonTapped()
     }
 
-    /// Assign this closure to be notified when a new order is created
+    /// Assign this closure to be notified when the flow has finished.
+    /// For creation it means that the order has been created.
+    /// For edition it means that the merchant has finished editing the order.
     ///
-    var onOrderCreated: (Order) -> Void = { _ in }
+    var onFinished: (Order) -> Void = { _ in }
 
     /// Updates the order status & tracks its event
     ///

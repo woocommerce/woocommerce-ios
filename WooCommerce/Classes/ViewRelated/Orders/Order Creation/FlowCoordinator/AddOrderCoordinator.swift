@@ -79,7 +79,7 @@ private extension AddOrderCoordinator {
     ///
     func presentNewOrderController() {
         let viewModel = NewOrderViewModel(siteID: siteID)
-        viewModel.onOrderCreated = onOrderCreated
+        viewModel.onFinished = onOrderCreated
 
         let viewController = NewOrderHostingController(viewModel: viewModel)
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {

@@ -199,7 +199,7 @@ final class OrderDetailsDataSource: NSObject {
     /// Combine refunded order items to show refunded products
     ///
     var refundedProducts: [AggregateOrderItem]? {
-        return AggregateDataHelper.combineRefundedProducts(from: refunds)
+        return AggregateDataHelper.combineRefundedProducts(from: refunds, orderItems: items)
     }
 
     /// Calculate the new order item quantities and totals after refunded products have altered the fields

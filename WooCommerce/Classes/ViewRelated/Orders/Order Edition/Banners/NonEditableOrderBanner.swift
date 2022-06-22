@@ -27,7 +27,7 @@ struct NonEditableOrderBanner: UIViewRepresentable {
 
         let viewModel = TopBannerViewModel(title: Localization.title,
                                            infoText: Localization.description,
-                                           icon: UIImage.gridicon(.lock),
+                                           icon: UIImage.lockImage,
                                            iconTintColor: .brand,
                                            isExpanded: false,
                                            topButton: expandButton)

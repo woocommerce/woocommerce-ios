@@ -393,15 +393,15 @@ private extension AddEditCouponViewModel {
 
     func checkUsageRestrictionsOnCreation(of coupon: Coupon) -> Bool {
         coupon.maximumAmount.isNotEmpty ||
-                coupon.minimumAmount.isNotEmpty ||
-                (coupon.usageLimit ?? 0) > 0 ||
-                (coupon.usageLimitPerUser ?? 0) > 0 ||
-                (coupon.limitUsageToXItems ?? 0) > 0 ||
-                coupon.emailRestrictions.isNotEmpty ||
-                coupon.individualUse ||
-                coupon.excludeSaleItems ||
-                coupon.excludedProductIds.isNotEmpty ||
-                coupon.excludedProductCategories.isNotEmpty
+        coupon.minimumAmount.isNotEmpty ||
+        (coupon.usageLimit ?? 0) > 0 ||
+        (coupon.usageLimitPerUser ?? 0) > 0 ||
+        (coupon.limitUsageToXItems ?? 0) > 0 ||
+        coupon.emailRestrictions.isNotEmpty ||
+        coupon.individualUse ||
+        coupon.excludeSaleItems ||
+        coupon.excludedProductIds.isNotEmpty ||
+        coupon.excludedProductCategories.isNotEmpty
     }
 
     func checkUsageRestrictionsUpdated(for coupon: Coupon) -> Bool {

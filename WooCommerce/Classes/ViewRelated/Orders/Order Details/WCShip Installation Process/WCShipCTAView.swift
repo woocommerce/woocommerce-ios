@@ -23,40 +23,40 @@ struct WCShipCTAView: View {
         VStack {
             ScrollView {
                 VStack {
-                    Text("Fullfill your orders with WooCommerce Shipping")
+                    Text(Localization.viewTitle)
                         .largeTitleStyle()
                         .padding(.top, Constants.topMargin)
                         .multilineTextAlignment(.center)
-                    Text("Save time and money")
+                    Text(Localization.viewSubtitle)
                         .headlineStyle()
                         .padding(.top, Constants.verticalSpacing)
                 }
                 .padding([.leading, .trailing], Constants.horizontalMargin)
 
                 VStack (spacing: Constants.verticalSpacing) {
-                IconListItem(title: "Buy postage when you need it",
-                             subtitle: "No need to wonder where that stampbook went",
-                             icon: .base64(.iconCircularTime))
+                    IconListItem(title: Localization.firstIconTitle,
+                                 subtitle: Localization.firstIconSubtitle,
+                                 icon: .base64(.iconCircularTime))
 
-                IconListItem(title: "Print from your phone",
-                             subtitle: "Pick up an order, then just pay, print, package, and post.",
-                             icon: .base64(.iconCircularDocument))
+                    IconListItem(title: Localization.secondIconTitle,
+                                 subtitle: Localization.secondIconSubtitle,
+                                 icon: .base64(.iconCircularDocument))
 
-                IconListItem(title: "Discounted rates",
-                             subtitle: "Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!",
-                             icon: .base64(.iconCircularRateDiscount))
+                    IconListItem(title: Localization.thirdIconTitle,
+                                 subtitle: Localization.thirdIconSubtitle,
+                                 icon: .base64(.iconCircularRateDiscount))
                 }
             }
             VStack {
                 // Add extension
-                Button("Add Extension To Store") {
+                Button(Localization.buttonAddExtension) {
 
                 }
                 .buttonStyle(PrimaryButtonStyle())
                 .fixedSize(horizontal: false, vertical: true)
 
                 // Dismiss view
-                Button("Not now") {
+                Button(Localization.buttonDismiss) {
 
                 }
                 .buttonStyle(SecondaryButtonStyle())
@@ -79,6 +79,18 @@ private extension WCShipCTAView {
         static let verticalSpacing: CGFloat = 16
     }
 
+    enum Localization {
+        static let viewTitle = NSLocalizedString("Fullfill your orders with WooCommerce Shipping", comment: "Title of the CTA view for installing WCShip extension")
+        static let viewSubtitle = NSLocalizedString("Save time and money", comment: "Title of the CTA view for installing WCShip extension")
+        static let firstIconTitle = NSLocalizedString("Buy postage when you need it", comment: "Title of one of the elements in the CTA View for installing WCShip extension")
+        static let firstIconSubtitle = NSLocalizedString("No need to wonder where that stampbook went", comment: "Subtitle of one of the elements in the CTA View for installing WCShip extension")
+        static let secondIconTitle = NSLocalizedString("Print from your phone", comment: "Title of one of the elements in the CTA View for installing WCShip extension")
+        static let secondIconSubtitle = NSLocalizedString("Pick up an order, then just pay, print, package, and post.", comment: "Subtitle of one of the elements in the CTA View for installing WCShip extension")
+        static let thirdIconTitle = NSLocalizedString("Discounted rates", comment: "Title of one of the elements in the CTA View for installing WCShip extension")
+        static let thirdIconSubtitle = NSLocalizedString("Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!", comment: "Subtitle of one of the elements in the CTA View for installing WCShip extension")
+        static let buttonAddExtension = NSLocalizedString("Add Extension To Store", comment: "Button in the CTA View for installing WCShip extension")
+        static let buttonDismiss = NSLocalizedString("Not now", comment: "Button in the CTA View for installing WCShip extension for dismissing the view")
+    }
 }
 struct WCShipCTAView_Previews: PreviewProvider {
     static var previews: some View {

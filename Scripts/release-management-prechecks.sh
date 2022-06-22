@@ -12,13 +12,11 @@ P_ENV_SENTRY_AUTH_TOKEN="SENTRY_AUTH_TOKEN"
 P_ENV_SENTRY_ORG_SLUG="SENTRY_ORG_SLUG"
 P_ENV_SENTRY_PROJECT_SLUG="SENTRY_PROJECT_SLUG"
 P_ENV_BUILDKITE_TOKEN="BUILDKITE_TOKEN"
-P_ENV_FASTLANE_ITC_TEAM_ID="FASTLANE_ITC_TEAM_ID"
 
 # TODO: Can we drop these values from the 'PROJECT_ENV_FILE' and add it to the repo?
 # We can simplify and improve this script if we can do that.
 P_ENV_SENTRY_ORG_SLUG_VALUE="a8c"
 P_ENV_SENTRY_PROJECT_SLUG_VALUE="woocommerce-ios"
-P_ENV_FASTLANE_ITC_TEAM_ID_VALUE="299112"
 
 # ---------------------------------------------------------------------------------
 # 0b. Warning & Error Messages
@@ -43,8 +41,6 @@ warning_project_env_file_contents() {
 Please make sure you have the following information in '$PROJECT_ENV_FILE':
 
 > $P_ENV_GITHUB_TOKEN={$P_ENV_GITHUB_TOKEN}
->
-> $P_ENV_FASTLANE_ITC_TEAM_ID=$P_ENV_FASTLANE_ITC_TEAM_ID_VALUE
 >
 > $P_ENV_SENTRY_AUTH_TOKEN={$P_ENV_SENTRY_AUTH_TOKEN}
 > $P_ENV_SENTRY_ORG_SLUG=$P_ENV_SENTRY_ORG_SLUG_VALUE
@@ -118,7 +114,6 @@ else
     # These values are set per project in configuration section and the value is not a secret
     check_project_env "$P_ENV_SENTRY_ORG_SLUG" "$P_ENV_SENTRY_ORG_SLUG_VALUE"
     check_project_env "$P_ENV_SENTRY_PROJECT_SLUG" "$P_ENV_SENTRY_PROJECT_SLUG_VALUE"
-    check_project_env "$P_ENV_FASTLANE_ITC_TEAM_ID" "$P_ENV_FASTLANE_ITC_TEAM_ID_VALUE"
 fi
 
 if [ "$HAS_PROJECT_ENV_FILE_WARNINGS" == true ]; then

@@ -184,7 +184,7 @@ private extension RefundMapperTests {
                                name: "",
                                productID: 1,
                                variationID: 1,
-                               refundedItemID: 1,
+                               refundedItemID: "1",
                                quantity: 1,
                                price: 18.0,
                                sku: nil,

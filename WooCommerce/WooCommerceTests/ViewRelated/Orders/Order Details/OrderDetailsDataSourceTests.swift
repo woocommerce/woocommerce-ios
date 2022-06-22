@@ -505,7 +505,7 @@ private extension OrderDetailsDataSourceTests {
                                               name: "OrderItemRefund",
                                               productID: 1,
                                               variationID: 1,
-                                              refundedItemID: 1,
+                                              refundedItemID: "1",
                                               quantity: 1,
                                               price: NSDecimalNumber(integerLiteral: 1),
                                               sku: nil,

@@ -716,8 +716,7 @@ private extension StorePickerViewController {
     func removeAppleIDAccess() async -> Result<Void, Error> {
         await withCheckedContinuation { [weak self] continuation in
             guard let self = self else { return }
-            let action = AccountAction.removeAppleIDAccess(dotcomAppID: ApiCredentials.dotcomAppId,
-                                                           dotcomSecret: ApiCredentials.dotcomSecret) { result in
+            let action = AccountAction.closeAccount { result in
                 continuation.resume(returning: result)
             }
             self.stores.dispatch(action)

@@ -191,14 +191,14 @@ private extension RefundConfirmationViewModel {
             case .some(.cardPresent(let cardDetails)), .some(.interacPresent(let cardDetails)):
                 return PaymentDetailsRow(cardIcon: cardDetails.brand.icon,
                                          cardIconAspectHorizontal: cardDetails.brand.iconAspectHorizontal,
-                                         paymentGateway: details.order.paymentMethodTitle,
+                                         paymentGateway: orderPaymentMethodTitle(),
                                          paymentMethodDescription: cardDetails.brand.cardDescription(last4: cardDetails.last4),
                                          accessibilityDescription: cardDetails.brand.cardAccessibilityDescription(last4: cardDetails.last4))
             default:
                 return SimpleTextRow(text: details.order.paymentMethodTitle)
             }
         } else {
-            return TitleAndBodyRow(title: Localization.manualRefund(via: details.order.paymentMethodTitle),
+            return TitleAndBodyRow(title: Localization.manualRefund(via: orderPaymentMethodTitle()),
                                    body: Localization.refundWillNotBeIssued(paymentMethod: details.order.paymentMethodTitle))
         }
     }
@@ -214,6 +214,12 @@ private extension RefundConfirmationViewModel {
             return false
         }
         return paymentGateway.features.contains(.refunds)
+    }
+    /// Returns "[Not Specified]" if the payment gateway associated with this order is empty.
+    /// For example: Orders marked directly as fullfilled, or simple payments with cash.
+    ///
+    func orderPaymentMethodTitle() -> String {
+        details.order.paymentMethodTitle.isEmpty ? "[Not Specified]" : details.order.paymentMethodTitle
     }
 }
 

@@ -1,9 +1,14 @@
+import Combine
 @testable import Yosemite
 @testable import WooCommerce
 
 final class MockProductImageUploader: ProductImageUploaderProtocol {
+    var statusUpdates: AnyPublisher<ProductImageUploadUpdate, Never> = Empty<ProductImageUploadUpdate, Never>().eraseToAnyPublisher()
+
     var replaceLocalIDWasCalled = false
     var saveProductImagesWhenNoneIsPendingUploadAnymoreWasCalled = false
+    var startEmittingStatusUpdatesWasCalled = false
+    var stopEmittingStatusUpdatesWasCalled = false
 
     func replaceLocalID(siteID: Int64, localProductID: Int64, remoteProductID: Int64) {
         replaceLocalIDWasCalled = true
@@ -18,6 +23,14 @@ final class MockProductImageUploader: ProductImageUploaderProtocol {
 
     func actionHandler(siteID: Int64, productID: Int64, isLocalID: Bool, originalStatuses: [ProductImageStatus]) -> ProductImageActionHandler {
         ProductImageActionHandler(siteID: 0, productID: 0, imageStatuses: [])
+    }
+
+    func startEmittingStatusUpdates(siteID: Int64, productID: Int64, isLocalID: Bool) {
+        startEmittingStatusUpdatesWasCalled = true
+    }
+
+    func stopEmittingStatusUpdates(siteID: Int64, productID: Int64, isLocalID: Bool) {
+        stopEmittingStatusUpdatesWasCalled = true
     }
 
     func hasUnsavedChangesOnImages(siteID: Int64, productID: Int64, isLocalID: Bool, originalImages: [ProductImage]) -> Bool {

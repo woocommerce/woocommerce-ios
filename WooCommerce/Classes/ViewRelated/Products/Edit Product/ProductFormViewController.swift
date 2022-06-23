@@ -37,6 +37,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     private let productImageActionHandler: ProductImageActionHandler
     private let productUIImageLoader: ProductUIImageLoader
+    private let productImageUploader: ProductImageUploaderProtocol
 
     private let currency: String
 
@@ -59,7 +60,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
          eventLogger: ProductFormEventLoggerProtocol,
          productImageActionHandler: ProductImageActionHandler,
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
-         presentationStyle: ProductFormPresentationStyle) {
+         presentationStyle: ProductFormPresentationStyle,
+         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
         self.viewModel = viewModel
         self.eventLogger = eventLogger
         self.currency = currency
@@ -67,6 +69,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         self.productImageActionHandler = productImageActionHandler
         self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler,
                                                                 phAssetImageLoaderProvider: { PHImageManager.default() })
+        self.productImageUploader = productImageUploader
         self.tableViewModel = DefaultProductFormTableViewModel(product: viewModel.productModel,
                                                                actionsFactory: viewModel.actionsFactory,
                                                                currency: currency)
@@ -127,12 +130,26 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
             self.viewModel.updateImages(productImageStatuses.images)
         }
+
+        productImageUploader.stopEmittingStatusUpdates(siteID: viewModel.productModel.siteID,
+                                                       productID: viewModel.productModel.productID,
+                                                       isLocalID: !viewModel.productModel.existsRemotely)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
         view.endEditing(true)
+
+        /// Depending on how a VC is presented we need to check different things to know whether it's being dismissed or not.
+        /// A VC presented as the first VC in a navigation controller needs to check if the navigation controller is being dismissed.
+        /// A VC added to an existing navigation controller is dismissed when `isMovingFromParent` is `true`.
+        /// For any other scenario `isBeingDismissed` will do.
+        if isMovingFromParent || isBeingDismissed || navigationController?.isBeingDismissed == true {
+            productImageUploader.startEmittingStatusUpdates(siteID: viewModel.productModel.siteID,
+                                                            productID: viewModel.productModel.productID,
+                                                            isLocalID: !viewModel.productModel.existsRemotely)
+        }
     }
 
     override var shouldShowOfflineBanner: Bool {

@@ -1,4 +1,5 @@
 @testable import WooCommerce
+import Combine
 import Photos
 import XCTest
 import Yosemite
@@ -6,6 +7,7 @@ import Yosemite
 final class ProductImageUploaderTests: XCTestCase {
     private let siteID: Int64 = 134
     private let productID: Int64 = 606
+    private var statusUpdatesSubscription: AnyCancellable?
 
     func test_hasUnsavedChangesOnImages_becomes_false_after_uploading_and_saving() throws {
         // Given
@@ -192,5 +194,200 @@ final class ProductImageUploaderTests: XCTestCase {
                                                                      productID: localProductID,
                                                                      isLocalID: true,
                                                                      originalStatuses: []).productImageStatuses)
+    }
+
+    // MARK: - Status Updates
+
+    func test_update_is_emitted_when_image_upload_fails() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let imageUploader = ProductImageUploader(stores: stores)
+        let actionHandler = imageUploader.actionHandler(siteID: siteID,
+                                                        productID: productID,
+                                                        isLocalID: true,
+                                                        originalStatuses: [])
+        let error = NSError(domain: "", code: 6)
+        stores.whenReceivingAction(ofType: MediaAction.self) { action in
+            if case let .uploadMedia(_, _, _, onCompletion) = action {
+                onCompletion(.failure(error))
+            }
+        }
+
+        // When
+        var updates: [ProductImageUploadUpdate] = []
+        let _: Void = waitFor { promise in
+            self.statusUpdatesSubscription = imageUploader.statusUpdates.sink { update in
+                updates.append(update)
+                promise(())
+            }
+            actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: PHAsset())
+        }
+
+        // Then
+        assertEqual([.init(siteID: siteID, productID: productID, productImageStatuses: [], error: error)], updates)
+    }
+
+    func test_updates_are_not_emitted_when_image_upload_succeeds() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let imageUploader = ProductImageUploader(stores: stores)
+        let actionHandler = imageUploader.actionHandler(siteID: siteID,
+                                                        productID: productID,
+                                                        isLocalID: true,
+                                                        originalStatuses: [])
+        stores.whenReceivingAction(ofType: MediaAction.self) { action in
+            if case let .uploadMedia(_, _, _, onCompletion) = action {
+                onCompletion(.success(.fake()))
+            }
+        }
+
+        // When
+        var updates: [ProductImageUploadUpdate] = []
+        statusUpdatesSubscription = imageUploader.statusUpdates.sink { update in
+            updates.append(update)
+            XCTFail("Image upload update should be emitted: \(update)")
+        }
+        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: PHAsset())
+
+        // Then
+        XCTAssertTrue(updates.isEmpty)
+    }
+
+    // MARK: - `stopEmittingStatusUpdates`
+
+    func test_update_is_emitted_after_stopEmittingStatusUpdates_with_a_different_product_when_image_upload_fails() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let imageUploader = ProductImageUploader(stores: stores)
+        let actionHandler = imageUploader.actionHandler(siteID: siteID,
+                                                        productID: productID,
+                                                        isLocalID: true,
+                                                        originalStatuses: [])
+        let error = NSError(domain: "", code: 6)
+        stores.whenReceivingAction(ofType: MediaAction.self) { action in
+            if case let .uploadMedia(_, _, _, onCompletion) = action {
+                onCompletion(.failure(error))
+            }
+        }
+
+        // When
+        imageUploader.stopEmittingStatusUpdates(siteID: siteID, productID: 9999, isLocalID: true)
+
+        var updates: [ProductImageUploadUpdate] = []
+        let _: Void = waitFor { promise in
+            self.statusUpdatesSubscription = imageUploader.statusUpdates.sink { update in
+                updates.append(update)
+                promise(())
+            }
+            actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: PHAsset())
+        }
+
+        // Then
+        assertEqual([.init(siteID: siteID, productID: productID, productImageStatuses: [], error: error)], updates)
+    }
+
+    func test_update_is_not_emitted_after_stopEmittingStatusUpdates_when_image_upload_fails() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let imageUploader = ProductImageUploader(stores: stores)
+        let actionHandler = imageUploader.actionHandler(siteID: siteID,
+                                                        productID: productID,
+                                                        isLocalID: true,
+                                                        originalStatuses: [])
+        let error = NSError(domain: "", code: 6)
+        stores.whenReceivingAction(ofType: MediaAction.self) { action in
+            if case let .uploadMedia(_, _, _, onCompletion) = action {
+                onCompletion(.failure(error))
+            }
+        }
+
+        // When
+        imageUploader.stopEmittingStatusUpdates(siteID: siteID, productID: productID, isLocalID: true)
+
+        var updates: [ProductImageUploadUpdate] = []
+        statusUpdatesSubscription = imageUploader.statusUpdates.sink { update in
+            updates.append(update)
+            XCTFail("Image upload update should be emitted: \(update)")
+        }
+        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: PHAsset())
+
+        // Then
+        XCTAssertTrue(updates.isEmpty)
+    }
+
+    func test_calling_replaceLocalID_updates_excluded_product_from_status_updates() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let imageUploader = ProductImageUploader(stores: stores)
+        let localProductID: Int64 = 0
+        let nonExistentProductID: Int64 = 999
+        let remoteProductID = productID
+        let actionHandler = imageUploader.actionHandler(siteID: siteID,
+                                                        productID: localProductID,
+                                                        isLocalID: true,
+                                                        originalStatuses: [])
+
+        // When
+        imageUploader.stopEmittingStatusUpdates(siteID: siteID, productID: localProductID, isLocalID: true)
+        imageUploader.replaceLocalID(siteID: siteID, localProductID: nonExistentProductID, remoteProductID: remoteProductID)
+
+        var updates: [ProductImageUploadUpdate] = []
+        _ = imageUploader.statusUpdates.sink { update in
+            updates.append(update)
+        }
+
+        stores.whenReceivingAction(ofType: MediaAction.self) { action in
+            if case let .uploadMedia(_, _, _, onCompletion) = action {
+                onCompletion(.failure(MediaActionError.unknown))
+            }
+        }
+        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: PHAsset())
+
+        // Then
+        // Ensure that trying to replace a non-existent product ID does nothing.
+        XCTAssertTrue(updates.isEmpty)
+    }
+
+    // MARK: - `startEmittingStatusUpdates`
+
+    func test_update_is_emitted_after_stop_and_startEmittingStatusUpdates_when_image_upload_fails() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let imageUploader = ProductImageUploader(stores: stores)
+        let actionHandler = imageUploader.actionHandler(siteID: siteID,
+                                                        productID: productID,
+                                                        isLocalID: true,
+                                                        originalStatuses: [])
+        let error = NSError(domain: "", code: 6)
+        stores.whenReceivingAction(ofType: MediaAction.self) { action in
+            if case let .uploadMedia(_, _, _, onCompletion) = action {
+                onCompletion(.failure(error))
+            }
+        }
+
+        // When
+        imageUploader.stopEmittingStatusUpdates(siteID: siteID, productID: productID, isLocalID: true)
+        imageUploader.startEmittingStatusUpdates(siteID: siteID, productID: productID, isLocalID: true)
+
+        var updates: [ProductImageUploadUpdate] = []
+        let _: Void = waitFor { promise in
+            self.statusUpdatesSubscription = imageUploader.statusUpdates.sink { update in
+                updates.append(update)
+                promise(())
+            }
+            actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: PHAsset())
+        }
+
+        // Then
+        assertEqual([.init(siteID: siteID, productID: productID, productImageStatuses: [], error: error)], updates)
+    }
+}
+
+extension ProductImageUploadUpdate: Equatable {
+    public static func == (lhs: ProductImageUploadUpdate, rhs: ProductImageUploadUpdate) -> Bool {
+        return lhs.siteID == rhs.siteID &&
+        lhs.productID == rhs.productID &&
+        lhs.productImageStatuses == rhs.productImageStatuses &&
+        (lhs.error as? NSError) == (rhs.error as? NSError)
     }
 }

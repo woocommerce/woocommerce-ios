@@ -105,6 +105,9 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         actionHandlersByProduct.removeValue(forKey: key)
         let keyWithRemoteProductID = ProductKey(siteID: siteID, productID: remoteProductID, isLocalID: false)
         actionHandlersByProduct[keyWithRemoteProductID] = handler
+
+        statusUpdatesExcludedProductKeys.remove(key)
+        statusUpdatesExcludedProductKeys.insert(keyWithRemoteProductID)
     }
 
     func startEmittingStatusUpdates(siteID: Int64, productID: Int64, isLocalID: Bool) {

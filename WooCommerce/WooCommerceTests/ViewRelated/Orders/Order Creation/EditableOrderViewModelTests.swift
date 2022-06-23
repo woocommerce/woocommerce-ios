@@ -1130,7 +1130,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let order = Order.fake().copy(isEditable: false)
 
         // When
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, initialOrder: order)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order))
 
         // Then
         XCTAssertTrue(viewModel.shouldShowNonEditableBanner)
@@ -1141,7 +1141,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let order = Order.fake().copy(isEditable: true)
 
         // When
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, initialOrder: order)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order))
 
         // Then
         XCTAssertFalse(viewModel.shouldShowNonEditableBanner)

@@ -1119,7 +1119,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_creating_order_does_not_shows_banner() {
         // Given
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID)
 
         // When & Then
         XCTAssertFalse(viewModel.shouldShowNonEditableBanner)
@@ -1130,7 +1130,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let order = Order.fake().copy(isEditable: false)
 
         // When
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order))
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order))
 
         // Then
         XCTAssertTrue(viewModel.shouldShowNonEditableBanner)
@@ -1141,7 +1141,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let order = Order.fake().copy(isEditable: true)
 
         // When
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order))
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order))
 
         // Then
         XCTAssertFalse(viewModel.shouldShowNonEditableBanner)

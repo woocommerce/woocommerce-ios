@@ -122,7 +122,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     init(siteID: Int64,
          title: String,
          viewModel: OrderListViewModel,
-         switchDetailsHandler: @escaping (OrderDetailsViewModel) -> Void) {
+         switchDetailsHandler: @escaping (OrderDetailsViewModel?) -> Void) {
         self.siteID = siteID
         self.viewModel = viewModel
         self.switchDetailsHandler = switchDetailsHandler
@@ -426,6 +426,13 @@ private extension OrderListViewController {
     /// Checks to see if the selected item is still at the same index in the list and resets its state if not.
     ///
     func checkSelectedItem() {
+        // workaround for when the list contains one item as a result from selecting a search result
+        // i.e when opening an order from a search result, we retrieve the order details and upsert it to storage,
+        // causing the list to be reloaded with a new snapshot and this method is then triggered.
+        guard state == .results else {
+            return
+        }
+
         guard let indexPath = selectedIndexPath, let orderID = selectedOrderId else {
             return selectFirstItemIfPossible()
         }

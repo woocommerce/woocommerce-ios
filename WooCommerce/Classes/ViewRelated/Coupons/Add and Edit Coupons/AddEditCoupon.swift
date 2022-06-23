@@ -119,7 +119,7 @@ struct AddEditCoupon: View {
                                                      keyboardType: .decimalPad,
                                                      inputFormatter: CouponAmountInputFormatter()) { editingChanged in
                                                             if !editingChanged {
-                                                                viewModel.onCouponAmountFieldFocusLost()
+                                                                viewModel.validatePercentageAmountInput()
                                                             }
                                                         }
                                 Divider()

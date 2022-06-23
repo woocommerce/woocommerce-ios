@@ -170,7 +170,7 @@ final class AddEditCouponViewModel: ObservableObject {
     // Fields
     @Published var discountType: Coupon.DiscountType {
         didSet {
-            onCouponDiscountTypeChanged(discountType: discountType)
+            validatePercentageAmountInput()
             couponRestrictionsViewModel.onDiscountTypeChanged(discountType: discountType)
         }
     }
@@ -259,16 +259,7 @@ final class AddEditCouponViewModel: ObservableObject {
         codeField = code
     }
 
-    func completeCouponAddEdit(coupon: Coupon, onUpdateFinished: @escaping () -> Void) {
-        switch editingOption {
-        case .creation:
-            createCoupon(coupon: coupon)
-        case .editing:
-            updateCoupon(coupon: coupon, onUpdateFinished: onUpdateFinished)
-        }
-    }
-
-    func onCouponAmountFieldFocusLost() {
+    func validatePercentageAmountInput() {
         let numberFormatter = NumberFormatter()
         numberFormatter.decimalSeparator = "."
         numberFormatter.numberStyle = .decimal
@@ -277,12 +268,31 @@ final class AddEditCouponViewModel: ObservableObject {
 
         if shouldCorrectCouponAmount(amount: Double(amount)) {
             DDLogInfo("⚠️ Invalid input, starting debounce")
-            let convertedAmount = convertFixedAmountToPercent(amount: Double(amount))
+            let convertedAmount = truncateAmountValueToPercentage(amount: Double(amount))
             Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { [weak self] timer in
                 timer.invalidate()
                 self?.amountField = convertedAmount
                 DDLogInfo("⚠️ Amount force fixed")
             }
+        }
+    }
+
+    private func truncateAmountValueToPercentage(amount: Double?) -> String {
+        guard let amount = amount else { return "0" }
+
+        if amount > 100 {
+            return "100"
+        } else {
+            return String(amount)
+        }
+    }
+
+    func completeCouponAddEdit(coupon: Coupon, onUpdateFinished: @escaping () -> Void) {
+        switch editingOption {
+        case .creation:
+            createCoupon(coupon: coupon)
+        case .editing:
+            updateCoupon(coupon: coupon, onUpdateFinished: onUpdateFinished)
         }
     }
 
@@ -383,22 +393,6 @@ final class AddEditCouponViewModel: ObservableObject {
         }
 
         return nil
-    }
-
-    private func onCouponDiscountTypeChanged(discountType: Coupon.DiscountType) {
-        if discountType == .percent {
-            amountField = convertFixedAmountToPercent(amount: Double(coupon?.amount ?? "0"))
-        }
-    }
-
-    private func convertFixedAmountToPercent(amount: Double?) -> String {
-        guard let amount = amount else { return "0" }
-
-        if amount > 100 {
-            return "100"
-        } else {
-            return String(amount)
-        }
     }
 
     enum EditingOption {

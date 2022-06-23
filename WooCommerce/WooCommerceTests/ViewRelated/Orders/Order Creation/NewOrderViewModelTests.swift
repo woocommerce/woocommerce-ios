@@ -143,7 +143,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(viewModel.notice, EditableOrderViewModel.NoticeFactory.syncOrderErrorNotice(error, with: synchronizer))
+        XCTAssertEqual(viewModel.notice, EditableOrderViewModel.NoticeFactory.syncOrderErrorNotice(error, flow: .creation, with: synchronizer))
     }
 
     func test_view_model_clears_error_notice_when_order_is_syncing() {

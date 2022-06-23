@@ -37,8 +37,7 @@ final class TitleAndSubtitleAndStatusTableViewCell: UITableViewCell, SearchResul
 extension TitleAndSubtitleAndStatusTableViewCell {
     struct ViewModel: Hashable {
         /// A unique ID to avoid duplicated identifier for the view model in diffable datasource
-        private let id = UUID()
-
+        var id: String = UUID().uuidString
         let title: String
         let subtitle: String
         let accessibilityLabel: String

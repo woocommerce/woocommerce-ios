@@ -17,9 +17,22 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
 
         // Then
+        XCTAssertEqual(viewModel.flow, .creation)
         XCTAssertEqual(viewModel.navigationTrailingItem, .create)
         XCTAssertEqual(viewModel.statusBadgeViewModel.title, "pending")
         XCTAssertEqual(viewModel.productRows.count, 0)
+    }
+
+    func test_edition_view_model_inits_with_expected_values() {
+        // Given
+        let order = Order.fake().copy(orderID: sampleOrderID)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+
+        // When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores)
+
+        // Then
+        XCTAssertEqual(viewModel.flow, .editing(initialOrder: order))
     }
 
     func test_edition_view_model_has_a_navigation_done_button() {
@@ -1063,6 +1076,45 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.canBeDismissed)
+    }
+
+    func test_onFinished_is_called_when_creating_order() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var isCallbackCalled = false
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .creation, stores: stores)
+        viewModel.onFinished = { _ in
+            isCallbackCalled = true
+        }
+
+        // When
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .createOrder(_, order, onCompletion):
+                onCompletion(.success(order))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+        viewModel.createOrder()
+
+        // Then
+        XCTAssertTrue(isCallbackCalled)
+    }
+
+    func test_onFinished_is_called_when_editing_order() {
+        // Given
+        var isCallbackCalled = false
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: .fake()))
+        viewModel.onFinished = { _ in
+            isCallbackCalled = true
+        }
+
+        // When
+        viewModel.finishEditing()
+
+        // Then
+        XCTAssertTrue(isCallbackCalled)
     }
 }
 

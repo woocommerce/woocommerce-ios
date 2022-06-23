@@ -6,6 +6,7 @@ import WooFoundation
 final class NewOrderViewModelTests: XCTestCase {
 
     let sampleSiteID: Int64 = 123
+    let sampleOrderID: Int64 = 1234
     let sampleProductID: Int64 = 5
 
     func test_view_model_inits_with_expected_values() {
@@ -19,6 +20,17 @@ final class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.navigationTrailingItem, .create)
         XCTAssertEqual(viewModel.statusBadgeViewModel.title, "pending")
         XCTAssertEqual(viewModel.productRows.count, 0)
+    }
+
+    func test_edition_view_model_has_a_navigation_done_button() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+
+        // When
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: .fake()), stores: stores)
+
+        // Then
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done)
     }
 
     func test_loading_indicator_is_enabled_during_network_request() {
@@ -1011,6 +1023,46 @@ final class NewOrderViewModelTests: XCTestCase {
                        "Saved change was unexpectedly discarded when address form was reset")
         XCTAssertEqual(viewModel.addressFormViewModel.fields.lastName, "",
                        "Pending change was not discarded when address form was reset")
+    }
+
+    func test_canBeDismissed_is_true_when_creating_order_without_changes() {
+        // Given
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID)
+
+        // Then
+        XCTAssertTrue(viewModel.canBeDismissed)
+    }
+
+    func test_canBeDismissed_is_false_when_creating_order_with_changes() {
+        // Given
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID)
+
+        // When
+        viewModel.updateOrderStatus(newStatus: .failed)
+
+        // Then
+        XCTAssertFalse(viewModel.canBeDismissed)
+    }
+
+    func test_canBeDismissed_is_true_when_editing_order_without_changes() {
+        // Given
+        let order = Order.fake().copy(orderID: sampleOrderID)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order))
+
+        // Then
+        XCTAssertTrue(viewModel.canBeDismissed)
+    }
+
+    func test_canBeDismissed_is_true_when_editing_order_with_changes() {
+        // Given
+        let order = Order.fake().copy(orderID: sampleOrderID)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order))
+
+        // When
+        viewModel.updateOrderStatus(newStatus: .failed)
+
+        // Then
+        XCTAssertTrue(viewModel.canBeDismissed)
     }
 }
 

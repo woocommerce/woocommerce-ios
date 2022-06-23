@@ -80,6 +80,10 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         guard let handler = actionHandlersByProduct[key] else {
             return
         }
+
+        // Update the product ID of handler to make sure that future product image uploads use the `remoteProductID` instead of `localProductID`
+        handler.updateProductID(remoteProductID)
+
         actionHandlersByProduct.removeValue(forKey: key)
         let keyWithRemoteProductID = ProductKey(siteID: siteID, productID: remoteProductID, isLocalID: false)
         actionHandlersByProduct[keyWithRemoteProductID] = handler

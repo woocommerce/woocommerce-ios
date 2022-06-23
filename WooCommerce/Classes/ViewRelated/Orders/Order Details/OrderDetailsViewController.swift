@@ -354,10 +354,6 @@ private extension OrderDetailsViewController {
     ///
     private func editOrder() {
         let viewModel = EditableOrderViewModel(siteID: viewModel.order.siteID, flow: .editing(initialOrder: viewModel.order))
-        viewModel.onFinished = { [weak self] order in
-            guard let self = self else { return }
-            self.dismiss(animated: true)
-        }
         let viewController = OrderFormHostingController(viewModel: viewModel)
         let navController = UINavigationController(rootViewController: viewController)
         present(navController, animated: true)

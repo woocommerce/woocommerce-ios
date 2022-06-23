@@ -357,6 +357,12 @@ final class EditableOrderViewModel: ObservableObject {
         trackCreateButtonTapped()
     }
 
+    /// Action triggered on `Done` button tap in order editing flow.
+    ///
+    func finishEditing() {
+        self.onFinished(orderSynchronizer.order)
+    }
+
     /// Assign this closure to be notified when the flow has finished.
     /// For creation it means that the order has been created.
     /// For edition it means that the merchant has finished editing the order.

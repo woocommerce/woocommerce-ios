@@ -152,6 +152,7 @@ struct OrderForm: View {
                     .disabled(viewModel.disabled)
                 case .done:
                     Button(Localization.doneButton) {
+                        viewModel.finishEditing()
                         dismissHandler()
                     }
                 case .loading:

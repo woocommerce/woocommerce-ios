@@ -188,7 +188,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// View model for the customer note section.
     ///
-    lazy private(set) var noteViewModel = { NewOrderCustomerNoteViewModel(originalNote: "") }()
+    lazy private(set) var noteViewModel = { OrderFormCustomerNoteViewModel(originalNote: "") }()
 
     // MARK: Payment properties
 

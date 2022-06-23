@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 
-class NewOrderCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
+class OrderFormCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
     /// Store for the edited content
     ///
     @Published var newNote: String

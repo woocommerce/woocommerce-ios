@@ -575,7 +575,7 @@ private extension EditableOrderViewModel {
                 case .error(let error):
                     DDLogError("⛔️ Error syncing order remotely: \(error)")
                     self.trackSyncOrderFailure(error: error)
-                    return NoticeFactory.syncOrderErrorNotice(error, with: self.orderSynchronizer)
+                    return NoticeFactory.syncOrderErrorNotice(error, flow: self.flow, with: self.orderSynchronizer)
                 default:
                     return nil
                 }
@@ -869,11 +869,20 @@ extension EditableOrderViewModel {
 
         /// Returns an order sync error notice.
         ///
-        static func syncOrderErrorNotice(_ error: Error, with orderSynchronizer: OrderSynchronizer) -> Notice {
+        static func syncOrderErrorNotice(_ error: Error, flow: Flow, with orderSynchronizer: OrderSynchronizer) -> Notice {
             guard !isEmailError(error, order: orderSynchronizer.order) else {
                 return Notice(title: Localization.invalidBillingParameters, message: Localization.invalidBillingSuggestion, feedbackType: .error)
             }
-            return Notice(title: Localization.errorMessageOrderSync, feedbackType: .error, actionTitle: Localization.retryOrderSync) {
+
+            let errorMessage: String
+            switch flow {
+            case .creation:
+                errorMessage = Localization.errorMessageNewOrderSync
+            case .editing:
+                errorMessage = Localization.errorMessageEditOrderSync
+            }
+
+            return Notice(title: errorMessage, feedbackType: .error, actionTitle: Localization.retryOrderSync) {
                 orderSynchronizer.retryTrigger.send()
             }
         }
@@ -896,9 +905,13 @@ private extension EditableOrderViewModel {
     enum Localization {
         static let titleForNewOrder = NSLocalizedString("New Order", comment: "Title for the order creation screen")
         static let titleWithOrderNumber = NSLocalizedString("Order #%1$@", comment: "Order number title. Parameters: %1$@ - order number")
-        static let errorMessageOrderCreation = NSLocalizedString("Unable to create new order", comment: "Notice displayed when order creation fails")
-        static let errorMessageOrderSync = NSLocalizedString("Unable to load taxes for order",
-                                                             comment: "Notice displayed when data cannot be synced for new or edited order")
+        static let errorMessageOrderCreation = NSLocalizedString("Unable to create new order",
+                                                                 comment: "Notice displayed when order creation fails")
+        static let errorMessageNewOrderSync = NSLocalizedString("Unable to load taxes for order",
+                                                                comment: "Notice displayed when data cannot be synced for new order")
+        static let errorMessageEditOrderSync = NSLocalizedString("Unable to save changes. Please try again.",
+                                                                 comment: "Notice displayed when data cannot be synced for edited order")
+
         static let retryOrderSync = NSLocalizedString("Retry", comment: "Action button to retry syncing the draft order")
 
         static let invalidBillingParameters =

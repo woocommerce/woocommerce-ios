@@ -2,6 +2,7 @@ import Combine
 import UIKit
 import SwiftUI
 import Yosemite
+import WooFoundation
 import protocol Storage.StorageManagerType
 
 
@@ -446,6 +447,9 @@ extension ShippingLabelPackagesFormViewModel {
                      parentID: 0,
                      customerID: 11,
                      orderKey: "",
+                     isEditable: false,
+                     needsPayment: false,
+                     needsProcessing: false,
                      number: "963",
                      status: .processing,
                      currency: "USD",

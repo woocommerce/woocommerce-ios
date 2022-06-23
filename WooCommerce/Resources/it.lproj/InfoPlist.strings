@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--Warning: Auto-generated file, do not edit.-->
+<plist version="1.0">
+  <dict>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>Questa app utilizza il Bluetooth per connettersi ai lettori di carte supportati.</string>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>È necessario l'accesso Bluetooth per connettersi ai lettori di carte supportati.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Per scattare foto o video da aggiungere ai tuoi prodotti, scansiona il codice a barre per lo SKU del prodotto o i ticket di assistenza.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Per accettare i pagamenti, è necessario l'accesso alla posizione.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Per salvare le foto dalla fotocamera per le immagini di prodotto, per aggiungere foto o video ai tuoi Prodotti o per i ticket di assistenza.</string>
+  </dict>
+</plist>

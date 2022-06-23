@@ -1,0 +1,2 @@
+Diese Version beinhaltet mehrere Fehlerkorrekturen bei der Erstellung von Bestellungen und persönlichen Zahlungen. U. a. wurde ein Fehler im Abschnitt „Produkte“ behoben, bei dem nicht die korrekte Bestellung von Artikeln angezeigt wurde, Datum und Uhrzeit für alle Bestellungen zu sehen waren und der Button „Rückerstattung ausstellen“ für alle bezahlten Bestellungen angezeigt wurde.
+Sende uns bitte weiter Feedback – wir freuen uns darauf!

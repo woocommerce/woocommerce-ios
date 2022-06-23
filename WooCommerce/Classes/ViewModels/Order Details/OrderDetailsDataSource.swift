@@ -1,6 +1,8 @@
 import Foundation
 import UIKit
 import Yosemite
+import Experiments
+import WooFoundation
 import protocol Storage.StorageManagerType
 
 
@@ -44,19 +46,11 @@ final class OrderDetailsDataSource: NSObject {
 
     /// Whether the order is eligible for card present payment.
     ///
-    var isEligibleForCardPresentPayment: Bool {
-        let hasCardPresentEligiblePaymentGatewayAccount = resultsControllers
-            .paymentGatewayAccounts
-            .contains(where: \.isCardPresentEligible)
-        let orderIsEligibleForCardPresentPayment = order.isEligibleForCardPresentPayment(cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration,
-                                                                                         products: resultsControllers.products)
-
-        return hasCardPresentEligiblePaymentGatewayAccount && orderIsEligibleForCardPresentPayment
-    }
+    var isEligibleForCardPresentPayment: Bool = false
 
     var isEligibleForRefund: Bool {
         guard !isRefundedStatus,
-              !isEligibleForCardPresentPayment,
+              order.datePaid != nil,
               refundableOrderItemsDeterminer.isAnythingToRefund(from: order, with: refunds, currencyFormatter: currencyFormatter) else {
             return false
         }
@@ -71,11 +65,46 @@ final class OrderDetailsDataSource: NSObject {
             !isEligibleForCardPresentPayment
     }
 
+    /// Whether the row for amount paid should be visible.
+    ///
+    private var shouldShowCustomerPaidRow: Bool {
+        order.datePaid != nil
+    }
+
     /// Whether the option to re-create shipping labels should be visible.
     ///
     var shouldAllowRecreatingShippingLabels: Bool {
         return isEligibleForShippingLabelCreation && shippingLabels.isNotEmpty &&
             !isEligibleForCardPresentPayment
+    }
+
+    /// Whether the option to install the WCShip extension should be visible.
+    /// This feature is hidden behind a feature flag `shippingLabelsOnboardingM1`.
+    /// We do those check because we are going to display the feature only to US store owners:
+    /// - WCShip is not installed or not enabled.
+    /// - The store is located in US.
+    /// - The currency is USD.
+    /// - The products are eligible for SL (not virtual/downloadable).
+    /// - The order is not eligible for IPP.
+    ///
+    var shouldAllowWCShipInstallation: Bool {
+        let isFeatureFlagEnabled = featureFlags.isFeatureFlagEnabled(.shippingLabelsOnboardingM1)
+        let plugin = resultsControllers.sitePlugins.first { $0.name == "WooCommerce Shipping & Tax" }
+        let isPluginInstalled = plugin != nil
+        let isPluginActive = plugin?.status.isActive ?? false
+        let isCountryCodeUS = SiteAddress(siteSettings: siteSettings).countryCode == SiteAddress.CountryCode.US.rawValue
+        let isCurrencyUSD = currencySettings.currencyCode == .USD
+
+        guard isFeatureFlagEnabled,
+              !isPluginInstalled,
+              !isPluginActive,
+              isCountryCodeUS,
+              isCurrencyUSD,
+              !isEligibleForCardPresentPayment else {
+            return false
+        }
+
+        return true
     }
 
     func cardPresentPaymentGatewayAccounts() -> [PaymentGatewayAccount] {
@@ -170,7 +199,7 @@ final class OrderDetailsDataSource: NSObject {
     /// Combine refunded order items to show refunded products
     ///
     var refundedProducts: [AggregateOrderItem]? {
-        return AggregateDataHelper.combineRefundedProducts(from: refunds)
+        return AggregateDataHelper.combineRefundedProducts(from: refunds, orderItems: items)
     }
 
     /// Calculate the new order item quantities and totals after refunded products have altered the fields
@@ -212,7 +241,7 @@ final class OrderDetailsDataSource: NSObject {
         return AsyncDictionary()
     }()
 
-    private lazy var currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+    private lazy var currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
 
     private let imageService: ImageService = ServiceLocator.imageService
 
@@ -221,15 +250,27 @@ final class OrderDetailsDataSource: NSObject {
 
     private let refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol
 
+    private let currencySettings: CurrencySettings
+
+    private let siteSettings: [SiteSetting]
+
+    private let featureFlags: FeatureFlagService
+
     init(order: Order,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
-         refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol = OrderRefundsOptionsDeterminer()) {
+         refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol = OrderRefundsOptionsDeterminer(),
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings,
+         featureFlags: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.storageManager = storageManager
         self.order = order
         self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
         self.couponLines = order.coupons
         self.refundableOrderItemsDeterminer = refundableOrderItemsDeterminer
+        self.currencySettings = currencySettings
+        self.siteSettings = siteSettings
+        self.featureFlags = featureFlags
 
         super.init()
     }
@@ -336,6 +377,8 @@ private extension OrderDetailsDataSource {
             configureShippingLabelDetail(cell: cell)
         case let cell as ImageAndTitleAndTextTableViewCell where row == .shippingNotice:
             configureShippingNotice(cell: cell)
+        case let cell as WCShipInstallTableViewCell where row == .installWCShip:
+            configureInstallWCShip(cell: cell)
         case let cell as ImageAndTitleAndTextTableViewCell where row == .shippingLabelCreationInfo(showsSeparator: true),
              let cell as ImageAndTitleAndTextTableViewCell where row == .shippingLabelCreationInfo(showsSeparator: false):
             if case .shippingLabelCreationInfo(let showsSeparator) = row {
@@ -410,6 +453,12 @@ private extension OrderDetailsDataSource {
             }
         }
 
+        // TODO: Before releasing the feature, please the delete closures assignation above.
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing) {
+            cell.onEditTapped = nil
+            cell.onAddTapped = nil
+        }
+
         cell.addButtonTitle = NSLocalizedString("Add Customer Note", comment: "Title for the button to add the Customer Provided Note in Order Details")
         cell.editButtonAccessibilityLabel = NSLocalizedString(
             "Update Note",
@@ -457,6 +506,24 @@ private extension OrderDetailsDataSource {
                                                     comment: "VoiceOver accessibility label for the shipping notice about the order")
     }
 
+    private func configureInstallWCShip(cell: WCShipInstallTableViewCell) {
+        cell.update(title: NSLocalizedString("Need a shipping label?",
+                                             comment: "Title of the banner in the Order Detail for suggesting to install WCShip extension."),
+                    body: NSLocalizedString("Print labels from your phone, with WooCommerce Shipping.",
+                                            comment: "Body of the banner in the Order Detail for suggesting to install WCShip extension."),
+                    action: NSLocalizedString("Get WooCommerce Shipping",
+                                              comment: "Action of the banner in the Order Detail for suggesting to install WCShip extension."),
+                    image: .installWCShipImage)
+
+        cell.selectionStyle = .none
+
+        cell.accessibilityTraits = .button
+        cell.accessibilityLabel = NSLocalizedString("Install the WCShip extension.",
+                                                    comment: "Accessibility label for the Install WCShip banner in the Order Detail")
+        cell.accessibilityHint = NSLocalizedString("Open the flow for installing the WCShip extension.",
+                                                   comment: "VoiceOver accessibility label for the Install WCShip banner in the Order Detail")
+    }
+
     private func configureNewNote(cell: LeftImageTableViewCell) {
         cell.leftImage = Icons.addNoteIcon
         cell.imageView?.tintColor = .accent
@@ -502,7 +569,7 @@ private extension OrderDetailsDataSource {
     private func configureCustomerPaid(cell: TwoColumnHeadlineFootnoteTableViewCell) {
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
         cell.leftText = Titles.paidByCustomer
-        cell.rightText = paymentViewModel.paymentTotal
+        cell.rightText = order.paymentTotal
         cell.updateFootnoteText(paymentViewModel.paymentSummary)
     }
 
@@ -515,7 +582,7 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureRefund(cell: TwoColumnHeadlineFootnoteTableViewCell, at indexPath: IndexPath) {
-        let index = indexPath.row - Constants.paymentCell - Constants.paidByCustomerCell
+        let index = indexPath.row - Constants.paymentCell - Constants.paidByCustomerCell(isDisplayed: shouldShowCustomerPaidRow)
         let condensedRefund = condensedRefunds[index]
         let refund = lookUpRefund(by: condensedRefund.refundID)
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order, refund: refund)
@@ -538,10 +605,8 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureNetAmount(cell: TwoColumnHeadlineFootnoteTableViewCell) {
-        let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
-
         cell.leftText = Titles.netAmount
-        cell.rightText = paymentViewModel.netAmount
+        cell.rightText = order.netAmount
         cell.hideFootnote()
     }
 
@@ -829,6 +894,12 @@ private extension OrderDetailsDataSource {
             }
         }
 
+        // TODO: Before releasing the feature, please the delete closures assignation above.
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing) {
+            cell.onEditTapped = nil
+            cell.onAddTapped = nil
+        }
+
         cell.addButtonTitle = NSLocalizedString("Add Shipping Address", comment: "Title for the button to add the Shipping Address in Order Details")
         cell.editButtonAccessibilityLabel = NSLocalizedString(
             "Update Address",
@@ -981,6 +1052,15 @@ extension OrderDetailsDataSource {
             return Section(category: .refundedProducts, title: Title.refundedProducts, row: row)
         }()
 
+        let installWCShipSection: Section? = {
+            guard shouldAllowWCShipInstallation else {
+                return nil
+            }
+
+            let rows: [Row] = [.installWCShip]
+            return Section(category: .installWCShip, title: nil, rows: rows)
+        }()
+
         let shippingLabelSections: [Section] = {
             guard shippingLabels.isNotEmpty else {
                 return []
@@ -1006,31 +1086,65 @@ extension OrderDetailsDataSource {
             return sections
         }()
 
-        let customerInformation: Section = {
+        let customerInformation: Section? = {
             var rows: [Row] = []
 
-            /// Always visible to allow editing.
-            rows.append(.customerNote)
+            let isUnifiedEditingEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing)
+
+            /// Customer Note
+            if isUnifiedEditingEnabled {
+                if order.customerNote?.isNotEmpty == true {
+                    /// When inside `.unifiedOrderEditing` only show the note if there is content for it.
+                    rows.append(.customerNote)
+                }
+            } else {
+                /// Always visible to allow editing.
+                rows.append(.customerNote)
+            }
 
             let orderContainsOnlyVirtualProducts = self.products.filter { (product) -> Bool in
                 return items.first(where: { $0.productID == product.productID}) != nil
             }.allSatisfy { $0.virtual == true }
 
-            if order.shippingAddress != nil && orderContainsOnlyVirtualProducts == false {
-                rows.append(.shippingAddress)
+            /// Shipping Address
+            if isUnifiedEditingEnabled {
+                /// When inside `.unifiedOrderEditing` only show the billing address if there is content for it.
+                if order.shippingAddress?.isEmpty == false {
+                    rows.append(.shippingAddress)
+                }
+            } else {
+                /// Almost always visible to allow editing.
+                if order.shippingAddress != nil && orderContainsOnlyVirtualProducts == false {
+                    rows.append(.shippingAddress)
+                }
             }
+
+            /// Shipping Lines
             if shippingLines.count > 0 {
                 rows.append(.shippingMethod)
             }
-            rows.append(.billingDetail)
+
+            /// Billing Address
+            if isUnifiedEditingEnabled {
+                /// When inside `.unifiedOrderEditing` only show the billing address if there is content for it.
+                if order.billingAddress?.isEmpty == false {
+                    rows.append(.billingDetail)
+                }
+            } else {
+                /// Always visible to allow editing.
+                rows.append(.billingDetail)
+            }
+
+            /// Return `nil` if there is no rows to display.
+            guard rows.isNotEmpty else {
+                return nil
+            }
 
             return Section(category: .customerInformation, title: Title.information, rows: rows)
         }()
 
         let payment: Section = {
             var rows: [Row] = [.payment]
-
-            let shouldShowCustomerPaidRow = order.datePaid != nil
 
             if shouldShowCustomerPaidRow {
                 rows.append(.customerPaid)
@@ -1095,21 +1209,22 @@ extension OrderDetailsDataSource {
         }()
 
         sections = ([summary,
-                    shippingNotice,
-                    products] +
+                     shippingNotice,
+                     products,
+                     installWCShipSection] +
                     shippingLabelSections +
                     [refundedProducts,
-                    payment,
-                    customerInformation,
-                    tracking,
-                    addTracking,
-                    notes]).compactMap { $0 }
+                     payment,
+                     customerInformation,
+                     tracking,
+                     addTracking,
+                     notes]).compactMap { $0 }
 
         updateOrderNoteAsyncDictionary(orderNotes: orderNotes)
     }
 
     func refund(at indexPath: IndexPath) -> Refund? {
-        let index = indexPath.row - Constants.paymentCell - Constants.paidByCustomerCell
+        let index = indexPath.row - Constants.paymentCell - Constants.paidByCustomerCell(isDisplayed: shouldShowCustomerPaidRow)
         let condensedRefund = condensedRefunds[index]
         let refund = refunds.first { $0.refundID == condensedRefund.refundID }
 
@@ -1318,6 +1433,7 @@ extension OrderDetailsDataSource {
             case summary
             case shippingNotice
             case products
+            case installWCShip
             case shippingLabel
             case refundedProducts
             case payment
@@ -1412,6 +1528,7 @@ extension OrderDetailsDataSource {
         case tracking
         case trackingAdd
         case collectCardPaymentButton
+        case installWCShip
         case shippingLabelCreateButton
         case shippingLabelCreationInfo(showsSeparator: Bool)
         case shippingLabelDetail
@@ -1461,6 +1578,8 @@ extension OrderDetailsDataSource {
                 return LeftImageTableViewCell.reuseIdentifier
             case .collectCardPaymentButton:
                 return ButtonTableViewCell.reuseIdentifier
+            case .installWCShip:
+                return WCShipInstallTableViewCell.reuseIdentifier
             case .shippingLabelCreateButton:
                 return ButtonTableViewCell.reuseIdentifier
             case .shippingLabelCreationInfo:
@@ -1501,10 +1620,15 @@ extension OrderDetailsDataSource {
         case editShippingAddress
     }
 
-    struct Constants {
+    enum Constants {
         static let addOrderCell = 1
         static let paymentCell = 1
-        static let paidByCustomerCell = 1
+
+        /// Input value required because cell is displayed conditionally
+        ///
+        static func paidByCustomerCell(isDisplayed: Bool) -> Int {
+            isDisplayed ? 1 : 0
+        }
     }
 }
 

@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import Yosemite
+import WooFoundation
 import protocol Storage.StorageManagerType
 
 /// View Model for `CouponRestriction`
@@ -73,6 +74,12 @@ final class CouponRestrictionsViewModel: ObservableObject {
             self?.excludedCategoryIDs = categories.map { $0.categoryID }
         }
     }()
+
+    var allowedEmailsViewModel: CouponAllowedEmailsViewModel {
+        CouponAllowedEmailsViewModel(allowedEmails: allowedEmails) { [weak self] updatedEmails in
+            self?.allowedEmails = updatedEmails
+        }
+    }
 
     private let siteID: Int64
     private let stores: StoresManager

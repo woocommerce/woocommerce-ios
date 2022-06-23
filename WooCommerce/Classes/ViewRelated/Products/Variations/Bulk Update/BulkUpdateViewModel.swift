@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import WooFoundation
 import protocol Storage.StorageManagerType
 
 /// View Model logic for the Bulk Variations Update

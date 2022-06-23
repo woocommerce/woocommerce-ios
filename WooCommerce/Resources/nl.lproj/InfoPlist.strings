@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--Warning: Auto-generated file, do not edit.-->
+<plist version="1.0">
+  <dict>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>Deze app maakt gebruik van Bluetooth om verbinding te maken met ondersteunde kaartlezers.</string>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>Bluetooth-toegang is vereist om verbinding te maken met ondersteunde kaartlezers.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Scan de barcode voor product-SKU of ondersteuningstickets om foto's of video's toe te voegen aan je producten.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Locatietoegang is vereist om betalingen aan te nemen.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Om foto's van je camera op te slaan als productafbeeldingen, of om foto's of video's toe te voegen aan je producten of ondersteuningstickets.</string>
+  </dict>
+</plist>

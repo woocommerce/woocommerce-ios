@@ -10,14 +10,14 @@ final class MockProductVariation {
                                 productVariationID: variationID,
                                 attributes: [],
                                 image: ProductImage(imageID: 2432,
-                                                    dateCreated: dateFromGMT("2020-03-13T03:13:57"),
-                                                    dateModified: dateFromGMT("2020-07-21T08:29:16"),
+                                                    dateCreated: DateFormatter.dateFromString(with: "2020-03-13T03:13:57"),
+                                                    dateModified: DateFormatter.dateFromString(with: "2020-07-21T08:29:16"),
                                                     src: "",
                                                     name: "DSC_0010",
                                                     alt: ""),
                                 permalink: "https://chocolate.com/marble",
-                                dateCreated: dateFromGMT("2020-06-12T14:36:02"),
-                                dateModified: dateFromGMT("2020-07-21T08:35:47"),
+                                dateCreated: DateFormatter.dateFromString(with: "2020-06-12T14:36:02"),
+                                dateModified: DateFormatter.dateFromString(with: "2020-07-21T08:35:47"),
                                 dateOnSaleStart: nil,
                                 dateOnSaleEnd: nil,
                                 status: .published,
@@ -49,10 +49,5 @@ final class MockProductVariation {
                                 shippingClassID: 0,
                                 menuOrder: 1)
 
-    }
-
-    private func dateFromGMT(_ dateStringInGMT: String) -> Date {
-        let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
-        return dateFormatter.date(from: dateStringInGMT)!
     }
 }

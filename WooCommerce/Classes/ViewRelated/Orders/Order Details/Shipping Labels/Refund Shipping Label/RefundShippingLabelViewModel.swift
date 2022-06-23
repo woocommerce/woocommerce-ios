@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import WooFoundation
 
 /// View model for `RefundShippingLabelViewController` that provides data that are ready for display in the view.
 struct RefundShippingLabelViewModel {

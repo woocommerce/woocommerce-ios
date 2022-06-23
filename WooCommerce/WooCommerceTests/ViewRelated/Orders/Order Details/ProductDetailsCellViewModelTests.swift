@@ -1,6 +1,7 @@
 import XCTest
 @testable import WooCommerce
 import Yosemite
+import WooFoundation
 
 final class ProductDetailsCellViewModelTests: XCTestCase {
     private let currencyFormatter = CurrencyFormatter(currencySettings: .init())
@@ -243,6 +244,7 @@ private extension ProductDetailsCellViewModelTests {
                         name: "Ninja Silhouette",
                         productID: 1,
                         variationID: 6,
+                        refundedItemID: "1",
                         quantity: quantity,
                         price: price,
                         sku: sku,

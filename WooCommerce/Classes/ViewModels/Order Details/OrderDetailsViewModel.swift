@@ -4,9 +4,12 @@ import Gridicons
 import Yosemite
 import MessageUI
 import Combine
+import Experiments
+import WooFoundation
 import enum Networking.DotcomError
 
 final class OrderDetailsViewModel {
+
     /// Retains the use-case so it can perform all of its async tasks.
     ///
     private var collectPaymentsUseCase: CollectOrderPaymentUseCase?
@@ -14,6 +17,10 @@ final class OrderDetailsViewModel {
     private let stores: StoresManager
 
     private(set) var order: Order
+
+    /// Defines the current sync states of the view model data.
+    ///
+    private var syncState: SyncState = .notSynced
 
     private let cardPresentPaymentsOnboardingPresenter = CardPresentPaymentsOnboardingPresenter()
 
@@ -145,22 +152,10 @@ final class OrderDetailsViewModel {
 
     private var receipt: CardPresentReceiptParameters? = nil
 
-    /// Defines if the actions menu item should be shown.
-    /// Currently the only action should be to share a payment link.
+    /// Returns available action buttons given the internal state.
     ///
-    var shouldShowActionsMenuItem: Bool {
-        needsPayment && paymentLink != nil
-    }
-
-    /// This check is temporary, we are working on knowing if an order needs payment directly from the API.
-    /// Conditions copied from:
-    /// https://github.com/woocommerce/woocommerce/blob/3611d4643791bad87a0d3e6e73e031bb80447417/plugins/woocommerce/includes/class-wc-order.php#L1520-L1523
-    ///
-    private var needsPayment: Bool {
-        guard let total = Double(order.total) else {
-            return false
-        }
-        return total > .zero && (order.status == .pending || order.status == .failed)
+    var moreActionsButtons: [MoreActionButton] {
+        MoreActionButton.availableButtons(order: order, syncState: syncState)
     }
 
     /// Returns the order payment link.
@@ -185,6 +180,140 @@ final class OrderDetailsViewModel {
     }
 }
 
+// MARK: Syncing
+extension OrderDetailsViewModel {
+    /// Syncs all data related to the current order.
+    ///
+    func syncEverything(onReloadSections: (() -> ())? = nil, onCompletion: (() -> ())? = nil) {
+        let group = DispatchGroup()
+
+        /// Update state to syncing
+        ///
+        syncState = .syncing
+
+        group.enter()
+        syncOrder { _ in
+            group.leave()
+        }
+
+        group.enter()
+        syncProducts { _ in
+            group.leave()
+        }
+
+        group.enter()
+        syncProductVariations { _ in
+            group.leave()
+        }
+
+        group.enter()
+        syncRefunds() { _ in
+            group.leave()
+        }
+
+        group.enter()
+        syncShippingLabels() { _ in
+            group.leave()
+        }
+
+        group.enter()
+        syncNotes { _ in
+            group.leave()
+        }
+
+        group.enter()
+        syncTrackingsEnablingAddButtonIfReachable(onReloadSections: onReloadSections) {
+            group.leave()
+        }
+
+        group.enter()
+        checkShippingLabelCreationEligibility {
+            onReloadSections?()
+            group.leave()
+        }
+
+        group.enter()
+        checkCardPresentPaymentEligibility() {
+            onReloadSections?()
+            group.leave()
+        }
+
+        group.enter()
+        loadPaymentGatewayAccounts()
+        group.leave()
+
+        group.enter()
+        refreshCardPresentPaymentOnboarding()
+        group.leave()
+
+        group.enter()
+        syncSavedReceipts {_ in
+            group.leave()
+        }
+
+        group.enter()
+        checkOrderAddOnFeatureSwitchState {
+            onReloadSections?()
+            group.leave()
+        }
+
+        group.notify(queue: .main) { [weak self] in
+
+            /// Update state to synced
+            ///
+            self?.syncState = .synced
+
+            onCompletion?()
+        }
+    }
+
+    func syncOrder(onCompletion: ((Error?) -> ())? = nil) {
+        syncOrder { [weak self] (order, error) in
+            guard let self = self, let order = order else {
+                onCompletion?(error)
+                return
+            }
+
+            self.update(order: order)
+
+            onCompletion?(nil)
+        }
+    }
+
+    func syncTrackingsEnablingAddButtonIfReachable(onReloadSections: (() -> ())? = nil, onCompletion: (() -> Void)? = nil) {
+        syncTracking { [weak self] error in
+            if error == nil {
+                self?.trackingIsReachable = true
+            }
+            onReloadSections?()
+            onCompletion?()
+        }
+    }
+
+    func syncOrderAfterPaymentCollection(onCompletion: @escaping ()-> Void) {
+        let group = DispatchGroup()
+
+        group.enter()
+        syncOrder { _ in
+            group.leave()
+        }
+
+        group.enter()
+        syncNotes { _ in
+            group.leave()
+        }
+
+        group.enter()
+        syncSavedReceipts { _ in
+            group.leave()
+        }
+
+        group.notify(queue: .main) {
+            NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
+            onCompletion()
+        }
+    }
+}
 
 // MARK: - Configuring results controllers
 //
@@ -215,7 +344,8 @@ extension OrderDetailsViewModel {
             SummaryTableViewCell.self,
             ButtonTableViewCell.self,
             IssueRefundTableViewCell.self,
-            ImageAndTitleAndTextTableViewCell.self
+            ImageAndTitleAndTextTableViewCell.self,
+            WCShipInstallTableViewCell.self
         ]
 
         for cellClass in cells {
@@ -293,7 +423,8 @@ extension OrderDetailsViewModel {
             viewController.show(productListVC, sender: nil)
         case .billingDetail:
             ServiceLocator.analytics.track(.orderDetailShowBillingTapped)
-            let billingInformationViewController = BillingInformationViewController(order: order, editingEnabled: true)
+            let isUnifiedEditingEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing)
+            let billingInformationViewController = BillingInformationViewController(order: order, editingEnabled: !isUnifiedEditingEnabled)
             viewController.navigationController?.pushViewController(billingInformationViewController, animated: true)
         case .seeReceipt:
             let countryCode = configurationLoader.configuration.countryCode
@@ -476,7 +607,33 @@ extension OrderDetailsViewModel {
         stores.dispatch(action)
     }
 
-    func refreshCardPresentPaymentEligibility() {
+    func checkCardPresentPaymentEligibility(onCompletion: @escaping (() -> Void)) {
+        let configuration = configurationLoader.configuration
+
+        guard configuration.isSupportedCountry else {
+            dataSource.isEligibleForCardPresentPayment = false
+            onCompletion()
+            return
+        }
+
+        let action = OrderCardPresentPaymentEligibilityAction
+            .orderIsEligibleForCardPresentPayment(orderID: order.orderID,
+                                                  siteID: order.siteID,
+                                                  cardPresentPaymentsConfiguration: configurationLoader.configuration) { [weak self] result in
+            switch result {
+            case .success(let eligible):
+                self?.dataSource.isEligibleForCardPresentPayment = eligible
+            case .failure(_):
+                self?.dataSource.isEligibleForCardPresentPayment = false
+            }
+
+            onCompletion()
+        }
+
+        stores.dispatch(action)
+    }
+
+    func loadPaymentGatewayAccounts() {
         /// No need for a completion here. The VC will be notified of changes to the stored paymentGatewayAccounts
         /// by the viewModel (after passing up through the dataSource and originating in the resultsControllers)
         ///
@@ -564,6 +721,65 @@ extension OrderDetailsViewModel {
                     // Make sure we free all the resources
                     self?.collectPaymentsUseCase = nil
                 })
+        }
+    }
+}
+
+// MARK: Definitions
+private extension OrderDetailsViewModel {
+    /// Defines the possible sync states of the view model data.
+    ///
+    enum SyncState {
+        case notSynced
+        case syncing
+        case synced
+    }
+}
+
+// MARK: More Action Buttons Definition
+extension OrderDetailsViewModel {
+
+    /// Defines an action button that resides inside the more action menu.
+    ///
+    struct MoreActionButton {
+
+        /// Defines all possible more action button types.
+        ///
+        enum ButtonType: CaseIterable {
+            case editOrder
+            case sharePaymentLink
+        }
+
+        /// ID of the button.
+        ///
+        let id: ButtonType
+
+        /// Title of the button.
+        ///
+        let title: String
+
+        fileprivate static func availableButtons(order: Order, syncState: SyncState) -> [MoreActionButton] {
+            ButtonType.allCases.compactMap { buttonType in
+                switch buttonType {
+
+                case .sharePaymentLink:
+                    guard order.needsPayment && order.paymentURL != nil else {
+                        return nil
+                    }
+                    return .init(id: buttonType, title: Localization.sharePaymentLink)
+
+                case .editOrder:
+                    guard syncState == .synced, ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing) else {
+                        return nil
+                    }
+                    return .init(id: buttonType, title: Localization.editOrder)
+                }
+            }
+        }
+
+        enum Localization {
+            static let sharePaymentLink = NSLocalizedString("Share Payment Link", comment: "Title to share an order payment link.")
+            static let editOrder = NSLocalizedString("Edit", comment: "Title to edit an order")
         }
     }
 }

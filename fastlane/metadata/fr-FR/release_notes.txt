@@ -1,0 +1,2 @@
+Cette version apporte plusieurs corrections à la création de commandes et aux paiements en personne, notamment la correction d’un bogue dans la section des produits qui n’affichait pas l’ordre correct des articles, ni la date et l’heure pour toutes les commandes, ni le bouton Remboursement pour toutes les commandes payées.
+Continuez à nous envoyer vos commentaires, votre avis nous intéresse !

@@ -1,0 +1,2 @@
+Rilis ini berisi beberapa perbaikan terkait pembuatan pesanan dan pembayaran langsung, termasuk mengatasi bug yang menyebabkan kesalahan urutan item di bagian produk, menampilkan tanggal dan waktu semua pesanan, dan menunjukkan tombol permintaan pengembalian dana semua pesanan terbayar.
+Mohon terus berikan feedback – kami siap mendengarkan feedback Anda!

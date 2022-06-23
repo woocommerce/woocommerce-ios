@@ -443,9 +443,6 @@ class RemoteOrderSynchronizerTests: XCTestCase {
         }
 
         // When
-        let input = OrderSyncProductInput(product: .product(product), quantity: 1)
-        synchronizer.setProduct.send(input)
-
         let states: [OrderSyncState] = waitFor { promise in
             synchronizer.statePublisher
                 .dropFirst()
@@ -454,6 +451,9 @@ class RemoteOrderSynchronizerTests: XCTestCase {
                     promise(states)
                 }
                 .store(in: &self.subscriptions)
+
+            let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+            synchronizer.setProduct.send(input)
         }
 
         // Then
@@ -476,11 +476,9 @@ class RemoteOrderSynchronizerTests: XCTestCase {
             }
         }
 
+        // Wait for order creation
         let input = OrderSyncProductInput(product: .product(product), quantity: 1)
         createOrder(on: synchronizer, input: input)
-
-        let input2 = OrderSyncProductInput(product: .product(product), quantity: 2)
-        synchronizer.setProduct.send(input2)
 
         let states: [OrderSyncState] = waitFor { promise in
             synchronizer.statePublisher
@@ -490,6 +488,10 @@ class RemoteOrderSynchronizerTests: XCTestCase {
                     promise(states)
                 }
                 .store(in: &self.subscriptions)
+
+            // Trigger order update
+            let input2 = OrderSyncProductInput(product: .product(product), quantity: 2)
+            synchronizer.setProduct.send(input2)
         }
 
         // Then
@@ -513,11 +515,9 @@ class RemoteOrderSynchronizerTests: XCTestCase {
             }
         }
 
+        // Wait for order creation
         let input = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1)
         createOrder(on: synchronizer, input: input)
-
-        let input2 = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 2)
-        synchronizer.setProduct.send(input2)
 
         let states: [OrderSyncState] = waitFor { promise in
             synchronizer.statePublisher
@@ -527,6 +527,10 @@ class RemoteOrderSynchronizerTests: XCTestCase {
                     promise(states)
                 }
                 .store(in: &self.subscriptions)
+
+            // Trigger order update
+            let input2 = OrderSyncProductInput(id: self.sampleInputID, product: .product(product), quantity: 2)
+            synchronizer.setProduct.send(input2)
         }
 
         // Then
@@ -591,9 +595,6 @@ class RemoteOrderSynchronizerTests: XCTestCase {
         }
 
         // When
-        let input = OrderSyncProductInput(product: .product(product), quantity: 1)
-        synchronizer.setProduct.send(input)
-
         let states: [OrderSyncState] = waitFor { promise in
             synchronizer.statePublisher
                 .dropFirst()
@@ -602,6 +603,9 @@ class RemoteOrderSynchronizerTests: XCTestCase {
                     promise(states)
                 }
                 .store(in: &self.subscriptions)
+
+            let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+            synchronizer.setProduct.send(input)
         }
 
         // Then
@@ -625,11 +629,9 @@ class RemoteOrderSynchronizerTests: XCTestCase {
             }
         }
 
+        // Wait for order creation
         let input = OrderSyncProductInput(product: .product(product), quantity: 1)
         createOrder(on: synchronizer, input: input)
-
-        let input2 = OrderSyncProductInput(product: .product(product), quantity: 2)
-        synchronizer.setProduct.send(input2)
 
         let states: [OrderSyncState] = waitFor { promise in
             synchronizer.statePublisher
@@ -639,6 +641,10 @@ class RemoteOrderSynchronizerTests: XCTestCase {
                     promise(states)
                 }
                 .store(in: &self.subscriptions)
+
+            // Trigger order update
+            let input2 = OrderSyncProductInput(product: .product(product), quantity: 2)
+            synchronizer.setProduct.send(input2)
         }
 
         // Then
@@ -948,6 +954,42 @@ class RemoteOrderSynchronizerTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_double_inputs_are_debounced_during_order_update() {
+        // Given
+        let product = Product.fake().copy(productID: sampleProductID)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
+
+        // When
+        let exp = expectation(description: #function)
+        exp.expectedFulfillmentCount = 1
+        exp.assertForOverFulfill = true
+
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case .createOrder(_, let order, let completion):
+                completion(.success(order.copy(orderID: self.sampleOrderID)))
+            case .updateOrder:
+                exp.fulfill()
+            default:
+                break
+            }
+        }
+
+        // Wait for order creation
+        let input1 = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1)
+        createOrder(on: synchronizer, input: input1)
+
+        // Trigger product quantity updates
+        let input2 = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 2)
+        let input3 = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 3)
+        synchronizer.setProduct.send(input2)
+        synchronizer.setProduct.send(input3)
+
+        // Then
+        wait(for: [exp], timeout: 1.0)
     }
 }
 

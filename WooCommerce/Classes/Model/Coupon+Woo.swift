@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import UIKit
+import WooFoundation
 
 extension Coupon.DiscountType {
     /// Localized name to be displayed for the discount type.
@@ -126,6 +127,20 @@ extension Coupon {
         return amountString
     }
 
+    /// The message to be shared about the coupon
+    ///
+    func generateShareMessage(currencySettings: CurrencySettings) -> String {
+        let formattedAmount = formattedAmount(currencySettings: currencySettings)
+        let couponAmount = formattedAmount.isEmpty ? amount : formattedAmount
+        if productIds.isNotEmpty ||
+                   productCategories.isNotEmpty ||
+                   excludedProductIds.isNotEmpty ||
+                   excludedProductCategories.isNotEmpty {
+            return String.localizedStringWithFormat(Localization.shareMessageSomeProducts, couponAmount, code)
+        }
+        return String.localizedStringWithFormat(Localization.shareMessageAllProducts, couponAmount, code)
+    }
+
     /// Localize content for the "Apply to" field. This takes into consideration different cases of apply rules:
     ///    - When only specific products or categories are defined: Display "x Products" or "x Categories"
     ///    - When specific products/categories and exceptions are defined: Display "x Products excl. y Categories" etc.
@@ -245,6 +260,14 @@ extension Coupon {
             "%1$@, %2$@",
             comment: "Combined rule for a coupon. Reads like: 2 Products, 1 Category"
         )
+        static let shareMessageAllProducts = NSLocalizedString(
+                "Apply %1$@ off to all products with the promo code “%2$@”.",
+                comment: "Message to share the coupon code if it is applicable to all products. " +
+                        "Reads like: Apply 10% off to all products with the promo code “20OFF”.")
+        static let shareMessageSomeProducts = NSLocalizedString(
+                "Apply %1$@ off to some products with the promo code “%2$@”.",
+                comment: "Message to share the coupon code if it is applicable to some products. " +
+                        "Reads like: Apply 10% off to some products with the promo code “20OFF”.")
     }
 }
 

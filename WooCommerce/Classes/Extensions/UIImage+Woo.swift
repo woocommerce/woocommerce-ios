@@ -118,12 +118,19 @@ extension UIImage {
         return UIImage(named: "check-circle-partial")!
     }
 
+    /// Large checkmark image that is shown upon success
+    ///
+    static var checkSuccessImage: UIImage {
+        return UIImage(named: "check-success")!
+    }
+
     /// WooCommerce Styled Checkmark
     ///
     static var checkmarkStyledImage: UIImage {
         let tintColor = UIColor.primary
         return checkmarkImage.imageWithTintColor(tintColor)!
     }
+
 
     /// Chevron Pointing Right
     ///
@@ -522,6 +529,14 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Credit card give icon
+    ///
+    static var creditCardGiveIcon: UIImage {
+        return UIImage(named: "credit-card-give")!
+            .withRenderingMode(.alwaysTemplate)
+            .imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Files Download Icon
     ///
     static var cloudImage: UIImage {
@@ -689,7 +704,7 @@ extension UIImage {
     /// Simple Payments Icon
     ///
     static var simplePaymentsImage: UIImage {
-        return UIImage(named: "icon-simple-payments")!
+        return UIImage(named: "icon-simple-payments")!.withRenderingMode(.alwaysTemplate)
     }
 
     /// Work In Progress banner icon on the Products Tab
@@ -751,6 +766,13 @@ extension UIImage {
     ///
     static var minusSmallImage: UIImage {
         return UIImage.gridicon(.minusSmall)
+    }
+
+    /// Rectangle on rectangle, angled
+    ///
+    static var rectangleOnRectangleAngled: UIImage {
+        return UIImage(systemName: "rectangle.on.rectangle.angled", withConfiguration: Configurations.barButtonItemSymbol)!
+            .imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Search Icon - used in `UIBarButtonItem`
@@ -822,6 +844,12 @@ extension UIImage {
         return UIImage.gridicon(.starOutline, size: starSize)
     }
 
+    /// Stripe icon
+    ///
+    static var stripeIcon: UIImage {
+        return UIImage(named: "stripe-icon")!
+    }
+
     /// Sync Icon
     ///
     static var syncIcon: UIImage {
@@ -868,6 +896,12 @@ extension UIImage {
     ///
     static var visibilityImage: UIImage {
         return UIImage.gridicon(.visible)
+    }
+
+    /// Stripe icon
+    ///
+    static var wcpayIcon: UIImage {
+        return UIImage(named: "wcpay-icon")!
     }
 
     /// No store image
@@ -928,6 +962,12 @@ extension UIImage {
     ///
     static var waitingForCustomersImage: UIImage {
         return UIImage(named: "woo-waiting-customers")!
+    }
+
+    /// Install WCShip banner Image
+    ///
+    static var installWCShipImage: UIImage {
+        return UIImage(named: "woo-wcship-install-banner")!
     }
 
     /// What is Jetpack Image

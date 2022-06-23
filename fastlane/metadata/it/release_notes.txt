@@ -1,0 +1,2 @@
+This release has several fixes for order creation and in person payments, including fixing a bug in the products section not showing the correct order of items, displaying the date and time for all orders and showing the issue refund button for all paid orders.
+Continua a inviarci feedback: siamo lieti di ascoltarli.

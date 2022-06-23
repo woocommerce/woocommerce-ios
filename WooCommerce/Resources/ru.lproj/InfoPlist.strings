@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--Warning: Auto-generated file, do not edit.-->
+<plist version="1.0">
+  <dict>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>Это приложение использует Bluetooth для подключения к платёжным терминалам.</string>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>Чтобы подключиться к платёжным терминалам, требуется доступ к Bluetooth.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Чтобы снимать фотографии и видеоролики и добавлять их в описание товаров и заявки в службу поддержки, а также сканировать штрихкоды товаров.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Чтобы принимать платежи, требуется доступ к данным о местоположении.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Чтобы сохранять фотографии с камеры в качестве изображений товаров или добавлять фотографии и видеоролики в описание товаров и заявки в службу поддержки.</string>
+  </dict>
+</plist>

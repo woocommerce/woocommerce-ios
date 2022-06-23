@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--Warning: Auto-generated file, do not edit.-->
+<plist version="1.0">
+  <dict>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>이 앱에서는 블루투스를 사용하여 지원되는 카드 리더에 연결합니다.</string>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>지원되는 카드 리더에 연결하려면 블루투스 접근 권한이 필요합니다.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>사진 또는 비디오를 촬영하여 상품, 상품 SKU 스캔 바코드 또는 지원 티켓에 추가하는 방법입니다.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>결제를 수락하려면 위치 접근 권한이 필요합니다.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>상품 이미지의 카메라 사진을 저장하거나 사진 또는 비디오를 상품 또는 지원 티켓에 추가하는 방법입니다.</string>
+  </dict>
+</plist>

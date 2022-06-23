@@ -48,10 +48,10 @@ final class ProductVariationsRemoteTests: XCTestCase {
             XCTAssertEqual(expectedVariation.sku, "99%-nuts-marble")
             XCTAssertEqual(expectedVariation.permalink, "https://chocolate.com/marble")
 
-            XCTAssertEqual(expectedVariation.dateCreated, self.dateFromGMT("2019-11-14T12:40:55"))
-            XCTAssertEqual(expectedVariation.dateModified, self.dateFromGMT("2019-11-14T13:06:42"))
-            XCTAssertEqual(expectedVariation.dateOnSaleStart, self.dateFromGMT("2019-10-15T21:30:00"))
-            XCTAssertEqual(expectedVariation.dateOnSaleEnd, self.dateFromGMT("2019-10-27T21:29:59"))
+            XCTAssertEqual(expectedVariation.dateCreated, DateFormatter.dateFromString(with: "2019-11-14T12:40:55"))
+            XCTAssertEqual(expectedVariation.dateModified, DateFormatter.dateFromString(with: "2019-11-14T13:06:42"))
+            XCTAssertEqual(expectedVariation.dateOnSaleStart, DateFormatter.dateFromString(with: "2019-10-15T21:30:00"))
+            XCTAssertEqual(expectedVariation.dateOnSaleEnd, DateFormatter.dateFromString(with: "2019-10-27T21:29:59"))
 
             let expectedPrice = 12
             XCTAssertEqual(expectedVariation.price, "\(expectedPrice)")
@@ -334,14 +334,14 @@ private extension ProductVariationsRemoteTests {
                                 productVariationID: id,
                                 attributes: sampleProductVariationAttributes(),
                                 image: ProductImage(imageID: 2432,
-                                                    dateCreated: dateFromGMT("2020-03-13T03:13:57"),
-                                                    dateModified: dateFromGMT("2020-07-21T08:29:16"),
+                                                    dateCreated: DateFormatter.dateFromString(with: "2020-03-13T03:13:57"),
+                                                    dateModified: DateFormatter.dateFromString(with: "2020-07-21T08:29:16"),
                                                     src: imageSource,
                                                     name: "DSC_0010",
                                                     alt: ""),
                                 permalink: "https://chocolate.com/marble",
-                                dateCreated: dateFromGMT("2020-06-12T14:36:02"),
-                                dateModified: dateFromGMT("2020-07-21T08:35:47"),
+                                dateCreated: DateFormatter.dateFromString(with: "2020-06-12T14:36:02"),
+                                dateModified: DateFormatter.dateFromString(with: "2020-07-21T08:35:47"),
                                 dateOnSaleStart: nil,
                                 dateOnSaleEnd: nil,
                                 status: .published,
@@ -386,10 +386,5 @@ private extension ProductVariationsRemoteTests {
                                       productID: Int64) -> CreateProductVariation {
         let createVariation = CreateProductVariation(regularPrice: "5.0", attributes: sampleProductVariationAttributes())
         return createVariation
-    }
-
-    func dateFromGMT(_ dateStringInGMT: String) -> Date {
-        let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
-        return dateFormatter.date(from: dateStringInGMT)!
     }
 }

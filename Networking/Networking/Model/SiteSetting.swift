@@ -36,21 +36,47 @@ public struct SiteSetting: Decodable, Equatable, GeneratedFakeable, GeneratedCop
         let settingID = try container.decode(String.self, forKey: .settingID)
         let label = try container.decodeIfPresent(String.self, forKey: .label) ?? ""
         let settingDescription = try container.decodeIfPresent(String.self, forKey: .settingDescription) ?? ""
-
-        // Note: `value` is a mixed type per the documentation — usually a String but could be an Array, Int, etc
-        // For the specific settings we are interested in, it is a String type.
-        // See: https://woocommerce.github.io/woocommerce-rest-api-docs/#setting-options for more details.
+        let responseType = try container.decodeIfPresent(ResponseType.self, forKey: .type) ?? .unknown
         var value = ""
-        if let stringValue = try? container.decode(String.self, forKey: .value) {
-            value = stringValue
-        } else {
-            DDLogWarn("⚠️ Could not successfully decode SiteSetting value for \(settingID)")
+        if responseType.isSupported {
+            if let stringValue = try? container.decode(String.self, forKey: .value) {
+                value = stringValue
+            } else {
+                DDLogWarn("⚠️ Could not successfully decode SiteSetting value for \(settingID)")
+            }
         }
-
         self.init(siteID: siteID, settingID: settingID, label: label, settingDescription: settingDescription, value: value, settingGroupKey: settingGroupKey)
     }
 }
+/// Defines all of the response types of SiteSettings options
+/// See: https://woocommerce.github.io/woocommerce-rest-api-docs/#setting-option-properties
+///
+private extension SiteSetting {
+    enum ResponseType: String, Codable {
+        case text
+        case email
+        case number
+        case color
+        case password
+        case textarea
+        case select
+        case multiselect
+        case radio
+        case imageWidth = "image_width"
+        case checkbox
+        // For types not contemplated by the API
+        case unknown
 
+        var isSupported: Bool {
+            switch self {
+            case .multiselect:
+                return false
+            default:
+                return true
+            }
+        }
+    }
+}
 
 /// Defines all of the SiteSetting CodingKeys.
 ///
@@ -61,6 +87,7 @@ private extension SiteSetting {
         case label              = "label"
         case settingDescription = "description"
         case value              = "value"
+        case type               = "type"
     }
 }
 

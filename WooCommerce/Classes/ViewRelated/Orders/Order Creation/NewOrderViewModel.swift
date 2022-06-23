@@ -2,6 +2,7 @@ import Yosemite
 import Combine
 import protocol Storage.StorageManagerType
 import Experiments
+import WooFoundation
 import enum Networking.DotcomError
 
 /// View model for `NewOrder`.
@@ -15,16 +16,50 @@ final class NewOrderViewModel: ObservableObject {
 
     private var cancellables: Set<AnyCancellable> = []
 
+    enum Flow: Equatable {
+        case creation
+        case editing(initialOrder: Order)
+    }
+
+    /// Current flow. For editing stores existing order state prior to applying any edits.
+    ///
+    let flow: Flow
+
     /// Indicates whether user has made any changes
     ///
     var hasChanges: Bool {
-        orderSynchronizer.order != OrderFactory.emptyNewOrder
+        switch flow {
+        case .creation:
+            return orderSynchronizer.order != OrderFactory.emptyNewOrder
+        case .editing(let initialOrder):
+            return orderSynchronizer.order != initialOrder
+        }
+    }
+
+    /// Indicates whether view can be dismissed.
+    ///
+    var canBeDismissed: Bool {
+        switch flow {
+        case .creation: // Creation can be dismissed when there aren't changes pending to commit.
+            return !hasChanges
+        case .editing: // Editing can always be dismissed because changes are committed instantly.
+            return true
+        }
     }
 
     /// Indicates whether the cancel button is visible.
     ///
     var shouldShowCancelButton: Bool {
-        featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
+        featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) && flow == .creation
+    }
+
+    var title: String {
+        switch flow {
+        case .creation:
+            return Localization.titleForNewOrder
+        case .editing(let order):
+            return String.localizedStringWithFormat(Localization.titleWithOrderNumber, order.number)
+        }
     }
 
     /// Active navigation bar trailing item.
@@ -45,9 +80,15 @@ final class NewOrderViewModel: ObservableObject {
 
     /// Order creation date. For new order flow it's always current date.
     ///
-    let dateString: String = {
-        DateFormatter.mediumLengthLocalizedDateFormatter.string(from: Date())
-    }()
+    var dateString: String {
+        switch flow {
+        case .creation:
+            return DateFormatter.mediumLengthLocalizedDateFormatter.string(from: Date())
+        case .editing(let order):
+            let formatter = DateFormatter.dateAndTimeFormatter
+            return formatter.string(from: order.dateCreated)
+        }
+    }
 
     /// Representation of order status display properties.
     ///
@@ -94,9 +135,7 @@ final class NewOrderViewModel: ObservableObject {
 
     /// Products list
     ///
-    private var allProducts: [Product] {
-        productsResultsController.fetchedObjects
-    }
+    private var allProducts: [Product] = []
 
     /// Product Variations Results Controller.
     ///
@@ -108,9 +147,7 @@ final class NewOrderViewModel: ObservableObject {
 
     /// Product Variations list
     ///
-    private var allProductVariations: [ProductVariation] {
-        productVariationsResultsController.fetchedObjects
-    }
+    private var allProductVariations: [ProductVariation] = []
 
     /// View model for the product list
     ///
@@ -198,17 +235,23 @@ final class NewOrderViewModel: ObservableObject {
     private let orderSynchronizer: OrderSynchronizer
 
     init(siteID: Int64,
+         flow: Flow = .creation,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
+        self.flow = flow
         self.stores = stores
         self.storageManager = storageManager
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.analytics = analytics
-        self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, stores: stores, currencySettings: currencySettings)
+        if case let .editing(initialOrder) = flow {
+            self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, initialOrder: initialOrder, stores: stores, currencySettings: currencySettings)
+        } else {
+            self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, initialOrder: nil, stores: stores, currencySettings: currencySettings)
+        }
         self.featureFlagService = featureFlagService
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.
@@ -303,7 +346,7 @@ final class NewOrderViewModel: ObservableObject {
 
             switch result {
             case .success(let newOrder):
-                self.onOrderCreated(newOrder)
+                self.onFinished(newOrder)
                 self.trackCreateOrderSuccess()
             case .failure(let error):
                 self.notice = NoticeFactory.createOrderErrorNotice(error, order: self.orderSynchronizer.order)
@@ -314,9 +357,11 @@ final class NewOrderViewModel: ObservableObject {
         trackCreateButtonTapped()
     }
 
-    /// Assign this closure to be notified when a new order is created
+    /// Assign this closure to be notified when the flow has finished.
+    /// For creation it means that the order has been created.
+    /// For edition it means that the merchant has finished editing the order.
     ///
-    var onOrderCreated: (Order) -> Void = { _ in }
+    var onFinished: (Order) -> Void = { _ in }
 
     /// Updates the order status & tracks its event
     ///
@@ -352,6 +397,7 @@ extension NewOrderViewModel {
     ///
     enum NavigationItem: Equatable {
         case create
+        case done
         case loading
     }
 
@@ -503,13 +549,18 @@ private extension NewOrderViewModel {
     /// Calculates what navigation trailing item should be shown depending on our internal state.
     ///
     func configureNavigationTrailingItem() {
-        Publishers.CombineLatest(orderSynchronizer.orderPublisher, $performingNetworkRequest)
-            .map { order, performingNetworkRequest -> NavigationItem in
+        Publishers.CombineLatest3(orderSynchronizer.orderPublisher, $performingNetworkRequest, Just(flow))
+            .map { order, performingNetworkRequest, flow -> NavigationItem in
                 guard !performingNetworkRequest else {
                     return .loading
                 }
 
-                return .create
+                switch flow {
+                case .creation:
+                    return .create
+                case .editing:
+                    return .done
+                }
             }
             .assign(to: &$navigationTrailingItem)
     }
@@ -548,6 +599,10 @@ private extension NewOrderViewModel {
     /// Adds a selected product (from the product list) to the order.
     ///
     func addProductToOrder(_ product: Product) {
+        if !allProducts.contains(product) {
+            allProducts.append(product)
+        }
+
         let input = OrderSyncProductInput(product: .product(product), quantity: 1)
         orderSynchronizer.setProduct.send(input)
 
@@ -557,6 +612,10 @@ private extension NewOrderViewModel {
     /// Adds a selected product variation (from the product list) to the order.
     ///
     func addProductVariationToOrder(_ variation: ProductVariation) {
+        if !allProductVariations.contains(variation) {
+            allProductVariations.append(variation)
+        }
+
         let input = OrderSyncProductInput(product: .variation(variation), quantity: 1)
         orderSynchronizer.setProduct.send(input)
 
@@ -776,6 +835,7 @@ private extension NewOrderViewModel {
     func updateProductsResultsController() {
         do {
             try productsResultsController.performFetch()
+            allProducts = productsResultsController.fetchedObjects
         } catch {
             DDLogError("⛔️ Error fetching products for new order: \(error)")
         }
@@ -786,6 +846,7 @@ private extension NewOrderViewModel {
     func updateProductVariationsResultsController() {
         do {
             try productVariationsResultsController.performFetch()
+            allProductVariations = productVariationsResultsController.fetchedObjects
         } catch {
             DDLogError("⛔️ Error fetching product variations for new order: \(error)")
         }
@@ -834,6 +895,8 @@ extension NewOrderViewModel {
 
 private extension NewOrderViewModel {
     enum Localization {
+        static let titleForNewOrder = NSLocalizedString("New Order", comment: "Title for the order creation screen")
+        static let titleWithOrderNumber = NSLocalizedString("Order #%1$@", comment: "Order number title. Parameters: %1$@ - order number")
         static let errorMessageOrderCreation = NSLocalizedString("Unable to create new order", comment: "Notice displayed when order creation fails")
         static let errorMessageOrderSync = NSLocalizedString("Unable to load taxes for order",
                                                              comment: "Notice displayed when taxes cannot be synced for new order")

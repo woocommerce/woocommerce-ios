@@ -81,6 +81,9 @@ private extension OrdersSplitViewWrapperController {
         addChild(ordersSplitViewController)
         view.addSubview(contentView)
         ordersSplitViewController.didMove(toParent: self)
+
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        view.pinSubviewToAllEdges(contentView)
     }
 }
 

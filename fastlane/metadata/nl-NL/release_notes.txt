@@ -1,0 +1,2 @@
+Deze release bevat enkele verbeteringen voor het aanmaken van bestellingen en fysieke betalingen, waaronder een probleem waarbij het gedeelte producten niet de juiste volgorde van artikelen weergaf, waarbij de datum en tijd voor alle bestellingen werd weergegeven en waarbij de knop terugbetaling aanvragen werd weergegeven voor alle betaalde bestellingen.
+Blijf ons feedback sturen – wij luisteren!

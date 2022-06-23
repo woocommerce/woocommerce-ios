@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import Experiments
+import WooFoundation
 
 /// View model for `CouponDetails` view
 ///
@@ -96,13 +97,7 @@ final class CouponDetailsViewModel: ObservableObject {
     /// The message to be shared about the coupon
     ///
     var shareMessage: String {
-        if coupon.productIds.isNotEmpty ||
-            coupon.productCategories.isNotEmpty ||
-            coupon.excludedProductIds.isNotEmpty ||
-            coupon.excludedProductCategories.isNotEmpty {
-            return String.localizedStringWithFormat(Localization.shareMessageSomeProducts, amount, couponCode)
-        }
-        return String.localizedStringWithFormat(Localization.shareMessageAllProducts, amount, couponCode)
+        coupon.generateShareMessage(currencySettings: currencySettings)
     }
 
     /// Total number of orders that applied the coupon
@@ -285,15 +280,10 @@ private extension CouponDetailsViewModel {
     }
 
     func createAddEditCouponViewModel(with coupon: Coupon) -> AddEditCouponViewModel {
-        .init(existingCoupon: coupon, onCompletion: { [weak self] result in
+        .init(existingCoupon: coupon, onSuccess: { [weak self] updatedCoupon in
             guard let self = self else { return }
-            switch result {
-            case .success(let updatedCoupon):
-                self.updateCoupon(updatedCoupon)
-                self.onUpdate()
-            default:
-                break
-            }
+            self.updateCoupon(updatedCoupon)
+            self.onUpdate()
         })
     }
 }
@@ -303,15 +293,5 @@ private extension CouponDetailsViewModel {
 private extension CouponDetailsViewModel {
     enum Constants {
         static let noLimit: Int64 = -1
-    }
-    enum Localization {
-        static let shareMessageAllProducts = NSLocalizedString(
-            "Apply %1$@ off to all products with the promo code “%2$@”.",
-            comment: "Message to share the coupon code if it is applicable to all products. " +
-            "Reads like: Apply 10% off to all products with the promo code “20OFF”.")
-        static let shareMessageSomeProducts = NSLocalizedString(
-            "Apply %1$@ off to some products with the promo code “%2$@”.",
-            comment: "Message to share the coupon code if it is applicable to some products. " +
-            "Reads like: Apply 10% off to some products with the promo code “20OFF”.")
     }
 }

@@ -193,11 +193,12 @@ extension OrderDetailsViewModel {
 
         group.enter()
         syncOrder { [weak self] _ in
-            // Products require order.items data, so sync them only after the order is loaded
-            guard let self = self else {
+            defer {
                 group.leave()
-                return
             }
+
+            // Products require order.items data, so sync them only after the order is loaded
+            guard let self = self else { return }
 
             group.enter()
             self.syncProducts { _ in
@@ -208,8 +209,6 @@ extension OrderDetailsViewModel {
             self.syncProductVariations { _ in
                 group.leave()
             }
-
-            group.leave()
         }
 
         group.enter()

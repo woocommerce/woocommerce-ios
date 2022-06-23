@@ -231,7 +231,7 @@ private extension SettingsViewController {
         cell.selectionStyle = .default
         cell.textLabel?.textAlignment = .center
         cell.textLabel?.textColor = .error
-        cell.textLabel?.text = Localization.removeAppleIDAccess
+        cell.textLabel?.text = Localization.closeAccount
     }
 
     func configureLogout(cell: BasicTableViewCell) {
@@ -730,9 +730,9 @@ private extension SettingsViewController {
             comment: "Navigates to screen containing the latest WooCommerce Features"
         )
 
-        static let removeAppleIDAccess = NSLocalizedString(
-            "Remove Apple ID Access",
-            comment: "Remove Apple ID Access button title to revoke Apple ID token"
+        static let closeAccount = NSLocalizedString(
+            "Close Account",
+            comment: "Close Account button title to close the user's WordPress.com account"
         )
 
         static let logout = NSLocalizedString(

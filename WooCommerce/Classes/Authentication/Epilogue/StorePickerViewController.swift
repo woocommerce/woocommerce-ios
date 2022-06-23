@@ -648,7 +648,7 @@ extension StorePickerViewController: UITableViewDataSource {
             && featureFlagService.isFeatureFlagEnabled(.appleIDAccountDeletion)
             cell.updateRemoveAppleIDAccessButtonVisibility(isVisible: isRemoveAppleIDAccessButtonVisible)
             if isRemoveAppleIDAccessButtonVisible {
-                cell.onRemoveAppleIDAccessButtonTapped = { [weak self] in
+                cell.onCloseAccountButtonTapped = { [weak self] in
                     guard let self = self else { return }
                     self.removeAppleIDAccessCoordinator.start()
                 }

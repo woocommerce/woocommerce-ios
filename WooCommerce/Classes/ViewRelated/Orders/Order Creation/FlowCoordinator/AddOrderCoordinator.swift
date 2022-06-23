@@ -75,13 +75,13 @@ private extension AddOrderCoordinator {
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowStarted())
     }
 
-    /// Presents `NewOrderHostingController`.
+    /// Presents `OrderFormHostingController`.
     ///
     func presentNewOrderController() {
-        let viewModel = NewOrderViewModel(siteID: siteID)
+        let viewModel = EditableOrderViewModel(siteID: siteID)
         viewModel.onFinished = onOrderCreated
 
-        let viewController = NewOrderHostingController(viewModel: viewModel)
+        let viewController = OrderFormHostingController(viewModel: viewModel)
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
             let newOrderNC = WooNavigationController(rootViewController: viewController)
             navigationController.present(newOrderNC, animated: true)

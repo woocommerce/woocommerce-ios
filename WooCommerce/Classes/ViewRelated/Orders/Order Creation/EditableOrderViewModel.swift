@@ -5,9 +5,9 @@ import Experiments
 import WooFoundation
 import enum Networking.DotcomError
 
-/// View model for `NewOrder`.
+/// View model used in Order Creation and Editing flows.
 ///
-final class NewOrderViewModel: ObservableObject {
+final class EditableOrderViewModel: ObservableObject {
     let siteID: Int64
     private let stores: StoresManager
     private let storageManager: StorageManagerType
@@ -188,7 +188,7 @@ final class NewOrderViewModel: ObservableObject {
 
     /// View model for the customer note section.
     ///
-    lazy private(set) var noteViewModel = { NewOrderCustomerNoteViewModel(originalNote: "") }()
+    lazy private(set) var noteViewModel = { OrderFormCustomerNoteViewModel(originalNote: "") }()
 
     // MARK: Payment properties
 
@@ -357,6 +357,12 @@ final class NewOrderViewModel: ObservableObject {
         trackCreateButtonTapped()
     }
 
+    /// Action triggered on `Done` button tap in order editing flow.
+    ///
+    func finishEditing() {
+        self.onFinished(orderSynchronizer.order)
+    }
+
     /// Assign this closure to be notified when the flow has finished.
     /// For creation it means that the order has been created.
     /// For edition it means that the merchant has finished editing the order.
@@ -392,7 +398,7 @@ final class NewOrderViewModel: ObservableObject {
 }
 
 // MARK: - Types
-extension NewOrderViewModel {
+extension EditableOrderViewModel {
     /// Representation of possible navigation bar trailing buttons
     ///
     enum NavigationItem: Equatable {
@@ -528,7 +534,7 @@ extension NewOrderViewModel {
 }
 
 // MARK: - Helpers
-private extension NewOrderViewModel {
+private extension EditableOrderViewModel {
 
     /// Sets the view to be `disabled` when `performingNetworkRequest` or when `statePublisher` is `.syncing(blocking: true)`
     ///
@@ -573,9 +579,9 @@ private extension NewOrderViewModel {
                 guard let self = self else { return nil }
                 switch state {
                 case .error(let error):
-                    DDLogError("⛔️ Error syncing new order remotely: \(error)")
+                    DDLogError("⛔️ Error syncing order remotely: \(error)")
                     self.trackSyncOrderFailure(error: error)
-                    return NoticeFactory.syncOrderErrorNotice(error, with: self.orderSynchronizer)
+                    return NoticeFactory.syncOrderErrorNotice(error, flow: self.flow, with: self.orderSynchronizer)
                 default:
                     return nil
                 }
@@ -829,7 +835,7 @@ private extension NewOrderViewModel {
     }
 }
 
-private extension NewOrderViewModel {
+private extension EditableOrderViewModel {
     /// Fetches products from storage.
     ///
     func updateProductsResultsController() {
@@ -837,7 +843,7 @@ private extension NewOrderViewModel {
             try productsResultsController.performFetch()
             allProducts = productsResultsController.fetchedObjects
         } catch {
-            DDLogError("⛔️ Error fetching products for new order: \(error)")
+            DDLogError("⛔️ Error fetching products for order: \(error)")
         }
     }
 
@@ -848,16 +854,15 @@ private extension NewOrderViewModel {
             try productVariationsResultsController.performFetch()
             allProductVariations = productVariationsResultsController.fetchedObjects
         } catch {
-            DDLogError("⛔️ Error fetching product variations for new order: \(error)")
+            DDLogError("⛔️ Error fetching product variations for order: \(error)")
         }
     }
 }
 
 // MARK: Constants
 
-extension NewOrderViewModel {
-    /// New Order notices
-    ///
+extension EditableOrderViewModel {
+
     enum NoticeFactory {
         /// Returns a default order creation error notice.
         ///
@@ -870,11 +875,20 @@ extension NewOrderViewModel {
 
         /// Returns an order sync error notice.
         ///
-        static func syncOrderErrorNotice(_ error: Error, with orderSynchronizer: OrderSynchronizer) -> Notice {
+        static func syncOrderErrorNotice(_ error: Error, flow: Flow, with orderSynchronizer: OrderSynchronizer) -> Notice {
             guard !isEmailError(error, order: orderSynchronizer.order) else {
                 return Notice(title: Localization.invalidBillingParameters, message: Localization.invalidBillingSuggestion, feedbackType: .error)
             }
-            return Notice(title: Localization.errorMessageOrderSync, feedbackType: .error, actionTitle: Localization.retryOrderSync) {
+
+            let errorMessage: String
+            switch flow {
+            case .creation:
+                errorMessage = Localization.errorMessageNewOrderSync
+            case .editing:
+                errorMessage = Localization.errorMessageEditOrderSync
+            }
+
+            return Notice(title: errorMessage, feedbackType: .error, actionTitle: Localization.retryOrderSync) {
                 orderSynchronizer.retryTrigger.send()
             }
         }
@@ -893,18 +907,24 @@ extension NewOrderViewModel {
     }
 }
 
-private extension NewOrderViewModel {
+private extension EditableOrderViewModel {
     enum Localization {
         static let titleForNewOrder = NSLocalizedString("New Order", comment: "Title for the order creation screen")
         static let titleWithOrderNumber = NSLocalizedString("Order #%1$@", comment: "Order number title. Parameters: %1$@ - order number")
-        static let errorMessageOrderCreation = NSLocalizedString("Unable to create new order", comment: "Notice displayed when order creation fails")
-        static let errorMessageOrderSync = NSLocalizedString("Unable to load taxes for order",
-                                                             comment: "Notice displayed when taxes cannot be synced for new order")
+        static let errorMessageOrderCreation = NSLocalizedString("Unable to create new order",
+                                                                 comment: "Notice displayed when order creation fails")
+        static let errorMessageNewOrderSync = NSLocalizedString("Unable to load taxes for order",
+                                                                comment: "Notice displayed when data cannot be synced for new order")
+        static let errorMessageEditOrderSync = NSLocalizedString("Unable to save changes. Please try again.",
+                                                                 comment: "Notice displayed when data cannot be synced for edited order")
+
         static let retryOrderSync = NSLocalizedString("Retry", comment: "Action button to retry syncing the draft order")
 
-        static let invalidBillingParameters = NSLocalizedString("Unable to set customer details.",
-                                                                comment: "Error notice title when we fail to update an address when creating an order.")
-        static let invalidBillingSuggestion = NSLocalizedString("Please make sure you are running the latest version of WooCommerce and try again later.",
-                                                                comment: "Recovery suggestion when we fail to update an address when creating an order")
+        static let invalidBillingParameters =
+        NSLocalizedString("Unable to set customer details.",
+                          comment: "Error notice title when we fail to update an address when creating or editing an order.")
+        static let invalidBillingSuggestion =
+        NSLocalizedString("Please make sure you are running the latest version of WooCommerce and try again later.",
+                          comment: "Recovery suggestion when we fail to update an address when creating or editing an order")
     }
 }

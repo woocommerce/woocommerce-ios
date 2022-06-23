@@ -22,4 +22,11 @@ public enum MediaAction: Action {
         productID: Int64,
         mediaAsset: ExportableAsset,
         onCompletion: (Result<Media, Error>) -> Void)
+
+    /// Updates the `parent_id` of the media using the provided `productID`.
+    ///
+    case updateProductID(siteID: Int64,
+                         productID: Int64,
+                         mediaID: Int64,
+                         onCompletion: (Result<Media, Error>) -> Void)
 }

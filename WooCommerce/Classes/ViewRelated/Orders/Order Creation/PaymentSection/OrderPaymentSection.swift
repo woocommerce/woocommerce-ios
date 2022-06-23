@@ -67,6 +67,7 @@ struct OrderPaymentSection: View {
             }
             .buttonStyle(PlusButtonStyle())
             .padding()
+            .accessibilityIdentifier("add-shipping-button")
         }
     }
 

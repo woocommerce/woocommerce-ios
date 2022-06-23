@@ -27,6 +27,10 @@ public final class NewOrderScreen: ScreenObject {
         $0.buttons["add-shipping-button"]
     }
 
+    private let addFeeButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["add-fee-button"]
+    }
+
     private var createButton: XCUIElement { createButtonGetter(app) }
 
     /// Cancel button in the Navigation bar.
@@ -48,6 +52,10 @@ public final class NewOrderScreen: ScreenObject {
     /// Add Shipping button in the Payment section.
     ///
     private var addShippingButton: XCUIElement { addShippingButtonGetter(app) }
+
+    /// Add Fee button in the Payment section.
+    ///
+    private var addFeeButton: XCUIElement { addFeeButtonGetter(app) }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
@@ -88,6 +96,14 @@ public final class NewOrderScreen: ScreenObject {
     public func openAddShippingScreen() throws -> AddShippingScreen {
         addShippingButton.tap()
         return try AddShippingScreen()
+    }
+
+    /// Opens the Add Fee screen.
+    /// - Returns: Add Fee screen object.
+    @discardableResult
+    public func openAddFeeScreen() throws -> AddFeeScreen {
+        addFeeButton.tap()
+        return try AddFeeScreen()
     }
 
 // MARK: - High-level Order Creation actions
@@ -133,6 +149,16 @@ public final class NewOrderScreen: ScreenObject {
             .enterShippingAmount(amount)
             .enterShippingName(name)
             .confirmShippingDetails()
+    }
+
+    /// Adds a fee on the Add Fee screen.
+    /// - Parameters:
+    ///   - amount: Amount (in the store currency) to add as a fee.
+    /// - Returns: New Order screen object.
+    public func addFee(amount: String) throws -> NewOrderScreen {
+        return try openAddFeeScreen()
+            .enterFixedFee(amount: amount)
+            .confirmFee()
     }
 
     /// Cancels Order Creation process

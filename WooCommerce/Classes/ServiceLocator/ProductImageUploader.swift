@@ -83,6 +83,10 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         actionHandlersByProduct.removeValue(forKey: key)
         let keyWithRemoteProductID = ProductKey(siteID: siteID, productID: remoteProductID, isLocalID: false)
         actionHandlersByProduct[keyWithRemoteProductID] = handler
+
+        updateProductIDOfImagesUploadedWithLocalProductID(siteID: siteID,
+                                                          productID: remoteProductID,
+                                                          images: handler.productImageStatuses.images)
     }
 
     func hasUnsavedChangesOnImages(siteID: Int64, productID: Int64, isLocalID: Bool, originalImages: [ProductImage]) -> Bool {
@@ -122,5 +126,14 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
             imagesSaverByProduct[key] = imagesSaver
         }
         imagesSaver.saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: handler, onProductSave: onProductSave)
+    }
+}
+
+private extension ProductImageUploader {
+    func updateProductIDOfImagesUploadedWithLocalProductID(siteID: Int64,
+                                                           productID: Int64,
+                                                           images: [ProductImage]) {
+        let productIDUpdater = ProductImagesProductIDUpdater(siteID: siteID, productID: productID, stores: stores)
+        productIDUpdater.updateProductIDOfImages(images)
     }
 }

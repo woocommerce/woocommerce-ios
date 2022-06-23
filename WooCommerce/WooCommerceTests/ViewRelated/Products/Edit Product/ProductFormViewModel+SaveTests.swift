@@ -68,7 +68,7 @@ final class ProductFormViewModel_SaveTests: XCTestCase {
         XCTAssertEqual(savedProduct, EditableProductModel(product: product.copy(statusKey: ProductStatus.pending.rawValue)))
     }
 
-    func test_adding_a_product_remotely_replaces_local_product_ID_in_productImagesUploader() throws {
+    func test_adding_a_product_remotely_fires_replaceLocalID_in_productImagesUploader() throws {
         // Given
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
         let productImagesUploader = MockProductImageUploader()

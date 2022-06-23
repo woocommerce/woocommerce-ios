@@ -198,8 +198,7 @@ private extension RefundConfirmationViewModel {
                 return SimpleTextRow(text: details.order.paymentMethodTitle)
             }
         } else {
-            return TitleAndBodyRow(title: Localization.manualRefund(via: orderPaymentMethodTitle()),
-                                   body: Localization.refundWillNotBeIssued(paymentMethod: details.order.paymentMethodTitle))
+            return TitleAndBodyRow(title: Localization.manualRefund, body: Localization.refundWillNotBeIssued)
         }
     }
 }
@@ -219,7 +218,7 @@ private extension RefundConfirmationViewModel {
     /// For example: Orders marked directly as fullfilled, or simple payments with cash.
     ///
     func orderPaymentMethodTitle() -> String {
-        details.order.paymentMethodTitle.isEmpty ? "[Not Specified]" : details.order.paymentMethodTitle
+        details.order.paymentMethodTitle.isEmpty ? Localization.manualRefund : details.order.paymentMethodTitle
     }
 }
 
@@ -297,24 +296,17 @@ private extension RefundConfirmationViewModel {
             NSLocalizedString("Reason for refunding order",
                               comment: "A placeholder for the text field that the user can edit to indicate why they are issuing a refund.")
 
-        static func manualRefund(via paymentMethod: String) -> String {
-            let format = NSLocalizedString(
-                     "Manual Refund via %1$@",
-                comment: "In Refund Confirmation, The title shown to the user to inform them that"
-                    + " they have to issue the refund manually."
-                    + " The %1$@ is the payment method like “Stripe”.")
-            return String.localizedStringWithFormat(format, paymentMethod)
-        }
+        static let manualRefund =
+            NSLocalizedString("Manual Refund",
+                              comment: "In Refund Confirmation, The title shown to the user to inform them that"
+                              + " they have to issue the refund manually.")
 
-        static func refundWillNotBeIssued(paymentMethod: String) -> String {
-            let format = NSLocalizedString(
-                "A refund will not be issued to the customer."
-                    + " You will need to manually issue the refund through %1$@.",
+        static let refundWillNotBeIssued =
+            NSLocalizedString(
+                "The payment method does not support automatic refunds."
+                    + " Complete the refund by transferring the money to the customer manually.",
                 comment: "In Refund Confirmation, The message shown to the user to inform them that"
-                    + " they have to issue the refund manually."
-                    + " The %1$@ is the payment method like “Stripe”.")
-            return String.localizedStringWithFormat(format, paymentMethod)
-        }
+                    + " they have to issue the refund manually.")
     }
 }
 

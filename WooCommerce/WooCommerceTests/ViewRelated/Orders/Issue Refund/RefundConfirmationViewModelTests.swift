@@ -154,8 +154,37 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         let row = try XCTUnwrap(viewModel.sections.last?.rows.last as? RefundConfirmationViewModel.TitleAndBodyRow)
 
         // Then
-        let title = NSLocalizedString("Manual Refund via Stripe", comment: "")
-        let body = NSLocalizedString("A refund will not be issued to the customer. You will need to manually issue the refund through Stripe.", comment: "")
+        let title = NSLocalizedString("Manual Refund", comment: "")
+        let body = NSLocalizedString("The payment method does not support automatic refunds." +
+                                     " Complete the refund by transferring the money to the customer manually.",
+                                     comment: "")
+        XCTAssertEqual(row.title, title)
+        XCTAssertEqual(row.body, body)
+    }
+    func test_viewModel_has_manual_refundVia_value_when_no_gateway_is_set() throws {
+        // Given
+        let order = MockOrders().empty().copy(paymentMethodID: "", paymentMethodTitle: "")
+        let gateway = PaymentGateway(siteID: 123, gatewayID: "", title: "", description: "", enabled: true, features: [])
+        let details = RefundConfirmationViewModel.Details(order: order,
+                                                          charge: nil,
+                                                          amount: "",
+                                                          refundsShipping: false,
+                                                          refundsFees: false,
+                                                          items: [],
+                                                          paymentGateway: gateway,
+                                                          paymentGatewayAccount: nil)
+
+        // When
+        let viewModel = RefundConfirmationViewModel(details: details)
+
+        // We expect the Refund Via row to be the last item in the last row.
+        let row = try XCTUnwrap(viewModel.sections.last?.rows.last as? RefundConfirmationViewModel.TitleAndBodyRow)
+
+        // Then
+        let title = NSLocalizedString("Manual Refund", comment: "")
+        let body = NSLocalizedString("The payment method does not support automatic refunds." +
+                                     " Complete the refund by transferring the money to the customer manually.",
+                                     comment: "")
         XCTAssertEqual(row.title, title)
         XCTAssertEqual(row.body, body)
     }

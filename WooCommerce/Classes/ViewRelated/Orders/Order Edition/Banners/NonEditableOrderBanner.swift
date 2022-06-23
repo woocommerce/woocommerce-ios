@@ -59,7 +59,7 @@ extension NonEditableOrderBanner {
 private extension NonEditableOrderBanner {
     enum Localization {
         static let title = NSLocalizedString("Parts of this order are not currently editable", comment: "Title of the banner when the order is not editable")
-        static let description = NSLocalizedString("To edit Products or Payment Details, please change the status to Pending Payment.",
+        static let description = NSLocalizedString("To edit Products or Payment Details, change the status to Pending Payment.",
                                                    comment: "Content of the banner when the order is not editable")
     }
 }

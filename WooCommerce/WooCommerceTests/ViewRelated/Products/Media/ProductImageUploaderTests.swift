@@ -168,4 +168,29 @@ final class ProductImageUploaderTests: XCTestCase {
                                                                      isLocalID: false,
                                                                      originalStatuses: []).productImageStatuses)
     }
+
+    func test_calling_replaceLocalID_with_nonExistent_localProductID_does_nothing() {
+        // Given
+        let imageUploader = ProductImageUploader()
+        let localProductID: Int64 = 0
+        let nonExistentProductID: Int64 = 999
+        let remoteProductID = productID
+        let originalStatuses: [ProductImageStatus] = [.remote(image: ProductImage.fake()),
+                                                      .uploading(asset: PHAsset()),
+                                                      .uploading(asset: PHAsset())]
+        _ = imageUploader.actionHandler(siteID: siteID,
+                                        productID: localProductID,
+                                        isLocalID: true,
+                                        originalStatuses: originalStatuses)
+
+        // When
+        imageUploader.replaceLocalID(siteID: siteID, localProductID: nonExistentProductID, remoteProductID: remoteProductID)
+
+        // Then
+        // Ensure that trying to replace a non-existent product ID does nothing.
+        XCTAssertEqual(originalStatuses, imageUploader.actionHandler(siteID: siteID,
+                                                                     productID: localProductID,
+                                                                     isLocalID: true,
+                                                                     originalStatuses: []).productImageStatuses)
+    }
 }

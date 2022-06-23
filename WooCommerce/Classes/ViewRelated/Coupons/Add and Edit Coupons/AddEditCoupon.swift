@@ -117,8 +117,7 @@ struct AddEditCoupon: View {
                                                      editable: true,
                                                      fieldAlignment: .leading,
                                                      keyboardType: .decimalPad,
-                                                     inputFormatter: CouponAmountInputFormatter(
-                                                        isPercentage: viewModel.discountType == .percent)) { editingChanged in
+                                                     inputFormatter: CouponAmountInputFormatter()) { editingChanged in
                                                             if !editingChanged {
                                                                 viewModel.onCouponAmountFieldFocusLost()
                                                             }

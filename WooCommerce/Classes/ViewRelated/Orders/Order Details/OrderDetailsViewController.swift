@@ -358,7 +358,7 @@ private extension OrderDetailsViewController {
             guard let self = self else { return }
             self.dismiss(animated: true)
         }
-        let viewController = NewOrderHostingController(viewModel: viewModel)
+        let viewController = OrderFormHostingController(viewModel: viewModel)
         let navController = UINavigationController(rootViewController: viewController)
         present(navController, animated: true)
     }

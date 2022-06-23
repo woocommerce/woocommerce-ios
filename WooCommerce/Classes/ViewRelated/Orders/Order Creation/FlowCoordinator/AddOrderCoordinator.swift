@@ -78,7 +78,7 @@ private extension AddOrderCoordinator {
     /// Presents `NewOrderHostingController`.
     ///
     func presentNewOrderController() {
-        let viewModel = NewOrderViewModel(siteID: siteID)
+        let viewModel = EditableOrderViewModel(siteID: siteID)
         viewModel.onFinished = onOrderCreated
 
         let viewController = NewOrderHostingController(viewModel: viewModel)

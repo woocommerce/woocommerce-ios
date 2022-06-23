@@ -5,9 +5,9 @@ import Experiments
 import WooFoundation
 import enum Networking.DotcomError
 
-/// View model for `NewOrder`.
+/// View model used in Order Creation and Editing flows.
 ///
-final class NewOrderViewModel: ObservableObject {
+final class EditableOrderViewModel: ObservableObject {
     let siteID: Int64
     private let stores: StoresManager
     private let storageManager: StorageManagerType
@@ -392,7 +392,7 @@ final class NewOrderViewModel: ObservableObject {
 }
 
 // MARK: - Types
-extension NewOrderViewModel {
+extension EditableOrderViewModel {
     /// Representation of possible navigation bar trailing buttons
     ///
     enum NavigationItem: Equatable {
@@ -528,7 +528,7 @@ extension NewOrderViewModel {
 }
 
 // MARK: - Helpers
-private extension NewOrderViewModel {
+private extension EditableOrderViewModel {
 
     /// Sets the view to be `disabled` when `performingNetworkRequest` or when `statePublisher` is `.syncing(blocking: true)`
     ///
@@ -829,7 +829,7 @@ private extension NewOrderViewModel {
     }
 }
 
-private extension NewOrderViewModel {
+private extension EditableOrderViewModel {
     /// Fetches products from storage.
     ///
     func updateProductsResultsController() {
@@ -855,7 +855,7 @@ private extension NewOrderViewModel {
 
 // MARK: Constants
 
-extension NewOrderViewModel {
+extension EditableOrderViewModel {
     /// New Order notices
     ///
     enum NoticeFactory {
@@ -893,7 +893,7 @@ extension NewOrderViewModel {
     }
 }
 
-private extension NewOrderViewModel {
+private extension EditableOrderViewModel {
     enum Localization {
         static let titleForNewOrder = NSLocalizedString("New Order", comment: "Title for the order creation screen")
         static let titleWithOrderNumber = NSLocalizedString("Order #%1$@", comment: "Order number title. Parameters: %1$@ - order number")

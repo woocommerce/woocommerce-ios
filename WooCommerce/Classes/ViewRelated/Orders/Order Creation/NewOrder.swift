@@ -8,9 +8,9 @@ final class NewOrderHostingController: UIHostingController<NewOrder> {
     /// References to keep the Combine subscriptions alive within the lifecycle of the object.
     ///
     private var subscriptions: Set<AnyCancellable> = []
-    private let viewModel: NewOrderViewModel
+    private let viewModel: EditableOrderViewModel
 
-    init(viewModel: NewOrderViewModel) {
+    init(viewModel: EditableOrderViewModel) {
         self.viewModel = viewModel
         super.init(rootView: NewOrder(viewModel: viewModel))
 
@@ -97,7 +97,7 @@ struct NewOrder: View {
     ///
     var dismissHandler: (() -> Void) = {}
 
-    @ObservedObject var viewModel: NewOrderViewModel
+    @ObservedObject var viewModel: EditableOrderViewModel
 
     /// Fix for breaking navbar button
     @State private var navigationButtonID = UUID()
@@ -171,7 +171,7 @@ private struct ProductsSection: View {
     let scroll: ScrollViewProxy
 
     /// View model to drive the view content
-    @ObservedObject var viewModel: NewOrderViewModel
+    @ObservedObject var viewModel: EditableOrderViewModel
 
     /// Fix for breaking navbar button
     @Binding var navigationButtonID: UUID
@@ -263,7 +263,7 @@ private extension NewOrder {
 
 struct NewOrder_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = NewOrderViewModel(siteID: 123)
+        let viewModel = EditableOrderViewModel(siteID: 123)
 
         NavigationView {
             NewOrder(viewModel: viewModel)

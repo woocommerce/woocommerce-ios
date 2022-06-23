@@ -1334,7 +1334,7 @@
 		CCFC010D23E9BD5500157A78 /* stats_top_earners_month.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00E723E9BD5500157A78 /* stats_top_earners_month.json */; };
 		CCFC010E23E9BD5500157A78 /* stats_visits_day.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00E823E9BD5500157A78 /* stats_visits_day.json */; };
 		CCFC50552743BC0D001E505F /* NewOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCFC50542743BC0D001E505F /* NewOrder.swift */; };
-		CCFC50592743E021001E505F /* NewOrderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCFC50582743E021001E505F /* NewOrderViewModel.swift */; };
+		CCFC50592743E021001E505F /* EditableOrderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCFC50582743E021001E505F /* EditableOrderViewModel.swift */; };
 		CE0F17CF22A8105800964A63 /* ReadMoreTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0F17CD22A8105800964A63 /* ReadMoreTableViewCell.swift */; };
 		CE0F17D022A8105800964A63 /* ReadMoreTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE0F17CE22A8105800964A63 /* ReadMoreTableViewCell.xib */; };
 		CE0F17D222A8308900964A63 /* FancyAlertController+PurchaseNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0F17D122A8308900964A63 /* FancyAlertController+PurchaseNote.swift */; };
@@ -3109,7 +3109,7 @@
 		CCFC011023E9E3F400157A78 /* start.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = start.sh; sourceTree = "<group>"; };
 		CCFC011123E9E40B00157A78 /* stop.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = stop.sh; sourceTree = "<group>"; };
 		CCFC50542743BC0D001E505F /* NewOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewOrder.swift; sourceTree = "<group>"; };
-		CCFC50582743E021001E505F /* NewOrderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewOrderViewModel.swift; sourceTree = "<group>"; };
+		CCFC50582743E021001E505F /* EditableOrderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableOrderViewModel.swift; sourceTree = "<group>"; };
 		CE0F17CD22A8105800964A63 /* ReadMoreTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadMoreTableViewCell.swift; sourceTree = "<group>"; };
 		CE0F17CE22A8105800964A63 /* ReadMoreTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReadMoreTableViewCell.xib; sourceTree = "<group>"; };
 		CE0F17D122A8308900964A63 /* FancyAlertController+PurchaseNote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FancyAlertController+PurchaseNote.swift"; sourceTree = "<group>"; };
@@ -6976,7 +6976,7 @@
 			children = (
 				B651474327D644DE00C9C4E6 /* CustomerNoteSection */,
 				CCFC50542743BC0D001E505F /* NewOrder.swift */,
-				CCFC50582743E021001E505F /* NewOrderViewModel.swift */,
+				CCFC50582743E021001E505F /* EditableOrderViewModel.swift */,
 				26C6439127B5DBE900DD00D1 /* Synchronizer */,
 				AE264C05275A495E00B52996 /* FlowCoordinator */,
 				CC200BAF27847D9300EC5884 /* PaymentSection */,
@@ -9731,7 +9731,7 @@
 				B979A9BA282D62A500EBB383 /* InPersonPaymentsDeactivateStripeView.swift in Sources */,
 				319A626127ACAE3400BC96C3 /* InPersonPaymentsPluginChoicesView.swift in Sources */,
 				6856D31F941A33BAE66F394D /* KeyboardFrameAdjustmentProvider.swift in Sources */,
-				CCFC50592743E021001E505F /* NewOrderViewModel.swift in Sources */,
+				CCFC50592743E021001E505F /* EditableOrderViewModel.swift in Sources */,
 				6856DB2E741639716E149967 /* KeyboardStateProvider.swift in Sources */,
 				ABC35F18E744C5576B986CB3 /* InPersonPaymentsUnavailableView.swift in Sources */,
 				ABC35528D2D6BE6F516E5CEF /* InPersonPaymentsOnboardingError.swift in Sources */,

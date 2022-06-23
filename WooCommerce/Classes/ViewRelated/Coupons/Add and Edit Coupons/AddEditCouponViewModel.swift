@@ -267,6 +267,10 @@ final class AddEditCouponViewModel: ObservableObject {
             updateCoupon(coupon: coupon, onUpdateFinished: onUpdateFinished)
         }
     }
+    
+    func onCouponAmountFieldFocusLost() {
+        
+    }
 
     private func createCoupon(coupon: Coupon) {
         trackCouponCreateInitiated(with: coupon)

@@ -118,7 +118,11 @@ struct AddEditCoupon: View {
                                                      fieldAlignment: .leading,
                                                      keyboardType: .decimalPad,
                                                      inputFormatter: CouponAmountInputFormatter(
-                                                        isPercentage: viewModel.discountType == .percent))
+                                                        isPercentage: viewModel.discountType == .percent)) { editingChanged in
+                                                            if !editingChanged {
+                                                                viewModel.onCouponAmountFieldFocusLost()
+                                                            }
+                                                        }
                                 Divider()
                                     .padding(.leading, Constants.margin)
 

@@ -7,6 +7,7 @@ import protocol Yosemite.StoresManager
     private let removeAction: () async -> Result<Void, Error>
     private let onRemoveSuccess: () -> Void
     private let stores: StoresManager
+    private let analytics: Analytics
 
     /// - Parameters:
     ///   - sourceViewController: the view controller that presents the in-progress UI and alerts.
@@ -15,11 +16,13 @@ import protocol Yosemite.StoresManager
     init(sourceViewController: UIViewController,
          removeAction: @escaping () async -> Result<Void, Error>,
          onRemoveSuccess: @escaping () -> Void,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.sourceViewController = sourceViewController
         self.removeAction = removeAction
         self.onRemoveSuccess = onRemoveSuccess
         self.stores = stores
+        self.analytics = analytics
     }
 
     func start() {
@@ -52,8 +55,10 @@ private extension RemoveAppleIDAccessCoordinator {
                     guard let self = self else { return }
                     switch result {
                     case .success:
+                        self.analytics.track(event: .closeAccountSuccess())
                         self.onRemoveSuccess()
                     case .failure(let error):
+                        self.analytics.track(event: .closeAccountFailed(error: error))
                         DDLogError("⛔️ Cannot close account: \(error)")
                         self.presentErrorAlert(error: error)
                     }

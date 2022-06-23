@@ -258,6 +258,7 @@ private extension SettingsViewController {
 //
 private extension SettingsViewController {
     func removeAppleIDAccessWasPressed() {
+        ServiceLocator.analytics.track(event: .closeAccountTapped(source: .settings))
         removeAppleIDAccessCoordinator.start()
     }
 

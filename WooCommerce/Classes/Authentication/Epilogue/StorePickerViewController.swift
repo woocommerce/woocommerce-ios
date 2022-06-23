@@ -650,6 +650,7 @@ extension StorePickerViewController: UITableViewDataSource {
             if isRemoveAppleIDAccessButtonVisible {
                 cell.onCloseAccountButtonTapped = { [weak self] in
                     guard let self = self else { return }
+                    ServiceLocator.analytics.track(event: .closeAccountTapped(source: .emptyStores))
                     self.removeAppleIDAccessCoordinator.start()
                 }
             }

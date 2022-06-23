@@ -595,6 +595,11 @@ public enum WooAnalyticsStat: String {
     case inboxNotesLoaded = "inbox_notes_loaded"
     case inboxNotesLoadedFailed = "inbox_notes_load_failed"
     case inboxNoteAction = "inbox_note_action"
+
+    // MARK: Close Account
+    case closeAccountTapped = "close_account_tapped"
+    case closeAccountSuccess = "close_account_success"
+    case closeAccountFailed = "close_account_failed"
 }
 
 public extension WooAnalyticsStat {

@@ -260,15 +260,12 @@ final class AddEditCouponViewModel: ObservableObject {
     }
 
     func validatePercentageAmountInput() {
-        let numberFormatter = NumberFormatter()
-        numberFormatter.decimalSeparator = "."
-        numberFormatter.numberStyle = .decimal
+        let priceFormatter = PriceInputFormatter()
+        guard let convertedAmount = priceFormatter.value(from: amountField)?.doubleValue else { return }
 
-        guard let amount = numberFormatter.number(from: amountField) else { return }
-
-        if shouldCorrectCouponAmount(amount: Double(amount)) {
+        if shouldCorrectCouponAmount(amount: convertedAmount) {
             DDLogInfo("⚠️ Invalid input, starting debounce")
-            let convertedAmount = truncateAmountValueToPercentage(amount: Double(amount))
+            let convertedAmount = truncateAmountValueToPercentage(amount: convertedAmount)
             Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { [weak self] timer in
                 timer.invalidate()
                 self?.amountField = convertedAmount
@@ -501,7 +498,6 @@ private extension AddEditCouponViewModel {
     }
 
     func shouldCorrectCouponAmount(amount: Double) -> Bool {
-        guard let discountType = coupon?.discountType else { return false }
         return discountType == .percent && amount > 100
     }
 

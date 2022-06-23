@@ -267,9 +267,17 @@ final class AddEditCouponViewModel: ObservableObject {
             updateCoupon(coupon: coupon, onUpdateFinished: onUpdateFinished)
         }
     }
-    
+
     func onCouponAmountFieldFocusLost() {
-        
+        if shouldCorrectCouponAmount(amount: amountField) {
+            DDLogInfo("⚠️ Invalid input, starting debounce")
+            let convertedAmount = convertFixedAmountToPercent(amount: Double(amountField))
+            Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { [weak self] timer in
+                timer.invalidate()
+                self?.amountField = convertedAmount
+                DDLogInfo("⚠️ Amount force fixed")
+            }
+        }
     }
 
     private func createCoupon(coupon: Coupon) {
@@ -490,6 +498,12 @@ private extension AddEditCouponViewModel {
             return false
         }
         return coupon.freeShipping != initialCoupon.freeShipping
+    }
+
+    func shouldCorrectCouponAmount(amount: String) -> Bool {
+        guard let discountType = coupon?.discountType else { return false }
+        guard let amount = Double(amount) else { return false }
+        return discountType == .percent && amount > 100
     }
 
     func trackCouponCreateInitiated(with coupon: Coupon) {

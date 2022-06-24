@@ -18,6 +18,7 @@ final class WCShipCTAHostingController: UIHostingController<WCShipCTAView> {
 
 struct WCShipCTAView: View {
     @ObservedObject private var iO = Inject.observer
+    @Environment(\.presentationMode) var presentationMode
     @State private var tappedWhatIsWCShip = false
 
     var body: some View {
@@ -66,7 +67,7 @@ struct WCShipCTAView: View {
 
                 // Dismiss view
                 Button(Localization.buttonDismiss) {
-
+                    presentationMode.wrappedValue.dismiss()
                 }
                 .buttonStyle(SecondaryButtonStyle())
                 .fixedSize(horizontal: false, vertical: true)

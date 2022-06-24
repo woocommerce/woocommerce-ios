@@ -88,9 +88,9 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         let keyWithRemoteProductID = ProductKey(siteID: siteID, productID: remoteProductID, isLocalID: false)
         actionHandlersByProduct[keyWithRemoteProductID] = handler
 
-        updateProductIDOfImagesUploadedWithLocalProductID(siteID: siteID,
-                                                          productID: remoteProductID,
-                                                          images: handler.productImageStatuses.images)
+        updateProductIDOfImagesUploadedUsingLocalProductID(siteID: siteID,
+                                                           productID: remoteProductID,
+                                                           images: handler.productImageStatuses.images)
     }
 
     func hasUnsavedChangesOnImages(siteID: Int64, productID: Int64, isLocalID: Bool, originalImages: [ProductImage]) -> Bool {
@@ -134,9 +134,11 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
 }
 
 private extension ProductImageUploader {
-    func updateProductIDOfImagesUploadedWithLocalProductID(siteID: Int64,
-                                                           productID: Int64,
-                                                           images: [ProductImage]) {
+    /// Called to replace the local product ID with remote product ID for the previously uploaded images
+    ///
+    func updateProductIDOfImagesUploadedUsingLocalProductID(siteID: Int64,
+                                                            productID: Int64,
+                                                            images: [ProductImage]) {
         images.forEach { image in
             Task {
                 let productIDUpdater = ProductImagesProductIDUpdater(stores: stores)

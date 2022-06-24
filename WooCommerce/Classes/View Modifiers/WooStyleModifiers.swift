@@ -27,6 +27,22 @@ struct LargeTitleStyle: ViewModifier {
     }
 }
 
+struct TitleStyle: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.title)
+            .foregroundColor(Color(.text))
+    }
+}
+
+struct SecondaryTitleStyle: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.title2.weight(.bold))
+            .foregroundColor(Color(.text))
+    }
+}
+
 struct SecondaryBodyStyle: ViewModifier {
     func body(content: Content) -> some View {
         content
@@ -139,6 +155,14 @@ extension View {
 
     func largeTitleStyle() -> some View {
         self.modifier(LargeTitleStyle())
+    }
+
+    func titleStyle() -> some View {
+        self.modifier(TitleStyle())
+    }
+
+    func secondaryTitleStyle() -> some View {
+        self.modifier(SecondaryTitleStyle())
     }
 
     /// - Parameters:

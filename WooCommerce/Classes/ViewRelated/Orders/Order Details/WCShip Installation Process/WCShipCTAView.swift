@@ -22,15 +22,17 @@ struct WCShipCTAView: View {
     var body: some View {
         VStack {
             ScrollView {
-                VStack {
+                VStack (spacing: 0) {
                     Text(Localization.viewTitle)
-                        .largeTitleStyle()
-                        .padding(.top, Constants.topMargin)
+                        .titleStyle()
                         .multilineTextAlignment(.center)
+                        .padding(.top, Constants.topMargin)
+
                     Text(Localization.viewSubtitle)
-                        .headlineStyle()
+                        .secondaryTitleStyle()
                         .padding(.top, Constants.verticalSpacing)
                 }
+                .padding(.bottom, Constants.topMargin)
                 .padding([.leading, .trailing], Constants.horizontalMargin)
 
                 VStack (spacing: Constants.verticalSpacing) {

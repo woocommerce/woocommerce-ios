@@ -4,7 +4,7 @@ import Yosemite
 /// Represents the Status section with date label, status badge and edit button.
 ///
 struct OrderStatusSection: View {
-    @ObservedObject var viewModel: NewOrderViewModel
+    @ObservedObject var viewModel: EditableOrderViewModel
 
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
@@ -73,7 +73,7 @@ private extension OrderStatusSection {
 
 struct OrderStatusSection_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = NewOrderViewModel(siteID: 123)
+        let viewModel = EditableOrderViewModel(siteID: 123)
 
         ScrollView {
             OrderStatusSection(viewModel: viewModel)

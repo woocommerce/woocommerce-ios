@@ -54,6 +54,9 @@ struct CouponCreationSuccess: View {
         .onAppear {
             animateEntry()
         }
+        .onDisappear {
+            onDismiss()
+        }
     }
 
     private func animateEntry() {

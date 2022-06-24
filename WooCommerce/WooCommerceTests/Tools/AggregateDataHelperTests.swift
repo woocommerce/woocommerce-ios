@@ -39,9 +39,14 @@ final class AggregateDataHelperTests: XCTestCase {
     /// Verifies refunded products are combined and sorted correctly.
     ///
     func testRefundedProductsSortedSuccessfully() {
+        let productID: Int64 = 1
+        // The itemID (63 in this case) is relevant to retrieve the attributes. A refund order item has in its properties the refunded item id, to be used
+        // to query the attibutes from the order items.
+        let orderItems = [MockOrderItem.sampleItem(itemID: 63, productID: productID, quantity: 3, attributes: testOrderItemAttributes)]
         let refunds = mapLoadAllRefundsResponse()
         let expectedProducts = expectedRefundedProducts()
-        guard let actualProducts = AggregateDataHelper.combineRefundedProducts(from: refunds) else {
+
+        guard let actualProducts = AggregateDataHelper.combineRefundedProducts(from: refunds, orderItems: orderItems) else {
             XCTFail("Error: failed to combine products.")
             return
         }
@@ -56,6 +61,7 @@ final class AggregateDataHelperTests: XCTestCase {
             XCTAssertEqual(expected.quantity, actual.quantity)
             XCTAssertEqual(expected.total, actual.total)
             XCTAssertEqual(expected.sku, actual.sku)
+            XCTAssertEqual(expected.attributes, actual.attributes)
         }
     }
 
@@ -79,8 +85,7 @@ final class AggregateDataHelperTests: XCTestCase {
     func test_AggregateOrderItem_has_attributes_from_OrderItem() {
         // Given
         let productID: Int64 = 1
-        let orderItemAttributes = [OrderItemAttribute(metaID: 170, name: "Packaging", value: "Yes")]
-        let orderItems = [MockOrderItem.sampleItem(itemID: 62, productID: productID, quantity: 3, attributes: orderItemAttributes)]
+        let orderItems = [MockOrderItem.sampleItem(itemID: 62, productID: productID, quantity: 3, attributes: testOrderItemAttributes)]
         let order = MockOrders().empty().copy(items: orderItems)
         let refundItems = [MockRefunds.sampleRefundItem(productID: productID)]
         let refunds = [MockRefunds.sampleRefund(items: refundItems)]
@@ -90,12 +95,17 @@ final class AggregateDataHelperTests: XCTestCase {
 
         // Then
         XCTAssertEqual(aggregatedOrderItems.count, 1)
-        XCTAssertEqual(aggregatedOrderItems[0].attributes, orderItemAttributes)
+        XCTAssertEqual(aggregatedOrderItems[0].attributes, testOrderItemAttributes)
     }
 }
 
 
 private extension AggregateDataHelperTests {
+    /// Used when testing that the item attributes are properly retrieved, for order items and refunds
+    var testOrderItemAttributes: [OrderItemAttribute] {
+        [OrderItemAttribute(metaID: 170, name: "Packaging", value: "Yes")]
+    }
+
     /// Returns the OrderListMapper output upon receiving `filename` (Data Encoded)
     ///
     func mapOrders(from filename: String) -> [Order] {
@@ -154,6 +164,8 @@ private extension AggregateDataHelperTests {
         )
         expectedArray.append(item1)
 
+        /// We expect this item to have these attributes by passing an order item
+        /// with the same refunded item id to the combineRefundedProducts function
         let item2 = AggregateOrderItem(
             productID: 21,
             variationID: 71,
@@ -162,7 +174,7 @@ private extension AggregateDataHelperTests {
             quantity: -1,
             sku: "HOODIE-SHIP-YOUR-IDEA-BLACK-L",
             total: currencyFormatter.convertToDecimal("-31.50") ?? NSDecimalNumber.zero,
-            attributes: []
+            attributes: testOrderItemAttributes
         )
         expectedArray.append(item2)
 

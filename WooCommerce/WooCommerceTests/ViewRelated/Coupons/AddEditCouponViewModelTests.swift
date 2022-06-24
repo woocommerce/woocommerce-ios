@@ -5,18 +5,18 @@ import XCTest
 final class AddEditCouponViewModelTests: XCTestCase {
 
     func test_titleView_property_return_expected_values_on_creation() {
-        let viewModel1 = AddEditCouponViewModel(siteID: 123, discountType: .percent, onCompletion: { _ in })
+        let viewModel1 = AddEditCouponViewModel(siteID: 123, discountType: .percent, onSuccess: { _ in })
         XCTAssertEqual(viewModel1.title, NSLocalizedString("Create coupon", comment: ""))
     }
 
     func test_titleView_property_return_expected_values_on_editing() {
-        let viewModel1 = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(discountType: .percent), onCompletion: { _ in })
+        let viewModel1 = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(discountType: .percent), onSuccess: { _ in })
         XCTAssertEqual(viewModel1.title, NSLocalizedString("Edit coupon", comment: ""))
     }
 
     func test_generateRandomCouponCode_populate_correctly_the_codeField() {
         // Given
-        let viewModel = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(code: ""), onCompletion: { _ in })
+        let viewModel = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(code: ""), onSuccess: { _ in })
         XCTAssertEqual(viewModel.codeField, "")
 
         // When
@@ -35,7 +35,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
         let expiryDate = Date().startOfDay(timezone: timeZone)
         let viewModel = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon.copy(discountType: .percent, dateExpires: expiryDate),
                                                timezone: timeZone,
-                                               onCompletion: { _ in })
+                                               onSuccess: { _ in })
         assertEqual(viewModel.populatedCoupon, Coupon.sampleCoupon.copy(discountType: .percent,
                                                                         dateExpires: expiryDate))
 
@@ -81,13 +81,43 @@ final class AddEditCouponViewModelTests: XCTestCase {
     }
 
     func test_populatedCoupon_return_expected_coupon_during_creation() {
-        //TODO: implement this test method in the implementation of coupon creation (M3)
+        // Given
+        let viewModel = AddEditCouponViewModel(siteID: 0, discountType: .fixedCart, onSuccess: { _ in })
+
+        // When
+        let populatedCoupon = viewModel.populatedCoupon
+        let newCoupon = Coupon(couponID: -1,
+                               code: populatedCoupon.code,
+                               amount: "",
+                               dateCreated: populatedCoupon.dateCreated,
+                               dateModified: populatedCoupon.dateModified,
+                               discountType: .fixedCart,
+                               description: "",
+                               dateExpires: nil,
+                               usageCount: 0,
+                               individualUse: false,
+                               productIds: [],
+                               excludedProductIds: [],
+                               usageLimit: nil,
+                               usageLimitPerUser: nil,
+                               limitUsageToXItems: nil,
+                               freeShipping: false,
+                               productCategories: [],
+                               excludedProductCategories: [],
+                               excludeSaleItems: false,
+                               minimumAmount: "",
+                               maximumAmount: "",
+                               emailRestrictions: [],
+                               usedBy: [])
+
+        // Then
+        XCTAssertEqual(populatedCoupon, newCoupon)
     }
 
     func test_validateCouponLocally_return_expected_error_if_coupon_code_is_empty() {
         // Given
         let coupon = Coupon.sampleCoupon.copy(code: "")
-        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onSuccess: { _ in })
 
         // When
         let result = viewModel.validateCouponLocally(coupon)
@@ -99,7 +129,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
     func test_validateCouponLocally_return_nil_if_coupon_code_is_not_empty() {
         // Given
         let coupon = Coupon.sampleCoupon.copy(code: "ABCDEF")
-        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onSuccess: { _ in })
 
         // When
         let result = viewModel.validateCouponLocally(coupon)
@@ -111,7 +141,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
     func test_hasChangesMade_is_correct_for_discount_type() {
         // Given
         let coupon = Coupon.sampleCoupon.copy(discountType: .percent)
-        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onSuccess: { _ in })
         XCTAssertFalse(viewModel.hasChangesMade) // confidence check
 
         // When
@@ -124,7 +154,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
     func test_hasChangesMade_is_correct_for_coupon_code() {
         // Given
         let coupon = Coupon.sampleCoupon.copy(code: "ABCDEF")
-        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onSuccess: { _ in })
         XCTAssertFalse(viewModel.hasChangesMade) // confidence check
 
         // When
@@ -137,7 +167,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
     func test_hasChangesMade_is_correct_for_amount() {
         // Given
         let coupon = Coupon.sampleCoupon.copy(amount: "11.22")
-        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onSuccess: { _ in })
         XCTAssertFalse(viewModel.hasChangesMade) // confidence check
 
         // When
@@ -150,7 +180,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
     func test_hasChangesMade_is_correct_for_expiry_date() {
         // Given
         let coupon = Coupon.sampleCoupon.copy(dateExpires: Date())
-        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onSuccess: { _ in })
         XCTAssertFalse(viewModel.hasChangesMade) // confidence check
 
         // When
@@ -163,7 +193,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
     func test_hasChangesMade_is_correct_for_nil_expiry_date() {
         // Given
         let coupon = Coupon.sampleCoupon.copy(dateExpires: Date())
-        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onSuccess: { _ in })
         XCTAssertFalse(viewModel.hasChangesMade) // confidence check
 
         // When
@@ -176,7 +206,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
     func test_hasChangesMade_is_correct_for_updated_product_restrictions() {
         // Given
         let coupon = Coupon.sampleCoupon
-        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onSuccess: { _ in })
         XCTAssertFalse(viewModel.hasChangesMade) // confidence check
 
         // When
@@ -189,7 +219,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
     func test_hasChangesMade_is_correct_for_updated_category_restrictions() {
         // Given
         let coupon = Coupon.sampleCoupon
-        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onSuccess: { _ in })
         XCTAssertFalse(viewModel.hasChangesMade) // confidence check
 
         // When
@@ -202,7 +232,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
     func test_hasChangesMade_is_correct_for_description() {
         // Given
         let coupon = Coupon.sampleCoupon
-        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onSuccess: { _ in })
         XCTAssertFalse(viewModel.hasChangesMade) // confidence check
 
         // When
@@ -215,7 +245,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
     func test_hasChangesMade_is_correct_for_free_shipping() {
         // Given
         let coupon = Coupon.sampleCoupon.copy(freeShipping: false)
-        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onSuccess: { _ in })
         XCTAssertFalse(viewModel.hasChangesMade) // confidence check
 
         // When
@@ -228,11 +258,19 @@ final class AddEditCouponViewModelTests: XCTestCase {
     func test_hasChangesMade_is_correct_for_updated_usage_restrictions() {
         // Given
         let coupon = Coupon.sampleCoupon.copy(usageLimit: 100)
-        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onCompletion: { _ in })
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onSuccess: { _ in })
         XCTAssertFalse(viewModel.hasChangesMade) // confidence check
 
         // When
         viewModel.couponRestrictionsViewModel.usageLimitPerCoupon = "1000"
+
+        // Then
+        XCTAssertTrue(viewModel.hasChangesMade)
+    }
+
+    func test_hasChangesMade_is_always_true_when_is_in_creation_mode() {
+        // Given
+        let viewModel = AddEditCouponViewModel(siteID: 123, discountType: .percent, onSuccess: {_ in })
 
         // Then
         XCTAssertTrue(viewModel.hasChangesMade)

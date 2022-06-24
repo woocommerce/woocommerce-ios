@@ -24,7 +24,7 @@ final class CouponAllowedEmailsViewModel: ObservableObject {
     func validateEmails(dismissHandler: @escaping () -> Void) {
         let emails = emailPatterns.components(separatedBy: ", ")
         let foundInvalidPatterns = emails.contains(where: { !EmailFormatValidator.validate(string: $0) })
-        if !foundInvalidPatterns {
+        if emailPatterns.isEmpty || !foundInvalidPatterns {
             onCompletion(emailPatterns)
             dismissHandler()
         } else {

@@ -1,18 +1,18 @@
 import SwiftUI
 import Combine
 
-/// Hosting controller that wraps an `NewOrder` view.
+/// Hosting controller that wraps an `OrderForm` view.
 ///
-final class NewOrderHostingController: UIHostingController<NewOrder> {
+final class OrderFormHostingController: UIHostingController<OrderForm> {
 
     /// References to keep the Combine subscriptions alive within the lifecycle of the object.
     ///
     private var subscriptions: Set<AnyCancellable> = []
-    private let viewModel: NewOrderViewModel
+    private let viewModel: EditableOrderViewModel
 
-    init(viewModel: NewOrderViewModel) {
+    init(viewModel: EditableOrderViewModel) {
         self.viewModel = viewModel
-        super.init(rootView: NewOrder(viewModel: viewModel))
+        super.init(rootView: OrderForm(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
         rootView.dismissHandler = { [weak self] in
@@ -42,9 +42,9 @@ final class NewOrderHostingController: UIHostingController<NewOrder> {
 
 /// Intercepts back navigation (selecting back button or swiping back).
 ///
-extension NewOrderHostingController {
+extension OrderFormHostingController {
     override func shouldPopOnBackButton() -> Bool {
-        guard !viewModel.hasChanges else {
+        guard viewModel.canBeDismissed else {
             presentDiscardChangesActionSheet(onDiscard: { [weak self] in
                 self?.discardOrderAndPop()
             })
@@ -60,9 +60,9 @@ extension NewOrderHostingController {
 
 /// Intercepts to the dismiss drag gesture.
 ///
-extension NewOrderHostingController: UIAdaptivePresentationControllerDelegate {
+extension OrderFormHostingController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
-        return !viewModel.hasChanges
+        return viewModel.canBeDismissed
     }
 
     func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
@@ -74,7 +74,7 @@ extension NewOrderHostingController: UIAdaptivePresentationControllerDelegate {
 
 /// Private methods
 ///
-private extension NewOrderHostingController {
+private extension OrderFormHostingController {
     func presentDiscardChangesActionSheet(onDiscard: @escaping () -> Void) {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: onDiscard)
     }
@@ -90,14 +90,14 @@ private extension NewOrderHostingController {
     }
 }
 
-/// View to create a new manual order
+/// View to create or edit an order
 ///
-struct NewOrder: View {
+struct OrderForm: View {
     /// Set this closure with UIKit dismiss code. Needed because we need access to the UIHostingController `dismiss` method.
     ///
     var dismissHandler: (() -> Void) = {}
 
-    @ObservedObject var viewModel: NewOrderViewModel
+    @ObservedObject var viewModel: EditableOrderViewModel
 
     /// Fix for breaking navbar button
     @State private var navigationButtonID = UUID()
@@ -131,7 +131,7 @@ struct NewOrder: View {
                 .ignoresSafeArea(.container, edges: [.horizontal])
             }
         }
-        .navigationTitle(Localization.title)
+        .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
@@ -150,7 +150,11 @@ struct NewOrder: View {
                     .id(navigationButtonID)
                     .accessibilityIdentifier(Accessibility.createButtonIdentifier)
                     .disabled(viewModel.disabled)
-
+                case .done:
+                    Button(Localization.doneButton) {
+                        viewModel.finishEditing()
+                        dismissHandler()
+                    }
                 case .loading:
                     ProgressView()
                 }
@@ -168,7 +172,7 @@ private struct ProductsSection: View {
     let scroll: ScrollViewProxy
 
     /// View model to drive the view content
-    @ObservedObject var viewModel: NewOrderViewModel
+    @ObservedObject var viewModel: EditableOrderViewModel
 
     /// Fix for breaking navbar button
     @Binding var navigationButtonID: UUID
@@ -189,13 +193,13 @@ private struct ProductsSection: View {
         Group {
             Divider()
 
-            VStack(alignment: .leading, spacing: NewOrder.Layout.verticalSpacing) {
-                Text(NewOrder.Localization.products)
+            VStack(alignment: .leading, spacing: OrderForm.Layout.verticalSpacing) {
+                Text(OrderForm.Localization.products)
                     .accessibilityAddTraits(.isHeader)
                     .headlineStyle()
 
                 ForEach(viewModel.productRows) { productRow in
-                    ProductRow(viewModel: productRow, accessibilityHint: NewOrder.Localization.productRowAccessibilityHint)
+                    ProductRow(viewModel: productRow, accessibilityHint: OrderForm.Localization.productRowAccessibilityHint)
                         .onTapGesture {
                             viewModel.selectOrderItem(productRow.id)
                         }
@@ -206,11 +210,11 @@ private struct ProductsSection: View {
                     Divider()
                 }
 
-                Button(NewOrder.Localization.addProduct) {
+                Button(OrderForm.Localization.addProduct) {
                     showAddProduct.toggle()
                 }
                 .id(addProductButton)
-                .accessibilityIdentifier(NewOrder.Accessibility.addProductButtonIdentifier)
+                .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
                 .buttonStyle(PlusButtonStyle())
                 .sheet(isPresented: $showAddProduct, onDismiss: {
                     scroll.scrollTo(addProductButton)
@@ -234,7 +238,7 @@ private struct ProductsSection: View {
 }
 
 // MARK: Constants
-private extension NewOrder {
+private extension OrderForm {
     enum Layout {
         static let sectionSpacing: CGFloat = 16.0
         static let verticalSpacing: CGFloat = 22.0
@@ -242,13 +246,13 @@ private extension NewOrder {
     }
 
     enum Localization {
-        static let title = NSLocalizedString("New Order", comment: "Title for the order creation screen")
-        static let createButton = NSLocalizedString("Create", comment: "Button to create an order on the New Order screen")
+        static let createButton = NSLocalizedString("Create", comment: "Button to create an order on the Order screen")
+        static let doneButton = NSLocalizedString("Done", comment: "Button to dismiss the Order Editing screen")
         static let cancelButton = NSLocalizedString("Cancel", comment: "Button to cancel the creation of an order on the New Order screen")
-        static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating a new order")
-        static let addProduct = NSLocalizedString("Add Product", comment: "Title text of the button that adds a product when creating a new order")
+        static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating or editing an order")
+        static let addProduct = NSLocalizedString("Add Product", comment: "Title text of the button that adds a product when creating or editing an order")
         static let productRowAccessibilityHint = NSLocalizedString("Opens product detail.",
-                                                                   comment: "Accessibility hint for selecting a product in a new order")
+                                                                   comment: "Accessibility hint for selecting a product in an order form")
     }
 
     enum Accessibility {
@@ -258,28 +262,28 @@ private extension NewOrder {
     }
 }
 
-struct NewOrder_Previews: PreviewProvider {
+struct OrderForm_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = NewOrderViewModel(siteID: 123)
+        let viewModel = EditableOrderViewModel(siteID: 123)
 
         NavigationView {
-            NewOrder(viewModel: viewModel)
+            OrderForm(viewModel: viewModel)
         }
 
         NavigationView {
-            NewOrder(viewModel: viewModel)
+            OrderForm(viewModel: viewModel)
         }
         .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
         .previewDisplayName("Accessibility")
 
         NavigationView {
-            NewOrder(viewModel: viewModel)
+            OrderForm(viewModel: viewModel)
         }
         .environment(\.colorScheme, .dark)
         .previewDisplayName("Dark")
 
         NavigationView {
-            NewOrder(viewModel: viewModel)
+            OrderForm(viewModel: viewModel)
         }
         .environment(\.layoutDirection, .rightToLeft)
         .previewDisplayName("Right to left")

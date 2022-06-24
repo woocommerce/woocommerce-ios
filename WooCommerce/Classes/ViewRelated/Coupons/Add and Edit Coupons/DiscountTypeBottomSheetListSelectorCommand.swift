@@ -28,8 +28,8 @@ final class DiscountTypeBottomSheetListSelectorCommand: BottomSheetListSelectorC
                                                                     image: model.actionSheetIcon,
                                                                     imageTintColor: .gray(.shade20),
                                                                     numberOfLinesForText: 0,
-                                                                    isSelected: isSelected(model: model),
-                                                                    isActionable: false)
+                                                                    isSelected: isSelected(model: model)
+        )
         cell.updateUI(viewModel: viewModel)
     }
 

@@ -18,6 +18,7 @@ final class WCShipCTAHostingController: UIHostingController<WCShipCTAView> {
 
 struct WCShipCTAView: View {
     @ObservedObject private var iO = Inject.observer
+    @State private var tappedWhatIsWCShip = false
 
     var body: some View {
         VStack {
@@ -48,6 +49,12 @@ struct WCShipCTAView: View {
                                  subtitle: Localization.thirdIconSubtitle,
                                  icon: .base64(.iconCircularRateDiscount))
                 }
+
+                Button(Localization.buttonWhatIsWCShip) {
+                    tappedWhatIsWCShip = true
+                }
+                .buttonStyle(LinkButtonStyle())
+                .padding(.bottom, Constants.topMargin)
             }
             VStack {
                 // Add extension
@@ -66,6 +73,9 @@ struct WCShipCTAView: View {
             }
             .padding([.leading, .trailing], Constants.horizontalMargin)
         }
+        .sheet(isPresented: $tappedWhatIsWCShip, content: {
+            SafariSheetView(url: Constants.whatIsWCShipURL)
+        })
         .enableInjection()
     }
 
@@ -79,6 +89,7 @@ private extension WCShipCTAView {
         static let topMargin: CGFloat = 64
         static let horizontalMargin: CGFloat = 32
         static let verticalSpacing: CGFloat = 16
+        static let whatIsWCShipURL: URL = URL(string: "https://woocommerce.com/document/woocommerce-shipping-and-tax/")!
     }
 
     enum Localization {
@@ -98,6 +109,8 @@ private extension WCShipCTAView {
                                                       comment: "Title of one of the elements in the CTA View for installing WCShip extension")
         static let thirdIconSubtitle = NSLocalizedString("Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!",
                                                          comment: "Subtitle of one of the elements in the CTA View for installing WCShip extension")
+        static let buttonWhatIsWCShip = NSLocalizedString("What is WooCommerce Shipping?",
+                                                          comment: "Button in the CTA View about what is the WCShip extension")
         static let buttonAddExtension = NSLocalizedString("Add Extension To Store",
                                                           comment: "Button in the CTA View for installing WCShip extension")
         static let buttonDismiss = NSLocalizedString("Not now",

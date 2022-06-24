@@ -173,7 +173,7 @@ final class OrdersRootViewController: UIViewController {
                 image: .emptySearchResultsImage
             )
             emptyStateViewController.configure(config)
-            splitViewController?.showDetailViewController(emptyStateViewController, sender: nil)
+            splitViewController?.showDetailViewController(UINavigationController(rootViewController: emptyStateViewController), sender: nil)
             return
         }
 

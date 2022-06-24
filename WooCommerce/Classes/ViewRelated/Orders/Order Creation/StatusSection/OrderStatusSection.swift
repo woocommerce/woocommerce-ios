@@ -4,12 +4,19 @@ import Yosemite
 /// Represents the Status section with date label, status badge and edit button.
 ///
 struct OrderStatusSection: View {
+
     @ObservedObject var viewModel: EditableOrderViewModel
 
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
+    /// Set false to not render the top divider.
+    /// Useful when there is a content on top that has its own divider.
+    ///
+    private(set) var topDivider: Bool = true
+
     var body: some View {
         Divider()
+            .renderedIf(topDivider)
 
         VStack(alignment: .leading, spacing: .zero) {
             Text(viewModel.dateString)

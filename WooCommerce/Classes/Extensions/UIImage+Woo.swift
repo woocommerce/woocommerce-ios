@@ -981,6 +981,12 @@ extension UIImage {
     static var welcomeImage: UIImage {
         UIImage(imageLiteralResourceName: "img-welcome")
     }
+
+    /// Lock Image
+    ///
+    static var lockImage: UIImage {
+        UIImage.gridicon(.lock, size: CGSize(width: 24, height: 24))
+    }
 }
 
 private extension UIImage {

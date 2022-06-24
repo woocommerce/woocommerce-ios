@@ -107,7 +107,14 @@ struct OrderForm: View {
             ScrollViewReader { scroll in
                 ScrollView {
                     VStack(spacing: Layout.noSpacing) {
-                        OrderStatusSection(viewModel: viewModel)
+
+                        Group {
+                            Divider() // Needed because `NonEditableOrderBanner` does not have a top divider
+                            NonEditableOrderBanner(width: geometry.size.width)
+                        }
+                        .renderedIf(viewModel.shouldShowNonEditableBanner)
+
+                        OrderStatusSection(viewModel: viewModel, topDivider: !viewModel.shouldShowNonEditableBanner)
 
                         Spacer(minLength: Layout.sectionSpacing)
 

@@ -426,7 +426,7 @@ private extension OrderListViewController {
     /// Checks to see if the selected item is still at the same index in the list and resets its state if not.
     ///
     func checkSelectedItem() {
-        guard let indexPath = selectedIndexPath, let orderID = selectedOrderId else {
+        guard let indexPath = selectedIndexPath, let orderID = selectedOrderID else {
             return selectFirstItemIfPossible()
         }
 
@@ -448,11 +448,11 @@ private extension OrderListViewController {
         guard let objectID = dataSource.itemIdentifier(for: firstIndexPath),
               let orderDetailsViewModel = viewModel.detailsViewModel(withID: objectID),
                 state != .empty else {
-            selectedOrderId = nil
+            selectedOrderID = nil
             selectedIndexPath = nil
             return switchDetailsHandler(nil)
         }
-        selectedOrderId = orderDetailsViewModel.order.orderID
+        selectedOrderID = orderDetailsViewModel.order.orderID
         selectedIndexPath = firstIndexPath
         switchDetailsHandler(orderDetailsViewModel)
         highlightSelectedRowIfNeeded()
@@ -593,7 +593,7 @@ extension OrderListViewController: UITableViewDelegate {
         let order = orderDetailsViewModel.order
         ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": order.orderID,
                                                                     "status": order.status.rawValue])
-        selectedOrderId = order.orderID
+        selectedOrderID = order.orderID
 
         if isSplitViewInOrdersTabEnabled {
             switchDetailsHandler(orderDetailsViewModel)

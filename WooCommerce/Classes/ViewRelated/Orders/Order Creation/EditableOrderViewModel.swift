@@ -101,8 +101,8 @@ final class EditableOrderViewModel: ObservableObject {
     /// Defines if the view should be disabled.
     @Published private(set) var disabled: Bool = false
 
-    /// Defines if the non editable banner should be shown.
-    @Published private(set) var shouldShowNonEditableBanner: Bool = false
+    /// Defines if the non editable indicators (banners, locks, fields) should be shown.
+    @Published private(set) var shouldShowNonEditableIndicators: Bool = false
 
     /// Status Results Controller.
     ///
@@ -269,7 +269,7 @@ final class EditableOrderViewModel: ObservableObject {
         configureCustomerDataViewModel()
         configurePaymentDataViewModel()
         configureCustomerNoteDataViewModel()
-        configureNonEditableBanner()
+        configureNonEditableIndicators()
         resetAddressForm()
     }
 
@@ -707,9 +707,9 @@ private extension EditableOrderViewModel {
             .assign(to: &$paymentDataViewModel)
     }
 
-    /// Binds the order state to the `shouldShowNonEditableBanner` property.
+    /// Binds the order state to the `shouldShowNonEditableIndicators` property.
     ///
-    func configureNonEditableBanner() {
+    func configureNonEditableIndicators() {
         Publishers.CombineLatest(orderSynchronizer.orderPublisher, Just(flow))
             .map { order, flow in
                 switch flow {
@@ -719,7 +719,7 @@ private extension EditableOrderViewModel {
                     return !order.isEditable
                 }
             }
-            .assign(to: &$shouldShowNonEditableBanner)
+            .assign(to: &$shouldShowNonEditableIndicators)
     }
 
     /// Tracks when customer details have been added

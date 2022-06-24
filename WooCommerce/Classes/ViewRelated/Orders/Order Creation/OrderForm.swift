@@ -112,9 +112,9 @@ struct OrderForm: View {
                             Divider() // Needed because `NonEditableOrderBanner` does not have a top divider
                             NonEditableOrderBanner(width: geometry.size.width)
                         }
-                        .renderedIf(viewModel.shouldShowNonEditableBanner)
+                        .renderedIf(viewModel.shouldShowNonEditableIndicators)
 
-                        OrderStatusSection(viewModel: viewModel, topDivider: !viewModel.shouldShowNonEditableBanner)
+                        OrderStatusSection(viewModel: viewModel, topDivider: !viewModel.shouldShowNonEditableIndicators)
 
                         Spacer(minLength: Layout.sectionSpacing)
 

@@ -3,6 +3,7 @@ import struct Yosemite.ProductImage
 import enum Yosemite.ProductAction
 import protocol Yosemite.StoresManager
 
+/// Information about an update of product image upload.
 struct ProductImageUploadUpdate {
     let siteID: Int64
     let productID: Int64
@@ -12,6 +13,7 @@ struct ProductImageUploadUpdate {
 
 /// Handles product image upload to support background image upload.
 protocol ProductImageUploaderProtocol {
+    /// Emits product image upload status updates (e.g. when the status changes or an error occurs).
     var statusUpdates: AnyPublisher<ProductImageUploadUpdate, Never> { get }
 
     /// Called for product image upload use cases (e.g. product/variation form, downloadable product list).
@@ -46,8 +48,19 @@ protocol ProductImageUploaderProtocol {
                                                          isLocalID: Bool,
                                                          onProductSave: @escaping (Result<[ProductImage], Error>) -> Void)
 
-    func startEmittingStatusUpdates(siteID: Int64, productID: Int64, isLocalID: Bool)
+    /// Stops the emission of status updates `statusUpdates` when the user is in the product form to edit a specific product.
+    /// - Parameters:
+    ///   - siteID: the ID of the site that the user is logged into.
+    ///   - productID: the ID of the product that the user is editing.
+    ///   - isLocalID: whether the product ID is a local ID like in product creation.
     func stopEmittingStatusUpdates(siteID: Int64, productID: Int64, isLocalID: Bool)
+
+    /// Starts the emission of status updates `statusUpdates` when the user leaves the product form.
+    /// - Parameters:
+    ///   - siteID: the ID of the site that the user is logged into.
+    ///   - productID: the ID of the product that the user is navigating away.
+    ///   - isLocalID: whether the product ID is a local ID like in product creation.
+    func startEmittingStatusUpdates(siteID: Int64, productID: Int64, isLocalID: Bool)
 
     /// Determines whether there are unsaved changes on a product's images.
     /// If the product had any save request before, it checks whether the image statuses to save match the latest image statuses.
@@ -110,14 +123,14 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         statusUpdatesExcludedProductKeys.insert(keyWithRemoteProductID)
     }
 
-    func startEmittingStatusUpdates(siteID: Int64, productID: Int64, isLocalID: Bool) {
-        let key = ProductKey(siteID: siteID, productID: productID, isLocalID: isLocalID)
-        statusUpdatesExcludedProductKeys.remove(key)
-    }
-
     func stopEmittingStatusUpdates(siteID: Int64, productID: Int64, isLocalID: Bool) {
         let key = ProductKey(siteID: siteID, productID: productID, isLocalID: isLocalID)
         statusUpdatesExcludedProductKeys.insert(key)
+    }
+
+    func startEmittingStatusUpdates(siteID: Int64, productID: Int64, isLocalID: Bool) {
+        let key = ProductKey(siteID: siteID, productID: productID, isLocalID: isLocalID)
+        statusUpdatesExcludedProductKeys.remove(key)
     }
 
     func hasUnsavedChangesOnImages(siteID: Int64, productID: Int64, isLocalID: Bool, originalImages: [ProductImage]) -> Bool {

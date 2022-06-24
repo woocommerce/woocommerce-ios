@@ -15,6 +15,9 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
         self.stores = stores
     }
 
+    /// The async version of `switchStore` that wraps the completion block version.
+    /// - Parameter storeID: target store ID.
+    /// - Returns: a boolean that indicates whether the site was changed.
     func switchStore(with storeID: Int64) async -> Bool {
         await withCheckedContinuation { [weak self] continuation in
             guard let self = self else { return }

@@ -6,7 +6,7 @@ import Yosemite
 
 final class MainTabBarControllerTests: XCTestCase {
     private var stores: StoresManager!
-    // Test cases that assert on a view controller's navigation behavior, a retained window is required
+    // For test cases that assert on a view controller's navigation behavior, a retained window is required
     // with its `rootViewController` set to the view controller.
     private let window = UIWindow(frame: UIScreen.main.bounds)
 
@@ -355,7 +355,7 @@ final class MainTabBarControllerTests: XCTestCase {
         let error = NSError(domain: "", code: 8)
         statusUpdates.send(.init(siteID: 134, productID: 606, productImageStatuses: [], error: error))
 
-        // Given
+        // Then
         XCTAssertEqual(noticePresenter.queuedNotices.count, 0)
     }
 }

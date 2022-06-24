@@ -15,6 +15,15 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
         self.stores = stores
     }
 
+    func switchStore(with storeID: Int64) async -> Bool {
+        await withCheckedContinuation { [weak self] continuation in
+            guard let self = self else { return }
+            self.switchStore(with: storeID) { siteChanged in
+                continuation.resume(returning: siteChanged)
+            }
+        }
+    }
+
     /// A static method which allows easily to switch store. The boolean argument in `onCompletion` indicates that the site was changed.
     /// When `onCompletion` is called, the selected site ID is updated while `Site` might still not be available if the site does not exist in storage yet
     /// (e.g. a newly connected site).

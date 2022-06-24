@@ -107,19 +107,30 @@ final class MainTabBarController: UITabBarController {
 
     private var cancellableSiteID: AnyCancellable?
     private let featureFlagService: FeatureFlagService
+    private let noticePresenter: NoticePresenter
+    private let productImageUploader: ProductImageUploaderProtocol
     private let stores: StoresManager = ServiceLocator.stores
+
+    private var productImageUploadStatusUpdatesSubscription: AnyCancellable?
 
     private lazy var isHubMenuFeatureFlagOn = featureFlagService.isFeatureFlagEnabled(.hubMenu)
 
     private lazy var isOrdersSplitViewFeatureFlagOn = featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
 
-    init?(coder: NSCoder, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+    init?(coder: NSCoder,
+          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
+          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
         self.featureFlagService = featureFlagService
+        self.noticePresenter = noticePresenter
+        self.productImageUploader = productImageUploader
         super.init(coder: coder)
     }
 
     required init?(coder: NSCoder) {
         self.featureFlagService = ServiceLocator.featureFlagService
+        self.noticePresenter = ServiceLocator.noticePresenter
+        self.productImageUploader = ServiceLocator.productImageUploader
         super.init(coder: coder)
     }
 
@@ -135,6 +146,7 @@ final class MainTabBarController: UITabBarController {
 
         configureTabViewControllers()
         observeSiteIDForViewControllers()
+        observeProductImageUploadStatusUpdates()
 
         loadHubMenuTabNotificationCountAndUpdateBadge()
     }
@@ -551,5 +563,64 @@ private extension MainTabBarController {
         }
 
         viewModel.startObservingOrdersCount()
+    }
+}
+
+// MARK: - Background Product Image Upload Status Updates
+
+private extension MainTabBarController {
+    func observeProductImageUploadStatusUpdates() {
+        guard featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) else {
+            return
+        }
+        productImageUploadStatusUpdatesSubscription = productImageUploader.statusUpdates.sink { [weak self] update in
+            self?.handleBackgroundImageUploadUpdate(update)
+        }
+    }
+
+    func handleBackgroundImageUploadUpdate(_ update: ProductImageUploadUpdate) {
+        if update.error != nil {
+            let notice = Notice(title: Localization.imageUploadFailureNoticeTitle,
+                                subtitle: nil,
+                                message: nil,
+                                feedbackType: .error,
+                                notificationInfo: nil,
+                                actionTitle: Localization.imageUploadFailureNoticeActionTitle,
+                                actionHandler: { [weak self] in
+                guard let self = self else { return }
+                Task { @MainActor in
+                    await self.showProductDetails(update: update)
+                }
+            })
+            noticePresenter.enqueue(notice: notice)
+        }
+    }
+
+    func showProductDetails(update: ProductImageUploadUpdate) async {
+        // Switches to the correct store first if needed.
+        let switchStoreUseCase = SwitchStoreUseCase(stores: stores)
+        let siteChanged = await switchStoreUseCase.switchStore(with: update.siteID)
+        if siteChanged {
+            let presenter = SwitchStoreNoticePresenter(siteID: update.siteID,
+                                                       noticePresenter: self.noticePresenter)
+            presenter.presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: .switchingStores)
+        }
+
+        let productViewController = ProductLoaderViewController(model: .product(productID: update.productID),
+                                                                siteID: update.siteID,
+                                                                forceReadOnly: false)
+        let productNavController = WooNavigationController(rootViewController: productViewController)
+        productsNavigationController.present(productNavController, animated: true)
+    }
+}
+
+private extension MainTabBarController {
+    enum Localization {
+        static let imageUploadFailureNoticeTitle =
+        NSLocalizedString("An image failed to upload",
+                          comment: "Title of the notice about an image upload failure in the background.")
+        static let imageUploadFailureNoticeActionTitle =
+        NSLocalizedString("View",
+                          comment: "Title of the action to view product details from a notice about an image upload failure in the background.")
     }
 }

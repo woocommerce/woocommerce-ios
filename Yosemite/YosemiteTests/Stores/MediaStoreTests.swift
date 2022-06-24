@@ -24,6 +24,10 @@ final class MediaStoreTests: XCTestCase {
     ///
     private let sampleProductID: Int64 = 586
 
+    /// Testing Media ID
+    ///
+    private let sampleMediaID: Int64 = 2352
+
     // MARK: - Overridden Methods
 
     override func setUp() {
@@ -413,6 +417,70 @@ final class MediaStoreTests: XCTestCase {
         // Then
         XCTAssertEqual(remote.invocations, [.uploadMediaToWordPressSite(siteID: sampleSiteID)])
 
+        let error = try XCTUnwrap(result.failure as? DotcomError)
+        XCTAssertEqual(error, .unauthorized)
+    }
+
+    // MARK: test cases for `MediaAction.updateProductID`
+
+    /// Verifies that `MediaAction.updateProductID` returns the expected response.
+    ///
+    func test_updateProductID_returns_media() throws {
+        // Given
+        let path = "sites/\(sampleSiteID)/media/\(sampleMediaID)"
+        network.simulateResponse(requestUrlSuffix: path, filename: "media-update-product-id")
+
+        let expectedMedia = Media(mediaID: 2352,
+                                  date: date(with: "2020-02-21T12:15:38+08:00"),
+                                  fileExtension: "jpeg",
+                                  filename: "img_0002-8.jpeg",
+                                  mimeType: "image/jpeg",
+                                  src: "https://test.com/wp-content/uploads/2020/02/img_0002-8.jpeg",
+                                  thumbnailURL: "https://test.com/wp-content/uploads/2020/02/img_0002-8-150x150.jpeg",
+                                  name: "DSC_0010",
+                                  alt: "",
+                                  height: nil,
+                                  width: nil)
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network)
+
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.updateProductID(siteID: self.sampleSiteID,
+                                                     productID: self.sampleProductID,
+                                                     mediaID: self.sampleMediaID) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        let mediaFromResult = try XCTUnwrap(result.get())
+        XCTAssertEqual(mediaFromResult, expectedMedia)
+    }
+
+    /// Verifies that `MediaAction.updateProductID` returns an error whenever there is an error response from the backend.
+    ///
+    func test_updateProductID_returns_error_upon_response_error() throws {
+        // Given
+        let path = "sites/\(sampleSiteID)/media/\(sampleMediaID)"
+        network.simulateResponse(requestUrlSuffix: path, filename: "generic_error")
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network)
+
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.updateProductID(siteID: self.sampleSiteID,
+                                                     productID: self.sampleProductID,
+                                                     mediaID: self.sampleMediaID) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
         let error = try XCTUnwrap(result.failure as? DotcomError)
         XCTAssertEqual(error, .unauthorized)
     }

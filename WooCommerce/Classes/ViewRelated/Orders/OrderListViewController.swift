@@ -111,7 +111,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
     /// Currently selected order ID in the table view
     ///
-    private var selectedOrderId: Int64?
+    private var selectedOrderID: Int64?
 
     private lazy var isSplitViewInOrdersTabEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
 

@@ -137,7 +137,13 @@ private extension ProductImageUploader {
     func updateProductIDOfImagesUploadedWithLocalProductID(siteID: Int64,
                                                            productID: Int64,
                                                            images: [ProductImage]) {
-        let productIDUpdater = ProductImagesProductIDUpdater(siteID: siteID, productID: productID, stores: stores)
-        productIDUpdater.updateProductIDOfImages(images)
+        images.forEach { image in
+            Task {
+                let productIDUpdater = ProductImagesProductIDUpdater(stores: stores)
+                _ = await productIDUpdater.updateProductIDOfImages(siteID: siteID,
+                                                               productID: productID,
+                                                               productImage: image)
+            }
+        }
     }
 }

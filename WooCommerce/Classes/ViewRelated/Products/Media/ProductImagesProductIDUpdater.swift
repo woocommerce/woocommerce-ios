@@ -1,41 +1,45 @@
-import Combine
 import Yosemite
 
-final class ProductImagesProductIDUpdater {
-    private let siteID: Int64
-    private let productID: Int64
+protocol ProductImagesProductIDUpdaterProtocol {
+    /// Updates the `parent_id` of the media (productImage) using the provided `productID`.
+    ///
+    func updateProductIDOfImages(siteID: Int64,
+                                 productID: Int64,
+                                 productImage: ProductImage) async ->  Result<Media, Error>
+}
+
+struct ProductImagesProductIDUpdater {
     private let stores: StoresManager
 
-    init(siteID: Int64, productID: Int64, stores: StoresManager = ServiceLocator.stores) {
-        self.siteID = siteID
-        self.productID = productID
+    init(stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
     }
+}
 
-    func updateProductIDOfImages(_ productImages: [ProductImage]) {
-        productImages.forEach { productImage in
-            updateProductIDFor(productImageID: productImage.imageID,
-                               siteID: siteID,
-                               productID: productID) { result in
-                switch result {
-                case .failure(let error):
-                    DDLogError("⛔️ Error updating `parent_id` of media with \(productImage.imageID): \(error)")
-                default:
-                    break
-                }
-            }
+extension ProductImagesProductIDUpdater: ProductImagesProductIDUpdaterProtocol {
+    func updateProductIDOfImages(siteID: Int64,
+                                 productID: Int64,
+                                 productImage: ProductImage) async ->  Result<Media, Error> {
+        let result = await updateProductIDFor(productImageID: productImage.imageID,
+                                              siteID: siteID,
+                                              productID: productID)
+        if case let .failure(error) = result {
+            DDLogError("⛔️ Error updating `parent_id` of media with \(productImage.imageID): \(error)")
         }
+        return result
     }
 }
 
 private extension ProductImagesProductIDUpdater {
+    @MainActor // Using `@MainActor` as `Dispatcher` expects the `dispatch` method to be called in main thread.
     func updateProductIDFor(productImageID: Int64,
                             siteID: Int64,
-                            productID: Int64,
-                            onCompletion: @escaping (Result<Media, Error>) -> Void) {
-        let action = MediaAction.updateProductID(siteID: siteID, productID: productID, mediaID: productImageID) { result in
-            onCompletion(result)
+                            productID: Int64) async -> Result<Media, Error> {
+        await withCheckedContinuation { continuation in
+            let action = MediaAction.updateProductID(siteID: siteID, productID: productID, mediaID: productImageID) { result in
+                continuation.resume(returning: result)
+            }
+            stores.dispatch(action)
         }
-        stores.dispatch(action)
     }
 }

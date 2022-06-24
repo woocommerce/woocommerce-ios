@@ -1,25 +1,30 @@
 import Yosemite
 
 protocol ProductImagesProductIDUpdaterProtocol {
-    /// Updates the `parent_id` of the media (productImage) using the provided `productID`.
+    /// Updates the `parent_id` of the  `productImage`(media) using the provided `productID`.
     ///
-    func updateProductIDOfImage(siteID: Int64,
-                                 productID: Int64,
-                                 productImage: ProductImage) async ->  Result<Media, Error>
+    /// - Parameters:
+    ///   - siteID: ID of the site in which the media and product is present.
+    ///   - productID: ID of the product which needs to be set as `parent_id` for the `productImage`
+    ///   - productImage: Image for which the `parent_id` needs to be updated
+    ///
+    func updateImageProductID(siteID: Int64,
+                              productID: Int64,
+                              productImage: ProductImage) async ->  Result<Media, Error>
 }
 
 struct ProductImagesProductIDUpdater {
     private let stores: StoresManager
-
+    
     init(stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
     }
 }
 
 extension ProductImagesProductIDUpdater: ProductImagesProductIDUpdaterProtocol {
-    func updateProductIDOfImage(siteID: Int64,
-                                 productID: Int64,
-                                 productImage: ProductImage) async ->  Result<Media, Error> {
+    func updateImageProductID(siteID: Int64,
+                              productID: Int64,
+                              productImage: ProductImage) async ->  Result<Media, Error> {
         let result = await updateProductIDFor(productImageID: productImage.imageID,
                                               siteID: siteID,
                                               productID: productID)

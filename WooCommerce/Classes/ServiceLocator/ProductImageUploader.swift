@@ -140,7 +140,7 @@ private extension ProductImageUploader {
         images.forEach { image in
             Task {
                 let productIDUpdater = ProductImagesProductIDUpdater(stores: stores)
-                _ = await productIDUpdater.updateProductIDOfImages(siteID: siteID,
+                _ = await productIDUpdater.updateProductIDOfImage(siteID: siteID,
                                                                productID: productID,
                                                                productImage: image)
             }

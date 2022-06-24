@@ -3,7 +3,7 @@ import Yosemite
 protocol ProductImagesProductIDUpdaterProtocol {
     /// Updates the `parent_id` of the media (productImage) using the provided `productID`.
     ///
-    func updateProductIDOfImages(siteID: Int64,
+    func updateProductIDOfImage(siteID: Int64,
                                  productID: Int64,
                                  productImage: ProductImage) async ->  Result<Media, Error>
 }
@@ -17,7 +17,7 @@ struct ProductImagesProductIDUpdater {
 }
 
 extension ProductImagesProductIDUpdater: ProductImagesProductIDUpdaterProtocol {
-    func updateProductIDOfImages(siteID: Int64,
+    func updateProductIDOfImage(siteID: Int64,
                                  productID: Int64,
                                  productImage: ProductImage) async ->  Result<Media, Error> {
         let result = await updateProductIDFor(productImageID: productImage.imageID,

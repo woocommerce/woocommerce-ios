@@ -3,6 +3,7 @@ import Yosemite
 import UIKit
 import WooFoundation
 import protocol Storage.StorageManagerType
+import SwiftUI
 
 /// View model for `AddEditCoupon` view
 ///
@@ -175,6 +176,7 @@ final class AddEditCouponViewModel: ObservableObject {
         }
     }
     @Published var amountField: String
+    @Published var amountFieldColor: Color
     @Published var codeField: String
     @Published var descriptionField: String
     @Published var expiryDateField: Date?
@@ -203,6 +205,7 @@ final class AddEditCouponViewModel: ObservableObject {
         self.onSuccess = onSuccess
 
         amountField = String()
+        amountFieldColor = Color(.label)
         codeField = String()
         descriptionField = String()
         expiryDateField = nil
@@ -233,6 +236,7 @@ final class AddEditCouponViewModel: ObservableObject {
 
         // Populate fields
         amountField = existingCoupon.amount
+        amountFieldColor = Color(.label)
         codeField = existingCoupon.code
         descriptionField = existingCoupon.description
         expiryDateField = existingCoupon.dateExpires
@@ -264,11 +268,13 @@ final class AddEditCouponViewModel: ObservableObject {
         guard let convertedAmount = priceFormatter.value(from: amountField)?.doubleValue else { return }
 
         if shouldCorrectCouponAmount(amount: convertedAmount) {
+            amountFieldColor = Color(.warning)
             DDLogInfo("⚠️ Invalid input, starting debounce")
             let convertedAmount = truncateAmountValueToPercentage(amount: convertedAmount)
             Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { [weak self] timer in
                 timer.invalidate()
                 self?.amountField = convertedAmount
+                self?.amountFieldColor = Color(.label)
                 DDLogInfo("⚠️ Amount force fixed")
             }
         }

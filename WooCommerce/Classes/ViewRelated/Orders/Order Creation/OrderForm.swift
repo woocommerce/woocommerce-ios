@@ -201,9 +201,17 @@ private struct ProductsSection: View {
             Divider()
 
             VStack(alignment: .leading, spacing: OrderForm.Layout.verticalSpacing) {
-                Text(OrderForm.Localization.products)
-                    .accessibilityAddTraits(.isHeader)
-                    .headlineStyle()
+
+                HStack {
+                    Text(OrderForm.Localization.products)
+                        .accessibilityAddTraits(.isHeader)
+                        .headlineStyle()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                    Image(uiImage: .lockImage)
+                        .foregroundColor(Color(.brand))
+                        .renderedIf(viewModel.shouldShowNonEditableIndicators)
+                }
 
                 ForEach(viewModel.productRows) { productRow in
                     ProductRow(viewModel: productRow, accessibilityHint: OrderForm.Localization.productRowAccessibilityHint)

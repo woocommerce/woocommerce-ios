@@ -30,6 +30,10 @@ struct OrderPaymentSection: View {
 
                 Spacer()
 
+                Image(uiImage: .lockImage)
+                    .foregroundColor(Color(.brand))
+                    .renderedIf(viewModel.showNonEditableIndicators)
+
                 ProgressView()
                     .renderedIf(viewModel.isLoading)
             }

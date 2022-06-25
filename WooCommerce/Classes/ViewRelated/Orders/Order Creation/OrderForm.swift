@@ -206,7 +206,8 @@ private struct ProductsSection: View {
                     Text(OrderForm.Localization.products)
                         .accessibilityAddTraits(.isHeader)
                         .headlineStyle()
-                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                    Spacer()
 
                     Image(uiImage: .lockImage)
                         .foregroundColor(Color(.brand))

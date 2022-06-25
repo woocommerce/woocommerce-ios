@@ -493,6 +493,8 @@ extension EditableOrderViewModel {
         ///
         let isLoading: Bool
 
+        let showNonEditableIndicators: Bool
+
         let shippingLineViewModel: ShippingLineDetailsViewModel
         let feeLineViewModel: FeeLineDetailsViewModel
 
@@ -506,6 +508,7 @@ extension EditableOrderViewModel {
              taxesTotal: String = "0",
              orderTotal: String = "0",
              isLoading: Bool = false,
+             showNonEditableIndicators: Bool = false,
              saveShippingLineClosure: @escaping (ShippingLine?) -> Void = { _ in },
              saveFeeLineClosure: @escaping (OrderFeeLine?) -> Void = { _ in },
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
@@ -519,6 +522,7 @@ extension EditableOrderViewModel {
             self.taxesTotal = currencyFormatter.formatAmount(taxesTotal) ?? "0.00"
             self.orderTotal = currencyFormatter.formatAmount(orderTotal) ?? "0.00"
             self.isLoading = isLoading
+            self.showNonEditableIndicators = showNonEditableIndicators
             self.shippingLineViewModel = ShippingLineDetailsViewModel(isExistingShippingLine: shouldShowShippingTotal,
                                                                       initialMethodTitle: shippingMethodTitle,
                                                                       shippingTotal: self.shippingTotal,
@@ -671,8 +675,8 @@ private extension EditableOrderViewModel {
     /// Updates payment section view model based on items in the order and order sync state.
     ///
     func configurePaymentDataViewModel() {
-        Publishers.CombineLatest(orderSynchronizer.orderPublisher, orderSynchronizer.statePublisher)
-            .map { [weak self] order, state in
+        Publishers.CombineLatest3(orderSynchronizer.orderPublisher, orderSynchronizer.statePublisher, $shouldShowNonEditableIndicators)
+            .map { [weak self] order, state, showNonEditableIndicators in
                 guard let self = self else {
                     return PaymentDataViewModel()
                 }
@@ -700,6 +704,7 @@ private extension EditableOrderViewModel {
                                             taxesTotal: order.totalTax.isNotEmpty ? order.totalTax : "0",
                                             orderTotal: order.total.isNotEmpty ? order.total : "0",
                                             isLoading: isDataSyncing,
+                                            showNonEditableIndicators: showNonEditableIndicators,
                                             saveShippingLineClosure: self.saveShippingLine,
                                             saveFeeLineClosure: self.saveFeeLine,
                                             currencyFormatter: self.currencyFormatter)

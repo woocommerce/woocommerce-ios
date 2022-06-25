@@ -119,10 +119,12 @@ struct OrderForm: View {
                         Spacer(minLength: Layout.sectionSpacing)
 
                         ProductsSection(scroll: scroll, viewModel: viewModel, navigationButtonID: $navigationButtonID)
+                            .disabled(viewModel.shouldShowNonEditableIndicators)
 
                         Spacer(minLength: Layout.sectionSpacing)
 
                         OrderPaymentSection(viewModel: viewModel.paymentDataViewModel)
+                            .disabled(viewModel.shouldShowNonEditableIndicators)
 
                         Spacer(minLength: Layout.sectionSpacing)
 

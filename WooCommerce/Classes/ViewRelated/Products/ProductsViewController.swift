@@ -451,8 +451,7 @@ private extension ProductsViewController {
             self?.updateTableHeaderViewHeight()
         }, onGiveFeedbackButtonPressed: { [weak self] in
             self?.presentProductsFeedback()
-        }, onDismissButtonPressed: { [weak self] in
-            self?.dismissProductsBanner()
+        }, onDismissButtonPressed: {
         }, onCompletion: { [weak self] topBannerView in
             self?.topBannerContainerView.updateSubview(topBannerView)
             self?.topBannerView = topBannerView
@@ -691,18 +690,6 @@ private extension ProductsViewController {
         // Present survey
         let navigationController = SurveyCoordinatingController(survey: .productsVariationsFeedback)
         present(navigationController, animated: true, completion: nil)
-    }
-
-    /// Mark feedback request as dismissed and update banner visibility
-    ///
-    func dismissProductsBanner() {
-        let action = AppSettingsAction.updateFeedbackStatus( status: .dismissed) { [weak self] result in
-            if let error = result.failure {
-                ServiceLocator.crashLogging.logError(error)
-            }
-            self?.hideTopBannerView()
-        }
-        ServiceLocator.stores.dispatch(action)
     }
 }
 

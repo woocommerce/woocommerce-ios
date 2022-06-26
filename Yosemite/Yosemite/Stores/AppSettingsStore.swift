@@ -99,7 +99,7 @@ public class AppSettingsStore: Store {
         case .setInstallationDateIfNecessary(let date, let onCompletion):
             setInstallationDateIfNecessary(date: date, onCompletion: onCompletion)
         case .updateFeedbackStatus(let type, let status, let onCompletion):
-            updateFeedbackStatus(type: type ?? .none, status: status, onCompletion: onCompletion)
+            updateFeedbackStatus(type: type, status: status, onCompletion: onCompletion)
         case .loadFeedbackVisibility(let type, let onCompletion):
             loadFeedbackVisibility(type: type, onCompletion: onCompletion)
         case .loadOrdersSettings(let siteID, let onCompletion):

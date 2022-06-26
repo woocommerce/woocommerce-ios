@@ -127,7 +127,7 @@ struct AddEditCoupon: View {
                                     .padding(.leading, Constants.margin)
 
                                 Text(viewModel.amountSubtitleLabel)
-                                    .foregroundColor(viewModel.amountFieldColor)
+                                    .foregroundColor(viewModel.amountSubtitleColor)
                                     .subheadlineStyle()
                                     .padding(.horizontal, Constants.margin)
                             }

@@ -180,6 +180,7 @@ final class AddEditCouponViewModel: ObservableObject {
     }
     @Published var amountField: String
     @Published var amountFieldColor: Color
+    @Published var amountSubtitleColor: Color
     @Published var codeField: String
     @Published var descriptionField: String
     @Published var expiryDateField: Date?
@@ -211,6 +212,7 @@ final class AddEditCouponViewModel: ObservableObject {
 
         amountField = String()
         amountFieldColor = Color(.label)
+        amountSubtitleColor = Color(.textSubtle)
         codeField = String()
         descriptionField = String()
         expiryDateField = nil
@@ -243,6 +245,7 @@ final class AddEditCouponViewModel: ObservableObject {
         // Populate fields
         amountField = existingCoupon.amount
         amountFieldColor = Color(.label)
+        amountSubtitleColor = Color(.textSubtle)
         codeField = existingCoupon.code
         descriptionField = existingCoupon.description
         expiryDateField = existingCoupon.dateExpires
@@ -250,6 +253,7 @@ final class AddEditCouponViewModel: ObservableObject {
         couponRestrictionsViewModel = CouponRestrictionsViewModel(coupon: existingCoupon)
         productOrVariationIDs = existingCoupon.productIds
         categoryIDs = existingCoupon.productCategories
+        
         configureWarningBehavior()
     }
 
@@ -275,9 +279,12 @@ final class AddEditCouponViewModel: ObservableObject {
             .removeDuplicates()
             .sink { [weak self] isDisplaying in
                 if isDisplaying {
-                    self?.amountFieldColor = Color(.warning)
+                    let warningColor = Color(.warning)
+                    self?.amountFieldColor = warningColor
+                    self?.amountSubtitleColor = warningColor
                 } else {
                     self?.amountFieldColor = Color(.label)
+                    self?.amountSubtitleColor = Color(.textSubtle)
                 }
             }
             .store(in: &subscriptions)

@@ -446,6 +446,8 @@ final class AddEditCouponViewModel: ObservableObject {
         if coupon.code.isEmpty {
             return .couponCodeEmpty
         }
+        
+        validatePercentageAmountInput(withWarning: false)
 
         return nil
     }

@@ -305,13 +305,11 @@ final class AddEditCouponViewModel: ObservableObject {
 
         if shouldCorrectCouponAmount(amount: convertedAmount) {
             isDisplayingAmountWarning = true
-            DDLogInfo("⚠️ Invalid input, starting debounce")
             let convertedAmount = truncateAmountValueToPercentage(amount: convertedAmount)
             Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { [weak self] timer in
                 timer.invalidate()
                 self?.isDisplayingAmountWarning = false
                 self?.amountField = convertedAmount
-                DDLogInfo("⚠️ Amount force fixed")
             }
         }
     }

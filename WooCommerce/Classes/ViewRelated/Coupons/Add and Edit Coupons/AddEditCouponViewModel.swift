@@ -301,15 +301,18 @@ final class AddEditCouponViewModel: ObservableObject {
 
     func validatePercentageAmountInput(withDebounce: Bool = false) {
         let priceFormatter = PriceInputFormatter()
-        guard let convertedAmount = priceFormatter.value(from: amountField)?.doubleValue else { return }
+        guard let formattedAmount = priceFormatter.value(from: amountField)?.doubleValue else {
+            amountField = "0"
+            return
+        }
 
-        if shouldCorrectCouponAmount(amount: convertedAmount) {
-            let convertedAmount = truncateAmountValueToPercentage(amount: convertedAmount)
+        if shouldCorrectCouponAmount(amount: formattedAmount) {
+            let truncatedAmount = truncateAmountValueToPercentage(amount: formattedAmount)
             if withDebounce {
                 isDisplayingAmountWarning = true
-                debounceAmountCorrection(convertedAmount: convertedAmount)
+                debounceAmountCorrection(convertedAmount: truncatedAmount)
             } else {
-                amountField = convertedAmount
+                amountField = truncatedAmount
             }
 
         }

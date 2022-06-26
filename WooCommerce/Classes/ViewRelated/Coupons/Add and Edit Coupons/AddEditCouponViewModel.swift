@@ -279,6 +279,10 @@ final class AddEditCouponViewModel: ObservableObject {
 
     func configureWarningBehavior() {
         let amountSubtitleDefaultText = amountSubtitleDefaultText
+        let warningColor = Color(.warning)
+        let labelColor = Color(.label)
+        let subtitleColor = Color(.textSubtle)
+
         $isDisplayingAmountWarning
             .removeDuplicates()
             .sink { [weak self] isDisplaying in
@@ -287,8 +291,8 @@ final class AddEditCouponViewModel: ObservableObject {
                     self?.amountSubtitleColor = warningColor
                     self?.amountSubtitleLabel = Localization.amountPercentWarningSubtitle
                 } else {
-                    self?.amountFieldColor = Color(.label)
-                    self?.amountSubtitleColor = Color(.textSubtle)
+                    self?.amountFieldColor = labelColor
+                    self?.amountSubtitleColor = subtitleColor
                     self?.amountSubtitleLabel = amountSubtitleDefaultText
                 }
             }

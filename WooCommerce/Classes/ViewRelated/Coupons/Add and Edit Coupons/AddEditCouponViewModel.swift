@@ -299,18 +299,27 @@ final class AddEditCouponViewModel: ObservableObject {
             .store(in: &subscriptions)
     }
 
-    func validatePercentageAmountInput() {
+    func validatePercentageAmountInput(withDebounce: Bool = false) {
         let priceFormatter = PriceInputFormatter()
         guard let convertedAmount = priceFormatter.value(from: amountField)?.doubleValue else { return }
 
         if shouldCorrectCouponAmount(amount: convertedAmount) {
-            isDisplayingAmountWarning = true
             let convertedAmount = truncateAmountValueToPercentage(amount: convertedAmount)
-            Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { [weak self] timer in
-                timer.invalidate()
-                self?.isDisplayingAmountWarning = false
-                self?.amountField = convertedAmount
+            if withDebounce {
+                isDisplayingAmountWarning = true
+                debounceAmountCorrection(convertedAmount: convertedAmount)
+            } else {
+                amountField = convertedAmount
             }
+
+        }
+    }
+
+    private func debounceAmountCorrection(convertedAmount: String) {
+        Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { [weak self] timer in
+            timer.invalidate()
+            self?.isDisplayingAmountWarning = false
+            self?.amountField = convertedAmount
         }
     }
 

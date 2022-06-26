@@ -175,7 +175,7 @@ final class AddEditCouponViewModel: ObservableObject {
     // Fields
     @Published var discountType: Coupon.DiscountType {
         didSet {
-            validatePercentageAmountInput(withDebounce: false)
+            validatePercentageAmountInput(withWarning: false)
             couponRestrictionsViewModel.onDiscountTypeChanged(discountType: discountType)
         }
     }
@@ -304,7 +304,7 @@ final class AddEditCouponViewModel: ObservableObject {
             .store(in: &subscriptions)
     }
 
-    func validatePercentageAmountInput(withDebounce: Bool) {
+    func validatePercentageAmountInput(withWarning: Bool) {
         guard discountType == .percent else { return }
         guard let formattedAmount = priceInputFormatter.value(from: amountField)?.doubleValue else {
             amountField = "0"
@@ -313,7 +313,7 @@ final class AddEditCouponViewModel: ObservableObject {
 
         if formattedAmount > 100 {
             let truncatedAmount = truncateAmountValueToPercentage(amount: formattedAmount)
-            if withDebounce {
+            if withWarning {
                 isDisplayingAmountWarning = true
                 debounceAmountCorrection(convertedAmount: truncatedAmount)
             } else {

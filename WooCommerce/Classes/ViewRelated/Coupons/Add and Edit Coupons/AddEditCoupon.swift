@@ -120,7 +120,7 @@ struct AddEditCoupon: View {
                                                      contentColor: $viewModel.amountFieldColor,
                                                      inputFormatter: CouponAmountInputFormatter()) { editingChanged in
                                                             if !editingChanged {
-                                                                viewModel.validatePercentageAmountInput(withDebounce: true)
+                                                                viewModel.validatePercentageAmountInput(withWarning: true)
                                                             }
                                                         }
                                 Divider()

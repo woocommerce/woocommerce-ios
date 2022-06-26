@@ -175,7 +175,7 @@ final class AddEditCouponViewModel: ObservableObject {
     // Fields
     @Published var discountType: Coupon.DiscountType {
         didSet {
-            validatePercentageAmountInput(withWarning: false)
+            validatePercentageAmountInput(withWarning: true)
             couponRestrictionsViewModel.onDiscountTypeChanged(discountType: discountType)
         }
     }

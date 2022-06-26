@@ -163,6 +163,7 @@ final class AddEditCouponViewModel: ObservableObject {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let currencySettings: CurrencySettings
+    private let priceInputFormatter: PriceInputFormatter
     let timezone: TimeZone
 
     /// When the view is updating or creating a new Coupon remotely.
@@ -174,7 +175,7 @@ final class AddEditCouponViewModel: ObservableObject {
     // Fields
     @Published var discountType: Coupon.DiscountType {
         didSet {
-            validatePercentageAmountInput()
+            validatePercentageAmountInput(withDebounce: false)
             couponRestrictionsViewModel.onDiscountTypeChanged(discountType: discountType)
         }
     }
@@ -200,6 +201,7 @@ final class AddEditCouponViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         priceInputFormatter: PriceInputFormatter = PriceInputFormatter(),
          timezone: TimeZone = .siteTimezone,
          onSuccess: @escaping (Coupon) -> Void) {
         self.siteID = siteID
@@ -208,6 +210,7 @@ final class AddEditCouponViewModel: ObservableObject {
         self.stores = stores
         self.storageManager = storageManager
         self.currencySettings = currencySettings
+        self.priceInputFormatter = priceInputFormatter
         self.timezone = timezone
         self.onSuccess = onSuccess
 
@@ -232,6 +235,7 @@ final class AddEditCouponViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         priceInputFormatter: PriceInputFormatter = PriceInputFormatter(),
          timezone: TimeZone = .siteTimezone,
          onSuccess: @escaping (Coupon) -> Void) {
         siteID = existingCoupon.siteID
@@ -241,6 +245,7 @@ final class AddEditCouponViewModel: ObservableObject {
         self.stores = stores
         self.storageManager = storageManager
         self.currencySettings = currencySettings
+        self.priceInputFormatter = priceInputFormatter
         self.timezone = timezone
         self.onSuccess = onSuccess
 
@@ -299,9 +304,9 @@ final class AddEditCouponViewModel: ObservableObject {
             .store(in: &subscriptions)
     }
 
-    func validatePercentageAmountInput(withDebounce: Bool = false) {
+    func validatePercentageAmountInput(withDebounce: Bool) {
         guard discountType == .percent else { return }
-        guard let formattedAmount = PriceInputFormatter().value(from: amountField)?.doubleValue else {
+        guard let formattedAmount = priceInputFormatter.value(from: amountField)?.doubleValue else {
             amountField = "0"
             return
         }

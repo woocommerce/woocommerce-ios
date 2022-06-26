@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import Combine
 import UIKit
 import WooFoundation
 import protocol Storage.StorageManagerType
@@ -168,6 +169,8 @@ final class AddEditCouponViewModel: ObservableObject {
     ///
     @Published var isLoading: Bool = false
 
+    @Published private(set) var isDisplayingAmountWarning: Bool = false
+
     // Fields
     @Published var discountType: Coupon.DiscountType {
         didSet {
@@ -185,6 +188,8 @@ final class AddEditCouponViewModel: ObservableObject {
     @Published var productOrVariationIDs: [Int64]
     @Published var categoryIDs: [Int64]
     @Published var showingCouponCreationSuccess: Bool = false
+
+    private var subscriptions: Set<AnyCancellable> = []
 
     /// Init method for coupon creation
     ///
@@ -214,6 +219,7 @@ final class AddEditCouponViewModel: ObservableObject {
         productOrVariationIDs = []
         categoryIDs = []
         generateRandomCouponCode()
+        configureWarningBehavior()
     }
 
     /// Init method for coupon editing
@@ -244,6 +250,7 @@ final class AddEditCouponViewModel: ObservableObject {
         couponRestrictionsViewModel = CouponRestrictionsViewModel(coupon: existingCoupon)
         productOrVariationIDs = existingCoupon.productIds
         categoryIDs = existingCoupon.productCategories
+        configureWarningBehavior()
     }
 
     /// The method will generate a code in the same way as the existing admin website code does.
@@ -263,18 +270,31 @@ final class AddEditCouponViewModel: ObservableObject {
         codeField = code
     }
 
+    func configureWarningBehavior() {
+        $isDisplayingAmountWarning
+            .removeDuplicates()
+            .sink { [weak self] isDisplaying in
+                if isDisplaying {
+                    self?.amountFieldColor = Color(.warning)
+                } else {
+                    self?.amountFieldColor = Color(.label)
+                }
+            }
+            .store(in: &subscriptions)
+    }
+
     func validatePercentageAmountInput() {
         let priceFormatter = PriceInputFormatter()
         guard let convertedAmount = priceFormatter.value(from: amountField)?.doubleValue else { return }
 
         if shouldCorrectCouponAmount(amount: convertedAmount) {
-            amountFieldColor = Color(.warning)
+            isDisplayingAmountWarning = true
             DDLogInfo("⚠️ Invalid input, starting debounce")
             let convertedAmount = truncateAmountValueToPercentage(amount: convertedAmount)
             Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { [weak self] timer in
                 timer.invalidate()
+                self?.isDisplayingAmountWarning = false
                 self?.amountField = convertedAmount
-                self?.amountFieldColor = Color(.label)
                 DDLogInfo("⚠️ Amount force fixed")
             }
         }

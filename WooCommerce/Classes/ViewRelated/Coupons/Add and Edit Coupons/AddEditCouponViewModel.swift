@@ -313,8 +313,7 @@ final class AddEditCouponViewModel: ObservableObject {
         }
 
         if convertedAmount > 100 {
-            let truncatedAmount = truncateAmountValueToPercentage(amount: convertedAmount)
-            amountField = truncatedAmount
+            amountField = "100"
             if withWarning {
                 debounceWarningState()
             }
@@ -327,16 +326,6 @@ final class AddEditCouponViewModel: ObservableObject {
         Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { [weak self] timer in
             timer.invalidate()
             self?.isDisplayingAmountWarning = false
-        }
-    }
-
-    private func truncateAmountValueToPercentage(amount: Double?) -> String {
-        guard let amount = amount else { return "0" }
-
-        if amount > 100 {
-            return "100"
-        } else {
-            return String(amount)
         }
     }
 

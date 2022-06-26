@@ -3,7 +3,7 @@ import WooFoundation
 @testable import WooCommerce
 
 final class CouponAmountInputFormatterTests: XCTestCase {
-    private var formatter = CouponAmountInputFormatter()
+    private let formatter = CouponAmountInputFormatter()
 
     // MARK: test cases for `isValid(input:)`
 

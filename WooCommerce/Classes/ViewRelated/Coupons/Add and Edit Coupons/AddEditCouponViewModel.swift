@@ -65,7 +65,7 @@ final class AddEditCouponViewModel: ObservableObject {
 
     /// Label representing the label of the amount textfield subtitle, localized based on discount type.
     ///
-    var amountSubtitleLabel: String {
+    var amountSubtitleDefaultText: String {
         switch discountType {
         case .percent:
             return Localization.amountPercentSubtitle
@@ -180,6 +180,7 @@ final class AddEditCouponViewModel: ObservableObject {
     }
     @Published var amountField: String
     @Published var amountFieldColor: Color
+    @Published var amountSubtitleLabel: String
     @Published var amountSubtitleColor: Color
     @Published var codeField: String
     @Published var descriptionField: String
@@ -212,6 +213,7 @@ final class AddEditCouponViewModel: ObservableObject {
 
         amountField = String()
         amountFieldColor = Color(.label)
+        amountSubtitleLabel = String()
         amountSubtitleColor = Color(.textSubtle)
         codeField = String()
         descriptionField = String()
@@ -245,6 +247,7 @@ final class AddEditCouponViewModel: ObservableObject {
         // Populate fields
         amountField = existingCoupon.amount
         amountFieldColor = Color(.label)
+        amountSubtitleLabel = String()
         amountSubtitleColor = Color(.textSubtle)
         codeField = existingCoupon.code
         descriptionField = existingCoupon.description
@@ -253,7 +256,7 @@ final class AddEditCouponViewModel: ObservableObject {
         couponRestrictionsViewModel = CouponRestrictionsViewModel(coupon: existingCoupon)
         productOrVariationIDs = existingCoupon.productIds
         categoryIDs = existingCoupon.productCategories
-        
+
         configureWarningBehavior()
     }
 
@@ -275,16 +278,18 @@ final class AddEditCouponViewModel: ObservableObject {
     }
 
     func configureWarningBehavior() {
+        let amountSubtitleDefaultText = amountSubtitleDefaultText
         $isDisplayingAmountWarning
             .removeDuplicates()
             .sink { [weak self] isDisplaying in
                 if isDisplaying {
-                    let warningColor = Color(.warning)
                     self?.amountFieldColor = warningColor
                     self?.amountSubtitleColor = warningColor
+                    self?.amountSubtitleLabel = Localization.amountPercentWarningSubtitle
                 } else {
                     self?.amountFieldColor = Color(.label)
                     self?.amountSubtitleColor = Color(.textSubtle)
+                    self?.amountSubtitleLabel = amountSubtitleDefaultText
                 }
             }
             .store(in: &subscriptions)
@@ -594,6 +599,10 @@ private extension AddEditCouponViewModel {
         static let amountPercentSubtitle = NSLocalizedString("Set the percentage of the discount you want to offer.",
                                                              comment: "Subtitle of the Amount field in the Coupon Edit" +
                                                              " or Creation screen for a percentage discount coupon.")
+        static let amountPercentWarningSubtitle = NSLocalizedString("Percentages cannot be greater than 100",
+                                                                    comment: "Subtitle of the Amount field when a percentage " +
+                                                                    "higher than 100 is set in the Coupon Edit or Creation " +
+                                                                    "screen for a percentage discount coupon.")
         static let amountFixedDiscountSubtitle = NSLocalizedString("Set the fixed amount of the discount you want to offer.",
                                                                    comment: "Subtitle of the Amount field on the Coupon Edit" +
                                                                    " or Creation screen for a fixed amount discount coupon.")

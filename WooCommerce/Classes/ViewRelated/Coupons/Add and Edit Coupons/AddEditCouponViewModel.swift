@@ -300,13 +300,13 @@ final class AddEditCouponViewModel: ObservableObject {
     }
 
     func validatePercentageAmountInput(withDebounce: Bool = false) {
-        let priceFormatter = PriceInputFormatter()
-        guard let formattedAmount = priceFormatter.value(from: amountField)?.doubleValue else {
+        guard discountType == .percent else { return }
+        guard let formattedAmount = PriceInputFormatter().value(from: amountField)?.doubleValue else {
             amountField = "0"
             return
         }
 
-        if shouldCorrectCouponAmount(amount: formattedAmount) {
+        if formattedAmount > 100 {
             let truncatedAmount = truncateAmountValueToPercentage(amount: formattedAmount)
             if withDebounce {
                 isDisplayingAmountWarning = true
@@ -547,10 +547,6 @@ private extension AddEditCouponViewModel {
             return false
         }
         return coupon.freeShipping != initialCoupon.freeShipping
-    }
-
-    func shouldCorrectCouponAmount(amount: Double) -> Bool {
-        return discountType == .percent && amount > 100
     }
 
     func trackCouponCreateInitiated(with coupon: Coupon) {

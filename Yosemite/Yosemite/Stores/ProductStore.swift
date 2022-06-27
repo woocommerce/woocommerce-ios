@@ -211,6 +211,12 @@ private extension ProductStore {
             }
         }
 
+        // Do not trigger API request for empty array of items
+        guard !missingIDs.isEmpty else {
+            onCompletion(nil)
+            return
+        }
+
         remote.loadProducts(for: order.siteID, by: missingIDs) { [weak self] result in
             switch result {
             case .success(let products):

@@ -12,6 +12,19 @@ protocol ProductImageUploaderProtocol {
     ///   - originalStatuses: the current image statuses of the product for initialization.
     func actionHandler(siteID: Int64, productID: Int64, isLocalID: Bool, originalStatuses: [ProductImageStatus]) -> ProductImageActionHandler
 
+    /// Replaces the local ID of the product with the remote ID from API.
+    ///
+    /// Called in "Add product" flow as soon as the product is saved in the API.
+    ///
+    /// Replacing product ID is necessary to update the product with the images that are already uploaded without product ID.
+    /// Note that the images start uploading even before the product is created in API.
+    ///
+    /// - Parameters:
+    ///   - siteID: The ID of the site to which images are uploaded to.
+    ///   - localProductID: A temporary local ID of the product.
+    ///   - remoteProductID: Remote product ID received from API.
+    func replaceLocalID(siteID: Int64, localProductID: Int64, remoteProductID: Int64)
+
     /// Saves the product remotely with the images after none is pending upload.
     /// - Parameters:
     ///   - siteID: the ID of the site where images are uploaded to.
@@ -60,6 +73,16 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
             actionHandlersByProduct[key] = actionHandler
         }
         return actionHandler
+    }
+
+    func replaceLocalID(siteID: Int64, localProductID: Int64, remoteProductID: Int64) {
+        let key = ProductKey(siteID: siteID, productID: localProductID, isLocalID: true)
+        guard let handler = actionHandlersByProduct[key] else {
+            return
+        }
+        actionHandlersByProduct.removeValue(forKey: key)
+        let keyWithRemoteProductID = ProductKey(siteID: siteID, productID: remoteProductID, isLocalID: false)
+        actionHandlersByProduct[keyWithRemoteProductID] = handler
     }
 
     func hasUnsavedChangesOnImages(siteID: Int64, productID: Int64, isLocalID: Bool, originalImages: [ProductImage]) -> Bool {

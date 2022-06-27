@@ -1161,6 +1161,31 @@ extension WooAnalyticsEvent {
     }
 }
 
+// MARK: - Close Account
+//
+extension WooAnalyticsEvent {
+    /// The source that presents the Jetpack install screen.
+    enum CloseAccountSource: String {
+        case settings
+        case emptyStores = "empty_stores"
+    }
+
+    /// Tracked when the user taps to close their WordPress.com account.
+    static func closeAccountTapped(source: CloseAccountSource) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .closeAccountTapped, properties: ["source": source.rawValue])
+    }
+
+    /// Tracked when the WordPress.com account closure succeeds.
+    static func closeAccountSuccess() -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .closeAccountSuccess, properties: [:])
+    }
+
+    /// Tracked when the WordPress.com account closure fails.
+    static func closeAccountFailed(error: Error) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .closeAccountFailed, properties: [:], error: error)
+    }
+}
+
 private extension PaymentMethod {
     var analyticsValue: String {
         switch self {

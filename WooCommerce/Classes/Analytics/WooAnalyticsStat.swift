@@ -581,6 +581,7 @@ public enum WooAnalyticsStat: String {
     case couponsLoaded = "coupons_loaded"
     case couponsLoadedFailed = "coupons_loaded_failed"
     case couponsListSearchTapped = "coupons_list_search_tapped"
+    case couponsListCreateTapped = "coupons_list_create_tapped"
     case couponDetails = "coupon_details"
     case couponSettingDisabled = "coupon_settings_disabled"
     case couponSettingEnabled = "coupon_settings_enabled"
@@ -589,11 +590,20 @@ public enum WooAnalyticsStat: String {
     case couponUpdateInitiated = "coupon_update_initiated"
     case couponUpdateSuccess = "coupon_update_success"
     case couponUpdateFailed = "coupon_update_failed"
+    case couponCreationInitiated = "coupon_creation_initiated"
+    case couponCreationSuccess = "coupon_creation_success"
+    case couponCreationFailed = "coupon_creation_failed"
+    case couponCreationSuccessShareTapped = "coupon_creation_success_share_tapped"
 
     // MARK: Inbox Notes
     case inboxNotesLoaded = "inbox_notes_loaded"
     case inboxNotesLoadedFailed = "inbox_notes_load_failed"
     case inboxNoteAction = "inbox_note_action"
+
+    // MARK: Close Account
+    case closeAccountTapped = "close_account_tapped"
+    case closeAccountSuccess = "close_account_success"
+    case closeAccountFailed = "close_account_failed"
 }
 
 public extension WooAnalyticsStat {

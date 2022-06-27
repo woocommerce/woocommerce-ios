@@ -176,10 +176,14 @@ private extension RemoteOrderSynchronizer {
             .store(in: &subscriptions)
 
         setNote.withLatestFrom(orderPublisher)
-            .map { notes, order in
-                order.copy(customerNote: notes)
+            .sink { [weak self] note, order in
+                let orderWithNewNote = order.copy(customerNote: note)
+                self?.order = orderWithNewNote
+                if case .editing = flow {
+                    self?.orderSyncTrigger.send(orderWithNewNote)
+                }
             }
-            .assign(to: &$order)
+            .store(in: &subscriptions)
 
         retryTrigger.withLatestFrom(orderPublisher)
             .sink { [weak self] _, order in

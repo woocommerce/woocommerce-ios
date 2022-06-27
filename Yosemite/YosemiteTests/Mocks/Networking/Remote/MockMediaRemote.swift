@@ -109,7 +109,7 @@ extension MockMediaRemote: MediaRemoteProtocol {
     func updateProductID(siteID: Int64,
                          productID: Int64,
                          mediaID: Int64,
-                         completion: @escaping  (Result<Media, Error>) -> Void) {
+                         completion: @escaping (Result<Media, Error>) -> Void) {
         invocations.append(.updateProductID(siteID: siteID))
         guard let result = updateProductIDResultsBySiteID[siteID] else {
             XCTFail("\(String(describing: self)) Could not find result for site ID: \(siteID)")

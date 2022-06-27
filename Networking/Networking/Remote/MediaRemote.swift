@@ -23,7 +23,7 @@ public protocol MediaRemoteProtocol {
     func updateProductID(siteID: Int64,
                          productID: Int64,
                          mediaID: Int64,
-                         completion: @escaping  (Result<Media, Error>) -> Void)
+                         completion: @escaping (Result<Media, Error>) -> Void)
 }
 
 /// Media: Remote Endpoints
@@ -182,7 +182,7 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
     public func updateProductID(siteID: Int64,
                                 productID: Int64,
                                 mediaID: Int64,
-                                completion: @escaping  (Result<Media, Error>) -> Void) {
+                                completion: @escaping (Result<Media, Error>) -> Void) {
         let formParameters: [String: String] = [
             ParameterKey.wordPressMediaParentID: "\(productID)",
             ParameterKey.fieldsWordPressSite: ParameterValue.wordPressMediaFields,

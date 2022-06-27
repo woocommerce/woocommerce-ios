@@ -141,11 +141,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
         view.endEditing(true)
 
-        /// Depending on how a VC is presented we need to check different things to know whether it's being dismissed or not.
-        /// A VC presented as the first VC in a navigation controller needs to check if the navigation controller is being dismissed.
-        /// A VC added to an existing navigation controller is dismissed when `isMovingFromParent` is `true`.
-        /// For any other scenario `isBeingDismissed` will do.
-        if isMovingFromParent || isBeingDismissed || navigationController?.isBeingDismissed == true {
+        if isBeingDismissedInAnyWay {
             productImageUploader.startEmittingErrors(siteID: viewModel.productModel.siteID,
                                                             productID: viewModel.productModel.productID,
                                                             isLocalID: !viewModel.productModel.existsRemotely)

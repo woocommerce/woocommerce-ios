@@ -58,9 +58,12 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
     private var actionHandlersByProduct: [ProductKey: ProductImageActionHandler] = [:]
     private var imagesSaverByProduct: [ProductKey: ProductImagesSaver] = [:]
     private let stores: StoresManager
+    private let imagesProductIDUpdater: ProductImagesProductIDUpdater
 
-    init(stores: StoresManager = ServiceLocator.stores) {
+    init(stores: StoresManager = ServiceLocator.stores,
+         imagesProductIDUpdater: ProductImagesProductIDUpdater = ProductImagesProductIDUpdater()) {
         self.stores = stores
+        self.imagesProductIDUpdater = imagesProductIDUpdater
     }
 
     func actionHandler(siteID: Int64, productID: Int64, isLocalID: Bool, originalStatuses: [ProductImageStatus]) -> ProductImageActionHandler {
@@ -141,10 +144,9 @@ private extension ProductImageUploader {
                                                             images: [ProductImage]) {
         images.forEach { image in
             Task {
-                let productIDUpdater = ProductImagesProductIDUpdater(stores: stores)
-                _ = await productIDUpdater.updateImageProductID(siteID: siteID,
-                                                                productID: productID,
-                                                                productImage: image)
+                _ = await imagesProductIDUpdater.updateImageProductID(siteID: siteID,
+                                                                      productID: productID,
+                                                                      productImage: image)
             }
         }
     }

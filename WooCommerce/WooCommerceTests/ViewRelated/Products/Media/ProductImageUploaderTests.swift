@@ -193,4 +193,30 @@ final class ProductImageUploaderTests: XCTestCase {
                                                                      isLocalID: true,
                                                                      originalStatuses: []).productImageStatuses)
     }
+    
+    func test_replaceLocalID_fires_updateImageProductID_in_ProductImagesProductIDUpdater() {
+        // Given
+        let mockProductIDUpdater = MockProductImagesProductIDUpdater()
+        let imageUploader = ProductImageUploader(imagesProductIDUpdater: mockProductIDUpdater)
+        let localProductID: Int64 = 0
+        let remoteProductID = productID
+        let alreadyUploadedImages = [ProductImage.fake(),
+                                     ProductImage.fake()]
+        let originalStatuses: [ProductImageStatus] = alreadyUploadedImages.map({ .remote(image: $0) }) + [.uploading(asset: PHAsset())]
+        
+        _ = imageUploader.actionHandler(siteID: siteID,
+                                        productID: localProductID,
+                                        isLocalID: true,
+                                        originalStatuses: originalStatuses)
+        
+        // When
+        imageUploader.replaceLocalID(siteID: siteID, localProductID: localProductID, remoteProductID: remoteProductID)
+        
+        /// Then
+        /// After replacing local product ID with remote product ID
+        /// `mockProductIDUpdater` should have received calls to update product ID of the already uploaded images.
+        waitUntil(condition: {
+            mockProductIDUpdater.numberOfTimesUpdateImageProductIDWasCalled == alreadyUploadedImages.count
+        })
+    }
 }

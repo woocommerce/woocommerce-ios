@@ -58,10 +58,10 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
     private var actionHandlersByProduct: [ProductKey: ProductImageActionHandler] = [:]
     private var imagesSaverByProduct: [ProductKey: ProductImagesSaver] = [:]
     private let stores: StoresManager
-    private let imagesProductIDUpdater: ProductImagesProductIDUpdater
+    private let imagesProductIDUpdater: ProductImagesProductIDUpdaterProtocol
 
     init(stores: StoresManager = ServiceLocator.stores,
-         imagesProductIDUpdater: ProductImagesProductIDUpdater = ProductImagesProductIDUpdater()) {
+         imagesProductIDUpdater: ProductImagesProductIDUpdaterProtocol = ProductImagesProductIDUpdater()) {
         self.stores = stores
         self.imagesProductIDUpdater = imagesProductIDUpdater
     }

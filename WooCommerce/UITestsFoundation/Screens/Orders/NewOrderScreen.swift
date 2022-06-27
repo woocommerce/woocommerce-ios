@@ -23,6 +23,18 @@ public final class NewOrderScreen: ScreenObject {
         $0.staticTexts["Add Customer Details"]
     }
 
+    private let addShippingButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["add-shipping-button"]
+    }
+
+    private let addFeeButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["add-fee-button"]
+    }
+
+    private let addNoteButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["add-customer-note-button"]
+    }
+
     private var createButton: XCUIElement { createButtonGetter(app) }
 
     /// Cancel button in the Navigation bar.
@@ -40,6 +52,18 @@ public final class NewOrderScreen: ScreenObject {
     /// Add Customer Details button in the Customer Details section.
     ///
     private var addCustomerDetailsButton: XCUIElement { addCustomerDetailsButtonGetter(app) }
+
+    /// Add Shipping button in the Payment section.
+    ///
+    private var addShippingButton: XCUIElement { addShippingButtonGetter(app) }
+
+    /// Add Fee button in the Payment section.
+    ///
+    private var addFeeButton: XCUIElement { addFeeButtonGetter(app) }
+
+    /// Add Note button in the Customer Note section.
+    ///
+    private var addNoteButton: XCUIElement { addNoteButtonGetter(app) }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
@@ -74,6 +98,30 @@ public final class NewOrderScreen: ScreenObject {
         return try CustomerDetailsScreen()
     }
 
+    /// Opens the Add Shipping screen.
+    /// - Returns: Add Shipping screen object.
+    @discardableResult
+    public func openAddShippingScreen() throws -> AddShippingScreen {
+        addShippingButton.tap()
+        return try AddShippingScreen()
+    }
+
+    /// Opens the Add Fee screen.
+    /// - Returns: Add Fee screen object.
+    @discardableResult
+    public func openAddFeeScreen() throws -> AddFeeScreen {
+        addFeeButton.tap()
+        return try AddFeeScreen()
+    }
+
+    /// Opens the Customer Note screen.
+    /// - Returns: Customer Note screen object.
+    @discardableResult
+    public func openCustomerNoteScreen() throws -> CustomerNoteScreen {
+        addNoteButton.tap()
+        return try CustomerNoteScreen()
+    }
+
 // MARK: - High-level Order Creation actions
 
     /// Creates a remote order with all of the entered order data.
@@ -105,6 +153,37 @@ public final class NewOrderScreen: ScreenObject {
     public func addCustomerDetails(name: String) throws -> NewOrderScreen {
         return try openCustomerDetailsScreen()
             .enterCustomerDetails(name: name)
+    }
+
+    /// Adds shipping on the Add Shipping screen.
+    /// - Parameters:
+    ///   - amount: Amount (in the store currency) to add for shipping.
+    ///   - name: Name of the shipping method (e.g. "Free Shipping" or "Flat Rate").
+    /// - Returns: New Order screen object.
+    public func addShipping(amount: String, name: String) throws -> NewOrderScreen {
+        return try openAddShippingScreen()
+            .enterShippingAmount(amount)
+            .enterShippingName(name)
+            .confirmShippingDetails()
+    }
+
+    /// Adds a fee on the Add Fee screen.
+    /// - Parameters:
+    ///   - amount: Amount (in the store currency) to add as a fee.
+    /// - Returns: New Order screen object.
+    public func addFee(amount: String) throws -> NewOrderScreen {
+        return try openAddFeeScreen()
+            .enterFixedFee(amount: amount)
+            .confirmFee()
+    }
+
+    /// Adds a note on the Customer Note screen.
+    /// - Parameter text: Text to enter as the customer note.
+    /// - Returns: New Order screen object.
+    public func addCustomerNote(_ text: String) throws -> NewOrderScreen {
+        return try openCustomerNoteScreen()
+            .enterNote(text)
+            .confirmNote()
     }
 
     /// Cancels Order Creation process

@@ -76,7 +76,14 @@ struct InPersonPaymentsView: View {
                 InPersonPaymentsStripeRejected()
             case .completed(let pluginState):
                 if viewModel.showMenuOnCompletion {
-                    InPersonPaymentsMenu(pluginState: pluginState)
+                    InPersonPaymentsMenu(
+                        pluginState: pluginState,
+                        onPluginSelected: { plugin in
+                            viewModel.selectPlugin(plugin)
+                        },
+                        onPluginSelectionCleared: {
+                            viewModel.clearPluginSelection()
+                        })
                 } else {
                     InPersonPaymentsCompleted()
                 }

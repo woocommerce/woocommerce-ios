@@ -1,3 +1,2 @@
-Bonjour à tous nos utilisateurs canadiens ! Nous sommes ravis d'annoncer que les paiements en personne sont maintenant disponibles pour les marchands canadiens qui utilisent actuellement WooCommerce Payments.
-
-Nous avons également amélioré d’autres aspects de l’application. Vous pouvez désormais utiliser des chiffres arabes dans les champs de montant, mettre à jour les différents types de codes promo et utiliser le copier-coller dans les remarques concernant les commandes. Merci pour vos retours ! Ils nous aident à améliorer notre application pour tous nos utilisateurs.
+Cette version apporte plusieurs corrections à la création de commandes et aux paiements en personne, notamment la correction d’un bogue dans la section des produits qui n’affichait pas l’ordre correct des articles, ni la date et l’heure pour toutes les commandes, ni le bouton Remboursement pour toutes les commandes payées.
+Continuez à nous envoyer vos commentaires, votre avis nous intéresse !

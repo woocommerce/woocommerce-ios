@@ -13,7 +13,7 @@ final class OrdersTests: XCTestCase {
         try LoginFlow.logInWithWPcom()
     }
 
-    func testOrdersScreenLoads() throws {
+    func test_load_orders_screen() throws {
         let orders = try GetMocks.readOrdersData()
 
         try TabNavComponent().goToOrdersScreen()
@@ -27,12 +27,16 @@ final class OrdersTests: XCTestCase {
 
     func test_create_new_order() throws {
         let products = try GetMocks.readProductsData()
+        let order = try GetMocks.readNewOrderData()
 
         try TabNavComponent().goToOrdersScreen()
             .startOrderCreation()
             .editOrderStatus()
             .addProduct(byName: products[0].name)
-            .addCustomerDetails(name: "Mira")
+            .addCustomerDetails(name: order.billing.first_name)
+            .addShipping(amount: order.shipping_lines[0].total, name: order.shipping_lines[0].method_title)
+            .addFee(amount: order.fee_lines[0].amount)
+            .addCustomerNote(order.customer_note)
             .createOrder()
     }
 

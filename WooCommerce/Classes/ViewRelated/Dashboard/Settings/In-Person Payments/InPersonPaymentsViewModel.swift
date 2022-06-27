@@ -64,6 +64,10 @@ final class InPersonPaymentsViewModel: ObservableObject {
         useCase.selectPlugin(plugin)
     }
 
+    func clearPluginSelection() {
+        useCase.clearPluginSelection()
+    }
+
     private func updateLearnMoreURL(state: CardPresentPaymentOnboardingState) {
         let preferredPlugin: CardPresentPaymentsPlugin
         switch state {

@@ -13,6 +13,9 @@ import AutomatticTracks
 
 import class Yosemite.ScreenshotStoresManager
 
+// In that way, Inject will be available in the entire target.
+@_exported import Inject
+
 #if DEBUG
 import Wormholy
 #endif
@@ -69,6 +72,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Upgrade check...
         checkForUpgrades()
+
+        // Since we are using Injection for refreshing the content of the app in debug mode,
+        // we are going to enable Inject.animation that will be used when
+        // ever new source code is injected into our application.
+        Inject.animation = .interactiveSpring()
 
         return true
     }

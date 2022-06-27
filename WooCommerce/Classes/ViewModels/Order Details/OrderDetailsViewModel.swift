@@ -189,18 +189,23 @@ extension OrderDetailsViewModel {
         syncState = .syncing
 
         group.enter()
-        syncOrder { _ in
-            group.leave()
-        }
+        syncOrder { [weak self] _ in
+            defer {
+                group.leave()
+            }
 
-        group.enter()
-        syncProducts { _ in
-            group.leave()
-        }
+            // Products require order.items data, so sync them only after the order is loaded
+            guard let self = self else { return }
 
-        group.enter()
-        syncProductVariations { _ in
-            group.leave()
+            group.enter()
+            self.syncProducts { _ in
+                group.leave()
+            }
+
+            group.enter()
+            self.syncProductVariations { _ in
+                group.leave()
+            }
         }
 
         group.enter()

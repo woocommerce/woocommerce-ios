@@ -417,6 +417,7 @@ extension ProductFormViewModel {
         let remoteActionUseCase = ProductFormRemoteActionUseCase()
         switch formType {
         case .add:
+            let productIDBeforeSave = productModel.productID
             remoteActionUseCase.addProduct(product: productModelToSave, password: password) { [weak self] result in
                 switch result {
                 case .failure(let error):
@@ -429,6 +430,7 @@ extension ProductFormViewModel {
                     self.resetPassword(data.password)
                     onCompletion(.success(data.product))
                     if self.isBackgroundImageUploadEnabled {
+                        self.replaceProductID(productIDBeforeSave: productIDBeforeSave)
                         self.saveProductImagesWhenNoneIsPendingUploadAnymore()
                     }
                 }
@@ -458,6 +460,28 @@ extension ProductFormViewModel {
         }
     }
 
+    func deleteProductRemotely(onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void) {
+        let remoteActionUseCase = ProductFormRemoteActionUseCase()
+        remoteActionUseCase.deleteProduct(product: product) { result in
+            switch result {
+            case .success:
+                onCompletion(.success(()))
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+    }
+}
+
+// MARK: Background image upload
+//
+private extension ProductFormViewModel {
+    func replaceProductID(productIDBeforeSave: Int64) {
+        productImagesUploader.replaceLocalID(siteID: product.siteID,
+                                             localProductID: productIDBeforeSave,
+                                             remoteProductID: product.productID)
+    }
+
     func saveProductImagesWhenNoneIsPendingUploadAnymore() {
         productImagesUploader.saveProductImagesWhenNoneIsPendingUploadAnymore(siteID: product.siteID,
                                                                               productID: product.productID,
@@ -480,18 +504,6 @@ extension ProductFormViewModel {
         // isn't shown right after the save request from pending image upload.
         // The save request keeps track of the latest image statuses at the time of the call and their upload progress over time.
         isUpdateEnabledSubject.send(hasUnsavedChanges())
-    }
-
-    func deleteProductRemotely(onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void) {
-        let remoteActionUseCase = ProductFormRemoteActionUseCase()
-        remoteActionUseCase.deleteProduct(product: product) { result in
-            switch result {
-            case .success:
-                onCompletion(.success(()))
-            case .failure(let error):
-                onCompletion(.failure(error))
-            }
-        }
     }
 }
 

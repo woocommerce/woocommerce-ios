@@ -3,10 +3,10 @@ import SwiftUI
 struct CustomerNoteSection: View {
 
     /// Parent view model to access all data
-    @ObservedObject var viewModel: NewOrderViewModel
+    @ObservedObject var viewModel: EditableOrderViewModel
 
     /// View model to drive the view content
-    private var notesDataViewModel: NewOrderViewModel.CustomerNoteDataViewModel {
+    private var notesDataViewModel: EditableOrderViewModel.CustomerNoteDataViewModel {
         viewModel.customerNoteDataViewModel
     }
 
@@ -35,7 +35,7 @@ struct CustomerNoteSection: View {
 
 private struct CustomerNoteSectionContent: View {
     /// View model to drive the view content
-    var viewModel: NewOrderViewModel.CustomerNoteDataViewModel
+    var viewModel: EditableOrderViewModel.CustomerNoteDataViewModel
 
     @Binding var showEditNotesView: Bool
 
@@ -83,6 +83,7 @@ private struct CustomerNoteSectionContent: View {
             }
             .buttonStyle(PlusButtonStyle())
             .padding([.leading, .bottom, .trailing])
+            .accessibilityIdentifier("add-customer-note-button")
         }
     }
 
@@ -116,8 +117,8 @@ private extension CustomerNoteSectionContent {
 
 struct CustomerNoteSection_Previews: PreviewProvider {
     static var previews: some View {
-        let emptyViewModel = NewOrderViewModel.CustomerNoteDataViewModel(customerNote: "")
-        let notesViewModel = NewOrderViewModel.CustomerNoteDataViewModel(customerNote: "some notes")
+        let emptyViewModel = EditableOrderViewModel.CustomerNoteDataViewModel(customerNote: "")
+        let notesViewModel = EditableOrderViewModel.CustomerNoteDataViewModel(customerNote: "some notes")
 
         ScrollView {
             CustomerNoteSectionContent(viewModel: emptyViewModel, showEditNotesView: .constant(false))

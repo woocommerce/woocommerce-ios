@@ -431,6 +431,7 @@ extension OrderItemRefund {
             name: .fake(),
             productID: .fake(),
             variationID: .fake(),
+            refundedItemID: .fake(),
             quantity: .fake(),
             price: .fake(),
             sku: .fake(),

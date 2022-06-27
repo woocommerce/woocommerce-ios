@@ -1,3 +1,2 @@
-Merhaba Kanada! Şu anda WooCommerce Payments'ı kullanan Kanadalı satıcıların artık şahsen ödemeleri de kabul edebileceğini duyurmaktan heyecan duyuyoruz.
-
-Ayrıca tutar alanlarında Arapça rakam desteği, kupon indirim türlerini güncelleme olanağı ve sipariş notları için kopyala/yapıştır desteği de dahil olmak üzere uygulamanın başka kısımlarında da çeşitli iyileştirmeler yaptık. Geri bildirimleriniz için teşekkürler. Gerçekten uygulamayı herkes için daha iyi hale getirmemize yardımcı oluyor.
+Bu sürümde,  sipariş oluşturma ve şahsen ödemelerde yaptığımız düzeltmelerle, ürünler bölümündeki öğelerin doğru sırada görünmemesine neden olan bir hatayı giderdik, tüm siparişler için tarih/saatin ve ödemesi yapılan tüm siparişler için geri ödeme düğmesinin görüntülenmesini sağladık.
+Lütfen bize geri bildirim göndermeye devam edin, sizi dinliyoruz.

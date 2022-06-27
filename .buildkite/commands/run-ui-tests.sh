@@ -6,7 +6,7 @@ IOS_VERSION=$3
 
 echo "Running $TEST_NAME on $DEVICE for iOS $IOS_VERSION"
 
-# FIXIT-13.1: Temporary fix until we're on the Xcode 13.1 VM
+# Workaround for https://github.com/Automattic/buildkite-ci/issues/79
 echo "--- :rubygems: Fixing Ruby Setup"
 gem install bundler
 

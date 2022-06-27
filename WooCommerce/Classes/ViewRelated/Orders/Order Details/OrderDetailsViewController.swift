@@ -353,7 +353,10 @@ private extension OrderDetailsViewController {
     /// Presents the order edit form
     ///
     private func editOrder() {
-        // TODO: Implement
+        let viewModel = EditableOrderViewModel(siteID: viewModel.order.siteID, flow: .editing(initialOrder: viewModel.order))
+        let viewController = OrderFormHostingController(viewModel: viewModel)
+        let navController = UINavigationController(rootViewController: viewController)
+        present(navController, animated: true)
     }
 }
 

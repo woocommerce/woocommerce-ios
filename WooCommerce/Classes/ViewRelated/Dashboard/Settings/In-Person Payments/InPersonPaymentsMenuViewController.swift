@@ -4,11 +4,19 @@ import Yosemite
 
 final class InPersonPaymentsMenuViewController: UITableViewController {
     private let pluginState: CardPresentPaymentsPluginState
-    private var rows = [Row]()
+    private var sections = [Section]()
     private let configurationLoader: CardPresentConfigurationLoader
+    private let onPluginSelected: (CardPresentPaymentsPlugin) -> Void
+    private let onPluginSelectionCleared: () -> Void
 
-    init(pluginState: CardPresentPaymentsPluginState) {
+    init(
+        pluginState: CardPresentPaymentsPluginState,
+        onPluginSelected: @escaping (CardPresentPaymentsPlugin) -> Void,
+        onPluginSelectionCleared: @escaping () -> Void
+    ) {
         self.pluginState = pluginState
+        self.onPluginSelected = onPluginSelected
+        self.onPluginSelectionCleared = onPluginSelectionCleared
         configurationLoader = CardPresentConfigurationLoader()
         super.init(style: .grouped)
     }
@@ -20,7 +28,7 @@ final class InPersonPaymentsMenuViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        configureRows()
+        configureSections()
         configureTableView()
         registerTableViewCells()
     }
@@ -29,12 +37,26 @@ final class InPersonPaymentsMenuViewController: UITableViewController {
 // MARK: - View configuration
 //
 private extension InPersonPaymentsMenuViewController {
+    func configureSections() {
+        sections = [
+            cardReadersSection,
+            paymentOptionsSection
+        ].compactMap { $0 }
+    }
 
-    func configureRows() {
-        rows = [
+    var cardReadersSection: Section? {
+        let rows = [
             .orderCardReader,
             .manageCardReader
         ] + readerManualRows()
+        return Section(header: Localization.cardReaderSectionTitle, rows: rows)
+    }
+
+    var paymentOptionsSection: Section? {
+        guard pluginState.available.containsMoreThanOne else {
+            return nil
+        }
+        return Section(header: Localization.paymentOptionsSectionTitle, rows: [.managePaymentGateways])
     }
 
     func readerManualRows() -> [Row] {
@@ -73,6 +95,8 @@ private extension InPersonPaymentsMenuViewController {
             configureOrderCardReader(cell: cell)
         case let cell as LeftImageTableViewCell where row == .manageCardReader:
             configureManageCardReader(cell: cell)
+        case let cell as LeftImageTitleSubtitleTableViewCell where row == .managePaymentGateways:
+            configureManagePaymentGateways(cell: cell)
         case let cell as LeftImageTableViewCell where row == .bbposChipper2XBTManual:
             configureChipper2XManual(cell: cell)
         case let cell as LeftImageTableViewCell where row == .stripeM2Manual:
@@ -96,6 +120,13 @@ private extension InPersonPaymentsMenuViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.configure(image: .creditCardIcon, text: Localization.manageCardReader)
+    }
+
+    func configureManagePaymentGateways(cell: LeftImageTitleSubtitleTableViewCell) {
+        cell.imageView?.tintColor = .text
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.configure(image: .rectangleOnRectangleAngled, text: Localization.managePaymentGateways, subtitle: pluginState.preferred.pluginName)
     }
 
     func configureChipper2XManual(cell: LeftImageTableViewCell) {
@@ -124,7 +155,7 @@ private extension InPersonPaymentsMenuViewController {
 //
 private extension InPersonPaymentsMenuViewController {
     func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
-        rows[indexPath.row]
+        sections[indexPath.section].rows[indexPath.row]
     }
 }
 
@@ -146,6 +177,10 @@ extension InPersonPaymentsMenuViewController {
         show(viewController, sender: self)
     }
 
+    func managePaymentGatewaysWasPressed() {
+        onPluginSelectionCleared()
+    }
+
     func bbposChipper2XBTManualWasPressed() {
         WebviewHelper.launch(Constants.bbposChipper2XBTManualURL, with: self)
     }
@@ -162,11 +197,15 @@ extension InPersonPaymentsMenuViewController {
 // MARK: - UITableViewDataSource
 extension InPersonPaymentsMenuViewController {
     override func numberOfSections(in tableView: UITableView) -> Int {
-        1
+        sections.count
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        rows.count
+        sections[section].rows.count
+    }
+
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        sections[section].header
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -190,6 +229,8 @@ extension InPersonPaymentsMenuViewController {
             orderCardReaderWasPressed()
         case .manageCardReader:
             manageCardReaderWasPressed()
+        case .managePaymentGateways:
+            managePaymentGatewaysWasPressed()
         case .bbposChipper2XBTManual:
             bbposChipper2XBTManualWasPressed()
         case .stripeM2Manual:
@@ -204,6 +245,14 @@ extension InPersonPaymentsMenuViewController {
 //
 private extension InPersonPaymentsMenuViewController {
     enum Localization {
+        static let cardReaderSectionTitle = NSLocalizedString(
+            "Card readers",
+            comment: "Title for the section related to card readers inside In-Person Payments settings")
+
+        static let paymentOptionsSectionTitle = NSLocalizedString(
+            "Payment options",
+            comment: "Title for the section related to payments inside In-Person Payments settings")
+
         static let orderCardReader = NSLocalizedString(
             "Order card reader",
             comment: "Navigates to Card Reader ordering screen"
@@ -212,6 +261,11 @@ private extension InPersonPaymentsMenuViewController {
         static let manageCardReader = NSLocalizedString(
             "Manage card reader",
             comment: "Navigates to Card Reader management screen"
+        )
+
+        static let managePaymentGateways = NSLocalizedString(
+            "Payment Provider",
+            comment: "Navigates to Payment Gateway management screen"
         )
 
         static let chipperCardReaderManual = NSLocalizedString(
@@ -231,15 +285,26 @@ private extension InPersonPaymentsMenuViewController {
     }
 }
 
+private struct Section {
+    let header: String
+    let rows: [Row]
+}
+
 private enum Row: CaseIterable {
     case orderCardReader
     case manageCardReader
+    case managePaymentGateways
     case bbposChipper2XBTManual
     case stripeM2Manual
     case wisepad3Manual
 
     var type: UITableViewCell.Type {
-        LeftImageTableViewCell.self
+        switch self {
+        case .managePaymentGateways:
+            return LeftImageTitleSubtitleTableViewCell.self
+        default:
+            return LeftImageTableViewCell.self
+        }
     }
 
     var reuseIdentifier: String {
@@ -260,9 +325,11 @@ private enum Constants {
 ///
 struct InPersonPaymentsMenu: UIViewControllerRepresentable {
     let pluginState: CardPresentPaymentsPluginState
+    let onPluginSelected: (CardPresentPaymentsPlugin) -> Void
+    let onPluginSelectionCleared: () -> Void
 
     func makeUIViewController(context: Context) -> some UIViewController {
-        InPersonPaymentsMenuViewController(pluginState: pluginState)
+        InPersonPaymentsMenuViewController(pluginState: pluginState, onPluginSelected: onPluginSelected, onPluginSelectionCleared: onPluginSelectionCleared)
     }
 
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {

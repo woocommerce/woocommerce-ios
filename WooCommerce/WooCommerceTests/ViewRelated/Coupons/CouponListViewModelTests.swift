@@ -177,7 +177,7 @@ final class CouponListViewModelTests: XCTestCase {
     func test_shouldDisplayFeedbackBanner_returns_false_if_state_is_initialized() {
         // Given
         sut = CouponListViewModel(siteID: 123, syncingCoordinator: mockSyncingCoordinator)
-        XCTAssertEqual(sut.state, .initialized) // confidence check
+        XCTAssertEqual(sut.state, .empty) // confidence check
 
         // Then
         XCTAssertFalse(sut.shouldDisplayFeedbackBanner)
@@ -451,5 +451,19 @@ final class CouponListViewModelTests: XCTestCase {
 
         // Then
         assertEqual(.couponsDisabled, sut.state)
+    }
+
+    func test_state_is_empty_when_all_coupons_gets_deleted() {
+        // Given
+        mockStorageManager.insertSampleCoupon(readOnlyCoupon: Coupon.fake().copy(siteID: 123))
+        sut = CouponListViewModel(siteID: 123, storageManager: mockStorageManager)
+        assertEqual(.coupons, sut.state)
+
+        // When
+        mockStorageManager.reset()
+        sut.buildCouponViewModels()
+
+        // Then
+        assertEqual(.empty, sut.state)
     }
 }

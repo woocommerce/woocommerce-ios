@@ -54,6 +54,7 @@ struct EditCustomerNote<ViewModel: EditCustomerNoteViewModelProtocol>: View {
                 .padding()
                 .navigationTitle(Localization.title)
                 .navigationBarTitleDisplayMode(.inline)
+                .accessibilityIdentifier("edit-note-text-editor")
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
                         Button(Localization.cancel, action: {
@@ -63,6 +64,7 @@ struct EditCustomerNote<ViewModel: EditCustomerNoteViewModelProtocol>: View {
                     }
                     ToolbarItem(placement: .confirmationAction) {
                         navigationBarTrailingItem()
+                            .accessibilityIdentifier("edit-note-done-button")
                     }
                 }
         }

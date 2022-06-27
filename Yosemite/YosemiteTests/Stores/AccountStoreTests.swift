@@ -798,7 +798,7 @@ final class AccountStoreTests: XCTestCase {
         // Given
         let network = MockNetwork()
         let dotcomRemote = MockDotcomAccountRemote()
-        dotcomRemote.whenDisconnectingFromSocialService(thenReturn: .success(()))
+        dotcomRemote.whenClosingAccount(thenReturn: .success(()))
         let accountStore = AccountStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
                                         network: network,
@@ -807,7 +807,7 @@ final class AccountStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            let action = AccountAction.removeAppleIDAccess(dotcomAppID: "", dotcomSecret: "") { result in
+            let action = AccountAction.closeAccount { result in
                 promise(result)
             }
             accountStore.onAction(action)
@@ -822,7 +822,7 @@ final class AccountStoreTests: XCTestCase {
         let network = MockNetwork()
         let dotcomRemote = MockDotcomAccountRemote()
         let error = NSError(domain: "disconnect", code: 134)
-        dotcomRemote.whenDisconnectingFromSocialService(thenReturn: .failure(error))
+        dotcomRemote.whenClosingAccount(thenReturn: .failure(error))
         let accountStore = AccountStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
                                         network: network,
@@ -831,7 +831,7 @@ final class AccountStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            let action = AccountAction.removeAppleIDAccess(dotcomAppID: "", dotcomSecret: "") { result in
+            let action = AccountAction.closeAccount { result in
                 promise(result)
             }
             accountStore.onAction(action)

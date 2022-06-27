@@ -13,7 +13,7 @@ final class LoginTests: XCTestCase {
     }
 
     // Login with Store Address and log out.
-    func testSiteAddressLoginLogout() throws {
+    func skipped_test_site_address_login_logout() throws {
         try skipTillSettingsFixed()
 
         let prologue = try PrologueScreen().selectSiteAddress()
@@ -34,7 +34,7 @@ final class LoginTests: XCTestCase {
     }
 
     // Login with WordPress.com account and log out
-    func testWordPressLoginLogout() throws {
+    func skipped_test_WordPress_login_logout() throws {
         try skipTillSettingsFixed()
 
         let prologue = try PrologueScreen().selectContinueWithWordPress()
@@ -53,7 +53,7 @@ final class LoginTests: XCTestCase {
         XCTAssert(prologue.isLoaded)
     }
 
-    func testWordPressUnsuccessfullLogin() throws {
+    func test_WordPress_unsuccessfull_login() throws {
         _ = try PrologueScreen().selectContinueWithWordPress()
             .proceedWith(email: TestCredentials.emailAddress)
             .tryProceed(password: "invalidPswd")

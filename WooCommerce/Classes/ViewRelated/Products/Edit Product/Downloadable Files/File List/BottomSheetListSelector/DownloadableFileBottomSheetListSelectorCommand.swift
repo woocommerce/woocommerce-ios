@@ -26,7 +26,8 @@ final class DownloadableFileBottomSheetListSelectorCommand: BottomSheetListSelec
                                                                     textTintColor: .text,
                                                                     image: model.image,
                                                                     imageTintColor: .gray(.shade20),
-                                                                    numberOfLinesForText: 0)
+                                                                    numberOfLinesForText: 0,
+                                                                    showsDisclosureIndicator: true)
         cell.updateUI(viewModel: viewModel)
     }
 

@@ -15,7 +15,7 @@ protocol ProductImagesProductIDUpdaterProtocol {
 
 struct ProductImagesProductIDUpdater {
     private let stores: StoresManager
-    
+
     init(stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
     }

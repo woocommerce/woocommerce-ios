@@ -24,7 +24,7 @@ struct ProductImagesProductIDUpdater {
 extension ProductImagesProductIDUpdater: ProductImagesProductIDUpdaterProtocol {
     func updateImageProductID(siteID: Int64,
                               productID: Int64,
-                              productImage: ProductImage) async ->  Result<Media, Error> {
+                              productImage: ProductImage) async -> Result<Media, Error> {
         let result = await updateProductIDFor(productImageID: productImage.imageID,
                                               siteID: siteID,
                                               productID: productID)

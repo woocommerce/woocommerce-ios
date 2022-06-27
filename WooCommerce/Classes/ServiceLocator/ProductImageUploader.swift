@@ -3,18 +3,18 @@ import struct Yosemite.ProductImage
 import enum Yosemite.ProductAction
 import protocol Yosemite.StoresManager
 
-/// Information about an update of product image upload.
-struct ProductImageUploadUpdate {
+/// Error for product image upload.
+struct ProductImageUploadError {
     let siteID: Int64
     let productID: Int64
     let productImageStatuses: [ProductImageStatus]
-    let error: Error?
+    let error: Error
 }
 
 /// Handles product image upload to support background image upload.
 protocol ProductImageUploaderProtocol {
-    /// Emits product image upload status updates (e.g. when the status changes or an error occurs).
-    var statusUpdates: AnyPublisher<ProductImageUploadUpdate, Never> { get }
+    /// Emits product image upload errors.
+    var errors: AnyPublisher<ProductImageUploadError, Never> { get }
 
     /// Called for product image upload use cases (e.g. product/variation form, downloadable product list).
     /// - Parameters:
@@ -48,19 +48,19 @@ protocol ProductImageUploaderProtocol {
                                                          isLocalID: Bool,
                                                          onProductSave: @escaping (Result<[ProductImage], Error>) -> Void)
 
-    /// Stops the emission of status updates `statusUpdates` when the user is in the product form to edit a specific product.
+    /// Stops the emission of errors when the user is in the product form to edit a specific product.
     /// - Parameters:
     ///   - siteID: the ID of the site that the user is logged into.
     ///   - productID: the ID of the product that the user is editing.
     ///   - isLocalID: whether the product ID is a local ID like in product creation.
-    func stopEmittingStatusUpdates(siteID: Int64, productID: Int64, isLocalID: Bool)
+    func stopEmittingErrors(siteID: Int64, productID: Int64, isLocalID: Bool)
 
-    /// Starts the emission of status updates `statusUpdates` when the user leaves the product form.
+    /// Starts the emission of errors when the user leaves the product form.
     /// - Parameters:
     ///   - siteID: the ID of the site that the user is logged into.
     ///   - productID: the ID of the product that the user is navigating away.
     ///   - isLocalID: whether the product ID is a local ID like in product creation.
-    func startEmittingStatusUpdates(siteID: Int64, productID: Int64, isLocalID: Bool)
+    func startEmittingErrors(siteID: Int64, productID: Int64, isLocalID: Bool)
 
     /// Determines whether there are unsaved changes on a product's images.
     /// If the product had any save request before, it checks whether the image statuses to save match the latest image statuses.
@@ -75,11 +75,11 @@ protocol ProductImageUploaderProtocol {
 
 /// Supports background image upload and product images update after the user leaves the product form.
 final class ProductImageUploader: ProductImageUploaderProtocol {
-    var statusUpdates: AnyPublisher<ProductImageUploadUpdate, Never> {
-        statusUpdatesSubject.eraseToAnyPublisher()
+    var errors: AnyPublisher<ProductImageUploadError, Never> {
+        errorsSubject.eraseToAnyPublisher()
     }
 
-    private let statusUpdatesSubject: PassthroughSubject<ProductImageUploadUpdate, Never> = .init()
+    private let errorsSubject: PassthroughSubject<ProductImageUploadError, Never> = .init()
     private var statusUpdatesExcludedProductKeys: Set<ProductKey> = []
     private var statusUpdatesSubscriptions: Set<AnyCancellable> = []
 
@@ -105,7 +105,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         } else {
             actionHandler = ProductImageActionHandler(siteID: siteID, productID: productID, imageStatuses: originalStatuses, stores: stores)
             actionHandlersByProduct[key] = actionHandler
-            observeStatusUpdatesToUpdateProduct(key: key, actionHandler: actionHandler)
+            observeStatusUpdatesForErrors(key: key, actionHandler: actionHandler)
         }
         return actionHandler
     }
@@ -123,12 +123,12 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         statusUpdatesExcludedProductKeys.insert(keyWithRemoteProductID)
     }
 
-    func stopEmittingStatusUpdates(siteID: Int64, productID: Int64, isLocalID: Bool) {
+    func stopEmittingErrors(siteID: Int64, productID: Int64, isLocalID: Bool) {
         let key = ProductKey(siteID: siteID, productID: productID, isLocalID: isLocalID)
         statusUpdatesExcludedProductKeys.insert(key)
     }
 
-    func startEmittingStatusUpdates(siteID: Int64, productID: Int64, isLocalID: Bool) {
+    func startEmittingErrors(siteID: Int64, productID: Int64, isLocalID: Bool) {
         let key = ProductKey(siteID: siteID, productID: productID, isLocalID: isLocalID)
         statusUpdatesExcludedProductKeys.remove(key)
     }
@@ -174,12 +174,12 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
 }
 
 private extension ProductImageUploader {
-    private func observeStatusUpdatesToUpdateProduct(key: ProductKey, actionHandler: ProductImageActionHandler) {
+    private func observeStatusUpdatesForErrors(key: ProductKey, actionHandler: ProductImageActionHandler) {
         let observationToken = actionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else { return }
 
             if let error = error, self.statusUpdatesExcludedProductKeys.contains(key) == false {
-                self.statusUpdatesSubject.send(.init(siteID: key.siteID, productID: key.productID, productImageStatuses: productImageStatuses, error: error))
+                self.errorsSubject.send(.init(siteID: key.siteID, productID: key.productID, productImageStatuses: productImageStatuses, error: error))
             }
         }
         statusUpdatesSubscriptions.insert(observationToken)

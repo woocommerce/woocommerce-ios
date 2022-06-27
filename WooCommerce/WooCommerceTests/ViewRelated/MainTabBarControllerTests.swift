@@ -269,7 +269,7 @@ final class MainTabBarControllerTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(isBackgroundImageUploadEnabled: true)
         let noticePresenter = MockNoticePresenter()
-        let statusUpdates = PassthroughSubject<ProductImageUploadUpdate, Never>()
+        let statusUpdates = PassthroughSubject<ProductImageUploadError, Never>()
         let productImageUploader = MockProductImageUploader(statusUpdates: statusUpdates.eraseToAnyPublisher())
 
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
@@ -297,7 +297,7 @@ final class MainTabBarControllerTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(isBackgroundImageUploadEnabled: true)
         let noticePresenter = MockNoticePresenter()
-        let statusUpdates = PassthroughSubject<ProductImageUploadUpdate, Never>()
+        let statusUpdates = PassthroughSubject<ProductImageUploadError, Never>()
         let productImageUploader = MockProductImageUploader(statusUpdates: statusUpdates.eraseToAnyPublisher())
 
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
@@ -335,7 +335,7 @@ final class MainTabBarControllerTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(isBackgroundImageUploadEnabled: false)
         let noticePresenter = MockNoticePresenter()
-        let statusUpdates = PassthroughSubject<ProductImageUploadUpdate, Never>()
+        let statusUpdates = PassthroughSubject<ProductImageUploadError, Never>()
         let productImageUploader = MockProductImageUploader(statusUpdates: statusUpdates.eraseToAnyPublisher())
 
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in

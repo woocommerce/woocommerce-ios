@@ -131,7 +131,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             self.viewModel.updateImages(productImageStatuses.images)
         }
 
-        productImageUploader.stopEmittingStatusUpdates(siteID: viewModel.productModel.siteID,
+        productImageUploader.stopEmittingErrors(siteID: viewModel.productModel.siteID,
                                                        productID: viewModel.productModel.productID,
                                                        isLocalID: !viewModel.productModel.existsRemotely)
     }
@@ -146,7 +146,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         /// A VC added to an existing navigation controller is dismissed when `isMovingFromParent` is `true`.
         /// For any other scenario `isBeingDismissed` will do.
         if isMovingFromParent || isBeingDismissed || navigationController?.isBeingDismissed == true {
-            productImageUploader.startEmittingStatusUpdates(siteID: viewModel.productModel.siteID,
+            productImageUploader.startEmittingErrors(siteID: viewModel.productModel.siteID,
                                                             productID: viewModel.productModel.productID,
                                                             isLocalID: !viewModel.productModel.existsRemotely)
         }

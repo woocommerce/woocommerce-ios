@@ -3,16 +3,16 @@ import Combine
 @testable import WooCommerce
 
 final class MockProductImageUploader: ProductImageUploaderProtocol {
-    let statusUpdates: AnyPublisher<ProductImageUploadUpdate, Never>
+    let errors: AnyPublisher<ProductImageUploadError, Never>
 
     var replaceLocalIDWasCalled = false
     var saveProductImagesWhenNoneIsPendingUploadAnymoreWasCalled = false
     var startEmittingStatusUpdatesWasCalled = false
     var stopEmittingStatusUpdatesWasCalled = false
 
-    init(statusUpdates: AnyPublisher<ProductImageUploadUpdate, Never> =
-         Empty<ProductImageUploadUpdate, Never>().eraseToAnyPublisher()) {
-        self.statusUpdates = statusUpdates
+    init(statusUpdates: AnyPublisher<ProductImageUploadError, Never> =
+         Empty<ProductImageUploadError, Never>().eraseToAnyPublisher()) {
+        self.errors = statusUpdates
     }
 
     func replaceLocalID(siteID: Int64, localProductID: Int64, remoteProductID: Int64) {
@@ -30,11 +30,11 @@ final class MockProductImageUploader: ProductImageUploaderProtocol {
         ProductImageActionHandler(siteID: 0, productID: 0, imageStatuses: [])
     }
 
-    func startEmittingStatusUpdates(siteID: Int64, productID: Int64, isLocalID: Bool) {
+    func startEmittingErrors(siteID: Int64, productID: Int64, isLocalID: Bool) {
         startEmittingStatusUpdatesWasCalled = true
     }
 
-    func stopEmittingStatusUpdates(siteID: Int64, productID: Int64, isLocalID: Bool) {
+    func stopEmittingErrors(siteID: Int64, productID: Int64, isLocalID: Bool) {
         stopEmittingStatusUpdatesWasCalled = true
     }
 

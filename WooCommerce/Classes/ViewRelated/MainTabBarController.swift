@@ -111,7 +111,7 @@ final class MainTabBarController: UITabBarController {
     private let productImageUploader: ProductImageUploaderProtocol
     private let stores: StoresManager = ServiceLocator.stores
 
-    private var productImageUploadStatusUpdatesSubscription: AnyCancellable?
+    private var productImageUploadErrorsSubscription: AnyCancellable?
 
     private lazy var isHubMenuFeatureFlagOn = featureFlagService.isFeatureFlagEnabled(.hubMenu)
 
@@ -573,30 +573,28 @@ private extension MainTabBarController {
         guard featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) else {
             return
         }
-        productImageUploadStatusUpdatesSubscription = productImageUploader.statusUpdates.sink { [weak self] update in
-            self?.handleBackgroundImageUploadUpdate(update)
+        productImageUploadErrorsSubscription = productImageUploader.errors.sink { [weak self] update in
+            self?.handleBackgroundImageUploadError(update)
         }
     }
 
-    func handleBackgroundImageUploadUpdate(_ update: ProductImageUploadUpdate) {
-        if update.error != nil {
-            let notice = Notice(title: Localization.imageUploadFailureNoticeTitle,
-                                subtitle: nil,
-                                message: nil,
-                                feedbackType: .error,
-                                notificationInfo: nil,
-                                actionTitle: Localization.imageUploadFailureNoticeActionTitle,
-                                actionHandler: { [weak self] in
-                guard let self = self else { return }
-                Task { @MainActor in
-                    await self.showProductDetails(update: update)
-                }
-            })
-            noticePresenter.enqueue(notice: notice)
-        }
+    func handleBackgroundImageUploadError(_ update: ProductImageUploadError) {
+        let notice = Notice(title: Localization.imageUploadFailureNoticeTitle,
+                            subtitle: nil,
+                            message: nil,
+                            feedbackType: .error,
+                            notificationInfo: nil,
+                            actionTitle: Localization.imageUploadFailureNoticeActionTitle,
+                            actionHandler: { [weak self] in
+            guard let self = self else { return }
+            Task { @MainActor in
+                await self.showProductDetails(update: update)
+            }
+        })
+        noticePresenter.enqueue(notice: notice)
     }
 
-    func showProductDetails(update: ProductImageUploadUpdate) async {
+    func showProductDetails(update: ProductImageUploadError) async {
         // Switches to the correct store first if needed.
         let switchStoreUseCase = SwitchStoreUseCase(stores: stores)
         let siteChanged = await switchStoreUseCase.switchStore(with: update.siteID)

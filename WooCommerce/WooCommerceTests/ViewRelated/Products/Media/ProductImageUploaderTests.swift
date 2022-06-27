@@ -7,7 +7,7 @@ import Yosemite
 final class ProductImageUploaderTests: XCTestCase {
     private let siteID: Int64 = 134
     private let productID: Int64 = 606
-    private var statusUpdatesSubscription: AnyCancellable?
+    private var errorsSubscription: AnyCancellable?
 
     func test_hasUnsavedChangesOnImages_becomes_false_after_uploading_and_saving() throws {
         // Given
@@ -214,9 +214,9 @@ final class ProductImageUploaderTests: XCTestCase {
         }
 
         // When
-        var updates: [ProductImageUploadUpdate] = []
+        var updates: [ProductImageUploadError] = []
         let _: Void = waitFor { promise in
-            self.statusUpdatesSubscription = imageUploader.statusUpdates.sink { update in
+            self.errorsSubscription = imageUploader.errors.sink { update in
                 updates.append(update)
                 promise(())
             }
@@ -242,8 +242,8 @@ final class ProductImageUploaderTests: XCTestCase {
         }
 
         // When
-        var updates: [ProductImageUploadUpdate] = []
-        statusUpdatesSubscription = imageUploader.statusUpdates.sink { update in
+        var updates: [ProductImageUploadError] = []
+        errorsSubscription = imageUploader.errors.sink { update in
             updates.append(update)
             XCTFail("Image upload update should be emitted: \(update)")
         }
@@ -253,9 +253,9 @@ final class ProductImageUploaderTests: XCTestCase {
         XCTAssertTrue(updates.isEmpty)
     }
 
-    // MARK: - `stopEmittingStatusUpdates`
+    // MARK: - `stopEmittingErrors`
 
-    func test_update_is_emitted_after_stopEmittingStatusUpdates_with_a_different_product_when_image_upload_fails() {
+    func test_update_is_emitted_after_stopEmittingErrors_with_a_different_product_when_image_upload_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let imageUploader = ProductImageUploader(stores: stores)
@@ -271,11 +271,11 @@ final class ProductImageUploaderTests: XCTestCase {
         }
 
         // When
-        imageUploader.stopEmittingStatusUpdates(siteID: siteID, productID: 9999, isLocalID: true)
+        imageUploader.stopEmittingErrors(siteID: siteID, productID: 9999, isLocalID: true)
 
-        var updates: [ProductImageUploadUpdate] = []
+        var updates: [ProductImageUploadError] = []
         let _: Void = waitFor { promise in
-            self.statusUpdatesSubscription = imageUploader.statusUpdates.sink { update in
+            self.errorsSubscription = imageUploader.errors.sink { update in
                 updates.append(update)
                 promise(())
             }
@@ -286,7 +286,7 @@ final class ProductImageUploaderTests: XCTestCase {
         assertEqual([.init(siteID: siteID, productID: productID, productImageStatuses: [], error: error)], updates)
     }
 
-    func test_update_is_not_emitted_after_stopEmittingStatusUpdates_when_image_upload_fails() {
+    func test_update_is_not_emitted_after_stopEmittingErrors_when_image_upload_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let imageUploader = ProductImageUploader(stores: stores)
@@ -302,10 +302,10 @@ final class ProductImageUploaderTests: XCTestCase {
         }
 
         // When
-        imageUploader.stopEmittingStatusUpdates(siteID: siteID, productID: productID, isLocalID: true)
+        imageUploader.stopEmittingErrors(siteID: siteID, productID: productID, isLocalID: true)
 
-        var updates: [ProductImageUploadUpdate] = []
-        statusUpdatesSubscription = imageUploader.statusUpdates.sink { update in
+        var updates: [ProductImageUploadError] = []
+        errorsSubscription = imageUploader.errors.sink { update in
             updates.append(update)
             XCTFail("Image upload update should be emitted: \(update)")
         }
@@ -328,11 +328,11 @@ final class ProductImageUploaderTests: XCTestCase {
                                                         originalStatuses: [])
 
         // When
-        imageUploader.stopEmittingStatusUpdates(siteID: siteID, productID: localProductID, isLocalID: true)
+        imageUploader.stopEmittingErrors(siteID: siteID, productID: localProductID, isLocalID: true)
         imageUploader.replaceLocalID(siteID: siteID, localProductID: nonExistentProductID, remoteProductID: remoteProductID)
 
-        var updates: [ProductImageUploadUpdate] = []
-        _ = imageUploader.statusUpdates.sink { update in
+        var updates: [ProductImageUploadError] = []
+        _ = imageUploader.errors.sink { update in
             updates.append(update)
         }
 
@@ -348,9 +348,9 @@ final class ProductImageUploaderTests: XCTestCase {
         XCTAssertTrue(updates.isEmpty)
     }
 
-    // MARK: - `startEmittingStatusUpdates`
+    // MARK: - `startEmittingErrors`
 
-    func test_update_is_emitted_after_stop_and_startEmittingStatusUpdates_when_image_upload_fails() {
+    func test_update_is_emitted_after_stop_and_startEmittingErrors_when_image_upload_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let imageUploader = ProductImageUploader(stores: stores)
@@ -366,12 +366,12 @@ final class ProductImageUploaderTests: XCTestCase {
         }
 
         // When
-        imageUploader.stopEmittingStatusUpdates(siteID: siteID, productID: productID, isLocalID: true)
-        imageUploader.startEmittingStatusUpdates(siteID: siteID, productID: productID, isLocalID: true)
+        imageUploader.stopEmittingErrors(siteID: siteID, productID: productID, isLocalID: true)
+        imageUploader.startEmittingErrors(siteID: siteID, productID: productID, isLocalID: true)
 
-        var updates: [ProductImageUploadUpdate] = []
+        var updates: [ProductImageUploadError] = []
         let _: Void = waitFor { promise in
-            self.statusUpdatesSubscription = imageUploader.statusUpdates.sink { update in
+            self.errorsSubscription = imageUploader.errors.sink { update in
                 updates.append(update)
                 promise(())
             }
@@ -383,11 +383,11 @@ final class ProductImageUploaderTests: XCTestCase {
     }
 }
 
-extension ProductImageUploadUpdate: Equatable {
-    public static func == (lhs: ProductImageUploadUpdate, rhs: ProductImageUploadUpdate) -> Bool {
+extension ProductImageUploadError: Equatable {
+    public static func == (lhs: ProductImageUploadError, rhs: ProductImageUploadError) -> Bool {
         return lhs.siteID == rhs.siteID &&
         lhs.productID == rhs.productID &&
         lhs.productImageStatuses == rhs.productImageStatuses &&
-        (lhs.error as? NSError) == (rhs.error as? NSError)
+        (lhs.error as NSError) == (rhs.error as NSError)
     }
 }

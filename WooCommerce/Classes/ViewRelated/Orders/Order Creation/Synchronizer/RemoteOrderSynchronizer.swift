@@ -64,20 +64,21 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
     // MARK: Initializers
 
     init(siteID: Int64,
-         initialOrder: Order? = nil,
+         flow: EditableOrderViewModel.Flow,
          stores: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.siteID = siteID
         self.stores = stores
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
 
-        if let initialOrder = initialOrder {
+        if case let .editing(initialOrder) = flow {
             order = initialOrder
+        } else {
+            updateBaseSyncOrderStatus()
         }
 
-        updateBaseSyncOrderStatus()
-        bindInputs()
-        bindOrderSync()
+        bindInputs(flow: flow)
+        bindOrderSync(flow: flow)
     }
 
     // MARK: Methods
@@ -117,7 +118,7 @@ private extension RemoteOrderSynchronizer {
 
     /// Updates the underlying order as inputs are received, and triggers a remote sync for significant inputs.
     ///
-    func bindInputs() {
+    func bindInputs(flow: EditableOrderViewModel.Flow) {
         setStatus.withLatestFrom(orderPublisher)
             .map { newStatus, order in
                 order.copy(status: newStatus)
@@ -189,7 +190,7 @@ private extension RemoteOrderSynchronizer {
 
     /// Creates or updates the order when a significant order input occurs.
     ///
-    func bindOrderSync() {
+    func bindOrderSync(flow: EditableOrderViewModel.Flow) {
         let syncTrigger: AnyPublisher<Order, Never> = orderSyncTrigger
             .compactMap { [weak self] order in
                 guard let self = self else { return nil }

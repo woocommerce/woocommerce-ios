@@ -250,11 +250,7 @@ final class EditableOrderViewModel: ObservableObject {
         self.storageManager = storageManager
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.analytics = analytics
-        if case let .editing(initialOrder) = flow {
-            self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, initialOrder: initialOrder, stores: stores, currencySettings: currencySettings)
-        } else {
-            self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, initialOrder: nil, stores: stores, currencySettings: currencySettings)
-        }
+        self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, flow: flow, stores: stores, currencySettings: currencySettings)
         self.featureFlagService = featureFlagService
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.

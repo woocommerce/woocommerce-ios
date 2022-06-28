@@ -212,10 +212,10 @@ private extension RemoteOrderSynchronizer {
             .share()
             .eraseToAnyPublisher()
 
-        bindOrderUpdate(trigger: syncTrigger)
         if case .creation = flow {
             bindOrderCreation(trigger: syncTrigger)
         }
+        bindOrderUpdate(trigger: syncTrigger, flow: flow)
     }
 
     /// Binds the provided `trigger` and creates an order when needed(order does not exists remotely).
@@ -246,7 +246,7 @@ private extension RemoteOrderSynchronizer {
 
     /// Binds the provided `trigger` and updates an order when needed(order already exists remotely).
     ///
-    func bindOrderUpdate(trigger: AnyPublisher<Order, Never>) {
+    func bindOrderUpdate(trigger: AnyPublisher<Order, Never>, flow: EditableOrderViewModel.Flow) {
         // Updates a "draft" order after it has already been created.
         trigger
             .filter { // Only continue if the order has been created.
@@ -259,7 +259,8 @@ private extension RemoteOrderSynchronizer {
             .map { [weak self] order -> AnyPublisher<Order, Never> in // Allow multiple requests, once per update request.
                 guard let self = self else { return Empty().eraseToAnyPublisher() }
 
-                return self.updateOrderRemotely(order, type: .sync)
+                let syncType: OperationType = flow == .creation ? .sync : .commit
+                return self.updateOrderRemotely(order, type: syncType)
                     .catch { [weak self] error -> AnyPublisher<Order, Never> in // When an error occurs, update state & finish.
                         self?.state = .error(error)
                         return Empty().eraseToAnyPublisher()

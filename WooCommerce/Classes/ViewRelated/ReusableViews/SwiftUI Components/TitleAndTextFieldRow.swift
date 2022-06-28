@@ -11,6 +11,7 @@ struct TitleAndTextFieldRow: View {
     private let editable: Bool
     private let fieldAlignment: TextAlignment
     private let inputFormatter: UnitInputFormatter?
+    private let contentColor: Color
 
     @Binding private var text: String
 
@@ -19,7 +20,6 @@ struct TitleAndTextFieldRow: View {
     ///
     @Binding private var titleWidth: CGFloat?
 
-    @Binding private var contentColor: Color
 
     init(title: String,
          titleWidth: Binding<CGFloat?> = .constant(nil),
@@ -29,7 +29,7 @@ struct TitleAndTextFieldRow: View {
          editable: Bool = true,
          fieldAlignment: TextAlignment = .trailing,
          keyboardType: UIKeyboardType = .default,
-         contentColor: Binding<Color> = .constant(Color(.label)),
+         contentColor: Color = Color(.label),
          inputFormatter: UnitInputFormatter? = nil,
          onEditingChanged: ((Bool) -> Void)? = nil) {
         self.title = title
@@ -40,7 +40,7 @@ struct TitleAndTextFieldRow: View {
         self.editable = editable
         self.fieldAlignment = fieldAlignment
         self.keyboardType = keyboardType
-        self._contentColor = contentColor
+        self.contentColor = contentColor
         self.inputFormatter = inputFormatter
         self.onEditingChanged = onEditingChanged
     }

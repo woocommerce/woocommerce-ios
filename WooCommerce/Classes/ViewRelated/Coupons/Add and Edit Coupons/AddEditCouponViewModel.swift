@@ -166,6 +166,8 @@ final class AddEditCouponViewModel: ObservableObject {
     private let couponAmountInputFormatter: CouponAmountInputFormatter
     let timezone: TimeZone
 
+    /// When an invalid percentage amount is set a debouncing warning timer is triggered.
+    ///
     private var amountWarningTimer: Timer? = nil
 
     /// When the view is updating or creating a new Coupon remotely.

@@ -65,12 +65,12 @@ private extension ProductImagesSaver {
             switch result {
             case .success(let product):
                 onProductSave(.success(product.images))
-                self.imageStatusesToSave = []
-                self.assetUploadSubscription = nil
-                self.uploadStatusesSubscription = nil
             case .failure(let error):
                 onProductSave(.failure(error))
             }
+            self.imageStatusesToSave = []
+            self.assetUploadSubscription = nil
+            self.uploadStatusesSubscription = nil
         }
         stores.dispatch(action)
     }

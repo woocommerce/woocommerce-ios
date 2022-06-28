@@ -327,7 +327,7 @@ final class AddEditCouponViewModel: ObservableObject {
 
     private func debounceWarningState() {
         isDisplayingAmountWarning = true
-        amountWarningTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { [weak self] timer in
+        amountWarningTimer = Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { [weak self] timer in
             timer.invalidate()
             self?.amountWarningTimer = nil
             self?.isDisplayingAmountWarning = false

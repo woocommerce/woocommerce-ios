@@ -427,24 +427,13 @@ final class MediaStoreTests: XCTestCase {
     ///
     func test_updateProductID_returns_media() throws {
         // Given
-        let path = "sites/\(sampleSiteID)/media/\(sampleMediaID)"
-        network.simulateResponse(requestUrlSuffix: path, filename: "media-update-product-id")
-
-        let expectedMedia = Media(mediaID: 2352,
-                                  date: date(with: "2020-02-21T12:15:38+08:00"),
-                                  fileExtension: "jpeg",
-                                  filename: "img_0002-8.jpeg",
-                                  mimeType: "image/jpeg",
-                                  src: "https://test.com/wp-content/uploads/2020/02/img_0002-8.jpeg",
-                                  thumbnailURL: "https://test.com/wp-content/uploads/2020/02/img_0002-8-150x150.jpeg",
-                                  name: "DSC_0010",
-                                  alt: "",
-                                  height: nil,
-                                  width: nil)
+        let remote = MockMediaRemote()
+        let media = Media.fake()
+        remote.whenUpdatingProductIDResultsBySiteIDToWordPressSite(siteID: sampleSiteID, thenReturn: .success(media))
         let mediaStore = MediaStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
-                                    network: network)
-
+                                    network: network,
+                                    remote: remote)
         // When
         let result: Result<Media, Error> = waitFor { promise in
             let action = MediaAction.updateProductID(siteID: self.sampleSiteID,
@@ -457,18 +446,19 @@ final class MediaStoreTests: XCTestCase {
 
         // Then
         let mediaFromResult = try XCTUnwrap(result.get())
-        XCTAssertEqual(mediaFromResult, expectedMedia)
+        XCTAssertEqual(mediaFromResult, media)
     }
 
     /// Verifies that `MediaAction.updateProductID` returns an error whenever there is an error response from the backend.
     ///
     func test_updateProductID_returns_error_upon_response_error() throws {
         // Given
-        let path = "sites/\(sampleSiteID)/media/\(sampleMediaID)"
-        network.simulateResponse(requestUrlSuffix: path, filename: "generic_error")
+        let remote = MockMediaRemote()
+        remote.whenUpdatingProductIDResultsBySiteIDToWordPressSite(siteID: sampleSiteID, thenReturn: .failure(DotcomError.unauthorized))
         let mediaStore = MediaStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
-                                    network: network)
+                                    network: network,
+                                    remote: remote)
 
         // When
         let result: Result<Media, Error> = waitFor { promise in

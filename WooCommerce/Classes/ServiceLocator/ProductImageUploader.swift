@@ -171,13 +171,13 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         }
         imagesSaver.saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: handler) { [weak self] result in
             guard let self = self else { return }
+            onProductSave(result)
             if case let .failure(error) = result {
                 self.errorsSubject.send(.init(siteID: siteID,
                                               productID: productID,
                                               productImageStatuses: handler.productImageStatuses,
                                               error: .savingProductImages(error: error)))
             }
-            onProductSave(result)
         }
     }
 }

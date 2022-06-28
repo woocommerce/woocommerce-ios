@@ -57,6 +57,15 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         return [defaultSite]
     }
 
+    var siteSettings: [SiteSetting] {
+        [Self.createSiteSetting(siteID: defaultSite.siteID,
+                                settingID: "woocommerce_default_country",
+                                label: "Country and State",
+                                settingDescription: "The country and state or province, if any, in which your business is located.",
+                                value: "US:CA",
+                                settingGroupKey: "general")]
+    }
+
     func accountWithId(id: Int64) -> Account {
         return defaultAccount
     }

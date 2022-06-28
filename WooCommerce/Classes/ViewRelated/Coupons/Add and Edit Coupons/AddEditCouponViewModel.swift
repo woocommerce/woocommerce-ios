@@ -284,7 +284,7 @@ final class AddEditCouponViewModel: ObservableObject {
 
     private func configureWarningBehavior() {
         let amountSubtitleDefaultText = amountSubtitleDefaultText
-        let warningColor = Color(.warning)
+        let warningColor = Color(.textWarning)
         let labelColor = Color(.label)
         let subtitleColor = Color(.textSubtle)
 

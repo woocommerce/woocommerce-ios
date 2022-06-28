@@ -431,17 +431,19 @@ private extension ProductsViewController {
 // MARK: - Updates
 //
 private extension ProductsViewController {
-    /// Fetches products feedback visibility from AppSettingsStore and update products top banner accordingly.
-    /// If there is an error loading products data, an error banner replaces the products top banner.
+
+    /// Displays an error banner if there is an error loading products data.
     ///
     func showTopBannerViewIfNeeded() {
-        guard !hasErrorLoadingData else {
+        if hasErrorLoadingData {
             requestAndShowErrorTopBannerView()
             return
         }
     }
 
     /// Request a new product banner from `ProductsTopBannerFactory` and wire actionButtons actions
+    /// To show a top banner, we can dispatch a loadFeedbackVisibility action from AppSettingsStore and update the top banner accordingly
+    /// Ref: https://github.com/woocommerce/woocommerce-ios/issues/6682
     ///
     func requestAndShowNewTopBannerView(for bannerType: ProductsTopBannerFactory.BannerType) {
         let isExpanded = topBannerView?.isExpanded ?? false
@@ -451,7 +453,8 @@ private extension ProductsViewController {
             self?.updateTableHeaderViewHeight()
         }, onGiveFeedbackButtonPressed: { [weak self] in
             self?.presentProductsFeedback()
-        }, onDismissButtonPressed: {
+        }, onDismissButtonPressed: { [weak self] in
+            self?.hideTopBannerView()
         }, onCompletion: { [weak self] topBannerView in
             self?.topBannerContainerView.updateSubview(topBannerView)
             self?.topBannerView = topBannerView

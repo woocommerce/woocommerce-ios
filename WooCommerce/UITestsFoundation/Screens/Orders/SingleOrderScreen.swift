@@ -6,6 +6,12 @@ public final class SingleOrderScreen: ScreenObject {
     // TODO: Remove force `try` once `ScreenObject` migration is completed
     let tabBar = try! TabNavComponent()
 
+    private let collectPaymentButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["order-detail-collect-payment-button"]
+    }
+
+    private var collectPaymentButton: XCUIElement { collectPaymentButtonGetter(app) }
+
     init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [ { $0.staticTexts["summary-table-view-cell-title-label"]} ],
@@ -34,6 +40,12 @@ public final class SingleOrderScreen: ScreenObject {
         }
 
         return self
+    }
+
+    @discardableResult
+    public func tapCollectPaymentButton() throws -> CardPresentPaymentsModalScreen {
+        collectPaymentButton.tap()
+        return try CardPresentPaymentsModalScreen()
     }
 
     @discardableResult

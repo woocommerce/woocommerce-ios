@@ -194,6 +194,7 @@ private extension CardPresentPaymentsModalViewController {
 
     func configureTopTitle() {
         topTitleLabel.text = viewModel.topTitle
+        topTitleLabel.accessibilityIdentifier = "card-present-payments-modal-title-label"
     }
 
     func configureTopSubtitle() {
@@ -261,6 +262,7 @@ private extension CardPresentPaymentsModalViewController {
 
         primaryButton.isHidden = false
         primaryButton.setTitle(viewModel.primaryButtonTitle, for: .normal)
+        primaryButton.accessibilityIdentifier = "card-present-payments-modal-primary-button"
     }
 
     func configureSecondaryButton() {
@@ -271,6 +273,7 @@ private extension CardPresentPaymentsModalViewController {
 
         secondaryButton.isHidden = false
         secondaryButton.setTitle(viewModel.secondaryButtonTitle, for: .normal)
+        secondaryButton.accessibilityIdentifier = "card-present-payments-modal-secondary-button"
     }
 
     func configureAuxiliaryButton() {
@@ -281,6 +284,7 @@ private extension CardPresentPaymentsModalViewController {
 
         auxiliaryButton.setTitleWithoutAnimation(viewModel.auxiliaryButtonTitle, for: .normal)
         auxiliaryButton.isHidden = false
+        auxiliaryButton.accessibilityIdentifier = "card-present-payments-modal-auxiliary-button"
     }
 
     func configureSpacer() {

@@ -215,8 +215,8 @@ final class ProductImageUploaderTests: XCTestCase {
         /// Then
         /// After replacing local product ID with remote product ID
         /// `mockProductIDUpdater` should have received calls to update product ID of the already uploaded images.
-        waitUntil(condition: {
+        waitUntil {
             mockProductIDUpdater.numberOfTimesUpdateImageProductIDWasCalled == alreadyUploadedImages.count
-        })
+        }
     }
 }

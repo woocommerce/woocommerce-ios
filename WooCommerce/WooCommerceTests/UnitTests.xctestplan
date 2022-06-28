@@ -16,6 +16,12 @@
         "enabled" : false
       }
     ],
+    "environmentVariableEntries" : [
+      {
+        "key" : "BUILDKITE_ANALYTICS_TOKEN",
+        "value" : "$(BUILDKITE_ANALYTICS_TOKEN)"
+      }
+    ],
     "language" : "en",
     "region" : "US",
     "targetForVariableExpansion" : {

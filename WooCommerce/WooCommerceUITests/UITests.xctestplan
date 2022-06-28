@@ -9,6 +9,12 @@
     }
   ],
   "defaultOptions" : {
+    "environmentVariableEntries" : [
+      {
+        "key" : "BUILDKITE_ANALYTICS_TOKEN",
+        "value" : "$BUILDKITE_ANALYTICS_TOKEN"
+      }
+    ],
     "testRepetitionMode" : "retryOnFailure"
   },
   "testTargets" : [

@@ -3,7 +3,7 @@ import struct Yosemite.ProductImage
 
 /// Used for `ServiceLocator.productImageUploader` if `backgroundProductImageUpload` feature flag is off.
 final class LegacyProductImageUploader: ProductImageUploaderProtocol {
-    let errors: AnyPublisher<ProductImageUploadError, Never> = Empty<ProductImageUploadError, Never>().eraseToAnyPublisher()
+    let errors: AnyPublisher<ProductImageUploadErrorInfo, Never> = Empty<ProductImageUploadErrorInfo, Never>().eraseToAnyPublisher()
 
     func actionHandler(siteID: Int64, productID: Int64, isLocalID: Bool, originalStatuses: [ProductImageStatus]) -> ProductImageActionHandler {
         ProductImageActionHandler(siteID: siteID, productID: productID, imageStatuses: originalStatuses)

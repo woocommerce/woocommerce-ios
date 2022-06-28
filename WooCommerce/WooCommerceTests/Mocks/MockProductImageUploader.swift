@@ -3,16 +3,16 @@ import Combine
 @testable import WooCommerce
 
 final class MockProductImageUploader: ProductImageUploaderProtocol {
-    let errors: AnyPublisher<ProductImageUploadError, Never>
+    let errors: AnyPublisher<ProductImageUploadErrorInfo, Never>
 
     var replaceLocalIDWasCalled = false
     var saveProductImagesWhenNoneIsPendingUploadAnymoreWasCalled = false
-    var startEmittingStatusUpdatesWasCalled = false
-    var stopEmittingStatusUpdatesWasCalled = false
+    var startEmittingErrorsWasCalled = false
+    var stopEmittingErrorsWasCalled = false
 
-    init(statusUpdates: AnyPublisher<ProductImageUploadError, Never> =
-         Empty<ProductImageUploadError, Never>().eraseToAnyPublisher()) {
-        self.errors = statusUpdates
+    init(errors: AnyPublisher<ProductImageUploadErrorInfo, Never> =
+         Empty<ProductImageUploadErrorInfo, Never>().eraseToAnyPublisher()) {
+        self.errors = errors
     }
 
     func replaceLocalID(siteID: Int64, localProductID: Int64, remoteProductID: Int64) {
@@ -31,11 +31,11 @@ final class MockProductImageUploader: ProductImageUploaderProtocol {
     }
 
     func startEmittingErrors(siteID: Int64, productID: Int64, isLocalID: Bool) {
-        startEmittingStatusUpdatesWasCalled = true
+        startEmittingErrorsWasCalled = true
     }
 
     func stopEmittingErrors(siteID: Int64, productID: Int64, isLocalID: Bool) {
-        stopEmittingStatusUpdatesWasCalled = true
+        stopEmittingErrorsWasCalled = true
     }
 
     func hasUnsavedChangesOnImages(siteID: Int64, productID: Int64, isLocalID: Bool, originalImages: [ProductImage]) -> Bool {

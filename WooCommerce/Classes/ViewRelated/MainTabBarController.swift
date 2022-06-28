@@ -573,12 +573,34 @@ private extension MainTabBarController {
         guard featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) else {
             return
         }
-        productImageUploadErrorsSubscription = productImageUploader.errors.sink { [weak self] update in
-            self?.handleBackgroundImageUploadError(update)
+        productImageUploadErrorsSubscription = productImageUploader.errors.sink { [weak self] error in
+            guard let self = self else { return }
+            switch error.error {
+            case .failedSavingProductAfterImageUpload:
+                self.handleErrorSavingProductAfterImageUpload(error)
+            case .failedUploadingImage:
+                self.handleErrorUploadingImage(error)
+            }
         }
     }
 
-    func handleBackgroundImageUploadError(_ update: ProductImageUploadError) {
+    func handleErrorSavingProductAfterImageUpload(_ error: ProductImageUploadErrorInfo) {
+        let notice = Notice(title: Localization.imagesSavingFailureNoticeTitle,
+                            subtitle: nil,
+                            message: nil,
+                            feedbackType: .error,
+                            notificationInfo: nil,
+                            actionTitle: Localization.imageUploadFailureNoticeActionTitle,
+                            actionHandler: { [weak self] in
+            guard let self = self else { return }
+            Task { @MainActor in
+                await self.showProductDetails(for: error)
+            }
+        })
+        noticePresenter.enqueue(notice: notice)
+    }
+
+    func handleErrorUploadingImage(_ error: ProductImageUploadErrorInfo) {
         let notice = Notice(title: Localization.imageUploadFailureNoticeTitle,
                             subtitle: nil,
                             message: nil,
@@ -588,35 +610,38 @@ private extension MainTabBarController {
                             actionHandler: { [weak self] in
             guard let self = self else { return }
             Task { @MainActor in
-                await self.showProductDetails(update: update)
+                await self.showProductDetails(for: error)
             }
         })
         noticePresenter.enqueue(notice: notice)
     }
 
-    func showProductDetails(update: ProductImageUploadError) async {
+    func showProductDetails(for error: ProductImageUploadErrorInfo) async {
         // Switches to the correct store first if needed.
         let switchStoreUseCase = SwitchStoreUseCase(stores: stores)
-        let siteChanged = await switchStoreUseCase.switchStore(with: update.siteID)
+        let siteChanged = await switchStoreUseCase.switchStore(with: error.siteID)
         if siteChanged {
-            let presenter = SwitchStoreNoticePresenter(siteID: update.siteID,
+            let presenter = SwitchStoreNoticePresenter(siteID: error.siteID,
                                                        noticePresenter: self.noticePresenter)
             presenter.presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: .switchingStores)
         }
 
-        let productViewController = ProductLoaderViewController(model: .product(productID: update.productID),
-                                                                siteID: update.siteID,
+        let productViewController = ProductLoaderViewController(model: .product(productID: error.productID),
+                                                                siteID: error.siteID,
                                                                 forceReadOnly: false)
         let productNavController = WooNavigationController(rootViewController: productViewController)
         productsNavigationController.present(productNavController, animated: true)
     }
 }
 
-private extension MainTabBarController {
+extension MainTabBarController {
     enum Localization {
         static let imageUploadFailureNoticeTitle =
         NSLocalizedString("An image failed to upload",
                           comment: "Title of the notice about an image upload failure in the background.")
+        static let imagesSavingFailureNoticeTitle =
+        NSLocalizedString("Error saving product images",
+                          comment: "Title of the notice about an error saving images uploaded in the background to a product.")
         static let imageUploadFailureNoticeActionTitle =
         NSLocalizedString("View",
                           comment: "Title of the action to view product details from a notice about an image upload failure in the background.")

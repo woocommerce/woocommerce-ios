@@ -136,8 +136,13 @@ final class RefundConfirmationViewModelTests: XCTestCase {
 
     func test_viewModel_has_manual_refundVia_values_when_using_a_gateway_that_does_not_support_refunds() throws {
         // Given
-        let order = MockOrders().empty().copy(paymentMethodID: "stripe", paymentMethodTitle: "Stripe")
-        let gateway = PaymentGateway(siteID: 123, gatewayID: "stripe", title: "Stripe", description: "", enabled: true, features: [])
+        let order = MockOrders().empty().copy(paymentMethodID: "Direct bank transfer", paymentMethodTitle: "Direct bank transfer")
+        let gateway = PaymentGateway(siteID: 123,
+                                     gatewayID: "Direct bank transfer",
+                                     title: "Direct bank transfer",
+                                     description: "",
+                                     enabled: true,
+                                     features: [])
         let details = RefundConfirmationViewModel.Details(order: order,
                                                           charge: nil,
                                                           amount: "",
@@ -151,15 +156,11 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         let viewModel = RefundConfirmationViewModel(details: details)
 
         // We expect the Refund Via row to be the last item in the last row.
-        let row = try XCTUnwrap(viewModel.sections.last?.rows.last as? RefundConfirmationViewModel.TitleAndBodyRow)
+        let row = try XCTUnwrap(viewModel.sections.last?.rows.last as? RefundConfirmationViewModel.SimpleTextRow)
 
         // Then
-        let title = NSLocalizedString("Manual Refund", comment: "")
-        let body = NSLocalizedString("The payment method does not support automatic refunds." +
-                                     " Complete the refund by transferring the money to the customer manually.",
-                                     comment: "")
-        XCTAssertEqual(row.title, title)
-        XCTAssertEqual(row.body, body)
+        let text = NSLocalizedString("Direct bank transfer", comment: "")
+        XCTAssertEqual(row.text, text)
     }
     func test_viewModel_has_manual_refundVia_value_when_no_gateway_is_set() throws {
         // Given

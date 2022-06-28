@@ -183,7 +183,8 @@ private extension RefundConfirmationViewModel {
         return TwoColumnRow(title: Localization.previouslyRefunded, value: totalRefundedFormatted, isHeadline: false)
     }
 
-    /// Returns a row with special formatting if the payment gateway does not support automatic money refunds.
+    /// Returns a row with different formatting depending if the payment gateway supports automatic refunds, does not,
+    /// and if the payment gateway is known, or it is not.
     ///
     func makeRefundViaRow() -> RefundConfirmationViewModelRow {
         if gatewaySupportsAutomaticRefunds() {
@@ -191,14 +192,18 @@ private extension RefundConfirmationViewModel {
             case .some(.cardPresent(let cardDetails)), .some(.interacPresent(let cardDetails)):
                 return PaymentDetailsRow(cardIcon: cardDetails.brand.icon,
                                          cardIconAspectHorizontal: cardDetails.brand.iconAspectHorizontal,
-                                         paymentGateway: paymentGatewayMethodTitle(),
+                                         paymentGateway: details.order.paymentMethodTitle,
                                          paymentMethodDescription: cardDetails.brand.cardDescription(last4: cardDetails.last4),
                                          accessibilityDescription: cardDetails.brand.cardAccessibilityDescription(last4: cardDetails.last4))
             default:
                 return SimpleTextRow(text: details.order.paymentMethodTitle)
             }
         } else {
-            return TitleAndBodyRow(title: Localization.manualRefund, body: Localization.refundWillNotBeIssued)
+            if details.order.paymentMethodTitle.isEmpty {
+                return TitleAndBodyRow(title: Localization.manualRefund, body: Localization.refundWillNotBeIssued)
+            } else {
+                return SimpleTextRow(text: details.order.paymentMethodTitle)
+            }
         }
     }
 }
@@ -213,11 +218,6 @@ private extension RefundConfirmationViewModel {
             return false
         }
         return paymentGateway.features.contains(.refunds)
-    }
-    /// Returns "Manual Payment" if the payment gateway associated with this order and refund is empty, or the payment gateway if there is one.
-    ///
-    func paymentGatewayMethodTitle() -> String {
-        details.order.paymentMethodTitle.isEmpty ? Localization.manualRefund : details.order.paymentMethodTitle
     }
 }
 

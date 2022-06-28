@@ -580,6 +580,8 @@ private extension MainTabBarController {
                 self.handleImagesSaverError(error)
             case .actionHandler:
                 self.handleBackgroundImageUploadError(error)
+            default:
+                break
             }
         }
     }

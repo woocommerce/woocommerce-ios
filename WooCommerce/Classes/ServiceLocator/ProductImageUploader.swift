@@ -163,10 +163,13 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         // The product has to exist remotely in order to save its images remotely.
         // In product creation, this save function should be called after a new product is saved remotely for the first time.
         guard isLocalID == false else {
+            onProductSave(.failure(ProductImageUploaderError.cannotUseLocalProductID))
             return
         }
+
         let key = ProductKey(siteID: siteID, productID: productID, isLocalID: isLocalID)
         guard let handler = actionHandlersByProduct[key] else {
+            onProductSave(.failure(ProductImageUploaderError.actionHandlerNotFound))
             return
         }
 
@@ -174,6 +177,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
             updateProductIDOfImagesUploadedUsingLocalProductID(siteID: siteID,
                                                                productID: productID,
                                                                images: handler.productImageStatuses.images)
+            onProductSave(.success(handler.productImageStatuses.images))
             return
         }
 
@@ -209,14 +213,14 @@ private extension ProductImageUploader {
                                                             images: [ProductImage]) {
         images.forEach { image in
             Task {
-                _ = await imagesProductIDUpdater.updateImageProductID(siteID: siteID,
+                _ = try? await imagesProductIDUpdater.updateImageProductID(siteID: siteID,
                                                                       productID: productID,
                                                                       productImage: image)
             }
         }
     }
 
-    func observeStatusUpdatesForErrors(key: ProductKey, actionHandler: ProductImageActionHandler) {
+    private func observeStatusUpdatesForErrors(key: ProductKey, actionHandler: ProductImageActionHandler) {
         let observationToken = actionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else { return }
 
@@ -235,4 +239,6 @@ private extension ProductImageUploader {
 enum ProductImageUploaderError: Error {
     case savingProductImages(error: Error)
     case actionHandler(error: Error)
+    case cannotUseLocalProductID
+    case actionHandlerNotFound
 }

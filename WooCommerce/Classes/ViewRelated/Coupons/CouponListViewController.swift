@@ -153,7 +153,13 @@ final class CouponListViewController: UIViewController, GhostableViewController 
                 var snapshot = NSDiffableDataSourceSnapshot<Section, CouponListViewModel.CellViewModel>()
                 snapshot.appendSections([.main])
                 snapshot.appendItems(viewModels, toSection: Section.main)
-                self.dataSource.apply(snapshot)
+
+                if #available(iOS 15.0, *) {
+                    // minimally reloads the list without computing diff or animation
+                    self.dataSource.applySnapshotUsingReloadData(snapshot)
+                } else {
+                    self.dataSource.apply(snapshot)
+                }
             }
             .store(in: &subscriptions)
 

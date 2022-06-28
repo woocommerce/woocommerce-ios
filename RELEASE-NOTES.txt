@@ -2,6 +2,7 @@
 
 9.6
 -----
+- [*] Coupons: Removed the redundant animation when reloading the coupon list. [https://github.com/woocommerce/woocommerce-ios/pull/7137]
 
 
 9.5

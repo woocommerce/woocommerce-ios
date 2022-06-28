@@ -304,12 +304,13 @@ final class AddEditCouponViewModel: ObservableObject {
             .store(in: &subscriptions)
     }
 
-    func validatePercentageAmountInput(withWarning: Bool) {
-        guard discountType == .percent else { return }
+    @discardableResult
+    func validatePercentageAmountInput(withWarning: Bool) -> CouponError? {
+        guard discountType == .percent else { return nil }
         let formattedAmount = couponAmountInputFormatter.format(input: amountField)
         guard let convertedAmount = couponAmountInputFormatter.value(from: formattedAmount)?.doubleValue else {
             amountField = "0"
-            return
+            return .couponPercentAmountInvalid
         }
 
         if convertedAmount > 100 {
@@ -317,8 +318,8 @@ final class AddEditCouponViewModel: ObservableObject {
             if withWarning {
                 debounceWarningState()
             }
-
         }
+        return nil
     }
 
     private func debounceWarningState() {
@@ -446,6 +447,7 @@ final class AddEditCouponViewModel: ObservableObject {
 
     enum CouponError: Error, Equatable {
         case couponCodeEmpty
+        case couponPercentAmountInvalid
         case other(error: Error)
 
         static func ==(lhs: CouponError, rhs: CouponError) -> Bool {

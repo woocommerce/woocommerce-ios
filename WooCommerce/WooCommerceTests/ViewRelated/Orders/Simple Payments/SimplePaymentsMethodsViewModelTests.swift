@@ -187,9 +187,10 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         viewModel.markOrderAsPaid(onSuccess: {})
 
         // Then
-        assertEqual(analytics.receivedEvents.first, WooAnalyticsStat.simplePaymentsFlowCompleted.rawValue)
+        assertEqual(analytics.receivedEvents.first, WooAnalyticsStat.paymentsFlowCompleted.rawValue)
         assertEqual(analytics.receivedProperties.first?["payment_method"] as? String, "cash")
         assertEqual(analytics.receivedProperties.first?["amount"] as? String, "$12.00")
+        assertEqual(analytics.receivedProperties.first?["flow"] as? String, "simple_payment")
     }
 
     func test_completed_event_is_tracked_after_collecting_payment_successfully() {
@@ -212,9 +213,10 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         viewModel.collectPayment(on: UIViewController(), useCase: useCase, onSuccess: {})
 
         // Then
-        assertEqual(analytics.receivedEvents.last, WooAnalyticsStat.simplePaymentsFlowCompleted.rawValue)
+        assertEqual(analytics.receivedEvents.last, WooAnalyticsStat.paymentsFlowCompleted.rawValue)
         assertEqual(analytics.receivedProperties.last?["payment_method"] as? String, "card")
         assertEqual(analytics.receivedProperties.last?["amount"] as? String, "$12.00")
+        assertEqual(analytics.receivedProperties.first?["flow"] as? String, "simple_payment")
     }
 
     func test_completed_event_is_tracked_after_sharing_a_link() {
@@ -228,9 +230,10 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         viewModel.performLinkSharedTasks()
 
         // Then
-        assertEqual(analytics.receivedEvents.first, WooAnalyticsStat.simplePaymentsFlowCompleted.rawValue)
+        assertEqual(analytics.receivedEvents.first, WooAnalyticsStat.paymentsFlowCompleted.rawValue)
         assertEqual(analytics.receivedProperties.first?["payment_method"] as? String, "payment_link")
         assertEqual(analytics.receivedProperties.first?["amount"] as? String, "$12.00")
+        assertEqual(analytics.receivedProperties.first?["flow"] as? String, "simple_payment")
     }
 
     func test_failed_event_is_tracked_after_failing_to_mark_order_as_paid() {
@@ -255,8 +258,9 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         viewModel.markOrderAsPaid(onSuccess: {})
 
         // Then
-        assertEqual(analytics.receivedEvents.first, WooAnalyticsStat.simplePaymentsFlowFailed.rawValue)
+        assertEqual(analytics.receivedEvents.first, WooAnalyticsStat.paymentsFlowFailed.rawValue)
         assertEqual(analytics.receivedProperties.first?["source"] as? String, "payment_method")
+        assertEqual(analytics.receivedProperties.first?["flow"] as? String, "simple_payment")
     }
 
     func test_failed_event_is_tracked_after_failing_to_collect_payment() {
@@ -279,8 +283,9 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         viewModel.collectPayment(on: UIViewController(), useCase: useCase, onSuccess: {})
 
         // Then
-        assertEqual(analytics.receivedEvents.last, WooAnalyticsStat.simplePaymentsFlowFailed.rawValue)
+        assertEqual(analytics.receivedEvents.last, WooAnalyticsStat.paymentsFlowFailed.rawValue)
         assertEqual(analytics.receivedProperties.last?["source"] as? String, "payment_method")
+        assertEqual(analytics.receivedProperties.first?["flow"] as? String, "simple_payment")
     }
 
     func test_collect_event_is_tracked_when_paying_by_cash() {
@@ -296,8 +301,9 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         viewModel.trackCollectByCash()
 
         // Then
-        assertEqual(analytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowCollect.rawValue])
+        assertEqual(analytics.receivedEvents, [WooAnalyticsStat.paymentsFlowCollect.rawValue])
         assertEqual(analytics.receivedProperties.first?["payment_method"] as? String, "cash")
+        assertEqual(analytics.receivedProperties.first?["flow"] as? String, "simple_payment")
     }
 
     func test_collect_event_is_tracked_when_sharing_payment_links() {
@@ -311,8 +317,9 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         viewModel.trackCollectByPaymentLink()
 
         // Then
-        assertEqual(analytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowCollect.rawValue])
+        assertEqual(analytics.receivedEvents, [WooAnalyticsStat.paymentsFlowCollect.rawValue])
         assertEqual(analytics.receivedProperties.first?["payment_method"] as? String, "payment_link")
+        assertEqual(analytics.receivedProperties.first?["flow"] as? String, "simple_payment")
     }
 
     func test_collect_event_is_tracked_when_collecting_payment() {
@@ -332,8 +339,9 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         viewModel.collectPayment(on: UIViewController(), useCase: useCase, onSuccess: {})
 
         // Then
-        assertEqual(analytics.receivedEvents.last, WooAnalyticsStat.simplePaymentsFlowCollect.rawValue)
+        assertEqual(analytics.receivedEvents.last, WooAnalyticsStat.paymentsFlowCollect.rawValue)
         assertEqual(analytics.receivedProperties.last?["payment_method"] as? String, "card")
+        assertEqual(analytics.receivedProperties.first?["flow"] as? String, "simple_payment")
     }
 
     func test_card_row_is_shown_for_eligible_order_and_country() {

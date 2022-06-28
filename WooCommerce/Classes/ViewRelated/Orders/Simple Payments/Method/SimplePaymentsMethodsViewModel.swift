@@ -293,20 +293,20 @@ private extension SimplePaymentsMethodsViewModel {
 
     /// Tracks the `simplePaymentsFlowCompleted` event.
     ///
-    func trackFlowCompleted(method: WooAnalyticsEvent.SimplePayments.PaymentMethod) {
-        analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowCompleted(amount: formattedTotal, method: method))
+    func trackFlowCompleted(method: WooAnalyticsEvent.PaymentsFlow.PaymentMethod) {
+        analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCompleted(flow: .simplePayment, amount: formattedTotal, method: method))
     }
 
     /// Tracks the `simplePaymentsFlowFailed` event.
     ///
     func trackFlowFailed() {
-        analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowFailed(source: .paymentMethod))
+        analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowFailed(flow: .simplePayment, source: .paymentMethod))
     }
 
     /// Tracks `simplePaymentsFlowCollect` event.
     ///
-    func trackCollectIntention(method: WooAnalyticsEvent.SimplePayments.PaymentMethod) {
-        analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowCollect(method: method))
+    func trackCollectIntention(method: WooAnalyticsEvent.PaymentsFlow.PaymentMethod) {
+        analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCollect(flow: .simplePayment, method: method))
     }
 }
 

@@ -241,15 +241,15 @@ final class StoresManagerTests: XCTestCase {
     }
 
     func test_deauthenticating_invokes_ProductImageUploader_reset() {
-        // Arrange
+        // Given
         let mockProductImageUploader = MockProductImageUploader()
         ServiceLocator.setProductImageUploader(mockProductImageUploader)
         XCTAssertFalse(mockProductImageUploader.resetWasCalled)
 
-        // Action
+        // When
         ServiceLocator.stores.deauthenticate()
 
-        // Assert
+        // Then
         XCTAssertTrue(mockProductImageUploader.resetWasCalled)
     }
 }

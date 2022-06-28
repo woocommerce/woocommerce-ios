@@ -196,7 +196,7 @@ final class ProductImageUploaderTests: XCTestCase {
                                                                      originalStatuses: []).productImageStatuses)
     }
 
-    // MARK: - Status Updates
+    // MARK: - Error updates
 
     func test_actionHandler_error_is_emitted_when_image_upload_fails() {
         // Given

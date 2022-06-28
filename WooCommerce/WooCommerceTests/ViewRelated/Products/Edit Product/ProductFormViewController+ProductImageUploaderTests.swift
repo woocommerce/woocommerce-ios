@@ -18,7 +18,7 @@ final class ProductFormViewController_ProductImageUploaderTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_triggering_viewDidLoad_invokes_stopEmittingStatusUpdates() throws {
+    func test_triggering_viewDidLoad_invokes_stopEmittingErrors() throws {
         // Given
         let actionHandler = ProductImageActionHandler(siteID: 134, productID: 256, imageStatuses: [])
         let productImageUploader = MockProductImageUploader()
@@ -35,11 +35,11 @@ final class ProductFormViewController_ProductImageUploaderTests: XCTestCase {
         productForm.viewDidLoad()
 
         // Then
-        XCTAssertFalse(productImageUploader.startEmittingStatusUpdatesWasCalled)
-        XCTAssertTrue(productImageUploader.stopEmittingStatusUpdatesWasCalled)
+        XCTAssertFalse(productImageUploader.startEmittingErrorsWasCalled)
+        XCTAssertTrue(productImageUploader.stopEmittingErrorsWasCalled)
     }
 
-    func test_dismissing_product_form_invokes_startEmittingStatusUpdates() throws {
+    func test_dismissing_product_form_invokes_startEmittingErrors() throws {
         // Given
         let actionHandler = ProductImageActionHandler(siteID: 134, productID: 256, imageStatuses: [])
         let productImageUploader = MockProductImageUploader()
@@ -64,10 +64,10 @@ final class ProductFormViewController_ProductImageUploaderTests: XCTestCase {
         }
 
         // Then
-        XCTAssertTrue(productImageUploader.startEmittingStatusUpdatesWasCalled)
+        XCTAssertTrue(productImageUploader.startEmittingErrorsWasCalled)
     }
 
-    func test_popping_product_form_invokes_startEmittingStatusUpdates() throws {
+    func test_popping_product_form_invokes_startEmittingErrors() throws {
         // Given
         let actionHandler = ProductImageActionHandler(siteID: 134, productID: 256, imageStatuses: [])
         let productImageUploader = MockProductImageUploader()
@@ -96,6 +96,6 @@ final class ProductFormViewController_ProductImageUploaderTests: XCTestCase {
         }
 
         // Then
-        XCTAssertTrue(productImageUploader.startEmittingStatusUpdatesWasCalled)
+        XCTAssertTrue(productImageUploader.startEmittingErrorsWasCalled)
     }
 }

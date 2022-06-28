@@ -244,6 +244,7 @@ extension OrderDetailsViewModel {
             ///
             self?.syncState = .synced
 
+            onReloadSections?()
             onCompletion?()
         }
     }

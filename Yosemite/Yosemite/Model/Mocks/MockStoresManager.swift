@@ -59,7 +59,10 @@ public class MockStoresManager: StoresManager {
         productReviewActionHandler = MockProductReviewActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         notificationActionHandler = MockNotificationActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         userActionHandler = MockUserActionHandler(objectGraph: objectGraph, storageManager: storageManager)
-        orderCardPresentPaymentEligibilityActionHandler = MockOrderCardPresentPaymentEligibilityActionHandler(objectGraph: objectGraph, storageManager: storageManager)
+        orderCardPresentPaymentEligibilityActionHandler = MockOrderCardPresentPaymentEligibilityActionHandler(
+            objectGraph: objectGraph,
+            storageManager: storageManager
+        )
     }
 
     /// Accessor for whether the user is logged in (spoiler: they always will be when mocking)

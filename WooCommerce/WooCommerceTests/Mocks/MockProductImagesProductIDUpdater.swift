@@ -6,8 +6,8 @@ final class MockProductImagesProductIDUpdater: ProductImagesProductIDUpdaterProt
 
     func updateImageProductID(siteID: Int64,
                               productID: Int64,
-                              productImage: ProductImage) async ->  Result<Media, Error> {
+                              productImage: ProductImage) async throws -> Media {
         numberOfTimesUpdateImageProductIDWasCalled += 1
-        return .success(Media.fake())
+        return Media.fake()
     }
 }

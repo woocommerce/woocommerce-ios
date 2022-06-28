@@ -15,7 +15,7 @@ final class ProductImagesProductIDUpdaterTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_updateProductIDOfImage_dispatches_MediaAction_updateProductID_to_update_media_parent_id() async {
+    func test_updateProductIDOfImage_dispatches_MediaAction_updateProductID_to_update_media_parent_id() async throws {
         // Given
         let productImage = ProductImage.fake()
         let media = Media.fake().copy(mediaID: productImage.imageID)
@@ -25,13 +25,11 @@ final class ProductImagesProductIDUpdaterTests: XCTestCase {
                 onCompletion(.success(media))
             }
         }
-
+        
         // When
-        let result = await productImagesProductIDUpdater.updateImageProductID(siteID: 1,
-                                                                              productID: 1,
-                                                                              productImage: productImage)
-        let savedMedia = try? result.get()
-
+        let savedMedia = try await productImagesProductIDUpdater.updateImageProductID(siteID: 1,
+                                                                                      productID: 1,
+                                                                                      productImage: productImage)
         // Then
         XCTAssertEqual(savedMedia, media)
     }

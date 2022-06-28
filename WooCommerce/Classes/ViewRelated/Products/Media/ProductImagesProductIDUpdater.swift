@@ -10,7 +10,7 @@ protocol ProductImagesProductIDUpdaterProtocol {
     ///
     func updateImageProductID(siteID: Int64,
                               productID: Int64,
-                              productImage: ProductImage) async ->  Result<Media, Error>
+                              productImage: ProductImage) async throws -> Media
 }
 
 struct ProductImagesProductIDUpdater {
@@ -24,14 +24,10 @@ struct ProductImagesProductIDUpdater {
 extension ProductImagesProductIDUpdater: ProductImagesProductIDUpdaterProtocol {
     func updateImageProductID(siteID: Int64,
                               productID: Int64,
-                              productImage: ProductImage) async -> Result<Media, Error> {
-        let result = await updateProductIDFor(productImageID: productImage.imageID,
-                                              siteID: siteID,
-                                              productID: productID)
-        if case let .failure(error) = result {
-            DDLogError("⛔️ Error updating `parent_id` of media with \(productImage.imageID): \(error)")
-        }
-        return result
+                              productImage: ProductImage) async throws -> Media {
+        try await updateProductIDFor(productImageID: productImage.imageID,
+                                     siteID: siteID,
+                                     productID: productID)
     }
 }
 
@@ -39,10 +35,16 @@ private extension ProductImagesProductIDUpdater {
     @MainActor // Using `@MainActor` as `Dispatcher` expects the `dispatch` method to be called in main thread.
     func updateProductIDFor(productImageID: Int64,
                             siteID: Int64,
-                            productID: Int64) async -> Result<Media, Error> {
-        await withCheckedContinuation { continuation in
+                            productID: Int64) async throws -> Media {
+        try await withCheckedThrowingContinuation { continuation in
             let action = MediaAction.updateProductID(siteID: siteID, productID: productID, mediaID: productImageID) { result in
-                continuation.resume(returning: result)
+                switch result {
+                case .failure(let error):
+                    DDLogError("⛔️ Error updating `parent_id` of media with \(productImageID): \(error)")
+                    continuation.resume(throwing: error)
+                case .success(let media):
+                    continuation.resume(returning: media)
+                }
             }
             stores.dispatch(action)
         }

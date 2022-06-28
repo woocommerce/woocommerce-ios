@@ -201,46 +201,49 @@ final class PaymentMethodsViewModel: ObservableObject {
                     return self.presentNoticeSubject.send(.error(Localization.genericCollectError))
                 }
 
-                guard let paymentGateway = self.gatewayAccountResultsController.fetchedObjects.first else {
-                    DDLogError("⛔️ Payment Gateway not found, can't collect payment.")
-                    return self.presentNoticeSubject.send(.error(Localization.genericCollectError))
+                let action = CardPresentPaymentAction.selectedPaymentGatewayAccount { paymentGateway in
+                    guard let paymentGateway = paymentGateway else {
+                        return DDLogError("⛔️ Payment Gateway not found, can't collect payment.")
+                    }
+
+                    self.collectPaymentsUseCase = useCase ?? CollectOrderPaymentUseCase(
+                        siteID: self.siteID,
+                        order: order,
+                        formattedAmount: self.formattedTotal,
+                        paymentGatewayAccount: paymentGateway,
+                        rootViewController: rootViewController,
+                        alerts: OrderDetailsPaymentAlerts(transactionType: .collectPayment,
+                                                          presentingController: rootViewController),
+                        configuration: CardPresentConfigurationLoader().configuration)
+
+                    self.collectPaymentsUseCase?.collectPayment(
+                        onCollect: { [weak self] result in
+                            guard case let .failure(error) = result else { return }
+
+                            let collectOrderPaymentUseCaseError = error as? CollectOrderPaymentUseCaseError
+                            guard collectOrderPaymentUseCaseError != CollectOrderPaymentUseCaseError.flowCanceledByUser else { return }
+
+                            self?.trackFlowFailed()
+                        },
+                        onCompleted: { [weak self] in
+                            // Update order in case its status and/or other details are updated after a successful in-person payment
+                            self?.updateOrderAsynchronously()
+
+                            // Inform success to consumer
+                            onSuccess()
+
+                            // Sent notice request
+                            self?.presentNoticeSubject.send(.completed)
+
+                            // Make sure we free all the resources
+                            self?.collectPaymentsUseCase = nil
+
+                            // Tracks completion
+                            self?.trackFlowCompleted(method: .card)
+                        })
                 }
 
-                self.collectPaymentsUseCase = useCase ?? CollectOrderPaymentUseCase(
-                    siteID: self.siteID,
-                    order: order,
-                    formattedAmount: self.formattedTotal,
-                    paymentGatewayAccount: paymentGateway,
-                    rootViewController: rootViewController,
-                    alerts: OrderDetailsPaymentAlerts(transactionType: .collectPayment,
-                                                      presentingController: rootViewController),
-                    configuration: CardPresentConfigurationLoader().configuration)
-
-                self.collectPaymentsUseCase?.collectPayment(
-                    onCollect: { [weak self] result in
-                        guard case let .failure(error) = result else { return }
-
-                        let collectOrderPaymentUseCaseError = error as? CollectOrderPaymentUseCaseError
-                        guard collectOrderPaymentUseCaseError != CollectOrderPaymentUseCaseError.flowCanceledByUser else { return }
-
-                        self?.trackFlowFailed()
-                    },
-                    onCompleted: { [weak self] in
-                        // Update order in case its status and/or other details are updated after a successful in-person payment
-                        self?.updateOrderAsynchronously()
-
-                        // Inform success to consumer
-                        onSuccess()
-
-                        // Sent notice request
-                        self?.presentNoticeSubject.send(.completed)
-
-                        // Make sure we free all the resources
-                        self?.collectPaymentsUseCase = nil
-
-                        // Tracks completion
-                        self?.trackFlowCompleted(method: .card)
-                    })
+                self.stores.dispatch(action)
             }
     }
 

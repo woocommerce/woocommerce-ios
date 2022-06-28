@@ -8,6 +8,10 @@ public enum CardPresentPaymentAction: Action {
     ///
     case use(paymentGatewayAccount: PaymentGatewayAccount)
 
+    /// Returns the selected payment gateway account, set previously with CardPresentPaymentAction.use
+    ///
+    case selectedPaymentGatewayAccount(onCompletion: (PaymentGatewayAccount?) -> Void)
+
     /// Retrieves the current configuration for IPP.
     ///
     case loadActivePaymentGatewayExtension(onCompletion: (CardPresentPaymentGatewayExtension) -> Void)

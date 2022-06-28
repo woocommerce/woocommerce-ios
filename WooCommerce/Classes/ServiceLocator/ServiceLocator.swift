@@ -354,6 +354,14 @@ extension ServiceLocator {
 
         _generalAppSettings = mock
     }
+
+    static func setProductImageUploader(_ mock: ProductImageUploaderProtocol) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _productImageUploader = mock
+    }
 }
 
 

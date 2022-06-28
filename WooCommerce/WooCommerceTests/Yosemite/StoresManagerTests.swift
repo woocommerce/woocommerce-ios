@@ -239,6 +239,19 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertEqual(siteIDValues, [nil])
         XCTAssertNil(manager.sessionManager.defaultSite)
     }
+
+    func test_deauthenticating_invokes_ProductImageUploader_reset() {
+        // Arrange
+        let mockProductImageUploader = MockProductImageUploader()
+        ServiceLocator.setProductImageUploader(mockProductImageUploader)
+        XCTAssertFalse(mockProductImageUploader.resetWasCalled)
+
+        // Action
+        ServiceLocator.stores.deauthenticate()
+
+        // Assert
+        XCTAssertTrue(mockProductImageUploader.resetWasCalled)
+    }
 }
 
 

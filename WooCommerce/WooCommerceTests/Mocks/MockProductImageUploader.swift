@@ -9,6 +9,7 @@ final class MockProductImageUploader: ProductImageUploaderProtocol {
     var saveProductImagesWhenNoneIsPendingUploadAnymoreWasCalled = false
     var startEmittingErrorsWasCalled = false
     var stopEmittingErrorsWasCalled = false
+    var resetWasCalled = false
 
     init(errors: AnyPublisher<ProductImageUploadErrorInfo, Never> =
          Empty<ProductImageUploadErrorInfo, Never>().eraseToAnyPublisher()) {
@@ -40,5 +41,9 @@ final class MockProductImageUploader: ProductImageUploaderProtocol {
 
     func hasUnsavedChangesOnImages(siteID: Int64, productID: Int64, isLocalID: Bool, originalImages: [ProductImage]) -> Bool {
         false
+    }
+
+    func reset() {
+        resetWasCalled = true
     }
 }

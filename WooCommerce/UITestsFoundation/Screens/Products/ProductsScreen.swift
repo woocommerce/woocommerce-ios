@@ -23,6 +23,23 @@ public final class ProductsScreen: ScreenObject {
     }
 
     @discardableResult
+    public func selectAddProduct() -> Self {
+        guard app.buttons["product-add-button"].waitForExistence(timeout: 3) else {
+            return self
+        }
+
+        app.buttons["product-add-button"].tap()
+        return self
+    }
+
+    @discardableResult
+    public func tapOutside() -> Self {
+        let coordinate = app.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
+        coordinate.tap()
+        return self
+    }
+
+    @discardableResult
     public func collapseTopBannerIfNeeded() -> Self {
 
         /// Without the info label, we don't need to collapse the top banner

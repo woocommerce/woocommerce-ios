@@ -437,7 +437,6 @@ private extension ProductsViewController {
     func showTopBannerViewIfNeeded() {
         if hasErrorLoadingData {
             requestAndShowErrorTopBannerView()
-            return
         }
     }
 

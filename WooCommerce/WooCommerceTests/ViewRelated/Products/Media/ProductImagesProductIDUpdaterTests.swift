@@ -25,7 +25,7 @@ final class ProductImagesProductIDUpdaterTests: XCTestCase {
                 onCompletion(.success(media))
             }
         }
-        
+
         // When
         let savedMedia = try await productImagesProductIDUpdater.updateImageProductID(siteID: 1,
                                                                                       productID: 1,

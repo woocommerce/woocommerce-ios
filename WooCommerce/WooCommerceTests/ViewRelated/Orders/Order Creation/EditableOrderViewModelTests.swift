@@ -46,6 +46,31 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.navigationTrailingItem, .done)
     }
 
+    func test_edition_view_model_has_a_navigation_loading_item_when_synching() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let order = Order.fake().copy(siteID: sampleSiteID, orderID: sampleOrderID)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores)
+
+        // When
+        let navigationItemDuringSync: EditableOrderViewModel.NavigationItem = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .updateOrder:
+                    promise(viewModel.navigationTrailingItem)
+                default:
+                    XCTFail("Received unsupported action: \(action)")
+                }
+            }
+
+            // Trigger remote sync
+            viewModel.saveShippingLine(ShippingLine.fake())
+        }
+
+        // Then
+        XCTAssertEqual(navigationItemDuringSync, .loading)
+    }
+
     func test_loading_indicator_is_enabled_during_network_request() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -688,6 +713,30 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(isLoadingDuringSync)
         XCTAssertFalse(viewModel.paymentDataViewModel.isLoading) // Disabled after sync ends
+    }
+
+    func test_payment_section_loading_indicator_is_disabled_while_non_editable_order_syncs() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let order = Order.fake().copy(siteID: sampleSiteID, orderID: sampleOrderID, isEditable: false)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores)
+
+        // When
+        let isPaymentsLoadingVisible: Bool = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .updateOrder:
+                    promise(viewModel.paymentDataViewModel.isLoading)
+                default:
+                    XCTFail("Received unsupported action: \(action)")
+                }
+            }
+            // Trigger remote sync
+            viewModel.saveShippingLine(ShippingLine.fake())
+        }
+
+        // Then
+        XCTAssertFalse(isPaymentsLoadingVisible)
     }
 
     func test_payment_section_is_updated_when_order_has_taxes() {

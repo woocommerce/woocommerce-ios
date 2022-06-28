@@ -46,7 +46,7 @@ class WooCommerceScreenshots: XCTestCase {
         // Products
         .tabBar.goToProductsScreen()
         .selectAddProduct()
-        .thenTakeScreenshot(named: "create-product")
+        .thenTakeScreenshot(named: "product-add")
         .tapOutside()
     }
 

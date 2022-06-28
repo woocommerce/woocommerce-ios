@@ -3,15 +3,15 @@ import Combine
 @testable import WooCommerce
 
 final class MockProductImageUploader: ProductImageUploaderProtocol {
-    let errors: AnyPublisher<ProductImageUploadError, Never>
+    let errors: AnyPublisher<ProductImageUploadErrorInfo, Never>
 
     var replaceLocalIDWasCalled = false
     var saveProductImagesWhenNoneIsPendingUploadAnymoreWasCalled = false
     var startEmittingStatusUpdatesWasCalled = false
     var stopEmittingStatusUpdatesWasCalled = false
 
-    init(statusUpdates: AnyPublisher<ProductImageUploadError, Never> =
-         Empty<ProductImageUploadError, Never>().eraseToAnyPublisher()) {
+    init(statusUpdates: AnyPublisher<ProductImageUploadErrorInfo, Never> =
+         Empty<ProductImageUploadErrorInfo, Never>().eraseToAnyPublisher()) {
         self.errors = statusUpdates
     }
 

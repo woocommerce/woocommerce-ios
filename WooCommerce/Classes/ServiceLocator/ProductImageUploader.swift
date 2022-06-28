@@ -3,18 +3,18 @@ import struct Yosemite.ProductImage
 import enum Yosemite.ProductAction
 import protocol Yosemite.StoresManager
 
-/// Error for product image upload.
-struct ProductImageUploadError {
+/// Information about a product image upload.
+struct ProductImageUploadErrorInfo {
     let siteID: Int64
     let productID: Int64
     let productImageStatuses: [ProductImageStatus]
-    let error: Error
+    let error: ProductImageUploaderError
 }
 
 /// Handles product image upload to support background image upload.
 protocol ProductImageUploaderProtocol {
     /// Emits product image upload errors.
-    var errors: AnyPublisher<ProductImageUploadError, Never> { get }
+    var errors: AnyPublisher<ProductImageUploadErrorInfo, Never> { get }
 
     /// Called for product image upload use cases (e.g. product/variation form, downloadable product list).
     /// - Parameters:
@@ -75,11 +75,11 @@ protocol ProductImageUploaderProtocol {
 
 /// Supports background image upload and product images update after the user leaves the product form.
 final class ProductImageUploader: ProductImageUploaderProtocol {
-    var errors: AnyPublisher<ProductImageUploadError, Never> {
+    var errors: AnyPublisher<ProductImageUploadErrorInfo, Never> {
         errorsSubject.eraseToAnyPublisher()
     }
 
-    private let errorsSubject: PassthroughSubject<ProductImageUploadError, Never> = .init()
+    private let errorsSubject: PassthroughSubject<ProductImageUploadErrorInfo, Never> = .init()
     private var statusUpdatesExcludedProductKeys: Set<ProductKey> = []
     private var statusUpdatesSubscriptions: Set<AnyCancellable> = []
 
@@ -169,7 +169,16 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
             imagesSaver = ProductImagesSaver(siteID: siteID, productID: productID, stores: stores)
             imagesSaverByProduct[key] = imagesSaver
         }
-        imagesSaver.saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: handler, onProductSave: onProductSave)
+        imagesSaver.saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: handler) { [weak self] result in
+            guard let self = self else { return }
+            if case let .failure(error) = result {
+                self.errorsSubject.send(.init(siteID: siteID,
+                                              productID: productID,
+                                              productImageStatuses: handler.productImageStatuses,
+                                              error: ProductImageUploaderError.savingProductImages(error: error)))
+            }
+            onProductSave(result)
+        }
     }
 }
 
@@ -179,9 +188,18 @@ private extension ProductImageUploader {
             guard let self = self else { return }
 
             if let error = error, self.statusUpdatesExcludedProductKeys.contains(key) == false {
-                self.errorsSubject.send(.init(siteID: key.siteID, productID: key.productID, productImageStatuses: productImageStatuses, error: error))
+                self.errorsSubject.send(.init(siteID: key.siteID,
+                                              productID: key.productID,
+                                              productImageStatuses: productImageStatuses,
+                                              error: ProductImageUploaderError.actionHandler(error: error)))
             }
         }
         statusUpdatesSubscriptions.insert(observationToken)
     }
+}
+
+/// Possible errors from background image upload.
+enum ProductImageUploaderError: Error {
+    case savingProductImages(error: Error)
+    case actionHandler(error: Error)
 }

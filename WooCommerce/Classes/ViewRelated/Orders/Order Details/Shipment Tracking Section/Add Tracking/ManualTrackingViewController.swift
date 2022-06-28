@@ -134,7 +134,11 @@ private extension ManualTrackingViewController {
     }
 
     @objc func dismissButtonTapped() {
-        dismiss()
+        if viewModel.canCommit == false {
+            displayDismissConfirmationAlert()
+        } else {
+            dismiss()
+        }
     }
 
     @objc func primaryButtonTapped() {
@@ -546,6 +550,12 @@ private extension ManualTrackingViewController {
 
         ServiceLocator.stores.dispatch(action)
 
+    }
+    func displayDismissConfirmationAlert() {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self,
+                                                           onDiscard: {[weak self] in self?.dismiss(animated: true)},
+                                                           onCancel: .none
+        )
     }
 
     func dismiss() {

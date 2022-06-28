@@ -563,16 +563,18 @@ private extension EditableOrderViewModel {
     /// Calculates what navigation trailing item should be shown depending on our internal state.
     ///
     func configureNavigationTrailingItem() {
-        Publishers.CombineLatest3(orderSynchronizer.orderPublisher, $performingNetworkRequest, Just(flow))
-            .map { order, performingNetworkRequest, flow -> NavigationItem in
+        Publishers.CombineLatest4(orderSynchronizer.orderPublisher, orderSynchronizer.statePublisher, $performingNetworkRequest, Just(flow))
+            .map { order, syncState, performingNetworkRequest, flow -> NavigationItem in
                 guard !performingNetworkRequest else {
                     return .loading
                 }
 
-                switch flow {
-                case .creation:
+                switch (flow, syncState) {
+                case (.creation, _):
                     return .create
-                case .editing:
+                case (.editing, .syncing):
+                    return .loading
+                case (.editing, _):
                     return .done
                 }
             }
@@ -703,7 +705,7 @@ private extension EditableOrderViewModel {
                                             feesTotal: orderTotals.feesTotal.stringValue,
                                             taxesTotal: order.totalTax.isNotEmpty ? order.totalTax : "0",
                                             orderTotal: order.total.isNotEmpty ? order.total : "0",
-                                            isLoading: isDataSyncing,
+                                            isLoading: isDataSyncing && !showNonEditableIndicators,
                                             showNonEditableIndicators: showNonEditableIndicators,
                                             saveShippingLineClosure: self.saveShippingLine,
                                             saveFeeLineClosure: self.saveFeeLine,

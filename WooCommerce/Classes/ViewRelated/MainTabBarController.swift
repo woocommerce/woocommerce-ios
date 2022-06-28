@@ -576,15 +576,15 @@ private extension MainTabBarController {
         productImageUploadErrorsSubscription = productImageUploader.errors.sink { [weak self] error in
             guard let self = self else { return }
             switch error.error {
-            case .savingProductImages:
-                self.handleImagesSaverError(error)
-            case .actionHandler:
-                self.handleBackgroundImageUploadError(error)
+            case .failedSavingProductAfterImageUpload:
+                self.handleErrorSavingProductAfterImageUpload(error)
+            case .failedUploadingImage:
+                self.handleErrorUploadingImage(error)
             }
         }
     }
 
-    func handleImagesSaverError(_ error: ProductImageUploadErrorInfo) {
+    func handleErrorSavingProductAfterImageUpload(_ error: ProductImageUploadErrorInfo) {
         let notice = Notice(title: Localization.imagesSavingFailureNoticeTitle,
                             subtitle: nil,
                             message: nil,
@@ -600,7 +600,7 @@ private extension MainTabBarController {
         noticePresenter.enqueue(notice: notice)
     }
 
-    func handleBackgroundImageUploadError(_ error: ProductImageUploadErrorInfo) {
+    func handleErrorUploadingImage(_ error: ProductImageUploadErrorInfo) {
         let notice = Notice(title: Localization.imageUploadFailureNoticeTitle,
                             subtitle: nil,
                             message: nil,

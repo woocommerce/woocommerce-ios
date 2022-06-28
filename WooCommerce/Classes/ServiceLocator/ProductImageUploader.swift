@@ -176,7 +176,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
                 self.errorsSubject.send(.init(siteID: siteID,
                                               productID: productID,
                                               productImageStatuses: handler.productImageStatuses,
-                                              error: .savingProductImages(error: error)))
+                                              error: .failedSavingProductAfterImageUpload(error: error)))
             }
         }
     }
@@ -191,7 +191,7 @@ private extension ProductImageUploader {
                 self.errorsSubject.send(.init(siteID: key.siteID,
                                               productID: key.productID,
                                               productImageStatuses: productImageStatuses,
-                                              error: .actionHandler(error: error)))
+                                              error: .failedUploadingImage(error: error)))
             }
         }
         statusUpdatesSubscriptions.insert(observationToken)
@@ -200,6 +200,6 @@ private extension ProductImageUploader {
 
 /// Possible errors from background image upload.
 enum ProductImageUploaderError: Error {
-    case savingProductImages(error: Error)
-    case actionHandler(error: Error)
+    case failedSavingProductAfterImageUpload(error: Error)
+    case failedUploadingImage(error: Error)
 }

@@ -10,10 +10,6 @@ import enum Networking.DotcomError
 
 final class OrderDetailsViewModel {
 
-    /// Retains the use-case so it can perform all of its async tasks.
-    ///
-    private var collectPaymentsUseCase: CollectOrderPaymentUseCase?
-
     private let stores: StoresManager
 
     private(set) var order: Order
@@ -158,11 +154,12 @@ final class OrderDetailsViewModel {
         MoreActionButton.availableButtons(order: order, syncState: syncState)
     }
 
-    /// Returns the order payment link.
-    /// Should exists on `6.4+` stores.
-    ///
-    var paymentLink: URL? {
-        return order.paymentURL
+    var paymentMethodsViewModel: PaymentMethodsViewModel {
+        PaymentMethodsViewModel(siteID: order.siteID,
+                                orderID: order.orderID,
+                                paymentLink: order.paymentURL,
+                                formattedTotal: order.total,
+                                flow: .orderPayment)
     }
 
     /// Helpers
@@ -233,12 +230,6 @@ extension OrderDetailsViewModel {
 
         group.enter()
         checkShippingLabelCreationEligibility {
-            onReloadSections?()
-            group.leave()
-        }
-
-        group.enter()
-        checkCardPresentPaymentEligibility() {
             onReloadSections?()
             group.leave()
         }
@@ -612,32 +603,6 @@ extension OrderDetailsViewModel {
         stores.dispatch(action)
     }
 
-    func checkCardPresentPaymentEligibility(onCompletion: @escaping (() -> Void)) {
-        let configuration = configurationLoader.configuration
-
-        guard configuration.isSupportedCountry else {
-            dataSource.isEligibleForCardPresentPayment = false
-            onCompletion()
-            return
-        }
-
-        let action = OrderCardPresentPaymentEligibilityAction
-            .orderIsEligibleForCardPresentPayment(orderID: order.orderID,
-                                                  siteID: order.siteID,
-                                                  cardPresentPaymentsConfiguration: configurationLoader.configuration) { [weak self] result in
-            switch result {
-            case .success(let eligible):
-                self?.dataSource.isEligibleForCardPresentPayment = eligible
-            case .failure(_):
-                self?.dataSource.isEligibleForCardPresentPayment = false
-            }
-
-            onCompletion()
-        }
-
-        stores.dispatch(action)
-    }
-
     func loadPaymentGatewayAccounts() {
         /// No need for a completion here. The VC will be notified of changes to the stored paymentGatewayAccounts
         /// by the viewModel (after passing up through the dataSource and originating in the resultsControllers)
@@ -690,22 +655,6 @@ extension OrderDetailsViewModel {
 
         stores.dispatch(deleteTrackingAction)
     }
-
-    /// Collects payments for the current order.
-    /// Tries to connect to a reader if necessary.
-    /// Checks onboarding status before connecting to a reader.
-    /// Handles receipt sharing.
-    ///
-    func collectPayment(rootViewController: UIViewController, onCollect: @escaping (Result<Void, Error>) -> Void) {
-        let paymentMethodsViewModel = PaymentMethodsViewModel(siteID: order.siteID,
-                                                              orderID: order.orderID,
-                                                              paymentLink: order.paymentURL,
-                                                              formattedTotal: order.total,
-                                                              flow: .orderPayment)
-        let paymentMethodsViewController = PaymentMethodsHostingController(viewModel: paymentMethodsViewModel)
-        let paymentMethodsNavigationController = WooNavigationController(rootViewController: paymentMethodsViewController)
-        rootViewController.navigationController?.present(paymentMethodsNavigationController, animated: true)
-    }
 }
 
 // MARK: Definitions
@@ -730,7 +679,6 @@ extension OrderDetailsViewModel {
         ///
         enum ButtonType: CaseIterable {
             case editOrder
-            case sharePaymentLink
         }
 
         /// ID of the button.
@@ -744,13 +692,6 @@ extension OrderDetailsViewModel {
         fileprivate static func availableButtons(order: Order, syncState: SyncState) -> [MoreActionButton] {
             ButtonType.allCases.compactMap { buttonType in
                 switch buttonType {
-
-                case .sharePaymentLink:
-                    guard order.needsPayment && order.paymentURL != nil else {
-                        return nil
-                    }
-                    return .init(id: buttonType, title: Localization.sharePaymentLink)
-
                 case .editOrder:
                     guard syncState == .synced, ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing) else {
                         return nil
@@ -761,7 +702,6 @@ extension OrderDetailsViewModel {
         }
 
         enum Localization {
-            static let sharePaymentLink = NSLocalizedString("Share Payment Link", comment: "Title to share an order payment link.")
             static let editOrder = NSLocalizedString("Edit", comment: "Title to edit an order")
         }
     }

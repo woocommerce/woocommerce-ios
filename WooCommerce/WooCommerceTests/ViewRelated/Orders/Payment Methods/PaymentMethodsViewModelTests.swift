@@ -19,6 +19,8 @@ final class PaymentMethodsViewModelTests: XCTestCase {
             switch action {
             case let .updateOrderStatus(_, _, _, onCompletion):
                 onCompletion(nil)
+            case .retrieveOrder:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -60,6 +62,8 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                 switch action {
                 case .updateOrderStatus:
                     promise(viewModel.showLoadingIndicator)
+                case .retrieveOrder:
+                    break
                 default:
                     XCTFail("Unexpected action: \(action)")
                 }
@@ -73,6 +77,41 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.disableViewActions)
     }
 
+    func test_view_model_updates_order_async_after_order_marked_as_paid() throws {
+        // Given
+        let storage = MockStorageManager()
+        let order = Order.fake().copy(status: .pending)
+        storage.insertSampleOrder(readOnlyOrder: order)
+        storage.insertSamplePaymentGatewayAccount(readOnlyAccount: .fake())
+
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+
+        let dependencies = Dependencies(stores: stores,
+                                        storage: storage)
+        let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
+                                                flow: .simplePayment,
+                                                dependencies: dependencies)
+
+        // When
+        let (siteID, orderID): (Int64, Int64) = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .updateOrderStatus(_, _, _, onCompletion):
+                    onCompletion(nil)
+                case let .retrieveOrder(siteID, orderID, _):
+                    promise((siteID, orderID))
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+            viewModel.markOrderAsPaid(onSuccess: {})
+        }
+
+        // Then
+        XCTAssertEqual(siteID, order.siteID)
+        XCTAssertEqual(orderID, order.orderID)
+    }
+
     func test_onSuccess_is_invoked_after_order_is_marked_as_paid() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -84,6 +123,8 @@ final class PaymentMethodsViewModelTests: XCTestCase {
             switch action {
             case let .updateOrderStatus(_, _, _, onCompletion):
                 onCompletion(nil)
+            case .retrieveOrder:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -112,6 +153,8 @@ final class PaymentMethodsViewModelTests: XCTestCase {
             switch action {
             case let .updateOrderStatus(_, _, _, onCompletion):
                 onCompletion(nil)
+            case .retrieveOrder:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -177,6 +220,8 @@ final class PaymentMethodsViewModelTests: XCTestCase {
             switch action {
             case let .updateOrderStatus(_, _, _, onCompletion):
                 onCompletion(nil)
+            case .retrieveOrder:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -251,6 +296,8 @@ final class PaymentMethodsViewModelTests: XCTestCase {
             switch action {
             case let .updateOrderStatus(_, _, _, onCompletion):
                 onCompletion(NSError(domain: "", code: 0, userInfo: nil))
+            case .retrieveOrder:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }

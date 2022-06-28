@@ -43,27 +43,6 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_collectPayment_without_reader_connection_does_not_track_collectPaymentTapped_event() {
-        // When
-        useCase.collectPayment(onCollect: { _ in }, onCompleted: {})
-
-        // Then
-        XCTAssertFalse(analyticsProvider.receivedEvents.contains("card_present_collect_payment_tapped"))
-    }
-
-    func test_collectPayment_tracks_collectPaymentTapped_event() throws {
-        // When
-        mockCardPresentPaymentActions()
-        useCase.collectPayment(onCollect: { _ in }, onCompleted: {})
-
-        // Then
-        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "card_present_collect_payment_tapped"}))
-        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
-        XCTAssertEqual(eventProperties["card_reader_model"] as? String, Mocks.cardReaderModel)
-        XCTAssertEqual(eventProperties["country"] as? String, "US")
-        XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayAccount)
-    }
-
     func test_cancelling_readerIsReady_alert_triggers_onCompleted_and_tracks_collectPaymentCanceled_event_and_dispatches_cancel_action() throws {
         // Given
         assertEmpty(stores.receivedActions)

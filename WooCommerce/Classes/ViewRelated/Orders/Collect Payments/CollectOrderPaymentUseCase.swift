@@ -258,11 +258,6 @@ private extension CollectOrderPaymentUseCase {
             return
         }
 
-        // Track tapped event
-        analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentTapped(forGatewayID: paymentGatewayAccount.gatewayID,
-                                                                                       countryCode: configuration.countryCode,
-                                                                                       cardReaderModel: connectedReader?.readerType.model ?? ""))
-
         // Show reader ready alert
         alerts.readerIsReady(title: Localization.collectPaymentTitle(username: order.billingAddress?.firstName),
                              amount: formattedAmount,

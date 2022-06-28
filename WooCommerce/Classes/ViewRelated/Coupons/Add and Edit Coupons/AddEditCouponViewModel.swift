@@ -590,7 +590,7 @@ private extension AddEditCouponViewModel {
             case .couponCodeEmpty:
                 return Notice(title: Localization.errorCouponCodeEmpty, feedbackType: .error)
             case .couponPercentAmountInvalid:
-                return Notice(title: Localization.amountPercentWarningSubtitle, feedbackType: .error)
+                return Notice(title: Localization.errorCouponAmountInvalid, feedbackType: .error)
             default:
                 switch editingOption {
                 case .editing:
@@ -613,7 +613,7 @@ private extension AddEditCouponViewModel {
         static let amountPercentSubtitle = NSLocalizedString("Set the percentage of the discount you want to offer.",
                                                              comment: "Subtitle of the Amount field in the Coupon Edit" +
                                                              " or Creation screen for a percentage discount coupon.")
-        static let amountPercentWarningSubtitle = NSLocalizedString("Percentages cannot be greater than 100",
+        static let amountPercentWarningSubtitle = NSLocalizedString("Percentages cannot be greater than 100%",
                                                                     comment: "Subtitle of the Amount field when a percentage " +
                                                                     "higher than 100 is set in the Coupon Edit or Creation " +
                                                                     "screen for a percentage discount coupon.")
@@ -630,6 +630,10 @@ private extension AddEditCouponViewModel {
             comment: "Coupon expiry date placeholder in the view for adding or editing a coupon")
         static let errorCouponCodeEmpty = NSLocalizedString("The coupon code couldn't be empty",
                                                             comment: "Error message in the Add Edit Coupon screen when the coupon code is empty.")
+        static let errorCouponAmountInvalid = NSLocalizedString("The coupon amount cannot be greater than" +
+                                                                " 100 for percentage discounts",
+                                                                comment: "Error message in the Add Edit Coupon screen when the coupon amount is " +
+                                                                "higher than 100% for a percentage discount")
         static let genericUpdateCouponError = NSLocalizedString("Something went wrong while updating the coupon.",
                                                                 comment: "Error message in the Add Edit Coupon screen " +
                                                                 "when the update of the coupon goes in error.")

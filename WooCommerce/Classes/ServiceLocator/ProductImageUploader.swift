@@ -90,10 +90,6 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         actionHandlersByProduct.removeValue(forKey: key)
         let keyWithRemoteProductID = ProductKey(siteID: siteID, productID: remoteProductID, isLocalID: false)
         actionHandlersByProduct[keyWithRemoteProductID] = handler
-
-        updateProductIDOfImagesUploadedUsingLocalProductID(siteID: siteID,
-                                                           productID: remoteProductID,
-                                                           images: handler.productImageStatuses.images)
     }
 
     func hasUnsavedChangesOnImages(siteID: Int64, productID: Int64, isLocalID: Bool, originalImages: [ProductImage]) -> Bool {
@@ -122,9 +118,17 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
             return
         }
         let key = ProductKey(siteID: siteID, productID: productID, isLocalID: isLocalID)
-        guard let handler = actionHandlersByProduct[key], handler.productImageStatuses.hasPendingUpload else {
+        guard let handler = actionHandlersByProduct[key] else {
             return
         }
+
+        guard handler.productImageStatuses.hasPendingUpload else {
+            updateProductIDOfImagesUploadedUsingLocalProductID(siteID: siteID,
+                                                               productID: productID,
+                                                               images: handler.productImageStatuses.images)
+            return
+        }
+
         let imagesSaver: ProductImagesSaver
         if let productImagesSaver = imagesSaverByProduct[key] {
             imagesSaver = productImagesSaver
@@ -132,7 +136,12 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
             imagesSaver = ProductImagesSaver(siteID: siteID, productID: productID, stores: stores)
             imagesSaverByProduct[key] = imagesSaver
         }
-        imagesSaver.saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: handler, onProductSave: onProductSave)
+
+        imagesSaver.saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: handler) { [weak self] _ in
+            self?.updateProductIDOfImagesUploadedUsingLocalProductID(siteID: siteID,
+                                                                     productID: productID,
+                                                                     images: handler.productImageStatuses.images)
+        }
     }
 }
 

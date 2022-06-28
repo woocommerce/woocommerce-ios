@@ -34,6 +34,7 @@ public class MockStoresManager: StoresManager {
     private let shippingLabelActionHandler: MockShippingLabelActionHandler
     private let statsV4ActionHandler: MockStatsActionV4Handler
     private let userActionHandler: MockUserActionHandler
+    private let orderCardPresentPaymentEligibilityActionHandler: MockOrderCardPresentPaymentEligibilityActionHandler
 
 
     init(objectGraph: MockObjectGraph, storageManager: StorageManagerType) {
@@ -58,6 +59,7 @@ public class MockStoresManager: StoresManager {
         productReviewActionHandler = MockProductReviewActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         notificationActionHandler = MockNotificationActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         userActionHandler = MockUserActionHandler(objectGraph: objectGraph, storageManager: storageManager)
+        orderCardPresentPaymentEligibilityActionHandler = MockOrderCardPresentPaymentEligibilityActionHandler(objectGraph: objectGraph, storageManager: storageManager)
     }
 
     /// Accessor for whether the user is logged in (spoiler: they always will be when mocking)
@@ -128,6 +130,8 @@ public class MockStoresManager: StoresManager {
             receiptActionHandler.handle(action: action)
         case _ as CardPresentPaymentAction, _ as SystemStatusAction:
             break
+        case let action as OrderCardPresentPaymentEligibilityAction:
+            orderCardPresentPaymentEligibilityActionHandler.handle(action: action)
         default:
             fatalError("Unable to handle action: \(action.identifier) \(String(describing: action))")
         }

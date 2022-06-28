@@ -8,6 +8,7 @@ public protocol MockObjectGraph {
     var defaultSiteAPI: SiteAPI { get }
 
     var sites: [Site] { get }
+    var siteSettings: [SiteSetting] { get }
     var orders: [Order] { get }
     var products: [Product] { get }
     var reviews: [ProductReview] { get }
@@ -28,6 +29,13 @@ public protocol MockObjectGraph {
 }
 
 let mockResourceUrlHost = "http://localhost:\(UserDefaults.standard.integer(forKey: "mocks-port"))/"
+
+// MARK: SiteSetting Accessors
+extension MockObjectGraph {
+    func siteSettings(for siteID: Int64) -> [SiteSetting] {
+        return siteSettings.filter { $0.siteID == siteID }
+    }
+}
 
 // MARK: Product Accessors
 extension MockObjectGraph {
@@ -74,6 +82,23 @@ extension MockObjectGraph {
 
     func reviews(forSiteId siteId: Int64) -> [ProductReview] {
         reviews.filter { $0.siteID == siteId }
+    }
+}
+
+// MARK: SiteSetting Creation Helper
+extension MockObjectGraph {
+    static func createSiteSetting(siteID: Int64,
+                                  settingID: String,
+                                  label: String,
+                                  settingDescription: String,
+                                  value: String,
+                                  settingGroupKey: String) -> SiteSetting {
+        SiteSetting(siteID: siteID,
+                    settingID: settingID,
+                    label: label,
+                    settingDescription: settingDescription,
+                    value: value,
+                    settingGroupKey: settingGroupKey)
     }
 }
 

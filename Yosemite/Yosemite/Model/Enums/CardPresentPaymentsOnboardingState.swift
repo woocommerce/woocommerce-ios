@@ -10,7 +10,7 @@ public enum CardPresentPaymentOnboardingState: Equatable {
 
     /// There is more than one plugin installed and activated. The user must deactivate one.
     /// 
-    case selectPlugin
+    case selectPlugin(source: String)
 
     /// The passed plugin should be deactivated. E.g. this state can happen when WCPay and Stripe
     /// are both installed and activated in a country that doesn't support Stripe. In that case

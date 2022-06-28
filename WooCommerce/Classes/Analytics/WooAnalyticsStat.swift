@@ -173,6 +173,7 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Payment Gateways selection
     case cardPresentPaymentGatewaySelected = "card_present_payment_gateway_selected"
+    case cardPresentSelectPaymentGatewayShow = "card_present_select_payment_gateway_show"
 
     // MARK: Order View Events
     //

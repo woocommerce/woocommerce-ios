@@ -7,7 +7,7 @@ final class ProductImagesProductIDUpdaterTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        storesManager = MockStoresManager(sessionManager: SessionManager.testingInstance)
+        storesManager = MockStoresManager(sessionManager: .testingInstance)
         ServiceLocator.setStores(storesManager)
     }
 

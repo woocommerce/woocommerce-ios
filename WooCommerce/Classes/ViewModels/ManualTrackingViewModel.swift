@@ -116,11 +116,7 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
 
     }
 
-    var shipmentProvider: ShipmentTrackingProvider? {
-        didSet {
-            saveSelectedShipmentProvider()
-        }
-    }
+    var shipmentProvider: ShipmentTrackingProvider?
 
     var shipmentProviderGroupName: String?
 

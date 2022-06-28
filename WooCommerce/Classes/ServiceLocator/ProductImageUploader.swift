@@ -3,7 +3,7 @@ import struct Yosemite.ProductImage
 import enum Yosemite.ProductAction
 import protocol Yosemite.StoresManager
 
-/// Information about a product image upload.
+/// Information about a background product image upload error.
 struct ProductImageUploadErrorInfo {
     let siteID: Int64
     let productID: Int64
@@ -175,7 +175,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
                 self.errorsSubject.send(.init(siteID: siteID,
                                               productID: productID,
                                               productImageStatuses: handler.productImageStatuses,
-                                              error: ProductImageUploaderError.savingProductImages(error: error)))
+                                              error: .savingProductImages(error: error)))
             }
             onProductSave(result)
         }
@@ -191,7 +191,7 @@ private extension ProductImageUploader {
                 self.errorsSubject.send(.init(siteID: key.siteID,
                                               productID: key.productID,
                                               productImageStatuses: productImageStatuses,
-                                              error: ProductImageUploaderError.actionHandler(error: error)))
+                                              error: .actionHandler(error: error)))
             }
         }
         statusUpdatesSubscriptions.insert(observationToken)

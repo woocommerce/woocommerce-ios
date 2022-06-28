@@ -155,7 +155,7 @@ final class CouponListViewController: UIViewController, GhostableViewController 
                 snapshot.appendItems(viewModels, toSection: Section.main)
 
                 if #available(iOS 15.0, *) {
-                    // minimally reloads the list without computing diff or animation
+                    // minimally reloads the list without computing diff or animations
                     self.dataSource.applySnapshotUsingReloadData(snapshot)
                 } else {
                     self.dataSource.apply(snapshot)

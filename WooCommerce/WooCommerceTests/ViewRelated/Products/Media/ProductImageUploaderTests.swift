@@ -135,4 +135,62 @@ final class ProductImageUploaderTests: XCTestCase {
         let images = try XCTUnwrap(resultOfSavedImages.get())
         XCTAssertEqual(images.map { $0.imageID }, [606, 645])
     }
+
+    func test_replaceLocalID_replaces_productID_properly() {
+        // Given
+        let imageUploader = ProductImageUploader()
+        let localProductID: Int64 = 0
+        let remoteProductID = productID
+        let originalStatuses: [ProductImageStatus] = [.remote(image: ProductImage.fake()),
+                                                      .uploading(asset: PHAsset()),
+                                                      .uploading(asset: PHAsset())]
+        _ = imageUploader.actionHandler(siteID: siteID,
+                                        productID: localProductID,
+                                        isLocalID: true,
+                                        originalStatuses: originalStatuses)
+
+        // Before replacing product ID
+
+        // Pass empty statuses to get the `actionHandler`, and validate that `actionHandler` with `originalStatuses` is returned.
+        XCTAssertEqual(originalStatuses, imageUploader.actionHandler(siteID: siteID,
+                                                                     productID: localProductID,
+                                                                     isLocalID: true,
+                                                                     originalStatuses: []).productImageStatuses)
+
+        // When
+        imageUploader.replaceLocalID(siteID: siteID, localProductID: localProductID, remoteProductID: remoteProductID)
+
+        // After replacing local product ID with remote product ID
+
+        // Pass empty statuses and `remoteProductID` to get the `actionHandler`, and validate that `actionHandler` with `originalStatuses` is returned.
+        XCTAssertEqual(originalStatuses, imageUploader.actionHandler(siteID: siteID,
+                                                                     productID: remoteProductID,
+                                                                     isLocalID: false,
+                                                                     originalStatuses: []).productImageStatuses)
+    }
+
+    func test_calling_replaceLocalID_with_nonExistent_localProductID_does_nothing() {
+        // Given
+        let imageUploader = ProductImageUploader()
+        let localProductID: Int64 = 0
+        let nonExistentProductID: Int64 = 999
+        let remoteProductID = productID
+        let originalStatuses: [ProductImageStatus] = [.remote(image: ProductImage.fake()),
+                                                      .uploading(asset: PHAsset()),
+                                                      .uploading(asset: PHAsset())]
+        _ = imageUploader.actionHandler(siteID: siteID,
+                                        productID: localProductID,
+                                        isLocalID: true,
+                                        originalStatuses: originalStatuses)
+
+        // When
+        imageUploader.replaceLocalID(siteID: siteID, localProductID: nonExistentProductID, remoteProductID: remoteProductID)
+
+        // Then
+        // Ensure that trying to replace a non-existent product ID does nothing.
+        XCTAssertEqual(originalStatuses, imageUploader.actionHandler(siteID: siteID,
+                                                                     productID: localProductID,
+                                                                     isLocalID: true,
+                                                                     originalStatuses: []).productImageStatuses)
+    }
 }

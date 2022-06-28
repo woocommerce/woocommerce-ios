@@ -63,10 +63,17 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
 
     // MARK: Initializers
 
-    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+    init(siteID: Int64,
+         initialOrder: Order? = nil,
+         stores: StoresManager = ServiceLocator.stores,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.siteID = siteID
         self.stores = stores
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+
+        if let initialOrder = initialOrder {
+            order = initialOrder
+        }
 
         updateBaseSyncOrderStatus()
         bindInputs()

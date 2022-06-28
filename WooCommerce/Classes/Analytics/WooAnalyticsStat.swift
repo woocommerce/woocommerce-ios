@@ -590,11 +590,17 @@ public enum WooAnalyticsStat: String {
     case couponCreationInitiated = "coupon_creation_initiated"
     case couponCreationSuccess = "coupon_creation_success"
     case couponCreationFailed = "coupon_creation_failed"
+    case couponCreationSuccessShareTapped = "coupon_creation_success_share_tapped"
 
     // MARK: Inbox Notes
     case inboxNotesLoaded = "inbox_notes_loaded"
     case inboxNotesLoadedFailed = "inbox_notes_load_failed"
     case inboxNoteAction = "inbox_note_action"
+
+    // MARK: Close Account
+    case closeAccountTapped = "close_account_tapped"
+    case closeAccountSuccess = "close_account_success"
+    case closeAccountFailed = "close_account_failed"
 }
 
 public extension WooAnalyticsStat {

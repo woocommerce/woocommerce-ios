@@ -5,8 +5,8 @@
         "bodyPatterns": [
             { "matches": ".*path=/wc/v3/orders/3337%26_method%3Dpost.*" },
             { "contains": "%22product_id%22%3A2129" },
-            { "contains": "%22fee_lines%22%3A%5B%5D" },
-            { "contains": "%22shipping_lines%22%3A%5B%5D" },
+            { "contains": "%22name%22%3A%22Fee%22" },
+            { "contains": "%22method_title%22%3A%22Flat%20Rate%22" },
             { "contains": "%22first_name%22%3A%22Mira%22" }
         ]
     },
@@ -24,10 +24,10 @@
                 "date_modified": "{{now offset='-10 minutes' format=customformat}}",
                 "discount_total": "0.00",
                 "discount_tax": "0.00",
-                "shipping_total": "0.00",
+                "shipping_total": "1.25",
                 "shipping_tax": "0.00",
                 "cart_tax": "0.00",
-                "total": "110.00",
+                "total": "113.59",
                 "total_tax": "0.00",
                 "customer_id": 0,
                 "order_key": "abc123",
@@ -85,8 +85,26 @@
                     "price": 110
                 }],
                 "tax_lines": [],
-                "shipping_lines": [],
-                "fee_lines": [],
+                "shipping_lines": [{
+                    "id": 1,
+                    "method_title": "Flat Rate",
+                    "method_id": "other",
+                    "total": "1.25",
+                    "total_tax": "0.00",
+                    "taxes": [],
+                    "meta_data": []
+                }],
+                "fee_lines": [{
+                    "id": 1,
+                    "name": "Fee",
+                    "tax_class": "",
+                    "tax_status": "taxable",
+                    "amount": "2.34",
+                    "total": "2.34",
+                    "total_tax": "0.00",
+                    "taxes": [],
+                    "meta_data": []
+                }],
                 "coupon_lines": [],
                 "refunds": [],
                 "date_created_gmt": "{{#assign 'customformat'}}yyyy-MM-dd'T'HH:mm:ss{{/assign}}{{now format=customformat}}",

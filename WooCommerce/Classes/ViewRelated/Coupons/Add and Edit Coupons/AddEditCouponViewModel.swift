@@ -166,6 +166,8 @@ final class AddEditCouponViewModel: ObservableObject {
     private let couponAmountInputFormatter: CouponAmountInputFormatter
     let timezone: TimeZone
 
+    private var amountWarningTimer: Timer? = nil
+
     /// When the view is updating or creating a new Coupon remotely.
     ///
     @Published var isLoading: Bool = false
@@ -314,9 +316,10 @@ final class AddEditCouponViewModel: ObservableObject {
         }
 
         if convertedAmount > 100 {
-            amountField = "100"
             if withWarning {
                 debounceWarningState()
+            } else {
+                return .couponPercentAmountInvalid
             }
         }
         return nil
@@ -324,9 +327,11 @@ final class AddEditCouponViewModel: ObservableObject {
 
     private func debounceWarningState() {
         isDisplayingAmountWarning = true
-        Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { [weak self] timer in
+        amountWarningTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { [weak self] timer in
             timer.invalidate()
+            self?.amountWarningTimer = nil
             self?.isDisplayingAmountWarning = false
+            self?.amountField = "100"
         }
     }
 
@@ -435,6 +440,8 @@ final class AddEditCouponViewModel: ObservableObject {
             return .couponCodeEmpty
         }
 
+        amountWarningTimer?.invalidate()
+        isDisplayingAmountWarning = false
         return validatePercentageAmountInput(withWarning: false)
     }
 
@@ -582,6 +589,8 @@ private extension AddEditCouponViewModel {
             switch couponError {
             case .couponCodeEmpty:
                 return Notice(title: Localization.errorCouponCodeEmpty, feedbackType: .error)
+            case .couponPercentAmountInvalid:
+                return Notice(title: Localization.amountPercentWarningSubtitle, feedbackType: .error)
             default:
                 switch editingOption {
                 case .editing:

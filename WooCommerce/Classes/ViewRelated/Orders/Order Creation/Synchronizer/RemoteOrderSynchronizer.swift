@@ -212,8 +212,10 @@ private extension RemoteOrderSynchronizer {
             .share()
             .eraseToAnyPublisher()
 
-        bindOrderCreation(trigger: syncTrigger)
         bindOrderUpdate(trigger: syncTrigger)
+        if case .creation = flow {
+            bindOrderCreation(trigger: syncTrigger)
+        }
     }
 
     /// Binds the provided `trigger` and creates an order when needed(order does not exists remotely).

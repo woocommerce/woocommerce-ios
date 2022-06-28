@@ -435,9 +435,7 @@ final class AddEditCouponViewModel: ObservableObject {
             return .couponCodeEmpty
         }
 
-        validatePercentageAmountInput(withWarning: false)
-
-        return nil
+        return validatePercentageAmountInput(withWarning: false)
     }
 
     enum EditingOption {

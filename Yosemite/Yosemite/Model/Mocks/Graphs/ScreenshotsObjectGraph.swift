@@ -75,6 +75,10 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         createPaymentGatewayAccount()
     ]
 
+    var cardReaders: [CardReader] = [
+        createCardReader()
+    ]
+
     func accountWithId(id: Int64) -> Account {
         return defaultAccount
     }

@@ -1,5 +1,6 @@
 import Foundation
 import Storage
+import Hardware
 
 public protocol MockObjectGraph {
     var userCredentials: Credentials { get }
@@ -11,6 +12,7 @@ public protocol MockObjectGraph {
     var siteSettings: [SiteSetting] { get }
     var systemPlugins: [SystemPlugin] { get }
     var paymentGatewayAccounts: [PaymentGatewayAccount] { get }
+    var cardReaders: [CardReader] { get }
     var orders: [Order] { get }
     var products: [Product] { get }
     var reviews: [ProductReview] { get }
@@ -172,6 +174,20 @@ extension MockObjectGraph {
             isLive: isLive,
             isInTestMode: isInTestMode
         )
+    }
+}
+
+// MARK: CardReader Creation Helper
+extension MockObjectGraph {
+    static func createCardReader() -> CardReader {
+        CardReader(serial: "WPE-SIMULATOR-1",
+                   vendorIdentifier: "SIMULATOR",
+                   name: "Simulated POS E",
+                   status: .init(connected: true, remembered: true),
+                   softwareVersion: "1.00.03.34-SZZZ_Generic_v45-300001",
+                   batteryLevel: 0.5,
+                   readerType: .chipper,
+                   locationId: "st_simulated")
     }
 }
 

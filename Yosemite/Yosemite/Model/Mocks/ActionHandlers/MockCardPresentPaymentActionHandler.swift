@@ -1,6 +1,7 @@
 import Foundation
 import Storage
 import Networking
+import Combine
 
 struct MockCardPresentPaymentActionHandler: MockActionHandler {
     typealias ActionType = CardPresentPaymentAction
@@ -12,6 +13,8 @@ struct MockCardPresentPaymentActionHandler: MockActionHandler {
         switch action {
         case .loadAccounts(let siteID, let onCompletion):
             loadAccounts(siteID: siteID, onCompletion: onCompletion)
+        case .publishCardReaderConnections(let onCompletion):
+            publishCardReaderConnections(onCompletion: onCompletion)
         default:
             break
         }
@@ -27,5 +30,10 @@ struct MockCardPresentPaymentActionHandler: MockActionHandler {
                 onCompletion(.success(()))
             }
         }
+    }
+
+    private func publishCardReaderConnections(onCompletion: @escaping (AnyPublisher<[CardReader], Never>) -> Void) {
+        let cardReaders = objectGraph.cardReaders
+        onCompletion(Just(cardReaders).eraseToAnyPublisher())
     }
 }

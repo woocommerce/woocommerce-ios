@@ -9,6 +9,7 @@ public protocol MockObjectGraph {
 
     var sites: [Site] { get }
     var siteSettings: [SiteSetting] { get }
+    var systemPlugins: [SystemPlugin] { get }
     var orders: [Order] { get }
     var products: [Product] { get }
     var reviews: [ProductReview] { get }
@@ -34,6 +35,13 @@ let mockResourceUrlHost = "http://localhost:\(UserDefaults.standard.integer(forK
 extension MockObjectGraph {
     func siteSettings(for siteID: Int64) -> [SiteSetting] {
         return siteSettings.filter { $0.siteID == siteID }
+    }
+}
+
+// MARK: SystemPlugin Accessors
+extension MockObjectGraph {
+    func systemPlugins(for siteID: Int64) -> [SystemPlugin] {
+        return systemPlugins.filter { $0.siteID == siteID }
     }
 }
 
@@ -87,7 +95,7 @@ extension MockObjectGraph {
 
 // MARK: SiteSetting Creation Helper
 extension MockObjectGraph {
-    static func createSiteSetting(siteID: Int64,
+    static func createSiteSetting(siteID: Int64 = 1,
                                   settingID: String,
                                   label: String,
                                   settingDescription: String,
@@ -99,6 +107,31 @@ extension MockObjectGraph {
                     settingDescription: settingDescription,
                     value: value,
                     settingGroupKey: settingGroupKey)
+    }
+}
+
+// MARK: SystemPlugin Creation Helper
+extension MockObjectGraph {
+    static func createSystemPlugin(siteID: Int64 = 1,
+                                   plugin: String,
+                                   name: String,
+                                   version: String,
+                                   versionLatest: String = "",
+                                   url: String = "",
+                                   authorName: String = "",
+                                   authorUrl: String = "",
+                                   networkActivated: Bool = true,
+                                   active: Bool = true) -> SystemPlugin {
+        SystemPlugin(siteID: siteID,
+                     plugin: plugin,
+                     name: name,
+                     version: version,
+                     versionLatest: versionLatest,
+                     url: url,
+                     authorName: authorName,
+                     authorUrl: authorUrl,
+                     networkActivated: networkActivated,
+                     active: active)
     }
 }
 

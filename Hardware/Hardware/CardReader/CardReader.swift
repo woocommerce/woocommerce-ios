@@ -27,6 +27,17 @@ public struct CardReader {
 
     /// The CardReader location id
     public let locationId: String?
+
+    public init(serial: String, vendorIdentifier: String?, name: String?, status: CardReaderStatus, softwareVersion: String?, batteryLevel: Float?, readerType: CardReaderType, locationId: String?) {
+        self.serial = serial
+        self.vendorIdentifier = vendorIdentifier
+        self.name = name
+        self.status = status
+        self.softwareVersion = softwareVersion
+        self.batteryLevel = batteryLevel
+        self.readerType = readerType
+        self.locationId = locationId
+    }
 }
 
 

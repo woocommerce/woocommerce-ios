@@ -8,6 +8,7 @@ final class ProductImageUploaderTests: XCTestCase {
     private let siteID: Int64 = 134
     private let productID: Int64 = 606
     private var errorsSubscription: AnyCancellable?
+    private var productImageStatusesSubscription: AnyCancellable?
 
     func test_hasUnsavedChangesOnImages_becomes_false_after_uploading_and_saving() throws {
         // Given
@@ -194,6 +195,48 @@ final class ProductImageUploaderTests: XCTestCase {
                                                                      productID: localProductID,
                                                                      isLocalID: true,
                                                                      originalStatuses: []).productImageStatuses)
+    }
+
+    func test_product_id_of_uploaded_images_is_updated_after_saving_product() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let mockProductIDUpdater = MockProductImagesProductIDUpdater()
+        let imageUploader = ProductImageUploader(stores: stores,
+                                                 imagesProductIDUpdater: mockProductIDUpdater)
+        let actionHandler = imageUploader.actionHandler(siteID: siteID,
+                                                        productID: productID,
+                                                        isLocalID: false,
+                                                        originalStatuses: [])
+        
+        stores.whenReceivingAction(ofType: MediaAction.self) { action in
+            if case let .uploadMedia(_, _, _, onCompletion) = action {
+                onCompletion(.success(.fake()))
+            }
+        }
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            if case let .updateProductImages(_, _, _, onCompletion) = action {
+                onCompletion(.success(.fake()))
+            }
+        }
+        
+        // When
+        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: PHAsset())
+        waitForExpectation { expectation in
+            self.productImageStatusesSubscription = actionHandler.addUpdateObserver(self) { statuses in
+                if statuses.productImageStatuses.hasPendingUpload == false {
+                    expectation.fulfill()
+                }
+            }
+        }
+        
+        imageUploader.saveProductImagesWhenNoneIsPendingUploadAnymore(siteID: siteID,
+                                                                      productID: productID,
+                                                                      isLocalID: false) { result in }
+        
+        // Then
+        waitUntil {
+            mockProductIDUpdater.updateImageProductIDWasCalled
+        }
     }
 
     // MARK: - Error updates

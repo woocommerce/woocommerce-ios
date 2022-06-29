@@ -2,12 +2,12 @@
 @testable import WooCommerce
 
 final class MockProductImagesProductIDUpdater: ProductImagesProductIDUpdaterProtocol {
-    var numberOfTimesUpdateImageProductIDWasCalled = 0
+    var updateImageProductIDWasCalled = false
 
     func updateImageProductID(siteID: Int64,
                               productID: Int64,
                               productImage: ProductImage) async throws -> Media {
-        numberOfTimesUpdateImageProductIDWasCalled += 1
+        updateImageProductIDWasCalled = true
         return Media.fake()
     }
 }

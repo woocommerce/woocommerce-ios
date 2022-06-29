@@ -16,10 +16,12 @@ public class CurrencyFormatter {
     ///
     public func convertToDecimal(_ stringValue: String, locale: Locale = .current) -> NSDecimalNumber? {
 
+        let latinValue = stringValue.applyingTransform(StringTransform.toLatin, reverse: false) ?? stringValue
+
         // NSDecimalNumber use by default the local decimal separator to evaluate a decimal amount.
         // We substitute the current decimal separator with the locale decimal separator.
         let localeDecimalSeparator = locale.decimalSeparator ?? currencySettings.decimalSeparator
-        var newStringValue = stringValue.replacingOccurrences(of: ",", with: localeDecimalSeparator)
+        var newStringValue = latinValue.replacingOccurrences(of: ",", with: localeDecimalSeparator)
         newStringValue = newStringValue.replacingOccurrences(of: ".", with: localeDecimalSeparator)
 
         // Removes the currency symbol, if any.

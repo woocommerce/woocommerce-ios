@@ -257,4 +257,47 @@ final class MediaRemoteTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
     }
+
+    // MARK: - updateProductIDToWordPressSite
+
+    /// Verifies that `updateProductIDToWordPressSite` properly parses the `media-update-product-id-in-wordpress-site` sample response.
+    ///
+    func test_updateProductIDToWordPressSite_properly_returns_parsed_media() throws {
+        // Given
+        let remote = MediaRemote(network: network)
+        let path = "sites/\(sampleSiteID)/media/\(sampleMediaID)"
+        network.simulateResponse(requestUrlSuffix: path, filename: "media-update-product-id-in-wordpress-site")
+
+        // When
+        let result = waitFor { promise in
+            remote.updateProductIDToWordPressSite(siteID: self.sampleSiteID,
+                                   productID: self.sampleProductID,
+                                   mediaID: self.sampleMediaID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let media = try XCTUnwrap(result.get())
+        XCTAssertEqual(media.mediaID, sampleMediaID)
+    }
+
+    /// Verifies that `updateProductIDToWordPressSite` properly relays Networking Layer errors.
+    ///
+    func test_updateProductIDToWordPressSite_properly_relays_networking_errors() {
+        // Given
+        let remote = MediaRemote(network: network)
+
+        // When
+        let result = waitFor { promise in
+            remote.updateProductIDToWordPressSite(siteID: self.sampleSiteID,
+                                   productID: self.sampleProductID,
+                                   mediaID: self.sampleMediaID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
 }

@@ -114,19 +114,6 @@ final class IssueRefundViewModel {
         return resultsController.fetchedObjects.first
     }()
 
-    /// PaymentGatewayAccount Results Controller.
-    private lazy var paymentGatewayAccountResultsController: ResultsController<StoragePaymentGatewayAccount> = {
-        let predicate = NSPredicate(format: "siteID = %ld", state.order.siteID)
-        let resultsController = ResultsController<StoragePaymentGatewayAccount>(storageManager: storage, matching: predicate, sortedBy: [])
-        try? resultsController.performFetch()
-        return resultsController
-    }()
-
-    /// Payment Gateway Accounts for the site (i.e. that can be used to refund)
-    private var paymentGatewayAccounts: [PaymentGatewayAccount] {
-        paymentGatewayAccountResultsController.fetchedObjects
-    }
-
     /// Charge related to the order. Used to show card details in the `Refund Via` section, and the refund confirmation screen.
     ///
     private var charge: WCPayCharge? {
@@ -173,16 +160,22 @@ final class IssueRefundViewModel {
 
     /// Creates the `ViewModel` to be used when navigating to the page where the user can
     /// confirm and submit the refund.
-    func createRefundConfirmationViewModel() -> RefundConfirmationViewModel {
-        let details = RefundConfirmationViewModel.Details(order: state.order,
-                                                          charge: state.charge,
-                                                          amount: "\(calculateRefundTotal())",
-                                                          refundsShipping: state.shouldRefundShipping,
-                                                          refundsFees: state.shouldRefundFees,
-                                                          items: state.refundQuantityStore.refundableItems(),
-                                                          paymentGateway: paymentGateway,
-                                                          paymentGatewayAccount: paymentGatewayAccounts.first)
-        return RefundConfirmationViewModel(details: details, currencySettings: state.currencySettings)
+    func createRefundConfirmationViewModel(onCompletion: @escaping ((RefundConfirmationViewModel) -> Void)) {
+        let action = CardPresentPaymentAction.selectedPaymentGatewayAccount { [weak self] paymentGatewayAccount in
+            guard let self = self else { return }
+            let details = RefundConfirmationViewModel.Details(order: self.state.order,
+                                                              charge: self.state.charge,
+                                                              amount: "\(self.calculateRefundTotal())",
+                                                              refundsShipping: self.state.shouldRefundShipping,
+                                                              refundsFees: self.state.shouldRefundFees,
+                                                              items: self.state.refundQuantityStore.refundableItems(),
+                                                              paymentGateway: self.paymentGateway,
+                                                              paymentGatewayAccount: paymentGatewayAccount)
+
+            onCompletion(RefundConfirmationViewModel(details: details, currencySettings: self.state.currencySettings))
+        }
+
+        stores.dispatch(action)
     }
 }
 
@@ -312,14 +305,8 @@ private extension IssueRefundViewModel {
         guard let chargeID = state.order.chargeID else {
             return
         }
-        guard let paymentGatewayAccount = paymentGatewayAccounts.first else {
-            return state.fetchChargeError = .unknownPaymentGatewayAccount
-        }
 
         state.fetchChargeError = nil
-
-        let setPaymentGatewayAccountAction = CardPresentPaymentAction.use(paymentGatewayAccount: paymentGatewayAccount)
-        stores.dispatch(setPaymentGatewayAccountAction)
 
         let action = CardPresentPaymentAction.fetchWCPayCharge(siteID: state.order.siteID, chargeID: chargeID, onCompletion: { [weak self] result in
             if case .failure = result {

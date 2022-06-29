@@ -299,7 +299,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
             return .genericError
         }
 
-        // If we've gotten this far, tell the Card Present Payment Store which backend to use
+        // If we've gotten this far, tell the Card Present Payment Store which account to use
         let setAccount = CardPresentPaymentAction.use(paymentGatewayAccount: account)
         stores.dispatch(setAccount)
 

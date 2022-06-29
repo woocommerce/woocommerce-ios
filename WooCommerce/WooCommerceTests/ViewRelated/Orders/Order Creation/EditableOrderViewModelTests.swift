@@ -1117,15 +1117,15 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(isCallbackCalled)
     }
 
-    func test_creating_order_does_not_shows_banner() {
+    func test_creating_order_does_not_shows_editable_indicator() {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID)
 
         // When & Then
-        XCTAssertFalse(viewModel.shouldShowNonEditableBanner)
+        XCTAssertFalse(viewModel.shouldShowNonEditableIndicators)
     }
 
-    func test_editing_a_non_editable_order_shows_banner() {
+    func test_editing_a_non_editable_order_shows_editable_indicator() {
         // Given
         let order = Order.fake().copy(isEditable: false)
 
@@ -1133,10 +1133,10 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order))
 
         // Then
-        XCTAssertTrue(viewModel.shouldShowNonEditableBanner)
+        XCTAssertTrue(viewModel.shouldShowNonEditableIndicators)
     }
 
-    func test_editing_an_editable_order_does_not_shows_banner() {
+    func test_editing_an_editable_order_does_not_shows_editable_indicator() {
         // Given
         let order = Order.fake().copy(isEditable: true)
 
@@ -1144,7 +1144,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order))
 
         // Then
-        XCTAssertFalse(viewModel.shouldShowNonEditableBanner)
+        XCTAssertFalse(viewModel.shouldShowNonEditableIndicators)
     }
 }
 

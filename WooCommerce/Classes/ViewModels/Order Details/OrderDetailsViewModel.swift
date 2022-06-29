@@ -18,8 +18,6 @@ final class OrderDetailsViewModel {
     ///
     private var syncState: SyncState = .notSynced
 
-    private let cardPresentPaymentsOnboardingPresenter = CardPresentPaymentsOnboardingPresenter()
-
     var orderStatus: OrderStatus? {
         return lookUpOrderStatus(for: order)
     }
@@ -141,11 +139,6 @@ final class OrderDetailsViewModel {
         order.billingAddress?.email
     }
 
-
-    private var cardPresentPaymentGatewayAccounts: [PaymentGatewayAccount] {
-        return dataSource.cardPresentPaymentGatewayAccounts()
-    }
-
     private var receipt: CardPresentReceiptParameters? = nil
 
     /// Returns available action buttons given the internal state.
@@ -235,14 +228,6 @@ extension OrderDetailsViewModel {
         }
 
         group.enter()
-        loadPaymentGatewayAccounts()
-        group.leave()
-
-        group.enter()
-        refreshCardPresentPaymentOnboarding()
-        group.leave()
-
-        group.enter()
         syncSavedReceipts {_ in
             group.leave()
         }
@@ -259,6 +244,7 @@ extension OrderDetailsViewModel {
             ///
             self?.syncState = .synced
 
+            onReloadSections?()
             onCompletion?()
         }
     }
@@ -601,18 +587,6 @@ extension OrderDetailsViewModel {
             onCompletion?()
         }
         stores.dispatch(action)
-    }
-
-    func loadPaymentGatewayAccounts() {
-        /// No need for a completion here. The VC will be notified of changes to the stored paymentGatewayAccounts
-        /// by the viewModel (after passing up through the dataSource and originating in the resultsControllers)
-        ///
-        let action = CardPresentPaymentAction.loadAccounts(siteID: order.siteID) {_ in}
-        ServiceLocator.stores.dispatch(action)
-    }
-
-    func refreshCardPresentPaymentOnboarding() {
-        cardPresentPaymentsOnboardingPresenter.refresh()
     }
 
     func checkOrderAddOnFeatureSwitchState(onCompletion: (() -> Void)? = nil) {

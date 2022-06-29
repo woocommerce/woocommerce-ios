@@ -135,7 +135,7 @@ final class EditableOrderViewModelTests: XCTestCase {
     func test_view_model_fires_error_notice_when_order_sync_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
         let error = NSError(domain: "Error", code: 0)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
 

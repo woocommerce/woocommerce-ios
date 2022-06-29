@@ -10,7 +10,7 @@ public enum CardPresentPaymentOnboardingState: Equatable {
 
     /// There is more than one plugin installed and activated. The user must deactivate one.
     /// `pluginSelectionWasCleared` being true means that there was one plugin selected for payments
-    /// but that selection was just cleared (e.g when in settings asking to choose a plugin again)
+    /// but that selection was just cleared (e.g when in settings asking to choose a plugin again). Being `nil` means that we do not have that information.
     /// 
     case selectPlugin(pluginSelectionWasCleared: Bool?)
 

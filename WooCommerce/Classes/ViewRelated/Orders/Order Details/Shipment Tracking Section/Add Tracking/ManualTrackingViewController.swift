@@ -34,6 +34,8 @@ final class ManualTrackingViewController: UIViewController {
 
     private var valueSubscriptions: Set<AnyCancellable> = []
 
+    var hasUnsavedChanges: Bool = true
+
     init(viewModel: ManualTrackingViewModel) {
         self.viewModel = viewModel
         super.init(nibName: type(of: self).nibName, bundle: nil)
@@ -134,7 +136,7 @@ private extension ManualTrackingViewController {
     }
 
     @objc func dismissButtonTapped() {
-        if viewModel.canCommit == false {
+        if viewModel.canCommit == false || hasUnsavedChanges {
             displayDismissConfirmationAlert()
         } else {
             dismiss()
@@ -144,6 +146,7 @@ private extension ManualTrackingViewController {
     @objc func primaryButtonTapped() {
         ServiceLocator.analytics.track(.orderShipmentTrackingAddButtonTapped)
         viewModel.isCustom ? addCustomTracking() : addTracking()
+        hasUnsavedChanges = false
     }
 }
 

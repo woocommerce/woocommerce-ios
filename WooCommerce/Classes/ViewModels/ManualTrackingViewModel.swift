@@ -63,7 +63,7 @@ protocol ManualTrackingViewModel {
 
     var shipmentProvider: ShipmentTrackingProvider? { get set }
     var shipmentProviderGroupName: String? { get set }
-
+    var isEmptyState: Bool { get }
     var canCommit: Bool { get }
     var isCustom: Bool { get }
     var isAdding: Bool { get }
@@ -128,6 +128,9 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
     }
 
     let providerCellAccessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+    var isEmptyState: Bool {
+        (shipmentProvider != nil || trackingNumber != nil) ? false : true
+    }
 
     var canCommit: Bool {
         return shipmentProvider != nil &&
@@ -231,6 +234,9 @@ final class AddCustomTrackingViewModel: ManualTrackingViewModel {
     }
 
     let providerCellAccessoryType = UITableViewCell.AccessoryType.none
+    var isEmptyState: Bool {
+        (providerName != nil || trackingNumber != nil) ? false : true
+    }
 
     var canCommit: Bool {
         let returnValue = providerName?.isEmpty == false &&

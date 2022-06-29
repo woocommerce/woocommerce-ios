@@ -145,9 +145,11 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
             switch result {
             case .success:
                 self.attemptPayment(onCompletion: { [weak self] result in
+                    guard let self = self else { return }
                     // Inform about the collect payment state
                     switch result {
                     case .failure(CollectOrderPaymentUseCaseError.flowCanceledByUser):
+                        self.trackPaymentCancelation()
                         return onCancel()
                     default:
                         onCollect(result.map { _ in () }) // Transforms Result<CardPresentCapturedPaymentData, Error> to Result<Void, Error>
@@ -157,9 +159,10 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                     guard let paymentData = try? result.get() else {
                         return onCompleted()
                     }
-                    self?.presentReceiptAlert(receiptParameters: paymentData.receiptParameters, onCompleted: onCompleted)
+                    self.presentReceiptAlert(receiptParameters: paymentData.receiptParameters, onCompleted: onCompleted)
                 })
             case .failure(CollectOrderPaymentUseCaseError.flowCanceledByUser):
+                self.trackPaymentCancelation()
                 onCancel()
             case .failure(let error):
                 onCollect(.failure(error))
@@ -370,13 +373,16 @@ private extension CollectOrderPaymentUseCase {
     /// Cancels payment and record analytics.
     ///
     func cancelPayment(onCompleted: @escaping () -> ()) {
-        paymentOrchestrator.cancelPayment { [weak self, analytics] _ in
-            guard let self = self else { return }
-            analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentCanceled(forGatewayID: self.paymentGatewayAccount.gatewayID,
-                                                                                             countryCode: self.configuration.countryCode,
-                                                                                             cardReaderModel: self.connectedReader?.readerType.model ?? ""))
+        paymentOrchestrator.cancelPayment { [weak self] _ in
+            self?.trackPaymentCancelation()
             onCompleted()
         }
+    }
+
+    func trackPaymentCancelation() {
+        analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentCanceled(forGatewayID: paymentGatewayAccount.gatewayID,
+                                                                                         countryCode: configuration.countryCode,
+                                                                                         cardReaderModel: connectedReader?.readerType.model ?? ""))
     }
 
     /// Allow merchants to print or email the payment receipt.

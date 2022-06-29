@@ -120,11 +120,13 @@ private extension RemoteOrderSynchronizer {
     ///
     func bindInputs(flow: EditableOrderViewModel.Flow) {
         setStatus.withLatestFrom(orderPublisher)
-            .sink { [weak self] newStatus, order in
-                let orderWithNewStatus = order.copy(status: newStatus)
-                self?.order = orderWithNewStatus
+            .map { newStatus, order in
+                order.copy(status: newStatus)
+            }
+            .sink { [weak self] order in
+                self?.order = order
                 if case .editing = flow {
-                    self?.orderSyncTrigger.send(orderWithNewStatus)
+                    self?.orderSyncTrigger.send(order)
                 }
             }
             .store(in: &subscriptions)
@@ -180,11 +182,13 @@ private extension RemoteOrderSynchronizer {
             .store(in: &subscriptions)
 
         setNote.withLatestFrom(orderPublisher)
-            .sink { [weak self] note, order in
-                let orderWithNewNote = order.copy(customerNote: note)
-                self?.order = orderWithNewNote
+            .map { note, order in
+                order.copy(customerNote: note)
+            }
+            .sink { [weak self] order in
+                self?.order = order
                 if case .editing = flow {
-                    self?.orderSyncTrigger.send(orderWithNewNote)
+                    self?.orderSyncTrigger.send(order)
                 }
             }
             .store(in: &subscriptions)

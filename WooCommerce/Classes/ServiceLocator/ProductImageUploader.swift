@@ -237,8 +237,6 @@ private extension ProductImageUploader {
 
 /// Possible errors from background image upload.
 enum ProductImageUploaderError: Error {
-    case savingProductImages(error: Error)
-    case actionHandler(error: Error)
     case failedSavingProductAfterImageUpload(error: Error)
     case failedUploadingImage(error: Error)
     case cannotUseLocalProductID

@@ -94,7 +94,8 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
 
     func selectPlugin(_ selectedPlugin: CardPresentPaymentsPlugin) {
         assert(state == .selectPlugin(pluginSelectionWasCleared: true) ||
-               state == .selectPlugin(pluginSelectionWasCleared: false))
+               state == .selectPlugin(pluginSelectionWasCleared: false) ||
+               state == .selectPlugin(pluginSelectionWasCleared: nil))
 
         preferredPluginLocal = selectedPlugin
         updateState()
@@ -111,7 +112,13 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         preferredPluginLocal = nil
         let action = AppSettingsAction.forgetPreferredInPersonPaymentGateway(siteID: siteID)
         stores.dispatch(action)
-        state = .selectPlugin(pluginSelectionWasCleared: true)
+
+        var newState = checkOnboardingState()
+        if case .selectPlugin(pluginSelectionWasCleared: nil) = newState {
+            newState = .selectPlugin(pluginSelectionWasCleared: true)
+        }
+
+        state = newState
     }
 }
 
@@ -216,7 +223,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
         }
 
         guard let preferredPlugin = preferredPluginLocal else {
-            return .selectPlugin(pluginSelectionWasCleared: false)
+            return .selectPlugin(pluginSelectionWasCleared: nil)
         }
 
         let state = onboardingStateForPlugin(preferredPlugin, wcPay: wcPay, stripe: stripe)
@@ -228,7 +235,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
             return .pluginShouldBeDeactivated(plugin: .stripe)
         }
 
-        return .selectPlugin(pluginSelectionWasCleared: false)
+        return .selectPlugin(pluginSelectionWasCleared: nil)
     }
 
     func onboardingStateForPlugin(_ plugin: CardPresentPaymentsPlugin, wcPay: SystemPlugin, stripe: SystemPlugin) -> CardPresentPaymentOnboardingState {

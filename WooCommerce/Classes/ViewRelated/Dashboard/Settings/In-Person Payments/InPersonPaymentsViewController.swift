@@ -42,7 +42,7 @@ struct InPersonPaymentsView: View {
             case let .selectPlugin(pluginSelectionWasCleared):
                 if viewModel.gatewaySelectionAvailable {
                     // Preselect WCPay only if there was no selection done before
-                    InPersonPaymentsSelectPluginView(selectedPlugin: pluginSelectionWasCleared ? nil : .wcPay) { plugin in
+                    InPersonPaymentsSelectPluginView(selectedPlugin: pluginSelectionWasCleared == true ? nil : .wcPay) { plugin in
                         viewModel.selectPlugin(plugin)
                     }
                 } else if viewModel.userIsAdministrator {

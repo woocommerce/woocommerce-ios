@@ -175,7 +175,6 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
             updateProductIDOfImagesUploadedUsingLocalProductID(siteID: siteID,
                                                                productID: productID,
                                                                images: handler.productImageStatuses.images)
-            onProductSave(.success(handler.productImageStatuses.images))
             return
         }
 

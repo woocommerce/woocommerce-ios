@@ -161,7 +161,14 @@ private extension MediaStore {
                          productID: Int64,
                          mediaID: Int64,
                          onCompletion: @escaping (Result<Media, Error>) -> Void) {
-        remote.updateProductID(siteID: siteID, productID: productID, mediaID: mediaID, completion: onCompletion)
+        let storage = storageManager.viewStorage
+        if let site = storage.loadSite(siteID: siteID)?.toReadOnly(), site.isJetpackCPConnected {
+            remote.updateProductIDToWordPressSite(siteID: siteID, productID: productID, mediaID: mediaID) { result in
+                onCompletion(result.map { $0.toMedia() })
+            }
+        } else {
+            remote.updateProductID(siteID: siteID, productID: productID, mediaID: mediaID, completion: onCompletion)
+        }
     }
 }
 

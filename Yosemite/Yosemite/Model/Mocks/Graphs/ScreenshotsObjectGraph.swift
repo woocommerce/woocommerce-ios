@@ -71,6 +71,10 @@ struct ScreenshotObjectGraph: MockObjectGraph {
                            version: "3.2.1")
     ]
 
+    var paymentGatewayAccounts: [PaymentGatewayAccount] = [
+        createPaymentGatewayAccount()
+    ]
+
     func accountWithId(id: Int64) -> Account {
         return defaultAccount
     }

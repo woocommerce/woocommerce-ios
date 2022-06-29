@@ -216,7 +216,7 @@ private extension RemoteOrderSynchronizer {
             .share()
             .eraseToAnyPublisher()
 
-        if case .creation = flow {
+        if flow == .creation {
             bindOrderCreation(trigger: syncTrigger)
         }
         bindOrderUpdate(trigger: syncTrigger, flow: flow)

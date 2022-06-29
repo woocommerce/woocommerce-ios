@@ -57,14 +57,19 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         return [defaultSite]
     }
 
-    var siteSettings: [SiteSetting] {
-        [Self.createSiteSetting(siteID: defaultSite.siteID,
-                                settingID: "woocommerce_default_country",
-                                label: "Country and State",
-                                settingDescription: "The country and state or province, if any, in which your business is located.",
-                                value: "US:CA",
-                                settingGroupKey: "general")]
-    }
+    var siteSettings: [SiteSetting] = [
+        createSiteSetting(settingID: "woocommerce_default_country",
+                          label: "Country and State",
+                          settingDescription: "The country and state or province, if any, in which your business is located.",
+                          value: "US:CA",
+                          settingGroupKey: "general")
+    ]
+
+    var systemPlugins: [SystemPlugin] = [
+        createSystemPlugin(plugin: "woocommerce-payments",
+                           name: "WooCommerce Payments",
+                           version: "3.2.1")
+    ]
 
     func accountWithId(id: Int64) -> Account {
         return defaultAccount

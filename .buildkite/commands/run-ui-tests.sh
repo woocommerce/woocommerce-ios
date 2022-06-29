@@ -24,6 +24,14 @@ install_gems
 echo "--- :cocoapods: Setting up Pods"
 install_cocoapods
 
+echo "--- Configure Test Analytics"
+# Collect data separately for iPhone and iPad
+if [[ $DEVICE =~ ^iPhone ]]; then
+  export BUILDKITE_ANALYTICS_TOKEN=$BUILDKITE_ANALYTICS_TOKEN_UI_TESTS_IPHONE
+else
+  export BUILDKITE_ANALYTICS_TOKEN=$BUILDKITE_ANALYTICS_TOKEN_UI_TESTS_IPAD
+fi
+
 echo "--- 🧪 Testing"
 xcrun simctl list >> /dev/null
 rake mocks &

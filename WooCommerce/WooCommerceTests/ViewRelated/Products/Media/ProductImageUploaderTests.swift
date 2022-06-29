@@ -406,6 +406,38 @@ final class ProductImageUploaderTests: XCTestCase {
         XCTAssertTrue(errors.isEmpty)
     }
 
+    func test_calling_replaceLocalID_updates_excluded_product_from_status_updates() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let imageUploader = ProductImageUploader(stores: stores)
+        let localProductID: Int64 = 0
+        let nonExistentProductID: Int64 = 999
+        let remoteProductID = productID
+        let actionHandler = imageUploader.actionHandler(siteID: siteID,
+                                                        productID: localProductID,
+                                                        isLocalID: true,
+                                                        originalStatuses: [])
+
+        // When
+        imageUploader.stopEmittingErrors(siteID: siteID, productID: localProductID, isLocalID: true)
+        imageUploader.replaceLocalID(siteID: siteID, localProductID: nonExistentProductID, remoteProductID: remoteProductID)
+
+        var errors: [ProductImageUploadErrorInfo] = []
+        _ = imageUploader.errors.sink { error in
+            errors.append(error)
+        }
+
+        stores.whenReceivingAction(ofType: MediaAction.self) { action in
+            if case let .uploadMedia(_, _, _, onCompletion) = action {
+                onCompletion(.failure(MediaActionError.unknown))
+            }
+        }
+        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: PHAsset())
+
+        // Then
+        XCTAssertTrue(errors.isEmpty)
+    }
+
     // MARK: - `startEmittingErrors`
 
     func test_error_is_emitted_after_stop_and_startEmittingErrors_when_image_upload_fails() {

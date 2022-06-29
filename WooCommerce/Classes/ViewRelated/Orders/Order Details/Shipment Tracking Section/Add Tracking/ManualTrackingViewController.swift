@@ -73,7 +73,6 @@ private extension ManualTrackingViewController {
         configureDismissButton()
         configureAddButton()
         // Disables the ability to dismiss the view controller via a pull-down gesture, in order to avoid losing unsaved changes.
-        isModalInPresentation = false
         navigationController?.presentationController?.delegate = self
     }
 
@@ -573,8 +572,7 @@ private extension ManualTrackingViewController {
     }
     func displayDismissConfirmationAlert() {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self,
-                                                           onDiscard: {[weak self] in self?.dismiss(animated: true)},
-                                                           onCancel: .none
+                                                           onDiscard: {[weak self] in self?.dismiss(animated: true)}
         )
     }
 

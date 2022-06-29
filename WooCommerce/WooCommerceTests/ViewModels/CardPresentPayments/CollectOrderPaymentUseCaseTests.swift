@@ -43,16 +43,16 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_cancelling_readerIsReady_alert_triggers_onCompleted_and_tracks_collectPaymentCanceled_event_and_dispatches_cancel_action() throws {
+    func test_cancelling_readerIsReady_alert_triggers_onCancel_and_tracks_collectPaymentCanceled_event_and_dispatches_cancel_action() throws {
         // Given
         assertEmpty(stores.receivedActions)
 
         // When
         mockCardPresentPaymentActions()
         let _: Void = waitFor { promise in
-            self.useCase.collectPayment(onCollect: { _ in }, onCompleted: {
+            self.useCase.collectPayment(onCollect: { _ in }, onCancel: {
                 promise(())
-            })
+            }, onCompleted: {})
             self.alerts.cancelReaderIsReadyAlert?()
         }
 
@@ -81,7 +81,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         waitFor { promise in
             self.useCase.collectPayment(onCollect: { _ in
                 promise(())
-            }, onCompleted: {})
+            }, onCancel: {}, onCompleted: {})
         }
 
         // Then
@@ -101,7 +101,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         waitFor { promise in
             self.useCase.collectPayment(onCollect: { _ in
                 promise(())
-            }, onCompleted: {})
+            }, onCancel: {}, onCompleted: {})
         }
 
         // Then
@@ -119,7 +119,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         waitFor { promise in
             self.useCase.collectPayment(onCollect: { _ in
                 promise(())
-            }, onCompleted: {})
+            }, onCancel: {}, onCompleted: {})
         }
         alerts.printReceiptFromSuccessAlert?()
 
@@ -139,7 +139,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         waitFor { promise in
             self.useCase.collectPayment(onCollect: { _ in
                 promise(())
-            }, onCompleted: {})
+            }, onCancel: {}, onCompleted: {})
         }
         alerts.emailReceiptFromSuccessAlert?()
 
@@ -171,7 +171,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         let _: Void = waitFor { [weak self] promise in
             useCase.collectPayment(onCollect: { collectPaymentResult in
                 result = collectPaymentResult
-            }, onCompleted: {
+            }, onCancel: {}, onCompleted: {
                 promise(())
             })
             // Dismisses error to complete the payment flow for `onCollect` to be triggered.
@@ -202,7 +202,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         waitFor { promise in
             self.useCase.collectPayment(onCollect: { _ in
                 promise(())
-            }, onCompleted: {})
+            }, onCancel: {}, onCompleted: {})
         }
 
         // Then
@@ -226,7 +226,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         waitFor { promise in
             self.useCase.collectPayment(onCollect: { _ in
                 promise(())
-            }, onCompleted: {})
+            }, onCancel: {}, onCompleted: {})
         }
 
         // Then

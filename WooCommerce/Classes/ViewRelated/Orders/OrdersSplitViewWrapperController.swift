@@ -50,7 +50,6 @@ private extension OrdersSplitViewWrapperController {
         let ordersNavigationController = WooTabNavigationController()
         ordersNavigationController.viewControllers = [ordersViewController]
 
-        // workaround to remove extra space at the bottom when embedded in spit view
         let emptyStateViewController = EmptyStateViewController(style: .basic)
         let config = EmptyStateViewController.Config.simple(
             message: .init(string: Localization.emptyOrderDetails),

@@ -237,6 +237,7 @@ public enum WooAnalyticsStat: String {
     case orderFeeAdd = "order_fee_add"
     case orderShippingMethodAdd = "order_shipping_method_add"
     case orderSyncFailed = "order_sync_failed"
+    case collectPaymentTapped = "payments_flow_order_collect_payment_tapped"
 
     // MARK: Order List Sorting/Filtering
     //
@@ -286,7 +287,6 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Payment Events
     //
-    case collectPaymentTapped = "card_present_collect_payment_tapped"
     case collectPaymentCanceled = "card_present_collect_payment_canceled"
     case collectPaymentFailed = "card_present_collect_payment_failed"
     case collectPaymentSuccess = "card_present_collect_payment_success"
@@ -548,12 +548,15 @@ public enum WooAnalyticsStat: String {
     // MARK: Simple Payments events
     //
     case simplePaymentsFlowStarted = "simple_payments_flow_started"
-    case simplePaymentsFlowCompleted = "simple_payments_flow_completed"
-    case simplePaymentsFlowCanceled = "simple_payments_flow_canceled"
-    case simplePaymentsFlowFailed = "simple_payments_flow_failed"
     case simplePaymentsFlowNoteAdded = "simple_payments_flow_note_added"
     case simplePaymentsFlowTaxesToggled = "simple_payments_flow_taxes_toggled"
-    case simplePaymentsFlowCollect = "simple_payments_flow_collect"
+
+    // MARK: Payment Methods events
+    //
+    case paymentsFlowCompleted = "payments_flow_completed"
+    case paymentsFlowCanceled = "payments_flow_canceled"
+    case paymentsFlowFailed = "payments_flow_failed"
+    case paymentsFlowCollect = "payments_flow_collect"
 
     // MARK: Jetpack-the-plugin events
     //
@@ -596,6 +599,11 @@ public enum WooAnalyticsStat: String {
     case inboxNotesLoaded = "inbox_notes_loaded"
     case inboxNotesLoadedFailed = "inbox_notes_load_failed"
     case inboxNoteAction = "inbox_note_action"
+
+    // MARK: Close Account
+    case closeAccountTapped = "close_account_tapped"
+    case closeAccountSuccess = "close_account_success"
+    case closeAccountFailed = "close_account_failed"
 }
 
 public extension WooAnalyticsStat {

@@ -646,30 +646,6 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertTrue(chargeFetched)
     }
 
-    func test_fetch_when_no_PaymentGatewayAccount_in_storage_then_it_does_not_fetch_charge_and_button_is_disabled() throws {
-        // Given
-        // The order has a chargeID
-        let items = [
-            MockOrderItem.sampleItem(itemID: 1, quantity: 3),
-        ]
-        let order = MockOrders().makeOrder(items: items).copy(chargeID: "ch_id")
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
-        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
-            if case .fetchWCPayCharge(siteID: _, chargeID: _, onCompletion: _) = action {
-                XCTFail("Charge should not be fetched when there is no `PaymentGatewayAccount` in storage.")
-            }
-        }
-        storageManager.reset()
-
-        // When
-        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores, storage: storageManager)
-        viewModel.fetch()
-
-        // Then
-        XCTAssertFalse(viewModel.isNextButtonAnimating)
-        XCTAssertFalse(viewModel.isNextButtonEnabled)
-    }
-
     func test_fetch_when_fetching_charge_fails_then_it_notifies_it() throws {
         // Given
         var showFetchChargeErrorNotice = false

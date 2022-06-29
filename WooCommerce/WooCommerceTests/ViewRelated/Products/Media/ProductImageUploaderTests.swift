@@ -196,39 +196,7 @@ final class ProductImageUploaderTests: XCTestCase {
                                                                      originalStatuses: []).productImageStatuses)
     }
 
-    func test_calling_replaceLocalID_updates_excluded_product_from_status_updates() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        let imageUploader = ProductImageUploader(stores: stores)
-        let localProductID: Int64 = 0
-        let nonExistentProductID: Int64 = 999
-        let remoteProductID = productID
-        let actionHandler = imageUploader.actionHandler(siteID: siteID,
-                                                        productID: localProductID,
-                                                        isLocalID: true,
-                                                        originalStatuses: [])
-
-        // When
-        imageUploader.stopEmittingErrors(siteID: siteID, productID: localProductID, isLocalID: true)
-        imageUploader.replaceLocalID(siteID: siteID, localProductID: nonExistentProductID, remoteProductID: remoteProductID)
-
-        var errors: [ProductImageUploadErrorInfo] = []
-        _ = imageUploader.errors.sink { error in
-            errors.append(error)
-        }
-
-        stores.whenReceivingAction(ofType: MediaAction.self) { action in
-            if case let .uploadMedia(_, _, _, onCompletion) = action {
-                onCompletion(.failure(MediaActionError.unknown))
-            }
-        }
-        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: PHAsset())
-
-        // Then
-        // Ensure that trying to replace a non-existent product ID does nothing.
-        XCTAssertTrue(errors.isEmpty)
-    }
-    // MARK: - Status Updates
+    // MARK: - Error updates
 
     func test_actionHandler_error_is_emitted_when_image_upload_fails() {
         // Given
@@ -259,7 +227,7 @@ final class ProductImageUploaderTests: XCTestCase {
         assertEqual([.init(siteID: siteID,
                            productID: productID,
                            productImageStatuses: [],
-                           error: ProductImageUploaderError.actionHandler(error: error))],
+                           error: ProductImageUploaderError.failedUploadingImage(error: error))],
                     errors)
     }
 
@@ -303,7 +271,7 @@ final class ProductImageUploaderTests: XCTestCase {
         assertEqual([.init(siteID: siteID,
                            productID: productID,
                            productImageStatuses: [.uploading(asset: asset)],
-                           error: .savingProductImages(error: ProductUpdateError.unexpected))],
+                           error: .failedSavingProductAfterImageUpload(error: ProductUpdateError.unexpected))],
                     errors)
     }
 
@@ -363,7 +331,7 @@ final class ProductImageUploaderTests: XCTestCase {
         }
 
         // Then
-        assertEqual([.init(siteID: siteID, productID: productID, productImageStatuses: [], error: .actionHandler(error: error))], errors)
+        assertEqual([.init(siteID: siteID, productID: productID, productImageStatuses: [], error: .failedUploadingImage(error: error))], errors)
     }
 
     func test_error_is_not_emitted_after_stopEmittingErrors_when_image_upload_fails() {
@@ -429,7 +397,7 @@ final class ProductImageUploaderTests: XCTestCase {
         assertEqual([.init(siteID: siteID,
                            productID: productID,
                            productImageStatuses: [],
-                           error: ProductImageUploaderError.actionHandler(error: error))],
+                           error: ProductImageUploaderError.failedUploadingImage(error: error))],
                     errors)
     }
 }
@@ -446,9 +414,9 @@ extension ProductImageUploadErrorInfo: Equatable {
 extension ProductImageUploaderError: Equatable {
     public static func == (lhs: ProductImageUploaderError, rhs: ProductImageUploaderError) -> Bool {
         switch (lhs, rhs) {
-        case (.actionHandler(let lhsError), .actionHandler(let rhsError)):
+        case (.failedUploadingImage(let lhsError), .failedUploadingImage(let rhsError)):
             return lhsError as NSError == rhsError as NSError
-        case (.savingProductImages(let lhsError), .savingProductImages(let rhsError)):
+        case (.failedSavingProductAfterImageUpload(let lhsError), .failedSavingProductAfterImageUpload(let rhsError)):
             return lhsError as NSError == rhsError as NSError
         default:
             return false

@@ -191,13 +191,13 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
 
         imagesSaver.saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: handler) { [weak self] result in
             guard let self = self else { return }
+            onProductSave(result)
             if case let .failure(error) = result {
                 self.errorsSubject.send(.init(siteID: siteID,
                                               productID: productID,
                                               productImageStatuses: handler.productImageStatuses,
-                                              error: .savingProductImages(error: error)))
+                                              error: .failedSavingProductAfterImageUpload(error: error)))
             }
-            onProductSave(result)
             self.updateProductIDOfImagesUploadedUsingLocalProductID(siteID: siteID,
                                                                      productID: productID,
                                                                      images: handler.productImageStatuses.images)
@@ -228,7 +228,7 @@ private extension ProductImageUploader {
                 self.errorsSubject.send(.init(siteID: key.siteID,
                                               productID: key.productID,
                                               productImageStatuses: productImageStatuses,
-                                              error: .actionHandler(error: error)))
+                                              error: .failedUploadingImage(error: error)))
             }
         }
         statusUpdatesSubscriptions.insert(observationToken)
@@ -239,6 +239,8 @@ private extension ProductImageUploader {
 enum ProductImageUploaderError: Error {
     case savingProductImages(error: Error)
     case actionHandler(error: Error)
+    case failedSavingProductAfterImageUpload(error: Error)
+    case failedUploadingImage(error: Error)
     case cannotUseLocalProductID
     case actionHandlerNotFound
 }

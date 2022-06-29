@@ -728,4 +728,23 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         let errorFromResult = try XCTUnwrap(result.failure)
         XCTAssertEqual(errorFromResult as? UnderlyingError, error)
     }
+
+    func test_selectedPaymentGatewayAccount_when_sent_use_before_then_returns_the_same_account() {
+        // Given
+        let store = CardPresentPaymentStore(dispatcher: dispatcher,
+                                            storageManager: storageManager,
+                                            network: network,
+                                            cardReaderService: mockCardReaderService)
+        let account = PaymentGatewayAccount.fake()
+        store.onAction(CardPresentPaymentAction.use(paymentGatewayAccount: account))
+
+        let result = waitFor { promise in
+            store.onAction(CardPresentPaymentAction.selectedPaymentGatewayAccount(onCompletion: { selectedAccount in
+                promise(selectedAccount)
+            }))
+        }
+
+        // Then
+        XCTAssertEqual(result, account)
+    }
 }

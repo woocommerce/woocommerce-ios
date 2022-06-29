@@ -86,7 +86,8 @@ final class CouponListViewModel {
 
     func buildCouponViewModels() {
         couponViewModels = resultsController.fetchedObjects.map { coupon in
-            CellViewModel(title: coupon.code,
+            CellViewModel(id: "\(coupon.couponID)",
+                          title: coupon.code,
                           subtitle: coupon.summary(), // to be updated after UI is finalized
                           accessibilityLabel: coupon.description.isEmpty ? coupon.description : coupon.code,
                           status: coupon.expiryStatus().localizedName,

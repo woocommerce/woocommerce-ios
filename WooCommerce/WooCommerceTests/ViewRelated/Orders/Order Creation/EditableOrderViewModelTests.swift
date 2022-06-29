@@ -1116,6 +1116,36 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(isCallbackCalled)
     }
+
+    func test_creating_order_does_not_shows_editable_indicator() {
+        // Given
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID)
+
+        // When & Then
+        XCTAssertFalse(viewModel.shouldShowNonEditableIndicators)
+    }
+
+    func test_editing_a_non_editable_order_shows_editable_indicator() {
+        // Given
+        let order = Order.fake().copy(isEditable: false)
+
+        // When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order))
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowNonEditableIndicators)
+    }
+
+    func test_editing_an_editable_order_does_not_shows_editable_indicator() {
+        // Given
+        let order = Order.fake().copy(isEditable: true)
+
+        // When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order))
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowNonEditableIndicators)
+    }
 }
 
 private extension MockStorageManager {

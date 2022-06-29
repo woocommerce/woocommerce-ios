@@ -65,13 +65,6 @@ final class OrderDetailsResultsControllers {
                                                        sortedBy: [dateCreatedDescriptor, shippingLabelIDDescriptor])
     }()
 
-    /// PaymentGatewayAccount Results Controller.
-    ///
-    private lazy var paymentGatewayAccountResultsController: ResultsController<StoragePaymentGatewayAccount> = {
-        let predicate = NSPredicate(format: "siteID = %ld", order.siteID)
-        return ResultsController<StoragePaymentGatewayAccount>(storageManager: storageManager, matching: predicate, sortedBy: [])
-    }()
-
     /// AddOnGroup ResultsController.
     ///
     private lazy var addOnGroupResultsController: ResultsController<StorageAddOnGroup> = {
@@ -122,11 +115,6 @@ final class OrderDetailsResultsControllers {
         return shippingLabelResultsController.fetchedObjects
     }
 
-    /// Payment Gateway Accounts for the Site (i.e. that can be used to collect payment for an order)
-    var paymentGatewayAccounts: [PaymentGatewayAccount] {
-        return paymentGatewayAccountResultsController.fetchedObjects
-    }
-
     /// Site's add-on groups.
     ///
     var addOnGroups: [AddOnGroup] {
@@ -156,7 +144,6 @@ final class OrderDetailsResultsControllers {
         configureProductVariationResultsController(onReload: onReload)
         configureRefundResultsController(onReload: onReload)
         configureShippingLabelResultsController(onReload: onReload)
-        configurePaymentGatewayAccountResultsController(onReload: onReload)
         configureAddOnGroupResultsController(onReload: onReload)
         configureSitePluginsResultsController(onReload: onReload)
     }
@@ -269,23 +256,6 @@ private extension OrderDetailsResultsControllers {
         try? shippingLabelResultsController.performFetch()
     }
 
-    private func configurePaymentGatewayAccountResultsController(onReload: @escaping () -> Void) {
-        paymentGatewayAccountResultsController.onDidChangeContent = {
-            onReload()
-        }
-
-        paymentGatewayAccountResultsController.onDidResetContent = { [weak self] in
-            guard let self = self else {
-                return
-            }
-
-            self.refetchAllResultsControllers()
-            onReload()
-        }
-
-        try? paymentGatewayAccountResultsController.performFetch()
-    }
-
     private func configureAddOnGroupResultsController(onReload: @escaping () -> Void) {
         addOnGroupResultsController.onDidChangeContent = {
             onReload()
@@ -323,7 +293,6 @@ private extension OrderDetailsResultsControllers {
         try? trackingResultsController.performFetch()
         try? statusResultsController.performFetch()
         try? shippingLabelResultsController.performFetch()
-        try? paymentGatewayAccountResultsController.performFetch()
         try? addOnGroupResultsController.performFetch()
         try? sitePluginsResultsController.performFetch()
     }

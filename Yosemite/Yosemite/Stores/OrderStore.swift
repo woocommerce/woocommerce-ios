@@ -355,11 +355,12 @@ private extension OrderStore {
         /// Optimistically update the Status
         let oldStatus = updateOrderStatus(siteID: siteID, orderID: orderID, statusKey: status)
 
-        remote.updateOrder(from: siteID, orderID: orderID, statusKey: status) { [weak self] (_, error) in
+        remote.updateOrder(from: siteID, orderID: orderID, statusKey: status) { [weak self] (order, error) in
             guard let error = error else {
-                // NOTE: We're *not* actually updating the whole entity here. Reason: Prevent UI inconsistencies!!
-                onCompletion(nil)
-                return
+                if let order = order {
+                    self?.upsertStoredOrder(readOnlyOrder: order)
+                }
+                return onCompletion(nil)
             }
 
             /// Revert Optimistic Update

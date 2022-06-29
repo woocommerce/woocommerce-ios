@@ -1,2 +1,4 @@
-This release has several fixes for order creation and in person payments, including fixing a bug in the products section not showing the correct order of items, displaying the date and time for all orders and showing the issue refund button for all paid orders.
-Please continue to send us feedback – we are listening!
+- [*] Coupons: Fixed issue saving "Individual Use" and "Exclude Sale Items" fields. [https://github.com/woocommerce/woocommerce-ios/pull/7117]
+- [*] Orders: The customer shipping/billing address form now navigates back automatically after selecting a country or state. [https://github.com/woocommerce/woocommerce-ios/pull/7119]
+- [internal] In settings and empty stores screen, the "Close Account" link is shown for users who signed in with Apple (the only way to create an account) to close their WordPress.com account. [https://github.com/woocommerce/woocommerce-ios/pull/7143]
+

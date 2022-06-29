@@ -107,15 +107,24 @@ struct OrderForm: View {
             ScrollViewReader { scroll in
                 ScrollView {
                     VStack(spacing: Layout.noSpacing) {
-                        OrderStatusSection(viewModel: viewModel)
+
+                        Group {
+                            Divider() // Needed because `NonEditableOrderBanner` does not have a top divider
+                            NonEditableOrderBanner(width: geometry.size.width)
+                        }
+                        .renderedIf(viewModel.shouldShowNonEditableIndicators)
+
+                        OrderStatusSection(viewModel: viewModel, topDivider: !viewModel.shouldShowNonEditableIndicators)
 
                         Spacer(minLength: Layout.sectionSpacing)
 
                         ProductsSection(scroll: scroll, viewModel: viewModel, navigationButtonID: $navigationButtonID)
+                            .disabled(viewModel.shouldShowNonEditableIndicators)
 
                         Spacer(minLength: Layout.sectionSpacing)
 
                         OrderPaymentSection(viewModel: viewModel.paymentDataViewModel)
+                            .disabled(viewModel.shouldShowNonEditableIndicators)
 
                         Spacer(minLength: Layout.sectionSpacing)
 
@@ -194,9 +203,18 @@ private struct ProductsSection: View {
             Divider()
 
             VStack(alignment: .leading, spacing: OrderForm.Layout.verticalSpacing) {
-                Text(OrderForm.Localization.products)
-                    .accessibilityAddTraits(.isHeader)
-                    .headlineStyle()
+
+                HStack {
+                    Text(OrderForm.Localization.products)
+                        .accessibilityAddTraits(.isHeader)
+                        .headlineStyle()
+
+                    Spacer()
+
+                    Image(uiImage: .lockImage)
+                        .foregroundColor(Color(.brand))
+                        .renderedIf(viewModel.shouldShowNonEditableIndicators)
+                }
 
                 ForEach(viewModel.productRows) { productRow in
                     ProductRow(viewModel: productRow, accessibilityHint: OrderForm.Localization.productRowAccessibilityHint)

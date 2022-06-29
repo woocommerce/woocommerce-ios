@@ -197,7 +197,7 @@ final class ProductImageUploaderTests: XCTestCase {
                                                                      originalStatuses: []).productImageStatuses)
     }
 
-    func test_product_id_of_uploaded_images_is_updated_after_saving_product() {
+    func test_product_id_of_uploaded_image_is_updated_after_saving_product() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let mockProductIDUpdater = MockProductImagesProductIDUpdater()

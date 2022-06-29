@@ -197,7 +197,7 @@ final class ProductImageUploaderTests: XCTestCase {
                                                                      originalStatuses: []).productImageStatuses)
     }
 
-    func test_product_id_of_uploaded_images_is_updated_after_saving_product() {
+    func test_product_id_of_uploaded_image_is_updated_after_saving_product() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let mockProductIDUpdater = MockProductImagesProductIDUpdater()
@@ -207,7 +207,7 @@ final class ProductImageUploaderTests: XCTestCase {
                                                         productID: productID,
                                                         isLocalID: false,
                                                         originalStatuses: [])
-        
+
         stores.whenReceivingAction(ofType: MediaAction.self) { action in
             if case let .uploadMedia(_, _, _, onCompletion) = action {
                 onCompletion(.success(.fake()))
@@ -218,7 +218,7 @@ final class ProductImageUploaderTests: XCTestCase {
                 onCompletion(.success(.fake()))
             }
         }
-        
+
         // When
         actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: PHAsset())
         waitForExpectation { expectation in
@@ -228,11 +228,11 @@ final class ProductImageUploaderTests: XCTestCase {
                 }
             }
         }
-        
+
         imageUploader.saveProductImagesWhenNoneIsPendingUploadAnymore(siteID: siteID,
                                                                       productID: productID,
                                                                       isLocalID: false) { result in }
-        
+
         // Then
         waitUntil {
             mockProductIDUpdater.updateImageProductIDWasCalled

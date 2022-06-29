@@ -10,6 +10,7 @@ public protocol MockObjectGraph {
     var sites: [Site] { get }
     var siteSettings: [SiteSetting] { get }
     var systemPlugins: [SystemPlugin] { get }
+    var paymentGatewayAccounts: [PaymentGatewayAccount] { get }
     var orders: [Order] { get }
     var products: [Product] { get }
     var reviews: [ProductReview] { get }
@@ -42,6 +43,13 @@ extension MockObjectGraph {
 extension MockObjectGraph {
     func systemPlugins(for siteID: Int64) -> [SystemPlugin] {
         return systemPlugins.filter { $0.siteID == siteID }
+    }
+}
+
+// MARK: PaymentGateWayAccount Accessor
+extension MockObjectGraph {
+    func paymentGatewayAccounts(for siteID: Int64) -> [PaymentGatewayAccount] {
+        return paymentGatewayAccounts.filter { $0.siteID == siteID }
     }
 }
 
@@ -132,6 +140,38 @@ extension MockObjectGraph {
                      authorUrl: authorUrl,
                      networkActivated: networkActivated,
                      active: active)
+    }
+}
+
+// MARK: PaymentGatewayAccount Creation Helper
+extension MockObjectGraph {
+    static func createPaymentGatewayAccount(gatewayID: String = WCPayAccount.gatewayID,
+                                            status: WCPayAccountStatusEnum = .complete,
+                                            hasPendingRequirements: Bool = false,
+                                            hasOverdueRequirements: Bool = false,
+                                            currentDeadline: Date? = nil,
+                                            statementDescriptor: String = "",
+                                            defaultCurrency: String = "USD",
+                                            supportedCurrencies: [String] = ["US", "CA"],
+                                            country: String = "US",
+                                            isCardPresentEligible: Bool = true,
+                                            isLive: Bool = false,
+                                            isInTestMode: Bool = false) -> PaymentGatewayAccount {
+        PaymentGatewayAccount(
+            siteID: 1,
+            gatewayID: WCPayAccount.gatewayID,
+            status: status.rawValue,
+            hasPendingRequirements: hasPendingRequirements,
+            hasOverdueRequirements: hasOverdueRequirements,
+            currentDeadline: currentDeadline,
+            statementDescriptor: statementDescriptor,
+            defaultCurrency: defaultCurrency,
+            supportedCurrencies: supportedCurrencies,
+            country: country,
+            isCardPresentEligible: isCardPresentEligible,
+            isLive: isLive,
+            isInTestMode: isInTestMode
+        )
     }
 }
 

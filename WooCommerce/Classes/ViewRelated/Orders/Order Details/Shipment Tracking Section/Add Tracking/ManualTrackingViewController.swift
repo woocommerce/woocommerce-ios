@@ -72,6 +72,9 @@ private extension ManualTrackingViewController {
         configureTitle()
         configureDismissButton()
         configureAddButton()
+        // Disables the ability to dismiss the view controller via a pull-down gesture, in order to avoid losing unsaved changes.
+        isModalInPresentation = false
+        navigationController?.presentationController?.delegate = self
     }
 
     func configureTitle() {
@@ -452,6 +455,20 @@ private extension ManualTrackingViewController {
 private extension ManualTrackingViewController {
     private func activateActionButtonIfNecessary() {
         navigationItem.rightBarButtonItem?.isEnabled = viewModel.canCommit
+    }
+}
+
+// MARK: - UISheetPresentationControllerDelegate comformance
+//
+/// Asks permission to dismiss. We call this delegate method whenever the user attempts to dismiss the View Controller via the pull-down gesture.
+extension ManualTrackingViewController: UISheetPresentationControllerDelegate {
+    func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+        if hasUnsavedChanges {
+            displayDismissConfirmationAlert()
+            return false
+        } else {
+            return true
+        }
     }
 }
 

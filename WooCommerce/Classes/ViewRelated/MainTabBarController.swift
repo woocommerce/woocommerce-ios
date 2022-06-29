@@ -580,8 +580,6 @@ private extension MainTabBarController {
                 self.handleErrorSavingProductAfterImageUpload(error)
             case .failedUploadingImage:
                 self.handleErrorUploadingImage(error)
-            default:
-                break
             }
         }
     }

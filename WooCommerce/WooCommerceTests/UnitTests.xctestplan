@@ -19,7 +19,7 @@
     "environmentVariableEntries" : [
       {
         "key" : "BUILDKITE_ANALYTICS_TOKEN",
-        "value" : "$(BUILDKITE_ANALYTICS_TOKEN)"
+        "value" : "$(BUILDKITE_ANALYTICS_TOKEN_UNIT_TESTS)"
       },
       {
         "key" : "BUILDKITE_BRANCH",

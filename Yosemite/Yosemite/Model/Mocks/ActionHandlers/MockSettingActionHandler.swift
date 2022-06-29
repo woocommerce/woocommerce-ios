@@ -34,16 +34,6 @@ struct MockSettingActionHandler: MockActionHandler {
 
     func synchronizeGeneralSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
         let settings = objectGraph.siteSettings(for: siteID)
-        let storage = storageManager.writerDerivedStorage
-
-        storage.perform {
-            settingStore.upsertStoredGeneralSiteSettings(siteID: siteID, readOnlySiteSettings: settings, in: storage)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: storage) {
-            DispatchQueue.main.async {
-                onCompletion(nil)
-            }
-        }
+        save(mocks: settings, as: StorageSiteSetting.self, onCompletion: onCompletion)
     }
 }

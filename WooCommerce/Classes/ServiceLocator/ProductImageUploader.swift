@@ -71,6 +71,10 @@ protocol ProductImageUploaderProtocol {
     ///   - isLocalID: whether the product ID is a local ID like in product creation.
     ///   - originalImages: the image statuses before any edits.
     func hasUnsavedChangesOnImages(siteID: Int64, productID: Int64, isLocalID: Bool, originalImages: [ProductImage]) -> Bool
+
+    /// Resets all internal states and tracking of image uploads for connected stores.
+    /// Called when the user is logged out.
+    func reset()
 }
 
 /// Supports background image upload and product images update after the user leaves the product form.
@@ -179,6 +183,14 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
                                               error: .failedSavingProductAfterImageUpload(error: error)))
             }
         }
+    }
+
+    func reset() {
+        statusUpdatesExcludedProductKeys = []
+        statusUpdatesSubscriptions = []
+
+        actionHandlersByProduct = [:]
+        imagesSaverByProduct = [:]
     }
 }
 

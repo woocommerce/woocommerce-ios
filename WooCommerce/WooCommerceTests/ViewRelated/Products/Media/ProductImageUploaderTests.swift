@@ -8,6 +8,7 @@ final class ProductImageUploaderTests: XCTestCase {
     private let siteID: Int64 = 134
     private let productID: Int64 = 606
     private var errorsSubscription: AnyCancellable?
+    private var assetUploadSubscription: AnyCancellable?
 
     func test_hasUnsavedChangesOnImages_becomes_false_after_uploading_and_saving() throws {
         // Given
@@ -432,6 +433,44 @@ final class ProductImageUploaderTests: XCTestCase {
                            productImageStatuses: [],
                            error: ProductImageUploaderError.failedUploadingImage(error: error))],
                     errors)
+    }
+
+    // MARK: - `reset`
+
+    func test_image_upload_error_is_not_emitted_after_reset() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let imageUploader = ProductImageUploader(stores: stores)
+        let actionHandler = imageUploader.actionHandler(siteID: siteID,
+                                                        productID: productID,
+                                                        isLocalID: true,
+                                                        originalStatuses: [])
+        stores.whenReceivingAction(ofType: MediaAction.self) { action in
+            if case let .uploadMedia(_, _, _, onCompletion) = action {
+                onCompletion(.failure(NSError(domain: "", code: 6)))
+            }
+        }
+
+        var errors: [ProductImageUploadErrorInfo] = []
+        errorsSubscription = imageUploader.errors.sink { error in
+            errors.append(error)
+            XCTFail("Image upload error should not be emitted: \(error)")
+        }
+
+        // When
+        imageUploader.reset()
+
+        let _: Void = waitFor { promise in
+            self.assetUploadSubscription = actionHandler.addUpdateObserver(self) { statuses in
+                if statuses.error != nil {
+                    promise(())
+                }
+            }
+            actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: PHAsset())
+        }
+
+        // Then
+        XCTAssertEqual(errors.count, 0)
     }
 }
 

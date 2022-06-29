@@ -166,7 +166,14 @@ public class MockStoresManager: StoresManager {
 
     @discardableResult
     public func synchronizeEntities(onCompletion: (() -> Void)?) -> StoresManager {
-        onCompletion?()
+        if let siteID = sessionManager.defaultStoreID {
+            let action = SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { _ in
+                onCompletion?()
+            }
+            dispatch(action)
+        } else {
+            onCompletion?()
+        }
         return self
     }
 

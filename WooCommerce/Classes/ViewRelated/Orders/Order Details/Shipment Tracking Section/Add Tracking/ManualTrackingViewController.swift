@@ -34,8 +34,6 @@ final class ManualTrackingViewController: UIViewController {
 
     private var valueSubscriptions: Set<AnyCancellable> = []
 
-    var hasUnsavedChanges: Bool = true
-
     init(viewModel: ManualTrackingViewModel) {
         self.viewModel = viewModel
         super.init(nibName: type(of: self).nibName, bundle: nil)
@@ -138,7 +136,7 @@ private extension ManualTrackingViewController {
     }
 
     @objc func dismissButtonTapped() {
-        if viewModel.canCommit == false || hasUnsavedChanges {
+        if viewModel.shipmentProvider != nil || viewModel.trackingNumber != nil {
             displayDismissConfirmationAlert()
         } else {
             dismiss()
@@ -148,7 +146,6 @@ private extension ManualTrackingViewController {
     @objc func primaryButtonTapped() {
         ServiceLocator.analytics.track(.orderShipmentTrackingAddButtonTapped)
         viewModel.isCustom ? addCustomTracking() : addTracking()
-        hasUnsavedChanges = false
     }
 }
 
@@ -462,7 +459,7 @@ private extension ManualTrackingViewController {
 /// Asks permission to dismiss. We call this delegate method whenever the user attempts to dismiss the View Controller via the pull-down gesture.
 extension ManualTrackingViewController: UISheetPresentationControllerDelegate {
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
-        hasUnsavedChanges ? false : true
+        viewModel.canCommit ? true : false
     }
     func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
         displayDismissConfirmationAlert()

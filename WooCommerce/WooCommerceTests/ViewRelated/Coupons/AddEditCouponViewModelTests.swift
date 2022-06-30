@@ -280,13 +280,17 @@ final class AddEditCouponViewModelTests: XCTestCase {
     func test_discount_type_changed_to_percent_triggers_amount_adjustment() {
         // Given
         let coupon = Coupon.sampleCoupon.copy(amount: "20000")
-        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onSuccess: { _ in })
+        let viewModel = AddEditCouponViewModel(
+            existingCoupon: coupon,
+            inputWarningDurationInSeconds: 0.01,
+            onSuccess: { _ in }
+        )
 
         // When
         viewModel.discountType = .percent
 
         waitFor { promise in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.02) {
                 promise(())
             }
         }

@@ -218,12 +218,11 @@ final class PaymentMethodsViewModel: ObservableObject {
 
                     self.collectPaymentsUseCase?.collectPayment(
                         onCollect: { [weak self] result in
-                            guard case let .failure(error) = result else { return }
-
-                            let collectOrderPaymentUseCaseError = error as? CollectOrderPaymentUseCaseError
-                            guard collectOrderPaymentUseCaseError != CollectOrderPaymentUseCaseError.flowCanceledByUser else { return }
-
+                            guard result.isFailure else { return }
                             self?.trackFlowFailed()
+                        },
+                        onCancel: {
+                            // No tracking required because the flow remains on screen to choose other payment methods.
                         },
                         onCompleted: { [weak self] in
                             // Update order in case its status and/or other details are updated after a successful in-person payment
@@ -267,7 +266,7 @@ final class PaymentMethodsViewModel: ObservableObject {
     /// Track the flow cancel scenario.
     ///
     func userDidCancelFlow() {
-        analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCanceled(flow: flow))
+        trackFlowCanceled()
     }
 
     /// Defines if the swipe-to-dismiss gesture on the payment flow should be enabled
@@ -324,6 +323,12 @@ private extension PaymentMethodsViewModel {
     ///
     func trackFlowFailed() {
         analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowFailed(flow: flow, source: .paymentMethod))
+    }
+
+    /// Tracks the `paymentsFlowCanceled` event.
+    ///
+    func trackFlowCanceled() {
+        analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCanceled(flow: flow))
     }
 
     /// Tracks `paymentsFlowCollect` event.

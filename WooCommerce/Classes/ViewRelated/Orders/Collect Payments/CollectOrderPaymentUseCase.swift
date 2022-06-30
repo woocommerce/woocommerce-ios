@@ -18,7 +18,8 @@ protocol CollectOrderPaymentProtocol {
     ///
     /// - Parameter onCollect: Closure Invoked after the collect process has finished.
     /// - Parameter onCompleted: Closure Invoked after the flow has been totally completed.
-    func collectPayment(onCollect: @escaping (Result<Void, Error>) -> (), onCompleted: @escaping () -> ())
+    /// - Parameter onCancel: Closure invoked after the flow is cancelled
+    func collectPayment(onCollect: @escaping (Result<Void, Error>) -> (), onCancel: @escaping () -> (), onCompleted: @escaping () -> ())
 }
 
 /// Use case to collect payments from an order.
@@ -126,9 +127,12 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     /// 4. If failure: Allows retry
     ///
     ///
-    /// - Parameter onCollect: Closure Invoked after the collect process has finished.
-    /// - Parameter onCompleted: Closure Invoked after the flow has been totally completed, Currently after merchant has handled the receipt.
-    func collectPayment(onCollect: @escaping (Result<Void, Error>) -> (), onCompleted: @escaping () -> ()) {
+    /// - Parameter onCollect: Closure invoked after the collect process has finished.
+    /// - Parameter onCancel: Closure invoked after the flow is cancelled
+    /// - Parameter onCompleted: Closure invoked after the flow has been totally completed, currently after merchant has handled the receipt.
+    func collectPayment(onCollect: @escaping (Result<Void, Error>) -> (),
+                        onCancel: @escaping () -> (),
+                        onCompleted: @escaping () -> ()) {
         guard isTotalAmountValid() else {
             let error = totalAmountInvalidError()
             onCollect(.failure(error))
@@ -142,15 +146,24 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
             switch result {
             case .success:
                 self.attemptPayment(onCompletion: { [weak self] result in
+                    guard let self = self else { return }
                     // Inform about the collect payment state
-                    onCollect(result.map { _ in () }) // Transforms Result<CardPresentReceiptParameters, Error> to Result<Void, Error>
+                    switch result {
+                    case .failure(CollectOrderPaymentUseCaseError.flowCanceledByUser):
+                        return onCancel()
+                    default:
+                        onCollect(result.map { _ in () }) // Transforms Result<CardPresentCapturedPaymentData, Error> to Result<Void, Error>
+                    }
 
                     // Handle payment receipt
                     guard let paymentData = try? result.get() else {
                         return onCompleted()
                     }
-                    self?.presentReceiptAlert(receiptParameters: paymentData.receiptParameters, onCompleted: onCompleted)
+                    self.presentReceiptAlert(receiptParameters: paymentData.receiptParameters, onCompleted: onCompleted)
                 })
+            case .failure(CollectOrderPaymentUseCaseError.flowCanceledByUser):
+                self.trackPaymentCancelation()
+                onCancel()
             case .failure(let error):
                 onCollect(.failure(error))
             }
@@ -360,13 +373,16 @@ private extension CollectOrderPaymentUseCase {
     /// Cancels payment and record analytics.
     ///
     func cancelPayment(onCompleted: @escaping () -> ()) {
-        paymentOrchestrator.cancelPayment { [weak self, analytics] _ in
-            guard let self = self else { return }
-            analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentCanceled(forGatewayID: self.paymentGatewayAccount.gatewayID,
-                                                                                             countryCode: self.configuration.countryCode,
-                                                                                             cardReaderModel: self.connectedReader?.readerType.model ?? ""))
+        paymentOrchestrator.cancelPayment { [weak self] _ in
+            self?.trackPaymentCancelation()
             onCompleted()
         }
+    }
+
+    func trackPaymentCancelation() {
+        analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentCanceled(forGatewayID: paymentGatewayAccount.gatewayID,
+                                                                                         countryCode: configuration.countryCode,
+                                                                                         cardReaderModel: connectedReader?.readerType.model ?? ""))
     }
 
     /// Allow merchants to print or email the payment receipt.

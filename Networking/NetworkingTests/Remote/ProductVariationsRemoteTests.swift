@@ -276,6 +276,50 @@ final class ProductVariationsRemoteTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(result).isFailure)
     }
 
+    /// Verifies that `updateProductVariationImage` properly parses the `product-variation-update` sample response.
+    ///
+    func test_updateProductVariationImage_properly_returns_parsed_product() throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        let sampleProductVariationID: Int64 = 2783
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations/\(sampleProductVariationID)", filename: "product-variation-update")
+
+        // When
+        let result = waitFor { promise in
+            remote.updateProductVariationImage(siteID: self.sampleSiteID,
+                                               productID: self.sampleProductID,
+                                               variationID: sampleProductVariationID,
+                                               image: .fake()) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let productVariation = try XCTUnwrap(result.get())
+        XCTAssertEqual(productVariation.image?.imageID, 2432)
+    }
+
+    /// Verifies that `updateProductVariationImage` properly relays Networking Layer errors.
+    ///
+    func test_updateProductVariationImage_properly_relays_networking_error() throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        let sampleProductVariationID: Int64 = 2783
+
+        // When
+        let result = waitFor { promise in
+            remote.updateProductVariationImage(siteID: self.sampleSiteID,
+                                               productID: self.sampleProductID,
+                                               variationID: sampleProductVariationID,
+                                               image: .fake()) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
+
     // MARK: - Delete ProductVariation
 
     /// Verifies that deleteProductVariation properly parses the `product-variation` sample response.

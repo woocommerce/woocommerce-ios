@@ -27,8 +27,12 @@ struct InPersonPaymentsSelectPluginRow: View {
                 .stroke(borderColor, lineWidth: 1)
                 .background(Color(.tertiarySystemBackground))
                )
+        .accessibilityElement(children: .combine)
+                .accessibilityLabel(name)
+                .accessibilityRemoveTraits([.isImage])
+                .accessibilityAddTraits([.isButton])
+                .accessibilityAddTraits(selected ? [.isSelected] : [])
     }
-
     var borderColor: Color {
         if selected {
             return Color(.primary)
@@ -46,6 +50,7 @@ struct InPersonPaymentsSelectPluginView: View {
         VStack(alignment: .leading, spacing: 16) {
             Image(uiImage: .creditCardGiveIcon)
                 .foregroundColor(Color(.primary))
+                .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 32) {
                 Text(Localization.title)

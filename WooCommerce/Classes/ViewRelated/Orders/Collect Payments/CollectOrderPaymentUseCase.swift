@@ -150,7 +150,6 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                     // Inform about the collect payment state
                     switch result {
                     case .failure(CollectOrderPaymentUseCaseError.flowCanceledByUser):
-                        self.trackPaymentCancelation()
                         return onCancel()
                     default:
                         onCollect(result.map { _ in () }) // Transforms Result<CardPresentCapturedPaymentData, Error> to Result<Void, Error>

@@ -136,12 +136,10 @@ private extension ManualTrackingViewController {
     }
 
     @objc func dismissButtonTapped() {
-        if viewModel.isEmptyState {
+        if viewModel.canCommit || viewModel.hasUnsavedChanges {
+            displayDismissConfirmationAlert()
+        } else if viewModel.isEmptyState {
             dismiss()
-        } else if viewModel.hasUnsavedChanges {
-            displayDismissConfirmationAlert()
-        } else if viewModel.canCommit {
-            displayDismissConfirmationAlert()
         } else {
             dismiss()
         }
@@ -463,13 +461,10 @@ private extension ManualTrackingViewController {
 /// Asks permission to dismiss. We call this delegate method whenever the user attempts to dismiss the View Controller via the pull-down gesture.
 extension ManualTrackingViewController: UISheetPresentationControllerDelegate {
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
-
-        if viewModel.isEmptyState {
+        if viewModel.canCommit || viewModel.hasUnsavedChanges {
+            return false
+        } else if viewModel.isEmptyState {
             return true
-        } else if viewModel.hasUnsavedChanges {
-            return false
-        } else if viewModel.canCommit {
-            return false
         } else {
             return true
         }

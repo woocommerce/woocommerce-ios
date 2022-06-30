@@ -178,6 +178,7 @@ extension InPersonPaymentsMenuViewController {
     }
 
     func managePaymentGatewaysWasPressed() {
+        ServiceLocator.analytics.track(.settingsCardPresentSelectedPaymentGatewayTapped)
         onPluginSelectionCleared()
     }
 

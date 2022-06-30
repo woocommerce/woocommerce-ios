@@ -287,7 +287,7 @@ final class MainTabBarControllerTests: XCTestCase {
 
         // When
         statusUpdates.send(.init(siteID: 134,
-                                 productID: 606,
+                                 productOrVariationID: .product(id: 606),
                                  productImageStatuses: [],
                                  error: .failedUploadingImage(error: NSError(domain: "", code: 8))))
 
@@ -319,7 +319,7 @@ final class MainTabBarControllerTests: XCTestCase {
 
         // When
         statusUpdates.send(.init(siteID: 134,
-                                 productID: 606,
+                                 productOrVariationID: .product(id: 606),
                                  productImageStatuses: [],
                                  error: .failedSavingProductAfterImageUpload(error: NSError(domain: "", code: 18))))
 
@@ -351,7 +351,10 @@ final class MainTabBarControllerTests: XCTestCase {
 
         // When
         let error = NSError(domain: "", code: 8)
-        statusUpdates.send(.init(siteID: 134, productID: 606, productImageStatuses: [], error: .failedUploadingImage(error: error)))
+        statusUpdates.send(.init(siteID: 134,
+                                 productOrVariationID: .product(id: 606),
+                                 productImageStatuses: [],
+                                 error: .failedUploadingImage(error: error)))
         let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
         notice.actionHandler?()
 
@@ -389,7 +392,10 @@ final class MainTabBarControllerTests: XCTestCase {
 
         // When
         let error = NSError(domain: "", code: 8)
-        statusUpdates.send(.init(siteID: 134, productID: 606, productImageStatuses: [], error: .failedUploadingImage(error: error)))
+        statusUpdates.send(.init(siteID: 134,
+                                 productOrVariationID: .product(id: 606),
+                                 productImageStatuses: [],
+                                 error: .failedUploadingImage(error: error)))
 
         // Then
         XCTAssertEqual(noticePresenter.queuedNotices.count, 0)

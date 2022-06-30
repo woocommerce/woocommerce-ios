@@ -20,7 +20,7 @@ final class ProductFormViewController_ProductImageUploaderTests: XCTestCase {
 
     func test_triggering_viewDidLoad_invokes_stopEmittingErrors() throws {
         // Given
-        let actionHandler = ProductImageActionHandler(siteID: 134, productID: 256, imageStatuses: [])
+        let actionHandler = ProductImageActionHandler(siteID: 134, productID: .product(id: 256), imageStatuses: [])
         let productImageUploader = MockProductImageUploader()
 
         // When
@@ -41,7 +41,7 @@ final class ProductFormViewController_ProductImageUploaderTests: XCTestCase {
 
     func test_dismissing_product_form_invokes_startEmittingErrors() throws {
         // Given
-        let actionHandler = ProductImageActionHandler(siteID: 134, productID: 256, imageStatuses: [])
+        let actionHandler = ProductImageActionHandler(siteID: 134, productID: .product(id: 256), imageStatuses: [])
         let productImageUploader = MockProductImageUploader()
         let productForm = ProductFormViewController(viewModel:
                                                         ProductFormViewModel(product: .init(product: .fake()),
@@ -69,7 +69,7 @@ final class ProductFormViewController_ProductImageUploaderTests: XCTestCase {
 
     func test_popping_product_form_invokes_startEmittingErrors() throws {
         // Given
-        let actionHandler = ProductImageActionHandler(siteID: 134, productID: 256, imageStatuses: [])
+        let actionHandler = ProductImageActionHandler(siteID: 134, productID: .product(id: 256), imageStatuses: [])
         let productImageUploader = MockProductImageUploader()
         let productForm = ProductFormViewController(viewModel:
                                                         ProductFormViewModel(product: .init(product: .fake()),

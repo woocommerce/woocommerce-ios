@@ -7,6 +7,7 @@ protocol SwitchStoreUseCaseProtocol {
 
 /// Simplifies and decouples the store picker from the caller
 ///
+@MainActor
 final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
 
     private let stores: StoresManager

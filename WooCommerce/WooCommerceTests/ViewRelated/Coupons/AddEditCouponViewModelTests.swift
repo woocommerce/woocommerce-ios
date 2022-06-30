@@ -279,7 +279,6 @@ final class AddEditCouponViewModelTests: XCTestCase {
 
     func test_discount_type_changed_to_percent_triggers_amount_adjustment() {
         // Given
-        var worked = false
         let coupon = Coupon.sampleCoupon.copy(amount: "20000")
         let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onSuccess: { _ in })
 

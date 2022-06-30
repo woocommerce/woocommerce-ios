@@ -122,11 +122,12 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         }
 
         // Update the product ID of handler to make sure that future product image uploads use the `remoteProductID` instead of `localProductID`
-        handler.updateProductID(remoteID)
+        let remoteProductOrVariationID = localID.replacingID(remoteID)
+        handler.updateProductID(remoteProductOrVariationID)
 
         actionHandlersByProduct.removeValue(forKey: key)
         let keyWithRemoteProductID = Key(siteID: siteID,
-                                         productOrVariationID: localID.replacingID(remoteID),
+                                         productOrVariationID: remoteProductOrVariationID,
                                          isLocalID: false)
         actionHandlersByProduct[keyWithRemoteProductID] = handler
 
@@ -170,8 +171,8 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         }
 
         guard handler.productImageStatuses.hasPendingUpload else {
-            updateProductIDOfImagesUploadedUsingLocalProductID(siteID: siteID,
-                                                               productID: productID,
+            updateProductIDOfImagesUploadedUsingLocalProductID(siteID: key.siteID,
+                                                               productOrVariationID: key.productOrVariationID,
                                                                images: handler.productImageStatuses.images)
             return
         }
@@ -195,9 +196,9 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
                                               productImageStatuses: handler.productImageStatuses,
                                               error: .failedSavingProductAfterImageUpload(error: error)))
             }
-            self.updateProductIDOfImagesUploadedUsingLocalProductID(siteID: siteID,
-                                                                     productID: productID,
-                                                                     images: handler.productImageStatuses.images)
+            self.updateProductIDOfImagesUploadedUsingLocalProductID(siteID: key.siteID,
+                                                                    productOrVariationID: key.productOrVariationID,
+                                                                    images: handler.productImageStatuses.images)
         }
     }
 
@@ -214,13 +215,21 @@ private extension ProductImageUploader {
     /// Called to replace the local product ID with remote product ID for the previously uploaded images
     ///
     func updateProductIDOfImagesUploadedUsingLocalProductID(siteID: Int64,
-                                                            productID: Int64,
+                                                            productOrVariationID: ProductOrVariationID,
                                                             images: [ProductImage]) {
+        let imageProductOrVariationID: Int64 = {
+            switch productOrVariationID {
+            case .product(let id):
+                return id
+            case .variation(_, let variationID):
+                return variationID
+            }
+        }()
         images.forEach { image in
             Task {
                 _ = try? await imagesProductIDUpdater.updateImageProductID(siteID: siteID,
-                                                                      productID: productID,
-                                                                      productImage: image)
+                                                                           productID: imageProductOrVariationID,
+                                                                           productImage: image)
             }
         }
     }

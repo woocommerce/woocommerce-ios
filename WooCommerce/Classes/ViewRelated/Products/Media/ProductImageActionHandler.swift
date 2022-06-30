@@ -10,7 +10,7 @@ final class ProductImageActionHandler {
     typealias OnAssetUpload = (PHAsset, Result<ProductImage, Error>) -> Void
 
     private let siteID: Int64
-    private let productID: ProductOrVariationID
+    private var productOrVariationID: ProductOrVariationID
 
     /// The queue where internal states like `allStatuses` and `observations` are updated on to maintain thread safety.
     private let queue: DispatchQueue
@@ -47,7 +47,7 @@ final class ProductImageActionHandler {
     ///   - stores: stores that dispatch image upload action.
     init(siteID: Int64, productID: ProductOrVariationID, imageStatuses: [ProductImageStatus], queue: DispatchQueue = .main, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
-        self.productID = productID
+        self.productOrVariationID = productID
         self.queue = queue
         self.stores = stores
         self.allStatuses = (productImageStatuses: imageStatuses, error: nil)
@@ -181,7 +181,7 @@ final class ProductImageActionHandler {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             let productOrVariationID: Int64 = {
-                switch self.productID {
+                switch self.productOrVariationID {
                 case .product(let id):
                     return id
                 case .variation(_, variationID: let variationID):
@@ -197,8 +197,8 @@ final class ProductImageActionHandler {
     ///
     /// Used for updating the product ID during create product flow. i.e. To replace the local product ID with the remote product ID.
     ///
-    func updateProductID(_ remoteProductID: Int64) {
-        self.productID = remoteProductID
+    func updateProductID(_ remoteProductID: ProductOrVariationID) {
+        self.productOrVariationID = remoteProductID
     }
 
     func deleteProductImage(_ productImage: ProductImage) {

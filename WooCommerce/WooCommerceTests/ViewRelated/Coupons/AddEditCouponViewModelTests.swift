@@ -1,4 +1,5 @@
 import XCTest
+import Combine
 @testable import Yosemite
 @testable import WooCommerce
 
@@ -274,5 +275,46 @@ final class AddEditCouponViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.hasChangesMade)
+    }
+
+    func test_discount_type_changed_to_percent_triggers_amount_adjustment() {
+        // Given
+        let coupon = Coupon.sampleCoupon.copy(amount: "20000")
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onSuccess: { _ in })
+
+        // When
+        viewModel.discountType = .percent
+
+        waitFor { promise in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+                promise(())
+            }
+        }
+
+        XCTAssertEqual(viewModel.amountField, "100")
+    }
+
+    func test_discount_type_changed_to_percent_doesnt_convert_valid_amount() {
+        // Given
+        let coupon = Coupon.sampleCoupon.copy(amount: "99.9")
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onSuccess: { _ in })
+
+        // When
+        viewModel.discountType = .percent
+
+        // Then
+        XCTAssertEqual(viewModel.amountField, "99.9")
+    }
+
+    func test_discount_type_changed_to_percent_converts_invalid_amount_to_zero() {
+        // Given
+        let coupon = Coupon.sampleCoupon.copy(amount: "invalid")
+        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onSuccess: { _ in })
+
+        // When
+        viewModel.discountType = .percent
+
+        // Then
+        XCTAssertEqual(viewModel.amountField, "0")
     }
 }

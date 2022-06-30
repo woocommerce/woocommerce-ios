@@ -11,6 +11,7 @@ struct TitleAndTextFieldRow: View {
     private let editable: Bool
     private let fieldAlignment: TextAlignment
     private let inputFormatter: UnitInputFormatter?
+    private let contentColor: Color
 
     @Binding private var text: String
 
@@ -18,6 +19,7 @@ struct TitleAndTextFieldRow: View {
     /// If `nil` - title will have intrinsic size.
     ///
     @Binding private var titleWidth: CGFloat?
+
 
     init(title: String,
          titleWidth: Binding<CGFloat?> = .constant(nil),
@@ -27,6 +29,7 @@ struct TitleAndTextFieldRow: View {
          editable: Bool = true,
          fieldAlignment: TextAlignment = .trailing,
          keyboardType: UIKeyboardType = .default,
+         contentColor: Color = Color(.label),
          inputFormatter: UnitInputFormatter? = nil,
          onEditingChanged: ((Bool) -> Void)? = nil) {
         self.title = title
@@ -37,6 +40,7 @@ struct TitleAndTextFieldRow: View {
         self.editable = editable
         self.fieldAlignment = fieldAlignment
         self.keyboardType = keyboardType
+        self.contentColor = contentColor
         self.inputFormatter = inputFormatter
         self.onEditingChanged = onEditingChanged
     }
@@ -44,6 +48,7 @@ struct TitleAndTextFieldRow: View {
     var body: some View {
         AdaptiveStack(horizontalAlignment: .leading, spacing: Constants.spacing) {
             Text(title)
+                .foregroundColor(contentColor)
                 .bodyStyle()
                 .lineLimit(1)
                 .fixedSize()
@@ -51,6 +56,7 @@ struct TitleAndTextFieldRow: View {
                 .frame(width: titleWidth, alignment: .leading)
             HStack {
                 TextField(placeholder, text: $text, onEditingChanged: onEditingChanged ?? { _ in })
+                    .foregroundColor(contentColor)
                     .onChange(of: text, perform: { newValue in
                         text = formatText(newValue)
                     })

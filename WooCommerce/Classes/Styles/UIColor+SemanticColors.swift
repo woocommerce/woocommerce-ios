@@ -135,6 +135,13 @@ extension UIColor {
         return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade60),
         dark: .withColorStudio(.wooCommercePurple, shade: .shade30))
     }
+
+    /// Text Warning.
+    ///
+    static var textWarning: UIColor {
+        return UIColor(light: .withColorStudio(.orange, shade: .shade50),
+                dark: .withColorStudio(.orange, shade: .shade30))
+    }
 }
 
 

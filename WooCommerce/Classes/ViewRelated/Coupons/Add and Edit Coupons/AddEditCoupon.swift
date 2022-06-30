@@ -117,11 +117,17 @@ struct AddEditCoupon: View {
                                                      editable: true,
                                                      fieldAlignment: .leading,
                                                      keyboardType: .decimalPad,
-                                                     inputFormatter: CouponAmountInputFormatter())
+                                                     contentColor: viewModel.amountFieldColor,
+                                                     inputFormatter: CouponAmountInputFormatter()) { beginningEditing in
+                                                            if !beginningEditing {
+                                                                viewModel.validatePercentageAmountInput(withWarning: true)
+                                                            }
+                                                        }
                                 Divider()
                                     .padding(.leading, Constants.margin)
 
                                 Text(viewModel.amountSubtitleLabel)
+                                    .foregroundColor(viewModel.amountSubtitleColor)
                                     .subheadlineStyle()
                                     .padding(.horizontal, Constants.margin)
                             }

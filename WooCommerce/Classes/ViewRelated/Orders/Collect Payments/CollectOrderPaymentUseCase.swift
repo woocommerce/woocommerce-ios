@@ -127,8 +127,9 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     /// 4. If failure: Allows retry
     ///
     ///
-    /// - Parameter onCollect: Closure Invoked after the collect process has finished.
-    /// - Parameter onCompleted: Closure Invoked after the flow has been totally completed, Currently after merchant has handled the receipt.
+    /// - Parameter onCollect: Closure invoked after the collect process has finished.
+    /// - Parameter onCancel: Closure invoked after the flow is cancelled
+    /// - Parameter onCompleted: Closure invoked after the flow has been totally completed, currently after merchant has handled the receipt.
     func collectPayment(onCollect: @escaping (Result<Void, Error>) -> (),
                         onCancel: @escaping () -> (),
                         onCompleted: @escaping () -> ()) {

@@ -271,30 +271,6 @@ extension OrderDetailsViewModel {
             onCompletion?()
         }
     }
-
-    func syncOrderAfterPaymentCollection(onCompletion: @escaping ()-> Void) {
-        let group = DispatchGroup()
-
-        group.enter()
-        syncOrder { _ in
-            group.leave()
-        }
-
-        group.enter()
-        syncNotes { _ in
-            group.leave()
-        }
-
-        group.enter()
-        syncSavedReceipts { _ in
-            group.leave()
-        }
-
-        group.notify(queue: .main) {
-            NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
-            onCompletion()
-        }
-    }
 }
 
 // MARK: - Configuring results controllers

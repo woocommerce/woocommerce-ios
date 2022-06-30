@@ -55,6 +55,11 @@ public final class MediaStore: Store {
             retrieveMediaLibrary(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .uploadMedia(let siteID, let productID, let mediaAsset, let onCompletion):
             uploadMedia(siteID: siteID, productID: productID, mediaAsset: mediaAsset, onCompletion: onCompletion)
+        case .updateProductID(let siteID,
+                            let productID,
+                             let mediaID,
+                             let onCompletion):
+            updateProductID(siteID: siteID, productID: productID, mediaID: mediaID, onCompletion: onCompletion)
         }
     }
 }
@@ -150,6 +155,13 @@ private extension MediaStore {
                 }
             }
         }
+    }
+
+    func updateProductID(siteID: Int64,
+                         productID: Int64,
+                         mediaID: Int64,
+                         onCompletion: @escaping (Result<Media, Error>) -> Void) {
+        remote.updateProductID(siteID: siteID, productID: productID, mediaID: mediaID, completion: onCompletion)
     }
 }
 

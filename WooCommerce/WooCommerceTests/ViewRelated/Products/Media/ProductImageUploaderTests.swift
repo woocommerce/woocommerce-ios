@@ -197,6 +197,48 @@ final class ProductImageUploaderTests: XCTestCase {
                                                                      originalStatuses: []).productImageStatuses)
     }
 
+    func test_product_id_of_uploaded_image_is_updated_after_saving_product() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let mockProductIDUpdater = MockProductImagesProductIDUpdater()
+        let imageUploader = ProductImageUploader(stores: stores,
+                                                 imagesProductIDUpdater: mockProductIDUpdater)
+        let actionHandler = imageUploader.actionHandler(siteID: siteID,
+                                                        productID: productID,
+                                                        isLocalID: false,
+                                                        originalStatuses: [])
+
+        stores.whenReceivingAction(ofType: MediaAction.self) { action in
+            if case let .uploadMedia(_, _, _, onCompletion) = action {
+                onCompletion(.success(.fake()))
+            }
+        }
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            if case let .updateProductImages(_, _, _, onCompletion) = action {
+                onCompletion(.success(.fake()))
+            }
+        }
+
+        // When
+        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: PHAsset())
+        waitForExpectation { expectation in
+            self.assetUploadSubscription = actionHandler.addUpdateObserver(self) { statuses in
+                if statuses.productImageStatuses.hasPendingUpload == false {
+                    expectation.fulfill()
+                }
+            }
+        }
+
+        imageUploader.saveProductImagesWhenNoneIsPendingUploadAnymore(siteID: siteID,
+                                                                      productID: productID,
+                                                                      isLocalID: false) { result in }
+
+        // Then
+        waitUntil {
+            mockProductIDUpdater.updateImageProductIDWasCalled
+        }
+    }
+
     // MARK: - Error updates
 
     func test_actionHandler_error_is_emitted_when_image_upload_fails() {
@@ -393,7 +435,6 @@ final class ProductImageUploaderTests: XCTestCase {
         actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: PHAsset())
 
         // Then
-        // Ensure that trying to replace a non-existent product ID does nothing.
         XCTAssertTrue(errors.isEmpty)
     }
 

@@ -96,9 +96,12 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
     private var actionHandlersByProduct: [ProductKey: ProductImageActionHandler] = [:]
     private var imagesSaverByProduct: [ProductKey: ProductImagesSaver] = [:]
     private let stores: StoresManager
+    private let imagesProductIDUpdater: ProductImagesProductIDUpdaterProtocol
 
-    init(stores: StoresManager = ServiceLocator.stores) {
+    init(stores: StoresManager = ServiceLocator.stores,
+         imagesProductIDUpdater: ProductImagesProductIDUpdaterProtocol = ProductImagesProductIDUpdater()) {
         self.stores = stores
+        self.imagesProductIDUpdater = imagesProductIDUpdater
     }
 
     func actionHandler(siteID: Int64, productID: Int64, isLocalID: Bool, originalStatuses: [ProductImageStatus]) -> ProductImageActionHandler {
@@ -119,6 +122,10 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         guard let handler = actionHandlersByProduct[key] else {
             return
         }
+
+        // Update the product ID of handler to make sure that future product image uploads use the `remoteProductID` instead of `localProductID`
+        handler.updateProductID(remoteProductID)
+
         actionHandlersByProduct.removeValue(forKey: key)
         let keyWithRemoteProductID = ProductKey(siteID: siteID, productID: remoteProductID, isLocalID: false)
         actionHandlersByProduct[keyWithRemoteProductID] = handler
@@ -162,10 +169,19 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         guard isLocalID == false else {
             return
         }
+
         let key = ProductKey(siteID: siteID, productID: productID, isLocalID: isLocalID)
-        guard let handler = actionHandlersByProduct[key], handler.productImageStatuses.hasPendingUpload else {
+        guard let handler = actionHandlersByProduct[key] else {
             return
         }
+
+        guard handler.productImageStatuses.hasPendingUpload else {
+            updateProductIDOfImagesUploadedUsingLocalProductID(siteID: siteID,
+                                                               productID: productID,
+                                                               images: handler.productImageStatuses.images)
+            return
+        }
+
         let imagesSaver: ProductImagesSaver
         if let productImagesSaver = imagesSaverByProduct[key] {
             imagesSaver = productImagesSaver
@@ -173,6 +189,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
             imagesSaver = ProductImagesSaver(siteID: siteID, productID: productID, stores: stores)
             imagesSaverByProduct[key] = imagesSaver
         }
+
         imagesSaver.saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: handler) { [weak self] result in
             guard let self = self else { return }
             onProductSave(result)
@@ -182,6 +199,9 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
                                               productImageStatuses: handler.productImageStatuses,
                                               error: .failedSavingProductAfterImageUpload(error: error)))
             }
+            self.updateProductIDOfImagesUploadedUsingLocalProductID(siteID: siteID,
+                                                                     productID: productID,
+                                                                     images: handler.productImageStatuses.images)
         }
     }
 
@@ -195,6 +215,20 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
 }
 
 private extension ProductImageUploader {
+    /// Called to replace the local product ID with remote product ID for the previously uploaded images
+    ///
+    func updateProductIDOfImagesUploadedUsingLocalProductID(siteID: Int64,
+                                                            productID: Int64,
+                                                            images: [ProductImage]) {
+        images.forEach { image in
+            Task {
+                _ = try? await imagesProductIDUpdater.updateImageProductID(siteID: siteID,
+                                                                      productID: productID,
+                                                                      productImage: image)
+            }
+        }
+    }
+
     private func observeStatusUpdatesForErrors(key: ProductKey, actionHandler: ProductImageActionHandler) {
         let observationToken = actionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else { return }

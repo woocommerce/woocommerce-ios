@@ -24,6 +24,10 @@ final class MediaStoreTests: XCTestCase {
     ///
     private let sampleProductID: Int64 = 586
 
+    /// Testing Media ID
+    ///
+    private let sampleMediaID: Int64 = 2352
+
     // MARK: - Overridden Methods
 
     override func setUp() {
@@ -413,6 +417,60 @@ final class MediaStoreTests: XCTestCase {
         // Then
         XCTAssertEqual(remote.invocations, [.uploadMediaToWordPressSite(siteID: sampleSiteID)])
 
+        let error = try XCTUnwrap(result.failure as? DotcomError)
+        XCTAssertEqual(error, .unauthorized)
+    }
+
+    // MARK: test cases for `MediaAction.updateProductID`
+
+    /// Verifies that `MediaAction.updateProductID` returns the expected response.
+    ///
+    func test_updateProductID_returns_media() throws {
+        // Given
+        let remote = MockMediaRemote()
+        let media = Media.fake()
+        remote.whenUpdatingProductIDResultsBySiteIDToWordPressSite(siteID: sampleSiteID, thenReturn: .success(media))
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network,
+                                    remote: remote)
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.updateProductID(siteID: self.sampleSiteID,
+                                                     productID: self.sampleProductID,
+                                                     mediaID: self.sampleMediaID) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        let mediaFromResult = try XCTUnwrap(result.get())
+        XCTAssertEqual(mediaFromResult, media)
+    }
+
+    /// Verifies that `MediaAction.updateProductID` returns an error whenever there is an error response from the backend.
+    ///
+    func test_updateProductID_returns_error_upon_response_error() throws {
+        // Given
+        let remote = MockMediaRemote()
+        remote.whenUpdatingProductIDResultsBySiteIDToWordPressSite(siteID: sampleSiteID, thenReturn: .failure(DotcomError.unauthorized))
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network,
+                                    remote: remote)
+
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.updateProductID(siteID: self.sampleSiteID,
+                                                     productID: self.sampleProductID,
+                                                     mediaID: self.sampleMediaID) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
         let error = try XCTUnwrap(result.failure as? DotcomError)
         XCTAssertEqual(error, .unauthorized)
     }

@@ -20,6 +20,10 @@ public protocol MediaRemoteProtocol {
                                     productID: Int64,
                                     mediaItems: [UploadableMedia],
                                     completion: @escaping (Result<WordPressMedia, Error>) -> Void)
+    func updateProductID(siteID: Int64,
+                         productID: Int64,
+                         mediaID: Int64,
+                         completion: @escaping (Result<Media, Error>) -> Void)
 }
 
 /// Media: Remote Endpoints
@@ -164,6 +168,31 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
             }
         }, completion: completion)
     }
+
+    /// Sets the provided `productID` as `parent_id` of the `media`.
+    ///
+    /// API reference: https://developer.wordpress.com/docs/api/1.1/post/sites/%24site/media/%24media_ID/
+    ///
+    /// - Parameters:
+    ///     - siteID: Site in which the media was uploaded to.
+    ///     - productID: Product ID to use as `parent_id` of the media.
+    ///     - mediaID: ID of media for which `parent_id` needs to be updated.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func updateProductID(siteID: Int64,
+                                productID: Int64,
+                                mediaID: Int64,
+                                completion: @escaping (Result<Media, Error>) -> Void) {
+        let formParameters: [String: String] = [
+            ParameterKey.wordPressMediaParentID: "\(productID)",
+            ParameterKey.fieldsWordPressSite: ParameterValue.wordPressMediaFields,
+        ]
+        let path = "sites/\(siteID)/media/\(mediaID)"
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: formParameters)
+        let mapper = MediaMapper()
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 
@@ -183,6 +212,7 @@ public extension MediaRemote {
         static let fieldsWordPressSite: String = "_fields"
         static let mimeType: String   = "mime_type"
         static let contextKey: String = "context"
+        static let wordPressMediaParentID = "parent_id"
     }
 
     private enum ParameterValue {

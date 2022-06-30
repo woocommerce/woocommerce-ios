@@ -10,7 +10,7 @@ final class ProductImageActionHandler {
     typealias OnAssetUpload = (PHAsset, Result<ProductImage, Error>) -> Void
 
     private let siteID: Int64
-    private let productID: Int64
+    private var productID: Int64
 
     /// The queue where internal states like `allStatuses` and `observations` are updated on to maintain thread safety.
     private let queue: DispatchQueue
@@ -183,6 +183,14 @@ final class ProductImageActionHandler {
             let action = MediaAction.uploadMedia(siteID: self.siteID, productID: self.productID, mediaAsset: asset, onCompletion: onCompletion)
             self.stores.dispatch(action)
         }
+    }
+
+    /// Updates the `productID` with the provided `remoteProductID`
+    ///
+    /// Used for updating the product ID during create product flow. i.e. To replace the local product ID with the remote product ID.
+    ///
+    func updateProductID(_ remoteProductID: Int64) {
+        self.productID = remoteProductID
     }
 
     func deleteProductImage(_ productImage: ProductImage) {

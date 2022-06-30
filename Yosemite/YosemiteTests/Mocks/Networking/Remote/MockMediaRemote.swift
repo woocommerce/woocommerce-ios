@@ -21,6 +21,9 @@ final class MockMediaRemote {
     /// The results to return based on the given site ID in `uploadMediaToWordPressSite`
     private var uploadMediaToWordPressSiteResultsBySiteID = [Int64: Result<WordPressMedia, Error>]()
 
+    /// The results to return based on the given site ID in `updateProductID`
+    private var updateProductIDResultsBySiteID = [Int64: Result<Media, Error>]()
+
     /// Returns the value as a publisher when `loadMediaLibrary` is called.
     func whenLoadingMediaLibrary(siteID: Int64, thenReturn result: Result<[Media], Error>) {
         loadMediaLibraryResultsBySiteID[siteID] = result
@@ -40,6 +43,11 @@ final class MockMediaRemote {
     func whenUploadingMediaToWordPressSite(siteID: Int64, thenReturn result: Result<WordPressMedia, Error>) {
         uploadMediaToWordPressSiteResultsBySiteID[siteID] = result
     }
+
+    /// Returns the value as a publisher when `updateProductID` is called.
+    func whenUpdatingProductIDResultsBySiteIDToWordPressSite(siteID: Int64, thenReturn result: Result<Media, Error>) {
+        updateProductIDResultsBySiteID[siteID] = result
+    }
 }
 
 extension MockMediaRemote {
@@ -48,6 +56,7 @@ extension MockMediaRemote {
         case loadMediaLibraryFromWordPressSite(siteID: Int64)
         case uploadMedia(siteID: Int64)
         case uploadMediaToWordPressSite(siteID: Int64)
+        case updateProductID(siteID: Int64)
     }
 }
 
@@ -91,6 +100,18 @@ extension MockMediaRemote: MediaRemoteProtocol {
                                     completion: @escaping (Result<WordPressMedia, Error>) -> Void) {
         invocations.append(.uploadMediaToWordPressSite(siteID: siteID))
         guard let result = uploadMediaToWordPressSiteResultsBySiteID[siteID] else {
+            XCTFail("\(String(describing: self)) Could not find result for site ID: \(siteID)")
+            return
+        }
+        completion(result)
+    }
+
+    func updateProductID(siteID: Int64,
+                         productID: Int64,
+                         mediaID: Int64,
+                         completion: @escaping (Result<Media, Error>) -> Void) {
+        invocations.append(.updateProductID(siteID: siteID))
+        guard let result = updateProductIDResultsBySiteID[siteID] else {
             XCTFail("\(String(describing: self)) Could not find result for site ID: \(siteID)")
             return
         }

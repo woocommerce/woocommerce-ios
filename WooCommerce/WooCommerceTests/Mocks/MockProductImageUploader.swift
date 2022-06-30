@@ -20,14 +20,12 @@ final class MockProductImageUploader: ProductImageUploaderProtocol {
         replaceLocalIDWasCalled = true
     }
 
-    func saveProductImagesWhenNoneIsPendingUploadAnymore(
-        key: ProductImageUploaderKey,
-        onProductSave: @escaping (Result<[Yosemite.ProductImage], Error>) -> Void
-    ) {
+    func saveProductImagesWhenNoneIsPendingUploadAnymore(key: ProductImageUploaderKey,
+                                                         onProductSave: @escaping (Result<[ProductImage], Error>) -> Void) {
         saveProductImagesWhenNoneIsPendingUploadAnymoreWasCalled = true
     }
 
-    func actionHandler(key: ProductImageUploaderKey, originalStatuses: [ProductImageStatus]) -> WooCommerce.ProductImageActionHandler {
+    func actionHandler(key: ProductImageUploaderKey, originalStatuses: [ProductImageStatus]) -> ProductImageActionHandler {
         ProductImageActionHandler(siteID: 0, productID: .product(id: 0), imageStatuses: [])
     }
 

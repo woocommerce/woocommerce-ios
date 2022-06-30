@@ -45,7 +45,11 @@ final class ProductImageActionHandler {
     ///   - imageStatuses: the current image statuses of the product.
     ///   - queue: the queue where the update callbacks are called on. Default to be the main queue.
     ///   - stores: stores that dispatch image upload action.
-    init(siteID: Int64, productID: ProductOrVariationID, imageStatuses: [ProductImageStatus], queue: DispatchQueue = .main, stores: StoresManager = ServiceLocator.stores) {
+    init(siteID: Int64,
+         productID: ProductOrVariationID,
+         imageStatuses: [ProductImageStatus],
+         queue: DispatchQueue = .main,
+         stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.productOrVariationID = productID
         self.queue = queue

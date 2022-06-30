@@ -183,6 +183,26 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         )
     ]
 
+    var thisMonthVisitStats: SiteVisitStats {
+        Self.createVisitStats(
+            siteID: 1,
+            granularity: .month,
+            items: [Int](0..<30).map { dayIndex in
+                Self.createVisitStatsItem(
+                    granularity: .day,
+                    periodDate: date.monthStart.addingDays(dayIndex),
+                    visitors: Int.random(in: 10 ... 100)
+                )
+            }
+        )
+    }
+
+    var thisMonthTopProducts: TopEarnerStats = createStats(siteID: 1, granularity: .month, items: [
+        createTopEarningItem(product: Products.akoyaPearlShades, quantity: 17),
+        createTopEarningItem(product: Products.blackCoralShades, quantity: 11),
+        createTopEarningItem(product: Products.coloradoShades, quantity: 5),
+    ])
+
     var thisYearVisitStats: SiteVisitStats {
         Self.createVisitStats(
             siteID: 1,
@@ -191,7 +211,7 @@ struct ScreenshotObjectGraph: MockObjectGraph {
                 Self.createVisitStatsItem(
                     granularity: .month,
                     periodDate: date.yearStart.addingMonths(monthIndex),
-                    visitors: Int.random(in: 100 ... 1000)
+                    visitors: Int.random(in: 100 ... 500)
                 )
             }
         )
@@ -209,14 +229,28 @@ struct ScreenshotObjectGraph: MockObjectGraph {
 
     /// The possible value of an order when generating random stats
     ///
-    private let orderValueRange = 100 ..< 500
+    private let orderValueRange = 10 ..< 50
+
+    var thisMonthOrderStats: OrderStatsV4 {
+        Self.createStats(
+            siteID: 1,
+            granularity: .monthly,
+            intervals: thisMonthVisitStats.items!.enumerated().map {
+                Self.createMonthlyInterval(
+                    date: date.monthStart.addingDays($0.offset),
+                    orderCount: Int(Double($0.element.visitors) * Double.random(in: orderProbabilityRange)),
+                    revenue: Decimal($0.element.visitors) * Decimal.random(in: orderValueRange)
+                )
+            }
+        )
+    }
 
     var thisYearOrderStats: OrderStatsV4 {
         Self.createStats(
             siteID: 1,
             granularity: .yearly,
             intervals: thisYearVisitStats.items!.enumerated().map {
-                Self.createInterval(
+                Self.createYearlyInterval(
                     date: date.yearStart.addingMonths($0.offset),
                     orderCount: Int(Double($0.element.visitors) * Double.random(in: orderProbabilityRange)),
                     revenue: Decimal($0.element.visitors) * Decimal.random(in: orderValueRange)

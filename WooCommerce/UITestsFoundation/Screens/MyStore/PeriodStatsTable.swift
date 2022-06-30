@@ -11,12 +11,17 @@ public final class PeriodStatsTable: ScreenObject {
         $0.cells["period-data-thisWeek-tab"]
     }
 
+    private let monthsTabGetter: (XCUIApplication) -> XCUIElement = {
+        $0.cells["period-data-thisMonth-tab"]
+    }
+
     private let yearsTabGetter: (XCUIApplication) -> XCUIElement = {
         $0.cells["period-data-thisYear-tab"]
     }
 
     private var daysTab: XCUIElement { daysTabGetter(app) }
     private var weeksTab: XCUIElement { weeksTabGetter(app) }
+    private var monthsTab: XCUIElement { monthsTabGetter(app) }
     private var yearsTab: XCUIElement { yearsTabGetter(app) }
 
     init(app: XCUIApplication = XCUIApplication()) throws {
@@ -33,10 +38,16 @@ public final class PeriodStatsTable: ScreenObject {
     }
 
     @discardableResult
-       func switchToWeeksTab() -> Self {
-           weeksTab.tap()
-           return self
-       }
+    func switchToWeeksTab() -> Self {
+        weeksTab.tap()
+        return self
+    }
+
+    @discardableResult
+    public func switchToMonthsTab() -> Self {
+        monthsTab.tap()
+        return self
+    }
 
     @discardableResult
     public func switchToYearsTab() -> Self {

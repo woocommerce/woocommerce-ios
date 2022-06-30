@@ -34,7 +34,7 @@ class WooCommerceScreenshots: XCTestCase {
 
         // My Store
         .dismissTopBannerIfNeeded()
-        .then { ($0 as! MyStoreScreen).periodStatsTable.switchToYearsTab() }
+        .then { ($0 as! MyStoreScreen).periodStatsTable.switchToMonthsTab() }
         .thenTakeScreenshot(named: "order-dashboard")
 
         // Orders

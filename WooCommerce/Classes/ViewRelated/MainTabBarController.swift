@@ -626,7 +626,15 @@ private extension MainTabBarController {
             presenter.presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: .switchingStores)
         }
 
-        let productViewController = ProductLoaderViewController(model: .product(productID: error.productID),
+        let model: ProductLoaderViewController.Model = {
+            switch error.productOrVariationID {
+            case .product(let id):
+                return .product(productID: id)
+            case .variation(let productID, let variationID):
+                return .productVariation(productID: productID, variationID: variationID)
+            }
+        }()
+        let productViewController = ProductLoaderViewController(model: model,
                                                                 siteID: error.siteID,
                                                                 forceReadOnly: false)
         let productNavController = WooNavigationController(rootViewController: productViewController)

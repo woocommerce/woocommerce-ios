@@ -6,9 +6,20 @@ import protocol Yosemite.StoresManager
 /// Information about a background product image upload error.
 struct ProductImageUploadErrorInfo {
     let siteID: Int64
-    let productID: Int64
+    let productOrVariationID: ProductOrVariationID
     let productImageStatuses: [ProductImageStatus]
     let error: ProductImageUploaderError
+}
+
+enum ProductOrVariationID: Equatable, Hashable {
+    case product(id: Int64)
+    case variation(productID: Int64, variationID: Int64)
+}
+
+struct ProductImageUploaderKey: Equatable, Hashable {
+    let siteID: Int64
+    let productOrVariationID: ProductOrVariationID
+    let isLocalID: Bool
 }
 
 /// Handles product image upload to support background image upload.
@@ -22,7 +33,7 @@ protocol ProductImageUploaderProtocol {
     ///   - productID: the ID of the product where images are added to.
     ///   - isLocalID: whether the product ID is a local ID like in product creation.
     ///   - originalStatuses: the current image statuses of the product for initialization.
-    func actionHandler(siteID: Int64, productID: Int64, isLocalID: Bool, originalStatuses: [ProductImageStatus]) -> ProductImageActionHandler
+    func actionHandler(key: ProductImageUploaderKey, originalStatuses: [ProductImageStatus]) -> ProductImageActionHandler
 
     /// Replaces the local ID of the product with the remote ID from API.
     ///
@@ -35,7 +46,7 @@ protocol ProductImageUploaderProtocol {
     ///   - siteID: The ID of the site to which images are uploaded to.
     ///   - localProductID: A temporary local ID of the product.
     ///   - remoteProductID: Remote product ID received from API.
-    func replaceLocalID(siteID: Int64, localProductID: Int64, remoteProductID: Int64)
+    func replaceLocalID(siteID: Int64, localID: ProductOrVariationID, remoteID: Int64)
 
     /// Saves the product remotely with the images after none is pending upload.
     /// - Parameters:
@@ -43,9 +54,7 @@ protocol ProductImageUploaderProtocol {
     ///   - productID: the ID of the product where images are added to.
     ///   - isLocalID: whether the product ID is a local ID like in product creation.
     ///   - onProductSave: called after the product is saved remotely with the uploaded images.
-    func saveProductImagesWhenNoneIsPendingUploadAnymore(siteID: Int64,
-                                                         productID: Int64,
-                                                         isLocalID: Bool,
+    func saveProductImagesWhenNoneIsPendingUploadAnymore(key: ProductImageUploaderKey,
                                                          onProductSave: @escaping (Result<[ProductImage], Error>) -> Void)
 
     /// Stops the emission of errors when the user is in the product form to edit a specific product.
@@ -53,14 +62,14 @@ protocol ProductImageUploaderProtocol {
     ///   - siteID: the ID of the site that the user is logged into.
     ///   - productID: the ID of the product that the user is editing.
     ///   - isLocalID: whether the product ID is a local ID like in product creation.
-    func stopEmittingErrors(siteID: Int64, productID: Int64, isLocalID: Bool)
+    func stopEmittingErrors(key: ProductImageUploaderKey)
 
     /// Starts the emission of errors when the user leaves the product form.
     /// - Parameters:
     ///   - siteID: the ID of the site that the user is logged into.
     ///   - productID: the ID of the product that the user is navigating away.
     ///   - isLocalID: whether the product ID is a local ID like in product creation.
-    func startEmittingErrors(siteID: Int64, productID: Int64, isLocalID: Bool)
+    func startEmittingErrors(key: ProductImageUploaderKey)
 
     /// Determines whether there are unsaved changes on a product's images.
     /// If the product had any save request before, it checks whether the image statuses to save match the latest image statuses.
@@ -70,7 +79,7 @@ protocol ProductImageUploaderProtocol {
     ///   - productID: the ID of the product where images are added to.
     ///   - isLocalID: whether the product ID is a local ID like in product creation.
     ///   - originalImages: the image statuses before any edits.
-    func hasUnsavedChangesOnImages(siteID: Int64, productID: Int64, isLocalID: Bool, originalImages: [ProductImage]) -> Bool
+    func hasUnsavedChangesOnImages(key: ProductImageUploaderKey, originalImages: [ProductImage]) -> Bool
 
     /// Resets all internal states and tracking of image uploads for connected stores.
     /// Called when the user is logged out.
@@ -83,18 +92,14 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         errorsSubject.eraseToAnyPublisher()
     }
 
+    typealias Key = ProductImageUploaderKey
+
     private let errorsSubject: PassthroughSubject<ProductImageUploadErrorInfo, Never> = .init()
-    private var statusUpdatesExcludedProductKeys: Set<ProductKey> = []
+    private var statusUpdatesExcludedProductKeys: Set<Key> = []
     private var statusUpdatesSubscriptions: Set<AnyCancellable> = []
 
-    private struct ProductKey: Equatable, Hashable {
-        let siteID: Int64
-        let productID: Int64
-        let isLocalID: Bool
-    }
-
-    private var actionHandlersByProduct: [ProductKey: ProductImageActionHandler] = [:]
-    private var imagesSaverByProduct: [ProductKey: ProductImagesSaver] = [:]
+    private var actionHandlersByProduct: [Key: ProductImageActionHandler] = [:]
+    private var imagesSaverByProduct: [Key: ProductImagesSaver] = [:]
     private let stores: StoresManager
     private let imagesProductIDUpdater: ProductImagesProductIDUpdaterProtocol
 
@@ -104,48 +109,48 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         self.imagesProductIDUpdater = imagesProductIDUpdater
     }
 
-    func actionHandler(siteID: Int64, productID: Int64, isLocalID: Bool, originalStatuses: [ProductImageStatus]) -> ProductImageActionHandler {
-        let key = ProductKey(siteID: siteID, productID: productID, isLocalID: isLocalID)
+    func actionHandler(key: ProductImageUploaderKey, originalStatuses: [ProductImageStatus]) -> ProductImageActionHandler {
         let actionHandler: ProductImageActionHandler
         if let handler = actionHandlersByProduct[key], handler.productImageStatuses.hasPendingUpload {
             actionHandler = handler
         } else {
-            actionHandler = ProductImageActionHandler(siteID: siteID, productID: productID, imageStatuses: originalStatuses, stores: stores)
+            actionHandler = ProductImageActionHandler(siteID: key.siteID, productID: key.productOrVariationID, imageStatuses: originalStatuses, stores: stores)
             actionHandlersByProduct[key] = actionHandler
             observeStatusUpdatesForErrors(key: key, actionHandler: actionHandler)
         }
         return actionHandler
     }
 
-    func replaceLocalID(siteID: Int64, localProductID: Int64, remoteProductID: Int64) {
-        let key = ProductKey(siteID: siteID, productID: localProductID, isLocalID: true)
+    func replaceLocalID(siteID: Int64, localID: ProductOrVariationID, remoteID: Int64) {
+        let key = Key(siteID: siteID,
+                      productOrVariationID: localID,
+                      isLocalID: true)
         guard let handler = actionHandlersByProduct[key] else {
             return
         }
 
         // Update the product ID of handler to make sure that future product image uploads use the `remoteProductID` instead of `localProductID`
-        handler.updateProductID(remoteProductID)
+        handler.updateProductID(remoteID)
 
         actionHandlersByProduct.removeValue(forKey: key)
-        let keyWithRemoteProductID = ProductKey(siteID: siteID, productID: remoteProductID, isLocalID: false)
+        let keyWithRemoteProductID = Key(siteID: siteID,
+                                         productOrVariationID: localID.replacingID(remoteID),
+                                         isLocalID: false)
         actionHandlersByProduct[keyWithRemoteProductID] = handler
 
         statusUpdatesExcludedProductKeys.remove(key)
         statusUpdatesExcludedProductKeys.insert(keyWithRemoteProductID)
     }
 
-    func stopEmittingErrors(siteID: Int64, productID: Int64, isLocalID: Bool) {
-        let key = ProductKey(siteID: siteID, productID: productID, isLocalID: isLocalID)
+    func stopEmittingErrors(key: ProductImageUploaderKey) {
         statusUpdatesExcludedProductKeys.insert(key)
     }
 
-    func startEmittingErrors(siteID: Int64, productID: Int64, isLocalID: Bool) {
-        let key = ProductKey(siteID: siteID, productID: productID, isLocalID: isLocalID)
+    func startEmittingErrors(key: ProductImageUploaderKey) {
         statusUpdatesExcludedProductKeys.remove(key)
     }
 
-    func hasUnsavedChangesOnImages(siteID: Int64, productID: Int64, isLocalID: Bool, originalImages: [ProductImage]) -> Bool {
-        let key = ProductKey(siteID: siteID, productID: productID, isLocalID: isLocalID)
+    func hasUnsavedChangesOnImages(key: ProductImageUploaderKey, originalImages: [ProductImage]) -> Bool {
         guard let handler = actionHandlersByProduct[key] else {
             return false
         }
@@ -160,17 +165,14 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         }
     }
 
-    func saveProductImagesWhenNoneIsPendingUploadAnymore(siteID: Int64,
-                                                         productID: Int64,
-                                                         isLocalID: Bool,
+    func saveProductImagesWhenNoneIsPendingUploadAnymore(key: ProductImageUploaderKey,
                                                          onProductSave: @escaping (Result<[ProductImage], Error>) -> Void) {
         // The product has to exist remotely in order to save its images remotely.
         // In product creation, this save function should be called after a new product is saved remotely for the first time.
-        guard isLocalID == false else {
+        guard key.isLocalID == false else {
             return
         }
 
-        let key = ProductKey(siteID: siteID, productID: productID, isLocalID: isLocalID)
         guard let handler = actionHandlersByProduct[key] else {
             return
         }
@@ -186,7 +188,9 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         if let productImagesSaver = imagesSaverByProduct[key] {
             imagesSaver = productImagesSaver
         } else {
-            imagesSaver = ProductImagesSaver(siteID: siteID, productID: productID, stores: stores)
+            imagesSaver = ProductImagesSaver(siteID: key.siteID,
+                                             productOrVariationID: key.productOrVariationID,
+                                             stores: stores)
             imagesSaverByProduct[key] = imagesSaver
         }
 
@@ -194,8 +198,8 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
             guard let self = self else { return }
             onProductSave(result)
             if case let .failure(error) = result {
-                self.errorsSubject.send(.init(siteID: siteID,
-                                              productID: productID,
+                self.errorsSubject.send(.init(siteID: key.siteID,
+                                              productOrVariationID: key.productOrVariationID,
                                               productImageStatuses: handler.productImageStatuses,
                                               error: .failedSavingProductAfterImageUpload(error: error)))
             }
@@ -229,18 +233,29 @@ private extension ProductImageUploader {
         }
     }
 
-    private func observeStatusUpdatesForErrors(key: ProductKey, actionHandler: ProductImageActionHandler) {
+    private func observeStatusUpdatesForErrors(key: Key, actionHandler: ProductImageActionHandler) {
         let observationToken = actionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else { return }
 
             if let error = error, self.statusUpdatesExcludedProductKeys.contains(key) == false {
                 self.errorsSubject.send(.init(siteID: key.siteID,
-                                              productID: key.productID,
+                                              productOrVariationID: key.productOrVariationID,
                                               productImageStatuses: productImageStatuses,
                                               error: .failedUploadingImage(error: error)))
             }
         }
         statusUpdatesSubscriptions.insert(observationToken)
+    }
+}
+
+private extension ProductOrVariationID {
+    func replacingID(_ id: Int64) -> ProductOrVariationID {
+        switch self {
+        case .product:
+            return .product(id: id)
+        case .variation(let productID, _):
+            return .variation(productID: productID, variationID: id)
+        }
     }
 }
 

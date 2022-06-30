@@ -131,9 +131,9 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             self.viewModel.updateImages(productImageStatuses.images)
         }
 
-        productImageUploader.stopEmittingErrors(siteID: viewModel.productModel.siteID,
-                                                       productID: viewModel.productModel.productID,
-                                                       isLocalID: !viewModel.productModel.existsRemotely)
+        productImageUploader.stopEmittingErrors(key: .init(siteID: viewModel.productModel.siteID,
+                                                           productOrVariationID: productOrVariationID(),
+                                                           isLocalID: !viewModel.productModel.existsRemotely))
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -142,9 +142,9 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         view.endEditing(true)
 
         if isBeingDismissedInAnyWay {
-            productImageUploader.startEmittingErrors(siteID: viewModel.productModel.siteID,
-                                                            productID: viewModel.productModel.productID,
-                                                            isLocalID: !viewModel.productModel.existsRemotely)
+            productImageUploader.startEmittingErrors(key: .init(siteID: viewModel.productModel.siteID,
+                                                                productOrVariationID: productOrVariationID(),
+                                                                isLocalID: !viewModel.productModel.existsRemotely))
         }
     }
 
@@ -1484,6 +1484,16 @@ private extension ProductFormViewController {
             viewModel.updateProductVariations(from: updatedProduct)
         }
         show(variationsViewController, sender: self)
+    }
+}
+
+private extension ProductFormViewController {
+    func productOrVariationID() -> ProductOrVariationID {
+        if let viewModel = viewModel as? ProductVariationFormViewModel {
+            return .variation(productID: viewModel.productModel.productID, variationID: viewModel.productModel.productVariation.productVariationID)
+        } else {
+            return .product(id: viewModel.productModel.productID)
+        }
     }
 }
 

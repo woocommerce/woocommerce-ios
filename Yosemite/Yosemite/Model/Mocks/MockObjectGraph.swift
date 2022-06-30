@@ -562,11 +562,11 @@ private extension Array where Element == OrderStatsV4Interval {
         let components = Calendar.current.dateComponents(in: .current, from: self)
         return components.month ?? 0
     }
-     
-     var day: Int {
-         let components = Calendar.current.dateComponents(in: .current, from: self)
-         return components.day ?? 0
-     }
+
+    var day: Int {
+        let components = Calendar.current.dateComponents(in: .current, from: self)
+        return components.day ?? 0
+    }
 
     var yearStart: Date {
         let year = Calendar.current.component(.year, from: self)

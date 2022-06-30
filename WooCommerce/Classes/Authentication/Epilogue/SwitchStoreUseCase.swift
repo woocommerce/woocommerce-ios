@@ -7,7 +7,6 @@ protocol SwitchStoreUseCaseProtocol {
 
 /// Simplifies and decouples the store picker from the caller
 ///
-@MainActor
 final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
 
     private let stores: StoresManager
@@ -19,6 +18,7 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
     /// The async version of `switchStore` that wraps the completion block version.
     /// - Parameter storeID: target store ID.
     /// - Returns: a boolean that indicates whether the site was changed.
+    @MainActor
     func switchStore(with storeID: Int64) async -> Bool {
         await withCheckedContinuation { [weak self] continuation in
             guard let self = self else { return }

@@ -11,11 +11,13 @@ struct ProductImageUploadErrorInfo {
     let error: ProductImageUploaderError
 }
 
+/// Identifiable data about a product or product variation.
 enum ProductOrVariationID: Equatable, Hashable {
     case product(id: Int64)
     case variation(productID: Int64, variationID: Int64)
 }
 
+/// Identifiable information about a specific product or product variation of different sites for image upload.
 struct ProductImageUploaderKey: Equatable, Hashable {
     let siteID: Int64
     let productOrVariationID: ProductOrVariationID
@@ -29,9 +31,7 @@ protocol ProductImageUploaderProtocol {
 
     /// Called for product image upload use cases (e.g. product/variation form, downloadable product list).
     /// - Parameters:
-    ///   - siteID: the ID of the site where images are uploaded to.
-    ///   - productID: the ID of the product where images are added to.
-    ///   - isLocalID: whether the product ID is a local ID like in product creation.
+    ///   - key: identifiable information about the product.
     ///   - originalStatuses: the current image statuses of the product for initialization.
     func actionHandler(key: ProductImageUploaderKey, originalStatuses: [ProductImageStatus]) -> ProductImageActionHandler
 
@@ -44,40 +44,32 @@ protocol ProductImageUploaderProtocol {
     ///
     /// - Parameters:
     ///   - siteID: The ID of the site to which images are uploaded to.
-    ///   - localProductID: A temporary local ID of the product.
-    ///   - remoteProductID: Remote product ID received from API.
+    ///   - localID: A temporary local ID of the product.
+    ///   - remoteID: Remote product ID received from API.
     func replaceLocalID(siteID: Int64, localID: ProductOrVariationID, remoteID: Int64)
 
     /// Saves the product remotely with the images after none is pending upload.
     /// - Parameters:
-    ///   - siteID: the ID of the site where images are uploaded to.
-    ///   - productID: the ID of the product where images are added to.
-    ///   - isLocalID: whether the product ID is a local ID like in product creation.
+    ///   - key: identifiable information about the product.
     ///   - onProductSave: called after the product is saved remotely with the uploaded images.
     func saveProductImagesWhenNoneIsPendingUploadAnymore(key: ProductImageUploaderKey,
                                                          onProductSave: @escaping (Result<[ProductImage], Error>) -> Void)
 
     /// Stops the emission of errors when the user is in the product form to edit a specific product.
     /// - Parameters:
-    ///   - siteID: the ID of the site that the user is logged into.
-    ///   - productID: the ID of the product that the user is editing.
-    ///   - isLocalID: whether the product ID is a local ID like in product creation.
+    ///   - key: identifiable information about the product.
     func stopEmittingErrors(key: ProductImageUploaderKey)
 
     /// Starts the emission of errors when the user leaves the product form.
     /// - Parameters:
-    ///   - siteID: the ID of the site that the user is logged into.
-    ///   - productID: the ID of the product that the user is navigating away.
-    ///   - isLocalID: whether the product ID is a local ID like in product creation.
+    ///   - key: identifiable information about the product.
     func startEmittingErrors(key: ProductImageUploaderKey)
 
     /// Determines whether there are unsaved changes on a product's images.
     /// If the product had any save request before, it checks whether the image statuses to save match the latest image statuses.
     /// Otherwise, it checks whether there is any pending upload or the image statuses match the given original image statuses.
     /// - Parameters:
-    ///   - siteID: the ID of the site where images are uploaded to.
-    ///   - productID: the ID of the product where images are added to.
-    ///   - isLocalID: whether the product ID is a local ID like in product creation.
+    ///   - key: identifiable information about the product.
     ///   - originalImages: the image statuses before any edits.
     func hasUnsavedChangesOnImages(key: ProductImageUploaderKey, originalImages: [ProductImage]) -> Bool
 

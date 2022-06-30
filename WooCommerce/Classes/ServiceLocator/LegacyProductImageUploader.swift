@@ -32,4 +32,8 @@ final class LegacyProductImageUploader: ProductImageUploaderProtocol {
         // The result is not used.
         return false
     }
+
+    func reset() {
+        // no-op
+    }
 }

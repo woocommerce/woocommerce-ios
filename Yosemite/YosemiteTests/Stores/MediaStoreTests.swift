@@ -475,9 +475,7 @@ final class MediaStoreTests: XCTestCase {
         XCTAssertEqual(error, .unauthorized)
     }
 
-    // MARK: test cases for `MediaAction.updateProductIDToWordPressSite`
-
-    /// Verifies that `MediaAction.updateProductIDToWordPressSite` returns the expected response.
+    /// Verifies that `MediaAction.updateProductID` returns the expected response while connecting to JCP sites.
     ///
     func test_updateProductIDToWordPressSite_returns_media() throws {
         // Given
@@ -505,7 +503,7 @@ final class MediaStoreTests: XCTestCase {
         XCTAssertEqual(mediaFromResult, media.toMedia())
     }
 
-    /// Verifies that `MediaAction.updateProductIDToWordPressSite` returns an error whenever there is an error response from the backend.
+    /// Verifies that `MediaAction.updateProductID` while connecting to JCP sites returns an error whenever there is an error response from the backend.
     ///
     func test_updateProductIDToWordPressSite_returns_error_upon_response_error() throws {
         // Given

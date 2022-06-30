@@ -1,4 +1,1 @@
-- [*] Coupons: Fixed issue saving "Individual Use" and "Exclude Sale Items" fields. [https://github.com/woocommerce/woocommerce-ios/pull/7117]
-- [*] Orders: The customer shipping/billing address form now navigates back automatically after selecting a country or state. [https://github.com/woocommerce/woocommerce-ios/pull/7119]
-- [internal] In settings and empty stores screen, the "Close Account" link is shown for users who signed in with Apple (the only way to create an account) to close their WordPress.com account. [https://github.com/woocommerce/woocommerce-ios/pull/7143]
-
+Did you know we’re working on a new feature for managing coupons? Head to the Menu tab, tap the settings icon, and scroll to experimental features. In this release, we’ve fixed an issue when editing “Individual Use” and “Exclude Sale Items” fields. Do try it out and share your feedback!

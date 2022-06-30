@@ -472,7 +472,7 @@ private extension ProductFormViewController {
     func configurePresentationStyle() {
         switch presentationStyle {
         case .contained(let containerViewController):
-            containerViewController.addCloseNavigationBarButton(target: self, action: #selector(closeNavigationBarButtonTapped))
+            containerViewController()?.addCloseNavigationBarButton(target: self, action: #selector(closeNavigationBarButtonTapped))
         case .navigationStack:
             break
         }
@@ -877,7 +877,7 @@ private extension ProductFormViewController {
         navigationItem.rightBarButtonItems = rightBarButtonItems
         switch presentationStyle {
         case .contained(let containerViewController):
-            containerViewController.navigationItem.rightBarButtonItems = rightBarButtonItems
+            containerViewController()?.navigationItem.rightBarButtonItems = rightBarButtonItems
         default:
             break
         }

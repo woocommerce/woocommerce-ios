@@ -28,9 +28,10 @@ struct InPersonPaymentsSelectPluginRow: View {
                 .background(Color(.tertiarySystemBackground))
                )
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(name)." +
-                            "\(Localization.accessibilitySelectableString)." +
-                            "\(selected ? Localization.accessibilitySelectedString : Localization.accessibilityNotSelectedString)")
+                .accessibilityLabel(name)
+                .accessibilityRemoveTraits([.isImage])
+                .accessibilityAddTraits([.isButton])
+                .accessibilityAddTraits(selected ? [.isSelected] : [])
     }
     var borderColor: Color {
         if selected {
@@ -103,15 +104,6 @@ private enum Localization {
     static let confirm = NSLocalizedString(
         "Confirm Payment Method",
         comment: "Button to confirm the preferred provider for In-Person Payments")
-    static let accessibilitySelectableString = NSLocalizedString(
-        "Selectable.",
-        comment: "VoiceOver accessibility hint informing the users that the row on the InPersonPaymentsSelectPluginView is selectable.")
-    static let accessibilitySelectedString = NSLocalizedString(
-        "Selected.",
-        comment: "VoiceOver accessibility hint informing the users that the row on the InPersonPaymentsSelectPluginView is selected.")
-    static let accessibilityNotSelectedString = NSLocalizedString(
-        "Not selected.",
-        comment: "VoiceOver accessibility hint informing the users that the row on the InPersonPaymentsSelectPluginView is not selected.")
 }
 
 struct InPersonPaymentsSelectPlugin_Previews: PreviewProvider {

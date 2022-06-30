@@ -164,6 +164,7 @@ final class AddEditCouponViewModel: ObservableObject {
     private let storageManager: StorageManagerType
     private let currencySettings: CurrencySettings
     private let couponAmountInputFormatter: CouponAmountInputFormatter
+    private let inputWarningDurationInSeconds: Double
     let timezone: TimeZone
 
     /// When an invalid percentage amount is set a debouncing warning timer is triggered.
@@ -206,6 +207,7 @@ final class AddEditCouponViewModel: ObservableObject {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          couponAmountInputFormatter: CouponAmountInputFormatter = CouponAmountInputFormatter(),
+         inputWarningDurationInSeconds: Double = 3,
          timezone: TimeZone = .siteTimezone,
          onSuccess: @escaping (Coupon) -> Void) {
         self.siteID = siteID
@@ -215,6 +217,7 @@ final class AddEditCouponViewModel: ObservableObject {
         self.storageManager = storageManager
         self.currencySettings = currencySettings
         self.couponAmountInputFormatter = couponAmountInputFormatter
+        self.inputWarningDurationInSeconds = inputWarningDurationInSeconds
         self.timezone = timezone
         self.onSuccess = onSuccess
 
@@ -240,6 +243,7 @@ final class AddEditCouponViewModel: ObservableObject {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          couponAmountInputFormatter: CouponAmountInputFormatter = CouponAmountInputFormatter(),
+         inputWarningDurationInSeconds: Double = 3,
          timezone: TimeZone = .siteTimezone,
          onSuccess: @escaping (Coupon) -> Void) {
         siteID = existingCoupon.siteID
@@ -250,6 +254,7 @@ final class AddEditCouponViewModel: ObservableObject {
         self.storageManager = storageManager
         self.currencySettings = currencySettings
         self.couponAmountInputFormatter = couponAmountInputFormatter
+        self.inputWarningDurationInSeconds = inputWarningDurationInSeconds
         self.timezone = timezone
         self.onSuccess = onSuccess
 
@@ -329,12 +334,14 @@ final class AddEditCouponViewModel: ObservableObject {
 
     private func debounceWarningState() {
         isDisplayingAmountWarning = true
-        amountWarningTimer = Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { [weak self] timer in
-            timer.invalidate()
-            self?.amountWarningTimer = nil
-            self?.isDisplayingAmountWarning = false
-            self?.amountField = "100"
-        }
+        amountWarningTimer = Timer.scheduledTimer(
+            withTimeInterval: inputWarningDurationInSeconds,
+            repeats: false) { [weak self] timer in
+                timer.invalidate()
+                self?.amountWarningTimer = nil
+                self?.isDisplayingAmountWarning = false
+                self?.amountField = "100"
+            }
     }
 
     func completeCouponAddEdit(coupon: Coupon, onUpdateFinished: @escaping () -> Void) {

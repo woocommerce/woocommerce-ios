@@ -235,7 +235,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .selectPlugin(pluginSelectionWasCleared: nil))
+        XCTAssertEqual(state, .selectPlugin(pluginSelectionWasCleared: false))
     }
 
     func test_onboarding_returns_select_plugin_when_both_stripe_and_wcpay_plugins_are_active_ignoring_preference_if_inPersonPaymentGatewaySelection_false() {
@@ -251,7 +251,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .selectPlugin(pluginSelectionWasCleared: nil))
+        XCTAssertEqual(state, .selectPlugin(pluginSelectionWasCleared: false))
     }
 
     func test_onboarding_uses_selected_plugin_wcpay_when_both_stripe_and_wcpay_plugins_are_active() {
@@ -262,7 +262,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
-        XCTAssertEqual(useCase.state, .selectPlugin(pluginSelectionWasCleared: nil))
+        XCTAssertEqual(useCase.state, .selectPlugin(pluginSelectionWasCleared: false))
         useCase.selectPlugin(.wcPay)
         let state = useCase.state
 
@@ -278,7 +278,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
-        XCTAssertEqual(useCase.state, .selectPlugin(pluginSelectionWasCleared: nil))
+        XCTAssertEqual(useCase.state, .selectPlugin(pluginSelectionWasCleared: false))
         useCase.selectPlugin(.stripe)
         let state = useCase.state
 
@@ -294,7 +294,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
-        XCTAssertEqual(useCase.state, .selectPlugin(pluginSelectionWasCleared: nil))
+        XCTAssertEqual(useCase.state, .selectPlugin(pluginSelectionWasCleared: false))
         useCase.selectPlugin(.stripe)
         useCase.clearPluginSelection()
 

@@ -10,9 +10,9 @@ public enum CardPresentPaymentOnboardingState: Equatable {
 
     /// There is more than one plugin installed and activated. The user must deactivate one.
     /// `pluginSelectionWasCleared` being true means that there was one plugin selected for payments
-    /// but that selection was just cleared (e.g when in settings asking to choose a plugin again). Being `nil` means that we do not have that information.
+    /// but that selection was just cleared (e.g when in settings asking to choose a plugin again)
     /// 
-    case selectPlugin(pluginSelectionWasCleared: Bool?)
+    case selectPlugin(pluginSelectionWasCleared: Bool)
 
     /// The passed plugin should be deactivated. E.g. this state can happen when WCPay and Stripe
     /// are both installed and activated in a country that doesn't support Stripe. In that case

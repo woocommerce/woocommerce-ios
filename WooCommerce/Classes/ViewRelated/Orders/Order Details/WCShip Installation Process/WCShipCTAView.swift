@@ -90,7 +90,7 @@ private extension WCShipCTAView {
     }
 
     enum Localization {
-        static let viewTitle = NSLocalizedString("Fullfill your orders with WooCommerce Shipping",
+        static let viewTitle = NSLocalizedString("Fulfill your orders with WooCommerce Shipping",
                                                  comment: "Title of the CTA view for installing WCShip extension")
         static let viewSubtitle = NSLocalizedString("Save time and money",
                                                     comment: "Title of the CTA view for installing WCShip extension")

@@ -52,6 +52,7 @@ struct InPersonPaymentsSelectPluginView: View {
                     .font(.largeTitle.bold())
                     .fixedSize(horizontal: false, vertical: true)
                 Text(Localization.prompt)
+                    .fixedSize(horizontal: false, vertical: true)
                     .bodyStyle()
 
                 VStack(alignment: .leading, spacing: 16) {

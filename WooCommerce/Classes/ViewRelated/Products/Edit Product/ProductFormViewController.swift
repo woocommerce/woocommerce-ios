@@ -28,6 +28,14 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         viewModel.password
     }
 
+    private var productOrVariationID: ProductOrVariationID {
+        if let viewModel = viewModel as? ProductVariationFormViewModel {
+            return .variation(productID: viewModel.productModel.productID, variationID: viewModel.productModel.productVariation.productVariationID)
+        } else {
+            return .product(id: viewModel.productModel.productID)
+        }
+    }
+
     private var tableViewModel: ProductFormTableViewModel
     private var tableViewDataSource: ProductFormTableViewDataSource {
         didSet {
@@ -131,9 +139,9 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             self.viewModel.updateImages(productImageStatuses.images)
         }
 
-        productImageUploader.stopEmittingErrors(siteID: viewModel.productModel.siteID,
-                                                       productID: viewModel.productModel.productID,
-                                                       isLocalID: !viewModel.productModel.existsRemotely)
+        productImageUploader.stopEmittingErrors(key: .init(siteID: viewModel.productModel.siteID,
+                                                           productOrVariationID: productOrVariationID,
+                                                           isLocalID: !viewModel.productModel.existsRemotely))
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -142,9 +150,9 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         view.endEditing(true)
 
         if isBeingDismissedInAnyWay {
-            productImageUploader.startEmittingErrors(siteID: viewModel.productModel.siteID,
-                                                            productID: viewModel.productModel.productID,
-                                                            isLocalID: !viewModel.productModel.existsRemotely)
+            productImageUploader.startEmittingErrors(key: .init(siteID: viewModel.productModel.siteID,
+                                                                productOrVariationID: productOrVariationID,
+                                                                isLocalID: !viewModel.productModel.existsRemotely))
         }
     }
 

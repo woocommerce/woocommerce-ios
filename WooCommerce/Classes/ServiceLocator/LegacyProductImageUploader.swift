@@ -5,30 +5,28 @@ import struct Yosemite.ProductImage
 final class LegacyProductImageUploader: ProductImageUploaderProtocol {
     let errors: AnyPublisher<ProductImageUploadErrorInfo, Never> = Empty<ProductImageUploadErrorInfo, Never>().eraseToAnyPublisher()
 
-    func actionHandler(siteID: Int64, productID: Int64, isLocalID: Bool, originalStatuses: [ProductImageStatus]) -> ProductImageActionHandler {
-        ProductImageActionHandler(siteID: siteID, productID: productID, imageStatuses: originalStatuses)
+    func actionHandler(key: ProductImageUploaderKey, originalStatuses: [ProductImageStatus]) -> ProductImageActionHandler {
+        ProductImageActionHandler(siteID: key.siteID, productID: key.productOrVariationID, imageStatuses: originalStatuses)
     }
 
-    func replaceLocalID(siteID: Int64, localProductID: Int64, remoteProductID: Int64) {
+    func replaceLocalID(siteID: Int64, localID: ProductOrVariationID, remoteID: Int64) {
         // no-op
     }
 
-    func saveProductImagesWhenNoneIsPendingUploadAnymore(siteID: Int64,
-                                                         productID: Int64,
-                                                         isLocalID: Bool,
+    func saveProductImagesWhenNoneIsPendingUploadAnymore(key: ProductImageUploaderKey,
                                                          onProductSave: @escaping (Result<[ProductImage], Error>) -> Void) {
         // no-op
     }
 
-    func startEmittingErrors(siteID: Int64, productID: Int64, isLocalID: Bool) {
+    func startEmittingErrors(key: ProductImageUploaderKey) {
         // no-op
     }
 
-    func stopEmittingErrors(siteID: Int64, productID: Int64, isLocalID: Bool) {
+    func stopEmittingErrors(key: ProductImageUploaderKey) {
         // no-op
     }
 
-    func hasUnsavedChangesOnImages(siteID: Int64, productID: Int64, isLocalID: Bool, originalImages: [ProductImage]) -> Bool {
+    func hasUnsavedChangesOnImages(key: ProductImageUploaderKey, originalImages: [ProductImage]) -> Bool {
         // The result is not used.
         return false
     }

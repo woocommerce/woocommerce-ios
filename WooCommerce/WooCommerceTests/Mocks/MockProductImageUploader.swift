@@ -16,30 +16,28 @@ final class MockProductImageUploader: ProductImageUploaderProtocol {
         self.errors = errors
     }
 
-    func replaceLocalID(siteID: Int64, localProductID: Int64, remoteProductID: Int64) {
+    func replaceLocalID(siteID: Int64, localID: ProductOrVariationID, remoteID: Int64) {
         replaceLocalIDWasCalled = true
     }
 
-    func saveProductImagesWhenNoneIsPendingUploadAnymore(siteID: Int64,
-                                                         productID: Int64,
-                                                         isLocalID: Bool,
+    func saveProductImagesWhenNoneIsPendingUploadAnymore(key: ProductImageUploaderKey,
                                                          onProductSave: @escaping (Result<[ProductImage], Error>) -> Void) {
         saveProductImagesWhenNoneIsPendingUploadAnymoreWasCalled = true
     }
 
-    func actionHandler(siteID: Int64, productID: Int64, isLocalID: Bool, originalStatuses: [ProductImageStatus]) -> ProductImageActionHandler {
-        ProductImageActionHandler(siteID: 0, productID: 0, imageStatuses: [])
+    func actionHandler(key: ProductImageUploaderKey, originalStatuses: [ProductImageStatus]) -> ProductImageActionHandler {
+        ProductImageActionHandler(siteID: 0, productID: .product(id: 0), imageStatuses: [])
     }
 
-    func startEmittingErrors(siteID: Int64, productID: Int64, isLocalID: Bool) {
+    func startEmittingErrors(key: ProductImageUploaderKey) {
         startEmittingErrorsWasCalled = true
     }
 
-    func stopEmittingErrors(siteID: Int64, productID: Int64, isLocalID: Bool) {
+    func stopEmittingErrors(key: ProductImageUploaderKey) {
         stopEmittingErrorsWasCalled = true
     }
 
-    func hasUnsavedChangesOnImages(siteID: Int64, productID: Int64, isLocalID: Bool, originalImages: [ProductImage]) -> Bool {
+    func hasUnsavedChangesOnImages(key: ProductImageUploaderKey, originalImages: [ProductImage]) -> Bool {
         false
     }
 

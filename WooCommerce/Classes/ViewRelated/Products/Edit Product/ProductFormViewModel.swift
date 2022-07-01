@@ -202,10 +202,11 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
             return product != originalProduct || productImageActionHandler.productImageStatuses.hasPendingUpload || password != originalPassword
         }
         let hasProductChangesExcludingImages = product.product.copy(images: []) != originalProduct.product.copy(images: [])
-        let hasImageChanges = productImagesUploader.hasUnsavedChangesOnImages(siteID: product.siteID,
-                                                                              productID: product.productID,
-                                                                              isLocalID: !product.existsRemotely,
-                                                                              originalImages: originalProduct.images)
+        let hasImageChanges = productImagesUploader
+            .hasUnsavedChangesOnImages(key: .init(siteID: product.siteID,
+                                                  productOrVariationID: .product(id: product.productID),
+                                                  isLocalID: !product.existsRemotely),
+                                       originalImages: originalProduct.images)
         return hasProductChangesExcludingImages || hasImageChanges || password != originalPassword
     }
 }
@@ -478,15 +479,16 @@ extension ProductFormViewModel {
 private extension ProductFormViewModel {
     func replaceProductID(productIDBeforeSave: Int64) {
         productImagesUploader.replaceLocalID(siteID: product.siteID,
-                                             localProductID: productIDBeforeSave,
-                                             remoteProductID: product.productID)
+                                             localID: .product(id: productIDBeforeSave),
+                                             remoteID: product.productID)
     }
 
     func saveProductImagesWhenNoneIsPendingUploadAnymore() {
-        productImagesUploader.saveProductImagesWhenNoneIsPendingUploadAnymore(siteID: product.siteID,
-                                                                              productID: product.productID,
-                                                                              isLocalID: !product.existsRemotely) { [weak self] result in
-            guard let self = self else { return }
+        productImagesUploader
+            .saveProductImagesWhenNoneIsPendingUploadAnymore(key: .init(siteID: product.siteID,
+                                                                        productOrVariationID: .product(id: product.productID),
+                                                                        isLocalID: !product.existsRemotely)) { [weak self] result in
+                guard let self = self else { return }
             switch result {
             case .success(let images):
                 let currentProduct = self.product

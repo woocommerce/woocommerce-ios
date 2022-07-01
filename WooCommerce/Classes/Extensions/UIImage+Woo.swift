@@ -998,6 +998,7 @@ extension UIImage {
     ///
     static var circularTimeIcon: UIImage {
         return UIImage(named: "icon-circular-time")!
+    }
 
     /// Lock Image
     ///

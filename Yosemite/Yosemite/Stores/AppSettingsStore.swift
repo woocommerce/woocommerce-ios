@@ -415,7 +415,7 @@ private extension AppSettingsStore {
                               onCompletion: onCompletion)
             return
         }
-        upsertTrackingProvider(siteID: siteID,
+        saveTrackingProvider(siteID: siteID,
                                providerName: providerName,
                                preselectedData: settings,
                                toFileURL: fileURL,
@@ -476,7 +476,7 @@ private extension AppSettingsStore {
         onCompletion(customProvider, nil)
     }
 
-    func upsertTrackingProvider(siteID: Int64,
+    func saveTrackingProvider(siteID: Int64,
                                 providerName: String,
                                 providerURL: String? = nil,
                                 preselectedData: [PreselectedProvider],
@@ -485,14 +485,7 @@ private extension AppSettingsStore {
         let newPreselectedProvider = PreselectedProvider(siteID: siteID,
                                                          providerName: providerName,
                                                          providerURL: providerURL)
-
-        var dataToSave = preselectedData
-
-        if preselectedData.contains(newPreselectedProvider) {
-            dataToSave[0] = newPreselectedProvider
-        } else {
-            dataToSave.insert(newPreselectedProvider, at: 0)
-        }
+        let dataToSave = [newPreselectedProvider]
 
         do {
             try fileStorage.write(dataToSave, to: toFileURL)

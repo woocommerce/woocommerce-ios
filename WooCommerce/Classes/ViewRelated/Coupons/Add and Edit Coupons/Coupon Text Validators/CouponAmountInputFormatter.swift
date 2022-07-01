@@ -14,14 +14,16 @@ struct CouponAmountInputFormatter: UnitInputFormatter {
         guard input.isNotEmpty else {
             return false
         }
+
         return priceInputFormatter.isValid(input: input)
     }
 
     func format(input text: String?) -> String {
-        guard text.isNilOrEmpty else {
-            return priceInputFormatter.format(input: text)
+        guard !text.isNilOrEmpty else {
+            return "0"
         }
-        return "0"
+
+        return priceInputFormatter.format(input: text)
     }
 }
 

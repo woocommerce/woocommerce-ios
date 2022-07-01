@@ -101,8 +101,8 @@ final class EditableOrderViewModel: ObservableObject {
     /// Defines if the view should be disabled.
     @Published private(set) var disabled: Bool = false
 
-    /// Defines if the non editable banner should be shown.
-    @Published private(set) var shouldShowNonEditableBanner: Bool = false
+    /// Defines if the non editable indicators (banners, locks, fields) should be shown.
+    @Published private(set) var shouldShowNonEditableIndicators: Bool = false
 
     /// Status Results Controller.
     ///
@@ -191,7 +191,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// View model for the customer note section.
     ///
-    lazy private(set) var noteViewModel = { OrderFormCustomerNoteViewModel(originalNote: "") }()
+    lazy private(set) var noteViewModel = { OrderFormCustomerNoteViewModel(originalNote: customerNoteDataViewModel.customerNote) }()
 
     // MARK: Payment properties
 
@@ -250,11 +250,7 @@ final class EditableOrderViewModel: ObservableObject {
         self.storageManager = storageManager
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.analytics = analytics
-        if case let .editing(initialOrder) = flow {
-            self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, initialOrder: initialOrder, stores: stores, currencySettings: currencySettings)
-        } else {
-            self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, initialOrder: nil, stores: stores, currencySettings: currencySettings)
-        }
+        self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, flow: flow, stores: stores, currencySettings: currencySettings)
         self.featureFlagService = featureFlagService
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.
@@ -269,7 +265,7 @@ final class EditableOrderViewModel: ObservableObject {
         configureCustomerDataViewModel()
         configurePaymentDataViewModel()
         configureCustomerNoteDataViewModel()
-        configureNonEditableBanner()
+        configureNonEditableIndicators()
         resetAddressForm()
     }
 
@@ -493,6 +489,8 @@ extension EditableOrderViewModel {
         ///
         let isLoading: Bool
 
+        let showNonEditableIndicators: Bool
+
         let shippingLineViewModel: ShippingLineDetailsViewModel
         let feeLineViewModel: FeeLineDetailsViewModel
 
@@ -506,6 +504,7 @@ extension EditableOrderViewModel {
              taxesTotal: String = "0",
              orderTotal: String = "0",
              isLoading: Bool = false,
+             showNonEditableIndicators: Bool = false,
              saveShippingLineClosure: @escaping (ShippingLine?) -> Void = { _ in },
              saveFeeLineClosure: @escaping (OrderFeeLine?) -> Void = { _ in },
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
@@ -519,6 +518,7 @@ extension EditableOrderViewModel {
             self.taxesTotal = currencyFormatter.formatAmount(taxesTotal) ?? "0.00"
             self.orderTotal = currencyFormatter.formatAmount(orderTotal) ?? "0.00"
             self.isLoading = isLoading
+            self.showNonEditableIndicators = showNonEditableIndicators
             self.shippingLineViewModel = ShippingLineDetailsViewModel(isExistingShippingLine: shouldShowShippingTotal,
                                                                       initialMethodTitle: shippingMethodTitle,
                                                                       shippingTotal: self.shippingTotal,
@@ -559,16 +559,18 @@ private extension EditableOrderViewModel {
     /// Calculates what navigation trailing item should be shown depending on our internal state.
     ///
     func configureNavigationTrailingItem() {
-        Publishers.CombineLatest3(orderSynchronizer.orderPublisher, $performingNetworkRequest, Just(flow))
-            .map { order, performingNetworkRequest, flow -> NavigationItem in
+        Publishers.CombineLatest4(orderSynchronizer.orderPublisher, orderSynchronizer.statePublisher, $performingNetworkRequest, Just(flow))
+            .map { order, syncState, performingNetworkRequest, flow -> NavigationItem in
                 guard !performingNetworkRequest else {
                     return .loading
                 }
 
-                switch flow {
-                case .creation:
+                switch (flow, syncState) {
+                case (.creation, _):
                     return .create
-                case .editing:
+                case (.editing, .syncing):
+                    return .loading
+                case (.editing, _):
                     return .done
                 }
             }
@@ -671,8 +673,8 @@ private extension EditableOrderViewModel {
     /// Updates payment section view model based on items in the order and order sync state.
     ///
     func configurePaymentDataViewModel() {
-        Publishers.CombineLatest(orderSynchronizer.orderPublisher, orderSynchronizer.statePublisher)
-            .map { [weak self] order, state in
+        Publishers.CombineLatest3(orderSynchronizer.orderPublisher, orderSynchronizer.statePublisher, $shouldShowNonEditableIndicators)
+            .map { [weak self] order, state, showNonEditableIndicators in
                 guard let self = self else {
                     return PaymentDataViewModel()
                 }
@@ -699,7 +701,8 @@ private extension EditableOrderViewModel {
                                             feesTotal: orderTotals.feesTotal.stringValue,
                                             taxesTotal: order.totalTax.isNotEmpty ? order.totalTax : "0",
                                             orderTotal: order.total.isNotEmpty ? order.total : "0",
-                                            isLoading: isDataSyncing,
+                                            isLoading: isDataSyncing && !showNonEditableIndicators,
+                                            showNonEditableIndicators: showNonEditableIndicators,
                                             saveShippingLineClosure: self.saveShippingLine,
                                             saveFeeLineClosure: self.saveFeeLine,
                                             currencyFormatter: self.currencyFormatter)
@@ -707,9 +710,9 @@ private extension EditableOrderViewModel {
             .assign(to: &$paymentDataViewModel)
     }
 
-    /// Binds the order state to the `shouldShowNonEditableBanner` property.
+    /// Binds the order state to the `shouldShowNonEditableIndicators` property.
     ///
-    func configureNonEditableBanner() {
+    func configureNonEditableIndicators() {
         Publishers.CombineLatest(orderSynchronizer.orderPublisher, Just(flow))
             .map { order, flow in
                 switch flow {
@@ -719,7 +722,7 @@ private extension EditableOrderViewModel {
                     return !order.isEditable
                 }
             }
-            .assign(to: &$shouldShowNonEditableBanner)
+            .assign(to: &$shouldShowNonEditableIndicators)
     }
 
     /// Tracks when customer details have been added

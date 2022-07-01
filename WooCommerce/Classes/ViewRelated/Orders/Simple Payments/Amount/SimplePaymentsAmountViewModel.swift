@@ -137,7 +137,7 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
 
             case .failure(let error):
                 self.presentNoticeSubject.send(.error(Localization.creationError))
-                self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowFailed(source: .amount))
+                self.analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowFailed(flow: .simplePayment, source: .amount))
                 DDLogError("⛔️ Error creating simple payments order: \(error)")
             }
         }
@@ -147,7 +147,7 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     /// Track the flow cancel scenario.
     ///
     func userDidCancelFlow() {
-        analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowCanceled())
+        analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCanceled(flow: .simplePayment))
     }
 
     /// Updates the initial order status.

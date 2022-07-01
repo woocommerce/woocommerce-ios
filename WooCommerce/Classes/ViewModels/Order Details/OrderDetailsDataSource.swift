@@ -46,7 +46,9 @@ final class OrderDetailsDataSource: NSObject {
 
     /// Whether the order is eligible for card present payment.
     ///
-    var isEligibleForCardPresentPayment: Bool = false
+    var isEligibleForPayment: Bool {
+        return order.datePaid == nil
+    }
 
     var isEligibleForRefund: Bool {
         guard !isRefundedStatus,
@@ -62,7 +64,7 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var shouldShowShippingLabelCreation: Bool {
         return isEligibleForShippingLabelCreation && shippingLabels.nonRefunded.isEmpty &&
-            !isEligibleForCardPresentPayment
+            !isEligibleForPayment
     }
 
     /// Whether the row for amount paid should be visible.
@@ -75,7 +77,7 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var shouldAllowRecreatingShippingLabels: Bool {
         return isEligibleForShippingLabelCreation && shippingLabels.isNotEmpty &&
-            !isEligibleForCardPresentPayment
+            !isEligibleForPayment
     }
 
     /// Whether the option to install the WCShip extension should be visible.
@@ -100,17 +102,12 @@ final class OrderDetailsDataSource: NSObject {
               !isPluginActive,
               isCountryCodeUS,
               isCurrencyUSD,
-              !isEligibleForCardPresentPayment else {
+              !isEligibleForPayment else {
             return false
         }
 
         return true
     }
-
-    func cardPresentPaymentGatewayAccounts() -> [PaymentGatewayAccount] {
-        resultsControllers.paymentGatewayAccounts.filter { $0.isCardPresentEligible }
-    }
-
 
     /// Whether the order has a receipt associated.
     ///
@@ -1156,7 +1153,7 @@ extension OrderDetailsDataSource {
                 rows.append(.netAmount)
             }
 
-            if isEligibleForCardPresentPayment {
+            if isEligibleForPayment {
                 rows.append(.collectCardPaymentButton)
             }
 

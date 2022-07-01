@@ -426,6 +426,13 @@ extension WooAnalyticsEvent {
                 Keys.errorDescription: errorDescription
             ])
         }
+
+        /// Tracked when the user taps to collect a payment
+        ///
+        static func collectPaymentTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .collectPaymentTapped,
+                              properties: [:])
+        }
     }
 }
 
@@ -517,18 +524,6 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .simplePaymentsFlowStarted, properties: [:])
         }
 
-        static func simplePaymentsFlowCompleted(amount: String, method: PaymentMethod) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .simplePaymentsFlowCompleted, properties: [Keys.amount: amount, Keys.paymentMethod: method.rawValue])
-        }
-
-        static func simplePaymentsFlowCanceled() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .simplePaymentsFlowCanceled, properties: [:])
-        }
-
-        static func simplePaymentsFlowFailed(source: Source) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .simplePaymentsFlowFailed, properties: [Keys.source: source.rawValue])
-        }
-
         static func simplePaymentsFlowNoteAdded() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .simplePaymentsFlowNoteAdded, properties: [:])
         }
@@ -536,9 +531,66 @@ extension WooAnalyticsEvent {
         static func simplePaymentsFlowTaxesToggled(isOn: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .simplePaymentsFlowTaxesToggled, properties: [Keys.state: isOn ? "on" : "off"])
         }
+    }
+}
 
-        static func simplePaymentsFlowCollect(method: PaymentMethod) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .simplePaymentsFlowCollect, properties: [Keys.paymentMethod: method.rawValue])
+
+// MARK: - Payments Flow Methods
+//
+extension WooAnalyticsEvent {
+    // Namespace
+    enum PaymentsFlow {
+        /// Possible Payment Methods
+        ///
+        enum PaymentMethod: String {
+            case card
+            case cash
+            case paymentLink = "payment_link"
+        }
+
+        /// Possible view sources
+        ///
+        enum Source: String {
+            case amount
+            case summary
+            case paymentMethod = "payment_method"
+        }
+
+        /// Possible flows
+        ///
+        enum Flow: String {
+            case simplePayment = "simple_payment"
+            case orderPayment = "order_payment"
+        }
+
+        /// Common event keys
+        ///
+        private enum Keys {
+            static let state = "state"
+            static let amount = "amount"
+            static let paymentMethod = "payment_method"
+            static let source = "source"
+            static let flow = "flow"
+        }
+
+        static func paymentsFlowCompleted(flow: Flow, amount: String, method: PaymentMethod) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .paymentsFlowCompleted, properties: [Keys.flow: flow.rawValue,
+                                                                             Keys.amount: amount,
+                                                                             Keys.paymentMethod: method.rawValue])
+        }
+
+        static func paymentsFlowCanceled(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .paymentsFlowCanceled, properties: [Keys.flow: flow.rawValue])
+        }
+
+        static func paymentsFlowFailed(flow: Flow, source: Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .paymentsFlowFailed, properties: [Keys.flow: flow.rawValue,
+                                                                          Keys.source: source.rawValue])
+        }
+
+        static func paymentsFlowCollect(flow: Flow, method: PaymentMethod) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .paymentsFlowCollect, properties: [Keys.flow: flow.rawValue,
+                                                                           Keys.paymentMethod: method.rawValue])
         }
     }
 }
@@ -811,22 +863,6 @@ extension WooAnalyticsEvent {
                                 Keys.softwareUpdateType: updateType.rawValue
                               ]
             )
-        }
-
-        /// Tracked when the user taps to collect a payment
-        ///
-        /// - Parameters:
-        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
-        ///   - countryCode: the country code of the store.
-        ///   - cardReaderModel: the model type of the card reader.
-        ///
-        static func collectPaymentTapped(forGatewayID: String?, countryCode: String, cardReaderModel: String) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .collectPaymentTapped,
-                              properties: [
-                                Keys.cardReaderModel: cardReaderModel,
-                                Keys.countryCode: countryCode,
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
-                              ])
         }
 
         /// Tracked when the payment collection fails

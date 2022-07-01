@@ -282,7 +282,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
         let coupon = Coupon.sampleCoupon.copy(amount: "20000", discountType: .percent)
         let viewModel = AddEditCouponViewModel(
                 existingCoupon: coupon,
-                inputWarningDurationInSeconds: 0.1,
+                inputWarningDurationInSeconds: 0.01,
                 onSuccess: { _ in }
         )
         XCTAssertFalse(viewModel.isDisplayingAmountWarning)
@@ -294,7 +294,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isDisplayingAmountWarning)
 
         waitFor { promise in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.02) {
                 promise(())
             }
         }
@@ -307,7 +307,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
         let coupon = Coupon.sampleCoupon.copy(amount: "invalid", discountType: .percent)
         let viewModel = AddEditCouponViewModel(
                 existingCoupon: coupon,
-                inputWarningDurationInSeconds: 0.1,
+                inputWarningDurationInSeconds: 0.01,
                 onSuccess: { _ in }
         )
 
@@ -324,7 +324,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
         let coupon = Coupon.sampleCoupon.copy(amount: "200", discountType: .percent)
         let viewModel = AddEditCouponViewModel(
                 existingCoupon: coupon,
-                inputWarningDurationInSeconds: 0.1,
+                inputWarningDurationInSeconds: 0.01,
                 onSuccess: { _ in }
         )
 
@@ -340,7 +340,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
         let coupon = Coupon.sampleCoupon.copy(amount: "200", discountType: .percent)
         let viewModel = AddEditCouponViewModel(
                 existingCoupon: coupon,
-                inputWarningDurationInSeconds: 0.1,
+                inputWarningDurationInSeconds: 0.01,
                 onSuccess: { _ in }
         )
 
@@ -357,7 +357,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
         let coupon = Coupon.sampleCoupon.copy(amount: "invalid", discountType: .percent)
         let viewModel = AddEditCouponViewModel(
                 existingCoupon: coupon,
-                inputWarningDurationInSeconds: 0.1,
+                inputWarningDurationInSeconds: 0.01,
                 onSuccess: { _ in }
         )
 
@@ -373,7 +373,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
         let coupon = Coupon.sampleCoupon.copy(amount: "200", discountType: .fixedCart)
         let viewModel = AddEditCouponViewModel(
                 existingCoupon: coupon,
-                inputWarningDurationInSeconds: 0.1,
+                inputWarningDurationInSeconds: 0.01,
                 onSuccess: { _ in }
         )
 
@@ -390,7 +390,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
         let coupon = Coupon.sampleCoupon.copy(amount: "100", discountType: .fixedCart)
         let viewModel = AddEditCouponViewModel(
                 existingCoupon: coupon,
-                inputWarningDurationInSeconds: 0.1,
+                inputWarningDurationInSeconds: 0.01,
                 onSuccess: { _ in }
         )
 

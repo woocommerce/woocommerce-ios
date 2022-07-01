@@ -417,7 +417,7 @@ extension EditableOrderViewModel {
             title = orderStatus.name ?? orderStatus.slug
             color = {
                 switch orderStatus.status {
-                case .autoDraft, .pending, .completed, .cancelled, .refunded, .custom:
+                case .autoDraft, .pending, .cancelled, .refunded, .custom:
                     return .gray(.shade5)
                 case .onHold:
                     return .withColorStudio(.orange, shade: .shade5)
@@ -425,6 +425,8 @@ extension EditableOrderViewModel {
                     return .withColorStudio(.green, shade: .shade5)
                 case .failed:
                     return .withColorStudio(.red, shade: .shade5)
+                case .completed:
+                    return .withColorStudio(.blue, shade: .shade5)
                 }
             }()
         }

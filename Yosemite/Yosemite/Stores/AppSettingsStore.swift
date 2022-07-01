@@ -488,11 +488,10 @@ private extension AppSettingsStore {
 
         var dataToSave = preselectedData
 
-        if preselectedData.contains(newPreselectedProvider),
-           let index = preselectedData.firstIndex(of: newPreselectedProvider) {
-            dataToSave[index] = newPreselectedProvider
+        if preselectedData.contains(newPreselectedProvider) {
+            dataToSave[0] = newPreselectedProvider
         } else {
-            dataToSave.append(newPreselectedProvider)
+            dataToSave.insert(newPreselectedProvider, at: 0)
         }
 
         do {

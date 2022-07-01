@@ -138,8 +138,6 @@ private extension ManualTrackingViewController {
     @objc func dismissButtonTapped() {
         if viewModel.canCommit || viewModel.hasUnsavedChanges {
             displayDismissConfirmationAlert()
-        } else if viewModel.isEmptyState {
-            dismiss()
         } else {
             dismiss()
         }

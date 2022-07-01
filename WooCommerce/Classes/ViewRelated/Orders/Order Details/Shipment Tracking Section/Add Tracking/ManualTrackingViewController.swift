@@ -458,7 +458,6 @@ private extension ManualTrackingViewController {
 
 // MARK: - UISheetPresentationControllerDelegate comformance
 //
-/// Asks permission to dismiss. We call this delegate method whenever the user attempts to dismiss the View Controller via the pull-down gesture.
 extension ManualTrackingViewController: UISheetPresentationControllerDelegate {
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
         if viewModel.canCommit || viewModel.hasUnsavedChanges {

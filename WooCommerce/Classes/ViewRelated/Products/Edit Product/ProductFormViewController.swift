@@ -28,6 +28,14 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         viewModel.password
     }
 
+    private var productOrVariationID: ProductOrVariationID {
+        if let viewModel = viewModel as? ProductVariationFormViewModel {
+            return .variation(productID: viewModel.productModel.productID, variationID: viewModel.productModel.productVariation.productVariationID)
+        } else {
+            return .product(id: viewModel.productModel.productID)
+        }
+    }
+
     private var tableViewModel: ProductFormTableViewModel
     private var tableViewDataSource: ProductFormTableViewDataSource {
         didSet {
@@ -132,7 +140,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         }
 
         productImageUploader.stopEmittingErrors(key: .init(siteID: viewModel.productModel.siteID,
-                                                           productOrVariationID: productOrVariationID(),
+                                                           productOrVariationID: productOrVariationID,
                                                            isLocalID: !viewModel.productModel.existsRemotely))
     }
 
@@ -143,7 +151,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
         if isBeingDismissedInAnyWay {
             productImageUploader.startEmittingErrors(key: .init(siteID: viewModel.productModel.siteID,
-                                                                productOrVariationID: productOrVariationID(),
+                                                                productOrVariationID: productOrVariationID,
                                                                 isLocalID: !viewModel.productModel.existsRemotely))
         }
     }
@@ -1484,16 +1492,6 @@ private extension ProductFormViewController {
             viewModel.updateProductVariations(from: updatedProduct)
         }
         show(variationsViewController, sender: self)
-    }
-}
-
-private extension ProductFormViewController {
-    func productOrVariationID() -> ProductOrVariationID {
-        if let viewModel = viewModel as? ProductVariationFormViewModel {
-            return .variation(productID: viewModel.productModel.productID, variationID: viewModel.productModel.productVariation.productVariationID)
-        } else {
-            return .product(id: viewModel.productModel.productID)
-        }
     }
 }
 

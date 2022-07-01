@@ -649,15 +649,15 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.rectangleOnRectangleAngled)
     }
 
-    func test_icon_circular_rate_discount() {
-        XCTAssertNotNil(UIImage.iconCircularRateDiscount)
+    func test_circular_rate_discount_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.circularRateDiscountIcon)
     }
 
-    func test_icon_circular_document() {
-        XCTAssertNotNil(UIImage.iconCircularDocument)
+    func test_circular_document_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.circularDocumentIcon)
     }
 
-    func test_icon_circular_time() {
-        XCTAssertNotNil(UIImage.iconCircularTime)
+    func test_circular_time_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.circularTimeIcon)
     }
 }

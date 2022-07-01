@@ -984,19 +984,19 @@ extension UIImage {
 
     /// Icon Circular Rate Discount (used in WCShip onboarding)
     ///
-    static var iconCircularRateDiscount: UIImage {
+    static var circularRateDiscountIcon: UIImage {
         return UIImage(named: "icon-circular-rate-discount")!
     }
 
     /// Icon Circular Document (used in WCShip onboarding)
     ///
-    static var iconCircularDocument: UIImage {
+    static var circularDocumentIcon: UIImage {
         return UIImage(named: "icon-circular-document")!
     }
 
     /// Icon Circular Time (used in WCShip onboarding)
     ///
-    static var iconCircularTime: UIImage {
+    static var circularTimeIcon: UIImage {
         return UIImage(named: "icon-circular-time")!
     }
 }

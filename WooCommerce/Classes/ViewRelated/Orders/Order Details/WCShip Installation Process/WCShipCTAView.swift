@@ -40,15 +40,15 @@ struct WCShipCTAView: View {
                 VStack (spacing: Constants.verticalSpacing) {
                     IconListItem(title: Localization.firstIconTitle,
                                  subtitle: Localization.firstIconSubtitle,
-                                 icon: .base64(.iconCircularTime))
+                                 icon: .base64(.circularTimeIcon))
 
                     IconListItem(title: Localization.secondIconTitle,
                                  subtitle: Localization.secondIconSubtitle,
-                                 icon: .base64(.iconCircularDocument))
+                                 icon: .base64(.circularDocumentIcon))
 
                     IconListItem(title: Localization.thirdIconTitle,
                                  subtitle: Localization.thirdIconSubtitle,
-                                 icon: .base64(.iconCircularRateDiscount))
+                                 icon: .base64(.circularRateDiscountIcon))
                 }
 
                 Button(Localization.buttonWhatIsWCShip) {

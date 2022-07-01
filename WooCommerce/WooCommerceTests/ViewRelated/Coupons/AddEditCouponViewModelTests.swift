@@ -276,6 +276,30 @@ final class AddEditCouponViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.hasChangesMade)
     }
+    
+    func test_validatePercentageAmountInput_correctly_control_warning_visibility() {
+        
+    }
+    
+    func test_validatePercentageAmountInput_returns_error_for_invalid_amount() {
+        
+    }
+    
+    func test_validatePercentageAmountInput_returns_error_when_set_for_no_warning() {
+        
+    }
+    
+    func test_validatePercentageAmountInput_correctly_updates_the_amount() {
+        
+    }
+    
+    func test_validatePercentageAmountInput_ignores_validation_when_discountType_is_not_percent() {
+        
+    }
+    
+    func test_validatePercentageAmountInput_returns_nil_if_amount_is_valid() {
+        
+    }
 
     func test_discount_type_changed_to_percent_triggers_amount_adjustment() {
         // Given

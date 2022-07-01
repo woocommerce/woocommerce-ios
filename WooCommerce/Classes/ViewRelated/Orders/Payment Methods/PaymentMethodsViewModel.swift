@@ -76,16 +76,6 @@ final class PaymentMethodsViewModel: ObservableObject {
     ///
     private let flow: WooAnalyticsEvent.PaymentsFlow.Flow
 
-    /// Stored payment gateways accounts.
-    /// We will care about the first one because only one is supported right now.
-    ///
-    private lazy var gatewayAccountResultsController: ResultsController<StoragePaymentGatewayAccount> = {
-        let predicate = NSPredicate(format: "siteID = %ld", siteID)
-        let controller = ResultsController<StoragePaymentGatewayAccount>(storageManager: storage, matching: predicate, sortedBy: [])
-        try? controller.performFetch()
-        return controller
-    }()
-
     /// Stored orders.
     /// We need to fetch this from our storage layer because we are only provide IDs as dependencies
     /// To keep previews/UIs decoupled from our business logic.

@@ -8,11 +8,13 @@ struct ShippingInputTransformer {
     /// Adds, deletes, or updates a shipping line input into an existing order.
     ///
     static func update(input: ShippingLine?, on order: Order) -> Order {
-        // If input is `nil`, then we remove any existing shipping line.
+        // If input is `nil`, then we remove the first shipping line.
         // We remove a shipping like by setting its `methodID` to nil.
         guard let input = input else {
-            let linesToRemove = order.shippingLines.map { OrderFactory.deletedShippingLine($0) }
-            return order.copy(shippingTotal: "0", shippingLines: linesToRemove)
+            guard let lineToRemove = order.shippingLines.first.map({ OrderFactory.deletedShippingLine($0) }) else {
+                return order
+            }
+            return order.copy(shippingLines: [lineToRemove])
         }
 
         // If there is no existing shipping lines, we insert the input one.

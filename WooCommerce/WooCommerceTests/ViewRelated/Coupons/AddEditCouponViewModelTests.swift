@@ -277,20 +277,150 @@ final class AddEditCouponViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.hasChangesMade)
     }
 
+    func test_validatePercentageAmountInput_correctly_control_warning_visibility() {
+        // Given
+        let coupon = Coupon.sampleCoupon.copy(amount: "20000", discountType: .percent)
+        let viewModel = AddEditCouponViewModel(
+                existingCoupon: coupon,
+                inputWarningDurationInSeconds: 0.01,
+                onSuccess: { _ in }
+        )
+        XCTAssertFalse(viewModel.isDisplayingAmountWarning)
+
+        // When
+        viewModel.validatePercentageAmountInput(withWarning: true)
+
+        // Then
+        XCTAssertTrue(viewModel.isDisplayingAmountWarning)
+
+        waitFor { promise in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.02) {
+                promise(())
+            }
+        }
+
+        XCTAssertFalse(viewModel.isDisplayingAmountWarning)
+    }
+
+    func test_validatePercentageAmountInput_returns_error_for_invalid_amount() {
+        // Given
+        let coupon = Coupon.sampleCoupon.copy(amount: "invalid", discountType: .percent)
+        let viewModel = AddEditCouponViewModel(
+                existingCoupon: coupon,
+                inputWarningDurationInSeconds: 0.01,
+                onSuccess: { _ in }
+        )
+
+        // When
+        let error = viewModel.validatePercentageAmountInput(withWarning: true)
+
+        // Then
+        XCTAssertNotNil(error)
+        XCTAssertEqual(error, .couponPercentAmountInvalid)
+    }
+
+    func test_validatePercentAmountInput_returns_nil_when_set_for_warning_correction() {
+        // Given
+        let coupon = Coupon.sampleCoupon.copy(amount: "200", discountType: .percent)
+        let viewModel = AddEditCouponViewModel(
+                existingCoupon: coupon,
+                inputWarningDurationInSeconds: 0.01,
+                onSuccess: { _ in }
+        )
+
+        // When
+        let error = viewModel.validatePercentageAmountInput(withWarning: true)
+
+        // Then
+        XCTAssertNil(error)
+    }
+
+    func test_validatePercentageAmountInput_returns_error_when_set_for_no_warning() {
+        // Given
+        let coupon = Coupon.sampleCoupon.copy(amount: "200", discountType: .percent)
+        let viewModel = AddEditCouponViewModel(
+                existingCoupon: coupon,
+                inputWarningDurationInSeconds: 0.01,
+                onSuccess: { _ in }
+        )
+
+        // When
+        let error = viewModel.validatePercentageAmountInput(withWarning: false)
+
+        // Then
+        XCTAssertNotNil(error)
+        XCTAssertEqual(error, .couponPercentAmountInvalid)
+    }
+
+    func test_validatePercentageAmountInput_with_no_warning_defaults_amount_to_zero() {
+        // Given
+        let coupon = Coupon.sampleCoupon.copy(amount: "invalid", discountType: .percent)
+        let viewModel = AddEditCouponViewModel(
+                existingCoupon: coupon,
+                inputWarningDurationInSeconds: 0.01,
+                onSuccess: { _ in }
+        )
+
+        // When
+        viewModel.validatePercentageAmountInput(withWarning: false)
+
+        // Then
+        XCTAssertEqual(viewModel.amountField, "0")
+    }
+
+    func test_validatePercentageAmountInput_ignores_validation_when_discountType_is_not_percent() {
+        // Given
+        let coupon = Coupon.sampleCoupon.copy(amount: "200", discountType: .fixedCart)
+        let viewModel = AddEditCouponViewModel(
+                existingCoupon: coupon,
+                inputWarningDurationInSeconds: 0.01,
+                onSuccess: { _ in }
+        )
+
+        // When
+        let error = viewModel.validatePercentageAmountInput(withWarning: false)
+
+        // Then
+        XCTAssertNil(error)
+        XCTAssertEqual(viewModel.amountField, "200")
+    }
+
+    func test_validatePercentageAmountInput_returns_nil_if_amount_is_valid() {
+        // Given
+        let coupon = Coupon.sampleCoupon.copy(amount: "100", discountType: .fixedCart)
+        let viewModel = AddEditCouponViewModel(
+                existingCoupon: coupon,
+                inputWarningDurationInSeconds: 0.01,
+                onSuccess: { _ in }
+        )
+
+        // When
+        let error = viewModel.validatePercentageAmountInput(withWarning: false)
+
+        // Then
+        XCTAssertNil(error)
+        XCTAssertEqual(viewModel.amountField, "100")
+    }
+
     func test_discount_type_changed_to_percent_triggers_amount_adjustment() {
         // Given
         let coupon = Coupon.sampleCoupon.copy(amount: "20000")
-        let viewModel = AddEditCouponViewModel(existingCoupon: coupon, onSuccess: { _ in })
+        let viewModel = AddEditCouponViewModel(
+            existingCoupon: coupon,
+            inputWarningDurationInSeconds: 0.01,
+            onSuccess: { _ in }
+        )
 
         // When
         viewModel.discountType = .percent
 
         waitFor { promise in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.02) {
                 promise(())
             }
         }
 
+        // Then
         XCTAssertEqual(viewModel.amountField, "100")
     }
 

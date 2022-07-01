@@ -84,12 +84,14 @@ final class OrderDetailsDataSource: NSObject {
     var shouldAllowWCShipInstallation: Bool {
         let isFeatureFlagEnabled = featureFlags.isFeatureFlagEnabled(.shippingLabelsOnboardingM1)
         let plugin = resultsControllers.sitePlugins.first { $0.name == SitePlugin.SupportedPlugin.WCShip }
+        let userIsAdmin = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator)
         let isPluginInstalled = plugin != nil && resultsControllers.sitePlugins.count > 0
         let isPluginActive = plugin?.status.isActive ?? false
         let isCountryCodeUS = SiteAddress(siteSettings: siteSettings).countryCode == SiteAddress.CountryCode.US.rawValue
         let isCurrencyUSD = currencySettings.currencyCode == .USD
 
         guard isFeatureFlagEnabled,
+              userIsAdmin,
               !isPluginInstalled,
               !isPluginActive,
               isCountryCodeUS,

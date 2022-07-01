@@ -136,11 +136,10 @@ private extension ManualTrackingViewController {
     }
 
     @objc func dismissButtonTapped() {
-        if viewModel.canCommit || viewModel.hasUnsavedChanges {
-            displayDismissConfirmationAlert()
-        } else {
-            dismiss()
+        guard !viewModel.hasUnsavedChanges else {
+            return displayDismissConfirmationAlert()
         }
+        dismiss()
     }
 
     @objc func primaryButtonTapped() {
@@ -462,13 +461,7 @@ private extension ManualTrackingViewController {
 //
 extension ManualTrackingViewController: UISheetPresentationControllerDelegate {
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
-        if viewModel.canCommit || viewModel.hasUnsavedChanges {
-            return false
-        } else if viewModel.isEmptyState {
-            return true
-        } else {
-            return true
-        }
+        viewModel.hasUnsavedChanges == false
     }
     func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
         displayDismissConfirmationAlert()

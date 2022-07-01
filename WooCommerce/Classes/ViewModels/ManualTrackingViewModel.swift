@@ -63,7 +63,6 @@ protocol ManualTrackingViewModel {
 
     var shipmentProvider: ShipmentTrackingProvider? { get set }
     var shipmentProviderGroupName: String? { get set }
-    var isEmptyState: Bool { get }
     var hasUnsavedChanges: Bool { get }
     var canCommit: Bool { get }
     var isCustom: Bool { get }
@@ -127,11 +126,8 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
 
     let providerCellAccessoryType = UITableViewCell.AccessoryType.disclosureIndicator
 
-    var isEmptyState: Bool {
-        (shipmentProvider == nil && trackingNumber.isNilOrEmpty)
-    }
     var hasUnsavedChanges: Bool {
-        (shipmentProvider == nil || trackingNumber.isNilOrEmpty)
+        !trackingNumber.isNilOrEmpty
     }
 
     var canCommit: Bool {
@@ -236,11 +232,9 @@ final class AddCustomTrackingViewModel: ManualTrackingViewModel {
     }
 
     let providerCellAccessoryType = UITableViewCell.AccessoryType.none
-    var isEmptyState: Bool {
-        (providerName.isNilOrEmpty && trackingNumber.isNilOrEmpty) ? true : false
-    }
+
     var hasUnsavedChanges: Bool {
-        (providerName.isNilOrEmpty || trackingNumber.isNilOrEmpty) ? true : false
+        !providerName.isNilOrEmpty || !trackingNumber.isNilOrEmpty
     }
 
     var canCommit: Bool {

@@ -20,8 +20,8 @@ struct ShippingInputTransformer {
             return order.copy(shippingTotal: input.total, shippingLines: [input])
         }
 
-        // Since we only support one shipping line, if we find one, we update our input with the existing `shippingID`.
-        let updatedShippingLine = input.copy(shippingID: existingShippingLine.shippingID)
+        // Since we only support one shipping line, if we find one, we update the existing with the new input values.
+        let updatedShippingLine = existingShippingLine.copy(methodTitle: input.methodTitle, total: input.total)
         return order.copy(shippingTotal: updatedShippingLine.total, shippingLines: [updatedShippingLine])
     }
 }

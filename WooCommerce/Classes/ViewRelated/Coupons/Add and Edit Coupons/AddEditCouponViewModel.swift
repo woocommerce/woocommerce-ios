@@ -163,9 +163,13 @@ final class AddEditCouponViewModel: ObservableObject {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let currencySettings: CurrencySettings
-    private let couponAmountInputFormatter: CouponAmountInputFormatter
     private let inputWarningDurationInSeconds: Double
     let timezone: TimeZone
+
+    /// Sets the amount of time that an invalid amount percent input must stay
+    /// visible to the user before adjusting the value.
+    ///
+    private let couponAmountInputFormatter: CouponAmountInputFormatter
 
     /// When an invalid percentage amount is set a debouncing warning timer is triggered.
     ///

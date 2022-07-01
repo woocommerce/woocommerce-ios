@@ -93,8 +93,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     }
 
     func selectPlugin(_ selectedPlugin: CardPresentPaymentsPlugin) {
-        assert(state == .selectPlugin(pluginSelectionWasCleared: true) ||
-               state == .selectPlugin(pluginSelectionWasCleared: false))
+        assert(state.isSelectPlugin)
 
         preferredPluginLocal = selectedPlugin
         updateState()

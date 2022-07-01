@@ -123,4 +123,12 @@ extension CardPresentPaymentOnboardingState {
             return false
         }
     }
+
+    public var isSelectPlugin: Bool {
+        if case .selectPlugin = self {
+            return true
+        } else {
+            return false
+        }
+    }
 }

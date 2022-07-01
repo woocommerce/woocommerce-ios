@@ -27,9 +27,16 @@ class WooCommerceScreenshots: XCTestCase {
         app.launchArguments.append("-simulate-stripe-card-reader")
         app.launchArguments.append("disable-animations")
         app.launchArguments.append("-mocks-port")
+        app.launchArguments.append("-mocks-push-notification")
         app.launchArguments.append("\(server.listenAddress.port)")
 
         app.launch()
+
+        let app2 = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+        let button = app2.alerts.firstMatch.buttons["Allow"]
+        if button.waitForExistence(timeout: 5) {
+            button.tap()
+        }
 
         try MyStoreScreen()
 
@@ -54,7 +61,9 @@ class WooCommerceScreenshots: XCTestCase {
         .tabBar.goToProductsScreen()
         .selectAddProduct()
         .thenTakeScreenshot(named: "product-add")
-        .tapOutside()
+
+        .lockScreen()
+        .thenTakeScreenshot(named: "order-notification")
     }
 
     private let loop = try! SelectorEventLoop(selector: try! KqueueSelector())
@@ -140,6 +149,13 @@ extension BaseScreen {
 }
 
 extension ScreenObject {
+
+    @discardableResult
+    func lockScreen() -> Self {
+        XCUIDevice.shared.perform(NSSelectorFromString("pressLockButton"))
+        sleep(2)
+        return self
+    }
 
     @discardableResult
     func thenTakeScreenshot(named title: String) -> Self {

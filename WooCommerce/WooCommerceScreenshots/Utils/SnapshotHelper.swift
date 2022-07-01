@@ -141,7 +141,7 @@ open class Snapshot: NSObject {
 
     open class func snapshot(_ name: String, timeWaitingForIdle timeout: TimeInterval = 20) {
         if timeout > 0 {
-            waitForLoadingIndicatorToDisappear(within: timeout)
+//            waitForLoadingIndicatorToDisappear(within: timeout)
         }
 
         NSLog("snapshot: \(name)") // more information about this, check out https://docs.fastlane.tools/actions/snapshot/#how-does-it-work

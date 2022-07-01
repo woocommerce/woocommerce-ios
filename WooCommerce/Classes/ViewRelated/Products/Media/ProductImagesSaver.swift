@@ -19,11 +19,16 @@ final class ProductImagesSaver {
     private let siteID: Int64
     private let productOrVariationID: ProductOrVariationID
     private let stores: StoresManager
+    private let analytics: Analytics
 
-    init(siteID: Int64, productOrVariationID: ProductOrVariationID, stores: StoresManager = ServiceLocator.stores) {
+    init(siteID: Int64,
+         productOrVariationID: ProductOrVariationID,
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.productOrVariationID = productOrVariationID
         self.stores = stores
+        self.analytics = analytics
     }
 
     /// If any images are pending upload, saves the product remotely with the uploaded images when none is pending upload.
@@ -67,8 +72,13 @@ private extension ProductImagesSaver {
                 switch result {
                 case .success(let product):
                     onProductSave(.success(product.images))
+                    self.analytics.track(event:
+                            .ImageUpload.savingProductAfterBackgroundImageUploadSuccess(productOrVariation: .product))
                 case .failure(let error):
                     onProductSave(.failure(error))
+                    self.analytics.track(event:
+                            .ImageUpload.savingProductAfterBackgroundImageUploadFailed(productOrVariation: .product,
+                                                                                       error: error))
                 }
                 self.imageStatusesToSave = []
                 self.assetUploadSubscription = nil
@@ -88,8 +98,13 @@ private extension ProductImagesSaver {
                 switch result {
                 case .success(let productVariation):
                     onProductSave(.success(productVariation.image.map { [$0] } ?? []))
+                    self.analytics.track(event:
+                            .ImageUpload.savingProductAfterBackgroundImageUploadSuccess(productOrVariation: .variation))
                 case .failure(let error):
                     onProductSave(.failure(error))
+                    self.analytics.track(event:
+                            .ImageUpload.savingProductAfterBackgroundImageUploadFailed(productOrVariation: .variation,
+                                                                                       error: error))
                 }
                 self.imageStatusesToSave = []
                 self.assetUploadSubscription = nil

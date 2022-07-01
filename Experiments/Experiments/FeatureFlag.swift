@@ -82,6 +82,10 @@ public enum FeatureFlag: Int {
     ///
     case backgroundProductImageUpload
 
+    /// Enable IPP reader manuals consolidation screen
+    ///
+    case consolidatedCardReaderManuals
+
     /// Apple ID account deletion
     ///
     case appleIDAccountDeletion

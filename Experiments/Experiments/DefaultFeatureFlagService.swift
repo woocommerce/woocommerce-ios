@@ -41,6 +41,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .backgroundProductImageUpload:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .consolidatedCardReaderManuals:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .appleIDAccountDeletion:
             return true
         default:

@@ -70,6 +70,7 @@ protocol ManualTrackingViewModel {
     var isAdding: Bool { get }
 
     func registerCells(for tableView: UITableView)
+    func saveSelectedShipmentProvider()
 }
 
 extension ManualTrackingViewModel {
@@ -116,11 +117,7 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
 
     }
 
-    var shipmentProvider: ShipmentTrackingProvider? {
-        didSet {
-            saveSelectedShipmentProvider()
-        }
-    }
+    var shipmentProvider: ShipmentTrackingProvider?
 
     var shipmentProviderGroupName: String?
 
@@ -156,7 +153,7 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
 
 // MARK: - Persistence of the selected ShipmentTrackingProvider
 //
-private extension AddTrackingViewModel {
+extension AddTrackingViewModel {
     func saveSelectedShipmentProvider() {
         guard let shipmentProvider = shipmentProvider else {
             return
@@ -175,7 +172,7 @@ private extension AddTrackingViewModel {
         ServiceLocator.stores.dispatch(action)
     }
 
-    func loadSelectedShipmentProvider() {
+    private func loadSelectedShipmentProvider() {
         let siteID = order.siteID
 
         let action = AppSettingsAction.loadTrackingProvider(siteID: siteID) { [weak self] (provider, providerGroup, error) in
@@ -247,14 +244,11 @@ final class AddCustomTrackingViewModel: ManualTrackingViewModel {
     }
 
     var canCommit: Bool {
-        let returnValue = providerName?.isEmpty == false &&
-            trackingNumber?.isEmpty == false
-
-        if returnValue {
-            saveSelectedCustomShipmentProvider()
+        guard let providerName = providerName,
+                let trackingNumber = trackingNumber else {
+            return false
         }
-
-        return returnValue
+        return providerName.isNotEmpty && trackingNumber.isNotEmpty
     }
 
     let isAdding: Bool = true
@@ -275,8 +269,8 @@ final class AddCustomTrackingViewModel: ManualTrackingViewModel {
 }
 
 
-private extension AddCustomTrackingViewModel {
-    func saveSelectedCustomShipmentProvider() {
+extension AddCustomTrackingViewModel {
+    func saveSelectedShipmentProvider() {
         guard let providerName = providerName else {
             return
         }
@@ -294,7 +288,7 @@ private extension AddCustomTrackingViewModel {
         ServiceLocator.stores.dispatch(action)
     }
 
-    func loadSelectedCustomShipmentProvider() {
+    private func loadSelectedCustomShipmentProvider() {
         let siteID = order.siteID
 
         let action = AppSettingsAction.loadCustomTrackingProvider(siteID: siteID) { [weak self] (provider, error) in

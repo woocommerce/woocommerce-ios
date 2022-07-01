@@ -25,6 +25,13 @@ public enum ProductVariationAction: Action {
     ///
     case updateProductVariation(productVariation: ProductVariation, onCompletion: (Result<ProductVariation, ProductUpdateError>) -> Void)
 
+    /// Updates the image of the specified ProductVariation.
+    case updateProductVariationImage(siteID: Int64,
+                                     productID: Int64,
+                                     variationID: Int64,
+                                     image: ProductImage,
+                                     completion: (Result<ProductVariation, ProductUpdateError>) -> Void)
+
     /// Updates the provided ProductVariations.
     ///
     case updateProductVariations(siteID: Int64,

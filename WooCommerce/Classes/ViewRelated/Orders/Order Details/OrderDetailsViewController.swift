@@ -322,8 +322,6 @@ private extension OrderDetailsViewController {
         for button in viewModel.moreActionsButtons {
             actionSheet.addDefaultActionWithTitle(button.title) { [weak self] _ in
                 switch button.id {
-                case .sharePaymentLink:
-                    self?.sharePaymentLink(sender)
                 case .editOrder:
                     self?.editOrder()
                 }
@@ -336,24 +334,13 @@ private extension OrderDetailsViewController {
         present(actionSheet, animated: true)
     }
 
-    /// Shares the payment link(if it exists) using the native sharing helper.
-    ///
-    private func sharePaymentLink(_ sender: UIBarButtonItem) {
-        guard let paymentLink = viewModel.paymentLink else {
-            return DDLogError("⛔️ No payment link for order: \(viewModel.order.orderID)")
-        }
-
-        SharingHelper.shareURL(url: paymentLink, title: nil, from: sender, in: self) { _, completed, _, _ in
-            if completed {
-                ServiceLocator.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailPaymentLinkShared())
-            }
-        }
-    }
-
     /// Presents the order edit form
     ///
     private func editOrder() {
-        // TODO: Implement
+        let viewModel = EditableOrderViewModel(siteID: viewModel.order.siteID, flow: .editing(initialOrder: viewModel.order))
+        let viewController = OrderFormHostingController(viewModel: viewModel)
+        let navController = UINavigationController(rootViewController: viewController)
+        present(navController, animated: true)
     }
 }
 
@@ -595,17 +582,16 @@ private extension OrderDetailsViewController {
     }
 
     @objc private func collectPaymentTapped() {
-        viewModel.collectPayment(rootViewController: self) { [weak self] result in
-            guard let self = self else { return }
-            // Refresh date & view once payment has been collected.
-            if result.isSuccess {
-                self.viewModel.syncOrderAfterPaymentCollection {
-                    self.viewModel.checkCardPresentPaymentEligibility {
-                        self.reloadTableViewSectionsAndData()
-                    }
-                }
-            }
-        }
+        collectPayment()
+
+        // Track tapped event
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.collectPaymentTapped())
+    }
+
+    private func collectPayment() {
+        let paymentMethodsViewController = PaymentMethodsHostingController(viewModel: viewModel.paymentMethodsViewModel)
+        let paymentMethodsNavigationController = WooNavigationController(rootViewController: paymentMethodsViewController)
+        present(paymentMethodsNavigationController, animated: true)
     }
 
     private func itemAddOnsButtonTapped(addOns: [OrderItemAttribute]) {
@@ -855,7 +841,6 @@ private extension OrderDetailsViewController {
 
         enum ActionsMenu {
             static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel the main more actions menu sheet.")
-            static let paymentLink = NSLocalizedString("Share Payment Link", comment: "Title to share an order payment link.")
         }
     }
 

@@ -32,10 +32,10 @@ final class HubMenuViewModel: ObservableObject {
         }
         return url
     }
-
     var woocommerceAdminURL: URL {
         guard let urlString = stores.sessionManager.defaultSite?.adminURL, let url = URL(string: urlString) else {
-            return WooConstants.URLs.blog.asURL()
+            return stores.sessionManager.defaultSite?.adminURLWithFallback() ??
+            WooConstants.URLs.blog.asURL()
         }
         return url
     }

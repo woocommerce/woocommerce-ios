@@ -117,11 +117,17 @@ struct AddEditCoupon: View {
                                                      editable: true,
                                                      fieldAlignment: .leading,
                                                      keyboardType: .decimalPad,
-                                                     inputFormatter: CouponAmountInputFormatter())
+                                                     contentColor: viewModel.amountFieldColor,
+                                                     inputFormatter: CouponAmountInputFormatter()) { beginningEditing in
+                                                            if !beginningEditing {
+                                                                viewModel.validatePercentageAmountInput(withWarning: true)
+                                                            }
+                                                        }
                                 Divider()
                                     .padding(.leading, Constants.margin)
 
                                 Text(viewModel.amountSubtitleLabel)
+                                    .foregroundColor(viewModel.amountSubtitleColor)
                                     .subheadlineStyle()
                                     .padding(.horizontal, Constants.margin)
                             }
@@ -256,11 +262,11 @@ struct AddEditCoupon: View {
                         Button {
                             // This should be replaced with `@FocusState` when we drop support for iOS 14
                             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                            viewModel.updateCoupon(coupon: viewModel.populatedCoupon, onUpdateFinished: {
+                            viewModel.completeCouponAddEdit(coupon: viewModel.populatedCoupon, onUpdateFinished: {
                                 dismissHandler()
                             })
                         } label: {
-                            Text(Localization.saveButton)
+                            Text(viewModel.addEditCouponButtonText)
                         }
                         .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoading))
                         .padding(.horizontal, Constants.margin)
@@ -303,6 +309,15 @@ struct AddEditCoupon: View {
                                         viewConfig: categorySelectorConfig,
                                         categoryListConfig: categoryListConfig,
                                         viewModel: viewModel.categorySelectorViewModel)
+            }
+            .sheet(isPresented: $viewModel.showingCouponCreationSuccess) {
+                let couponCode = viewModel.coupon?.code ?? ""
+                if couponCode.isEmpty {
+                    let _ = DDLogError("⛔️ Error acquiring the coupon code after creation")
+                }
+                CouponCreationSuccess(couponCode: couponCode, shareMessage: viewModel.shareCouponMessage) {
+                    onDisappear()
+                }
             }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -377,7 +392,6 @@ private extension AddEditCoupon {
         static let usageRestrictions = NSLocalizedString(
             "Usage Restrictions",
             comment: "Field in the view for adding or editing a coupon.")
-        static let saveButton = NSLocalizedString("Save", comment: "Action for saving a Coupon remotely")
         static let addDescriptionPlaceholder = NSLocalizedString("Add the description of the coupon.",
                                                                  comment: "Placeholder text that will be shown in the view" +
                                                                  " for adding the description of a coupon.")
@@ -396,7 +410,7 @@ struct AddEditCoupon_Previews: PreviewProvider {
 
         /// Edit Coupon
         ///
-        let editingViewModel = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon, onCompletion: { _ in })
+        let editingViewModel = AddEditCouponViewModel(existingCoupon: Coupon.sampleCoupon, onSuccess: { _ in })
         AddEditCoupon(editingViewModel)
     }
 }

@@ -1,7 +1,10 @@
 import Foundation
 import Yosemite
+import Combine
 import UIKit
+import WooFoundation
 import protocol Storage.StorageManagerType
+import SwiftUI
 
 /// View model for `AddEditCoupon` view
 ///
@@ -13,7 +16,7 @@ final class AddEditCouponViewModel: ObservableObject {
     ///
     private let editingOption: EditingOption
 
-    private let onCompletion: ((Result<Coupon, Error>) -> Void)
+    private let onSuccess: (Coupon) -> Void
 
     /// Defines the current notice that should be shown.
     /// Defaults to `nil`.
@@ -26,6 +29,18 @@ final class AddEditCouponViewModel: ObservableObject {
             return Localization.createCouponTitle
         case .editing:
             return Localization.editCouponTitle
+        }
+    }
+
+    /// Defines the main action button text that should be shown.
+    /// Switching between `Create` or `Save` action.
+    ///
+    var addEditCouponButtonText: String {
+        switch editingOption {
+        case .creation:
+            return Localization.createButton
+        case .editing:
+            return Localization.saveButton
         }
     }
 
@@ -50,7 +65,7 @@ final class AddEditCouponViewModel: ObservableObject {
 
     /// Label representing the label of the amount textfield subtitle, localized based on discount type.
     ///
-    var amountSubtitleLabel: String {
+    var amountSubtitleDefaultText: String {
         switch discountType {
         case .percent:
             return Localization.amountPercentSubtitle
@@ -127,7 +142,12 @@ final class AddEditCouponViewModel: ObservableObject {
         categoryIDs.isNotEmpty
     }
 
+    var shareCouponMessage: String {
+        coupon?.generateShareMessage(currencySettings: currencySettings) ?? ""
+    }
+
     var hasChangesMade: Bool {
+        guard editingOption == .editing else { return true }
         let coupon = populatedCoupon
         return checkDiscountTypeUpdated(for: coupon) ||
         checkAmountUpdated(for: coupon) ||
@@ -142,19 +162,36 @@ final class AddEditCouponViewModel: ObservableObject {
     private(set) var coupon: Coupon?
     private let stores: StoresManager
     private let storageManager: StorageManagerType
+    private let currencySettings: CurrencySettings
+    private let inputWarningDurationInSeconds: Double
     let timezone: TimeZone
+
+    /// Sets the amount of time that an invalid amount percent input must stay
+    /// visible to the user before adjusting the value.
+    ///
+    private let couponAmountInputFormatter: CouponAmountInputFormatter
+
+    /// When an invalid percentage amount is set a debouncing warning timer is triggered.
+    ///
+    private var amountWarningTimer: Timer? = nil
 
     /// When the view is updating or creating a new Coupon remotely.
     ///
     @Published var isLoading: Bool = false
 
+    @Published private(set) var isDisplayingAmountWarning: Bool = false
+
     // Fields
     @Published var discountType: Coupon.DiscountType {
         didSet {
+            validatePercentageAmountInput(withWarning: true)
             couponRestrictionsViewModel.onDiscountTypeChanged(discountType: discountType)
         }
     }
     @Published var amountField: String
+    @Published var amountFieldColor: Color
+    @Published var amountSubtitleLabel: String
+    @Published var amountSubtitleColor: Color
     @Published var codeField: String
     @Published var descriptionField: String
     @Published var expiryDateField: Date?
@@ -162,6 +199,9 @@ final class AddEditCouponViewModel: ObservableObject {
     @Published var couponRestrictionsViewModel: CouponRestrictionsViewModel
     @Published var productOrVariationIDs: [Int64]
     @Published var categoryIDs: [Int64]
+    @Published var showingCouponCreationSuccess: Bool = false
+
+    private var subscriptions: Set<AnyCancellable> = []
 
     /// Init method for coupon creation
     ///
@@ -169,17 +209,26 @@ final class AddEditCouponViewModel: ObservableObject {
          discountType: Coupon.DiscountType,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         couponAmountInputFormatter: CouponAmountInputFormatter = CouponAmountInputFormatter(),
+         inputWarningDurationInSeconds: Double = 3,
          timezone: TimeZone = .siteTimezone,
-         onCompletion: @escaping ((Result<Coupon, Error>) -> Void)) {
+         onSuccess: @escaping (Coupon) -> Void) {
         self.siteID = siteID
         editingOption = .creation
         self.discountType = discountType
         self.stores = stores
         self.storageManager = storageManager
+        self.currencySettings = currencySettings
+        self.couponAmountInputFormatter = couponAmountInputFormatter
+        self.inputWarningDurationInSeconds = inputWarningDurationInSeconds
         self.timezone = timezone
-        self.onCompletion = onCompletion
+        self.onSuccess = onSuccess
 
         amountField = String()
+        amountFieldColor = Color(.label)
+        amountSubtitleLabel = String()
+        amountSubtitleColor = Color(.textSubtle)
         codeField = String()
         descriptionField = String()
         expiryDateField = nil
@@ -187,6 +236,8 @@ final class AddEditCouponViewModel: ObservableObject {
         couponRestrictionsViewModel = CouponRestrictionsViewModel(siteID: siteID)
         productOrVariationIDs = []
         categoryIDs = []
+        generateRandomCouponCode()
+        configureWarningBehavior()
     }
 
     /// Init method for coupon editing
@@ -194,19 +245,28 @@ final class AddEditCouponViewModel: ObservableObject {
     init(existingCoupon: Coupon,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         couponAmountInputFormatter: CouponAmountInputFormatter = CouponAmountInputFormatter(),
+         inputWarningDurationInSeconds: Double = 3,
          timezone: TimeZone = .siteTimezone,
-         onCompletion: @escaping ((Result<Coupon, Error>) -> Void)) {
+         onSuccess: @escaping (Coupon) -> Void) {
         siteID = existingCoupon.siteID
         coupon = existingCoupon
         editingOption = .editing
         discountType = existingCoupon.discountType
         self.stores = stores
         self.storageManager = storageManager
+        self.currencySettings = currencySettings
+        self.couponAmountInputFormatter = couponAmountInputFormatter
+        self.inputWarningDurationInSeconds = inputWarningDurationInSeconds
         self.timezone = timezone
-        self.onCompletion = onCompletion
+        self.onSuccess = onSuccess
 
         // Populate fields
         amountField = existingCoupon.amount
+        amountFieldColor = Color(.label)
+        amountSubtitleLabel = String()
+        amountSubtitleColor = Color(.textSubtle)
         codeField = existingCoupon.code
         descriptionField = existingCoupon.description
         expiryDateField = existingCoupon.dateExpires
@@ -214,6 +274,8 @@ final class AddEditCouponViewModel: ObservableObject {
         couponRestrictionsViewModel = CouponRestrictionsViewModel(coupon: existingCoupon)
         productOrVariationIDs = existingCoupon.productIds
         categoryIDs = existingCoupon.productCategories
+
+        configureWarningBehavior()
     }
 
     /// The method will generate a code in the same way as the existing admin website code does.
@@ -233,13 +295,103 @@ final class AddEditCouponViewModel: ObservableObject {
         codeField = code
     }
 
-    func updateCoupon(coupon: Coupon, onUpdateFinished: @escaping () -> Void) {
+    private func configureWarningBehavior() {
+        let amountSubtitleDefaultText = amountSubtitleDefaultText
+        let warningColor = Color(.textWarning)
+        let labelColor = Color(.label)
+        let subtitleColor = Color(.textSubtle)
+
+        $isDisplayingAmountWarning
+            .removeDuplicates()
+            .sink { [weak self] isDisplaying in
+                if isDisplaying {
+                    self?.amountFieldColor = warningColor
+                    self?.amountSubtitleColor = warningColor
+                    self?.amountSubtitleLabel = Localization.amountPercentWarningSubtitle
+                } else {
+                    self?.amountFieldColor = labelColor
+                    self?.amountSubtitleColor = subtitleColor
+                    self?.amountSubtitleLabel = amountSubtitleDefaultText
+                }
+            }
+            .store(in: &subscriptions)
+    }
+
+    @discardableResult
+    func validatePercentageAmountInput(withWarning: Bool) -> CouponError? {
+        guard discountType == .percent else { return nil }
+        let formattedAmount = couponAmountInputFormatter.format(input: amountField)
+        guard let convertedAmount = couponAmountInputFormatter.value(from: formattedAmount)?.doubleValue else {
+            amountField = "0"
+            return .couponPercentAmountInvalid
+        }
+
+        if convertedAmount > 100 {
+            if withWarning {
+                debounceWarningState()
+            } else {
+                return .couponPercentAmountInvalid
+            }
+        }
+        return nil
+    }
+
+    private func debounceWarningState() {
+        isDisplayingAmountWarning = true
+        amountWarningTimer = Timer.scheduledTimer(
+            withTimeInterval: inputWarningDurationInSeconds,
+            repeats: false) { [weak self] timer in
+                timer.invalidate()
+                self?.amountWarningTimer = nil
+                self?.isDisplayingAmountWarning = false
+                self?.amountField = "100"
+            }
+    }
+
+    func completeCouponAddEdit(coupon: Coupon, onUpdateFinished: @escaping () -> Void) {
+        switch editingOption {
+        case .creation:
+            createCoupon(coupon: coupon)
+        case .editing:
+            updateCoupon(coupon: coupon, onUpdateFinished: onUpdateFinished)
+        }
+    }
+
+    private func createCoupon(coupon: Coupon) {
+        trackCouponCreateInitiated(with: coupon)
+
+        if let validationError = validateCouponLocally(coupon) {
+            notice = NoticeFactory.createCouponErrorNotice(validationError,
+                    editingOption: editingOption)
+            return
+        }
+
+        isLoading = true
+        let action = CouponAction.createCoupon(coupon, siteTimezone: timezone) { [weak self] result in
+            guard let self = self else { return }
+            self.isLoading = false
+            switch result {
+            case .success(let coupon):
+                ServiceLocator.analytics.track(.couponCreationSuccess)
+                self.coupon = coupon
+                self.onSuccess(coupon)
+                self.showingCouponCreationSuccess = true
+            case .failure(let error):
+                DDLogError("⛔️ Error creating the coupon: \(error)")
+                ServiceLocator.analytics.track(.couponCreationFailed, withError: error)
+                self.notice = NoticeFactory.createCouponErrorNotice(.other(error: error),
+                        editingOption: self.editingOption)
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    private func updateCoupon(coupon: Coupon, onUpdateFinished: @escaping () -> Void) {
         trackCouponUpdateInitiated(with: coupon)
 
         if let validationError = validateCouponLocally(coupon) {
             notice = NoticeFactory.createCouponErrorNotice(validationError,
                                                            editingOption: editingOption)
-            onCompletion(.failure(validationError))
             return
         }
 
@@ -248,9 +400,9 @@ final class AddEditCouponViewModel: ObservableObject {
             guard let self = self else { return }
             self.isLoading = false
             switch result {
-            case .success(_):
+            case .success(let updatedCoupon):
                 ServiceLocator.analytics.track(.couponUpdateSuccess)
-                self.onCompletion(result)
+                self.onSuccess(updatedCoupon)
                 onUpdateFinished()
             case .failure(let error):
                 DDLogError("⛔️ Error updating the coupon: \(error)")
@@ -301,7 +453,9 @@ final class AddEditCouponViewModel: ObservableObject {
             return .couponCodeEmpty
         }
 
-        return nil
+        amountWarningTimer?.invalidate()
+        isDisplayingAmountWarning = false
+        return validatePercentageAmountInput(withWarning: false)
     }
 
     enum EditingOption {
@@ -311,6 +465,7 @@ final class AddEditCouponViewModel: ObservableObject {
 
     enum CouponError: Error, Equatable {
         case couponCodeEmpty
+        case couponPercentAmountInvalid
         case other(error: Error)
 
         static func ==(lhs: CouponError, rhs: CouponError) -> Bool {
@@ -327,6 +482,19 @@ private extension AddEditCouponViewModel {
             return false
         }
         return coupon.discountType != initialCoupon.discountType
+    }
+
+    func checkUsageRestrictionsOnCreation(of coupon: Coupon) -> Bool {
+        coupon.maximumAmount.isNotEmpty ||
+        coupon.minimumAmount.isNotEmpty ||
+        (coupon.usageLimit ?? 0) > 0 ||
+        (coupon.usageLimitPerUser ?? 0) > 0 ||
+        (coupon.limitUsageToXItems ?? 0) > 0 ||
+        coupon.emailRestrictions.isNotEmpty ||
+        coupon.individualUse ||
+        coupon.excludeSaleItems ||
+        coupon.excludedProductIds.isNotEmpty ||
+        coupon.excludedProductCategories.isNotEmpty
     }
 
     func checkUsageRestrictionsUpdated(for coupon: Coupon) -> Bool {
@@ -396,6 +564,17 @@ private extension AddEditCouponViewModel {
         return coupon.freeShipping != initialCoupon.freeShipping
     }
 
+    func trackCouponCreateInitiated(with coupon: Coupon) {
+        ServiceLocator.analytics.track(.couponCreationInitiated, withProperties: [
+            "discount_type": coupon.discountType.rawValue,
+            "has_expiry_date": coupon.dateExpires != nil,
+            "includes_free_shipping": coupon.freeShipping,
+            "has_description": coupon.description.isNotEmpty,
+            "has_product_or_category_restrictions": coupon.excludedProductCategories.isNotEmpty || coupon.excludedProductIds.isNotEmpty,
+            "has_usage_restrictions": checkUsageRestrictionsOnCreation(of: coupon)
+        ])
+    }
+
     func trackCouponUpdateInitiated(with coupon: Coupon) {
         ServiceLocator.analytics.track(.couponUpdateInitiated, withProperties: [
             "discount_type_updated": checkDiscountTypeUpdated(for: coupon),
@@ -423,6 +602,8 @@ private extension AddEditCouponViewModel {
             switch couponError {
             case .couponCodeEmpty:
                 return Notice(title: Localization.errorCouponCodeEmpty, feedbackType: .error)
+            case .couponPercentAmountInvalid:
+                return Notice(title: Localization.errorCouponAmountInvalid, feedbackType: .error)
             default:
                 switch editingOption {
                 case .editing:
@@ -445,6 +626,10 @@ private extension AddEditCouponViewModel {
         static let amountPercentSubtitle = NSLocalizedString("Set the percentage of the discount you want to offer.",
                                                              comment: "Subtitle of the Amount field in the Coupon Edit" +
                                                              " or Creation screen for a percentage discount coupon.")
+        static let amountPercentWarningSubtitle = NSLocalizedString("Percentages cannot be greater than 100%",
+                                                                    comment: "Subtitle of the Amount field when a percentage " +
+                                                                    "higher than 100 is set in the Coupon Edit or Creation " +
+                                                                    "screen for a percentage discount coupon.")
         static let amountFixedDiscountSubtitle = NSLocalizedString("Set the fixed amount of the discount you want to offer.",
                                                                    comment: "Subtitle of the Amount field on the Coupon Edit" +
                                                                    " or Creation screen for a fixed amount discount coupon.")
@@ -458,6 +643,10 @@ private extension AddEditCouponViewModel {
             comment: "Coupon expiry date placeholder in the view for adding or editing a coupon")
         static let errorCouponCodeEmpty = NSLocalizedString("The coupon code couldn't be empty",
                                                             comment: "Error message in the Add Edit Coupon screen when the coupon code is empty.")
+        static let errorCouponAmountInvalid = NSLocalizedString("The coupon amount cannot be greater than" +
+                                                                " 100 for percentage discounts",
+                                                                comment: "Error message in the Add Edit Coupon screen when the coupon amount is " +
+                                                                "higher than 100% for a percentage discount")
         static let genericUpdateCouponError = NSLocalizedString("Something went wrong while updating the coupon.",
                                                                 comment: "Error message in the Add Edit Coupon screen " +
                                                                 "when the update of the coupon goes in error.")
@@ -474,5 +663,7 @@ private extension AddEditCouponViewModel {
             "Reads like: Edit Categories")
         static let createCouponTitle = NSLocalizedString("Create coupon", comment: "Title of the Create coupon screen")
         static let editCouponTitle = NSLocalizedString("Edit coupon", comment: "Title of the Edit coupon screen")
+        static let saveButton = NSLocalizedString("Save", comment: "Action for saving a Coupon remotely")
+        static let createButton = NSLocalizedString("Create", comment: "Action for creating a Coupon remotely")
     }
 }

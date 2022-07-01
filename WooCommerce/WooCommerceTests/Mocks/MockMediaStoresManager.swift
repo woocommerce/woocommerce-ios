@@ -38,6 +38,12 @@ final class MockMediaStoresManager: DefaultStoresManager {
                 return
             }
             onCompletion(.success([media]))
+        case .updateProductID(_, _, _, let onCompletion):
+            guard let media = media else {
+                onCompletion(.failure(MediaActionError.unknown))
+                return
+            }
+            onCompletion(.success(media))
         }
     }
 }

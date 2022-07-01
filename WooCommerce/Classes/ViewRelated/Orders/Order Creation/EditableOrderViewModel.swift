@@ -5,9 +5,9 @@ import Experiments
 import WooFoundation
 import enum Networking.DotcomError
 
-/// View model for `NewOrder`.
+/// View model used in Order Creation and Editing flows.
 ///
-final class NewOrderViewModel: ObservableObject {
+final class EditableOrderViewModel: ObservableObject {
     let siteID: Int64
     private let stores: StoresManager
     private let storageManager: StorageManagerType
@@ -16,16 +16,50 @@ final class NewOrderViewModel: ObservableObject {
 
     private var cancellables: Set<AnyCancellable> = []
 
+    enum Flow: Equatable {
+        case creation
+        case editing(initialOrder: Order)
+    }
+
+    /// Current flow. For editing stores existing order state prior to applying any edits.
+    ///
+    let flow: Flow
+
     /// Indicates whether user has made any changes
     ///
     var hasChanges: Bool {
-        orderSynchronizer.order != OrderFactory.emptyNewOrder
+        switch flow {
+        case .creation:
+            return orderSynchronizer.order != OrderFactory.emptyNewOrder
+        case .editing(let initialOrder):
+            return orderSynchronizer.order != initialOrder
+        }
+    }
+
+    /// Indicates whether view can be dismissed.
+    ///
+    var canBeDismissed: Bool {
+        switch flow {
+        case .creation: // Creation can be dismissed when there aren't changes pending to commit.
+            return !hasChanges
+        case .editing: // Editing can always be dismissed because changes are committed instantly.
+            return true
+        }
     }
 
     /// Indicates whether the cancel button is visible.
     ///
     var shouldShowCancelButton: Bool {
-        featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
+        featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) && flow == .creation
+    }
+
+    var title: String {
+        switch flow {
+        case .creation:
+            return Localization.titleForNewOrder
+        case .editing(let order):
+            return String.localizedStringWithFormat(Localization.titleWithOrderNumber, order.number)
+        }
     }
 
     /// Active navigation bar trailing item.
@@ -46,9 +80,15 @@ final class NewOrderViewModel: ObservableObject {
 
     /// Order creation date. For new order flow it's always current date.
     ///
-    let dateString: String = {
-        DateFormatter.mediumLengthLocalizedDateFormatter.string(from: Date())
-    }()
+    var dateString: String {
+        switch flow {
+        case .creation:
+            return DateFormatter.mediumLengthLocalizedDateFormatter.string(from: Date())
+        case .editing(let order):
+            let formatter = DateFormatter.dateAndTimeFormatter
+            return formatter.string(from: order.dateCreated)
+        }
+    }
 
     /// Representation of order status display properties.
     ///
@@ -60,6 +100,9 @@ final class NewOrderViewModel: ObservableObject {
 
     /// Defines if the view should be disabled.
     @Published private(set) var disabled: Bool = false
+
+    /// Defines if the non editable indicators (banners, locks, fields) should be shown.
+    @Published private(set) var shouldShowNonEditableIndicators: Bool = false
 
     /// Status Results Controller.
     ///
@@ -148,7 +191,7 @@ final class NewOrderViewModel: ObservableObject {
 
     /// View model for the customer note section.
     ///
-    lazy private(set) var noteViewModel = { NewOrderCustomerNoteViewModel(originalNote: "") }()
+    lazy private(set) var noteViewModel = { OrderFormCustomerNoteViewModel(originalNote: customerNoteDataViewModel.customerNote) }()
 
     // MARK: Payment properties
 
@@ -195,17 +238,19 @@ final class NewOrderViewModel: ObservableObject {
     private let orderSynchronizer: OrderSynchronizer
 
     init(siteID: Int64,
+         flow: Flow = .creation,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
+        self.flow = flow
         self.stores = stores
         self.storageManager = storageManager
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.analytics = analytics
-        self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, stores: stores, currencySettings: currencySettings)
+        self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, flow: flow, stores: stores, currencySettings: currencySettings)
         self.featureFlagService = featureFlagService
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.
@@ -220,6 +265,7 @@ final class NewOrderViewModel: ObservableObject {
         configureCustomerDataViewModel()
         configurePaymentDataViewModel()
         configureCustomerNoteDataViewModel()
+        configureNonEditableIndicators()
         resetAddressForm()
     }
 
@@ -300,7 +346,7 @@ final class NewOrderViewModel: ObservableObject {
 
             switch result {
             case .success(let newOrder):
-                self.onOrderCreated(newOrder)
+                self.onFinished(newOrder)
                 self.trackCreateOrderSuccess()
             case .failure(let error):
                 self.notice = NoticeFactory.createOrderErrorNotice(error, order: self.orderSynchronizer.order)
@@ -311,9 +357,17 @@ final class NewOrderViewModel: ObservableObject {
         trackCreateButtonTapped()
     }
 
-    /// Assign this closure to be notified when a new order is created
+    /// Action triggered on `Done` button tap in order editing flow.
     ///
-    var onOrderCreated: (Order) -> Void = { _ in }
+    func finishEditing() {
+        self.onFinished(orderSynchronizer.order)
+    }
+
+    /// Assign this closure to be notified when the flow has finished.
+    /// For creation it means that the order has been created.
+    /// For edition it means that the merchant has finished editing the order.
+    ///
+    var onFinished: (Order) -> Void = { _ in }
 
     /// Updates the order status & tracks its event
     ///
@@ -344,11 +398,12 @@ final class NewOrderViewModel: ObservableObject {
 }
 
 // MARK: - Types
-extension NewOrderViewModel {
+extension EditableOrderViewModel {
     /// Representation of possible navigation bar trailing buttons
     ///
     enum NavigationItem: Equatable {
         case create
+        case done
         case loading
     }
 
@@ -434,6 +489,8 @@ extension NewOrderViewModel {
         ///
         let isLoading: Bool
 
+        let showNonEditableIndicators: Bool
+
         let shippingLineViewModel: ShippingLineDetailsViewModel
         let feeLineViewModel: FeeLineDetailsViewModel
 
@@ -447,6 +504,7 @@ extension NewOrderViewModel {
              taxesTotal: String = "0",
              orderTotal: String = "0",
              isLoading: Bool = false,
+             showNonEditableIndicators: Bool = false,
              saveShippingLineClosure: @escaping (ShippingLine?) -> Void = { _ in },
              saveFeeLineClosure: @escaping (OrderFeeLine?) -> Void = { _ in },
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
@@ -460,6 +518,7 @@ extension NewOrderViewModel {
             self.taxesTotal = currencyFormatter.formatAmount(taxesTotal) ?? "0.00"
             self.orderTotal = currencyFormatter.formatAmount(orderTotal) ?? "0.00"
             self.isLoading = isLoading
+            self.showNonEditableIndicators = showNonEditableIndicators
             self.shippingLineViewModel = ShippingLineDetailsViewModel(isExistingShippingLine: shouldShowShippingTotal,
                                                                       initialMethodTitle: shippingMethodTitle,
                                                                       shippingTotal: self.shippingTotal,
@@ -479,7 +538,7 @@ extension NewOrderViewModel {
 }
 
 // MARK: - Helpers
-private extension NewOrderViewModel {
+private extension EditableOrderViewModel {
 
     /// Sets the view to be `disabled` when `performingNetworkRequest` or when `statePublisher` is `.syncing(blocking: true)`
     ///
@@ -500,13 +559,20 @@ private extension NewOrderViewModel {
     /// Calculates what navigation trailing item should be shown depending on our internal state.
     ///
     func configureNavigationTrailingItem() {
-        Publishers.CombineLatest(orderSynchronizer.orderPublisher, $performingNetworkRequest)
-            .map { order, performingNetworkRequest -> NavigationItem in
+        Publishers.CombineLatest4(orderSynchronizer.orderPublisher, orderSynchronizer.statePublisher, $performingNetworkRequest, Just(flow))
+            .map { order, syncState, performingNetworkRequest, flow -> NavigationItem in
                 guard !performingNetworkRequest else {
                     return .loading
                 }
 
-                return .create
+                switch (flow, syncState) {
+                case (.creation, _):
+                    return .create
+                case (.editing, .syncing):
+                    return .loading
+                case (.editing, _):
+                    return .done
+                }
             }
             .assign(to: &$navigationTrailingItem)
     }
@@ -519,9 +585,9 @@ private extension NewOrderViewModel {
                 guard let self = self else { return nil }
                 switch state {
                 case .error(let error):
-                    DDLogError("⛔️ Error syncing new order remotely: \(error)")
+                    DDLogError("⛔️ Error syncing order remotely: \(error)")
                     self.trackSyncOrderFailure(error: error)
-                    return NoticeFactory.syncOrderErrorNotice(error, with: self.orderSynchronizer)
+                    return NoticeFactory.syncOrderErrorNotice(error, flow: self.flow, with: self.orderSynchronizer)
                 default:
                     return nil
                 }
@@ -607,8 +673,8 @@ private extension NewOrderViewModel {
     /// Updates payment section view model based on items in the order and order sync state.
     ///
     func configurePaymentDataViewModel() {
-        Publishers.CombineLatest(orderSynchronizer.orderPublisher, orderSynchronizer.statePublisher)
-            .map { [weak self] order, state in
+        Publishers.CombineLatest3(orderSynchronizer.orderPublisher, orderSynchronizer.statePublisher, $shouldShowNonEditableIndicators)
+            .map { [weak self] order, state, showNonEditableIndicators in
                 guard let self = self else {
                     return PaymentDataViewModel()
                 }
@@ -635,12 +701,28 @@ private extension NewOrderViewModel {
                                             feesTotal: orderTotals.feesTotal.stringValue,
                                             taxesTotal: order.totalTax.isNotEmpty ? order.totalTax : "0",
                                             orderTotal: order.total.isNotEmpty ? order.total : "0",
-                                            isLoading: isDataSyncing,
+                                            isLoading: isDataSyncing && !showNonEditableIndicators,
+                                            showNonEditableIndicators: showNonEditableIndicators,
                                             saveShippingLineClosure: self.saveShippingLine,
                                             saveFeeLineClosure: self.saveFeeLine,
                                             currencyFormatter: self.currencyFormatter)
             }
             .assign(to: &$paymentDataViewModel)
+    }
+
+    /// Binds the order state to the `shouldShowNonEditableIndicators` property.
+    ///
+    func configureNonEditableIndicators() {
+        Publishers.CombineLatest(orderSynchronizer.orderPublisher, Just(flow))
+            .map { order, flow in
+                switch flow {
+                case .creation:
+                    return false
+                case .editing:
+                    return !order.isEditable
+                }
+            }
+            .assign(to: &$shouldShowNonEditableIndicators)
     }
 
     /// Tracks when customer details have been added
@@ -775,7 +857,7 @@ private extension NewOrderViewModel {
     }
 }
 
-private extension NewOrderViewModel {
+private extension EditableOrderViewModel {
     /// Fetches products from storage.
     ///
     func updateProductsResultsController() {
@@ -783,7 +865,7 @@ private extension NewOrderViewModel {
             try productsResultsController.performFetch()
             allProducts = productsResultsController.fetchedObjects
         } catch {
-            DDLogError("⛔️ Error fetching products for new order: \(error)")
+            DDLogError("⛔️ Error fetching products for order: \(error)")
         }
     }
 
@@ -794,16 +876,15 @@ private extension NewOrderViewModel {
             try productVariationsResultsController.performFetch()
             allProductVariations = productVariationsResultsController.fetchedObjects
         } catch {
-            DDLogError("⛔️ Error fetching product variations for new order: \(error)")
+            DDLogError("⛔️ Error fetching product variations for order: \(error)")
         }
     }
 }
 
 // MARK: Constants
 
-extension NewOrderViewModel {
-    /// New Order notices
-    ///
+extension EditableOrderViewModel {
+
     enum NoticeFactory {
         /// Returns a default order creation error notice.
         ///
@@ -816,11 +897,20 @@ extension NewOrderViewModel {
 
         /// Returns an order sync error notice.
         ///
-        static func syncOrderErrorNotice(_ error: Error, with orderSynchronizer: OrderSynchronizer) -> Notice {
+        static func syncOrderErrorNotice(_ error: Error, flow: Flow, with orderSynchronizer: OrderSynchronizer) -> Notice {
             guard !isEmailError(error, order: orderSynchronizer.order) else {
                 return Notice(title: Localization.invalidBillingParameters, message: Localization.invalidBillingSuggestion, feedbackType: .error)
             }
-            return Notice(title: Localization.errorMessageOrderSync, feedbackType: .error, actionTitle: Localization.retryOrderSync) {
+
+            let errorMessage: String
+            switch flow {
+            case .creation:
+                errorMessage = Localization.errorMessageNewOrderSync
+            case .editing:
+                errorMessage = Localization.errorMessageEditOrderSync
+            }
+
+            return Notice(title: errorMessage, feedbackType: .error, actionTitle: Localization.retryOrderSync) {
                 orderSynchronizer.retryTrigger.send()
             }
         }
@@ -839,16 +929,24 @@ extension NewOrderViewModel {
     }
 }
 
-private extension NewOrderViewModel {
+private extension EditableOrderViewModel {
     enum Localization {
-        static let errorMessageOrderCreation = NSLocalizedString("Unable to create new order", comment: "Notice displayed when order creation fails")
-        static let errorMessageOrderSync = NSLocalizedString("Unable to load taxes for order",
-                                                             comment: "Notice displayed when taxes cannot be synced for new order")
+        static let titleForNewOrder = NSLocalizedString("New Order", comment: "Title for the order creation screen")
+        static let titleWithOrderNumber = NSLocalizedString("Order #%1$@", comment: "Order number title. Parameters: %1$@ - order number")
+        static let errorMessageOrderCreation = NSLocalizedString("Unable to create new order",
+                                                                 comment: "Notice displayed when order creation fails")
+        static let errorMessageNewOrderSync = NSLocalizedString("Unable to load taxes for order",
+                                                                comment: "Notice displayed when data cannot be synced for new order")
+        static let errorMessageEditOrderSync = NSLocalizedString("Unable to save changes. Please try again.",
+                                                                 comment: "Notice displayed when data cannot be synced for edited order")
+
         static let retryOrderSync = NSLocalizedString("Retry", comment: "Action button to retry syncing the draft order")
 
-        static let invalidBillingParameters = NSLocalizedString("Unable to set customer details.",
-                                                                comment: "Error notice title when we fail to update an address when creating an order.")
-        static let invalidBillingSuggestion = NSLocalizedString("Please make sure you are running the latest version of WooCommerce and try again later.",
-                                                                comment: "Recovery suggestion when we fail to update an address when creating an order")
+        static let invalidBillingParameters =
+        NSLocalizedString("Unable to set customer details.",
+                          comment: "Error notice title when we fail to update an address when creating or editing an order.")
+        static let invalidBillingSuggestion =
+        NSLocalizedString("Please make sure you are running the latest version of WooCommerce and try again later.",
+                          comment: "Recovery suggestion when we fail to update an address when creating or editing an order")
     }
 }

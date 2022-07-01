@@ -244,6 +244,7 @@ private extension ProductDetailsCellViewModelTests {
                         name: "Ninja Silhouette",
                         productID: 1,
                         variationID: 6,
+                        refundedItemID: "1",
                         quantity: quantity,
                         price: price,
                         sku: sku,

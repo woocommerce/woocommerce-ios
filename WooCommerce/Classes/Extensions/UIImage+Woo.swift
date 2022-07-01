@@ -998,6 +998,11 @@ extension UIImage {
     ///
     static var circularTimeIcon: UIImage {
         return UIImage(named: "icon-circular-time")!
+
+    /// Lock Image
+    ///
+    static var lockImage: UIImage {
+        UIImage.gridicon(.lock, size: CGSize(width: 24, height: 24))
     }
 }
 

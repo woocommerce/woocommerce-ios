@@ -660,4 +660,8 @@ final class IconsTests: XCTestCase {
     func test_circular_time_icon_is_not_nil() {
         XCTAssertNotNil(UIImage.circularTimeIcon)
     }
+    
+    func test_lock_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.lockImage)
+    }
 }

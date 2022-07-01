@@ -1,7 +1,7 @@
 import Combine
 import UIKit
 import WordPressUI
-import class SwiftUI.UIHostingController
+import Yosemite
 
 final class CouponListViewController: UIViewController, GhostableViewController {
     @IBOutlet private weak var tableView: UITableView!
@@ -44,6 +44,21 @@ final class CouponListViewController: UIViewController, GhostableViewController 
         button.accessibilityLabel = Localization.accessibilityLabelSearchCoupons
         button.accessibilityHint = Localization.accessibilityHintSearchCoupons
         button.accessibilityIdentifier = "coupon-search-button"
+
+        return button
+    }()
+
+    /// Create a `UIBarButtonItem` to be used as the create coupon button on the top-right.
+    ///
+    private lazy var createCouponButtonItem: UIBarButtonItem = {
+        let button = UIBarButtonItem(image: .plusImage,
+                style: .plain,
+                target: self,
+                action: #selector(displayCouponTypeBottomSheet))
+        button.accessibilityTraits = .button
+        button.accessibilityLabel = Localization.accessibilityLabelCreateCoupons
+        button.accessibilityHint = Localization.accessibilityHintCreateCoupons
+        button.accessibilityIdentifier = "coupon-create-button"
 
         return button
     }()
@@ -138,7 +153,13 @@ final class CouponListViewController: UIViewController, GhostableViewController 
                 var snapshot = NSDiffableDataSourceSnapshot<Section, CouponListViewModel.CellViewModel>()
                 snapshot.appendSections([.main])
                 snapshot.appendItems(viewModels, toSection: Section.main)
-                self.dataSource.apply(snapshot)
+
+                if #available(iOS 15.0, *) {
+                    // minimally reloads the list without computing diff or animation
+                    self.dataSource.applySnapshotUsingReloadData(snapshot)
+                } else {
+                    self.dataSource.apply(snapshot)
+                }
             }
             .store(in: &subscriptions)
 
@@ -179,6 +200,17 @@ private extension CouponListViewController {
         footerSpinnerView.stopAnimating()
         tableView?.tableFooterView = footerEmptyView
     }
+
+    /// Triggers the coupon creation flow
+    ///
+    func startCouponCreation(discountType: Coupon.DiscountType) {
+        let viewModel = AddEditCouponViewModel(siteID: siteID, discountType: discountType, onSuccess: {_ in })
+        let addEditHostingController = AddEditCouponHostingController(viewModel: viewModel, onDisappear: { [weak self] in
+            guard let self = self else { return }
+            self.dismiss(animated: true)
+        })
+        present(addEditHostingController, animated: true)
+    }
 }
 
 // MARK: - TableView Delegate
@@ -216,7 +248,15 @@ private extension CouponListViewController {
     }
 
     func configureNavigationBarItems(hasCoupons: Bool) {
-        navigationItem.rightBarButtonItems = hasCoupons ? [searchBarButtonItem] : []
+        if hasCoupons {
+            navigationItem.rightBarButtonItems = viewModel.isCreationEnabled
+            ? [createCouponButtonItem, searchBarButtonItem]
+            : [searchBarButtonItem]
+        } else {
+            navigationItem.rightBarButtonItems = viewModel.isCreationEnabled
+            ? [createCouponButtonItem]
+            : []
+        }
     }
 
     func configureTableView() {
@@ -258,6 +298,20 @@ private extension CouponListViewController {
         )
         let navigationController = WooNavigationController(rootViewController: searchViewController)
         present(navigationController, animated: true, completion: nil)
+    }
+
+    @objc private func displayCouponTypeBottomSheet() {
+        ServiceLocator.analytics.track(.couponsListCreateTapped)
+        let viewProperties = BottomSheetListSelectorViewProperties(title: Localization.createCouponAction)
+        let command = DiscountTypeBottomSheetListSelectorCommand(selected: nil) { [weak self] selectedType in
+            guard let self = self else { return }
+            self.presentedViewController?.dismiss(animated: true, completion: nil)
+            self.startCouponCreation(discountType: selectedType)
+        }
+
+        let bottomSheet = BottomSheetListSelectorViewController(viewProperties: viewProperties, command: command, onDismiss: nil)
+        let bottomSheetViewController = BottomSheetViewController(childViewController: bottomSheet)
+        bottomSheetViewController.show(from: self)
     }
 
     func createFeedbackBannerView() -> TopBannerView {
@@ -319,13 +373,27 @@ private extension CouponListViewController {
     ///
     func displayNoResultsOverlay() {
         let emptyStateViewController = EmptyStateViewController(style: .list)
-        let config: EmptyStateViewController.Config = .simple(
-            message: .init(string: Localization.emptyStateMessage),
-            image: .emptyCouponsImage
-        )
-
         displayEmptyStateViewController(emptyStateViewController)
-        emptyStateViewController.configure(config)
+        emptyStateViewController.configure(buildNoResultConfig())
+    }
+
+    func buildNoResultConfig() -> EmptyStateViewController.Config {
+        if viewModel.isCreationEnabled {
+            return .withButton(
+                    message: .init(string: Localization.couponCreationSuggestionMessage),
+                    image: .emptyCouponsImage,
+                    details: Localization.emptyStateDetails,
+                    buttonTitle: Localization.createCouponAction
+            ) { [weak self] button in
+                guard let self = self else { return }
+                self.displayCouponTypeBottomSheet()
+            }
+        } else {
+            return .simple(
+                    message: .init(string: Localization.emptyStateMessage),
+                    image: .emptyCouponsImage
+            )
+        }
     }
 
     /// Displays the overlay when coupons are disabled for the store.
@@ -393,8 +461,14 @@ private extension CouponListViewController {
             comment: "Coupon management coupon list screen title")
 
         static let emptyStateMessage = NSLocalizedString(
-            "No coupons found",
-            comment: "The title on the placeholder overlay when there are no coupons on the coupon list screen.")
+                "No coupons found",
+                comment: "The title on the placeholder overlay when there are no coupons on the coupon list screen.")
+        static let couponCreationSuggestionMessage = NSLocalizedString(
+            "Everyone loves a deal",
+            comment: "The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible.")
+        static let emptyStateDetails = NSLocalizedString(
+            "Boost your business by sending customers special offers and discounts.",
+            comment: "The details text on the placeholder overlay when there are no coupons on the coupon list screen.")
 
         static let couponsDisabledMessage = NSLocalizedString(
             "Everyone loves a deal",
@@ -414,11 +488,16 @@ private extension CouponListViewController {
             "Retrieves a list of coupons that contain a given keyword.",
             comment: "VoiceOver accessibility hint, informing the user the button can be used to search coupons."
         )
+        static let accessibilityLabelCreateCoupons = NSLocalizedString("Create coupons", comment: "Accessibility label for the Create Coupons button")
+        static let accessibilityHintCreateCoupons = NSLocalizedString("Start a Coupon creation by selecting a discount type in a bottom sheet",
+                comment: "VoiceOver accessibility hint, informing the user the button can be used to create coupons.")
         static let feedbackBannerTitle = NSLocalizedString("View and edit coupons", comment: "Title of the feedback banner on the coupon list screen")
         static let feedbackBannerContent = NSLocalizedString(
             "We’ve been working on making it possible to view and edit coupons from your device!",
             comment: "Content of the feedback banner on the coupon list screen"
         )
+        static let createCouponAction = NSLocalizedString("Create Coupon",
+                                                          comment: "Title of the create coupon button on the coupon list screen when it's empty")
         static let giveFeedbackAction = NSLocalizedString("Give Feedback", comment: "Title of the feedback action button on the coupon list screen")
         static let dismissAction = NSLocalizedString("Dismiss", comment: "Title of the dismiss action button on the coupon list screen")
         static let couponDeleted = NSLocalizedString("Coupon deleted", comment: "Notice message after deleting coupon from the Coupon Details screen")

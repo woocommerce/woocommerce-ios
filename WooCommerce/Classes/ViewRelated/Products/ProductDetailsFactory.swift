@@ -33,10 +33,11 @@ private extension ProductDetailsFactory {
                                productImageUploader: ProductImageUploaderProtocol) -> UIViewController {
         let vc: UIViewController
         let productModel = EditableProductModel(product: product)
-        let productImageActionHandler = productImageUploader.actionHandler(siteID: product.siteID,
-                                                                           productID: productModel.productID,
-                                                                           isLocalID: false,
-                                                                           originalStatuses: productModel.imageStatuses)
+        let productImageActionHandler = productImageUploader
+            .actionHandler(key: .init(siteID: product.siteID,
+                                      productOrVariationID: .product(id: productModel.productID),
+                                      isLocalID: false),
+                           originalStatuses: productModel.imageStatuses)
         let formType: ProductFormType = isEditProductsEnabled ? .edit: .readonly
         let viewModel = ProductFormViewModel(product: productModel,
                                              formType: formType,

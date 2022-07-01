@@ -103,11 +103,15 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
     /// Callback closure when an order is selected
     ///
-    private var switchDetailsHandler: (OrderDetailsViewModel) -> Void
+    private var switchDetailsHandler: (OrderDetailsViewModel?) -> Void
 
     /// Currently selected index path in the table view
     ///
     private var selectedIndexPath: IndexPath?
+
+    /// Currently selected order ID in the table view
+    ///
+    private var selectedOrderID: Int64?
 
     private lazy var isSplitViewInOrdersTabEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
 
@@ -118,7 +122,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     init(siteID: Int64,
          title: String,
          viewModel: OrderListViewModel,
-         switchDetailsHandler: @escaping (OrderDetailsViewModel) -> Void) {
+         switchDetailsHandler: @escaping (OrderDetailsViewModel?) -> Void) {
         self.siteID = siteID
         self.viewModel = viewModel
         self.switchDetailsHandler = switchDetailsHandler
@@ -222,7 +226,13 @@ private extension OrderListViewController {
 
         /// Update the `dataSource` whenever there is a new snapshot.
         viewModel.snapshot.sink { [weak self] snapshot in
-            self?.dataSource.apply(snapshot)
+            guard let self = self else { return }
+            self.dataSource.apply(snapshot)
+
+            if self.isSplitViewInOrdersTabEnabled, self.splitViewController?.isCollapsed == false {
+                self.checkSelectedItem()
+            }
+
         }.store(in: &cancellables)
 
         /// Update the top banner when needed
@@ -412,6 +422,41 @@ private extension OrderListViewController {
             tableView.selectRow(at: selectedIndexPath, animated: false, scrollPosition: .none)
         }
     }
+
+    /// Checks to see if the selected item is still at the same index in the list and resets its state if not.
+    ///
+    func checkSelectedItem() {
+        guard let indexPath = selectedIndexPath, let orderID = selectedOrderID else {
+            return selectFirstItemIfPossible()
+        }
+
+        guard let objectID = dataSource.itemIdentifier(for: indexPath),
+            let orderDetailsViewModel = viewModel.detailsViewModel(withID: objectID) else {
+            return selectFirstItemIfPossible()
+        }
+
+        if orderDetailsViewModel.order.orderID != orderID {
+            selectFirstItemIfPossible()
+        }
+    }
+
+    /// Attempts setting the first item in the list as selected if there's any item at all.
+    /// Otherwise, triggers closure to remove the current selected item from the split view's secondary column.
+    ///
+    func selectFirstItemIfPossible() {
+        let firstIndexPath = IndexPath(row: 0, section: 0)
+        guard let objectID = dataSource.itemIdentifier(for: firstIndexPath),
+              let orderDetailsViewModel = viewModel.detailsViewModel(withID: objectID),
+                state != .empty else {
+            selectedOrderID = nil
+            selectedIndexPath = nil
+            return switchDetailsHandler(nil)
+        }
+        selectedOrderID = orderDetailsViewModel.order.orderID
+        selectedIndexPath = firstIndexPath
+        switchDetailsHandler(orderDetailsViewModel)
+        highlightSelectedRowIfNeeded()
+    }
 }
 
 
@@ -548,6 +593,7 @@ extension OrderListViewController: UITableViewDelegate {
         let order = orderDetailsViewModel.order
         ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": order.orderID,
                                                                     "status": order.status.rawValue])
+        selectedOrderID = order.orderID
 
         if isSplitViewInOrdersTabEnabled {
             switchDetailsHandler(orderDetailsViewModel)

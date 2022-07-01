@@ -43,6 +43,7 @@ struct InPersonPaymentsView: View {
                 if viewModel.gatewaySelectionAvailable {
                     InPersonPaymentsSelectPluginView(selectedPlugin: nil) { plugin in
                         viewModel.selectPlugin(plugin)
+                        ServiceLocator.analytics.track(.cardPresentPaymentGatewaySelected, withProperties: ["payment_gateway": plugin.pluginName])
                     }
                 } else if viewModel.userIsAdministrator {
                     InPersonPaymentsPluginConflictAdmin(onRefresh: viewModel.refresh)

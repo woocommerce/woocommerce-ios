@@ -1,3 +1,2 @@
-Olá, Canadá! Temos o prazer de anunciar que os pagamentos presenciais agora estão disponíveis para vendedores canadenses que usem o WooCommerce Payments.
-
-Além disso, fizemos várias melhorias em outros locais do aplicativo, incluindo compatibilidade com números arábicos em campos de valor, capacidade de atualizar os tipos de desconto de cupom e função de copiar e colar em anotações de pedido. Obrigado a todos pelo feedback. Isso nos ajuda a tornar o aplicativo melhor para todos.
+Esta versão possui várias correções para criação de pedidos e pagamentos presenciais, incluindo a correção de um bug na seção de produtos que não mostrava a ordem correta dos itens, exibia a data e hora de todos os pedidos e o botão de emitir reembolso para todos os pedidos pagos.
+Continue compartilhando seu feedback conosco. Estamos ouvindo.

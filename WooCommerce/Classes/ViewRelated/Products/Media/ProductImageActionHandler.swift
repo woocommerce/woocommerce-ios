@@ -2,9 +2,37 @@ import Combine
 import Photos
 import Yosemite
 
+/// Interface of `ProductImageActionHandler` to allow mocking in unit tests.
+protocol ProductImageActionHandlerProtocol {
+    typealias AllStatuses = (productImageStatuses: [ProductImageStatus], error: Error?)
+    typealias OnAllStatusesUpdate = (AllStatuses) -> Void
+    typealias OnAssetUpload = (PHAsset, Result<ProductImage, Error>) -> Void
+
+    var productImageStatuses: [ProductImageStatus] { get }
+
+    @discardableResult
+    func addUpdateObserver<T: AnyObject>(_ observer: T,
+                                         onUpdate: @escaping OnAllStatusesUpdate) -> AnyCancellable
+
+    func addAssetUploadObserver<T: AnyObject>(_ observer: T,
+                                              onAssetUpload: @escaping OnAssetUpload) -> AnyCancellable
+
+    func addSiteMediaLibraryImagesToProduct(mediaItems: [Media])
+
+    func uploadMediaAssetToSiteMediaLibrary(asset: PHAsset)
+
+    func updateProductID(_ remoteProductID: ProductOrVariationID)
+
+    func deleteProductImage(_ productImage: ProductImage)
+
+    func resetProductImages(to product: ProductFormDataModel)
+
+    func updateProductImageStatusesAfterReordering(_ productImageStatuses: [ProductImageStatus])
+}
+
 /// Encapsulates the implementation of Product images actions from the UI.
 ///
-final class ProductImageActionHandler {
+final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
     typealias AllStatuses = (productImageStatuses: [ProductImageStatus], error: Error?)
     typealias OnAllStatusesUpdate = (AllStatuses) -> Void
     typealias OnAssetUpload = (PHAsset, Result<ProductImage, Error>) -> Void

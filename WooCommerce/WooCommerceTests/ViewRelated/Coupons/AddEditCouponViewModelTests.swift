@@ -278,7 +278,28 @@ final class AddEditCouponViewModelTests: XCTestCase {
     }
     
     func test_validatePercentageAmountInput_correctly_control_warning_visibility() {
-        
+        // Given
+        let coupon = Coupon.sampleCoupon.copy(amount: "20000", discountType: .percent)
+        let viewModel = AddEditCouponViewModel(
+                existingCoupon: coupon,
+                inputWarningDurationInSeconds: 0.1,
+                onSuccess: { _ in }
+        )
+        XCTAssertFalse(viewModel.isDisplayingAmountWarning)
+
+        // When
+        viewModel.validatePercentageAmountInput(withWarning: true)
+
+        // Then
+        XCTAssertTrue(viewModel.isDisplayingAmountWarning)
+
+        waitFor { promise in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                promise(())
+            }
+        }
+
+        XCTAssertFalse(viewModel.isDisplayingAmountWarning)
     }
     
     func test_validatePercentageAmountInput_returns_error_for_invalid_amount() {

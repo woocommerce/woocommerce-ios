@@ -28,6 +28,14 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         viewModel.password
     }
 
+    private var productOrVariationID: ProductOrVariationID {
+        if let viewModel = viewModel as? ProductVariationFormViewModel {
+            return .variation(productID: viewModel.productModel.productID, variationID: viewModel.productModel.productVariation.productVariationID)
+        } else {
+            return .product(id: viewModel.productModel.productID)
+        }
+    }
+
     private var tableViewModel: ProductFormTableViewModel
     private var tableViewDataSource: ProductFormTableViewDataSource {
         didSet {
@@ -37,6 +45,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     private let productImageActionHandler: ProductImageActionHandler
     private let productUIImageLoader: ProductUIImageLoader
+    private let productImageUploader: ProductImageUploaderProtocol
 
     private let currency: String
 
@@ -59,7 +68,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
          eventLogger: ProductFormEventLoggerProtocol,
          productImageActionHandler: ProductImageActionHandler,
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
-         presentationStyle: ProductFormPresentationStyle) {
+         presentationStyle: ProductFormPresentationStyle,
+         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
         self.viewModel = viewModel
         self.eventLogger = eventLogger
         self.currency = currency
@@ -67,6 +77,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         self.productImageActionHandler = productImageActionHandler
         self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler,
                                                                 phAssetImageLoaderProvider: { PHImageManager.default() })
+        self.productImageUploader = productImageUploader
         self.tableViewModel = DefaultProductFormTableViewModel(product: viewModel.productModel,
                                                                actionsFactory: viewModel.actionsFactory,
                                                                currency: currency)
@@ -127,12 +138,22 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
             self.viewModel.updateImages(productImageStatuses.images)
         }
+
+        productImageUploader.stopEmittingErrors(key: .init(siteID: viewModel.productModel.siteID,
+                                                           productOrVariationID: productOrVariationID,
+                                                           isLocalID: !viewModel.productModel.existsRemotely))
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
         view.endEditing(true)
+
+        if isBeingDismissedInAnyWay {
+            productImageUploader.startEmittingErrors(key: .init(siteID: viewModel.productModel.siteID,
+                                                                productOrVariationID: productOrVariationID,
+                                                                isLocalID: !viewModel.productModel.existsRemotely))
+        }
     }
 
     override var shouldShowOfflineBanner: Bool {
@@ -459,7 +480,7 @@ private extension ProductFormViewController {
     func configurePresentationStyle() {
         switch presentationStyle {
         case .contained(let containerViewController):
-            containerViewController.addCloseNavigationBarButton(target: self, action: #selector(closeNavigationBarButtonTapped))
+            containerViewController()?.addCloseNavigationBarButton(target: self, action: #selector(closeNavigationBarButtonTapped))
         case .navigationStack:
             break
         }
@@ -864,7 +885,7 @@ private extension ProductFormViewController {
         navigationItem.rightBarButtonItems = rightBarButtonItems
         switch presentationStyle {
         case .contained(let containerViewController):
-            containerViewController.navigationItem.rightBarButtonItems = rightBarButtonItems
+            containerViewController()?.navigationItem.rightBarButtonItems = rightBarButtonItems
         default:
             break
         }

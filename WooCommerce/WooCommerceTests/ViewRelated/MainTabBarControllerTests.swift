@@ -1,3 +1,4 @@
+import Combine
 import TestKit
 import XCTest
 @testable import WooCommerce
@@ -5,6 +6,9 @@ import Yosemite
 
 final class MainTabBarControllerTests: XCTestCase {
     private var stores: StoresManager!
+    // For test cases that assert on a view controller's navigation behavior, a retained window is required
+    // with its `rootViewController` set to the view controller.
+    private let window = UIWindow(frame: UIScreen.main.bounds)
 
     override func setUp() {
         super.setUp()
@@ -12,9 +16,14 @@ final class MainTabBarControllerTests: XCTestCase {
         ServiceLocator.setAuthenticationManager(mockAuthenticationManager)
         stores = DefaultStoresManager.testingInstance
         ServiceLocator.setStores(stores)
+
+        window.makeKeyAndVisible()
     }
 
     override func tearDown() {
+        window.resignKey()
+        window.rootViewController = nil
+
         SessionManager.testingInstance.reset()
         stores = nil
         super.tearDown()
@@ -254,6 +263,142 @@ final class MainTabBarControllerTests: XCTestCase {
 
                                                             isHubMenuFeatureFlagOn: isHubMenuFeatureFlagOn)?.topViewController,
                    isAnInstanceOf: ReviewDetailsViewController.self)
+    }
+
+    func test_when_receiving_product_image_upload_error_a_notice_is_enqueued() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isBackgroundImageUploadEnabled: true)
+        let noticePresenter = MockNoticePresenter()
+        let statusUpdates = PassthroughSubject<ProductImageUploadErrorInfo, Never>()
+        let productImageUploader = MockProductImageUploader(errors: statusUpdates.eraseToAnyPublisher())
+
+        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
+            return MainTabBarController(coder: coder,
+                                        featureFlagService: featureFlagService,
+                                        noticePresenter: noticePresenter,
+                                        productImageUploader: productImageUploader)
+        }) else {
+            return
+        }
+
+        // Trigger `viewDidLoad`
+        XCTAssertNotNil(tabBarController.view)
+        XCTAssertEqual(noticePresenter.queuedNotices.count, 0)
+
+        // When
+        statusUpdates.send(.init(siteID: 134,
+                                 productOrVariationID: .product(id: 606),
+                                 productImageStatuses: [],
+                                 error: .failedUploadingImage(error: NSError(domain: "", code: 8))))
+
+        // Given
+        XCTAssertEqual(noticePresenter.queuedNotices.count, 1)
+        let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
+        XCTAssertEqual(notice.title, MainTabBarController.Localization.imageUploadFailureNoticeTitle)
+    }
+
+    func test_when_receiving_product_images_saver_error_a_notice_is_enqueued() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isBackgroundImageUploadEnabled: true)
+        let noticePresenter = MockNoticePresenter()
+        let statusUpdates = PassthroughSubject<ProductImageUploadErrorInfo, Never>()
+        let productImageUploader = MockProductImageUploader(errors: statusUpdates.eraseToAnyPublisher())
+
+        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
+            return MainTabBarController(coder: coder,
+                                        featureFlagService: featureFlagService,
+                                        noticePresenter: noticePresenter,
+                                        productImageUploader: productImageUploader)
+        }) else {
+            return
+        }
+
+        // Trigger `viewDidLoad`
+        XCTAssertNotNil(tabBarController.view)
+        XCTAssertEqual(noticePresenter.queuedNotices.count, 0)
+
+        // When
+        statusUpdates.send(.init(siteID: 134,
+                                 productOrVariationID: .product(id: 606),
+                                 productImageStatuses: [],
+                                 error: .failedSavingProductAfterImageUpload(error: NSError(domain: "", code: 18))))
+
+        // Given
+        XCTAssertEqual(noticePresenter.queuedNotices.count, 1)
+        let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
+        XCTAssertEqual(notice.title, MainTabBarController.Localization.imagesSavingFailureNoticeTitle)
+    }
+
+    func test_when_tapping_product_image_upload_error_notice_product_details_is_pushed_to_products_tab() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isBackgroundImageUploadEnabled: true)
+        let noticePresenter = MockNoticePresenter()
+        let statusUpdates = PassthroughSubject<ProductImageUploadErrorInfo, Never>()
+        let productImageUploader = MockProductImageUploader(errors: statusUpdates.eraseToAnyPublisher())
+
+        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
+            return MainTabBarController(coder: coder,
+                                        featureFlagService: featureFlagService,
+                                        noticePresenter: noticePresenter,
+                                        productImageUploader: productImageUploader)
+        }) else {
+            return
+        }
+        window.rootViewController = tabBarController
+
+        // Trigger `viewDidLoad`
+        XCTAssertNotNil(tabBarController.view)
+
+        // When
+        let error = NSError(domain: "", code: 8)
+        statusUpdates.send(.init(siteID: 134,
+                                 productOrVariationID: .product(id: 606),
+                                 productImageStatuses: [],
+                                 error: .failedUploadingImage(error: error)))
+        let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
+        notice.actionHandler?()
+
+        let productsNavigationController = try XCTUnwrap(tabBarController
+            .tabNavigationController(tab: .products,
+                                     isHubMenuFeatureFlagOn: featureFlagService.isFeatureFlagEnabled(.hubMenu)))
+        waitUntil {
+            productsNavigationController.presentedViewController != nil
+        }
+
+        // Then
+        let productNavigationController = try XCTUnwrap(productsNavigationController.presentedViewController as? UINavigationController)
+        assertThat(productNavigationController.topViewController, isAnInstanceOf: ProductLoaderViewController.self)
+    }
+
+    func test_when_receiving_product_image_upload_error_with_feature_flag_off_a_notice_is_not_enqueued() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isBackgroundImageUploadEnabled: false)
+        let noticePresenter = MockNoticePresenter()
+        let statusUpdates = PassthroughSubject<ProductImageUploadErrorInfo, Never>()
+        let productImageUploader = MockProductImageUploader(errors: statusUpdates.eraseToAnyPublisher())
+
+        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
+            return MainTabBarController(coder: coder,
+                                        featureFlagService: featureFlagService,
+                                        noticePresenter: noticePresenter,
+                                        productImageUploader: productImageUploader)
+        }) else {
+            return
+        }
+
+        // Trigger `viewDidLoad`
+        XCTAssertNotNil(tabBarController.view)
+        XCTAssertEqual(noticePresenter.queuedNotices.count, 0)
+
+        // When
+        let error = NSError(domain: "", code: 8)
+        statusUpdates.send(.init(siteID: 134,
+                                 productOrVariationID: .product(id: 606),
+                                 productImageStatuses: [],
+                                 error: .failedUploadingImage(error: error)))
+
+        // Then
+        XCTAssertEqual(noticePresenter.queuedNotices.count, 0)
     }
 }
 

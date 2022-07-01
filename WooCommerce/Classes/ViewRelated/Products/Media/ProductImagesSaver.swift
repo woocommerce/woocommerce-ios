@@ -17,12 +17,12 @@ final class ProductImagesSaver {
     private var assetUploadSubscription: AnyCancellable?
 
     private let siteID: Int64
-    private let productID: Int64
+    private let productOrVariationID: ProductOrVariationID
     private let stores: StoresManager
 
-    init(siteID: Int64, productID: Int64, stores: StoresManager = ServiceLocator.stores) {
+    init(siteID: Int64, productOrVariationID: ProductOrVariationID, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
-        self.productID = productID
+        self.productOrVariationID = productOrVariationID
         self.stores = stores
     }
 
@@ -58,21 +58,27 @@ private extension ProductImagesSaver {
     }
 
     func saveProductImages(_ images: [ProductImage], onProductSave: @escaping (Result<[ProductImage], Error>) -> Void) {
-        let action = ProductAction.updateProductImages(siteID: siteID,
-                                                       productID: productID,
-                                                       images: images) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let product):
-                onProductSave(.success(product.images))
+        switch productOrVariationID {
+        case .product(let productID):
+            let action = ProductAction.updateProductImages(siteID: siteID,
+                                                           productID: productID,
+                                                           images: images) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let product):
+                    onProductSave(.success(product.images))
+                case .failure(let error):
+                    onProductSave(.failure(error))
+                }
                 self.imageStatusesToSave = []
                 self.assetUploadSubscription = nil
                 self.uploadStatusesSubscription = nil
-            case .failure(let error):
-                onProductSave(.failure(error))
             }
+            stores.dispatch(action)
+        case .variation(_, _):
+            // TODO: 7021 - update variation images action with a different endpoint
+            return
         }
-        stores.dispatch(action)
     }
 
     func observeAssetUploadsToUpdateImageStatuses(imageActionHandler: ProductImageActionHandler) {

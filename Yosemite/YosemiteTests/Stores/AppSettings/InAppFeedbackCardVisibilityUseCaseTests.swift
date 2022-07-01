@@ -155,14 +155,14 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         XCTAssertEqual(error as? InferenceError, .failedToInferInstallationDate)
     }
 
-    func test_shouldBeVisible_for_productM5_is_true_if_no_settings_are_found() throws {
+    func test_shouldBeVisible_for_ordersCreation_is_true_if_no_settings_are_found() throws {
         // Given
         let settings = GeneralAppSettings(installationDate: nil,
                                           feedbacks: [:], isViewAddOnsSwitchEnabled: false,
                                           isProductSKUInputScannerSwitchEnabled: false,
                                           isCouponManagementSwitchEnabled: false,
                                           knownCardReaders: [])
-        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .productsVariations)
+        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .ordersCreation)
 
         // When
         let shouldBeVisible = try useCase.shouldBeVisible()
@@ -171,10 +171,10 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         XCTAssertTrue(shouldBeVisible)
     }
 
-    func test_shouldBeVisible_for_productM5_is_true_if_feedback_has_pending_status() throws {
+    func test_shouldBeVisible_for_ordersCreation_is_true_if_feedback_has_pending_status() throws {
         // Given
-        let settings = createAppSetting(installationDate: nil, feedbackType: .productsVariations, feedbackStatus: .pending)
-        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .productsVariations)
+        let settings = createAppSetting(installationDate: nil, feedbackType: .ordersCreation, feedbackStatus: .pending)
+        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .ordersCreation)
 
         // When
         let shouldBeVisible = try useCase.shouldBeVisible()
@@ -183,10 +183,10 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         XCTAssertTrue(shouldBeVisible)
     }
 
-    func test_shouldBeVisible_for_productM5_is_false_if_feedback_has_dismissed_status() throws {
+    func test_shouldBeVisible_for_ordersCreation_is_false_if_feedback_has_dismissed_status() throws {
         // Given
-        let settings = createAppSetting(installationDate: nil, feedbackType: .productsVariations, feedbackStatus: .dismissed)
-        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .productsVariations)
+        let settings = createAppSetting(installationDate: nil, feedbackType: .ordersCreation, feedbackStatus: .dismissed)
+        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .ordersCreation)
 
         // When
         let shouldBeVisible = try useCase.shouldBeVisible()
@@ -195,10 +195,10 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         XCTAssertFalse(shouldBeVisible)
     }
 
-    func test_shouldBeVisible_for_productM5_is_false_if_feedback_has_given_status() throws {
+    func test_shouldBeVisible_for_ordersCreation_is_false_if_feedback_has_given_status() throws {
         // Given
-        let settings = createAppSetting(installationDate: nil, feedbackType: .productsVariations, feedbackStatus: .given(Date()))
-        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .productsVariations)
+        let settings = createAppSetting(installationDate: nil, feedbackType: .ordersCreation, feedbackStatus: .given(Date()))
+        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .ordersCreation)
 
         // When
         let shouldBeVisible = try useCase.shouldBeVisible()

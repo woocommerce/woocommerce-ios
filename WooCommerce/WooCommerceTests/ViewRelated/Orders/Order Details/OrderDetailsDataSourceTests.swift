@@ -192,13 +192,12 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(row(row: .markCompleteButton(style: .secondary, showsBottomSpacing: false), in: productsSection))
     }
 
-    func test_reloadSections_when_isEligibleForCardPresentPayment_is_false_then_collect_payment_button_is_not_visible() throws {
+    func test_reloadSections_when_isEligibleForPayment_is_false_then_collect_payment_button_is_not_visible() throws {
         //Given
-        let order = makeOrder()
+        let order = makeOrder().copy(datePaid: .some(Date())) // Paid orders are not eligible for payment
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
 
         // When
-        dataSource.isEligibleForCardPresentPayment = false
         dataSource.reloadSections()
 
         // Then
@@ -206,13 +205,12 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(row(row: .collectCardPaymentButton, in: paymentSection))
     }
 
-    func test_reloadSections_when_isEligibleForCardPresentPayment_is_true_then_collect_payment_button_is_visible() throws {
+    func test_reloadSections_when_isEligibleForPayment_is_true_then_collect_payment_button_is_visible() throws {
         //Given
-        let order = makeOrder()
+        let order = makeOrder().copy(datePaid: .some(nil)) // Unpaid orders are eligible for payment
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
 
         // When
-        dataSource.isEligibleForCardPresentPayment = true
         dataSource.reloadSections()
 
         // Then
@@ -288,12 +286,11 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(createShippingLabelRow)
     }
 
-    func test_create_shipping_label_button_is_not_visible_when_order_is_eligible_for_card_present_payment() throws {
+    func test_create_shipping_label_button_is_not_visible_when_order_is_eligible_for_payment() throws {
         // Given
         let order = makeOrder().copy(status: .processing, datePaid: .some(nil), total: "100")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.isEligibleForShippingLabelCreation = true
-        dataSource.isEligibleForCardPresentPayment = true
 
         // When
         dataSource.configureResultsControllers { }
@@ -505,6 +502,7 @@ private extension OrderDetailsDataSourceTests {
                                               name: "OrderItemRefund",
                                               productID: 1,
                                               variationID: 1,
+                                              refundedItemID: "1",
                                               quantity: 1,
                                               price: NSDecimalNumber(integerLiteral: 1),
                                               sku: nil,

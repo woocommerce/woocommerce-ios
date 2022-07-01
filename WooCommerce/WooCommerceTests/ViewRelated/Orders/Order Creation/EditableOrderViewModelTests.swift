@@ -3,9 +3,10 @@ import XCTest
 import Yosemite
 import WooFoundation
 
-final class NewOrderViewModelTests: XCTestCase {
+final class EditableOrderViewModelTests: XCTestCase {
 
     let sampleSiteID: Int64 = 123
+    let sampleOrderID: Int64 = 1234
     let sampleProductID: Int64 = 5
 
     func test_view_model_inits_with_expected_values() {
@@ -13,21 +14,70 @@ final class NewOrderViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .testingInstance)
 
         // When
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
 
         // Then
+        XCTAssertEqual(viewModel.flow, .creation)
         XCTAssertEqual(viewModel.navigationTrailingItem, .create)
         XCTAssertEqual(viewModel.statusBadgeViewModel.title, "pending")
         XCTAssertEqual(viewModel.productRows.count, 0)
     }
 
+    func test_edition_view_model_inits_with_expected_values() {
+        // Given
+        let order = Order.fake().copy(orderID: sampleOrderID)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+
+        // When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores)
+
+        // Then
+        XCTAssertEqual(viewModel.flow, .editing(initialOrder: order))
+    }
+
+    func test_edition_view_model_has_a_navigation_done_button() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+
+        // When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: .fake()), stores: stores)
+
+        // Then
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done)
+    }
+
+    func test_edition_view_model_has_a_navigation_loading_item_when_synching() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let order = Order.fake().copy(siteID: sampleSiteID, orderID: sampleOrderID)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores)
+
+        // When
+        let navigationItemDuringSync: EditableOrderViewModel.NavigationItem = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .updateOrder:
+                    promise(viewModel.navigationTrailingItem)
+                default:
+                    XCTFail("Received unsupported action: \(action)")
+                }
+            }
+
+            // Trigger remote sync
+            viewModel.saveShippingLine(ShippingLine.fake())
+        }
+
+        // Then
+        XCTAssertEqual(navigationItemDuringSync, .loading)
+    }
+
     func test_loading_indicator_is_enabled_during_network_request() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
 
         // When
-        let navigationItem: NewOrderViewModel.NavigationItem = waitFor { promise in
+        let navigationItem: EditableOrderViewModel.NavigationItem = waitFor { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
                 case .createOrder:
@@ -46,7 +96,7 @@ final class NewOrderViewModelTests: XCTestCase {
     func test_view_is_disabled_during_network_request() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
 
         // When
         let isViewDisabled: Bool = waitFor { promise in
@@ -68,7 +118,7 @@ final class NewOrderViewModelTests: XCTestCase {
     func test_create_button_is_enabled_after_the_network_operation_completes() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
 
         // When
         viewModel.updateOrderStatus(newStatus: .processing)
@@ -89,7 +139,7 @@ final class NewOrderViewModelTests: XCTestCase {
     func test_view_model_fires_error_notice_when_order_creation_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
         let error = NSError(domain: "Error", code: 0)
 
         // When
@@ -104,15 +154,15 @@ final class NewOrderViewModelTests: XCTestCase {
         viewModel.createOrder()
 
         // Then
-        XCTAssertEqual(viewModel.notice, NewOrderViewModel.NoticeFactory.createOrderErrorNotice(error, order: .fake()))
+        XCTAssertEqual(viewModel.notice, EditableOrderViewModel.NoticeFactory.createOrderErrorNotice(error, order: .fake()))
     }
 
     func test_view_model_fires_error_notice_when_order_sync_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
         let error = NSError(domain: "Error", code: 0)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
 
         // When
         waitForExpectation { expectation in
@@ -131,15 +181,15 @@ final class NewOrderViewModelTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(viewModel.notice, NewOrderViewModel.NoticeFactory.syncOrderErrorNotice(error, with: synchronizer))
+        XCTAssertEqual(viewModel.notice, EditableOrderViewModel.NoticeFactory.syncOrderErrorNotice(error, flow: .creation, with: synchronizer))
     }
 
     func test_view_model_clears_error_notice_when_order_is_syncing() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
         let error = NSError(domain: "Error", code: 0)
-        viewModel.notice = NewOrderViewModel.NoticeFactory.createOrderErrorNotice(error, order: .fake())
+        viewModel.notice = EditableOrderViewModel.NoticeFactory.createOrderErrorNotice(error, order: .fake())
 
         // When
         let notice: Notice? = waitFor { promise in
@@ -166,7 +216,7 @@ final class NewOrderViewModelTests: XCTestCase {
         storageManager.insertOrderStatus(.init(name: "Pending payment", siteID: sampleSiteID, slug: "pending", total: 0))
 
         // When
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
 
         // Then
         XCTAssertEqual(viewModel.statusBadgeViewModel.title, "Pending payment")
@@ -180,7 +230,7 @@ final class NewOrderViewModelTests: XCTestCase {
         storageManager.insertOrderStatus(.init(name: "Processing", siteID: sampleSiteID, slug: "processing", total: 0))
 
         // When
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
 
         // Then
         XCTAssertEqual(viewModel.statusBadgeViewModel.title, "Pending payment")
@@ -197,7 +247,7 @@ final class NewOrderViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
         viewModel.addProductViewModel.selectProduct(product.productID)
@@ -211,7 +261,7 @@ final class NewOrderViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
         viewModel.addProductViewModel.selectProduct(product.productID)
@@ -230,7 +280,7 @@ final class NewOrderViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // Product quantity is 1
         viewModel.addProductViewModel.selectProduct(product.productID)
@@ -248,7 +298,7 @@ final class NewOrderViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
         viewModel.addProductViewModel.selectProduct(product.productID)
 
         // When
@@ -266,7 +316,7 @@ final class NewOrderViewModelTests: XCTestCase {
         let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
         let storageManager = MockStorageManager()
         storageManager.insertProducts([product0, product1])
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // Given products are added to order
         viewModel.addProductViewModel.selectProduct(product0.productID)
@@ -287,7 +337,7 @@ final class NewOrderViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID)
         let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
         let orderItem = OrderItem.fake().copy(name: product.name, productID: product.productID, quantity: 1)
@@ -310,7 +360,7 @@ final class NewOrderViewModelTests: XCTestCase {
         let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
         storageManager.insertSampleProductVariation(readOnlyProductVariation: productVariation, on: product)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
         let orderItem = OrderItem.fake().copy(name: product.name,
@@ -334,7 +384,7 @@ final class NewOrderViewModelTests: XCTestCase {
     func test_view_model_is_updated_when_address_updated() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
         XCTAssertFalse(viewModel.customerDataViewModel.isDataAvailable)
 
         // When
@@ -352,7 +402,7 @@ final class NewOrderViewModelTests: XCTestCase {
         let sampleAddressWithoutNameAndEmail = sampleAddress2()
 
         // When
-        let customerDataViewModel = NewOrderViewModel.CustomerDataViewModel(billingAddress: sampleAddressWithoutNameAndEmail,
+        let customerDataViewModel = EditableOrderViewModel.CustomerDataViewModel(billingAddress: sampleAddressWithoutNameAndEmail,
                                                                             shippingAddress: nil)
 
         // Then
@@ -364,7 +414,7 @@ final class NewOrderViewModelTests: XCTestCase {
 
     func test_customer_data_view_model_is_initialized_correctly_from_empty_input() {
         // Given
-        let customerDataViewModel = NewOrderViewModel.CustomerDataViewModel(billingAddress: Address.empty, shippingAddress: Address.empty)
+        let customerDataViewModel = EditableOrderViewModel.CustomerDataViewModel(billingAddress: Address.empty, shippingAddress: Address.empty)
 
         // Then
         XCTAssertFalse(customerDataViewModel.isDataAvailable)
@@ -378,7 +428,7 @@ final class NewOrderViewModelTests: XCTestCase {
         let addressWithOnlyPhone = Address.fake().copy(phone: "123-456-7890")
 
         // When
-        let customerDataViewModel = NewOrderViewModel.CustomerDataViewModel(billingAddress: addressWithOnlyPhone, shippingAddress: Address.empty)
+        let customerDataViewModel = EditableOrderViewModel.CustomerDataViewModel(billingAddress: addressWithOnlyPhone, shippingAddress: Address.empty)
 
         // Then
         XCTAssertTrue(customerDataViewModel.isDataAvailable)
@@ -392,7 +442,7 @@ final class NewOrderViewModelTests: XCTestCase {
         let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
 
         // When
-        let paymentDataViewModel = NewOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00",
+        let paymentDataViewModel = EditableOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00",
                                                                           shippingTotal: "3.00",
                                                                           feesTotal: "2.00",
                                                                           taxesTotal: "5.00",
@@ -412,7 +462,7 @@ final class NewOrderViewModelTests: XCTestCase {
         let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
 
         // When
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, currencySettings: currencySettings)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, currencySettings: currencySettings)
 
         // Then
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£0.00")
@@ -430,7 +480,7 @@ final class NewOrderViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
         let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
 
         // When & Then
         viewModel.addProductViewModel.selectProduct(product.productID)
@@ -449,7 +499,7 @@ final class NewOrderViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
         let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
 
         // When
         viewModel.addProductViewModel.selectProduct(product.productID)
@@ -485,7 +535,7 @@ final class NewOrderViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
         let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
 
         // When
         viewModel.addProductViewModel.selectProduct(product.productID)
@@ -523,7 +573,7 @@ final class NewOrderViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
         let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
 
         // When
         viewModel.addProductViewModel.selectProduct(product.productID)
@@ -559,7 +609,7 @@ final class NewOrderViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
         let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
 
         // When
         viewModel.addProductViewModel.selectProduct(product.productID)
@@ -597,7 +647,7 @@ final class NewOrderViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
         let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
 
         // When
         viewModel.addProductViewModel.selectProduct(product.productID)
@@ -643,7 +693,7 @@ final class NewOrderViewModelTests: XCTestCase {
     func test_payment_section_loading_indicator_is_enabled_while_order_syncs() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
 
         // When
         let isLoadingDuringSync: Bool = waitFor { promise in
@@ -665,12 +715,36 @@ final class NewOrderViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.paymentDataViewModel.isLoading) // Disabled after sync ends
     }
 
+    func test_payment_section_loading_indicator_is_disabled_while_non_editable_order_syncs() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let order = Order.fake().copy(siteID: sampleSiteID, orderID: sampleOrderID, isEditable: false)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores)
+
+        // When
+        let isPaymentsLoadingVisible: Bool = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .updateOrder:
+                    promise(viewModel.paymentDataViewModel.isLoading)
+                default:
+                    XCTFail("Received unsupported action: \(action)")
+                }
+            }
+            // Trigger remote sync
+            viewModel.saveShippingLine(ShippingLine.fake())
+        }
+
+        // Then
+        XCTAssertFalse(isPaymentsLoadingVisible)
+    }
+
     func test_payment_section_is_updated_when_order_has_taxes() {
         // Given
         let expectation = expectation(description: "Order with taxes is synced")
         let currencySettings = CurrencySettings()
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, currencySettings: currencySettings)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, currencySettings: currencySettings)
 
         // When
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
@@ -700,7 +774,7 @@ final class NewOrderViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .testingInstance)
 
         // When
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
 
         // Then
         XCTAssertFalse(viewModel.hasChanges)
@@ -711,7 +785,7 @@ final class NewOrderViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
         viewModel.addProductViewModel.selectProduct(product.productID)
@@ -723,7 +797,7 @@ final class NewOrderViewModelTests: XCTestCase {
     func test_hasChanges_returns_true_when_order_status_is_updated() {
         // Given
         let storageManager = MockStorageManager()
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
         viewModel.updateOrderStatus(newStatus: .completed)
@@ -735,7 +809,7 @@ final class NewOrderViewModelTests: XCTestCase {
     func test_hasChanges_returns_true_when_customer_information_is_updated() {
         // Given
         let storageManager = MockStorageManager()
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
         viewModel.addressFormViewModel.fields.firstName = sampleAddress1().firstName
@@ -749,7 +823,7 @@ final class NewOrderViewModelTests: XCTestCase {
     func test_hasChanges_returns_true_when_customer_note_is_updated() {
         // Given
         let storageManager = MockStorageManager()
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         //When
         viewModel.noteViewModel.newNote = "Test"
@@ -762,7 +836,7 @@ final class NewOrderViewModelTests: XCTestCase {
     func test_hasChanges_returns_true_when_shipping_line_is_updated() {
         // Given
         let storageManager = MockStorageManager()
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
         let shippingLine = ShippingLine.fake()
 
         // When
@@ -775,7 +849,7 @@ final class NewOrderViewModelTests: XCTestCase {
     func test_hasChanges_returns_true_when_fee_line_is_updated() {
         // Given
         let storageManager = MockStorageManager()
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
         let feeLine = OrderFeeLine.fake()
 
         // When
@@ -790,7 +864,7 @@ final class NewOrderViewModelTests: XCTestCase {
     func test_shipping_method_tracked_when_added() throws {
         // Given
         let analytics = MockAnalyticsProvider()
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
         let shippingLine = ShippingLine.fake()
 
         // When
@@ -806,7 +880,7 @@ final class NewOrderViewModelTests: XCTestCase {
     func test_shipping_method_not_tracked_when_removed() {
         // Given
         let analytics = MockAnalyticsProvider()
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
         viewModel.saveShippingLine(nil)
@@ -818,7 +892,7 @@ final class NewOrderViewModelTests: XCTestCase {
     func test_fee_line_tracked_when_added() throws {
         // Given
         let analytics = MockAnalyticsProvider()
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
         let feeLine = OrderFeeLine.fake()
 
         // When
@@ -834,7 +908,7 @@ final class NewOrderViewModelTests: XCTestCase {
     func test_fee_line_not_tracked_when_removed() {
         // Given
         let analytics = MockAnalyticsProvider()
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
         viewModel.saveFeeLine(nil)
@@ -846,7 +920,7 @@ final class NewOrderViewModelTests: XCTestCase {
     func test_customer_details_tracked_when_added() throws {
         // Given
         let analytics = MockAnalyticsProvider()
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
         viewModel.addressFormViewModel.fields.address1 = sampleAddress1().address1
@@ -865,7 +939,7 @@ final class NewOrderViewModelTests: XCTestCase {
     func test_customer_details_not_tracked_when_removed() {
         // Given
         let analytics = MockAnalyticsProvider()
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
         viewModel.addressFormViewModel.fields.address1 = ""
@@ -878,7 +952,7 @@ final class NewOrderViewModelTests: XCTestCase {
     func test_customer_note_tracked_when_added() throws {
         // Given
         let analytics = MockAnalyticsProvider()
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
         viewModel.noteViewModel.newNote = "Test"
@@ -894,7 +968,7 @@ final class NewOrderViewModelTests: XCTestCase {
     func test_customer_note_not_tracked_when_removed() {
         // Given
         let analytics = MockAnalyticsProvider()
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
         viewModel.noteViewModel.newNote = ""
@@ -908,7 +982,7 @@ final class NewOrderViewModelTests: XCTestCase {
         // Given
         let analytics = MockAnalyticsProvider()
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, analytics: WooAnalytics(analyticsProvider: analytics))
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
         waitForExpectation { expectation in
@@ -935,7 +1009,7 @@ final class NewOrderViewModelTests: XCTestCase {
     func test_customer_note_section_is_updated_when_note_is_added_to_order() {
         // Given
         let storageManager = MockStorageManager()
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
         let expectedCustomerNote = "Test"
 
         //When
@@ -949,7 +1023,7 @@ final class NewOrderViewModelTests: XCTestCase {
     func test_discard_order_deletes_order_if_order_exists_remotely() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
         waitForExpectation { expectation in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
@@ -984,7 +1058,7 @@ final class NewOrderViewModelTests: XCTestCase {
     func test_discard_order_skips_remote_deletion_for_local_order() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             XCTFail("Unexpected action: \(action)")
         }
@@ -996,7 +1070,7 @@ final class NewOrderViewModelTests: XCTestCase {
     func test_resetAddressForm_discards_pending_address_field_changes() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
 
         // Given there is a saved change and a pending change
         viewModel.addressFormViewModel.fields.firstName = sampleAddress1().firstName
@@ -1011,6 +1085,115 @@ final class NewOrderViewModelTests: XCTestCase {
                        "Saved change was unexpectedly discarded when address form was reset")
         XCTAssertEqual(viewModel.addressFormViewModel.fields.lastName, "",
                        "Pending change was not discarded when address form was reset")
+    }
+
+    func test_canBeDismissed_is_true_when_creating_order_without_changes() {
+        // Given
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID)
+
+        // Then
+        XCTAssertTrue(viewModel.canBeDismissed)
+    }
+
+    func test_canBeDismissed_is_false_when_creating_order_with_changes() {
+        // Given
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID)
+
+        // When
+        viewModel.updateOrderStatus(newStatus: .failed)
+
+        // Then
+        XCTAssertFalse(viewModel.canBeDismissed)
+    }
+
+    func test_canBeDismissed_is_true_when_editing_order_without_changes() {
+        // Given
+        let order = Order.fake().copy(orderID: sampleOrderID)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order))
+
+        // Then
+        XCTAssertTrue(viewModel.canBeDismissed)
+    }
+
+    func test_canBeDismissed_is_true_when_editing_order_with_changes() {
+        // Given
+        let order = Order.fake().copy(orderID: sampleOrderID)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order))
+
+        // When
+        viewModel.updateOrderStatus(newStatus: .failed)
+
+        // Then
+        XCTAssertTrue(viewModel.canBeDismissed)
+    }
+
+    func test_onFinished_is_called_when_creating_order() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var isCallbackCalled = false
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .creation, stores: stores)
+        viewModel.onFinished = { _ in
+            isCallbackCalled = true
+        }
+
+        // When
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .createOrder(_, order, onCompletion):
+                onCompletion(.success(order))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+        viewModel.createOrder()
+
+        // Then
+        XCTAssertTrue(isCallbackCalled)
+    }
+
+    func test_onFinished_is_called_when_editing_order() {
+        // Given
+        var isCallbackCalled = false
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: .fake()))
+        viewModel.onFinished = { _ in
+            isCallbackCalled = true
+        }
+
+        // When
+        viewModel.finishEditing()
+
+        // Then
+        XCTAssertTrue(isCallbackCalled)
+    }
+
+    func test_creating_order_does_not_shows_editable_indicator() {
+        // Given
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID)
+
+        // When & Then
+        XCTAssertFalse(viewModel.shouldShowNonEditableIndicators)
+    }
+
+    func test_editing_a_non_editable_order_shows_editable_indicator() {
+        // Given
+        let order = Order.fake().copy(isEditable: false)
+
+        // When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order))
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowNonEditableIndicators)
+    }
+
+    func test_editing_an_editable_order_does_not_shows_editable_indicator() {
+        // Given
+        let order = Order.fake().copy(isEditable: true)
+
+        // When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order))
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowNonEditableIndicators)
     }
 }
 
@@ -1031,7 +1214,7 @@ private extension MockStorageManager {
     }
 }
 
-private extension NewOrderViewModelTests {
+private extension EditableOrderViewModelTests {
     func sampleAddress1() -> Address {
         return Address(firstName: "Johnny",
                        lastName: "Appleseed",

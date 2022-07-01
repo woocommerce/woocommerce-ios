@@ -1,10 +1,6 @@
-import Foundation
 import SwiftUI
 
-/// View to choose what payment method will be used with the simple payments order.
-///
-struct SimplePaymentsMethod: View {
-
+struct PaymentMethodsView: View {
     /// Set this closure with UIKit dismiss code. Needed because we need access to the UIHostingController `dismiss` method.
     ///
     var dismiss: (() -> Void) = {}
@@ -15,7 +11,7 @@ struct SimplePaymentsMethod: View {
 
     /// ViewModel to render the view content.
     ///
-    @ObservedObject var viewModel: SimplePaymentsMethodsViewModel
+    @ObservedObject var viewModel: PaymentMethodsViewModel
 
     /// Determines if the "pay by cash" alert confirmation should be shown.
     ///
@@ -132,8 +128,8 @@ private struct MethodRow: View {
                 Image(uiImage: icon)
                     .resizable()
                     .flipsForRightToLeftLayoutDirection(true)
-                    .frame(width: SimplePaymentsMethod.Layout.iconWidthHeight(scale: scale),
-                           height: SimplePaymentsMethod.Layout.iconWidthHeight(scale: scale))
+                    .frame(width: PaymentMethodsView.Layout.iconWidthHeight(scale: scale),
+                           height: PaymentMethodsView.Layout.iconWidthHeight(scale: scale))
                     .foregroundColor(Color(.systemGray))
                     .accessibility(hidden: true)
 
@@ -144,21 +140,22 @@ private struct MethodRow: View {
 
                 DisclosureIndicator()
             }
-            .padding(.vertical, SimplePaymentsMethod.Layout.verticalPadding)
+            .padding(.vertical, PaymentMethodsView.Layout.verticalPadding)
             .padding(.horizontal, insets: safeAreaInsets)
         }
     }
 }
 
 // MARK: Constants
-private extension SimplePaymentsMethod {
+extension PaymentMethodsView {
     enum Localization {
-        static let header = NSLocalizedString("Choose your payment method", comment: "Heading text on the select payment method screen for simple payments")
-        static let cash = NSLocalizedString("Cash", comment: "Cash method title on the select payment method screen for simple payments")
-        static let card = NSLocalizedString("Card", comment: "Card method title on the select payment method screen for simple payments")
-        static let link = NSLocalizedString("Share Payment Link", comment: "Payment Link method title on the select payment method screen for simple payments")
-        static let markAsPaidTitle = NSLocalizedString("Mark as Paid?", comment: "Alert title when selecting the cash payment method for simple payments")
-        static let markAsPaidButton = NSLocalizedString("Mark as Paid", comment: "Alert button when selecting the cash payment method for simple payments")
+        static let header = NSLocalizedString("Choose your payment method", comment: "Heading text on the select payment method screen")
+        static let cash = NSLocalizedString("Cash", comment: "Cash method title on the select payment method screen")
+        static let card = NSLocalizedString("Card", comment: "Card method title on the select payment method screen")
+        static let link = NSLocalizedString("Share Payment Link", comment: "Payment Link method title on the select payment method screen")
+        static let markAsPaidTitle = NSLocalizedString("Mark as Paid?", comment: "Alert title when selecting the cash payment method")
+        static let markAsPaidButton = NSLocalizedString("Mark as Paid", comment: "Alert button when selecting the cash payment method")
+        static let cancelTitle = NSLocalizedString("Cancel", comment: "Title for the button to cancel the payment methods screen")
     }
 
     enum Layout {
@@ -172,24 +169,24 @@ private extension SimplePaymentsMethod {
 }
 
 // MARK: Previews
-struct SimplePaymentsMethod_Preview: PreviewProvider {
+struct PaymentMethodsView_Preview: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            SimplePaymentsMethod(viewModel: .init(formattedTotal: "$15.99"))
+            PaymentMethodsView(viewModel: .init(formattedTotal: "$15.99", flow: .orderPayment))
                 .navigationBarTitleDisplayMode(.inline)
         }
         .environment(\.colorScheme, .light)
         .previewDisplayName("Light")
 
         NavigationView {
-            SimplePaymentsMethod(viewModel: .init(formattedTotal: "$15.99"))
+            PaymentMethodsView(viewModel: .init(formattedTotal: "$15.99", flow: .orderPayment))
                 .navigationBarTitleDisplayMode(.inline)
         }
         .environment(\.colorScheme, .dark)
         .previewDisplayName("Dark")
 
         NavigationView {
-            SimplePaymentsMethod(viewModel: .init(formattedTotal: "$15.99"))
+            PaymentMethodsView(viewModel: .init(formattedTotal: "$15.99", flow: .orderPayment))
                 .navigationBarTitleDisplayMode(.inline)
         }
         .environment(\.sizeCategory, .accessibilityExtraExtraLarge)

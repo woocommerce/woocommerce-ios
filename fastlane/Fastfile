@@ -851,8 +851,8 @@ platform :ios do
                         download_path: './fastlane/metadata')
 
     # Copy appstoreres (screenshot-related) txt files into `en-US`
-    enUS_path = File.join(Dir.pwd, 'metadata', 'en-US')
-    FileUtils.mkdir_p(enUS_path)
+    en_us_path = File.join(Dir.pwd, 'metadata', 'en-US')
+    FileUtils.mkdir_p(en_us_path)
 
     [
       'promo_screenshot_1.txt',
@@ -862,7 +862,7 @@ platform :ios do
       'promo_screenshot_5.txt'
     ].each do |filename|
       source = File.join(Dir.pwd, 'appstoreres', 'metadata', 'source', filename)
-      destination = File.join(enUS_path, filename)
+      destination = File.join(en_us_path, filename)
       FileUtils.cp(source, destination)
     end
 
@@ -1036,13 +1036,13 @@ end
 desc 'Run tests without building'
 lane :test_without_building do |options|
   # Find the referenced .xctestrun file based on its name
-  buildProductsPath = File.expand_path('DerivedData/Build/Products/', File.dirname(Dir.pwd))
+  build_products_path = File.expand_path('DerivedData/Build/Products/', File.dirname(Dir.pwd))
 
-  testPlanPath = Dir.glob(File.join(buildProductsPath, '*.xctestrun')).select do |e|
+  xctestrun_path = Dir.glob(File.join(build_products_path, '*.xctestrun')).select do |e|
     e.include?(options[:name])
   end.first
 
-  UI.user_error!('Unable to find .xctestrun file') unless !testPlanPath.nil? && File.exist?((testPlanPath))
+  UI.user_error!('Unable to find .xctestrun file') unless !xctestrun_path.nil? && File.exist?((xctestrun_path))
 
   run_tests(
     workspace: 'WooCommerce.xcworkspace',
@@ -1050,7 +1050,7 @@ lane :test_without_building do |options|
     device: options[:device],
     deployment_target_version: options[:ios_version],
     test_without_building: true,
-    xctestrun: testPlanPath,
+    xctestrun: xctestrun_path,
     result_bundle: true,
     # settins for XML test report generation via `trainer`
     output_types: '',

@@ -129,11 +129,12 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
     }
 
     let providerCellAccessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+
     var isEmptyState: Bool {
-        (shipmentProvider == nil && trackingNumber.isNilOrEmpty) ? true : false
+        (shipmentProvider == nil && trackingNumber.isNilOrEmpty)
     }
     var hasUnsavedChanges: Bool {
-        (shipmentProvider == nil || trackingNumber.isNilOrEmpty) ? true : false
+        (shipmentProvider == nil || trackingNumber.isNilOrEmpty)
     }
 
     var canCommit: Bool {

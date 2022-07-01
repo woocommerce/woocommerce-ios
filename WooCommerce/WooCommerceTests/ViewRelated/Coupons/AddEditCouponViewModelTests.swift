@@ -386,7 +386,20 @@ final class AddEditCouponViewModelTests: XCTestCase {
     }
     
     func test_validatePercentageAmountInput_returns_nil_if_amount_is_valid() {
-        
+        // Given
+        let coupon = Coupon.sampleCoupon.copy(amount: "100", discountType: .fixedCart)
+        let viewModel = AddEditCouponViewModel(
+                existingCoupon: coupon,
+                inputWarningDurationInSeconds: 0.1,
+                onSuccess: { _ in }
+        )
+
+        // When
+        let error = viewModel.validatePercentageAmountInput(withWarning: false)
+
+        // Then
+        XCTAssertNil(error)
+        XCTAssertEqual(viewModel.amountField, "100")
     }
 
     func test_discount_type_changed_to_percent_triggers_amount_adjustment() {

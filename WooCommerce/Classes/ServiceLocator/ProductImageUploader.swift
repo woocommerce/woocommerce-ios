@@ -15,6 +15,16 @@ struct ProductImageUploadErrorInfo {
 enum ProductOrVariationID: Equatable, Hashable {
     case product(id: Int64)
     case variation(productID: Int64, variationID: Int64)
+
+    /// Returns the product ID for product type and variation ID for variation type.
+    var id: Int64 {
+        switch self {
+        case .product(let id):
+            return id
+        case .variation(_, let variationID):
+            return variationID
+        }
+    }
 }
 
 /// Identifiable information about a specific product or product variation of different sites for image upload.
@@ -217,18 +227,10 @@ private extension ProductImageUploader {
     func updateProductIDOfImagesUploadedUsingLocalProductID(siteID: Int64,
                                                             productOrVariationID: ProductOrVariationID,
                                                             images: [ProductImage]) {
-        let imageProductOrVariationID: Int64 = {
-            switch productOrVariationID {
-            case .product(let id):
-                return id
-            case .variation(_, let variationID):
-                return variationID
-            }
-        }()
         images.forEach { image in
             Task {
                 _ = try? await imagesProductIDUpdater.updateImageProductID(siteID: siteID,
-                                                                           productID: imageProductOrVariationID,
+                                                                           productID: productOrVariationID.id,
                                                                            productImage: image)
             }
         }

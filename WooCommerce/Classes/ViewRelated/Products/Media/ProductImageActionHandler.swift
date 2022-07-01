@@ -184,15 +184,7 @@ final class ProductImageActionHandler {
     private func uploadMediaAssetToSiteMediaLibrary(asset: PHAsset, onCompletion: @escaping (Result<Media, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
-            let productOrVariationID: Int64 = {
-                switch self.productOrVariationID {
-                case .product(let id):
-                    return id
-                case .variation(_, variationID: let variationID):
-                    return variationID
-                }
-            }()
-            let action = MediaAction.uploadMedia(siteID: self.siteID, productID: productOrVariationID, mediaAsset: asset, onCompletion: onCompletion)
+            let action = MediaAction.uploadMedia(siteID: self.siteID, productID: self.productOrVariationID.id, mediaAsset: asset, onCompletion: onCompletion)
             self.stores.dispatch(action)
         }
     }

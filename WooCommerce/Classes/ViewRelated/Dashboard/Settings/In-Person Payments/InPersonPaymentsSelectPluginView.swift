@@ -54,14 +54,16 @@ struct InPersonPaymentsSelectPluginView: View {
                 Text(Localization.prompt)
                     .bodyStyle()
 
-                InPersonPaymentsSelectPluginRow(icon: .wcpayIcon, name: "WooCommerce Payments", selected: selectedPlugin == .wcPay)
-                    .onTapGesture {
-                        selectedPlugin = .wcPay
-                    }
-                InPersonPaymentsSelectPluginRow(icon: .stripeIcon, name: "Stripe", selected: selectedPlugin == .stripe)
-                    .onTapGesture {
-                        selectedPlugin = .stripe
-                    }
+                VStack(alignment: .leading, spacing: 16) {
+                    InPersonPaymentsSelectPluginRow(icon: .wcpayIcon, name: "WooCommerce Payments", selected: selectedPlugin == .wcPay)
+                        .onTapGesture {
+                            selectedPlugin = .wcPay
+                        }
+                    InPersonPaymentsSelectPluginRow(icon: .stripeIcon, name: "Stripe", selected: selectedPlugin == .stripe)
+                        .onTapGesture {
+                            selectedPlugin = .stripe
+                        }
+                }
             }
 
             Spacer()
@@ -70,7 +72,7 @@ struct InPersonPaymentsSelectPluginView: View {
             .disabled(selectedPlugin == nil)
             .buttonStyle(PrimaryButtonStyle())
         }
-        .padding(.top, 64)
+        .padding(.top, 32)
         .padding(.horizontal, 16)
         .padding(.bottom, 24)
         .background(Color(.tertiarySystemBackground).ignoresSafeArea())

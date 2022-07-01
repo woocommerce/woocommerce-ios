@@ -420,6 +420,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
             }
         }
 
+        // Then
         XCTAssertEqual(viewModel.amountField, "100")
     }
 

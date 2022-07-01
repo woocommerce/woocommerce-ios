@@ -483,7 +483,7 @@ extension MockObjectGraph {
     static func createStats(siteID: Int64, granularity: StatGranularity, items: [TopEarnerStatsItem]) -> TopEarnerStats {
         TopEarnerStats(
             siteID: siteID,
-            date: String(Date().year),
+            date: StatsStoreV4.buildDateString(from: Date(), with: granularity),
             granularity: granularity,
             limit: "",
             items: items

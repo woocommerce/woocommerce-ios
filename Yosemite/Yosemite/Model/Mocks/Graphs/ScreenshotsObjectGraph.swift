@@ -213,7 +213,7 @@ struct ScreenshotObjectGraph: MockObjectGraph {
                 Self.createVisitStatsItem(
                     granularity: .day,
                     periodDate: date.monthStart.addingDays(dayIndex),
-                    visitors: Int.random(in: 10 ... 100)
+                    visitors: Int.random(in: 0 ... 20)
                 )
             }
         )
@@ -251,7 +251,7 @@ struct ScreenshotObjectGraph: MockObjectGraph {
 
     /// The possible value of an order when generating random stats
     ///
-    private let orderValueRange = 10 ..< 50
+    private let orderValueRange = 5 ..< 20
 
     var thisMonthOrderStats: OrderStatsV4 {
         Self.createStats(

@@ -139,10 +139,11 @@ private extension ManualTrackingViewController {
 
     @objc func primaryButtonTapped() {
         ServiceLocator.analytics.track(.orderShipmentTrackingAddButtonTapped)
-        if viewModel.canCommit {
-            viewModel.isCustom ? addCustomTracking() : addTracking()
-            viewModel.saveSelectedShipmentProvider()
+        guard viewModel.canCommit else {
+            return
         }
+        viewModel.isCustom ? addCustomTracking() : addTracking()
+        viewModel.saveSelectedShipmentProvider()
     }
 }
 

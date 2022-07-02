@@ -43,8 +43,10 @@ struct WebView: UIViewRepresentable {
 struct CardReadersView: View {
     var body: some View {
         NavigationView {
-            NavigationLink(destination: WebView(url: URL(string: manuals[0].urlString)!) ) {
-                Text(manuals[0].name)
+            List(manuals, id: \.name) { manual in
+                NavigationLink(destination: WebView(url: URL(string: manual.urlString)!) ) {
+                    Text(manual.name)
+                }
             }
         }.navigationTitle(Localization.navigationTitle)
     }

@@ -147,7 +147,6 @@ final class AddEditCouponViewModel: ObservableObject {
     }
 
     var hasChangesMade: Bool {
-        guard editingOption == .editing else { return true }
         let coupon = populatedCoupon
         return checkDiscountTypeUpdated(for: coupon) ||
         checkAmountUpdated(for: coupon) ||
@@ -414,6 +413,35 @@ final class AddEditCouponViewModel: ObservableObject {
         stores.dispatch(action)
     }
 
+    /// Default coupon when coupon creation is initiated
+    var defaultCoupon: Coupon {
+        Coupon(siteID: siteID,
+               couponID: -1,
+               code: codeField,
+               amount: "0.00",
+               dateCreated: Date(),
+               dateModified: Date(),
+               discountType: .percent,
+               description: "",
+               dateExpires: nil,
+               usageCount: 0,
+               individualUse: false,
+               productIds: [],
+               excludedProductIds: [],
+               usageLimit: nil,
+               usageLimitPerUser: nil,
+               limitUsageToXItems: nil,
+               freeShipping: false,
+               productCategories: [],
+               excludedProductCategories: [],
+               excludeSaleItems: false,
+               minimumAmount: "",
+               maximumAmount: "",
+               emailRestrictions: [],
+               usedBy: [])
+    }
+
+    /// Coupon generated from input
     var populatedCoupon: Coupon {
         let emailRestrictions: [String] = {
             if couponRestrictionsViewModel.allowedEmails.isEmpty {
@@ -478,9 +506,7 @@ final class AddEditCouponViewModel: ObservableObject {
 //
 private extension AddEditCouponViewModel {
     func checkDiscountTypeUpdated(for coupon: Coupon) -> Bool {
-        guard let initialCoupon = self.coupon else {
-            return false
-        }
+        let initialCoupon = self.coupon ?? defaultCoupon
         return coupon.discountType != initialCoupon.discountType
     }
 
@@ -498,9 +524,7 @@ private extension AddEditCouponViewModel {
     }
 
     func checkUsageRestrictionsUpdated(for coupon: Coupon) -> Bool {
-        guard let initialCoupon = self.coupon else {
-            return false
-        }
+        let initialCoupon = self.coupon ?? defaultCoupon
         let amountFormatter = CouponAmountInputFormatter()
 
         return amountFormatter.value(from: coupon.maximumAmount) != amountFormatter.value(from: initialCoupon.maximumAmount) ||
@@ -516,9 +540,7 @@ private extension AddEditCouponViewModel {
     }
 
     func checkExpiryDateUpdated(for coupon: Coupon) -> Bool {
-        guard let initialCoupon = self.coupon else {
-            return false
-        }
+        let initialCoupon = self.coupon ?? defaultCoupon
         // since we're trimming time on the new date, we should also trim the time on the old date
         // as a workaround for the edge case where the date was created with different time zones.
         guard let oldDate = initialCoupon.dateExpires?.startOfDay(timezone: timezone),
@@ -529,38 +551,28 @@ private extension AddEditCouponViewModel {
     }
 
     func checkCouponCodeUpdated(for coupon: Coupon) -> Bool {
-        guard let initialCoupon = self.coupon else {
-            return false
-        }
+        let initialCoupon = self.coupon ?? defaultCoupon
         return coupon.code.lowercased() != initialCoupon.code.lowercased()
     }
 
     func checkAmountUpdated(for coupon: Coupon) -> Bool {
-        guard let initialCoupon = self.coupon else {
-            return false
-        }
+        let initialCoupon = self.coupon ?? defaultCoupon
         let amountFormatter = CouponAmountInputFormatter()
         return amountFormatter.value(from: coupon.amount) != amountFormatter.value(from: initialCoupon.amount)
     }
 
     func checkDescriptionUpdated(for coupon: Coupon) -> Bool {
-        guard let initialCoupon = self.coupon else {
-            return false
-        }
+        let initialCoupon = self.coupon ?? defaultCoupon
         return coupon.description != initialCoupon.description
     }
 
     func checkAllowedProductsAndCategoriesUpdated(for coupon: Coupon) -> Bool {
-        guard let initialCoupon = self.coupon else {
-            return false
-        }
+        let initialCoupon = self.coupon ?? defaultCoupon
         return coupon.productIds != initialCoupon.productIds || coupon.productCategories != initialCoupon.productCategories
     }
 
     func checkFreeShippingUpdated(for coupon: Coupon) -> Bool {
-        guard let initialCoupon = self.coupon else {
-            return false
-        }
+        let initialCoupon = self.coupon ?? defaultCoupon
         return coupon.freeShipping != initialCoupon.freeShipping
     }
 

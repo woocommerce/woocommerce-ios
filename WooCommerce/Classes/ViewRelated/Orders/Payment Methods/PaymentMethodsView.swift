@@ -1,5 +1,46 @@
 import SwiftUI
 
+struct FeatureAnnouncementView: View {
+    var body: some View {
+        HStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
+                Text("NEW")
+                    .foregroundColor(Color(.textBrand))
+                    .padding(.leading, 6)
+                    .padding(.trailing, 6)
+                    .padding(.top, 4)
+                    .padding(.bottom, 4)
+                    .background(RoundedRectangle(cornerRadius: 8)
+                        .fill(Color(.withColorStudio(.wooCommercePurple, shade: .shade0))))
+                    .font(.system(size: 12, weight: .bold))
+                    .padding(.bottom, 16)
+                Text("Accept Payments Easily")
+                    .headlineStyle()
+                    .padding(.bottom, 8)
+                Text("Adopting in-person payments can help you grow your business.")
+                    .font(.system(size: 15))
+                    .padding(.bottom, 16)
+                Button("Set up now") {}
+            }
+            .padding(.leading, 16)
+
+            VStack(alignment: .trailing, spacing: 0) {
+                Button(action: {
+                          print("button pressed")
+                        }) {
+                            Image(systemName: "xmark")
+                                .foregroundColor(Color(.withColorStudio(.gray)))
+                        }
+                        .padding(.top, 16)
+                        .padding(.trailing, 16)
+                        .padding(.bottom, 8)
+                Image(uiImage: .installWCShipImage)
+            }
+        }
+        .background(Color(.listForeground))
+    }
+}
+
 struct PaymentMethodsView: View {
     /// Set this closure with UIKit dismiss code. Needed because we need access to the UIHostingController `dismiss` method.
     ///
@@ -35,33 +76,35 @@ struct PaymentMethodsView: View {
 
             Divider()
 
-            Group {
-                MethodRow(icon: .priceImage, title: Localization.cash) {
-                    showingCashAlert = true
-                    viewModel.trackCollectByCash()
-                }
+            VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: Layout.noSpacing) {
+                    MethodRow(icon: .priceImage, title: Localization.cash) {
+                        showingCashAlert = true
+                        viewModel.trackCollectByCash()
+                    }
 
-                if viewModel.showPayWithCardRow {
-                    Divider()
+                    if viewModel.showPayWithCardRow {
+                        Divider()
 
-                    MethodRow(icon: .creditCardImage, title: Localization.card) {
-                        viewModel.collectPayment(on: rootViewController, onSuccess: dismiss)
+                        MethodRow(icon: .creditCardImage, title: Localization.card) {
+                            viewModel.collectPayment(on: rootViewController, onSuccess: dismiss)
+                        }
+                    }
+
+                    if viewModel.showPaymentLinkRow {
+                        Divider()
+
+                        MethodRow(icon: .linkImage, title: Localization.link) {
+                            sharingPaymentLink = true
+                            viewModel.trackCollectByPaymentLink()
+                        }
                     }
                 }
+                .padding(.horizontal)
+                .background(Color(.listForeground))
 
-                if viewModel.showPaymentLinkRow {
-                    Divider()
-
-                    MethodRow(icon: .linkImage, title: Localization.link) {
-                        sharingPaymentLink = true
-                        viewModel.trackCollectByPaymentLink()
-                    }
-                }
+                FeatureAnnouncementView()
             }
-            .padding(.horizontal)
-            .background(Color(.listForeground))
-
-            Divider()
 
             // Pushes content to the top
             Spacer()

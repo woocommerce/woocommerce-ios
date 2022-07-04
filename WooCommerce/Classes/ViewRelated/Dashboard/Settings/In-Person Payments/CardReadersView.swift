@@ -38,17 +38,28 @@ struct WebView: UIViewRepresentable {
         webView.load(request)
     }
 }
+
+struct CardReaderViewDetail: View {
+    var choice: Manual
+
+    var body: some View {
+        NavigationLink(destination: WebView(url: URL(string: choice.urlString)!)) {
+            // TODO: Needs refactor
+            return WebView(url: URL(string: choice.urlString)!)
+        }
+    }
+}
 /// A view to be displayed on Card Reader Manuals screen
 ///
 struct CardReadersView: View {
     var body: some View {
         NavigationView {
             List(manuals, id: \.name) { manual in
-                NavigationLink(destination: WebView(url: URL(string: manual.urlString)!) ) {
-                    HStack {
-                            // Temporary Placeholder using SwiftUI wrapper
-                            Image(uiImage: .cardReaderManualIcon)
-                            Text(manual.name)
+                VStack {
+                    NavigationLink(destination: CardReaderViewDetail(choice: manual)) {
+                        // Temporary Image placeholder using SwiftUI wrapper
+                        Image(uiImage: .cardReaderManualIcon)
+                        Text(manual.name)
                     }
                     .navigationBarTitle(Localization.navigationTitle, displayMode: .inline)
                 }

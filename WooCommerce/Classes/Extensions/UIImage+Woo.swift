@@ -982,6 +982,24 @@ extension UIImage {
         UIImage(imageLiteralResourceName: "img-welcome")
     }
 
+    /// Icon Circular Rate Discount (used in WCShip onboarding)
+    ///
+    static var circularRateDiscountIcon: UIImage {
+        return UIImage(named: "icon-circular-rate-discount")!
+    }
+
+    /// Icon Circular Document (used in WCShip onboarding)
+    ///
+    static var circularDocumentIcon: UIImage {
+        return UIImage(named: "icon-circular-document")!
+    }
+
+    /// Icon Circular Time (used in WCShip onboarding)
+    ///
+    static var circularTimeIcon: UIImage {
+        return UIImage(named: "icon-circular-time")!
+    }
+
     /// Lock Image
     ///
     static var lockImage: UIImage {

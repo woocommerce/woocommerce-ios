@@ -51,6 +51,7 @@ private extension InPersonPaymentsMenuViewController {
         ] + readerManualRows()
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.consolidatedCardReaderManuals) {
+            // While not ready to be enabled, hide the individual rows, and show the consolidated version instead
             let cardReaderManualRow = Row.cardReaderManuals
             rows.removeLast(readerManualRows().count)
             rows.append(cardReaderManualRow)

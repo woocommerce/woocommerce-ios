@@ -9,17 +9,17 @@ struct Manual: Identifiable {
 
 let bbposChipper2XBT = Manual(
     id: 0,
-    name: "bbposChipper2XBT",
+    name: "BBPOS Chipper 2X BT",
     urlString: "https://stripe.com/files/docs/terminal/c2xbt_product_sheet.pdf"
 )
 let stripeM2 = Manual(
     id: 1,
-    name: "stripeM2",
+    name: "Stripe Reader M2",
     urlString: "https://stripe.com/files/docs/terminal/m2_product_sheet.pdf"
 )
 let wisepad3 = Manual(
     id: 2,
-    name: "wisepad3",
+    name: "Wisepad 3",
     urlString: "https://stripe.com/files/docs/terminal/wp3_product_sheet.pdf"
 )
 
@@ -45,10 +45,15 @@ struct CardReadersView: View {
         NavigationView {
             List(manuals, id: \.name) { manual in
                 NavigationLink(destination: WebView(url: URL(string: manual.urlString)!) ) {
-                    Text(manual.name)
+                    HStack {
+                            // Temporary Placeholder using SwiftUI wrapper
+                            Image(uiImage: .cardReaderManualIcon)
+                            Text(manual.name)
+                    }
+                    .navigationBarTitle(Localization.navigationTitle, displayMode: .inline)
                 }
             }
-        }.navigationTitle(Localization.navigationTitle)
+        }
     }
 }
 

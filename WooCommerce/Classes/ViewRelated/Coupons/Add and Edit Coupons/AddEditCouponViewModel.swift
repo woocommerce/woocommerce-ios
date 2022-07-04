@@ -202,6 +202,12 @@ final class AddEditCouponViewModel: ObservableObject {
 
     private var subscriptions: Set<AnyCancellable> = []
 
+    /// Keeping track of the initial discount type to check for changes
+    private let initialDiscountType: Coupon.DiscountType
+
+    /// Keeping track of the initial coupon code to check for changes
+    private let initialCouponCode: String
+
     /// Init method for coupon creation
     ///
     init(siteID: Int64,
@@ -235,7 +241,9 @@ final class AddEditCouponViewModel: ObservableObject {
         couponRestrictionsViewModel = CouponRestrictionsViewModel(siteID: siteID)
         productOrVariationIDs = []
         categoryIDs = []
-        generateRandomCouponCode()
+        initialCouponCode = Self.generateRandomCouponCode()
+        codeField = initialCouponCode
+        initialDiscountType = discountType
         configureWarningBehavior()
     }
 
@@ -273,6 +281,8 @@ final class AddEditCouponViewModel: ObservableObject {
         couponRestrictionsViewModel = CouponRestrictionsViewModel(coupon: existingCoupon)
         productOrVariationIDs = existingCoupon.productIds
         categoryIDs = existingCoupon.productCategories
+        initialCouponCode = existingCoupon.code
+        initialDiscountType = existingCoupon.discountType
 
         configureWarningBehavior()
     }
@@ -282,7 +292,7 @@ final class AddEditCouponViewModel: ObservableObject {
     /// We will loop to select 8 characters from the set `ABCDEFGHJKMNPQRSTUVWXYZ23456789` at random using `arc4random_uniform` for randomness.
     /// https://github.com/woocommerce/woocommerce/blob/2e60d47a019a6e35f066f3ef43a56c0e761fc8e3/includes/admin/class-wc-admin-assets.php#L295
     ///
-    func generateRandomCouponCode() {
+    private static func generateRandomCouponCode() -> String {
         let dictionary: [String] = "ABCDEFGHJKMNPQRSTUVWXYZ23456789".map { String($0) }
         let generatedCodeLength = 8
 
@@ -290,8 +300,7 @@ final class AddEditCouponViewModel: ObservableObject {
         for _ in 0 ..< generatedCodeLength {
             code += dictionary.randomElement() ?? ""
         }
-
-        codeField = code
+        return code
     }
 
     private func configureWarningBehavior() {
@@ -314,6 +323,10 @@ final class AddEditCouponViewModel: ObservableObject {
                 }
             }
             .store(in: &subscriptions)
+    }
+
+    func updateCodeFieldWithRandomCode() {
+        codeField = Self.generateRandomCouponCode()
     }
 
     @discardableResult
@@ -417,11 +430,11 @@ final class AddEditCouponViewModel: ObservableObject {
     var defaultCoupon: Coupon {
         Coupon(siteID: siteID,
                couponID: -1,
-               code: codeField,
+               code: initialCouponCode,
                amount: "0.00",
                dateCreated: Date(),
                dateModified: Date(),
-               discountType: .percent,
+               discountType: initialDiscountType,
                description: "",
                dateExpires: nil,
                usageCount: 0,

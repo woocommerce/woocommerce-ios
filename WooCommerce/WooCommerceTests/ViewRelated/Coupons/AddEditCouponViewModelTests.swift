@@ -21,7 +21,7 @@ final class AddEditCouponViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.codeField, "")
 
         // When
-        viewModel.generateRandomCouponCode()
+        viewModel.updateCodeFieldWithRandomCode()
 
         // Then
         let dictionary = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"

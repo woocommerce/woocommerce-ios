@@ -24,6 +24,19 @@ final class CreateOrderAddressFormViewModelTests: XCTestCase {
         subscriptions.removeAll()
     }
 
+    func test_view_model_inits_with_expected_values() {
+        // Given
+        let viewModel = CreateOrderAddressFormViewModel(siteID: sampleSiteID,
+                                                        addressData: .init(billingAddress: nil, shippingAddress: nil),
+                                                        onAddressUpdate: nil)
+
+        // Then
+        XCTAssertTrue(viewModel.showEmailField)
+        XCTAssertFalse(viewModel.showAlternativeUsageToggle)
+        XCTAssertNil(viewModel.alternativeUsageToggleTitle)
+        XCTAssertTrue(viewModel.showDifferentAddressToggle)
+    }
+
     func test_input_of_identical_addresses_disables_different_address_toggle() {
         // Given
         let viewModel = CreateOrderAddressFormViewModel(siteID: sampleSiteID,

@@ -22,6 +22,20 @@ final class SurveyViewControllerTests: XCTestCase {
         XCTAssertEqual(mirror.webView.url, WooConstants.URLs.inAppFeedback.asURL().tagPlatform("ios").tagAppVersion(Bundle.main.bundleVersion()))
     }
 
+    func test_it_loads_the_correct_product_feedback_survey() throws {
+        // Given
+        let viewController = SurveyViewController(survey: .productsFeedback, onCompletion: {})
+        // When
+        _ = try XCTUnwrap(viewController.view)
+        let mirror = try self.mirror(of: viewController)
+
+        // Then
+        XCTAssertTrue(mirror.webView.isLoading)
+        XCTAssertEqual(mirror.webView.url, WooConstants.URLs.productsFeedback
+                        .asURL().tagPlatform("ios")
+                        .tagAppVersion(Bundle.main.bundleVersion()))
+    }
+
     func test_it_loads_the_correct_shipping_labels_release_survey() throws {
         // Given
         let viewController = SurveyViewController(survey: .shippingLabelsRelease3Feedback, onCompletion: {})

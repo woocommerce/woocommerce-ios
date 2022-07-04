@@ -70,8 +70,7 @@ private extension ProductsTopBannerFactory {
         static let title = NSLocalizedString("New features available!",
                                              comment: "The title of the top banner on the Products tab.")
 
-        static let topBannerInfo = NSLocalizedString("",
-                                                      comment: "The info of the top banner on the Products tab.")
+        static let topBannerInfo = "" // The info of the top banner on the Products tab.
 
         static let giveFeedback =
             NSLocalizedString("Give feedback",

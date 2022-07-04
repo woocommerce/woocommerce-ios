@@ -14,6 +14,12 @@ public final class SingleOrderScreen: ScreenObject {
     }
 
     @discardableResult
+    public func verifySingleOrderScreenLoaded() throws -> Self {
+        XCTAssertTrue(isLoaded)
+        return self
+    }
+
+    @discardableResult
     public func verifySingleOrder(order: OrderData) throws -> Self {
         // Check that navigation bar contains order number
         let navigationBarTitles = app.navigationBars.map { $0.staticTexts.element.label }

@@ -380,7 +380,9 @@ final class OrderDetailsDataSourceTests: XCTestCase {
                                                 storageManager: storageManager,
                                                 cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration(country: "US"),
                                                 currencySettings: currencySettings,
-                                                siteSettings: [siteSetting], featureFlags: MockFeatureFlagService(shippingLabelsOnboardingM1: true))
+                                                siteSettings: [siteSetting],
+                                                userIsAdmin: true,
+                                                featureFlags: MockFeatureFlagService(shippingLabelsOnboardingM1: true))
         dataSource.configureResultsControllers { }
 
         // When

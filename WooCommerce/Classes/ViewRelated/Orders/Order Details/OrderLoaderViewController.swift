@@ -181,7 +181,7 @@ private extension OrderLoaderViewController {
     ///
     func presentOrderDetails(for order: Order) {
         let viewModel = OrderDetailsViewModel(order: order)
-        let detailsViewController = OrderDetailsViewController(viewModel: viewModel)
+        let detailsViewController = Inject.ViewControllerHost(OrderDetailsViewController(viewModel: viewModel))
 
         // Attach
         addChild(detailsViewController)

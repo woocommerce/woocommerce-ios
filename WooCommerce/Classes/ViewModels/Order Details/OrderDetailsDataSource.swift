@@ -91,13 +91,14 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var shouldAllowWCShipInstallation: Bool {
         let isFeatureFlagEnabled = featureFlags.isFeatureFlagEnabled(.shippingLabelsOnboardingM1)
-        let plugin = resultsControllers.sitePlugins.first { $0.name == "WooCommerce Shipping & Tax" }
-        let isPluginInstalled = plugin != nil
+        let plugin = resultsControllers.sitePlugins.first { $0.name == SitePlugin.SupportedPlugin.WCShip }
+        let isPluginInstalled = plugin != nil && resultsControllers.sitePlugins.count > 0
         let isPluginActive = plugin?.status.isActive ?? false
         let isCountryCodeUS = SiteAddress(siteSettings: siteSettings).countryCode == SiteAddress.CountryCode.US.rawValue
         let isCurrencyUSD = currencySettings.currencyCode == .USD
 
         guard isFeatureFlagEnabled,
+              userIsAdmin,
               !isPluginInstalled,
               !isPluginActive,
               isCountryCodeUS,
@@ -249,6 +250,8 @@ final class OrderDetailsDataSource: NSObject {
 
     private let currencySettings: CurrencySettings
 
+    private let userIsAdmin: Bool
+
     private let siteSettings: [SiteSetting]
 
     private let featureFlags: FeatureFlagService
@@ -259,6 +262,7 @@ final class OrderDetailsDataSource: NSObject {
          refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol = OrderRefundsOptionsDeterminer(),
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings,
+         userIsAdmin: Bool = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator),
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.storageManager = storageManager
         self.order = order
@@ -267,6 +271,7 @@ final class OrderDetailsDataSource: NSObject {
         self.refundableOrderItemsDeterminer = refundableOrderItemsDeterminer
         self.currencySettings = currencySettings
         self.siteSettings = siteSettings
+        self.userIsAdmin = userIsAdmin
         self.featureFlags = featureFlags
 
         super.init()

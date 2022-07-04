@@ -32,6 +32,18 @@ else
   export BUILDKITE_ANALYTICS_TOKEN=$BUILDKITE_ANALYTICS_TOKEN_UI_TESTS_IPAD
 fi
 
+# Temporary notice about UI tests analytics
+#
+# First, remove any previous notice to avoid duplication
+context='ctx-ui-tests-notice'
+buildkite-agent annotation remove --context "$context" \
+  || true # `remove` will 401 if there's no annotation, but we don't want to fail because of it
+# Then, print a fresh notice
+buildkite-agent annotate \
+  'Test Analytics for UI tests are currently unavailable' \
+  --style 'info' \
+  --context "$context"
+
 echo "--- 🧪 Testing"
 xcrun simctl list >> /dev/null
 rake mocks &

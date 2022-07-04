@@ -1,5 +1,6 @@
 import SwiftUI
 import WebKit
+import SafariServices
 
 struct Manual: Identifiable {
     let id: Int
@@ -25,46 +26,32 @@ let wisepad3 = Manual(
 
 let manuals = [bbposChipper2XBT, stripeM2, wisepad3]
 
-struct WebView: UIViewRepresentable {
+struct SafariView: UIViewControllerRepresentable {
 
-    var url: URL
-
-    func makeUIView(context: Context) -> WKWebView {
-        return WKWebView()
-    }
-
-    func updateUIView(_ webView: WKWebView, context: Context) {
-        let request = URLRequest(url: url)
-        webView.load(request)
-    }
-}
-
-struct CardReaderViewDetail: View {
     var choice: Manual
+    let url: URL
 
-    var body: some View {
-        NavigationLink(destination: WebView(url: URL(string: choice.urlString)!)) {
-            // TODO: Needs refactor
-            return WebView(url: URL(string: choice.urlString)!)
-        }
+    func makeUIViewController(context: UIViewControllerRepresentableContext<SafariView>) -> SFSafariViewController {
+        return SFSafariViewController(url: url)
+    }
+
+    func updateUIViewController(_ uiViewController: SFSafariViewController,
+                                context: UIViewControllerRepresentableContext<SafariView>) {
+
     }
 }
 /// A view to be displayed on Card Reader Manuals screen
 ///
 struct CardReadersView: View {
     var body: some View {
-        NavigationView {
-            List(manuals, id: \.name) { manual in
-                VStack {
-                    NavigationLink(destination: CardReaderViewDetail(choice: manual)) {
-                        // Temporary Image placeholder using SwiftUI wrapper
-                        Image(uiImage: .cardReaderManualIcon)
-                        Text(manual.name)
-                    }
-                    .navigationBarTitle(Localization.navigationTitle, displayMode: .inline)
-                }
+        List(manuals, id: \.name) { manual in
+            NavigationLink(destination: SafariView(choice: manual, url: URL(string: manual.urlString)!)) {
+                // Temporary Image placeholder using SwiftUI wrapper
+                Image(uiImage: .cardReaderManualIcon)
+                Text(manual.name)
             }
         }
+        .navigationBarTitle(Localization.navigationTitle, displayMode: .inline)
     }
 }
 

@@ -451,7 +451,7 @@ private extension ProductsViewController {
                                            expandedStateChangeHandler: { [weak self] in
             self?.updateTableHeaderViewHeight()
         }, onGiveFeedbackButtonPressed: { [weak self] in
-            self?.presentFeedback()
+            self?.presentProductsFeedback()
         }, onDismissButtonPressed: { [weak self] in
             self?.hideTopBannerView()
         }, onCompletion: { [weak self] topBannerView in
@@ -686,9 +686,9 @@ private extension ProductsViewController {
         filters = FilterProductListViewModel.Filters()
     }
 
-    /// Presents productsFeedback survey. 
+    /// Presents productsFeedback survey.
     ///
-    func presentFeedback() {
+    func presentProductsFeedback() {
         let navigationController = SurveyCoordinatingController(survey: .productsFeedback)
         present(navigationController, animated: true, completion: nil)
     }

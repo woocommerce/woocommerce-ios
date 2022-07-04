@@ -20,7 +20,7 @@ struct ProductsTopBannerFactory {
         var feedbackContext: WooAnalyticsEvent.FeedbackContext {
             switch self {
             case .general:
-                return .general
+                return .productsGeneral
             }
         }
     }

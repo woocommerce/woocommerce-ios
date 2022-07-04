@@ -40,7 +40,7 @@ final class ProductsTopBannerFactoryTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedEvents.first, "feature_feedback_banner")
 
         let properties = try XCTUnwrap(analyticsProvider.receivedProperties.first)
-        XCTAssertEqual(properties["context"] as? String, "general")
+        XCTAssertEqual(properties["context"] as? String, "products_general")
         XCTAssertEqual(properties["action"] as? String, "gave_feedback")
     }
 
@@ -59,7 +59,7 @@ final class ProductsTopBannerFactoryTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedEvents.first, "feature_feedback_banner")
 
         let properties = try XCTUnwrap(analyticsProvider.receivedProperties.first)
-        XCTAssertEqual(properties["context"] as? String, "general")
+        XCTAssertEqual(properties["context"] as? String, "products_general")
         XCTAssertEqual(properties["action"] as? String, "dismissed")
     }
 }

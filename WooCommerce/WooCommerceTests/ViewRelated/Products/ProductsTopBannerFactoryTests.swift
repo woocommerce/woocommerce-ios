@@ -27,7 +27,7 @@ final class ProductsTopBannerFactoryTests: XCTestCase {
 
     func test_it_tracks_featureFeedbackBanner_gaveFeedback_event_when_giveFeedback_button_is_pressed() throws {
         // Given
-        let bannerMirror = try makeBannerViewMirror(for: .variations)
+        let bannerMirror = try makeBannerViewMirror(for: .general)
         let giveFeedbackButton = try XCTUnwrap(bannerMirror.actionButtons.first)
 
         assertEmpty(analyticsProvider.receivedEvents)
@@ -40,13 +40,13 @@ final class ProductsTopBannerFactoryTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedEvents.first, "feature_feedback_banner")
 
         let properties = try XCTUnwrap(analyticsProvider.receivedProperties.first)
-        XCTAssertEqual(properties["context"] as? String, "products_variations")
+        XCTAssertEqual(properties["context"] as? String, "general")
         XCTAssertEqual(properties["action"] as? String, "gave_feedback")
     }
 
     func test_it_tracks_featureFeedbackBanner_dismissed_event_when_dismiss_button_is_pressed() throws {
         // Given
-        let bannerMirror = try makeBannerViewMirror(for: .variations)
+        let bannerMirror = try makeBannerViewMirror(for: .general)
         let dismissButton = try XCTUnwrap(bannerMirror.actionButtons.last)
 
         assertEmpty(analyticsProvider.receivedEvents)
@@ -59,7 +59,7 @@ final class ProductsTopBannerFactoryTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedEvents.first, "feature_feedback_banner")
 
         let properties = try XCTUnwrap(analyticsProvider.receivedProperties.first)
-        XCTAssertEqual(properties["context"] as? String, "products_variations")
+        XCTAssertEqual(properties["context"] as? String, "general")
         XCTAssertEqual(properties["action"] as? String, "dismissed")
     }
 }

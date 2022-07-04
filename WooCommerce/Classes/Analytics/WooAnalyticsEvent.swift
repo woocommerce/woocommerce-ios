@@ -65,8 +65,8 @@ extension WooAnalyticsEvent {
     public enum FeedbackContext: String {
         /// Shown in Stats but is for asking general feedback.
         case general
-        /// Shown in products banner for Variations release.
-        case productsVariations = "products_variations"
+        /// Shown in products banner for general feedback.
+        case productsGeneral  = "products_general"
         /// Shown in shipping labels banner for Milestone 3 features.
         case shippingLabelsRelease3 = "shipping_labels_m3"
         /// Shown in beta feature banner for order add-ons.

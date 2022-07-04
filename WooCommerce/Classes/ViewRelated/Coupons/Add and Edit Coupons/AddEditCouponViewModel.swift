@@ -427,32 +427,32 @@ final class AddEditCouponViewModel: ObservableObject {
     }
 
     /// Default coupon when coupon creation is initiated
-    var defaultCoupon: Coupon {
-        Coupon(siteID: siteID,
-               couponID: -1,
-               code: initialCouponCode,
-               amount: "0.00",
-               dateCreated: Date(),
-               dateModified: Date(),
-               discountType: initialDiscountType,
-               description: "",
-               dateExpires: nil,
-               usageCount: 0,
-               individualUse: false,
-               productIds: [],
-               excludedProductIds: [],
-               usageLimit: nil,
-               usageLimitPerUser: nil,
-               limitUsageToXItems: nil,
-               freeShipping: false,
-               productCategories: [],
-               excludedProductCategories: [],
-               excludeSaleItems: false,
-               minimumAmount: "",
-               maximumAmount: "",
-               emailRestrictions: [],
-               usedBy: [])
-    }
+    private lazy var defaultCoupon: Coupon = {
+        .init(siteID: siteID,
+              couponID: -1,
+              code: initialCouponCode,
+              amount: "0.00",
+              dateCreated: Date(),
+              dateModified: Date(),
+              discountType: initialDiscountType,
+              description: "",
+              dateExpires: nil,
+              usageCount: 0,
+              individualUse: false,
+              productIds: [],
+              excludedProductIds: [],
+              usageLimit: nil,
+              usageLimitPerUser: nil,
+              limitUsageToXItems: nil,
+              freeShipping: false,
+              productCategories: [],
+              excludedProductCategories: [],
+              excludeSaleItems: false,
+              minimumAmount: "",
+              maximumAmount: "",
+              emailRestrictions: [],
+              usedBy: [])
+    }()
 
     /// Coupon generated from input
     var populatedCoupon: Coupon {

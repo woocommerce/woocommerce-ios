@@ -686,10 +686,10 @@ private extension ProductsViewController {
         filters = FilterProductListViewModel.Filters()
     }
 
-    /// Presents inAppFeedback survey. 
+    /// Presents productsFeedback survey. 
     ///
     func presentFeedback() {
-        let navigationController = SurveyCoordinatingController(survey: .inAppFeedback)
+        let navigationController = SurveyCoordinatingController(survey: .productsFeedback)
         present(navigationController, animated: true, completion: nil)
     }
 }

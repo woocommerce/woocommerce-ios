@@ -130,7 +130,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Games should use this method to pause the game.
         if ProcessConfiguration.shouldSimulatePushNotification {
             let content = UNMutableNotificationContent()
-            content.title = NSLocalizedString("You have a new order! 🎉", comment: "Title for the mocked order notification needed for the AppStore listing screenshot")
+            content.title = NSLocalizedString(
+                "You have a new order! 🎉",
+                comment: "Title for the mocked order notification needed for the AppStore listing screenshot"
+            )
             content.body = NSLocalizedString(
                 "New order for $13.98 on Your WooCommerce Store",
                 comment: "Message for the mocked order notification needed for the AppStore listing screenshot. " +

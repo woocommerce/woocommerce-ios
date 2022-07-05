@@ -938,6 +938,7 @@
 		6832C7CA26DA5C4500BA4088 /* LabeledTextViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6832C7C926DA5C4500BA4088 /* LabeledTextViewTableViewCell.swift */; };
 		6832C7CC26DA5FDF00BA4088 /* LabeledTextViewTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6832C7CB26DA5FDE00BA4088 /* LabeledTextViewTableViewCell.xib */; };
 		684AB83A2870677F003DFDD1 /* CardReadersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684AB8392870677F003DFDD1 /* CardReadersView.swift */; };
+		684AB83C2873DF04003DFDD1 /* CardReadersViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684AB83B2873DF04003DFDD1 /* CardReadersViewViewModel.swift */; };
 		6856D2A5C2076F5BF14F2C11 /* KeyboardStateProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6856DCE1638958DA296D690F /* KeyboardStateProviderTests.swift */; };
 		6856D31F941A33BAE66F394D /* KeyboardFrameAdjustmentProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6856D3846BBF078CB5D955B9 /* KeyboardFrameAdjustmentProvider.swift */; };
 		6856D49DB7DCF4D87745C0B1 /* MockPushNotificationsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6856D249FD1702FE3864950A /* MockPushNotificationsManager.swift */; };
@@ -2695,6 +2696,7 @@
 		6832C7C926DA5C4500BA4088 /* LabeledTextViewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabeledTextViewTableViewCell.swift; sourceTree = "<group>"; };
 		6832C7CB26DA5FDE00BA4088 /* LabeledTextViewTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LabeledTextViewTableViewCell.xib; sourceTree = "<group>"; };
 		684AB8392870677F003DFDD1 /* CardReadersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReadersView.swift; sourceTree = "<group>"; };
+		684AB83B2873DF04003DFDD1 /* CardReadersViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReadersViewViewModel.swift; sourceTree = "<group>"; };
 		6856D02484A69911F2B91714 /* KeyboardStateProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardStateProvider.swift; sourceTree = "<group>"; };
 		6856D1A5F72A36AB3704D19D /* AgeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgeTests.swift; sourceTree = "<group>"; };
 		6856D249FD1702FE3864950A /* MockPushNotificationsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockPushNotificationsManager.swift; sourceTree = "<group>"; };
@@ -8046,6 +8048,7 @@
 				E107FCE226C13A0D00BAF51B /* InPersonPaymentsSupportLink.swift */,
 				E1ABAEF628479E0300F40BB2 /* InPersonPaymentsSelectPluginView.swift */,
 				684AB8392870677F003DFDD1 /* CardReadersView.swift */,
+				684AB83B2873DF04003DFDD1 /* CardReadersViewViewModel.swift */,
 			);
 			path = "In-Person Payments";
 			sourceTree = "<group>";
@@ -9666,6 +9669,7 @@
 				77E53EC52510C193003D385F /* ProductDownloadListViewController+Droppable.swift in Sources */,
 				0259D5F92581F0E6003B1CD6 /* ShippingLabelPaperSizeOptionView.swift in Sources */,
 				D81F2D37225F0D160084BF9C /* EmptyListMessageWithActionView.swift in Sources */,
+				684AB83C2873DF04003DFDD1 /* CardReadersViewViewModel.swift in Sources */,
 				575472812452185300A94C3C /* PushNotification.swift in Sources */,
 				02C1853B27FF0D9C00ABD764 /* RefundSubmissionUseCase.swift in Sources */,
 				E10BD16D27CF890800CE6449 /* InPersonPaymentsCountryNotSupportedStripe.swift in Sources */,

@@ -2,34 +2,6 @@ import SwiftUI
 import WebKit
 import SafariServices
 
-struct Manual: Identifiable {
-    let id: Int
-    let image: UIImage
-    let name: String
-    let urlString: String
-}
-
-let bbposChipper2XBT = Manual(
-    id: 0,
-    image: .cardReaderImageBBPOSChipper,
-    name: "BBPOS Chipper 2X BT",
-    urlString: "https://stripe.com/files/docs/terminal/c2xbt_product_sheet.pdf"
-)
-let stripeM2 = Manual(
-    id: 1,
-    image: .cardReaderImageM2,
-    name: "Stripe Reader M2",
-    urlString: "https://stripe.com/files/docs/terminal/m2_product_sheet.pdf"
-)
-let wisepad3 = Manual(
-    id: 2,
-    image: .cardReaderImageWisepad3,
-    name: "Wisepad 3",
-    urlString: "https://stripe.com/files/docs/terminal/wp3_product_sheet.pdf"
-)
-
-let manuals = [bbposChipper2XBT, stripeM2, wisepad3]
-
 struct SafariView: UIViewControllerRepresentable {
 
     var choice: Manual
@@ -49,6 +21,11 @@ struct SafariView: UIViewControllerRepresentable {
 struct CardReadersView: View {
     // Tracks the scale of the view due to accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
+
+    let viewModel = CardReadersViewViewModel()
+    var manuals: [Manual] {
+        viewModel.manuals
+    }
 
     var body: some View {
         List(manuals, id: \.name) { manual in

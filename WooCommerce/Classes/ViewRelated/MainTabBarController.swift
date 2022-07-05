@@ -611,9 +611,11 @@ private extension MainTabBarController {
                     .failureSavingProductAfterImageUploadNoticeTapped(productOrVariation: error.productOrVariationEventProperty))
             }
         })
-        noticePresenter.enqueue(notice: notice)
-        analytics.track(event: .ImageUpload
-            .failureSavingProductAfterImageUploadNoticeShown(productOrVariation: error.productOrVariationEventProperty))
+        let canNoticeBeDisplayed = noticePresenter.enqueue(notice: notice)
+        if canNoticeBeDisplayed {
+            analytics.track(event: .ImageUpload
+                .failureSavingProductAfterImageUploadNoticeShown(productOrVariation: error.productOrVariationEventProperty))
+        }
     }
 
     func handleErrorUploadingImage(_ error: ProductImageUploadErrorInfo) {
@@ -631,9 +633,11 @@ private extension MainTabBarController {
                     .failureUploadingImageNoticeTapped(productOrVariation: error.productOrVariationEventProperty))
             }
         })
-        noticePresenter.enqueue(notice: notice)
-        analytics.track(event: .ImageUpload
-            .failureUploadingImageNoticeShown(productOrVariation: error.productOrVariationEventProperty))
+        let canNoticeBeDisplayed = noticePresenter.enqueue(notice: notice)
+        if canNoticeBeDisplayed {
+            analytics.track(event: .ImageUpload
+                .failureUploadingImageNoticeShown(productOrVariation: error.productOrVariationEventProperty))
+        }
     }
 
     func showProductDetails(for error: ProductImageUploadErrorInfo) async {

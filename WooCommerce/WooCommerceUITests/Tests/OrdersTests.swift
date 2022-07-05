@@ -38,11 +38,13 @@ final class OrdersTests: XCTestCase {
             .addFee(amount: order.fee_lines[0].amount)
             .addCustomerNote(order.customer_note)
             .createOrder()
+            .verifySingleOrderScreenLoaded()
     }
 
     func test_cancel_order_creation() throws {
         try TabNavComponent().goToOrdersScreen()
             .startOrderCreation()
             .cancelOrderCreation()
+            .verifyOrdersScreenLoaded()
     }
 }

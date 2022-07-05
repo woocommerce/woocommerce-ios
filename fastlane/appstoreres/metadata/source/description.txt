@@ -1,22 +1,22 @@
-Manage your business on the go with the WooCommerce Mobile App. Create products, process orders, and keep an eye on key stats in real-time. 
+Manage your business on the go with the WooCommerce Mobile App. Add products, create orders, take quick payments, and keep an eye on new sales and key stats in real time.
 
-ADD PRODUCTS
-Create, group, and publish products directly from your iPhone or iPad. Capture your creativity in the moment – turn your ideas into products in seconds, or save them as drafts for later.
+Add and edit products with a touch
+Get started in seconds! Create, group, and publish products directly from your iPhone or iPad. Capture your creativity the moment it strikes – turn your ideas into products immediately, or save them as drafts for later.
 
-GET NOTIFIED
-Never miss an order or a review. Keep that FOMO at bay by enabling real-time alerts – and listen out for that addictive “cha-ching” sound that comes with every new sale!
+Create orders on the fly
+Once you have some products created, it’s simple. Choose items from your catalog, add shipping, and then fill in customer details to quickly create an order that syncs with your inventory.
 
-VIEW AND MODIFY ORDERS
-Scroll the summaries, or search by customer or order specifics. Tap into the details to see itemized billing, begin fulfillment, and change order status. Add notes to the order or email customers directly to follow up.
+Take payments in person
+Collect physical payments using WooCommerce In-Person Payments and a card reader (available in the US and Canada). Start a new order – or find an existing one that’s pending payment – and collect payment using the card reader or a digital wallet, such as Apple Pay.
 
-TRACK YOUR STATS
-See which products are winning at a glance. Keep tabs on overall revenue, order count, and visitor data by week, month, and year. Knowledge = power!
+Get notified of every sale
+Now that you’re actively selling, never miss an order or a review. Keep yourself in the loop by enabling real-time alerts – and listen for that addictive “cha-ching” sound that comes with each new sale!
 
-SWITCH BETWEEN STORES
-For those with more than one, toggle seamlessly between your businesses in seconds.
+Track sales and bestselling products
+See which products are winning at a glance. Keep tabs on your overall revenue, order count, and visitor data by week, month, and year. Knowledge = power.
 
 WooCommerce is the world’s most customizable open-source eCommerce platform. Whether you’re launching a business, taking brick-and-mortar retail online, or developing sites for clients, use WooCommerce for a store that powerfully blends content and commerce.
 
-Requirements: WooCommerce v3.5+, the Jetpack plugin.
+Requirements: WooCommerce v3.5+. Jetpack is also required to receive notifications.
 
 View the Privacy Notice for California users at https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

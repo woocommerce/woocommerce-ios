@@ -47,13 +47,16 @@ struct SafariView: UIViewControllerRepresentable {
 /// A view to be displayed on Card Reader Manuals screen
 ///
 struct CardReadersView: View {
+    // Tracks the scale of the view due to accessibility changes
+    @ScaledMetric private var scale: CGFloat = 1.0
+
     var body: some View {
         List(manuals, id: \.name) { manual in
             NavigationLink(destination: SafariView(choice: manual, url: URL(string: manual.urlString)!)) {
                 Image(uiImage: manual.image)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: Constants.iconSize, height: Constants.iconSize, alignment: .center)
+                    .frame(width: Constants.iconSize * scale, height: Constants.iconSize * scale, alignment: .center)
                 Text(manual.name)
             }
         }

@@ -47,6 +47,12 @@ extension WooConstants {
     ///
     enum URLs: String, CaseIterable {
 
+        /// "What is WordPress.com?" webpage URL.
+        ///
+        /// Displayed by the Authenticator in the Continue with WordPress.com flow.
+        ///
+        case whatIsWPComURL = "https://woocommerce.com/signin-with-wordpress/"
+
         /// Terms of Service Website. Displayed by the Authenticator (when / if needed).
         ///
         case termsOfService = "https://wordpress.com/tos/"

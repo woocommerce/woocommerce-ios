@@ -28,13 +28,15 @@ struct CardReadersView: View {
     }
 
     var body: some View {
-        List(manuals, id: \.name) { manual in
-            NavigationLink(destination: SafariView(choice: manual, url: URL(string: manual.urlString)!)) {
-                Image(uiImage: manual.image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: Constants.iconSize * scale, height: Constants.iconSize * scale, alignment: .center)
-                Text(manual.name)
+        ScrollView {
+            ForEach(manuals, id: \.name) { manual in
+                NavigationLink(destination: SafariView(choice: manual, url: URL(string: manual.urlString)!)) {
+                    Image(uiImage: manual.image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: Constants.iconSize * scale, height: Constants.iconSize * scale, alignment: .center)
+                    Text(manual.name)
+                }
             }
         }
         .navigationBarTitle(Localization.navigationTitle, displayMode: .inline)

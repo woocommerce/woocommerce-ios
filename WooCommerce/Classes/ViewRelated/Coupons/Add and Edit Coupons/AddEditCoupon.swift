@@ -151,7 +151,7 @@ struct AddEditCoupon: View {
                             .padding(.bottom, Constants.verticalSpacing)
 
                             Button {
-                                viewModel.generateRandomCouponCode()
+                                viewModel.updateCodeFieldWithRandomCode()
                             } label: {
                                 Text(Localization.regenerateCouponCodeButton)
                             }

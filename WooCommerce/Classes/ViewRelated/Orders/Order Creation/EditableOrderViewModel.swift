@@ -104,6 +104,10 @@ final class EditableOrderViewModel: ObservableObject {
     /// Defines if the non editable indicators (banners, locks, fields) should be shown.
     @Published private(set) var shouldShowNonEditableIndicators: Bool = false
 
+    /// Defines the multiple lines info message to show.
+    ///
+    @Published private(set) var multipleLinesMessage: String? = nil
+
     /// Status Results Controller.
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
@@ -266,6 +270,7 @@ final class EditableOrderViewModel: ObservableObject {
         configurePaymentDataViewModel()
         configureCustomerNoteDataViewModel()
         configureNonEditableIndicators()
+        configureMultipleLinesMessage()
         resetAddressForm()
     }
 
@@ -731,6 +736,29 @@ private extension EditableOrderViewModel {
             .assign(to: &$shouldShowNonEditableIndicators)
     }
 
+    /// Binds the order state to the `multipleLineMessage` property.
+    ///
+    func configureMultipleLinesMessage() {
+        Publishers.CombineLatest(orderSynchronizer.orderPublisher, Just(flow))
+            .map { order, flow -> String? in
+                switch (flow, order.shippingLines.count, order.fees.count) {
+                case (.creation, _, _):
+                    return nil
+                case (.editing, 2...Int.max, 0...1): // Multiple shipping lines
+                    return Localization.multipleShippingLines
+                case (.editing, 0...1, 2...Int.max): // Multiple fee lines
+                    return Localization.multipleFeeLines
+                case (.editing, 2...Int.max, 2...Int.max): // Multiple shipping & fee lines
+                    return Localization.multipleFeesAndShippingLines
+                case (.editing, _, _): // Single/nil shipping & fee lines
+                    return nil
+                }
+            }
+            .assign(to: &$multipleLinesMessage)
+    }
+
+
+
     /// Tracks when customer details have been added
     ///
     func trackCustomerDetailsAdded() {
@@ -954,5 +982,15 @@ private extension EditableOrderViewModel {
         static let invalidBillingSuggestion =
         NSLocalizedString("Please make sure you are running the latest version of WooCommerce and try again later.",
                           comment: "Recovery suggestion when we fail to update an address when creating or editing an order")
+
+        static let multipleShippingLines = NSLocalizedString("Shipping details are incomplete.\n" +
+                                                             "To edit all shipping details, view the order in your WooCommerce store admin.",
+                                                             comment: "Info message shown when the order contains multiple shipping lines")
+        static let multipleFeeLines = NSLocalizedString("Fees are incomplete.\n" +
+                                                        "To edit all fees, view the order in your WooCommerce store admin.",
+                                                        comment: "Info message shown when the order contains multiple fee lines")
+        static let multipleFeesAndShippingLines = NSLocalizedString("Fees & Shipping details are incomplete.\n" +
+                                                                    "To edit all the details, view the order in your WooCommerce store admin.",
+                                                                    comment: "Info message shown when the order contains multiple fees and shipping lines")
     }
 }

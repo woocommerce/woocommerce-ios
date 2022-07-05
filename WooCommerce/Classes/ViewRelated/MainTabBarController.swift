@@ -605,7 +605,8 @@ private extension MainTabBarController {
                             actionTitle: Localization.imageUploadFailureNoticeActionTitle,
                             actionHandler: { [weak self] in
             guard let self = self else { return }
-            Task { @MainActor in
+            Task { @MainActor [weak self] in
+                guard let self = self else { return }
                 await self.showProductDetails(for: error)
                 self.analytics.track(event: .ImageUpload
                     .failureSavingProductAfterImageUploadNoticeTapped(productOrVariation: error.productOrVariationEventProperty))
@@ -627,7 +628,8 @@ private extension MainTabBarController {
                             actionTitle: Localization.imageUploadFailureNoticeActionTitle,
                             actionHandler: { [weak self] in
             guard let self = self else { return }
-            Task { @MainActor in
+            Task { @MainActor [weak self] in
+                guard let self = self else { return }
                 await self.showProductDetails(for: error)
                 self.analytics.track(event: .ImageUpload
                     .failureUploadingImageNoticeTapped(productOrVariation: error.productOrVariationEventProperty))

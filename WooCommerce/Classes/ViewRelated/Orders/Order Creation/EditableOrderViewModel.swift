@@ -978,13 +978,13 @@ private extension EditableOrderViewModel {
                           comment: "Recovery suggestion when we fail to update an address when creating or editing an order")
 
         static let multipleShippingLines = NSLocalizedString("Shipping details are incomplete.\n" +
-                                                             "To edit all shipping details, browse the order in your WooCommerce store admin.",
+                                                             "To edit all shipping details, view the order in your WooCommerce store admin.",
                                                              comment: "Info message shown when the order contains multiple shipping lines")
         static let multipleFeeLines = NSLocalizedString("Fees are incomplete.\n" +
-                                                        "To edit all fees, browse the order in your WooCommerce store admin.",
+                                                        "To edit all fees, view the order in your WooCommerce store admin.",
                                                         comment: "Info message shown when the order contains multiple fee lines")
         static let multipleFeesAndShippingLines = NSLocalizedString("Fees & Shipping details are incomplete.\n" +
-                                                                    "To edit all the details, browse the order in your WooCommerce store admin.",
+                                                                    "To edit all the details, view the order in your WooCommerce store admin.",
                                                                     comment: "Info message shown when the order contains multiple fees and shipping lines")
     }
 }

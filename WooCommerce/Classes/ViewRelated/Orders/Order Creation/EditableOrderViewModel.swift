@@ -744,7 +744,7 @@ private extension EditableOrderViewModel {
                     return Localization.multipleFeeLines
                 case (.editing, 2...Int.max, 2...Int.max): // Multiple shipping & fee lines
                     return Localization.multipleFeesAndShippingLines
-                case (.editing, _, _): // Negative count - Should not happen!
+                case (.editing, _, _): // Single/nil shipping & fee lines
                     return nil
                 }
             }

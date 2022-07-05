@@ -24,7 +24,7 @@ install_gems
 echo "--- :cocoapods: Setting up Pods"
 install_cocoapods
 
-echo "--- Configure Test Analytics"
+echo "--- :test-analytics: Configure Test Analytics"
 # Collect data separately for iPhone and iPad
 if [[ $DEVICE =~ ^iPhone ]]; then
   export BUILDKITE_ANALYTICS_TOKEN=$BUILDKITE_ANALYTICS_TOKEN_UI_TESTS_IPHONE

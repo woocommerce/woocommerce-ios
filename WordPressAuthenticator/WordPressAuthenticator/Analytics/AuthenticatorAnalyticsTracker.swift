@@ -142,6 +142,10 @@ public class AuthenticatorAnalyticsTracker {
         ///
         case continueWithWordPressCom = "continue_with_wordpress_com"
 
+        /// Tracked when the user clicks “What is WordPress.com?" button on the WordPress.com flow screen
+        ///
+        case whatIsWpCom = "what_is_wordpress_com"
+
         /// Tracked when the user clicks “Login with site address” on the Prologue screen
         ///
         case loginWithSiteAddress = "login_with_site_address"

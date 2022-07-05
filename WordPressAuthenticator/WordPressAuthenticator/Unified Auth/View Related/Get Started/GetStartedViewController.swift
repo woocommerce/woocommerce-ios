@@ -174,6 +174,18 @@ private extension GetStartedViewController {
 
         stackView.addArrangedSubview(continueButton)
 
+        if WordPressAuthenticator.shared.configuration.whatIsWPComURL != nil {
+            let stackViewWithCenterAlignment = UIStackView()
+            stackViewWithCenterAlignment.axis = .vertical
+            stackViewWithCenterAlignment.alignment = .center
+
+            let button = WPStyleGuide.whatIsWPComButton()
+            button.addTarget(self, action: #selector(whatIsWPComButtonTapped(_:)), for: .touchUpInside)
+            stackViewWithCenterAlignment.addArrangedSubview(button)
+
+            stackView.addArrangedSubview(stackViewWithCenterAlignment)
+        }
+
         tableView.tableFooterView = stackView
         tableView.updateFooterHeight()
     }
@@ -195,6 +207,17 @@ private extension GetStartedViewController {
     @IBAction func handleSubmitButtonTapped(_ sender: UIButton) {
         tracker.track(click: .submit)
         validateForm()
+    }
+
+    // MARK: - What is WordPress.com Button Action
+
+    @IBAction func whatIsWPComButtonTapped(_ sender: UIButton) {
+        tracker.track(click: .whatIsWpCom)
+        guard let whatIsWPCom = WordPressAuthenticator.shared.configuration.whatIsWPComURL,
+              let url = URL(string: whatIsWPCom) else {
+            return
+        }
+        UIApplication.shared.open(url)
     }
 
     // MARK: - Hidden Password Field Action

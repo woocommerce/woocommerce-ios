@@ -91,6 +91,11 @@ class GetStartedViewController: LoginViewController {
         hiddenPasswordField?.isAccessibilityElement = false
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.updateFooterHeight()
+    }
+
     // MARK: - Overrides
 
     override func styleBackground() {

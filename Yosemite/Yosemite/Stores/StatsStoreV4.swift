@@ -150,26 +150,60 @@ public extension StatsStoreV4 {
         let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
         let earliestDate = dateFormatter.string(from: earliestDateToInclude)
         let latestDate = dateFormatter.string(from: latestDateToInclude)
-        leaderboardsRemote.loadLeaderboards(for: siteID,
-                                unit: timeRange.leaderboardsGranularity,
-                                earliestDateToInclude: earliestDate,
-                                latestDateToInclude: latestDate,
-                                quantity: quantity) { [weak self] result in
-            guard let self = self else { return }
 
-            switch result {
-            case .success(let leaderboards):
-                self.convertAndStoreLeaderboardsIntoTopEarners(siteID: siteID,
-                                                               granularity: timeRange.topEarnerStatsGranularity,
-                                                               date: latestDateToInclude,
-                                                               leaderboards: leaderboards,
-                                                               quantity: quantity,
-                                                               onCompletion: onCompletion)
+		// Use newer, faster product leaderboard endpoint if it's supported
+		let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: wcPluginName) { wooPlugin in
+			guard let wooPlugin = wooPlugin else {
+				// Woo not found - should not happen
+				return
+			}
 
-            case .failure(let error):
-                onCompletion(.failure(error))
-            }
-        }
+			if VersionHelpers.isVersionSupported(version: wooPlugin.version, minimumRequired: "6.7") {
+				leaderboardsRemote.loadProductLeaderboard(for: siteID,
+													unit: timeRange.leaderboardsGranularity,
+													earliestDateToInclude: earliestDate,
+													latestDateToInclude: latestDate,
+													quantity: quantity) { [weak self] result in
+					guard let self = self else { return }
+
+					switch result {
+					case .success(let leaderboards):
+						self.convertAndStoreLeaderboardsIntoTopEarners(siteID: siteID,
+																	   granularity: timeRange.topEarnerStatsGranularity,
+																	   date: latestDateToInclude,
+																	   leaderboards: leaderboards,
+																	   quantity: quantity,
+																	   onCompletion: onCompletion)
+
+					case .failure(let error):
+						onCompletion(.failure(error))
+					}
+				}
+			} else {
+				leaderboardsRemote.loadLeaderboards(for: siteID,
+													unit: timeRange.leaderboardsGranularity,
+													earliestDateToInclude: earliestDate,
+													latestDateToInclude: latestDate,
+													quantity: quantity) { [weak self] result in
+					guard let self = self else { return }
+
+					switch result {
+					case .success(let leaderboards):
+						self.convertAndStoreLeaderboardsIntoTopEarners(siteID: siteID,
+																	   granularity: timeRange.topEarnerStatsGranularity,
+																	   date: latestDateToInclude,
+																	   leaderboards: leaderboards,
+																	   quantity: quantity,
+																	   onCompletion: onCompletion)
+
+					case .failure(let error):
+						onCompletion(.failure(error))
+					}
+				}
+			}
+		}
+
+		ServiceLocator.stores.dispatch(action)
     }
 }
 

@@ -19,16 +19,26 @@ public class LeaderboardsRemote: Remote {
                                  earliestDateToInclude: String,
                                  latestDateToInclude: String,
                                  quantity: Int,
+								 path: String = Constants.path,
                                  completion: @escaping (Result<[Leaderboard], Error>) -> Void) {
         let parameters = [ParameterKeys.interval: unit.rawValue,
                           ParameterKeys.after: earliestDateToInclude,
                           ParameterKeys.before: latestDateToInclude,
                           ParameterKeys.quantity: String(quantity)]
 
-        let request = JetpackRequest(wooApiVersion: .wcAnalytics, method: .get, siteID: siteID, path: Constants.path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .wcAnalytics, method: .get, siteID: siteID, path: path, parameters: parameters)
         let mapper = LeaderboardListMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+	public func loadProductLeaderboard(for siteID: Int64,
+								 unit: StatsGranularityV4,
+								 earliestDateToInclude: String,
+								 latestDateToInclude: String,
+								 quantity: Int,
+								 completion: @escaping (Result<[Leaderboard], Error>) -> Void) {
+		loadLeaderboards(for: siteID, unit: unit, earliestDateToInclude: earliestDateToInclude, latestDateToInclude: latestDateToInclude, quantity: quantity, path: Constants.productPath, completion: completion)
+	}
 }
 
 
@@ -37,6 +47,7 @@ public class LeaderboardsRemote: Remote {
 private extension LeaderboardsRemote {
     enum Constants {
         static let path = "leaderboards"
+		static let productPath = "leaderboards/products"
     }
 
     enum ParameterKeys {

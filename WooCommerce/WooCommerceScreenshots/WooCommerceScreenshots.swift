@@ -142,7 +142,7 @@ extension BaseScreen {
         let mode = XCUIDevice.inDarkMode ? "dark" : "light"
         let filename = "\(screenshotCount)-\(mode)-\(title)"
 
-        snapshot(filename)
+        snapshot(filename, timeWaitingForIdle: 0)
 
         return self
     }
@@ -164,7 +164,7 @@ extension ScreenObject {
         let mode = XCUIDevice.inDarkMode ? "dark" : "light"
         let filename = "\(screenshotCount)-\(mode)-\(title)"
 
-        snapshot(filename)
+        snapshot(filename, timeWaitingForIdle: 0)
 
         return self
     }

@@ -28,18 +28,31 @@ struct CardReadersView: View {
     }
 
     var body: some View {
-        ScrollView {
-            ForEach(manuals, id: \.name) { manual in
-                NavigationLink(destination: SafariView(choice: manual, url: URL(string: manual.urlString)!)) {
-                    Image(uiImage: manual.image)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: Constants.iconSize * scale, height: Constants.iconSize * scale, alignment: .center)
-                    Text(manual.name)
+        GeometryReader { geometry in
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    ForEach(manuals, id: \.name) { manual in
+                        Divider()
+                        NavigationLink(destination: SafariView(choice: manual, url: URL(string: manual.urlString)!)) {
+                                Image(uiImage: manual.image)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: Constants.imageSize * scale, height: Constants.imageSize * scale, alignment: .center)
+                                    .frame(width: geometry.size.width * Constants.imageSizeMultiplier)
+                                Text(manual.name)
+                                .frame(width: geometry.size.width * Constants.textSizeMultiplier, alignment: .leading)
+                                .font(.body)
+                                DisclosureIndicator()
+                                .frame(width: geometry.size.width * Constants.imageSizeMultiplier)
+                        }
+                        .frame(height: geometry.size.height * Constants.numberOfRowsMultiplier)
+                        .buttonStyle(PlainButtonStyle())
+                    }
+                    Divider()
                 }
             }
+            .navigationBarTitle(Localization.navigationTitle, displayMode: .inline)
         }
-        .navigationBarTitle(Localization.navigationTitle, displayMode: .inline)
     }
 }
 
@@ -59,5 +72,9 @@ private extension CardReadersView {
 private extension CardReadersView {
     enum Constants {
         static let iconSize: CGFloat = 16
+        static let imageSize: CGFloat = 32
+        static let numberOfRowsMultiplier: CGFloat = 0.05
+        static let imageSizeMultiplier: CGFloat = 0.2
+        static let textSizeMultiplier: CGFloat = 0.6
     }
 }

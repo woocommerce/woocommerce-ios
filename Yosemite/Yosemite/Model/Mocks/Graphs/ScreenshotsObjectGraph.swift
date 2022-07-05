@@ -80,7 +80,7 @@ struct ScreenshotObjectGraph: MockObjectGraph {
             number: 2201,
             customer: Customers.MiraWorkman,
             status: .processing,
-            total: 1310.00,
+            total: 50.00,
             items: [
                 createOrderItem(from: Products.malayaShades, count: 4),
                 createOrderItem(from: Products.blackCoralShades, count: 5),
@@ -91,21 +91,21 @@ struct ScreenshotObjectGraph: MockObjectGraph {
             customer: Customers.LydiaDonin,
             status: .processing,
             daysOld: 3,
-            total: 300
+            total: 73.29
         ),
         createOrder(
             number: 2116,
             customer: Customers.ChanceVicarro,
             status: .processing,
             daysOld: 4,
-            total: 300
+            total: 66.15
         ),
         createOrder(
             number: 2104,
             customer: Customers.MarcusCurtis,
             status: .processing,
             daysOld: 5,
-            total: 420
+            total: 120.00
         ),
         createOrder(
             number: 2087,

@@ -70,9 +70,7 @@ private extension ProductImagesSaver {
                 case .failure(let error):
                     onProductSave(.failure(error))
                 }
-                self.imageStatusesToSave = []
-                self.assetUploadSubscription = nil
-                self.uploadStatusesSubscription = nil
+                self.reset()
             }
             stores.dispatch(action)
         case .variation(let productID, let variationID):
@@ -91,12 +89,16 @@ private extension ProductImagesSaver {
                 case .failure(let error):
                     onProductSave(.failure(error))
                 }
-                self.imageStatusesToSave = []
-                self.assetUploadSubscription = nil
-                self.uploadStatusesSubscription = nil
+                self.reset()
             }
             stores.dispatch(action)
         }
+    }
+
+    func reset() {
+        imageStatusesToSave = []
+        assetUploadSubscription = nil
+        uploadStatusesSubscription = nil
     }
 
     func observeAssetUploadsToUpdateImageStatuses(imageActionHandler: ProductImageActionHandlerProtocol) {

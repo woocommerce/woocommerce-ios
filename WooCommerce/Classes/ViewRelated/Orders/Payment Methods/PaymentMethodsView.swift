@@ -63,9 +63,9 @@ struct PaymentMethodsView: View {
                 .background(Color(.listForeground))
 
                 if viewModel.showUpsellCardReaderFeatureBanner {
-                    FeatureAnnouncementView(title: "Accept Payment easily",
-                                            message: "Get ready to accept payment via card reader.",
-                                            buttonTitle: "Purchase card reader",
+                    FeatureAnnouncementView(title: Localization.featureAnnouncementTitle,
+                                            message: Localization.featureAnnouncementMessage,
+                                            buttonTitle: Localization.featureAnnouncementButtonTitle,
                                             image: .paymentsFeatureBannerImage,
                                             dismiss: {},
                                             callToAction: {})
@@ -165,6 +165,9 @@ extension PaymentMethodsView {
         static let markAsPaidTitle = NSLocalizedString("Mark as Paid?", comment: "Alert title when selecting the cash payment method")
         static let markAsPaidButton = NSLocalizedString("Mark as Paid", comment: "Alert button when selecting the cash payment method")
         static let cancelTitle = NSLocalizedString("Cancel", comment: "Title for the button to cancel the payment methods screen")
+        static let featureAnnouncementTitle = NSLocalizedString("Accept Payment easily", comment: "Title for the feature announcement banner intended to upsell card readers")
+        static let featureAnnouncementMessage = NSLocalizedString("Get ready to accept payment via card reader.", comment: "Message for the feature announcement banner intended to upsell card readers")
+        static let featureAnnouncementButtonTitle = NSLocalizedString("Purchase Card Reader", comment: "Title for the button on the feature announcement banner intended to upsell card readers")
     }
 
     enum Layout {

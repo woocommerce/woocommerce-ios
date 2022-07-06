@@ -102,7 +102,7 @@ struct ScreenshotObjectGraph: MockObjectGraph {
             number: 2201,
             customer: Customers.MiraWorkman,
             status: .processing,
-            total: 1310.00,
+            total: 50.00,
             items: [
                 createOrderItem(from: Products.malayaShades, count: 4),
                 createOrderItem(from: Products.blackCoralShades, count: 5),
@@ -113,21 +113,21 @@ struct ScreenshotObjectGraph: MockObjectGraph {
             customer: Customers.LydiaDonin,
             status: .processing,
             daysOld: 3,
-            total: 300
+            total: 73.29
         ),
         createOrder(
             number: 2116,
             customer: Customers.ChanceVicarro,
             status: .processing,
             daysOld: 4,
-            total: 300
+            total: 66.15
         ),
         createOrder(
             number: 2104,
             customer: Customers.MarcusCurtis,
             status: .processing,
             daysOld: 5,
-            total: 420
+            total: 120.00
         ),
         createOrder(
             number: 2087,
@@ -205,6 +205,26 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         )
     ]
 
+    var thisMonthVisitStats: SiteVisitStats {
+        Self.createVisitStats(
+            siteID: 1,
+            granularity: .month,
+            items: [Int](0..<30).map { dayIndex in
+                Self.createVisitStatsItem(
+                    granularity: .day,
+                    periodDate: date.monthStart.addingDays(dayIndex),
+                    visitors: Int.random(in: 0 ... 20)
+                )
+            }
+        )
+    }
+
+    var thisMonthTopProducts: TopEarnerStats = createStats(siteID: 1, granularity: .month, items: [
+        createTopEarningItem(product: Products.akoyaPearlShades, quantity: 17),
+        createTopEarningItem(product: Products.blackCoralShades, quantity: 11),
+        createTopEarningItem(product: Products.coloradoShades, quantity: 5),
+    ])
+
     var thisYearVisitStats: SiteVisitStats {
         Self.createVisitStats(
             siteID: 1,
@@ -213,7 +233,7 @@ struct ScreenshotObjectGraph: MockObjectGraph {
                 Self.createVisitStatsItem(
                     granularity: .month,
                     periodDate: date.yearStart.addingMonths(monthIndex),
-                    visitors: Int.random(in: 100 ... 1000)
+                    visitors: Int.random(in: 100 ... 500)
                 )
             }
         )
@@ -231,14 +251,28 @@ struct ScreenshotObjectGraph: MockObjectGraph {
 
     /// The possible value of an order when generating random stats
     ///
-    private let orderValueRange = 100 ..< 500
+    private let orderValueRange = 5 ..< 20
+
+    var thisMonthOrderStats: OrderStatsV4 {
+        Self.createStats(
+            siteID: 1,
+            granularity: .monthly,
+            intervals: thisMonthVisitStats.items!.enumerated().map {
+                Self.createMonthlyInterval(
+                    date: date.monthStart.addingDays($0.offset),
+                    orderCount: Int(Double($0.element.visitors) * Double.random(in: orderProbabilityRange)),
+                    revenue: Decimal($0.element.visitors) * Decimal.random(in: orderValueRange)
+                )
+            }
+        )
+    }
 
     var thisYearOrderStats: OrderStatsV4 {
         Self.createStats(
             siteID: 1,
             granularity: .yearly,
             intervals: thisYearVisitStats.items!.enumerated().map {
-                Self.createInterval(
+                Self.createYearlyInterval(
                     date: date.yearStart.addingMonths($0.offset),
                     orderCount: Int(Double($0.element.visitors) * Double.random(in: orderProbabilityRange)),
                     revenue: Decimal($0.element.visitors) * Decimal.random(in: orderValueRange)

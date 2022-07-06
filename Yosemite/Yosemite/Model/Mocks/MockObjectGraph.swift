@@ -17,6 +17,10 @@ public protocol MockObjectGraph {
     var products: [Product] { get }
     var reviews: [ProductReview] { get }
 
+    var thisMonthOrderStats: OrderStatsV4 { get }
+    var thisMonthVisitStats: SiteVisitStats { get }
+    var thisMonthTopProducts: TopEarnerStats { get }
+
     var thisYearOrderStats: OrderStatsV4 { get }
     var thisYearVisitStats: SiteVisitStats { get }
     var thisYearTopProducts: TopEarnerStats { get }
@@ -391,7 +395,20 @@ extension MockObjectGraph {
 // MARK: Stats Creation Helpers
 extension MockObjectGraph {
 
-    static func createInterval(
+    static func createMonthlyInterval(
+        date: Date,
+        orderCount: Int,
+        revenue: Decimal
+    ) -> OrderStatsV4Interval {
+        OrderStatsV4Interval(
+            interval: String(date.day),
+            dateStart: date.asOrderStatsString,
+            dateEnd: date.monthEnd.asOrderStatsString,
+            subtotals: createTotal(orderCount: orderCount, revenue: revenue)
+        )
+    }
+
+    static func createYearlyInterval(
         date: Date,
         orderCount: Int,
         revenue: Decimal
@@ -406,10 +423,10 @@ extension MockObjectGraph {
 
     static func createVisitStatsItem(granularity: StatGranularity, periodDate: Date, visitors: Int) -> SiteVisitStatsItem {
         switch granularity {
-            case .month:
-                return SiteVisitStatsItem(period: periodDate.asVisitStatsMonthString, visitors: visitors)
-            default:
-                fatalError("Not implemented yet")
+        case .day, .month:
+            return SiteVisitStatsItem(period: periodDate.asVisitStatsMonthString, visitors: visitors)
+        default:
+            fatalError("Not implemented yet")
         }
     }
 
@@ -446,21 +463,27 @@ extension MockObjectGraph {
         switch granularity {
             case .day: preconditionFailure("Not implemented")
             case .week: preconditionFailure("Not implemented")
-            case .month: preconditionFailure("Not implemented")
+            case .month:
+            return SiteVisitStats(
+                siteID: siteID,
+                date: Date().asVisitStatsMonthString,
+                granularity: .day,
+                items: items
+            )
             case .year:
-                return SiteVisitStats(
-                    siteID: siteID,
-                    date: Date().asVisitStatsYearString,
-                    granularity: .month,
-                    items: items
-                )
+            return SiteVisitStats(
+                siteID: siteID,
+                date: Date().asVisitStatsYearString,
+                granularity: .month,
+                items: items
+            )
         }
     }
 
     static func createStats(siteID: Int64, granularity: StatGranularity, items: [TopEarnerStatsItem]) -> TopEarnerStats {
         TopEarnerStats(
             siteID: siteID,
-            date: String(Date().year),
+            date: StatsStoreV4.buildDateString(from: Date(), with: granularity),
             granularity: granularity,
             limit: "",
             items: items
@@ -538,6 +561,11 @@ private extension Array where Element == OrderStatsV4Interval {
     var month: Int {
         let components = Calendar.current.dateComponents(in: .current, from: self)
         return components.month ?? 0
+    }
+
+    var day: Int {
+        let components = Calendar.current.dateComponents(in: .current, from: self)
+        return components.day ?? 0
     }
 
     var yearStart: Date {

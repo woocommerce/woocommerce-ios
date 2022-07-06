@@ -516,11 +516,13 @@ extension UIImage {
     static var cardReaderImageM2: UIImage {
         return UIImage(named: "card-reader-m2")!
     }
+
     /// Card Reader image - Wisepad 3
     ///
     static var cardReaderImageWisepad3: UIImage {
         return UIImage(named: "card-reader-wisepad3")!
     }
+
     /// Shopping cart
     ///
     static var shoppingCartIcon: UIImage {

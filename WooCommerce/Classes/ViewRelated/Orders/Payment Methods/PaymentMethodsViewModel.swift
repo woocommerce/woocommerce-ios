@@ -45,8 +45,7 @@ final class PaymentMethodsViewModel: ObservableObject {
     }
 
     var showUpsellCardReaderFeatureBanner: Bool {
-        // TODO: Load value from settings
-        true
+        return cardPresentPaymentsConfiguration.isSupportedCountry
     }
 
     var purchaseCardReaderUrl: URL {

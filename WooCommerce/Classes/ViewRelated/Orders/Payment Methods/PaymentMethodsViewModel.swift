@@ -45,7 +45,12 @@ final class PaymentMethodsViewModel: ObservableObject {
     }
 
     var showUpsellCardReaderFeatureBanner: Bool {
+        // TODO: Load value from settings
         true
+    }
+
+    var purchaseCardReaderUrl: URL {
+        cardPresentPaymentsConfiguration.purchaseCardReaderUrl()
     }
 
     /// Store's ID.

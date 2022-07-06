@@ -23,6 +23,10 @@ class AuthenticationManager: Authentication {
     ///
     private var appleUserID: String?
 
+    /// Info of the self-hosted site that was entered from the Enter a Site Address flow
+    ///
+    private var currentSelfHostedSite: WordPressComSiteInfo?
+
     /// Initializes the WordPress Authenticator.
     ///
     func initialize() {
@@ -229,6 +233,9 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return
         }
 
+        /// save the site to memory to check for jetpack requirement in epilogue
+        currentSelfHostedSite = site
+
         /// For self-hosted sites, navigate to enter the email address associated to the wp.com account:
         /// https://github.com/woocommerce/woocommerce-ios/issues/3426
         guard site.isWPCom else {
@@ -254,8 +261,10 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         guard let wpcomLogin = credentials.wpcom else {
             return
         }
-        /// Jetpack is required. Present an error if we don't detect a valid installation.
-        guard wpcomLogin.isJetpackLogin else {
+
+        /// Jetpack is required. Present an error if we don't detect a valid installation for a self-hosted site.
+        if let site = currentSelfHostedSite,
+            site.url == wpcomLogin.siteURL, !site.hasValidJetpack {
             let viewModel = JetpackErrorViewModel(siteURL: wpcomLogin.siteURL)
             let installJetpackUI = ULErrorViewController(viewModel: viewModel)
             return navigationController.show(installJetpackUI, sender: nil)

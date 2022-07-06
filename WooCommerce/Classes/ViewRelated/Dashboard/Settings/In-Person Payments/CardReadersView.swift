@@ -45,7 +45,6 @@ struct CardReadersView: View {
                                 DisclosureIndicator()
                                 .frame(width: geometry.size.width * Constants.imageSizeMultiplier)
                         }
-                        .frame(height: geometry.size.height * Constants.numberOfRowsMultiplier)
                         .buttonStyle(PlainButtonStyle())
                     }
                     Divider()
@@ -72,8 +71,7 @@ private extension CardReadersView {
 private extension CardReadersView {
     enum Constants {
         static let iconSize: CGFloat = 16
-        static let imageSize: CGFloat = 32
-        static let numberOfRowsMultiplier: CGFloat = 0.05
+        static let imageSize: CGFloat = 64
         static let imageSizeMultiplier: CGFloat = 0.2
         static let textSizeMultiplier: CGFloat = 0.6
     }

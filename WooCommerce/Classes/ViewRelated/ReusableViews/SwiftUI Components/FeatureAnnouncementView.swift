@@ -7,8 +7,22 @@ struct FeatureAnnouncementView: View {
     let buttonTitle: String
     let image: UIImage
 
-    let dismiss: (() -> Void)
+    let dismiss: (() -> Void)?
     let callToAction: (() -> Void)
+
+    init(title: String,
+         message: String,
+         buttonTitle: String,
+         image: UIImage,
+         dismiss: (() -> Void)? = nil,
+         callToAction: @escaping (() -> Void)) {
+        self.title = title
+        self.message = message
+        self.buttonTitle = buttonTitle
+        self.image = image
+        self.dismiss = dismiss
+        self.callToAction = callToAction
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -16,10 +30,12 @@ struct FeatureAnnouncementView: View {
                 NewBadgeView()
                     .padding(.leading, Layout.padding)
                 Spacer()
-                Button(action: dismiss) {
-                            Image(systemName: "xmark")
-                                .foregroundColor(Color(.withColorStudio(.gray)))
-                }.padding(.trailing, Layout.padding)
+                if let dismiss = dismiss {
+                    Button(action: dismiss) {
+                        Image(systemName: "xmark")
+                            .foregroundColor(Color(.withColorStudio(.gray)))
+                    }.padding(.trailing, Layout.padding)
+                }
             }
             .padding(.top, Layout.padding)
 

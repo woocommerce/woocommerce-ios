@@ -4,6 +4,7 @@
 -----
 - [**] Order Details: All unpaid orders have a Collect Payment button, which shows a payment method selection screen. Choices are Cash, Card, and Payment Link. [https://github.com/woocommerce/woocommerce-ios/pull/7111]
 - [*] Coupons: Removed the redundant animation when reloading the coupon list. [https://github.com/woocommerce/woocommerce-ios/pull/7137]
+- [*] In-Person Payments: Publicize the Card Present Payments feature on the Payment Method screen [https://github.com/woocommerce/woocommerce-ios/pull/7225]
 
 9.5
 -----

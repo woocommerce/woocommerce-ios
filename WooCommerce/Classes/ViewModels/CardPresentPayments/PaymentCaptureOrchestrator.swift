@@ -255,14 +255,14 @@ private extension PaymentCaptureOrchestrator {
 
     func receiptDescription(orderNumber: String) -> String? {
         guard let storeName = stores.sessionManager.defaultSite?.name,
-              let blogId = stores.sessionManager.defaultSite?.siteID else {
+              let blogID = stores.sessionManager.defaultSite?.siteID else {
             return nil
         }
 
         return String.localizedStringWithFormat(Localization.receiptDescription,
                                                 orderNumber,
                                                 storeName,
-                                                String(blogId))
+                                                String(blogID))
     }
 
     func celebrate() {
@@ -289,7 +289,7 @@ private extension PaymentCaptureOrchestrator {
         static let receiptDescription = NSLocalizedString(
             "In-Person Payment for Order #%1$@ for %2$@ blog_id %3$@",
             comment: "Message included in emailed receipts. " +
-            "Reads as: In-Person Payment for Order @{number} for @{store name} blog_id @{blog id} " +
+            "Reads as: In-Person Payment for Order @{number} for @{store name} blog_id @{blog ID} " +
             "Parameters: %1$@ - order number, %2$@ - store name, %3$@ - blog ID number")
     }
 }

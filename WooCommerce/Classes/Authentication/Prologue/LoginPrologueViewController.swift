@@ -1,11 +1,13 @@
 import Foundation
 import UIKit
 import WordPressAuthenticator
+import Experiments
 
 
 /// Displays the WooCommerce Prologue UI.
 ///
 final class LoginPrologueViewController: UIViewController {
+    private let isNewToWooCommerceButtonShown: Bool
 
     /// Background View, to be placed surrounding the bottom area.
     ///
@@ -31,6 +33,15 @@ final class LoginPrologueViewController: UIViewController {
 
     // MARK: - Overridden Methods
 
+    init(featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+        isNewToWooCommerceButtonShown = featureFlagService.isFeatureFlagEnabled(.newToWooCommerceLinkInLoginPrologue)
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -38,8 +49,8 @@ final class LoginPrologueViewController: UIViewController {
         setupBackgroundView()
         setupContainerView()
         setupCurvedRectangle()
-        setupCarousel()
-        setupNewToWooCommerceButton()
+        setupCarousel(isNewToWooCommerceButtonShown: isNewToWooCommerceButtonShown)
+        setupNewToWooCommerceButton(isNewToWooCommerceButtonShown: isNewToWooCommerceButtonShown)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -73,21 +84,28 @@ private extension LoginPrologueViewController {
     /// Adds a carousel (slider) of screens to promote the main features of the app.
     /// This is contained in a child view so that this view's background doesn't scroll.
     ///
-    func setupCarousel() {
+    func setupCarousel(isNewToWooCommerceButtonShown: Bool) {
         let carousel = LoginProloguePageViewController()
         carousel.view.translatesAutoresizingMaskIntoConstraints = false
 
         addChild(carousel)
         view.addSubview(carousel.view)
-        NSLayoutConstraint.activate([
-            carousel.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            carousel.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            carousel.view.topAnchor.constraint(equalTo: view.topAnchor),
-            carousel.view.bottomAnchor.constraint(equalTo: newToWooCommerceButton.topAnchor),
-        ])
+        if isNewToWooCommerceButtonShown {
+            NSLayoutConstraint.activate([
+                carousel.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                carousel.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                carousel.view.topAnchor.constraint(equalTo: view.topAnchor),
+                carousel.view.bottomAnchor.constraint(equalTo: newToWooCommerceButton.topAnchor),
+            ])
+        } else {
+            view.pinSubviewToAllEdges(carousel.view)
+        }
     }
 
-    func setupNewToWooCommerceButton() {
+    func setupNewToWooCommerceButton(isNewToWooCommerceButtonShown: Bool) {
+        guard isNewToWooCommerceButtonShown else {
+            return newToWooCommerceButton.isHidden = true
+        }
         newToWooCommerceButton.setTitle(Localization.newToWooCommerce, for: .normal)
         newToWooCommerceButton.applyLinkButtonStyle()
         newToWooCommerceButton.titleLabel?.numberOfLines = 0

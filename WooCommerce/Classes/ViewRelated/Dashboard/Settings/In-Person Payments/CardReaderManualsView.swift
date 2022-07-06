@@ -6,7 +6,7 @@ struct CardReaderManualsView: View {
     // Tracks the scale of the view due to accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    let viewModel = CardReadersViewViewModel()
+    let viewModel = CardReaderManualsViewModel()
     var manuals: [Manual] {
         viewModel.manuals
     }

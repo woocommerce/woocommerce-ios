@@ -8,7 +8,7 @@ struct Manual: Identifiable {
     let urlString: String
 }
 
-final class CardReadersViewViewModel {
+final class CardReaderManualsViewModel {
     let manuals: [Manual]
 
     init(manuals: [Manual] = [bbposChipper2XBT, stripeM2, wisepad3]) {
@@ -16,7 +16,7 @@ final class CardReadersViewViewModel {
     }
 }
 
-extension CardReadersViewViewModel {
+extension CardReaderManualsViewModel {
     static let bbposChipper2XBT = Manual(
         id: 0,
         image: .cardReaderImageBBPOSChipper,

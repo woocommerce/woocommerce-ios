@@ -2,7 +2,7 @@ import SwiftUI
 
 /// A view to be displayed on Card Reader Manuals screen
 ///
-struct CardReadersView: View {
+struct CardReaderManualsView: View {
     // Tracks the scale of the view due to accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
@@ -41,18 +41,18 @@ struct CardReadersView: View {
 
 struct CardReadersView_Previews: PreviewProvider {
     static var previews: some View {
-        CardReadersView()
+        CardReaderManualsView()
     }
 }
 
-private extension CardReadersView {
+private extension CardReaderManualsView {
     enum Localization {
         static let navigationTitle = NSLocalizedString( "Card reader manuals",
                                                         comment: "Navigation title at the top of the Card reader manuals screen")
     }
 }
 
-private extension CardReadersView {
+private extension CardReaderManualsView {
     enum Constants {
         static let iconSize: CGFloat = 16
         static let imageSize: CGFloat = 64

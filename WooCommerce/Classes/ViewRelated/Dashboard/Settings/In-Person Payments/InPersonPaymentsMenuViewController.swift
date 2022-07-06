@@ -196,7 +196,7 @@ extension InPersonPaymentsMenuViewController {
     }
 
     func cardReaderManualsWasPressed() {
-        let view = UIHostingController(rootView: CardReadersView())
+        let view = UIHostingController(rootView: CardReaderManualsView())
         navigationController?.pushViewController(view, animated: true)
     }
 

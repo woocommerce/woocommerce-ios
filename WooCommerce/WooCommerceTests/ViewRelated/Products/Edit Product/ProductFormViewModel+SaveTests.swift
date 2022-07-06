@@ -5,8 +5,6 @@ import Yosemite
 
 /// Unit tests for `ProductFormViewModel`'s `saveProductRemotely`
 final class ProductFormViewModel_SaveTests: XCTestCase {
-    private let defaultSiteID: Int64 = 134
-
     private var storesManager: MockStoresManager!
 
     override func setUp() {

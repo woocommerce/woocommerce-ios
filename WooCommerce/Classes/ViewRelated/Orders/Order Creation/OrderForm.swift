@@ -123,8 +123,15 @@ struct OrderForm: View {
 
                         Spacer(minLength: Layout.sectionSpacing)
 
-                        OrderPaymentSection(viewModel: viewModel.paymentDataViewModel)
-                            .disabled(viewModel.shouldShowNonEditableIndicators)
+                        Group {
+                            if let title = viewModel.multipleLinesMessage {
+                                MultipleLinesMessage(title: title)
+                                Spacer(minLength: Layout.sectionSpacing)
+                            }
+
+                            OrderPaymentSection(viewModel: viewModel.paymentDataViewModel)
+                                .disabled(viewModel.shouldShowNonEditableIndicators)
+                        }
 
                         Spacer(minLength: Layout.sectionSpacing)
 
@@ -171,6 +178,39 @@ struct OrderForm: View {
         }
         .wooNavigationBarStyle()
         .notice($viewModel.notice, autoDismiss: false)
+    }
+}
+
+/// Represents an information message to indicate about multiple shipping or fee lines.
+///
+private struct MultipleLinesMessage: View {
+
+    /// Message to display.
+    ///
+    let title: String
+
+    ///   Environment safe areas
+    ///
+    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: OrderForm.Layout.noSpacing) {
+            Divider()
+
+            HStack(spacing: OrderForm.Layout.sectionSpacing) {
+
+                Image(uiImage: .infoImage)
+                    .foregroundColor(Color(.brand))
+
+                Text(title)
+                    .bodyStyle()
+            }
+            .padding()
+            .padding(.horizontal, insets: safeAreaInsets)
+
+            Divider()
+        }
+        .background(Color(.listForeground))
     }
 }
 

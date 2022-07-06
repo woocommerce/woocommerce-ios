@@ -193,13 +193,17 @@ extension EditableProductVariationModel {
 extension ProductVariationFormViewModel {
     convenience init(productVariation: EditableProductVariationModel,
                      formType: ProductFormType = .edit,
-                     productImageActionHandler: ProductImageActionHandler,
-                     storesManager: StoresManager = ServiceLocator.stores) {
+                     productImageActionHandler: ProductImageActionHandlerProtocol,
+                     storesManager: StoresManager = ServiceLocator.stores,
+                     productImagesUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+                     isBackgroundImageUploadEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload)) {
         self.init(productVariation: productVariation,
                   allAttributes: [],
                   parentProductSKU: nil,
                   formType: formType,
                   productImageActionHandler: productImageActionHandler,
-                  storesManager: storesManager)
+                  storesManager: storesManager,
+                  productImagesUploader: productImagesUploader,
+                  isBackgroundImageUploadEnabled: isBackgroundImageUploadEnabled)
     }
 }

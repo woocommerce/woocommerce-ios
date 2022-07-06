@@ -505,6 +505,24 @@ extension UIImage {
         return UIImage(named: "card-reader-low-battery")!
     }
 
+    /// Card Reader image - BBPOS Chipper 2X BT
+    ///
+    static var cardReaderImageBBPOSChipper: UIImage {
+        return UIImage(named: "card-reader-bbpos-chipper")!
+    }
+
+    /// Card Reader image - Stripe Reader M2
+    ///
+    static var cardReaderImageM2: UIImage {
+        return UIImage(named: "card-reader-m2")!
+    }
+
+    /// Card Reader image - Wisepad 3
+    ///
+    static var cardReaderImageWisepad3: UIImage {
+        return UIImage(named: "card-reader-wisepad3")!
+    }
+
     /// Shopping cart
     ///
     static var shoppingCartIcon: UIImage {
@@ -980,6 +998,24 @@ extension UIImage {
     ///
     static var welcomeImage: UIImage {
         UIImage(imageLiteralResourceName: "img-welcome")
+    }
+
+    /// Icon Circular Rate Discount (used in WCShip onboarding)
+    ///
+    static var circularRateDiscountIcon: UIImage {
+        return UIImage(named: "icon-circular-rate-discount")!
+    }
+
+    /// Icon Circular Document (used in WCShip onboarding)
+    ///
+    static var circularDocumentIcon: UIImage {
+        return UIImage(named: "icon-circular-document")!
+    }
+
+    /// Icon Circular Time (used in WCShip onboarding)
+    ///
+    static var circularTimeIcon: UIImage {
+        return UIImage(named: "icon-circular-time")!
     }
 
     /// Lock Image

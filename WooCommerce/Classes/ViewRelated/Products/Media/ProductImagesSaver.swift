@@ -30,7 +30,7 @@ final class ProductImagesSaver {
     /// - Parameters:
     ///   - imageActionHandler: action handler that provides the latest image statuses and image asset upload subscription.
     ///   - onProductSave: called after the product is updated remotely with the uploaded images.
-    func saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: ProductImageActionHandler,
+    func saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: ProductImageActionHandlerProtocol,
                                                          onProductSave: @escaping (Result<[ProductImage], Error>) -> Void) {
         let imageStatuses = imageActionHandler.productImageStatuses
         guard imageStatuses.hasPendingUpload else {
@@ -70,18 +70,38 @@ private extension ProductImagesSaver {
                 case .failure(let error):
                     onProductSave(.failure(error))
                 }
-                self.imageStatusesToSave = []
-                self.assetUploadSubscription = nil
-                self.uploadStatusesSubscription = nil
+                self.reset()
             }
             stores.dispatch(action)
-        case .variation(_, _):
-            // TODO: 7021 - update variation images action with a different endpoint
-            return
+        case .variation(let productID, let variationID):
+            // Product variation only has up to one image.
+            guard let image = images.first else {
+                return
+            }
+            let action = ProductVariationAction.updateProductVariationImage(siteID: siteID,
+                                                                            productID: productID,
+                                                                            variationID: variationID,
+                                                                            image: image) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let productVariation):
+                    onProductSave(.success(productVariation.image.map { [$0] } ?? []))
+                case .failure(let error):
+                    onProductSave(.failure(error))
+                }
+                self.reset()
+            }
+            stores.dispatch(action)
         }
     }
 
-    func observeAssetUploadsToUpdateImageStatuses(imageActionHandler: ProductImageActionHandler) {
+    func reset() {
+        imageStatusesToSave = []
+        assetUploadSubscription = nil
+        uploadStatusesSubscription = nil
+    }
+
+    func observeAssetUploadsToUpdateImageStatuses(imageActionHandler: ProductImageActionHandlerProtocol) {
         assetUploadSubscription = imageActionHandler.addAssetUploadObserver(self) { [weak self] asset, result in
             guard let self = self else { return }
             guard let index = self.imageStatusesToSave.firstIndex(where: { status -> Bool in

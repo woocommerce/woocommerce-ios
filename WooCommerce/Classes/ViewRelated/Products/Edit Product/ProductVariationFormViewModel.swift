@@ -95,16 +95,20 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
 
     private let allAttributes: [ProductAttribute]
     private let parentProductSKU: String?
-    private let productImageActionHandler: ProductImageActionHandler
+    private let productImageActionHandler: ProductImageActionHandlerProtocol
     private let storesManager: StoresManager
+    private let productImagesUploader: ProductImageUploaderProtocol
+    private let isBackgroundImageUploadEnabled: Bool
     private var cancellable: AnyCancellable?
 
     init(productVariation: EditableProductVariationModel,
          allAttributes: [ProductAttribute],
          parentProductSKU: String?,
          formType: ProductFormType,
-         productImageActionHandler: ProductImageActionHandler,
-         storesManager: StoresManager = ServiceLocator.stores) {
+         productImageActionHandler: ProductImageActionHandlerProtocol,
+         storesManager: StoresManager = ServiceLocator.stores,
+         productImagesUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+         isBackgroundImageUploadEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload)) {
         self.allAttributes = allAttributes
         self.parentProductSKU = parentProductSKU
         self.productImageActionHandler = productImageActionHandler
@@ -115,10 +119,17 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
         self.editable = formType != .readonly
         self.actionsFactory = ProductVariationFormActionsFactory(productVariation: productVariation, editable: editable)
         self.isUpdateEnabledSubject = PassthroughSubject<Bool, Never>()
+        self.productImagesUploader = productImagesUploader
+        self.isBackgroundImageUploadEnabled = isBackgroundImageUploadEnabled
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
-            if allStatuses.productImageStatuses.hasPendingUpload {
-                self?.isUpdateEnabledSubject.send(true)
+            guard let self = self else { return }
+            guard self.isBackgroundImageUploadEnabled else {
+                if allStatuses.productImageStatuses.hasPendingUpload {
+                    self.isUpdateEnabledSubject.send(true)
+                }
+                return
             }
+            self.isUpdateEnabledSubject.send(self.hasUnsavedChanges())
         }
     }
 
@@ -127,7 +138,19 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
     }
 
     func hasUnsavedChanges() -> Bool {
-        return productVariation != originalProductVariation || productImageActionHandler.productImageStatuses.hasPendingUpload
+        guard isBackgroundImageUploadEnabled else {
+            return productVariation != originalProductVariation || productImageActionHandler.productImageStatuses.hasPendingUpload
+        }
+        let hasProductChangesExcludingImages =
+        productVariation.productVariation.copy(image: .some(nil)) != originalProductVariation.productVariation.copy(image: .some(nil))
+        let hasImageChanges = productImagesUploader
+            .hasUnsavedChangesOnImages(key: .init(siteID: productVariation.siteID,
+                                                  productOrVariationID:
+                    .variation(productID: productVariation.productVariation.productID,
+                               variationID: productVariation.productVariation.productVariationID),
+                                                  isLocalID: !productVariation.existsRemotely),
+                                       originalImages: originalProductVariation.images)
+        return hasProductChangesExcludingImages || hasImageChanges
     }
 }
 
@@ -302,6 +325,9 @@ extension ProductVariationFormViewModel {
                                                           parentProductSKU: self.parentProductSKU)
                 self.resetProductVariation(model)
                 onCompletion(.success(model))
+                if self.isBackgroundImageUploadEnabled {
+                    self.saveProductVariationImageWhenUploaded()
+                }
             }
         }
         storesManager.dispatch(updateAction)
@@ -324,6 +350,37 @@ extension ProductVariationFormViewModel {
 
     private func resetProductVariation(_ productVariation: EditableProductVariationModel) {
         originalProductVariation = productVariation
+        isUpdateEnabledSubject.send(hasUnsavedChanges())
+    }
+
+    private func saveProductVariationImageWhenUploaded() {
+        productImagesUploader
+            .saveProductImagesWhenNoneIsPendingUploadAnymore(key: .init(siteID: productVariation.siteID,
+                                                                        productOrVariationID:
+                    .variation(productID: productVariation.productVariation.productID,
+                               variationID: productVariation.productVariation.productVariationID),
+                                                                        isLocalID: !productVariation.existsRemotely)) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let images):
+                    let currentProduct = self.productVariation
+                    self.resetProductVariation(.init(productVariation: self.originalProductVariation.productVariation.copy(image: images.first),
+                                                     allAttributes: self.allAttributes,
+                                                     parentProductSKU: self.parentProductSKU))
+                    // Because `resetProductVariation` also internally updates the latest `productVariation`, the
+                    // `productVariation` is set with the value before `resetProductVariation` to retain any local changes.
+                    self.productVariation = .init(productVariation: currentProduct.productVariation,
+                                                  allAttributes: self.allAttributes,
+                                                  parentProductSKU: self.parentProductSKU)
+                case .failure:
+                    // If the variation image update request fails, the update CTA visibility is refreshed again so that the merchant can save the
+                    // variation image again along with any other potential local changes.
+                    self.isUpdateEnabledSubject.send(self.hasUnsavedChanges())
+                }
+            }
+        // Updates the update CTA visibility after scheduling a save request when no images are pending upload anymore, so that the update CTA
+        // isn't shown right after the save request from pending image upload.
+        // The save request keeps track of the latest image statuses at the time of the call and their upload progress over time.
         isUpdateEnabledSubject.send(hasUnsavedChanges())
     }
 }

@@ -44,6 +44,10 @@ final class PaymentMethodsViewModel: ObservableObject {
         paymentLink != nil
     }
 
+    var showUpsellCardReaderFeatureBanner: Bool {
+        true
+    }
+
     /// Store's ID.
     ///
     private let siteID: Int64

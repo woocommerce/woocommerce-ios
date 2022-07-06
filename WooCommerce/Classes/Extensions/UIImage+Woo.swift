@@ -970,6 +970,12 @@ extension UIImage {
         return UIImage(named: "woo-wcship-install-banner")!
     }
 
+    /// Payments Feature Banner
+    ///
+    static var paymentsFeatureBannerImage: UIImage {
+        return UIImage(named: "woo-payments-feature-banner")!
+    }
+
     /// What is Jetpack Image
     ///
     static var whatIsJetpackImage: UIImage {

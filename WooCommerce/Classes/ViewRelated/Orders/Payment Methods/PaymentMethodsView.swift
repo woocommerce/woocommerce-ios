@@ -1,43 +1,60 @@
 import SwiftUI
 
-struct FeatureAnnouncementView: View {
+struct NewBadgeView: View {
     var body: some View {
-        HStack(spacing: 0) {
-            VStack(alignment: .leading, spacing: 0) {
-                Text("NEW")
-                    .foregroundColor(Color(.textBrand))
-                    .padding(.leading, 6)
-                    .padding(.trailing, 6)
-                    .padding(.top, 4)
-                    .padding(.bottom, 4)
-                    .background(RoundedRectangle(cornerRadius: 8)
-                        .fill(Color(.withColorStudio(.wooCommercePurple, shade: .shade0))))
-                    .font(.system(size: 12, weight: .bold))
-                    .padding(.bottom, 16)
-                Text("Accept Payments Easily")
-                    .headlineStyle()
-                    .padding(.bottom, 8)
-                Text("Adopting in-person payments can help you grow your business.")
-                    .font(.system(size: 15))
-                    .padding(.bottom, 16)
-                Button("Set up now") {}
-            }
-            .padding(.leading, 16)
+        Text("NEW")
+            .foregroundColor(Color(.textBrand))
+            .padding(.leading, 6)
+            .padding(.trailing, 6)
+            .padding(.top, 4)
+            .padding(.bottom, 4)
+            .background(RoundedRectangle(cornerRadius: 8)
+                .fill(Color(.withColorStudio(.wooCommercePurple, shade: .shade0))))
+            .font(.system(size: 12, weight: .bold))
+    }
+}
 
-            VStack(alignment: .trailing, spacing: 0) {
-                Button(action: {
-                          print("button pressed")
-                        }) {
+struct FeatureAnnouncementView: View {
+    let title: String
+    let message: String
+    let buttonTitle: String
+    let image: UIImage
+
+    let dismiss: (() -> Void)
+    let callToAction: (() -> Void)
+
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack(spacing: 0) {
+                NewBadgeView()
+                    .padding(.leading, 16)
+                Spacer()
+                Button(action: dismiss) {
                             Image(systemName: "xmark")
                                 .foregroundColor(Color(.withColorStudio(.gray)))
-                        }
-                        .padding(.top, 16)
-                        .padding(.trailing, 16)
-                        .padding(.bottom, 8)
-                Image(uiImage: .installWCShipImage)
+                        }.padding(.trailing, 16)
             }
-        }
-        .background(Color(.listForeground))
+            .padding(.top, 16)
+
+
+            HStack(alignment: .bottom, spacing: 0) {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(title)
+                        .headlineStyle()
+                        .padding(.bottom, 8)
+                    Text(message)
+                        .font(.system(size: 15))
+                        .bodyStyle()
+                        .padding(.bottom, 16)
+                    Button(buttonTitle, action: callToAction)
+                        .padding(.bottom, 23.5)
+                }
+                Spacer()
+                Image(uiImage: image)
+            }
+            .padding(.top, 8)
+            .padding(.leading, 16)
+        }.background(Color(.listForeground))
     }
 }
 
@@ -103,7 +120,14 @@ struct PaymentMethodsView: View {
                 .padding(.horizontal)
                 .background(Color(.listForeground))
 
-                FeatureAnnouncementView()
+                if viewModel.showUpsellCardReaderFeatureBanner {
+                    FeatureAnnouncementView(title: "Accept Payment easily",
+                                            message: "Get ready to accept payment via card reader.",
+                                            buttonTitle: "Purchase card reader",
+                                            image: .paymentsFeatureBannerImage,
+                                            dismiss: {},
+                                            callToAction: {})
+                }
             }
 
             // Pushes content to the top

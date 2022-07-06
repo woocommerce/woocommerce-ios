@@ -47,7 +47,6 @@ class WooCommerceScreenshots: XCTestCase {
         .tabBar.goToProductsScreen()
         .selectAddProduct()
         .thenTakeScreenshot(named: "product-add")
-        .tapOutside()
     }
 
     private let loop = try! SelectorEventLoop(selector: try! KqueueSelector())

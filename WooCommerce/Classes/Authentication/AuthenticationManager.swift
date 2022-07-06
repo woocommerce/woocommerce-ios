@@ -252,7 +252,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         // We are currently supporting WPCom credentials only
         // Update this when handling store credentials authentication.
         guard let wpcomLogin = credentials.wpcom else {
-            return 
+            return
         }
         /// Jetpack is required. Present an error if we don't detect a valid installation.
         guard wpcomLogin.isJetpackLogin else {

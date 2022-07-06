@@ -217,7 +217,7 @@ private extension GetStartedViewController {
     // MARK: - What is WordPress.com Button Action
 
     @IBAction func whatIsWPComButtonTapped(_ sender: UIButton) {
-        tracker.track(click: .whatIsWpCom)
+        tracker.track(click: .whatIsWPCom)
         guard let whatIsWPCom = WordPressAuthenticator.shared.configuration.whatIsWPComURL,
               let url = URL(string: whatIsWPCom) else {
             return

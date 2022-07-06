@@ -41,17 +41,21 @@ struct FeatureAnnouncementView: View {
 
             HStack(alignment: .bottom, spacing: 0) {
                 VStack(alignment: .leading, spacing: 0) {
+                    VStack(alignment: .leading, spacing: 0) {
                     Text(title)
                         .headlineStyle()
                         .padding(.bottom, Layout.smallSpacing)
                     Text(message)
                         .bodyStyle()
                         .padding(.bottom, Layout.largeSpacing)
+                    }
+                    .accessibilityElement(children: .combine)
                     Button(buttonTitle, action: callToAction)
                         .padding(.bottom, Layout.bottomButtonPadding)
                 }
                 Spacer()
                 Image(uiImage: image)
+                    .accessibilityHidden(true)
             }
             .padding(.top, Layout.smallSpacing)
             .padding(.leading, Layout.padding)

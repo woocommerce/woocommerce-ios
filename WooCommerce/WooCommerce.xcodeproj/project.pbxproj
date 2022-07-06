@@ -1636,6 +1636,7 @@
 		DE7B479727A3C4980018742E /* CouponDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7B479627A3C4980018742E /* CouponDetailsViewModelTests.swift */; };
 		DE8C94662646990000C94823 /* PluginListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8C94652646990000C94823 /* PluginListViewController.swift */; };
 		DE8C946E264699B600C94823 /* PluginListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8C946D264699B600C94823 /* PluginListViewModel.swift */; };
+		DEA4269A2875440500265B0C /* PaymentMethodsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA426992875440500265B0C /* PaymentMethodsScreen.swift */; };
 		DEC1508227F450AC00F4487C /* CouponAllowedEmails.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC1508127F450AC00F4487C /* CouponAllowedEmails.swift */; };
 		DEC2961F26BD1605005A056B /* ShippingLabelCustomsFormListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2961E26BD1605005A056B /* ShippingLabelCustomsFormListViewModel.swift */; };
 		DEC2962126BD1627005A056B /* ShippingLabelCustomsFormList.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2962026BD1627005A056B /* ShippingLabelCustomsFormList.swift */; };
@@ -3435,6 +3436,7 @@
 		DE7B479627A3C4980018742E /* CouponDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponDetailsViewModelTests.swift; sourceTree = "<group>"; };
 		DE8C94652646990000C94823 /* PluginListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginListViewController.swift; sourceTree = "<group>"; };
 		DE8C946D264699B600C94823 /* PluginListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginListViewModel.swift; sourceTree = "<group>"; };
+		DEA426992875440500265B0C /* PaymentMethodsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethodsScreen.swift; sourceTree = "<group>"; };
 		DEC1508127F450AC00F4487C /* CouponAllowedEmails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponAllowedEmails.swift; sourceTree = "<group>"; };
 		DEC2961E26BD1605005A056B /* ShippingLabelCustomsFormListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormListViewModel.swift; sourceTree = "<group>"; };
 		DEC2962026BD1627005A056B /* ShippingLabelCustomsFormList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormList.swift; sourceTree = "<group>"; };
@@ -7195,7 +7197,6 @@
 				DEC51B05276B3F3C009F3DF4 /* Int64+Helpers.swift */,
 				02DE5CA8279F857D007CBEF3 /* Double+Rounding.swift */,
 				02645D8727BA2E820065DC68 /* NSAttributedString+Attributes.swift */,
-				B9B6DEEE283F8B9F00901FB7 /* Site+PluginsURL.swift */,
 				450C6EE9286F4334002DB168 /* SitePlugin+Woo.swift */,
 				B9B6DEEE283F8B9F00901FB7 /* Site+URL.swift */,
 				021DD44C286A3A8D004F0468 /* UIViewController+Navigation.swift */,
@@ -8165,6 +8166,7 @@
 				CC71353A2862285300A28B42 /* AddShippingScreen.swift */,
 				CC2A08032863206000510C4B /* AddFeeScreen.swift */,
 				CC2A0807286337A300510C4B /* CustomerNoteScreen.swift */,
+				DEA426992875440500265B0C /* PaymentMethodsScreen.swift */,
 				DE3C5B1E286B18520049E6AA /* CardPresentPaymentsModalScreen.swift */,
 			);
 			path = Orders;
@@ -8880,6 +8882,7 @@
 				3F0CF2FE270420DD00EF3D71 /* ScreenObject+Extension.swift in Sources */,
 				3FF314EA26FC751B0012E68E /* XCTest+Extensions.swift in Sources */,
 				3F0CF3002704490A00EF3D71 /* OrderSearchScreen.swift in Sources */,
+				DEA4269A2875440500265B0C /* PaymentMethodsScreen.swift in Sources */,
 				3F0CF3012704490A00EF3D71 /* ReviewsScreen.swift in Sources */,
 				CC71353B2862285300A28B42 /* AddShippingScreen.swift in Sources */,
 				3F0CF30A2704490A00EF3D71 /* OrdersScreen.swift in Sources */,

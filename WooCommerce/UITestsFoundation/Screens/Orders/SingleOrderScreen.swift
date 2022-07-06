@@ -49,13 +49,13 @@ public final class SingleOrderScreen: ScreenObject {
     }
 
     @discardableResult
-    public func tapCollectPaymentButton() throws -> CardPresentPaymentsModalScreen {
+    public func tapCollectPaymentButton() throws -> PaymentMethodsScreen {
         let orderDetailTableView = app.tables["order-details-table-view"]
         while !collectPaymentButton.isFullyVisibleOnScreen() {
             orderDetailTableView.swipeUp()
         }
         collectPaymentButton.tap()
-        return try CardPresentPaymentsModalScreen()
+        return try PaymentMethodsScreen()
     }
 
     @discardableResult

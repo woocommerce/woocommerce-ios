@@ -147,8 +147,8 @@ private struct MethodRow: View {
             }
             .padding(.vertical, PaymentMethodsView.Layout.verticalPadding)
             .padding(.horizontal, insets: safeAreaInsets)
-            .accessibilityIdentifier(accessibilityID)
         }
+        .accessibilityIdentifier(accessibilityID)
     }
 }
 

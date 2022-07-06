@@ -91,6 +91,7 @@ private extension LoginPrologueViewController {
         newToWooCommerceButton.setTitle(Localization.newToWooCommerce, for: .normal)
         newToWooCommerceButton.applyLinkButtonStyle()
         newToWooCommerceButton.titleLabel?.numberOfLines = 0
+        newToWooCommerceButton.titleLabel?.textAlignment = .center
         newToWooCommerceButton.on(.touchUpInside) { _ in
             // TODO: 7231 - analytics
 

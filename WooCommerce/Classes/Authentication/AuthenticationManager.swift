@@ -217,20 +217,8 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     ///
     func shouldPresentUsernamePasswordController(for siteInfo: WordPressComSiteInfo?, onCompletion: @escaping (WordPressAuthenticatorResult) -> Void) {
 
-        /// Jetpack is required. Present an error if we don't detect a valid installation.
-        guard let site = siteInfo, site.hasValidJetpack == true else {
-            let viewModel = JetpackErrorViewModel(siteURL: siteInfo?.url)
-            let installJetpackUI = ULErrorViewController(viewModel: viewModel)
-
-            let authenticationResult: WordPressAuthenticatorResult = .injectViewController(value: installJetpackUI)
-
-            onCompletion(authenticationResult)
-
-            return
-        }
-
         /// WordPress must be present.
-        guard site.isWP else {
+        guard let site = siteInfo, site.isWP else {
             let viewModel = NotWPErrorViewModel()
             let notWPErrorUI = ULErrorViewController(viewModel: viewModel)
 
@@ -261,10 +249,22 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Presents the Login Epilogue, in the specified NavigationController.
     ///
     func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, onDismiss: @escaping () -> Void) {
+        // We are currently supporting WPCom credentials only
+        // Update this when handling store credentials authentication.
+        guard let wpcomLogin = credentials.wpcom else {
+            return 
+        }
+        /// Jetpack is required. Present an error if we don't detect a valid installation.
+        guard wpcomLogin.isJetpackLogin else {
+            let viewModel = JetpackErrorViewModel(siteURL: wpcomLogin.siteURL)
+            let installJetpackUI = ULErrorViewController(viewModel: viewModel)
+            return navigationController.show(installJetpackUI, sender: nil)
+        }
+
         let matcher = ULAccountMatcher()
         matcher.refreshStoredSites()
 
-        guard let siteURL = credentials.wpcom?.siteURL, matcher.match(originalURL: siteURL) else {
+        guard matcher.match(originalURL: wpcomLogin.siteURL) else {
             DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: credentials.wpcom?.siteURL))")
             let viewModel = WrongAccountErrorViewModel(siteURL: credentials.wpcom?.siteURL)
             let mismatchAccountUI = ULAccountMismatchViewController(viewModel: viewModel)
@@ -274,7 +274,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
         storePickerCoordinator?.onDismiss = onDismiss
-        if let site = matcher.matchedSite(originalURL: siteURL) {
+        if let site = matcher.matchedSite(originalURL: wpcomLogin.siteURL) {
             storePickerCoordinator?.didSelectStore(with: site.siteID, onCompletion: onDismiss)
         } else {
             storePickerCoordinator?.start()

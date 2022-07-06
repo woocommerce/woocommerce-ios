@@ -1,10 +1,8 @@
 import SwiftUI
-import WebKit
 import SafariServices
 
 struct SafariView: UIViewControllerRepresentable {
 
-    var choice: Manual
     let url: URL
 
     func makeUIViewController(context: UIViewControllerRepresentableContext<SafariView>) -> SFSafariViewController {
@@ -33,7 +31,7 @@ struct CardReadersView: View {
                 VStack(alignment: .leading, spacing: 0) {
                     ForEach(manuals, id: \.name) { manual in
                         Divider()
-                        NavigationLink(destination: SafariView(choice: manual, url: URL(string: manual.urlString)!)) {
+                        NavigationLink(destination: SafariView(url: URL(string: manual.urlString)!)) {
                                 Image(uiImage: manual.image)
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)

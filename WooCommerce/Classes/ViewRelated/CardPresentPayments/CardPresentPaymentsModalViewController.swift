@@ -194,7 +194,7 @@ private extension CardPresentPaymentsModalViewController {
 
     func configureTopTitle() {
         topTitleLabel.text = viewModel.topTitle
-        topTitleLabel.accessibilityIdentifier = "card-present-payments-modal-title-label"
+        topTitleLabel.accessibilityIdentifier = Accessibility.topTitleLabel
     }
 
     func configureTopSubtitle() {
@@ -262,7 +262,7 @@ private extension CardPresentPaymentsModalViewController {
 
         primaryButton.isHidden = false
         primaryButton.setTitle(viewModel.primaryButtonTitle, for: .normal)
-        primaryButton.accessibilityIdentifier = "card-present-payments-modal-primary-button"
+        primaryButton.accessibilityIdentifier = Accessibility.primaryButton
     }
 
     func configureSecondaryButton() {
@@ -273,7 +273,7 @@ private extension CardPresentPaymentsModalViewController {
 
         secondaryButton.isHidden = false
         secondaryButton.setTitle(viewModel.secondaryButtonTitle, for: .normal)
-        secondaryButton.accessibilityIdentifier = "card-present-payments-modal-secondary-button"
+        secondaryButton.accessibilityIdentifier = Accessibility.secondaryButton
     }
 
     func configureAuxiliaryButton() {
@@ -284,7 +284,7 @@ private extension CardPresentPaymentsModalViewController {
 
         auxiliaryButton.setTitleWithoutAnimation(viewModel.auxiliaryButtonTitle, for: .normal)
         auxiliaryButton.isHidden = false
-        auxiliaryButton.accessibilityIdentifier = "card-present-payments-modal-auxiliary-button"
+        auxiliaryButton.accessibilityIdentifier = Accessibility.auxiliaryButton
     }
 
     func configureSpacer() {
@@ -408,5 +408,14 @@ extension CardPresentPaymentsModalViewController {
 
     func getSecondaryActionButton() -> UIButton {
         return secondaryButton
+    }
+}
+
+private extension CardPresentPaymentsModalViewController {
+    enum Accessibility {
+        static let topTitleLabel = "card-present-payments-modal-title-label"
+        static let primaryButton = "card-present-payments-modal-primary-button"
+        static let secondaryButton = "card-present-payments-modal-secondary-button"
+        static let auxiliaryButton = "card-present-payments-modal-auxiliary-button"
     }
 }

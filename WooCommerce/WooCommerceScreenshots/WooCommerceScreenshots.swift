@@ -44,10 +44,12 @@ class WooCommerceScreenshots: XCTestCase {
         .thenTakeScreenshot(named: "order-creation")
         .cancelOrderCreation()
 
+        // Collect payment
         .selectOrder(atIndex: 0)
         .tapCollectPaymentButton()
         .selectCardPresentPayment()
         .thenTakeScreenshot(named: "order-payment")
+        .goBackToPaymentMethodsScreen()
         .goBackToOrderScreen()
         .goBackToOrdersScreen()
 

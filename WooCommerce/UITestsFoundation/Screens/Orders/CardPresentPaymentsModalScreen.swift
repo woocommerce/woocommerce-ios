@@ -19,8 +19,8 @@ public final class CardPresentPaymentsModalScreen: ScreenObject {
     }
 
     @discardableResult
-    public func goBackToOrderScreen() throws -> SingleOrderScreen {
+    public func goBackToPaymentMethodsScreen() throws -> PaymentMethodsScreen {
         dismissButton.tap()
-        return try SingleOrderScreen()
+        return try PaymentMethodsScreen()
     }
 }

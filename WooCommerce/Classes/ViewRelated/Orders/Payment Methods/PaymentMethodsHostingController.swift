@@ -50,11 +50,18 @@ struct HostedPaymentMethodsView: View {
                         dismiss()
                         viewModel.userDidCancelFlow()
                     })
+                    .accessibilityIdentifier(Accessibility.cancelButton)
                 }
             }
             .wooNavigationBarStyle()
     }
 
+}
+
+private extension HostedPaymentMethodsView {
+    enum Accessibility {
+        static let cancelButton = "payment-methods-view-cancel-button"
+    }
 }
 
 /// Intercepts to the dismiss drag gesture.

@@ -7,6 +7,14 @@ public final class PaymentMethodsScreen: ScreenObject {
         $0.buttons["payment-methods-view-card-row"]
     }
 
+    private let dismissButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["payment-methods-view-cancel-button"]
+    }
+
+    /// Button to dismiss a the modal
+    ///
+    private var dismissButton: XCUIElement { dismissButtonGetter(app) }
+
     /// Button to dismiss a the modal
     ///
     private var cardMethodButton: XCUIElement { cardMethodButtonGetter(app) }
@@ -22,5 +30,11 @@ public final class PaymentMethodsScreen: ScreenObject {
     public func selectCardPresentPayment() throws -> CardPresentPaymentsModalScreen {
         cardMethodButton.tap()
         return try CardPresentPaymentsModalScreen()
+    }
+
+    @discardableResult
+    public func goBackToOrderScreen() throws -> SingleOrderScreen {
+        dismissButton.tap()
+        return try SingleOrderScreen()
     }
 }

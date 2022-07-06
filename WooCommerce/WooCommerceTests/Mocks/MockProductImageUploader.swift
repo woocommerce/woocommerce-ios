@@ -2,7 +2,7 @@ import Combine
 @testable import Yosemite
 @testable import WooCommerce
 
-final class MockProductImageUploader: ProductImageUploaderProtocol {
+final class MockProductImageUploader {
     let errors: AnyPublisher<ProductImageUploadErrorInfo, Never>
 
     var replaceLocalIDWasCalled = false
@@ -11,11 +11,24 @@ final class MockProductImageUploader: ProductImageUploaderProtocol {
     var stopEmittingErrorsWasCalled = false
     var resetWasCalled = false
 
+    private var onProductSaveResult: Result<[ProductImage], Error>?
+    private var hasUnsavedChangesOnImages = false
+
     init(errors: AnyPublisher<ProductImageUploadErrorInfo, Never> =
          Empty<ProductImageUploadErrorInfo, Never>().eraseToAnyPublisher()) {
         self.errors = errors
     }
 
+    func whenProductIsSaved(thenReturn result: Result<[ProductImage], Error>) {
+        onProductSaveResult = result
+    }
+
+    func whenHasUnsavedChangesOnImagesIsCalled(thenReturn hasUnsavedChangesOnImages: Bool) {
+        self.hasUnsavedChangesOnImages = hasUnsavedChangesOnImages
+    }
+}
+
+extension MockProductImageUploader: ProductImageUploaderProtocol {
     func replaceLocalID(siteID: Int64, localID: ProductOrVariationID, remoteID: Int64) {
         replaceLocalIDWasCalled = true
     }
@@ -23,6 +36,9 @@ final class MockProductImageUploader: ProductImageUploaderProtocol {
     func saveProductImagesWhenNoneIsPendingUploadAnymore(key: ProductImageUploaderKey,
                                                          onProductSave: @escaping (Result<[ProductImage], Error>) -> Void) {
         saveProductImagesWhenNoneIsPendingUploadAnymoreWasCalled = true
+        if let result = onProductSaveResult {
+            onProductSave(result)
+        }
     }
 
     func actionHandler(key: ProductImageUploaderKey, originalStatuses: [ProductImageStatus]) -> ProductImageActionHandler {
@@ -38,7 +54,7 @@ final class MockProductImageUploader: ProductImageUploaderProtocol {
     }
 
     func hasUnsavedChangesOnImages(key: ProductImageUploaderKey, originalImages: [ProductImage]) -> Bool {
-        false
+        hasUnsavedChangesOnImages
     }
 
     func reset() {

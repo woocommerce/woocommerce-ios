@@ -147,7 +147,6 @@ final class AddEditCouponViewModel: ObservableObject {
     }
 
     var hasChangesMade: Bool {
-        guard editingOption == .editing else { return true }
         let coupon = populatedCoupon
         return checkDiscountTypeUpdated(for: coupon) ||
         checkAmountUpdated(for: coupon) ||
@@ -203,6 +202,12 @@ final class AddEditCouponViewModel: ObservableObject {
 
     private var subscriptions: Set<AnyCancellable> = []
 
+    /// Keeping track of the initial discount type to check for changes
+    private let initialDiscountType: Coupon.DiscountType
+
+    /// Keeping track of the initial coupon code to check for changes
+    private let initialCouponCode: String
+
     /// Init method for coupon creation
     ///
     init(siteID: Int64,
@@ -236,7 +241,9 @@ final class AddEditCouponViewModel: ObservableObject {
         couponRestrictionsViewModel = CouponRestrictionsViewModel(siteID: siteID)
         productOrVariationIDs = []
         categoryIDs = []
-        generateRandomCouponCode()
+        initialCouponCode = Self.generateRandomCouponCode()
+        codeField = initialCouponCode
+        initialDiscountType = discountType
         configureWarningBehavior()
     }
 
@@ -274,6 +281,8 @@ final class AddEditCouponViewModel: ObservableObject {
         couponRestrictionsViewModel = CouponRestrictionsViewModel(coupon: existingCoupon)
         productOrVariationIDs = existingCoupon.productIds
         categoryIDs = existingCoupon.productCategories
+        initialCouponCode = existingCoupon.code
+        initialDiscountType = existingCoupon.discountType
 
         configureWarningBehavior()
     }
@@ -283,7 +292,7 @@ final class AddEditCouponViewModel: ObservableObject {
     /// We will loop to select 8 characters from the set `ABCDEFGHJKMNPQRSTUVWXYZ23456789` at random using `arc4random_uniform` for randomness.
     /// https://github.com/woocommerce/woocommerce/blob/2e60d47a019a6e35f066f3ef43a56c0e761fc8e3/includes/admin/class-wc-admin-assets.php#L295
     ///
-    func generateRandomCouponCode() {
+    private static func generateRandomCouponCode() -> String {
         let dictionary: [String] = "ABCDEFGHJKMNPQRSTUVWXYZ23456789".map { String($0) }
         let generatedCodeLength = 8
 
@@ -291,8 +300,7 @@ final class AddEditCouponViewModel: ObservableObject {
         for _ in 0 ..< generatedCodeLength {
             code += dictionary.randomElement() ?? ""
         }
-
-        codeField = code
+        return code
     }
 
     private func configureWarningBehavior() {
@@ -315,6 +323,10 @@ final class AddEditCouponViewModel: ObservableObject {
                 }
             }
             .store(in: &subscriptions)
+    }
+
+    func updateCodeFieldWithRandomCode() {
+        codeField = Self.generateRandomCouponCode()
     }
 
     @discardableResult
@@ -414,6 +426,35 @@ final class AddEditCouponViewModel: ObservableObject {
         stores.dispatch(action)
     }
 
+    /// Default coupon when coupon creation is initiated
+    private lazy var defaultCoupon: Coupon = {
+        .init(siteID: siteID,
+              couponID: -1,
+              code: initialCouponCode,
+              amount: "0.00",
+              dateCreated: Date(),
+              dateModified: Date(),
+              discountType: initialDiscountType,
+              description: "",
+              dateExpires: nil,
+              usageCount: 0,
+              individualUse: false,
+              productIds: [],
+              excludedProductIds: [],
+              usageLimit: nil,
+              usageLimitPerUser: nil,
+              limitUsageToXItems: nil,
+              freeShipping: false,
+              productCategories: [],
+              excludedProductCategories: [],
+              excludeSaleItems: false,
+              minimumAmount: "",
+              maximumAmount: "",
+              emailRestrictions: [],
+              usedBy: [])
+    }()
+
+    /// Coupon generated from input
     var populatedCoupon: Coupon {
         let emailRestrictions: [String] = {
             if couponRestrictionsViewModel.allowedEmails.isEmpty {
@@ -478,9 +519,7 @@ final class AddEditCouponViewModel: ObservableObject {
 //
 private extension AddEditCouponViewModel {
     func checkDiscountTypeUpdated(for coupon: Coupon) -> Bool {
-        guard let initialCoupon = self.coupon else {
-            return false
-        }
+        let initialCoupon = self.coupon ?? defaultCoupon
         return coupon.discountType != initialCoupon.discountType
     }
 
@@ -498,9 +537,7 @@ private extension AddEditCouponViewModel {
     }
 
     func checkUsageRestrictionsUpdated(for coupon: Coupon) -> Bool {
-        guard let initialCoupon = self.coupon else {
-            return false
-        }
+        let initialCoupon = self.coupon ?? defaultCoupon
         let amountFormatter = CouponAmountInputFormatter()
 
         return amountFormatter.value(from: coupon.maximumAmount) != amountFormatter.value(from: initialCoupon.maximumAmount) ||
@@ -516,9 +553,7 @@ private extension AddEditCouponViewModel {
     }
 
     func checkExpiryDateUpdated(for coupon: Coupon) -> Bool {
-        guard let initialCoupon = self.coupon else {
-            return false
-        }
+        let initialCoupon = self.coupon ?? defaultCoupon
         // since we're trimming time on the new date, we should also trim the time on the old date
         // as a workaround for the edge case where the date was created with different time zones.
         guard let oldDate = initialCoupon.dateExpires?.startOfDay(timezone: timezone),
@@ -529,38 +564,28 @@ private extension AddEditCouponViewModel {
     }
 
     func checkCouponCodeUpdated(for coupon: Coupon) -> Bool {
-        guard let initialCoupon = self.coupon else {
-            return false
-        }
+        let initialCoupon = self.coupon ?? defaultCoupon
         return coupon.code.lowercased() != initialCoupon.code.lowercased()
     }
 
     func checkAmountUpdated(for coupon: Coupon) -> Bool {
-        guard let initialCoupon = self.coupon else {
-            return false
-        }
+        let initialCoupon = self.coupon ?? defaultCoupon
         let amountFormatter = CouponAmountInputFormatter()
         return amountFormatter.value(from: coupon.amount) != amountFormatter.value(from: initialCoupon.amount)
     }
 
     func checkDescriptionUpdated(for coupon: Coupon) -> Bool {
-        guard let initialCoupon = self.coupon else {
-            return false
-        }
+        let initialCoupon = self.coupon ?? defaultCoupon
         return coupon.description != initialCoupon.description
     }
 
     func checkAllowedProductsAndCategoriesUpdated(for coupon: Coupon) -> Bool {
-        guard let initialCoupon = self.coupon else {
-            return false
-        }
+        let initialCoupon = self.coupon ?? defaultCoupon
         return coupon.productIds != initialCoupon.productIds || coupon.productCategories != initialCoupon.productCategories
     }
 
     func checkFreeShippingUpdated(for coupon: Coupon) -> Bool {
-        guard let initialCoupon = self.coupon else {
-            return false
-        }
+        let initialCoupon = self.coupon ?? defaultCoupon
         return coupon.freeShipping != initialCoupon.freeShipping
     }
 

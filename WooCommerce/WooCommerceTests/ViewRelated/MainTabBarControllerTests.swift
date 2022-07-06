@@ -297,7 +297,7 @@ final class MainTabBarControllerTests: XCTestCase {
         XCTAssertEqual(notice.title, MainTabBarController.Localization.imageUploadFailureNoticeTitle)
     }
 
-    func test_when_receiving_product_images_saver_error_a_notice_is_enqueued() throws {
+    func test_when_receiving_product_images_saving_error_a_notice_is_enqueued() throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isBackgroundImageUploadEnabled: true)
         let noticePresenter = MockNoticePresenter()
@@ -326,7 +326,39 @@ final class MainTabBarControllerTests: XCTestCase {
         // Given
         XCTAssertEqual(noticePresenter.queuedNotices.count, 1)
         let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
-        XCTAssertEqual(notice.title, MainTabBarController.Localization.imagesSavingFailureNoticeTitle)
+        XCTAssertEqual(notice.title, MainTabBarController.Localization.productImagesSavingFailureNoticeTitle)
+    }
+
+    func test_when_receiving_variation_image_saving_error_a_notice_is_enqueued() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isBackgroundImageUploadEnabled: true)
+        let noticePresenter = MockNoticePresenter()
+        let statusUpdates = PassthroughSubject<ProductImageUploadErrorInfo, Never>()
+        let productImageUploader = MockProductImageUploader(errors: statusUpdates.eraseToAnyPublisher())
+
+        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
+            return MainTabBarController(coder: coder,
+                                        featureFlagService: featureFlagService,
+                                        noticePresenter: noticePresenter,
+                                        productImageUploader: productImageUploader)
+        }) else {
+            return
+        }
+
+        // Trigger `viewDidLoad`
+        XCTAssertNotNil(tabBarController.view)
+        XCTAssertEqual(noticePresenter.queuedNotices.count, 0)
+
+        // When
+        statusUpdates.send(.init(siteID: 134,
+                                 productOrVariationID: .variation(productID: 0, variationID: 608),
+                                 productImageStatuses: [],
+                                 error: .failedSavingProductAfterImageUpload(error: NSError(domain: "", code: 18))))
+
+        // Given
+        XCTAssertEqual(noticePresenter.queuedNotices.count, 1)
+        let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
+        XCTAssertEqual(notice.title, MainTabBarController.Localization.variationImageSavingFailureNoticeTitle)
     }
 
     func test_when_tapping_product_image_upload_error_notice_product_details_is_pushed_to_products_tab() throws {

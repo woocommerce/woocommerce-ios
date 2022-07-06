@@ -585,7 +585,15 @@ private extension MainTabBarController {
     }
 
     func handleErrorSavingProductAfterImageUpload(_ error: ProductImageUploadErrorInfo) {
-        let notice = Notice(title: Localization.imagesSavingFailureNoticeTitle,
+        let noticeTitle: String = {
+            switch error.productOrVariationID {
+            case .product:
+                return Localization.productImagesSavingFailureNoticeTitle
+            case .variation:
+                return Localization.variationImageSavingFailureNoticeTitle
+            }
+        }()
+        let notice = Notice(title: noticeTitle,
                             subtitle: nil,
                             message: nil,
                             feedbackType: .error,
@@ -647,9 +655,12 @@ extension MainTabBarController {
         static let imageUploadFailureNoticeTitle =
         NSLocalizedString("An image failed to upload",
                           comment: "Title of the notice about an image upload failure in the background.")
-        static let imagesSavingFailureNoticeTitle =
+        static let productImagesSavingFailureNoticeTitle =
         NSLocalizedString("Error saving product images",
                           comment: "Title of the notice about an error saving images uploaded in the background to a product.")
+        static let variationImageSavingFailureNoticeTitle =
+        NSLocalizedString("Error saving variation image",
+                          comment: "Title of the notice about an error saving an image uploaded in the background to a product variation.")
         static let imageUploadFailureNoticeActionTitle =
         NSLocalizedString("View",
                           comment: "Title of the action to view product details from a notice about an image upload failure in the background.")

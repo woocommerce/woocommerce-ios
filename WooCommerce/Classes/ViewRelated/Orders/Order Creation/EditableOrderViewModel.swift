@@ -104,6 +104,10 @@ final class EditableOrderViewModel: ObservableObject {
     /// Defines if the non editable indicators (banners, locks, fields) should be shown.
     @Published private(set) var shouldShowNonEditableIndicators: Bool = false
 
+    /// Defines the multiple lines info message to show.
+    ///
+    @Published private(set) var multipleLinesMessage: String? = nil
+
     /// Status Results Controller.
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
@@ -266,6 +270,7 @@ final class EditableOrderViewModel: ObservableObject {
         configurePaymentDataViewModel()
         configureCustomerNoteDataViewModel()
         configureNonEditableIndicators()
+        configureMultipleLinesMessage()
         resetAddressForm()
     }
 
@@ -477,7 +482,10 @@ extension EditableOrderViewModel {
 
         let shouldShowShippingTotal: Bool
         let shippingTotal: String
+
+        // We only support one(the first) shipping line
         let shippingMethodTitle: String
+        let shippingMethodTotal: String
 
         let shouldShowFees: Bool
         let feesBaseAmountForPercentage: Decimal
@@ -498,6 +506,7 @@ extension EditableOrderViewModel {
              shouldShowShippingTotal: Bool = false,
              shippingTotal: String = "0",
              shippingMethodTitle: String = "",
+             shippingMethodTotal: String = "",
              shouldShowFees: Bool = false,
              feesBaseAmountForPercentage: Decimal = 0,
              feesTotal: String = "0",
@@ -512,6 +521,7 @@ extension EditableOrderViewModel {
             self.shouldShowShippingTotal = shouldShowShippingTotal
             self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? "0.00"
             self.shippingMethodTitle = shippingMethodTitle
+            self.shippingMethodTotal = currencyFormatter.formatAmount(shippingMethodTotal) ?? "0.00"
             self.shouldShowFees = shouldShowFees
             self.feesBaseAmountForPercentage = feesBaseAmountForPercentage
             self.feesTotal = currencyFormatter.formatAmount(feesTotal) ?? "0.00"
@@ -521,7 +531,7 @@ extension EditableOrderViewModel {
             self.showNonEditableIndicators = showNonEditableIndicators
             self.shippingLineViewModel = ShippingLineDetailsViewModel(isExistingShippingLine: shouldShowShippingTotal,
                                                                       initialMethodTitle: shippingMethodTitle,
-                                                                      shippingTotal: self.shippingTotal,
+                                                                      shippingTotal: shippingMethodTotal,
                                                                       didSelectSave: saveShippingLineClosure)
             self.feeLineViewModel = FeeLineDetailsViewModel(isExistingFeeLine: shouldShowFees,
                                                             baseAmountForPercentage: feesBaseAmountForPercentage,
@@ -696,6 +706,7 @@ private extension EditableOrderViewModel {
                                             shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
                                             shippingTotal: order.shippingTotal.isNotEmpty ? order.shippingTotal : "0",
                                             shippingMethodTitle: shippingMethodTitle,
+                                            shippingMethodTotal: order.shippingLines.first?.total ?? "0",
                                             shouldShowFees: order.fees.filter { $0.name != nil }.isNotEmpty,
                                             feesBaseAmountForPercentage: orderTotals.feesBaseAmountForPercentage as Decimal,
                                             feesTotal: orderTotals.feesTotal.stringValue,
@@ -724,6 +735,29 @@ private extension EditableOrderViewModel {
             }
             .assign(to: &$shouldShowNonEditableIndicators)
     }
+
+    /// Binds the order state to the `multipleLineMessage` property.
+    ///
+    func configureMultipleLinesMessage() {
+        Publishers.CombineLatest(orderSynchronizer.orderPublisher, Just(flow))
+            .map { order, flow -> String? in
+                switch (flow, order.shippingLines.count, order.fees.count) {
+                case (.creation, _, _):
+                    return nil
+                case (.editing, 2...Int.max, 0...1): // Multiple shipping lines
+                    return Localization.multipleShippingLines
+                case (.editing, 0...1, 2...Int.max): // Multiple fee lines
+                    return Localization.multipleFeeLines
+                case (.editing, 2...Int.max, 2...Int.max): // Multiple shipping & fee lines
+                    return Localization.multipleFeesAndShippingLines
+                case (.editing, _, _): // Single/nil shipping & fee lines
+                    return nil
+                }
+            }
+            .assign(to: &$multipleLinesMessage)
+    }
+
+
 
     /// Tracks when customer details have been added
     ///
@@ -948,5 +982,15 @@ private extension EditableOrderViewModel {
         static let invalidBillingSuggestion =
         NSLocalizedString("Please make sure you are running the latest version of WooCommerce and try again later.",
                           comment: "Recovery suggestion when we fail to update an address when creating or editing an order")
+
+        static let multipleShippingLines = NSLocalizedString("Shipping details are incomplete.\n" +
+                                                             "To edit all shipping details, view the order in your WooCommerce store admin.",
+                                                             comment: "Info message shown when the order contains multiple shipping lines")
+        static let multipleFeeLines = NSLocalizedString("Fees are incomplete.\n" +
+                                                        "To edit all fees, view the order in your WooCommerce store admin.",
+                                                        comment: "Info message shown when the order contains multiple fee lines")
+        static let multipleFeesAndShippingLines = NSLocalizedString("Fees & Shipping details are incomplete.\n" +
+                                                                    "To edit all the details, view the order in your WooCommerce store admin.",
+                                                                    comment: "Info message shown when the order contains multiple fees and shipping lines")
     }
 }

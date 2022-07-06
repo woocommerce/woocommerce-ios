@@ -132,6 +132,37 @@ final class ProductImagesSaverTests: XCTestCase {
         // Then
         XCTAssertEqual(imagesSaver.imageStatusesToSave, [])
     }
+
+    func test_updateProductVariationImage_is_dispatched_when_saving_an_image_to_ProductVariation() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let variationID: ProductOrVariationID = .variation(productID: productID, variationID: 134)
+        let imagesSaver = ProductImagesSaver(siteID: siteID, productOrVariationID: variationID, stores: stores)
+        let asset = PHAsset()
+        let actionHandler = MockProductImageActionHandler(productImageStatuses: [.uploading(asset: asset)])
+        let image = ProductImage.fake()
+        actionHandler.assetUploadResults = (asset: asset, result: .success(image))
+
+        // Mocks successful variation image update.
+        stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
+            if case let .updateProductVariationImage(_, _, _, image, completion) = action {
+                completion(.success(.fake().copy(image: image)))
+            }
+        }
+
+        // When
+        let result: Result<[ProductImage], Error> = waitFor { promise in
+            // Saves product images.
+            imagesSaver.saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: actionHandler) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertEqual(imagesSaver.imageStatusesToSave, [])
+        let savedImages = try XCTUnwrap(result.get())
+        XCTAssertEqual(savedImages, [image])
+    }
 }
 
 private extension ProductImagesSaverTests {

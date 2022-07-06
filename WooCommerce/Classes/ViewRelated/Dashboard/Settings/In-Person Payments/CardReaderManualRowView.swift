@@ -1,17 +1,18 @@
 import SwiftUI
 
 struct CardReaderManualRowView: View {
+    // Environment safe areas
+    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+
     // Tracks the scale of the view due to accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    /// Environment safe areas
-    ///
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+    @State var webViewPresented = false
 
     let manual: Manual
 
     var body: some View {
-        NavigationLink(destination: SafariView(url: URL(string: manual.urlString)!)) {
+        NavigationRow(content: {
             HStack {
                 Image(uiImage: manual.image)
                     .resizable()
@@ -19,19 +20,22 @@ struct CardReaderManualRowView: View {
                     .frame(width: Constants.imageSize * scale, height: Constants.imageSize * scale, alignment: .center)
                 Text(manual.name)
                 .font(.body)
-                Spacer()
-                DisclosureIndicator()
             }
-            .padding()
-            .padding(.horizontal, insets: safeAreaInsets)
-        }
-        .buttonStyle(PlainButtonStyle())
+            .sheet(isPresented: $webViewPresented, onDismiss: {
+                webViewPresented = false
+            }, content: {
+                SafariSheetView(url: URL(string: manual.urlString)!)
+            })
+        }, action: {
+            webViewPresented.toggle()
+        })
+            .buttonStyle(PlainButtonStyle())
     }
 }
 
 struct CardReaderManualRowView_Previews: PreviewProvider {
     static var previews: some View {
-        CardReaderManualRowView(manual: Manual(id: 0, image: .cardReaderManualIcon, name: "empty", urlString: "empty"))
+        CardReaderManualRowView(manual: Manual(id: 0, image: .cardReaderManualIcon, name: "", urlString: ""))
     }
 }
 

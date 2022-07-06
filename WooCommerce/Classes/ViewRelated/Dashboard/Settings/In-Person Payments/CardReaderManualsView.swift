@@ -35,12 +35,3 @@ private extension CardReaderManualsView {
                                                         comment: "Navigation title at the top of the Card reader manuals screen")
     }
 }
-
-private extension CardReaderManualsView {
-    enum Constants {
-        static let iconSize: CGFloat = 16
-        static let imageSize: CGFloat = 64
-        static let imageSizeMultiplier: CGFloat = 0.2
-        static let textSizeMultiplier: CGFloat = 0.6
-    }
-}

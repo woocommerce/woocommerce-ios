@@ -483,13 +483,16 @@ extension EditableOrderViewModel {
         let shouldShowShippingTotal: Bool
         let shippingTotal: String
 
-        // We only support one(the first) shipping line
+        // We only support one (the first) shipping line
         let shippingMethodTitle: String
         let shippingMethodTotal: String
 
         let shouldShowFees: Bool
         let feesBaseAmountForPercentage: Decimal
         let feesTotal: String
+
+        // We only support one (the first) fee line
+        let feeLineTotal: String
 
         let taxesTotal: String
 
@@ -510,6 +513,7 @@ extension EditableOrderViewModel {
              shouldShowFees: Bool = false,
              feesBaseAmountForPercentage: Decimal = 0,
              feesTotal: String = "0",
+             feeLineTotal: String = "0",
              taxesTotal: String = "0",
              orderTotal: String = "0",
              isLoading: Bool = false,
@@ -525,6 +529,7 @@ extension EditableOrderViewModel {
             self.shouldShowFees = shouldShowFees
             self.feesBaseAmountForPercentage = feesBaseAmountForPercentage
             self.feesTotal = currencyFormatter.formatAmount(feesTotal) ?? "0.00"
+            self.feeLineTotal = currencyFormatter.formatAmount(feeLineTotal) ?? "0.00"
             self.taxesTotal = currencyFormatter.formatAmount(taxesTotal) ?? "0.00"
             self.orderTotal = currencyFormatter.formatAmount(orderTotal) ?? "0.00"
             self.isLoading = isLoading
@@ -535,7 +540,7 @@ extension EditableOrderViewModel {
                                                                       didSelectSave: saveShippingLineClosure)
             self.feeLineViewModel = FeeLineDetailsViewModel(isExistingFeeLine: shouldShowFees,
                                                             baseAmountForPercentage: feesBaseAmountForPercentage,
-                                                            feesTotal: self.feesTotal,
+                                                            feesTotal: feeLineTotal,
                                                             didSelectSave: saveFeeLineClosure)
         }
     }
@@ -710,6 +715,7 @@ private extension EditableOrderViewModel {
                                             shouldShowFees: order.fees.filter { $0.name != nil }.isNotEmpty,
                                             feesBaseAmountForPercentage: orderTotals.feesBaseAmountForPercentage as Decimal,
                                             feesTotal: orderTotals.feesTotal.stringValue,
+                                            feeLineTotal: order.fees.first?.total ?? "0",
                                             taxesTotal: order.totalTax.isNotEmpty ? order.totalTax : "0",
                                             orderTotal: order.total.isNotEmpty ? order.total : "0",
                                             isLoading: isDataSyncing && !showNonEditableIndicators,

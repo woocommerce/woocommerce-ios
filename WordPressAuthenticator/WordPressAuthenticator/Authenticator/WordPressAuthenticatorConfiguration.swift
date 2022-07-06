@@ -31,7 +31,7 @@ public struct WordPressAuthenticatorConfiguration {
 
     /// The URL of a webpage which has details about What is WordPress.com?.
     ///
-    /// Displayed in the WordPress.com login page.
+    /// Displayed in the WordPress.com login page. The button/link will not be displayed if this value is nil.
     ///
     let whatIsWPComURL: String?
 

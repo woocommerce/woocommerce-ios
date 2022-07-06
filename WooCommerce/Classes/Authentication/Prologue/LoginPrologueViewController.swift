@@ -9,16 +9,18 @@ final class LoginPrologueViewController: UIViewController {
 
     /// Background View, to be placed surrounding the bottom area.
     ///
-    @IBOutlet var backgroundView: UIView!
+    @IBOutlet private var backgroundView: UIView!
 
     /// Container View: Holds up the Button + bottom legend.
     ///
-    @IBOutlet var containerView: UIView!
+    @IBOutlet private var containerView: UIView!
 
     /// Curved Rectangle: Background shape with curved top edge
     ///
-    @IBOutlet weak var curvedRectangle: UIImageView!
+    @IBOutlet private weak var curvedRectangle: UIImageView!
 
+    /// Button for users who are new to WooCommerce to learn more about WooCommerce.
+    @IBOutlet private weak var newToWooCommerceButton: UIButton!
 
     // MARK: - Overridden Properties
 
@@ -37,6 +39,7 @@ final class LoginPrologueViewController: UIViewController {
         setupContainerView()
         setupCurvedRectangle()
         setupCarousel()
+        setupNewToWooCommerceButton()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -76,6 +79,38 @@ private extension LoginPrologueViewController {
 
         addChild(carousel)
         view.addSubview(carousel.view)
-        view.pinSubviewToAllEdges(carousel.view)
+        NSLayoutConstraint.activate([
+            carousel.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            carousel.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            carousel.view.topAnchor.constraint(equalTo: view.topAnchor),
+            carousel.view.bottomAnchor.constraint(equalTo: newToWooCommerceButton.topAnchor),
+        ])
+    }
+
+    func setupNewToWooCommerceButton() {
+        newToWooCommerceButton.setTitle(Localization.newToWooCommerce, for: .normal)
+        newToWooCommerceButton.applyLinkButtonStyle()
+        newToWooCommerceButton.titleLabel?.numberOfLines = 0
+        newToWooCommerceButton.on(.touchUpInside) { _ in
+            // TODO: 7231 - analytics
+
+            guard let url = URL(string: Constants.newToWooCommerceURL) else {
+                return assertionFailure("Cannot generate URL.")
+            }
+
+            WebviewHelper.launch(url, with: self)
+        }
+    }
+}
+
+private extension LoginPrologueViewController {
+    enum Constants {
+        // TODO: 7231 - update URL if needed
+        static let newToWooCommerceURL = "https://wordpress.com/support/introduction-to-woocommerce"
+    }
+
+    enum Localization {
+        static let newToWooCommerce = NSLocalizedString("New to WooCommerce?",
+                                                        comment: "Title of button in the login prologue screen for users who are new to WooCommerce.")
     }
 }

@@ -32,11 +32,12 @@ struct PaymentMethodsView: View {
                 .subheadlineStyle()
                 .padding()
                 .padding(.horizontal, insets: safeAreaInsets)
+                .accessibilityIdentifier(Accessibility.headerLabel)
 
             Divider()
 
             Group {
-                MethodRow(icon: .priceImage, title: Localization.cash) {
+                MethodRow(icon: .priceImage, title: Localization.cash, accessibilityID: Accessibility.cashMethod) {
                     showingCashAlert = true
                     viewModel.trackCollectByCash()
                 }
@@ -44,7 +45,7 @@ struct PaymentMethodsView: View {
                 if viewModel.showPayWithCardRow {
                     Divider()
 
-                    MethodRow(icon: .creditCardImage, title: Localization.card) {
+                    MethodRow(icon: .creditCardImage, title: Localization.card, accessibilityID: Accessibility.cardMethod) {
                         viewModel.collectPayment(on: rootViewController, onSuccess: dismiss)
                     }
                 }
@@ -52,7 +53,7 @@ struct PaymentMethodsView: View {
                 if viewModel.showPaymentLinkRow {
                     Divider()
 
-                    MethodRow(icon: .linkImage, title: Localization.link) {
+                    MethodRow(icon: .linkImage, title: Localization.link, accessibilityID: Accessibility.paymentLink) {
                         sharingPaymentLink = true
                         viewModel.trackCollectByPaymentLink()
                     }
@@ -110,6 +111,10 @@ private struct MethodRow: View {
     ///
     let title: String
 
+    /// Accessibility ID for the row
+    ///
+    var accessibilityID: String = ""
+
     /// Action when the row is selected
     ///
     let action: () -> ()
@@ -142,6 +147,7 @@ private struct MethodRow: View {
             }
             .padding(.vertical, PaymentMethodsView.Layout.verticalPadding)
             .padding(.horizontal, insets: safeAreaInsets)
+            .accessibilityIdentifier(accessibilityID)
         }
     }
 }
@@ -165,6 +171,13 @@ extension PaymentMethodsView {
         static func iconWidthHeight(scale: CGFloat) -> CGFloat {
             24 * scale
         }
+    }
+
+    enum Accessibility {
+        static let headerLabel = "payment-methods-header-label"
+        static let cashMethod = "payment-methods-view-cash-row"
+        static let cardMethod = "payment-methods-view-card-row"
+        static let paymentLink = "payment-methods-view-payment-link-row"
     }
 }
 

@@ -45,18 +45,19 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     var cardReadersSection: Section? {
-        var rows = [
-            .orderCardReader,
-            .manageCardReader,
-        ] + readerManualRows()
-
+        let rows: [Row]
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.consolidatedCardReaderManuals) {
-            // While not ready to be enabled, hide the individual rows, and show the consolidated version instead
-            let cardReaderManualRow = Row.cardReaderManuals
-            rows.removeLast(readerManualRows().count)
-            rows.append(cardReaderManualRow)
+            rows = [
+                .orderCardReader,
+                .manageCardReader,
+                .cardReaderManuals
+            ]
+        } else {
+            rows = [
+                .orderCardReader,
+                .manageCardReader
+            ] + readerManualRows()
         }
-
         return Section(header: Localization.cardReaderSectionTitle, rows: rows)
     }
 

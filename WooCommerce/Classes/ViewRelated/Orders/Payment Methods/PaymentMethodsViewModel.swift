@@ -44,6 +44,18 @@ final class PaymentMethodsViewModel: ObservableObject {
         paymentLink != nil
     }
 
+    /// Defines if the Card Reader upsell banner should be shown based on country eligibility
+    ///
+    var showUpsellCardReaderFeatureBanner: Bool {
+        return cardPresentPaymentsConfiguration.isSupportedCountry
+    }
+
+    /// Returns the URL where the merchant can purchase a card reader based on store country code
+    ///
+    var purchaseCardReaderUrl: URL {
+        cardPresentPaymentsConfiguration.purchaseCardReaderUrl()
+    }
+
     /// Store's ID.
     ///
     private let siteID: Int64

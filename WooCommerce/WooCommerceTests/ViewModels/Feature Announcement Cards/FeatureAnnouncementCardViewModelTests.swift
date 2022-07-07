@@ -1,28 +1,94 @@
 import XCTest
+@testable import WooCommerce
 
-class FeatureAnnouncementCardViewModelTests: XCTestCase {
+private typealias FeatureCardEvent = WooAnalyticsEvent.FeatureCard
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+final class FeatureAnnouncementCardViewModelTests: XCTestCase {
+
+    var sut: FeatureAnnouncementCardViewModel!
+
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
+    override func setUp() {
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+
+        let config = FeatureAnnouncementCardViewModel.Configuration(
+            source: .paymentMethods,
+            campaign: .upsellCardReaders,
+            title: "Buy a reader",
+            message: "With a card reader, you can accept card payments",
+            buttonTitle: "Buy now",
+            image: .paymentsFeatureBannerImage)
+
+        sut = FeatureAnnouncementCardViewModel(
+            analytics: analytics,
+            configuration: config)
+
+        super.setUp()
     }
 
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    func test_onAppear_logs_shown_analytics_event() {
+        // Given
+
+        // When
+        sut.onAppear()
+
+        // Then
+        let expectedSource = FeatureCardEvent.Source.paymentMethods
+        let expectedCampaign = FeatureCardEvent.Campaign.upsellCardReaders
+        let expectedEvent = WooAnalyticsEvent.FeatureCard.shown(source: expectedSource, campaign: expectedCampaign)
+
+        XCTAssert(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent.statName.rawValue
+        }))
+
+        verifyUpsellCardProperties(expectedSource: expectedSource, expectedCampaign: expectedCampaign)
     }
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+    func test_dismissTapped_logs_dismissed_analytics_event() {
+        // Given
+
+        // When
+        sut.dismissedTapped()
+
+        // Then
+        let expectedSource = FeatureCardEvent.Source.paymentMethods
+        let expectedCampaign = FeatureCardEvent.Campaign.upsellCardReaders
+        let expectedEvent = WooAnalyticsEvent.FeatureCard.dismissed(source: expectedSource, campaign: expectedCampaign)
+
+        XCTAssert(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent.statName.rawValue
+        }))
+
+        verifyUpsellCardProperties(expectedSource: expectedSource, expectedCampaign: expectedCampaign)
     }
 
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+    func test_ctaTapped_logs_analytics_event() {
+        // Given
+
+        // When
+        sut.ctaTapped()
+
+        // Then
+        let expectedSource = FeatureCardEvent.Source.paymentMethods
+        let expectedCampaign = FeatureCardEvent.Campaign.upsellCardReaders
+        let expectedEvent = WooAnalyticsEvent.FeatureCard.ctaTapped(source: expectedSource, campaign: expectedCampaign)
+
+        XCTAssert(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent.statName.rawValue
+        }))
+
+        verifyUpsellCardProperties(expectedSource: expectedSource, expectedCampaign: expectedCampaign)
+    }
+
+    private func verifyUpsellCardProperties(
+        expectedSource: FeatureCardEvent.Source,
+        expectedCampaign: FeatureCardEvent.Campaign) {
+        guard let actualProperties = analyticsProvider.receivedProperties.first(where: { $0.keys.contains("source")
+        }) else {
+            return XCTFail("Expected properties were not logged")
         }
-    }
 
+        assertEqual(expectedSource.rawValue, actualProperties["source"] as? String)
+        assertEqual(expectedCampaign.rawValue, actualProperties["campaign"] as? String)
+    }
 }

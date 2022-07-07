@@ -1202,6 +1202,46 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(migratedOrder.value(forKey: "needsPayment") as? Bool, false)
         XCTAssertEqual(migratedOrder.value(forKey: "needsProcessing") as? Bool, false)
     }
+
+    func test_migrating_from_70_to_71_adds_custom_fields_property_to_order() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 70")
+        let sourceContext = sourceContainer.viewContext
+
+        let order = insertOrder(to: sourceContext)
+        try sourceContext.save()
+
+        // `customFields` should not be present before migration
+        XCTAssertNil(order.entity.relationshipsByName["customFields"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 71")
+        let targetContext = targetContainer.viewContext
+
+        // Confidence check
+        XCTAssertEqual(try targetContext.count(entityName: "Order"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "OrderMetaData"), 0)
+
+        let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
+
+        // `customFields` should be present in `migratedOrder`
+        XCTAssertNotNil(migratedOrder.entity.relationshipsByName["customFields"])
+
+        // Test adding custom fields to a migrated `Order`.
+        let customField = insertOrderMetaData(to: targetContext)
+        migratedOrder.mutableSetValue(forKey: "customFields").add(customField)
+
+        XCTAssertNoThrow(try targetContext.save())
+
+        // Confidence check
+        XCTAssertEqual(try targetContext.count(entityName: "OrderMetaData"), 1)
+
+        // The relationship between Order and OrderMetaData should be updated.
+        XCTAssertEqual(migratedOrder.value(forKey: "customFields") as? Set<NSManagedObject>, [customField])
+
+        // The OrderMetaData.order inverse relationship should be updated.
+        XCTAssertEqual(customField.value(forKey: "order") as? NSManagedObject, migratedOrder)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -1708,6 +1748,15 @@ private extension MigrationTests {
             "brand": "visa",
             "last4": "2096",
             "funding": "debit"
+        ])
+    }
+
+    @discardableResult
+    func insertOrderMetaData(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "OrderMetaData", properties: [
+            "metadataID": 18148,
+            "key": "Viewed Currency",
+            "value": "USD"
         ])
     }
 }

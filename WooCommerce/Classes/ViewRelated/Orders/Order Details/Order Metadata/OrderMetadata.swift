@@ -1,11 +1,3 @@
-//
-//  OrderMetadata.swift
-//  WooCommerce
-//
-//  Created by Thomaz F B Cortez on 06/07/22.
-//  Copyright © 2022 Automattic. All rights reserved.
-//
-
 import SwiftUI
 
 struct OrderMetadata: View {

@@ -65,9 +65,9 @@ struct PaymentMethodsView: View {
                 .background(Color(.listForeground))
 
                 if viewModel.showUpsellCardReaderFeatureBanner {
-                    FeatureAnnouncementView(title: Localization.featureAnnouncementTitle,
-                                            message: Localization.featureAnnouncementMessage,
-                                            buttonTitle: Localization.featureAnnouncementButtonTitle,
+                    FeatureAnnouncementView(title: Localization.purchaseCardReaderAnnouncementTitle,
+                                            message: Localization.purchaseCardReaderAnnouncementMessage,
+                                            buttonTitle: Localization.purchaseCardReaderAnnouncementButtonTitle,
                                             image: .paymentsFeatureBannerImage,
                                             dismiss: nil,
                                             callToAction: {
@@ -172,11 +172,11 @@ extension PaymentMethodsView {
         static let markAsPaidTitle = NSLocalizedString("Mark as Paid?", comment: "Alert title when selecting the cash payment method")
         static let markAsPaidButton = NSLocalizedString("Mark as Paid", comment: "Alert button when selecting the cash payment method")
         static let cancelTitle = NSLocalizedString("Cancel", comment: "Title for the button to cancel the payment methods screen")
-        static let featureAnnouncementTitle = NSLocalizedString("Accept payments easily",
+        static let purchaseCardReaderAnnouncementTitle = NSLocalizedString("Accept payments easily",
                     comment: "Title for the feature announcement banner intended to upsell card readers")
-        static let featureAnnouncementMessage = NSLocalizedString("Get ready to accept payments with a card reader.",
+        static let purchaseCardReaderAnnouncementMessage = NSLocalizedString("Get ready to accept payments with a card reader.",
                     comment: "Message for the feature announcement banner intended to upsell card readers")
-        static let featureAnnouncementButtonTitle = NSLocalizedString("Purchase Card Reader",
+        static let purchaseCardReaderAnnouncementButtonTitle = NSLocalizedString("Purchase Card Reader",
                     comment: "Title for the button on the feature announcement banner intended to upsell card readers")
     }
 

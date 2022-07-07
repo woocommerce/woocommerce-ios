@@ -65,7 +65,7 @@ struct PaymentMethodsView: View {
                 .background(Color(.listForeground))
 
                 if viewModel.showUpsellCardReaderFeatureBanner {
-                    FeatureAnnouncementView(title: Localization.purchaseCardReaderAnnouncementTitle,
+                    FeatureAnnouncementCardView(title: Localization.purchaseCardReaderAnnouncementTitle,
                                             message: Localization.purchaseCardReaderAnnouncementMessage,
                                             buttonTitle: Localization.purchaseCardReaderAnnouncementButtonTitle,
                                             image: .paymentsFeatureBannerImage,

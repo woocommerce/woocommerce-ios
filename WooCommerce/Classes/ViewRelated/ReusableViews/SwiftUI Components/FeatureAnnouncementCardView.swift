@@ -1,11 +1,11 @@
 import SwiftUI
 
-struct FeatureAnnouncementView: View {
+struct FeatureAnnouncementCardView: View {
     let title: String
     let message: String
     let buttonTitle: String
     let image: UIImage
-    private let viewModel: FeatureAnnouncementViewModel
+    private let viewModel: FeatureAnnouncementCardViewModel
 
     let dismiss: (() -> Void)?
     let callToAction: (() -> Void)
@@ -14,7 +14,7 @@ struct FeatureAnnouncementView: View {
          message: String,
          buttonTitle: String,
          image: UIImage,
-         viewModel: FeatureAnnouncementViewModel,
+         viewModel: FeatureAnnouncementCardViewModel,
          dismiss: (() -> Void)? = nil,
          callToAction: @escaping (() -> Void)) {
         self.title = title
@@ -74,7 +74,7 @@ struct FeatureAnnouncementView: View {
     }
 }
 
-extension FeatureAnnouncementView {
+extension FeatureAnnouncementCardView {
     enum Layout {
         static let padding: CGFloat = 16
         static let bottomButtonPadding: CGFloat = 23.5

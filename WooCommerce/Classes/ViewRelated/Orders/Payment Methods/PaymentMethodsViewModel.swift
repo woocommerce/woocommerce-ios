@@ -105,8 +105,8 @@ final class PaymentMethodsViewModel: ObservableObject {
 
     private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
-    var cardUpsellAnnouncementViewModel: FeatureAnnouncementViewModel {
-        FeatureAnnouncementViewModel(analytics: analytics,
+    var cardUpsellAnnouncementViewModel: FeatureAnnouncementCardViewModel {
+        FeatureAnnouncementCardViewModel(analytics: analytics,
                                      source: .paymentMethods,
                                      campaign: .upsellCardReaders)
     }

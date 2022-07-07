@@ -2,7 +2,7 @@ import Foundation
 
 private typealias FeatureCardEvent = WooAnalyticsEvent.FeatureCard
 
-struct FeatureAnnouncementViewModel {
+struct FeatureAnnouncementCardViewModel {
     private let analytics: Analytics
     private let source: FeatureCardEvent.Source
     private let campaign: FeatureCardEvent.Campaign

@@ -189,6 +189,36 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         let storageOrderItem = try XCTUnwrap(viewStorage.loadOrderItem(siteID: 3, orderID: 98, itemID: 76))
         XCTAssertEqual(storageOrderItem.toReadOnly(), orderItem)
     }
+
+    func test_it_persists_order_custom_field_in_storage() throws {
+        // Given
+        let customField = OrderMetaData(metadataID: 1, key: "Key", value: "Value")
+        let order = makeOrder().copy(siteID: 3, customFields: [customField])
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+
+        // When
+        useCase.upsert([order])
+
+        // Then
+        let storageCustomField = try XCTUnwrap(viewStorage.loadOrderMetaData(siteID: 3, metadataID: 1))
+        XCTAssertEqual(storageCustomField.toReadOnly(), customField)
+    }
+
+    func test_it_replaces_existing_order_custom_field_in_storage() throws {
+        // Given
+        let originalCustomField = OrderMetaData(metadataID: 1, key: "Key", value: "Value")
+        let order = makeOrder().copy(siteID: 3, customFields: [originalCustomField])
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+        useCase.upsert([order])
+
+        // When
+        let customField = OrderMetaData(metadataID: 1, key: "Key", value: "New Value")
+        useCase.upsert([order.copy(customFields: [customField])])
+
+        // Then
+        let storageCustomField = try XCTUnwrap(viewStorage.loadOrderMetaData(siteID: 3, metadataID: 1))
+        XCTAssertEqual(storageCustomField.toReadOnly(), customField)
+    }
 }
 
 private extension OrdersUpsertUseCaseTests {

@@ -27,9 +27,13 @@ class GetStartedViewController: LoginViewController {
     private var shouldChangeVoiceOverFocus: Bool = false
 
     // Submit button displayed in the table footer.
-    private let continueButton: NUXButton = {
+    private lazy var continueButton: NUXButton = {
         let button = NUXButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
         button.isPrimary = true
+        button.isEnabled = false
+        button.addTarget(self, action: #selector(handleSubmitButtonTapped(_:)), for: .touchUpInside)
+        button.accessibilityIdentifier = "Get Started Email Continue Button"
 
         let title = WordPressAuthenticator.shared.displayStrings.continueButtonTitle
         button.setTitle(title, for: .normal)
@@ -53,7 +57,7 @@ class GetStartedViewController: LoginViewController {
         setupTable()
         registerTableViewCells()
         loadRows()
-        setupContinueButton()
+        setupTableFooterView()
         configureDivider()
         configureSocialButtons()
     }
@@ -85,6 +89,11 @@ class GetStartedViewController: LoginViewController {
         errorMessage = nil
         hiddenPasswordField?.text = nil
         hiddenPasswordField?.isAccessibilityElement = false
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.updateFooterHeight()
     }
 
     // MARK: - Overrides
@@ -160,15 +169,30 @@ private extension GetStartedViewController {
         setTableViewMargins(forWidth: view.frame.width)
     }
 
-    func setupContinueButton() {
-        let tableFooter = UIView(frame: Constants.footerFrame)
-        tableFooter.addSubview(continueButton)
-        tableFooter.pinSubviewToSafeArea(continueButton, insets: Constants.footerButtonInsets)
-        continueButton.translatesAutoresizingMaskIntoConstraints = false
-        continueButton.isEnabled = false
-        continueButton.addTarget(self, action: #selector(handleSubmitButtonTapped(_:)), for: .touchUpInside)
-        continueButton.accessibilityIdentifier = "Get Started Email Continue Button"
-        tableView.tableFooterView = tableFooter
+    func setupTableFooterView() {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.alignment = .fill
+        stackView.spacing = Constants.FooterStackView.spacing
+        stackView.layoutMargins = Constants.FooterStackView.layoutMargins
+        stackView.isLayoutMarginsRelativeArrangement = true
+
+        stackView.addArrangedSubview(continueButton)
+
+        if WordPressAuthenticator.shared.configuration.whatIsWPComURL != nil {
+            let stackViewWithCenterAlignment = UIStackView()
+            stackViewWithCenterAlignment.axis = .vertical
+            stackViewWithCenterAlignment.alignment = .center
+
+            let button = WPStyleGuide.whatIsWPComButton()
+            button.addTarget(self, action: #selector(whatIsWPComButtonTapped(_:)), for: .touchUpInside)
+            stackViewWithCenterAlignment.addArrangedSubview(button)
+
+            stackView.addArrangedSubview(stackViewWithCenterAlignment)
+        }
+
+        tableView.tableFooterView = stackView
+        tableView.updateFooterHeight()
     }
 
     /// Style the "OR" divider.
@@ -188,6 +212,17 @@ private extension GetStartedViewController {
     @IBAction func handleSubmitButtonTapped(_ sender: UIButton) {
         tracker.track(click: .submit)
         validateForm()
+    }
+
+    // MARK: - What is WordPress.com Button Action
+
+    @IBAction func whatIsWPComButtonTapped(_ sender: UIButton) {
+        tracker.track(click: .whatIsWPCom)
+        guard let whatIsWPCom = WordPressAuthenticator.shared.configuration.whatIsWPComURL,
+              let url = URL(string: whatIsWPCom) else {
+            return
+        }
+        UIApplication.shared.open(url)
     }
 
     // MARK: - Hidden Password Field Action
@@ -318,8 +353,10 @@ private extension GetStartedViewController {
     }
 
     enum Constants {
-        static let footerFrame = CGRect(x: 0, y: 0, width: 0, height: 44)
-        static let footerButtonInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        enum FooterStackView {
+            static let spacing = 16.0
+            static let layoutMargins = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        }
     }
 
 }

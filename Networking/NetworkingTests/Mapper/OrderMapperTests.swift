@@ -327,6 +327,26 @@ final class OrderMapperTests: XCTestCase {
 
         XCTAssertEqual(order.chargeID, "ch_3KMuym2EdyGr1FMV0uQZeFqm")
     }
+
+    func test_order_custom_fields_correctly_remove_internal_metadata() throws {
+        // Given
+        let order = try XCTUnwrap(mapLoadFullyRefundedOrderResponse())
+
+        // Then
+        XCTAssertEqual(order.customFields.count, 4)
+    }
+
+    func test_order_custom_fields_are_parsed_correctly() throws {
+        // Given
+        let order = try XCTUnwrap(mapLoadFullyRefundedOrderResponse())
+
+        // When
+        let customField = try XCTUnwrap(order.customFields.first)
+
+        // Then
+        let expectedCustomField = OrderMetaData(key: "Viewed Currency", value: "USD")
+        XCTAssertEqual(customField, expectedCustomField)
+    }
 }
 
 

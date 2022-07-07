@@ -10,6 +10,9 @@ final class MainTabBarControllerTests: XCTestCase {
     // with its `rootViewController` set to the view controller.
     private let window = UIWindow(frame: UIScreen.main.bounds)
 
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
     override func setUp() {
         super.setUp()
         let mockAuthenticationManager = MockAuthenticationManager()
@@ -17,12 +20,18 @@ final class MainTabBarControllerTests: XCTestCase {
         stores = DefaultStoresManager.testingInstance
         ServiceLocator.setStores(stores)
 
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+
         window.makeKeyAndVisible()
     }
 
     override func tearDown() {
         window.resignKey()
         window.rootViewController = nil
+
+        analytics = nil
+        analyticsProvider = nil
 
         SessionManager.testingInstance.reset()
         stores = nil
@@ -431,6 +440,100 @@ final class MainTabBarControllerTests: XCTestCase {
 
         // Then
         XCTAssertEqual(noticePresenter.queuedNotices.count, 0)
+    }
+
+    // MARK: - Analytics
+
+    func test_failureUploadingImageNotice_events_are_tracked_when_showing_and_tapping_product_image_upload_error_notice() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isBackgroundImageUploadEnabled: true)
+        let noticePresenter = MockNoticePresenter()
+        let statusUpdates = PassthroughSubject<ProductImageUploadErrorInfo, Never>()
+        let productImageUploader = MockProductImageUploader(errors: statusUpdates.eraseToAnyPublisher())
+
+        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
+            return MainTabBarController(coder: coder,
+                                        featureFlagService: featureFlagService,
+                                        noticePresenter: noticePresenter,
+                                        productImageUploader: productImageUploader,
+                                        analytics: self.analytics)
+        }) else {
+            return
+        }
+        window.rootViewController = tabBarController
+
+        // Trigger `viewDidLoad`
+        XCTAssertNotNil(tabBarController.view)
+
+        // When
+        let error = NSError(domain: "", code: 8)
+        statusUpdates.send(.init(siteID: 134,
+                                 productOrVariationID: .product(id: 606),
+                                 productImageStatuses: [],
+                                 error: .failedUploadingImage(error: error)))
+        let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
+        notice.actionHandler?()
+
+        let productsNavigationController = try XCTUnwrap(tabBarController
+            .tabNavigationController(tab: .products,
+                                     isHubMenuFeatureFlagOn: featureFlagService.isFeatureFlagEnabled(.hubMenu)))
+        waitUntil {
+            productsNavigationController.presentedViewController != nil
+        }
+
+        // Then
+        assertEqual([
+            WooAnalyticsStat.failureUploadingImageNoticeShown.rawValue,
+            WooAnalyticsStat.failureUploadingImageNoticeTapped.rawValue,
+        ], analyticsProvider.receivedEvents)
+        assertEqual("product", analyticsProvider.receivedProperties[safe: 0]?["type"] as? String)
+        assertEqual("product", analyticsProvider.receivedProperties[safe: 1]?["type"] as? String)
+    }
+
+    func test_failureSavingProductAfterImageUploadNotice_events_are_tracked_when_showing_and_tapping_product_saving_error_notice() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isBackgroundImageUploadEnabled: true)
+        let noticePresenter = MockNoticePresenter()
+        let statusUpdates = PassthroughSubject<ProductImageUploadErrorInfo, Never>()
+        let productImageUploader = MockProductImageUploader(errors: statusUpdates.eraseToAnyPublisher())
+
+        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
+            return MainTabBarController(coder: coder,
+                                        featureFlagService: featureFlagService,
+                                        noticePresenter: noticePresenter,
+                                        productImageUploader: productImageUploader,
+                                        analytics: self.analytics)
+        }) else {
+            return
+        }
+        window.rootViewController = tabBarController
+
+        // Trigger `viewDidLoad`
+        XCTAssertNotNil(tabBarController.view)
+
+        // When
+        let error = NSError(domain: "", code: 8)
+        statusUpdates.send(.init(siteID: 134,
+                                 productOrVariationID: .product(id: 606),
+                                 productImageStatuses: [],
+                                 error: .failedSavingProductAfterImageUpload(error: error)))
+        let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
+        notice.actionHandler?()
+
+        let productsNavigationController = try XCTUnwrap(tabBarController
+            .tabNavigationController(tab: .products,
+                                     isHubMenuFeatureFlagOn: featureFlagService.isFeatureFlagEnabled(.hubMenu)))
+        waitUntil {
+            productsNavigationController.presentedViewController != nil
+        }
+
+        // Then
+        assertEqual([
+            WooAnalyticsStat.failureSavingProductAfterImageUploadNoticeShown.rawValue,
+            WooAnalyticsStat.failureSavingProductAfterImageUploadNoticeTapped.rawValue,
+        ], analyticsProvider.receivedEvents)
+        assertEqual("product", analyticsProvider.receivedProperties[safe: 0]?["type"] as? String)
+        assertEqual("product", analyticsProvider.receivedProperties[safe: 1]?["type"] as? String)
     }
 }
 

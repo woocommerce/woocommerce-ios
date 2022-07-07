@@ -425,6 +425,7 @@
 		035C6DEB273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035C6DEA273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift */; };
 		035F2308275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035F2307275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift */; };
 		036F6EA6281847D5006D84F8 /* PaymentCaptureOrchestratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036F6EA5281847D5006D84F8 /* PaymentCaptureOrchestratorTests.swift */; };
+		0371C3682875E47B00277E2C /* FeatureAnnouncementViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0371C3672875E47B00277E2C /* FeatureAnnouncementViewModel.swift */; };
 		0375799928201F750083F2E1 /* CardPresentPaymentsReadinessUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0375799828201F750083F2E1 /* CardPresentPaymentsReadinessUseCase.swift */; };
 		0375799B28227EDE0083F2E1 /* CardPresentPaymentsOnboardingPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0375799A28227EDE0083F2E1 /* CardPresentPaymentsOnboardingPresenter.swift */; };
 		0375799D2822F9040083F2E1 /* MockCardPresentPaymentsOnboardingPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0375799C2822F9040083F2E1 /* MockCardPresentPaymentsOnboardingPresenter.swift */; };
@@ -2216,6 +2217,7 @@
 		035C6DEA273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareUpdateTypeProperty.swift; sourceTree = "<group>"; };
 		035F2307275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalConnectingFailedUpdatePostalCode.swift; sourceTree = "<group>"; };
 		036F6EA5281847D5006D84F8 /* PaymentCaptureOrchestratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentCaptureOrchestratorTests.swift; sourceTree = "<group>"; };
+		0371C3672875E47B00277E2C /* FeatureAnnouncementViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureAnnouncementViewModel.swift; sourceTree = "<group>"; };
 		0375799828201F750083F2E1 /* CardPresentPaymentsReadinessUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsReadinessUseCase.swift; sourceTree = "<group>"; };
 		0375799A28227EDE0083F2E1 /* CardPresentPaymentsOnboardingPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsOnboardingPresenter.swift; sourceTree = "<group>"; };
 		0375799C2822F9040083F2E1 /* MockCardPresentPaymentsOnboardingPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCardPresentPaymentsOnboardingPresenter.swift; sourceTree = "<group>"; };
@@ -5568,6 +5570,7 @@
 				02B2829127C4808D004A332A /* InfiniteScrollIndicator.swift */,
 				DE34771227F174C8009CA300 /* StatusView.swift */,
 				B9E4364B287587D300883CFA /* FeatureAnnouncementView.swift */,
+				0371C3672875E47B00277E2C /* FeatureAnnouncementViewModel.swift */,
 				B9E4364D287589E200883CFA /* NewBadgeView.swift */,
 			);
 			path = "SwiftUI Components";
@@ -7208,7 +7211,6 @@
 				DEC51B05276B3F3C009F3DF4 /* Int64+Helpers.swift */,
 				02DE5CA8279F857D007CBEF3 /* Double+Rounding.swift */,
 				02645D8727BA2E820065DC68 /* NSAttributedString+Attributes.swift */,
-				B9B6DEEE283F8B9F00901FB7 /* Site+PluginsURL.swift */,
 				450C6EE9286F4334002DB168 /* SitePlugin+Woo.swift */,
 				B9B6DEEE283F8B9F00901FB7 /* Site+URL.swift */,
 				021DD44C286A3A8D004F0468 /* UIViewController+Navigation.swift */,
@@ -9695,6 +9697,7 @@
 				021AEF9E2407F55C00029D28 /* PHAssetImageLoader.swift in Sources */,
 				DECE13FB27993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.swift in Sources */,
 				26E0AE1926335AA900A5EB3B /* Survey.swift in Sources */,
+				0371C3682875E47B00277E2C /* FeatureAnnouncementViewModel.swift in Sources */,
 				09EA565527C8ACEE00407D40 /* BulkUpdateViewController.swift in Sources */,
 				2602A64627BDBEBA00B347F1 /* ProductInputTransformer.swift in Sources */,
 				DE74F2A327E41D650002FE59 /* EnableAnalyticsViewModel.swift in Sources */,

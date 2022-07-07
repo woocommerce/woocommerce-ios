@@ -69,6 +69,7 @@ struct PaymentMethodsView: View {
                                             message: Localization.purchaseCardReaderAnnouncementMessage,
                                             buttonTitle: Localization.purchaseCardReaderAnnouncementButtonTitle,
                                             image: .paymentsFeatureBannerImage,
+                                            viewModel: viewModel.cardUpsellAnnouncementViewModel,
                                             dismiss: nil,
                                             callToAction: {
                         showingPurchaseCardReaderView = true

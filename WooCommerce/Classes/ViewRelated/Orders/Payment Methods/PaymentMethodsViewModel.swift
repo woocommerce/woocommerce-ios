@@ -105,6 +105,12 @@ final class PaymentMethodsViewModel: ObservableObject {
 
     private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
+    var cardUpsellAnnouncementViewModel: FeatureAnnouncementViewModel {
+        FeatureAnnouncementViewModel(analytics: analytics,
+                                     source: .paymentMethods,
+                                     campaign: .upsellCardReaders)
+    }
+
     struct Dependencies {
         let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never>
         let cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting

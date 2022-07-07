@@ -5,6 +5,7 @@ struct FeatureAnnouncementView: View {
     let message: String
     let buttonTitle: String
     let image: UIImage
+    private let viewModel: FeatureAnnouncementViewModel
 
     let dismiss: (() -> Void)?
     let callToAction: (() -> Void)
@@ -13,12 +14,14 @@ struct FeatureAnnouncementView: View {
          message: String,
          buttonTitle: String,
          image: UIImage,
+         viewModel: FeatureAnnouncementViewModel,
          dismiss: (() -> Void)? = nil,
          callToAction: @escaping (() -> Void)) {
         self.title = title
         self.message = message
         self.buttonTitle = buttonTitle
         self.image = image
+        self.viewModel = viewModel
         self.dismiss = dismiss
         self.callToAction = callToAction
     }
@@ -30,7 +33,10 @@ struct FeatureAnnouncementView: View {
                     .padding(.leading, Layout.padding)
                 Spacer()
                 if let dismiss = dismiss {
-                    Button(action: dismiss) {
+                    Button(action: {
+                        viewModel.dismissedTapped()
+                        dismiss()
+                    }) {
                         Image(systemName: "xmark")
                             .foregroundColor(Color(.withColorStudio(.gray)))
                     }.padding(.trailing, Layout.padding)
@@ -41,16 +47,19 @@ struct FeatureAnnouncementView: View {
             HStack(alignment: .bottom, spacing: 0) {
                 VStack(alignment: .leading, spacing: 0) {
                     VStack(alignment: .leading, spacing: 0) {
-                    Text(title)
-                        .headlineStyle()
-                        .padding(.bottom, Layout.smallSpacing)
-                    Text(message)
-                        .bodyStyle()
-                        .padding(.bottom, Layout.largeSpacing)
+                        Text(title)
+                            .headlineStyle()
+                            .padding(.bottom, Layout.smallSpacing)
+                        Text(message)
+                            .bodyStyle()
+                            .padding(.bottom, Layout.largeSpacing)
                     }
                     .accessibilityElement(children: .combine)
-                    Button(buttonTitle, action: callToAction)
-                        .padding(.bottom, Layout.bottomButtonPadding)
+                    Button(buttonTitle) {
+                        viewModel.ctaTapped()
+                        callToAction()
+                    }
+                    .padding(.bottom, Layout.bottomButtonPadding)
                 }
                 Spacer()
                 Image(uiImage: image)
@@ -59,6 +68,9 @@ struct FeatureAnnouncementView: View {
             .padding(.top, Layout.smallSpacing)
             .padding(.leading, Layout.padding)
         }.background(Color(.listForeground))
+            .onAppear {
+                viewModel.onAppear()
+            }
     }
 }
 

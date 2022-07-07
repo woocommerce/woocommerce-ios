@@ -1,26 +1,14 @@
 import SwiftUI
 
 struct FeatureAnnouncementCardView: View {
-    let title: String
-    let message: String
-    let buttonTitle: String
-    let image: UIImage
     private let viewModel: FeatureAnnouncementCardViewModel
 
     let dismiss: (() -> Void)?
     let callToAction: (() -> Void)
 
-    init(title: String,
-         message: String,
-         buttonTitle: String,
-         image: UIImage,
-         viewModel: FeatureAnnouncementCardViewModel,
+    init(viewModel: FeatureAnnouncementCardViewModel,
          dismiss: (() -> Void)? = nil,
          callToAction: @escaping (() -> Void)) {
-        self.title = title
-        self.message = message
-        self.buttonTitle = buttonTitle
-        self.image = image
         self.viewModel = viewModel
         self.dismiss = dismiss
         self.callToAction = callToAction
@@ -47,22 +35,22 @@ struct FeatureAnnouncementCardView: View {
             HStack(alignment: .bottom, spacing: 0) {
                 VStack(alignment: .leading, spacing: 0) {
                     VStack(alignment: .leading, spacing: 0) {
-                        Text(title)
+                        Text(viewModel.title)
                             .headlineStyle()
                             .padding(.bottom, Layout.smallSpacing)
-                        Text(message)
+                        Text(viewModel.message)
                             .bodyStyle()
                             .padding(.bottom, Layout.largeSpacing)
                     }
                     .accessibilityElement(children: .combine)
-                    Button(buttonTitle) {
+                    Button(viewModel.buttonTitle) {
                         viewModel.ctaTapped()
                         callToAction()
                     }
                     .padding(.bottom, Layout.bottomButtonPadding)
                 }
                 Spacer()
-                Image(uiImage: image)
+                Image(uiImage: viewModel.image)
                     .accessibilityHidden(true)
             }
             .padding(.top, Layout.smallSpacing)

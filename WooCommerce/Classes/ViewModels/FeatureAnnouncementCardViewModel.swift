@@ -1,18 +1,32 @@
 import Foundation
+import UIKit
 
 private typealias FeatureCardEvent = WooAnalyticsEvent.FeatureCard
 
 struct FeatureAnnouncementCardViewModel {
     private let analytics: Analytics
-    private let source: FeatureCardEvent.Source
-    private let campaign: FeatureCardEvent.Campaign
+    private let config: Configuration
+
+    var title: String {
+        config.title
+    }
+
+    var message: String {
+        config.message
+    }
+
+    var buttonTitle: String {
+        config.buttonTitle
+    }
+
+    var image: UIImage {
+        config.image
+    }
 
     init(analytics: Analytics,
-         source: WooAnalyticsEvent.FeatureCard.Source,
-         campaign: WooAnalyticsEvent.FeatureCard.Campaign) {
+         configuration: Configuration) {
         self.analytics = analytics
-        self.source = source
-        self.campaign = campaign
+        self.config = configuration
     }
 
     func onAppear() {
@@ -28,14 +42,30 @@ struct FeatureAnnouncementCardViewModel {
     }
 
     private func trackAnnouncementShown() {
-        analytics.track(event: FeatureCardEvent.shown(source: source, campaign: campaign))
+        track(FeatureCardEvent.shown(source: config.source,
+                                     campaign: config.campaign))
     }
 
     private func trackAnnouncementDismissed() {
-        analytics.track(event: FeatureCardEvent.dismissed(source: source, campaign: campaign))
+        track(FeatureCardEvent.dismissed(source: config.source,
+                                         campaign: config.campaign))
     }
 
     private func trackAnnouncementCtaTapped() {
-        analytics.track(event: FeatureCardEvent.ctaTapped(source: source, campaign: campaign))
+        track(FeatureCardEvent.ctaTapped(source: config.source,
+                                         campaign: config.campaign))
+    }
+
+    private func track(_ event: WooAnalyticsEvent) {
+        analytics.track(event: event)
+    }
+
+    struct Configuration {
+        let source: WooAnalyticsEvent.FeatureCard.Source
+        let campaign: WooAnalyticsEvent.FeatureCard.Campaign
+        let title: String
+        let message: String
+        let buttonTitle: String
+        let image: UIImage
     }
 }

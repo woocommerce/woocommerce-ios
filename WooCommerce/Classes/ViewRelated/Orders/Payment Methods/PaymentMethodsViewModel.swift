@@ -106,9 +106,15 @@ final class PaymentMethodsViewModel: ObservableObject {
     private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
     var cardUpsellAnnouncementViewModel: FeatureAnnouncementCardViewModel {
-        FeatureAnnouncementCardViewModel(analytics: analytics,
-                                     source: .paymentMethods,
-                                     campaign: .upsellCardReaders)
+        let config = FeatureAnnouncementCardViewModel.Configuration(
+            source: .paymentMethods,
+            campaign: .upsellCardReaders,
+            title: Localization.purchaseCardReaderAnnouncementTitle,
+            message: Localization.purchaseCardReaderAnnouncementMessage,
+            buttonTitle: Localization.purchaseCardReaderAnnouncementButtonTitle,
+            image: .paymentsFeatureBannerImage)
+        return FeatureAnnouncementCardViewModel(analytics: analytics,
+                                                configuration: config)
     }
 
     struct Dependencies {
@@ -350,6 +356,7 @@ private extension PaymentMethodsViewModel {
     enum Localization {
         static let markAsPaidError = NSLocalizedString("There was an error while marking the order as paid.",
                                                        comment: "Text when there is an error while marking the order as paid for during payment.")
+
         static let genericCollectError = NSLocalizedString("There was an error while trying to collect the payment.",
                                                        comment: "Text when there is an unknown error while trying to collect payments")
 
@@ -361,5 +368,14 @@ private extension PaymentMethodsViewModel {
             NSLocalizedString("This will mark your order as complete if you received \(total) outside of WooCommerce",
                               comment: "Alert info when selecting the cash payment method during payments")
         }
+
+        static let purchaseCardReaderAnnouncementTitle = NSLocalizedString("Accept payments easily",
+                    comment: "Title for the feature announcement banner intended to upsell card readers")
+
+        static let purchaseCardReaderAnnouncementMessage = NSLocalizedString("Get ready to accept payments with a card reader.",
+                    comment: "Message for the feature announcement banner intended to upsell card readers")
+
+        static let purchaseCardReaderAnnouncementButtonTitle = NSLocalizedString("Purchase Card Reader",
+                    comment: "Title for the button on the feature announcement banner intended to upsell card readers")
     }
 }

@@ -65,11 +65,7 @@ struct PaymentMethodsView: View {
                 .background(Color(.listForeground))
 
                 if viewModel.showUpsellCardReaderFeatureBanner {
-                    FeatureAnnouncementCardView(title: Localization.purchaseCardReaderAnnouncementTitle,
-                                            message: Localization.purchaseCardReaderAnnouncementMessage,
-                                            buttonTitle: Localization.purchaseCardReaderAnnouncementButtonTitle,
-                                            image: .paymentsFeatureBannerImage,
-                                            viewModel: viewModel.cardUpsellAnnouncementViewModel,
+                    FeatureAnnouncementCardView(viewModel: viewModel.cardUpsellAnnouncementViewModel,
                                             dismiss: nil,
                                             callToAction: {
                         showingPurchaseCardReaderView = true
@@ -173,12 +169,6 @@ extension PaymentMethodsView {
         static let markAsPaidTitle = NSLocalizedString("Mark as Paid?", comment: "Alert title when selecting the cash payment method")
         static let markAsPaidButton = NSLocalizedString("Mark as Paid", comment: "Alert button when selecting the cash payment method")
         static let cancelTitle = NSLocalizedString("Cancel", comment: "Title for the button to cancel the payment methods screen")
-        static let purchaseCardReaderAnnouncementTitle = NSLocalizedString("Accept payments easily",
-                    comment: "Title for the feature announcement banner intended to upsell card readers")
-        static let purchaseCardReaderAnnouncementMessage = NSLocalizedString("Get ready to accept payments with a card reader.",
-                    comment: "Message for the feature announcement banner intended to upsell card readers")
-        static let purchaseCardReaderAnnouncementButtonTitle = NSLocalizedString("Purchase Card Reader",
-                    comment: "Title for the button on the feature announcement banner intended to upsell card readers")
     }
 
     enum Layout {

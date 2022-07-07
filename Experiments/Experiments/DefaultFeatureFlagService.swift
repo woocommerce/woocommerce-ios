@@ -40,7 +40,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .unifiedOrderEditing:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .backgroundProductImageUpload:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .consolidatedCardReaderManuals:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .appleIDAccountDeletion:

@@ -6,6 +6,7 @@ import MessageUI
 import Combine
 import Experiments
 import WooFoundation
+import SwiftUI
 import enum Networking.DotcomError
 
 final class OrderDetailsViewModel {
@@ -384,6 +385,9 @@ extension OrderDetailsViewModel {
             let isUnifiedEditingEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing)
             let billingInformationViewController = BillingInformationViewController(order: order, editingEnabled: !isUnifiedEditingEnabled)
             viewController.navigationController?.pushViewController(billingInformationViewController, animated: true)
+        case .metadata:
+            let metadataView = UIHostingController(rootView: OrderMetadata())
+            viewController.navigationController?.pushViewController(metadataView, animated: true)
         case .seeReceipt:
             let countryCode = configurationLoader.configuration.countryCode
             ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode))

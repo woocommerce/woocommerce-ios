@@ -42,22 +42,18 @@ struct FeatureAnnouncementCardViewModel {
     }
 
     private func trackAnnouncementShown() {
-        track(FeatureCardEvent.shown(source: config.source,
+        analytics.track(event: FeatureCardEvent.shown(source: config.source,
                                      campaign: config.campaign))
     }
 
     private func trackAnnouncementDismissed() {
-        track(FeatureCardEvent.dismissed(source: config.source,
+        analytics.track(event: FeatureCardEvent.dismissed(source: config.source,
                                          campaign: config.campaign))
     }
 
     private func trackAnnouncementCtaTapped() {
-        track(FeatureCardEvent.ctaTapped(source: config.source,
+        analytics.track(event: FeatureCardEvent.ctaTapped(source: config.source,
                                          campaign: config.campaign))
-    }
-
-    private func track(_ event: WooAnalyticsEvent) {
-        analytics.track(event: event)
     }
 
     struct Configuration {

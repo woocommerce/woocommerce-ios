@@ -983,6 +983,8 @@ extension OrderDetailsDataSource {
 
         let summary = Section(category: .summary, row: .summary)
 
+        let metadata = Section(category: .metadata, row: .metadata)
+
         let shippingNotice: Section? = {
             // Hide the shipping method warning if order contains only virtual products
             // or if the order contains only one shipping method
@@ -1443,6 +1445,7 @@ extension OrderDetailsDataSource {
             case tracking
             case addTracking
             case notes
+            case metadata
         }
 
         /// The table header style of a `Section`.
@@ -1543,6 +1546,7 @@ extension OrderDetailsDataSource {
         case addOrderNote
         case orderNoteHeader
         case orderNote
+        case metadata
 
         var reuseIdentifier: String {
             switch self {

@@ -28,53 +28,55 @@ struct PaymentMethodsView: View {
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Layout.noSpacing) {
+        ScrollView {
+            VStack(alignment: .leading, spacing: Layout.noSpacing) {
 
-            Text(Localization.header)
-                .subheadlineStyle()
-                .padding()
-                .padding(.horizontal, insets: safeAreaInsets)
+                Text(Localization.header)
+                    .subheadlineStyle()
+                    .padding()
+                    .padding(.horizontal, insets: safeAreaInsets)
 
-            Divider()
+                Divider()
 
-            VStack(alignment: .leading, spacing: 8) {
-                VStack(alignment: .leading, spacing: Layout.noSpacing) {
-                    MethodRow(icon: .priceImage, title: Localization.cash) {
-                        showingCashAlert = true
-                        viewModel.trackCollectByCash()
-                    }
+                VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: Layout.noSpacing) {
+                        MethodRow(icon: .priceImage, title: Localization.cash) {
+                            showingCashAlert = true
+                            viewModel.trackCollectByCash()
+                        }
 
-                    if viewModel.showPayWithCardRow {
-                        Divider()
+                        if viewModel.showPayWithCardRow {
+                            Divider()
 
-                        MethodRow(icon: .creditCardImage, title: Localization.card) {
-                            viewModel.collectPayment(on: rootViewController, onSuccess: dismiss)
+                            MethodRow(icon: .creditCardImage, title: Localization.card) {
+                                viewModel.collectPayment(on: rootViewController, onSuccess: dismiss)
+                            }
+                        }
+
+                        if viewModel.showPaymentLinkRow {
+                            Divider()
+
+                            MethodRow(icon: .linkImage, title: Localization.link) {
+                                sharingPaymentLink = true
+                                viewModel.trackCollectByPaymentLink()
+                            }
                         }
                     }
+                    .padding(.horizontal)
+                    .background(Color(.listForeground))
 
-                    if viewModel.showPaymentLinkRow {
-                        Divider()
-
-                        MethodRow(icon: .linkImage, title: Localization.link) {
-                            sharingPaymentLink = true
-                            viewModel.trackCollectByPaymentLink()
-                        }
+                    if viewModel.showUpsellCardReaderFeatureBanner {
+                        FeatureAnnouncementCardView(viewModel: viewModel.cardUpsellAnnouncementViewModel,
+                                                    dismiss: nil,
+                                                    callToAction: {
+                            showingPurchaseCardReaderView = true
+                        })
                     }
                 }
-                .padding(.horizontal)
-                .background(Color(.listForeground))
 
-                if viewModel.showUpsellCardReaderFeatureBanner {
-                    FeatureAnnouncementCardView(viewModel: viewModel.cardUpsellAnnouncementViewModel,
-                                            dismiss: nil,
-                                            callToAction: {
-                        showingPurchaseCardReaderView = true
-                    })
-                }
+                // Pushes content to the top
+                Spacer()
             }
-
-            // Pushes content to the top
-            Spacer()
         }
         .ignoresSafeArea(edges: .horizontal)
         .disabled(viewModel.disableViewActions)

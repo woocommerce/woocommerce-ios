@@ -95,7 +95,8 @@ private extension LoginPrologueViewController {
                 carousel.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
                 carousel.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
                 carousel.view.topAnchor.constraint(equalTo: view.topAnchor),
-                carousel.view.bottomAnchor.constraint(equalTo: newToWooCommerceButton.topAnchor),
+                carousel.view.bottomAnchor.constraint(equalTo: newToWooCommerceButton.topAnchor,
+                                                      constant: -Constants.spacingBetweenCarouselAndNewToWooCommerceButton),
             ])
         } else {
             view.pinSubviewToAllEdges(carousel.view)
@@ -124,6 +125,7 @@ private extension LoginPrologueViewController {
 
 private extension LoginPrologueViewController {
     enum Constants {
+        static let spacingBetweenCarouselAndNewToWooCommerceButton: CGFloat = 20
         // TODO: 7231 - update URL if needed
         static let newToWooCommerceURL = "https://wordpress.com/support/introduction-to-woocommerce"
     }

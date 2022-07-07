@@ -21,6 +21,8 @@ struct PaymentMethodsView: View {
     ///
     @State var sharingPaymentLink = false
 
+    @State private var showingPurchaseCardReaderView = false
+
     ///   Environment safe areas
     ///
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
@@ -35,33 +37,44 @@ struct PaymentMethodsView: View {
 
             Divider()
 
-            Group {
-                MethodRow(icon: .priceImage, title: Localization.cash) {
-                    showingCashAlert = true
-                    viewModel.trackCollectByCash()
-                }
+            VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: Layout.noSpacing) {
+                    MethodRow(icon: .priceImage, title: Localization.cash) {
+                        showingCashAlert = true
+                        viewModel.trackCollectByCash()
+                    }
 
-                if viewModel.showPayWithCardRow {
-                    Divider()
+                    if viewModel.showPayWithCardRow {
+                        Divider()
 
-                    MethodRow(icon: .creditCardImage, title: Localization.card) {
-                        viewModel.collectPayment(on: rootViewController, onSuccess: dismiss)
+                        MethodRow(icon: .creditCardImage, title: Localization.card) {
+                            viewModel.collectPayment(on: rootViewController, onSuccess: dismiss)
+                        }
+                    }
+
+                    if viewModel.showPaymentLinkRow {
+                        Divider()
+
+                        MethodRow(icon: .linkImage, title: Localization.link) {
+                            sharingPaymentLink = true
+                            viewModel.trackCollectByPaymentLink()
+                        }
                     }
                 }
+                .padding(.horizontal)
+                .background(Color(.listForeground))
 
-                if viewModel.showPaymentLinkRow {
-                    Divider()
-
-                    MethodRow(icon: .linkImage, title: Localization.link) {
-                        sharingPaymentLink = true
-                        viewModel.trackCollectByPaymentLink()
-                    }
+                if viewModel.showUpsellCardReaderFeatureBanner {
+                    FeatureAnnouncementView(title: Localization.purchaseCardReaderAnnouncementTitle,
+                                            message: Localization.purchaseCardReaderAnnouncementMessage,
+                                            buttonTitle: Localization.purchaseCardReaderAnnouncementButtonTitle,
+                                            image: .paymentsFeatureBannerImage,
+                                            dismiss: nil,
+                                            callToAction: {
+                        showingPurchaseCardReaderView = true
+                    })
                 }
             }
-            .padding(.horizontal)
-            .background(Color(.listForeground))
-
-            Divider()
 
             // Pushes content to the top
             Spacer()
@@ -85,6 +98,9 @@ struct PaymentMethodsView: View {
                     dismiss()
                 }
             }))
+        }
+        .sheet(isPresented: $showingPurchaseCardReaderView) {
+            SafariView(url: viewModel.purchaseCardReaderUrl)
         }
         .shareSheet(isPresented: $sharingPaymentLink) {
             // If paymentLink is available it already contains a valid URL.
@@ -156,6 +172,12 @@ extension PaymentMethodsView {
         static let markAsPaidTitle = NSLocalizedString("Mark as Paid?", comment: "Alert title when selecting the cash payment method")
         static let markAsPaidButton = NSLocalizedString("Mark as Paid", comment: "Alert button when selecting the cash payment method")
         static let cancelTitle = NSLocalizedString("Cancel", comment: "Title for the button to cancel the payment methods screen")
+        static let purchaseCardReaderAnnouncementTitle = NSLocalizedString("Accept payments easily",
+                    comment: "Title for the feature announcement banner intended to upsell card readers")
+        static let purchaseCardReaderAnnouncementMessage = NSLocalizedString("Get ready to accept payments with a card reader.",
+                    comment: "Message for the feature announcement banner intended to upsell card readers")
+        static let purchaseCardReaderAnnouncementButtonTitle = NSLocalizedString("Purchase Card Reader",
+                    comment: "Title for the button on the feature announcement banner intended to upsell card readers")
     }
 
     enum Layout {

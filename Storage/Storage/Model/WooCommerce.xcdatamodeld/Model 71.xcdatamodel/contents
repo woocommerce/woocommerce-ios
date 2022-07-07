@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21D49" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
@@ -151,6 +151,7 @@
         <attribute name="total" optional="YES" attributeType="String"/>
         <attribute name="totalTax" optional="YES" attributeType="String"/>
         <relationship name="coupons" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderCoupon" inverseName="order" inverseEntity="OrderCoupon"/>
+        <relationship name="customFields" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderMetaData" inverseName="order" inverseEntity="OrderMetaData"/>
         <relationship name="fees" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderFeeLine" inverseName="order" inverseEntity="OrderFeeLine"/>
         <relationship name="items" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="OrderItem" inverseName="order" inverseEntity="OrderItem"/>
         <relationship name="notes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderNote" inverseName="order" inverseEntity="OrderNote"/>
@@ -233,6 +234,12 @@
         <attribute name="taxID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="total" optional="YES" attributeType="String"/>
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OrderItemRefund" inverseName="taxes" inverseEntity="OrderItemRefund"/>
+    </entity>
+    <entity name="OrderMetaData" representedClassName="OrderMetaData" syncable="YES">
+        <attribute name="key" optional="YES" attributeType="String"/>
+        <attribute name="metadataID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="value" optional="YES" attributeType="String"/>
+        <relationship name="order" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="customFields" inverseEntity="Order"/>
     </entity>
     <entity name="OrderNote" representedClassName="OrderNote" syncable="YES">
         <attribute name="author" optional="YES" attributeType="String"/>
@@ -800,7 +807,7 @@
         <element name="InboxAction" positionX="-702" positionY="36" width="128" height="119"/>
         <element name="InboxNote" positionX="-693" positionY="45" width="128" height="194"/>
         <element name="Note" positionX="-369.61328125" positionY="-95.85546875" width="128" height="283"/>
-        <element name="Order" positionX="-41.5859375" positionY="23.53125" width="128" height="899"/>
+        <element name="Order" positionX="-41.5859375" positionY="23.53125" width="128" height="914"/>
         <element name="OrderCoupon" positionX="-206.01953125" positionY="379.74609375" width="128" height="120"/>
         <element name="OrderFeeLine" positionX="-693" positionY="45" width="128" height="164"/>
         <element name="OrderItem" positionX="-343.4609375" positionY="444.4296875" width="128" height="268"/>
@@ -808,6 +815,7 @@
         <element name="OrderItemRefund" positionX="-504.859375" positionY="299.1171875" width="128" height="254"/>
         <element name="OrderItemTax" positionX="-693" positionY="36" width="128" height="104"/>
         <element name="OrderItemTaxRefund" positionX="-675" positionY="54" width="128" height="28"/>
+        <element name="OrderMetaData" positionX="-702" positionY="36" width="128" height="89"/>
         <element name="OrderNote" positionX="-505.06640625" positionY="758.75390625" width="128" height="135"/>
         <element name="OrderRefundCondensed" positionX="-693" positionY="45" width="128" height="28"/>
         <element name="OrderSearchResults" positionX="144.44140625" positionY="743.43359375" width="128" height="75"/>

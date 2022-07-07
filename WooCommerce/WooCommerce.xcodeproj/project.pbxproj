@@ -1231,7 +1231,7 @@
 		B5FD110E21D3CB8500560344 /* OrderTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5FD110D21D3CB8500560344 /* OrderTableViewCell.xib */; };
 		B5FD111221D3CE7700560344 /* NewNoteViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5FD111121D3CE7700560344 /* NewNoteViewController.xib */; };
 		B5FD111621D3F13700560344 /* BordersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5FD111521D3F13700560344 /* BordersView.swift */; };
-		B626C71B287659D60083820C /* OrderMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = B626C71A287659D60083820C /* OrderMetadata.swift */; };
+		B626C71B287659D60083820C /* OrderMetadataDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = B626C71A287659D60083820C /* OrderMetadataDetails.swift */; };
 		B626C71D28765A1A0083820C /* OrderMetadataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B626C71C28765A1A0083820C /* OrderMetadataViewModel.swift */; };
 		B63AAF4B254AD2C6000B28A2 /* URL+SurveyViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63AAF4A254AD2C6000B28A2 /* URL+SurveyViewControllerTests.swift */; };
 		B651474527D644FF00C9C4E6 /* CustomerNoteSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B651474427D644FF00C9C4E6 /* CustomerNoteSection.swift */; };
@@ -3026,7 +3026,7 @@
 		B5FD110D21D3CB8500560344 /* OrderTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderTableViewCell.xib; sourceTree = "<group>"; };
 		B5FD111121D3CE7700560344 /* NewNoteViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NewNoteViewController.xib; sourceTree = "<group>"; };
 		B5FD111521D3F13700560344 /* BordersView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BordersView.swift; sourceTree = "<group>"; };
-		B626C71A287659D60083820C /* OrderMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderMetadata.swift; sourceTree = "<group>"; };
+		B626C71A287659D60083820C /* OrderMetadataDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderMetadataDetails.swift; sourceTree = "<group>"; };
 		B626C71C28765A1A0083820C /* OrderMetadataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderMetadataViewModel.swift; sourceTree = "<group>"; };
 		B63AAF4A254AD2C6000B28A2 /* URL+SurveyViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+SurveyViewControllerTests.swift"; sourceTree = "<group>"; };
 		B651474427D644FF00C9C4E6 /* CustomerNoteSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerNoteSection.swift; sourceTree = "<group>"; };
@@ -6723,7 +6723,7 @@
 		B626C7192876599B0083820C /* Order Metadata */ = {
 			isa = PBXGroup;
 			children = (
-				B626C71A287659D60083820C /* OrderMetadata.swift */,
+				B626C71A287659D60083820C /* OrderMetadataDetails.swift */,
 				B626C71C28765A1A0083820C /* OrderMetadataViewModel.swift */,
 			);
 			path = "Order Metadata";
@@ -8445,7 +8445,7 @@
 				3F1CA81B26C3542600228BF2 /* XCRemoteSwiftPackageReference "XCUITestHelpers" */,
 				174CA86827D90A6200126524 /* XCRemoteSwiftPackageReference "AutomatticAbout-swift" */,
 				3FFC5EAA2851942F00563C48 /* XCRemoteSwiftPackageReference "Charts" */,
-				4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject" */,
+				4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject.git" */,
 				3F2C8A17285B038800B1A5BB /* XCRemoteSwiftPackageReference "test-collector-swift" */,
 			);
 			productRefGroup = B56DB3C72049BFAA00D4AA8E /* Products */;
@@ -9460,7 +9460,7 @@
 				029F29FA24D93E9E004751CA /* EditableProductModel.swift in Sources */,
 				31FC8CE927B476BA004B9456 /* CardReaderSettingsResultsControllers.swift in Sources */,
 				D449C52926DFBCCC00D75B02 /* WhatsNewHostingController.swift in Sources */,
-				B626C71B287659D60083820C /* OrderMetadata.swift in Sources */,
+				B626C71B287659D60083820C /* OrderMetadataDetails.swift in Sources */,
 				025E32BC251D8FEF00685C4A /* ProductFormDataModel+ProductsTabProductViewModel.swift in Sources */,
 				02ECD1E624FFB4E900735BE5 /* ProductFactory.swift in Sources */,
 				579CDEFF274D7E7900E8903D /* StoreStatsUsageTracksEventEmitter.swift in Sources */,
@@ -11148,7 +11148,7 @@
 				minimumVersion = 1.0.0;
 			};
 		};
-		4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject" */ = {
+		4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject.git" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/krzysztofzablocki/Inject.git";
 			requirement = {
@@ -11234,7 +11234,7 @@
 		};
 		4598298028574688003A9AFE /* Inject */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject" */;
+			package = 4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject.git" */;
 			productName = Inject;
 		};
 		57150E0E24F462C200E81611 /* TestKit */ = {

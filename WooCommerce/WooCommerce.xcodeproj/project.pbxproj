@@ -426,6 +426,7 @@
 		035F2308275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035F2307275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift */; };
 		036F6EA6281847D5006D84F8 /* PaymentCaptureOrchestratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036F6EA5281847D5006D84F8 /* PaymentCaptureOrchestratorTests.swift */; };
 		0371C3682875E47B00277E2C /* FeatureAnnouncementViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0371C3672875E47B00277E2C /* FeatureAnnouncementViewModel.swift */; };
+		0371C36A2876DBCA00277E2C /* FeatureAnnouncementCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0371C3692876DBCA00277E2C /* FeatureAnnouncementCardViewModelTests.swift */; };
 		0375799928201F750083F2E1 /* CardPresentPaymentsReadinessUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0375799828201F750083F2E1 /* CardPresentPaymentsReadinessUseCase.swift */; };
 		0375799B28227EDE0083F2E1 /* CardPresentPaymentsOnboardingPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0375799A28227EDE0083F2E1 /* CardPresentPaymentsOnboardingPresenter.swift */; };
 		0375799D2822F9040083F2E1 /* MockCardPresentPaymentsOnboardingPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0375799C2822F9040083F2E1 /* MockCardPresentPaymentsOnboardingPresenter.swift */; };
@@ -2218,6 +2219,7 @@
 		035F2307275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalConnectingFailedUpdatePostalCode.swift; sourceTree = "<group>"; };
 		036F6EA5281847D5006D84F8 /* PaymentCaptureOrchestratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentCaptureOrchestratorTests.swift; sourceTree = "<group>"; };
 		0371C3672875E47B00277E2C /* FeatureAnnouncementViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureAnnouncementViewModel.swift; sourceTree = "<group>"; };
+		0371C3692876DBCA00277E2C /* FeatureAnnouncementCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureAnnouncementCardViewModelTests.swift; sourceTree = "<group>"; };
 		0375799828201F750083F2E1 /* CardPresentPaymentsReadinessUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsReadinessUseCase.swift; sourceTree = "<group>"; };
 		0375799A28227EDE0083F2E1 /* CardPresentPaymentsOnboardingPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsOnboardingPresenter.swift; sourceTree = "<group>"; };
 		0375799C2822F9040083F2E1 /* MockCardPresentPaymentsOnboardingPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCardPresentPaymentsOnboardingPresenter.swift; sourceTree = "<group>"; };
@@ -5570,7 +5572,6 @@
 				02B2829127C4808D004A332A /* InfiniteScrollIndicator.swift */,
 				DE34771227F174C8009CA300 /* StatusView.swift */,
 				B9E4364B287587D300883CFA /* FeatureAnnouncementView.swift */,
-				0371C3672875E47B00277E2C /* FeatureAnnouncementViewModel.swift */,
 				B9E4364D287589E200883CFA /* NewBadgeView.swift */,
 			);
 			path = "SwiftUI Components";
@@ -5689,6 +5690,7 @@
 				D8025469265517F9001B2CC1 /* CardPresentPayments */,
 				5791FB4124EC834300117FD6 /* MainTabViewModelTests.swift */,
 				CC2E72F627B6BFB800A62872 /* ProductVariationFormatterTests.swift */,
+				0371C3692876DBCA00277E2C /* FeatureAnnouncementCardViewModelTests.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -7387,6 +7389,7 @@
 				D41C9F2A26D9A04A00993558 /* WhatsNew */,
 				D8815AE526383FC200EDAD62 /* CardPresentPayments */,
 				D817585C22BB5E6900289CFE /* Order Details */,
+				0371C3672875E47B00277E2C /* FeatureAnnouncementViewModel.swift */,
 				D843D5D82248EE90001BFA55 /* ManualTrackingViewModel.swift */,
 				CCEC256927B581E800EF9FA3 /* ProductVariationFormatter.swift */,
 				CECC758B23D2227000486676 /* ProductDetailsCellViewModel.swift */,
@@ -10136,6 +10139,7 @@
 				029700EF24FE38F000D242F8 /* ScrollWatcherTests.swift in Sources */,
 				0236BCA425087B660043EB43 /* ProductFormRemoteActionUseCaseTests.swift in Sources */,
 				CC13C0CD278E086D00C0B5B5 /* ProductVariationSelectorViewModelTests.swift in Sources */,
+				0371C36A2876DBCA00277E2C /* FeatureAnnouncementCardViewModelTests.swift in Sources */,
 				DE26B5292775C76C00A2EA0A /* MockSyncingCoordinator.swift in Sources */,
 				0968B80C27CFB2EF0021210A /* BulkUpdateOptionsModelTests.swift in Sources */,
 				DE126D0F26CA71E8007F901D /* ShippingLabelCustomsFormInputViewModelTests.swift in Sources */,

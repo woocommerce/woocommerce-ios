@@ -30,15 +30,17 @@ class DefaultNoticePresenter: NoticePresenter {
 
     /// Enqueues the specified Notice for display.
     ///
-    func enqueue(notice: Notice) {
+    @discardableResult
+    func enqueue(notice: Notice) -> Bool {
         guard
             noticeOnScreen != notice, // Ignore if we are already presenting this notice.
             !notices.contains(notice) // Ignore if this notice is already enqueued and waiting for presentation.
         else {
-            return
+            return false
         }
         notices.append(notice)
         presentNextNoticeIfPossible()
+        return true
     }
 }
 

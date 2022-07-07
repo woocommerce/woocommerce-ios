@@ -15,6 +15,6 @@ extension OrderMetaData {
 
 }
 
-extension OrderMetaData : Identifiable {
+extension OrderMetaData: Identifiable {
 
 }

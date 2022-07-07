@@ -311,7 +311,8 @@ extension Order {
         coupons: CopiableProp<[OrderCouponLine]> = .copy,
         refunds: CopiableProp<[OrderRefundCondensed]> = .copy,
         fees: CopiableProp<[OrderFeeLine]> = .copy,
-        taxes: CopiableProp<[OrderTaxLine]> = .copy
+        taxes: CopiableProp<[OrderTaxLine]> = .copy,
+        customFields: CopiableProp<[OrderMetaData]> = .copy
     ) -> Order {
         let siteID = siteID ?? self.siteID
         let orderID = orderID ?? self.orderID
@@ -346,6 +347,7 @@ extension Order {
         let refunds = refunds ?? self.refunds
         let fees = fees ?? self.fees
         let taxes = taxes ?? self.taxes
+        let customFields = customFields ?? self.customFields
 
         return Order(
             siteID: siteID,
@@ -380,7 +382,8 @@ extension Order {
             coupons: coupons,
             refunds: refunds,
             fees: fees,
-            taxes: taxes
+            taxes: taxes,
+            customFields: customFields
         )
     }
 }
@@ -493,7 +496,7 @@ extension OrderItemRefund {
         name: CopiableProp<String> = .copy,
         productID: CopiableProp<Int64> = .copy,
         variationID: CopiableProp<Int64> = .copy,
-        refundedItemID: CopiableProp<String> = .copy,
+        refundedItemID: NullableCopiableProp<String> = .copy,
         quantity: CopiableProp<Decimal> = .copy,
         price: CopiableProp<NSDecimalNumber> = .copy,
         sku: NullableCopiableProp<String> = .copy,

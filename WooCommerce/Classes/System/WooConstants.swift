@@ -51,7 +51,7 @@ extension WooConstants {
         ///
         /// Displayed by the Authenticator in the Continue with WordPress.com flow.
         ///
-        case whatIsWPComURL = "https://woocommerce.com/document/log-into-woocommerce-com-with-wordpress-com/"
+        case whatIsWPComURL = "https://woocommerce.com/document/what-is-a-wordpress-com-account/"
 
         /// Terms of Service Website. Displayed by the Authenticator (when / if needed).
         ///

@@ -435,9 +435,22 @@ private extension OrderDetailsDataSource {
             configureRefundedProducts(cell)
         case let cell as IssueRefundTableViewCell:
             configureIssueRefundButton(cell: cell)
+        case let cell as WooBasicTableViewCell where row == .metadata:
+            configureMetadata(cell: cell)
         default:
             fatalError("Unidentified customer info row type")
         }
+    }
+
+    private func configureMetadata(cell: WooBasicTableViewCell) {
+        cell.bodyLabel?.text = "View metadata"
+        cell.applyPlainTextStyle()
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+
+        cell.accessibilityTraits = .button
+        cell.accessibilityLabel = ""
+        cell.accessibilityHint = ""
     }
 
     private func configureCustomerNote(cell: CustomerNoteTableViewCell) {
@@ -1215,6 +1228,7 @@ extension OrderDetailsDataSource {
         sections = ([summary,
                      shippingNotice,
                      products,
+                     metadata,
                      installWCShipSection] +
                     shippingLabelSections +
                     [refundedProducts,
@@ -1608,6 +1622,8 @@ extension OrderDetailsDataSource {
                 return OrderNoteHeaderTableViewCell.reuseIdentifier
             case .orderNote:
                 return OrderNoteTableViewCell.reuseIdentifier
+            case .metadata:
+                return WooBasicTableViewCell.reuseIdentifier
             }
         }
     }

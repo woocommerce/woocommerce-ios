@@ -105,16 +105,11 @@ final class PaymentMethodsViewModel: ObservableObject {
 
     private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
+    private let cardUpsellCampaign =  UpsellCardReadersCampaign(source: .paymentMethods)
+
     var cardUpsellAnnouncementViewModel: FeatureAnnouncementCardViewModel {
-        let config = FeatureAnnouncementCardViewModel.Configuration(
-            source: .paymentMethods,
-            campaign: .upsellCardReaders,
-            title: Localization.purchaseCardReaderAnnouncementTitle,
-            message: Localization.purchaseCardReaderAnnouncementMessage,
-            buttonTitle: Localization.purchaseCardReaderAnnouncementButtonTitle,
-            image: .paymentsFeatureBannerImage)
-        return FeatureAnnouncementCardViewModel(analytics: analytics,
-                                                configuration: config)
+        .init(analytics: analytics,
+              configuration: cardUpsellCampaign.configuration)
     }
 
     struct Dependencies {
@@ -368,14 +363,5 @@ private extension PaymentMethodsViewModel {
             NSLocalizedString("This will mark your order as complete if you received \(total) outside of WooCommerce",
                               comment: "Alert info when selecting the cash payment method during payments")
         }
-
-        static let purchaseCardReaderAnnouncementTitle = NSLocalizedString("Accept payments easily",
-                    comment: "Title for the feature announcement banner intended to upsell card readers")
-
-        static let purchaseCardReaderAnnouncementMessage = NSLocalizedString("Get ready to accept payments with a card reader.",
-                    comment: "Message for the feature announcement banner intended to upsell card readers")
-
-        static let purchaseCardReaderAnnouncementButtonTitle = NSLocalizedString("Purchase Card Reader",
-                    comment: "Title for the button on the feature announcement banner intended to upsell card readers")
     }
 }

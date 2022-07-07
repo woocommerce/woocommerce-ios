@@ -427,6 +427,7 @@
 		036F6EA6281847D5006D84F8 /* PaymentCaptureOrchestratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036F6EA5281847D5006D84F8 /* PaymentCaptureOrchestratorTests.swift */; };
 		0371C3682875E47B00277E2C /* FeatureAnnouncementCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0371C3672875E47B00277E2C /* FeatureAnnouncementCardViewModel.swift */; };
 		0371C36A2876DBCA00277E2C /* FeatureAnnouncementCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0371C3692876DBCA00277E2C /* FeatureAnnouncementCardViewModelTests.swift */; };
+		0371C36E2876E92D00277E2C /* UpsellCardReadersCampaign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0371C36D2876E92D00277E2C /* UpsellCardReadersCampaign.swift */; };
 		0375799928201F750083F2E1 /* CardPresentPaymentsReadinessUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0375799828201F750083F2E1 /* CardPresentPaymentsReadinessUseCase.swift */; };
 		0375799B28227EDE0083F2E1 /* CardPresentPaymentsOnboardingPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0375799A28227EDE0083F2E1 /* CardPresentPaymentsOnboardingPresenter.swift */; };
 		0375799D2822F9040083F2E1 /* MockCardPresentPaymentsOnboardingPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0375799C2822F9040083F2E1 /* MockCardPresentPaymentsOnboardingPresenter.swift */; };
@@ -2220,6 +2221,7 @@
 		036F6EA5281847D5006D84F8 /* PaymentCaptureOrchestratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentCaptureOrchestratorTests.swift; sourceTree = "<group>"; };
 		0371C3672875E47B00277E2C /* FeatureAnnouncementCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureAnnouncementCardViewModel.swift; sourceTree = "<group>"; };
 		0371C3692876DBCA00277E2C /* FeatureAnnouncementCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureAnnouncementCardViewModelTests.swift; sourceTree = "<group>"; };
+		0371C36D2876E92D00277E2C /* UpsellCardReadersCampaign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpsellCardReadersCampaign.swift; sourceTree = "<group>"; };
 		0375799828201F750083F2E1 /* CardPresentPaymentsReadinessUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsReadinessUseCase.swift; sourceTree = "<group>"; };
 		0375799A28227EDE0083F2E1 /* CardPresentPaymentsOnboardingPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsOnboardingPresenter.swift; sourceTree = "<group>"; };
 		0375799C2822F9040083F2E1 /* MockCardPresentPaymentsOnboardingPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCardPresentPaymentsOnboardingPresenter.swift; sourceTree = "<group>"; };
@@ -4597,6 +4599,23 @@
 			path = JetpackConnectionPackageSites;
 			sourceTree = "<group>";
 		};
+		0371C36C2876E91500277E2C /* Feature Announcement Cards */ = {
+			isa = PBXGroup;
+			children = (
+				0371C3672875E47B00277E2C /* FeatureAnnouncementCardViewModel.swift */,
+				0371C36D2876E92D00277E2C /* UpsellCardReadersCampaign.swift */,
+			);
+			path = "Feature Announcement Cards";
+			sourceTree = "<group>";
+		};
+		0371C36F2876ED3A00277E2C /* Feature Announcement Cards */ = {
+			isa = PBXGroup;
+			children = (
+				0371C3692876DBCA00277E2C /* FeatureAnnouncementCardViewModelTests.swift */,
+			);
+			path = "Feature Announcement Cards";
+			sourceTree = "<group>";
+		};
 		0386CFE52851F58E00134466 /* Payment Methods */ = {
 			isa = PBXGroup;
 			children = (
@@ -5688,9 +5707,9 @@
 			children = (
 				D41C9F2F26D9A41F00993558 /* WhatsNew */,
 				D8025469265517F9001B2CC1 /* CardPresentPayments */,
+				0371C36F2876ED3A00277E2C /* Feature Announcement Cards */,
 				5791FB4124EC834300117FD6 /* MainTabViewModelTests.swift */,
 				CC2E72F627B6BFB800A62872 /* ProductVariationFormatterTests.swift */,
-				0371C3692876DBCA00277E2C /* FeatureAnnouncementCardViewModelTests.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -7389,7 +7408,7 @@
 				D41C9F2A26D9A04A00993558 /* WhatsNew */,
 				D8815AE526383FC200EDAD62 /* CardPresentPayments */,
 				D817585C22BB5E6900289CFE /* Order Details */,
-				0371C3672875E47B00277E2C /* FeatureAnnouncementCardViewModel.swift */,
+				0371C36C2876E91500277E2C /* Feature Announcement Cards */,
 				D843D5D82248EE90001BFA55 /* ManualTrackingViewModel.swift */,
 				CCEC256927B581E800EF9FA3 /* ProductVariationFormatter.swift */,
 				CECC758B23D2227000486676 /* ProductDetailsCellViewModel.swift */,
@@ -8967,6 +8986,7 @@
 				02ACD25A2852E11700EC928E /* RemoveAppleIDAccessCoordinator.swift in Sources */,
 				451A9973260E39270059D135 /* ShippingLabelPackageNumberRow.swift in Sources */,
 				AEE2610F26E664CE00B142A0 /* EditOrderAddressFormViewModel.swift in Sources */,
+				0371C36E2876E92D00277E2C /* UpsellCardReadersCampaign.swift in Sources */,
 				025C00BA25514A7100FAC222 /* BarcodeScannerFrameScaler.swift in Sources */,
 				02913E9723A774E600707A0C /* DecimalInputFormatter.swift in Sources */,
 				456AB0E7283E610500019CFF /* WCShipInstallTableViewCell.swift in Sources */,

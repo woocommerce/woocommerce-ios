@@ -292,7 +292,7 @@ extension MockObjectGraph {
 
     static func createVisitStatsItem(granularity: StatGranularity, periodDate: Date, visitors: Int) -> SiteVisitStatsItem {
         switch granularity {
-        case .day, .month:
+        case .day:
             return SiteVisitStatsItem(period: periodDate.asVisitStatsMonthString, visitors: visitors)
         default:
             fatalError("Not implemented yet")

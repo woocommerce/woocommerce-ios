@@ -3,55 +3,55 @@ import XCTest
 
 public final class PeriodStatsTable: ScreenObject {
 
-    private let daysTabGetter: (XCUIApplication) -> XCUIElement = {
+    private let todayTabGetter: (XCUIApplication) -> XCUIElement = {
         $0.cells["period-data-today-tab"]
     }
 
-    private let weeksTabGetter: (XCUIApplication) -> XCUIElement = {
+    private let thisWeekTabGetter: (XCUIApplication) -> XCUIElement = {
         $0.cells["period-data-thisWeek-tab"]
     }
 
-    private let monthsTabGetter: (XCUIApplication) -> XCUIElement = {
+    private let thisMonthTabGetter: (XCUIApplication) -> XCUIElement = {
         $0.cells["period-data-thisMonth-tab"]
     }
 
-    private let yearsTabGetter: (XCUIApplication) -> XCUIElement = {
+    private let thisYearTabGetter: (XCUIApplication) -> XCUIElement = {
         $0.cells["period-data-thisYear-tab"]
     }
 
-    private var daysTab: XCUIElement { daysTabGetter(app) }
-    private var weeksTab: XCUIElement { weeksTabGetter(app) }
-    private var monthsTab: XCUIElement { monthsTabGetter(app) }
-    private var yearsTab: XCUIElement { yearsTabGetter(app) }
+    private var todayTab: XCUIElement { todayTabGetter(app) }
+    private var thisWeekTab: XCUIElement { thisWeekTabGetter(app) }
+    private var thisMonthTab: XCUIElement { thisMonthTabGetter(app) }
+    private var thisYearTab: XCUIElement { thisYearTabGetter(app) }
 
     init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-            expectedElementGetters: [daysTabGetter, weeksTabGetter, yearsTabGetter],
+            expectedElementGetters: [todayTabGetter, thisWeekTabGetter, thisYearTabGetter],
             app: app
         )
     }
 
     @discardableResult
     func switchToDaysTab() -> Self {
-        daysTab.tap()
+        todayTab.tap()
         return self
     }
 
     @discardableResult
     func switchToWeeksTab() -> Self {
-        weeksTab.tap()
+        thisWeekTab.tap()
         return self
     }
 
     @discardableResult
     public func switchToMonthsTab() -> Self {
-        monthsTab.tap()
+        thisMonthTab.tap()
         return self
     }
 
     @discardableResult
     public func switchToYearsTab() -> Self {
-        yearsTab.tap()
+        thisYearTab.tap()
         return self
     }
 }

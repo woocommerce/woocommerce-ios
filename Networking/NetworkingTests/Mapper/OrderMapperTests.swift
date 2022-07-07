@@ -344,7 +344,7 @@ final class OrderMapperTests: XCTestCase {
         let customField = try XCTUnwrap(order.customFields.first)
 
         // Then
-        let expectedCustomField = OrderMetaData(key: "Viewed Currency", value: "USD")
+        let expectedCustomField = OrderMetaData(metadataID: 18148, key: "Viewed Currency", value: "USD")
         XCTAssertEqual(customField, expectedCustomField)
     }
 }

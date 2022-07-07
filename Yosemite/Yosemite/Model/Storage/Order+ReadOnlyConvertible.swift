@@ -109,7 +109,8 @@ extension Storage.Order: ReadOnlyConvertible {
                      coupons: orderCoupons,
                      refunds: orderRefunds,
                      fees: orderFeeLines,
-                     taxes: orderTaxLines)
+                     taxes: orderTaxLines,
+                     customFields: []) // TODO: Handle custom fields (order meta data)
 
     }
 

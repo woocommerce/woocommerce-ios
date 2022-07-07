@@ -38,7 +38,8 @@ enum ShippingLabelSampleData {
                      coupons: sampleCoupons(),
                      refunds: [],
                      fees: [],
-                     taxes: [])
+                     taxes: [],
+                     customFields: [])
     }
 
     static func samplePackageDetails() -> ShippingLabelPackagesResponse {

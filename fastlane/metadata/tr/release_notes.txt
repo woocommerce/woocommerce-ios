@@ -1,2 +1,1 @@
-Bu sürümde,  sipariş oluşturma ve şahsen ödemelerde yaptığımız düzeltmelerle, ürünler bölümündeki öğelerin doğru sırada görünmemesine neden olan bir hatayı giderdik, tüm siparişler için tarih/saatin ve ödemesi yapılan tüm siparişler için geri ödeme düğmesinin görüntülenmesini sağladık.
-Lütfen bize geri bildirim göndermeye devam edin, sizi dinliyoruz.
+Kuponları yönetme ile ilgili yeni bir özellik üzerinde çalıştığımızı biliyor muydunuz? Menü sekmesine gidin, ayarlar simgesine dokunup deneysel özelliklere gidin. Bu sürümde, "Bireysel Kullanım" ve "İndirimli Öğeleri Hariç Tut" alanlarını düzenlerken oluşan bir sorunu düzelttik. Deneyin ve geri bildiriminizi paylaşın!

@@ -1,2 +1,1 @@
-Esta versão possui várias correções para criação de pedidos e pagamentos presenciais, incluindo a correção de um bug na seção de produtos que não mostrava a ordem correta dos itens, exibia a data e hora de todos os pedidos e o botão de emitir reembolso para todos os pedidos pagos.
-Continue compartilhando seu feedback conosco. Estamos ouvindo.
+Sabia que estamos trabalhando em uma nova funcionalidade para gerenciar cupons? Acesse a guia Menu, toque no ícone de configuração e role a tela até as funcionalidades experimentais. Nesta versão, corrigimos um problema na edição dos campos "Uso individual" e "Excluir itens em oferta". Experimente e compartilhe seu feedback.

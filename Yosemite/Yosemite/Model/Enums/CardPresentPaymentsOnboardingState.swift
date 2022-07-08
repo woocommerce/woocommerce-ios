@@ -84,7 +84,7 @@ extension CardPresentPaymentOnboardingState {
         case .completed:
             return nil
         case .selectPlugin:
-            return "multiple_payment_provider_conflict"
+            return "multiple_payment_providers_conflict"
         case .pluginShouldBeDeactivated:
             return "plugin_should_be_deactivated"
         case .countryNotSupported(countryCode: _):

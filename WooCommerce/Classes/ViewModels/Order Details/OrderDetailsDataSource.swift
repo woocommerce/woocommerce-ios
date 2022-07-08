@@ -445,7 +445,7 @@ private extension OrderDetailsDataSource {
     private func configureCustomFields(cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = "View Custom Fields"
         cell.applyPlainTextStyle()
-        cell.accessoryType = .disclosureIndicator
+        cell.accessoryType = .none
         cell.selectionStyle = .default
 
         cell.accessibilityTraits = .button

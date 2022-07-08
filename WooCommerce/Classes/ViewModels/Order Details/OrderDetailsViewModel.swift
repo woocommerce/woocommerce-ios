@@ -387,7 +387,7 @@ extension OrderDetailsViewModel {
             viewController.navigationController?.pushViewController(billingInformationViewController, animated: true)
         case .customFields:
             let metadataView = UIHostingController(rootView: OrderCustomFieldsDetails(customFields: order.customFields))
-            viewController.navigationController?.pushViewController(metadataView, animated: true)
+            viewController.present(metadataView, animated: true)
         case .seeReceipt:
             let countryCode = configurationLoader.configuration.countryCode
             ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode))

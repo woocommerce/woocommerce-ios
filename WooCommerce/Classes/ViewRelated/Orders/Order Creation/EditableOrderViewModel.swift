@@ -314,6 +314,10 @@ final class EditableOrderViewModel: ObservableObject {
                                        quantity: item.quantity,
                                        canChangeQuantity: canChangeQuantity,
                                        displayMode: .attributes(attributes),
+                                       quantityUpdatedCallback: { [weak self] _ in
+                guard let self = self else { return }
+                self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))
+            },
                                        removeProductIntent: { [weak self] in
                 self?.selectOrderItem(item.itemID) })
         } else {
@@ -321,6 +325,10 @@ final class EditableOrderViewModel: ObservableObject {
                                        product: product,
                                        quantity: item.quantity,
                                        canChangeQuantity: canChangeQuantity,
+                                       quantityUpdatedCallback: { [weak self] _ in
+                guard let self = self else { return }
+                self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))
+            },
                                        removeProductIntent: { [weak self] in
                 self?.selectOrderItem(item.itemID) })
         }

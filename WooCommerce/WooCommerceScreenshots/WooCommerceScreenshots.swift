@@ -158,7 +158,7 @@ extension ScreenObject {
     @discardableResult
     func lockScreen() -> Self {
         // This is a hack from https://stackoverflow.com/a/57356929
-        // ☠️ Beware of break changes in future updates ☠️
+        // ☠️ Beware of breaking changes in future updates ☠️
         XCUIDevice.shared.perform(NSSelectorFromString("pressLockButton"))
         sleep(2)
         return self

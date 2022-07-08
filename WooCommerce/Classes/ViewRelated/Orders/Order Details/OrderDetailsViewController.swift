@@ -341,6 +341,8 @@ private extension OrderDetailsViewController {
         let viewController = OrderFormHostingController(viewModel: viewModel)
         let navController = UINavigationController(rootViewController: viewController)
         present(navController, animated: true)
+
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderEditButtonTapped())
     }
 }
 

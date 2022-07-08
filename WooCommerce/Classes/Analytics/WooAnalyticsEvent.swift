@@ -362,6 +362,10 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderAddNew, properties: [:])
         }
 
+        static func orderEditButtonTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderEditButtonTapped, properties: [:])
+        }
+
         static func orderProductAdd(flow: Flow) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderProductAdd, properties: [Keys.flow: flow.rawValue])
         }

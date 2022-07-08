@@ -231,6 +231,8 @@ final class EditableOrderViewModel: ObservableObject {
 
         if feeLine != nil {
             analytics.track(event: WooAnalyticsEvent.Orders.orderFeeAdd(flow: flow.analyticsFlow))
+        } else {
+            analytics.track(event: WooAnalyticsEvent.Orders.orderFeeRemove(flow: flow.analyticsFlow))
         }
     }
 

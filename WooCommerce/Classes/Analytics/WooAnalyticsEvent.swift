@@ -385,6 +385,10 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderFeeAdd, properties: [Keys.flow: flow.rawValue])
         }
 
+        static func orderFeeRemove(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFeeRemove, properties: [Keys.flow: flow.rawValue])
+        }
+
         static func orderShippingMethodAdd(flow: Flow) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderShippingMethodAdd, properties: [Keys.flow: flow.rawValue])
         }

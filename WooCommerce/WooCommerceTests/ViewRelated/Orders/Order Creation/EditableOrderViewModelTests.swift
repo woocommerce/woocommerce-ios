@@ -967,16 +967,21 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(properties, "creation")
     }
 
-    func test_fee_line_not_tracked_when_removed() {
+    func test_fee_line_tracked_when_removed() throws {
         // Given
         let analytics = MockAnalyticsProvider()
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               flow: .editing(initialOrder: .fake()),
+                                               analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
         viewModel.saveFeeLine(nil)
 
         // Then
-        XCTAssertTrue(analytics.receivedEvents.isEmpty)
+        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderFeeRemove.rawValue])
+
+        let properties = try XCTUnwrap(analytics.receivedProperties.first?["flow"] as? String)
+        XCTAssertEqual(properties, "editing")
     }
 
     func test_customer_details_tracked_when_added() throws {

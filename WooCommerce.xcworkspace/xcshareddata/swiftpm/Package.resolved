@@ -33,8 +33,8 @@
         "repositoryURL": "https://github.com/envoy/Embassy",
         "state": {
           "branch": null,
-          "revision": "1f1fe7eeebeb06037c23a2a89d6f8f1271d625be",
-          "version": "4.1.2"
+          "revision": "065b6ce52596bd06b867cfe17fea2c56dcb53b30",
+          "version": "4.1.3"
         }
       },
       {
@@ -78,8 +78,8 @@
         "repositoryURL": "https://github.com/markiv/SwiftUI-Shimmer",
         "state": {
           "branch": null,
-          "revision": "5b2e81191e77f66e6c6ca497f11a77fe48f7f0fc",
-          "version": "1.0.0"
+          "revision": "61411771350a5a4e96666a8a202ae4b2be327a2b",
+          "version": "1.0.1"
         }
       },
       {

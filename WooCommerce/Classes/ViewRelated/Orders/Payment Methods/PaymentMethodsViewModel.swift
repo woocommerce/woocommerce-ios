@@ -44,6 +44,18 @@ final class PaymentMethodsViewModel: ObservableObject {
         paymentLink != nil
     }
 
+    /// Defines if the Card Reader upsell banner should be shown based on country eligibility
+    ///
+    var showUpsellCardReaderFeatureBanner: Bool {
+        return cardPresentPaymentsConfiguration.isSupportedCountry
+    }
+
+    /// Returns the URL where the merchant can purchase a card reader based on store country code
+    ///
+    var purchaseCardReaderUrl: URL {
+        cardPresentPaymentsConfiguration.purchaseCardReaderUrl()
+    }
+
     /// Store's ID.
     ///
     private let siteID: Int64
@@ -92,6 +104,13 @@ final class PaymentMethodsViewModel: ObservableObject {
     private var collectPaymentsUseCase: CollectOrderPaymentProtocol?
 
     private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
+
+    private let cardUpsellCampaign =  UpsellCardReadersCampaign(source: .paymentMethods)
+
+    var cardUpsellAnnouncementViewModel: FeatureAnnouncementCardViewModel {
+        .init(analytics: analytics,
+              configuration: cardUpsellCampaign.configuration)
+    }
 
     struct Dependencies {
         let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never>
@@ -332,6 +351,7 @@ private extension PaymentMethodsViewModel {
     enum Localization {
         static let markAsPaidError = NSLocalizedString("There was an error while marking the order as paid.",
                                                        comment: "Text when there is an error while marking the order as paid for during payment.")
+
         static let genericCollectError = NSLocalizedString("There was an error while trying to collect the payment.",
                                                        comment: "Text when there is an unknown error while trying to collect payments")
 

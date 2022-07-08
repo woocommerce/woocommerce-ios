@@ -5,12 +5,12 @@ struct OrderCustomFieldsDetails: View {
     let customFields: [OrderMetaData]
 
     var body: some View {
-        VStack {
+        NavigationView {
             List {
                 ForEach(customFields, id: \.self) { customField in
                     Text(customField.value)
                 }
-            }
+            }.navigationTitle("Custom Fields")
         }
     }
 }

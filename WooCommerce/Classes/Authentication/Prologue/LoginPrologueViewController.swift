@@ -8,6 +8,7 @@ import Experiments
 ///
 final class LoginPrologueViewController: UIViewController {
     private let isNewToWooCommerceButtonShown: Bool
+    private let analytics: Analytics
 
     /// Background View, to be placed surrounding the bottom area.
     ///
@@ -33,8 +34,10 @@ final class LoginPrologueViewController: UIViewController {
 
     // MARK: - Overridden Methods
 
-    init(featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+    init(analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         isNewToWooCommerceButtonShown = featureFlagService.isFeatureFlagEnabled(.newToWooCommerceLinkInLoginPrologue)
+        self.analytics = analytics
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -111,8 +114,10 @@ private extension LoginPrologueViewController {
         newToWooCommerceButton.applyLinkButtonStyle()
         newToWooCommerceButton.titleLabel?.numberOfLines = 0
         newToWooCommerceButton.titleLabel?.textAlignment = .center
-        newToWooCommerceButton.on(.touchUpInside) { _ in
-            // TODO: 7231 - analytics
+        newToWooCommerceButton.on(.touchUpInside) { [weak self] _ in
+            guard let self = self else { return }
+
+            self.analytics.track(.loginNewToWooButtonTapped)
 
             guard let url = URL(string: Constants.newToWooCommerceURL) else {
                 return assertionFailure("Cannot generate URL.")

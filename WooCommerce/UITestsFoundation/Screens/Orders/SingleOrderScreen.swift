@@ -7,7 +7,7 @@ public final class SingleOrderScreen: ScreenObject {
     let tabBar = try! TabNavComponent()
 
     private let collectPaymentButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["order-detail-collect-payment-button"]
+        $0.buttons["order-details-collect-payment-button"]
     }
 
     private var collectPaymentButton: XCUIElement { collectPaymentButtonGetter(app) }

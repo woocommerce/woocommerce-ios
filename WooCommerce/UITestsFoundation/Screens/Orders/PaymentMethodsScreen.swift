@@ -11,11 +11,11 @@ public final class PaymentMethodsScreen: ScreenObject {
         $0.buttons["payment-methods-view-cancel-button"]
     }
 
-    /// Button to dismiss a the modal
+    /// Button to dismiss the the modal
     ///
     private var dismissButton: XCUIElement { dismissButtonGetter(app) }
 
-    /// Button to dismiss a the modal
+    /// Button to select the card payment method
     ///
     private var cardMethodButton: XCUIElement { cardMethodButtonGetter(app) }
 

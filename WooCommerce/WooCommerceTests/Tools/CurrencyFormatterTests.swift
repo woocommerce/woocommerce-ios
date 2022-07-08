@@ -49,12 +49,15 @@ class CurrencyFormatterTests: XCTestCase {
 
     /// Verifies that the Arabic string value returns an accurate decimal value
     ///
-    func testArabicNumeralsReturnDecimal() {
+    func test_arabic_numerals_return_decimal() {
+        // Given
         let stringValue = "٤٥,٤١"
         let expectedResult = NSDecimalNumber(string: "45.41")
 
+        // When
         let converted = CurrencyFormatter(currencySettings: sampleCurrencySettings).convertToDecimal(stringValue)
 
+        // Then
         // check the formatted decimal exists
         guard let actualResult = converted else {
             XCTFail()

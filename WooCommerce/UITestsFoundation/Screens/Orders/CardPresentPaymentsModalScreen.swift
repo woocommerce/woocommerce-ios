@@ -7,7 +7,7 @@ public final class CardPresentPaymentsModalScreen: ScreenObject {
         $0.buttons["card-present-payments-modal-secondary-button"]
     }
 
-    /// Button to dismiss a the modal
+    /// Button to dismiss the the modal
     ///
     private var dismissButton: XCUIElement { dismissButtonGetter(app) }
 

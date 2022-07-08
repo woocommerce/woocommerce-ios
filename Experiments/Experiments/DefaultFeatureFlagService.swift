@@ -46,7 +46,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .appleIDAccountDeletion:
             return true
         case .newToWooCommerceLinkInLoginPrologue:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         default:
             return true
         }

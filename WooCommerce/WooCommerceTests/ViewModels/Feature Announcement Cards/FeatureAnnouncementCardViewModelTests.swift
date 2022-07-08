@@ -1,5 +1,6 @@
 import XCTest
 @testable import WooCommerce
+import Yosemite
 
 private typealias FeatureCardEvent = WooAnalyticsEvent.FeatureCard
 
@@ -37,7 +38,7 @@ final class FeatureAnnouncementCardViewModelTests: XCTestCase {
 
         // Then
         let expectedSource = FeatureCardEvent.Source.paymentMethods
-        let expectedCampaign = FeatureCardEvent.Campaign.upsellCardReaders
+        let expectedCampaign = FeatureAnnouncementCampaign.upsellCardReaders
         let expectedEvent = WooAnalyticsEvent.FeatureCard.shown(source: expectedSource, campaign: expectedCampaign)
 
         XCTAssert(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent.statName.rawValue
@@ -54,7 +55,7 @@ final class FeatureAnnouncementCardViewModelTests: XCTestCase {
 
         // Then
         let expectedSource = FeatureCardEvent.Source.paymentMethods
-        let expectedCampaign = FeatureCardEvent.Campaign.upsellCardReaders
+        let expectedCampaign = FeatureAnnouncementCampaign.upsellCardReaders
         let expectedEvent = WooAnalyticsEvent.FeatureCard.dismissed(source: expectedSource, campaign: expectedCampaign)
 
         XCTAssert(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent.statName.rawValue
@@ -71,7 +72,7 @@ final class FeatureAnnouncementCardViewModelTests: XCTestCase {
 
         // Then
         let expectedSource = FeatureCardEvent.Source.paymentMethods
-        let expectedCampaign = FeatureCardEvent.Campaign.upsellCardReaders
+        let expectedCampaign = FeatureAnnouncementCampaign.upsellCardReaders
         let expectedEvent = WooAnalyticsEvent.FeatureCard.ctaTapped(source: expectedSource, campaign: expectedCampaign)
 
         XCTAssert(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent.statName.rawValue
@@ -82,7 +83,7 @@ final class FeatureAnnouncementCardViewModelTests: XCTestCase {
 
     private func verifyUpsellCardProperties(
         expectedSource: FeatureCardEvent.Source,
-        expectedCampaign: FeatureCardEvent.Campaign) {
+        expectedCampaign: FeatureAnnouncementCampaign) {
         guard let actualProperties = analyticsProvider.receivedProperties.first(where: { $0.keys.contains("source")
         }) else {
             return XCTFail("Expected properties were not logged")

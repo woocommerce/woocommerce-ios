@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import Yosemite
 
 private typealias FeatureCardEvent = WooAnalyticsEvent.FeatureCard
 
@@ -58,7 +59,7 @@ struct FeatureAnnouncementCardViewModel {
 
     struct Configuration {
         let source: WooAnalyticsEvent.FeatureCard.Source
-        let campaign: WooAnalyticsEvent.FeatureCard.Campaign
+        let campaign: FeatureAnnouncementCampaign
         let title: String
         let message: String
         let buttonTitle: String

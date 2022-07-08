@@ -82,12 +82,6 @@ struct InPersonPaymentsSelectPluginView: View {
         .padding(.horizontal, 16)
         .padding(.bottom, 24)
         .background(Color(.tertiarySystemBackground).ignoresSafeArea())
-        .onAppear {
-            ServiceLocator.analytics.track(
-                event: WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingNotCompleted(
-                    reason: "multiple_payment_provider_conflict",
-                    countryCode: SiteAddress().countryCode ))
-        }
     }
 
     private func confirmPluginSelection() {

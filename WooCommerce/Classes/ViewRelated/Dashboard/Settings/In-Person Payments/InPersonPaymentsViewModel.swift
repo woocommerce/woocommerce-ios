@@ -98,8 +98,12 @@ final class InPersonPaymentsViewModel: ObservableObject {
 
 private extension InPersonPaymentsViewModel {
     func trackState(_ state: CardPresentPaymentOnboardingState) {
-        guard let reason = state.reasonForAnalytics else {
+        // When we remove this feature flag, we can switch reason to let and remove the state.isSelectPlugin block
+        guard var reason = state.reasonForAnalytics else {
             return
+        }
+        if state.isSelectPlugin && !gatewaySelectionAvailable {
+            reason = "multiple_plugins_installed"
         }
         ServiceLocator.analytics
             .track(event: .InPersonPayments

@@ -31,6 +31,7 @@ public enum WooAnalyticsStat: String {
     case signedIn = "signed_in"
     case logout = "account_logout"
     case openedLogin = "login_accessed"
+    case loginNewToWooButtonTapped = "login_new_to_woo_button_tapped"
     case loginFailed = "login_failed_to_login"
     case loginAutoFillCredentialsFilled = "login_autofill_credentials_filled"
     case loginAutoFillCredentialsUpdated = "login_autofill_credentials_updated"

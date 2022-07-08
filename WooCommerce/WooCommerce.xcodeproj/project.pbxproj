@@ -1232,7 +1232,6 @@
 		B5FD111221D3CE7700560344 /* NewNoteViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5FD111121D3CE7700560344 /* NewNoteViewController.xib */; };
 		B5FD111621D3F13700560344 /* BordersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5FD111521D3F13700560344 /* BordersView.swift */; };
 		B626C71B287659D60083820C /* OrderMetadataDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = B626C71A287659D60083820C /* OrderMetadataDetails.swift */; };
-		B626C71D28765A1A0083820C /* OrderMetadataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B626C71C28765A1A0083820C /* OrderMetadataViewModel.swift */; };
 		B63AAF4B254AD2C6000B28A2 /* URL+SurveyViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63AAF4A254AD2C6000B28A2 /* URL+SurveyViewControllerTests.swift */; };
 		B651474527D644FF00C9C4E6 /* CustomerNoteSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B651474427D644FF00C9C4E6 /* CustomerNoteSection.swift */; };
 		B687940C27699D420092BCA0 /* RefundFeesCalculationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B687940B27699D410092BCA0 /* RefundFeesCalculationUseCase.swift */; };
@@ -3029,7 +3028,6 @@
 		B5FD111121D3CE7700560344 /* NewNoteViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NewNoteViewController.xib; sourceTree = "<group>"; };
 		B5FD111521D3F13700560344 /* BordersView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BordersView.swift; sourceTree = "<group>"; };
 		B626C71A287659D60083820C /* OrderMetadataDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderMetadataDetails.swift; sourceTree = "<group>"; };
-		B626C71C28765A1A0083820C /* OrderMetadataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderMetadataViewModel.swift; sourceTree = "<group>"; };
 		B63AAF4A254AD2C6000B28A2 /* URL+SurveyViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+SurveyViewControllerTests.swift"; sourceTree = "<group>"; };
 		B651474427D644FF00C9C4E6 /* CustomerNoteSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerNoteSection.swift; sourceTree = "<group>"; };
 		B687940B27699D410092BCA0 /* RefundFeesCalculationUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundFeesCalculationUseCase.swift; sourceTree = "<group>"; };
@@ -6730,7 +6728,6 @@
 			isa = PBXGroup;
 			children = (
 				B626C71A287659D60083820C /* OrderMetadataDetails.swift */,
-				B626C71C28765A1A0083820C /* OrderMetadataViewModel.swift */,
 			);
 			path = "Order Metadata";
 			sourceTree = "<group>";
@@ -8451,7 +8448,7 @@
 				3F1CA81B26C3542600228BF2 /* XCRemoteSwiftPackageReference "XCUITestHelpers" */,
 				174CA86827D90A6200126524 /* XCRemoteSwiftPackageReference "AutomatticAbout-swift" */,
 				3FFC5EAA2851942F00563C48 /* XCRemoteSwiftPackageReference "Charts" */,
-				4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject.git" */,
+				4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject" */,
 				3F2C8A17285B038800B1A5BB /* XCRemoteSwiftPackageReference "test-collector-swift" */,
 			);
 			productRefGroup = B56DB3C72049BFAA00D4AA8E /* Products */;
@@ -9227,7 +9224,6 @@
 				02482A8E237BEAE9007E73ED /* AztecLinkFormatBarCommand.swift in Sources */,
 				02162729237965E8000208D2 /* ProductFormTableViewModel.swift in Sources */,
 				DEF3300C270444070073AE29 /* ShippingLabelSelectedRate.swift in Sources */,
-				B626C71D28765A1A0083820C /* OrderMetadataViewModel.swift in Sources */,
 				CE2A9FBF23BFB1BE002BEC1C /* LedgerTableViewCell.swift in Sources */,
 				B58B4AC02108FF6100076FDD /* Array+Helpers.swift in Sources */,
 				028AFFB32484ED2800693C09 /* Dictionary+Logging.swift in Sources */,
@@ -11156,7 +11152,7 @@
 				minimumVersion = 1.0.0;
 			};
 		};
-		4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject.git" */ = {
+		4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/krzysztofzablocki/Inject.git";
 			requirement = {
@@ -11242,7 +11238,7 @@
 		};
 		4598298028574688003A9AFE /* Inject */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject.git" */;
+			package = 4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject" */;
 			productName = Inject;
 		};
 		57150E0E24F462C200E81611 /* TestKit */ = {

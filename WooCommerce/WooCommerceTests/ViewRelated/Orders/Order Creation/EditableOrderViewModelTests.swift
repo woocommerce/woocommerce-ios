@@ -939,7 +939,9 @@ final class EditableOrderViewModelTests: XCTestCase {
     func test_customer_details_tracked_when_only_billing_address_added() throws {
         // Given
         let analytics = MockAnalyticsProvider()
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               flow: .editing(initialOrder: .fake()),
+                                               analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
         viewModel.addressFormViewModel.fields.address1 = sampleAddress1().address1
@@ -950,7 +952,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         let flowProperty = try XCTUnwrap(analytics.receivedProperties.first?["flow"] as? String)
         let hasDifferentShippingDetailsProperty = try XCTUnwrap(analytics.receivedProperties.first?["has_different_shipping_details"] as? Bool)
-        XCTAssertEqual(flowProperty, "creation")
+        XCTAssertEqual(flowProperty, "editing")
         XCTAssertFalse(hasDifferentShippingDetailsProperty)
     }
 

@@ -19,6 +19,15 @@ final class EditableOrderViewModel: ObservableObject {
     enum Flow: Equatable {
         case creation
         case editing(initialOrder: Order)
+
+        var analyticsFlow: WooAnalyticsEvent.Orders.Flow {
+            switch self {
+            case .creation:
+                return .creation
+            case .editing:
+                return .editing
+            }
+        }
     }
 
     /// Current flow. For editing stores existing order state prior to applying any edits.
@@ -210,7 +219,7 @@ final class EditableOrderViewModel: ObservableObject {
         orderSynchronizer.setShipping.send(shippingLine)
 
         if shippingLine != nil {
-            analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodAdd(flow: .creation))
+            analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodAdd(flow: flow.analyticsFlow))
         }
     }
 
@@ -221,7 +230,7 @@ final class EditableOrderViewModel: ObservableObject {
         orderSynchronizer.setFee.send(feeLine)
 
         if feeLine != nil {
-            analytics.track(event: WooAnalyticsEvent.Orders.orderFeeAdd(flow: .creation))
+            analytics.track(event: WooAnalyticsEvent.Orders.orderFeeAdd(flow: flow.analyticsFlow))
         }
     }
 
@@ -379,7 +388,7 @@ final class EditableOrderViewModel: ObservableObject {
     func updateOrderStatus(newStatus: OrderStatusEnum) {
         let oldStatus = orderSynchronizer.order.status
         orderSynchronizer.setStatus.send(newStatus)
-        analytics.track(event: WooAnalyticsEvent.Orders.orderStatusChange(flow: .creation, orderID: nil, from: oldStatus, to: newStatus))
+        analytics.track(event: WooAnalyticsEvent.Orders.orderStatusChange(flow: flow.analyticsFlow, orderID: nil, from: oldStatus, to: newStatus))
     }
 
     /// Deletes the order if it has been synced remotely, and removes it from local storage.
@@ -635,7 +644,7 @@ private extension EditableOrderViewModel {
         let input = OrderSyncProductInput(product: .product(product), quantity: 1)
         orderSynchronizer.setProduct.send(input)
 
-        analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation))
+        analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
     }
 
     /// Adds a selected product variation (from the product list) to the order.
@@ -648,7 +657,7 @@ private extension EditableOrderViewModel {
         let input = OrderSyncProductInput(product: .variation(variation), quantity: 1)
         orderSynchronizer.setProduct.send(input)
 
-        analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation))
+        analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
     }
 
     /// Configures product row view models for each item in `orderDetails`.
@@ -777,14 +786,14 @@ private extension EditableOrderViewModel {
             }
             return billingAddress != shippingAddress
         }()
-        analytics.track(event: WooAnalyticsEvent.Orders.orderCustomerAdd(flow: .creation, hasDifferentShippingDetails: areAddressesDifferent))
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCustomerAdd(flow: flow.analyticsFlow, hasDifferentShippingDetails: areAddressesDifferent))
     }
 
     /// Tracks when customer note have been added
     ///
     func trackCustomerNoteAdded() {
         guard customerNoteDataViewModel.customerNote.isNotEmpty else { return }
-        analytics.track(event: WooAnalyticsEvent.Orders.orderCustomerNoteAdd(flow: .creation))
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCustomerNoteAdd(flow: flow.analyticsFlow))
     }
 
     /// Tracks when the create order button is tapped.

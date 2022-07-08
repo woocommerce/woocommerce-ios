@@ -738,7 +738,8 @@ extension AppSettingsStore {
 
     func setFeatureAnnouncementDismissed(campaign: FeatureAnnouncementCampaign, remindLater: Bool) {
         do {
-            let newSettings = FeatureAnnouncementCampaignSettings(dismissedDate: Date(), remindAfter: nil)
+            let remindAfter = remindLater ? Date().addingDays(14) : nil
+            let newSettings = FeatureAnnouncementCampaignSettings(dismissedDate: Date(), remindAfter: remindAfter)
 
             try generalAppSettings.setValue([campaign: newSettings], for: \.featureAnnouncementCampaignSettings)
 

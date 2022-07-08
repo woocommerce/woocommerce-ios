@@ -859,6 +859,24 @@ extension AppSettingsStoreTests {
         XCTAssert(Calendar.current.isDate(actualDismissDate, inSameDayAs: currentTime))
     }
 
+    func test_setFeatureAnnouncementDismissed_with_remindLater_true_stores_reminder_date_in_two_weeks() throws {
+        // Given
+        let twoWeeksTime = Calendar.current.date(byAdding: .day, value: 14, to: Date())!
+
+        try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .upsellCardReaders, remindLater: true)
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
+
+        let actualRemindAfter = try XCTUnwrap( savedSettings.featureAnnouncementCampaignSettings[.upsellCardReaders]?.remindAfter)
+
+        XCTAssert(Calendar.current.isDate(actualRemindAfter, inSameDayAs: twoWeeksTime))
+    }
+
 }
 
 // MARK: - Utils

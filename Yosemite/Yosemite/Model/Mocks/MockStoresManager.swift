@@ -167,10 +167,14 @@ public class MockStoresManager: StoresManager {
     @discardableResult
     public func synchronizeEntities(onCompletion: (() -> Void)?) -> StoresManager {
         if let siteID = sessionManager.defaultStoreID {
-            let action = SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { _ in
-                onCompletion?()
+            Task {
+                await synchronizeGeneralSiteSettings(siteID: siteID)
+                await synchronizeSystemPlugins(siteID: siteID)
+                await loadPaymentGatewayAccounts(siteID: siteID)
+                await MainActor.run {
+                    onCompletion?()
+                }
             }
-            dispatch(action)
         } else {
             onCompletion?()
         }
@@ -202,5 +206,34 @@ public class MockStoresManager: StoresManager {
 
     public func updateDefaultStore(_ site: Site) {
         sessionManager.defaultSite = site
+    }
+}
+
+private extension MockStoresManager {
+    func synchronizeGeneralSiteSettings(siteID: Int64) async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            let action = SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { _ in
+                continuation.resume(returning: ())
+            }
+            dispatch(action)
+        }
+    }
+
+    func synchronizeSystemPlugins(siteID: Int64) async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            let action = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID) { _ in
+                continuation.resume(returning: ())
+            }
+            dispatch(action)
+        }
+    }
+
+    func loadPaymentGatewayAccounts(siteID: Int64) async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            let action = CardPresentPaymentAction.loadAccounts(siteID: siteID) { _ in
+                continuation.resume(returning: ())
+            }
+            dispatch(action)
+        }
     }
 }

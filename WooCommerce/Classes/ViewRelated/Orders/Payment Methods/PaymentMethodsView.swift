@@ -105,19 +105,19 @@ struct PaymentMethodsView: View {
 private struct MethodRow: View {
     /// Icon of the row
     ///
-    let icon: UIImage
+    private let icon: UIImage
 
     /// Title of the row
     ///
-    let title: String
+    private let title: String
 
     /// Accessibility ID for the row
     ///
-    var accessibilityID: String = ""
+    private let accessibilityID: String
 
     /// Action when the row is selected
     ///
-    let action: () -> ()
+    private let action: () -> ()
 
     /// Keeps track of the current screen scale.
     ///
@@ -126,6 +126,13 @@ private struct MethodRow: View {
     ///   Environment safe areas
     ///
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+
+    init(icon: UIImage, title: String, accessibilityID: String = "", action: @escaping () -> ()) {
+        self.icon = icon
+        self.title = title
+        self.accessibilityID = accessibilityID
+        self.action = action
+    }
 
     var body: some View {
         Button(action: action) {

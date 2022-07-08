@@ -385,7 +385,7 @@ extension OrderDetailsViewModel {
             let isUnifiedEditingEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing)
             let billingInformationViewController = BillingInformationViewController(order: order, editingEnabled: !isUnifiedEditingEnabled)
             viewController.navigationController?.pushViewController(billingInformationViewController, animated: true)
-        case .metadata:
+        case .customFields:
             let metadataView = UIHostingController(rootView: OrderCustomFieldsDetails(customFields: order.customFields))
             viewController.navigationController?.pushViewController(metadataView, animated: true)
         case .seeReceipt:

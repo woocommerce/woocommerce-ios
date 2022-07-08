@@ -435,15 +435,15 @@ private extension OrderDetailsDataSource {
             configureRefundedProducts(cell)
         case let cell as IssueRefundTableViewCell:
             configureIssueRefundButton(cell: cell)
-        case let cell as WooBasicTableViewCell where row == .metadata:
-            configureMetadata(cell: cell)
+        case let cell as WooBasicTableViewCell where row == .customFields:
+            configureCustomFields(cell: cell)
         default:
             fatalError("Unidentified customer info row type")
         }
     }
 
-    private func configureMetadata(cell: WooBasicTableViewCell) {
-        cell.bodyLabel?.text = "View metadata"
+    private func configureCustomFields(cell: WooBasicTableViewCell) {
+        cell.bodyLabel?.text = "View Custom Fields"
         cell.applyPlainTextStyle()
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
@@ -996,8 +996,6 @@ extension OrderDetailsDataSource {
 
         let summary = Section(category: .summary, row: .summary)
 
-        let metadata = Section(category: .metadata, row: .metadata)
-
         let shippingNotice: Section? = {
             // Hide the shipping method warning if order contains only virtual products
             // or if the order contains only one shipping method
@@ -1057,6 +1055,8 @@ extension OrderDetailsDataSource {
                            rows: rows,
                            headerStyle: headerStyle)
         }()
+
+        let customFields = Section(category: .customFields, row: .customFields)
 
         let refundedProducts: Section? = {
             // Refunds on
@@ -1228,7 +1228,7 @@ extension OrderDetailsDataSource {
         sections = ([summary,
                      shippingNotice,
                      products,
-                     metadata,
+                     customFields,
                      installWCShipSection] +
                     shippingLabelSections +
                     [refundedProducts,
@@ -1459,7 +1459,7 @@ extension OrderDetailsDataSource {
             case tracking
             case addTracking
             case notes
-            case metadata
+            case customFields
         }
 
         /// The table header style of a `Section`.
@@ -1560,7 +1560,7 @@ extension OrderDetailsDataSource {
         case addOrderNote
         case orderNoteHeader
         case orderNote
-        case metadata
+        case customFields
 
         var reuseIdentifier: String {
             switch self {
@@ -1622,7 +1622,7 @@ extension OrderDetailsDataSource {
                 return OrderNoteHeaderTableViewCell.reuseIdentifier
             case .orderNote:
                 return OrderNoteTableViewCell.reuseIdentifier
-            case .metadata:
+            case .customFields:
                 return WooBasicTableViewCell.reuseIdentifier
             }
         }

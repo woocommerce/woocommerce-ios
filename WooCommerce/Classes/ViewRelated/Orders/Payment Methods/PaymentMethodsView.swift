@@ -67,7 +67,7 @@ struct PaymentMethodsView: View {
 
                     if viewModel.showUpsellCardReaderFeatureBanner {
                         FeatureAnnouncementCardView(viewModel: viewModel.upsellCardReadersAnnouncementViewModel,
-                                                    dismiss: nil,
+                                                    dismiss: {},
                                                     callToAction: {
                             showingPurchaseCardReaderView = true
                         })

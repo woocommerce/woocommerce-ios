@@ -556,6 +556,11 @@ public enum WooAnalyticsStat: String {
     //
     case featureAnnouncementShown = "feature_announcement_shown"
 
+    // MARK: Feature Card events
+    case featureCardShown = "feature_card_shown"
+    case featureCardDismissed = "feature_card_dismissed"
+    case featureCardCtaTapped = "feature_card_cta_tapped"
+
     // MARK: Simple Payments events
     //
     case simplePaymentsFlowStarted = "simple_payments_flow_started"

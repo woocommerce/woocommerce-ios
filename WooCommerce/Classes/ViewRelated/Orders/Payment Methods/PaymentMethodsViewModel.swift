@@ -105,6 +105,13 @@ final class PaymentMethodsViewModel: ObservableObject {
 
     private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
+    private let cardUpsellCampaign =  UpsellCardReadersCampaign(source: .paymentMethods)
+
+    var cardUpsellAnnouncementViewModel: FeatureAnnouncementCardViewModel {
+        .init(analytics: analytics,
+              configuration: cardUpsellCampaign.configuration)
+    }
+
     struct Dependencies {
         let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never>
         let cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting
@@ -344,6 +351,7 @@ private extension PaymentMethodsViewModel {
     enum Localization {
         static let markAsPaidError = NSLocalizedString("There was an error while marking the order as paid.",
                                                        comment: "Text when there is an error while marking the order as paid for during payment.")
+
         static let genericCollectError = NSLocalizedString("There was an error while trying to collect the payment.",
                                                        comment: "Text when there is an unknown error while trying to collect payments")
 

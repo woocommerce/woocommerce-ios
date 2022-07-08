@@ -1,24 +1,15 @@
 import SwiftUI
 
-struct FeatureAnnouncementView: View {
-    let title: String
-    let message: String
-    let buttonTitle: String
-    let image: UIImage
+struct FeatureAnnouncementCardView: View {
+    private let viewModel: FeatureAnnouncementCardViewModel
 
     let dismiss: (() -> Void)?
     let callToAction: (() -> Void)
 
-    init(title: String,
-         message: String,
-         buttonTitle: String,
-         image: UIImage,
+    init(viewModel: FeatureAnnouncementCardViewModel,
          dismiss: (() -> Void)? = nil,
          callToAction: @escaping (() -> Void)) {
-        self.title = title
-        self.message = message
-        self.buttonTitle = buttonTitle
-        self.image = image
+        self.viewModel = viewModel
         self.dismiss = dismiss
         self.callToAction = callToAction
     }
@@ -30,7 +21,10 @@ struct FeatureAnnouncementView: View {
                     .padding(.leading, Layout.padding)
                 Spacer()
                 if let dismiss = dismiss {
-                    Button(action: dismiss) {
+                    Button(action: {
+                        viewModel.dismissedTapped()
+                        dismiss()
+                    }) {
                         Image(systemName: "xmark")
                             .foregroundColor(Color(.withColorStudio(.gray)))
                     }.padding(.trailing, Layout.padding)
@@ -41,28 +35,34 @@ struct FeatureAnnouncementView: View {
             HStack(alignment: .bottom, spacing: 0) {
                 VStack(alignment: .leading, spacing: 0) {
                     VStack(alignment: .leading, spacing: 0) {
-                    Text(title)
-                        .headlineStyle()
-                        .padding(.bottom, Layout.smallSpacing)
-                    Text(message)
-                        .bodyStyle()
-                        .padding(.bottom, Layout.largeSpacing)
+                        Text(viewModel.title)
+                            .headlineStyle()
+                            .padding(.bottom, Layout.smallSpacing)
+                        Text(viewModel.message)
+                            .bodyStyle()
+                            .padding(.bottom, Layout.largeSpacing)
                     }
                     .accessibilityElement(children: .combine)
-                    Button(buttonTitle, action: callToAction)
-                        .padding(.bottom, Layout.bottomButtonPadding)
+                    Button(viewModel.buttonTitle) {
+                        viewModel.ctaTapped()
+                        callToAction()
+                    }
+                    .padding(.bottom, Layout.bottomButtonPadding)
                 }
                 Spacer()
-                Image(uiImage: image)
+                Image(uiImage: viewModel.image)
                     .accessibilityHidden(true)
             }
             .padding(.top, Layout.smallSpacing)
             .padding(.leading, Layout.padding)
         }.background(Color(.listForeground))
+            .onAppear {
+                viewModel.onAppear()
+            }
     }
 }
 
-extension FeatureAnnouncementView {
+extension FeatureAnnouncementCardView {
     enum Layout {
         static let padding: CGFloat = 16
         static let bottomButtonPadding: CGFloat = 23.5

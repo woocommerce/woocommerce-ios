@@ -6,9 +6,12 @@ struct OrderCustomFieldsDetails: View {
 
     var body: some View {
         NavigationView {
-            List {
-                ForEach(customFields, id: \.self) { customField in
-                    Text(customField.value)
+            VStack {
+                Spacer()
+                List {
+                    ForEach(customFields, id: \.self) { customField in
+                        Text(customField.value)
+                    }
                 }
             }.navigationTitle("Custom Fields")
         }

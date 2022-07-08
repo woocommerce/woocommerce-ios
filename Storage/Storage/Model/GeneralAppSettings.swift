@@ -44,6 +44,10 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     /// The last time the Jetpack benefits banner is dismissed.
     public var lastJetpackBenefitsBannerDismissedTime: Date?
 
+    /// The settings stored locally for each feature announcement campaign
+    /// 
+    public var featureAnnouncementCampaignSettings: [FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings]
+
     public init(installationDate: Date?,
                 feedbacks: [FeedbackType: FeedbackSettings],
                 isViewAddOnsSwitchEnabled: Bool,
@@ -51,7 +55,8 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
                 isCouponManagementSwitchEnabled: Bool,
                 knownCardReaders: [String],
                 lastEligibilityErrorInfo: EligibilityErrorInfo? = nil,
-                lastJetpackBenefitsBannerDismissedTime: Date? = nil) {
+                lastJetpackBenefitsBannerDismissedTime: Date? = nil,
+                featureAnnouncementCampaignSettings: [FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings]) {
         self.installationDate = installationDate
         self.feedbacks = feedbacks
         self.isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled
@@ -60,6 +65,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
         self.knownCardReaders = knownCardReaders
         self.lastEligibilityErrorInfo = lastEligibilityErrorInfo
         self.lastJetpackBenefitsBannerDismissedTime = lastJetpackBenefitsBannerDismissedTime
+        self.featureAnnouncementCampaignSettings = featureAnnouncementCampaignSettings
     }
 
     public static var `default`: Self {
@@ -69,7 +75,8 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
               isProductSKUInputScannerSwitchEnabled: false,
               isCouponManagementSwitchEnabled: false,
               knownCardReaders: [],
-              lastEligibilityErrorInfo: nil)
+              lastEligibilityErrorInfo: nil,
+              featureAnnouncementCampaignSettings: [:])
     }
 
     /// Returns the status of a given feedback type. If the feedback is not stored in the feedback array. it is assumed that it has a pending status.
@@ -96,7 +103,8 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             isProductSKUInputScannerSwitchEnabled: isProductSKUInputScannerSwitchEnabled,
             isCouponManagementSwitchEnabled: isCouponManagementSwitchEnabled,
             knownCardReaders: knownCardReaders,
-            lastEligibilityErrorInfo: lastEligibilityErrorInfo
+            lastEligibilityErrorInfo: lastEligibilityErrorInfo,
+            featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings
         )
     }
 }
@@ -116,6 +124,9 @@ extension GeneralAppSettings {
         self.knownCardReaders = try container.decodeIfPresent([String].self, forKey: .knownCardReaders) ?? []
         self.lastEligibilityErrorInfo = try container.decodeIfPresent(EligibilityErrorInfo.self, forKey: .lastEligibilityErrorInfo)
         self.lastJetpackBenefitsBannerDismissedTime = try container.decodeIfPresent(Date.self, forKey: .lastJetpackBenefitsBannerDismissedTime)
+        self.featureAnnouncementCampaignSettings = try container.decodeIfPresent(
+            [FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings].self,
+            forKey: .featureAnnouncementCampaignSettings) ?? [:]
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

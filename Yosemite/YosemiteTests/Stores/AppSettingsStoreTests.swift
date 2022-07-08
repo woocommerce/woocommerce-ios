@@ -837,6 +837,30 @@ final class AppSettingsStoreTests: XCTestCase {
     }
 }
 
+// MARK: - Feature Announcement Card Visibility
+
+extension AppSettingsStoreTests {
+
+    func test_setFeatureAnnouncementDismissed_for_campaign_stores_current_date() throws {
+        // Given
+        let currentTime = Date()
+
+        try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .upsellCardReaders, remindLater: false)
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
+
+        let actualDismissDate = try XCTUnwrap( savedSettings.featureAnnouncementCampaignSettings[.upsellCardReaders]?.dismissedDate)
+
+        XCTAssert(Calendar.current.isDate(actualDismissDate, inSameDayAs: currentTime))
+    }
+
+}
+
 // MARK: - Utils
 
 private extension AppSettingsStoreTests {
@@ -853,7 +877,8 @@ private extension AppSettingsStoreTests {
             isViewAddOnsSwitchEnabled: false,
             isProductSKUInputScannerSwitchEnabled: false,
             isCouponManagementSwitchEnabled: false,
-            knownCardReaders: []
+            knownCardReaders: [],
+            featureAnnouncementCampaignSettings: [:]
         )
         return (settings, feedback)
     }

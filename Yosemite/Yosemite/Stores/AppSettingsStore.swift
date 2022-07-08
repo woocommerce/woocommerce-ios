@@ -737,7 +737,15 @@ private extension AppSettingsStore {
 extension AppSettingsStore {
 
     func setFeatureAnnouncementDismissed(campaign: FeatureAnnouncementCampaign, remindLater: Bool) {
+        do {
+            let newSettings = FeatureAnnouncementCampaignSettings(dismissedDate: Date(), remindAfter: nil)
 
+            try generalAppSettings.setValue([campaign: newSettings], for: \.featureAnnouncementCampaignSettings)
+
+//            onCompletion(.success(true))
+        } catch {
+//            onCompletion(.failure(error))
+        }
     }
 
     func getFeatureAnnouncementVisibility(campaign: FeatureAnnouncementCampaign, onCompletion: (Result<Bool, Error>) -> ()) {

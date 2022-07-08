@@ -219,6 +219,8 @@ public typealias StorageTopEarnerStats = Storage.TopEarnerStats
 public typealias StorageTopEarnerStatsItem = Storage.TopEarnerStatsItem
 public typealias StorageTaxClass = Storage.TaxClass
 public typealias StorageWCPayCharge = Storage.WCPayCharge
+public typealias FeatureAnnouncementCampaign = Storage.FeatureAnnouncementCampaign
+public typealias FeatureAnnouncementCampaignSettings = Storage.FeatureAnnouncementCampaignSettings
 
 // MARK: - Internal ReadOnly Models
 

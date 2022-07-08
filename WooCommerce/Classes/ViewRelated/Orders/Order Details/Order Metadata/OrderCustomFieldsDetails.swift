@@ -1,7 +1,7 @@
 import Yosemite
 import SwiftUI
 
-struct OrderMetadataDetails: View {
+struct OrderCustomFieldsDetails: View {
     let customFields: [OrderMetaData]
 
     var body: some View {
@@ -17,6 +17,6 @@ struct OrderMetadataDetails: View {
 
 struct OrderMetadataDetails_Previews: PreviewProvider {
     static var previews: some View {
-        OrderMetadataDetails(customFields: [])
+        OrderCustomFieldsDetails(customFields: [])
     }
 }

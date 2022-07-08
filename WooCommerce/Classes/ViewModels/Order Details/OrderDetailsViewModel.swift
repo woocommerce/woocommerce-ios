@@ -386,7 +386,7 @@ extension OrderDetailsViewModel {
             let billingInformationViewController = BillingInformationViewController(order: order, editingEnabled: !isUnifiedEditingEnabled)
             viewController.navigationController?.pushViewController(billingInformationViewController, animated: true)
         case .metadata:
-            let metadataView = UIHostingController(rootView: OrderMetadataDetails(customFields: order.customFields))
+            let metadataView = UIHostingController(rootView: OrderCustomFieldsDetails(customFields: order.customFields))
             viewController.navigationController?.pushViewController(metadataView, animated: true)
         case .seeReceipt:
             let countryCode = configurationLoader.configuration.countryCode

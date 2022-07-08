@@ -372,6 +372,10 @@ private extension OrdersRootViewController {
     ///
     private func navigateToOrderDetail(_ order: Order) {
         let viewModel = OrderDetailsViewModel(order: order)
+        guard !featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
+            return handleSwitchingDetails(viewModel: viewModel)
+        }
+
         let orderViewController = Inject.ViewControllerHost(OrderDetailsViewController(viewModel: viewModel))
 
         // Cleanup navigation (remove new order flow views) before navigating to order details

@@ -35,6 +35,7 @@ class AuthenticationManager: Authentication {
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
                                                                 wpcomTermsOfServiceURL: WooConstants.URLs.termsOfService.rawValue,
                                                                 wpcomAPIBaseURL: Settings.wordpressApiBaseURL,
+                                                                whatIsWPComURL: WooConstants.URLs.whatIsWPComURL.rawValue,
                                                                 googleLoginClientId: ApiCredentials.googleClientId,
                                                                 googleLoginServerClientId: ApiCredentials.googleServerId,
                                                                 googleLoginScheme: ApiCredentials.googleAuthScheme,
@@ -86,6 +87,7 @@ class AuthenticationManager: Authentication {
                                                                   enterYourSiteAddressButtonTitle: AuthenticationConstants.enterYourSiteAddressButtonTitle,
                                                                   findSiteButtonTitle: AuthenticationConstants.findYourStoreAddressButtonTitle,
                                                                   signupTermsOfService: AuthenticationConstants.signupTermsOfService,
+                                                                  whatIsWPComLinkTitle: AuthenticationConstants.whatIsWPComLinkTitle,
                                                                   getStartedTitle: AuthenticationConstants.loginTitle)
 
         let unifiedStyle = WordPressAuthenticatorUnifiedStyle(borderColor: .divider,

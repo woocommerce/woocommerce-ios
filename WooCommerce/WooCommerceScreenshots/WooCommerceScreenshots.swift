@@ -32,12 +32,12 @@ class WooCommerceScreenshots: XCTestCase {
 
         app.launch()
 
-        // Automates allowing local notification if needed
-        let app2 = XCUIApplication(bundleIdentifier: "com.apple.springboard")
-        let button = app2.alerts.firstMatch.buttons["Allow"]
-        if button.waitForExistence(timeout: 5) {
-            button.tap()
+        addUIInterruptionMonitor(withDescription: "System Dialog") {
+            (alert) -> Bool in
+            alert.buttons["Allow"].tap()
+            return true
         }
+        app.tap()
 
         try MyStoreScreen()
 

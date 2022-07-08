@@ -14,6 +14,8 @@ struct FeatureAnnouncementCardView: View {
         self.callToAction = callToAction
     }
 
+    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
@@ -55,10 +57,12 @@ struct FeatureAnnouncementCardView: View {
             }
             .padding(.top, Layout.smallSpacing)
             .padding(.leading, Layout.padding)
-        }.background(Color(.listForeground))
-            .onAppear {
-                viewModel.onAppear()
-            }
+        }
+        .padding(.horizontal, insets: safeAreaInsets)
+        .background(Color(.listForeground).ignoresSafeArea())
+        .onAppear {
+            viewModel.onAppear()
+        }
     }
 }
 

@@ -33,7 +33,7 @@ struct FeatureAnnouncementCardViewModel {
         trackAnnouncementShown()
     }
 
-    func dismissedTapped() {
+    func dismissTapped() {
         trackAnnouncementDismissed()
     }
 

@@ -50,7 +50,7 @@ final class FeatureAnnouncementCardViewModelTests: XCTestCase {
         // Given
 
         // When
-        sut.dismissedTapped()
+        sut.dismissTapped()
 
         // Then
         let expectedSource = FeatureCardEvent.Source.paymentMethods

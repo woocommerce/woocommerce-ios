@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-06-21 17:54:17+0000 */
+/* Translation-Revision-Date: 2022-06-30 13:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -354,7 +354,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action to add product on the placeholder overlay when there are no products on the Products tab
    Title for the screen to add a product to an order
-   Title text of the button that adds a product when creating a new order */
+   Title text of the button that adds a product when creating or editing an order */
 "Add Product" = "제품 추가";
 
 /* Action to add linked products to a product in the Linked Products List Selector screen
@@ -560,6 +560,9 @@ which should be translated separately and considered part of this sentence. */
 /* A failure reason for when an error HTTP status code was returned from the site. */
 "An HTTP error code was returned." = "HTTP 오류 코드가 반환되었습니다.";
 
+/* Default error message displayed when unable to close user account. */
+"An error occured while closing account." = "계정을 종료하는 동안 오류가 발생했습니다.";
+
 /* Error message when Bluetooth is not enabled for this application. */
 "An error occurred accessing Bluetooth - please enable Bluetooth and try again" = "블루투스 접근 중 오류가 발생했음 - 블루투스를 활성화하고 다시 시도하세요.";
 
@@ -755,6 +758,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "굵게";
 
+/* The details text on the placeholder overlay when there are no coupons on the coupon list screen. */
+"Boost your business by sending customers special offers and discounts." = "고객에게 특별한 혜택과 할인을 발송하여 비즈니스를 증진하세요.";
+
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "상자";
 
@@ -833,6 +839,8 @@ which should be translated separately and considered part of this sentence. */
    Cancel the shipping label more menu action sheet
    Cancel the shipping label tracking more menu action sheet
    Change order status screen - button title for closing the view
+   Close Account button title - dismisses alert, which cancels the Close Account attempt.
+   Close Account error alert button title - dismisses error alert.
    Close the action sheet
    Dismiss button on the alert when the user taps to delete a Product image
    Label for a button that when tapped, cancels the process of connecting to a card reader 
@@ -876,6 +884,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Card method title on the select payment method screen for simple payments */
 "Card" = "카드";
+
+/* Title for the section related to card readers inside In-Person Payments settings */
+"Card readers" = "카드 판독기";
 
 /* Error message when a card is left in the reader and another transaction started. */
 "Card was left in reader - please remove and reinsert card" = "카드가 리더에 남아 있음 - 카드를 제거하고 다시 시도하세요.";
@@ -988,6 +999,13 @@ which should be translated separately and considered part of this sentence. */
    Title of the Close action on the Jetpack Install view */
 "Close" = "닫기";
 
+/* Close Account button title to close the user's WordPress.com account
+   Link on the store picker for users who signed in with Apple to close their WordPress.com account. */
+"Close Account" = "계정 종료";
+
+/* Title of the Close Account in-progress view. */
+"Closing account..." = "계정 종료 중…";
+
 /* Accessibility value when a banner is collapsed */
 "Collapsed" = "축소됨";
 
@@ -1015,6 +1033,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "새 주문 메모를 작성합니다.";
+
+/* Close Account confirmation alert title. */
+"Confirm Close Account" = "계정 종료 확인";
 
 /* Button to confirm the preferred provider for In-Person Payments */
 "Confirm Payment Method" = "결제 수단 확인";
@@ -1083,6 +1104,7 @@ which should be translated separately and considered part of this sentence. */
 "Contact Email" = "연락처 이메일";
 
 /* Action button to contact support when Jetpack install fails
+   Close Account error alert button title - navigates the user to contact support.
    Contact Support title
    Text for the button to contact support from the store picker error screen
    The title of the button to contact support in the Error Loading Data banner */
@@ -1172,6 +1194,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when tag loading failed */
 "Couldn't load tags." = "태그를 로드할 수 없었습니다.";
 
+/* Error title displayed when unable to close user account. */
+"Couldn’t close account automatically" = "계정을 자동으로 닫을 수 없습니다.";
+
 /* Text field country in Edit Address Form
    Text field country in Shipping Label Address Validation
    Title to select country from the edit address screen */
@@ -1220,11 +1245,15 @@ which should be translated separately and considered part of this sentence. */
 /* The title for a button that causes the app to deliberately crash for debugging purposes */
 "Crash Immediately" = "즉시 충돌";
 
-/* Button to create an order on the New Order screen */
+/* Action for creating a Coupon remotely
+   Button to create an order on the Order screen */
 "Create" = "만들기";
 
 /* The button title text for creating a new account. */
 "Create Account" = "계정 생성";
+
+/* Title of the create coupon button on the coupon list screen when it's empty */
+"Create Coupon" = "쿠폰 생성";
 
 /* Create Shipping Label form navigation title
    Option to create new shipping label from the action sheet on Products section of Order Details screen
@@ -1248,6 +1277,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Create coupon screen */
 "Create coupon" = "쿠폰 만들기";
+
+/* Accessibility label for the Create Coupons button */
+"Create coupons" = "쿠폰 생성";
 
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "새 패키지 생성";
@@ -1483,6 +1515,7 @@ which should be translated separately and considered part of this sentence. */
 "Don't have an account? _Sign up_" = "아직 계정이 없으신가요? _가입_";
 
 /* Action title to select products to add to a grouped product from search results
+   Button to dismiss the Order Editing screen
    Button to finish selecting the Coupon expiry date in the Add or Edit Coupon screen
    Button to submit selection on Select Categories screen
    Button to submit the product selector without any product selected.
@@ -1820,7 +1853,8 @@ which should be translated separately and considered part of this sentence. */
 /* Notice displayed when the label purchase fails */
 "Error purchasing the label" = "레이블 구매 중 오류 발생";
 
-/* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
+/* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
+   The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
 "Everyone loves a deal" = "누구나 좋아하는 딜";
 
 /* Button to submit selection on the Exclude Categories screen when more than 1 item is selected. Reads like: Exclude 10 Categories */
@@ -2969,7 +3003,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Accessibility hint for selecting a variable product in the Select Products screen */
 "Opens list of product variations." = "상품 변형 목록을 엽니다.";
 
-/* Accessibility hint for selecting a product in a new order */
+/* Accessibility hint for selecting a product in an order form */
 "Opens product detail." = "상품 상세 정보를 엽니다.";
 
 /* Placeholder of cell presenting the title of the new attribute option. */
@@ -3098,6 +3132,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Add Product Category. Title of cell presenting the parent category. */
 "Parent Category" = "상위 카테고리";
 
+/* Title of the banner when the order is not editable */
+"Parts of this order are not currently editable" = "이 주문 중 일부는 현재 편집할 수 없습니다.";
+
 /* Accessibility label for the password text field in the self-hosted login page.
    Login dialog password placeholder
    Password field title in Product Visibility
@@ -3124,6 +3161,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header for list of payment methods in Payment Method screen */
 "Payment Method Selected" = "결제 수단 선택됨";
 
+/* Navigates to Payment Gateway management screen */
+"Payment Provider" = "결제 제공업체";
+
 /* Message when the presented card remaining credit or balance is insufficient for the purchase. */
 "Payment declined due to insufficient funds. Try another means of payment" = "한도가 부족하여 결제가 거부되었습니다. 다른 결제 수단 시도";
 
@@ -3136,6 +3176,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Notice that will be displayed after adding a new Shipping Label payment method */
 "Payment method added" = "결제 수단 추가됨";
+
+/* Title for the section related to payments inside In-Person Payments settings */
+"Payment options" = "결제 옵션";
 
 /* Label informing users that the payment succeeded. Presented to users when a payment is collected */
 "Payment successful" = "결제 성공";
@@ -3164,6 +3207,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the Performance section on Coupons Details screen */
 "Performance" = "실적";
+
+/* Close Account button title - confirms and closes user's WordPress.com account. */
+"Permanently Close Account" = "영구적으로 계정 종료";
 
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
@@ -3256,7 +3302,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please make sure the app can access Photos in device settings" = "앱이 기기 설정의 사진에 액세스할 수 있는지 확인하세요.";
 
 /* Error notice recovery suggestion when we fail to update an address in the edit address screen.
-   Recovery suggestion when we fail to update an address when creating an order */
+   Recovery suggestion when we fail to update an address when creating or editing an order */
 "Please make sure you are running the latest version of WooCommerce and try again later." = "실행하는 우커머스가 최신 버전인지 확인하고 나중에 다시 시도하세요.";
 
 /* Error message when no package is selected on Shipping Label Package Details screen */
@@ -3464,7 +3510,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Product section title if there is more than one product.
    Product section title in Review Order screen if there is more than one product.
    Title of the Products tab — plural form of Product
-   Title text of the section that shows the Products when creating a new order
+   Title text of the section that shows the Products when creating or editing an order
    Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "상품";
 
@@ -4297,6 +4343,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label for one of the filters in order custom date range */
 "Start Date" = "시작 날짜";
 
+/* VoiceOver accessibility hint, informing the user the button can be used to create coupons. */
+"Start a Coupon creation by selecting a discount type in a bottom sheet" = "하단의 시트에서 할인 유형을 선택하여 쿠폰 생성을 시작하세요.";
+
 /* The details on the placeholder overlay when there are no products on the Products tab */
 "Start selling today by adding your first product to the store." = "스토어에 첫 번째 제품을 추가하고 지금 바로 판매하세요.";
 
@@ -4893,6 +4942,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Footer text for editing external product button text */
 "This text will be shown on the button linking to the external product." = "외부 제품으로 연결되는 버튼에 표시되는 텍스트입니다.";
 
+/* Error message displayed when unable to close user account due to unresolved chargebacks. */
+"This user account cannot be closed if there are unresolved chargebacks." = "해결되지 않는 결제 승인 거부가 있는 경우 이 계정을 종료할 수 없습니다.";
+
+/* Error message displayed when unable to close user account due to having active purchases. */
+"This user account cannot be closed while it has active purchases." = "활성 구매가 있는 동안에는 이 사용자 계정을 종료할 수 없습니다.";
+
+/* Error message displayed when unable to close user account due to having active subscriptions. */
+"This user account cannot be closed while it has active subscriptions." = "활성 구독이 있는 동안에는 이 사용자 계정을 종료할 수 없습니다.";
+
 /* Alert info when selecting the cash payment method for simple payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "그러면 WooCommerce 외부에서 수신한 주문(전체)이 완료로 표시됩니다.";
 
@@ -4915,17 +4973,26 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle on the variations list screen when there are no variations and attributes */
 "To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "변형을 추가하려면 속성(즉, \"색상\", \"사이즈\")을 먼저 설정해야 합니다.";
 
+/* Error message displayed when unable to close user account due to having active atomic site. */
+"To close this account now, contact our support team." = "이 계정을 지금 닫으려면, 지원 팀에 문의하세요.";
+
 /* Message prompting an administrator to deactivate Stripe plugin */
 "To collect payments, please ask an administrator to deactivate WooCommerce Stripe Gateway." = "결제 정보를 수집하려면 관리자에게 문의하여 WooCommerce Stripe Gateway를 비활성화하세요.";
 
 /* Message prompting an administrator to deactivate Stripe plugin */
 "To collect payments, please deactivate WooCommerce Stripe Gateway." = "결제 정보를 수집하려면 WooCommerce Stripe Gateway를 비활성화하세요.";
 
+/* Close Account confirmation alert message. The %1$@ is the user's WordPress.com username. */
+"To confirm, please re-enter your username before closing.\n\n%1$@" = "확인하려면 종료하기 전에 사용자명을 다시 입력하세요.\n\n%1$@";
+
 /* Footer of text field section in Add Attribute screen */
 "To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "변형을 만들려면 속성(즉, \"색상\", \"사이즈\")을 먼저 설정해야 합니다. ";
 
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "새 워드프레스닷컴 계정을 만들려면 이메일 주소를 입력하세요.";
+
+/* Content of the banner when the order is not editable */
+"To edit Products or Payment Details, change the status to Pending Payment." = "상품 또는 결제 상세 정보를 변경하려면 상태를 결제 대기 중으로 변경하세요.";
 
 /* Settings > Privacy Settings > report crashes section. Explains what the 'report crashes' toggle does */
 "To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports." = "앱 성능을 개선하고 가끔씩 발생하는 버그를 수정하는 데 도움이 되도록 자동 충돌 보고서를 켜주세요.";
@@ -5126,7 +5193,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Load Product Attributes Action Failed */
 "Unable to load product attributes" = "제품 속성을 로드할 수 없음";
 
-/* Notice displayed when taxes cannot be synced for new order */
+/* Notice displayed when data cannot be synced for new order */
 "Unable to load taxes for order" = "주문에 대한 세금을 로드할 수 없음";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
@@ -5171,13 +5238,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
 "Unable to save changes to the payment method" = "변경 사항을 지급 방법에 저장할 수 없음";
 
+/* Notice displayed when data cannot be synced for edited order */
+"Unable to save changes. Please try again." = "변경 사항을 저장할 수 없습니다. 다시 시도하세요.";
+
 /* Error message when Bluetooth Low Energy is not supported on the user device. */
 "Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device" = "카드 리더를 검색할 수 없음 - Bluetooth 절전 모드가 이 기기에서는 지원되지 않음 - 다른 기기를 사용해 보세요.";
 
 /* Error message when Bluetooth scan times out during reader discovery. */
 "Unable to search for card readers - Bluetooth timed out - please try again" = "카드 리더를 검색할 수 없음 - Bluetooth 시간 초과 - 다시 시도하세요.";
 
-/* Error notice title when we fail to update an address when creating an order. */
+/* Error notice title when we fail to update an address when creating or editing an order. */
 "Unable to set customer details." = "고객 상세 정보를 설정할 수 없습니다.";
 
 /* Error notice title when we fail to update an address in the edit address screen. */
@@ -5698,6 +5768,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the merchant's payment account is under review */
 "You'll be able to accept In-Person Payments as soon as we finish reviewing your account." = "계정 검토를 완료하는 즉시 대면 결제를 수락할 수 있습니다.";
+
+/* Error message displayed when unable to close user account due to being unauthorized. */
+"You're not authorized to close the account." = "계정을 종료할 권한이 없습니다.";
 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "결제 대금을 수령하려면 카드 리더 소프트웨어를 업데이트해야 합니다. 취소하면 리더 연결이 차단됩니다.";

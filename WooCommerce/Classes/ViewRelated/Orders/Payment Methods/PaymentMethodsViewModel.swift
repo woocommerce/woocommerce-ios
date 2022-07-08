@@ -105,11 +105,11 @@ final class PaymentMethodsViewModel: ObservableObject {
 
     private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
-    private let cardUpsellCampaign =  UpsellCardReadersCampaign(source: .paymentMethods)
+    private let upsellCardReadersCampaign =  UpsellCardReadersCampaign(source: .paymentMethods)
 
-    var cardUpsellAnnouncementViewModel: FeatureAnnouncementCardViewModel {
+    var upsellCardReadersAnnouncementViewModel: FeatureAnnouncementCardViewModel {
         .init(analytics: analytics,
-              configuration: cardUpsellCampaign.configuration)
+              configuration: upsellCardReadersCampaign.configuration)
     }
 
     struct Dependencies {

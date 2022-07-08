@@ -186,4 +186,10 @@ public enum AppSettingsAction: Action {
     /// Clears all the products settings
     ///
     case resetGeneralStoreSettings
+
+    // MARK: - Feature Announcement Card Visibility
+
+    case setFeatureAnnouncementDismissed(campaign: FeatureAnnouncementCampaign, remindLater: Bool)
+
+    case getFeatureAnnouncementVisibility(campaign: FeatureAnnouncementCampaign, onCompletion: (Result<Bool, Error>) -> ())
 }

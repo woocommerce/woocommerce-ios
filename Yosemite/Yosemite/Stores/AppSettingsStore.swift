@@ -178,6 +178,10 @@ public class AppSettingsStore: Store {
             setCouponManagementFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadCouponManagementFeatureSwitchState(let onCompletion):
             loadCouponManagementFeatureSwitchState(onCompletion: onCompletion)
+        case .setFeatureAnnouncementDismissed(campaign: let campaign, remindLater: let remindLater):
+            setFeatureAnnouncementDismissed(campaign: campaign, remindLater: remindLater)
+        case .getFeatureAnnouncementVisibility(campaign: let campaign, onCompletion: let completion):
+            getFeatureAnnouncementVisibility(campaign: campaign, onCompletion: completion)
         }
     }
 }
@@ -723,6 +727,21 @@ private extension AppSettingsStore {
         let storeSettings = getStoreSettings(for: siteID)
         let newSettings = storeSettings.copy(preferredInPersonPaymentGateway: .some(nil))
         setStoreSettings(settings: newSettings, for: siteID, onCompletion: nil)
+    }
+
+}
+
+
+// MARK: - Feature Announcement Card Visibility
+
+extension AppSettingsStore {
+
+    func setFeatureAnnouncementDismissed(campaign: FeatureAnnouncementCampaign, remindLater: Bool) {
+
+    }
+
+    func getFeatureAnnouncementVisibility(campaign: FeatureAnnouncementCampaign, onCompletion: (Result<Bool, Error>) -> ()) {
+
     }
 
 }

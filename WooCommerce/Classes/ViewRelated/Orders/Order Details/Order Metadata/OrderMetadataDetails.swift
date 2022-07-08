@@ -3,7 +3,7 @@ import SwiftUI
 
 struct OrderMetadataDetails: View {
     let customFields: [OrderMetaData]
- 
+
     var body: some View {
         VStack {
             List {

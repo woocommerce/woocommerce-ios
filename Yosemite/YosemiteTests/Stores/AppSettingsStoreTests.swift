@@ -877,6 +877,88 @@ extension AppSettingsStoreTests {
         XCTAssert(Calendar.current.isDate(actualRemindAfter, inSameDayAs: twoWeeksTime))
     }
 
+    func test_getFeatureAnnouncementVisibility_without_stored_setting_calls_completion_with_visibility_true() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .upsellCardReaders) { result in
+                promise(result)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        let isEnabled = try result.get()
+        XCTAssertTrue(isEnabled)
+    }
+
+    func test_getFeatureAnnouncementVisibility_with_stored_dismissDate_and_no_remindAfter_calls_completion_with_visibility_false() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let date = Date(timeIntervalSince1970: 100)
+
+        let settings = createAppSettings(featureAnnouncementCampaignSettings: [.upsellCardReaders: .init(dismissedDate: date, remindAfter: nil)])
+        try fileStorage?.write(settings, to: expectedGeneralAppSettingsFileURL)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .upsellCardReaders) { result in
+                promise(result)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        let isEnabled = try result.get()
+        XCTAssertFalse(isEnabled)
+    }
+
+    func test_getFeatureAnnouncementVisibility_with_stored_dismissDate_and_future_remindAfter_calls_completion_with_visibility_false() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let dismissedDate = Date()
+        let oneMinute = Calendar.current.date(byAdding: .minute, value: 1, to: dismissedDate)
+
+        let settings = createAppSettings(featureAnnouncementCampaignSettings: [.upsellCardReaders: .init(dismissedDate: dismissedDate, remindAfter: oneMinute)])
+        try fileStorage?.write(settings, to: expectedGeneralAppSettingsFileURL)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .upsellCardReaders) { result in
+                promise(result)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        let isEnabled = try result.get()
+        XCTAssertFalse(isEnabled)
+    }
+
+    func test_getFeatureAnnouncementVisibility_with_stored_dismissDate_and_past_remindAfter_calls_completion_with_visibility_true() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let dismissedDate = Calendar.current.date(byAdding: .minute, value: -2, to: Date())!
+        let oneMinuteAgo = Calendar.current.date(byAdding: .minute, value: -1, to: dismissedDate)
+
+        let settings = createAppSettings(featureAnnouncementCampaignSettings: [.upsellCardReaders: .init(dismissedDate: dismissedDate, remindAfter: oneMinuteAgo)])
+        try fileStorage?.write(settings, to: expectedGeneralAppSettingsFileURL)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .upsellCardReaders) { result in
+                promise(result)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        let isEnabled = try result.get()
+        XCTAssertTrue(isEnabled)
+    }
+
 }
 
 // MARK: - Utils
@@ -899,6 +981,19 @@ private extension AppSettingsStoreTests {
             featureAnnouncementCampaignSettings: [:]
         )
         return (settings, feedback)
+    }
+
+    func createAppSettings(featureAnnouncementCampaignSettings: [FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings]) -> GeneralAppSettings {
+        let settings = GeneralAppSettings(
+            installationDate: Date(),
+            feedbacks: [:],
+            isViewAddOnsSwitchEnabled: false,
+            isProductSKUInputScannerSwitchEnabled: false,
+            isCouponManagementSwitchEnabled: false,
+            knownCardReaders: [],
+            featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings
+        )
+        return settings
     }
 
     var expectedGeneralStoreSettingsFileURL: URL {

@@ -750,7 +750,17 @@ extension AppSettingsStore {
     }
 
     func getFeatureAnnouncementVisibility(campaign: FeatureAnnouncementCampaign, onCompletion: (Result<Bool, Error>) -> ()) {
+        guard let campaignSettings = generalAppSettings.value(for: \.featureAnnouncementCampaignSettings)[campaign] else {
+            return onCompletion(.success(true))
+        }
 
+        if let remindAfter = campaignSettings.remindAfter {
+            let remindAfterHasPassed = remindAfter < Date()
+            onCompletion(.success(remindAfterHasPassed))
+        } else {
+            let neverDismissed = campaignSettings.dismissedDate == nil
+            onCompletion(.success(neverDismissed))
+        }
     }
 
 }

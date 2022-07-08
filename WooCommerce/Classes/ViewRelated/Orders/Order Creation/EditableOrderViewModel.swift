@@ -296,6 +296,8 @@ final class EditableOrderViewModel: ObservableObject {
     func removeItemFromOrder(_ item: OrderItem) {
         guard let input = createUpdateProductInput(item: item, quantity: 0) else { return }
         orderSynchronizer.setProduct.send(input)
+
+        analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
     }
 
     /// Creates a view model for the `ProductRow` corresponding to an order item.

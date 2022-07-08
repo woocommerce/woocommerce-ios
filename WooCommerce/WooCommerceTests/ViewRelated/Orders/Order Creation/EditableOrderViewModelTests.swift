@@ -901,6 +901,28 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(properties, "editing")
     }
 
+    func test_product_is_tracked_when_removed_from_order() throws {
+        // Given
+        let product0 = Product.fake().copy(siteID: sampleSiteID, productID: 0, purchasable: true)
+        let storageManager = MockStorageManager()
+        storageManager.insertProducts([product0])
+        let analytics = MockAnalyticsProvider()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // Given products are added to order
+        viewModel.addProductViewModel.selectProduct(product0.productID)
+
+        // When
+        let itemToRemove = OrderItem.fake().copy(itemID: viewModel.productRows[0].id)
+        viewModel.removeItemFromOrder(itemToRemove)
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderProductAdd.rawValue, WooAnalyticsStat.orderProductRemove.rawValue])
+
+        let properties = try XCTUnwrap(analytics.receivedProperties.last?["flow"] as? String)
+        XCTAssertEqual(properties, "creation")
+    }
+
     func test_shipping_method_tracked_when_added() throws {
         // Given
         let analytics = MockAnalyticsProvider()

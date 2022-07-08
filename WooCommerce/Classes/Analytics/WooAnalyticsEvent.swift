@@ -370,6 +370,10 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderProductQuantityChange, properties: [Keys.flow: flow.rawValue])
         }
 
+        static func orderProductRemove(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderProductRemove, properties: [Keys.flow: flow.rawValue])
+        }
+
         static func orderCustomerAdd(flow: Flow, hasDifferentShippingDetails: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderCustomerAdd, properties: [
                 Keys.flow: flow.rawValue,

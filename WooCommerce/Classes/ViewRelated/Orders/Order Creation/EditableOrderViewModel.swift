@@ -841,8 +841,9 @@ private extension EditableOrderViewModel {
     /// Tracks an order remote sync failure
     ///
     func trackSyncOrderFailure(error: Error) {
-        analytics.track(event: WooAnalyticsEvent.Orders.orderSyncFailed(errorContext: String(describing: error),
-                                                                            errorDescription: error.localizedDescription))
+        analytics.track(event: WooAnalyticsEvent.Orders.orderSyncFailed(flow: flow.analyticsFlow,
+                                                                        errorContext: String(describing: error),
+                                                                        errorDescription: error.localizedDescription))
     }
 
     /// Creates an `OrderSyncAddressesInput` type from a `NewOrderAddressData` type.

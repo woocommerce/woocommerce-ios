@@ -1070,7 +1070,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(analytics.receivedEvents.isEmpty)
     }
 
-    func test_sync_failure_tracked_when_sync_fails() {
+    func test_sync_failure_tracked_when_sync_fails() throws {
         // Given
         let analytics = MockAnalyticsProvider()
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -1094,6 +1094,10 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(analytics.receivedEvents.contains(WooAnalyticsStat.orderSyncFailed.rawValue))
+
+        let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.orderSyncFailed.rawValue}))
+        let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["flow"] as? String, "creation")
     }
 
     // MARK: -

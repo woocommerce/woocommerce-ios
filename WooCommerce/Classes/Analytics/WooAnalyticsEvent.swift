@@ -436,8 +436,9 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        static func orderSyncFailed(errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
+        static func orderSyncFailed(flow: Flow, errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderSyncFailed, properties: [
+                Keys.flow: flow.rawValue,
                 Keys.errorContext: errorContext,
                 Keys.errorDescription: errorDescription
             ])

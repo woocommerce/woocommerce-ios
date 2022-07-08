@@ -108,13 +108,13 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
     func test_paymentMethodsViewModel_title_contains_formatted_order_amount() {
         // Given
-        let order = Order.fake().copy(currency: "USD", total: "10.0")
+        let order = Order.fake().copy(currency: "EUR", total: "10.0")
 
         // When
         let currencyFormatter = CurrencyFormatter(currencySettings: .init())
         let title = OrderDetailsViewModel(order: order, currencyFormatter: currencyFormatter).paymentMethodsViewModel.title
 
         // Then
-        XCTAssertTrue(title.contains("$10.0"))
+        XCTAssertTrue(title.contains("\u{20AC}10.0"))
     }
 }

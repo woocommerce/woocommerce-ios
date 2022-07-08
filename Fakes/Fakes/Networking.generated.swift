@@ -350,7 +350,8 @@ extension Order {
             coupons: .fake(),
             refunds: .fake(),
             fees: .fake(),
-            taxes: .fake()
+            taxes: .fake(),
+            customFields: .fake()
         )
     }
 }

@@ -44,6 +44,7 @@ public typealias OrderStatusEnum = Networking.OrderStatusEnum
 public typealias OrderCouponLine = Networking.OrderCouponLine
 public typealias OrderFeeLine = Networking.OrderFeeLine
 public typealias OrderFeeTaxStatus = Networking.OrderFeeTaxStatus
+public typealias OrderMetaData = Networking.OrderMetaData
 public typealias OrderNote = Networking.OrderNote
 public typealias OrderTaxLine = Networking.OrderTaxLine
 public typealias OrderMetaData = Networking.OrderMetaData

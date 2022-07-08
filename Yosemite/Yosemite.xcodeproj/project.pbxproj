@@ -314,6 +314,7 @@
 		BAB3737927964A9500837B4A /* OrderTaxLine+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAB3737827964A9500837B4A /* OrderTaxLine+ReadOnlyConvertible.swift */; };
 		CC2C036C262F316600928C9C /* ShippingLabelAccountSettings+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2C036B262F316600928C9C /* ShippingLabelAccountSettings+ReadOnlyConvertible.swift */; };
 		CC2C0372262F32D800928C9C /* ShippingLabelPaymentMethod+ReadonlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2C0371262F32D800928C9C /* ShippingLabelPaymentMethod+ReadonlyConvertible.swift */; };
+		CC6A054628773F75002C144E /* OrderMetaData+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6A054528773F75002C144E /* OrderMetaData+ReadOnlyConvertible.swift */; };
 		CE01014F2368C41600783459 /* Refund+ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE01014E2368C41600783459 /* Refund+ReadOnlyType.swift */; };
 		CE0DB6C0233EB3F300A27E7A /* OrderRefundCondensed+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0DB6BF233EB3F300A27E7A /* OrderRefundCondensed+ReadOnlyConvertible.swift */; };
 		CE12FBDB221F406100C59248 /* OrderStatus+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE12FBDA221F406100C59248 /* OrderStatus+ReadOnlyConvertible.swift */; };
@@ -726,6 +727,7 @@
 		C25501C7F936D2FD32FAF3F4 /* Pods_Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC2C036B262F316600928C9C /* ShippingLabelAccountSettings+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabelAccountSettings+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		CC2C0371262F32D800928C9C /* ShippingLabelPaymentMethod+ReadonlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabelPaymentMethod+ReadonlyConvertible.swift"; sourceTree = "<group>"; };
+		CC6A054528773F75002C144E /* OrderMetaData+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderMetaData+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		CE01014E2368C41600783459 /* Refund+ReadOnlyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Refund+ReadOnlyType.swift"; sourceTree = "<group>"; };
 		CE0DB6BF233EB3F300A27E7A /* OrderRefundCondensed+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderRefundCondensed+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		CE12FBDA221F406100C59248 /* OrderStatus+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatus+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
@@ -1205,6 +1207,7 @@
 				CE4FD4512350FB5400A16B31 /* OrderItemTaxRefund+ReadOnlyConvertible.swift */,
 				74B7D6AF20F910AF002667AC /* OrderNote+ReadOnlyConvertible.swift */,
 				CE0DB6BF233EB3F300A27E7A /* OrderRefundCondensed+ReadOnlyConvertible.swift */,
+				CC6A054528773F75002C144E /* OrderMetaData+ReadOnlyConvertible.swift */,
 				D8C11A5322DFAE9500D4A88D /* OrderStatsV4+ReadOnlyConvertible.swift */,
 				D8C11A5722DFB2FF00D4A88D /* OrderStatsV4Interval+ReadOnlyConvertible.swift */,
 				D8C11A5522DFB0BE00D4A88D /* OrderStatsV4Totals+ReadOnlyConvertible.swift */,
@@ -1838,6 +1841,7 @@
 				03F3AFE728097D6400E328BE /* CardPresentPaymentsPlugin.swift in Sources */,
 				B52E0032211A440D00700FDE /* Order+ReadOnlyType.swift in Sources */,
 				261F94E4242EFA6D00762B58 /* ProductCategoryAction.swift in Sources */,
+				CC6A054628773F75002C144E /* OrderMetaData+ReadOnlyConvertible.swift in Sources */,
 				029BA557255E0CD4006171FD /* ShippingLabelStore.swift in Sources */,
 				021EAA5C25493E9300AA8CCD /* OrderItemAttribute+ReadOnlyConvertible.swift in Sources */,
 				45AB8B1524AA4A1E00B5B36E /* ProductTagAction.swift in Sources */,

@@ -36,7 +36,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .shippingLabelsOnboardingM1:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .inPersonPaymentGatewaySelection:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .unifiedOrderEditing:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .backgroundProductImageUpload:

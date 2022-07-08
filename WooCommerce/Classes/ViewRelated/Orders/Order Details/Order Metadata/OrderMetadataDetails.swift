@@ -3,9 +3,15 @@ import SwiftUI
 
 struct OrderMetadataDetails: View {
     let customFields: [OrderMetaData]
-    
+ 
     var body: some View {
-        Text("Order metadata goes here")
+        VStack {
+            List {
+                ForEach(customFields, id: \.self) { customField in
+                    Text(customField.value)
+                }
+            }
+        }
     }
 }
 

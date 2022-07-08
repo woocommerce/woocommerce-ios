@@ -47,7 +47,6 @@ public typealias OrderFeeTaxStatus = Networking.OrderFeeTaxStatus
 public typealias OrderMetaData = Networking.OrderMetaData
 public typealias OrderNote = Networking.OrderNote
 public typealias OrderTaxLine = Networking.OrderTaxLine
-public typealias OrderMetaData = Networking.OrderMetaData
 public typealias OrderRefundCondensed = Networking.OrderRefundCondensed
 public typealias OrderStatsV4 = Networking.OrderStatsV4
 public typealias OrderStatsV4Interval = Networking.OrderStatsV4Interval

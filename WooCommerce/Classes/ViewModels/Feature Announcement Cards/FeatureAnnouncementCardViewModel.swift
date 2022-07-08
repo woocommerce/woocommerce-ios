@@ -4,7 +4,7 @@ import Yosemite
 
 private typealias FeatureCardEvent = WooAnalyticsEvent.FeatureCard
 
-struct FeatureAnnouncementCardViewModel {
+class FeatureAnnouncementCardViewModel {
     private let analytics: Analytics
     private let config: Configuration
 
@@ -24,10 +24,27 @@ struct FeatureAnnouncementCardViewModel {
         config.image
     }
 
+    private(set) var shouldBeVisible: Bool = false
+
     init(analytics: Analytics,
          configuration: Configuration) {
         self.analytics = analytics
         self.config = configuration
+
+        updateShouldBeVisible()
+    }
+
+    private func updateShouldBeVisible() {
+        let action = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: config.campaign) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let visible):
+                self.shouldBeVisible = visible
+            case .failure:
+                self.shouldBeVisible = false
+            }
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 
     func onAppear() {
@@ -35,7 +52,13 @@ struct FeatureAnnouncementCardViewModel {
     }
 
     func dismissTapped() {
+        storeDismissedSetting()
         trackAnnouncementDismissed()
+    }
+
+    private func storeDismissedSetting() {
+        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: config.campaign, remindLater: false, onCompletion: nil)
+        ServiceLocator.stores.dispatch(action)
     }
 
     func ctaTapped() {

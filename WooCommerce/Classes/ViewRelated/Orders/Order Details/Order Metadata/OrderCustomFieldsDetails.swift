@@ -6,15 +6,42 @@ struct OrderCustomFieldsDetails: View {
 
     var body: some View {
         NavigationView {
-            VStack {
-                Spacer()
-                List {
+            GeometryReader { geometry in
+
+                Color(.listBackground).edgesIgnoringSafeArea(.all)
+
+                VStack(alignment: .leading, spacing: 10) {
                     ForEach(customFields, id: \.self) { customField in
-                        Text(customField.value)
+                        CustomFieldView(customField: customField)
                     }
                 }
             }.navigationTitle("Custom Fields")
         }
+
+    }
+}
+
+private struct CustomFieldView: View {
+    let customField: OrderMetaData
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+                    Divider()
+
+            Text(customField.key)
+                        .headlineStyle()
+                        .padding([.leading, .trailing])
+
+                    HStack(alignment: .bottom) {
+                        Text(customField.value)
+                            .bodyStyle()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .padding([.leading, .trailing])
+
+                    Divider()
+                }
+                .background(Color(.basicBackground))
     }
 }
 

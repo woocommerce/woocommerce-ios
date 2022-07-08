@@ -189,7 +189,7 @@ public enum AppSettingsAction: Action {
 
     // MARK: - Feature Announcement Card Visibility
 
-    case setFeatureAnnouncementDismissed(campaign: FeatureAnnouncementCampaign, remindLater: Bool)
+    case setFeatureAnnouncementDismissed(campaign: FeatureAnnouncementCampaign, remindLater: Bool, onCompletion: ((Result<Bool, Error>) -> ())?)
 
     case getFeatureAnnouncementVisibility(campaign: FeatureAnnouncementCampaign, onCompletion: (Result<Bool, Error>) -> ())
 }

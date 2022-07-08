@@ -178,8 +178,8 @@ public class AppSettingsStore: Store {
             setCouponManagementFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadCouponManagementFeatureSwitchState(let onCompletion):
             loadCouponManagementFeatureSwitchState(onCompletion: onCompletion)
-        case .setFeatureAnnouncementDismissed(campaign: let campaign, remindLater: let remindLater):
-            setFeatureAnnouncementDismissed(campaign: campaign, remindLater: remindLater)
+        case .setFeatureAnnouncementDismissed(campaign: let campaign, remindLater: let remindLater, onCompletion: let completion):
+            setFeatureAnnouncementDismissed(campaign: campaign, remindLater: remindLater, onCompletion: completion)
         case .getFeatureAnnouncementVisibility(campaign: let campaign, onCompletion: let completion):
             getFeatureAnnouncementVisibility(campaign: campaign, onCompletion: completion)
         }
@@ -736,16 +736,16 @@ private extension AppSettingsStore {
 
 extension AppSettingsStore {
 
-    func setFeatureAnnouncementDismissed(campaign: FeatureAnnouncementCampaign, remindLater: Bool) {
+    func setFeatureAnnouncementDismissed(campaign: FeatureAnnouncementCampaign, remindLater: Bool, onCompletion: ((Result<Bool, Error>) -> ())?) {
         do {
             let remindAfter = remindLater ? Date().addingDays(14) : nil
             let newSettings = FeatureAnnouncementCampaignSettings(dismissedDate: Date(), remindAfter: remindAfter)
 
             try generalAppSettings.setValue([campaign: newSettings], for: \.featureAnnouncementCampaignSettings)
 
-//            onCompletion(.success(true))
+            onCompletion?(.success(true))
         } catch {
-//            onCompletion(.failure(error))
+            onCompletion?(.failure(error))
         }
     }
 

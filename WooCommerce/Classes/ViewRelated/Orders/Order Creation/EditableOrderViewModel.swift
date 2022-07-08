@@ -220,6 +220,8 @@ final class EditableOrderViewModel: ObservableObject {
 
         if shippingLine != nil {
             analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodAdd(flow: flow.analyticsFlow))
+        } else {
+            analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodRemove(flow: flow.analyticsFlow))
         }
     }
 

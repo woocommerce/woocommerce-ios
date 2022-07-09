@@ -4,7 +4,7 @@ import Codegen
 /// Represents the metadata within an Order
 /// Currently only handles `String` metadata values
 ///
-public struct OrderMetaData: Decodable, Equatable, Hashable {
+public struct OrderMetaData: Decodable, Equatable {
     public let metadataID: Int64
     public let key: String
     public let value: String

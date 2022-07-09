@@ -4,7 +4,7 @@ import Yosemite
 /// ViewModel for `OrderCustomFieldsDetails`
 struct OrderCustomFieldsViewModel: Identifiable {
     /// Unique identifier, required by `SwiftUI`
-    /// 
+    ///
     let id: Int64
 
     /// The title for the Custom Field mapped from the metadata key

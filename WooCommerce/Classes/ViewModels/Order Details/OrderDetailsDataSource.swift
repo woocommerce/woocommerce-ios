@@ -1056,7 +1056,12 @@ extension OrderDetailsDataSource {
                            headerStyle: headerStyle)
         }()
 
-        let customFields = Section(category: .customFields, row: .customFields)
+        let customFields: Section? = {
+            guard order.customFields.isNotEmpty else {
+                return nil
+            }
+            return Section(category: .customFields, row: .customFields)
+        }()
 
         let refundedProducts: Section? = {
             // Refunds on

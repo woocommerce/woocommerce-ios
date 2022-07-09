@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct OrderCustomFieldsDetails: View {
+    @Environment(\.presentationMode) var presentationMode
+
     let customFields: [OrderCustomFieldsViewModel]
 
     var body: some View {
@@ -23,6 +25,13 @@ struct OrderCustomFieldsDetails: View {
 
             }
             .navigationTitle("Custom Fields")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Done") {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }
+            }
         }
     }
 }

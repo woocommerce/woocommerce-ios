@@ -32,37 +32,21 @@ class WooCommerceScreenshots: XCTestCase {
 
         try MyStoreScreen()
 
-            // My Store
-            .dismissTopBannerIfNeeded()
-            .then { ($0 as! MyStoreScreen).periodStatsTable.switchToYearsTab() }
-            .thenTakeScreenshot(named: "order-dashboard")
+        // My Store
+        .dismissTopBannerIfNeeded()
+        .then { ($0 as! MyStoreScreen).periodStatsTable.switchToMonthsTab() }
+        .thenTakeScreenshot(named: "order-dashboard")
 
-            // Orders
-            .tabBar.goToOrdersScreen()
-            .thenTakeScreenshot(named: "order-list")
-            .selectOrder(atIndex: 0)
-            .thenTakeScreenshot(named: "order-detail")
-            .goBackToOrdersScreen()
+        // Orders
+        .tabBar.goToOrdersScreen()
+        .startOrderCreation()
+        .thenTakeScreenshot(named: "order-creation")
+        .cancelOrderCreation()
 
-            .openSearchPane()
-            .thenTakeScreenshot(named: "order-search")
-            .cancel()
-
-            // Products
-            .tabBar.goToProductsScreen()
-            .collapseTopBannerIfNeeded()
-            .thenTakeScreenshot(named: "product-list")
-            .selectProduct(atIndex: 1)
-            .thenTakeScreenshot(named: "product-details")
-            .goBackToProductList()
-
-            // Reviews
-            .tabBar.goToMenuScreen()
-            .goToReviewsScreen()
-            .thenTakeScreenshot(named: "review-list")
-            .selectReview(atIndex: 3)
-            .thenTakeScreenshot(named: "review-details")
-            .goBackToReviewsScreen()
+        // Products
+        .tabBar.goToProductsScreen()
+        .selectAddProduct()
+        .thenTakeScreenshot(named: "product-add")
     }
 
     private let loop = try! SelectorEventLoop(selector: try! KqueueSelector())

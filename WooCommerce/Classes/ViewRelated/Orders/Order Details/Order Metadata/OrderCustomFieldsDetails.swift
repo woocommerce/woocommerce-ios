@@ -16,6 +16,8 @@ struct OrderCustomFieldsDetails: View {
                             title: customField.key,
                             subtitle: customField.value
                         )
+                        Divider()
+                            .padding(.leading)
                     }
                 }.background(Color(.basicBackground))
 

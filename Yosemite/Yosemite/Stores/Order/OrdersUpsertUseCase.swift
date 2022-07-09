@@ -58,6 +58,7 @@ struct OrdersUpsertUseCase {
         handleOrderShippingLines(readOnlyOrder, storageOrder, storage)
         handleOrderRefundsCondensed(readOnlyOrder, storageOrder, storage)
         handleOrderTaxes(readOnlyOrder, storageOrder, storage)
+        handleOrderCustomFields(readOnlyOrder, storageOrder, storage)
 
         return storageOrder
     }
@@ -279,6 +280,29 @@ struct OrdersUpsertUseCase {
             if readOnlyOrder.taxes.first(where: { $0.taxID == storageTax.taxID } ) == nil {
                 storageOrder.removeFromTaxes(storageTax)
                 storage.deleteObject(storageTax)
+            }
+        }
+    }
+
+    /// Updates, inserts, or prunes the provided `storageOrder`'s custom fields using the provided `readOnlyOrder`'s custom fields
+    ///
+    private func handleOrderCustomFields(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
+        // Upsert the `customFields` from the `readOnlyOrder`
+        readOnlyOrder.customFields.forEach { readOnlyCustomField in
+            if let existingStorageMetaData = storage.loadOrderMetaData(siteID: readOnlyOrder.siteID, metadataID: readOnlyCustomField.metadataID) {
+                existingStorageMetaData.update(with: readOnlyCustomField)
+            } else {
+                let newStorageMetaData = storage.insertNewObject(ofType: Storage.OrderMetaData.self)
+                newStorageMetaData.update(with: readOnlyCustomField)
+                storageOrder.addToCustomFields(newStorageMetaData)
+            }
+        }
+
+        // Now, remove any objects that exist in `storageOrder.customFields` but not in `readOnlyOrder.customFields`
+        storageOrder.customFields?.forEach { storageCustomField in
+            if readOnlyOrder.customFields.first(where: { $0.metadataID == storageCustomField.metadataID } ) == nil {
+                storageOrder.removeFromCustomFields(storageCustomField)
+                storage.deleteObject(storageCustomField)
             }
         }
     }

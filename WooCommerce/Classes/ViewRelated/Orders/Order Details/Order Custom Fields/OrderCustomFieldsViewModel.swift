@@ -12,4 +12,10 @@ struct OrderCustomFieldsViewModel: Identifiable {
     /// The content for the Custom Field mapped from the metadata value
     ///
     let content: String
+    
+    init(metadata: OrderMetaData) {
+        self.id = metadata.metadataID
+        self.title = metadata.key
+        self.content = metadata.value
+    }
 }

@@ -24,6 +24,7 @@ class WooCommerceScreenshots: XCTestCase {
         let app = XCUIApplication()
         setupSnapshot(app)
         app.launchArguments.append("mocked-network-layer")
+        app.launchArguments.append("-simulate-stripe-card-reader")
         app.launchArguments.append("disable-animations")
         app.launchArguments.append("-mocks-port")
         app.launchArguments.append("\(server.listenAddress.port)")
@@ -42,6 +43,15 @@ class WooCommerceScreenshots: XCTestCase {
         .startOrderCreation()
         .thenTakeScreenshot(named: "order-creation")
         .cancelOrderCreation()
+
+        // Collect payment
+        .selectOrder(atIndex: 0)
+        .tapCollectPaymentButton()
+        .selectCardPresentPayment()
+        .thenTakeScreenshot(named: "order-payment")
+        .goBackToPaymentMethodsScreen()
+        .goBackToOrderScreen()
+        .goBackToOrdersScreen()
 
         // Products
         .tabBar.goToProductsScreen()

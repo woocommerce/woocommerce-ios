@@ -1,5 +1,6 @@
 import Foundation
 import Storage
+import Hardware
 
 public protocol MockObjectGraph {
     var userCredentials: Credentials { get }
@@ -8,6 +9,10 @@ public protocol MockObjectGraph {
     var defaultSiteAPI: SiteAPI { get }
 
     var sites: [Site] { get }
+    var siteSettings: [SiteSetting] { get }
+    var systemPlugins: [SystemPlugin] { get }
+    var paymentGatewayAccounts: [PaymentGatewayAccount] { get }
+    var cardReaders: [CardReader] { get }
     var orders: [Order] { get }
     var products: [Product] { get }
     var reviews: [ProductReview] { get }
@@ -28,6 +33,27 @@ public protocol MockObjectGraph {
 }
 
 let mockResourceUrlHost = "http://localhost:\(UserDefaults.standard.integer(forKey: "mocks-port"))/"
+
+// MARK: SiteSetting Accessors
+extension MockObjectGraph {
+    func siteSettings(for siteID: Int64) -> [SiteSetting] {
+        return siteSettings.filter { $0.siteID == siteID }
+    }
+}
+
+// MARK: SystemPlugin Accessors
+extension MockObjectGraph {
+    func systemPlugins(for siteID: Int64) -> [SystemPlugin] {
+        return systemPlugins.filter { $0.siteID == siteID }
+    }
+}
+
+// MARK: PaymentGateWayAccount Accessor
+extension MockObjectGraph {
+    func paymentGatewayAccounts(for siteID: Int64) -> [PaymentGatewayAccount] {
+        return paymentGatewayAccounts.filter { $0.siteID == siteID }
+    }
+}
 
 // MARK: Product Accessors
 extension MockObjectGraph {
@@ -74,6 +100,94 @@ extension MockObjectGraph {
 
     func reviews(forSiteId siteId: Int64) -> [ProductReview] {
         reviews.filter { $0.siteID == siteId }
+    }
+}
+
+// MARK: SiteSetting Creation Helper
+extension MockObjectGraph {
+    static func createSiteSetting(siteID: Int64 = 1,
+                                  settingID: String,
+                                  label: String,
+                                  settingDescription: String,
+                                  value: String,
+                                  settingGroupKey: String) -> SiteSetting {
+        SiteSetting(siteID: siteID,
+                    settingID: settingID,
+                    label: label,
+                    settingDescription: settingDescription,
+                    value: value,
+                    settingGroupKey: settingGroupKey)
+    }
+}
+
+// MARK: SystemPlugin Creation Helper
+extension MockObjectGraph {
+    static func createSystemPlugin(siteID: Int64 = 1,
+                                   plugin: String,
+                                   name: String,
+                                   version: String,
+                                   versionLatest: String = "",
+                                   url: String = "",
+                                   authorName: String = "",
+                                   authorUrl: String = "",
+                                   networkActivated: Bool = true,
+                                   active: Bool = true) -> SystemPlugin {
+        SystemPlugin(siteID: siteID,
+                     plugin: plugin,
+                     name: name,
+                     version: version,
+                     versionLatest: versionLatest,
+                     url: url,
+                     authorName: authorName,
+                     authorUrl: authorUrl,
+                     networkActivated: networkActivated,
+                     active: active)
+    }
+}
+
+// MARK: PaymentGatewayAccount Creation Helper
+extension MockObjectGraph {
+    static func createPaymentGatewayAccount(gatewayID: String = WCPayAccount.gatewayID,
+                                            status: WCPayAccountStatusEnum = .complete,
+                                            hasPendingRequirements: Bool = false,
+                                            hasOverdueRequirements: Bool = false,
+                                            currentDeadline: Date? = nil,
+                                            statementDescriptor: String = "",
+                                            defaultCurrency: String = "USD",
+                                            supportedCurrencies: [String] = ["US", "CA"],
+                                            country: String = "US",
+                                            isCardPresentEligible: Bool = true,
+                                            isLive: Bool = false,
+                                            isInTestMode: Bool = false) -> PaymentGatewayAccount {
+        PaymentGatewayAccount(
+            siteID: 1,
+            gatewayID: WCPayAccount.gatewayID,
+            status: status.rawValue,
+            hasPendingRequirements: hasPendingRequirements,
+            hasOverdueRequirements: hasOverdueRequirements,
+            currentDeadline: currentDeadline,
+            statementDescriptor: statementDescriptor,
+            defaultCurrency: defaultCurrency,
+            supportedCurrencies: supportedCurrencies,
+            country: country,
+            isCardPresentEligible: isCardPresentEligible,
+            isLive: isLive,
+            isInTestMode: isInTestMode
+        )
+    }
+}
+
+// MARK: CardReader Creation Helper
+extension MockObjectGraph {
+    static func createCardReader() -> CardReader {
+        CardReader(serial: "WPE-SIMULATOR-1",
+                   vendorIdentifier: "SIMULATOR",
+                   name: "Simulated POS E",
+                   status: .init(connected: true, remembered: true),
+                   softwareVersion: "1.00.03.34-SZZZ_Generic_v45-300001",
+                   batteryLevel: 0.5,
+                   readerType: .chipper,
+                   locationId: "st_simulated")
     }
 }
 

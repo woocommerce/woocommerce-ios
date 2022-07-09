@@ -39,9 +39,10 @@ struct InPersonPaymentsView: View {
             switch viewModel.state {
             case .loading:
                 InPersonPaymentsLoading()
-            case .selectPlugin:
+            case let .selectPlugin(pluginSelectionWasCleared):
                 if viewModel.gatewaySelectionAvailable {
-                    InPersonPaymentsSelectPluginView(selectedPlugin: nil) { plugin in
+                    // Preselect WCPay only if there was no selection done before
+                    InPersonPaymentsSelectPluginView(selectedPlugin: pluginSelectionWasCleared == true ? nil : .wcPay) { plugin in
                         viewModel.selectPlugin(plugin)
                         ServiceLocator.analytics.track(.cardPresentPaymentGatewaySelected, withProperties: ["payment_gateway": plugin.pluginName])
                     }

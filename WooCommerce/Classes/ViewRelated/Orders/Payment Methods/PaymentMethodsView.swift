@@ -21,51 +21,62 @@ struct PaymentMethodsView: View {
     ///
     @State var sharingPaymentLink = false
 
+    @State private var showingPurchaseCardReaderView = false
+
     ///   Environment safe areas
     ///
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Layout.noSpacing) {
+        ScrollView {
+            VStack(alignment: .leading, spacing: Layout.noSpacing) {
 
-            Text(Localization.header)
-                .subheadlineStyle()
-                .padding()
-                .padding(.horizontal, insets: safeAreaInsets)
-                .accessibilityIdentifier(Accessibility.headerLabel)
+                Text(Localization.header)
+                    .subheadlineStyle()
+                    .padding()
+                    .padding(.horizontal, insets: safeAreaInsets)
 
-            Divider()
+                Divider()
 
-            Group {
-                MethodRow(icon: .priceImage, title: Localization.cash, accessibilityID: Accessibility.cashMethod) {
-                    showingCashAlert = true
-                    viewModel.trackCollectByCash()
-                }
+                VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: Layout.noSpacing, accessibilityID: Accessibility.cashMethod) {
+                        MethodRow(icon: .priceImage, title: Localization.cash) {
+                            showingCashAlert = true
+                            viewModel.trackCollectByCash()
+                        }
 
-                if viewModel.showPayWithCardRow {
-                    Divider()
+                        if viewModel.showPayWithCardRow {
+                            Divider()
 
-                    MethodRow(icon: .creditCardImage, title: Localization.card, accessibilityID: Accessibility.cardMethod) {
-                        viewModel.collectPayment(on: rootViewController, onSuccess: dismiss)
+                            MethodRow(icon: .creditCardImage, title: Localization.card, accessibilityID: Accessibility.cardMethod) {
+                                viewModel.collectPayment(on: rootViewController, onSuccess: dismiss)
+                            }
+                        }
+
+                        if viewModel.showPaymentLinkRow {
+                            Divider()
+
+                            MethodRow(icon: .linkImage, title: Localization.link, accessibilityID: Accessibility.paymentLink) {
+                                sharingPaymentLink = true
+                                viewModel.trackCollectByPaymentLink()
+                            }
+                        }
+                    }
+                    .padding(.horizontal)
+                    .background(Color(.listForeground))
+
+                    if viewModel.showUpsellCardReaderFeatureBanner {
+                        FeatureAnnouncementCardView(viewModel: viewModel.cardUpsellAnnouncementViewModel,
+                                                    dismiss: nil,
+                                                    callToAction: {
+                            showingPurchaseCardReaderView = true
+                        })
                     }
                 }
 
-                if viewModel.showPaymentLinkRow {
-                    Divider()
-
-                    MethodRow(icon: .linkImage, title: Localization.link, accessibilityID: Accessibility.paymentLink) {
-                        sharingPaymentLink = true
-                        viewModel.trackCollectByPaymentLink()
-                    }
-                }
+                // Pushes content to the top
+                Spacer()
             }
-            .padding(.horizontal)
-            .background(Color(.listForeground))
-
-            Divider()
-
-            // Pushes content to the top
-            Spacer()
         }
         .ignoresSafeArea(edges: .horizontal)
         .disabled(viewModel.disableViewActions)
@@ -86,6 +97,9 @@ struct PaymentMethodsView: View {
                     dismiss()
                 }
             }))
+        }
+        .sheet(isPresented: $showingPurchaseCardReaderView) {
+            SafariView(url: viewModel.purchaseCardReaderUrl)
         }
         .shareSheet(isPresented: $sharingPaymentLink) {
             // If paymentLink is available it already contains a valid URL.

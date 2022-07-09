@@ -505,6 +505,24 @@ extension UIImage {
         return UIImage(named: "card-reader-low-battery")!
     }
 
+    /// Card Reader image - BBPOS Chipper 2X BT
+    ///
+    static var cardReaderImageBBPOSChipper: UIImage {
+        return UIImage(named: "card-reader-bbpos-chipper")!
+    }
+
+    /// Card Reader image - Stripe Reader M2
+    ///
+    static var cardReaderImageM2: UIImage {
+        return UIImage(named: "card-reader-m2")!
+    }
+
+    /// Card Reader image - Wisepad 3
+    ///
+    static var cardReaderImageWisepad3: UIImage {
+        return UIImage(named: "card-reader-wisepad3")!
+    }
+
     /// Shopping cart
     ///
     static var shoppingCartIcon: UIImage {
@@ -968,6 +986,12 @@ extension UIImage {
     ///
     static var installWCShipImage: UIImage {
         return UIImage(named: "woo-wcship-install-banner")!
+    }
+
+    /// Payments Feature Banner
+    ///
+    static var paymentsFeatureBannerImage: UIImage {
+        return UIImage(named: "woo-payments-feature-banner")!
     }
 
     /// What is Jetpack Image

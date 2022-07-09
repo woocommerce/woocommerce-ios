@@ -31,6 +31,7 @@ public enum WooAnalyticsStat: String {
     case signedIn = "signed_in"
     case logout = "account_logout"
     case openedLogin = "login_accessed"
+    case loginNewToWooButtonTapped = "login_new_to_woo_button_tapped"
     case loginFailed = "login_failed_to_login"
     case loginAutoFillCredentialsFilled = "login_autofill_credentials_filled"
     case loginAutoFillCredentialsUpdated = "login_autofill_credentials_updated"
@@ -173,7 +174,6 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Payment Gateways selection
     case cardPresentPaymentGatewaySelected = "card_present_payment_gateway_selected"
-    case cardPresentSelectPaymentGatewayShow = "card_present_select_payment_gateway_show"
 
     // MARK: Order View Events
     //
@@ -424,6 +424,12 @@ public enum WooAnalyticsStat: String {
     case productImageSettingsAddImagesSourceTapped = "product_image_settings_add_images_source_tapped"
     case productImageSettingsDeleteImageButtonTapped = "product_image_settings_delete_image_button_tapped"
     case productImageUploadFailed = "product_image_upload_failed"
+    case savingProductAfterBackgroundImageUploadSuccess = "saving_product_after_background_image_upload_success"
+    case savingProductAfterBackgroundImageUploadFailed = "saving_product_after_background_image_upload_failed"
+    case failureSavingProductAfterImageUploadNoticeShown = "failure_saving_product_after_image_upload_notice_shown"
+    case failureSavingProductAfterImageUploadNoticeTapped = "failure_saving_product_after_image_upload_notice_tapped"
+    case failureUploadingImageNoticeShown = "failure_uploading_image_notice_shown"
+    case failureUploadingImageNoticeTapped = "failure_uploading_image_notice_tapped"
 
     // Product Categories Events
     //
@@ -549,6 +555,11 @@ public enum WooAnalyticsStat: String {
     // MARK: What's New Component events
     //
     case featureAnnouncementShown = "feature_announcement_shown"
+
+    // MARK: Feature Card events
+    case featureCardShown = "feature_card_shown"
+    case featureCardDismissed = "feature_card_dismissed"
+    case featureCardCtaTapped = "feature_card_cta_tapped"
 
     // MARK: Simple Payments events
     //

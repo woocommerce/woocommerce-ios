@@ -490,6 +490,54 @@ extension WooAnalyticsEvent {
     }
 }
 
+// MARK: - Feature Announcement Card
+
+extension WooAnalyticsEvent {
+    enum FeatureCard {
+        /// Possible sources for the Feature Card
+        ///
+        enum Source: String {
+            fileprivate static let key = "source"
+
+            case paymentMethods = "payment_methods"
+            case orderList = "order_list"
+            case settings
+        }
+
+        /// Campaigns run using the Feature Card
+        ///
+        enum Campaign: String {
+            fileprivate static let key = "campaign"
+
+            case upsellCardReaders = "upsell_card_readers"
+        }
+
+        static func shown(source: Source, campaign: Campaign) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .featureCardShown,
+                              properties: [
+                                Source.key: source.rawValue,
+                                Campaign.key: campaign.rawValue
+                              ])
+        }
+
+        static func dismissed(source: Source, campaign: Campaign) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .featureCardDismissed,
+                              properties: [
+                                Source.key: source.rawValue,
+                                Campaign.key: campaign.rawValue
+                              ])
+        }
+
+        static func ctaTapped(source: Source, campaign: Campaign) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .featureCardCtaTapped,
+                              properties: [
+                                Source.key: source.rawValue,
+                                Campaign.key: campaign.rawValue
+                              ])
+        }
+    }
+}
+
 // MARK: - Simple Payments
 //
 extension WooAnalyticsEvent {

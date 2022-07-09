@@ -21,10 +21,6 @@ public protocol MockObjectGraph {
     var thisMonthVisitStats: SiteVisitStats { get }
     var thisMonthTopProducts: TopEarnerStats { get }
 
-    var thisYearOrderStats: OrderStatsV4 { get }
-    var thisYearVisitStats: SiteVisitStats { get }
-    var thisYearTopProducts: TopEarnerStats { get }
-
     func accountWithId(id: Int64) -> Account
     func accountSettingsWithUserId(userId: Int64) -> AccountSettings
 
@@ -360,7 +356,8 @@ extension MockObjectGraph {
             coupons: [],
             refunds: [],
             fees: [],
-            taxes: []
+            taxes: [],
+            customFields: []
         )
     }
 }
@@ -408,22 +405,9 @@ extension MockObjectGraph {
         )
     }
 
-    static func createYearlyInterval(
-        date: Date,
-        orderCount: Int,
-        revenue: Decimal
-    ) -> OrderStatsV4Interval {
-        OrderStatsV4Interval(
-            interval: String(date.month),
-            dateStart: date.asOrderStatsString,
-            dateEnd: date.monthEnd.asOrderStatsString,
-            subtotals: createTotal(orderCount: orderCount, revenue: revenue)
-        )
-    }
-
     static func createVisitStatsItem(granularity: StatGranularity, periodDate: Date, visitors: Int) -> SiteVisitStatsItem {
         switch granularity {
-        case .day, .month:
+        case .day:
             return SiteVisitStatsItem(period: periodDate.asVisitStatsMonthString, visitors: visitors)
         default:
             fatalError("Not implemented yet")
@@ -470,13 +454,7 @@ extension MockObjectGraph {
                 granularity: .day,
                 items: items
             )
-            case .year:
-            return SiteVisitStats(
-                siteID: siteID,
-                date: Date().asVisitStatsYearString,
-                granularity: .month,
-                items: items
-            )
+            case .year: preconditionFailure("Not implemented")
         }
     }
 

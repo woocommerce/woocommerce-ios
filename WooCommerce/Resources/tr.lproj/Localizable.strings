@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-06-16 09:54:20+0000 */
+/* Translation-Revision-Date: 2022-07-05 11:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -354,7 +354,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action to add product on the placeholder overlay when there are no products on the Products tab
    Title for the screen to add a product to an order
-   Title text of the button that adds a product when creating a new order */
+   Title text of the button that adds a product when creating or editing an order */
 "Add Product" = "Ürün Ekle";
 
 /* Action to add linked products to a product in the Linked Products List Selector screen
@@ -560,6 +560,9 @@ which should be translated separately and considered part of this sentence. */
 /* A failure reason for when an error HTTP status code was returned from the site. */
 "An HTTP error code was returned." = "Bir HTTP hata kodu döndürüldü.";
 
+/* Default error message displayed when unable to close user account. */
+"An error occured while closing account." = "Hesap kapatılırken bir hata oluştu.";
+
 /* Error message when Bluetooth is not enabled for this application. */
 "An error occurred accessing Bluetooth - please enable Bluetooth and try again" = "Bluetooth'a erişimde bir hata oluştu - lütfen Bluetooth'u etkinleştirin ve tekrar deneyin";
 
@@ -755,6 +758,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "Kalın";
 
+/* The details text on the placeholder overlay when there are no coupons on the coupon list screen. */
+"Boost your business by sending customers special offers and discounts." = "Müşterilere özel teklifler ve indirimler göndererek işletmenizi güçlendirin.";
+
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "Kutu";
 
@@ -833,6 +839,8 @@ which should be translated separately and considered part of this sentence. */
    Cancel the shipping label more menu action sheet
    Cancel the shipping label tracking more menu action sheet
    Change order status screen - button title for closing the view
+   Close Account button title - dismisses alert, which cancels the Close Account attempt.
+   Close Account error alert button title - dismisses error alert.
    Close the action sheet
    Dismiss button on the alert when the user taps to delete a Product image
    Label for a button that when tapped, cancels the process of connecting to a card reader 
@@ -876,6 +884,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Card method title on the select payment method screen for simple payments */
 "Card" = "Kart";
+
+/* Title for the section related to card readers inside In-Person Payments settings */
+"Card readers" = "Kart Okuyucular";
 
 /* Error message when a card is left in the reader and another transaction started. */
 "Card was left in reader - please remove and reinsert card" = "Kart okuyucuda kaldı - lütfen kartı çıkarıp yeniden takın";
@@ -988,6 +999,13 @@ which should be translated separately and considered part of this sentence. */
    Title of the Close action on the Jetpack Install view */
 "Close" = "Kapat";
 
+/* Close Account button title to close the user's WordPress.com account
+   Link on the store picker for users who signed in with Apple to close their WordPress.com account. */
+"Close Account" = "Hesabı Kapat";
+
+/* Title of the Close Account in-progress view. */
+"Closing account..." = "Hesap kapatılıyor…";
+
 /* Accessibility value when a banner is collapsed */
 "Collapsed" = "Daraltılmış";
 
@@ -1015,6 +1033,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "Yeni bir sipariş notu oluşturur.";
+
+/* Close Account confirmation alert title. */
+"Confirm Close Account" = "Hesabı Kapatmayı Onayla";
 
 /* Button to confirm the preferred provider for In-Person Payments */
 "Confirm Payment Method" = "Ödeme Yöntemini onaylayın";
@@ -1083,6 +1104,7 @@ which should be translated separately and considered part of this sentence. */
 "Contact Email" = "İletişim E-postası";
 
 /* Action button to contact support when Jetpack install fails
+   Close Account error alert button title - navigates the user to contact support.
    Contact Support title
    Text for the button to contact support from the store picker error screen
    The title of the button to contact support in the Error Loading Data banner */
@@ -1172,6 +1194,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when tag loading failed */
 "Couldn't load tags." = "Etiketler yüklenemedi.";
 
+/* Error title displayed when unable to close user account. */
+"Couldn’t close account automatically" = "Hesap otomatik olarak kapatılamadı";
+
 /* Text field country in Edit Address Form
    Text field country in Shipping Label Address Validation
    Title to select country from the edit address screen */
@@ -1188,6 +1213,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the view for editing the coupon description. */
 "Coupon Description" = "Kupon Açıklaması";
+
+/* Field in the view for adding or editing a coupon's expiry date. */
+"Coupon Expiry Date" = "Kupon Son Kullanma Tarihi";
 
 /* Cell title on beta features screen to enable coupon management */
 "Coupon Management" = "Kupon Yönetimi";
@@ -1217,11 +1245,15 @@ which should be translated separately and considered part of this sentence. */
 /* The title for a button that causes the app to deliberately crash for debugging purposes */
 "Crash Immediately" = "Anında Kilitlenme";
 
-/* Button to create an order on the New Order screen */
+/* Action for creating a Coupon remotely
+   Button to create an order on the Order screen */
 "Create" = "Oluştur";
 
 /* The button title text for creating a new account. */
 "Create Account" = "Hesap Oluştur";
+
+/* Title of the create coupon button on the coupon list screen when it's empty */
+"Create Coupon" = "Kupon Oluştur";
 
 /* Create Shipping Label form navigation title
    Option to create new shipping label from the action sheet on Products section of Order Details screen
@@ -1245,6 +1277,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Create coupon screen */
 "Create coupon" = "Kupon oluştur";
+
+/* Accessibility label for the Create Coupons button */
+"Create coupons" = "Kuponlar oluştur";
 
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "Yeni paket oluştur";
@@ -1480,6 +1515,7 @@ which should be translated separately and considered part of this sentence. */
 "Don't have an account? _Sign up_" = "Hesabınız yok mu? _Kaydol_";
 
 /* Action title to select products to add to a grouped product from search results
+   Button to dismiss the Order Editing screen
    Button to finish selecting the Coupon expiry date in the Add or Edit Coupon screen
    Button to submit selection on Select Categories screen
    Button to submit the product selector without any product selected.
@@ -1817,7 +1853,8 @@ which should be translated separately and considered part of this sentence. */
 /* Notice displayed when the label purchase fails */
 "Error purchasing the label" = "Etiket satın alınırken hata oluştu";
 
-/* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
+/* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
+   The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
 "Everyone loves a deal" = "Herkes iyi alışverişi sever";
 
 /* Button to submit selection on the Exclude Categories screen when more than 1 item is selected. Reads like: Exclude 10 Categories */
@@ -2966,7 +3003,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Accessibility hint for selecting a variable product in the Select Products screen */
 "Opens list of product variations." = "Ürün varyasyonları listesini açar.";
 
-/* Accessibility hint for selecting a product in a new order */
+/* Accessibility hint for selecting a product in an order form */
 "Opens product detail." = "Ürün detayını açar.";
 
 /* Placeholder of cell presenting the title of the new attribute option. */
@@ -3095,6 +3132,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Add Product Category. Title of cell presenting the parent category. */
 "Parent Category" = "Üst kategori";
 
+/* Title of the banner when the order is not editable */
+"Parts of this order are not currently editable" = "Bu siparişin bazı bölümleri şu anda düzenlenemez";
+
 /* Accessibility label for the password text field in the self-hosted login page.
    Login dialog password placeholder
    Password field title in Product Visibility
@@ -3121,6 +3161,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header for list of payment methods in Payment Method screen */
 "Payment Method Selected" = "Ödeme Yöntemi Seçildi";
 
+/* Navigates to Payment Gateway management screen */
+"Payment Provider" = "Ödeme Sağlayıcısı";
+
 /* Message when the presented card remaining credit or balance is insufficient for the purchase. */
 "Payment declined due to insufficient funds. Try another means of payment" = "Ödeme yetersiz bakiye nedeniyle reddedildi. Başka bir ödeme yöntemi deneyin";
 
@@ -3133,6 +3176,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Notice that will be displayed after adding a new Shipping Label payment method */
 "Payment method added" = "Ödeme yöntemi eklendi";
+
+/* Title for the section related to payments inside In-Person Payments settings */
+"Payment options" = "Ödeme seçenekleri";
 
 /* Label informing users that the payment succeeded. Presented to users when a payment is collected */
 "Payment successful" = "Ödeme başarılı";
@@ -3161,6 +3207,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the Performance section on Coupons Details screen */
 "Performance" = "Performans";
+
+/* Close Account button title - confirms and closes user's WordPress.com account. */
+"Permanently Close Account" = "Hesabı Kalıcı Olarak Kapat";
 
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
@@ -3253,7 +3302,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please make sure the app can access Photos in device settings" = "Lütfen cihaz ayarlarında uygulamanın Fotoğraflar'a erişebildiğinden emin olun";
 
 /* Error notice recovery suggestion when we fail to update an address in the edit address screen.
-   Recovery suggestion when we fail to update an address when creating an order */
+   Recovery suggestion when we fail to update an address when creating or editing an order */
 "Please make sure you are running the latest version of WooCommerce and try again later." = "Lütfen WooCommerce'in en son sürümünü çalıştırdığınızdan emin olun ve daha sonra tekrar deneyin.";
 
 /* Error message when no package is selected on Shipping Label Package Details screen */
@@ -3461,7 +3510,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Product section title if there is more than one product.
    Product section title in Review Order screen if there is more than one product.
    Title of the Products tab — plural form of Product
-   Title text of the section that shows the Products when creating a new order
+   Title text of the section that shows the Products when creating or editing an order
    Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "Ürünler";
 
@@ -4294,6 +4343,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label for one of the filters in order custom date range */
 "Start Date" = "Başlangıç tarihi";
 
+/* VoiceOver accessibility hint, informing the user the button can be used to create coupons. */
+"Start a Coupon creation by selecting a discount type in a bottom sheet" = "Alt sayfada bir indirim türü seçerek Kupon oluşturmaya başlayın";
+
 /* The details on the placeholder overlay when there are no products on the Products tab */
 "Start selling today by adding your first product to the store." = "Mağazanıza ilk ürünü ekleyerek hemen bugün satışa başlayın.";
 
@@ -4890,6 +4942,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Footer text for editing external product button text */
 "This text will be shown on the button linking to the external product." = "Bu metin harici ürüne bağlantı düğmesinde gösterilecektir.";
 
+/* Error message displayed when unable to close user account due to unresolved chargebacks. */
+"This user account cannot be closed if there are unresolved chargebacks." = "Çözülmemiş geri ödeme varsa bu kullanıcı hesabı kapatılamaz.";
+
+/* Error message displayed when unable to close user account due to having active purchases. */
+"This user account cannot be closed while it has active purchases." = "Aktif satın alımları olduğundan, bu kullanıcı hesabı kapatılamadı.";
+
+/* Error message displayed when unable to close user account due to having active subscriptions. */
+"This user account cannot be closed while it has active subscriptions." = "Aktif abonelikleri olduğundan, kullanıcı hesabı kapatılamadı.";
+
 /* Alert info when selecting the cash payment method for simple payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "Bu, WooCommerce dışından aldıysanız (toplam), siparişinizi tamamlandı olarak işaretleyecektir.";
 
@@ -4912,17 +4973,26 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle on the variations list screen when there are no variations and attributes */
 "To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "Bir varyasyon eklemek için önce niteliklerini (yani \"Renk\", \"Boyut\") ayarlamanız gerekir.";
 
+/* Error message displayed when unable to close user account due to having active atomic site. */
+"To close this account now, contact our support team." = "Bu hesabı şimdi kapatmak için destek ekibimize başvurun.";
+
 /* Message prompting an administrator to deactivate Stripe plugin */
 "To collect payments, please ask an administrator to deactivate WooCommerce Stripe Gateway." = "Ödemeleri tahsil etmek için lütfen bir yöneticiden WooCommerce Stripe Ağ Geçidi'ni devre dışı bırakmasını isteyin.";
 
 /* Message prompting an administrator to deactivate Stripe plugin */
 "To collect payments, please deactivate WooCommerce Stripe Gateway." = "Ödemeleri tahsil etmek için lütfen WooCommerce Stripe Ağ Geçidi'ni devre dışı bırakın.";
 
+/* Close Account confirmation alert message. The %1$@ is the user's WordPress.com username. */
+"To confirm, please re-enter your username before closing.\n\n%1$@" = "Onaylamak için lütfen kapatmadan önce kullanıcı adınızı tekrar girin.\n\n%1$@";
+
 /* Footer of text field section in Add Attribute screen */
 "To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "Bir varyasyon oluşturmak için önce özelliklerini (yani \"Renk\", \"Boyut\") ayarlamanız gerekir";
 
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "Yeni WordPress.com hesabınızı oluşturmak için lütfen e-posta adresinizi girin.";
+
+/* Content of the banner when the order is not editable */
+"To edit Products or Payment Details, change the status to Pending Payment." = "Ürünleri veya Ödeme Ayrıntılarını düzenlemek için durumu Ödeme Bekliyor olarak değiştirin.";
 
 /* Settings > Privacy Settings > report crashes section. Explains what the 'report crashes' toggle does */
 "To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports." = "Uygulamanın performansını iyileştirmemize ve hataları gidermemize yardımcı olmak için, çökme raporlarını etkinleştirin.";
@@ -5123,7 +5193,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Load Product Attributes Action Failed */
 "Unable to load product attributes" = "Ürün özellikleri yüklenemiyor";
 
-/* Notice displayed when taxes cannot be synced for new order */
+/* Notice displayed when data cannot be synced for new order */
 "Unable to load taxes for order" = "Siparişle ilgili vergiler yüklenemiyor";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
@@ -5168,13 +5238,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
 "Unable to save changes to the payment method" = "Ödeme yöntemindeki değişiklikler kaydedilemiyor";
 
+/* Notice displayed when data cannot be synced for edited order */
+"Unable to save changes. Please try again." = "Değişiklikler kaydedilemiyor. Lütfen tekrar deneyin.";
+
 /* Error message when Bluetooth Low Energy is not supported on the user device. */
 "Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device" = "Kart okuyucular aranamıyor - Bluetooth Low Energy bu cihazda desteklenmiyor - lütfen farklı bir cihaz kullanın";
 
 /* Error message when Bluetooth scan times out during reader discovery. */
 "Unable to search for card readers - Bluetooth timed out - please try again" = "Kart okuyucular aranamıyor - Bluetooth zaman aşımına uğradı - lütfen tekrar deneyin";
 
-/* Error notice title when we fail to update an address when creating an order. */
+/* Error notice title when we fail to update an address when creating or editing an order. */
 "Unable to set customer details." = "Müşteri ayrıntıları ayarlanamadı.";
 
 /* Error notice title when we fail to update an address in the edit address screen. */
@@ -5695,6 +5768,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the merchant's payment account is under review */
 "You'll be able to accept In-Person Payments as soon as we finish reviewing your account." = "Hesabınızın incelenmesi biter bitirmez Şahsen Ödemeleri kabul edebileceksiniz.";
+
+/* Error message displayed when unable to close user account due to being unauthorized. */
+"You're not authorized to close the account." = "Hesabı kapatma yetkiniz yok.";
 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "Ödeme almak için kart okuyucu yazılımınızın güncellenmesi gerekiyor.  İptal ederseniz okuyucu bağlantınız engellenir.";

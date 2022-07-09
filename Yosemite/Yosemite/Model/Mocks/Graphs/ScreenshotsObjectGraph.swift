@@ -225,25 +225,6 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         createTopEarningItem(product: Products.coloradoShades, quantity: 5),
     ])
 
-    var thisYearVisitStats: SiteVisitStats {
-        Self.createVisitStats(
-            siteID: 1,
-            granularity: .year,
-            items: [Int](0..<12).map { monthIndex in
-                Self.createVisitStatsItem(
-                    granularity: .month,
-                    periodDate: date.yearStart.addingMonths(monthIndex),
-                    visitors: Int.random(in: 100 ... 500)
-                )
-            }
-        )
-    }
-
-    var thisYearTopProducts: TopEarnerStats = createStats(siteID: 1, granularity: .year, items: [
-        createTopEarningItem(product: Products.akoyaPearlShades, quantity: 17),
-        createTopEarningItem(product: Products.blackCoralShades, quantity: 11),
-        createTopEarningItem(product: Products.coloradoShades, quantity: 5),
-    ])
 
     /// The probability of a sale for each visit when generating random stats
     ///
@@ -260,20 +241,6 @@ struct ScreenshotObjectGraph: MockObjectGraph {
             intervals: thisMonthVisitStats.items!.enumerated().map {
                 Self.createMonthlyInterval(
                     date: date.monthStart.addingDays($0.offset),
-                    orderCount: Int(Double($0.element.visitors) * Double.random(in: orderProbabilityRange)),
-                    revenue: Decimal($0.element.visitors) * Decimal.random(in: orderValueRange)
-                )
-            }
-        )
-    }
-
-    var thisYearOrderStats: OrderStatsV4 {
-        Self.createStats(
-            siteID: 1,
-            granularity: .yearly,
-            intervals: thisYearVisitStats.items!.enumerated().map {
-                Self.createYearlyInterval(
-                    date: date.yearStart.addingMonths($0.offset),
                     orderCount: Int(Double($0.element.visitors) * Double.random(in: orderProbabilityRange)),
                     revenue: Decimal($0.element.visitors) * Decimal.random(in: orderValueRange)
                 )

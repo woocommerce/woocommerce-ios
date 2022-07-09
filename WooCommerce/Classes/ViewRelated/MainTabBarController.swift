@@ -110,6 +110,7 @@ final class MainTabBarController: UITabBarController {
     private let noticePresenter: NoticePresenter
     private let productImageUploader: ProductImageUploaderProtocol
     private let stores: StoresManager = ServiceLocator.stores
+    private let analytics: Analytics
 
     private var productImageUploadErrorsSubscription: AnyCancellable?
 
@@ -120,10 +121,12 @@ final class MainTabBarController: UITabBarController {
     init?(coder: NSCoder,
           featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
           noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
-          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
+          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+          analytics: Analytics = ServiceLocator.analytics) {
         self.featureFlagService = featureFlagService
         self.noticePresenter = noticePresenter
         self.productImageUploader = productImageUploader
+        self.analytics = analytics
         super.init(coder: coder)
     }
 
@@ -131,6 +134,7 @@ final class MainTabBarController: UITabBarController {
         self.featureFlagService = ServiceLocator.featureFlagService
         self.noticePresenter = ServiceLocator.noticePresenter
         self.productImageUploader = ServiceLocator.productImageUploader
+        self.analytics = ServiceLocator.analytics
         super.init(coder: coder)
     }
 
@@ -601,11 +605,18 @@ private extension MainTabBarController {
                             actionTitle: Localization.imageUploadFailureNoticeActionTitle,
                             actionHandler: { [weak self] in
             guard let self = self else { return }
-            Task { @MainActor in
+            Task { @MainActor [weak self] in
+                guard let self = self else { return }
                 await self.showProductDetails(for: error)
+                self.analytics.track(event: .ImageUpload
+                    .failureSavingProductAfterImageUploadNoticeTapped(productOrVariation: error.productOrVariationEventProperty))
             }
         })
-        noticePresenter.enqueue(notice: notice)
+        let canNoticeBeDisplayed = noticePresenter.enqueue(notice: notice)
+        if canNoticeBeDisplayed {
+            analytics.track(event: .ImageUpload
+                .failureSavingProductAfterImageUploadNoticeShown(productOrVariation: error.productOrVariationEventProperty))
+        }
     }
 
     func handleErrorUploadingImage(_ error: ProductImageUploadErrorInfo) {
@@ -617,11 +628,18 @@ private extension MainTabBarController {
                             actionTitle: Localization.imageUploadFailureNoticeActionTitle,
                             actionHandler: { [weak self] in
             guard let self = self else { return }
-            Task { @MainActor in
+            Task { @MainActor [weak self] in
+                guard let self = self else { return }
                 await self.showProductDetails(for: error)
+                self.analytics.track(event: .ImageUpload
+                    .failureUploadingImageNoticeTapped(productOrVariation: error.productOrVariationEventProperty))
             }
         })
-        noticePresenter.enqueue(notice: notice)
+        let canNoticeBeDisplayed = noticePresenter.enqueue(notice: notice)
+        if canNoticeBeDisplayed {
+            analytics.track(event: .ImageUpload
+                .failureUploadingImageNoticeShown(productOrVariation: error.productOrVariationEventProperty))
+        }
     }
 
     func showProductDetails(for error: ProductImageUploadErrorInfo) async {
@@ -664,5 +682,16 @@ extension MainTabBarController {
         static let imageUploadFailureNoticeActionTitle =
         NSLocalizedString("View",
                           comment: "Title of the action to view product details from a notice about an image upload failure in the background.")
+    }
+}
+
+private extension ProductImageUploadErrorInfo {
+    var productOrVariationEventProperty: WooAnalyticsEvent.ImageUpload.ProductOrVariation {
+        switch productOrVariationID {
+        case .product:
+            return .product
+        case .variation:
+            return .variation
+        }
     }
 }

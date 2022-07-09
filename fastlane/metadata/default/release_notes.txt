@@ -1,2 +1,1 @@
-This release has several fixes for order creation and in person payments, including fixing a bug in the products section not showing the correct order of items, displaying the date and time for all orders and showing the issue refund button for all paid orders.
-Please continue to send us feedback – we are listening!
+Did you know we’re working on a new feature for managing coupons? Head to the Menu tab, tap the settings icon, and scroll to experimental features. In this release, we’ve fixed an issue when editing “Individual Use” and “Exclude Sale Items” fields. Do try it out and share your feedback!

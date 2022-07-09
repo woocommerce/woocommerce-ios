@@ -17,6 +17,6 @@ See which products are winning at a glance. Keep tabs on your overall revenue, o
 
 WooCommerce is the world’s most customizable open-source eCommerce platform. Whether you’re launching a business, taking brick-and-mortar retail online, or developing sites for clients, use WooCommerce for a store that powerfully blends content and commerce.
 
-Requirements: WooCommerce v3.5+. Jetpack is also required to receive notifications.
+Requirements: WooCommerce v3.5+.
 
 View the Privacy Notice for California users at https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

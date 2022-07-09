@@ -17,6 +17,14 @@ struct AuthenticationConstants {
         "Log in with your WordPress.com account email address to manage your WooCommerce stores.",
         comment: "Sign in instructions on the 'log in using WordPress.com account' screen."
     )
+
+    /// What is WordPress.com? link (Continue with WordPress.com)
+    ///
+    static let whatIsWPComLinkTitle = NSLocalizedString(
+        "_What is WordPress.com?_",
+        comment: "Navigates to page with details about What is WordPress.com. The underscores _..._ denote underline."
+    )
+
     /// Login with Jetpack instructions.
     ///
     static let jetpackInstructions = NSLocalizedString(

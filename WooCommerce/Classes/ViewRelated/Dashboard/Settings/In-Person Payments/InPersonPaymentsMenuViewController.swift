@@ -45,10 +45,19 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     var cardReadersSection: Section? {
-        let rows = [
-            .orderCardReader,
-            .manageCardReader
-        ] + readerManualRows()
+        let rows: [Row]
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.consolidatedCardReaderManuals) {
+            rows = [
+                .orderCardReader,
+                .manageCardReader,
+                .cardReaderManuals
+            ]
+        } else {
+            rows = [
+                .orderCardReader,
+                .manageCardReader
+            ] + readerManualRows()
+        }
         return Section(header: Localization.cardReaderSectionTitle, rows: rows)
     }
 
@@ -97,6 +106,8 @@ private extension InPersonPaymentsMenuViewController {
             configureManageCardReader(cell: cell)
         case let cell as LeftImageTitleSubtitleTableViewCell where row == .managePaymentGateways:
             configureManagePaymentGateways(cell: cell)
+        case let cell as LeftImageTableViewCell where row == .cardReaderManuals:
+            configureCardReaderManuals(cell: cell)
         case let cell as LeftImageTableViewCell where row == .bbposChipper2XBTManual:
             configureChipper2XManual(cell: cell)
         case let cell as LeftImageTableViewCell where row == .stripeM2Manual:
@@ -127,6 +138,13 @@ private extension InPersonPaymentsMenuViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.configure(image: .rectangleOnRectangleAngled, text: Localization.managePaymentGateways, subtitle: pluginState.preferred.pluginName)
+    }
+
+    func configureCardReaderManuals(cell: LeftImageTableViewCell) {
+        cell.imageView?.tintColor = .text
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.configure(image: .cardReaderManualIcon, text: Localization.cardReaderManuals)
     }
 
     func configureChipper2XManual(cell: LeftImageTableViewCell) {
@@ -175,6 +193,11 @@ extension InPersonPaymentsMenuViewController {
         let viewModelsAndViews = CardReaderSettingsViewModelsOrderedList(configuration: configurationLoader.configuration)
         viewController.configure(viewModelsAndViews: viewModelsAndViews)
         show(viewController, sender: self)
+    }
+
+    func cardReaderManualsWasPressed() {
+        let view = UIHostingController(rootView: CardReaderManualsView())
+        navigationController?.pushViewController(view, animated: true)
     }
 
     func managePaymentGatewaysWasPressed() {
@@ -230,6 +253,8 @@ extension InPersonPaymentsMenuViewController {
             orderCardReaderWasPressed()
         case .manageCardReader:
             manageCardReaderWasPressed()
+        case .cardReaderManuals:
+            cardReaderManualsWasPressed()
         case .managePaymentGateways:
             managePaymentGatewaysWasPressed()
         case .bbposChipper2XBTManual:
@@ -269,6 +294,11 @@ private extension InPersonPaymentsMenuViewController {
             comment: "Navigates to Payment Gateway management screen"
         )
 
+        static let cardReaderManuals = NSLocalizedString(
+            "Card Reader Manuals",
+            comment: "Navigates to Card Reader Manuals screen"
+        )
+
         static let chipperCardReaderManual = NSLocalizedString(
             "Chipper 2X card reader manual",
             comment: "Navigates to Chipper Card Reader manual"
@@ -294,6 +324,7 @@ private struct Section {
 private enum Row: CaseIterable {
     case orderCardReader
     case manageCardReader
+    case cardReaderManuals
     case managePaymentGateways
     case bbposChipper2XBTManual
     case stripeM2Manual

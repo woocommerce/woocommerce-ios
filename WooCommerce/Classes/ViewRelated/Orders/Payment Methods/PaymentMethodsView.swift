@@ -35,12 +35,13 @@ struct PaymentMethodsView: View {
                     .subheadlineStyle()
                     .padding()
                     .padding(.horizontal, insets: safeAreaInsets)
+                    .accessibility(identifier: Accessibility.headerLabel)
 
                 Divider()
 
                 VStack(alignment: .leading, spacing: 8) {
-                    VStack(alignment: .leading, spacing: Layout.noSpacing, accessibilityID: Accessibility.cashMethod) {
-                        MethodRow(icon: .priceImage, title: Localization.cash) {
+                    VStack(alignment: .leading, spacing: Layout.noSpacing) {
+                        MethodRow(icon: .priceImage, title: Localization.cash, accessibilityID: Accessibility.cashMethod) {
                             showingCashAlert = true
                             viewModel.trackCollectByCash()
                         }

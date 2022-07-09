@@ -24,7 +24,6 @@ struct OrderCustomFieldsDetails: View {
                 .background(Color(.basicBackground))
 
             }
-            .navigationTitle("Custom Fields")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Done") {
@@ -32,6 +31,9 @@ struct OrderCustomFieldsDetails: View {
                     }
                 }
             }
+            .navigationTitle("Custom Fields")
+            .navigationBarTitleDisplayMode(.large)
+            .wooNavigationBarStyle()
         }
     }
 }

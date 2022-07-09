@@ -10,43 +10,25 @@ struct OrderCustomFieldsDetails: View {
 
                 Color(.listBackground).edgesIgnoringSafeArea(.all)
 
-                VStack(alignment: .leading, spacing: 10) {
+                VStack(alignment: .leading) {
                     ForEach(customFields, id: \.self) { customField in
-                        CustomFieldView(customField: customField)
+                        TitleAndSubtitleRow(
+                            title: customField.key,
+                            subtitle: customField.value
+                        )
                     }
-                }
+                }.background(Color(.basicBackground))
+
             }.navigationTitle("Custom Fields")
         }
-
-    }
-}
-
-private struct CustomFieldView: View {
-    let customField: OrderMetaData
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-                    Divider()
-
-            Text(customField.key)
-                        .headlineStyle()
-                        .padding([.leading, .trailing])
-
-                    HStack(alignment: .bottom) {
-                        Text(customField.value)
-                            .bodyStyle()
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                    .padding([.leading, .trailing])
-
-                    Divider()
-                }
-                .background(Color(.basicBackground))
     }
 }
 
 struct OrderMetadataDetails_Previews: PreviewProvider {
     static var previews: some View {
-        OrderCustomFieldsDetails(customFields: [])
+        OrderCustomFieldsDetails(customFields: [
+            OrderMetaData(metadataID: 0, key: "First Key", value: "First Value"),
+            OrderMetaData(metadataID: 1, key: "Second Key", value: "Second Value")
+        ])
     }
 }

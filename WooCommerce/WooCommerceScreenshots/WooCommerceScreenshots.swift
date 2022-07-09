@@ -27,9 +27,17 @@ class WooCommerceScreenshots: XCTestCase {
         app.launchArguments.append("-simulate-stripe-card-reader")
         app.launchArguments.append("disable-animations")
         app.launchArguments.append("-mocks-port")
+        app.launchArguments.append("-mocks-push-notification")
         app.launchArguments.append("\(server.listenAddress.port)")
 
         app.launch()
+
+        addUIInterruptionMonitor(withDescription: "System Dialog") {
+            (alert) -> Bool in
+            alert.buttons["Allow"].tap()
+            return true
+        }
+        app.tap()
 
         try MyStoreScreen()
 
@@ -57,6 +65,10 @@ class WooCommerceScreenshots: XCTestCase {
         .tabBar.goToProductsScreen()
         .selectAddProduct()
         .thenTakeScreenshot(named: "product-add")
+
+        // Push notification
+        .lockScreen()
+        .thenTakeScreenshot(named: "order-notification")
     }
 
     private let loop = try! SelectorEventLoop(selector: try! KqueueSelector())
@@ -135,7 +147,7 @@ extension BaseScreen {
         let mode = XCUIDevice.inDarkMode ? "dark" : "light"
         let filename = "\(screenshotCount)-\(mode)-\(title)"
 
-        snapshot(filename)
+        snapshot(filename, timeWaitingForIdle: 0)
 
         return self
     }
@@ -144,13 +156,22 @@ extension BaseScreen {
 extension ScreenObject {
 
     @discardableResult
+    func lockScreen() -> Self {
+        // This is a hack from https://stackoverflow.com/a/57356929
+        // ☠️ Beware of breaking changes in future updates ☠️
+        XCUIDevice.shared.perform(NSSelectorFromString("pressLockButton"))
+        sleep(2)
+        return self
+    }
+
+    @discardableResult
     func thenTakeScreenshot(named title: String) -> Self {
         screenshotCount += 1
 
         let mode = XCUIDevice.inDarkMode ? "dark" : "light"
         let filename = "\(screenshotCount)-\(mode)-\(title)"
 
-        snapshot(filename)
+        snapshot(filename, timeWaitingForIdle: 0)
 
         return self
     }

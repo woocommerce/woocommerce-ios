@@ -1,8 +1,7 @@
-import Yosemite
 import SwiftUI
 
 struct OrderCustomFieldsDetails: View {
-    let customFields: [OrderMetaData]
+    let customFields: [OrderCustomFieldsViewModel]
 
     var body: some View {
         NavigationView {
@@ -11,17 +10,19 @@ struct OrderCustomFieldsDetails: View {
                 Color(.listBackground).edgesIgnoringSafeArea(.all)
 
                 VStack(alignment: .leading) {
-                    ForEach(customFields, id: \.self) { customField in
+                    ForEach(customFields) { customField in
                         TitleAndSubtitleRow(
-                            title: customField.key,
-                            subtitle: customField.value
+                            title: customField.title,
+                            subtitle: customField.content
                         )
                         Divider()
                             .padding(.leading)
                     }
-                }.background(Color(.basicBackground))
+                }
+                .background(Color(.basicBackground))
 
-            }.navigationTitle("Custom Fields")
+            }
+            .navigationTitle("Custom Fields")
         }
     }
 }
@@ -29,8 +30,8 @@ struct OrderCustomFieldsDetails: View {
 struct OrderMetadataDetails_Previews: PreviewProvider {
     static var previews: some View {
         OrderCustomFieldsDetails(customFields: [
-            OrderMetaData(metadataID: 0, key: "First Key", value: "First Value"),
-            OrderMetaData(metadataID: 1, key: "Second Key", value: "Second Value")
+            OrderCustomFieldsViewModel(id: 0, title: "First Title", content: "First Content"),
+            OrderCustomFieldsViewModel(id: 1, title: "Second Title", content: "Second Content")
         ])
     }
 }

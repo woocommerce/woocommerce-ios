@@ -48,6 +48,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let expectedTitles = [
             nil,
             Title.products,
+            nil,
             Title.refundedProducts,
             Title.payment,
             Title.information,

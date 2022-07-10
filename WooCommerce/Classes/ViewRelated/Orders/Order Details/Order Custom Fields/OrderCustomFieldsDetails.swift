@@ -32,9 +32,6 @@ struct OrderCustomFieldsDetails: View {
                     }, label: {
                         Image(uiImage: .closeButton)
                     })
-                    Button("Done") {
-                        presentationMode.wrappedValue.dismiss()
-                    }
                 }
             }
             .navigationTitle("Custom Fields")

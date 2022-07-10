@@ -89,4 +89,8 @@ public enum FeatureFlag: Int {
     /// Apple ID account deletion
     ///
     case appleIDAccountDeletion
+
+    /// Enable the Order Custom Fields button in Order Details
+    ///
+    case orderCustomFields
 }

@@ -45,6 +45,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .appleIDAccountDeletion:
             return true
+        case .orderCustomFields:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

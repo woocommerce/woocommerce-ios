@@ -34,10 +34,17 @@ final class OrderDetailsDataSourceTests: XCTestCase {
     func test_payment_section_is_shown_right_after_the_products_and_refunded_products_sections() {
         // Given
         let order = makeOrder()
+        let mockFeatureFlagService = MockFeatureFlagService(isOrderCustomFieldsEnabled: false)
 
         insert(refund: makeRefund(orderID: order.orderID, siteID: order.siteID))
 
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(
+            order: order,
+            storageManager: storageManager,
+            cardPresentPaymentsConfiguration: Mocks.configuration,
+            featureFlags: mockFeatureFlagService
+        )
+
         dataSource.configureResultsControllers { }
 
         // When
@@ -48,7 +55,6 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let expectedTitles = [
             nil,
             Title.products,
-            nil,
             Title.refundedProducts,
             Title.payment,
             Title.information,
@@ -477,10 +483,15 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
     func test_custom_fields_button_is_visible() throws {
         // Given
+        let mockFeatureFlagService = MockFeatureFlagService(isOrderCustomFieldsEnabled: true)
         let order = MockOrders().makeOrder(customFields: [
             OrderMetaData(metadataID: 123, key: "Key", value: "Value")
         ])
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(
+            order: order, storageManager: storageManager,
+            cardPresentPaymentsConfiguration: Mocks.configuration,
+            featureFlags: mockFeatureFlagService
+        )
 
         // When
         dataSource.reloadSections()
@@ -492,8 +503,13 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
     func test_custom_fields_button_is_hidden_when_order_contains_no_custom_fields_to_display() throws {
         // Given
+        let mockFeatureFlagService = MockFeatureFlagService(isOrderCustomFieldsEnabled: true)
         let order = MockOrders().makeOrder(customFields: [])
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(
+            order: order, storageManager: storageManager,
+            cardPresentPaymentsConfiguration: Mocks.configuration,
+            featureFlags: mockFeatureFlagService
+        )
 
         // When
         dataSource.reloadSections()

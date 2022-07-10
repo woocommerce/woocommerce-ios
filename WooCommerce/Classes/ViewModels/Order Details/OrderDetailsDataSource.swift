@@ -443,14 +443,20 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureCustomFields(cell: WooBasicTableViewCell) {
-        cell.bodyLabel?.text = "View Custom Fields"
+        cell.bodyLabel?.text = Titles.viewCustomFields
         cell.applyPlainTextStyle()
         cell.accessoryType = .none
         cell.selectionStyle = .default
 
         cell.accessibilityTraits = .button
-        cell.accessibilityLabel = ""
-        cell.accessibilityHint = ""
+        cell.accessibilityLabel = NSLocalizedString(
+                "View Custom Fields",
+                comment: "Accessibility label for the 'View Custom Fields' button"
+        )
+        cell.accessibilityHint = NSLocalizedString(
+            "Show the custom fields for this order.",
+            comment: "VoiceOver accessibility hint, informing the user that the button can be used to view the order custom fields information."
+        )
     }
 
     private func configureCustomerNote(cell: CustomerNoteTableViewCell) {
@@ -1406,6 +1412,7 @@ extension OrderDetailsDataSource {
         static let createShippingLabel = NSLocalizedString("Create Shipping Label", comment: "Text on the button that starts shipping label creation")
         static let reprintShippingLabel = NSLocalizedString("Print Shipping Label", comment: "Text on the button that prints a shipping label")
         static let seeReceipt = NSLocalizedString("See Receipt", comment: "Text on the button to see a saved receipt")
+        static let viewCustomFields = NSLocalizedString("View Custom Fields", comment: "The title for the custom fields button")
     }
 
     enum Icons {

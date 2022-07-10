@@ -8,21 +8,22 @@ struct OrderCustomFieldsDetails: View {
     var body: some View {
         NavigationView {
             GeometryReader { geometry in
+                ScrollView {
 
-                Color(.listBackground).edgesIgnoringSafeArea(.all)
+                    Color(.listBackground).edgesIgnoringSafeArea(.all)
 
-                VStack(alignment: .leading) {
-                    ForEach(customFields) { customField in
-                        TitleAndSubtitleRow(
-                            title: customField.title,
-                            subtitle: customField.content
-                        )
-                        Divider()
-                            .padding(.leading)
+                    VStack(alignment: .leading) {
+                        ForEach(customFields) { customField in
+                            TitleAndSubtitleRow(
+                                title: customField.title,
+                                subtitle: customField.content
+                            )
+                            Divider()
+                                .padding(.leading)
+                        }
                     }
+                    .background(Color(.basicBackground))
                 }
-                .background(Color(.basicBackground))
-
             }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

@@ -1063,9 +1063,14 @@ extension OrderDetailsDataSource {
         }()
 
         let customFields: Section? = {
+            guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCustomFields) else {
+                return nil
+            }
+
             guard order.customFields.isNotEmpty else {
                 return nil
             }
+
             return Section(category: .customFields, row: .customFields)
         }()
 

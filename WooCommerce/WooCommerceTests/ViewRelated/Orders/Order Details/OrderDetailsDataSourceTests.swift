@@ -518,6 +518,26 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let customFieldSection = section(withCategory: .customFields, from: dataSource)
         XCTAssertNil(customFieldSection)
     }
+
+    func test_custom_fields_button_is_hidden_when_feature_flag_is_disabled() throws {
+        // Given
+        let mockFeatureFlagService = MockFeatureFlagService(isOrderCustomFieldsEnabled: false)
+        let order = MockOrders().makeOrder(customFields: [
+            OrderMetaData(metadataID: 123, key: "Key", value: "Value")
+        ])
+        let dataSource = OrderDetailsDataSource(
+            order: order, storageManager: storageManager,
+            cardPresentPaymentsConfiguration: Mocks.configuration,
+            featureFlags: mockFeatureFlagService
+        )
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let customFieldSection = section(withCategory: .customFields, from: dataSource)
+        XCTAssertNil(customFieldSection)
+    }
 }
 
 // MARK: - Test Data

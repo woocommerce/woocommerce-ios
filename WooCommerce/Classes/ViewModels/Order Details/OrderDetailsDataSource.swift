@@ -443,7 +443,7 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureCustomFields(cell: WooBasicTableViewCell) {
-        cell.bodyLabel?.text = Titles.viewCustomFields
+        cell.bodyLabel?.text = Title.customFields
         cell.applyPlainTextStyle()
         cell.accessoryType = .none
         cell.selectionStyle = .default
@@ -1418,7 +1418,6 @@ extension OrderDetailsDataSource {
         static let createShippingLabel = NSLocalizedString("Create Shipping Label", comment: "Text on the button that starts shipping label creation")
         static let reprintShippingLabel = NSLocalizedString("Print Shipping Label", comment: "Text on the button that prints a shipping label")
         static let seeReceipt = NSLocalizedString("See Receipt", comment: "Text on the button to see a saved receipt")
-        static let viewCustomFields = NSLocalizedString("View Custom Fields", comment: "The title for the custom fields button")
     }
 
     enum Icons {
@@ -1437,6 +1436,7 @@ extension OrderDetailsDataSource {
         static let information = NSLocalizedString("Customer", comment: "Customer info section title")
         static let payment = NSLocalizedString("Payment", comment: "Payment section title")
         static let notes = NSLocalizedString("Order Notes", comment: "Order notes section title")
+        static let customFields = NSLocalizedString("View Custom Fields", comment: "Custom Fields section title")
         static let shippingLabelCreationInfoAction =
             NSLocalizedString("Learn more about creating labels with your mobile device",
                               comment: "Title of button in order details > info link for creating a shipping label on the mobile device.")

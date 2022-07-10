@@ -49,6 +49,8 @@ extension OrderCustomFieldsDetails {
     }
 }
 
+#if DEBUG
+
 struct OrderCustomFieldsDetails_Previews: PreviewProvider {
     static var previews: some View {
         OrderCustomFieldsDetails(customFields: [
@@ -57,3 +59,5 @@ struct OrderCustomFieldsDetails_Previews: PreviewProvider {
         ])
     }
 }
+
+#endif

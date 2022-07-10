@@ -34,14 +34,22 @@ struct OrderCustomFieldsDetails: View {
                     })
                 }
             }
-            .navigationTitle("Custom Fields")
+            .navigationTitle(Localization.title)
             .navigationBarTitleDisplayMode(.inline)
             .wooNavigationBarStyle()
         }
     }
 }
 
-struct OrderMetadataDetails_Previews: PreviewProvider {
+// MARK: - Constants
+//
+extension OrderCustomFieldsDetails {
+    enum Localization {
+        static let title = NSLocalizedString("Custom Fields", comment: "Title for the order custom fields list")
+    }
+}
+
+struct OrderCustomFieldsDetails_Previews: PreviewProvider {
     static var previews: some View {
         OrderCustomFieldsDetails(customFields: [
             OrderCustomFieldsViewModel(id: 0, title: "First Title", content: "First Content"),

@@ -598,7 +598,7 @@ extension OrderListViewController: UITableViewDelegate {
         if isSplitViewInOrdersTabEnabled {
             switchDetailsHandler(orderDetailsViewModel)
         } else {
-            let viewController = Inject.ViewControllerHost(OrderDetailsViewController(viewModel: orderDetailsViewModel))
+            let viewController = OrderDetailsViewController(viewModel: orderDetailsViewModel)
             navigationController?.pushViewController(viewController, animated: true)
         }
     }

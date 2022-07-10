@@ -1,2 +1,1 @@
-Den här versionen innehåller flera olika korrigeringar för beställningsskapande och personliga betalningar, inklusive ett åtgärdat fel i produktsektionen som gjorde att artiklarna visades i fel ordning, att datum och tid visades för alla beställningar och att knappen Utfärda återbetalning visades för alla betalda beställningar.
-Fortsätt att skicka feedback till oss – vi lyssnar!
+Visste du att vi arbetar på en ny funktion för att hantera rabattkoder? Gå till fliken Meny, tryck på inställningsikonen och bläddra till Experimentella funktioner. I den här versionen har vi åtgärdat ett fel som uppstod vid redigering av fälten "Kan inte kombineras" och "Exkludera reavaror". Prova och dela din feedback.

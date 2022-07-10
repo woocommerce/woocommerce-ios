@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-06-16 11:54:03+0000 */
+/* Translation-Revision-Date: 2022-07-04 16:54:15+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -354,7 +354,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action to add product on the placeholder overlay when there are no products on the Products tab
    Title for the screen to add a product to an order
-   Title text of the button that adds a product when creating a new order */
+   Title text of the button that adds a product when creating or editing an order */
 "Add Product" = "Добавить товар";
 
 /* Action to add linked products to a product in the Linked Products List Selector screen
@@ -560,6 +560,9 @@ which should be translated separately and considered part of this sentence. */
 /* A failure reason for when an error HTTP status code was returned from the site. */
 "An HTTP error code was returned." = "Получен статус ошибки HTTP.";
 
+/* Default error message displayed when unable to close user account. */
+"An error occured while closing account." = "При закрытии учётной записи произошла ошибка.";
+
 /* Error message when Bluetooth is not enabled for this application. */
 "An error occurred accessing Bluetooth - please enable Bluetooth and try again" = "При получении доступа к Bluetooth возникла ошибка. Включите Bluetooth и повторите попытку";
 
@@ -755,6 +758,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "Полужирный";
 
+/* The details text on the placeholder overlay when there are no coupons on the coupon list screen. */
+"Boost your business by sending customers special offers and discounts." = "Повысьте эффективность бизнеса, отправляя клиентам информацию о специальных предложениях и скидках.";
+
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "Коробка";
 
@@ -833,6 +839,8 @@ which should be translated separately and considered part of this sentence. */
    Cancel the shipping label more menu action sheet
    Cancel the shipping label tracking more menu action sheet
    Change order status screen - button title for closing the view
+   Close Account button title - dismisses alert, which cancels the Close Account attempt.
+   Close Account error alert button title - dismisses error alert.
    Close the action sheet
    Dismiss button on the alert when the user taps to delete a Product image
    Label for a button that when tapped, cancels the process of connecting to a card reader 
@@ -876,6 +884,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Card method title on the select payment method screen for simple payments */
 "Card" = "Карта";
+
+/* Title for the section related to card readers inside In-Person Payments settings */
+"Card readers" = "Устройства чтения карт";
 
 /* Error message when a card is left in the reader and another transaction started. */
 "Card was left in reader - please remove and reinsert card" = "Карта осталась в устройстве чтения. Извлеките её и вставьте снова";
@@ -988,6 +999,13 @@ which should be translated separately and considered part of this sentence. */
    Title of the Close action on the Jetpack Install view */
 "Close" = "Закрыть";
 
+/* Close Account button title to close the user's WordPress.com account
+   Link on the store picker for users who signed in with Apple to close their WordPress.com account. */
+"Close Account" = "Закрыть учётную запись";
+
+/* Title of the Close Account in-progress view. */
+"Closing account..." = "Закрытие учётной записи...";
+
 /* Accessibility value when a banner is collapsed */
 "Collapsed" = "Свернутый";
 
@@ -1015,6 +1033,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "Составить новое примечание к заказу.";
+
+/* Close Account confirmation alert title. */
+"Confirm Close Account" = "Подтвердите закрытие учётной записи";
 
 /* Button to confirm the preferred provider for In-Person Payments */
 "Confirm Payment Method" = "Подтвердить способ оплаты";
@@ -1083,6 +1104,7 @@ which should be translated separately and considered part of this sentence. */
 "Contact Email" = "Контактный адрес эл.почты";
 
 /* Action button to contact support when Jetpack install fails
+   Close Account error alert button title - navigates the user to contact support.
    Contact Support title
    Text for the button to contact support from the store picker error screen
    The title of the button to contact support in the Error Loading Data banner */
@@ -1172,6 +1194,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when tag loading failed */
 "Couldn't load tags." = "Ошибка загрузки меток.";
 
+/* Error title displayed when unable to close user account. */
+"Couldn’t close account automatically" = "Не получается автоматически закрыть учётную запись";
+
 /* Text field country in Edit Address Form
    Text field country in Shipping Label Address Validation
    Title to select country from the edit address screen */
@@ -1188,6 +1213,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the view for editing the coupon description. */
 "Coupon Description" = "Описание купона";
+
+/* Field in the view for adding or editing a coupon's expiry date. */
+"Coupon Expiry Date" = "Дата окончания срока действия купона";
 
 /* Cell title on beta features screen to enable coupon management */
 "Coupon Management" = "Управление купонами";
@@ -1217,11 +1245,15 @@ which should be translated separately and considered part of this sentence. */
 /* The title for a button that causes the app to deliberately crash for debugging purposes */
 "Crash Immediately" = "Немедленное закрытие";
 
-/* Button to create an order on the New Order screen */
+/* Action for creating a Coupon remotely
+   Button to create an order on the Order screen */
 "Create" = "Создать";
 
 /* The button title text for creating a new account. */
 "Create Account" = "Создать учетную запись";
+
+/* Title of the create coupon button on the coupon list screen when it's empty */
+"Create Coupon" = "Создать купон";
 
 /* Create Shipping Label form navigation title
    Option to create new shipping label from the action sheet on Products section of Order Details screen
@@ -1245,6 +1277,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Create coupon screen */
 "Create coupon" = "Создание купона";
+
+/* Accessibility label for the Create Coupons button */
+"Create coupons" = "Создание купонов";
 
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "Создать новую посылку";
@@ -1480,6 +1515,7 @@ which should be translated separately and considered part of this sentence. */
 "Don't have an account? _Sign up_" = "Нет учетной записи? _Зарегистрироваться_";
 
 /* Action title to select products to add to a grouped product from search results
+   Button to dismiss the Order Editing screen
    Button to finish selecting the Coupon expiry date in the Add or Edit Coupon screen
    Button to submit selection on Select Categories screen
    Button to submit the product selector without any product selected.
@@ -1817,7 +1853,8 @@ which should be translated separately and considered part of this sentence. */
 /* Notice displayed when the label purchase fails */
 "Error purchasing the label" = "Ошибка при покупке этикетки";
 
-/* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
+/* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
+   The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
 "Everyone loves a deal" = "Все любят скидки";
 
 /* Button to submit selection on the Exclude Categories screen when more than 1 item is selected. Reads like: Exclude 10 Categories */
@@ -2966,7 +3003,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Accessibility hint for selecting a variable product in the Select Products screen */
 "Opens list of product variations." = "Открывает список вариантов товара.";
 
-/* Accessibility hint for selecting a product in a new order */
+/* Accessibility hint for selecting a product in an order form */
 "Opens product detail." = "Открывает сведения о товаре.";
 
 /* Placeholder of cell presenting the title of the new attribute option. */
@@ -3095,6 +3132,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Add Product Category. Title of cell presenting the parent category. */
 "Parent Category" = "Родительская рубрика";
 
+/* Title of the banner when the order is not editable */
+"Parts of this order are not currently editable" = "В настоящий момент элементы этого заказа нельзя изменить";
+
 /* Accessibility label for the password text field in the self-hosted login page.
    Login dialog password placeholder
    Password field title in Product Visibility
@@ -3121,6 +3161,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header for list of payment methods in Payment Method screen */
 "Payment Method Selected" = "Выбранный способ оплаты";
 
+/* Navigates to Payment Gateway management screen */
+"Payment Provider" = "Платёжный сервис";
+
 /* Message when the presented card remaining credit or balance is insufficient for the purchase. */
 "Payment declined due to insufficient funds. Try another means of payment" = "Платёж отклонён из-за нехватки средств. Попробуйте другое средство платежа";
 
@@ -3133,6 +3176,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Notice that will be displayed after adding a new Shipping Label payment method */
 "Payment method added" = "Способ оплаты добавлен";
+
+/* Title for the section related to payments inside In-Person Payments settings */
+"Payment options" = "Способы оплаты";
 
 /* Label informing users that the payment succeeded. Presented to users when a payment is collected */
 "Payment successful" = "Оплата прошла успешно";
@@ -3161,6 +3207,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the Performance section on Coupons Details screen */
 "Performance" = "Производительность";
+
+/* Close Account button title - confirms and closes user's WordPress.com account. */
+"Permanently Close Account" = "Навсегда закрыть учётную запись";
 
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
@@ -3253,7 +3302,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please make sure the app can access Photos in device settings" = "Предоставьте приложению доступ к разделу \"Фотографии\" в настройках устройства";
 
 /* Error notice recovery suggestion when we fail to update an address in the edit address screen.
-   Recovery suggestion when we fail to update an address when creating an order */
+   Recovery suggestion when we fail to update an address when creating or editing an order */
 "Please make sure you are running the latest version of WooCommerce and try again later." = "Убедитесь, что используется последняя версия WooCommerce и повторите попытку позже.";
 
 /* Error message when no package is selected on Shipping Label Package Details screen */
@@ -3461,7 +3510,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Product section title if there is more than one product.
    Product section title in Review Order screen if there is more than one product.
    Title of the Products tab — plural form of Product
-   Title text of the section that shows the Products when creating a new order
+   Title text of the section that shows the Products when creating or editing an order
    Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "Товары";
 
@@ -4294,6 +4343,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label for one of the filters in order custom date range */
 "Start Date" = "Дата начала";
 
+/* VoiceOver accessibility hint, informing the user the button can be used to create coupons. */
+"Start a Coupon creation by selecting a discount type in a bottom sheet" = "Чтобы создать купон, выберите тип скидки на нижней панели";
+
 /* The details on the placeholder overlay when there are no products on the Products tab */
 "Start selling today by adding your first product to the store." = "Добавьте в магазин первый продукт, чтобы уже сегодня приступить к продаже товаров.";
 
@@ -4890,6 +4942,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Footer text for editing external product button text */
 "This text will be shown on the button linking to the external product." = "Будет показан на кнопке, связанной с внешним товаром.";
 
+/* Error message displayed when unable to close user account due to unresolved chargebacks. */
+"This user account cannot be closed if there are unresolved chargebacks." = "Эту учетную запись пользователя нельзя закрыть, если есть неразрешенные возвратные платежи.";
+
+/* Error message displayed when unable to close user account due to having active purchases. */
+"This user account cannot be closed while it has active purchases." = "Эту учетную запись пользователя нельзя закрыть, если есть активные покупки.";
+
+/* Error message displayed when unable to close user account due to having active subscriptions. */
+"This user account cannot be closed while it has active subscriptions." = "Эту учетную запись пользователя нельзя закрыть, если есть активные подписки.";
+
 /* Alert info when selecting the cash payment method for simple payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "Заказ будет отмечен как выполненный, если вы получили (всего) не через WooCommerce";
 
@@ -4912,17 +4973,26 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle on the variations list screen when there are no variations and attributes */
 "To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "Чтобы добавить вариант, необходимо сначала задать атрибуты (например, \"Цвет\" или \"Размер\").";
 
+/* Error message displayed when unable to close user account due to having active atomic site. */
+"To close this account now, contact our support team." = "Чтобы закрыть эту учётную запись, обратитесь в службу поддержки.";
+
 /* Message prompting an administrator to deactivate Stripe plugin */
 "To collect payments, please ask an administrator to deactivate WooCommerce Stripe Gateway." = "Чтобы собирать платежи, попросите администратора отключить WooCommerce Stripe Gateway.";
 
 /* Message prompting an administrator to deactivate Stripe plugin */
 "To collect payments, please deactivate WooCommerce Stripe Gateway." = "Чтобы собирать платежи, отключите WooCommerce Stripe Gateway.";
 
+/* Close Account confirmation alert message. The %1$@ is the user's WordPress.com username. */
+"To confirm, please re-enter your username before closing.\n\n%1$@" = "Введите ваше имя пользователя для подтверждения закрытия.\n\n%1$@";
+
 /* Footer of text field section in Add Attribute screen */
 "To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "Чтобы создать вариант, необходимо сначала задать атрибуты (например, \"Цвет\" или \"Размер\").";
 
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "Для создания новой учетной записи WordPress.com, пожалуйста, введите ваш адрес эл.почты.";
+
+/* Content of the banner when the order is not editable */
+"To edit Products or Payment Details, change the status to Pending Payment." = "Чтобы отредактировать сведения о товарах или оплате, измените статус на \"Ожидание оплаты\".";
 
 /* Settings > Privacy Settings > report crashes section. Explains what the 'report crashes' toggle does */
 "To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports." = "Чтобы помочь нам повысить качество работы приложения и устранить возможные ошибки, включите автоматические отчёты об отказах.";
@@ -5123,7 +5193,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Load Product Attributes Action Failed */
 "Unable to load product attributes" = "Не удалось загрузить атрибуты продукта";
 
-/* Notice displayed when taxes cannot be synced for new order */
+/* Notice displayed when data cannot be synced for new order */
 "Unable to load taxes for order" = "Не удалось загрузить сведения о налогах для заказа";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
@@ -5168,13 +5238,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
 "Unable to save changes to the payment method" = "Не удалось сохранить изменения способа оплаты";
 
+/* Notice displayed when data cannot be synced for edited order */
+"Unable to save changes. Please try again." = "Не удалось сохранить изменения. Повторите попытку.";
+
 /* Error message when Bluetooth Low Energy is not supported on the user device. */
 "Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device" = "Не удалось выполнить поиск устройств чтения карт: на этом устройстве не поддерживается Bluetooth с низким энергопотреблением. Выберите другое устройство";
 
 /* Error message when Bluetooth scan times out during reader discovery. */
 "Unable to search for card readers - Bluetooth timed out - please try again" = "Не удалось выполнить поиск устройств чтения карт: истекло время ожидания для подключения по Bluetooth. Повторите попытку";
 
-/* Error notice title when we fail to update an address when creating an order. */
+/* Error notice title when we fail to update an address when creating or editing an order. */
 "Unable to set customer details." = "Не удалось добавить сведения о клиенте.";
 
 /* Error notice title when we fail to update an address in the edit address screen. */
@@ -5695,6 +5768,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the merchant's payment account is under review */
 "You'll be able to accept In-Person Payments as soon as we finish reviewing your account." = "Вы сможете получать очные платежи, как только мы завершим проверку вашей учётной записи.";
+
+/* Error message displayed when unable to close user account due to being unauthorized. */
+"You're not authorized to close the account." = "У вас нет прав для закрытия учётной записи.";
 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "Для сбора платежей требуется обновить ваш платёжный терминал. Отмена приведёт к блокировке подключения терминала.";

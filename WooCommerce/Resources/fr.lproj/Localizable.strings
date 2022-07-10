@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-06-21 09:54:03+0000 */
+/* Translation-Revision-Date: 2022-06-30 11:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -354,7 +354,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action to add product on the placeholder overlay when there are no products on the Products tab
    Title for the screen to add a product to an order
-   Title text of the button that adds a product when creating a new order */
+   Title text of the button that adds a product when creating or editing an order */
 "Add Product" = "Ajouter un produit";
 
 /* Action to add linked products to a product in the Linked Products List Selector screen
@@ -560,6 +560,9 @@ which should be translated separately and considered part of this sentence. */
 /* A failure reason for when an error HTTP status code was returned from the site. */
 "An HTTP error code was returned." = "Un code d’erreur HTTP a été reçu.";
 
+/* Default error message displayed when unable to close user account. */
+"An error occured while closing account." = "Une erreur est survenue lors de la clôture du compte.";
+
 /* Error message when Bluetooth is not enabled for this application. */
 "An error occurred accessing Bluetooth - please enable Bluetooth and try again" = "Une erreur s’est produite lors de la tentative d’accès au Bluetooth. Activez le Bluetooth et réessayez";
 
@@ -755,6 +758,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "Gras";
 
+/* The details text on the placeholder overlay when there are no coupons on the coupon list screen. */
+"Boost your business by sending customers special offers and discounts." = "Boostez votre activité en envoyant des remises et des offres spéciales à vos clients.";
+
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "Boîte";
 
@@ -833,6 +839,8 @@ which should be translated separately and considered part of this sentence. */
    Cancel the shipping label more menu action sheet
    Cancel the shipping label tracking more menu action sheet
    Change order status screen - button title for closing the view
+   Close Account button title - dismisses alert, which cancels the Close Account attempt.
+   Close Account error alert button title - dismisses error alert.
    Close the action sheet
    Dismiss button on the alert when the user taps to delete a Product image
    Label for a button that when tapped, cancels the process of connecting to a card reader 
@@ -876,6 +884,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Card method title on the select payment method screen for simple payments */
 "Card" = "Carte";
+
+/* Title for the section related to card readers inside In-Person Payments settings */
+"Card readers" = "Lecteurs de carte";
 
 /* Error message when a card is left in the reader and another transaction started. */
 "Card was left in reader - please remove and reinsert card" = "La carte n’a pas été retirée du lecteur. Retirez-la, puis réinsérez-la";
@@ -988,6 +999,13 @@ which should be translated separately and considered part of this sentence. */
    Title of the Close action on the Jetpack Install view */
 "Close" = "Fermer";
 
+/* Close Account button title to close the user's WordPress.com account
+   Link on the store picker for users who signed in with Apple to close their WordPress.com account. */
+"Close Account" = "Clôturer le compte";
+
+/* Title of the Close Account in-progress view. */
+"Closing account..." = "Clôture du compte en cours…";
+
 /* Accessibility value when a banner is collapsed */
 "Collapsed" = "Réduit";
 
@@ -1015,6 +1033,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "Rédige une nouvelle note de commande.";
+
+/* Close Account confirmation alert title. */
+"Confirm Close Account" = "Confirmer la clôture du compte";
 
 /* Button to confirm the preferred provider for In-Person Payments */
 "Confirm Payment Method" = "Confirmer le mode de paiement";
@@ -1083,6 +1104,7 @@ which should be translated separately and considered part of this sentence. */
 "Contact Email" = "Adresse e-mail de contact";
 
 /* Action button to contact support when Jetpack install fails
+   Close Account error alert button title - navigates the user to contact support.
    Contact Support title
    Text for the button to contact support from the store picker error screen
    The title of the button to contact support in the Error Loading Data banner */
@@ -1172,6 +1194,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when tag loading failed */
 "Couldn't load tags." = "Impossible de charger les étiquettes";
 
+/* Error title displayed when unable to close user account. */
+"Couldn’t close account automatically" = "Fermeture automatique du compte impossible";
+
 /* Text field country in Edit Address Form
    Text field country in Shipping Label Address Validation
    Title to select country from the edit address screen */
@@ -1220,11 +1245,15 @@ which should be translated separately and considered part of this sentence. */
 /* The title for a button that causes the app to deliberately crash for debugging purposes */
 "Crash Immediately" = "Bloquer immédiatement";
 
-/* Button to create an order on the New Order screen */
+/* Action for creating a Coupon remotely
+   Button to create an order on the Order screen */
 "Create" = "Créer";
 
 /* The button title text for creating a new account. */
 "Create Account" = "Créer un compte";
+
+/* Title of the create coupon button on the coupon list screen when it's empty */
+"Create Coupon" = "Créer un code promo";
 
 /* Create Shipping Label form navigation title
    Option to create new shipping label from the action sheet on Products section of Order Details screen
@@ -1248,6 +1277,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Create coupon screen */
 "Create coupon" = "Créer un code promo";
+
+/* Accessibility label for the Create Coupons button */
+"Create coupons" = "Créer des codes promo";
 
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "Créer un nouveau colis";
@@ -1483,6 +1515,7 @@ which should be translated separately and considered part of this sentence. */
 "Don't have an account? _Sign up_" = "Vous n'avez pas encore de compte ? _S'inscrire_";
 
 /* Action title to select products to add to a grouped product from search results
+   Button to dismiss the Order Editing screen
    Button to finish selecting the Coupon expiry date in the Add or Edit Coupon screen
    Button to submit selection on Select Categories screen
    Button to submit the product selector without any product selected.
@@ -1820,7 +1853,8 @@ which should be translated separately and considered part of this sentence. */
 /* Notice displayed when the label purchase fails */
 "Error purchasing the label" = "Erreur lors de l’achat de l’étiquette";
 
-/* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
+/* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
+   The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
 "Everyone loves a deal" = "On ne dit jamais non aux bonnes affaires";
 
 /* Button to submit selection on the Exclude Categories screen when more than 1 item is selected. Reads like: Exclude 10 Categories */
@@ -2969,7 +3003,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Accessibility hint for selecting a variable product in the Select Products screen */
 "Opens list of product variations." = "Ouvre une liste de variantes du produit.";
 
-/* Accessibility hint for selecting a product in a new order */
+/* Accessibility hint for selecting a product in an order form */
 "Opens product detail." = "Ouvre les détails du produit.";
 
 /* Placeholder of cell presenting the title of the new attribute option. */
@@ -3098,6 +3132,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Add Product Category. Title of cell presenting the parent category. */
 "Parent Category" = "Catégorie mère";
 
+/* Title of the banner when the order is not editable */
+"Parts of this order are not currently editable" = "Certains éléments de cette commande ne sont pas modifiables pour le moment";
+
 /* Accessibility label for the password text field in the self-hosted login page.
    Login dialog password placeholder
    Password field title in Product Visibility
@@ -3124,6 +3161,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header for list of payment methods in Payment Method screen */
 "Payment Method Selected" = "Moyen de paiement sélectionné";
 
+/* Navigates to Payment Gateway management screen */
+"Payment Provider" = "Fournisseur de paiement";
+
 /* Message when the presented card remaining credit or balance is insufficient for the purchase. */
 "Payment declined due to insufficient funds. Try another means of payment" = "Le paiement a été refusé en raison de fonds insuffisants. Essayez un autre moyen de paiement";
 
@@ -3136,6 +3176,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Notice that will be displayed after adding a new Shipping Label payment method */
 "Payment method added" = "Moyen de paiement ajouté";
+
+/* Title for the section related to payments inside In-Person Payments settings */
+"Payment options" = "Options de paiement";
 
 /* Label informing users that the payment succeeded. Presented to users when a payment is collected */
 "Payment successful" = "Paiement réussi";
@@ -3164,6 +3207,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the Performance section on Coupons Details screen */
 "Performance" = "Performances";
+
+/* Close Account button title - confirms and closes user's WordPress.com account. */
+"Permanently Close Account" = "Clôturer le compte définitivement";
 
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
@@ -3256,7 +3302,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please make sure the app can access Photos in device settings" = "Vérifiez que l’application peut accéder aux photos dans les paramètres de l’appareil";
 
 /* Error notice recovery suggestion when we fail to update an address in the edit address screen.
-   Recovery suggestion when we fail to update an address when creating an order */
+   Recovery suggestion when we fail to update an address when creating or editing an order */
 "Please make sure you are running the latest version of WooCommerce and try again later." = "Assurez-vous d’utiliser la version la plus récente de WooCommerce, puis réessayez.";
 
 /* Error message when no package is selected on Shipping Label Package Details screen */
@@ -3464,7 +3510,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Product section title if there is more than one product.
    Product section title in Review Order screen if there is more than one product.
    Title of the Products tab — plural form of Product
-   Title text of the section that shows the Products when creating a new order
+   Title text of the section that shows the Products when creating or editing an order
    Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "Produits";
 
@@ -4297,6 +4343,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label for one of the filters in order custom date range */
 "Start Date" = "Date de début";
 
+/* VoiceOver accessibility hint, informing the user the button can be used to create coupons. */
+"Start a Coupon creation by selecting a discount type in a bottom sheet" = "Pour commencer à créer un code promo, sélectionner un type de réduction dans une feuille inférieure";
+
 /* The details on the placeholder overlay when there are no products on the Products tab */
 "Start selling today by adding your first product to the store." = "Commencez à vendre aujourd’hui en ajoutant votre premier produit à la boutique.";
 
@@ -4893,6 +4942,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Footer text for editing external product button text */
 "This text will be shown on the button linking to the external product." = "Ce texte sera visible dans le bouton de lien vers le produit externe.";
 
+/* Error message displayed when unable to close user account due to unresolved chargebacks. */
+"This user account cannot be closed if there are unresolved chargebacks." = "Ce compte utilisateur ne peut pas être clôturé s’il y a des contestations de paiement non résolues.";
+
+/* Error message displayed when unable to close user account due to having active purchases. */
+"This user account cannot be closed while it has active purchases." = "Impossible de clôturer ce compte utilisateur tant qu’il bénéficie d’achats activés.";
+
+/* Error message displayed when unable to close user account due to having active subscriptions. */
+"This user account cannot be closed while it has active subscriptions." = "Impossible de clôturer ce compte utilisateur tant qu’il bénéficie d’abonnements en cours.";
+
 /* Alert info when selecting the cash payment method for simple payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "Votre commande sera marquée comme terminée si vous avez reçu (total) en dehors de WooCommerce.";
 
@@ -4915,17 +4973,26 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle on the variations list screen when there are no variations and attributes */
 "To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "Pour ajouter une variante, vous devrez d’abord configurer ses attributs (couleur, dimensions, etc.)";
 
+/* Error message displayed when unable to close user account due to having active atomic site. */
+"To close this account now, contact our support team." = "Pour fermer ce compte maintenant, contactez notre équipe d’assistance.";
+
 /* Message prompting an administrator to deactivate Stripe plugin */
 "To collect payments, please ask an administrator to deactivate WooCommerce Stripe Gateway." = "Pour accepter des paiements, demandez à un administrateur de désactiver WooCommerce Stripe Gateway.";
 
 /* Message prompting an administrator to deactivate Stripe plugin */
 "To collect payments, please deactivate WooCommerce Stripe Gateway." = "Pour accepter des paiements, désactivez WooCommerce Stripe Gateway.";
 
+/* Close Account confirmation alert message. The %1$@ is the user's WordPress.com username. */
+"To confirm, please re-enter your username before closing.\n\n%1$@" = "Pour confirmer, saisissez à nouveau votre identifiant avant de fermer.\n\n%1$@";
+
 /* Footer of text field section in Add Attribute screen */
 "To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "Pour créer une variante, vous devez d’abord définir ses attributs (par exemple « Couleur » ou « Taille »)";
 
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "Pour créer votre nouveau compte WordPress.com, veuillez saisir votre adresse e-mail.";
+
+/* Content of the banner when the order is not editable */
+"To edit Products or Payment Details, change the status to Pending Payment." = "Pour modifier des produits ou les détails du paiement, définissez l’état sur Paiement en attente.";
 
 /* Settings > Privacy Settings > report crashes section. Explains what the 'report crashes' toggle does */
 "To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports." = "Aidez-nous à améliorer les performances de l’application et à résoudre les bugs occasionnels en activant les rapports d’incident automatiques.";
@@ -5126,7 +5193,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Load Product Attributes Action Failed */
 "Unable to load product attributes" = "Impossible de charger les attributs du produit";
 
-/* Notice displayed when taxes cannot be synced for new order */
+/* Notice displayed when data cannot be synced for new order */
 "Unable to load taxes for order" = "Impossible de charger les taxes pour la commande";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
@@ -5171,13 +5238,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
 "Unable to save changes to the payment method" = "Impossible d’enregistrer les modifications apportées au moyen de paiement";
 
+/* Notice displayed when data cannot be synced for edited order */
+"Unable to save changes. Please try again." = "Impossible d’enregistrer les modifications. Veuillez réessayer.";
+
 /* Error message when Bluetooth Low Energy is not supported on the user device. */
 "Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device" = "Impossible de détecter des lecteurs de cartes. Le Bluetooth à basse consommation n’est pas pris en charge par cet appareil. Utilisez un autre appareil";
 
 /* Error message when Bluetooth scan times out during reader discovery. */
 "Unable to search for card readers - Bluetooth timed out - please try again" = "Impossible de détecter des lecteurs de cartes. Le Bluetooth a été déconnecté. Réessayez ultérieurement";
 
-/* Error notice title when we fail to update an address when creating an order. */
+/* Error notice title when we fail to update an address when creating or editing an order. */
 "Unable to set customer details." = "Impossible de définir les détails client.";
 
 /* Error notice title when we fail to update an address in the edit address screen. */
@@ -5698,6 +5768,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the merchant's payment account is under review */
 "You'll be able to accept In-Person Payments as soon as we finish reviewing your account." = "Vous pourrez accepter des paiements en personne dès que nous aurons passé votre compte en revue.";
+
+/* Error message displayed when unable to close user account due to being unauthorized. */
+"You're not authorized to close the account." = "Nous n’êtes pas autorisé à clôturer le compte.";
 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "Le logiciel de votre lecteur de carte doit être mis à jour pour percevoir les paiements. L’annulation bloquera la connexion de votre lecteur.";

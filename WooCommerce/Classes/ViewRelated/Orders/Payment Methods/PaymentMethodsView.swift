@@ -28,56 +28,56 @@ struct PaymentMethodsView: View {
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Layout.noSpacing) {
+        ScrollView {
+            VStack(alignment: .leading, spacing: Layout.noSpacing) {
 
-            Text(Localization.header)
-                .subheadlineStyle()
-                .padding()
-                .padding(.horizontal, insets: safeAreaInsets)
+                Text(Localization.header)
+                    .subheadlineStyle()
+                    .padding()
+                    .padding(.horizontal, insets: safeAreaInsets)
+                    .accessibility(identifier: Accessibility.headerLabel)
 
-            Divider()
+                Divider()
 
-            VStack(alignment: .leading, spacing: 8) {
-                VStack(alignment: .leading, spacing: Layout.noSpacing) {
-                    MethodRow(icon: .priceImage, title: Localization.cash) {
-                        showingCashAlert = true
-                        viewModel.trackCollectByCash()
-                    }
+                VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: Layout.noSpacing) {
+                        MethodRow(icon: .priceImage, title: Localization.cash, accessibilityID: Accessibility.cashMethod) {
+                            showingCashAlert = true
+                            viewModel.trackCollectByCash()
+                        }
 
-                    if viewModel.showPayWithCardRow {
-                        Divider()
+                        if viewModel.showPayWithCardRow {
+                            Divider()
 
-                        MethodRow(icon: .creditCardImage, title: Localization.card) {
-                            viewModel.collectPayment(on: rootViewController, onSuccess: dismiss)
+                            MethodRow(icon: .creditCardImage, title: Localization.card, accessibilityID: Accessibility.cardMethod) {
+                                viewModel.collectPayment(on: rootViewController, onSuccess: dismiss)
+                            }
+                        }
+
+                        if viewModel.showPaymentLinkRow {
+                            Divider()
+
+                            MethodRow(icon: .linkImage, title: Localization.link, accessibilityID: Accessibility.paymentLink) {
+                                sharingPaymentLink = true
+                                viewModel.trackCollectByPaymentLink()
+                            }
                         }
                     }
+                    .padding(.horizontal)
+                    .background(Color(.listForeground))
 
-                    if viewModel.showPaymentLinkRow {
-                        Divider()
-
-                        MethodRow(icon: .linkImage, title: Localization.link) {
-                            sharingPaymentLink = true
-                            viewModel.trackCollectByPaymentLink()
-                        }
+                    if viewModel.showUpsellCardReaderFeatureBanner {
+                        FeatureAnnouncementCardView(viewModel: viewModel.cardUpsellAnnouncementViewModel,
+                                                    dismiss: nil,
+                                                    callToAction: {
+                            showingPurchaseCardReaderView = true
+                        })
                     }
                 }
-                .padding(.horizontal)
-                .background(Color(.listForeground))
 
-                if viewModel.showUpsellCardReaderFeatureBanner {
-                    FeatureAnnouncementView(title: Localization.purchaseCardReaderAnnouncementTitle,
-                                            message: Localization.purchaseCardReaderAnnouncementMessage,
-                                            buttonTitle: Localization.purchaseCardReaderAnnouncementButtonTitle,
-                                            image: .paymentsFeatureBannerImage,
-                                            dismiss: nil,
-                                            callToAction: {
-                        showingPurchaseCardReaderView = true
-                    })
-                }
+                // Pushes content to the top
+                Spacer()
             }
-
-            // Pushes content to the top
-            Spacer()
         }
         .ignoresSafeArea(edges: .horizontal)
         .disabled(viewModel.disableViewActions)
@@ -120,15 +120,19 @@ struct PaymentMethodsView: View {
 private struct MethodRow: View {
     /// Icon of the row
     ///
-    let icon: UIImage
+    private let icon: UIImage
 
     /// Title of the row
     ///
-    let title: String
+    private let title: String
+
+    /// Accessibility ID for the row
+    ///
+    private let accessibilityID: String
 
     /// Action when the row is selected
     ///
-    let action: () -> ()
+    private let action: () -> ()
 
     /// Keeps track of the current screen scale.
     ///
@@ -137,6 +141,13 @@ private struct MethodRow: View {
     ///   Environment safe areas
     ///
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+
+    init(icon: UIImage, title: String, accessibilityID: String = "", action: @escaping () -> ()) {
+        self.icon = icon
+        self.title = title
+        self.accessibilityID = accessibilityID
+        self.action = action
+    }
 
     var body: some View {
         Button(action: action) {
@@ -159,6 +170,7 @@ private struct MethodRow: View {
             .padding(.vertical, PaymentMethodsView.Layout.verticalPadding)
             .padding(.horizontal, insets: safeAreaInsets)
         }
+        .accessibilityIdentifier(accessibilityID)
     }
 }
 
@@ -172,12 +184,6 @@ extension PaymentMethodsView {
         static let markAsPaidTitle = NSLocalizedString("Mark as Paid?", comment: "Alert title when selecting the cash payment method")
         static let markAsPaidButton = NSLocalizedString("Mark as Paid", comment: "Alert button when selecting the cash payment method")
         static let cancelTitle = NSLocalizedString("Cancel", comment: "Title for the button to cancel the payment methods screen")
-        static let purchaseCardReaderAnnouncementTitle = NSLocalizedString("Accept payments easily",
-                    comment: "Title for the feature announcement banner intended to upsell card readers")
-        static let purchaseCardReaderAnnouncementMessage = NSLocalizedString("Get ready to accept payments with a card reader.",
-                    comment: "Message for the feature announcement banner intended to upsell card readers")
-        static let purchaseCardReaderAnnouncementButtonTitle = NSLocalizedString("Purchase Card Reader",
-                    comment: "Title for the button on the feature announcement banner intended to upsell card readers")
     }
 
     enum Layout {
@@ -187,6 +193,13 @@ extension PaymentMethodsView {
         static func iconWidthHeight(scale: CGFloat) -> CGFloat {
             24 * scale
         }
+    }
+
+    enum Accessibility {
+        static let headerLabel = "payment-methods-header-label"
+        static let cashMethod = "payment-methods-view-cash-row"
+        static let cardMethod = "payment-methods-view-card-row"
+        static let paymentLink = "payment-methods-view-payment-link-row"
     }
 }
 

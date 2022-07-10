@@ -473,6 +473,34 @@ final class OrderDetailsDataSourceTests: XCTestCase {
             return
         }
     }
+
+    func test_custom_fields_button_is_visible() throws {
+        // Given
+        let order = MockOrders().makeOrder(customFields: [
+            OrderMetaData(metadataID: 123, key: "Key", value: "Value")
+        ])
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let customFieldSection = section(withCategory: .customFields, from: dataSource)
+        XCTAssertNotNil(customFieldSection)
+    }
+
+    func test_custom_fields_button_is_hidden_when_order_contains_no_custom_fields_to_display() throws {
+        // Given
+        let order = MockOrders().makeOrder(customFields: [])
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let customFieldSection = section(withCategory: .customFields, from: dataSource)
+        XCTAssertNil(customFieldSection)
+    }
 }
 
 // MARK: - Test Data

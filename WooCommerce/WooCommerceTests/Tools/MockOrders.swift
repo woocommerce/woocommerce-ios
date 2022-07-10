@@ -15,7 +15,8 @@ final class MockOrders {
                    shippingLines: [ShippingLine] = sampleShippingLines(),
                    refunds: [OrderRefundCondensed] = [],
                    fees: [OrderFeeLine] = [],
-                   taxes: [OrderTaxLine] = []) -> Order {
+                   taxes: [OrderTaxLine] = [],
+                   customFields: [OrderMetaData] = []) -> Order {
         return Order.fake().copy(siteID: siteID,
                                  orderID: orderID,
                                  customerID: 11,
@@ -41,7 +42,8 @@ final class MockOrders {
                                  shippingLines: shippingLines,
                                  refunds: refunds,
                                  fees: fees,
-                                 taxes: taxes)
+                                 taxes: taxes,
+                                 customFields: customFields)
     }
 
     func sampleOrder() -> Order {

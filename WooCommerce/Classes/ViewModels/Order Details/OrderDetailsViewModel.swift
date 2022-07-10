@@ -389,8 +389,8 @@ extension OrderDetailsViewModel {
             let customFields = order.customFields.map {
                 OrderCustomFieldsViewModel(metadata: $0)
             }
-            let metadataView = UIHostingController(rootView: OrderCustomFieldsDetails(customFields: customFields))
-            viewController.present(metadataView, animated: true)
+            let customFieldsView = UIHostingController(rootView: OrderCustomFieldsDetails(customFields: customFields))
+            viewController.present(customFieldsView, animated: true)
         case .seeReceipt:
             let countryCode = configurationLoader.configuration.countryCode
             ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode))

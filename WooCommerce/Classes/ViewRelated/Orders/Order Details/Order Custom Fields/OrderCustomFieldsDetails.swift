@@ -26,13 +26,18 @@ struct OrderCustomFieldsDetails: View {
             }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
+                    Button(action: {
+                        presentationMode.wrappedValue.dismiss()
+                    }, label: {
+                        Image(uiImage: .closeButton)
+                    })
                     Button("Done") {
                         presentationMode.wrappedValue.dismiss()
                     }
                 }
             }
             .navigationTitle("Custom Fields")
-            .navigationBarTitleDisplayMode(.large)
+            .navigationBarTitleDisplayMode(.inline)
             .wooNavigationBarStyle()
         }
     }

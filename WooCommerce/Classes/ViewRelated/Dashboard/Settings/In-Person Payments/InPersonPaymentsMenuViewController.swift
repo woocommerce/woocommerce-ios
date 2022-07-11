@@ -45,19 +45,11 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     var cardReadersSection: Section? {
-        let rows: [Row]
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.consolidatedCardReaderManuals) {
-            rows = [
+        let rows: [Row] = [
                 .orderCardReader,
                 .manageCardReader,
                 .cardReaderManuals
             ]
-        } else {
-            rows = [
-                .orderCardReader,
-                .manageCardReader
-            ] + readerManualRows()
-        }
         return Section(header: Localization.cardReaderSectionTitle, rows: rows)
     }
 
@@ -66,21 +58,6 @@ private extension InPersonPaymentsMenuViewController {
             return nil
         }
         return Section(header: Localization.paymentOptionsSectionTitle, rows: [.managePaymentGateways])
-    }
-
-    func readerManualRows() -> [Row] {
-        configurationLoader.configuration.supportedReaders.map { readerType in
-            switch readerType {
-            case .chipper:
-                return .bbposChipper2XBTManual
-            case .stripeM2:
-                return .stripeM2Manual
-            case .wisepad3:
-                return .wisepad3Manual
-            case .other:
-                preconditionFailure("Unknown card reader type was present in the supported readers list. This should not be possible")
-            }
-        }
     }
 
     func configureTableView() {
@@ -108,12 +85,6 @@ private extension InPersonPaymentsMenuViewController {
             configureManagePaymentGateways(cell: cell)
         case let cell as LeftImageTableViewCell where row == .cardReaderManuals:
             configureCardReaderManuals(cell: cell)
-        case let cell as LeftImageTableViewCell where row == .bbposChipper2XBTManual:
-            configureChipper2XManual(cell: cell)
-        case let cell as LeftImageTableViewCell where row == .stripeM2Manual:
-            configureStripeM2Manual(cell: cell)
-        case let cell as LeftImageTableViewCell where row == .wisepad3Manual:
-            configureWisepad3Manual(cell: cell)
         default:
             fatalError()
         }
@@ -145,27 +116,6 @@ private extension InPersonPaymentsMenuViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.configure(image: .cardReaderManualIcon, text: Localization.cardReaderManuals)
-    }
-
-    func configureChipper2XManual(cell: LeftImageTableViewCell) {
-        cell.imageView?.tintColor = .text
-        cell.accessoryType = .disclosureIndicator
-        cell.selectionStyle = .default
-        cell.configure(image: .cardReaderManualIcon, text: Localization.chipperCardReaderManual)
-    }
-
-    func configureStripeM2Manual(cell: LeftImageTableViewCell) {
-        cell.imageView?.tintColor = .text
-        cell.accessoryType = .disclosureIndicator
-        cell.selectionStyle = .default
-        cell.configure(image: .cardReaderManualIcon, text: Localization.stripeM2CardReaderManual)
-    }
-
-    func configureWisepad3Manual(cell: LeftImageTableViewCell) {
-        cell.imageView?.tintColor = .text
-        cell.accessoryType = .disclosureIndicator
-        cell.selectionStyle = .default
-        cell.configure(image: .cardReaderManualIcon, text: Localization.wisepad3CardReaderManual)
     }
 }
 
@@ -203,18 +153,6 @@ extension InPersonPaymentsMenuViewController {
     func managePaymentGatewaysWasPressed() {
         ServiceLocator.analytics.track(.settingsCardPresentSelectedPaymentGatewayTapped)
         onPluginSelectionCleared()
-    }
-
-    func bbposChipper2XBTManualWasPressed() {
-        WebviewHelper.launch(Constants.bbposChipper2XBTManualURL, with: self)
-    }
-
-    func stripeM2ManualWasPressed() {
-        WebviewHelper.launch(Constants.stripeM2ManualURL, with: self)
-    }
-
-    func wisepad3ManualWasPressed() {
-        WebviewHelper.launch(Constants.wisepad3ManualURL, with: self)
     }
 }
 
@@ -257,12 +195,6 @@ extension InPersonPaymentsMenuViewController {
             cardReaderManualsWasPressed()
         case .managePaymentGateways:
             managePaymentGatewaysWasPressed()
-        case .bbposChipper2XBTManual:
-            bbposChipper2XBTManualWasPressed()
-        case .stripeM2Manual:
-            stripeM2ManualWasPressed()
-        case .wisepad3Manual:
-            wisepad3ManualWasPressed()
         }
     }
 }
@@ -298,21 +230,6 @@ private extension InPersonPaymentsMenuViewController {
             "Card Reader Manuals",
             comment: "Navigates to Card Reader Manuals screen"
         )
-
-        static let chipperCardReaderManual = NSLocalizedString(
-            "Chipper 2X card reader manual",
-            comment: "Navigates to Chipper Card Reader manual"
-        )
-
-        static let stripeM2CardReaderManual = NSLocalizedString(
-            "Stripe M2 card reader manual",
-            comment: "Navigates to Stripe M2 Card Reader manual"
-        )
-
-        static let wisepad3CardReaderManual = NSLocalizedString(
-            "WisePad 3 card reader manual",
-            comment: "Navigates to WisePad 3 Card Reader manual"
-        )
     }
 }
 
@@ -326,9 +243,6 @@ private enum Row: CaseIterable {
     case manageCardReader
     case cardReaderManuals
     case managePaymentGateways
-    case bbposChipper2XBTManual
-    case stripeM2Manual
-    case wisepad3Manual
 
     var type: UITableViewCell.Type {
         switch self {
@@ -342,12 +256,6 @@ private enum Row: CaseIterable {
     var reuseIdentifier: String {
         return type.reuseIdentifier
     }
-}
-
-private enum Constants {
-    static let bbposChipper2XBTManualURL = URL(string: "https://stripe.com/files/docs/terminal/c2xbt_product_sheet.pdf")!
-    static let stripeM2ManualURL = URL(string: "https://stripe.com/files/docs/terminal/m2_product_sheet.pdf")!
-    static let wisepad3ManualURL = URL(string: "https://stripe.com/files/docs/terminal/wp3_product_sheet.pdf")!
 }
 
 // MARK: - SwiftUI compatibility

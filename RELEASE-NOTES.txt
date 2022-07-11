@@ -3,6 +3,7 @@
 9.7
 -----
 - [*] In-Person Payments: The purchase card reader information card can be dismissed [https://github.com/woocommerce/woocommerce-ios/pull/7260]
+- [*] In-Person Payments: When dismissing the purchase card reader information card, the user can choose to be reminded in 14 days. [https://github.com/woocommerce/woocommerce-ios/pull/7271]
 
 9.6
 -----

@@ -193,6 +193,12 @@ final class PaymentMethodsViewModel: ObservableObject {
         stores.dispatch(action)
     }
 
+    #warning("this is for testing only")
+    func cancelCardDismissal() {
+        let action = AppSettingsAction.resetFeatureAnnouncementDismissed(campaign: .upsellCardReaders)
+            ServiceLocator.stores.dispatch(action)
+    }
+
     /// Starts the collect payment flow in the provided `rootViewController`
     /// - parameter useCase: Assign a custom useCase object for testing purposes. If not provided `CollectOrderPaymentUseCase` will be used.
     ///
@@ -200,6 +206,8 @@ final class PaymentMethodsViewModel: ObservableObject {
                         useCase: CollectOrderPaymentProtocol? = nil,
                         onSuccess: @escaping () -> ()) {
         trackCollectIntention(method: .card)
+
+        cancelCardDismissal()
 
         guard let rootViewController = rootViewController else {
             DDLogError("⛔️ Root ViewController is nil, can't present payment alerts.")

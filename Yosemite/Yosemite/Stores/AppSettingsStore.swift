@@ -182,6 +182,8 @@ public class AppSettingsStore: Store {
             setFeatureAnnouncementDismissed(campaign: campaign, remindLater: remindLater, onCompletion: completion)
         case .getFeatureAnnouncementVisibility(campaign: let campaign, onCompletion: let completion):
             getFeatureAnnouncementVisibility(campaign: campaign, onCompletion: completion)
+        case .resetFeatureAnnouncementDismissed(campaign: let campaign):
+            resetFeatureAnnouncementDismissed(campaign: campaign)
         }
     }
 }
@@ -762,6 +764,14 @@ extension AppSettingsStore {
         } else {
             let neverDismissed = campaignSettings.dismissedDate == nil
             onCompletion(.success(neverDismissed))
+        }
+    }
+
+    func resetFeatureAnnouncementDismissed(campaign: FeatureAnnouncementCampaign) {
+        do {
+            try generalAppSettings.setValue([:], for: \.featureAnnouncementCampaignSettings)
+        } catch {
+
         }
     }
 

@@ -4,21 +4,23 @@ import Yosemite
 
 class CardReaderManualsViewModelTests: XCTestCase {
 
-    /// Mock Storage: InMemory
-    ///
     private var storageManager: MockStorageManager!
-
-    /// Dummy Site ID
-    ///
+    private var stores: MockStoresManager!
     private let sampleSiteID: Int64 = 1234
 
     override func setUpWithError() throws {
         try super.setUpWithError()
         storageManager = MockStorageManager()
+        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.sessionManager.setStoreId(sampleSiteID)
+        ServiceLocator.setSelectedSiteSettings(SelectedSiteSettings(stores: stores, storageManager: storageManager))
     }
 
     override func tearDownWithError() throws {
+        ServiceLocator.setSelectedSiteSettings(SelectedSiteSettings())
+        storageManager.reset()
         storageManager = nil
+        stores = nil
         try super.tearDownWithError()
     }
 
@@ -26,7 +28,7 @@ class CardReaderManualsViewModelTests: XCTestCase {
         // Given
         let viewModel = CardReaderManualsViewModel()
 
-        // When
+        // Then
         XCTAssertNotNil(viewModel)
     }
 
@@ -44,12 +46,14 @@ class CardReaderManualsViewModelTests: XCTestCase {
     func test_viewModel_when_US_store_then_available_card_reader_manuals() {
         // Given
         let setting = SiteSetting.fake()
-                    .copy(
-                        siteID: sampleSiteID,
-                        settingID: "woocommerce_default_country",
-                        value: "US:CA"
-                    )
+            .copy(
+                siteID: sampleSiteID,
+                settingID: "woocommerce_default_country",
+                value: "US:CA",
+                settingGroupKey: SiteSettingGroup.general.rawValue
+            )
         storageManager.insertSampleSiteSetting(readOnlySiteSetting: setting)
+        ServiceLocator.selectedSiteSettings.refresh()
         let viewModel = CardReaderManualsViewModel()
 
         // When
@@ -63,15 +67,17 @@ class CardReaderManualsViewModelTests: XCTestCase {
     func test_viewModel_when_CA_store_then_available_card_reader_manuals() {
         // Given
         let setting = SiteSetting.fake()
-                    .copy(
-                        siteID: sampleSiteID,
-                        settingID: "woocommerce_default_country",
-                        value: "CA:NS"
-                    )
+            .copy(
+                siteID: sampleSiteID,
+                settingID: "woocommerce_default_country",
+                value: "CA:NS",
+                settingGroupKey: SiteSettingGroup.general.rawValue
+            )
         storageManager.insertSampleSiteSetting(readOnlySiteSetting: setting)
+        ServiceLocator.selectedSiteSettings.refresh()
         let viewModel = CardReaderManualsViewModel()
 
-        // When
+        // When:
         let availableReaderTypes = [CardReaderType.wisepad3]
         let expectedManuals = availableReaderTypes.map { $0.manual }
 
@@ -85,10 +91,11 @@ class CardReaderManualsViewModelTests: XCTestCase {
                     .copy(
                         siteID: sampleSiteID,
                         settingID: "woocommerce_default_country",
-                        value: "ES"
+                        value: "ES",
+                        settingGroupKey: SiteSettingGroup.general.rawValue
                     )
         storageManager.insertSampleSiteSetting(readOnlySiteSetting: setting)
-        let viewModel = CardReaderManualsViewModel()
+        let viewModel = CardReaderManualsViewModel.init()
 
         // When
         let availableReaderTypes: [CardReaderType] = []

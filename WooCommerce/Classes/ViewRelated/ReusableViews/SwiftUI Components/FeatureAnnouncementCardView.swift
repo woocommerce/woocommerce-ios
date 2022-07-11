@@ -2,6 +2,7 @@ import SwiftUI
 
 struct FeatureAnnouncementCardView: View {
     private let viewModel: FeatureAnnouncementCardViewModel
+    @State private var showingDismissAlert = false
 
     let dismiss: (() -> Void)?
     let callToAction: (() -> Void)
@@ -24,12 +25,25 @@ struct FeatureAnnouncementCardView: View {
                 Spacer()
                 if let dismiss = dismiss {
                     Button(action: {
-                        viewModel.dismissTapped()
-                        dismiss()
+                        showingDismissAlert = true
                     }) {
                         Image(systemName: "xmark")
                             .foregroundColor(Color(.withColorStudio(.gray)))
-                    }.padding(.trailing, Layout.padding)
+                    }
+                    .padding(.trailing, Layout.padding)
+                    .alert(isPresented: $showingDismissAlert,
+                           content: {
+                        Alert(title: Text(viewModel.dismissAlertTitle),
+                              message: Text(viewModel.dismissAlertMessage),
+                              primaryButton: .cancel(Text("Remind me later"), action: {
+                            viewModel.remindLaterTapped()
+                            dismiss()
+                        }),
+                              secondaryButton: .default(Text("Don't show again"), action: {
+                            viewModel.dontShowAgainTapped()
+                            dismiss()
+                        }))
+                    })
                 }
             }
             .padding(.top, Layout.padding)
@@ -72,5 +86,18 @@ extension FeatureAnnouncementCardView {
         static let bottomButtonPadding: CGFloat = 23.5
         static let smallSpacing: CGFloat = 8
         static let largeSpacing: CGFloat = 16
+    }
+}
+
+extension FeatureAnnouncementCardView {
+    enum Localization {
+        static let remindLaterButton = NSLocalizedString(
+            "Remind me later",
+            comment: "Alert button text on a feature announcement which gives the user the chance to be reminded " +
+            "of the new feature after a short time")
+
+        static let dontShowAgainButton = NSLocalizedString(
+            "Don't show again",
+            comment: "Alert button text on a feature announcement which prevents the banner being shown again")
     }
 }

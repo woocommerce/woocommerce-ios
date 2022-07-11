@@ -190,7 +190,13 @@ public final class NewOrderScreen: ScreenObject {
     /// - Returns: Orders Screen object.
     @discardableResult
     public func cancelOrderCreation() throws -> OrdersScreen {
-        cancelButton.tap()
+        // This cancel button exists only if the feature flag `.splitViewInOrdersTab` is on.
+        // For taking app store screenshot, the beta feature is turned off so we should pop to get out of this screen.
+        if cancelButton.exists {
+            cancelButton.tap()
+        } else {
+            pop()
+        }
         return try OrdersScreen()
     }
 }

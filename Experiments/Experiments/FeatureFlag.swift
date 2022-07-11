@@ -89,4 +89,8 @@ public enum FeatureFlag: Int {
     /// Apple ID account deletion
     ///
     case appleIDAccountDeletion
+
+    /// Showing a "New to WooCommerce" link in the login prologue screen
+    ///
+    case newToWooCommerceLinkInLoginPrologue
 }

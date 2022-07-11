@@ -11,6 +11,7 @@ import enum Networking.DotcomError
 final class OrderDetailsViewModel {
 
     private let stores: StoresManager
+    private let currencyFormatter: CurrencyFormatter
 
     private(set) var order: Order
 
@@ -22,9 +23,12 @@ final class OrderDetailsViewModel {
         return lookUpOrderStatus(for: order)
     }
 
-    init(order: Order, stores: StoresManager = ServiceLocator.stores) {
+    init(order: Order,
+         stores: StoresManager = ServiceLocator.stores,
+         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         self.order = order
         self.stores = stores
+        self.currencyFormatter = currencyFormatter
     }
 
     func update(order newOrder: Order) {
@@ -148,11 +152,12 @@ final class OrderDetailsViewModel {
     }
 
     var paymentMethodsViewModel: PaymentMethodsViewModel {
-        PaymentMethodsViewModel(siteID: order.siteID,
-                                orderID: order.orderID,
-                                paymentLink: order.paymentURL,
-                                formattedTotal: order.total,
-                                flow: .orderPayment)
+        let formattedTotal = currencyFormatter.formatAmount(order.total, with: order.currency) ?? String()
+        return PaymentMethodsViewModel(siteID: order.siteID,
+                                       orderID: order.orderID,
+                                       paymentLink: order.paymentURL,
+                                       formattedTotal: formattedTotal,
+                                       flow: .orderPayment)
     }
 
     /// Helpers

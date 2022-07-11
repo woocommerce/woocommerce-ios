@@ -33,16 +33,15 @@ final class ProductDownloadListViewController: UIViewController {
                                           backgroundColor: UIColor.black.withAlphaComponent(0.4))
 
     init(product: ProductFormDataModel,
-         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+         stores: StoresManager = ServiceLocator.stores,
          completion: @escaping Completion) {
         self.product = product
         viewModel = ProductDownloadListViewModel(product: product)
         onCompletion = completion
-        productImageActionHandler = productImageUploader
-            .actionHandler(key: .init(siteID: product.siteID,
-                                      productOrVariationID: .product(id: product.productID),
-                                      isLocalID: !product.existsRemotely),
-                           originalStatuses: product.imageStatuses)
+        productImageActionHandler = ProductImageActionHandler(siteID: product.siteID,
+                                                              productID: .product(id: product.productID),
+                                                              imageStatuses: [],
+                                                              stores: stores)
         super.init(nibName: type(of: self).nibName, bundle: nil)
 
         onDeviceMediaLibraryPickerCompletion = { [weak self] assets in

@@ -46,6 +46,8 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
     public let fees: [OrderFeeLine]
     public let taxes: [OrderTaxLine]
 
+    public let customFields: [OrderMetaData]
+
     /// Order struct initializer.
     ///
     public init(siteID: Int64,
@@ -80,7 +82,8 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                 coupons: [OrderCouponLine],
                 refunds: [OrderRefundCondensed],
                 fees: [OrderFeeLine],
-                taxes: [OrderTaxLine]) {
+                taxes: [OrderTaxLine],
+                customFields: [OrderMetaData]) {
 
         self.siteID = siteID
         self.orderID = orderID
@@ -119,6 +122,8 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         self.refunds = refunds
         self.fees = fees
         self.taxes = taxes
+
+        self.customFields = customFields
     }
 
 
@@ -194,6 +199,9 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         // https://github.com/woocommerce/woocommerce/blob/3611d4643791bad87a0d3e6e73e031bb80447417/plugins/woocommerce/includes/class-wc-order.php#L1537-L1561
         let needsProcessing = try container.decodeIfPresent(Bool.self, forKey: .needsProcessing) ?? false
 
+        // Filter out meta data if its key is prefixed with an underscore (internal meta keys)
+        let customFields = allOrderMetaData?.filter({ !$0.key.hasPrefix("_") }) ?? []
+
         self.init(siteID: siteID,
                   orderID: orderID,
                   parentID: parentID,
@@ -226,7 +234,8 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                   coupons: coupons,
                   refunds: refunds,
                   fees: fees,
-                  taxes: taxes)
+                  taxes: taxes,
+                  customFields: customFields)
     }
 
     public static var empty: Order {
@@ -262,7 +271,8 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                   coupons: [],
                   refunds: [],
                   fees: [],
-                  taxes: [])
+                  taxes: [],
+                  customFields: [])
     }
 }
 

@@ -51,7 +51,7 @@ final class CouponAmountInputFormatterTests: XCTestCase {
 
     func test_formatting_empty_input() {
         let input = ""
-        XCTAssertEqual(formatter.format(input: input), "0")
+        XCTAssertEqual(formatter.format(input: input), "")
     }
 
     func test_formatting_zero_input() {

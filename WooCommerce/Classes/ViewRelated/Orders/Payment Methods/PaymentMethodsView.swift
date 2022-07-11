@@ -35,12 +35,13 @@ struct PaymentMethodsView: View {
                     .subheadlineStyle()
                     .padding()
                     .padding(.horizontal, insets: safeAreaInsets)
+                    .accessibility(identifier: Accessibility.headerLabel)
 
                 Divider()
 
                 VStack(alignment: .leading, spacing: 8) {
                     VStack(alignment: .leading, spacing: Layout.noSpacing) {
-                        MethodRow(icon: .priceImage, title: Localization.cash) {
+                        MethodRow(icon: .priceImage, title: Localization.cash, accessibilityID: Accessibility.cashMethod) {
                             showingCashAlert = true
                             viewModel.trackCollectByCash()
                         }
@@ -48,7 +49,7 @@ struct PaymentMethodsView: View {
                         if viewModel.showPayWithCardRow {
                             Divider()
 
-                            MethodRow(icon: .creditCardImage, title: Localization.card) {
+                            MethodRow(icon: .creditCardImage, title: Localization.card, accessibilityID: Accessibility.cardMethod) {
                                 viewModel.collectPayment(on: rootViewController, onSuccess: dismiss)
                             }
                         }
@@ -56,7 +57,7 @@ struct PaymentMethodsView: View {
                         if viewModel.showPaymentLinkRow {
                             Divider()
 
-                            MethodRow(icon: .linkImage, title: Localization.link) {
+                            MethodRow(icon: .linkImage, title: Localization.link, accessibilityID: Accessibility.paymentLink) {
                                 sharingPaymentLink = true
                                 viewModel.trackCollectByPaymentLink()
                             }
@@ -121,15 +122,19 @@ struct PaymentMethodsView: View {
 private struct MethodRow: View {
     /// Icon of the row
     ///
-    let icon: UIImage
+    private let icon: UIImage
 
     /// Title of the row
     ///
-    let title: String
+    private let title: String
+
+    /// Accessibility ID for the row
+    ///
+    private let accessibilityID: String
 
     /// Action when the row is selected
     ///
-    let action: () -> ()
+    private let action: () -> ()
 
     /// Keeps track of the current screen scale.
     ///
@@ -138,6 +143,13 @@ private struct MethodRow: View {
     ///   Environment safe areas
     ///
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+
+    init(icon: UIImage, title: String, accessibilityID: String = "", action: @escaping () -> ()) {
+        self.icon = icon
+        self.title = title
+        self.accessibilityID = accessibilityID
+        self.action = action
+    }
 
     var body: some View {
         Button(action: action) {
@@ -160,6 +172,7 @@ private struct MethodRow: View {
             .padding(.vertical, PaymentMethodsView.Layout.verticalPadding)
             .padding(.horizontal, insets: safeAreaInsets)
         }
+        .accessibilityIdentifier(accessibilityID)
     }
 }
 
@@ -182,6 +195,13 @@ extension PaymentMethodsView {
         static func iconWidthHeight(scale: CGFloat) -> CGFloat {
             24 * scale
         }
+    }
+
+    enum Accessibility {
+        static let headerLabel = "payment-methods-header-label"
+        static let cashMethod = "payment-methods-view-cash-row"
+        static let cardMethod = "payment-methods-view-card-row"
+        static let paymentLink = "payment-methods-view-payment-link-row"
     }
 }
 

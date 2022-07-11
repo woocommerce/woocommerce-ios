@@ -1,2 +1,1 @@
-Esta versión tiene varias mejoras en la creación de pedidos y los pagos en persona: se ha corregido un error en la sección de productos que no mostraba el orden correcto de los elementos, se muestra la fecha y la hora en todos los pedidos y se muestra el botón de emisión del reembolso en todos los pedidos pagados.
-Sigue enviando tus comentarios: ¡te escuchamos!
+¿Sabías que estamos trabajando en una nueva función para gestionar cupones? Dirígete a la pestaña Menú, toca el icono de ajustes y desplázate hasta las funciones experimentales. En esta versión, hemos corregido un problema que se producía al editar los campos "Uso individual" y "Excluir artículos rebajados". ¡Pruébalo y danos tu opinión!

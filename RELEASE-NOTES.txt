@@ -3,6 +3,8 @@
 9.7
 ----
 - [*] In-Person Payments: Card Reader Manuals now appear based on country availability, consolidated into an unique view [https://github.com/woocommerce/woocommerce-ios/pull/7178]
+-----
+
 
 9.6
 -----
@@ -11,8 +13,10 @@
 - [*] Coupons: Removed the redundant animation when reloading the coupon list. [https://github.com/woocommerce/woocommerce-ios/pull/7137]
 - [*] Login: Display "What is WordPress.com?" link in "Continue With WordPress.com" flow. [https://github.com/woocommerce/woocommerce-ios/pull/7213]
 - [*] Login: Display the Jetpack requirement error after login is successful.
+- [*] Login: Display a "New to WooCommerce?" link in the login prologue screen above the login buttons. [https://github.com/woocommerce/woocommerce-ios/pull/7261]
 - [*] In-Person Payments: Publicize the Card Present Payments feature on the Payment Method screen [https://github.com/woocommerce/woocommerce-ios/pull/7225]
 - [*] In-Person Payments: Add blog_id to IPP transaction description to match WCPay [https://github.com/woocommerce/woocommerce-ios/pull/7221]
+- [*] Product form: after uploading an image, the product can now be saved immediately while the image is being uploaded in the background. When no images are pending upload for the saved product, the images are added to the product. Testing instructions: https://github.com/woocommerce/woocommerce-ios/pull/7196. [https://github.com/woocommerce/woocommerce-ios/pull/7254]
 
 9.5
 -----

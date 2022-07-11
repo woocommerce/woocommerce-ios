@@ -1,3 +1,4 @@
+import WooFoundation
 import XCTest
 import Yosemite
 
@@ -103,5 +104,17 @@ final class OrderDetailsViewModelTests: XCTestCase {
         // Then
         let actionButtonIDs = viewModel.moreActionsButtons.map { $0.id }
         XCTAssertFalse(actionButtonIDs.contains(.editOrder))
+    }
+
+    func test_paymentMethodsViewModel_title_contains_formatted_order_amount() {
+        // Given
+        let order = Order.fake().copy(currency: "EUR", total: "10.0")
+
+        // When
+        let currencyFormatter = CurrencyFormatter(currencySettings: .init())
+        let title = OrderDetailsViewModel(order: order, currencyFormatter: currencyFormatter).paymentMethodsViewModel.title
+
+        // Then
+        XCTAssertTrue(title.contains("\u{20AC}10.0"))
     }
 }

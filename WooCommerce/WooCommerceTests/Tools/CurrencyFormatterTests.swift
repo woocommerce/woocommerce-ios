@@ -47,6 +47,29 @@ class CurrencyFormatterTests: XCTestCase {
         XCTAssertEqual(expectedResult, actualResult)
     }
 
+    /// Verifies that the Arabic string value returns an accurate decimal value
+    ///
+    func test_arabic_numerals_return_decimal() {
+        // Given
+        let stringValue = "٤٥,٤١"
+        let expectedResult = NSDecimalNumber(string: "45.41")
+
+        // When
+        let converted = CurrencyFormatter(currencySettings: sampleCurrencySettings).convertToDecimal(stringValue)
+
+        // Then
+        // check the formatted decimal exists
+        guard let actualResult = converted else {
+            XCTFail()
+            return
+        }
+
+        // check the decimal type
+        XCTAssertTrue(actualResult.isKind(of: NSDecimalNumber.self))
+
+        // check the decimal value
+        assertEqual(expectedResult, actualResult)
+    }
 
     /// This is where a float-to-decimal unit test would go.
     /// It's not here because we don't allow using floats for currency.

@@ -75,7 +75,7 @@ final class OrderSearchUICommand: SearchUICommand {
 
     func didSelectSearchResult(model: Order, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {
         let viewModel = OrderDetailsViewModel(order: model)
-        let detailsViewController = Inject.ViewControllerHost(OrderDetailsViewController(viewModel: viewModel))
+        let detailsViewController = OrderDetailsViewController(viewModel: viewModel)
 
         viewController.navigationController?.pushViewController(detailsViewController, animated: true)
     }

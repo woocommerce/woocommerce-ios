@@ -123,11 +123,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
-        // Sent when the application is about to move from active to inactive state.
-        // This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message)
-        // or when the user quits the application and it begins the transition to the background state.
-        // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks.
-        // Games should use this method to pause the game.
+        // Simulate push notification for capturing snapshot.
+        // This is supposed to be called only by the WooCommerceScreenshots target.
+        if ProcessConfiguration.shouldSimulatePushNotification {
+            let content = UNMutableNotificationContent()
+            content.title = NSLocalizedString(
+                "You have a new order! 🎉",
+                comment: "Title for the mocked order notification needed for the AppStore listing screenshot"
+            )
+            content.body = NSLocalizedString(
+                "New order for $13.98 on Your WooCommerce Store",
+                comment: "Message for the mocked order notification needed for the AppStore listing screenshot. " +
+                "'Your WooCommerce Store' is the name of the mocked store."
+            )
+
+            // show this notification seconds from now
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1.5, repeats: false)
+
+            // choose a random identifier
+            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+
+            // add our notification request
+            UNUserNotificationCenter.current().add(request)
+        }
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
@@ -327,6 +345,10 @@ private extension AppDelegate {
 
             /// Trick found at: https://twitter.com/twannl/status/1232966604142653446
             UIApplication.shared.currentKeyWindow?.layer.speed = 100
+        }
+
+        if ProcessConfiguration.shouldSimulatePushNotification {
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert]) { _, _ in }
         }
     }
 

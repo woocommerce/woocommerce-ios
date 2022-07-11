@@ -82,9 +82,6 @@ struct InPersonPaymentsSelectPluginView: View {
         .padding(.horizontal, 16)
         .padding(.bottom, 24)
         .background(Color(.tertiarySystemBackground).ignoresSafeArea())
-        .onAppear {
-            ServiceLocator.analytics.track(.cardPresentSelectPaymentGatewayShow)
-        }
     }
 
     private func confirmPluginSelection() {

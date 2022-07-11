@@ -5,6 +5,7 @@ import WordPressKit
 import Yosemite
 import class Networking.UserAgent
 import struct Networking.Settings
+import UIKit
 
 
 /// Encapsulates all of the interactions with the WordPress Authenticator
@@ -30,6 +31,25 @@ class AuthenticationManager: Authentication {
     /// Initializes the WordPress Authenticator.
     ///
     func initialize() {
+        let alternativeSignInOptions: [WordPressAuthenticatorConfiguration.AltSignInOption] = {
+            if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                let signInWithQRCodeButtonConfig: WordPressAuthenticatorConfiguration.ButtonConfig = {
+                    .init(title: NSLocalizedString("Scan QR code to login", comment: "The button in the login starter screen to log in with a QR code."),
+                          isPrimary: false) { sourceViewController in
+                        let scanner = QRCodeLoginScannerViewController { code in
+                            guard let url = URL(string: code) else {
+                                return
+                            }
+                            UIApplication.shared.open(url)
+                        }
+                        sourceViewController.present(scanner, animated: true)
+                    }
+                }()
+                return [.other(config: signInWithQRCodeButtonConfig), .apple, .google]
+            } else {
+                return [.apple, .google]
+            }
+        }()
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
@@ -42,6 +62,7 @@ class AuthenticationManager: Authentication {
                                                                 userAgent: UserAgent.defaultUserAgent,
                                                                 showLoginOptions: true,
                                                                 enableSignUp: false,
+                                                                alternativeSignInOptions: alternativeSignInOptions,
                                                                 enableSignInWithApple: true,
                                                                 enableSignupWithGoogle: false,
                                                                 enableUnifiedAuth: true,

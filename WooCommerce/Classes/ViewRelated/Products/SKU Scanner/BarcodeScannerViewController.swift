@@ -153,6 +153,8 @@ private extension BarcodeScannerViewController {
         let barcodeRequest = VNDetectBarcodesRequest { [weak self] request, error in
             self?.handleBarcodeDetectionResults(request: request, error: error)
         }
+        // TODO-jc: DI the symbologies
+        barcodeRequest.symbologies = [.qr]
         self.requests = [barcodeRequest]
     }
 
@@ -198,6 +200,7 @@ private extension BarcodeScannerViewController {
         instructionLabel.textColor = .white
         instructionLabel.textInsets = Constants.instructionTextInsets
         instructionLabel.text = instructionText
+        instructionLabel.numberOfLines = 0
     }
 }
 

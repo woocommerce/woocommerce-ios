@@ -330,6 +330,7 @@
 		02B296A722FA6DB500FD7A4C /* Date+StartAndEnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B296A622FA6DB500FD7A4C /* Date+StartAndEnd.swift */; };
 		02B296A922FA6E0000FD7A4C /* DateStartAndEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B296A822FA6E0000FD7A4C /* DateStartAndEndTests.swift */; };
 		02B2C831249C4C8D0040C83C /* TextFieldTextAlignmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B2C830249C4C8D0040C83C /* TextFieldTextAlignmentTests.swift */; };
+		02B43BF328777E13002416BF /* QRCodeLoginScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B43BF228777E13002416BF /* QRCodeLoginScannerViewController.swift */; };
 		02B653AC2429F7BF00A9C839 /* MockTaxClassStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B653AB2429F7BF00A9C839 /* MockTaxClassStoresManager.swift */; };
 		02B8650F24A9E2D800265779 /* Product+SwiftUIPreviewHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B8650E24A9E2D800265779 /* Product+SwiftUIPreviewHelpers.swift */; };
 		02BA12852461674B008D8325 /* Optional+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BA12842461674B008D8325 /* Optional+String.swift */; };
@@ -2125,6 +2126,7 @@
 		02B296A622FA6DB500FD7A4C /* Date+StartAndEnd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+StartAndEnd.swift"; sourceTree = "<group>"; };
 		02B296A822FA6E0000FD7A4C /* DateStartAndEndTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateStartAndEndTests.swift; sourceTree = "<group>"; };
 		02B2C830249C4C8D0040C83C /* TextFieldTextAlignmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldTextAlignmentTests.swift; sourceTree = "<group>"; };
+		02B43BF228777E13002416BF /* QRCodeLoginScannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeLoginScannerViewController.swift; sourceTree = "<group>"; };
 		02B653AB2429F7BF00A9C839 /* MockTaxClassStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockTaxClassStoresManager.swift; sourceTree = "<group>"; };
 		02B8650E24A9E2D800265779 /* Product+SwiftUIPreviewHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+SwiftUIPreviewHelpers.swift"; sourceTree = "<group>"; };
 		02BA12842461674B008D8325 /* Optional+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Optional+String.swift"; sourceTree = "<group>"; };
@@ -6330,6 +6332,7 @@
 				027A2E152513356100DA6ACB /* AppleIDCredentialChecker.swift */,
 				FE28F6F3268477C1004465C7 /* RoleEligibilityUseCase.swift */,
 				D89CFE8F25B256E9000E4683 /* ULAccountMatcher.swift */,
+				02B43BF228777E13002416BF /* QRCodeLoginScannerViewController.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -9685,6 +9688,7 @@
 				CECC758C23D2227000486676 /* ProductDetailsCellViewModel.swift in Sources */,
 				DEC1508227F450AC00F4487C /* CouponAllowedEmails.swift in Sources */,
 				B9DA153C280EC7D700FC67DD /* OrderRefundsOptionsDeterminer.swift in Sources */,
+				02B43BF328777E13002416BF /* QRCodeLoginScannerViewController.swift in Sources */,
 				453227B723C4D6EC00D816B3 /* TimeZone+Woo.swift in Sources */,
 				CC53FB3527551A6E00C4CA4F /* ProductRow.swift in Sources */,
 				2662D90A26E16B3600E25611 /* FilterListSelector.swift in Sources */,

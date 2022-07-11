@@ -8,9 +8,6 @@ struct OrderCustomFieldsDetails: View {
     var body: some View {
         NavigationView {
             ScrollView {
-
-                Color(.listBackground).edgesIgnoringSafeArea(.all)
-
                 VStack(alignment: .leading) {
                     ForEach(customFields) { customField in
                         TitleAndSubtitleRow(
@@ -21,8 +18,9 @@ struct OrderCustomFieldsDetails: View {
                             .padding(.leading)
                     }
                 }
-                .background(Color(.basicBackground))
+                .background(Color(.listForeground))
             }
+            .background(Color(.listBackground).ignoresSafeArea())
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(action: {

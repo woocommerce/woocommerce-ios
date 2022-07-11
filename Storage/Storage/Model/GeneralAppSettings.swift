@@ -107,6 +107,25 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings
         )
     }
+
+    /// Returns a new instance of `GeneralAppSettings` with the provided feature announcement campaign seetings updated.
+    ///
+    public func replacing(featureAnnouncementSettings: FeatureAnnouncementCampaignSettings, for campaign: FeatureAnnouncementCampaign) -> GeneralAppSettings {
+        let updatedSettings = featureAnnouncementCampaignSettings.merging([campaign: featureAnnouncementSettings]) {
+            _, new in new
+        }
+
+        return GeneralAppSettings(
+            installationDate: installationDate,
+            feedbacks: feedbacks,
+            isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
+            isProductSKUInputScannerSwitchEnabled: isProductSKUInputScannerSwitchEnabled,
+            isCouponManagementSwitchEnabled: isCouponManagementSwitchEnabled,
+            knownCardReaders: knownCardReaders,
+            lastEligibilityErrorInfo: lastEligibilityErrorInfo,
+            featureAnnouncementCampaignSettings: updatedSettings
+        )
+    }
 }
 
 // MARK: Custom Decoding

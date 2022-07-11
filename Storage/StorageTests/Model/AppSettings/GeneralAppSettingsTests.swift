@@ -92,6 +92,9 @@ final class GeneralAppSettingsTests: XCTestCase {
     }
 }
 
+private typealias Campaign = FeatureAnnouncementCampaign
+private typealias CampaignSettings = FeatureAnnouncementCampaignSettings
+
 private extension GeneralAppSettingsTests {
     func createGeneralAppSettings(installationDate: Date? = nil,
                                   feedbacks: [FeedbackType: FeedbackSettings] = [:],
@@ -101,7 +104,7 @@ private extension GeneralAppSettingsTests {
                                   knownCardReaders: [String] = [],
                                   lastEligibilityErrorInfo: EligibilityErrorInfo? = nil,
                                   lastJetpackBenefitsBannerDismissedTime: Date? = nil,
-                                  featureAnnouncementCampaignSettings:[FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings] = [:]
+                                  featureAnnouncementCampaignSettings: [Campaign: CampaignSettings] = [:]
     ) -> GeneralAppSettings {
         GeneralAppSettings(installationDate: installationDate,
                            feedbacks: feedbacks,

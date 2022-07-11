@@ -741,7 +741,9 @@ extension AppSettingsStore {
             let remindAfter = remindLater ? Date().addingDays(14) : nil
             let newSettings = FeatureAnnouncementCampaignSettings(dismissedDate: Date(), remindAfter: remindAfter)
 
-            try generalAppSettings.setValue([campaign: newSettings], for: \.featureAnnouncementCampaignSettings)
+            let settings = generalAppSettings.settings
+            let settingsToSave = settings.replacing(featureAnnouncementSettings: newSettings, for: campaign)
+            try generalAppSettings.saveSettings(settingsToSave)
 
             onCompletion?(.success(true))
         } catch {

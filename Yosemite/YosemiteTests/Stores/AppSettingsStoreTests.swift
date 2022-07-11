@@ -877,6 +877,32 @@ extension AppSettingsStoreTests {
         XCTAssert(Calendar.current.isDate(actualRemindAfter, inSameDayAs: twoWeeksTime))
     }
 
+    func test_setFeatureAnnouncementDismissed_with_another_campaign_previously_dismissed_keeps_values_for_both() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
+
+        let currentTime = Date()
+        let date = Date(timeIntervalSince1970: 100)
+
+        let settings = createAppSettings(featureAnnouncementCampaignSettings: [.test: .init(dismissedDate: date, remindAfter: nil)])
+        try fileStorage?.write(settings, to: expectedGeneralAppSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .upsellCardReaders, remindLater: false, onCompletion: nil)
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
+
+        let actualDismissDate = try XCTUnwrap( savedSettings.featureAnnouncementCampaignSettings[.upsellCardReaders]?.dismissedDate)
+
+        XCTAssert(Calendar.current.isDate(actualDismissDate, inSameDayAs: currentTime))
+
+        let otherCampaignDismissDate = try XCTUnwrap(savedSettings.featureAnnouncementCampaignSettings[.test]?.dismissedDate)
+
+        assertEqual(date, otherCampaignDismissDate)
+    }
+
     func test_getFeatureAnnouncementVisibility_without_stored_setting_calls_completion_with_visibility_true() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
@@ -943,7 +969,10 @@ extension AppSettingsStoreTests {
         let dismissedDate = Calendar.current.date(byAdding: .minute, value: -2, to: Date())!
         let oneMinuteAgo = Calendar.current.date(byAdding: .minute, value: -1, to: dismissedDate)
 
-        let settings = createAppSettings(featureAnnouncementCampaignSettings: [.upsellCardReaders: .init(dismissedDate: dismissedDate, remindAfter: oneMinuteAgo)])
+        let campaignSettings = FeatureAnnouncementCampaignSettings(
+            dismissedDate: dismissedDate,
+            remindAfter: oneMinuteAgo)
+        let settings = createAppSettings(featureAnnouncementCampaignSettings: [.upsellCardReaders: campaignSettings])
         try fileStorage?.write(settings, to: expectedGeneralAppSettingsFileURL)
 
         // When

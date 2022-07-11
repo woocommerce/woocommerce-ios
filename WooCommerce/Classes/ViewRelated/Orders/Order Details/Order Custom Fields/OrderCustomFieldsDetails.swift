@@ -23,19 +23,20 @@ struct OrderCustomFieldsDetails: View {
                 }
                 .background(Color(.basicBackground))
             }
-        }
-        .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button(action: {
-                    presentationMode.wrappedValue.dismiss()
-                }, label: {
-                    Image(uiImage: .closeButton)
-                })
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(action: {
+                        presentationMode.wrappedValue.dismiss()
+                    }, label: {
+                        Image(uiImage: .closeButton)
+                    })
+                }
             }
+            .navigationTitle(Localization.title)
+            .navigationBarTitleDisplayMode(.inline)
         }
-        .navigationTitle(Localization.title)
-        .navigationBarTitleDisplayMode(.inline)
         .wooNavigationBarStyle()
+        .navigationViewStyle(.stack)
     }
 }
 

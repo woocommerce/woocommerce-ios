@@ -11,10 +11,8 @@ struct OrderCustomFieldsDetails: View {
                 ScrollView {
                     VStack(alignment: .leading) {
                         ForEach(customFields) { customField in
-                            TitleAndSubtitleRow(
-                                title: customField.title,
-                                subtitle: customField.content
-                            )
+                            CustomFieldRow(title: customField.title,
+                                           content: customField.content)
                             Divider()
                                 .padding(.leading)
                         }
@@ -42,11 +40,69 @@ struct OrderCustomFieldsDetails: View {
     }
 }
 
+private struct CustomFieldRow: View {
+    /// Custom Field title
+    ///
+    let title: String
+
+    /// Custom Field content
+    ///
+    let content: String
+
+    /// URL to display in `SafariSheet` in app
+    ///
+    @State private var displayedURL: URL?
+
+    /// Action to open URL with system handler
+    ///
+    @Environment(\.openURL) private var openURL
+
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading,
+                   spacing: Constants.spacing) {
+                Text(title)
+
+                if content.isValidURL(), let url = URL(string: content), UIApplication.shared.canOpenURL(url) { // Display content as a link
+                    Text(content)
+                        .font(.footnote)
+                        .foregroundColor(Color(.textLink))
+                        .safariSheet(url: $displayedURL)
+                        .onTapGesture {
+                            switch url.scheme {
+                            case "http", "https":
+                                displayedURL = url // Open in `SafariSheet` in app
+                            default:
+                                openURL(url) // Open in associated app for URL scheme
+                            }
+                        }
+                } else { // Display content as plain text
+                    Text(content)
+                        .footnoteStyle()
+                }
+            }.padding([.leading, .trailing], Constants.vStackPadding)
+
+            Spacer()
+        }
+        .padding([.top, .bottom], Constants.hStackPadding)
+        .frame(minHeight: Constants.height)
+    }
+}
+
 // MARK: - Constants
 //
 extension OrderCustomFieldsDetails {
     enum Localization {
         static let title = NSLocalizedString("Custom Fields", comment: "Title for the order custom fields list")
+    }
+}
+
+private extension CustomFieldRow {
+    enum Constants {
+        static let spacing: CGFloat = 8
+        static let vStackPadding: CGFloat = 16
+        static let hStackPadding: CGFloat = 10
+        static let height: CGFloat = 64
     }
 }
 

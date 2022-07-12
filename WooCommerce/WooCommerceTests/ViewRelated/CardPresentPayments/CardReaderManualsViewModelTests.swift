@@ -32,17 +32,6 @@ class CardReaderManualsViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel)
     }
 
-    func test_viewModel_when_init_then_has_default_manuals() {
-         // Given
-         let viewModel = CardReaderManualsViewModel()
-
-         // When
-         let expectedManuals = viewModel.manuals
-
-         // Then
-         XCTAssertEqual(viewModel.manuals, expectedManuals)
-     }
-
     func test_viewModel_when_US_store_then_available_card_reader_manuals() {
         // Given
         let setting = SiteSetting.fake()

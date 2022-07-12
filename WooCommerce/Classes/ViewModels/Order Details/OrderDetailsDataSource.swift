@@ -53,7 +53,7 @@ final class OrderDetailsDataSource: NSObject {
     /// Whether the order is eligible for card present payment.
     ///
     var isEligibleForPayment: Bool {
-        return order.datePaid == nil
+        order.status == .pending || order.status == .onHold || order.status == .failed
     }
 
     var isEligibleForRefund: Bool {
@@ -1018,8 +1018,8 @@ extension OrderDetailsDataSource {
 
             if isProcessingStatus {
                 if shouldShowShippingLabelCreation {
-                    rows.append(.markCompleteButton(style: .secondary, showsBottomSpacing: false))
                     rows.append(.shippingLabelCreationInfo(showsSeparator: false))
+                    rows.append(.markCompleteButton(style: .secondary, showsBottomSpacing: false))
                 } else {
                     rows.append(.markCompleteButton(style: .primary, showsBottomSpacing: true))
                 }

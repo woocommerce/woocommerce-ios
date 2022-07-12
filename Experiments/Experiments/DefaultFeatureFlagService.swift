@@ -47,6 +47,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .newToWooCommerceLinkInLoginPrologue:
             return true
+        case .orderCustomFields:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

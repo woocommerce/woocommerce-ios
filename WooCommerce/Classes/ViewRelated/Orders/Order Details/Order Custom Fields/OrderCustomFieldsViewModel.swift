@@ -18,7 +18,7 @@ struct OrderCustomFieldsViewModel: Identifiable {
     init(id: Int64, title: String, content: String) {
         self.id = id
         self.title = title
-        self.content = content
+        self.content = content.removedHTMLTags
     }
 
     init(metadata: OrderMetaData) {

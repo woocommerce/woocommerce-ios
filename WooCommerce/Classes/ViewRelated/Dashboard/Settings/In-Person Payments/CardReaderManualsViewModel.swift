@@ -13,7 +13,7 @@ final class CardReaderManualsViewModel {
     var configurationLoader: CardPresentConfigurationLoader
     let manuals: [Manual]
 
-    init(cardReaders: [CardReaderType] = [.chipper, .stripeM2, .wisepad3]) {
+    init() {
         // Initialize the View Model only with the supported readers for a specific Store
         self.configurationLoader = CardPresentConfigurationLoader()
         let supportedReaders = configurationLoader.configuration.supportedReaders

@@ -7,31 +7,35 @@ struct OrderCustomFieldsDetails: View {
 
     var body: some View {
         NavigationView {
-            ScrollView {
-                VStack(alignment: .leading) {
-                    ForEach(customFields) { customField in
-                        TitleAndSubtitleRow(
-                            title: customField.title,
-                            subtitle: customField.content
-                        )
-                        Divider()
-                            .padding(.leading)
+            GeometryReader { geometry in
+                ScrollView {
+                    VStack(alignment: .leading) {
+                        ForEach(customFields) { customField in
+                            TitleAndSubtitleRow(
+                                title: customField.title,
+                                subtitle: customField.content
+                            )
+                            Divider()
+                                .padding(.leading)
+                        }
+                    }
+                    .padding(.horizontal, insets: geometry.safeAreaInsets)
+                    .background(Color(.listForeground))
+                }
+                .background(Color(.listBackground))
+                .ignoresSafeArea(edges: .horizontal)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button(action: {
+                            presentationMode.wrappedValue.dismiss()
+                        }, label: {
+                            Image(uiImage: .closeButton)
+                        })
                     }
                 }
-                .background(Color(.listForeground))
+                .navigationTitle(Localization.title)
+                .navigationBarTitleDisplayMode(.inline)
             }
-            .background(Color(.listBackground).ignoresSafeArea())
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(action: {
-                        presentationMode.wrappedValue.dismiss()
-                    }, label: {
-                        Image(uiImage: .closeButton)
-                    })
-                }
-            }
-            .navigationTitle(Localization.title)
-            .navigationBarTitleDisplayMode(.inline)
         }
         .wooNavigationBarStyle()
         .navigationViewStyle(.stack)

@@ -131,8 +131,7 @@ private extension LoginPrologueViewController {
 private extension LoginPrologueViewController {
     enum Constants {
         static let spacingBetweenCarouselAndNewToWooCommerceButton: CGFloat = 20
-        // TODO: 7231 - update URL if needed
-        static let newToWooCommerceURL = "https://woocommerce.com/guides/new-store"
+        static let newToWooCommerceURL = "https://woocommerce.com/document/woocommerce-features"
     }
 
     enum Localization {

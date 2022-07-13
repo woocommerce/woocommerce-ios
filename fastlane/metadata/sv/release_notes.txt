@@ -1,1 +1,0 @@
-Visste du att vi arbetar på en ny funktion för att hantera rabattkoder? Gå till fliken Meny, tryck på inställningsikonen och bläddra till Experimentella funktioner. I den här versionen har vi åtgärdat ett fel som uppstod vid redigering av fälten "Kan inte kombineras" och "Exkludera reavaror". Prova och dela din feedback.

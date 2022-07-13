@@ -401,8 +401,11 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderShippingMethodRemove, properties: [Keys.flow: flow.rawValue])
         }
 
-        static func orderCustomerNoteAdd(flow: Flow) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .orderNoteAdd, properties: [Keys.flow: flow.rawValue])
+        static func orderCustomerNoteAdd(flow: Flow, orderID: Int64, orderStatus: OrderStatusEnum) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderNoteAdd, properties: [Keys.flow: flow.rawValue,
+                                                                    "parent_id": orderID,
+                                                                    "status": orderStatus.rawValue,
+                                                                    "type": "customer"])
         }
 
         static func orderStatusChange(flow: Flow, orderID: Int64?, from oldStatus: OrderStatusEnum, to newStatus: OrderStatusEnum) -> WooAnalyticsEvent {

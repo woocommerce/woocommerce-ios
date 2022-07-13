@@ -807,7 +807,9 @@ private extension EditableOrderViewModel {
     ///
     func trackCustomerNoteAdded() {
         guard customerNoteDataViewModel.customerNote.isNotEmpty else { return }
-        analytics.track(event: WooAnalyticsEvent.Orders.orderCustomerNoteAdd(flow: flow.analyticsFlow))
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCustomerNoteAdd(flow: flow.analyticsFlow,
+                                                                             orderID: orderSynchronizer.order.orderID,
+                                                                             orderStatus: currentOrderStatus))
     }
 
     /// Tracks when the create order button is tapped.

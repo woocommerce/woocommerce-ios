@@ -1053,8 +1053,11 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderNoteAdd.rawValue])
 
-        let properties = try XCTUnwrap(analytics.receivedProperties.first?["flow"] as? String)
-        XCTAssertEqual(properties, "creation")
+        let properties = try XCTUnwrap(analytics.receivedProperties.first)
+        XCTAssertEqual(properties["flow"] as? String, "creation")
+        XCTAssertEqual(properties["parent_id"] as? Int64, 0)
+        XCTAssertEqual(properties["status"] as? String, "pending")
+        XCTAssertEqual(properties["type"] as? String, "customer")
     }
 
     func test_customer_note_not_tracked_when_removed() {

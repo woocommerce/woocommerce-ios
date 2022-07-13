@@ -1014,18 +1014,14 @@ extension OrderDetailsDataSource {
 
             if shouldShowShippingLabelCreation {
                 rows.append(.shippingLabelCreateButton)
+                rows.append(.shippingLabelCreationInfo(showsSeparator: false))
             }
 
             if isProcessingStatus {
                 if shouldShowShippingLabelCreation {
-                    rows.append(.shippingLabelCreationInfo(showsSeparator: false))
                     rows.append(.markCompleteButton(style: .secondary, showsBottomSpacing: false))
                 } else {
                     rows.append(.markCompleteButton(style: .primary, showsBottomSpacing: true))
-                }
-            } else if isRefundedStatus == false {
-                if shouldShowShippingLabelCreation {
-                    rows.append(.shippingLabelCreationInfo(showsSeparator: true))
                 }
             }
 

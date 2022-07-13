@@ -12,7 +12,8 @@ struct OrderCustomFieldsDetails: View {
                     VStack(alignment: .leading) {
                         ForEach(customFields) { customField in
                             CustomFieldRow(title: customField.title,
-                                           content: customField.content)
+                                           content: customField.content,
+                                           contentURL: customField.contentURL)
                             Divider()
                                 .padding(.leading)
                         }
@@ -49,6 +50,10 @@ private struct CustomFieldRow: View {
     ///
     let content: String
 
+    /// Optional URL to link the content
+    ///
+    let contentURL: URL?
+
     /// URL to display in `SafariSheet` in app
     ///
     @State private var displayedURL: URL?
@@ -63,7 +68,7 @@ private struct CustomFieldRow: View {
                    spacing: Constants.spacing) {
                 Text(title)
 
-                if content.isValidURL(), let url = URL(string: content), UIApplication.shared.canOpenURL(url) { // Display content as a link
+                if let url = contentURL { // Display content as a link if URL is provided
                     Text(content)
                         .font(.footnote)
                         .foregroundColor(Color(.textLink))
@@ -112,7 +117,7 @@ struct OrderCustomFieldsDetails_Previews: PreviewProvider {
     static var previews: some View {
         OrderCustomFieldsDetails(customFields: [
             OrderCustomFieldsViewModel(id: 0, title: "First Title", content: "First Content"),
-            OrderCustomFieldsViewModel(id: 1, title: "Second Title", content: "Second Content")
+            OrderCustomFieldsViewModel(id: 1, title: "Second Title", content: "Second Content", contentURL: URL(string: "https://woocommerce.com/"))
         ])
     }
 }

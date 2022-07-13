@@ -174,8 +174,8 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Then
         let productsSection = try section(withTitle: Title.products, from: dataSource)
+        XCTAssertNotNil(row(row: .shippingLabelCreationInfo(showsSeparator: true), in: productsSection))
         XCTAssertNotNil(row(row: .markCompleteButton(style: .secondary, showsBottomSpacing: false), in: productsSection))
-        XCTAssertNotNil(row(row: .shippingLabelCreationInfo(showsSeparator: false), in: productsSection))
     }
 
     func test_markOrderComplete_button_is_hidden_if_order_is_not_processing() throws {

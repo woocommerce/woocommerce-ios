@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-07-08 11:12:33+0000 */
+/* Translation-Revision-Date: 2022-07-11 11:10:08+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -243,9 +243,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "A product with variations like color or size" = "Un producto con variaciones, como el color o el tamaño";
-
-/* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"A refund will not be issued to the customer. You will need to manually issue the refund through %1$@." = "No se emitirá un reembolso para el cliente. Tendrás que emitir manualmente el reembolso a través de %1$@.";
 
 /* Message explaining that the site may have an invalid SSL certificate. */
 "A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate." = "No se ha podido establecer una conexión segura con el sitio. Comprueba que tu sitio tiene un certificado SSL válido.";
@@ -852,6 +849,7 @@ which should be translated separately and considered part of this sentence. */
    The title for a button that dismisses the crash debug menu
    The title of the button to cancel issuing a refund.
    Title for canceling the edit attribute action sheet.
+   Title for the button to cancel the payment methods screen
    Title for the button to cancel the simple payments screen */
 "Cancel" = "Cancelar";
 
@@ -882,7 +880,7 @@ which should be translated separately and considered part of this sentence. */
    Detailed message shown on the Product Reviews screen if the list is empty */
 "Capture high-quality product reviews for your store." = "Conseguir reseñas de productos de gran calidad para tu tienda.";
 
-/* Card method title on the select payment method screen for simple payments */
+/* Card method title on the select payment method screen */
 "Card" = "Tarjeta";
 
 /* Title for the section related to card readers inside In-Person Payments settings */
@@ -900,7 +898,7 @@ which should be translated separately and considered part of this sentence. */
 /* Add Custom shipping carrier. Title of cell presenting the carrier name */
 "Carrier name" = "Nombre de la empresa de transporte";
 
-/* Cash method title on the select payment method screen for simple payments */
+/* Cash method title on the select payment method screen */
 "Cash" = "Efectivo";
 
 /* Catalog Visibility label in Product Settings
@@ -964,7 +962,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the screen to select the preferred provider for In-Person Payments */
 "Choose your Payment Provider" = "Elige tu proveedor de pagos";
 
-/* Heading text on the select payment method screen for simple payments */
+/* Heading text on the select payment method screen */
 "Choose your payment method" = "Elegir el método de pago";
 
 /* Text field city in Edit Address Form
@@ -2227,9 +2225,6 @@ which should be translated separately and considered part of this sentence. */
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "En la sección de administración de tu sitio encontrarás la dirección de correo electrónico que usaste para conectar WordPress.com desde el Escritorio de Jetpack, en Conexiones > Conexión de la cuenta";
 
-/* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} Parameters: %1$@ - order number, %2$@ - store name */
-"In-Person Payment for Order #%1$@ for %2$@" = "Pago en persona del pedido #%1$@ para %2$@";
-
 /* Navigates to In-Person Payments screen
    Title for the In-Person Payments settings screen */
 "In-Person Payments" = "Pagos en Persona";
@@ -2639,9 +2634,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "Compensaciones manuales";
 
-/* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Reembolso manual a través de %1$@";
-
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Dominio mapeado";
 
@@ -2658,10 +2650,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Option to mark all reviews as read from the action sheet in Reviews screen. */
 "Mark all reviews as read" = "Marcar todas las reseñas como leídas";
 
-/* Alert button when selecting the cash payment method for simple payments */
+/* Alert button when selecting the cash payment method */
 "Mark as Paid" = "Marcar como pagado";
 
-/* Alert title when selecting the cash payment method for simple payments */
+/* Alert title when selecting the cash payment method */
 "Mark as Paid?" = "¿Marcar como pagado?";
 
 /* Create Shipping Label form -> Mark order as complete label */
@@ -2794,6 +2786,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for table view section of network active plugins */
 "Network Active Plugins" = "Plugins de red activos";
 
+/* Title of the new badge shown when advertising a new feature */
+"New" = "Nuevos";
+
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "Nombre del nuevo atributo";
 
@@ -2906,6 +2901,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "None" = "Ninguno";
 
 /* Action title to dismiss enabling Analytics for a store
+   Button in the CTA View for installing WCShip extension for dismissing the view
    Title of dismiss action in the Jetpack benefits view. */
 "Not now" = "Ahora no";
 
@@ -3414,6 +3410,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation bar title of shipping label printing instructions screen */
 "Print from your mobile device" = "Imprime desde tu dispositivo móvil";
+
+/* Title of one of the elements in the CTA View for installing WCShip extension */
+"Print from your phone" = "Imprimir con tu teléfono";
 
 /* Body of the banner in the Order Detail for suggesting to install WCShip extension. */
 "Print labels from your phone, with WooCommerce Shipping." = "Imprime etiquetas desde tu teléfono con WooCommerce Shipping.";
@@ -4064,8 +4063,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to share coupon from the Coupon Creation Success screen. */
 "Share Coupon" = "Compartir cupón";
 
-/* Payment Link method title on the select payment method screen for simple payments
-   Title to share an order payment link. */
+/* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "Comparte el enlace para realizar el pago";
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
@@ -4470,7 +4468,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the simple payments screen */
 "Take Payment" = "Aceptar pago";
 
-/* Navigation bar title for the Simple Payments Methods screens. %1$@ is a placeholder for the total amount to collect
+/* Navigation bar title for the Payment Methods screens. %1$@ is a placeholder for the total amount to collect
    Text of the button that creates a simple payment order. %1$@ is a placeholder for the total amount to collect */
 "Take Payment (%1$@)" = "Acepta el pago (%1$@)";
 
@@ -4865,7 +4863,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Notice text after failing to update the order successfully */
 "There was an error updating the order" = "Se ha producido un error al actualizar el pedido";
 
-/* Text when there is an error while marking the order as paid for simple payments. */
+/* Text when there is an error while marking the order as paid for during payment. */
 "There was an error while marking the order as paid." = "Se ha producido un error al marcar el pedido como pagado.";
 
 /* Text when there is an unknown error while trying to collect payments */
@@ -4951,7 +4949,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message displayed when unable to close user account due to having active subscriptions. */
 "This user account cannot be closed while it has active subscriptions." = "No es posible cerrar la cuenta de este usuario porque tiene suscripciones activas.";
 
-/* Alert info when selecting the cash payment method for simple payments */
+/* Alert info when selecting the cash payment method during payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "Si has recibido (total) fuera de WooCommerce, esta acción generará que el pedido se marque como completado.";
 
 /* Add Product Category. Placeholder of cell presenting the title of the category.
@@ -5466,7 +5464,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Displays the connected reader software version */
 "Version: %1$@" = "Versión: %1$@";
 
-/* Action title in an in-app notification to view more details. */
+/* Action title in an in-app notification to view more details.
+   Title of the action to view product details from a notice about an image upload failure in the background. */
 "View" = "Ver";
 
 /* Cell title on the beta features screen to enable the order add-ons feature
@@ -5731,9 +5730,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "Puedes editar los complementos para los productos en el escritorio del sitio web.";
-
-/* The info of the top banner on the Products tab. */
-"You can now create and manage product variations!" = "¡Ahora puedes crear y gestionar variaciones de productos!";
 
 /* The info of the shipping labels top banner in order details */
 "You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "Ahora puedes crear etiquetas de envío para todos los pedidos físicos directamente desde tu dispositivo con el plugin gratuito WooCommerce Shipping. Toca Crear etiqueta de envío para probar nuestra función beta.";

@@ -1,1 +1,0 @@
-Kabar terkini: kami sedang mengerjakan fitur baru untuk pengelolaan kupon. Arahkan kursor ke tab Menu, ketuk ikon pengaturan, dan gulir ke fitur eksperimental. Di rilis ini, kami membenahi masalah dalam pengeditan kolom "Penggunaan Individual" dan "Kecualikan Barang Obral". Cobalah dan bagikan masukan Anda! 

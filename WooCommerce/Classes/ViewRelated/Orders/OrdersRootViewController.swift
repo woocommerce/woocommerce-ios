@@ -386,11 +386,7 @@ private extension OrdersRootViewController {
             show(orderViewController, sender: self)
         }
 
-        let customFieldsSize = order.customFields.map { $0.value.utf8.count }.reduce(0, +) // Total byte size of custom field values
-        ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": order.orderID,
-                                                                    "status": order.status.rawValue,
-                                                                    "custom_fields_count": order.customFields.count,
-                                                                    "custom_fields_size": customFieldsSize])
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order))
     }
 }
 

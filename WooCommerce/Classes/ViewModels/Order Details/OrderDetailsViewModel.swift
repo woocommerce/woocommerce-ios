@@ -391,6 +391,7 @@ extension OrderDetailsViewModel {
             let billingInformationViewController = BillingInformationViewController(order: order, editingEnabled: !isUnifiedEditingEnabled)
             viewController.navigationController?.pushViewController(billingInformationViewController, animated: true)
         case .customFields:
+            ServiceLocator.analytics.track(.orderViewCustomFieldsTapped)
             let customFields = order.customFields.map {
                 OrderCustomFieldsViewModel(metadata: $0)
             }

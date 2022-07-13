@@ -1014,7 +1014,7 @@ extension OrderDetailsDataSource {
 
             if shouldShowShippingLabelCreation {
                 rows.append(.shippingLabelCreateButton)
-                rows.append(.shippingLabelCreationInfo(showsSeparator: false))
+                rows.append(.shippingLabelCreationInfo(showsSeparator: true))
             }
 
             if isProcessingStatus {

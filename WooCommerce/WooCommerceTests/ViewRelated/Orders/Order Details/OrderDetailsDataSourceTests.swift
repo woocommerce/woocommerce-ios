@@ -194,7 +194,8 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
     func test_reloadSections_when_isEligibleForPayment_is_false_then_collect_payment_button_is_not_visible() throws {
         //Given
-        let order = makeOrder().copy(datePaid: .some(Date())) // Paid orders are not eligible for payment
+        let paidOrderStatuses = [OrderStatusEnum.completed, OrderStatusEnum.processing]
+        let order = makeOrder().copy(status: paidOrderStatuses.randomElement()) // Paid orders are not eligible for payment
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
 
         // When
@@ -202,12 +203,14 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Then
         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
+        XCTAssertFalse(dataSource.isEligibleForPayment)
         XCTAssertNil(row(row: .collectCardPaymentButton, in: paymentSection))
     }
 
     func test_reloadSections_when_isEligibleForPayment_is_true_then_collect_payment_button_is_visible() throws {
         //Given
-        let order = makeOrder().copy(datePaid: .some(nil)) // Unpaid orders are eligible for payment
+        let unpaidOrderStatuses = [OrderStatusEnum.pending, OrderStatusEnum.onHold, OrderStatusEnum.failed]
+        let order = makeOrder().copy(status: unpaidOrderStatuses.randomElement()) // Unpaid orders are eligible for payment
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
 
         // When
@@ -215,6 +218,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Then
         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
+        XCTAssertTrue(dataSource.isEligibleForPayment)
         XCTAssertNotNil(row(row: .collectCardPaymentButton, in: paymentSection))
     }
 
@@ -288,7 +292,8 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
     func test_create_shipping_label_button_is_not_visible_when_order_is_eligible_for_payment() throws {
         // Given
-        let order = makeOrder().copy(status: .processing, datePaid: .some(nil), total: "100")
+        let unpaidOrderStatuses = [OrderStatusEnum.pending, OrderStatusEnum.onHold, OrderStatusEnum.failed]
+        let order = makeOrder().copy(status: unpaidOrderStatuses.randomElement())
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.isEligibleForShippingLabelCreation = true
 
@@ -458,6 +463,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
     func test_morel_button_is_not_visible_in_product_section_for_cash_on_delivery_order() throws {
         // Given
+        // datePaid: .some(nil)
         let order = makeOrder().copy(status: .processing, datePaid: .some(nil), total: "100", paymentMethodID: "cod")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.isEligibleForShippingLabelCreation = true

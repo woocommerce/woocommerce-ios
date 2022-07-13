@@ -24,6 +24,12 @@ final class OrderDetailsDataSource: NSObject {
     ///
     private(set) var sections = [Section]()
 
+    /// Is this order complete?
+    ///
+    private var isCompletedStatus: Bool {
+        return order.status == OrderStatusEnum.completed
+    }
+
     /// Is this order processing? Payment received (paid). The order is awaiting fulfillment.
     ///
     private var isProcessingStatus: Bool {
@@ -1014,12 +1020,16 @@ extension OrderDetailsDataSource {
 
             if shouldShowShippingLabelCreation {
                 rows.append(.shippingLabelCreateButton)
+            }
+
+            if isCompletedStatus && shouldShowShippingLabelCreation {
                 rows.append(.shippingLabelCreationInfo(showsSeparator: true))
             }
 
             if isProcessingStatus {
                 if shouldShowShippingLabelCreation {
                     rows.append(.markCompleteButton(style: .secondary, showsBottomSpacing: false))
+                    rows.append(.shippingLabelCreationInfo(showsSeparator: true))
                 } else {
                     rows.append(.markCompleteButton(style: .primary, showsBottomSpacing: true))
                 }

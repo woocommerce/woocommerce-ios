@@ -117,13 +117,43 @@ private extension LoginPrologueViewController {
         newToWooCommerceButton.on(.touchUpInside) { [weak self] _ in
             guard let self = self else { return }
 
-            self.analytics.track(.loginNewToWooButtonTapped)
+            /// TODO-jc
+            Task {
+                let center = UNUserNotificationCenter.current()
+                let settings = await center.notificationSettings()
+                guard settings.authorizationStatus == .authorized ||
+                        settings.authorizationStatus == .provisional else {
+                    print("...error: \(settings.authorizationStatus)")
+                    return
+                }
 
-            guard let url = URL(string: Constants.newToWooCommerceURL) else {
-                return assertionFailure("Cannot generate URL.")
+                let categoryIdentifier = "login-reminder-actions"
+                let contactSupportActionIdentifier = "login-reminder-action-contact-support"
+                let contactSupportAction = UNNotificationAction(identifier: contactSupportActionIdentifier,
+                                                                title: "Contact support",
+                                                                options: .foreground)
+                let category = UNNotificationCategory(identifier: categoryIdentifier,
+                                                      actions: [contactSupportAction],
+                                                      intentIdentifiers: [],
+                                                      hiddenPreviewsBodyPlaceholder: nil,
+                                                      categorySummaryFormat: nil,
+                                                      options: .allowAnnouncement)
+                center.setNotificationCategories([category])
+
+                let content = UNMutableNotificationContent()
+                content.title = "Problems logging in?"
+                content.body = "We can help!"
+                content.categoryIdentifier = categoryIdentifier
+
+                let request = UNNotificationRequest(identifier: "login-reminder",
+                                                    content: content,
+                                                    trigger: UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false))
+                do {
+                    try await center.add(request)
+                } catch {
+                    print("\(error)")
+                }
             }
-
-            WebviewHelper.launch(url, with: self)
         }
     }
 }

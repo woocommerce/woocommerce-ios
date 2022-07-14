@@ -63,6 +63,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupKeyboardStateProvider()
         handleLaunchArguments()
         appleIDCredentialChecker.observeLoggedInStateForAppleIDObservations()
+        UNUserNotificationCenter.current().delegate = self
 
         // Components that require prior Auth
         setupZendesk()
@@ -288,7 +289,7 @@ private extension AppDelegate {
     ///
     func setupPushNotificationsManagerIfPossible() {
         guard ServiceLocator.stores.isAuthenticated, ServiceLocator.stores.needsDefaultStore == false else {
-            return
+            return ServiceLocator.pushNotesManager.ensureAuthorizationIsRequested(usesProvisionalAuth: true, onCompletion: nil)
         }
 
         #if targetEnvironment(simulator)
@@ -401,5 +402,19 @@ extension AppDelegate {
     func authenticatorWasDismissed() {
         setupPushNotificationsManagerIfPossible()
         RequirementsChecker.checkMinimumWooVersionForDefaultStore()
+    }
+}
+
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+        switch response.actionIdentifier {
+        case "login-reminder-action-contact-support":
+            guard let viewController = window?.rootViewController else {
+                return
+            }
+            ZendeskProvider.shared.showNewRequestIfPossible(from: viewController, with: nil)
+        default:
+            break
+        }
     }
 }

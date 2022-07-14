@@ -41,8 +41,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .backgroundProductImageUpload:
             return true
-        case .consolidatedCardReaderManuals:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .appleIDAccountDeletion:
             return true
         case .newToWooCommerceLinkInLoginPrologue:

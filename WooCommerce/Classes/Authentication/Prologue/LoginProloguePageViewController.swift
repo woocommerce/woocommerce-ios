@@ -26,7 +26,12 @@ final class LoginProloguePageViewController: UIPageViewController {
             setViewControllers([firstPage], direction: .forward, animated: false)
         }
 
-        addPageControl()
+        if pages.count > 1 {
+            addPageControl()
+        } else {
+            // Sets data source to `nil` to disable scrolling.
+            dataSource = nil
+        }
     }
 
     // MARK: Page Control Setup

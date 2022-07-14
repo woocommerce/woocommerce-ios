@@ -402,7 +402,10 @@ final class EditableOrderViewModel: ObservableObject {
     func updateOrderStatus(newStatus: OrderStatusEnum) {
         let oldStatus = orderSynchronizer.order.status
         orderSynchronizer.setStatus.send(newStatus)
-        analytics.track(event: WooAnalyticsEvent.Orders.orderStatusChange(flow: flow.analyticsFlow, orderID: nil, from: oldStatus, to: newStatus))
+        analytics.track(event: WooAnalyticsEvent.Orders.orderStatusChange(flow: flow.analyticsFlow,
+                                                                          orderID: orderSynchronizer.order.orderID,
+                                                                          from: oldStatus,
+                                                                          to: newStatus))
     }
 
     /// Deletes the order if it has been synced remotely, and removes it from local storage.

@@ -109,7 +109,7 @@ private extension AppCoordinator {
 
     /// Presents onboarding on top of the authentication UI under certain criteria.
     func presentLoginOnboarding() {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginPrologueOnboarding) else  {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginPrologueOnboarding) else {
             return
         }
         let onboardingViewController = LoginOnboardingViewController { [weak self] in
@@ -208,7 +208,8 @@ private extension AppCoordinator {
     /// Sets the app window's root view controller, with animation only if the root view controller is previously non-nil.
     /// - Parameters:
     ///   - rootViewController: view controller to be set as the window's root view controller.
-    ///   - onCompletion: called after the root view controller is set after animation if needed. The boolean value indicates whether or not the animations actually finished before the completion handler was called.
+    ///   - onCompletion: called after the root view controller is set after animation if needed.
+    ///                   The boolean value indicates whether or not the animations actually finished before the completion handler was called.
     func setWindowRootViewControllerAndAnimateIfNeeded(_ rootViewController: UIViewController, onCompletion: @escaping (Bool) -> Void = { _ in }) {
         // Animates window transition only if the root view controller is non-nil originally.
         let shouldAnimate = window.rootViewController != nil

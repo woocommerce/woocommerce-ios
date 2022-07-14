@@ -356,14 +356,19 @@ extension WooAnalyticsEvent {
             static let to = "to"
             static let from = "from"
             static let orderID = "id"
+            static let hasMultipleShippingLines = "has_multiple_shipping_lines"
+            static let hasMultipleFeeLines = "has_multiple_fee_lines"
         }
 
         static func orderAddNew() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderAddNew, properties: [:])
         }
 
-        static func orderEditButtonTapped() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .orderEditButtonTapped, properties: [:])
+        static func orderEditButtonTapped(hasMultipleShippingLines: Bool, hasMultipleFeeLines: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderEditButtonTapped, properties: [
+                Keys.hasMultipleShippingLines: hasMultipleShippingLines,
+                Keys.hasMultipleFeeLines: hasMultipleFeeLines
+            ])
         }
 
         static func orderProductAdd(flow: Flow) -> WooAnalyticsEvent {

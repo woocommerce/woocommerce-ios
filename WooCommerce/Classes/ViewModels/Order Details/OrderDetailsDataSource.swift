@@ -210,7 +210,7 @@ final class OrderDetailsDataSource: NSObject {
     /// All the condensed refunds in an order
     ///
     var condensedRefunds: [OrderRefundCondensed] {
-        return order.refunds.sorted(by: { $0.refundID > $1.refundID })
+        return order.refunds.sorted(by: { $0.refundID < $1.refundID })
     }
 
     /// Notes of an Order

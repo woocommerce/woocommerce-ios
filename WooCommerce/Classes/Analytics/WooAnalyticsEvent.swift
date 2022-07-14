@@ -356,14 +356,31 @@ extension WooAnalyticsEvent {
             static let to = "to"
             static let from = "from"
             static let orderID = "id"
+            static let hasMultipleShippingLines = "has_multiple_shipping_lines"
+            static let hasMultipleFeeLines = "has_multiple_fee_lines"
         }
 
         static func orderAddNew() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderAddNew, properties: [:])
         }
 
+        static func orderEditButtonTapped(hasMultipleShippingLines: Bool, hasMultipleFeeLines: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderEditButtonTapped, properties: [
+                Keys.hasMultipleShippingLines: hasMultipleShippingLines,
+                Keys.hasMultipleFeeLines: hasMultipleFeeLines
+            ])
+        }
+
         static func orderProductAdd(flow: Flow) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderProductAdd, properties: [Keys.flow: flow.rawValue])
+        }
+
+        static func orderProductQuantityChange(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderProductQuantityChange, properties: [Keys.flow: flow.rawValue])
+        }
+
+        static func orderProductRemove(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderProductRemove, properties: [Keys.flow: flow.rawValue])
         }
 
         static func orderCustomerAdd(flow: Flow, hasDifferentShippingDetails: Bool) -> WooAnalyticsEvent {
@@ -377,12 +394,23 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderFeeAdd, properties: [Keys.flow: flow.rawValue])
         }
 
+        static func orderFeeRemove(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFeeRemove, properties: [Keys.flow: flow.rawValue])
+        }
+
         static func orderShippingMethodAdd(flow: Flow) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderShippingMethodAdd, properties: [Keys.flow: flow.rawValue])
         }
 
-        static func orderCustomerNoteAdd(flow: Flow) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .orderNoteAdd, properties: [Keys.flow: flow.rawValue])
+        static func orderShippingMethodRemove(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderShippingMethodRemove, properties: [Keys.flow: flow.rawValue])
+        }
+
+        static func orderCustomerNoteAdd(flow: Flow, orderID: Int64, orderStatus: OrderStatusEnum) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderNoteAdd, properties: [Keys.flow: flow.rawValue,
+                                                                    "parent_id": orderID,
+                                                                    "status": orderStatus.rawValue,
+                                                                    "type": "customer"])
         }
 
         static func orderStatusChange(flow: Flow, orderID: Int64?, from oldStatus: OrderStatusEnum, to newStatus: OrderStatusEnum) -> WooAnalyticsEvent {
@@ -420,8 +448,9 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        static func orderSyncFailed(errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
+        static func orderSyncFailed(flow: Flow, errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderSyncFailed, properties: [
+                Keys.flow: flow.rawValue,
                 Keys.errorContext: errorContext,
                 Keys.errorDescription: errorDescription
             ])

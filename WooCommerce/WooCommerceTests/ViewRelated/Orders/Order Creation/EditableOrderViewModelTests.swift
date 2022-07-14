@@ -861,6 +861,68 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     // MARK: - Tracking Tests
 
+    func test_product_is_tracked_when_added() throws {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let analytics = MockAnalyticsProvider()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.addProductViewModel.selectProduct(product.productID)
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderProductAdd.rawValue])
+
+        let properties = try XCTUnwrap(analytics.receivedProperties.first?["flow"] as? String)
+        XCTAssertEqual(properties, "creation")
+    }
+
+    func test_product_is_tracked_when_quantity_changes() throws {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let analytics = MockAnalyticsProvider()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               flow: .editing(initialOrder: .fake()),
+                                               storageManager: storageManager,
+                                               analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.addProductViewModel.selectProduct(product.productID)
+        viewModel.productRows[0].incrementQuantity()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderProductAdd.rawValue, WooAnalyticsStat.orderProductQuantityChange.rawValue])
+
+        let properties = try XCTUnwrap(analytics.receivedProperties.last?["flow"] as? String)
+        XCTAssertEqual(properties, "editing")
+    }
+
+    func test_product_is_tracked_when_removed_from_order() throws {
+        // Given
+        let product0 = Product.fake().copy(siteID: sampleSiteID, productID: 0, purchasable: true)
+        let storageManager = MockStorageManager()
+        storageManager.insertProducts([product0])
+        let analytics = MockAnalyticsProvider()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // Given products are added to order
+        viewModel.addProductViewModel.selectProduct(product0.productID)
+
+        // When
+        let itemToRemove = OrderItem.fake().copy(itemID: viewModel.productRows[0].id)
+        viewModel.removeItemFromOrder(itemToRemove)
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderProductAdd.rawValue, WooAnalyticsStat.orderProductRemove.rawValue])
+
+        let properties = try XCTUnwrap(analytics.receivedProperties.last?["flow"] as? String)
+        XCTAssertEqual(properties, "creation")
+    }
+
     func test_shipping_method_tracked_when_added() throws {
         // Given
         let analytics = MockAnalyticsProvider()
@@ -877,16 +939,21 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(properties, "creation")
     }
 
-    func test_shipping_method_not_tracked_when_removed() {
+    func test_shipping_method_tracked_when_removed() throws {
         // Given
         let analytics = MockAnalyticsProvider()
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               flow: .editing(initialOrder: .fake()),
+                                               analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
         viewModel.saveShippingLine(nil)
 
         // Then
-        XCTAssertTrue(analytics.receivedEvents.isEmpty)
+        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderShippingMethodRemove.rawValue])
+
+        let properties = try XCTUnwrap(analytics.receivedProperties.first?["flow"] as? String)
+        XCTAssertEqual(properties, "editing")
     }
 
     func test_fee_line_tracked_when_added() throws {
@@ -905,16 +972,21 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(properties, "creation")
     }
 
-    func test_fee_line_not_tracked_when_removed() {
+    func test_fee_line_tracked_when_removed() throws {
         // Given
         let analytics = MockAnalyticsProvider()
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               flow: .editing(initialOrder: .fake()),
+                                               analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
         viewModel.saveFeeLine(nil)
 
         // Then
-        XCTAssertTrue(analytics.receivedEvents.isEmpty)
+        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderFeeRemove.rawValue])
+
+        let properties = try XCTUnwrap(analytics.receivedProperties.first?["flow"] as? String)
+        XCTAssertEqual(properties, "editing")
     }
 
     func test_customer_details_tracked_when_added() throws {
@@ -939,7 +1011,9 @@ final class EditableOrderViewModelTests: XCTestCase {
     func test_customer_details_tracked_when_only_billing_address_added() throws {
         // Given
         let analytics = MockAnalyticsProvider()
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               flow: .editing(initialOrder: .fake()),
+                                               analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
         viewModel.addressFormViewModel.fields.address1 = sampleAddress1().address1
@@ -950,7 +1024,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         let flowProperty = try XCTUnwrap(analytics.receivedProperties.first?["flow"] as? String)
         let hasDifferentShippingDetailsProperty = try XCTUnwrap(analytics.receivedProperties.first?["has_different_shipping_details"] as? Bool)
-        XCTAssertEqual(flowProperty, "creation")
+        XCTAssertEqual(flowProperty, "editing")
         XCTAssertFalse(hasDifferentShippingDetailsProperty)
     }
 
@@ -979,8 +1053,11 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderNoteAdd.rawValue])
 
-        let properties = try XCTUnwrap(analytics.receivedProperties.first?["flow"] as? String)
-        XCTAssertEqual(properties, "creation")
+        let properties = try XCTUnwrap(analytics.receivedProperties.first)
+        XCTAssertEqual(properties["flow"] as? String, "creation")
+        XCTAssertEqual(properties["parent_id"] as? Int64, 0)
+        XCTAssertEqual(properties["status"] as? String, "pending")
+        XCTAssertEqual(properties["type"] as? String, "customer")
     }
 
     func test_customer_note_not_tracked_when_removed() {
@@ -996,7 +1073,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(analytics.receivedEvents.isEmpty)
     }
 
-    func test_sync_failure_tracked_when_sync_fails() {
+    func test_sync_failure_tracked_when_sync_fails() throws {
         // Given
         let analytics = MockAnalyticsProvider()
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -1020,6 +1097,10 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(analytics.receivedEvents.contains(WooAnalyticsStat.orderSyncFailed.rawValue))
+
+        let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.orderSyncFailed.rawValue}))
+        let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["flow"] as? String, "creation")
     }
 
     // MARK: -

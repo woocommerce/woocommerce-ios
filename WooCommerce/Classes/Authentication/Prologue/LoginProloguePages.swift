@@ -31,6 +31,22 @@ enum LoginProloguePageType: CaseIterable {
         }
     }
 
+    var subtitle: String? {
+        switch self {
+        case .stats:
+            return NSLocalizedString("We know it’s essential to your business.",
+                                     comment: "Subtitle displayed in promotional screens shown during the login flow.")
+        case .orderManagement:
+            return NSLocalizedString("You can manage quickly and easily.",
+                                     comment: "Subtitle displayed in promotional screens shown during the login flow.")
+        case .products:
+            return NSLocalizedString("We make it fast and easy to process effortlessly.",
+                                     comment: "Subtitle displayed in promotional screens shown during the login flow.")
+        default:
+            return nil
+        }
+    }
+
     var image: UIImage {
         switch self {
         case .stats:
@@ -49,15 +65,18 @@ enum LoginProloguePageType: CaseIterable {
 
 /// Simple container for each page of the login prologue carousel.
 ///
-class LoginProloguePageTypeViewController: UIViewController {
+final class LoginProloguePageTypeViewController: UIViewController {
     private let stackView = UIStackView()
     private let titleLabel = UILabel()
+    private let subtitleLabel = UILabel()
     private let imageView = UIImageView()
 
-    private var pageType: LoginProloguePageType
+    private let pageType: LoginProloguePageType
+    private let showsSubtitle: Bool
 
-    init(pageType: LoginProloguePageType) {
+    init(pageType: LoginProloguePageType, showsSubtitle: Bool) {
         self.pageType = pageType
+        self.showsSubtitle = showsSubtitle
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -73,9 +92,14 @@ class LoginProloguePageTypeViewController: UIViewController {
         configureStackView()
         configureImage()
         configureTitle()
+        if showsSubtitle {
+            configureSubtitle()
+        }
     }
+}
 
-    private func configureStackView() {
+private extension LoginProloguePageTypeViewController {
+    func configureStackView() {
         view.addSubview(stackView)
 
         // Stack view layout
@@ -97,7 +121,7 @@ class LoginProloguePageTypeViewController: UIViewController {
         ])
     }
 
-    private func configureImage() {
+    func configureImage() {
         stackView.addArrangedSubview(imageView)
 
         // Image style & layout
@@ -112,11 +136,11 @@ class LoginProloguePageTypeViewController: UIViewController {
         imageView.image = pageType.image
     }
 
-    private func configureTitle() {
+    func configureTitle() {
         stackView.addArrangedSubview(titleLabel)
 
         // Label style & layout
-        titleLabel.font = .body
+        titleLabel.font = showsSubtitle ? .font(forStyle: .title2, weight: .semibold): .body
         titleLabel.adjustsFontForContentSizeCategory = true
         titleLabel.textColor = .text
         titleLabel.textAlignment = .center
@@ -132,7 +156,28 @@ class LoginProloguePageTypeViewController: UIViewController {
         titleLabel.text = pageType.title
     }
 
-    private enum Constants {
+    func configureSubtitle() {
+        stackView.addArrangedSubview(subtitleLabel)
+
+        // Label style & layout
+        subtitleLabel.font = .body
+        subtitleLabel.adjustsFontForContentSizeCategory = true
+        subtitleLabel.textColor = .textSubtle
+        subtitleLabel.textAlignment = .center
+        subtitleLabel.numberOfLines = 0
+        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        subtitleLabel.setContentHuggingPriority(.required, for: .vertical)
+        subtitleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
+        NSLayoutConstraint.activate([
+            subtitleLabel.widthAnchor.constraint(equalToConstant: Constants.labelWidth)
+        ])
+
+        subtitleLabel.text = pageType.subtitle
+    }
+}
+
+private extension LoginProloguePageTypeViewController {
+    enum Constants {
         static let stackSpacing: CGFloat = 40 // Space between image and text
         static let stackVerticalOffset: CGFloat = 103
         static let stackBottomMargin: CGFloat = -57 // Minimum margin between stack view and login buttons, including space required for UIPageControl

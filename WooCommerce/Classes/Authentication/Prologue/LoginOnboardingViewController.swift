@@ -3,7 +3,8 @@ import UIKit
 /// Contains a feature carousel with buttons that end up on the login prologue screen.
 final class LoginOnboardingViewController: UIViewController {
     private let stackView: UIStackView = .init()
-    private lazy var pageViewController: LoginProloguePageViewController = LoginProloguePageViewController(pageTypes: [.stats, .orderManagement, .products])
+    private lazy var pageViewController: LoginProloguePageViewController =
+    LoginProloguePageViewController(pageTypes: [.stats, .orderManagement, .products], showsSubtitle: true)
     private let onDismiss: () -> Void
 
     init(onDismiss: @escaping () -> Void) {
@@ -132,8 +133,8 @@ private extension LoginOnboardingViewController {
     }
 
     enum Constants {
-        static let stackViewInsets: UIEdgeInsets = .init(top: 0, left: 16, bottom: 20, right: 16)
-        static let stackViewSpacing: CGFloat = 40
+        static let stackViewInsets: UIEdgeInsets = .init(top: 52, left: 16, bottom: 20, right: 16)
+        static let stackViewSpacing: CGFloat = 30
         static let buttonStackViewSpacing: CGFloat = 16
     }
 }

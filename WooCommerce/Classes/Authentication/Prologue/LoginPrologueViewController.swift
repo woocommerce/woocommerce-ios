@@ -91,7 +91,7 @@ private extension LoginPrologueViewController {
     ///
     func setupCarousel(isNewToWooCommerceButtonShown: Bool) {
         let pageTypes: [LoginProloguePageType] = isOnboardingFeatureEnabled ? [.getStarted]: LoginProloguePageType.allCases
-        let carousel = LoginProloguePageViewController(pageTypes: pageTypes)
+        let carousel = LoginProloguePageViewController(pageTypes: pageTypes, showsSubtitle: isOnboardingFeatureEnabled)
         carousel.view.translatesAutoresizingMaskIntoConstraints = false
 
         addChild(carousel)

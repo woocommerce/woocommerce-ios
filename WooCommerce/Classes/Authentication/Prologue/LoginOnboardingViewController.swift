@@ -47,7 +47,8 @@ private extension LoginOnboardingViewController {
     }
 
     func configureCurvedImageView() {
-        let imageView = UIImageView(image: .curvedRectangle)
+        let imageView = UIImageView(image: .curvedRectangle.withRenderingMode(.alwaysTemplate))
+        imageView.tintColor = .authPrologueBottomBackgroundColor
         imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
         NSLayoutConstraint.activate([

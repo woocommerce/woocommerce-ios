@@ -3,6 +3,7 @@ import UIKit
 /// Contains a feature carousel with buttons that end up on the login prologue screen.
 final class LoginOnboardingViewController: UIViewController {
     private let stackView: UIStackView = .init()
+    private lazy var pageViewController: LoginProloguePageViewController = LoginProloguePageViewController(pageTypes: [.stats, .orderManagement, .products])
     private let onDismiss: () -> Void
 
     init(onDismiss: @escaping () -> Void) {
@@ -94,11 +95,10 @@ private extension LoginOnboardingViewController {
     }
 
     func createFeatureCarousel() -> UIView {
-        let carousel = LoginProloguePageViewController()
-        carousel.view.translatesAutoresizingMaskIntoConstraints = false
+        pageViewController.view.translatesAutoresizingMaskIntoConstraints = false
 
-        addChild(carousel)
-        return carousel.view
+        addChild(pageViewController)
+        return pageViewController.view
     }
 
     func createContinueButton() -> UIButton {
@@ -106,7 +106,10 @@ private extension LoginOnboardingViewController {
         button.applyPrimaryButtonStyle()
         button.setTitle(Localization.continueButtonTitle, for: .normal)
         button.on(.touchUpInside) { [weak self] _ in
-            self?.onDismiss()
+            guard let self = self else { return }
+            guard self.pageViewController.goToNextPage() else {
+                return self.onDismiss()
+            }
         }
         return button
     }

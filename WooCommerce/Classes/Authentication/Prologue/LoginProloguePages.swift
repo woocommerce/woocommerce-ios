@@ -9,6 +9,7 @@ enum LoginProloguePageType: CaseIterable {
     case orderManagement
     case products
     case reviews
+    case getStarted
 
     var title: String {
         switch self {
@@ -24,6 +25,9 @@ enum LoginProloguePageType: CaseIterable {
         case .reviews:
             return NSLocalizedString("Monitor and approve your product reviews",
                                      comment: "Caption displayed in promotional screens shown during the login flow.")
+        case .getStarted:
+            return NSLocalizedString("Let’s get started!",
+                                     comment: "Caption displayed in the prologue screen shown after onboarding during the login flow.")
         }
     }
 
@@ -35,7 +39,7 @@ enum LoginProloguePageType: CaseIterable {
             return UIImage.prologueOrdersImage
         case .products:
             return UIImage.prologueProductsImage
-        case .reviews:
+        case .reviews, .getStarted:
             return UIImage.prologueReviewsImage
         }
     }

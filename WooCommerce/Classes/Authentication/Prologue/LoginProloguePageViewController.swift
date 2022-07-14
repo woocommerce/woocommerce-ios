@@ -4,13 +4,12 @@ import UIKit
 ///
 final class LoginProloguePageViewController: UIPageViewController {
 
-    private let pages: [UIViewController] = {
-        LoginProloguePageType.allCases.map { LoginProloguePageTypeViewController(pageType: $0) }
-    }()
+    private let pages: [UIViewController]
 
     private let pageControl = UIPageControl()
 
-    init() {
+    init(pageTypes: [LoginProloguePageType] = LoginProloguePageType.allCases) {
+        self.pages = pageTypes.map { LoginProloguePageTypeViewController(pageType: $0) }
         super.init(transitionStyle: .scroll, navigationOrientation: .horizontal)
     }
 
@@ -49,7 +48,19 @@ final class LoginProloguePageViewController: UIPageViewController {
         pageControl.addTarget(self, action: #selector(handlePageControlValueChanged(sender:)), for: .valueChanged)
     }
 
-    @objc func handlePageControlValueChanged(sender: UIPageControl) {
+    /// Show the next page of content.
+    /// - Returns: Whether there is next page.
+    func goToNextPage() -> Bool {
+        let currentPage = pageControl.currentPage
+        guard currentPage < pages.count - 1 else {
+            return false
+        }
+        pageControl.currentPage = currentPage + 1
+        handlePageControlValueChanged(sender: pageControl)
+        return true
+    }
+
+    @objc private func handlePageControlValueChanged(sender: UIPageControl) {
         guard let currentPage = viewControllers?.first,
               let currentIndex = pages.firstIndex(of: currentPage) else {
             return

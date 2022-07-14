@@ -2,7 +2,7 @@
 
 9.7
 -----
-
+- [*] Refund lines in the Order details screen now appear ordered from oldest to newest [https://github.com/woocommerce/woocommerce-ios/pull/7287]
 
 9.6
 -----

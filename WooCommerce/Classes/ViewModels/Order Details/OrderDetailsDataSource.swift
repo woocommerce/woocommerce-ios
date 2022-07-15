@@ -53,12 +53,13 @@ final class OrderDetailsDataSource: NSObject {
     /// Whether the order is eligible for card present payment.
     ///
     var isEligibleForPayment: Bool {
-        order.status == .pending || order.status == .onHold || order.status == .failed
+        order.needsPayment
     }
 
     var isEligibleForRefund: Bool {
         guard !isRefundedStatus,
-              order.datePaid != nil,
+              !isEligibleForPayment,
+              !order.isEditable,
               refundableOrderItemsDeterminer.isAnythingToRefund(from: order, with: refunds, currencyFormatter: currencyFormatter) else {
             return false
         }

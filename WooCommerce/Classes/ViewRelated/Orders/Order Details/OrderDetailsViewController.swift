@@ -134,14 +134,12 @@ private extension OrderDetailsViewController {
         title = String.localizedStringWithFormat(titleFormat, viewModel.order.number)
 
         // Actions menu
-        if viewModel.moreActionsButtons.isNotEmpty {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(image: .moreImage,
-                                                                style: .plain,
-                                                                target: self,
-                                                                action: #selector(presentActionMenuSheet(_:)))
-        } else {
-            navigationItem.rightBarButtonItem = nil
-        }
+        let menuButton = UIBarButtonItem(image: .moreImage,
+                                         style: .plain,
+                                         target: self,
+                                         action: #selector(presentActionMenuSheet(_:)))
+        menuButton.isEnabled = viewModel.moreActionsButtons.isNotEmpty
+        navigationItem.rightBarButtonItem = menuButton
     }
 
     /// Setup: EntityListener

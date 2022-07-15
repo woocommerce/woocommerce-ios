@@ -99,9 +99,27 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNotNil(issueRefundRow)
     }
 
-    func test_refund_button_is_not_visible_when_there_is_no_date_paid() throws {
+    func test_refund_button_is_not_visible_when_order_needs_payment() throws {
         // Given
-        let order = makeOrder().copy(datePaid: .some(nil))
+        let order = makeOrder().copy(needsPayment: true)
+        let orderRefundsOptionsDeterminer = MockOrderRefundsOptionsDeterminer(isAnythingToRefund: true)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                refundableOrderItemsDeterminer: orderRefundsOptionsDeterminer)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
+        let issueRefundRow = row(row: .issueRefundButton, in: paymentSection)
+        XCTAssertNil(issueRefundRow)
+    }
+
+    func test_refund_button_is_not_visible_when_order_is_editable() throws {
+        // Given
+        let order = makeOrder().copy(isEditable: true)
         let orderRefundsOptionsDeterminer = MockOrderRefundsOptionsDeterminer(isAnythingToRefund: true)
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
@@ -192,10 +210,9 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(row(row: .markCompleteButton(style: .secondary, showsBottomSpacing: false), in: productsSection))
     }
 
-    func test_reloadSections_when_isEligibleForPayment_is_false_then_collect_payment_button_is_not_visible() throws {
+    func test_reloadSections_when_order_does_not_need_payment_then_isEligibleForPayment_is_false_and_collect_payment_button_is_not_visible() throws {
         //Given
-        let paidOrderStatuses = [OrderStatusEnum.completed, OrderStatusEnum.processing]
-        let order = makeOrder().copy(status: paidOrderStatuses.randomElement()) // Paid orders are not eligible for payment
+        let order = makeOrder().copy(needsPayment: false) // Paid orders are not eligible for payment
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
 
         // When
@@ -207,10 +224,9 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(row(row: .collectCardPaymentButton, in: paymentSection))
     }
 
-    func test_reloadSections_when_isEligibleForPayment_is_true_then_collect_payment_button_is_visible() throws {
-        //Given
-        let unpaidOrderStatuses = [OrderStatusEnum.pending, OrderStatusEnum.onHold, OrderStatusEnum.failed]
-        let order = makeOrder().copy(status: unpaidOrderStatuses.randomElement()) // Unpaid orders are eligible for payment
+    func test_reloadSections_when_order_needs_payment_then_isEligibleForPayment_is_true_and_collect_payment_button_is_visible() throws {
+        // Given
+        let order = makeOrder().copy(needsPayment: true) // Unpaid orders are eligible for payment
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
 
         // When
@@ -290,10 +306,9 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(createShippingLabelRow)
     }
 
-    func test_create_shipping_label_button_is_not_visible_when_order_is_eligible_for_payment() throws {
+    func test_create_shipping_label_button_is_not_visible_when_order_needs_payment() throws {
         // Given
-        let unpaidOrderStatuses = [OrderStatusEnum.pending, OrderStatusEnum.onHold, OrderStatusEnum.failed]
-        let order = makeOrder().copy(status: unpaidOrderStatuses.randomElement())
+        let order = makeOrder().copy(needsPayment: true)
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.isEligibleForShippingLabelCreation = true
 

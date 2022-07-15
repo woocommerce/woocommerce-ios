@@ -30,10 +30,12 @@ final class OrderDetailsDataSource: NSObject {
         return order.status == OrderStatusEnum.completed
     }
 
-    /// Is this order processing? Payment received (paid). The order is awaiting fulfillment.
+    /// Does this order need processing? Payment received (paid). The order is awaiting fulfillment.
+    /// All product orders require processing, except those that only contain products which are both Virtual and Downloadable.
     ///
-    private var isProcessingStatus: Bool {
-        order.needsProcessing
+    private var needsProcessing: Bool {
+        // We check both the order.status and order.needsProcessing as a workaround to allow Digital Downloadable Orders to be in processing status
+        ( order.status == OrderStatusEnum.processing || order.needsProcessing )
     }
 
     /// Is this order fully refunded?
@@ -1013,21 +1015,21 @@ extension OrderDetailsDataSource {
 
             var rows: [Row] = Array(repeating: .aggregateOrderItem, count: aggregateOrderItemCount)
 
-            if shouldShowShippingLabelCreation {
+            switch (shouldShowShippingLabelCreation, isCompletedStatus, needsProcessing) {
+            case (true, true, _): // Order should show shipping label button. Order is complete.
                 rows.append(.shippingLabelCreateButton)
-            }
-
-            if isCompletedStatus && shouldShowShippingLabelCreation {
                 rows.append(.shippingLabelCreationInfo(showsSeparator: true))
-            }
-
-            if isProcessingStatus {
-                if shouldShowShippingLabelCreation {
-                    rows.append(.markCompleteButton(style: .secondary, showsBottomSpacing: false))
-                    rows.append(.shippingLabelCreationInfo(showsSeparator: true))
-                } else {
-                    rows.append(.markCompleteButton(style: .primary, showsBottomSpacing: true))
-                }
+            case (true, false, true): // Order should show shipping label button. Order needs processing.
+                rows.append(.shippingLabelCreateButton)
+                rows.append(.markCompleteButton(style: .secondary, showsBottomSpacing: false))
+                rows.append(.shippingLabelCreationInfo(showsSeparator: true))
+            case (true, false, false): // Order should show shipping label button. Is not completed, does not need processing.
+                rows.append(.shippingLabelCreateButton)
+                rows.append(.shippingLabelCreationInfo(showsSeparator: true))
+            case (false, _, true): // Order should not show shipping label button and is processing
+                rows.append(.markCompleteButton(style: .primary, showsBottomSpacing: true))
+            case (false, _, false): // Order should not show shipping label button and is not processing
+                break
             }
 
             if rows.count == 0 {

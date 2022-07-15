@@ -48,10 +48,6 @@ private extension JetpackSetupWebViewController {
         let request = URLRequest(url: url)
         webView.load(request)
     }
-
-    func handleMobileRedirect() {
-        completionHandler()
-    }
 }
 
 extension JetpackSetupWebViewController: WKNavigationDelegate {
@@ -60,7 +56,7 @@ extension JetpackSetupWebViewController: WKNavigationDelegate {
         switch navigationURL {
         case let .some(url) where url == Constants.mobileRedirectURL:
             decisionHandler(.cancel)
-            handleMobileRedirect()
+            completionHandler()
         default:
             decisionHandler(.allow)
         }

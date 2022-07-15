@@ -138,6 +138,7 @@ private extension OrderDetailsViewController {
                                          style: .plain,
                                          target: self,
                                          action: #selector(presentActionMenuSheet(_:)))
+        menuButton.accessibilityLabel = Localization.ActionsMenu.accessibilityLabel
         menuButton.isEnabled = viewModel.moreActionsButtons.isNotEmpty
         navigationItem.rightBarButtonItem = menuButton
     }
@@ -843,6 +844,7 @@ private extension OrderDetailsViewController {
         }
 
         enum ActionsMenu {
+            static let accessibilityLabel = NSLocalizedString("Order actions", comment: "Accessibility label for button triggering more actions menu sheet.")
             static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel the main more actions menu sheet.")
         }
     }

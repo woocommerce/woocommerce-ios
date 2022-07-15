@@ -41,17 +41,24 @@ struct JetpackErrorViewModel: ULErrorViewModel {
 
     // MARK: - Actions
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        showInstructionsScreen(in: viewController)
+        showJetpackSetupScreen(in: viewController)
         analytics.track(.loginJetpackRequiredViewInstructionsButtonTapped)
     }
 
-    private func showInstructionsScreen(in viewController: UIViewController?) {
+    private func showJetpackSetupScreen(in viewController: UIViewController?) {
         guard let viewController = viewController else {
             return
         }
 
-        let connectionController = JetpackConnectionWebViewController(siteURL: siteURL)
+        let connectionController = JetpackConnectionWebViewController(siteURL: siteURL) { [weak viewController] in
+            viewController?.dismiss(animated: true)
+            self.completeJetpackSetup()
+        }
         viewController.present(connectionController, animated: true, completion: nil)
+    }
+
+    private func completeJetpackSetup() {
+        // TODO-7269
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {

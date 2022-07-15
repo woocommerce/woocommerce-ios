@@ -1,9 +1,17 @@
 import UIKit
 import WebKit
 
+/// The web view to handle Jetpack installation/activation/connection all at once.
+///
 final class JetpackConnectionWebViewController: UIViewController {
 
+    /// The site URL to set up Jetpack for.
     private let siteURL: String
+
+    /// The closure to trigger when Jetpack setup completes.
+    private let completionHandler: () -> Void
+
+    /// Main web view
     private lazy var webView: WKWebView = {
         let webView = WKWebView(frame: .zero)
         webView.translatesAutoresizingMaskIntoConstraints = false
@@ -11,8 +19,9 @@ final class JetpackConnectionWebViewController: UIViewController {
         return webView
     }()
 
-    init(siteURL: String) {
+    init(siteURL: String, onCompletion: @escaping () -> Void) {
         self.siteURL = siteURL
+        self.completionHandler = onCompletion
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -41,7 +50,7 @@ private extension JetpackConnectionWebViewController {
     }
 
     func handleMobileRedirect() {
-        // TODO-7269
+        completionHandler()
     }
 }
 

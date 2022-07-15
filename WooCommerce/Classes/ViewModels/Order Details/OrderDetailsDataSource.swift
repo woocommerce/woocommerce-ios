@@ -33,7 +33,7 @@ final class OrderDetailsDataSource: NSObject {
     /// Is this order processing? Payment received (paid). The order is awaiting fulfillment.
     ///
     private var isProcessingStatus: Bool {
-        return order.status == OrderStatusEnum.processing
+        order.needsProcessing
     }
 
     /// Is this order fully refunded?

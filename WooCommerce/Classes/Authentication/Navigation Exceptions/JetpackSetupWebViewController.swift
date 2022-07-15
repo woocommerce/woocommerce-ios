@@ -3,7 +3,7 @@ import WebKit
 
 /// The web view to handle Jetpack installation/activation/connection all at once.
 ///
-final class JetpackConnectionWebViewController: UIViewController {
+final class JetpackSetupWebViewController: UIViewController {
 
     /// The site URL to set up Jetpack for.
     private let siteURL: String
@@ -35,7 +35,7 @@ final class JetpackConnectionWebViewController: UIViewController {
     }
 }
 
-private extension JetpackConnectionWebViewController {
+private extension JetpackSetupWebViewController {
     func configureWebView() {
         view.addSubview(webView)
         view.pinSubviewToSafeArea(webView)
@@ -54,7 +54,7 @@ private extension JetpackConnectionWebViewController {
     }
 }
 
-extension JetpackConnectionWebViewController: WKNavigationDelegate {
+extension JetpackSetupWebViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         let navigationURL = navigationAction.request.url?.absoluteString
         switch navigationURL {
@@ -67,7 +67,7 @@ extension JetpackConnectionWebViewController: WKNavigationDelegate {
     }
 }
 
-private extension JetpackConnectionWebViewController {
+private extension JetpackSetupWebViewController {
     enum Constants {
         static let jetpackInstallString = "https://wordpress.com/jetpack/connect?url=%@&mobie-redirect=%@from=mobile"
         static let mobileRedirectURL = "woocommerce://jetpack-connected"

@@ -9,10 +9,12 @@ import WordPressUI
 struct JetpackErrorViewModel: ULErrorViewModel {
     private let siteURL: String
     private let analytics: Analytics
+    private let jetpackSetupCompletionHandler: () -> Void
 
-    init(siteURL: String?, analytics: Analytics = ServiceLocator.analytics) {
+    init(siteURL: String?, analytics: Analytics = ServiceLocator.analytics, onJetpackSetupCompletion: @escaping () -> Void) {
         self.siteURL = siteURL ?? Localization.yourSite
         self.analytics = analytics
+        self.jetpackSetupCompletionHandler = onJetpackSetupCompletion
     }
 
     // MARK: - Data and configuration
@@ -52,13 +54,9 @@ struct JetpackErrorViewModel: ULErrorViewModel {
 
         let connectionController = JetpackSetupWebViewController(siteURL: siteURL) { [weak viewController] in
             viewController?.dismiss(animated: true)
-            self.completeJetpackSetup()
+            self.jetpackSetupCompletionHandler()
         }
         viewController.present(connectionController, animated: true, completion: nil)
-    }
-
-    private func completeJetpackSetup() {
-        // TODO-7269
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {

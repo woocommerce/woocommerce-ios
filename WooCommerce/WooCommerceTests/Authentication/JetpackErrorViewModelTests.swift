@@ -22,7 +22,7 @@ final class JetpackErrorViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_image() {
         // Given
-        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url)
+        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url) {}
 
         // When
         let image = viewModel.image
@@ -33,7 +33,7 @@ final class JetpackErrorViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_visibility_for_auxiliary_button() {
         // Given
-        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url)
+        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url) {}
 
         // When
         let isVisible = viewModel.isAuxiliaryButtonHidden
@@ -44,7 +44,7 @@ final class JetpackErrorViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_title_for_auxiliary_button() {
         // Given
-        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url)
+        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url) {}
 
         // When
         let auxiliaryButtonTitle = viewModel.auxiliaryButtonTitle
@@ -55,7 +55,7 @@ final class JetpackErrorViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_title_for_primary_button() {
         // Given
-        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url)
+        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url) {}
 
         // When
         let primaryButtonTitle = viewModel.primaryButtonTitle
@@ -66,7 +66,7 @@ final class JetpackErrorViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_title_for_secondary_button() {
         // Given
-        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url)
+        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url) {}
 
         // When
         let secondaryButtonTitle = viewModel.secondaryButtonTitle
@@ -77,7 +77,7 @@ final class JetpackErrorViewModelTests: XCTestCase {
 
     func test_viewModel_logs_an_event_when_viewDidLoad_is_triggered() throws {
         // Given
-        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url, analytics: analytics)
+        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url, analytics: analytics) {}
 
         assertEmpty(analyticsProvider.receivedEvents)
 
@@ -91,7 +91,7 @@ final class JetpackErrorViewModelTests: XCTestCase {
 
     func test_viewModel_logs_an_event_when_see_instructions_button_is_tapped() throws {
         // Given
-        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url, analytics: analytics)
+        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url, analytics: analytics) {}
 
         assertEmpty(analyticsProvider.receivedEvents)
 
@@ -105,7 +105,7 @@ final class JetpackErrorViewModelTests: XCTestCase {
 
     func test_viewModel_logs_an_event_when_the_what_is_jetpack_button_is_tapped() throws {
         // Given
-        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url, analytics: analytics)
+        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url, analytics: analytics) {}
 
         assertEmpty(analyticsProvider.receivedEvents)
 

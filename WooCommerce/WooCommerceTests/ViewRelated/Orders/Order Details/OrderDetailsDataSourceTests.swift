@@ -461,9 +461,8 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         }
     }
 
-    func test_morel_button_is_not_visible_in_product_section_for_cash_on_delivery_order() throws {
+    func test_more_button_is_not_visible_in_product_section_for_cash_on_delivery_order() throws {
         // Given
-        // datePaid: .some(nil)
         let order = makeOrder().copy(status: .processing, datePaid: .some(nil), total: "100", paymentMethodID: "cod")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.isEligibleForShippingLabelCreation = true

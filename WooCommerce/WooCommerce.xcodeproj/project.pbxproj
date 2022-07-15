@@ -11289,7 +11289,7 @@
 			repositoryURL = "https://github.com/buildkite/test-collector-swift";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.1.1;
+				minimumVersion = 0.3.0;
 			};
 		};
 		3FF2247126706AA3008FFA87 /* XCRemoteSwiftPackageReference "ScreenObject" */ = {

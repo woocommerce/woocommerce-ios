@@ -50,7 +50,7 @@ struct JetpackErrorViewModel: ULErrorViewModel {
             return
         }
 
-        let connectionController = JetpackConnectWebViewController(siteURL: siteURL)
+        let connectionController = JetpackConnectionWebViewController(siteURL: siteURL)
         viewController.present(connectionController, animated: true, completion: nil)
     }
 

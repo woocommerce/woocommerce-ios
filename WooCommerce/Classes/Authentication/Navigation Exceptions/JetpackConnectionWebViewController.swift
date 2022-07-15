@@ -1,7 +1,7 @@
 import UIKit
 import WebKit
 
-final class JetpackConnectWebViewController: UIViewController {
+final class JetpackConnectionWebViewController: UIViewController {
 
     private let siteURL: String
     private lazy var webView: WKWebView = {
@@ -26,7 +26,7 @@ final class JetpackConnectWebViewController: UIViewController {
     }
 }
 
-private extension JetpackConnectWebViewController {
+private extension JetpackConnectionWebViewController {
     func configureWebView() {
         view.addSubview(webView)
         view.pinSubviewToSafeArea(webView)
@@ -41,14 +41,14 @@ private extension JetpackConnectWebViewController {
     }
 }
 
-extension JetpackConnectWebViewController: WKNavigationDelegate {
+extension JetpackConnectionWebViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         DDLogInfo("🔵 URL: \(navigationAction.request.url?.absoluteString ?? "")")
         decisionHandler(.allow)
     }
 }
 
-private extension JetpackConnectWebViewController {
+private extension JetpackConnectionWebViewController {
     enum Strings {
         static let jetpackInstallString = "https://wordpress.com/jetpack/connect?url=%@&from=mobile"
     }

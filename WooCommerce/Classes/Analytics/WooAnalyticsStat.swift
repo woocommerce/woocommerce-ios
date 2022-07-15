@@ -248,6 +248,7 @@ public enum WooAnalyticsStat: String {
     case orderShippingMethodRemove = "order_shipping_method_remove"
     case orderSyncFailed = "order_sync_failed"
     case collectPaymentTapped = "payments_flow_order_collect_payment_tapped"
+    case orderViewCustomFieldsTapped = "order_view_custom_fields_tapped"
 
     // MARK: Order List Sorting/Filtering
     //

@@ -118,6 +118,7 @@ private extension LoginOnboardingViewController {
 
     func createSkipButton() -> UIButton {
         let button = UIButton(frame: .zero)
+        button.accessibilityIdentifier = "Login Onboarding Skip Button"
         button.applyLinkButtonStyle()
         button.setTitle(Localization.skipButtonTitle, for: .normal)
         button.on(.touchUpInside) { [weak self] _ in

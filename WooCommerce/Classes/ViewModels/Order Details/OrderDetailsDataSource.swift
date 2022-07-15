@@ -36,12 +36,6 @@ final class OrderDetailsDataSource: NSObject {
         return order.status == OrderStatusEnum.processing
     }
 
-    /// Is this order pending? Awaiting payment (unpaid).
-    ///
-    private var isPendingPayment: Bool {
-        return order.status == OrderStatusEnum.pending
-    }
-
     /// Is this order fully refunded?
     ///
     private var isRefundedStatus: Bool {

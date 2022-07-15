@@ -1015,20 +1015,22 @@ extension OrderDetailsDataSource {
 
             var rows: [Row] = Array(repeating: .aggregateOrderItem, count: aggregateOrderItemCount)
 
-            switch (shouldShowShippingLabelCreation, isCompletedStatus, needsProcessing) {
-            case (true, true, _): // Order should show shipping label button. Order is complete.
+            switch (shouldShowShippingLabelCreation, isCompletedStatus, needsProcessing, isEligibleForPayment) {
+            case (true, true, _, _): // Order should show shipping label button. Order is complete.
                 rows.append(.shippingLabelCreateButton)
                 rows.append(.shippingLabelCreationInfo(showsSeparator: true))
-            case (true, false, true): // Order should show shipping label button. Order needs processing.
+            case (true, false, true, _): // Order should show shipping label button. Order needs processing.
                 rows.append(.shippingLabelCreateButton)
                 rows.append(.markCompleteButton(style: .secondary, showsBottomSpacing: false))
                 rows.append(.shippingLabelCreationInfo(showsSeparator: true))
-            case (true, false, false): // Order should show shipping label button. Is not completed, does not need processing.
+            case (true, false, false, _): // Order should show shipping label button. Is not completed, does not need processing.
                 rows.append(.shippingLabelCreateButton)
                 rows.append(.shippingLabelCreationInfo(showsSeparator: true))
-            case (false, _, true): // Order should not show shipping label button and is processing
+            case (false, _, true, false): // Order should not show shipping label button and is processing
                 rows.append(.markCompleteButton(style: .primary, showsBottomSpacing: true))
-            case (false, _, false): // Order should not show shipping label button and is not processing
+            case (false, _, true, true): // Order should not show shipping label button and is processing
+                break
+            case (false, _, false, _): // Order should not show shipping label button and is not processing
                 break
             }
 

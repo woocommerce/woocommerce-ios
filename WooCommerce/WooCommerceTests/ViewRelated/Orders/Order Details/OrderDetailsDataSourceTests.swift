@@ -156,9 +156,9 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(issueRefundRow)
     }
 
-    func test_markOrderComplete_button_is_visible_and_primary_style_if_order_is_processing_and_not_eligible_for_shipping_label_creation() throws {
+    func test_markOrderComplete_button_is_visible_and_primary_style_if_order_needs_processing_and_not_eligible_for_shipping_label_creation() throws {
         // Given
-        let order = makeOrder().copy(status: .processing)
+        let order = makeOrder().copy(needsProcessing: true)
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.isEligibleForShippingLabelCreation = false
 
@@ -170,9 +170,9 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNotNil(row(row: .markCompleteButton(style: .primary, showsBottomSpacing: true), in: productsSection))
     }
 
-    func test_markOrderComplete_button_is_visible_and_secondary_style_if_order_is_processing_and_eligible_for_shipping_label_creation() throws {
+    func test_markOrderComplete_button_is_visible_and_secondary_style_if_order_needs_processing_and_eligible_for_shipping_label_creation() throws {
         // Given
-        let order = makeOrder().copy(status: .processing)
+        let order = makeOrder().copy(needsProcessing: true)
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.isEligibleForShippingLabelCreation = true
 

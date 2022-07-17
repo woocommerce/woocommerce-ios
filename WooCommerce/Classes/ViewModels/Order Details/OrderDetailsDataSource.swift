@@ -24,10 +24,11 @@ final class OrderDetailsDataSource: NSObject {
     ///
     private(set) var sections = [Section]()
 
-    /// Is this order processing?
+    /// Does this order need processing? Payment received (paid). The order is awaiting fulfillment.
+    /// All product orders require processing, except those that only contain products which are both Virtual and Downloadable.
     ///
-    private var isProcessingPayment: Bool {
-        return order.status == OrderStatusEnum.processing
+    private var needsProcessing: Bool {
+        order.needsProcessing
     }
 
     /// Is this order fully refunded?
@@ -1029,7 +1030,7 @@ extension OrderDetailsDataSource {
                 rows.append(.shippingLabelCreateButton)
             }
 
-            if isProcessingPayment {
+            if needsProcessing {
                 if shouldShowShippingLabelCreation {
                     rows.append(.markCompleteButton(style: .secondary, showsBottomSpacing: false))
                     rows.append(.shippingLabelCreationInfo(showsSeparator: false))

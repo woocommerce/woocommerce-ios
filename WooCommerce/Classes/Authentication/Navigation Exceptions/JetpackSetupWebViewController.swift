@@ -23,7 +23,6 @@ final class JetpackSetupWebViewController: UIViewController {
     /// Progress bar for the web view
     private lazy var progressBar: UIProgressView = {
         let bar = UIProgressView(progressViewStyle: .bar)
-        bar.tintColor = .brand
         bar.translatesAutoresizingMaskIntoConstraints = false
         return bar
     }()
@@ -46,6 +45,7 @@ final class JetpackSetupWebViewController: UIViewController {
         configureNavigationBar()
         configureWebView()
         configureProgressBar()
+        startLoading()
     }
 }
 
@@ -57,20 +57,12 @@ private extension JetpackSetupWebViewController {
 
     func configureWebView() {
         view.addSubview(webView)
-        view.pinSubviewToSafeArea(webView)
-
-        guard let escapedSiteURL = siteURL.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-              let url = URL(string: String(format: Constants.jetpackInstallString, escapedSiteURL, Constants.mobileRedirectURL)) else {
-            return
-        }
-
-        let request = URLRequest(url: url)
-        webView.load(request)
-        progressSubscription = webView.publisher(for: \.estimatedProgress)
-            .sink { [weak self] progress in
-                self?.progressBar.isHidden = progress == 1 // hides the progress bar when done loading
-                self?.progressBar.setProgress(Float(progress), animated: false)
-            }
+        NSLayoutConstraint.activate([
+            view.leadingAnchor.constraint(equalTo: webView.leadingAnchor),
+            view.trailingAnchor.constraint(equalTo: webView.trailingAnchor),
+            view.safeTopAnchor.constraint(equalTo: webView.topAnchor),
+            view.safeBottomAnchor.constraint(equalTo: webView.bottomAnchor),
+        ])
     }
 
     func configureProgressBar() {
@@ -78,8 +70,26 @@ private extension JetpackSetupWebViewController {
         NSLayoutConstraint.activate([
             view.leadingAnchor.constraint(equalTo: progressBar.leadingAnchor),
             view.trailingAnchor.constraint(equalTo: progressBar.trailingAnchor),
-            view.topAnchor.constraint(equalTo: progressBar.topAnchor)
+            view.safeTopAnchor.constraint(equalTo: progressBar.topAnchor)
         ])
+    }
+
+    func startLoading() {
+        guard let escapedSiteURL = siteURL.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let url = URL(string: String(format: Constants.jetpackInstallString, escapedSiteURL, Constants.mobileRedirectURL)) else {
+            return
+        }
+        progressSubscription = webView.publisher(for: \.estimatedProgress)
+            .sink { [weak self] progress in
+                if progress == 1 {
+                    self?.progressBar.setProgress(0, animated: false)
+                } else {
+                    self?.progressBar.setProgress(Float(progress), animated: true)
+                }
+                
+            }
+        let request = URLRequest(url: url)
+        webView.load(request)
     }
 
     @objc func dismissView() {
@@ -98,6 +108,10 @@ extension JetpackSetupWebViewController: WKNavigationDelegate {
         default:
             decisionHandler(.allow)
         }
+    }
+
+    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        progressBar.setProgress(0, animated: false)
     }
 }
 

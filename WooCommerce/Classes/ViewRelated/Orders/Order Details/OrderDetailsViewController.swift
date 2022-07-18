@@ -134,14 +134,13 @@ private extension OrderDetailsViewController {
         title = String.localizedStringWithFormat(titleFormat, viewModel.order.number)
 
         // Actions menu
-        if viewModel.moreActionsButtons.isNotEmpty {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(image: .moreImage,
-                                                                style: .plain,
-                                                                target: self,
-                                                                action: #selector(presentActionMenuSheet(_:)))
-        } else {
-            navigationItem.rightBarButtonItem = nil
-        }
+        let menuButton = UIBarButtonItem(image: .moreImage,
+                                         style: .plain,
+                                         target: self,
+                                         action: #selector(presentActionMenuSheet(_:)))
+        menuButton.accessibilityLabel = Localization.ActionsMenu.accessibilityLabel
+        menuButton.isEnabled = viewModel.moreActionsButtons.isNotEmpty
+        navigationItem.rightBarButtonItem = menuButton
     }
 
     /// Setup: EntityListener
@@ -845,6 +844,7 @@ private extension OrderDetailsViewController {
         }
 
         enum ActionsMenu {
+            static let accessibilityLabel = NSLocalizedString("Order actions", comment: "Accessibility label for button triggering more actions menu sheet.")
             static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel the main more actions menu sheet.")
         }
     }

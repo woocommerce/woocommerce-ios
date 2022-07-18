@@ -210,7 +210,7 @@ final class OrderDetailsDataSource: NSObject {
     /// All the condensed refunds in an order
     ///
     var condensedRefunds: [OrderRefundCondensed] {
-        return order.refunds.sorted(by: { $0.refundID > $1.refundID })
+        return order.refunds.sorted(by: { $0.refundID < $1.refundID })
     }
 
     /// Notes of an Order
@@ -435,9 +435,28 @@ private extension OrderDetailsDataSource {
             configureRefundedProducts(cell)
         case let cell as IssueRefundTableViewCell:
             configureIssueRefundButton(cell: cell)
+        case let cell as WooBasicTableViewCell where row == .customFields:
+            configureCustomFields(cell: cell)
         default:
             fatalError("Unidentified customer info row type")
         }
+    }
+
+    private func configureCustomFields(cell: WooBasicTableViewCell) {
+        cell.bodyLabel?.text = Title.customFields
+        cell.applyPlainTextStyle()
+        cell.accessoryType = .none
+        cell.selectionStyle = .default
+
+        cell.accessibilityTraits = .button
+        cell.accessibilityLabel = NSLocalizedString(
+                "View Custom Fields",
+                comment: "Accessibility label for the 'View Custom Fields' button"
+        )
+        cell.accessibilityHint = NSLocalizedString(
+            "Show the custom fields for this order.",
+            comment: "VoiceOver accessibility hint, informing the user that the button can be used to view the order custom fields information."
+        )
     }
 
     private func configureCustomerNote(cell: CustomerNoteTableViewCell) {
@@ -1044,6 +1063,16 @@ extension OrderDetailsDataSource {
                            headerStyle: headerStyle)
         }()
 
+        let customFields: Section? = {
+            guard featureFlags.isFeatureFlagEnabled(.orderCustomFields),
+                  order.customFields.isNotEmpty
+            else {
+                return nil
+            }
+
+            return Section(category: .customFields, row: .customFields)
+        }()
+
         let refundedProducts: Section? = {
             // Refunds on
             guard refundedProductsCount > 0 else {
@@ -1214,6 +1243,7 @@ extension OrderDetailsDataSource {
         sections = ([summary,
                      shippingNotice,
                      products,
+                     customFields,
                      installWCShipSection] +
                     shippingLabelSections +
                     [refundedProducts,
@@ -1404,6 +1434,7 @@ extension OrderDetailsDataSource {
         static let information = NSLocalizedString("Customer", comment: "Customer info section title")
         static let payment = NSLocalizedString("Payment", comment: "Payment section title")
         static let notes = NSLocalizedString("Order Notes", comment: "Order notes section title")
+        static let customFields = NSLocalizedString("View Custom Fields", comment: "Custom Fields section title")
         static let shippingLabelCreationInfoAction =
             NSLocalizedString("Learn more about creating labels with your mobile device",
                               comment: "Title of button in order details > info link for creating a shipping label on the mobile device.")
@@ -1444,6 +1475,7 @@ extension OrderDetailsDataSource {
             case tracking
             case addTracking
             case notes
+            case customFields
         }
 
         /// The table header style of a `Section`.
@@ -1544,6 +1576,7 @@ extension OrderDetailsDataSource {
         case addOrderNote
         case orderNoteHeader
         case orderNote
+        case customFields
 
         var reuseIdentifier: String {
             switch self {
@@ -1605,6 +1638,8 @@ extension OrderDetailsDataSource {
                 return OrderNoteHeaderTableViewCell.reuseIdentifier
             case .orderNote:
                 return OrderNoteTableViewCell.reuseIdentifier
+            case .customFields:
+                return WooBasicTableViewCell.reuseIdentifier
             }
         }
     }

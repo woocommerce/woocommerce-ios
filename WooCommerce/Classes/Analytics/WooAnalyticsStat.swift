@@ -223,10 +223,13 @@ public enum WooAnalyticsStat: String {
     case orderCreationFailed = "order_creation_failed"
     case orderContactAction = "order_contact_action"
     case orderCustomerAdd = "order_customer_add"
+    case orderEditButtonTapped = "order_edit_button_tapped"
     case ordersListFilter = "orders_list_filter"
     case ordersListSearch = "orders_list_search"
     case ordersListLoaded = "orders_list_loaded"
     case orderProductAdd = "order_product_add"
+    case orderProductQuantityChange = "order_product_quantity_change"
+    case orderProductRemove = "order_product_remove"
     case orderStatusChange = "order_status_change"
     case orderStatusChangeSuccess = "order_status_change_success"
     case orderStatusChangeFailed = "order_status_change_failed"
@@ -240,9 +243,12 @@ public enum WooAnalyticsStat: String {
     case orderTrackingDeleteSuccess = "order_tracking_delete_success"
     case orderTrackingProvidersLoaded = "order_tracking_providers_loaded"
     case orderFeeAdd = "order_fee_add"
+    case orderFeeRemove = "order_fee_remove"
     case orderShippingMethodAdd = "order_shipping_method_add"
+    case orderShippingMethodRemove = "order_shipping_method_remove"
     case orderSyncFailed = "order_sync_failed"
     case collectPaymentTapped = "payments_flow_order_collect_payment_tapped"
+    case orderViewCustomFieldsTapped = "order_view_custom_fields_tapped"
 
     // MARK: Order List Sorting/Filtering
     //

@@ -199,8 +199,8 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         // https://github.com/woocommerce/woocommerce/blob/3611d4643791bad87a0d3e6e73e031bb80447417/plugins/woocommerce/includes/class-wc-order.php#L1537-L1561
         let needsProcessing = try container.decodeIfPresent(Bool.self, forKey: .needsProcessing) ?? false
 
-        // Filter out meta data if its key is prefixed with an underscore (internal meta keys)
-        let customFields = allOrderMetaData?.filter({ !$0.key.hasPrefix("_") }) ?? []
+        // Filter out metadata if the key is prefixed with an underscore (internal meta keys) or the value is empty
+        let customFields = allOrderMetaData?.filter({ !$0.key.hasPrefix("_") && !$0.value.isEmpty }) ?? []
 
         self.init(siteID: siteID,
                   orderID: orderID,

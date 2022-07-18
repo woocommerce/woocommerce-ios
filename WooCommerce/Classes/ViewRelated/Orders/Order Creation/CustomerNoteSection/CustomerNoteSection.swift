@@ -17,14 +17,16 @@ struct CustomerNoteSection: View {
             .sheet(
                 isPresented: $showEditNotesView,
                 onDismiss: {
+                    // reset note content when modal is dismissed with swipe down gesture
                     viewModel.noteViewModel.userDidCancelFlow()
-                    viewModel.updateCustomerNote()
                 },
                 content: {
                     EditCustomerNote(
+                        onSave: {
+                            viewModel.updateCustomerNote()
+                        },
                         dismiss: {
                             showEditNotesView.toggle()
-                            viewModel.updateCustomerNote()
                         },
                         viewModel: viewModel.noteViewModel
                     )

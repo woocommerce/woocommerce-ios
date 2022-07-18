@@ -1,1 +1,0 @@
-Kuponları yönetme ile ilgili yeni bir özellik üzerinde çalıştığımızı biliyor muydunuz? Menü sekmesine gidin, ayarlar simgesine dokunup deneysel özelliklere gidin. Bu sürümde, "Bireysel Kullanım" ve "İndirimli Öğeleri Hariç Tut" alanlarını düzenlerken oluşan bir sorunu düzelttik. Deneyin ve geri bildiriminizi paylaşın!

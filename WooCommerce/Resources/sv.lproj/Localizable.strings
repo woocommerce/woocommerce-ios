@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-06-30 11:54:04+0000 */
+/* Translation-Revision-Date: 2022-07-12 20:48:57+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -244,9 +244,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "A product with variations like color or size" = "En produkt med variationer som färg eller storlek";
 
-/* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"A refund will not be issued to the customer. You will need to manually issue the refund through %1$@." = "Ingen återbetalning kommer att utfärdas till kunden. Du kan behöva utfärda återbetalningen manuellt via %1$@.";
-
 /* Message explaining that the site may have an invalid SSL certificate. */
 "A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate." = "Det gick inte att upprätta en säker anslutning till webbplatsen. Se till att din webbplats har ett giltigt SSL-certifikat.";
 
@@ -325,6 +322,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Downloadable file screen navigation title */
 "Add Downloadable File" = "Lägg till nedladdningsbar fil";
+
+/* Button in the CTA View for installing WCShip extension */
+"Add Extension To Store" = "Lägg till utökning till butik";
 
 /* Title for the Fee screen during order creation
    Title text of the button that adds a fee when creating a new order */
@@ -583,6 +583,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message when it looks like a duplicate transaction is being attempted. */
 "An identical transaction was submitted recently. If you wish to continue, try another means of payment" = "En identisk transaktion skickades nyligen. Om du vill fortsätta, prova en annan betalningsmetod";
+
+/* Title of the notice about an image upload failure in the background. */
+"An image failed to upload" = "En bild kunde inte laddas upp";
 
 /* Message when an incorrect PIN has been entered too many times. */
 "An incorrect PIN has been entered too many times. Try another means of payment" = "En felaktig PIN-kod har angetts för många gånger. Prova en annan betalningsmetod";
@@ -852,6 +855,7 @@ which should be translated separately and considered part of this sentence. */
    The title for a button that dismisses the crash debug menu
    The title of the button to cancel issuing a refund.
    Title for canceling the edit attribute action sheet.
+   Title for the button to cancel the payment methods screen
    Title for the button to cancel the simple payments screen */
 "Cancel" = "Avbryt";
 
@@ -882,7 +886,7 @@ which should be translated separately and considered part of this sentence. */
    Detailed message shown on the Product Reviews screen if the list is empty */
 "Capture high-quality product reviews for your store." = "Samla produktrecensioner av hög kvalitet till din butik.";
 
-/* Card method title on the select payment method screen for simple payments */
+/* Card method title on the select payment method screen */
 "Card" = "Kort";
 
 /* Title for the section related to card readers inside In-Person Payments settings */
@@ -900,7 +904,7 @@ which should be translated separately and considered part of this sentence. */
 /* Add Custom shipping carrier. Title of cell presenting the carrier name */
 "Carrier name" = "Transportföretagsnamn";
 
-/* Cash method title on the select payment method screen for simple payments */
+/* Cash method title on the select payment method screen */
 "Cash" = "Kontant";
 
 /* Catalog Visibility label in Product Settings
@@ -964,7 +968,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the screen to select the preferred provider for In-Person Payments */
 "Choose your Payment Provider" = "Välj en betalningsleverantör";
 
-/* Heading text on the select payment method screen for simple payments */
+/* Heading text on the select payment method screen */
 "Choose your payment method" = "Välj din betalningsmetod";
 
 /* Text field city in Edit Address Form
@@ -1853,6 +1857,9 @@ which should be translated separately and considered part of this sentence. */
 /* Notice displayed when the label purchase fails */
 "Error purchasing the label" = "Ett fel uppstod vid köp av etiketten";
 
+/* Title of the notice about an error saving images uploaded in the background to a product. */
+"Error saving product images" = "Det gick inte att spara produktbilder";
+
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
 "Everyone loves a deal" = "Alla gillar ett erbjudande";
@@ -2226,9 +2233,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "Du kan hitta e-postadressen som du använde för att ansluta till WordPress.com i Jetpack-instrumentpanelen under Anslutningar > Kontoanslutning";
-
-/* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} Parameters: %1$@ - order number, %2$@ - store name */
-"In-Person Payment for Order #%1$@ for %2$@" = "Personlig betalning för beställning #%1$@ för %2$@";
 
 /* Navigates to In-Person Payments screen
    Title for the In-Person Payments settings screen */
@@ -2639,8 +2643,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "Manuella offset-värden";
 
-/* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manuell återbetalning via %1$@";
+/* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. */
+"Manual Refund" = "Manuell återbetalning";
 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Ompekad domän";
@@ -2658,10 +2662,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Option to mark all reviews as read from the action sheet in Reviews screen. */
 "Mark all reviews as read" = " Markera alla recensioner som lästa";
 
-/* Alert button when selecting the cash payment method for simple payments */
+/* Alert button when selecting the cash payment method */
 "Mark as Paid" = "Markera som betald";
 
-/* Alert title when selecting the cash payment method for simple payments */
+/* Alert title when selecting the cash payment method */
 "Mark as Paid?" = "Markera som betald?";
 
 /* Create Shipping Label form -> Mark order as complete label */
@@ -2794,6 +2798,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for table view section of network active plugins */
 "Network Active Plugins" = "Nätverksaktiva tillägg";
 
+/* Title of the new badge shown when advertising a new feature */
+"New" = "Nya";
+
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "Nytt attributnamn";
 
@@ -2906,6 +2913,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "None" = "Ingen";
 
 /* Action title to dismiss enabling Analytics for a store
+   Button in the CTA View for installing WCShip extension for dismissing the view
    Title of dismiss action in the Jetpack benefits view. */
 "Not now" = "Inte nu";
 
@@ -3227,6 +3235,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "Välj butik att ansluta";
 
+/* Subtitle of one of the elements in the CTA View for installing WCShip extension */
+"Pick up an order, then just pay, print, package, and post." = "Hämta en beställning och sedan är det bara att betala, skriva ut, paketera och skicka.";
+
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "Placerar din produkt i papperskorgen …";
 
@@ -3415,6 +3426,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title of shipping label printing instructions screen */
 "Print from your mobile device" = "Skriv ut från din mobila enhet";
 
+/* Title of one of the elements in the CTA View for installing WCShip extension */
+"Print from your phone" = "Skriv ut från din telefon";
+
 /* Body of the banner in the Order Detail for suggesting to install WCShip extension. */
 "Print labels from your phone, with WooCommerce Shipping." = "Skriv ut etiketter från din telefon, med WooCommerce Shipping.";
 
@@ -3541,6 +3555,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the in-progress UI while updating the Product remotely */
 "Publishing your product..." = "Publicerar din produkt ...";
+
+/* Title for the button on the feature announcement banner intended to upsell card readers */
+"Purchase Card Reader" = "Köp kortläsare";
 
 /* Title of shipping label purchase date in Refund Shipping Label screen */
 "Purchase Date" = "Inköpsdatum";
@@ -3886,6 +3903,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button when the user does not want to print the receipt. Presented to users after a payment has been successfully collected */
 "Save receipt and continue" = "Spara kvitto och fortsätt";
 
+/* Title of the CTA view for installing WCShip extension */
+"Save time and money" = "Spara tid och pengar";
+
 /* Message text in the shipping label creation info screen */
 "Save time and money by fulfilling with WooCommerce Shipping" = "Spara tid och pengar genom att fullfölja med WooCommerce Shipping";
 
@@ -4064,8 +4084,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to share coupon from the Coupon Creation Success screen. */
 "Share Coupon" = "Dela rabattkod";
 
-/* Payment Link method title on the select payment method screen for simple payments
-   Title to share an order payment link. */
+/* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "Dela betalningslänk";
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
@@ -4470,7 +4489,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the simple payments screen */
 "Take Payment" = "Ta emot betalning";
 
-/* Navigation bar title for the Simple Payments Methods screens. %1$@ is a placeholder for the total amount to collect
+/* Navigation bar title for the Payment Methods screens. %1$@ is a placeholder for the total amount to collect
    Text of the button that creates a simple payment order. %1$@ is a placeholder for the total amount to collect */
 "Take Payment (%1$@)" = "Ta emot betalning (%1$@)";
 
@@ -4730,6 +4749,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the payment can not be processed (i.e. order amount is below the minimum amount allowed.) */
 "The payment can not be processed by the payment processor." = "Betalningen kan inte behandlas av betalningsbehandlaren.";
 
+/* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. */
+"The payment method does not support automatic refunds. Complete the refund by transferring the money to the customer manually." = "Betalningsmetoden stöder inte automatiska återbetalningar. Slutför återbetalningen genom att överföra pengarna till kunden manuellt.";
+
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "Telefonnumret är inte giltigt eller så kan du inte ringa kunden från denna enhet.";
 
@@ -4865,7 +4887,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Notice text after failing to update the order successfully */
 "There was an error updating the order" = "Det gick inte att uppdatera beställningen";
 
-/* Text when there is an error while marking the order as paid for simple payments. */
+/* Text when there is an error while marking the order as paid for during payment. */
 "There was an error while marking the order as paid." = "Det gick inte att markera beställningen som betald.";
 
 /* Text when there is an unknown error while trying to collect payments */
@@ -4951,7 +4973,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message displayed when unable to close user account due to having active subscriptions. */
 "This user account cannot be closed while it has active subscriptions." = "Detta användarkonto kan inte avslutas eftersom det har aktiva abonnemang.";
 
-/* Alert info when selecting the cash payment method for simple payments */
+/* Alert info when selecting the cash payment method during payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "Detta kommer att markera din beställning som slutförd om du har mottagit (totalbelopp) utanför WooCommerce";
 
 /* Add Product Category. Placeholder of cell presenting the title of the category.
@@ -5466,7 +5488,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Displays the connected reader software version */
 "Version: %1$@" = "Version: %1$@";
 
-/* Action title in an in-app notification to view more details. */
+/* Action title in an in-app notification to view more details.
+   Title of the action to view product details from a notice about an image upload failure in the background. */
 "View" = "Visa";
 
 /* Cell title on the beta features screen to enable the order add-ons feature
@@ -5658,6 +5681,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Shipping Labels: info title about WooCommerce Services discount */
 "What is WooCommerce Services discount?" = "Vad innebär rabatt på WooCommerce-tjänster?";
 
+/* Button in the CTA View about what is the WCShip extension */
+"What is WooCommerce Shipping?" = "Vad är WooCommerce Shipping?";
+
 /* Navigates to screen containing the latest WooCommerce Features */
 "What's New in WooCommerce" = "Vad som är nytt i WooCommerce";
 
@@ -5732,9 +5758,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "Du kan redigera produkttillägg i webbadminpanelen.";
 
-/* The info of the top banner on the Products tab. */
-"You can now create and manage product variations!" = "Du kan nu skapa och hantera produktvariationer!";
-
 /* The info of the shipping labels top banner in order details */
 "You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "Du kan nu skapa fraktetiketter för alla fysiska beställningar direkt från din enhet med hjälp av gratistillägget WooCommerce Shipping. Tryck på Skapa fraktetikett för att prova vår betafunktion!";
 
@@ -5756,6 +5779,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The description on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
 "You currently have Coupons disabled for this store. Enable coupons to get started." = "Du har för närvarande rabattkoder inaktiverade för denna butik. Aktivera rabattkoder för att komma igång.";
+
+/* Title for the mocked order notification needed for the AppStore listing screenshot */
+"You have a new order! 🎉" = "Du har en ny beställning! 🎉";
 
 /* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
 "You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "Du har minst ett försenat krav i ditt konto. Ta hand om det för att återuppta personliga betalningar.";
@@ -5801,6 +5827,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Comment Attachment Label */
 "[COMMENT]" = "[COMMENT]";
+
+/* Navigates to page with details about What is WordPress.com. The underscores _..._ denote underline. */
+"_What is WordPress.com?_" = "_Vad är WordPress.com?_";
 
 /* Placeholder for the site url textfield.
    Site Address placeholder */

@@ -341,6 +341,11 @@ private extension OrderDetailsViewController {
         let viewController = OrderFormHostingController(viewModel: viewModel)
         let navController = UINavigationController(rootViewController: viewController)
         present(navController, animated: true)
+
+        let hasMultipleShippingLines = self.viewModel.order.shippingLines.count > 1
+        let hasMultipleFeeLines = self.viewModel.order.fees.count > 1
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderEditButtonTapped(hasMultipleShippingLines: hasMultipleShippingLines,
+                                                                                             hasMultipleFeeLines: hasMultipleFeeLines))
     }
 }
 

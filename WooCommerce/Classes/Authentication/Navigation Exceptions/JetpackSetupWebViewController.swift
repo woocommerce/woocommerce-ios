@@ -65,7 +65,7 @@ extension JetpackSetupWebViewController: WKNavigationDelegate {
 
 private extension JetpackSetupWebViewController {
     enum Constants {
-        static let jetpackInstallString = "https://wordpress.com/jetpack/connect?url=%@&mobie-redirect=%@from=mobile"
+        static let jetpackInstallString = "https://wordpress.com/jetpack/connect?url=%@&mobile_redirect=%@&from=mobile"
         static let mobileRedirectURL = "woocommerce://jetpack-connected"
     }
 }

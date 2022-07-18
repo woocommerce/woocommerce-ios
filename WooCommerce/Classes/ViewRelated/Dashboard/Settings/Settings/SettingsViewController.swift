@@ -121,6 +121,8 @@ private extension SettingsViewController {
             configureSwitchStore(cell: cell)
         case let cell as BasicTableViewCell where row == .plugins:
             configurePlugins(cell: cell)
+        case let cell as FeatureAnnouncementCardTableViewCell where row == .upsellCardReadersFeatureAnnouncement:
+            configureUpsellCardReadersFeatureAnnouncement(cell: cell)
         case let cell as BasicTableViewCell where row == .inPersonPayments:
             configureInPersonPayments(cell: cell)
         case let cell as BasicTableViewCell where row == .installJetpack:
@@ -170,6 +172,10 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = Localization.helpAndSupport
+    }
+
+    func configureUpsellCardReadersFeatureAnnouncement(cell: FeatureAnnouncementCardTableViewCell) {
+
     }
 
     func configureInPersonPayments(cell: BasicTableViewCell) {
@@ -587,6 +593,7 @@ extension SettingsViewController {
         case plugins
 
         // Store settings
+        case upsellCardReadersFeatureAnnouncement
         case inPersonPayments
         case installJetpack
 
@@ -623,6 +630,8 @@ extension SettingsViewController {
                 return BasicTableViewCell.self
             case .support:
                 return BasicTableViewCell.self
+            case .upsellCardReadersFeatureAnnouncement:
+                return FeatureAnnouncementCardTableViewCell.self
             case .inPersonPayments:
                 return BasicTableViewCell.self
             case .installJetpack:

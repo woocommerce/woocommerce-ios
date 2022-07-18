@@ -213,7 +213,8 @@ private extension SettingsViewModel {
 
         // Store settings
         let storeSettingsSection: Section = {
-            var rows: [Row] = [.inPersonPayments]
+            // check if feature announcement should be shown
+            var rows: [Row] = [.upsellCardReadersFeatureAnnouncement, .inPersonPayments]
             if stores.sessionManager.defaultSite?.isJetpackCPConnected == true,
                 featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport) {
                 rows.append(.installJetpack)

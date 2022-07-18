@@ -28,7 +28,14 @@ final class OrderDetailsDataSource: NSObject {
     /// All product orders require processing, except those that only contain products which are both Virtual and Downloadable.
     ///
     private var needsProcessing: Bool {
-        order.needsProcessing
+        if order.needsProcessing {
+            return true
+        } else {
+            let orderContainsOnlyVirtualAndDownloadableProducts = self.products.filter { (product) -> Bool in
+                return items.first(where: { $0.productID == product.productID}) != nil
+            }.allSatisfy { $0.virtual == true && $0.downloadable == true }
+            return !orderContainsOnlyVirtualAndDownloadableProducts
+        }
     }
 
     /// Is this order fully refunded?

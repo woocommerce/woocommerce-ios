@@ -136,7 +136,7 @@ public final class NewOrderScreen: ScreenObject {
     /// - Returns: New Order screen object.
     @discardableResult
     public func editOrderStatus() throws -> NewOrderScreen {
-      return try openOrderStatusScreen()
+       return try openOrderStatusScreen()
             .selectOrderStatus(atIndex: 1)
     }
 

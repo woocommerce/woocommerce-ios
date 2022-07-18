@@ -1,5 +1,6 @@
 import Foundation
 import Storage
+import Networking
 
 struct i18n {
     struct DefaultAccount {
@@ -16,8 +17,7 @@ struct i18n {
 }
 
 struct ScreenshotObjectGraph: MockObjectGraph {
-
-     let userCredentials = Credentials(
+    let userCredentials = Credentials(
         username: i18n.DefaultAccount.username,
         authToken: UUID().uuidString,
         siteAddress: i18n.DefaultSite.url
@@ -102,7 +102,7 @@ struct ScreenshotObjectGraph: MockObjectGraph {
             number: 2201,
             customer: Customers.MiraWorkman,
             status: .processing,
-            total: 50.00,
+            total: 950.00,
             items: [
                 createOrderItem(from: Products.malayaShades, count: 4),
                 createOrderItem(from: Products.blackCoralShades, count: 5),
@@ -317,13 +317,13 @@ extension ScreenshotObjectGraph {
 
         static let blackCoralShades = createProduct(
             name: "Black Coral Shades",
-            price: 150.00,
-            quantity: -24
+            price: 110.00,
+            quantity: 24
         )
 
         static let malayaShades = createProduct(
             name: "Malaya Shades",
-            price: 140.00,
+            price: 100.00,
             quantity: 17
         )
 
@@ -331,7 +331,7 @@ extension ScreenshotObjectGraph {
             name: "Colorado shades",
             price: 135,
             salePrice: 100,
-            quantity: 98
+            quantity: -8
         )
 
         static let akoyaPearlShades = createProduct(

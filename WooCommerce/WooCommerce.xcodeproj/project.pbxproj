@@ -1063,6 +1063,7 @@
 		80C362732779A7EF005CEAD3 /* products_reviews_all.json in Resources */ = {isa = PBXBuildFile; fileRef = 80C362722779A7EF005CEAD3 /* products_reviews_all.json */; };
 		80E6FC6D276312D50086CD67 /* products.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00C923E9BD5500157A78 /* products.json */; };
 		80E6FC79276C3FD60086CD67 /* MockDataReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80E6FC742763579D0086CD67 /* MockDataReader.swift */; };
+		80FEE3EA287E6197004BF7BD /* MockLoginFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80FEE3E9287E6197004BF7BD /* MockLoginFlow.swift */; };
 		86DBBB0BDEA3488E2BEBB314 /* Pods_WooCommerce.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */; };
 		8CD41D4A21F8A7E300CF3C2B /* RELEASE-NOTES.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8CD41D4921F8A7E300CF3C2B /* RELEASE-NOTES.txt */; };
 		933A27372222354600C2143A /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A27362222354600C2143A /* Logging.swift */; };
@@ -2841,6 +2842,7 @@
 		80C362722779A7EF005CEAD3 /* products_reviews_all.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = products_reviews_all.json; sourceTree = "<group>"; };
 		80E6FC6E276325F60086CD67 /* Clibsodium.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Clibsodium.xcframework; path = ../Pods/Sodium/Clibsodium.xcframework; sourceTree = "<group>"; };
 		80E6FC742763579D0086CD67 /* MockDataReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataReader.swift; sourceTree = "<group>"; };
+		80FEE3E9287E6197004BF7BD /* MockLoginFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockLoginFlow.swift; sourceTree = "<group>"; };
 		8A659E65308A3D9DD79A95F9 /* Pods-WooCommerceTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.release.xcconfig"; sourceTree = "<group>"; };
 		8CA4F6DD220B257000A47B5D /* WooCommerce.debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = WooCommerce.debug.xcconfig; path = ../config/WooCommerce.debug.xcconfig; sourceTree = "<group>"; };
 		8CA4F6DE220B257000A47B5D /* WooCommerce.release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = WooCommerce.release.xcconfig; path = ../config/WooCommerce.release.xcconfig; sourceTree = "<group>"; };
@@ -6112,6 +6114,7 @@
 			children = (
 				80E6FC742763579D0086CD67 /* MockDataReader.swift */,
 				800A5B9D275623FC009DE2CD /* LoginFlow.swift */,
+				80FEE3E9287E6197004BF7BD /* MockLoginFlow.swift */,
 			);
 			path = Flows;
 			sourceTree = "<group>";
@@ -10356,6 +10359,7 @@
 				80C3626F277453E8005CEAD3 /* ReviewsTests.swift in Sources */,
 				80E6FC79276C3FD60086CD67 /* MockDataReader.swift in Sources */,
 				CCDC49CD23FFFFF4003166BA /* LoginTests.swift in Sources */,
+				80FEE3EA287E6197004BF7BD /* MockLoginFlow.swift in Sources */,
 				800A5B58275483D6009DE2CD /* OrdersTests.swift in Sources */,
 				80AD2CA427858BAB00A63DE8 /* StatsTests.swift in Sources */,
 				800A5BCB2759CE4B009DE2CD /* ProductsTests.swift in Sources */,
@@ -10508,7 +10512,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = ALPHA;
@@ -10756,7 +10760,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
@@ -10818,7 +10822,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;

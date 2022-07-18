@@ -3,14 +3,20 @@ import XCTest
 
 final class OrdersTests: XCTestCase {
 
+    let newServer = mockServer()
     override func setUpWithError() throws {
+
         continueAfterFailure = false
+        try newServer.startWebServer()
 
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
-        app.launchArguments = ["logout-at-launch", "disable-animations", "mocked-wpcom-api", "-ui_testing"]
+        app.launchArguments = ["disable-animations", "mocked-network-layer", "-ui_testing", "-mocks-port", "\(newServer.server.listenAddress.port)"]
         app.launch()
-        try LoginFlow.logInWithWPcom()
+    }
+
+    override func tearDown() {
+        newServer.stopWebServer()
     }
 
     func test_load_orders_screen() throws {
@@ -32,8 +38,8 @@ final class OrdersTests: XCTestCase {
         try TabNavComponent().goToOrdersScreen()
             .startOrderCreation()
             .editOrderStatus()
-            .addProduct(byName: products[0].name)
-            .addCustomerDetails(name: order.billing.first_name)
+            .addProduct(byName: "Black Coral Shades")
+            .addCustomerDetails(name: "order.billing.first_name")
             .addShipping(amount: order.shipping_lines[0].total, name: order.shipping_lines[0].method_title)
             .addFee(amount: order.fee_lines[0].amount)
             .addCustomerNote(order.customer_note)

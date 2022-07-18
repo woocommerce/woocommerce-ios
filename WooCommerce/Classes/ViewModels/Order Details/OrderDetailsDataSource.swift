@@ -585,6 +585,7 @@ private extension OrderDetailsDataSource {
     private func configurePayment(cell: LedgerTableViewCell) {
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
         cell.configure(with: paymentViewModel)
+        cell.accessibilityIdentifier = "order-details-payments"
     }
 
     private func configureCustomerPaid(cell: TwoColumnHeadlineFootnoteTableViewCell) {

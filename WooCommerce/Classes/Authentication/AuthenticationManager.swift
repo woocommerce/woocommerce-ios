@@ -276,7 +276,6 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                     // tries re-syncing to get an updated store list
                     // then attempts to present epilogue again
                     ServiceLocator.stores.synchronizeEntities {
-                        navigationController.popViewController(animated: false)
                         self?.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: onDismiss)
                     }
                 }

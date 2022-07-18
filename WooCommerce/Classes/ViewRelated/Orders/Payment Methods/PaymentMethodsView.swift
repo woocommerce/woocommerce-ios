@@ -67,8 +67,10 @@ struct PaymentMethodsView: View {
                     .background(Color(.listForeground))
 
                     if viewModel.showUpsellCardReaderFeatureBanner {
-                        FeatureAnnouncementCardView(viewModel: viewModel.cardUpsellAnnouncementViewModel,
-                                                    dismiss: nil,
+                        FeatureAnnouncementCardView(viewModel: viewModel.upsellCardReadersAnnouncementViewModel,
+                                                    dismiss: {
+                            viewModel.refreshUpsellCardReaderFeatureBannerVisibility()
+                        },
                                                     callToAction: {
                             showingPurchaseCardReaderView = true
                         })

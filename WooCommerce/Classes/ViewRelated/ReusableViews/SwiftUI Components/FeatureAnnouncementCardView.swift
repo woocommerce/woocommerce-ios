@@ -24,7 +24,7 @@ struct FeatureAnnouncementCardView: View {
                 Spacer()
                 if let dismiss = dismiss {
                     Button(action: {
-                        viewModel.dismissedTapped()
+                        viewModel.dismissTapped()
                         dismiss()
                     }) {
                         Image(systemName: "xmark")

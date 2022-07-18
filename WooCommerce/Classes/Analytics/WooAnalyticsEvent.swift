@@ -543,33 +543,32 @@ extension WooAnalyticsEvent {
 
         /// Campaigns run using the Feature Card
         ///
-        enum Campaign: String {
-            fileprivate static let key = "campaign"
-
-            case upsellCardReaders = "upsell_card_readers"
+        private enum Keys {
+            static let campaign = "campaign"
+            static let source = "source"
         }
 
-        static func shown(source: Source, campaign: Campaign) -> WooAnalyticsEvent {
+        static func shown(source: Source, campaign: FeatureAnnouncementCampaign) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .featureCardShown,
                               properties: [
-                                Source.key: source.rawValue,
-                                Campaign.key: campaign.rawValue
+                                Keys.source: source.rawValue,
+                                Keys.campaign: campaign.rawValue
                               ])
         }
 
-        static func dismissed(source: Source, campaign: Campaign) -> WooAnalyticsEvent {
+        static func dismissed(source: Source, campaign: FeatureAnnouncementCampaign) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .featureCardDismissed,
                               properties: [
-                                Source.key: source.rawValue,
-                                Campaign.key: campaign.rawValue
+                                Keys.source: source.rawValue,
+                                Keys.campaign: campaign.rawValue
                               ])
         }
 
-        static func ctaTapped(source: Source, campaign: Campaign) -> WooAnalyticsEvent {
+        static func ctaTapped(source: Source, campaign: FeatureAnnouncementCampaign) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .featureCardCtaTapped,
                               properties: [
-                                Source.key: source.rawValue,
-                                Campaign.key: campaign.rawValue
+                                Keys.source: source.rawValue,
+                                Keys.campaign: campaign.rawValue
                               ])
         }
     }

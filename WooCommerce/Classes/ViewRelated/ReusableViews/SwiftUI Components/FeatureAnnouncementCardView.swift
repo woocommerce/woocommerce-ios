@@ -35,11 +35,11 @@ struct FeatureAnnouncementCardView: View {
                            content: {
                         Alert(title: Text(viewModel.dismissAlertTitle),
                               message: Text(viewModel.dismissAlertMessage),
-                              primaryButton: .cancel(Text("Remind me later"), action: {
+                              primaryButton: .cancel(Text(Localization.remindLaterButton), action: {
                             viewModel.remindLaterTapped()
                             dismiss()
                         }),
-                              secondaryButton: .default(Text("Don't show again"), action: {
+                              secondaryButton: .default(Text(Localization.dontShowAgainButton), action: {
                             viewModel.dontShowAgainTapped()
                             dismiss()
                         }))

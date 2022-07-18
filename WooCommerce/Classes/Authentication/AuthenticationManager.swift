@@ -264,25 +264,26 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return
         }
 
-        /// Jetpack is required. Present an error if we don't detect a valid installation for a self-hosted site.
-        if let site = currentSelfHostedSite,
-            site.url == wpcomLogin.siteURL, !site.hasValidJetpack {
-            let viewModel = JetpackErrorViewModel(siteURL: wpcomLogin.siteURL) { [weak self] in
-                // tries re-syncing to get an updated store list
-                // then attempts to present epilogue again
-                ServiceLocator.stores.synchronizeEntities { [weak self] in
-                    navigationController.popViewController(animated: true)
-                    self?.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: onDismiss)
-                }
-            }
-            let installJetpackUI = ULErrorViewController(viewModel: viewModel)
-            return navigationController.show(installJetpackUI, sender: nil)
-        }
-
         let matcher = ULAccountMatcher()
         matcher.refreshStoredSites()
 
         guard matcher.match(originalURL: wpcomLogin.siteURL) else {
+
+            /// Jetpack is required. Present an error if we don't detect a valid installation for a self-hosted site.
+            if let site = currentSelfHostedSite,
+                site.url == wpcomLogin.siteURL, !site.hasValidJetpack {
+                let viewModel = JetpackErrorViewModel(siteURL: wpcomLogin.siteURL) { [weak self] in
+                    // tries re-syncing to get an updated store list
+                    // then attempts to present epilogue again
+                    ServiceLocator.stores.synchronizeEntities {
+                        navigationController.popViewController(animated: false)
+                        self?.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: onDismiss)
+                    }
+                }
+                let installJetpackUI = ULErrorViewController(viewModel: viewModel)
+                return navigationController.show(installJetpackUI, sender: nil)
+            }
+
             DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: credentials.wpcom?.siteURL))")
             let viewModel = WrongAccountErrorViewModel(siteURL: credentials.wpcom?.siteURL)
             let mismatchAccountUI = ULAccountMismatchViewController(viewModel: viewModel)

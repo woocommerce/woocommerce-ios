@@ -86,7 +86,6 @@ private extension JetpackSetupWebViewController {
                 } else {
                     self?.progressBar.setProgress(Float(progress), animated: true)
                 }
-                
             }
         let request = URLRequest(url: url)
         webView.load(request)

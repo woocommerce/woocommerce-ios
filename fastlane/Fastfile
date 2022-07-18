@@ -1054,6 +1054,8 @@ lane :test_without_building do |options|
     result_bundle: true,
     # settins for XML test report generation via `trainer`
     output_types: '',
+    # DEBUG: get full xcodebuild logs to see why we have no UI tests analytics
+    output_style: 'raw',
     fail_build: false
   )
 

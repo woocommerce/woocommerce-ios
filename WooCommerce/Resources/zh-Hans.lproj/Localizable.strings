@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-06-30 09:54:08+0000 */
+/* Translation-Revision-Date: 2022-07-11 11:10:08+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -243,9 +243,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "A product with variations like color or size" = "包含颜色或尺寸等参数的变体";
-
-/* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"A refund will not be issued to the customer. You will need to manually issue the refund through %1$@." = "退款将不会发放给客户。 您需要通过 %1$@ 手动退款。";
 
 /* Message explaining that the site may have an invalid SSL certificate. */
 "A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate." = "无法建立到该站点的安全连接。 请确保您的站点具有有效的 SSL 证书。";
@@ -852,6 +849,7 @@ which should be translated separately and considered part of this sentence. */
    The title for a button that dismisses the crash debug menu
    The title of the button to cancel issuing a refund.
    Title for canceling the edit attribute action sheet.
+   Title for the button to cancel the payment methods screen
    Title for the button to cancel the simple payments screen */
 "Cancel" = "取消";
 
@@ -882,7 +880,7 @@ which should be translated separately and considered part of this sentence. */
    Detailed message shown on the Product Reviews screen if the list is empty */
 "Capture high-quality product reviews for your store." = "为您的店铺获取高质量的产品评论。";
 
-/* Card method title on the select payment method screen for simple payments */
+/* Card method title on the select payment method screen */
 "Card" = "卡片";
 
 /* Title for the section related to card readers inside In-Person Payments settings */
@@ -900,7 +898,7 @@ which should be translated separately and considered part of this sentence. */
 /* Add Custom shipping carrier. Title of cell presenting the carrier name */
 "Carrier name" = "承运商名称";
 
-/* Cash method title on the select payment method screen for simple payments */
+/* Cash method title on the select payment method screen */
 "Cash" = "现金";
 
 /* Catalog Visibility label in Product Settings
@@ -964,7 +962,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the screen to select the preferred provider for In-Person Payments */
 "Choose your Payment Provider" = "选择您的付款提供商";
 
-/* Heading text on the select payment method screen for simple payments */
+/* Heading text on the select payment method screen */
 "Choose your payment method" = "选择付款方式";
 
 /* Text field city in Edit Address Form
@@ -2227,9 +2225,6 @@ which should be translated separately and considered part of this sentence. */
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "进行站点管理时，您可以在 Jetpack 控制面板中找到用于连接 WordPress.com 的电子邮件，具体位于“连接”>“帐户连接”下";
 
-/* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} Parameters: %1$@ - order number, %2$@ - store name */
-"In-Person Payment for Order #%1$@ for %2$@" = "对 %2$@ 的订单 #%1$@ 面对面付款";
-
 /* Navigates to In-Person Payments screen
    Title for the In-Person Payments settings screen */
 "In-Person Payments" = "现场付款";
@@ -2639,9 +2634,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "手动选择偏差";
 
-/* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "通过 %1$@ 手动退款";
-
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "已映射的域";
 
@@ -2658,10 +2650,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Option to mark all reviews as read from the action sheet in Reviews screen. */
 "Mark all reviews as read" = "将评论全部标为已读";
 
-/* Alert button when selecting the cash payment method for simple payments */
+/* Alert button when selecting the cash payment method */
 "Mark as Paid" = "标记为已付款";
 
-/* Alert title when selecting the cash payment method for simple payments */
+/* Alert title when selecting the cash payment method */
 "Mark as Paid?" = "是否标记为已付款？";
 
 /* Create Shipping Label form -> Mark order as complete label */
@@ -2794,6 +2786,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for table view section of network active plugins */
 "Network Active Plugins" = "网络活动插件";
 
+/* Title of the new badge shown when advertising a new feature */
+"New" = "新";
+
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "新属性名称";
 
@@ -2906,6 +2901,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "None" = "无";
 
 /* Action title to dismiss enabling Analytics for a store
+   Button in the CTA View for installing WCShip extension for dismissing the view
    Title of dismiss action in the Jetpack benefits view. */
 "Not now" = "现在不行";
 
@@ -3414,6 +3410,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation bar title of shipping label printing instructions screen */
 "Print from your mobile device" = "从您的移动设备打印";
+
+/* Title of one of the elements in the CTA View for installing WCShip extension */
+"Print from your phone" = "通过手机打印";
 
 /* Body of the banner in the Order Detail for suggesting to install WCShip extension. */
 "Print labels from your phone, with WooCommerce Shipping." = "通过 WooCommerce Shipping 从手机打印标签。";
@@ -4064,8 +4063,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to share coupon from the Coupon Creation Success screen. */
 "Share Coupon" = "共享优惠券";
 
-/* Payment Link method title on the select payment method screen for simple payments
-   Title to share an order payment link. */
+/* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "分享付款链接";
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
@@ -4470,7 +4468,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the simple payments screen */
 "Take Payment" = "收款";
 
-/* Navigation bar title for the Simple Payments Methods screens. %1$@ is a placeholder for the total amount to collect
+/* Navigation bar title for the Payment Methods screens. %1$@ is a placeholder for the total amount to collect
    Text of the button that creates a simple payment order. %1$@ is a placeholder for the total amount to collect */
 "Take Payment (%1$@)" = "收款 (%1$@)";
 
@@ -4865,7 +4863,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Notice text after failing to update the order successfully */
 "There was an error updating the order" = "更新订单时出错";
 
-/* Text when there is an error while marking the order as paid for simple payments. */
+/* Text when there is an error while marking the order as paid for during payment. */
 "There was an error while marking the order as paid." = "将订单标记为已付款时出错。";
 
 /* Text when there is an unknown error while trying to collect payments */
@@ -4951,7 +4949,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message displayed when unable to close user account due to having active subscriptions. */
 "This user account cannot be closed while it has active subscriptions." = "这个用户账户在有活动订阅时不能被关闭。";
 
-/* Alert info when selecting the cash payment method for simple payments */
+/* Alert info when selecting the cash payment method during payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "如果您在 WooCommerce 之外收到（全部）订单，那么系统会将订单标记为完成";
 
 /* Add Product Category. Placeholder of cell presenting the title of the category.
@@ -5466,7 +5464,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Displays the connected reader software version */
 "Version: %1$@" = "版本：%1$@";
 
-/* Action title in an in-app notification to view more details. */
+/* Action title in an in-app notification to view more details.
+   Title of the action to view product details from a notice about an image upload failure in the background. */
 "View" = "视图";
 
 /* Cell title on the beta features screen to enable the order add-ons feature
@@ -5731,9 +5730,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "您可以在 Web 仪表盘中编辑产品加载项。";
-
-/* The info of the top banner on the Products tab. */
-"You can now create and manage product variations!" = "您现在可以创建和管理产品变体！";
 
 /* The info of the shipping labels top banner in order details */
 "You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "现在，您可以利用免费的 WooCommerce Shipping 插件，直接通过您的设备为所有实体订单创建配送标签。 轻按“创建配送标签”试用我们的 Beta 版功能！";

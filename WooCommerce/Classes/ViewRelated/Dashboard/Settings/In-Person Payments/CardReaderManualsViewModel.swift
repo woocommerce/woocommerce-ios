@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 import Yosemite
 
-struct Manual: Identifiable {
+struct Manual: Identifiable, Equatable {
     let id: Int
     let image: UIImage
     let name: String
@@ -10,9 +10,13 @@ struct Manual: Identifiable {
 }
 
 final class CardReaderManualsViewModel {
+    var configurationLoader: CardPresentConfigurationLoader
     let manuals: [Manual]
 
-    init(cardReaders: [CardReaderType] = [.chipper, .stripeM2, .wisepad3]) {
-        self.manuals = cardReaders.map { $0.manual }
+    init() {
+        // Initialize the View Model only with the supported readers for a specific Store
+        self.configurationLoader = CardPresentConfigurationLoader()
+        let supportedReaders = configurationLoader.configuration.supportedReaders
+        self.manuals = supportedReaders.map { $0.manual }
     }
 }

@@ -93,4 +93,8 @@ public enum FeatureFlag: Int {
     /// Showing a "New to WooCommerce" link in the login prologue screen
     ///
     case newToWooCommerceLinkInLoginPrologue
+
+    /// Enable the Order Custom Fields button in Order Details
+    ///
+    case orderCustomFields
 }

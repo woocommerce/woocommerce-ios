@@ -1,13 +1,17 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
 9.7
+----
+- [*] In-Person Payments: Card Reader Manuals now appear based on country availability, consolidated into an unique view [https://github.com/woocommerce/woocommerce-ios/pull/7178]
 -----
 - [*] In-Person Payments: The purchase card reader information card can be dismissed [https://github.com/woocommerce/woocommerce-ios/pull/7260]
+- [*] Refund lines in the Order details screen now appear ordered from oldest to newest [https://github.com/woocommerce/woocommerce-ios/pull/7287]
 
 9.6
 -----
 - [***] Coupons: Coupons can now be created from within the app. [https://github.com/woocommerce/woocommerce-ios/pull/7239]
 - [**] Order Details: All unpaid orders have a Collect Payment button, which shows a payment method selection screen. Choices are Cash, Card, and Payment Link. [https://github.com/woocommerce/woocommerce-ios/pull/7111]
+- [**] In-Person Payments: Support for selecting preferred payment gateway when multiple extensions are installed on the store. [https://github.com/woocommerce/woocommerce-ios/pull/7153]
 - [*] Coupons: Removed the redundant animation when reloading the coupon list. [https://github.com/woocommerce/woocommerce-ios/pull/7137]
 - [*] Login: Display "What is WordPress.com?" link in "Continue With WordPress.com" flow. [https://github.com/woocommerce/woocommerce-ios/pull/7213]
 - [*] Login: Display the Jetpack requirement error after login is successful.

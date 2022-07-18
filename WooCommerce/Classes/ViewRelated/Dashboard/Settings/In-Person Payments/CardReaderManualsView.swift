@@ -15,11 +15,13 @@ struct CardReaderManualsView: View {
                 ForEach(manuals, id: \.name) { manual in
                     Divider()
                     CardReaderManualRowView(manual: manual)
+                        .background(Color(UIColor.listForeground))
                 }
                 Divider()
             }
         }
         .navigationBarTitle(Localization.navigationTitle, displayMode: .inline)
+        .background(Color(UIColor.listBackground))
     }
 }
 

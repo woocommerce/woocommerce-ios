@@ -39,6 +39,7 @@ struct NavigationRow<Content: View>: View {
             .padding()
             .padding(.horizontal, insets: safeAreaInsets)
             .frame(minHeight: Layout.minHeight)
+            .contentShape(Rectangle())
         }
         .disabled(!selectable)
     }

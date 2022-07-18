@@ -43,12 +43,18 @@ final class JetpackSetupWebViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureNavigationBar()
         configureWebView()
         configureProgressBar()
     }
 }
 
 private extension JetpackSetupWebViewController {
+    func configureNavigationBar() {
+        title = Localization.title
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancel, style: .plain, target: self, action: #selector(dismissView))
+    }
+
     func configureWebView() {
         view.addSubview(webView)
         view.pinSubviewToSafeArea(webView)
@@ -75,6 +81,11 @@ private extension JetpackSetupWebViewController {
             view.topAnchor.constraint(equalTo: progressBar.topAnchor)
         ])
     }
+
+    @objc func dismissView() {
+        // TODO: analytics
+        dismiss(animated: true)
+    }
 }
 
 extension JetpackSetupWebViewController: WKNavigationDelegate {
@@ -94,5 +105,10 @@ private extension JetpackSetupWebViewController {
     enum Constants {
         static let jetpackInstallString = "https://wordpress.com/jetpack/connect?url=%@&mobile_redirect=%@&from=mobile"
         static let mobileRedirectURL = "wordpress://jetpack-connection"
+    }
+
+    enum Localization {
+        static let title = NSLocalizedString("Setup Jetpack", comment: "Title of the Setup Jetpack screen")
+        static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss the Setup Jetpack screen")
     }
 }

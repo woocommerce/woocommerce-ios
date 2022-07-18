@@ -56,7 +56,8 @@ struct JetpackErrorViewModel: ULErrorViewModel {
             viewController?.dismiss(animated: true)
             self.jetpackSetupCompletionHandler()
         }
-        viewController.present(connectionController, animated: true, completion: nil)
+        let navigationController = UINavigationController(rootViewController: connectionController)
+        viewController.present(navigationController, animated: true, completion: nil)
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {

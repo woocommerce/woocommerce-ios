@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 import WebKit
 
@@ -19,6 +20,17 @@ final class JetpackSetupWebViewController: UIViewController {
         return webView
     }()
 
+    /// Progress bar for the web view
+    private lazy var progressBar: UIProgressView = {
+        let bar = UIProgressView(progressViewStyle: .bar)
+        bar.tintColor = .brand
+        bar.translatesAutoresizingMaskIntoConstraints = false
+        return bar
+    }()
+
+    /// Strong reference for the subscription to update progress bar
+    private var progressSubscription: AnyCancellable?
+
     init(siteURL: String, onCompletion: @escaping () -> Void) {
         self.siteURL = siteURL
         self.completionHandler = onCompletion
@@ -32,6 +44,7 @@ final class JetpackSetupWebViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureWebView()
+        configureProgressBar()
     }
 }
 
@@ -47,6 +60,20 @@ private extension JetpackSetupWebViewController {
 
         let request = URLRequest(url: url)
         webView.load(request)
+        progressSubscription = webView.publisher(for: \.estimatedProgress)
+            .sink { [weak self] progress in
+                self?.progressBar.isHidden = progress == 1 // hides the progress bar when done loading
+                self?.progressBar.setProgress(Float(progress), animated: false)
+            }
+    }
+
+    func configureProgressBar() {
+        view.addSubview(progressBar)
+        NSLayoutConstraint.activate([
+            view.leadingAnchor.constraint(equalTo: progressBar.leadingAnchor),
+            view.trailingAnchor.constraint(equalTo: progressBar.trailingAnchor),
+            view.topAnchor.constraint(equalTo: progressBar.topAnchor)
+        ])
     }
 }
 
@@ -66,6 +93,6 @@ extension JetpackSetupWebViewController: WKNavigationDelegate {
 private extension JetpackSetupWebViewController {
     enum Constants {
         static let jetpackInstallString = "https://wordpress.com/jetpack/connect?url=%@&mobile_redirect=%@&from=mobile"
-        static let mobileRedirectURL = "woocommerce://jetpack-connected"
+        static let mobileRedirectURL = "wordpress://jetpack-connection"
     }
 }

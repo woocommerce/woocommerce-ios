@@ -21,7 +21,10 @@ final class FeatureAnnouncementCardViewModelTests: XCTestCase {
             title: "Buy a reader",
             message: "With a card reader, you can accept card payments",
             buttonTitle: "Buy now",
-            image: .paymentsFeatureBannerImage)
+            image: .paymentsFeatureBannerImage,
+            dismissAlertTitle: "Dismiss alert",
+            dismissAlertMessage: "Press here to dismiss alert"
+        )
 
         sut = FeatureAnnouncementCardViewModel(
             analytics: analytics,
@@ -47,21 +50,24 @@ final class FeatureAnnouncementCardViewModelTests: XCTestCase {
         verifyUpsellCardProperties(expectedSource: expectedSource, expectedCampaign: expectedCampaign)
     }
 
-    func test_dismissTapped_logs_dismissed_analytics_event() {
+    func test_dontShowAgainTapped_logs_dismissed_analytics_event() {
         // Given
 
         // When
-        sut.dismissTapped()
+        sut.dontShowAgainTapped()
 
         // Then
-        let expectedSource = FeatureCardEvent.Source.paymentMethods
-        let expectedCampaign = FeatureAnnouncementCampaign.upsellCardReaders
-        let expectedEvent = WooAnalyticsEvent.FeatureCard.dismissed(source: expectedSource, campaign: expectedCampaign)
+        assertLogsDismissedAnalyticsEvent()
+    }
 
-        XCTAssert(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent.statName.rawValue
-        }))
+    func test_remindLaterTapped_logs_dismissed_analytics_event() {
+        // Given
 
-        verifyUpsellCardProperties(expectedSource: expectedSource, expectedCampaign: expectedCampaign)
+        // When
+        sut.remindLaterTapped()
+
+        // Then
+        assertLogsDismissedAnalyticsEvent()
     }
 
     func test_ctaTapped_logs_analytics_event() {
@@ -74,6 +80,17 @@ final class FeatureAnnouncementCardViewModelTests: XCTestCase {
         let expectedSource = FeatureCardEvent.Source.paymentMethods
         let expectedCampaign = FeatureAnnouncementCampaign.upsellCardReaders
         let expectedEvent = WooAnalyticsEvent.FeatureCard.ctaTapped(source: expectedSource, campaign: expectedCampaign)
+
+        XCTAssert(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent.statName.rawValue
+        }))
+
+        verifyUpsellCardProperties(expectedSource: expectedSource, expectedCampaign: expectedCampaign)
+    }
+
+    private func assertLogsDismissedAnalyticsEvent() {
+        let expectedSource = FeatureCardEvent.Source.paymentMethods
+        let expectedCampaign = FeatureAnnouncementCampaign.upsellCardReaders
+        let expectedEvent = WooAnalyticsEvent.FeatureCard.dismissed(source: expectedSource, campaign: expectedCampaign, remindLater: true)
 
         XCTAssert(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent.statName.rawValue
         }))

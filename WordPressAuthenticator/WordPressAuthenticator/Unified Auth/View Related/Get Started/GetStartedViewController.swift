@@ -256,6 +256,7 @@ private extension GetStartedViewController {
 
     // MARK: - Sign in with site credentials Button Action
     @objc func handleSiteCredentialsButtonTapped() {
+        goToSiteCredentialsScreen()
     }
 
     // MARK: - What is WordPress.com Button Action
@@ -659,6 +660,20 @@ private extension GetStartedViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
 
+    /// Navigates to site credentials screen where .org site credentials can be entered
+    ///
+    func goToSiteCredentialsScreen() {
+        guard let vc = SiteCredentialsViewController.instantiate(from: .siteAddress) else {
+            DDLogError("Failed to navigate from GetStartedViewController to SiteCredentialsViewController")
+            return
+        }
+
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
+    }
 }
 
 // MARK: - Social Button Management

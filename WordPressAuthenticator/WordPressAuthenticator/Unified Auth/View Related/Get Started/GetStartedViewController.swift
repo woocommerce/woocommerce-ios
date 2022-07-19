@@ -757,5 +757,10 @@ private extension GetStartedViewController {
             static let title = WordPressAuthenticator.shared.displayStrings.continueButtonTitle
             static let accessibilityIdentifier = "Get Started Email Continue Button"
         }
+
+        enum SignInWithSiteCredentials {
+            static let title =  WordPressAuthenticator.shared.displayStrings.signInWithSiteCredentialsButtonTitle
+            static let accessibilityIdentifier = "Sign in with site credentials Button"
+        }
     }
 }

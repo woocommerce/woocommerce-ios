@@ -101,8 +101,23 @@ private extension AppCoordinator {
         setWindowRootViewControllerAndAnimateIfNeeded(authenticationUI) { [weak self] _ in
             guard let self = self else { return }
             self.tabBarController.removeViewControllers()
+
+            self.presentLoginOnboarding()
         }
         ServiceLocator.analytics.track(.openedLogin)
+    }
+
+    /// Presents onboarding on top of the authentication UI under certain criteria.
+    func presentLoginOnboarding() {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginPrologueOnboarding) else {
+            return
+        }
+        let onboardingViewController = LoginOnboardingViewController { [weak self] in
+            self?.window.rootViewController?.dismiss(animated: true)
+        }
+        onboardingViewController.modalPresentationStyle = .fullScreen
+        onboardingViewController.modalTransitionStyle = .crossDissolve
+        window.rootViewController?.present(onboardingViewController, animated: false)
     }
 
     /// Displays logged in tab bar UI.
@@ -190,12 +205,19 @@ private extension AppCoordinator {
 }
 
 private extension AppCoordinator {
+    /// Sets the app window's root view controller, with animation only if the root view controller is previously non-nil.
+    /// - Parameters:
+    ///   - rootViewController: view controller to be set as the window's root view controller.
+    ///   - onCompletion: called after the root view controller is set after animation if needed.
+    ///                   The boolean value indicates whether or not the animations actually finished before the completion handler was called.
     func setWindowRootViewControllerAndAnimateIfNeeded(_ rootViewController: UIViewController, onCompletion: @escaping (Bool) -> Void = { _ in }) {
         // Animates window transition only if the root view controller is non-nil originally.
         let shouldAnimate = window.rootViewController != nil
         window.rootViewController = rootViewController
         if shouldAnimate {
             UIView.transition(with: window, duration: Constants.animationDuration, options: .transitionCrossDissolve, animations: {}, completion: onCompletion)
+        } else {
+            onCompletion(false)
         }
     }
 }

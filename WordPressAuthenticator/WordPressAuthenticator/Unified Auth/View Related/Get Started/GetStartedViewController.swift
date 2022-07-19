@@ -34,6 +34,8 @@ class GetStartedViewController: LoginViewController {
     private let configuration = WordPressAuthenticator.shared.configuration
     private var shouldChangeVoiceOverFocus: Bool = false
 
+    /// Sign in with site credentials button will be displayed based on the `screenMode`
+    ///
     private var screenMode: ScreenMode {
         guard configuration.enableSiteCredentialsLoginInGetStartedScreen,
               loginFields.siteAddress.isEmpty == false else {
@@ -48,7 +50,7 @@ class GetStartedViewController: LoginViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.isPrimary = true
         button.isEnabled = false
-        button.addTarget(self, action: #selector(handleSubmitButtonTapped(_:)), for: .touchUpInside)
+        button.addTarget(self, action: #selector(handleSubmitButtonTapped), for: .touchUpInside)
         button.accessibilityIdentifier = ButtonConfiguration.Continue.accessibilityIdentifier
         button.setTitle(ButtonConfiguration.Continue.title, for: .normal)
         button.setTitle(ButtonConfiguration.Continue.title, for: .highlighted)
@@ -73,7 +75,11 @@ class GetStartedViewController: LoginViewController {
         loadRows()
         setupTableFooterView()
         configureDivider()
-        configureSocialButtons()
+        if screenMode == .signInUsingSiteCredentials {
+            configureSiteCredentialsButton()
+        } else {
+            configureSocialButtons()
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -223,9 +229,13 @@ private extension GetStartedViewController {
 
     // MARK: - Continue Button Action
 
-    @IBAction func handleSubmitButtonTapped(_ sender: UIButton) {
+    @objc func handleSubmitButtonTapped() {
         tracker.track(click: .submit)
         validateForm()
+    }
+
+    // MARK: - Sign in with site credentials Button Action
+    @objc func handleSiteCredentialsButtonTapped() {
     }
 
     // MARK: - What is WordPress.com Button Action
@@ -384,6 +394,11 @@ private extension GetStartedViewController {
     func configureContinueButton(animating: Bool) {
         continueButton.showActivityIndicator(animating)
         continueButton.isEnabled = enableSubmit(animating: animating)
+
+        if screenMode == .signInUsingSiteCredentials {
+            buttonViewController?.setTopButtonState(isLoading: animating,
+                                                    isEnabled: enableSubmit(animating: animating))
+        }
     }
 
     /// Whether the form can be submitted.
@@ -654,6 +669,24 @@ private extension GetStartedViewController {
         let termsButton = WPStyleGuide.signupTermsButton()
         buttonViewController.stackView?.addArrangedSubview(termsButton)
         termsButton.addTarget(self, action: #selector(termsTapped), for: .touchUpInside)
+    }
+
+    func configureSiteCredentialsButton() {
+        guard let buttonViewController = buttonViewController else {
+            return
+        }
+
+        buttonViewController.hideShadowView()
+
+        buttonViewController.setupTopButton(title: ButtonConfiguration.Continue.title,
+                                            isPrimary: true,
+                                            accessibilityIdentifier: ButtonConfiguration.Continue.accessibilityIdentifier,
+                                            onTap: handleSubmitButtonTapped)
+
+        buttonViewController.setupBottomButton(title: ButtonConfiguration.SignInWithSiteCredentials.title,
+                                               isPrimary: false,
+                                               accessibilityIdentifier: ButtonConfiguration.SignInWithSiteCredentials.accessibilityIdentifier,
+                                               onTap: handleSiteCredentialsButtonTapped)
     }
 
     @objc func appleTapped() {

@@ -74,6 +74,7 @@ struct PaymentMethodsView: View {
                                                     callToAction: {
                             showingPurchaseCardReaderView = true
                         })
+                        .padding(.horizontal, insets: safeAreaInsets)
                     }
                 }
 

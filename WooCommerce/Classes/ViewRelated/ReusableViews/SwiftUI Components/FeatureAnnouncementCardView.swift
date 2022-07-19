@@ -60,8 +60,6 @@ struct FeatureAnnouncementCardView: View {
             .padding(.top, Layout.smallSpacing)
             .padding(.leading, Layout.padding)
         }
-        .padding(.horizontal, insets: safeAreaInsets)
-        .background(Color(.listForeground).ignoresSafeArea())
         .onAppear {
             viewModel.onAppear()
         }

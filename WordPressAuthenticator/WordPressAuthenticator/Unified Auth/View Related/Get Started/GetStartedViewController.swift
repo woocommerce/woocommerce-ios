@@ -2,7 +2,7 @@ import UIKit
 import SafariServices
 import WordPressKit
 
-class GetStartedViewController: LoginViewController {
+class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
 
     private enum ScreenMode {
         /// For signing in using .org site credentials
@@ -12,8 +12,14 @@ class GetStartedViewController: LoginViewController {
         /// For signing in using WPCOM credentials or social accounts
         case signInUsingWordPressComOrSocialAccounts
     }
-    // MARK: - Properties
 
+    // MARK: - NUXKeyboardResponder constraints
+    @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
+
+    // Required for `NUXKeyboardResponder` but unused here.
+    var verticalCenterConstraint: NSLayoutConstraint?
+
+    // MARK: - Properties
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var leadingDividerLine: UIView!
     @IBOutlet private weak var leadingDividerLineWidth: NSLayoutConstraint!
@@ -109,6 +115,16 @@ class GetStartedViewController: LoginViewController {
         errorMessage = nil
         hiddenPasswordField?.text = nil
         hiddenPasswordField?.isAccessibilityElement = false
+
+        if screenMode == .signInUsingSiteCredentials {
+            registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
+                                      keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
+        }
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        unregisterForKeyboardEvents()
     }
 
     override func viewDidLayoutSubviews() {
@@ -776,6 +792,18 @@ extension GetStartedViewController: UITextFieldDelegate {
         return true
     }
 
+}
+
+// MARK: - Keyboard Notifications
+
+extension GetStartedViewController {
+    @objc func handleKeyboardWillShow(_ notification: Foundation.Notification) {
+        keyboardWillShow(notification)
+    }
+
+    @objc func handleKeyboardWillHide(_ notification: Foundation.Notification) {
+        keyboardWillHide(notification)
+    }
 }
 
 // MARK: - Button configuration

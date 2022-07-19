@@ -123,6 +123,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="bottomContentConstraint" destination="Dva-c1-u2U" id="qYD-7e-DL4"/>
                         <outlet property="dividerLabel" destination="QDu-95-gF8" id="Mjt-XK-h7a"/>
                         <outlet property="hiddenPasswordField" destination="cym-N3-RXL" id="swd-6G-MKE"/>
                         <outlet property="leadingDividerLine" destination="8Lc-Sw-Jlx" id="EVQ-Jg-oKZ"/>

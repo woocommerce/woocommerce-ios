@@ -197,7 +197,11 @@ private extension GetStartedViewController {
         stackView.layoutMargins = Constants.FooterStackView.layoutMargins
         stackView.isLayoutMarginsRelativeArrangement = true
 
-        stackView.addArrangedSubview(continueButton)
+        if screenMode == .signInUsingWordPressComOrSocialAccounts {
+            // Continue button will be added to `buttonViewController` along with sign in with site credentials button when `screenMode` is `signInUsingSiteCredentials`.
+            // So, adding it to stackView here ONLY for `signInUsingWordPressComOrSocialAccounts` `screenMode`
+            stackView.addArrangedSubview(continueButton)
+        }
 
         if WordPressAuthenticator.shared.configuration.whatIsWPComURL != nil {
             let stackViewWithCenterAlignment = UIStackView()
@@ -263,8 +267,7 @@ private extension GetStartedViewController {
         let cells = [
             TextLabelTableViewCell.reuseIdentifier: TextLabelTableViewCell.loadNib(),
             TextFieldTableViewCell.reuseIdentifier: TextFieldTableViewCell.loadNib(),
-            TextWithLinkTableViewCell.reuseIdentifier: TextWithLinkTableViewCell.loadNib(),
-            SpacerTableViewCell.reuseIdentifier: SpacerTableViewCell.loadNib()
+            TextWithLinkTableViewCell.reuseIdentifier: TextWithLinkTableViewCell.loadNib()
         ]
 
         for (reuseIdentifier, nib) in cells {
@@ -279,8 +282,6 @@ private extension GetStartedViewController {
 
         if let authenticationDelegate = WordPressAuthenticator.shared.delegate, authenticationDelegate.wpcomTermsOfServiceEnabled {
             rows.append(.tos)
-        } else {
-            rows.append(.spacer)
         }
 
         if let errorText = errorMessage, !errorText.isEmpty {
@@ -298,8 +299,6 @@ private extension GetStartedViewController {
             configureEmailField(cell)
         case let cell as TextWithLinkTableViewCell:
             configureTextWithLink(cell)
-        case cell as SpacerTableViewCell:
-            break
         case let cell as TextLabelTableViewCell where row == .errorMessage:
             configureErrorLabel(cell)
         default:
@@ -359,7 +358,6 @@ private extension GetStartedViewController {
         case instructions
         case email
         case tos
-        case spacer
         case errorMessage
 
         var reuseIdentifier: String {
@@ -370,8 +368,6 @@ private extension GetStartedViewController {
                 return TextFieldTableViewCell.reuseIdentifier
             case .tos:
                 return TextWithLinkTableViewCell.reuseIdentifier
-            case .spacer:
-                return SpacerTableViewCell.reuseIdentifier
             }
         }
     }
@@ -379,7 +375,7 @@ private extension GetStartedViewController {
     enum Constants {
         enum FooterStackView {
             static let spacing = 16.0
-            static let layoutMargins = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+            static let layoutMargins = UIEdgeInsets(top: 16, left: 16, bottom: 0, right: 16)
         }
     }
 

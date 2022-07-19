@@ -4,6 +4,36 @@ import Gridicons
 import SafariServices
 import AutomatticAbout
 import Yosemite
+import SwiftUI
+
+class HostingTableViewCell<Content: View>: UITableViewCell {
+
+    private weak var controller: UIHostingController<Content>?
+
+    func host(_ view: Content, parent: UIViewController) {
+        if let controller = controller {
+            controller.rootView = view
+            controller.view.layoutIfNeeded()
+        } else {
+            let swiftUICellViewController = UIHostingController(rootView: view)
+            controller = swiftUICellViewController
+            swiftUICellViewController.view.backgroundColor = .clear
+
+            layoutIfNeeded()
+
+            parent.addChild(swiftUICellViewController)
+            contentView.addSubview(swiftUICellViewController.view)
+            swiftUICellViewController.view.translatesAutoresizingMaskIntoConstraints = false
+            contentView.addConstraint(NSLayoutConstraint(item: swiftUICellViewController.view!, attribute: NSLayoutConstraint.Attribute.leading, relatedBy: NSLayoutConstraint.Relation.equal, toItem: contentView, attribute: NSLayoutConstraint.Attribute.leading, multiplier: 1.0, constant: 0.0))
+            contentView.addConstraint(NSLayoutConstraint(item: swiftUICellViewController.view!, attribute: NSLayoutConstraint.Attribute.trailing, relatedBy: NSLayoutConstraint.Relation.equal, toItem: contentView, attribute: NSLayoutConstraint.Attribute.trailing, multiplier: 1.0, constant: 0.0))
+            contentView.addConstraint(NSLayoutConstraint(item: swiftUICellViewController.view!, attribute: NSLayoutConstraint.Attribute.top, relatedBy: NSLayoutConstraint.Relation.equal, toItem: contentView, attribute: NSLayoutConstraint.Attribute.top, multiplier: 1.0, constant: 0.0))
+            contentView.addConstraint(NSLayoutConstraint(item: swiftUICellViewController.view!, attribute: NSLayoutConstraint.Attribute.bottom, relatedBy: NSLayoutConstraint.Relation.equal, toItem: contentView, attribute: NSLayoutConstraint.Attribute.bottom, multiplier: 1.0, constant: 0.0))
+
+            swiftUICellViewController.didMove(toParent: parent)
+            swiftUICellViewController.view.layoutIfNeeded()
+        }
+    }
+}
 
 protocol SettingsViewPresenter: AnyObject {
     func refreshViewContent()
@@ -109,6 +139,8 @@ private extension SettingsViewController {
         for row in Row.allCases {
             tableView.registerNib(for: row.type)
         }
+
+        tableView.register(HostingTableViewCell<FeatureAnnouncementCardView>.self)
     }
 
     /// Cells currently configured in the order they appear on screen
@@ -121,7 +153,7 @@ private extension SettingsViewController {
             configureSwitchStore(cell: cell)
         case let cell as BasicTableViewCell where row == .plugins:
             configurePlugins(cell: cell)
-        case let cell as FeatureAnnouncementCardTableViewCell where row == .upsellCardReadersFeatureAnnouncement:
+        case let cell as HostingTableViewCell<FeatureAnnouncementCardView> where row == .upsellCardReadersFeatureAnnouncement:
             configureUpsellCardReadersFeatureAnnouncement(cell: cell)
         case let cell as BasicTableViewCell where row == .inPersonPayments:
             configureInPersonPayments(cell: cell)
@@ -174,8 +206,17 @@ private extension SettingsViewController {
         cell.textLabel?.text = Localization.helpAndSupport
     }
 
-    func configureUpsellCardReadersFeatureAnnouncement(cell: FeatureAnnouncementCardTableViewCell) {
-
+    func configureUpsellCardReadersFeatureAnnouncement(cell: HostingTableViewCell<FeatureAnnouncementCardView>) {
+        let config = FeatureAnnouncementCardViewModel.Configuration(
+            source: .paymentMethods,
+            campaign: .upsellCardReaders,
+            title: "Buy a reader",
+            message: "With a card reader, you can accept card payments",
+            buttonTitle: "",
+            image: .paymentsFeatureBannerImage)
+        let viewModel = FeatureAnnouncementCardViewModel(analytics: ServiceLocator.analytics,
+                                                          configuration: config)
+        cell.host(FeatureAnnouncementCardView(viewModel: viewModel, dismiss: { debugPrint("dismiss")}, callToAction: {}), parent: self)
     }
 
     func configureInPersonPayments(cell: BasicTableViewCell) {
@@ -631,7 +672,7 @@ extension SettingsViewController {
             case .support:
                 return BasicTableViewCell.self
             case .upsellCardReadersFeatureAnnouncement:
-                return FeatureAnnouncementCardTableViewCell.self
+                return HostingTableViewCell<FeatureAnnouncementCardView>.self
             case .inPersonPayments:
                 return BasicTableViewCell.self
             case .installJetpack:

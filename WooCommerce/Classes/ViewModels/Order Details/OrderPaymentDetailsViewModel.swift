@@ -111,6 +111,19 @@ final class OrderPaymentDetailsViewModel {
         return String.localizedStringWithFormat(template, styleDate, order.paymentMethodTitle)
     }
 
+    /// Awaiting payment
+    ///
+    var awaitingPayment: String? {
+        if order.paymentMethodTitle.isEmpty {
+            return String.localizedStringWithFormat(
+                NSLocalizedString("Awaiting payment", comment: "Awaiting payment"))
+        }
+        return String.localizedStringWithFormat(
+            NSLocalizedString("Awaiting payment via %@",
+                              comment: "Awaiting payment via (payment method title)"),
+            order.paymentMethodTitle)
+    }
+
     /// Refund Summary
     /// - returns: A full sentence summary of the date the refund was created, which payment gateway it was refunded to, and a link to the detailed refund.
     /// Example: Oct 28, 2019 via Credit Card (Stripe)

@@ -256,6 +256,7 @@ private extension GetStartedViewController {
 
     // MARK: - Sign in with site credentials Button Action
     @objc func handleSiteCredentialsButtonTapped() {
+        tracker.track(click: .signInWithSiteCredentials)
         goToSiteCredentialsScreen()
     }
 

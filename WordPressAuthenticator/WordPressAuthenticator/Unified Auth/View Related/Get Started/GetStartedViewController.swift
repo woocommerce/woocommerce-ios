@@ -4,6 +4,14 @@ import WordPressKit
 
 class GetStartedViewController: LoginViewController {
 
+    private enum ScreenMode {
+        /// For signing in using .org site credentials
+        ///
+        case signInUsingSiteCredentials
+
+        /// For signing in using WPCOM credentials or social accounts
+        case signInUsingWordPressComOrSocialAccounts
+    }
     // MARK: - Properties
 
     @IBOutlet private weak var tableView: UITableView!
@@ -25,6 +33,14 @@ class GetStartedViewController: LoginViewController {
     private var buttonViewController: NUXButtonViewController?
     private let configuration = WordPressAuthenticator.shared.configuration
     private var shouldChangeVoiceOverFocus: Bool = false
+
+    private var screenMode: ScreenMode {
+        guard configuration.enableSiteCredentialsLoginInGetStartedScreen,
+              loginFields.siteAddress.isEmpty == false else {
+            return .signInUsingWordPressComOrSocialAccounts
+        }
+        return .signInUsingSiteCredentials
+    }
 
     // Submit button displayed in the table footer.
     private lazy var continueButton: NUXButton = {

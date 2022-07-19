@@ -32,6 +32,8 @@ else
   export BUILDKITE_ANALYTICS_TOKEN=$BUILDKITE_ANALYTICS_TOKEN_UI_TESTS_IPAD
 fi
 
+echo "BUILDKITE_ANALYTICS_TOKEN starts with $(echo $BUILDKITE_ANALYTICS_TOKEN | cut -c1-5)"
+
 echo "--- 🧪 Testing"
 xcrun simctl list >> /dev/null
 rake mocks &

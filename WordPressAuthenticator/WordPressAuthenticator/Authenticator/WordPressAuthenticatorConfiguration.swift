@@ -100,6 +100,10 @@ public struct WordPressAuthenticatorConfiguration {
     ///  Disabled by default
     let enableSiteCredentialsLoginInGetStartedScreen: Bool
 
+    /// If enabled, we will ask for WPCOM login after signing in using .org site credentials.
+    ///  WordPress iOS app can proceed without WPCOM login. But, WooCommerce iOS app needs WPCOM login.
+    let isWordPressComCredentialsRequired: Bool
+
     /// Designated Initializer
     ///
     public init (wpcomClientId: String,
@@ -121,7 +125,8 @@ public struct WordPressAuthenticatorConfiguration {
                  enableUnifiedCarousel: Bool = false,
                  displayHintButtons: Bool = true,
                  continueWithSiteAddressFirst: Bool = false,
-                 enableSiteCredentialsLoginInGetStartedScreen: Bool = false) {
+                 enableSiteCredentialsLoginInGetStartedScreen: Bool = false,
+                 isWordPressComCredentialsRequired: Bool = false) {
 
         self.wpcomClientId = wpcomClientId
         self.wpcomSecret = wpcomSecret
@@ -143,5 +148,6 @@ public struct WordPressAuthenticatorConfiguration {
         self.enableSignupWithGoogle = enableSignupWithGoogle
         self.continueWithSiteAddressFirst = continueWithSiteAddressFirst
         self.enableSiteCredentialsLoginInGetStartedScreen = enableSiteCredentialsLoginInGetStartedScreen
+        self.isWordPressComCredentialsRequired = isWordPressComCredentialsRequired
     }
 }

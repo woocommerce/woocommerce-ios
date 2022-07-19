@@ -137,10 +137,8 @@ private extension SettingsViewController {
 
     func registerTableViewCells() {
         for row in Row.allCases {
-            tableView.registerNib(for: row.type)
+            row.registerWithNib ? tableView.registerNib(for: row.type) : tableView.register(row.type)
         }
-
-        tableView.register(HostingTableViewCell<FeatureAnnouncementCardView>.self)
     }
 
     /// Cells currently configured in the order they appear on screen
@@ -660,6 +658,14 @@ extension SettingsViewController {
         // Logout
         case logout
 
+        fileprivate var registerWithNib: Bool {
+            switch self {
+            case .upsellCardReadersFeatureAnnouncement:
+                return false
+            default:
+                return true
+            }
+        }
 
         fileprivate var type: UITableViewCell.Type {
             switch self {

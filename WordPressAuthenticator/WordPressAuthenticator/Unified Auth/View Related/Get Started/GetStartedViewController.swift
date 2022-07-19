@@ -23,6 +23,7 @@ class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var leadingDividerLine: UIView!
     @IBOutlet private weak var leadingDividerLineWidth: NSLayoutConstraint!
+    @IBOutlet private weak var dividerStackView: UIStackView!
     @IBOutlet private weak var dividerLabel: UILabel!
     @IBOutlet private weak var trailingDividerLine: UIView!
     @IBOutlet private weak var trailingDividerLineWidth: NSLayoutConstraint!
@@ -238,6 +239,10 @@ private extension GetStartedViewController {
     /// Style the "OR" divider.
     ///
     func configureDivider() {
+        guard screenMode == .signInUsingWordPressComOrSocialAccounts else {
+            return dividerStackView.isHidden = true
+        }
+
         let color = WordPressAuthenticator.shared.unifiedStyle?.borderColor ?? WordPressAuthenticator.shared.style.primaryNormalBorderColor
         leadingDividerLine.backgroundColor = color
         leadingDividerLineWidth.constant = WPStyleGuide.hairlineBorderWidth

@@ -12,7 +12,7 @@
         <!--Get Started View Controller-->
         <scene sceneID="7Rf-Qz-qsw">
             <objects>
-                <viewController storyboardIdentifier="GetStartedViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="aQT-Gx-U3x" customClass="GetStartedViewController" customModule="WordPressAuthenticator" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="GetStartedViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="aQT-Gx-U3x" customClass="GetStartedViewController" customModule="WordPressAuthenticatorResources" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ljV-kF-TaY">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -125,6 +125,7 @@
                     <connections>
                         <outlet property="bottomContentConstraint" destination="Dva-c1-u2U" id="qYD-7e-DL4"/>
                         <outlet property="dividerLabel" destination="QDu-95-gF8" id="Mjt-XK-h7a"/>
+                        <outlet property="dividerStackView" destination="f1j-fj-w73" id="Mt7-Ok-XYh"/>
                         <outlet property="hiddenPasswordField" destination="cym-N3-RXL" id="swd-6G-MKE"/>
                         <outlet property="leadingDividerLine" destination="8Lc-Sw-Jlx" id="EVQ-Jg-oKZ"/>
                         <outlet property="leadingDividerLineWidth" destination="Z6B-bC-BjQ" id="Tor-0G-bt8"/>

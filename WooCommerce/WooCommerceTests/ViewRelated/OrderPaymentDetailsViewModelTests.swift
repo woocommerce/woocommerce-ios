@@ -141,26 +141,27 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.paymentSummary)
     }
 
-    func test_payment_summary_contains_awaiting_payment_message_when_date_paid_is_null() {
-        let awaitingPayment = String.localizedStringWithFormat(
-            NSLocalizedString(
-                "Awaiting payment via %@",
-                comment: "A unit test string. It reads: " +
-                "Awaiting payment via <payment method title>." +
-                "A payment method example is: 'Credit Card (Stripe)'"
-            ),
-            anotherBrokenOrder.paymentMethodTitle
-        )
-
-        XCTAssertEqual(anotherBrokenOrder.paymentMethodTitle, "Cash on Delivery")
-        XCTAssertNil(anotherBrokenOrder.datePaid)
-
-        guard let paymentSummary = anotherBrokenOrderViewModel.paymentSummary else {
-            XCTFail("The payment summary should not be nil or blank.")
+    func test_payment_summary_returns_nil_when_date_paid_is_nil() {
+        guard let _ = order.datePaid else {
+            XCTAssertNil(anotherBrokenOrderViewModel.paymentSummary)
             return
         }
+    }
 
-        XCTAssertTrue(paymentSummary.contains(awaitingPayment))
+    func test_awaitingPayment_returns_no_payment_method_title_when_paymentMethodTitle_is_empty() {
+        guard brokenOrder.paymentMethodTitle.isEmpty else {
+            XCTFail("Expected paymentMethodTitle to be empty")
+            return
+        }
+        XCTAssertEqual(brokenOrderViewModel.awaitingPayment, "Awaiting payment")
+    }
+
+    func test_awaitingPayment_returns_payment_method_title_when_paymentMethodTitle_is_not_empty() {
+        guard order.paymentMethodTitle.isNotEmpty else {
+            XCTFail("Expected paymentMethodTitle to not be empty")
+            return
+        }
+        XCTAssertEqual(viewModel.awaitingPayment, "Awaiting payment via Credit Card (Stripe)")
     }
 
     func test_coupon_lines_matches_expectation() {

@@ -3,8 +3,8 @@ import UIKit
 /// Contains a feature carousel with buttons that end up on the login prologue screen.
 final class LoginOnboardingViewController: UIViewController {
     private let stackView: UIStackView = .init()
-    private lazy var pageViewController: LoginProloguePageViewController =
-    LoginProloguePageViewController(pageTypes: [.stats, .orderManagement, .products], showsSubtitle: true)
+    private lazy var pageViewController = LoginProloguePageViewController(pageTypes: [.stats, .orderManagement, .products],
+                                                                          showsSubtitle: true)
     private let onDismiss: () -> Void
 
     init(onDismiss: @escaping () -> Void) {
@@ -84,10 +84,10 @@ private extension LoginOnboardingViewController {
     func configureStackViewSubviews() {
         let carousel = createFeatureCarousel()
 
-        let continueButton = createContinueButton()
+        let nextButton = createNextButton()
         let skipButton = createSkipButton()
         let buttonStackView: UIStackView = {
-            let stackView = UIStackView(arrangedSubviews: [continueButton, skipButton])
+            let stackView = UIStackView(arrangedSubviews: [nextButton, skipButton])
             stackView.spacing = Constants.buttonStackViewSpacing
             stackView.axis = .vertical
             return stackView
@@ -100,16 +100,17 @@ private extension LoginOnboardingViewController {
         pageViewController.view.translatesAutoresizingMaskIntoConstraints = false
 
         addChild(pageViewController)
+        pageViewController.didMove(toParent: self)
         return pageViewController.view
     }
 
-    func createContinueButton() -> UIButton {
+    func createNextButton() -> UIButton {
         let button = UIButton(frame: .zero)
         button.applyPrimaryButtonStyle()
         button.setTitle(Localization.continueButtonTitle, for: .normal)
         button.on(.touchUpInside) { [weak self] _ in
             guard let self = self else { return }
-            guard self.pageViewController.goToNextPage() else {
+            guard self.pageViewController.goToNextPageIfPossible() else {
                 return self.onDismiss()
             }
         }

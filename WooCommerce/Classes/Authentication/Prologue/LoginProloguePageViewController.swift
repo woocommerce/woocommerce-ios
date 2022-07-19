@@ -26,6 +26,24 @@ final class LoginProloguePageViewController: UIPageViewController {
             setViewControllers([firstPage], direction: .forward, animated: false)
         }
 
+        configureUIBasedOnPageCount()
+    }
+
+    /// Shows the next page of content if it is not on the last page.
+    /// - Returns: Whether it can go to the next page, if it has not reached the last page.
+    func goToNextPageIfPossible() -> Bool {
+        let currentPage = pageControl.currentPage
+        guard currentPage < pages.count - 1 else {
+            return false
+        }
+        pageControl.currentPage = currentPage + 1
+        handlePageControlValueChanged(sender: pageControl)
+        return true
+    }
+}
+
+private extension LoginProloguePageViewController {
+    func configureUIBasedOnPageCount() {
         if pages.count > 1 {
             addPageControl()
         } else {
@@ -36,7 +54,7 @@ final class LoginProloguePageViewController: UIPageViewController {
 
     // MARK: Page Control Setup
     //
-    private func addPageControl() {
+    func addPageControl() {
         pageControl.currentPageIndicatorTintColor = .gray(.shade5)
         pageControl.pageIndicatorTintColor = .wooCommercePurple(.shade50)
         pageControl.transform = CGAffineTransform(scaleX: Constants.pageControlScale, y: Constants.pageControlScale)
@@ -53,19 +71,7 @@ final class LoginProloguePageViewController: UIPageViewController {
         pageControl.addTarget(self, action: #selector(handlePageControlValueChanged(sender:)), for: .valueChanged)
     }
 
-    /// Show the next page of content.
-    /// - Returns: Whether there is next page.
-    func goToNextPage() -> Bool {
-        let currentPage = pageControl.currentPage
-        guard currentPage < pages.count - 1 else {
-            return false
-        }
-        pageControl.currentPage = currentPage + 1
-        handlePageControlValueChanged(sender: pageControl)
-        return true
-    }
-
-    @objc private func handlePageControlValueChanged(sender: UIPageControl) {
+    @objc func handlePageControlValueChanged(sender: UIPageControl) {
         guard let currentPage = viewControllers?.first,
               let currentIndex = pages.firstIndex(of: currentPage) else {
             return

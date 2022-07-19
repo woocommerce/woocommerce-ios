@@ -38,7 +38,7 @@ final class LoginPrologueViewController: UIViewController {
     init(analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         isNewToWooCommerceButtonShown = featureFlagService.isFeatureFlagEnabled(.newToWooCommerceLinkInLoginPrologue)
-        self.isOnboardingFeatureEnabled = featureFlagService.isFeatureFlagEnabled(.loginPrologueOnboarding)
+        isOnboardingFeatureEnabled = featureFlagService.isFeatureFlagEnabled(.loginPrologueOnboarding)
         self.analytics = analytics
         super.init(nibName: nil, bundle: nil)
     }
@@ -90,8 +90,7 @@ private extension LoginPrologueViewController {
     /// This is contained in a child view so that this view's background doesn't scroll.
     ///
     func setupCarousel(isNewToWooCommerceButtonShown: Bool) {
-        let pageTypes: [LoginProloguePageType] = isOnboardingFeatureEnabled ?
-        [.getStarted]: [.stats, .orderManagement, .products, .reviews]
+        let pageTypes: [LoginProloguePageType] = isOnboardingFeatureEnabled ? [.getStarted] : [.stats, .orderManagement, .products, .reviews]
         let carousel = LoginProloguePageViewController(pageTypes: pageTypes, showsSubtitle: isOnboardingFeatureEnabled)
         carousel.view.translatesAutoresizingMaskIntoConstraints = false
 

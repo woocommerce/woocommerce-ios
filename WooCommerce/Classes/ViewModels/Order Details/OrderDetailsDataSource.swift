@@ -24,20 +24,6 @@ final class OrderDetailsDataSource: NSObject {
     ///
     private(set) var sections = [Section]()
 
-    /// Does this order need processing? Payment received (paid). The order is awaiting fulfillment.
-    /// All product orders require processing, except those that only contain products which are both Virtual and Downloadable.
-    ///
-    private var needsProcessing: Bool {
-        if order.needsProcessing {
-            return true
-        } else {
-            let orderContainsOnlyVirtualAndDownloadableProducts = self.products.filter { (product) -> Bool in
-                return items.first(where: { $0.productID == product.productID}) != nil
-            }.allSatisfy { $0.virtual == true && $0.downloadable == true }
-            return !orderContainsOnlyVirtualAndDownloadableProducts
-        }
-    }
-
     /// Is this order fully refunded?
     ///
     private var isRefundedStatus: Bool {
@@ -314,6 +300,20 @@ final class OrderDetailsDataSource: NSObject {
             return []
         }
         return shippingLabelOrderItemsAggregator.orderItems(of: shippingLabel)
+    }
+
+    /// Does this order need processing? Payment received (paid). The order is awaiting fulfillment.
+    /// All product orders require processing, except those that only contain products which are both Virtual and Downloadable.
+    ///
+    private func needsProcessing() -> Bool {
+        order.needsProcessing || !allOrderProductsAreVirtualAndDownloadable()
+    }
+
+    private func allOrderProductsAreVirtualAndDownloadable() -> Bool {
+        let orderProducts = products.filter { (product) -> Bool in
+            items.contains(where: { $0.productID == product.productID})
+        }
+        return orderProducts.allSatisfy { $0.virtual && $0.downloadable }
     }
 }
 
@@ -1037,7 +1037,7 @@ extension OrderDetailsDataSource {
                 rows.append(.shippingLabelCreateButton)
             }
 
-            if needsProcessing {
+            if needsProcessing() {
                 if shouldShowShippingLabelCreation {
                     rows.append(.markCompleteButton(style: .secondary, showsBottomSpacing: false))
                     rows.append(.shippingLabelCreationInfo(showsSeparator: false))

@@ -4,11 +4,11 @@ struct FeatureAnnouncementCardView: View {
     private let viewModel: FeatureAnnouncementCardViewModel
 
     let dismiss: (() -> Void)?
-    let callToAction: (() -> Void)
+    let callToAction: (() -> Void)?
 
     init(viewModel: FeatureAnnouncementCardViewModel,
          dismiss: (() -> Void)? = nil,
-         callToAction: @escaping (() -> Void)) {
+         callToAction: (() -> Void)? = nil) {
         self.viewModel = viewModel
         self.dismiss = dismiss
         self.callToAction = callToAction
@@ -45,11 +45,13 @@ struct FeatureAnnouncementCardView: View {
                             .padding(.bottom, Layout.largeSpacing)
                     }
                     .accessibilityElement(children: .combine)
-                    Button(viewModel.buttonTitle) {
-                        viewModel.ctaTapped()
-                        callToAction()
+                    if let buttonTitle = viewModel.buttonTitle {
+                        Button(buttonTitle) {
+                            viewModel.ctaTapped()
+                            callToAction?()
+                        }
+                        .padding(.bottom, Layout.bottomButtonPadding)
                     }
-                    .padding(.bottom, Layout.bottomButtonPadding)
                 }
                 Spacer()
                 Image(uiImage: viewModel.image)

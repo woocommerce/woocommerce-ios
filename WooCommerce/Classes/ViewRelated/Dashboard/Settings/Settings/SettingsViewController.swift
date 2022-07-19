@@ -205,16 +205,12 @@ private extension SettingsViewController {
     }
 
     func configureUpsellCardReadersFeatureAnnouncement(cell: HostingTableViewCell<FeatureAnnouncementCardView>) {
-        let config = FeatureAnnouncementCardViewModel.Configuration(
-            source: .paymentMethods,
-            campaign: .upsellCardReaders,
-            title: "Buy a reader",
-            message: "With a card reader, you can accept card payments",
-            buttonTitle: "",
-            image: .paymentsFeatureBannerImage)
+        let upsellCardReadersCampaign = UpsellCardReadersCampaign(source: .settings)
         let viewModel = FeatureAnnouncementCardViewModel(analytics: ServiceLocator.analytics,
-                                                          configuration: config)
-        cell.host(FeatureAnnouncementCardView(viewModel: viewModel, dismiss: { debugPrint("dismiss")}, callToAction: {}), parent: self)
+                                                         configuration: upsellCardReadersCampaign.configuration)
+        let view = FeatureAnnouncementCardView(viewModel: viewModel,
+                                               dismiss: { debugPrint("dismiss")})
+        cell.host(view, parent: self)
     }
 
     func configureInPersonPayments(cell: BasicTableViewCell) {

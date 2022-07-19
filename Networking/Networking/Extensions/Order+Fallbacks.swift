@@ -23,9 +23,9 @@ internal extension Order {
         return status == .pending || status == .onHold || status == .autoDraft
     }
 
-    /// Temporary. Conditions to be copied from:
-    /// https://github.com/woocommerce/woocommerce/blob/3611d4643791bad87a0d3e6e73e031bb80447417/plugins/woocommerce/includes/class-wc-order.php#L1537-L1567
-    ///
+    /// If the Order Status is not specifically set to "processing", then return false.
+    /// We'll recalculate `needsProcessing` directly in the view model when we actually need to access the property.
+    /// TODO-7302: Improve this part by making `needsProcessing` optional and update Core Data accordingly
     static func inferNeedsProcessing(status: OrderStatusEnum) -> Bool {
         return status == .processing
     }

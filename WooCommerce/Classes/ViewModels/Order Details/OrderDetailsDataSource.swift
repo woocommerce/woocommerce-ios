@@ -304,6 +304,8 @@ final class OrderDetailsDataSource: NSObject {
 
     /// Does this order need processing? Payment received (paid). The order is awaiting fulfillment.
     /// All product orders require processing, except those that only contain products which are both Virtual and Downloadable.
+    /// Conditions copied from:
+    ///  https://github.com/woocommerce/woocommerce/blob/3611d4643791bad87a0d3e6e73e031bb80447417/plugins/woocommerce/includes/class-wc-order.php#L1537-L1567
     ///
     private func needsProcessing() -> Bool {
         order.needsProcessing || !allOrderProductsAreVirtualAndDownloadable()

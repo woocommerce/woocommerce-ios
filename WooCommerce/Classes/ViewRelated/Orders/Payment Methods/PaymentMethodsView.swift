@@ -45,6 +45,16 @@ struct PaymentMethodsView: View {
                             showingCashAlert = true
                             viewModel.trackCollectByCash()
                         }
+                        .alert(isPresented: $showingCashAlert) {
+                            Alert(title: Text(Localization.markAsPaidTitle),
+                                  message: Text(viewModel.payByCashInfo()),
+                                  primaryButton: .cancel(),
+                                  secondaryButton: .default(Text(Localization.markAsPaidButton), action: {
+                                viewModel.markOrderAsPaid {
+                                    dismiss()
+                                }
+                            }))
+                        }
 
                         if viewModel.showPayWithCardRow {
                             Divider()
@@ -90,16 +100,6 @@ struct PaymentMethodsView: View {
                 ProgressView()
                     .renderedIf(viewModel.showLoadingIndicator)
             }
-        }
-        .alert(isPresented: $showingCashAlert) {
-            Alert(title: Text(Localization.markAsPaidTitle),
-                  message: Text(viewModel.payByCashInfo()),
-                  primaryButton: .cancel(),
-                  secondaryButton: .default(Text(Localization.markAsPaidButton), action: {
-                viewModel.markOrderAsPaid {
-                    dismiss()
-                }
-            }))
         }
         .sheet(isPresented: $showingPurchaseCardReaderView) {
             SafariView(url: viewModel.purchaseCardReaderUrl)

@@ -95,6 +95,11 @@ public struct WordPressAuthenticatorConfiguration {
     /// Default value is disabled
     let continueWithSiteAddressFirst: Bool
 
+    /// If enabled shows a "Sign in with site credentials" button in `GetStartedViewController` when landing in the screen after entering site address
+    ///  Used in WooCommerce iOS to enable sign in using site credentials feature.
+    ///  Disabled by default
+    let enableSiteCredentialsLoginInGetStartedScreen: Bool
+
     /// Designated Initializer
     ///
     public init (wpcomClientId: String,
@@ -115,7 +120,8 @@ public struct WordPressAuthenticatorConfiguration {
                  enableUnifiedAuth: Bool = false,
                  enableUnifiedCarousel: Bool = false,
                  displayHintButtons: Bool = true,
-                 continueWithSiteAddressFirst: Bool = false) {
+                 continueWithSiteAddressFirst: Bool = false,
+                 enableSiteCredentialsLoginInGetStartedScreen: Bool = false) {
 
         self.wpcomClientId = wpcomClientId
         self.wpcomSecret = wpcomSecret
@@ -136,5 +142,6 @@ public struct WordPressAuthenticatorConfiguration {
         self.displayHintButtons = displayHintButtons
         self.enableSignupWithGoogle = enableSignupWithGoogle
         self.continueWithSiteAddressFirst = continueWithSiteAddressFirst
+        self.enableSiteCredentialsLoginInGetStartedScreen = enableSiteCredentialsLoginInGetStartedScreen
     }
 }

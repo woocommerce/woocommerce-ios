@@ -49,11 +49,9 @@ class GetStartedViewController: LoginViewController {
         button.isPrimary = true
         button.isEnabled = false
         button.addTarget(self, action: #selector(handleSubmitButtonTapped(_:)), for: .touchUpInside)
-        button.accessibilityIdentifier = "Get Started Email Continue Button"
-
-        let title = WordPressAuthenticator.shared.displayStrings.continueButtonTitle
-        button.setTitle(title, for: .normal)
-        button.setTitle(title, for: .highlighted)
+        button.accessibilityIdentifier = ButtonConfiguration.Continue.accessibilityIdentifier
+        button.setTitle(ButtonConfiguration.Continue.title, for: .normal)
+        button.setTitle(ButtonConfiguration.Continue.title, for: .highlighted)
 
         return button
     }()
@@ -749,4 +747,15 @@ extension GetStartedViewController: UITextFieldDelegate {
         return true
     }
 
+}
+
+// MARK: - Button configuration
+
+private extension GetStartedViewController {
+    enum ButtonConfiguration {
+        enum Continue {
+            static let title = WordPressAuthenticator.shared.displayStrings.continueButtonTitle
+            static let accessibilityIdentifier = "Get Started Email Continue Button"
+        }
+    }
 }

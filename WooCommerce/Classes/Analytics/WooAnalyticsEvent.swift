@@ -356,14 +356,39 @@ extension WooAnalyticsEvent {
             static let to = "to"
             static let from = "from"
             static let orderID = "id"
+            static let hasMultipleShippingLines = "has_multiple_shipping_lines"
+            static let hasMultipleFeeLines = "has_multiple_fee_lines"
+        }
+
+        static func orderOpen(order: Order) -> WooAnalyticsEvent {
+            let customFieldsSize = order.customFields.map { $0.value.utf8.count }.reduce(0, +) // Total byte size of custom field values
+            return WooAnalyticsEvent(statName: .orderOpen, properties: ["id": order.orderID,
+                                                                        "status": order.status.rawValue,
+                                                                        "custom_fields_count": Int64(order.customFields.count),
+                                                                        "custom_fields_size": Int64(customFieldsSize)])
         }
 
         static func orderAddNew() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderAddNew, properties: [:])
         }
 
+        static func orderEditButtonTapped(hasMultipleShippingLines: Bool, hasMultipleFeeLines: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderEditButtonTapped, properties: [
+                Keys.hasMultipleShippingLines: hasMultipleShippingLines,
+                Keys.hasMultipleFeeLines: hasMultipleFeeLines
+            ])
+        }
+
         static func orderProductAdd(flow: Flow) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderProductAdd, properties: [Keys.flow: flow.rawValue])
+        }
+
+        static func orderProductQuantityChange(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderProductQuantityChange, properties: [Keys.flow: flow.rawValue])
+        }
+
+        static func orderProductRemove(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderProductRemove, properties: [Keys.flow: flow.rawValue])
         }
 
         static func orderCustomerAdd(flow: Flow, hasDifferentShippingDetails: Bool) -> WooAnalyticsEvent {
@@ -377,12 +402,23 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderFeeAdd, properties: [Keys.flow: flow.rawValue])
         }
 
+        static func orderFeeRemove(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFeeRemove, properties: [Keys.flow: flow.rawValue])
+        }
+
         static func orderShippingMethodAdd(flow: Flow) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderShippingMethodAdd, properties: [Keys.flow: flow.rawValue])
         }
 
-        static func orderCustomerNoteAdd(flow: Flow) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .orderNoteAdd, properties: [Keys.flow: flow.rawValue])
+        static func orderShippingMethodRemove(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderShippingMethodRemove, properties: [Keys.flow: flow.rawValue])
+        }
+
+        static func orderCustomerNoteAdd(flow: Flow, orderID: Int64, orderStatus: OrderStatusEnum) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderNoteAdd, properties: [Keys.flow: flow.rawValue,
+                                                                    "parent_id": orderID,
+                                                                    "status": orderStatus.rawValue,
+                                                                    "type": "customer"])
         }
 
         static func orderStatusChange(flow: Flow, orderID: Int64?, from oldStatus: OrderStatusEnum, to newStatus: OrderStatusEnum) -> WooAnalyticsEvent {
@@ -420,8 +456,9 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        static func orderSyncFailed(errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
+        static func orderSyncFailed(flow: Flow, errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderSyncFailed, properties: [
+                Keys.flow: flow.rawValue,
                 Keys.errorContext: errorContext,
                 Keys.errorDescription: errorDescription
             ])
@@ -506,33 +543,32 @@ extension WooAnalyticsEvent {
 
         /// Campaigns run using the Feature Card
         ///
-        enum Campaign: String {
-            fileprivate static let key = "campaign"
-
-            case upsellCardReaders = "upsell_card_readers"
+        private enum Keys {
+            static let campaign = "campaign"
+            static let source = "source"
         }
 
-        static func shown(source: Source, campaign: Campaign) -> WooAnalyticsEvent {
+        static func shown(source: Source, campaign: FeatureAnnouncementCampaign) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .featureCardShown,
                               properties: [
-                                Source.key: source.rawValue,
-                                Campaign.key: campaign.rawValue
+                                Keys.source: source.rawValue,
+                                Keys.campaign: campaign.rawValue
                               ])
         }
 
-        static func dismissed(source: Source, campaign: Campaign) -> WooAnalyticsEvent {
+        static func dismissed(source: Source, campaign: FeatureAnnouncementCampaign) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .featureCardDismissed,
                               properties: [
-                                Source.key: source.rawValue,
-                                Campaign.key: campaign.rawValue
+                                Keys.source: source.rawValue,
+                                Keys.campaign: campaign.rawValue
                               ])
         }
 
-        static func ctaTapped(source: Source, campaign: Campaign) -> WooAnalyticsEvent {
+        static func ctaTapped(source: Source, campaign: FeatureAnnouncementCampaign) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .featureCardCtaTapped,
                               properties: [
-                                Source.key: source.rawValue,
-                                Campaign.key: campaign.rawValue
+                                Keys.source: source.rawValue,
+                                Keys.campaign: campaign.rawValue
                               ])
         }
     }

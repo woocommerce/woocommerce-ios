@@ -42,10 +42,13 @@ protocol SettingsViewModelActionsHandler {
     /// Reloads settings if the site is no longer Jetpack CP.
     ///
     func onJetpackInstallDismiss()
+
+    func onUpsellCardReadersAnnouncementDismiss()
 }
 
 protocol SettingsViewModelInput: AnyObject {
     var presenter: SettingsViewPresenter? { get set }
+    var upsellCardReadersAnnouncementViewModel: FeatureAnnouncementCardViewModel { get }
 }
 
 final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActionsHandler, SettingsViewModelInput {
@@ -98,6 +101,12 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let storageManager: StorageManagerType
     private let featureFlagService: FeatureFlagService
     private let appleIDCredentialChecker: AppleIDCredentialCheckerProtocol
+    private let upsellCardReadersCampaign = UpsellCardReadersCampaign(source: .settings)
+
+    var upsellCardReadersAnnouncementViewModel: FeatureAnnouncementCardViewModel {
+        .init(analytics: ServiceLocator.analytics,
+              configuration: upsellCardReadersCampaign.configuration)
+    }
 
     init(stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -154,6 +163,10 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         guard stores.sessionManager.defaultSite?.isJetpackCPConnected == false else {
             return
         }
+        reloadSettings()
+    }
+
+    func onUpsellCardReadersAnnouncementDismiss() {
         reloadSettings()
     }
 }
@@ -213,8 +226,8 @@ private extension SettingsViewModel {
 
         // Store settings
         let storeSettingsSection: Section = {
-            // check if feature announcement should be shown
-            var rows: [Row] = [.upsellCardReadersFeatureAnnouncement, .inPersonPayments]
+            var rows: [Row] = upsellCardReadersAnnouncementViewModel.shouldBeVisible ? [.upsellCardReadersFeatureAnnouncement] : []
+            rows.append(.inPersonPayments)
             if stores.sessionManager.defaultSite?.isJetpackCPConnected == true,
                 featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport) {
                 rows.append(.installJetpack)

@@ -205,11 +205,11 @@ private extension SettingsViewController {
     }
 
     func configureUpsellCardReadersFeatureAnnouncement(cell: HostingTableViewCell<FeatureAnnouncementCardView>) {
-        let upsellCardReadersCampaign = UpsellCardReadersCampaign(source: .settings)
-        let viewModel = FeatureAnnouncementCardViewModel(analytics: ServiceLocator.analytics,
-                                                         configuration: upsellCardReadersCampaign.configuration)
-        let view = FeatureAnnouncementCardView(viewModel: viewModel,
-                                               dismiss: { debugPrint("dismiss")})
+        let view = FeatureAnnouncementCardView(viewModel: viewModel.upsellCardReadersAnnouncementViewModel,
+                                               dismiss: { [weak self] in
+            self?.viewModel.onUpsellCardReadersAnnouncementDismiss()
+        })
+        
         cell.host(view, parent: self)
     }
 

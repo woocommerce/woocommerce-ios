@@ -191,7 +191,7 @@ private extension AppCoordinatorTests {
                          stores: StoresManager? = nil,
                          authenticationManager: Authentication? = nil,
                          roleEligibilityUseCase: RoleEligibilityUseCaseProtocol? = nil,
-                         loggedOutAppSettings: LoggedOutAppSettings = MockLoggedOutAppSettings(),
+                         loggedOutAppSettings: LoggedOutAppSettingsProtocol = MockLoggedOutAppSettings(),
                          featureFlagService: FeatureFlagService = MockFeatureFlagService()) -> AppCoordinator {
         return AppCoordinator(window: window ?? self.window,
                               stores: stores ?? self.stores,

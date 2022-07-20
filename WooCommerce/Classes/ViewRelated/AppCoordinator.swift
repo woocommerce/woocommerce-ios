@@ -14,7 +14,7 @@ final class AppCoordinator {
     private let stores: StoresManager
     private let authenticationManager: Authentication
     private let roleEligibilityUseCase: RoleEligibilityUseCaseProtocol
-    private let loggedOutAppSettings: LoggedOutAppSettings
+    private let loggedOutAppSettings: LoggedOutAppSettingsProtocol
     private let featureFlagService: FeatureFlagService
 
     private var storePickerCoordinator: StorePickerCoordinator?
@@ -25,7 +25,7 @@ final class AppCoordinator {
          stores: StoresManager = ServiceLocator.stores,
          authenticationManager: Authentication = ServiceLocator.authenticationManager,
          roleEligibilityUseCase: RoleEligibilityUseCaseProtocol = RoleEligibilityUseCase(),
-         loggedOutAppSettings: LoggedOutAppSettings = UserDefaults.standard,
+         loggedOutAppSettings: LoggedOutAppSettingsProtocol = LoggedOutAppSettings(userDefaults: .standard),
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.window = window
         self.tabBarController = {

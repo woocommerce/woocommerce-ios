@@ -1,6 +1,6 @@
 @testable import WooCommerce
 
-final class MockLoggedOutAppSettings: LoggedOutAppSettings {
+final class MockLoggedOutAppSettings: LoggedOutAppSettingsProtocol {
     var hasFinishedOnboarding: Bool
 
     init(hasFinishedOnboarding: Bool = false) {

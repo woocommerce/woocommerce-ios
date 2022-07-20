@@ -161,7 +161,7 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
             XCTFail("Expected paymentMethodTitle to be empty")
             return
         }
-        XCTAssertEqual(brokenOrderViewModel.awaitingPayment, "Awaiting payment")
+        XCTAssertEqual(brokenOrderViewModel.paymentSummary, "Awaiting payment")
     }
 
     func test_awaitingPayment_returns_payment_method_title_when_paymentMethodTitle_is_not_empty() {
@@ -169,7 +169,7 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
             XCTFail("Expected paymentMethodTitle to not be empty")
             return
         }
-        XCTAssertEqual(viewModel.awaitingPayment, "Awaiting payment via Credit Card (Stripe)")
+        XCTAssertEqual(anotherBrokenOrderViewModel.paymentSummary, "Awaiting payment via Cash on Delivery")
     }
 
     func test_coupon_lines_matches_expectation() {

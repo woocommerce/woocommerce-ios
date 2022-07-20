@@ -94,7 +94,7 @@ final class OrderPaymentDetailsViewModel {
     var paymentSummary: String? {
 
         guard let datePaid = order.datePaid else {
-            return awaitingPayment
+            return awaitingPaymentTitle
         }
 
         if order.paymentMethodTitle.isEmpty {
@@ -111,14 +111,16 @@ final class OrderPaymentDetailsViewModel {
 
     /// Awaiting payment
     ///
-    var awaitingPayment: String? {
+    private var awaitingPaymentTitle: String? {
         if order.paymentMethodTitle.isEmpty {
             return String.localizedStringWithFormat(
-                NSLocalizedString("Awaiting payment", comment: "Awaiting payment"))
+                NSLocalizedString("Awaiting payment", comment: "The title on the payment row of the Order Details screen when the payment is still pending"))
         }
         return String.localizedStringWithFormat(
             NSLocalizedString("Awaiting payment via %@",
-                              comment: "Awaiting payment via (payment method title)"),
+                              comment: "The title on the payment row of the Order Details screen" +
+                              "when the payment for a specific payment method is still pending." +
+                              "Reads like: Awaiting payment via Stripe."),
             order.paymentMethodTitle)
     }
 

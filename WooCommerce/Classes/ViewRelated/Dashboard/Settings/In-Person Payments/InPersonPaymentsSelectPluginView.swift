@@ -47,41 +47,46 @@ struct InPersonPaymentsSelectPluginView: View {
     let onPluginSelected: (CardPresentPaymentsPlugin) -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Image(uiImage: .creditCardGiveIcon)
-                .foregroundColor(Color(.primary))
-                .accessibilityHidden(true)
-
-            VStack(alignment: .leading, spacing: 32) {
-                Text(Localization.title)
-                    .font(.largeTitle.bold())
-                    .fixedSize(horizontal: false, vertical: true)
-                Text(Localization.prompt)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .bodyStyle()
-
+        GeometryReader { reader in
+            ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    InPersonPaymentsSelectPluginRow(icon: .wcpayIcon, name: "WooCommerce Payments", selected: selectedPlugin == .wcPay)
-                        .onTapGesture {
-                            selectedPlugin = .wcPay
+                    Image(uiImage: .creditCardGiveIcon)
+                        .foregroundColor(Color(.primary))
+                        .accessibilityHidden(true)
+
+                    VStack(alignment: .leading, spacing: 32) {
+                        Text(Localization.title)
+                            .font(.largeTitle.bold())
+                            .fixedSize(horizontal: false, vertical: true)
+                        Text(Localization.prompt)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .bodyStyle()
+
+                        VStack(alignment: .leading, spacing: 16) {
+                            InPersonPaymentsSelectPluginRow(icon: .wcpayIcon, name: "WooCommerce Payments", selected: selectedPlugin == .wcPay)
+                                .onTapGesture {
+                                    selectedPlugin = .wcPay
+                                }
+                            InPersonPaymentsSelectPluginRow(icon: .stripeIcon, name: "Stripe", selected: selectedPlugin == .stripe)
+                                .onTapGesture {
+                                    selectedPlugin = .stripe
+                                }
                         }
-                    InPersonPaymentsSelectPluginRow(icon: .stripeIcon, name: "Stripe", selected: selectedPlugin == .stripe)
-                        .onTapGesture {
-                            selectedPlugin = .stripe
-                        }
+                    }
+
+                    Spacer()
+
+                    Button(Localization.confirm, action: confirmPluginSelection)
+                    .disabled(selectedPlugin == nil)
+                    .buttonStyle(PrimaryButtonStyle())
                 }
+                .padding(.top, 32)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 24)
+                .background(Color(.tertiarySystemBackground).ignoresSafeArea())
+                .frame(minHeight: reader.size.height)
             }
-
-            Spacer()
-
-            Button(Localization.confirm, action: confirmPluginSelection)
-            .disabled(selectedPlugin == nil)
-            .buttonStyle(PrimaryButtonStyle())
         }
-        .padding(.top, 32)
-        .padding(.horizontal, 16)
-        .padding(.bottom, 24)
-        .background(Color(.tertiarySystemBackground).ignoresSafeArea())
     }
 
     private func confirmPluginSelection() {

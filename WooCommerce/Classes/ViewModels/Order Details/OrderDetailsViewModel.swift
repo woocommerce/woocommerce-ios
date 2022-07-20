@@ -183,10 +183,6 @@ extension OrderDetailsViewModel {
     func syncEverything(onReloadSections: (() -> ())? = nil, onCompletion: (() -> ())? = nil) {
         let group = DispatchGroup()
 
-        /// Update state to syncing
-        ///
-        syncState = .syncing
-
         group.enter()
         syncOrder { [weak self] _ in
             defer {
@@ -630,7 +626,6 @@ private extension OrderDetailsViewModel {
     ///
     enum SyncState {
         case notSynced
-        case syncing
         case synced
     }
 }

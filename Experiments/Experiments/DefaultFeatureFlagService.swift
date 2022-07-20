@@ -38,7 +38,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .inPersonPaymentGatewaySelection:
             return true
         case .unifiedOrderEditing:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .backgroundProductImageUpload:
             return true
         case .appleIDAccountDeletion:
@@ -46,6 +46,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .newToWooCommerceLinkInLoginPrologue:
             return true
         case .orderCustomFields:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .loginPrologueOnboarding:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

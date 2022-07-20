@@ -97,4 +97,8 @@ public enum FeatureFlag: Int {
     /// Enable the Order Custom Fields button in Order Details
     ///
     case orderCustomFields
+
+    /// Onboarding experiment on the login prologue screen
+    ///
+    case loginPrologueOnboarding
 }

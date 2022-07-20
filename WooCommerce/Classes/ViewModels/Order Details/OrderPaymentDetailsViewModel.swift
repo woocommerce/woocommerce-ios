@@ -88,15 +88,16 @@ final class OrderPaymentDetailsViewModel {
     /// - returns: A full sentence summary of how much (if any) was paid, when, and using what method.
     ///
     /// It reads: `Awaiting payment via Credit Card (Stripe)`
-    /// or: `Nov 19, 2019 via Credit Card (Stripe)`
-    /// or is left blank by returning nil.
+    /// or: `Payment on Nov 19, 2019 via Credit Card (Stripe)`
+    /// or is left blank if is paid, but has no payment method title associated.
     ///
     var paymentSummary: String? {
-        if order.paymentMethodTitle.isEmpty {
-            return nil
-        }
 
         guard let datePaid = order.datePaid else {
+            return awaitingPayment
+        }
+
+        if order.paymentMethodTitle.isEmpty {
             return nil
         }
 

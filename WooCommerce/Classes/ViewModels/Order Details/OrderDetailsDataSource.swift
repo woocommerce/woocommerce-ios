@@ -404,8 +404,6 @@ private extension OrderDetailsDataSource {
             configureRefund(cell: cell, at: indexPath)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .netAmount:
             configureNetAmount(cell: cell)
-        case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .awaitingForPayment:
-            configureAwaitingForPaymentInfo(cell: cell)
         case let cell as WooBasicTableViewCell where row == .shippingLabelProducts:
             configureShippingLabelProducts(cell: cell, at: indexPath)
         case let cell as ProductDetailsTableViewCell where row == .aggregateOrderItem:
@@ -640,13 +638,6 @@ private extension OrderDetailsDataSource {
             self?.onCellAction?(.collectPayment, indexPath)
         }
         cell.hideSeparator()
-    }
-
-    private func configureAwaitingForPaymentInfo(cell: TwoColumnHeadlineFootnoteTableViewCell) {
-        let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
-        cell.leftText = Titles.paidByCustomer
-        cell.rightText = order.paymentTotal
-        cell.updateFootnoteText(paymentViewModel.awaitingPayment)
     }
 
     private func configureCreateShippingLabelButton(cell: ButtonTableViewCell, at indexPath: IndexPath) {
@@ -1187,9 +1178,7 @@ extension OrderDetailsDataSource {
         let payment: Section = {
             var rows: [Row] = [.payment]
 
-            if shouldShowCustomerPaidRow {
-                rows.append(.customerPaid)
-            }
+            rows.append(.customerPaid)
 
             if condensedRefunds.isNotEmpty {
                 let refunds = Array<Row>(repeating: .refund, count: condensedRefunds.count)
@@ -1198,7 +1187,6 @@ extension OrderDetailsDataSource {
             }
 
             if isEligibleForPayment {
-                rows.append(.awaitingForPayment)
                 rows.append(.collectCardPaymentButton)
             }
 
@@ -1566,7 +1554,6 @@ extension OrderDetailsDataSource {
         case shippingMethod
         case billingDetail
         case payment
-        case awaitingForPayment
         case customerPaid
         case seeReceipt
         case refund
@@ -1611,8 +1598,6 @@ extension OrderDetailsDataSource {
                 return WooBasicTableViewCell.reuseIdentifier
             case .payment:
                 return LedgerTableViewCell.reuseIdentifier
-            case .awaitingForPayment:
-                return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
             case .customerPaid:
                 return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
             case .seeReceipt:

@@ -54,7 +54,7 @@ struct FeatureAnnouncementCardView: View {
                             .padding(.bottom, Layout.smallSpacing)
                         Text(viewModel.message)
                             .bodyStyle()
-                            .padding(.bottom, viewModel.buttonTitle == nil ? Layout.bottomButtonLessPadding : Layout.largeSpacing)
+                            .padding(.bottom, viewModel.buttonTitle == nil ? Layout.bottomNoButtonPadding : Layout.largeSpacing)
                     }
                     .accessibilityElement(children: .combine)
                     if let buttonTitle = viewModel.buttonTitle {
@@ -82,7 +82,7 @@ extension FeatureAnnouncementCardView {
     enum Layout {
         static let padding: CGFloat = 16
         static let bottomButtonPadding: CGFloat = 23.5
-        static let bottomButtonLessPadding: CGFloat = 60
+        static let bottomNoButtonPadding: CGFloat = 60
         static let smallSpacing: CGFloat = 8
         static let largeSpacing: CGFloat = 16
     }

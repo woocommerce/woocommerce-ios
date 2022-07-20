@@ -12,11 +12,13 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
     private var brokenOrder: Order!
     private var anotherBrokenOrder: Order!
     private var orderWithFees: Order!
+    private var orderPaidWithNoPaymentMethod: Order!
     private var orderWithAPIRefunds: Order!
     private var orderWithTransientRefunds: Order!
     private var brokenOrderViewModel: OrderPaymentDetailsViewModel!
     private var anotherBrokenOrderViewModel: OrderPaymentDetailsViewModel!
     private var orderWithFeesViewModel: OrderPaymentDetailsViewModel!
+    private var orderPaidWithNoPaymentMethodViewModel: OrderPaymentDetailsViewModel!
     private var orderWithAPIRefundsViewModel: OrderPaymentDetailsViewModel!
     private var orderWithTransientRefundsViewModel: OrderPaymentDetailsViewModel!
 
@@ -33,6 +35,9 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
 
         orderWithFees = MockOrders().orderWithFees()
         orderWithFeesViewModel = OrderPaymentDetailsViewModel(order: orderWithFees, currencySettings: CurrencySettings())
+
+        orderPaidWithNoPaymentMethod = MockOrders().orderPaidWithNoPaymentMethod()
+        orderPaidWithNoPaymentMethodViewModel = OrderPaymentDetailsViewModel(order: orderPaidWithNoPaymentMethod)
 
         orderWithAPIRefunds = MockOrders().orderWithAPIRefunds()
         orderWithAPIRefundsViewModel = OrderPaymentDetailsViewModel(order: orderWithAPIRefunds, refund: MockRefunds.sampleRefund())
@@ -120,12 +125,12 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
     }
 
     /// Test the `paymentSummary` calculated property
-    /// returns nil if the payment method title is an empty string
+    /// returns nil if the order is paid but the payment method title is an empty string
     ///
-    func test_order_payment_method_title_returns_nil_if_payment_method_title_is_blank() {
+    func test_order_payment_method_title_returns_nil_when_order_paid_and_payment_method_title_is_blank() {
         let expected = ""
-        XCTAssertEqual(brokenOrder.paymentMethodTitle, expected)
-        XCTAssertNil(brokenOrderViewModel.paymentSummary)
+        XCTAssertEqual(orderPaidWithNoPaymentMethod.paymentMethodTitle, expected)
+        XCTAssertNil(orderPaidWithNoPaymentMethodViewModel.paymentSummary)
     }
 
     /// The `paymentMethodTitle` is used in the `paymentSummary`.
@@ -141,11 +146,14 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.paymentSummary)
     }
 
-    func test_payment_summary_returns_nil_when_date_paid_is_nil() {
-        guard let _ = order.datePaid else {
-            XCTAssertNil(anotherBrokenOrderViewModel.paymentSummary)
-            return
-        }
+    func test_payment_summary_returns_awaiting_payment_message_when_date_paid_is_nil() {
+        XCTAssertNil(brokenOrder.datePaid)
+        XCTAssertNotNil(anotherBrokenOrderViewModel.paymentSummary)
+    }
+
+    func test_payment_summary_returns_payment_summary_message_when_date_paid_is_not_nil() {
+        XCTAssertNotNil(order.datePaid)
+        XCTAssertNotNil(viewModel.paymentSummary)
     }
 
     func test_awaitingPayment_returns_no_payment_method_title_when_paymentMethodTitle_is_empty() {

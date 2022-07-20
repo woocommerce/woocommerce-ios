@@ -58,6 +58,13 @@ struct AuthenticationConstants {
         comment: "Button title. Takes the user to the login by store address flow."
     )
 
+    /// Title of "Sign in with store credentials" button
+    //
+    static let signInWithSiteCredentialsButtonTitle = NSLocalizedString(
+        "Sign in with store credentials",
+        comment: "Button title. Takes the user to the site credentials entry screen."
+    )
+
     /// Title of views in Unified Login
     //
     static let loginTitle = NSLocalizedString(

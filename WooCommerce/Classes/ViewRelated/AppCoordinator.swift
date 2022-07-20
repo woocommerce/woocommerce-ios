@@ -116,6 +116,15 @@ private extension AppCoordinator {
 
     /// Presents onboarding on top of the authentication UI under certain criteria.
     func presentLoginOnboarding() {
+        // Since we cannot control the user defaults in the simulator where UI tests are run on,
+        // login onboarding is not shown in UI tests for now.
+        // If we want to add UI tests for the login onboarding, we can add another launch argument
+        // so that we can show/hide the onboarding screen consistently.
+        let isUITesting: Bool = CommandLine.arguments.contains("-ui_testing")
+        guard isUITesting == false else {
+            return
+        }
+
         guard featureFlagService.isFeatureFlagEnabled(.loginPrologueOnboarding),
         loggedOutAppSettings.hasFinishedOnboarding == false else {
             return

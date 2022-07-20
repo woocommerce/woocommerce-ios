@@ -139,6 +139,7 @@ private extension OrderDetailsViewController {
                                          target: self,
                                          action: #selector(presentActionMenuSheet(_:)))
         menuButton.accessibilityLabel = Localization.ActionsMenu.accessibilityLabel
+        menuButton.accessibilityIdentifier = "order-details-more-actions-button"
         menuButton.isEnabled = viewModel.moreActionsButtons.isNotEmpty
         navigationItem.rightBarButtonItem = menuButton
     }

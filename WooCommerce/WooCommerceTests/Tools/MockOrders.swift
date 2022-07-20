@@ -54,6 +54,13 @@ final class MockOrders {
         makeOrder(fees: sampleFeeLines())
     }
 
+    func orderPaidWithNoPaymentMethod() -> Order {
+        return Order.fake().copy(
+            datePaid: DateFormatter.dateFromString(with: "2018-04-03T23:05:14"),
+            paymentMethodID: "",
+            paymentMethodTitle: "")
+    }
+
     func orderWithAPIRefunds() -> Order {
         makeOrder(refunds: refundsWithNegativeValue())
     }

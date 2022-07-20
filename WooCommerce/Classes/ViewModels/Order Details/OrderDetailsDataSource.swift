@@ -1178,9 +1178,7 @@ extension OrderDetailsDataSource {
         let payment: Section = {
             var rows: [Row] = [.payment]
 
-            if shouldShowCustomerPaidRow {
-                rows.append(.customerPaid)
-            }
+            rows.append(.customerPaid)
 
             if condensedRefunds.isNotEmpty {
                 let refunds = Array<Row>(repeating: .refund, count: condensedRefunds.count)

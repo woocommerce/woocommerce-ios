@@ -14,8 +14,6 @@ struct FeatureAnnouncementCardView: View {
         self.callToAction = callToAction
     }
 
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
-
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {

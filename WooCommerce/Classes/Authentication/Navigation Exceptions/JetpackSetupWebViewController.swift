@@ -101,9 +101,7 @@ extension JetpackSetupWebViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         let navigationURL = navigationAction.request.url?.absoluteString
         switch navigationURL {
-        // There are 2 cases: user can be redirected to the defined mobile_redirect URL or wp-admin home page.
-        // In these cases, we assume that the Jetpack setup has completed.
-        case let .some(url) where url == Constants.mobileRedirectURL || url.hasSuffix(Constants.wpadminPath):
+        case let .some(url) where url == Constants.mobileRedirectURL:
             decisionHandler(.cancel)
             completionHandler()
         default:
@@ -121,7 +119,6 @@ private extension JetpackSetupWebViewController {
         static let jetpackInstallString = "https://wordpress.com/jetpack/connect?url=%@&mobile_redirect=%@&from=mobile"
         // TODO: update this URL with woocommerce:// when https://github.com/Automattic/wp-calypso/pull/65715 is merged.
         static let mobileRedirectURL = "wordpress://jetpack-connection"
-        static let wpadminPath = "/wp-admin/"
     }
 
     enum Localization {

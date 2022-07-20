@@ -181,6 +181,7 @@ private extension SettingsViewController {
             self?.viewModel.onUpsellCardReadersAnnouncementDismiss()
         })
         cell.host(view, parent: self)
+        cell.selectionStyle = .none
     }
 
     func configureInPersonPayments(cell: BasicTableViewCell) {

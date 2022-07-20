@@ -128,7 +128,7 @@ final class AppCoordinatorTests: XCTestCase {
         // Given
         stores.deauthenticate()
         sessionManager.defaultStoreID = 134
-        let loggedOutAppSettings = MockLoggedOutAppSettings(hasInteractedWithOnboarding: false)
+        let loggedOutAppSettings = MockLoggedOutAppSettings(hasFinishedOnboarding: false)
         let featureFlagService = MockFeatureFlagService(isLoginPrologueOnboardingEnabled: true)
         let appCoordinator = makeCoordinator(window: window,
                                              stores: stores,
@@ -148,7 +148,7 @@ final class AppCoordinatorTests: XCTestCase {
         // Given
         stores.deauthenticate()
         sessionManager.defaultStoreID = 134
-        let loggedOutAppSettings = MockLoggedOutAppSettings(hasInteractedWithOnboarding: true)
+        let loggedOutAppSettings = MockLoggedOutAppSettings(hasFinishedOnboarding: true)
         let featureFlagService = MockFeatureFlagService(isLoginPrologueOnboardingEnabled: true)
         let appCoordinator = makeCoordinator(window: window,
                                              stores: stores,
@@ -168,7 +168,7 @@ final class AppCoordinatorTests: XCTestCase {
         // Given
         stores.deauthenticate()
         sessionManager.defaultStoreID = 134
-        let loggedOutAppSettings = MockLoggedOutAppSettings(hasInteractedWithOnboarding: false)
+        let loggedOutAppSettings = MockLoggedOutAppSettings(hasFinishedOnboarding: false)
         let featureFlagService = MockFeatureFlagService(isLoginPrologueOnboardingEnabled: false)
         let appCoordinator = makeCoordinator(window: window,
                                              stores: stores,

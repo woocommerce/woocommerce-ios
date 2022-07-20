@@ -2,16 +2,16 @@ import Foundation
 
 /// Interface for app settings when the app is in logged out state.
 protocol LoggedOutAppSettings {
-    var hasInteractedWithOnboarding: Bool { get }
-    func setHasInteractedWithOnboarding(_ hasInteractedWithOnboarding: Bool)
+    var hasFinishedOnboarding: Bool { get }
+    func setHasFinishedOnboarding(_ hasFinishedOnboarding: Bool)
 }
 
 extension UserDefaults: LoggedOutAppSettings {
-    func setHasInteractedWithOnboarding(_ hasInteractedWithOnboarding: Bool) {
-        set(hasInteractedWithOnboarding, forKey: .hasInteractedWithOnboarding)
+    var hasFinishedOnboarding: Bool {
+        object(forKey: .hasFinishedOnboarding) ?? false
     }
 
-    var hasInteractedWithOnboarding: Bool {
-        object(forKey: .hasInteractedWithOnboarding) ?? false
+    func setHasFinishedOnboarding(_ hasFinishedOnboarding: Bool) {
+        set(hasFinishedOnboarding, forKey: .hasFinishedOnboarding)
     }
 }

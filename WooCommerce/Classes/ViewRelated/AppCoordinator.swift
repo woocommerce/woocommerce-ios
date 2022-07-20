@@ -117,12 +117,12 @@ private extension AppCoordinator {
     /// Presents onboarding on top of the authentication UI under certain criteria.
     func presentLoginOnboarding() {
         guard featureFlagService.isFeatureFlagEnabled(.loginPrologueOnboarding),
-        loggedOutAppSettings.hasInteractedWithOnboarding == false else {
+        loggedOutAppSettings.hasFinishedOnboarding == false else {
             return
         }
         let onboardingViewController = LoginOnboardingViewController { [weak self] in
             guard let self = self else { return }
-            self.loggedOutAppSettings.setHasInteractedWithOnboarding(true)
+            self.loggedOutAppSettings.setHasFinishedOnboarding(true)
             self.window.rootViewController?.dismiss(animated: true)
         }
         onboardingViewController.modalPresentationStyle = .fullScreen

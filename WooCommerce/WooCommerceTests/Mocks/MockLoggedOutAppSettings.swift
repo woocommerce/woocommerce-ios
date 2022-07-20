@@ -1,13 +1,13 @@
 @testable import WooCommerce
 
 final class MockLoggedOutAppSettings: LoggedOutAppSettings {
-    var hasInteractedWithOnboarding: Bool
+    var hasFinishedOnboarding: Bool
 
-    init(hasInteractedWithOnboarding: Bool = false) {
-        self.hasInteractedWithOnboarding = hasInteractedWithOnboarding
+    init(hasFinishedOnboarding: Bool = false) {
+        self.hasFinishedOnboarding = hasFinishedOnboarding
     }
 
-    func setHasInteractedWithOnboarding(_ hasInteractedWithOnboarding: Bool) {
-        self.hasInteractedWithOnboarding = hasInteractedWithOnboarding
+    func setHasFinishedOnboarding(_ hasFinishedOnboarding: Bool) {
+        self.hasFinishedOnboarding = hasFinishedOnboarding
     }
 }

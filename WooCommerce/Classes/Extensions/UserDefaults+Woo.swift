@@ -14,7 +14,7 @@ extension UserDefaults {
         case defaultRoles
         case deviceID
         case deviceToken
-        case hasInteractedWithOnboarding
+        case hasFinishedOnboarding
         case userOptedInAnalytics
         case userOptedInCrashLogging = "userOptedInCrashlytics"
         case versionOfLastRun

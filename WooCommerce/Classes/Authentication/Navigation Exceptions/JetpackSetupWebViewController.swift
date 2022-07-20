@@ -122,7 +122,7 @@ private extension JetpackSetupWebViewController {
     }
 
     enum Localization {
-        static let title = NSLocalizedString("Setup Jetpack", comment: "Title of the Setup Jetpack screen")
-        static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss the Setup Jetpack screen")
+        static let title = NSLocalizedString("Jetpack Setup", comment: "Title of the Jetpack Setup screen")
+        static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss the Jetpack Setup screen")
     }
 }

@@ -60,7 +60,7 @@ struct AuthenticationConstants {
 
     /// Title of "Sign in with store credentials" button
     //
-    static let signInWithSiteCredentialsButtonTitle = NSLocalizedString(
+    static let signInWithSiteCredsButtonTitle = NSLocalizedString(
         "Sign in with store credentials",
         comment: "Button title. Takes the user to the site credentials entry screen."
     )

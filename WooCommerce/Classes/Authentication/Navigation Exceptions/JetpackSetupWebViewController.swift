@@ -145,8 +145,7 @@ extension JetpackSetupWebViewController: WKNavigationDelegate {
 private extension JetpackSetupWebViewController {
     enum Constants {
         static let jetpackInstallString = "https://wordpress.com/jetpack/connect?url=%@&mobile_redirect=%@&from=mobile"
-        // TODO: update this URL with woocommerce:// when https://github.com/Automattic/wp-calypso/pull/65715 is merged.
-        static let mobileRedirectURL = "wordpress://jetpack-connection"
+        static let mobileRedirectURL = "woocommerce://jetpack-connected"
     }
 
     enum JetpackSetupWebSteps: CaseIterable {

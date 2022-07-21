@@ -23,6 +23,7 @@ extension WPStyleGuide {
         static let domainsIconPaddingToRemove: CGFloat = 2.0
         static let domainsIconSize = CGSize(width: 18, height: 18)
         static let verticalLabelSpacing: CGFloat = 10.0
+        static let linkFieldImageIconSize = CGSize(width: 18, height: 22)
     }
 
     /// Calculate the border based on the display
@@ -146,6 +147,20 @@ extension WPStyleGuide {
         attributedString.append(NSAttributedString(string: title))
 
         return NSAttributedString(attributedString: attributedString)
+    }
+
+    /// Creates an attributed string that includes the `linkFieldImage`
+    ///
+    /// - Returns: A properly styled NSAttributedString to be displayed on a NUXButton.
+    ///
+    class func formattedSignInWithSiteCredentialsString() -> NSAttributedString {
+        let image = UIImage.linkFieldImage
+        let title = NSLocalizedString(WordPressAuthenticator.shared.displayStrings.signInWithSiteCredentialsButtonTitle,
+                                      comment: "Button title. Tapping opens the site credentials screen.")
+        return attributedStringwithLogo(image,
+                                        imageSize: Constants.linkFieldImageIconSize,
+                                        title: title,
+                                        titleFont: WPStyleGuide.mediumWeightFont(forStyle: .title3))
     }
 
     /// Creates a button for Self-hosted Login

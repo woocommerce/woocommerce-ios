@@ -716,7 +716,7 @@ private extension GetStartedViewController {
                                             accessibilityIdentifier: ButtonConfiguration.Continue.accessibilityIdentifier,
                                             onTap: handleSubmitButtonTapped)
 
-        buttonViewController.setupBottomButton(title: ButtonConfiguration.SignInWithSiteCredentials.title,
+        buttonViewController.setupBottomButton(attributedTitle: WPStyleGuide.formattedSignInWithSiteCredentialsString(),
                                                isPrimary: false,
                                                accessibilityIdentifier: ButtonConfiguration.SignInWithSiteCredentials.accessibilityIdentifier,
                                                onTap: handleSiteCredentialsButtonTapped)
@@ -837,7 +837,6 @@ private extension GetStartedViewController {
         }
 
         enum SignInWithSiteCredentials {
-            static let title =  WordPressAuthenticator.shared.displayStrings.signInWithSiteCredentialsButtonTitle
             static let accessibilityIdentifier = "Sign in with site credentials Button"
         }
     }

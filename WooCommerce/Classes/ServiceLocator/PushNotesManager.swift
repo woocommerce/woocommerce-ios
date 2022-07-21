@@ -42,9 +42,10 @@ protocol PushNotesManager {
 
     /// Requests Authorization to receive Push Notifications, *only* when the current Status is not determined.
     ///
+    /// - Parameter includesProvisionalAuth: A boolean that indicates whether to request provisional authorization in order to send trial notifications.
     /// - Parameter onCompletion: Closure to be executed on completion. Receives a Boolean indicating if we've got Push Permission.
     ///
-    func ensureAuthorizationIsRequested(onCompletion: ((Bool) -> Void)?)
+    func ensureAuthorizationIsRequested(includesProvisionalAuth: Bool, onCompletion: ((Bool) -> Void)?)
 
     /// Handles Push Notifications Registration Errors. This method unregisters the current device from the WordPress.com
     /// Push Service.

@@ -95,20 +95,20 @@ final class PushNotificationsManager: PushNotesManager {
 //
 extension PushNotificationsManager {
 
-    /// Requests Authorization to receive Push Notifications, *only* when the current Status is not determined.
+    /// Requests Authorization to receive Push Notifications, *only* when the current Status is not determined or provisional.
     ///
     /// - Parameter onCompletion: Closure to be executed on completion. Receives a Boolean indicating if we've got Push Permission.
     ///
-    func ensureAuthorizationIsRequested(onCompletion: ((Bool) -> Void)? = nil) {
+    func ensureAuthorizationIsRequested(includesProvisionalAuth: Bool, onCompletion: ((Bool) -> Void)? = nil) {
         let nc = configuration.userNotificationsCenter
 
         nc.loadAuthorizationStatus(queue: .main) { status in
-            guard status == .notDetermined else {
+            guard status == .notDetermined || status == .provisional else {
                 onCompletion?(status == .authorized)
                 return
             }
 
-            nc.requestAuthorization(queue: .main) { allowed in
+            nc.requestAuthorization(queue: .main, includesProvisionalAuth: includesProvisionalAuth) { allowed in
                 let stat: WooAnalyticsStat = allowed ? .pushNotificationOSAlertAllowed : .pushNotificationOSAlertDenied
                 ServiceLocator.analytics.track(stat)
 

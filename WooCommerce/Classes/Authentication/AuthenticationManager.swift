@@ -266,9 +266,8 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         /// Jetpack is required. Present an error if we don't detect a valid installation for a self-hosted site.
         if let urlFromCredentials = credentials.wpcom?.siteURL ?? credentials.wporg?.siteURL,
-           checkJetpackErrorForSelfHostedSite(url: urlFromCredentials) {
-            presentJetpackError(for: urlFromCredentials, with: credentials, in: navigationController, onDismiss: onDismiss)
-            return
+           isJetpackValidForSelfHostedSite(url: urlFromCredentials) {
+            return presentJetpackError(for: urlFromCredentials, with: credentials, in: navigationController, onDismiss: onDismiss)
         }
 
         // We are currently supporting WPCom credentials only
@@ -410,7 +409,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
 // MARK: - Private helpers
 private extension AuthenticationManager {
-    func checkJetpackErrorForSelfHostedSite(url: String) -> Bool {
+    func isJetpackValidForSelfHostedSite(url: String) -> Bool {
         if let site = currentSelfHostedSite,
            site.url == url, !site.hasValidJetpack {
             return true
@@ -426,7 +425,7 @@ private extension AuthenticationManager {
             self?.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: onDismiss)
         })
         let installJetpackUI = ULErrorViewController(viewModel: viewModel)
-        return navigationController.show(installJetpackUI, sender: nil)
+        navigationController.show(installJetpackUI, sender: nil)
     }
 }
 

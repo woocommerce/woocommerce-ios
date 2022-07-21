@@ -5,18 +5,18 @@ extension WooAnalyticsEvent {
             static let isFinalFeaturePage = "is_final_page"
         }
 
-        /// Tracked when the store stats are loaded with fresh data either via first load, event driven refresh, or manual refresh.
+        /// Tracked when login onboarding is shown in the app.
         static func loginOnboardingShown() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .loginOnboardingShown, properties: [:])
         }
 
-        /// Tracked when the date range on the store stats view changes.
-        /// - Parameter isFinalPage: <#isFinalPage description#>
+        /// Tracked when the user taps on the “Next” button on the login onboarding screen to see the next app feature or continue to the prologue screen.
+        /// - Parameter isFinalPage: whether the user taps the “Next” button on the final page of the feature.
         static func loginOnboardingNextButtonTapped(isFinalPage: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .loginOnboardingNextButtonTapped, properties: [Keys.isFinalFeaturePage: isFinalPage])
         }
 
-        /// Tracked when the top performers are loaded with fresh data either via first load, event driven refresh, or manual refresh.
+        /// Tracked when the user taps on the “Skip” button on the login onboarding screen to enter the prologue screen.
         static func loginOnboardingSkipButtonTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .loginOnboardingSkipButtonTapped, properties: [:])
         }

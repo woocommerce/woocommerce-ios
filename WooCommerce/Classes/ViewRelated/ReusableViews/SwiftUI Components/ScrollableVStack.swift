@@ -4,15 +4,18 @@ import SwiftUI
 ///
 struct ScrollableVStack<Content: View>: View {
     let alignment: HorizontalAlignment
+    let padding: CGFloat
     let spacing: CGFloat?
     let content: Content
 
     init(
         alignment: HorizontalAlignment = .center,
+        padding: CGFloat = 24,
         spacing: CGFloat? = nil,
         @ViewBuilder content: () -> Content
     ) {
         self.alignment = alignment
+        self.padding = padding
         self.spacing = spacing
         self.content = content()
     }
@@ -23,7 +26,7 @@ struct ScrollableVStack<Content: View>: View {
                 VStack(alignment: alignment, spacing: spacing) {
                     content
                 }
-                .padding(24)
+                .padding(padding)
                 .frame(minWidth: geometry.size.width, minHeight: geometry.size.height)
             }
         }

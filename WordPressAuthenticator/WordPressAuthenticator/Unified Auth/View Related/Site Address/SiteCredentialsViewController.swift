@@ -468,6 +468,7 @@ extension SiteCredentialsViewController {
 
         guard let loginFields = makeLoginFieldsUsing(xmlrpc: xmlrpc, options: options) else {
             DDLogError("Unexpected response from .org site credentials sign in using XMLRPC.")
+            showLoginEpilogue(for: credentials)
             return
         }
 

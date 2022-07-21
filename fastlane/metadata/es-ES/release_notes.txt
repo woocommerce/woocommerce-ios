@@ -1,1 +1,0 @@
-¿Sabías que estamos trabajando en una nueva función para gestionar cupones? Dirígete a la pestaña Menú, toca el icono de ajustes y desplázate hasta las funciones experimentales. En esta versión, hemos corregido un problema que se producía al editar los campos "Uso individual" y "Excluir artículos rebajados". ¡Pruébalo y danos tu opinión!

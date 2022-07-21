@@ -38,15 +38,17 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .inPersonPaymentGatewaySelection:
             return true
         case .unifiedOrderEditing:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .backgroundProductImageUpload:
             return true
-        case .consolidatedCardReaderManuals:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .appleIDAccountDeletion:
             return true
         case .newToWooCommerceLinkInLoginPrologue:
             return true
+        case .orderCustomFields:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .loginPrologueOnboarding:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

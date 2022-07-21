@@ -8,6 +8,7 @@ import Experiments
 ///
 final class LoginPrologueViewController: UIViewController {
     private let isNewToWooCommerceButtonShown: Bool
+    private let isOnboardingFeatureEnabled: Bool
     private let analytics: Analytics
 
     /// Background View, to be placed surrounding the bottom area.
@@ -37,6 +38,7 @@ final class LoginPrologueViewController: UIViewController {
     init(analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         isNewToWooCommerceButtonShown = featureFlagService.isFeatureFlagEnabled(.newToWooCommerceLinkInLoginPrologue)
+        isOnboardingFeatureEnabled = featureFlagService.isFeatureFlagEnabled(.loginPrologueOnboarding)
         self.analytics = analytics
         super.init(nibName: nil, bundle: nil)
     }
@@ -88,7 +90,8 @@ private extension LoginPrologueViewController {
     /// This is contained in a child view so that this view's background doesn't scroll.
     ///
     func setupCarousel(isNewToWooCommerceButtonShown: Bool) {
-        let carousel = LoginProloguePageViewController()
+        let pageTypes: [LoginProloguePageType] = isOnboardingFeatureEnabled ? [.getStarted] : [.stats, .orderManagement, .products, .reviews]
+        let carousel = LoginProloguePageViewController(pageTypes: pageTypes, showsSubtitle: isOnboardingFeatureEnabled)
         carousel.view.translatesAutoresizingMaskIntoConstraints = false
 
         addChild(carousel)
@@ -131,8 +134,7 @@ private extension LoginPrologueViewController {
 private extension LoginPrologueViewController {
     enum Constants {
         static let spacingBetweenCarouselAndNewToWooCommerceButton: CGFloat = 20
-        // TODO: 7231 - update URL if needed
-        static let newToWooCommerceURL = "https://woocommerce.com/guides/new-store"
+        static let newToWooCommerceURL = "https://woocommerce.com/document/woocommerce-features"
     }
 
     enum Localization {

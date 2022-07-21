@@ -11,6 +11,8 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let inPersonPaymentGatewaySelection: Bool
     private let isAppleIDAccountDeletionEnabled: Bool
     private let isBackgroundImageUploadEnabled: Bool
+    private let isOrderCustomFieldsEnabled: Bool
+    private let isLoginPrologueOnboardingEnabled: Bool
 
     init(isJetpackConnectionPackageSupportOn: Bool = false,
          isHubMenuOn: Bool = false,
@@ -20,7 +22,9 @@ struct MockFeatureFlagService: FeatureFlagService {
          shippingLabelsOnboardingM1: Bool = false,
          inPersonPaymentGatewaySelection: Bool = false,
          isAppleIDAccountDeletionEnabled: Bool = false,
-         isBackgroundImageUploadEnabled: Bool = false) {
+         isBackgroundImageUploadEnabled: Bool = false,
+         isOrderCustomFieldsEnabled: Bool = false,
+         isLoginPrologueOnboardingEnabled: Bool = false) {
         self.isJetpackConnectionPackageSupportOn = isJetpackConnectionPackageSupportOn
         self.isHubMenuOn = isHubMenuOn
         self.isInboxOn = isInboxOn
@@ -30,6 +34,8 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.inPersonPaymentGatewaySelection = inPersonPaymentGatewaySelection
         self.isAppleIDAccountDeletionEnabled = isAppleIDAccountDeletionEnabled
         self.isBackgroundImageUploadEnabled = isBackgroundImageUploadEnabled
+        self.isOrderCustomFieldsEnabled = isOrderCustomFieldsEnabled
+        self.isLoginPrologueOnboardingEnabled = isLoginPrologueOnboardingEnabled
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -52,6 +58,10 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isAppleIDAccountDeletionEnabled
         case .backgroundProductImageUpload:
             return isBackgroundImageUploadEnabled
+        case .orderCustomFields:
+            return isOrderCustomFieldsEnabled
+        case .loginPrologueOnboarding:
+            return isLoginPrologueOnboardingEnabled
         default:
             return false
         }

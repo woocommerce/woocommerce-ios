@@ -34,10 +34,17 @@ final class OrderDetailsDataSourceTests: XCTestCase {
     func test_payment_section_is_shown_right_after_the_products_and_refunded_products_sections() {
         // Given
         let order = makeOrder()
+        let mockFeatureFlagService = MockFeatureFlagService(isOrderCustomFieldsEnabled: false)
 
         insert(refund: makeRefund(orderID: order.orderID, siteID: order.siteID))
 
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(
+            order: order,
+            storageManager: storageManager,
+            cardPresentPaymentsConfiguration: Mocks.configuration,
+            featureFlags: mockFeatureFlagService
+        )
+
         dataSource.configureResultsControllers { }
 
         // When
@@ -57,7 +64,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertEqual(actualTitles, expectedTitles)
     }
 
-    func test_reloadSections_when_there_is_no_paid_date_then_customer_paid_row_is_hidden() throws {
+    func test_reloadSections_when_there_is_no_paid_date_then_customer_paid_row_is_visible() throws {
         // Given
         let order = Order.fake()
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
@@ -68,7 +75,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Then
         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
         let customerPaidRow = row(row: .customerPaid, in: paymentSection)
-        XCTAssertNil(customerPaidRow)
+        XCTAssertNotNil(customerPaidRow)
     }
 
     func test_reloadSections_when_there_is_a_paid_date_then_customer_paid_row_is_visible() throws {
@@ -99,27 +106,9 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNotNil(issueRefundRow)
     }
 
-    func test_refund_button_is_not_visible_when_order_needs_payment() throws {
+    func test_refund_button_is_not_visible_when_there_is_no_date_paid() throws {
         // Given
-        let order = makeOrder().copy(needsPayment: true)
-        let orderRefundsOptionsDeterminer = MockOrderRefundsOptionsDeterminer(isAnythingToRefund: true)
-        let dataSource = OrderDetailsDataSource(order: order,
-                                                storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                refundableOrderItemsDeterminer: orderRefundsOptionsDeterminer)
-
-        // When
-        dataSource.reloadSections()
-
-        // Then
-        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
-        let issueRefundRow = row(row: .issueRefundButton, in: paymentSection)
-        XCTAssertNil(issueRefundRow)
-    }
-
-    func test_refund_button_is_not_visible_when_order_is_editable() throws {
-        // Given
-        let order = makeOrder().copy(isEditable: true)
+        let order = makeOrder().copy(datePaid: .some(nil))
         let orderRefundsOptionsDeterminer = MockOrderRefundsOptionsDeterminer(isAnythingToRefund: true)
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
@@ -192,8 +181,8 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Then
         let productsSection = try section(withTitle: Title.products, from: dataSource)
-        XCTAssertNotNil(row(row: .shippingLabelCreationInfo(showsSeparator: true), in: productsSection))
         XCTAssertNotNil(row(row: .markCompleteButton(style: .secondary, showsBottomSpacing: false), in: productsSection))
+        XCTAssertNotNil(row(row: .shippingLabelCreationInfo(showsSeparator: false), in: productsSection))
     }
 
     func test_markOrderComplete_button_is_hidden_if_order_is_not_processing() throws {
@@ -210,9 +199,9 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(row(row: .markCompleteButton(style: .secondary, showsBottomSpacing: false), in: productsSection))
     }
 
-    func test_reloadSections_when_order_does_not_need_payment_then_isEligibleForPayment_is_false_and_collect_payment_button_is_not_visible() throws {
+    func test_reloadSections_when_isEligibleForPayment_is_false_then_collect_payment_button_is_not_visible() throws {
         //Given
-        let order = makeOrder().copy(needsPayment: false) // Paid orders are not eligible for payment
+        let order = makeOrder().copy(datePaid: .some(Date())) // Paid orders are not eligible for payment
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
 
         // When
@@ -220,12 +209,11 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Then
         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
-        XCTAssertFalse(dataSource.isEligibleForPayment)
         XCTAssertNil(row(row: .collectCardPaymentButton, in: paymentSection))
     }
 
-    func test_reloadSections_when_order_needs_payment_then_isEligibleForPayment_is_true_and_collect_payment_button_is_visible() throws {
-        // Given
+    func test_reloadSections_when_isEligibleForPayment_is_true_then_collect_payment_button_is_visible() throws {
+        //Given
         let order = makeOrder().copy(needsPayment: true) // Unpaid orders are eligible for payment
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
 
@@ -234,7 +222,6 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Then
         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
-        XCTAssertTrue(dataSource.isEligibleForPayment)
         XCTAssertNotNil(row(row: .collectCardPaymentButton, in: paymentSection))
     }
 
@@ -306,9 +293,9 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(createShippingLabelRow)
     }
 
-    func test_create_shipping_label_button_is_not_visible_when_order_needs_payment() throws {
+    func test_create_shipping_label_button_is_not_visible_when_order_is_eligible_for_payment() throws {
         // Given
-        let order = makeOrder().copy(needsPayment: true)
+        let order = makeOrder().copy(needsPayment: true, status: .processing, total: "100")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.isEligibleForShippingLabelCreation = true
 
@@ -476,7 +463,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         }
     }
 
-    func test_more_button_is_not_visible_in_product_section_for_cash_on_delivery_order() throws {
+    func test_morel_button_is_not_visible_in_product_section_for_cash_on_delivery_order() throws {
         // Given
         let order = makeOrder().copy(status: .processing, datePaid: .some(nil), total: "100", paymentMethodID: "cod")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
@@ -492,6 +479,64 @@ final class OrderDetailsDataSourceTests: XCTestCase {
             XCTFail("Product section should not show button on the header for cash on delivery order")
             return
         }
+    }
+
+    func test_custom_fields_button_is_visible() throws {
+        // Given
+        let mockFeatureFlagService = MockFeatureFlagService(isOrderCustomFieldsEnabled: true)
+        let order = MockOrders().makeOrder(customFields: [
+            OrderMetaData(metadataID: 123, key: "Key", value: "Value")
+        ])
+        let dataSource = OrderDetailsDataSource(
+            order: order, storageManager: storageManager,
+            cardPresentPaymentsConfiguration: Mocks.configuration,
+            featureFlags: mockFeatureFlagService
+        )
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let customFieldSection = section(withCategory: .customFields, from: dataSource)
+        XCTAssertNotNil(customFieldSection)
+    }
+
+    func test_custom_fields_button_is_hidden_when_order_contains_no_custom_fields_to_display() throws {
+        // Given
+        let mockFeatureFlagService = MockFeatureFlagService(isOrderCustomFieldsEnabled: true)
+        let order = MockOrders().makeOrder(customFields: [])
+        let dataSource = OrderDetailsDataSource(
+            order: order, storageManager: storageManager,
+            cardPresentPaymentsConfiguration: Mocks.configuration,
+            featureFlags: mockFeatureFlagService
+        )
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let customFieldSection = section(withCategory: .customFields, from: dataSource)
+        XCTAssertNil(customFieldSection)
+    }
+
+    func test_custom_fields_button_is_hidden_when_feature_flag_is_disabled() throws {
+        // Given
+        let mockFeatureFlagService = MockFeatureFlagService(isOrderCustomFieldsEnabled: false)
+        let order = MockOrders().makeOrder(customFields: [
+            OrderMetaData(metadataID: 123, key: "Key", value: "Value")
+        ])
+        let dataSource = OrderDetailsDataSource(
+            order: order, storageManager: storageManager,
+            cardPresentPaymentsConfiguration: Mocks.configuration,
+            featureFlags: mockFeatureFlagService
+        )
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let customFieldSection = section(withCategory: .customFields, from: dataSource)
+        XCTAssertNil(customFieldSection)
     }
 }
 

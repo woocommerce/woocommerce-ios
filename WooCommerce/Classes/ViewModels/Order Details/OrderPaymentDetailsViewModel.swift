@@ -88,19 +88,17 @@ final class OrderPaymentDetailsViewModel {
     /// - returns: A full sentence summary of how much (if any) was paid, when, and using what method.
     ///
     /// It reads: `Awaiting payment via Credit Card (Stripe)`
-    /// or: `Nov 19, 2019 via Credit Card (Stripe)`
-    /// or is left blank by returning nil.
+    /// or: `Payment on Nov 19, 2019 via Credit Card (Stripe)`
+    /// or is left blank if is paid, but has no payment method title associated.
     ///
     var paymentSummary: String? {
-        if order.paymentMethodTitle.isEmpty {
-            return nil
-        }
 
         guard let datePaid = order.datePaid else {
-            return String.localizedStringWithFormat(
-                NSLocalizedString("Awaiting payment via %@",
-                                  comment: "Awaiting payment via (payment method title)"),
-                order.paymentMethodTitle)
+            return awaitingPaymentTitle
+        }
+
+        if order.paymentMethodTitle.isEmpty {
+            return nil
         }
 
         let styleDate = datePaid.toString(dateStyle: .medium, timeStyle: .none)
@@ -109,6 +107,21 @@ final class OrderPaymentDetailsViewModel {
             comment: "Payment on <date> received via (payment method title)")
 
         return String.localizedStringWithFormat(template, styleDate, order.paymentMethodTitle)
+    }
+
+    /// Awaiting payment
+    ///
+    private var awaitingPaymentTitle: String? {
+        if order.paymentMethodTitle.isEmpty {
+            return String.localizedStringWithFormat(
+                NSLocalizedString("Awaiting payment", comment: "The title on the payment row of the Order Details screen when the payment is still pending"))
+        }
+        return String.localizedStringWithFormat(
+            NSLocalizedString("Awaiting payment via %@",
+                              comment: "The title on the payment row of the Order Details screen" +
+                              "when the payment for a specific payment method is still pending." +
+                              "Reads like: Awaiting payment via Stripe."),
+            order.paymentMethodTitle)
     }
 
     /// Refund Summary

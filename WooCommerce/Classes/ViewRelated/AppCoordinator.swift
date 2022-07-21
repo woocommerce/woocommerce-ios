@@ -1,4 +1,5 @@
 import Combine
+import Experiments
 import UIKit
 import Yosemite
 import class AutomatticTracks.CrashLogging
@@ -13,6 +14,8 @@ final class AppCoordinator {
     private let stores: StoresManager
     private let authenticationManager: Authentication
     private let roleEligibilityUseCase: RoleEligibilityUseCaseProtocol
+    private let loggedOutAppSettings: LoggedOutAppSettingsProtocol
+    private let featureFlagService: FeatureFlagService
 
     private var storePickerCoordinator: StorePickerCoordinator?
     private var cancellable: AnyCancellable?
@@ -21,7 +24,9 @@ final class AppCoordinator {
     init(window: UIWindow,
          stores: StoresManager = ServiceLocator.stores,
          authenticationManager: Authentication = ServiceLocator.authenticationManager,
-         roleEligibilityUseCase: RoleEligibilityUseCaseProtocol = RoleEligibilityUseCase()) {
+         roleEligibilityUseCase: RoleEligibilityUseCaseProtocol = RoleEligibilityUseCase(),
+         loggedOutAppSettings: LoggedOutAppSettingsProtocol = LoggedOutAppSettings(userDefaults: .standard),
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.window = window
         self.tabBarController = {
             let storyboard = UIStoryboard(name: "Main", bundle: nil) // Main is the name of storyboard
@@ -33,6 +38,8 @@ final class AppCoordinator {
         self.stores = stores
         self.authenticationManager = authenticationManager
         self.roleEligibilityUseCase = roleEligibilityUseCase
+        self.loggedOutAppSettings = loggedOutAppSettings
+        self.featureFlagService = featureFlagService
     }
 
     func start() {
@@ -109,11 +116,23 @@ private extension AppCoordinator {
 
     /// Presents onboarding on top of the authentication UI under certain criteria.
     func presentLoginOnboarding() {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginPrologueOnboarding) else {
+        // Since we cannot control the user defaults in the simulator where UI tests are run on,
+        // login onboarding is not shown in UI tests for now.
+        // If we want to add UI tests for the login onboarding, we can add another launch argument
+        // so that we can show/hide the onboarding screen consistently.
+        let isUITesting: Bool = CommandLine.arguments.contains("-ui_testing")
+        guard isUITesting == false else {
+            return
+        }
+
+        guard featureFlagService.isFeatureFlagEnabled(.loginPrologueOnboarding),
+        loggedOutAppSettings.hasFinishedOnboarding == false else {
             return
         }
         let onboardingViewController = LoginOnboardingViewController { [weak self] in
-            self?.window.rootViewController?.dismiss(animated: true)
+            guard let self = self else { return }
+            self.loggedOutAppSettings.setHasFinishedOnboarding(true)
+            self.window.rootViewController?.dismiss(animated: true)
         }
         onboardingViewController.modalPresentationStyle = .fullScreen
         onboardingViewController.modalTransitionStyle = .crossDissolve

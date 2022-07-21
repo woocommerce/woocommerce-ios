@@ -149,6 +149,7 @@
 		0247F50E286E6CCD009C177E /* MockProductImageActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0247F50D286E6CCD009C177E /* MockProductImageActionHandler.swift */; };
 		0247F510286E7D26009C177E /* ProductVariationFormViewModel+ImageUploaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0247F50F286E7D26009C177E /* ProductVariationFormViewModel+ImageUploaderTests.swift */; };
 		0247F512286F73EA009C177E /* WooAnalyticsEvent+ImageUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0247F511286F73EA009C177E /* WooAnalyticsEvent+ImageUpload.swift */; };
+		0248042D2887C92A00991319 /* MockLoggedOutAppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0248042C2887C92A00991319 /* MockLoggedOutAppSettings.swift */; };
 		02482A8B237BE8C7007E73ED /* LinkSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02482A89237BE8C7007E73ED /* LinkSettingsViewController.swift */; };
 		02482A8C237BE8C7007E73ED /* LinkSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02482A8A237BE8C7007E73ED /* LinkSettingsViewController.xib */; };
 		02482A8E237BEAE9007E73ED /* AztecLinkFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02482A8D237BEAE9007E73ED /* AztecLinkFormatBarCommand.swift */; };
@@ -199,6 +200,7 @@
 		025C006B2550DE4700FAC222 /* BarcodeScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025C00672550DE4700FAC222 /* BarcodeScannerViewController.swift */; };
 		025C00BA25514A7100FAC222 /* BarcodeScannerFrameScaler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025C00B925514A7100FAC222 /* BarcodeScannerFrameScaler.swift */; };
 		025C00CC2551524300FAC222 /* BarcodeScannerFrameScalerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025C00CB2551524300FAC222 /* BarcodeScannerFrameScalerTests.swift */; };
+		025CA1A62887D17A00CCBB25 /* LoggedOutAppSettingsProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025CA1A52887D17A00CCBB25 /* LoggedOutAppSettingsProtocol.swift */; };
 		025E32BC251D8FEF00685C4A /* ProductFormDataModel+ProductsTabProductViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025E32BB251D8FEF00685C4A /* ProductFormDataModel+ProductsTabProductViewModel.swift */; };
 		025FA38B2522CB4D0054CA57 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025FA38A2522CB4D0054CA57 /* AppCoordinator.swift */; };
 		025FDD3223717D2900824006 /* EditorFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025FDD3123717D2900824006 /* EditorFactory.swift */; };
@@ -231,6 +233,7 @@
 		026D4A24280461960090164F /* CollectOrderPaymentUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026D4A23280461960090164F /* CollectOrderPaymentUseCaseTests.swift */; };
 		0270F47624D005B00005210A /* ProductFormViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0270F47524D005B00005210A /* ProductFormViewModelProtocol.swift */; };
 		0270F47824D006F60005210A /* ProductFormPresentationStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0270F47724D006F60005210A /* ProductFormPresentationStyle.swift */; };
+		0271125D2887D4E900FCD13C /* LoggedOutAppSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0271125C2887D4E900FCD13C /* LoggedOutAppSettingsTests.swift */; };
 		0271139A24DD15D800574A07 /* ProductsTabProductViewModel+VariationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0271139924DD15D800574A07 /* ProductsTabProductViewModel+VariationTests.swift */; };
 		0271E1642509C66200633F7A /* DefaultProductFormTableViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0271E1632509C66200633F7A /* DefaultProductFormTableViewModelTests.swift */; };
 		0272C00322EE9C3200D7CA2C /* AsyncDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0272C00222EE9C3200D7CA2C /* AsyncDictionary.swift */; };
@@ -1654,6 +1657,7 @@
 		DE8C94662646990000C94823 /* PluginListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8C94652646990000C94823 /* PluginListViewController.swift */; };
 		DE8C946E264699B600C94823 /* PluginListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8C946D264699B600C94823 /* PluginListViewModel.swift */; };
 		DEA4269A2875440500265B0C /* PaymentMethodsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA426992875440500265B0C /* PaymentMethodsScreen.swift */; };
+		DEBC3136287E9A5B00337AB5 /* JetpackSetupWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEBC3134287E9A5B00337AB5 /* JetpackSetupWebViewController.swift */; };
 		DEC1508227F450AC00F4487C /* CouponAllowedEmails.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC1508127F450AC00F4487C /* CouponAllowedEmails.swift */; };
 		DEC2961F26BD1605005A056B /* ShippingLabelCustomsFormListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2961E26BD1605005A056B /* ShippingLabelCustomsFormListViewModel.swift */; };
 		DEC2962126BD1627005A056B /* ShippingLabelCustomsFormList.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2962026BD1627005A056B /* ShippingLabelCustomsFormList.swift */; };
@@ -1950,6 +1954,7 @@
 		0247F50D286E6CCD009C177E /* MockProductImageActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductImageActionHandler.swift; sourceTree = "<group>"; };
 		0247F50F286E7D26009C177E /* ProductVariationFormViewModel+ImageUploaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductVariationFormViewModel+ImageUploaderTests.swift"; sourceTree = "<group>"; };
 		0247F511286F73EA009C177E /* WooAnalyticsEvent+ImageUpload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+ImageUpload.swift"; sourceTree = "<group>"; };
+		0248042C2887C92A00991319 /* MockLoggedOutAppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockLoggedOutAppSettings.swift; sourceTree = "<group>"; };
 		02482A89237BE8C7007E73ED /* LinkSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkSettingsViewController.swift; sourceTree = "<group>"; };
 		02482A8A237BE8C7007E73ED /* LinkSettingsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LinkSettingsViewController.xib; sourceTree = "<group>"; };
 		02482A8D237BEAE9007E73ED /* AztecLinkFormatBarCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecLinkFormatBarCommand.swift; sourceTree = "<group>"; };
@@ -2000,6 +2005,7 @@
 		025C00672550DE4700FAC222 /* BarcodeScannerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarcodeScannerViewController.swift; sourceTree = "<group>"; };
 		025C00B925514A7100FAC222 /* BarcodeScannerFrameScaler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerFrameScaler.swift; sourceTree = "<group>"; };
 		025C00CB2551524300FAC222 /* BarcodeScannerFrameScalerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerFrameScalerTests.swift; sourceTree = "<group>"; };
+		025CA1A52887D17A00CCBB25 /* LoggedOutAppSettingsProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedOutAppSettingsProtocol.swift; sourceTree = "<group>"; };
 		025E32BB251D8FEF00685C4A /* ProductFormDataModel+ProductsTabProductViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormDataModel+ProductsTabProductViewModel.swift"; sourceTree = "<group>"; };
 		025FA38A2522CB4D0054CA57 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
 		025FDD3123717D2900824006 /* EditorFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorFactory.swift; sourceTree = "<group>"; };
@@ -2033,6 +2039,7 @@
 		0270C0A827069BEF00FC799F /* Experiments.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Experiments.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0270F47524D005B00005210A /* ProductFormViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormViewModelProtocol.swift; sourceTree = "<group>"; };
 		0270F47724D006F60005210A /* ProductFormPresentationStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormPresentationStyle.swift; sourceTree = "<group>"; };
+		0271125C2887D4E900FCD13C /* LoggedOutAppSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedOutAppSettingsTests.swift; sourceTree = "<group>"; };
 		0271139924DD15D800574A07 /* ProductsTabProductViewModel+VariationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductsTabProductViewModel+VariationTests.swift"; sourceTree = "<group>"; };
 		0271E1632509C66200633F7A /* DefaultProductFormTableViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultProductFormTableViewModelTests.swift; sourceTree = "<group>"; };
 		0272C00222EE9C3200D7CA2C /* AsyncDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncDictionary.swift; sourceTree = "<group>"; };
@@ -3471,6 +3478,7 @@
 		DE8C94652646990000C94823 /* PluginListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginListViewController.swift; sourceTree = "<group>"; };
 		DE8C946D264699B600C94823 /* PluginListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginListViewModel.swift; sourceTree = "<group>"; };
 		DEA426992875440500265B0C /* PaymentMethodsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethodsScreen.swift; sourceTree = "<group>"; };
+		DEBC3134287E9A5B00337AB5 /* JetpackSetupWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackSetupWebViewController.swift; sourceTree = "<group>"; };
 		DEC1508127F450AC00F4487C /* CouponAllowedEmails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponAllowedEmails.swift; sourceTree = "<group>"; };
 		DEC2961E26BD1605005A056B /* ShippingLabelCustomsFormListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormListViewModel.swift; sourceTree = "<group>"; };
 		DEC2962026BD1627005A056B /* ShippingLabelCustomsFormList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormList.swift; sourceTree = "<group>"; };
@@ -5954,6 +5962,7 @@
 				EECB7EDF2862115C0028C888 /* MockProductImageUploader.swift */,
 				EEEA41F12869A5F400AEFC4B /* MockProductImagesProductIDUpdater.swift */,
 				0247F50D286E6CCD009C177E /* MockProductImageActionHandler.swift */,
+				0248042C2887C92A00991319 /* MockLoggedOutAppSettings.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -6606,6 +6615,7 @@
 				02DE5CAA279F8754007CBEF3 /* Double+RoundingTests.swift */,
 				02645D8927BA2EDB0065DC68 /* NSAttributedString+AttributesTests.swift */,
 				B9B6DEF0283F8EB100901FB7 /* SitePluginsURLTests.swift */,
+				0271125C2887D4E900FCD13C /* LoggedOutAppSettingsTests.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -6689,6 +6699,7 @@
 				CC6923AB26010D8D002FB669 /* LoginProloguePageViewController.swift */,
 				CC69236126010946002FB669 /* LoginProloguePages.swift */,
 				02FE1B9E287F51F400EC03B3 /* LoginOnboardingViewController.swift */,
+				025CA1A52887D17A00CCBB25 /* LoggedOutAppSettingsProtocol.swift */,
 			);
 			path = Prologue;
 			sourceTree = "<group>";
@@ -7857,6 +7868,7 @@
 				FE28F7102684CA29004465C7 /* RoleErrorViewController.swift */,
 				FE28F7112684CA29004465C7 /* RoleErrorViewController.xib */,
 				FE28F7172684EE6A004465C7 /* RoleErrorViewModel.swift */,
+				DEBC3134287E9A5B00337AB5 /* JetpackSetupWebViewController.swift */,
 			);
 			path = "Navigation Exceptions";
 			sourceTree = "<group>";
@@ -9088,6 +9100,7 @@
 				74460D4022289B7600D7316A /* Coordinator.swift in Sources */,
 				B57C743D20F5493300EEFC87 /* AccountHeaderView.swift in Sources */,
 				31AD0B1126E9575F000B6391 /* CardPresentModalConnectingFailed.swift in Sources */,
+				DEBC3136287E9A5B00337AB5 /* JetpackSetupWebViewController.swift in Sources */,
 				576EA39425264C9B00AFC0B3 /* RefundConfirmationViewModel.swift in Sources */,
 				DEC51B00276AEE91009F3DF4 /* SystemStatusReportViewModel.swift in Sources */,
 				CC4A4E962655273D00B75DCD /* ShippingLabelPaymentMethods.swift in Sources */,
@@ -9263,6 +9276,7 @@
 				CE1EC8F120B8A408009762BF /* OrderNoteTableViewCell.swift in Sources */,
 				D8C11A5E22E2440400D4A88D /* OrderPaymentDetailsViewModel.swift in Sources */,
 				D8B4D5F226C2CF5B00F34E94 /* InPersonPaymentsStripeAccountOverdueView.swift in Sources */,
+				025CA1A62887D17A00CCBB25 /* LoggedOutAppSettingsProtocol.swift in Sources */,
 				021E2A1E23AA24C600B1DE07 /* StringInputFormatter.swift in Sources */,
 				CC440E1E2770C6AF0074C264 /* ProductInOrderViewModel.swift in Sources */,
 				D8D15F83230A17A000D48B3F /* ServiceLocator.swift in Sources */,
@@ -10101,6 +10115,7 @@
 				746791632108D7C0007CF1DC /* WooAnalyticsTests.swift in Sources */,
 				2667BFDD252F61C5008099D4 /* RefundShippingDetailsViewModelTests.swift in Sources */,
 				DE7B479727A3C4980018742E /* CouponDetailsViewModelTests.swift in Sources */,
+				0271125D2887D4E900FCD13C /* LoggedOutAppSettingsTests.swift in Sources */,
 				74F3015A2200EC0800931B9E /* NSDecimalNumberWooTests.swift in Sources */,
 				D85136CD231E15B800DD0539 /* MockReviews.swift in Sources */,
 				2655905B27863D1300BB8457 /* MockCollectOrderPaymentUseCase.swift in Sources */,
@@ -10289,6 +10304,7 @@
 				45DB706C26161F970064A6CF /* DecimalWooTests.swift in Sources */,
 				CCE4CD172667EBB100E09FD4 /* ShippingLabelPaymentMethodsViewModelTests.swift in Sources */,
 				45AF9DA5265CEA89001EB794 /* ShippingLabelCarriersViewModelTests.swift in Sources */,
+				0248042D2887C92A00991319 /* MockLoggedOutAppSettings.swift in Sources */,
 				B56BBD16214820A70053A32D /* SyncCoordinatorTests.swift in Sources */,
 				02A275C023FE58F6005C560F /* MockImageCache.swift in Sources */,
 				261AA30E275506DE009530FE /* PaymentMethodsViewModelTests.swift in Sources */,

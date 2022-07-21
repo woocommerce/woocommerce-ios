@@ -380,7 +380,14 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
         let attributes = try container.decode([ProductAttribute].self, forKey: .attributes)
         let defaultAttributes = try container.decode([ProductDefaultAttribute].self, forKey: .defaultAttributes)
-        let variations = try container.decode([Int64].self, forKey: .variations)
+        let variations: [Int64] = {
+            do {
+                return try container.decode([Int64].self, forKey: .variations)
+            } catch {
+                DDLogError("⛔️ Error parsing `variations` for `Product`: \(error)")
+                return []
+            }
+        }()
         let groupedProducts = try container.decode([Int64].self, forKey: .groupedProducts)
 
         let menuOrder = try container.decode(Int.self, forKey: .menuOrder)

@@ -110,6 +110,13 @@ final class OrdersRootViewController: UIViewController {
         super.viewWillAppear(animated)
 
         ServiceLocator.pushNotesManager.resetBadgeCount(type: .storeOrder)
+        updateUpsellCardUpsellCardReaderFeatureAnnouncementVisibility()
+    }
+
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+
+        updateUpsellCardUpsellCardReaderFeatureAnnouncementVisibility()
     }
 
     override var shouldShowOfflineBanner: Bool {
@@ -276,7 +283,15 @@ private extension OrdersRootViewController {
         upsellCardReaderFeatureAnnouncementView.removeFromSuperview()
         upsellCardReaderFeatureAnnouncementViewController.removeFromParent()
 
+        self.upsellCardReaderFeatureAnnouncementViewController = nil
         stackView.setCustomSpacing(0, after: filtersBar)
+    }
+
+    func updateUpsellCardUpsellCardReaderFeatureAnnouncementVisibility() {
+        let shouldBeShown = UIDevice.current.orientation.isPortrait
+
+        upsellCardReaderFeatureAnnouncementViewController?.view.isHidden = !shouldBeShown
+        stackView.setCustomSpacing(shouldBeShown ? UIStackView.spacingUseSystem : 0, after: filtersBar)
     }
 
     func configureChildViewController() {

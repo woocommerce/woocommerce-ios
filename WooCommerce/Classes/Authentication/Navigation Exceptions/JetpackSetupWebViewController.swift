@@ -97,21 +97,26 @@ private extension JetpackSetupWebViewController {
         let request = URLRequest(url: url)
         webView.load(request)
     }
+
+    func handleSetupCompletion() {
+        activityIndicator.startAnimating()
+        // tries re-syncing to get an updated store list
+        // then attempts to present epilogue again
+        ServiceLocator.stores.synchronizeEntities { [weak self] in
+            self?.activityIndicator.stopAnimating()
+            self?.completionHandler()
+        }
+    }
 }
 
 extension JetpackSetupWebViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         let navigationURL = navigationAction.request.url?.absoluteString
         switch navigationURL {
+        // When the web view is about to navigate to the redirect URL for mobile, we can assume that the setup has completed.
         case let .some(url) where url == Constants.mobileRedirectURL:
             decisionHandler(.cancel)
-            activityIndicator.startAnimating()
-            // tries re-syncing to get an updated store list
-            // then attempts to present epilogue again
-            ServiceLocator.stores.synchronizeEntities { [weak self] in
-                self?.activityIndicator.stopAnimating()
-                self?.completionHandler()
-            }
+            handleSetupCompletion()
         default:
             decisionHandler(.allow)
         }

@@ -183,6 +183,26 @@ final class AppCoordinatorTests: XCTestCase {
         assertThat(window.rootViewController, isAnInstanceOf: LoginNavigationController.self)
         XCTAssertNil(window.rootViewController?.presentedViewController)
     }
+
+    // MARK: - Login onboarding analytics
+
+    func test_loginOnboardingShown_is_tracked_after_presenting_onboarding() throws {
+        // Given
+        stores.deauthenticate()
+        let analytics = MockAnalyticsProvider()
+        let appCoordinator = makeCoordinator(window: window,
+                                             stores: stores,
+                                             authenticationManager: authenticationManager,
+                                             analytics: WooAnalytics(analyticsProvider: analytics),
+                                             loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: false),
+                                             featureFlagService: MockFeatureFlagService(isLoginPrologueOnboardingEnabled: true))
+
+        // When
+        appCoordinator.start()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.loginOnboardingShown.rawValue])
+    }
 }
 
 private extension AppCoordinatorTests {
@@ -191,12 +211,14 @@ private extension AppCoordinatorTests {
                          stores: StoresManager? = nil,
                          authenticationManager: Authentication? = nil,
                          roleEligibilityUseCase: RoleEligibilityUseCaseProtocol? = nil,
+                         analytics: Analytics = ServiceLocator.analytics,
                          loggedOutAppSettings: LoggedOutAppSettingsProtocol = MockLoggedOutAppSettings(),
                          featureFlagService: FeatureFlagService = MockFeatureFlagService()) -> AppCoordinator {
         return AppCoordinator(window: window ?? self.window,
                               stores: stores ?? self.stores,
                               authenticationManager: authenticationManager ?? self.authenticationManager,
                               roleEligibilityUseCase: roleEligibilityUseCase ?? MockRoleEligibilityUseCase(),
+                              analytics: analytics,
                               loggedOutAppSettings: loggedOutAppSettings,
                               featureFlagService: featureFlagService)
     }

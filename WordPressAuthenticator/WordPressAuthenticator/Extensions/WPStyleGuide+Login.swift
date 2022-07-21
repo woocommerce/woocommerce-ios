@@ -115,17 +115,13 @@ extension WPStyleGuide {
 
             return NSAttributedString(attachment: googleAttachment)
         } else {
-            // Create an attributed string that contains the Google icon + button text.
             let nuxButtonTitleFont = WPStyleGuide.mediumWeightFont(forStyle: .title3)
-            googleAttachment.bounds = CGRect(x: 0, y: (nuxButtonTitleFont.capHeight - Constants.googleIconButtonSize) / 2,
-                                             width: Constants.googleIconButtonSize, height: Constants.googleIconButtonSize)
-
-            let buttonString = NSMutableAttributedString(attachment: googleAttachment)
-            //  Add leading non-breaking spaces to separate the button text from the Google logo.
-            let googleTitle = "\u{00a0}\u{00a0}" + NSLocalizedString("Continue with Google", comment: "Button title. Tapping begins log in using Google.")
-            buttonString.append(NSAttributedString(string: googleTitle))
-
-            return buttonString
+            let googleTitle = NSLocalizedString("Continue with Google",
+                                                comment: "Button title. Tapping begins log in using Google.")
+            return attributedStringwithLogo(googleIcon,
+                                            imageSize: .init(width: Constants.googleIconButtonSize, height: Constants.googleIconButtonSize),
+                                            title: googleTitle,
+                                            titleFont: nuxButtonTitleFont)
         }
     }
 
@@ -322,5 +318,39 @@ extension WPStyleGuide {
         labelString.append(NSAttributedString(string: " " + buttonText, attributes: [.foregroundColor: linkColor]))
 
         return labelString
+    }
+}
+
+// MARK: Attributed String Helpers
+//
+private extension WPStyleGuide {
+
+    /// Creates an attributed string with a logo and title.
+    ///  The logo is prepended to the title.
+    ///
+    /// - Parameters:
+    ///     - logoImage: UIImage representing the logo
+    ///     - imageSize: Size of the UIImage
+    ///     - title: title String to be appended to the logoImage
+    ///     - titleFont: UIFont for the title String
+    ///
+    /// - Returns: A properly styled NSAttributedString to be displayed on a NUXButton.
+    ///
+    class func attributedStringwithLogo(_ logoImage: UIImage,
+                                        imageSize: CGSize,
+                                        title: String,
+                                        titleFont: UIFont) -> NSAttributedString {
+        let attachment = NSTextAttachment()
+        attachment.image = logoImage
+
+        attachment.bounds = CGRect(x: 0, y: (titleFont.capHeight - imageSize.height) / 2,
+                                   width: imageSize.width, height: imageSize.height)
+
+        let buttonString = NSMutableAttributedString(attachment: attachment)
+        //  Add leading non-breaking spaces to separate the button text from the logo.
+        let title = "\u{00a0}\u{00a0}" + title
+        buttonString.append(NSAttributedString(string: title))
+
+        return buttonString
     }
 }

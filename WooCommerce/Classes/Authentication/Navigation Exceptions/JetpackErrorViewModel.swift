@@ -52,12 +52,10 @@ struct JetpackErrorViewModel: ULErrorViewModel {
             return
         }
 
-        let connectionController = JetpackSetupWebViewController(siteURL: siteURL) { [weak viewController] in
-            viewController?.dismiss(animated: true)
+        let connectionController = JetpackSetupWebViewController(siteURL: siteURL) {
             self.jetpackSetupCompletionHandler()
         }
-        let navigationController = UINavigationController(rootViewController: connectionController)
-        viewController.present(navigationController, animated: true, completion: nil)
+        viewController.navigationController?.show(connectionController, sender: nil)
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {

@@ -273,11 +273,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             if let site = currentSelfHostedSite,
                 site.url == wpcomLogin.siteURL, !site.hasValidJetpack {
                 let viewModel = JetpackErrorViewModel(siteURL: wpcomLogin.siteURL) { [weak self] in
-                    // tries re-syncing to get an updated store list
-                    // then attempts to present epilogue again
-                    ServiceLocator.stores.synchronizeEntities {
-                        self?.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: onDismiss)
-                    }
+                    self?.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: onDismiss)
                 }
                 let installJetpackUI = ULErrorViewController(viewModel: viewModel)
                 return navigationController.show(installJetpackUI, sender: nil)

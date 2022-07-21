@@ -27,6 +27,13 @@ final class JetpackSetupWebViewController: UIViewController {
         return bar
     }()
 
+    /// Activity indicator for fetching sites after setup completes
+    private lazy var activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.hidesWhenStopped = true
+        return indicator
+    }()
+
     /// Strong reference for the subscription to update progress bar
     private var progressSubscription: AnyCancellable?
 
@@ -52,7 +59,7 @@ final class JetpackSetupWebViewController: UIViewController {
 private extension JetpackSetupWebViewController {
     func configureNavigationBar() {
         title = Localization.title
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancel, style: .plain, target: self, action: #selector(dismissView))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: activityIndicator)
     }
 
     func configureWebView() {
@@ -61,7 +68,7 @@ private extension JetpackSetupWebViewController {
             view.leadingAnchor.constraint(equalTo: webView.leadingAnchor),
             view.trailingAnchor.constraint(equalTo: webView.trailingAnchor),
             view.safeTopAnchor.constraint(equalTo: webView.topAnchor),
-            view.safeBottomAnchor.constraint(equalTo: webView.bottomAnchor),
+            view.bottomAnchor.constraint(equalTo: webView.bottomAnchor),
         ])
     }
 
@@ -90,11 +97,6 @@ private extension JetpackSetupWebViewController {
         let request = URLRequest(url: url)
         webView.load(request)
     }
-
-    @objc func dismissView() {
-        // TODO: analytics
-        dismiss(animated: true)
-    }
 }
 
 extension JetpackSetupWebViewController: WKNavigationDelegate {
@@ -103,7 +105,13 @@ extension JetpackSetupWebViewController: WKNavigationDelegate {
         switch navigationURL {
         case let .some(url) where url == Constants.mobileRedirectURL:
             decisionHandler(.cancel)
-            completionHandler()
+            activityIndicator.startAnimating()
+            // tries re-syncing to get an updated store list
+            // then attempts to present epilogue again
+            ServiceLocator.stores.synchronizeEntities { [weak self] in
+                self?.activityIndicator.stopAnimating()
+                self?.completionHandler()
+            }
         default:
             decisionHandler(.allow)
         }
@@ -123,6 +131,5 @@ private extension JetpackSetupWebViewController {
 
     enum Localization {
         static let title = NSLocalizedString("Jetpack Setup", comment: "Title of the Jetpack Setup screen")
-        static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss the Jetpack Setup screen")
     }
 }

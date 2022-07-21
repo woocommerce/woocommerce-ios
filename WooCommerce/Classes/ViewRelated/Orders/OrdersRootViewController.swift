@@ -255,6 +255,8 @@ private extension OrdersRootViewController {
             return
         }
 
+        stackView.setCustomSpacing(UIStackView.spacingUseSystem, after: filtersBar)
+
         addChild(hostingViewController)
         stackView.addArrangedSubview(hostingView)
         hostingViewController.didMove(toParent: self)
@@ -272,6 +274,8 @@ private extension OrdersRootViewController {
         stackView.removeArrangedSubview(upsellCardReaderFeatureAnnouncementView)
         upsellCardReaderFeatureAnnouncementView.removeFromSuperview()
         upsellCardReaderFeatureAnnouncementViewController.removeFromParent()
+
+        stackView.setCustomSpacing(0, after: filtersBar)
     }
 
     func configureChildViewController() {

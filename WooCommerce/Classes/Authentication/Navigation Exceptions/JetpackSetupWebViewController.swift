@@ -8,6 +8,7 @@ final class JetpackSetupWebViewController: UIViewController {
 
     /// The site URL to set up Jetpack for.
     private let siteURL: String
+    private let analytics: Analytics
 
     /// The closure to trigger when Jetpack setup completes.
     private let completionHandler: () -> Void
@@ -37,8 +38,9 @@ final class JetpackSetupWebViewController: UIViewController {
     /// Strong reference for the subscription to update progress bar
     private var progressSubscription: AnyCancellable?
 
-    init(siteURL: String, onCompletion: @escaping () -> Void) {
+    init(siteURL: String, analytics: Analytics = ServiceLocator.analytics, onCompletion: @escaping () -> Void) {
         self.siteURL = siteURL
+        self.analytics = analytics
         self.completionHandler = onCompletion
         super.init(nibName: nil, bundle: nil)
     }
@@ -53,6 +55,19 @@ final class JetpackSetupWebViewController: UIViewController {
         configureWebView()
         configureProgressBar()
         startLoading()
+    }
+}
+
+/// Intercepts back navigation (selecting back button or swiping back).
+///
+extension JetpackSetupWebViewController {
+    override func shouldPopOnBackButton() -> Bool {
+        analytics.track(event: .loginJetpackSetupDismissed(source: .web))
+        return true
+    }
+
+    override func shouldPopOnSwipeBack() -> Bool {
+        return shouldPopOnBackButton()
     }
 }
 
@@ -99,6 +114,7 @@ private extension JetpackSetupWebViewController {
     }
 
     func handleSetupCompletion() {
+        analytics.track(event: .loginJetpackSetupCompleted(source: .web))
         activityIndicator.startAnimating()
         // tries re-syncing to get an updated store list
         // then attempts to present epilogue again

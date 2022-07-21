@@ -261,22 +261,23 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Presents the Login Epilogue, in the specified NavigationController.
     ///
     func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, onDismiss: @escaping () -> Void) {
+        let matcher = ULAccountMatcher()
+        matcher.refreshStoredSites()
+
+        /// Jetpack is required. Present an error if we don't detect a valid installation for a self-hosted site.
+        if let urlFromCredentials = credentials.wpcom?.siteURL ?? credentials.wporg?.siteURL,
+           checkJetpackErrorForSelfHostedSite(url: urlFromCredentials) {
+            presentJetpackError(for: urlFromCredentials, with: credentials, in: navigationController, onDismiss: onDismiss)
+            return
+        }
+
         // We are currently supporting WPCom credentials only
         // Update this when handling store credentials authentication.
         guard let wpcomLogin = credentials.wpcom else {
             return
         }
 
-        let matcher = ULAccountMatcher()
-        matcher.refreshStoredSites()
-
         guard matcher.match(originalURL: wpcomLogin.siteURL) else {
-
-            /// Jetpack is required. Present an error if we don't detect a valid installation for a self-hosted site.
-            if checkJetpackErrorForSelfHostedSite(url: wpcomLogin.siteURL) {
-                presentJetpackError(for: wpcomLogin.siteURL, with: credentials, in: navigationController, onDismiss: onDismiss)
-            }
-
             DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: credentials.wpcom?.siteURL))")
             let viewModel = WrongAccountErrorViewModel(siteURL: credentials.wpcom?.siteURL)
             let mismatchAccountUI = ULAccountMismatchViewController(viewModel: viewModel)

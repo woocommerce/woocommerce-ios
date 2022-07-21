@@ -33,6 +33,8 @@ final class OrdersRootViewController: UIViewController {
     ///
     private var subscriptions = Set<AnyCancellable>()
 
+    private var upsellCardReaderFeatureAnnouncementViewController: UIViewController?
+
     /// The top bar for apply filters, that will be embedded inside the stackview, on top of everything.
     ///
     private var filtersBar: FilteredOrdersHeaderBar = {
@@ -92,6 +94,7 @@ final class OrdersRootViewController: UIViewController {
         configureView()
         configureNavigationButtons()
         configureFiltersBar()
+        configureUpsellCardReaderFeatureAnnouncement()
         configureChildViewController()
 
         /// We sync the local order settings for configuring local statuses and date range filters.
@@ -229,6 +232,45 @@ private extension OrdersRootViewController {
         }
     }
 
+    func configureUpsellCardReaderFeatureAnnouncement() {
+        let upsellCardReadersCampaign = UpsellCardReadersCampaign(source: .orderList)
+        let upsellCardReadersAnnouncementViewModel = FeatureAnnouncementCardViewModel(analytics: ServiceLocator.analytics,
+                   configuration: upsellCardReadersCampaign.configuration)
+
+        guard upsellCardReadersAnnouncementViewModel.shouldBeVisible else {
+            return
+        }
+
+        let view = FeatureAnnouncementCardView(viewModel: upsellCardReadersAnnouncementViewModel,
+                                               dismiss: { [weak self] in
+            self?.removeUpsellCardReaderFeatureAnnouncement()
+        })
+
+        let hostingViewController = ConstraintsUpdatingHostingController(rootView: view)
+
+        guard let hostingView = hostingViewController.view else {
+            return
+        }
+
+        addChild(hostingViewController)
+        stackView.addArrangedSubview(hostingView)
+        hostingViewController.didMove(toParent: self)
+
+        upsellCardReaderFeatureAnnouncementViewController = hostingViewController
+    }
+
+    func removeUpsellCardReaderFeatureAnnouncement() {
+        guard let upsellCardReaderFeatureAnnouncementViewController = upsellCardReaderFeatureAnnouncementViewController,
+        let upsellCardReaderFeatureAnnouncementView = upsellCardReaderFeatureAnnouncementViewController.view else {
+            return
+        }
+
+        upsellCardReaderFeatureAnnouncementViewController.willMove(toParent: nil)
+        stackView.removeArrangedSubview(upsellCardReaderFeatureAnnouncementView)
+        upsellCardReaderFeatureAnnouncementView.removeFromSuperview()
+        upsellCardReaderFeatureAnnouncementViewController.removeFromParent()
+    }
+
     func configureChildViewController() {
         // Configure large title using the `hiddenScrollView` trick.
         hiddenScrollView.configureForLargeTitleWorkaround()
@@ -238,21 +280,6 @@ private extension OrdersRootViewController {
         hiddenScrollView.translatesAutoresizingMaskIntoConstraints = false
         view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
         ordersViewController.delegate = self
-
-        let upsellCardReadersCampaign = UpsellCardReadersCampaign(source: .orderList)
-        let upsellCardReadersAnnouncementViewModel = FeatureAnnouncementCardViewModel(analytics: ServiceLocator.analytics,
-                   configuration: upsellCardReadersCampaign.configuration)
-
-        let view = FeatureAnnouncementCardView(viewModel: upsellCardReadersAnnouncementViewModel,
-                                               dismiss: { [weak self] in
-            //self?.viewModel.onUpsellCardReadersAnnouncementDismiss()
-        })
-
-        let viewCtrl = ConstraintsUpdatingHostingController(rootView: view)
-
-        addChild(viewCtrl)
-        stackView.addArrangedSubview(viewCtrl.view!)
-        viewCtrl.didMove(toParent: self)
 
         // Add contentView to stackview
         let contentView = ordersViewController.view!

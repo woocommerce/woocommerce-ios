@@ -47,7 +47,7 @@ final class OrderDetailsDataSource: NSObject {
     /// Whether the order is eligible for card present payment.
     ///
     var isEligibleForPayment: Bool {
-        return order.datePaid == nil
+        order.needsPayment
     }
 
     var isEligibleForRefund: Bool {
@@ -1178,9 +1178,7 @@ extension OrderDetailsDataSource {
         let payment: Section = {
             var rows: [Row] = [.payment]
 
-            if shouldShowCustomerPaidRow {
-                rows.append(.customerPaid)
-            }
+            rows.append(.customerPaid)
 
             if condensedRefunds.isNotEmpty {
                 let refunds = Array<Row>(repeating: .refund, count: condensedRefunds.count)

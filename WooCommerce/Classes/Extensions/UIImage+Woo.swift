@@ -976,6 +976,12 @@ extension UIImage {
         return im2.imageWithTintColor(tintColor)
     }
 
+    /// Woo logo that is displayed on the login prologue.
+    ///
+    static var wooLogoPrologueImage: UIImage {
+        UIImage(named: "prologue-logo")!
+    }
+
     /// Waiting for Customers Image
     ///
     static var waitingForCustomersImage: UIImage {

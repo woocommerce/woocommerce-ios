@@ -12,6 +12,7 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isAppleIDAccountDeletionEnabled: Bool
     private let isBackgroundImageUploadEnabled: Bool
     private let isOrderCustomFieldsEnabled: Bool
+    private let isLoginPrologueOnboardingEnabled: Bool
 
     init(isJetpackConnectionPackageSupportOn: Bool = false,
          isHubMenuOn: Bool = false,
@@ -22,7 +23,8 @@ struct MockFeatureFlagService: FeatureFlagService {
          inPersonPaymentGatewaySelection: Bool = false,
          isAppleIDAccountDeletionEnabled: Bool = false,
          isBackgroundImageUploadEnabled: Bool = false,
-         isOrderCustomFieldsEnabled: Bool = false) {
+         isOrderCustomFieldsEnabled: Bool = false,
+         isLoginPrologueOnboardingEnabled: Bool = false) {
         self.isJetpackConnectionPackageSupportOn = isJetpackConnectionPackageSupportOn
         self.isHubMenuOn = isHubMenuOn
         self.isInboxOn = isInboxOn
@@ -33,6 +35,7 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isAppleIDAccountDeletionEnabled = isAppleIDAccountDeletionEnabled
         self.isBackgroundImageUploadEnabled = isBackgroundImageUploadEnabled
         self.isOrderCustomFieldsEnabled = isOrderCustomFieldsEnabled
+        self.isLoginPrologueOnboardingEnabled = isLoginPrologueOnboardingEnabled
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -57,6 +60,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isBackgroundImageUploadEnabled
         case .orderCustomFields:
             return isOrderCustomFieldsEnabled
+        case .loginPrologueOnboarding:
+            return isLoginPrologueOnboardingEnabled
         default:
             return false
         }

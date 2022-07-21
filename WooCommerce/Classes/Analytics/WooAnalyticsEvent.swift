@@ -541,11 +541,12 @@ extension WooAnalyticsEvent {
             case settings
         }
 
-        /// Campaigns run using the Feature Card
+        /// Keys for the Feature Card properties
         ///
         private enum Keys {
             static let campaign = "campaign"
             static let source = "source"
+            static let remindLater = "remind_later"
         }
 
         static func shown(source: Source, campaign: FeatureAnnouncementCampaign) -> WooAnalyticsEvent {
@@ -556,11 +557,14 @@ extension WooAnalyticsEvent {
                               ])
         }
 
-        static func dismissed(source: Source, campaign: FeatureAnnouncementCampaign) -> WooAnalyticsEvent {
+        static func dismissed(source: Source,
+                              campaign: FeatureAnnouncementCampaign,
+                              remindLater: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .featureCardDismissed,
                               properties: [
                                 Keys.source: source.rawValue,
-                                Keys.campaign: campaign.rawValue
+                                Keys.campaign: campaign.rawValue,
+                                Keys.remindLater: remindLater
                               ])
         }
 

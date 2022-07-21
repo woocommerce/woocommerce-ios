@@ -63,6 +63,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupKeyboardStateProvider()
         handleLaunchArguments()
         appleIDCredentialChecker.observeLoggedInStateForAppleIDObservations()
+        setupUserNotificationCenter()
 
         // Components that require prior Auth
         setupZendesk()
@@ -288,7 +289,7 @@ private extension AppDelegate {
     ///
     func setupPushNotificationsManagerIfPossible() {
         guard ServiceLocator.stores.isAuthenticated, ServiceLocator.stores.needsDefaultStore == false else {
-            return
+            return ServiceLocator.pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: true, onCompletion: nil)
         }
 
         #if targetEnvironment(simulator)
@@ -296,8 +297,12 @@ private extension AppDelegate {
         #else
             let pushNotesManager = ServiceLocator.pushNotesManager
             pushNotesManager.registerForRemoteNotifications()
-            pushNotesManager.ensureAuthorizationIsRequested(onCompletion: nil)
+            pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: false, onCompletion: nil)
         #endif
+    }
+
+    func setupUserNotificationCenter() {
+        UNUserNotificationCenter.current().delegate = self
     }
 
     /// Set up app review prompt
@@ -401,5 +406,12 @@ extension AppDelegate {
     func authenticatorWasDismissed() {
         setupPushNotificationsManagerIfPossible()
         RequirementsChecker.checkMinimumWooVersionForDefaultStore()
+    }
+}
+
+// MARK: - UNUserNotificationCenterDelegate
+
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
     }
 }

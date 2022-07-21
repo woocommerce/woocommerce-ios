@@ -1,4 +1,5 @@
 import UIKit
+import SwiftUI
 import Yosemite
 import Combine
 import protocol Storage.StorageManagerType
@@ -237,6 +238,25 @@ private extension OrdersRootViewController {
         hiddenScrollView.translatesAutoresizingMaskIntoConstraints = false
         view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
         ordersViewController.delegate = self
+
+        let upsellCardReadersCampaign = UpsellCardReadersCampaign(source: .orderList)
+        let upsellCardReadersAnnouncementViewModel = FeatureAnnouncementCardViewModel(analytics: ServiceLocator.analytics,
+                   configuration: upsellCardReadersCampaign.configuration)
+
+        let view = FeatureAnnouncementCardView(viewModel: upsellCardReadersAnnouncementViewModel,
+                                               dismiss: { [weak self] in
+            //self?.viewModel.onUpsellCardReadersAnnouncementDismiss()
+        })
+
+        let viewCtrl = UIHostingController(rootView: view)
+        viewCtrl.view!.translatesAutoresizingMaskIntoConstraints = false
+
+        addChild(viewCtrl)
+        //viewCtrl.view!.backgroundColor = UIColor.red
+        stackView.addArrangedSubview(viewCtrl.view!)
+        viewCtrl.didMove(toParent: self)
+
+        viewCtrl.view!.layoutIfNeeded()
 
         // Add contentView to stackview
         let contentView = ordersViewController.view!

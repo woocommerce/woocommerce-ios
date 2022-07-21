@@ -56,18 +56,12 @@ final class JetpackSetupWebViewController: UIViewController {
         configureProgressBar()
         startLoading()
     }
-}
 
-/// Intercepts back navigation (selecting back button or swiping back).
-///
-extension JetpackSetupWebViewController {
-    override func shouldPopOnBackButton() -> Bool {
-        analytics.track(event: .loginJetpackSetupDismissed(source: .web))
-        return true
-    }
-
-    override func shouldPopOnSwipeBack() -> Bool {
-        return shouldPopOnBackButton()
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if isMovingFromParent {
+            analytics.track(event: .loginJetpackSetupDismissed(source: .web))
+        }
     }
 }
 

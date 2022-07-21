@@ -270,8 +270,8 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         guard matcher.match(originalURL: wpcomLogin.siteURL) else {
 
             /// Jetpack is required. Present an error if we don't detect a valid installation for a self-hosted site.
-            if checkJetpackErrorForSelfHostedSite(url: wpcomLogin.siteURL) {
-                presentJetpackError(for: wpcomLogin.siteURL, with: credentials, in: navigationController, onDismiss: onDismiss)
+            if isJetpackValidForSelfHostedSite(url: wpcomLogin.siteURL) {
+                return presentJetpackError(for: wpcomLogin.siteURL, with: credentials, in: navigationController, onDismiss: onDismiss)
             }
 
             DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: credentials.wpcom?.siteURL))")
@@ -406,7 +406,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
 // MARK: - Private helpers
 private extension AuthenticationManager {
-    func checkJetpackErrorForSelfHostedSite(url: String) -> Bool {
+    func isJetpackValidForSelfHostedSite(url: String) -> Bool {
         if let site = currentSelfHostedSite,
            site.url == url, !site.hasValidJetpack {
             return true
@@ -422,7 +422,7 @@ private extension AuthenticationManager {
             self?.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: onDismiss)
         })
         let installJetpackUI = ULErrorViewController(viewModel: viewModel)
-        return navigationController.show(installJetpackUI, sender: nil)
+        navigationController.show(installJetpackUI, sender: nil)
     }
 }
 

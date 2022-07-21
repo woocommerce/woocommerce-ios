@@ -101,4 +101,8 @@ public enum FeatureFlag: Int {
     /// Onboarding experiment on the login prologue screen
     ///
     case loginPrologueOnboarding
+
+    /// Local notifications scheduled 24 hours after certain login errors
+    ///
+    case loginErrorNotifications
 }

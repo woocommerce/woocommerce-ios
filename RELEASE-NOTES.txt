@@ -3,7 +3,7 @@
 9.7
 ----
 - [*] In-Person Payments: Card Reader Manuals now appear based on country availability, consolidated into an unique view [https://github.com/woocommerce/woocommerce-ios/pull/7178]
------
+- [*] Login: Jetpack setup flow is now accessible from the Jetpack requirement screen. [https://github.com/woocommerce/woocommerce-ios/pull/7294]
 - [*] Refund lines in the Order details screen now appear ordered from oldest to newest [https://github.com/woocommerce/woocommerce-ios/pull/7287]
 
 9.6

@@ -37,7 +37,14 @@ public struct ProductImage: Codable, Equatable, GeneratedCopiable, GeneratedFake
         let dateModified = try container.decodeIfPresent(Date.self, forKey: .dateModified)
         let src = try container.decode(String.self, forKey: .src)
         let name = try container.decodeIfPresent(String.self, forKey: .name)
-        let alt = try? container.decodeIfPresent(String.self, forKey: .alt)
+        let alt: String? = {
+            do {
+                return try container.decodeIfPresent(String.self, forKey: .alt)
+            } catch {
+                DDLogError("⛔️ Error parsing `alt` for `ProductImage`: \(error)")
+                return nil
+            }
+        }()
 
         self.init(imageID: imageID,
                   dateCreated: dateCreated,

@@ -244,6 +244,9 @@ private extension OrdersRootViewController {
         let view = FeatureAnnouncementCardView(viewModel: upsellCardReadersAnnouncementViewModel,
                                                dismiss: { [weak self] in
             self?.removeUpsellCardReaderFeatureAnnouncement()
+        }, callToAction: {
+            let configuration = CardPresentConfigurationLoader().configuration
+            WebviewHelper.launch(configuration.purchaseCardReaderUrl(), with: self)
         })
 
         let hostingViewController = ConstraintsUpdatingHostingController(rootView: view)

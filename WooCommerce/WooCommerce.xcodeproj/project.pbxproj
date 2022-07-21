@@ -1267,6 +1267,7 @@
 		B9E4364C287587D300883CFA /* FeatureAnnouncementCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E4364B287587D300883CFA /* FeatureAnnouncementCardView.swift */; };
 		B9E4364E287589E200883CFA /* NewBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E4364D287589E200883CFA /* NewBadgeView.swift */; };
 		B9EF083F2886CE3300D96C58 /* HostingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9EF083E2886CE3300D96C58 /* HostingTableViewCell.swift */; };
+		B9EFC27328898D8700667217 /* ConstraintsUpdatingHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9EFC27228898D8700667217 /* ConstraintsUpdatingHostingController.swift */; };
 		BAA34C202787494300846F3C /* ReviewsViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAA34C1F2787494300846F3C /* ReviewsViewControllerTests.swift */; };
 		BAE4F8432734325C00871344 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE4F8422734325C00871344 /* SettingsViewModel.swift */; };
 		BAFEF51E273C2151005F94CC /* SettingsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAFEF51D273C2151005F94CC /* SettingsViewModelTests.swift */; };
@@ -3074,6 +3075,7 @@
 		B9E4364B287587D300883CFA /* FeatureAnnouncementCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureAnnouncementCardView.swift; sourceTree = "<group>"; };
 		B9E4364D287589E200883CFA /* NewBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewBadgeView.swift; sourceTree = "<group>"; };
 		B9EF083E2886CE3300D96C58 /* HostingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostingTableViewCell.swift; sourceTree = "<group>"; };
+		B9EFC27228898D8700667217 /* ConstraintsUpdatingHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstraintsUpdatingHostingController.swift; sourceTree = "<group>"; };
 		BAA34C1F2787494300846F3C /* ReviewsViewControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReviewsViewControllerTests.swift; sourceTree = "<group>"; };
 		BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerce.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAE4F8422734325C00871344 /* SettingsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
@@ -7620,6 +7622,7 @@
 				DE6906E227D7121800735E3B /* GhostTableViewController.swift */,
 				B910685F27F1F28F00AD0575 /* GhostableViewController.swift */,
 				B9EF083E2886CE3300D96C58 /* HostingTableViewCell.swift */,
+				B9EFC27228898D8700667217 /* ConstraintsUpdatingHostingController.swift */,
 			);
 			path = ReusableViews;
 			sourceTree = "<group>";
@@ -9926,6 +9929,7 @@
 				456396B625C82691001F1A26 /* ShippingLabelFormStepTableViewCell.swift in Sources */,
 				03FBDA9D263AD49200ACE257 /* CouponListViewController.swift in Sources */,
 				02C8876D24501FAC00E4470F /* FilterListViewController.swift in Sources */,
+				B9EFC27328898D8700667217 /* ConstraintsUpdatingHostingController.swift in Sources */,
 				02B2828E27C35061004A332A /* RefreshableInfiniteScrollList.swift in Sources */,
 				021FB44C24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift in Sources */,
 				456C7EEB25EE71F10016CBC6 /* ShippingLabelSuggestedAddressViewController.swift in Sources */,

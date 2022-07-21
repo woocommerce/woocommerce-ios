@@ -248,15 +248,11 @@ private extension OrdersRootViewController {
             //self?.viewModel.onUpsellCardReadersAnnouncementDismiss()
         })
 
-        let viewCtrl = UIHostingController(rootView: view)
-        viewCtrl.view!.translatesAutoresizingMaskIntoConstraints = false
+        let viewCtrl = ConstraintsUpdatingHostingController(rootView: view)
 
         addChild(viewCtrl)
-        //viewCtrl.view!.backgroundColor = UIColor.red
         stackView.addArrangedSubview(viewCtrl.view!)
         viewCtrl.didMove(toParent: self)
-
-        viewCtrl.view!.layoutIfNeeded()
 
         // Add contentView to stackview
         let contentView = ordersViewController.view!

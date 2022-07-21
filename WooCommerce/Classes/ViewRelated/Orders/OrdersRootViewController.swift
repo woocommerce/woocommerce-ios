@@ -248,6 +248,7 @@ private extension OrdersRootViewController {
             let configuration = CardPresentConfigurationLoader().configuration
             WebviewHelper.launch(configuration.purchaseCardReaderUrl(), with: self)
         })
+            .background(Color(.listForeground))
 
         let hostingViewController = ConstraintsUpdatingHostingController(rootView: view)
 

@@ -270,13 +270,8 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         guard matcher.match(originalURL: wpcomLogin.siteURL) else {
 
             /// Jetpack is required. Present an error if we don't detect a valid installation for a self-hosted site.
-            if let site = currentSelfHostedSite,
-                site.url == wpcomLogin.siteURL, !site.hasValidJetpack {
-                let viewModel = JetpackErrorViewModel(siteURL: wpcomLogin.siteURL) { [weak self] in
-                    self?.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: onDismiss)
-                }
-                let installJetpackUI = ULErrorViewController(viewModel: viewModel)
-                return navigationController.show(installJetpackUI, sender: nil)
+            if checkJetpackErrorForSelfHostedSite(url: wpcomLogin.siteURL) {
+                presentJetpackError(for: wpcomLogin.siteURL, with: credentials, in: navigationController, onDismiss: onDismiss)
             }
 
             DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: credentials.wpcom?.siteURL))")
@@ -406,6 +401,28 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return
         }
         ServiceLocator.analytics.track(wooEvent, withError: error)
+    }
+}
+
+// MARK: - Private helpers
+private extension AuthenticationManager {
+    func checkJetpackErrorForSelfHostedSite(url: String) -> Bool {
+        if let site = currentSelfHostedSite,
+           site.url == url, !site.hasValidJetpack {
+            return true
+        }
+        return false
+    }
+
+    func presentJetpackError(for siteURL: String,
+                             with credentials: AuthenticatorCredentials,
+                             in navigationController: UINavigationController,
+                             onDismiss: @escaping () -> Void) {
+        let viewModel = JetpackErrorViewModel(siteURL: siteURL, onJetpackSetupCompletion: { [weak self] in
+            self?.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: onDismiss)
+        })
+        let installJetpackUI = ULErrorViewController(viewModel: viewModel)
+        return navigationController.show(installJetpackUI, sender: nil)
     }
 }
 

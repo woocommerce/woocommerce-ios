@@ -625,6 +625,12 @@ public enum WooAnalyticsStat: String {
     case closeAccountTapped = "close_account_tapped"
     case closeAccountSuccess = "close_account_success"
     case closeAccountFailed = "close_account_failed"
+
+    // MARK: Login Jetpack setup
+    case loginJetpackSetupButtonTapped = "login_jetpack_setup_button_tapped"
+    case loginJetpackSetupDismissed = "login_jetpack_setup_dismissed"
+    case loginJetpackSetupCompleted = "login_jetpack_setup_completed"
+    case loginJetpackSetupFlow = "login_jetpack_setup_flow"
 }
 
 public extension WooAnalyticsStat {

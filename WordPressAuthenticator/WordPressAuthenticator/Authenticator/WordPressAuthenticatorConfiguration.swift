@@ -102,6 +102,7 @@ public struct WordPressAuthenticatorConfiguration {
 
     /// If enabled, we will ask for WPCOM login after signing in using .org site credentials.
     ///  WordPress iOS app can proceed without WPCOM login. But, WooCommerce iOS app needs WPCOM login.
+    ///  Disabled by default
     let isWordPressComCredentialsRequired: Bool
 
     /// Designated Initializer

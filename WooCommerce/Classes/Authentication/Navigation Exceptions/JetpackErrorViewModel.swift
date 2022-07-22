@@ -44,7 +44,7 @@ struct JetpackErrorViewModel: ULErrorViewModel {
     // MARK: - Actions
     func didTapPrimaryButton(in viewController: UIViewController?) {
         showJetpackSetupScreen(in: viewController)
-        analytics.track(.loginJetpackRequiredViewInstructionsButtonTapped)
+        analytics.track(.loginJetpackSetupButtonTapped)
     }
 
     private func showJetpackSetupScreen(in viewController: UIViewController?) {
@@ -52,7 +52,7 @@ struct JetpackErrorViewModel: ULErrorViewModel {
             return
         }
 
-        let connectionController = JetpackSetupWebViewController(siteURL: siteURL, onCompletion: jetpackSetupCompletionHandler)
+        let connectionController = JetpackSetupWebViewController(siteURL: siteURL, analytics: analytics, onCompletion: jetpackSetupCompletionHandler)
         viewController.navigationController?.show(connectionController, sender: nil)
     }
 

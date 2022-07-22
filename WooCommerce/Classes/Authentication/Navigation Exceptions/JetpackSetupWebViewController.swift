@@ -8,6 +8,7 @@ final class JetpackSetupWebViewController: UIViewController {
 
     /// The site URL to set up Jetpack for.
     private let siteURL: String
+    private let analytics: Analytics
 
     /// The closure to trigger when Jetpack setup completes.
     private let completionHandler: () -> Void
@@ -37,8 +38,9 @@ final class JetpackSetupWebViewController: UIViewController {
     /// Strong reference for the subscription to update progress bar
     private var progressSubscription: AnyCancellable?
 
-    init(siteURL: String, onCompletion: @escaping () -> Void) {
+    init(siteURL: String, analytics: Analytics = ServiceLocator.analytics, onCompletion: @escaping () -> Void) {
         self.siteURL = siteURL
+        self.analytics = analytics
         self.completionHandler = onCompletion
         super.init(nibName: nil, bundle: nil)
     }
@@ -53,6 +55,13 @@ final class JetpackSetupWebViewController: UIViewController {
         configureWebView()
         configureProgressBar()
         startLoading()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if isMovingFromParent {
+            analytics.track(event: .LoginJetpackSetup.setupDismissed(source: .web))
+        }
     }
 }
 
@@ -99,6 +108,7 @@ private extension JetpackSetupWebViewController {
     }
 
     func handleSetupCompletion() {
+        analytics.track(event: .LoginJetpackSetup.setupCompleted(source: .web))
         activityIndicator.startAnimating()
         // tries re-syncing to get an updated store list
         // then attempts to present epilogue again
@@ -111,13 +121,18 @@ private extension JetpackSetupWebViewController {
 
 extension JetpackSetupWebViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        let navigationURL = navigationAction.request.url?.absoluteString
+        guard let navigationURL = navigationAction.request.url?.absoluteString else {
+            return
+        }
         switch navigationURL {
         // When the web view is about to navigate to the redirect URL for mobile, we can assume that the setup has completed.
-        case let .some(url) where url == Constants.mobileRedirectURL:
+        case Constants.mobileRedirectURL:
             decisionHandler(.cancel)
             handleSetupCompletion()
         default:
+            if let match = JetpackSetupWebStep.matchingStep(for: navigationURL) {
+                analytics.track(event: .LoginJetpackSetup.setupFlow(source: .web, step: match.trackingStep))
+            }
             decisionHandler(.allow)
         }
     }
@@ -130,8 +145,58 @@ extension JetpackSetupWebViewController: WKNavigationDelegate {
 private extension JetpackSetupWebViewController {
     enum Constants {
         static let jetpackInstallString = "https://wordpress.com/jetpack/connect?url=%@&mobile_redirect=%@&from=mobile"
-        // TODO: update this URL with woocommerce:// when https://github.com/Automattic/wp-calypso/pull/65715 is merged.
-        static let mobileRedirectURL = "wordpress://jetpack-connection"
+        static let mobileRedirectURL = "woocommerce://jetpack-connected"
+    }
+
+    enum JetpackSetupWebStep: CaseIterable {
+        case automaticInstall
+        case wpcomLogin
+        case authorize
+        case siteLogin
+        case pluginDetail
+        case pluginInstallation
+        case pluginActivation
+        case pluginSetup
+
+        var path: String {
+            switch self {
+            case .automaticInstall:
+                return "https://wordpress.com/jetpack/connect/install"
+            case .wpcomLogin:
+                return "https://wordpress.com/log-in/jetpack"
+            case .authorize:
+                return "https://wordpress.com/jetpack/connect/authorize"
+            case .siteLogin:
+                return "wp-admin/wp-login.php"
+            case .pluginDetail:
+                return "wp-admin/plugin-install.php"
+            case .pluginInstallation:
+                return "wp-admin/update.php?action=install-plugin"
+            case .pluginActivation:
+                return "wp-admin/plugins.php?action=activate"
+            case .pluginSetup:
+                return "wp-admin/admin.php?page=jetpack"
+            }
+        }
+
+        var trackingStep: WooAnalyticsEvent.LoginJetpackSetup.Step {
+            switch self {
+            case .automaticInstall: return .automaticInstall
+            case .wpcomLogin: return .wpcomLogin
+            case .authorize: return .authorize
+            case .siteLogin: return .siteLogin
+            case .pluginDetail: return .pluginDetail
+            case .pluginInstallation: return .pluginInstallation
+            case .pluginActivation: return .pluginActivation
+            case .pluginSetup: return .pluginSetup
+            }
+        }
+
+        static func matchingStep(for url: String) -> Self? {
+            Self.allCases.first { step in
+                url.contains(step.path)
+            }
+        }
     }
 
     enum Localization {

@@ -89,7 +89,7 @@ final class JetpackErrorViewModelTests: XCTestCase {
         XCTAssertEqual(firstEvent, "login_jetpack_required_screen_viewed")
     }
 
-    func test_viewModel_logs_an_event_when_see_instructions_button_is_tapped() throws {
+    func test_viewModel_logs_an_event_when_install_jetpack_button_is_tapped() throws {
         // Given
         let viewModel = JetpackErrorViewModel(siteURL: Expectations.url, analytics: analytics) {}
 
@@ -100,7 +100,7 @@ final class JetpackErrorViewModelTests: XCTestCase {
 
         // Then
         let firstEvent = try XCTUnwrap(analyticsProvider.receivedEvents.first)
-        XCTAssertEqual(firstEvent, "login_jetpack_required_view_instructions_button_tapped")
+        XCTAssertEqual(firstEvent, "login_jetpack_setup_button_tapped")
     }
 
     func test_viewModel_logs_an_event_when_the_what_is_jetpack_button_is_tapped() throws {

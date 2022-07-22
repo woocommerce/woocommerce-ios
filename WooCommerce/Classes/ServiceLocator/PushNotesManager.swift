@@ -67,4 +67,14 @@ protocol PushNotesManager {
     func handleNotification(_ userInfo: [AnyHashable: Any],
                             onBadgeUpdateCompletion: @escaping () -> Void,
                             completionHandler: @escaping (UIBackgroundFetchResult) -> Void)
+
+    /// Requests a local notification to be scheduled under a given trigger.
+    /// - Parameters:
+    ///   - notification: the notification content.
+    ///   - trigger: if nil, the local notification is delivered immediately.
+    func requestLocalNotification(_ notification: LocalNotification, trigger: UNNotificationTrigger?)
+
+    /// Cancels a local notification that was previously scheduled.
+    /// - Parameter scenarios: the scenarios of the notification to be cancelled.
+    func cancelLocalNotification(scenarios: [LocalNotification.Scenario])
 }

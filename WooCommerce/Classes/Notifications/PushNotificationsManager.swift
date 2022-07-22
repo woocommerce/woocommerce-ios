@@ -99,7 +99,7 @@ extension PushNotificationsManager {
     ///
     /// - Parameter onCompletion: Closure to be executed on completion. Receives a Boolean indicating if we've got Push Permission.
     ///
-    func ensureAuthorizationIsRequested(includesProvisionalAuth: Bool, onCompletion: ((Bool) -> Void)? = nil) {
+    func ensureAuthorizationIsRequested(includesProvisionalAuth: Bool = false, onCompletion: ((Bool) -> Void)? = nil) {
         let nc = configuration.userNotificationsCenter
 
         nc.loadAuthorizationStatus(queue: .main) { status in
@@ -260,6 +260,54 @@ extension PushNotificationsManager {
                 break
             }
         }
+    }
+
+    func requestLocalNotification(_ notification: LocalNotification, trigger: UNNotificationTrigger?) {
+        Task {
+            // TODO: 7318 - tech debt - replace `UNUserNotificationCenter.current()` with
+            // `configuration.userNotificationsCenter` for unit testing
+            let center = UNUserNotificationCenter.current()
+            let settings = await center.notificationSettings()
+            guard settings.authorizationStatus == .authorized || settings.authorizationStatus == .provisional else {
+                DDLogError("⛔️ Unable to request a local notification due to invalid authorization status: \(settings.authorizationStatus)")
+                return
+            }
+
+            let content = UNMutableNotificationContent()
+            content.title = notification.title
+            content.body = notification.body
+
+            if let categoryAndActions = notification.actions {
+                let categoryIdentifier = categoryAndActions.category.rawValue
+                let actions = categoryAndActions.actions.map {
+                    UNNotificationAction(identifier: $0.rawValue,
+                                         title: $0.title,
+                                         options: .foreground)
+                }
+                let category = UNNotificationCategory(identifier: categoryIdentifier,
+                                                      actions: actions,
+                                                      intentIdentifiers: [],
+                                                      hiddenPreviewsBodyPlaceholder: nil,
+                                                      categorySummaryFormat: nil,
+                                                      options: .allowAnnouncement)
+                center.setNotificationCategories([category])
+                content.categoryIdentifier = categoryIdentifier
+            }
+
+            let request = UNNotificationRequest(identifier: notification.scenario.rawValue,
+                                                content: content,
+                                                trigger: trigger)
+            do {
+                try await center.add(request)
+            } catch {
+                DDLogError("⛔️ Unable to request a local notification: \(error)")
+            }
+        }
+    }
+
+    func cancelLocalNotification(scenarios: [LocalNotification.Scenario]) {
+        let center = UNUserNotificationCenter.current()
+        center.removePendingNotificationRequests(withIdentifiers: scenarios.map { $0.rawValue })
     }
 }
 

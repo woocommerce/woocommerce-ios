@@ -209,6 +209,24 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     }
 
     func handleError(_ error: Error, onCompletion: @escaping (UIViewController) -> Void) {
+        let wooAuthError = AuthenticationError.make(with: error)
+        switch wooAuthError {
+        case .notWPSite, .notValidAddress:
+            let notification = LocalNotification(title: NSLocalizedString("Problems with logging in?",
+                                                                          comment: "Local notification title when the user encounters an error logging in " +
+                                                                          "with site address."),
+                                                 body: NSLocalizedString("Get some help!",
+                                                                         comment: "Local notification body when the user encounters an error logging in " +
+                                                                         "with site address."),
+                                                 scenario: .loginSiteAddressError,
+                                                 actions: .init(category: .loginError, actions: [.contactSupport]))
+            ServiceLocator.pushNotesManager.requestLocalNotification(notification,
+                                                                     // 24 hours from now.
+                                                                     trigger: UNTimeIntervalNotificationTrigger(timeInterval: 86400, repeats: false))
+        default:
+            break
+        }
+
         guard let errorViewModel = viewModel(error) else {
             return
         }
@@ -263,6 +281,8 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         guard let wpcomLogin = credentials.wpcom else {
             return
         }
+
+        ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: [.loginSiteAddressError])
 
         /// Jetpack is required. Present an error if we don't detect a valid installation for a self-hosted site.
         if let site = currentSelfHostedSite,

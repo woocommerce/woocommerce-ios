@@ -459,6 +459,9 @@ extension SiteCredentialsViewController {
         let credentials = AuthenticatorCredentials(wporg: wporg)
 
         guard WordPressAuthenticator.shared.configuration.isWordPressComCredentialsRequired else {
+            // Client didn't explicitly ask for WPCOM credentials. (`isWordPressComCredentialsRequired` is false)
+            // So, sync the available credentials and finish sign in.
+            //
             delegate.sync(credentials: credentials) { [weak self] in
                 NotificationCenter.default.post(name: Foundation.Notification.Name(rawValue: WordPressAuthenticator.WPSigninDidFinishNotification), object: nil)
                 self?.showLoginEpilogue(for: credentials)
@@ -466,12 +469,16 @@ extension SiteCredentialsViewController {
             return
         }
 
+        // Try to get the jetpack email from XML-RPC response dictionary.
+        //
         guard let loginFields = makeLoginFieldsUsing(xmlrpc: xmlrpc, options: options) else {
             DDLogError("Unexpected response from .org site credentials sign in using XMLRPC.")
             showLoginEpilogue(for: credentials)
             return
         }
 
+        // Present unified password screen. Passing loginFields will prefill the jetpack email in `PasswordViewController`
+        //
         presentUnifiedPassword(loginFields: loginFields)
     }
 

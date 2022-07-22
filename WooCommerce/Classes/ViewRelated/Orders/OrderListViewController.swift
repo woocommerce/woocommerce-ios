@@ -541,12 +541,13 @@ private extension OrderListViewController {
     /// Creates EmptyStateViewController.Config when there are no orders available
     ///
     func noOrdersAvailableConfig() -> EmptyStateViewController.Config {
-        .simple(
-            message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
-            image: .waitingForCustomersImage,
-            onPullToRefresh: { [weak self] refreshControl in
-                self?.pullToRefresh(sender: refreshControl)
-            })
+        .withLink(message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
+                  image: .emptyOrdersImage,
+                  details: Localization.allOrdersEmptyStateDetail,
+                  linkTitle: Localization.learnMore,
+                  linkURL: WooConstants.URLs.blog.asURL()) { [weak self] refreshControl in
+            self?.pullToRefresh(sender: refreshControl)
+        }
     }
 
     /// Creates EmptyStateViewController.Config for no orders matching the filter empty view
@@ -735,6 +736,9 @@ private extension OrderListViewController {
     enum Localization {
         static let allOrdersEmptyStateMessage = NSLocalizedString("Waiting for your first order",
                                                                   comment: "The message shown in the Orders → All Orders tab if the list is empty.")
+        static let allOrdersEmptyStateDetail = NSLocalizedString("Explore how you can increase your store sales",
+                                                                 comment: "The detailed message shown in the Orders → All Orders tab if the list is empty.")
+        static let learnMore = NSLocalizedString("Learn more", comment: "Title of button shown in the Orders → All Orders tab if the list is empty.")
         static let filteredOrdersEmptyStateMessage = NSLocalizedString("We're sorry, we couldn't find any order that match %@",
                    comment: "Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user.")
         static let clearButton = NSLocalizedString("Clear Filters",

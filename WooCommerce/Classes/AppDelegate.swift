@@ -305,6 +305,9 @@ private extension AppDelegate {
     }
 
     func setupUserNotificationCenter() {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginErrorNotifications) else {
+            return
+        }
         UNUserNotificationCenter.current().delegate = self
     }
 

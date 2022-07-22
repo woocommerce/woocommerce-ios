@@ -382,12 +382,14 @@ private extension SiteCredentialsViewController {
             return nil
         }
 
+        // `jetpack_user_email` to be used for WPCOM login
         guard let email = options["jetpack_user_email"] as? [String: Any],
               let userName = email["value"] as? String else {
             DDLogError("Failed to find jetpack_user_email value.")
             return nil
         }
 
+        // Site address
         guard let home_url = options["home_url"] as? [String: Any],
               let siteAddress = home_url["value"] as? String else {
             DDLogError("Failed to find home_url value.")

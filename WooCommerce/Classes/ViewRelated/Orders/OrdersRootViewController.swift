@@ -259,7 +259,7 @@ private extension OrdersRootViewController {
 
         let view = FeatureAnnouncementCardView(viewModel: upsellCardReadersAnnouncementViewModel,
                                                dismiss: { [weak self] in
-            self?.removeUpsellCardReaderFeatureAnnouncement()
+            self?.hideUpsellCardReaderFeatureAnnouncementView(true)
         }, callToAction: {
             let configuration = CardPresentConfigurationLoader().configuration
             WebviewHelper.launch(configuration.purchaseCardReaderUrl(), with: self)
@@ -281,30 +281,18 @@ private extension OrdersRootViewController {
         upsellCardReaderFeatureAnnouncementViewController = hostingViewController
     }
 
-    func removeUpsellCardReaderFeatureAnnouncement() {
-        guard let upsellCardReaderFeatureAnnouncementViewController = upsellCardReaderFeatureAnnouncementViewController,
-        let upsellCardReaderFeatureAnnouncementView = upsellCardReaderFeatureAnnouncementViewController.view else {
-            return
-        }
-
-        upsellCardReaderFeatureAnnouncementViewController.willMove(toParent: nil)
-        stackView.removeArrangedSubview(upsellCardReaderFeatureAnnouncementView)
-        upsellCardReaderFeatureAnnouncementView.removeFromSuperview()
-        upsellCardReaderFeatureAnnouncementViewController.removeFromParent()
-
-        self.upsellCardReaderFeatureAnnouncementViewController = nil
-        stackView.setCustomSpacing(0, after: filtersBar)
+    func updateUpsellCardUpsellCardReaderFeatureAnnouncementVisibility() {
+        let shouldBeShown = UIDevice.current.orientation.isPortrait && upsellCardReadersAnnouncementViewModel.shouldBeVisible
+        hideUpsellCardReaderFeatureAnnouncementView(!shouldBeShown)
     }
 
-    func updateUpsellCardUpsellCardReaderFeatureAnnouncementVisibility() {
+    func hideUpsellCardReaderFeatureAnnouncementView(_ hidden: Bool) {
         guard upsellCardReaderFeatureAnnouncementViewController != nil else {
             return
         }
 
-        let shouldBeShown = UIDevice.current.orientation.isPortrait
-
-        stackView.setCustomSpacing(shouldBeShown ? UIStackView.spacingUseSystem : 0, after: filtersBar)
-        upsellCardReaderFeatureAnnouncementViewController?.view.isHidden = !shouldBeShown
+        stackView.setCustomSpacing(hidden ? 0 : UIStackView.spacingUseSystem, after: filtersBar)
+        upsellCardReaderFeatureAnnouncementViewController?.view.isHidden = hidden
     }
 
     func configureChildViewController() {
@@ -327,7 +315,7 @@ private extension OrdersRootViewController {
             .sink { [weak self] topBannerType in
                 // Error banner takes preference over the upsell card reader one.
                 if case .error = topBannerType {
-                    self?.removeUpsellCardReaderFeatureAnnouncement()
+                    self?.hideUpsellCardReaderFeatureAnnouncementView(true)
                 }
         }
             .store(in: &cancellables)

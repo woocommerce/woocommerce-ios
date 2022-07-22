@@ -1,22 +1,22 @@
-Kelola bisnis Anda dari mana saja dengan Aplikasi Seluler WooCommerce. Buat produk, proses pesanan, dan pantau statistik utama secara real-time.
+Kelola bisnis Anda dari mana saja dengan Aplikasi Seluler WooCommerce. Tambahkan produk, buat pesanan, terima pembayaran cepat, dan pantau penjualan baru serta statistik utama secara real-time.
 
-TAMBAH PRODUK
-Buat, kelompokkan, dan terbitkan produk langsung dari iPhone atau iPad Anda. Realisasikan kreativitas secara langsung – ubah ide Anda jadi produk nyata dalam hitungan detik, atau simpan sebagai draf untuk lain waktu.
+Tambahkan dan sunting produk dengan sekali sentuh
+Mulai berjualan dalam hitungan detik! Tambahkan, kelompokkan, dan publikasikan produk langsung dari iPhone atau iPad Anda. Realisasikan kreativitas Anda secara langsung – segera ubah ide Anda menjadi produk, atau simpan sebagai draf untuk lain waktu.
 
-DAPATKAN PEMBERITAHUAN
-Jangan pernah melewatkan pesanan atau ulasan. Tak perlu khawatir kelewatan, aktifkan peringatan real-time – dan dengarkan bunyi “cring-cring” setiap kali Anda melakukan penjualan!
+Buat pesanan dengan cepat kapan saja
+Setelah produk dibuat, berikutnya mudah. Pilih item dari katalog Anda, tambahkan pengiriman, kemudian isi rincian pelanggan untuk membuat pesanan dengan cepat, yang tersinkronisasi dengan inventaris Anda.
 
-LIHAT DAN UBAH PESANAN
-Gulir ringkasan, atau cari berdasarkan pelanggan atau pesanan tertentu. Ketuk detailnya untuk melihat tagihan terperinci, memulai penyediaan pesanan, dan mengubah status pesanan. Tambahkan catatan ke pesanan atau kirim email langsung ke pelanggan untuk menindaklanjuti. 
+Terima pembayaran secara langsung
+Terima pembayaran fisik menggunakan Pembayaran Langsung WooCommerce dan pembaca kartu (tersedia di Amerika Serikat dan Kanada). Mulai pesanan baru – atau cari yang sudah ada yang pembayarannya sedang menunggu – lalu terima pembayaran menggunakan pembaca kartu atau dompet digital, seperti Apple Pay.
 
-LACAK STATUS ANDA
-Dalam waktu singkat, lihat produk mana yang paling laris. Pantau pendapatan keseluruhan, jumlah pesanan, dan data pengunjung per minggu, bulan, dan tahun. Pengetahuan = kekuatan!
+Dapatkan pemberitahuan untuk setiap penjualan
+Kini setelah Anda aktif berjualan, jangan lewatkan pesanan atau ulasan. Terus pantau dengan mengaktifkan peringatan real-time dan nantikan bunyi "cring-cring" yang muncul di setiap penjualan!
 
-BERALIH DARI SATU TOKO KE TOKO LAIN
-Punya lebih dari satu bisnis? Anda dapat beralih dari satu toko ke toko lain hanya dalam hitungan detik.
+Lacak penjualan dan produk terlaris
+Lihat produk mana yang paling laris. Pantau pendapatan keseluruhan, jumlah pesanan, dan data pengunjung Anda per minggu, bulan, dan tahun. Pengetahuan = kekuatan.
 
 WooCommerce adalah platform eCommerce sumber terbuka yang paling fleksibel dalam kustomisasi. Untuk meluncurkan bisnis, mentransformasi toko fisik ke dunia online, maupun mengembangkan situs untuk klien, manfaatkan WooCommerce untuk membangun toko yang memadukan konten dan dagangan.
 
-Persyaratan: WooCommerce v3.5+, plugin Jetpack.
+Persyaratan: WooCommerce v3.5+.
 
 Lihat Pemberitahuan Privasi untuk pengguna di California di https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

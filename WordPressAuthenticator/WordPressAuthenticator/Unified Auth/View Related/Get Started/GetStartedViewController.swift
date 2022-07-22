@@ -411,12 +411,13 @@ private extension GetStartedViewController {
     /// Configures appearance of the submit button.
     ///
     func configureContinueButton(animating: Bool) {
-        continueButton.showActivityIndicator(animating)
-        continueButton.isEnabled = enableSubmit(animating: animating)
-
-        if screenMode == .signInUsingSiteCredentials {
+        switch screenMode {
+        case .signInUsingSiteCredentials:
             buttonViewController?.setTopButtonState(isLoading: animating,
                                                     isEnabled: enableSubmit(animating: animating))
+        case .signInUsingWordPressComOrSocialAccounts:
+            continueButton.showActivityIndicator(animating)
+            continueButton.isEnabled = enableSubmit(animating: animating)
         }
     }
 

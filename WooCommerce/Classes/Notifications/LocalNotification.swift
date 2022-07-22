@@ -37,3 +37,26 @@ struct LocalNotification {
         }
     }
 }
+
+extension LocalNotification {
+    init(scenario: Scenario) {
+        switch scenario {
+        case .loginSiteAddressError:
+            self.init(title: Localization.errorLoggingInTitle,
+                      body: Localization.errorLoggingInBody,
+                      scenario: .loginSiteAddressError,
+                      actions: .init(category: .loginError, actions: [.contactSupport]))
+        }
+    }
+}
+
+private extension LocalNotification {
+    enum Localization {
+        static let errorLoggingInTitle = NSLocalizedString("Problems with logging in?",
+                                                           comment: "Local notification title when the user encounters an error logging in " +
+                                                           "with site address.")
+        static let errorLoggingInBody = NSLocalizedString("Get some help!",
+                                                          comment: "Local notification body when the user encounters an error logging in " +
+                                                          "with site address.")
+    }
+}

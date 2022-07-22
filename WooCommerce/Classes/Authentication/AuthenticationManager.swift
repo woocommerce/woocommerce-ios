@@ -421,14 +421,7 @@ private extension AuthenticationManager {
         let wooAuthError = AuthenticationError.make(with: error)
         switch wooAuthError {
         case .notWPSite, .notValidAddress:
-            let notification = LocalNotification(title: NSLocalizedString("Problems with logging in?",
-                                                                          comment: "Local notification title when the user encounters an error logging in " +
-                                                                          "with site address."),
-                                                 body: NSLocalizedString("Get some help!",
-                                                                         comment: "Local notification body when the user encounters an error logging in " +
-                                                                         "with site address."),
-                                                 scenario: .loginSiteAddressError,
-                                                 actions: .init(category: .loginError, actions: [.contactSupport]))
+            let notification = LocalNotification(scenario: .loginSiteAddressError)
             ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: [notification.scenario])
             ServiceLocator.pushNotesManager.requestLocalNotification(notification,
                                                                      // 24 hours from now.

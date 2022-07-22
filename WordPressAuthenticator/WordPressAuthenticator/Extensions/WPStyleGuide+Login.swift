@@ -23,7 +23,6 @@ extension WPStyleGuide {
         static let domainsIconPaddingToRemove: CGFloat = 2.0
         static let domainsIconSize = CGSize(width: 18, height: 18)
         static let verticalLabelSpacing: CGFloat = 10.0
-        static let linkFieldImageIconSize = CGSize(width: 18, height: 22)
     }
 
     /// Calculate the border based on the display
@@ -158,7 +157,7 @@ extension WPStyleGuide {
         let title = NSLocalizedString(WordPressAuthenticator.shared.displayStrings.signInWithSiteCredentialsButtonTitle,
                                       comment: "Button title. Tapping opens the site credentials screen.")
         return attributedStringwithLogo(image,
-                                        imageSize: Constants.linkFieldImageIconSize,
+                                        imageSize: image.size,
                                         title: title,
                                         titleFont: WPStyleGuide.mediumWeightFont(forStyle: .title3))
     }

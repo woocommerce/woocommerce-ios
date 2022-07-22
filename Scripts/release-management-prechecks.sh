@@ -52,7 +52,7 @@ Here is how to retrieve these values:
 
 $P_ENV_GITHUB_TOKEN: https://github.com/settings/tokens (requires 'repo')
 $P_ENV_SENTRY_AUTH_TOKEN: https://sentry.io/settings/account/api/auth-tokens/ (requires 'event:read, member:read, org:read, project:read, project:releases, team:read, event:admin')
-$P_ENV_BUILDKITE_TOKEN: https://buildkite.com/user/api-access-tokens (requires 'read_builds, write_builds')
+$P_ENV_BUILDKITE_TOKEN: https://buildkite.com/user/api-access-tokens (requires: 'Organizations: Automattic' & 'REST Scopes: read_builds, write_builds')
 "
 }
 

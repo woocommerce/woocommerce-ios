@@ -360,6 +360,14 @@ extension WooAnalyticsEvent {
             static let hasMultipleFeeLines = "has_multiple_fee_lines"
         }
 
+        static func orderOpen(order: Order) -> WooAnalyticsEvent {
+            let customFieldsSize = order.customFields.map { $0.value.utf8.count }.reduce(0, +) // Total byte size of custom field values
+            return WooAnalyticsEvent(statName: .orderOpen, properties: ["id": order.orderID,
+                                                                        "status": order.status.rawValue,
+                                                                        "custom_fields_count": Int64(order.customFields.count),
+                                                                        "custom_fields_size": Int64(customFieldsSize)])
+        }
+
         static func orderAddNew() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderAddNew, properties: [:])
         }
@@ -533,35 +541,38 @@ extension WooAnalyticsEvent {
             case settings
         }
 
-        /// Campaigns run using the Feature Card
+        /// Keys for the Feature Card properties
         ///
-        enum Campaign: String {
-            fileprivate static let key = "campaign"
-
-            case upsellCardReaders = "upsell_card_readers"
+        private enum Keys {
+            static let campaign = "campaign"
+            static let source = "source"
+            static let remindLater = "remind_later"
         }
 
-        static func shown(source: Source, campaign: Campaign) -> WooAnalyticsEvent {
+        static func shown(source: Source, campaign: FeatureAnnouncementCampaign) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .featureCardShown,
                               properties: [
-                                Source.key: source.rawValue,
-                                Campaign.key: campaign.rawValue
+                                Keys.source: source.rawValue,
+                                Keys.campaign: campaign.rawValue
                               ])
         }
 
-        static func dismissed(source: Source, campaign: Campaign) -> WooAnalyticsEvent {
+        static func dismissed(source: Source,
+                              campaign: FeatureAnnouncementCampaign,
+                              remindLater: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .featureCardDismissed,
                               properties: [
-                                Source.key: source.rawValue,
-                                Campaign.key: campaign.rawValue
+                                Keys.source: source.rawValue,
+                                Keys.campaign: campaign.rawValue,
+                                Keys.remindLater: remindLater
                               ])
         }
 
-        static func ctaTapped(source: Source, campaign: Campaign) -> WooAnalyticsEvent {
+        static func ctaTapped(source: Source, campaign: FeatureAnnouncementCampaign) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .featureCardCtaTapped,
                               properties: [
-                                Source.key: source.rawValue,
-                                Campaign.key: campaign.rawValue
+                                Keys.source: source.rawValue,
+                                Keys.campaign: campaign.rawValue
                               ])
         }
     }

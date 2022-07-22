@@ -7,6 +7,7 @@ import MessageUI
 import Combine
 import SwiftUI
 import WooFoundation
+import Experiments
 
 // MARK: - OrderDetailsViewController: Displays the details for a given Order.
 //
@@ -133,14 +134,13 @@ private extension OrderDetailsViewController {
         let titleFormat = NSLocalizedString("Order #%1$@", comment: "Order number title. Parameters: %1$@ - order number")
         title = String.localizedStringWithFormat(titleFormat, viewModel.order.number)
 
-        // Actions menu
-        if viewModel.moreActionsButtons.isNotEmpty {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(image: .moreImage,
-                                                                style: .plain,
-                                                                target: self,
-                                                                action: #selector(presentActionMenuSheet(_:)))
-        } else {
-            navigationItem.rightBarButtonItem = nil
+        let editButton = UIBarButtonItem(title: Localization.NavBar.editOrder,
+                                         style: .plain,
+                                         target: self,
+                                         action: #selector(editOrder))
+        editButton.isEnabled = viewModel.editButtonIsEnabled
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing) {
+            navigationItem.rightBarButtonItem = editButton
         }
     }
 
@@ -308,35 +308,9 @@ private extension OrderDetailsViewController {
         }
     }
 
-    /// Actions Menu Sheet.
-    ///
-    @objc func presentActionMenuSheet(_ sender: UIBarButtonItem) {
-        let sheetTitle = "#" + viewModel.order.number
-
-        // Configure share sheet
-        let actionSheet = UIAlertController(title: nil, message: sheetTitle, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = .text
-        actionSheet.addCancelActionWithTitle(Localization.ActionsMenu.cancelAction)
-
-        // Create action buttons
-        for button in viewModel.moreActionsButtons {
-            actionSheet.addDefaultActionWithTitle(button.title) { [weak self] _ in
-                switch button.id {
-                case .editOrder:
-                    self?.editOrder()
-                }
-            }
-        }
-
-        // Handle sheet presentation
-        let popoverController = actionSheet.popoverPresentationController
-        popoverController?.barButtonItem = sender
-        present(actionSheet, animated: true)
-    }
-
     /// Presents the order edit form
     ///
-    private func editOrder() {
+    @objc private func editOrder() {
         let viewModel = EditableOrderViewModel(siteID: viewModel.order.siteID, flow: .editing(initialOrder: viewModel.order))
         let viewController = OrderFormHostingController(viewModel: viewModel)
         let navController = UINavigationController(rootViewController: viewController)
@@ -818,6 +792,10 @@ private extension OrderDetailsViewController {
                                                                       comment: "Text of the loading banner in Order Detail when loaded for the first time")
         }
 
+        enum NavBar {
+            static let editOrder = NSLocalizedString("Edit", comment: "Button to edit an order on Order Details screen")
+        }
+
         enum ProductsMoreMenu {
             static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel the more menu action sheet on Products section")
             static let createShippingLabelAction = NSLocalizedString("Create Shipping Label",
@@ -845,6 +823,7 @@ private extension OrderDetailsViewController {
         }
 
         enum ActionsMenu {
+            static let accessibilityLabel = NSLocalizedString("Order actions", comment: "Accessibility label for button triggering more actions menu sheet.")
             static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel the main more actions menu sheet.")
         }
     }

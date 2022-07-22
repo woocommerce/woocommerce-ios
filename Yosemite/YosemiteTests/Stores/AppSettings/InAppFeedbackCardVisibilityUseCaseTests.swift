@@ -161,7 +161,8 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
                                           feedbacks: [:], isViewAddOnsSwitchEnabled: false,
                                           isProductSKUInputScannerSwitchEnabled: false,
                                           isCouponManagementSwitchEnabled: false,
-                                          knownCardReaders: [])
+                                          knownCardReaders: [],
+                                          featureAnnouncementCampaignSettings: [:])
         let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .ordersCreation)
 
         // When
@@ -227,7 +228,8 @@ private extension InAppFeedbackCardVisibilityUseCaseTests {
             isViewAddOnsSwitchEnabled: false,
             isProductSKUInputScannerSwitchEnabled: false,
             isCouponManagementSwitchEnabled: false,
-            knownCardReaders: []
+            knownCardReaders: [],
+            featureAnnouncementCampaignSettings: [:]
         )
         return settings
     }

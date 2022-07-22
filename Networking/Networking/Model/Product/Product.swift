@@ -384,7 +384,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
             do {
                 return try container.decode([Int64].self, forKey: .variations)
             } catch {
-                DDLogError("⛔️ Error parsing `variations` for `Product`: \(error)")
+                DDLogError("⛔️ Error parsing `variations` for Product ID \(productID): \(error)")
                 return []
             }
         }()

@@ -41,7 +41,7 @@ public struct ProductImage: Codable, Equatable, GeneratedCopiable, GeneratedFake
             do {
                 return try container.decodeIfPresent(String.self, forKey: .alt)
             } catch {
-                DDLogError("⛔️ Error parsing `alt` for `ProductImage`: \(error)")
+                DDLogError("⛔️ Error parsing `alt` for ProductImage ID \(imageID): \(error)")
                 return nil
             }
         }()

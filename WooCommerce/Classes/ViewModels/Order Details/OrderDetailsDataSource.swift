@@ -47,7 +47,7 @@ final class OrderDetailsDataSource: NSObject {
     /// Whether the order is eligible for card present payment.
     ///
     var isEligibleForPayment: Bool {
-        return order.datePaid == nil
+        order.needsPayment
     }
 
     var isEligibleForRefund: Bool {
@@ -1064,9 +1064,7 @@ extension OrderDetailsDataSource {
         }()
 
         let customFields: Section? = {
-            guard featureFlags.isFeatureFlagEnabled(.orderCustomFields),
-                  order.customFields.isNotEmpty
-            else {
+            guard order.customFields.isNotEmpty else {
                 return nil
             }
 

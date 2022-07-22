@@ -284,18 +284,16 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: [.loginSiteAddressError])
 
-        /// Jetpack is required. Present an error if we don't detect a valid installation for a self-hosted site.
-        if let site = currentSelfHostedSite,
-            site.url == wpcomLogin.siteURL, !site.hasValidJetpack {
-            let viewModel = JetpackErrorViewModel(siteURL: wpcomLogin.siteURL)
-            let installJetpackUI = ULErrorViewController(viewModel: viewModel)
-            return navigationController.show(installJetpackUI, sender: nil)
-        }
-
         let matcher = ULAccountMatcher()
         matcher.refreshStoredSites()
 
         guard matcher.match(originalURL: wpcomLogin.siteURL) else {
+
+            /// Jetpack is required. Present an error if we don't detect a valid installation for a self-hosted site.
+            if isJetpackValidForSelfHostedSite(url: wpcomLogin.siteURL) {
+                return presentJetpackError(for: wpcomLogin.siteURL, with: credentials, in: navigationController, onDismiss: onDismiss)
+            }
+
             DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: credentials.wpcom?.siteURL))")
             let viewModel = WrongAccountErrorViewModel(siteURL: credentials.wpcom?.siteURL)
             let mismatchAccountUI = ULAccountMismatchViewController(viewModel: viewModel)
@@ -423,6 +421,28 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return
         }
         ServiceLocator.analytics.track(wooEvent, withError: error)
+    }
+}
+
+// MARK: - Private helpers
+private extension AuthenticationManager {
+    func isJetpackValidForSelfHostedSite(url: String) -> Bool {
+        if let site = currentSelfHostedSite,
+           site.url == url, !site.hasValidJetpack {
+            return true
+        }
+        return false
+    }
+
+    func presentJetpackError(for siteURL: String,
+                             with credentials: AuthenticatorCredentials,
+                             in navigationController: UINavigationController,
+                             onDismiss: @escaping () -> Void) {
+        let viewModel = JetpackErrorViewModel(siteURL: siteURL, onJetpackSetupCompletion: { [weak self] in
+            self?.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: onDismiss)
+        })
+        let installJetpackUI = ULErrorViewController(viewModel: viewModel)
+        navigationController.show(installJetpackUI, sender: nil)
     }
 }
 

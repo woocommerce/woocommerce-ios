@@ -98,7 +98,7 @@ final class OrderListViewModel {
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          notificationCenter: NotificationCenter = .default,
          filters: FilterOrderListViewModel.Filters?,
-         loadOrdersBanner: Bool) {
+         loadOrdersBanner: Bool = true) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager

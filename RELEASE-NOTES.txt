@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+9.8
+----
+- [*] In-Person Payments: The purchase card reader information card appears also in the Orders tab. [https://github.com/woocommerce/woocommerce-ios/pull/7326]
+
 9.7
 ----
 - [***] Orders: Orders can now be edited within the app. [https://github.com/woocommerce/woocommerce-ios/pull/7300]

@@ -1,7 +1,11 @@
 import Foundation
 import Yosemite
 
-final class CardPresentConfigurationLoader {
+protocol CardPresentConfigurationProtocol {
+    var configuration: CardPresentPaymentsConfiguration { get }
+}
+
+final class CardPresentConfigurationLoader: CardPresentConfigurationProtocol {
     init(stores: StoresManager = ServiceLocator.stores) {
         // This initializer is kept since this is where we'd check for
         // feature flags while developing support for a new country

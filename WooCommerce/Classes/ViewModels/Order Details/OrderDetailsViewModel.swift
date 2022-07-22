@@ -26,10 +26,12 @@ final class OrderDetailsViewModel {
 
     init(order: Order,
          stores: StoresManager = ServiceLocator.stores,
-         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
+         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+         configurationLoader: CardPresentConfigurationProtocol = CardPresentConfigurationLoader(stores: ServiceLocator.stores)) {
         self.order = order
         self.stores = stores
         self.currencyFormatter = currencyFormatter
+
     }
 
     func update(order newOrder: Order) {

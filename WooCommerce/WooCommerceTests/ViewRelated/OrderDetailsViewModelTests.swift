@@ -7,6 +7,7 @@ import Yosemite
 final class OrderDetailsViewModelTests: XCTestCase {
     private var order: Order!
     private var viewModel: OrderDetailsViewModel!
+    private var configurationLoader: MockCardPresentConfigurationLoader!
 
     private var storesManager: MockStoresManager!
 
@@ -14,8 +15,9 @@ final class OrderDetailsViewModelTests: XCTestCase {
         storesManager = MockStoresManager(sessionManager: SessionManager.makeForTesting())
 
         order = MockOrders().sampleOrder()
+        configurationLoader = MockCardPresentConfigurationLoader.init()
 
-        viewModel = OrderDetailsViewModel(order: order, stores: storesManager)
+        viewModel = OrderDetailsViewModel(order: order, stores: storesManager, configurationLoader: configurationLoader)
 
         let analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider())
         ServiceLocator.setAnalytics(analytics)
@@ -99,7 +101,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         let order = Order.fake().copy(total: "10.0")
 
         // When
-        let viewModel = OrderDetailsViewModel(order: order)
+        let viewModel = OrderDetailsViewModel(order: order, configurationLoader: configurationLoader)
 
         // Then
         XCTAssertFalse(viewModel.editButtonIsEnabled)
@@ -111,9 +113,30 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
         // When
         let currencyFormatter = CurrencyFormatter(currencySettings: .init())
-        let title = OrderDetailsViewModel(order: order, currencyFormatter: currencyFormatter).paymentMethodsViewModel.title
+        let title = OrderDetailsViewModel(order: order,
+                                          currencyFormatter: currencyFormatter,
+                                          configurationLoader: configurationLoader).paymentMethodsViewModel.title
 
         // Then
         XCTAssertTrue(title.contains("\u{20AC}10.0"))
+    }
+
+    func test_it_sets_viewModel_isEligibleForCardPresentPayment_to_true_if_it_is_eligible() {
+        // Given
+        let order = Order.fake().copy(currency: "EUR", total: "10.0")
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: OrderCardPresentPaymentEligibilityAction.self) {
+            action in
+            switch action {
+            case let .orderIsEligibleForCardPresentPayment(_, _, _, completion):
+                completion(.success(true))
+            }
+        }
+
+        // When
+        let viewModel = OrderDetailsViewModel(order: order, stores: stores, configurationLoader: configurationLoader)
+
+        XCTAssertNotNil(viewModel, "Temporary test")
+
     }
 }

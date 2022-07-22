@@ -12,8 +12,17 @@ final class OrdersRootViewController: UIViewController {
     // The stack view which will contain the top bar filters and the order list.
     @IBOutlet private weak var stackView: UIStackView!
 
+    private let upsellCardReadersCampaign = UpsellCardReadersCampaign(source: .orderList)
+
+    var upsellCardReadersAnnouncementViewModel: FeatureAnnouncementCardViewModel {
+        .init(analytics: ServiceLocator.analytics,
+              configuration: upsellCardReadersCampaign.configuration)
+    }
+
     // MARK: Child view controller
-    private lazy var orderListViewModel = OrderListViewModel(siteID: siteID, filters: filters)
+    private lazy var orderListViewModel = OrderListViewModel(siteID: siteID,
+                                                             filters: filters,
+                                                             loadOrdersBanner: !upsellCardReadersAnnouncementViewModel.shouldBeVisible)
 
     private lazy var ordersViewController = OrderListViewController(
         siteID: siteID,
@@ -34,6 +43,8 @@ final class OrdersRootViewController: UIViewController {
     private var subscriptions = Set<AnyCancellable>()
 
     private var upsellCardReaderFeatureAnnouncementViewController: UIViewController?
+
+    private var cancellables = Set<AnyCancellable>()
 
     /// The top bar for apply filters, that will be embedded inside the stackview, on top of everything.
     ///
@@ -90,6 +101,7 @@ final class OrdersRootViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureStackView()
         configureTitle()
         configureView()
         configureNavigationButtons()
@@ -203,6 +215,10 @@ private extension OrdersRootViewController {
         view.backgroundColor = .listBackground
     }
 
+    func configureStackView() {
+        stackView.spacing = UIStackView.spacingUseSystem
+    }
+
     func configureTitle() {
         title = Localization.defaultOrderListTitle
     }
@@ -240,10 +256,6 @@ private extension OrdersRootViewController {
     }
 
     func configureUpsellCardReaderFeatureAnnouncement() {
-        let upsellCardReadersCampaign = UpsellCardReadersCampaign(source: .orderList)
-        let upsellCardReadersAnnouncementViewModel = FeatureAnnouncementCardViewModel(analytics: ServiceLocator.analytics,
-                   configuration: upsellCardReadersCampaign.configuration)
-
         guard upsellCardReadersAnnouncementViewModel.shouldBeVisible else {
             return
         }
@@ -262,8 +274,6 @@ private extension OrdersRootViewController {
         guard let hostingView = hostingViewController.view else {
             return
         }
-
-        stackView.setCustomSpacing(UIStackView.spacingUseSystem, after: filtersBar)
 
         addChild(hostingViewController)
         stackView.addArrangedSubview(hostingView)
@@ -288,10 +298,8 @@ private extension OrdersRootViewController {
     }
 
     func updateUpsellCardUpsellCardReaderFeatureAnnouncementVisibility() {
-        let shouldBeShown = UIDevice.current.orientation.isPortrait
-
-        upsellCardReaderFeatureAnnouncementViewController?.view.isHidden = !shouldBeShown
-        stackView.setCustomSpacing(shouldBeShown ? UIStackView.spacingUseSystem : 0, after: filtersBar)
+        // Only show on portrait
+        upsellCardReaderFeatureAnnouncementViewController?.view.isHidden = !UIDevice.current.orientation.isPortrait
     }
 
     func configureChildViewController() {
@@ -309,6 +317,14 @@ private extension OrdersRootViewController {
         addChild(ordersViewController)
         stackView.addArrangedSubview(contentView)
         ordersViewController.didMove(toParent: self)
+
+        orderListViewModel.$topBanner
+            .sink { [weak self] topBannerType in
+                if case .error = topBannerType {
+                    self?.removeUpsellCardReaderFeatureAnnouncement()
+                }
+        }
+            .store(in: &cancellables)
     }
 
     /// Connect hooks on `ResultsController` and query cached data.

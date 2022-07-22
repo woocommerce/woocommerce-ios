@@ -90,18 +90,22 @@ final class OrderListViewModel {
     ///
     @Published var hideOrdersBanners: Bool = true
 
+    private let loadOrdersBanner: Bool
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          notificationCenter: NotificationCenter = .default,
-         filters: FilterOrderListViewModel.Filters?) {
+         filters: FilterOrderListViewModel.Filters?,
+         loadOrdersBanner: Bool) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
         self.pushNotificationsManager = pushNotificationsManager
         self.notificationCenter = notificationCenter
         self.filters = filters
+        self.loadOrdersBanner = loadOrdersBanner
     }
 
     deinit {
@@ -124,7 +128,10 @@ final class OrderListViewModel {
 
         observeForegroundRemoteNotifications()
         bindTopBannerState()
-        loadOrdersBannerVisibility()
+
+        if loadOrdersBanner {
+            loadOrdersBannerVisibility()
+        }
     }
 
     func dismissOrdersBanner() {

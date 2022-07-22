@@ -1064,9 +1064,7 @@ extension OrderDetailsDataSource {
         }()
 
         let customFields: Section? = {
-            guard featureFlags.isFeatureFlagEnabled(.orderCustomFields),
-                  order.customFields.isNotEmpty
-            else {
+            guard order.customFields.isNotEmpty else {
                 return nil
             }
 

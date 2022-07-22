@@ -17,7 +17,7 @@ enum LoginProloguePageType: CaseIterable {
             return NSLocalizedString("Track sales and high performing products",
                                      comment: "Caption displayed in promotional screens shown during the login flow.")
         case .orderManagement:
-            return NSLocalizedString("Manage your store orders on the go ",
+            return NSLocalizedString("Manage and edit orders on the go",
                                      comment: "Caption displayed in promotional screens shown during the login flow.")
         case .products:
             return NSLocalizedString("Edit and add new products from anywhere",
@@ -40,7 +40,7 @@ enum LoginProloguePageType: CaseIterable {
             return NSLocalizedString("You can manage quickly and easily.",
                                      comment: "Subtitle displayed in promotional screens shown during the login flow.")
         case .products:
-            return NSLocalizedString("We make it fast and easy to process effortlessly.",
+            return NSLocalizedString("We enable you to process them effortlessly.",
                                      comment: "Subtitle displayed in promotional screens shown during the login flow.")
         default:
             return nil

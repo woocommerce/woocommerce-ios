@@ -48,7 +48,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .loginPrologueOnboarding:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .loginErrorNotifications:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         default:
             return true
         }

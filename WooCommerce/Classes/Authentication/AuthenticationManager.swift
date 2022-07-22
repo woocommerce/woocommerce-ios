@@ -209,23 +209,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     }
 
     func handleError(_ error: Error, onCompletion: @escaping (UIViewController) -> Void) {
-        let wooAuthError = AuthenticationError.make(with: error)
-        switch wooAuthError {
-        case .notWPSite, .notValidAddress:
-            let notification = LocalNotification(title: NSLocalizedString("Problems with logging in?",
-                                                                          comment: "Local notification title when the user encounters an error logging in " +
-                                                                          "with site address."),
-                                                 body: NSLocalizedString("Get some help!",
-                                                                         comment: "Local notification body when the user encounters an error logging in " +
-                                                                         "with site address."),
-                                                 scenario: .loginSiteAddressError,
-                                                 actions: .init(category: .loginError, actions: [.contactSupport]))
-            ServiceLocator.pushNotesManager.requestLocalNotification(notification,
-                                                                     // 24 hours from now.
-                                                                     trigger: UNTimeIntervalNotificationTrigger(timeInterval: 86400, repeats: false))
-        default:
-            break
-        }
+        requestLocalNotificationIfApplicable(error: error)
 
         guard let errorViewModel = viewModel(error) else {
             return
@@ -282,7 +266,9 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return
         }
 
-        ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: [.loginSiteAddressError])
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginErrorNotifications) {
+            ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: [.loginSiteAddressError])
+        }
 
         let matcher = ULAccountMatcher()
         matcher.refreshStoredSites()
@@ -421,6 +407,34 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return
         }
         ServiceLocator.analytics.track(wooEvent, withError: error)
+    }
+}
+
+// MARK: - Local notifications
+
+private extension AuthenticationManager {
+    func requestLocalNotificationIfApplicable(error: Error) {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginErrorNotifications) else {
+            return
+        }
+
+        let wooAuthError = AuthenticationError.make(with: error)
+        switch wooAuthError {
+        case .notWPSite, .notValidAddress:
+            let notification = LocalNotification(title: NSLocalizedString("Problems with logging in?",
+                                                                          comment: "Local notification title when the user encounters an error logging in " +
+                                                                          "with site address."),
+                                                 body: NSLocalizedString("Get some help!",
+                                                                         comment: "Local notification body when the user encounters an error logging in " +
+                                                                         "with site address."),
+                                                 scenario: .loginSiteAddressError,
+                                                 actions: .init(category: .loginError, actions: [.contactSupport]))
+            ServiceLocator.pushNotesManager.requestLocalNotification(notification,
+                                                                     // 24 hours from now.
+                                                                     trigger: UNTimeIntervalNotificationTrigger(timeInterval: 86400, repeats: false))
+        default:
+            break
+        }
     }
 }
 

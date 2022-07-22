@@ -83,7 +83,7 @@ class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
         setupTableFooterView()
         configureDivider()
         if screenMode == .signInUsingSiteCredentials {
-            configureSiteCredentialsButton()
+            configureButtonViewControllerForSiteCredentialsMode()
         } else {
             configureSocialButtons()
         }
@@ -704,18 +704,22 @@ private extension GetStartedViewController {
         termsButton.addTarget(self, action: #selector(termsTapped), for: .touchUpInside)
     }
 
-    func configureSiteCredentialsButton() {
+    func configureButtonViewControllerForSiteCredentialsMode() {
         guard let buttonViewController = buttonViewController else {
             return
         }
 
         buttonViewController.hideShadowView()
 
+        // Add a "Continue" button here as the `continueButton` at the top
+        // will not be displayed for `signInUsingSiteCredentials` screen mode.
+        //
         buttonViewController.setupTopButton(title: ButtonConfiguration.Continue.title,
                                             isPrimary: true,
                                             accessibilityIdentifier: ButtonConfiguration.Continue.accessibilityIdentifier,
                                             onTap: handleSubmitButtonTapped)
 
+        // Setup Sign in with site credentials button
         buttonViewController.setupBottomButton(attributedTitle: WPStyleGuide.formattedSignInWithSiteCredentialsString(),
                                                isPrimary: false,
                                                accessibilityIdentifier: ButtonConfiguration.SignInWithSiteCredentials.accessibilityIdentifier,

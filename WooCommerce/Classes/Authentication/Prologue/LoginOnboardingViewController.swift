@@ -3,7 +3,7 @@ import UIKit
 /// Contains a feature carousel with buttons that end up on the login prologue screen.
 final class LoginOnboardingViewController: UIViewController {
     private let stackView: UIStackView = .init()
-    private lazy var pageViewController = LoginProloguePageViewController(pageTypes: [.stats, .orderManagement, .products],
+    private lazy var pageViewController = LoginProloguePageViewController(pageTypes: [.products, .orderManagement, .stats],
                                                                           showsSubtitle: true)
     private let onDismiss: () -> Void
 

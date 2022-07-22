@@ -60,7 +60,7 @@ final class JetpackSetupWebViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         if isMovingFromParent {
-            analytics.track(event: .loginJetpackSetupDismissed(source: .web))
+            analytics.track(event: .LoginJetpackSetup.setupDismissed(source: .web))
         }
     }
 }
@@ -108,7 +108,7 @@ private extension JetpackSetupWebViewController {
     }
 
     func handleSetupCompletion() {
-        analytics.track(event: .loginJetpackSetupCompleted(source: .web))
+        analytics.track(event: .LoginJetpackSetup.setupCompleted(source: .web))
         activityIndicator.startAnimating()
         // tries re-syncing to get an updated store list
         // then attempts to present epilogue again
@@ -130,8 +130,8 @@ extension JetpackSetupWebViewController: WKNavigationDelegate {
             decisionHandler(.cancel)
             handleSetupCompletion()
         default:
-            if let match = JetpackSetupWebSteps.matchingStep(for: navigationURL) {
-                analytics.track(event: .loginJetpackSetupFlow(source: .web, step: match.trackingStep))
+            if let match = JetpackSetupWebStep.matchingStep(for: navigationURL) {
+                analytics.track(event: .LoginJetpackSetup.setupFlow(source: .web, step: match.trackingStep))
             }
             decisionHandler(.allow)
         }
@@ -148,7 +148,7 @@ private extension JetpackSetupWebViewController {
         static let mobileRedirectURL = "woocommerce://jetpack-connected"
     }
 
-    enum JetpackSetupWebSteps: CaseIterable {
+    enum JetpackSetupWebStep: CaseIterable {
         case automaticInstall
         case wpcomLogin
         case authorize
@@ -179,7 +179,7 @@ private extension JetpackSetupWebViewController {
             }
         }
 
-        var trackingStep: WooAnalyticsEvent.LoginJetpackSetupStep {
+        var trackingStep: WooAnalyticsEvent.LoginJetpackSetup.Step {
             switch self {
             case .automaticInstall: return .automaticInstall
             case .wpcomLogin: return .wpcomLogin

@@ -1290,34 +1290,43 @@ private extension PaymentMethod {
 // MARK: - Login Jetpack Setup
 //
 extension WooAnalyticsEvent {
-    /// The source that user sets up Jetpack: on the web or natively on the app.
-    enum LoginJetpackSetupSource: String {
-        case web
-        case native
-    }
+    enum LoginJetpackSetup {
+        /// The source that user sets up Jetpack: on the web or natively on the app.
+        enum Source: String {
+            case web
+            case native
+        }
 
-    enum LoginJetpackSetupStep: String {
-        case automaticInstall = "automatic_install"
-        case wpcomLogin = "wpcom_login"
-        case authorize
-        case siteLogin = "site_login"
-        case pluginDetail = "plugin_detail"
-        case pluginInstallation = "plugin_installation"
-        case pluginActivation = "plugin_activation"
-        case pluginSetup = "plugin_setup"
-    }
+        enum Step: String {
+            case automaticInstall = "automatic_install"
+            case wpcomLogin = "wpcom_login"
+            case authorize
+            case siteLogin = "site_login"
+            case pluginDetail = "plugin_detail"
+            case pluginInstallation = "plugin_installation"
+            case pluginActivation = "plugin_activation"
+            case pluginSetup = "plugin_setup"
+        }
 
-    /// Tracks when the user dismisses Jetpack Setup flow.
-    static func loginJetpackSetupDismissed(source: LoginJetpackSetupSource) -> WooAnalyticsEvent {
-        WooAnalyticsEvent(statName: .loginJetpackSetupDismissed, properties: ["source": source.rawValue])
-    }
+        enum Key: String {
+            case source
+            case step
+        }
 
-    /// Tracks when the user completes Jetpack Setup flow.
-    static func loginJetpackSetupCompleted(source: LoginJetpackSetupSource) -> WooAnalyticsEvent {
-        WooAnalyticsEvent(statName: .loginJetpackSetupCompleted, properties: ["source": source.rawValue])
-    }
+        /// Tracks when the user dismisses Jetpack Setup flow.
+        static func setupDismissed(source: Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginJetpackSetupDismissed, properties: [Key.source.rawValue: source.rawValue])
+        }
 
-    static func loginJetpackSetupFlow(source: LoginJetpackSetupSource, step: LoginJetpackSetupStep) -> WooAnalyticsEvent {
-        WooAnalyticsEvent(statName: .loginJetpackSetupFlow, properties: ["source": source.rawValue, "step": step.rawValue])
+        /// Tracks when the user completes Jetpack Setup flow.
+        static func setupCompleted(source: Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginJetpackSetupCompleted, properties: [Key.source.rawValue: source.rawValue])
+        }
+
+        /// Tracks when the user reaches a new step in the setup flow
+        static func setupFlow(source: Source, step: Step) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginJetpackSetupFlow, properties: [Key.source.rawValue: source.rawValue,
+                                                                             Key.step.rawValue: step.rawValue])
+        }
     }
 }

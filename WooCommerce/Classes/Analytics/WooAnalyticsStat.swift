@@ -49,6 +49,9 @@ public enum WooAnalyticsStat: String {
     case loginMagicLinkOpened = "login_magic_link_opened"
     case loginMagicLinkRequested = "login_magic_link_requested"
     case loginMagicLinkSucceeded = "login_magic_link_succeeded"
+    case loginOnboardingShown = "login_onboarding_shown"
+    case loginOnboardingNextButtonTapped = "login_onboarding_next_button_tapped"
+    case loginOnboardingSkipButtonTapped = "login_onboarding_skip_button_tapped"
     case loginPasswordFormViewed = "login_password_form_viewed"
     case loginURLFormViewed = "login_url_form_viewed"
     case loginURLHelpScreenViewed = "login_url_help_screen_viewed"
@@ -627,6 +630,12 @@ public enum WooAnalyticsStat: String {
     case closeAccountTapped = "close_account_tapped"
     case closeAccountSuccess = "close_account_success"
     case closeAccountFailed = "close_account_failed"
+
+    // MARK: Login Jetpack setup
+    case loginJetpackSetupButtonTapped = "login_jetpack_setup_button_tapped"
+    case loginJetpackSetupDismissed = "login_jetpack_setup_dismissed"
+    case loginJetpackSetupCompleted = "login_jetpack_setup_completed"
+    case loginJetpackSetupFlow = "login_jetpack_setup_flow"
 }
 
 public extension WooAnalyticsStat {

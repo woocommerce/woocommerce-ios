@@ -46,9 +46,9 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .newToWooCommerceLinkInLoginPrologue:
             return true
         case .loginPrologueOnboarding:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .loginErrorNotifications:
             return true
+        case .loginErrorNotifications:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

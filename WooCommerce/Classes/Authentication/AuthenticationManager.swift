@@ -429,6 +429,7 @@ private extension AuthenticationManager {
                                                                          "with site address."),
                                                  scenario: .loginSiteAddressError,
                                                  actions: .init(category: .loginError, actions: [.contactSupport]))
+            ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: [notification.scenario])
             ServiceLocator.pushNotesManager.requestLocalNotification(notification,
                                                                      // 24 hours from now.
                                                                      trigger: UNTimeIntervalNotificationTrigger(timeInterval: 86400, repeats: false))

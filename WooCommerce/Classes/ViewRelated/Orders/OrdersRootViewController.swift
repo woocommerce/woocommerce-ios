@@ -20,6 +20,8 @@ final class OrdersRootViewController: UIViewController {
     }
 
     // MARK: Child view controller
+
+    // Orders and Upsell Card Readers should not be shown simultaneously
     private lazy var orderListViewModel = OrderListViewModel(siteID: siteID,
                                                              filters: filters,
                                                              loadOrdersBanner: !upsellCardReadersAnnouncementViewModel.shouldBeVisible)
@@ -323,6 +325,7 @@ private extension OrdersRootViewController {
 
         orderListViewModel.$topBanner
             .sink { [weak self] topBannerType in
+                // Error banner takes preference over the upsell card reader one.
                 if case .error = topBannerType {
                     self?.removeUpsellCardReaderFeatureAnnouncement()
                 }

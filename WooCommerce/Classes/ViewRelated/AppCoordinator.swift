@@ -14,6 +14,7 @@ final class AppCoordinator {
     private let stores: StoresManager
     private let authenticationManager: Authentication
     private let roleEligibilityUseCase: RoleEligibilityUseCaseProtocol
+    private let analytics: Analytics
     private let loggedOutAppSettings: LoggedOutAppSettingsProtocol
     private let featureFlagService: FeatureFlagService
 
@@ -25,6 +26,7 @@ final class AppCoordinator {
          stores: StoresManager = ServiceLocator.stores,
          authenticationManager: Authentication = ServiceLocator.authenticationManager,
          roleEligibilityUseCase: RoleEligibilityUseCaseProtocol = RoleEligibilityUseCase(),
+         analytics: Analytics = ServiceLocator.analytics,
          loggedOutAppSettings: LoggedOutAppSettingsProtocol = LoggedOutAppSettings(userDefaults: .standard),
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.window = window
@@ -38,6 +40,7 @@ final class AppCoordinator {
         self.stores = stores
         self.authenticationManager = authenticationManager
         self.roleEligibilityUseCase = roleEligibilityUseCase
+        self.analytics = analytics
         self.loggedOutAppSettings = loggedOutAppSettings
         self.featureFlagService = featureFlagService
     }
@@ -129,14 +132,23 @@ private extension AppCoordinator {
         loggedOutAppSettings.hasFinishedOnboarding == false else {
             return
         }
-        let onboardingViewController = LoginOnboardingViewController { [weak self] in
+        let onboardingViewController = LoginOnboardingViewController { [weak self] action in
             guard let self = self else { return }
             self.loggedOutAppSettings.setHasFinishedOnboarding(true)
             self.window.rootViewController?.dismiss(animated: true)
+
+            switch action {
+            case .next:
+                self.analytics.track(event: .LoginOnboarding.loginOnboardingNextButtonTapped(isFinalPage: true))
+            case .skip:
+                self.analytics.track(event: .LoginOnboarding.loginOnboardingSkipButtonTapped())
+            }
         }
         onboardingViewController.modalPresentationStyle = .fullScreen
         onboardingViewController.modalTransitionStyle = .crossDissolve
         window.rootViewController?.present(onboardingViewController, animated: false)
+
+        analytics.track(event: .LoginOnboarding.loginOnboardingShown())
     }
 
     /// Displays logged in tab bar UI.

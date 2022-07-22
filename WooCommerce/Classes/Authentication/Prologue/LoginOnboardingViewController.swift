@@ -2,12 +2,20 @@ import UIKit
 
 /// Contains a feature carousel with buttons that end up on the login prologue screen.
 final class LoginOnboardingViewController: UIViewController {
+    /// The action that leads to the dismissal.
+    enum DismissAction {
+        case next
+        case skip
+    }
+
     private let stackView: UIStackView = .init()
     private lazy var pageViewController = LoginProloguePageViewController(pageTypes: [.stats, .orderManagement, .products],
                                                                           showsSubtitle: true)
-    private let onDismiss: () -> Void
+    private let analytics: Analytics
+    private let onDismiss: (DismissAction) -> Void
 
-    init(onDismiss: @escaping () -> Void) {
+    init(analytics: Analytics = ServiceLocator.analytics, onDismiss: @escaping (DismissAction) -> Void) {
+        self.analytics = analytics
         self.onDismiss = onDismiss
         super.init(nibName: nil, bundle: nil)
     }
@@ -111,8 +119,9 @@ private extension LoginOnboardingViewController {
         button.on(.touchUpInside) { [weak self] _ in
             guard let self = self else { return }
             guard self.pageViewController.goToNextPageIfPossible() else {
-                return self.onDismiss()
+                return self.onDismiss(.next)
             }
+            self.analytics.track(event: .LoginOnboarding.loginOnboardingNextButtonTapped(isFinalPage: false))
         }
         return button
     }
@@ -123,7 +132,7 @@ private extension LoginOnboardingViewController {
         button.applyLinkButtonStyle()
         button.setTitle(Localization.skipButtonTitle, for: .normal)
         button.on(.touchUpInside) { [weak self] _ in
-            self?.onDismiss()
+            self?.onDismiss(.skip)
         }
         return button
     }

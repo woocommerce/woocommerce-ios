@@ -8,6 +8,7 @@
 - [*] In-Person Payments: When dismissing the purchase card reader information card, the user can choose to be reminded in 14 days. [https://github.com/woocommerce/woocommerce-ios/pull/7271]
 - [*] Refund lines in the Order details screen now appear ordered from oldest to newest [https://github.com/woocommerce/woocommerce-ios/pull/7287]
 - [**] Orders: You can now view the Custom Fields for an order in the Order Details screen. [https://github.com/woocommerce/woocommerce-ios/pull/7310]
+- [*] Login: a local notification is scheduled after the user encounters an error from logging in with an invalid site address. Please see testing scenarios in the PR. [https://github.com/woocommerce/woocommerce-ios/pull/7323]
 
 9.6
 -----

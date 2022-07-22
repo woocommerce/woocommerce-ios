@@ -101,7 +101,6 @@ final class OrdersRootViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureStackView()
         configureTitle()
         configureView()
         configureNavigationButtons()
@@ -215,10 +214,6 @@ private extension OrdersRootViewController {
         view.backgroundColor = .listBackground
     }
 
-    func configureStackView() {
-        stackView.spacing = UIStackView.spacingUseSystem
-    }
-
     func configureTitle() {
         title = Localization.defaultOrderListTitle
     }
@@ -275,6 +270,8 @@ private extension OrdersRootViewController {
             return
         }
 
+        stackView.setCustomSpacing(UIStackView.spacingUseSystem, after: filtersBar)
+
         addChild(hostingViewController)
         stackView.addArrangedSubview(hostingView)
         hostingViewController.didMove(toParent: self)
@@ -298,8 +295,14 @@ private extension OrdersRootViewController {
     }
 
     func updateUpsellCardUpsellCardReaderFeatureAnnouncementVisibility() {
-        // Only show on portrait
-        upsellCardReaderFeatureAnnouncementViewController?.view.isHidden = !UIDevice.current.orientation.isPortrait
+        guard upsellCardReaderFeatureAnnouncementViewController != nil else {
+            return
+        }
+
+        let shouldBeShown = UIDevice.current.orientation.isPortrait
+
+        stackView.setCustomSpacing(shouldBeShown ? UIStackView.spacingUseSystem : 0, after: filtersBar)
+        upsellCardReaderFeatureAnnouncementViewController?.view.isHidden = !shouldBeShown
     }
 
     func configureChildViewController() {

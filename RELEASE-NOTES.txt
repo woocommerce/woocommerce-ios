@@ -10,6 +10,7 @@
 - [*] Refund lines in the Order details screen now appear ordered from oldest to newest [https://github.com/woocommerce/woocommerce-ios/pull/7287]
 - [*] Login: when the app is in logged out state, an onboarding screen is shown before the prologue screen if the user hasn't finished or skipped it.  [https://github.com/woocommerce/woocommerce-ios/pull/7324]
 - [**] Orders: You can now view the Custom Fields for an order in the Order Details screen. [https://github.com/woocommerce/woocommerce-ios/pull/7310]
+- [*] Orders: When a store has no orders yet, there is an updated message with a link to learn more on the Orders tab. [https://github.com/woocommerce/woocommerce-ios/pull/7328]
 
 9.6
 -----

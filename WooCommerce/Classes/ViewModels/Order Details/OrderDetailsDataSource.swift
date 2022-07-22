@@ -24,12 +24,6 @@ final class OrderDetailsDataSource: NSObject {
     ///
     private(set) var sections = [Section]()
 
-    /// Is this order complete?
-    ///
-    private var isCompletedStatus: Bool {
-        return order.status == OrderStatusEnum.completed
-    }
-
     /// Is this order processing? Payment received (paid). The order is awaiting fulfillment.
     ///
     private var isProcessingStatus: Bool {
@@ -1033,7 +1027,7 @@ extension OrderDetailsDataSource {
 
             switch (shouldShowShippingLabelCreation, isProcessingStatus, isRefundedStatus) {
             case (true, false, false):
-                // Order completed and eligible for shippin label creation:
+                // Order completed and eligible for shipping label creation:
                 rows.append(.shippingLabelCreateButton)
                 rows.append(.shippingLabelCreationInfo(showsSeparator: false))
             case (true, true, false):

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-07-12 20:48:57+0000 */
+/* Translation-Revision-Date: 2022-07-14 14:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -270,6 +270,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "Om appen";
+
+/* Title for the feature announcement banner intended to upsell card readers */
+"Accept payments easily" = "Ta emot betalningar enkelt";
+
+/* Subtitle of one of the elements in the CTA View for installing WCShip extension */
+"Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!" = "Kom åt rabatterade fraktavgifter. För närvarande endast tillgängligt med DHL och USPS, men fler alternativ kommer snart.";
 
 /* Reads as 'Account Type'. Part of the mandatory data in receipts */
 "Account Type" = "Kontotyp";
@@ -777,6 +783,9 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder of the text field for editing the button text for an external/affiliate product */
 "Buy Product" = "Köp produkt";
 
+/* Title of one of the elements in the CTA View for installing WCShip extension */
+"Buy postage when you need it" = "Köp porto när du behöver det";
+
 /* Legal disclaimer for logging in. The underscores _..._ denote underline. */
 "By continuing, you agree to our _Terms of Service_." = "Genom att fortsätta godkänner du våra _användarvillkor_.";
 
@@ -888,6 +897,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Card method title on the select payment method screen */
 "Card" = "Kort";
+
+/* Navigates to Card Reader Manuals screen */
+"Card Reader Manuals" = "Manualer för kortläsare";
+
+/* Navigation title at the top of the Card reader manuals screen */
+"Card reader manuals" = "Kortläsarmanualer";
 
 /* Title for the section related to card readers inside In-Person Payments settings */
 "Card readers" = "Kortläsare";
@@ -1472,6 +1487,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Discounted Orders label on Coupon Details screen */
 "Discounted Orders" = "Rabatterade beställningar";
 
+/* Title of one of the elements in the CTA View for installing WCShip extension */
+"Discounted rates" = "Rabatterade avgifter";
+
 /* Accessibility label for button to dismiss a bottom sheet
    Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog.
    Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog.
@@ -1860,6 +1878,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the notice about an error saving images uploaded in the background to a product. */
 "Error saving product images" = "Det gick inte att spara produktbilder";
 
+/* Title of the notice about an error saving an image uploaded in the background to a product variation. */
+"Error saving variation image" = "Det gick inte att spara variationsbilden";
+
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
 "Everyone loves a deal" = "Alla gillar ett erbjudande";
@@ -1955,8 +1976,14 @@ which should be translated separately and considered part of this sentence. */
    Line description for 'Fees' cart total on the receipt. Only shown when non-zero. */
 "Fees" = "Avgifter";
 
+/* Info message shown when the order contains multiple fees and shipping lines */
+"Fees & Shipping details are incomplete.\nTo edit all the details, view the order in your WooCommerce store admin." = "Avgifterna och leveransinformationen är ofullständiga.\nFör att redigera all information, visa beställningen i din WooCommerce-butiksadmin.";
+
 /* Title on the refund screen that lists the fees total cost */
 "Fees Refund" = "Avgiftsåterbetalning";
+
+/* Info message shown when the order contains multiple fee lines */
+"Fees are incomplete.\nTo edit all fees, view the order in your WooCommerce store admin." = "Avgifterna är ofullständiga.\nFör att redigera alla avgifter, visa beställningen i din WooCommerce-butiksadmin.";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -2032,6 +2059,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding file from device. */
 "From device" = "Från enhet";
 
+/* Title of the CTA view for installing WCShip extension */
+"Fulfill your orders with WooCommerce Shipping" = "Fullfölj dina beställningar med WooCommerce Shipping";
+
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "Få insikt i hur produkter presterar i din butik";
 
@@ -2059,6 +2089,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of push notifications as part of Jetpack benefits. */
 "Get push notifications for new orders, reviews, etc. delivered to your device." = "Få push-notiser för nya beställningar, recensioner med mera levererade till din enhet.";
+
+/* Message for the feature announcement banner intended to upsell card readers */
+"Get ready to accept payments with a card reader." = "Gör dig redo att ta emot betalningar med en kortläsare.";
 
 /* Title of the Jetpack benefits banner. */
 "Get the full experience with Jetpack" = "Få den fullständiga upplevelsen med Jetpack";
@@ -2233,6 +2266,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "Du kan hitta e-postadressen som du använde för att ansluta till WordPress.com i Jetpack-instrumentpanelen under Anslutningar > Kontoanslutning";
+
+/* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} blog_id @{blog ID} Parameters: %1$@ - order number, %2$@ - store name, %3$@ - blog ID number */
+"In-Person Payment for Order #%1$@ for %2$@ blog_id %3$@" = "Personlig betalning för beställning #%1$@ för %2$@ blog_id %3$@";
 
 /* Navigates to In-Person Payments screen
    Title for the In-Person Payments settings screen */
@@ -2813,6 +2849,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title of the top banner on the Products tab. */
 "New features available!" = "Nya funktioner tillgängliga!";
 
+/* Message for the mocked order notification needed for the AppStore listing screenshot. 'Your WooCommerce Store' is the name of the mocked store. */
+"New order for $13.98 on Your WooCommerce Store" = "Ny beställning för 13.98 USD i din WooCommerce-butik";
+
+/* Title of button in the login prologue screen for users who are new to WooCommerce. */
+"New to WooCommerce?" = "Är WooCommerce nytt för dig?";
+
 /* Action navigate to the variation creation screen
    Next nav bar button title in Add Product Attribute Options screen
    Next nav bar button title in Add Product Attribute screen
@@ -2862,6 +2904,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The text on the placeholder overlay when no products match the filter on the Products tab */
 "No matching products found" = "Inga matchande produkter hittades";
+
+/* Subtitle of one of the elements in the CTA View for installing WCShip extension */
+"No need to wonder where that stampbook went" = "Du behöver inte undra vart stämpelboken tog vägen";
 
 /* Message on the detail view of the Orders tab before any order is selected */
 "No order selected" = "Ingen beställning vald";
@@ -3212,6 +3257,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Name of percentage discount type */
 "Percentage Discount" = "Procentuell rabatt";
+
+/* Subtitle of the Amount field when a percentage higher than 100 is set in the Coupon Edit or Creation screen for a percentage discount coupon. */
+"Percentages cannot be greater than 100%" = "Procenttal kan inte vara större än 100 %";
 
 /* Title of the Performance section on Coupons Details screen */
 "Performance" = "Prestanda";
@@ -4159,6 +4207,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title of the Product shipping class selector screen */
 "Shipping classes" = "Fraktklasser";
 
+/* Info message shown when the order contains multiple shipping lines */
+"Shipping details are incomplete.\nTo edit all shipping details, view the order in your WooCommerce store admin." = "Leveransinformationen är ofullständig.\nFör att redigera all leveransinformation, visa beställningen i din WooCommerce-butiksadmin.";
+
 /* Header of the order summary section in the shipping label creation form */
 "Shipping label order summary" = "Beställningssammanfattning för fraktetiketter";
 
@@ -4730,6 +4781,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Certifikatet för den här servern är inte giltigt. Det kan hända att du ansluter till en server som påstår sig vara \"%@\", vilket kan försätta din sekretessbelagda information i fara.\n\nVill du lita på certifikatet i alla fall?";
+
+/* Error message in the Add Edit Coupon screen when the coupon amount is higher than 100% for a percentage discount */
+"The coupon amount cannot be greater than 100 for percentage discounts" = "Värdet för rabattkoden kan inte vara mer än 100 för procentrabatter";
 
 /* Error message in the Add Edit Coupon screen when the coupon code is empty. */
 "The coupon code couldn't be empty" = "Rabattkoden kan inte vara tom";

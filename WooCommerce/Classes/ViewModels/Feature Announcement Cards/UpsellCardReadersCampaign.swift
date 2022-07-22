@@ -3,12 +3,21 @@ import Foundation
 struct UpsellCardReadersCampaign {
     let source: WooAnalyticsEvent.FeatureCard.Source
 
+    private var buttonTitle: String? {
+        switch source {
+        case .paymentMethods:
+            return Localization.cardButtonTitle
+        default:
+            return nil
+        }
+    }
+
     var configuration: FeatureAnnouncementCardViewModel.Configuration {
         .init(source: source,
               campaign: .upsellCardReaders,
               title: Localization.cardTitle,
               message: Localization.cardMessage,
-              buttonTitle: Localization.cardButtonTitle,
+              buttonTitle: buttonTitle,
               image: .paymentsFeatureBannerImage,
               dismissAlertTitle: Localization.dismissTitle,
               dismissAlertMessage: Localization.dismissMessage)

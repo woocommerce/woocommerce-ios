@@ -5,36 +5,43 @@ import Yosemite
 @testable import WooCommerce
 
 final class OrderDetailsViewModelTests: XCTestCase {
+
+    private var storageManager: MockStorageManager!
+    private var storesManager: MockStoresManager!
     private var order: Order!
     private var viewModel: OrderDetailsViewModel!
     private var configurationLoader: MockCardPresentConfigurationLoader!
-
-    private var storesManager: MockStoresManager!
+    private let sampleSiteID: Int64 = 1111
+    private let sampleOrderID: Int64 = 1111
 
     override func setUp() {
+        super.setUp()
+        storageManager = MockStorageManager()
         storesManager = MockStoresManager(sessionManager: SessionManager.makeForTesting())
-
+        storesManager.sessionManager.setStoreId(sampleSiteID)
+        ServiceLocator.setSelectedSiteSettings(SelectedSiteSettings(stores: storesManager, storageManager: storageManager))
         order = MockOrders().sampleOrder()
         configurationLoader = MockCardPresentConfigurationLoader.init()
-
         viewModel = OrderDetailsViewModel(order: order, stores: storesManager, configurationLoader: configurationLoader)
 
         let analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider())
         ServiceLocator.setAnalytics(analytics)
-        super.setUp()
     }
 
     override func tearDown() {
-        super.tearDown()
+        ServiceLocator.setSelectedSiteSettings(SelectedSiteSettings())
+        storageManager.reset()
+        storageManager = nil
+        storesManager = nil
         viewModel = nil
         order = nil
-        storesManager = nil
+        super.tearDown()
     }
 
     func test_deleteTracking_fires_orderTrackingDelete_Tracks_event() {
         // Given
-        let mockShipmentTracking = ShipmentTracking(siteID: 1111,
-                                                    orderID: 1111,
+        let mockShipmentTracking = ShipmentTracking(siteID: sampleSiteID,
+                                                    orderID: sampleOrderID,
                                                     trackingID: "1111",
                                                     trackingNumber: "1111",
                                                     trackingProvider: nil,
@@ -121,22 +128,53 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertTrue(title.contains("\u{20AC}10.0"))
     }
 
-    func test_it_sets_viewModel_isEligibleForCardPresentPayment_to_true_if_it_is_eligible() {
+    func test_viewModel_when_country_is_not_eligible_for_card_payment_then_is_not_supported() {
+
         // Given
-        let order = Order.fake().copy(currency: "EUR", total: "10.0")
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        stores.whenReceivingAction(ofType: OrderCardPresentPaymentEligibilityAction.self) {
-            action in
-            switch action {
-            case let .orderIsEligibleForCardPresentPayment(_, _, _, completion):
-                completion(.success(true))
-            }
-        }
+        let order = Order.fake().copy(orderID: sampleOrderID, currency: "EUR", total: "10.0")
+        let setting = SiteSetting.fake()
+            .copy(
+                siteID: sampleSiteID,
+                settingID: "woocommerce_default_country",
+                value: "ES",
+                settingGroupKey: SiteSettingGroup.general.rawValue
+            )
+        storageManager.insertSampleSiteSetting(readOnlySiteSetting: setting)
+        ServiceLocator.selectedSiteSettings.refresh()
 
         // When
-        let viewModel = OrderDetailsViewModel(order: order, stores: stores, configurationLoader: configurationLoader)
+        let viewModel = OrderDetailsViewModel(
+            order: order,
+            stores: storesManager,
+            configurationLoader: configurationLoader
+        )
 
-        XCTAssertNotNil(viewModel, "Temporary test")
+        // Then
+        XCTAssertFalse(viewModel.configurationLoader.configuration.isSupportedCountry)
+    }
 
+    func test_viewModel_when_country_is_eligible_for_card_payment_then_is_supported() {
+
+        // Given
+        let order = Order.fake().copy(orderID: sampleOrderID, currency: "USD", total: "10.0")
+        let setting = SiteSetting.fake()
+            .copy(
+                siteID: sampleSiteID,
+                settingID: "woocommerce_default_country",
+                value: "US:CA",
+                settingGroupKey: SiteSettingGroup.general.rawValue
+            )
+        storageManager.insertSampleSiteSetting(readOnlySiteSetting: setting)
+        ServiceLocator.selectedSiteSettings.refresh()
+
+        // When
+        let viewModel = OrderDetailsViewModel(
+            order: order,
+            stores: storesManager,
+            configurationLoader: configurationLoader
+        )
+
+        // Then
+        XCTAssertTrue(viewModel.configurationLoader.configuration.isSupportedCountry)
     }
 }

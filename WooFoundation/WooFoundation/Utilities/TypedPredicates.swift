@@ -3,7 +3,6 @@ import Foundation
 ///
 /// The goal of these utilities is to be able to provide a type-safe API when creating `NSPredicates`.
 /// This is achieved by overloading logical operators between a `Swift.KeyPath` which is type-safe and a `Value`.
-/// Polymorphism (or operator overloading) is a manner in which OO systems allow the same operator name or symbol to be used for multiple operations.
 /// `KeyPaths` and `Values` can be transformed into `NSExpression` via a native `APIs`
 /// Which then can be converted to a `NSComparisonPredicate` using the `init(leftExpression, rightExpression, operator)`method.
 ///

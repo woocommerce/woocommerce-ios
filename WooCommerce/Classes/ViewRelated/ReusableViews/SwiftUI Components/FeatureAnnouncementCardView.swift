@@ -82,6 +82,7 @@ struct FeatureAnnouncementCardView: View {
                             callToAction?()
                         }
                         .padding(.bottom, Layout.bottomButtonPadding)
+                        .foregroundColor(Color(.withColorStudio(.pink)))
                     }
                 }
                 Spacer()

@@ -1,2 +1,2 @@
-Visualizza e gestisci
-gli ordini quando sei in movimento
+Crea ordini
+in movimento

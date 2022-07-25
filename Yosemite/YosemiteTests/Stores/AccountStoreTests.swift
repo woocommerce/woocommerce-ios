@@ -839,7 +839,7 @@ final class AccountStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? NSError, error)
+        XCTAssertEqual(result.failure as NSError?, error)
     }
 }
 

@@ -399,7 +399,13 @@ private extension GetStartedViewController {
     // MARK: Analytics
     //
     func configureAnalyticsTracker() {
-        tracker.set(flow: .wpCom)
+        // Configure tracker flow based on screen mode.
+        switch screenMode {
+        case .signInUsingSiteCredentials:
+            tracker.set(flow: .loginWithSiteAddress)
+        case .signInUsingWordPressComOrSocialAccounts:
+            tracker.set(flow: .wpCom)
+        }
 
         if isMovingToParent {
             tracker.track(step: .start)

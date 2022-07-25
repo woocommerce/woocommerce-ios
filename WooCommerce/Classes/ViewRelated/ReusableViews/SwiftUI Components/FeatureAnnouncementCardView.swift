@@ -29,6 +29,25 @@ struct FeatureAnnouncementCardView: View {
                             .foregroundColor(Color(.withColorStudio(.gray)))
                     }
                     .padding(.trailing, Layout.padding)
+                    .actionSheet(isPresented: $showingDismissAlert) {
+                        ActionSheet(
+                            title: Text(viewModel.dismissAlertTitle),
+                            message: Text(viewModel.dismissAlertMessage),
+                            buttons: [
+                                .default(Text(Localization.remindLaterButton),
+                                         action: {
+                                             viewModel.remindLaterTapped()
+                                             dismiss()
+                                         }),
+                                .default(Text(Localization.dontShowAgainButton),
+                                         action: {
+                                             viewModel.dontShowAgainTapped()
+                                             dismiss()
+                                         }),
+                                .cancel()
+                            ]
+                        )
+                    }
                     .alert(isPresented: $showingDismissAlert,
                            content: {
                         Alert(title: Text(viewModel.dismissAlertTitle),

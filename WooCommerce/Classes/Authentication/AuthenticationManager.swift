@@ -422,6 +422,7 @@ private extension AuthenticationManager {
                              in navigationController: UINavigationController,
                              onDismiss: @escaping () -> Void) {
         let viewModel = JetpackErrorViewModel(siteURL: siteURL, onJetpackSetupCompletion: { [weak self] in
+            self?.currentSelfHostedSite = nil
             self?.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: onDismiss)
         })
         let installJetpackUI = ULErrorViewController(viewModel: viewModel)

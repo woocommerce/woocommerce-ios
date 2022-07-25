@@ -105,13 +105,7 @@ class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
     override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        tracker.set(flow: .wpCom)
-
-        if isMovingToParent {
-            tracker.track(step: .start)
-        } else {
-            tracker.set(step: .start)
-        }
+        configureAnalyticsTracker()
 
         errorMessage = nil
         hiddenPasswordField?.text = nil
@@ -402,6 +396,17 @@ private extension GetStartedViewController {
         }
     }
 
+    // MARK: Analytics
+    //
+    func configureAnalyticsTracker() {
+        tracker.set(flow: .wpCom)
+
+        if isMovingToParent {
+            tracker.track(step: .start)
+        } else {
+            tracker.set(step: .start)
+        }
+    }
 }
 
 // MARK: - Validation

@@ -282,12 +282,17 @@ private extension OrdersRootViewController {
     }
 
     func updateUpsellCardUpsellCardReaderFeatureAnnouncementVisibility() {
-        let shouldBeShown = traitCollection.verticalSizeClass == .regular && upsellCardReadersAnnouncementViewModel.shouldBeVisible
+        // Error banner takes preference over the upsell card reader one
+        let shouldBeShown = traitCollection.verticalSizeClass == .regular &&
+        upsellCardReadersAnnouncementViewModel.shouldBeVisible &&
+        orderListViewModel.topBanner != .error
+
         hideUpsellCardReaderFeatureAnnouncementView(!shouldBeShown)
     }
 
     func hideUpsellCardReaderFeatureAnnouncementView(_ hidden: Bool) {
-        guard upsellCardReaderFeatureAnnouncementViewController != nil else {
+        guard upsellCardReaderFeatureAnnouncementViewController != nil,
+              upsellCardReaderFeatureAnnouncementViewController?.view.isHidden != hidden else {
             return
         }
 
@@ -305,20 +310,17 @@ private extension OrdersRootViewController {
         view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
         ordersViewController.delegate = self
 
+        orderListViewModel.$topBanner
+            .sink { [weak self] topBannerType in
+                self?.updateUpsellCardUpsellCardReaderFeatureAnnouncementVisibility()
+        }
+            .store(in: &cancellables)
+
         // Add contentView to stackview
         let contentView = ordersViewController.view!
         addChild(ordersViewController)
         stackView.addArrangedSubview(contentView)
         ordersViewController.didMove(toParent: self)
-
-        orderListViewModel.$topBanner
-            .sink { [weak self] topBannerType in
-                // Error banner takes preference over the upsell card reader one.
-                if case .error = topBannerType {
-                    self?.hideUpsellCardReaderFeatureAnnouncementView(true)
-                }
-        }
-            .store(in: &cancellables)
     }
 
     /// Connect hooks on `ResultsController` and query cached data.

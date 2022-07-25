@@ -145,7 +145,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             )
 
             // show this notification seconds from now
-            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1.5, repeats: false)
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 3, repeats: false)
 
             // choose a random identifier
             let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)

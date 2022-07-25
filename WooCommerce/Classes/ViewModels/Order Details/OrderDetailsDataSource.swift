@@ -24,10 +24,10 @@ final class OrderDetailsDataSource: NSObject {
     ///
     private(set) var sections = [Section]()
 
-    /// Is this order processing?
+    /// Is this order processing? Payment received (paid). The order is awaiting fulfillment.
     ///
-    private var isProcessingPayment: Bool {
-        return order.status == OrderStatusEnum.processing
+    private var isProcessingStatus: Bool {
+        order.status == OrderStatusEnum.processing
     }
 
     /// Is this order fully refunded?
@@ -47,7 +47,7 @@ final class OrderDetailsDataSource: NSObject {
     /// Whether the order is eligible for card present payment.
     ///
     var isEligibleForPayment: Bool {
-        return order.datePaid == nil
+        order.needsPayment
     }
 
     var isEligibleForRefund: Bool {
@@ -1025,21 +1025,22 @@ extension OrderDetailsDataSource {
 
             var rows: [Row] = Array(repeating: .aggregateOrderItem, count: aggregateOrderItemCount)
 
-            if shouldShowShippingLabelCreation {
+            switch (shouldShowShippingLabelCreation, isProcessingStatus, isRefundedStatus) {
+            case (true, false, false):
+                // Order completed and eligible for shipping label creation:
                 rows.append(.shippingLabelCreateButton)
-            }
-
-            if isProcessingPayment {
-                if shouldShowShippingLabelCreation {
-                    rows.append(.markCompleteButton(style: .secondary, showsBottomSpacing: false))
-                    rows.append(.shippingLabelCreationInfo(showsSeparator: false))
-                } else {
-                    rows.append(.markCompleteButton(style: .primary, showsBottomSpacing: true))
-                }
-            } else if isRefundedStatus == false {
-                if shouldShowShippingLabelCreation {
-                    rows.append(.shippingLabelCreationInfo(showsSeparator: true))
-                }
+                rows.append(.shippingLabelCreationInfo(showsSeparator: false))
+            case (true, true, false):
+                // Order processing shippable:
+                rows.append(.shippingLabelCreateButton)
+                rows.append(.markCompleteButton(style: .secondary, showsBottomSpacing: false))
+                rows.append(.shippingLabelCreationInfo(showsSeparator: false))
+            case (false, true, false):
+                // Order processing digital:
+                rows.append(.markCompleteButton(style: .primary, showsBottomSpacing: true))
+            default:
+                // Other cases
+                break
             }
 
             if rows.count == 0 {
@@ -1064,9 +1065,7 @@ extension OrderDetailsDataSource {
         }()
 
         let customFields: Section? = {
-            guard featureFlags.isFeatureFlagEnabled(.orderCustomFields),
-                  order.customFields.isNotEmpty
-            else {
+            guard order.customFields.isNotEmpty else {
                 return nil
             }
 
@@ -1178,9 +1177,7 @@ extension OrderDetailsDataSource {
         let payment: Section = {
             var rows: [Row] = [.payment]
 
-            if shouldShowCustomerPaidRow {
-                rows.append(.customerPaid)
-            }
+            rows.append(.customerPaid)
 
             if condensedRefunds.isNotEmpty {
                 let refunds = Array<Row>(repeating: .refund, count: condensedRefunds.count)

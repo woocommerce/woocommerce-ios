@@ -16,8 +16,7 @@ final class LoginTests: XCTestCase {
     func skipped_test_site_address_login_logout() throws {
         try skipTillSettingsFixed()
 
-        let prologue = try LoginOnboardingScreen().skipOnboarding()
-            .selectSiteAddress()
+        let prologue = try PrologueScreen().selectSiteAddress()
             .proceedWith(siteUrl: TestCredentials.siteUrl)
             .proceedWith(email: TestCredentials.emailAddress)
             .proceedWith(password: TestCredentials.password)
@@ -55,8 +54,7 @@ final class LoginTests: XCTestCase {
     }
 
     func test_WordPress_unsuccessfull_login() throws {
-        _ = try LoginOnboardingScreen().skipOnboarding()
-            .selectContinueWithWordPress()
+        _ = try PrologueScreen().selectContinueWithWordPress()
             .proceedWith(email: TestCredentials.emailAddress)
             .tryProceed(password: "invalidPswd")
             .verifyLoginError()

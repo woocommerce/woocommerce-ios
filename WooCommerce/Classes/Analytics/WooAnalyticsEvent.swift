@@ -1286,3 +1286,47 @@ private extension PaymentMethod {
         }
     }
 }
+
+// MARK: - Login Jetpack Setup
+//
+extension WooAnalyticsEvent {
+    enum LoginJetpackSetup {
+        /// The source that user sets up Jetpack: on the web or natively on the app.
+        enum Source: String {
+            case web
+            case native
+        }
+
+        enum Step: String {
+            case automaticInstall = "automatic_install"
+            case wpcomLogin = "wpcom_login"
+            case authorize
+            case siteLogin = "site_login"
+            case pluginDetail = "plugin_detail"
+            case pluginInstallation = "plugin_installation"
+            case pluginActivation = "plugin_activation"
+            case pluginSetup = "plugin_setup"
+        }
+
+        enum Key: String {
+            case source
+            case step
+        }
+
+        /// Tracks when the user dismisses Jetpack Setup flow.
+        static func setupDismissed(source: Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginJetpackSetupDismissed, properties: [Key.source.rawValue: source.rawValue])
+        }
+
+        /// Tracks when the user completes Jetpack Setup flow.
+        static func setupCompleted(source: Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginJetpackSetupCompleted, properties: [Key.source.rawValue: source.rawValue])
+        }
+
+        /// Tracks when the user reaches a new step in the setup flow
+        static func setupFlow(source: Source, step: Step) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginJetpackSetupFlow, properties: [Key.source.rawValue: source.rawValue,
+                                                                             Key.step.rawValue: step.rawValue])
+        }
+    }
+}

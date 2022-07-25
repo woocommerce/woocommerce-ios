@@ -1,3 +1,4 @@
+import Experiments
 import TestKit
 import WordPressAuthenticator
 import XCTest
@@ -120,6 +121,88 @@ final class AppCoordinatorTests: XCTestCase {
         // Then
         assertThat(window.rootViewController, isAnInstanceOf: LoginNavigationController.self)
     }
+
+    // MARK: - Login onboarding
+
+    func test_starting_app_logged_out_without_interacting_with_onboarding_presents_onboarding_over_authentication() throws {
+        // Given
+        stores.deauthenticate()
+        sessionManager.defaultStoreID = 134
+        let loggedOutAppSettings = MockLoggedOutAppSettings(hasFinishedOnboarding: false)
+        let featureFlagService = MockFeatureFlagService(isLoginPrologueOnboardingEnabled: true)
+        let appCoordinator = makeCoordinator(window: window,
+                                             stores: stores,
+                                             authenticationManager: authenticationManager,
+                                             loggedOutAppSettings: loggedOutAppSettings,
+                                             featureFlagService: featureFlagService)
+
+        // When
+        appCoordinator.start()
+
+        // Then
+        assertThat(window.rootViewController, isAnInstanceOf: LoginNavigationController.self)
+        assertThat(window.rootViewController?.presentedViewController, isAnInstanceOf: LoginOnboardingViewController.self)
+    }
+
+    func test_starting_app_logged_out_after_interacting_with_onboarding_does_not_present_onboarding() throws {
+        // Given
+        stores.deauthenticate()
+        sessionManager.defaultStoreID = 134
+        let loggedOutAppSettings = MockLoggedOutAppSettings(hasFinishedOnboarding: true)
+        let featureFlagService = MockFeatureFlagService(isLoginPrologueOnboardingEnabled: true)
+        let appCoordinator = makeCoordinator(window: window,
+                                             stores: stores,
+                                             authenticationManager: authenticationManager,
+                                             loggedOutAppSettings: loggedOutAppSettings,
+                                             featureFlagService: featureFlagService)
+
+        // When
+        appCoordinator.start()
+
+        // Then
+        assertThat(window.rootViewController, isAnInstanceOf: LoginNavigationController.self)
+        XCTAssertNil(window.rootViewController?.presentedViewController)
+    }
+
+    func test_starting_app_logged_out_does_not_present_onboarding_when_feature_flag_is_disabled() throws {
+        // Given
+        stores.deauthenticate()
+        sessionManager.defaultStoreID = 134
+        let loggedOutAppSettings = MockLoggedOutAppSettings(hasFinishedOnboarding: false)
+        let featureFlagService = MockFeatureFlagService(isLoginPrologueOnboardingEnabled: false)
+        let appCoordinator = makeCoordinator(window: window,
+                                             stores: stores,
+                                             authenticationManager: authenticationManager,
+                                             loggedOutAppSettings: loggedOutAppSettings,
+                                             featureFlagService: featureFlagService)
+
+        // When
+        appCoordinator.start()
+
+        // Then
+        assertThat(window.rootViewController, isAnInstanceOf: LoginNavigationController.self)
+        XCTAssertNil(window.rootViewController?.presentedViewController)
+    }
+
+    // MARK: - Login onboarding analytics
+
+    func test_loginOnboardingShown_is_tracked_after_presenting_onboarding() throws {
+        // Given
+        stores.deauthenticate()
+        let analytics = MockAnalyticsProvider()
+        let appCoordinator = makeCoordinator(window: window,
+                                             stores: stores,
+                                             authenticationManager: authenticationManager,
+                                             analytics: WooAnalytics(analyticsProvider: analytics),
+                                             loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: false),
+                                             featureFlagService: MockFeatureFlagService(isLoginPrologueOnboardingEnabled: true))
+
+        // When
+        appCoordinator.start()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.loginOnboardingShown.rawValue])
+    }
 }
 
 private extension AppCoordinatorTests {
@@ -127,10 +210,16 @@ private extension AppCoordinatorTests {
     func makeCoordinator(window: UIWindow? = nil,
                          stores: StoresManager? = nil,
                          authenticationManager: Authentication? = nil,
-                         roleEligibilityUseCase: RoleEligibilityUseCaseProtocol? = nil) -> AppCoordinator {
+                         roleEligibilityUseCase: RoleEligibilityUseCaseProtocol? = nil,
+                         analytics: Analytics = ServiceLocator.analytics,
+                         loggedOutAppSettings: LoggedOutAppSettingsProtocol = MockLoggedOutAppSettings(),
+                         featureFlagService: FeatureFlagService = MockFeatureFlagService()) -> AppCoordinator {
         return AppCoordinator(window: window ?? self.window,
                               stores: stores ?? self.stores,
                               authenticationManager: authenticationManager ?? self.authenticationManager,
-                              roleEligibilityUseCase: roleEligibilityUseCase ?? MockRoleEligibilityUseCase())
+                              roleEligibilityUseCase: roleEligibilityUseCase ?? MockRoleEligibilityUseCase(),
+                              analytics: analytics,
+                              loggedOutAppSettings: loggedOutAppSettings,
+                              featureFlagService: featureFlagService)
     }
 }

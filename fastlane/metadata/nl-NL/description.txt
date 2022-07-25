@@ -1,22 +1,22 @@
-Beheer je bedrijf onderweg met de mobiele WooCommerce-app. Producten aanmaken, bestellingen verwerken en je belangrijkste cijfers in de gaten houden; allemaal in realtime.
+Beheer je bedrijf onderweg met de mobiele WooCommerce-app. Voeg producten toe, maak bestellingen aan, neem snel betalingen aan en heb zicht op nieuwe aankopen en belangrijke statistieken in real-time.
 
-VOEG PRODUCTEN TOE
-Maak producten aan, en groepeer en publiceer ze rechtstreeks vanaf je iPhone of iPad. Maak meteen werk van nieuwe ingevingen en zet ze direct om in producten, of sla de producten op als concept voor later.
+Voeg producten toe en bewerk ze met slechts een tik
+Ga binnen enkele seconden al aan de slag. Maak producten aan, en groepeer en publiceer ze rechtstreeks vanaf je iPhone of iPad. Maak meteen werk van nieuwe ingevingen en zet ze direct om in producten, of sla de producten op als concept voor later.
 
-BLIJF OP DE HOOGTE
-Mis nooit meer een bestelling of een beoordeling. Bang dat je iets mist? Schakel dan realtime meldingen in en wacht op dat verslavende 'katsjing!' iedere keer als je iets hebt verkocht!
+Maak overal en altijd bestellingen aan
+Heb je je product aangemaakt? Kies dan simpelweg het artikel uit je catalogus, voeg de verzending toe, vul ten slotte de klantgegevens in en je hebt razendsnel een bestelling die met je inventaris synchroniseert.
 
-BEKIJK EN PAS BESTELLINGEN AAN
-Scrol door de overzichten, of zoek op klant of bestellingsgegevens. Tik op de gegevens om de factuur te bekijken, de levering in gang te zetten en de bestelstatus te wijzigen. Voeg opmerkingen toe aan de bestelling of stuur direct een e-mail met een update naar de klant.
+Ontvang betalingen in hoogsteigen persoon.
+Neem fysieke betalingen aan met WooCommerce Fysieke betalingen en een kaartlezer (beschikbaar in de VS en Canada). Begin een nieuwe bestelling of selecteer een bestelling met een openstaande betaling en neem de betaling aan met de kaartlezer of een digitale portemonnee, zoals Apple Pay.
 
-HOUD JE STATISTIEKEN BIJ
-Bekijk in één oogopslag welke producten het beste verkopen. Check je totale winst, aantal bestellingen en bezoekersgegevens per week, maand en jaar. Kennis is macht!
+Ontvang een melding van elke aankoop
+Nu je aan de slag bent gegaan met verkopen, wil je nooit meer een bestelling of een beoordeling missen. Blijf op de hoogte; schakel realtime meldingen in en wacht op dat verslavende 'katsjing!' bij elke aankoop!
 
-WISSEL TUSSEN WINKELS
-Heb je meer dan één winkel? Schakel dan eenvoudig over van de ene naar de andere.
+Volg verkoopcijfers en bestverkopende producten
+Bekijk in één oogopslag welke producten het beste verkopen. Check je totale winst, aantal bestellingen en bezoekersgegevens per week, maand en jaar. Kennis is macht.
 
 WooCommerce is 's werelds meest aanpasbare opensource eCommerce-platform. Of je nu een bedrijf start, een fysieke winkel online wil starten of sites voor klanten wil ontwikkelen: gebruik WooCommerce voor een winkel waarin content en handel gecombineerd worden.
 
-Vereisten: WooCommerce v3.5+, de Jetpack-plugin.
+Vereisten: WooCommerce v3.5+.
 
 Bekijk de privacyverklaring voor gebruikers in Californië op https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

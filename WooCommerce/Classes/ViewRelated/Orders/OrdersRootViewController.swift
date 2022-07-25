@@ -126,8 +126,8 @@ final class OrdersRootViewController: UIViewController {
         updateUpsellCardUpsellCardReaderFeatureAnnouncementVisibility()
     }
 
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
 
         updateUpsellCardUpsellCardReaderFeatureAnnouncementVisibility()
     }
@@ -282,7 +282,7 @@ private extension OrdersRootViewController {
     }
 
     func updateUpsellCardUpsellCardReaderFeatureAnnouncementVisibility() {
-        let shouldBeShown = UIDevice.current.orientation.isPortrait && upsellCardReadersAnnouncementViewModel.shouldBeVisible
+        let shouldBeShown = traitCollection.verticalSizeClass == .regular && upsellCardReadersAnnouncementViewModel.shouldBeVisible
         hideUpsellCardReaderFeatureAnnouncementView(!shouldBeShown)
     }
 

@@ -1,4 +1,5 @@
 import Foundation
+import WooFoundation
 
 
 // MARK: - StorageType DataModel Specific Extensions

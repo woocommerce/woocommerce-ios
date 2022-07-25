@@ -31,6 +31,8 @@ public struct WordPressOrgCredentials: Equatable {
         self.options = options
     }
 
+    /// Returns site URL by stripping "/xmlrpc.php" from `xmlrpc`
+    ///
     public var siteURL: String {
         xmlrpc.removingSuffix("/xmlrpc.php")
     }

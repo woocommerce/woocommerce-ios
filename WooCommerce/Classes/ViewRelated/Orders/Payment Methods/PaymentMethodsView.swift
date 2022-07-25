@@ -85,6 +85,7 @@ struct PaymentMethodsView: View {
                             showingPurchaseCardReaderView = true
                         })
                         .padding(.horizontal, insets: safeAreaInsets)
+                        .background(Color(.listForeground))
                     }
                 }
 

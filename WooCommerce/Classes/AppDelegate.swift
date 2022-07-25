@@ -120,7 +120,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didReceiveRemoteNotification userInfo: [AnyHashable: Any],
                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        ServiceLocator.pushNotesManager.handleNotification(userInfo, onBadgeUpdateCompletion: {}, completionHandler: completionHandler)
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
@@ -438,8 +437,25 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                     "type": response.notification.request.identifier
                 ])
             default:
-                return
+                // Handles remote notifications.
+                let notificationContent = response.notification.request.content
+                ServiceLocator.pushNotesManager.handleNotification(notificationContent,
+                                                                   onBadgeUpdateCompletion: {
+                    // TODO
+                }) { backgroundFetchResult in
+                    // TODO
+                }
             }
         }
+    }
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
+        ServiceLocator.pushNotesManager.handleNotification(notification.request.content,
+                                                           onBadgeUpdateCompletion: {
+            // TODO
+        }) { backgroundFetchResult in
+            // TODO
+        }
+        return UNNotificationPresentationOptions(rawValue: 0)
     }
 }

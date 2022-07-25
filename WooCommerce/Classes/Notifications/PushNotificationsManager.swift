@@ -223,16 +223,16 @@ extension PushNotificationsManager {
 
     /// Handles a Remote Push Notification Payload. On completion the `completionHandler` will be executed.
     ///
-    func handleNotification(_ userInfo: [AnyHashable: Any],
+    func handleNotification(_ content: UNNotificationContent,
                             onBadgeUpdateCompletion: @escaping () -> Void,
                             completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        DDLogVerbose("📱 Push Notification Received: \n\(userInfo)\n")
+        DDLogVerbose("📱 Push Notification Received: \n\(content.userInfo)\n")
 
         // Badge: Update
-        if let typeString = userInfo.string(forKey: APNSKey.type),
-            let type = Note.Kind(rawValue: typeString),
-            let siteID = siteID,
-            let notificationSiteID = userInfo[APNSKey.siteID] as? Int64 {
+        if let typeString = content.userInfo.string(forKey: APNSKey.type),
+           let type = Note.Kind(rawValue: typeString),
+           let siteID = siteID,
+           let notificationSiteID = content.userInfo[APNSKey.siteID] as? Int64 {
             incrementNotificationCount(siteID: notificationSiteID, type: type, incrementCount: 1) { [weak self] in
                 self?.loadNotificationCountAndUpdateApplicationBadgeNumberAndPostNotifications(siteID: siteID, type: type)
                 onBadgeUpdateCompletion()
@@ -240,12 +240,12 @@ extension PushNotificationsManager {
         }
 
         // Badge: Reset
-        guard userInfo.string(forKey: APNSKey.type) != PushType.badgeReset else {
+        guard content.userInfo.string(forKey: APNSKey.type) != PushType.badgeReset else {
             return
         }
 
         // Analytics
-        trackNotification(with: userInfo)
+        trackNotification(with: content.userInfo)
 
         // Handling!
         let handlers = [
@@ -256,7 +256,7 @@ extension PushNotificationsManager {
         ]
 
         for handler in handlers {
-            if handler(userInfo, completionHandler) {
+            if handler(content, completionHandler) {
                 break
             }
         }
@@ -371,18 +371,18 @@ private extension PushNotificationsManager {
     ///
     /// - Returns: True when handled. False otherwise
     ///
-    func handleSupportNotification(_ userInfo: [AnyHashable: Any], completionHandler: @escaping (UIBackgroundFetchResult) -> Void) -> Bool {
+    func handleSupportNotification(_ content: UNNotificationContent, completionHandler: @escaping (UIBackgroundFetchResult) -> Void) -> Bool {
 
-        guard userInfo.string(forKey: APNSKey.type) == PushType.zendesk else {
+        guard content.userInfo.string(forKey: APNSKey.type) == PushType.zendesk else {
                 return false
         }
 
         self.configuration.supportManager.pushNotificationReceived()
 
-        trackNotification(with: userInfo)
+        trackNotification(with: content.userInfo)
 
         if applicationState == .inactive {
-            self.configuration.supportManager.displaySupportRequest(using: userInfo)
+            self.configuration.supportManager.displaySupportRequest(using: content.userInfo)
         }
 
         completionHandler(.newData)
@@ -399,12 +399,12 @@ private extension PushNotificationsManager {
     ///
     /// - Returns: True when handled. False otherwise
     ///
-    func handleForegroundNotification(_ userInfo: [AnyHashable: Any], completionHandler: @escaping (UIBackgroundFetchResult) -> Void) -> Bool {
-        guard applicationState == .active, let _ = userInfo[APNSKey.identifier] else {
+    func handleForegroundNotification(_ content: UNNotificationContent, completionHandler: @escaping (UIBackgroundFetchResult) -> Void) -> Bool {
+        guard applicationState == .active, let _ = content.userInfo[APNSKey.identifier] else {
             return false
         }
 
-        if let foregroundNotification = PushNotification.from(userInfo: userInfo) {
+        if let foregroundNotification = PushNotification.from(userInfo: content.userInfo) {
             configuration.application
                 .presentInAppNotification(title: foregroundNotification.title,
                                           subtitle: foregroundNotification.subtitle,
@@ -433,14 +433,14 @@ private extension PushNotificationsManager {
     ///
     /// - Returns: True when handled. False otherwise
     ///
-    func handleInactiveNotification(_ userInfo: [AnyHashable: Any], completionHandler: (UIBackgroundFetchResult) -> Void) -> Bool {
+    func handleInactiveNotification(_ content: UNNotificationContent, completionHandler: (UIBackgroundFetchResult) -> Void) -> Bool {
         guard applicationState == .inactive else {
             return false
         }
 
         DDLogVerbose("📱 Handling Notification in Inactive State")
 
-        if let notification = PushNotification.from(userInfo: userInfo) {
+        if let notification = PushNotification.from(userInfo: content.userInfo) {
             presentDetails(for: notification)
 
             inactiveNotificationsSubject.send(notification)
@@ -460,8 +460,8 @@ private extension PushNotificationsManager {
     ///
     /// - Returns: True when handled. False otherwise
     ///
-    func handleBackgroundNotification(_ userInfo: [AnyHashable: Any], completionHandler: @escaping (UIBackgroundFetchResult) -> Void) -> Bool {
-        guard applicationState == .background, let _ = userInfo[APNSKey.identifier] else {
+    func handleBackgroundNotification(_ content: UNNotificationContent, completionHandler: @escaping (UIBackgroundFetchResult) -> Void) -> Bool {
+        guard applicationState == .background, let _ = content.userInfo[APNSKey.identifier] else {
             return false
         }
 

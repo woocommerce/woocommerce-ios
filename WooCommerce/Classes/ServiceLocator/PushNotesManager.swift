@@ -64,7 +64,7 @@ protocol PushNotesManager {
 
     /// Handles a Remote Push Notification Payload. On completion the `completionHandler` will be executed.
     ///
-    func handleNotification(_ userInfo: [AnyHashable: Any],
+    func handleNotification(_ content: UNNotificationContent,
                             onBadgeUpdateCompletion: @escaping () -> Void,
                             completionHandler: @escaping (UIBackgroundFetchResult) -> Void)
 

@@ -1,2 +1,2 @@
-View products and
-check inventory
+Add and edit products 
+with a touch

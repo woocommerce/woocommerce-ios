@@ -1,2 +1,2 @@
-Ürünleri görüntüle ve
-envanteri kontrol et
+Sadece bir dokunuşla
+ürün ekleyin ve düzenleyin

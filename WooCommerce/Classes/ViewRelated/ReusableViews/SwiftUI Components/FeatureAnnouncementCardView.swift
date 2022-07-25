@@ -2,7 +2,7 @@ import SwiftUI
 
 struct FeatureAnnouncementCardView: View {
     private let viewModel: FeatureAnnouncementCardViewModel
-    @State private var showingDismissAlert = false
+    @State private var showingDismissActionSheet = false
 
     let dismiss: (() -> Void)?
     let callToAction: (() -> Void)?
@@ -23,13 +23,13 @@ struct FeatureAnnouncementCardView: View {
                 Spacer()
                 if let dismiss = dismiss {
                     Button(action: {
-                        showingDismissAlert = true
+                        showingDismissActionSheet = true
                     }) {
                         Image(systemName: "xmark")
                             .foregroundColor(Color(.withColorStudio(.gray)))
                     }
                     .padding(.trailing, Layout.padding)
-                    .actionSheet(isPresented: $showingDismissAlert) {
+                    .actionSheet(isPresented: $showingDismissActionSheet) {
                         ActionSheet(
                             title: Text(viewModel.dismissAlertTitle),
                             message: Text(viewModel.dismissAlertMessage),
@@ -48,19 +48,6 @@ struct FeatureAnnouncementCardView: View {
                             ]
                         )
                     }
-                    .alert(isPresented: $showingDismissAlert,
-                           content: {
-                        Alert(title: Text(viewModel.dismissAlertTitle),
-                              message: Text(viewModel.dismissAlertMessage),
-                              primaryButton: .cancel(Text(Localization.remindLaterButton), action: {
-                            viewModel.remindLaterTapped()
-                            dismiss()
-                        }),
-                              secondaryButton: .default(Text(Localization.dontShowAgainButton), action: {
-                            viewModel.dontShowAgainTapped()
-                            dismiss()
-                        }))
-                    })
                 }
             }
             .padding(.top, Layout.padding)

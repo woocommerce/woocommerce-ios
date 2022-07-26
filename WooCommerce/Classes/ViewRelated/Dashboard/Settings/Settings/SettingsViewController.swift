@@ -184,7 +184,7 @@ private extension SettingsViewController {
     func configureUpsellCardReadersFeatureAnnouncement(cell: HostingTableViewCell<FeatureAnnouncementCardView>) {
         let view = FeatureAnnouncementCardView(viewModel: viewModel.upsellCardReadersAnnouncementViewModel,
                                                dismiss: { [weak self] in
-            self?.viewModel.onUpsellCardReadersAnnouncementDismiss()
+            self?.viewModel.reloadSettings()
         })
         cell.host(view, parent: self)
         cell.selectionStyle = .none

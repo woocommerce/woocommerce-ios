@@ -43,8 +43,6 @@ protocol SettingsViewModelActionsHandler {
     ///
     func onJetpackInstallDismiss()
 
-    func onUpsellCardReadersAnnouncementDismiss()
-
     func reloadSettings()
 }
 
@@ -165,10 +163,6 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         guard stores.sessionManager.defaultSite?.isJetpackCPConnected == false else {
             return
         }
-        reloadSettings()
-    }
-
-    func onUpsellCardReadersAnnouncementDismiss() {
         reloadSettings()
     }
 

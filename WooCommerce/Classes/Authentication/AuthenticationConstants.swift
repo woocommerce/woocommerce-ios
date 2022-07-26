@@ -21,8 +21,8 @@ struct AuthenticationConstants {
     /// What is WordPress.com? link (Continue with WordPress.com)
     ///
     static let whatIsWPComLinkTitle = NSLocalizedString(
-        "_What is WordPress.com?_",
-        comment: "Navigates to page with details about What is WordPress.com. The underscores _..._ denote underline."
+        "What is WordPress.com?",
+        comment: "Navigates to page with details about What is WordPress.com."
     )
 
     /// Login with Jetpack instructions.

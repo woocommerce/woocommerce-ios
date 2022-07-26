@@ -53,6 +53,10 @@
   "testTargets" : [
     {
       "skippedTests" : [
+        "OrdersTests",
+        "ProductsTests",
+        "ReviewsTests",
+        "StatsTests",
         "StatsTests\/testStatsScreenLoad()"
       ],
       "target" : {

@@ -227,26 +227,6 @@ extension WPStyleGuide {
         return textButton(normal: attrStrNormal, highlighted: attrStrHighlight, font: font, alignment: .center)
     }
 
-    /// Creates a button to open a webpage with details about What is WordPress.com?
-    ///
-    /// - Returns: A properly styled UIButton
-    ///
-    class func whatIsWPComButton() -> UIButton {
-        let unifiedStyle = WordPressAuthenticator.shared.unifiedStyle
-        let originalStyle = WordPressAuthenticator.shared.style
-        let baseString = WordPressAuthenticator.shared.displayStrings.whatIsWPComLinkTitle
-        let textColor = unifiedStyle?.textSubtleColor ?? originalStyle.subheadlineColor
-        let linkColor = unifiedStyle?.textButtonColor ?? originalStyle.textButtonColor
-
-        let attrStrNormal = baseString.underlined(color: textColor, underlineColor: linkColor)
-        let attrStrHighlight = baseString.underlined(color: textColor, underlineColor: linkColor)
-        let font = WPStyleGuide.mediumWeightFont(forStyle: .footnote)
-
-        let button = textButton(normal: attrStrNormal, highlighted: attrStrHighlight, font: font, alignment: .center, forUnified: true)
-        button.titleLabel?.textAlignment = .center
-        return button
-    }
-
     /// Creates a button to open our T&C.
     /// Specifically, the Sign Up verbiage on the Get Started view.
     /// - Returns: A properly styled UIButton

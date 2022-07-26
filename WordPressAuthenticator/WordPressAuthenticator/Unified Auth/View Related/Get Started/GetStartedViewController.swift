@@ -65,6 +65,18 @@ class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
         return button
     }()
 
+    // "What is WordPress.com?" button
+    private lazy var whatisWPCOMButton: UIButton = {
+        let button = UIButton()
+        button.setTitle(WordPressAuthenticator.shared.displayStrings.whatIsWPComLinkTitle, for: .normal)
+        let buttonTitleColor = WordPressAuthenticator.shared.unifiedStyle?.textButtonColor ?? WordPressAuthenticator.shared.style.textButtonColor
+        let buttonHighlightColor = WordPressAuthenticator.shared.unifiedStyle?.textButtonHighlightColor ?? WordPressAuthenticator.shared.style.textButtonHighlightColor
+        button.setTitleColor(buttonTitleColor, for: .normal)
+        button.setTitleColor(buttonHighlightColor, for: .highlighted)
+        button.addTarget(self, action: #selector(whatIsWPComButtonTapped(_:)), for: .touchUpInside)
+        return button
+    }()
+
     override open var sourceTag: WordPressSupportSourceTag {
         get {
             return .loginEmail
@@ -219,9 +231,7 @@ private extension GetStartedViewController {
             stackViewWithCenterAlignment.axis = .vertical
             stackViewWithCenterAlignment.alignment = .center
 
-            let button = WPStyleGuide.whatIsWPComButton()
-            button.addTarget(self, action: #selector(whatIsWPComButtonTapped(_:)), for: .touchUpInside)
-            stackViewWithCenterAlignment.addArrangedSubview(button)
+            stackViewWithCenterAlignment.addArrangedSubview(whatisWPCOMButton)
 
             stackView.addArrangedSubview(stackViewWithCenterAlignment)
         }

@@ -102,7 +102,7 @@ public struct WordPressAuthenticatorConfiguration {
 
     /// If enabled, we will ask for WPCOM login after signing in using .org site credentials.
     ///  Disabled by default
-    let isWordPressComCredentialsRequired: Bool
+    let isWPComLoginRequiredForSiteCredentialsLogin: Bool
 
     /// Designated Initializer
     ///
@@ -126,7 +126,7 @@ public struct WordPressAuthenticatorConfiguration {
                  displayHintButtons: Bool = true,
                  continueWithSiteAddressFirst: Bool = false,
                  enableSiteCredentialsLoginForSelfHostedSites: Bool = false,
-                 isWordPressComCredentialsRequired: Bool = false) {
+                 isWPComLoginRequiredForSiteCredentialsLogin: Bool = false) {
 
         self.wpcomClientId = wpcomClientId
         self.wpcomSecret = wpcomSecret
@@ -148,6 +148,6 @@ public struct WordPressAuthenticatorConfiguration {
         self.enableSignupWithGoogle = enableSignupWithGoogle
         self.continueWithSiteAddressFirst = continueWithSiteAddressFirst
         self.enableSiteCredentialsLoginForSelfHostedSites = enableSiteCredentialsLoginForSelfHostedSites
-        self.isWordPressComCredentialsRequired = isWordPressComCredentialsRequired
+        self.isWPComLoginRequiredForSiteCredentialsLogin = isWPComLoginRequiredForSiteCredentialsLogin
     }
 }

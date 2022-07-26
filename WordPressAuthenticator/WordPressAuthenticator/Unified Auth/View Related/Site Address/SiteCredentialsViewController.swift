@@ -461,8 +461,8 @@ extension SiteCredentialsViewController {
         let wporg = WordPressOrgCredentials(username: username, password: password, xmlrpc: xmlrpc, options: options)
         let credentials = AuthenticatorCredentials(wporg: wporg)
 
-        guard WordPressAuthenticator.shared.configuration.isWordPressComCredentialsRequired else {
-            // Client didn't explicitly ask for WPCOM credentials. (`isWordPressComCredentialsRequired` is false)
+        guard WordPressAuthenticator.shared.configuration.isWPComLoginRequiredForSiteCredentialsLogin else {
+            // Client didn't explicitly ask for WPCOM credentials. (`isWPComLoginRequiredForSiteCredentialsLogin` is false)
             // So, sync the available credentials and finish sign in.
             //
             delegate.sync(credentials: credentials) { [weak self] in

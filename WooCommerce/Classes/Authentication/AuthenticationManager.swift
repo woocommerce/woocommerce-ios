@@ -420,7 +420,7 @@ private extension AuthenticationManager {
 
         let wooAuthError = AuthenticationError.make(with: error)
         switch wooAuthError {
-        case .notWPSite, .notValidAddress:
+        case .notWPSite, .notValidAddress, .noSecureConnection:
             let notification = LocalNotification(scenario: .loginSiteAddressError)
             ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: [notification.scenario])
             ServiceLocator.pushNotesManager.requestLocalNotification(notification,

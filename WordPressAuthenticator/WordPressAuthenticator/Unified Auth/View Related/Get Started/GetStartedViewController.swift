@@ -44,7 +44,7 @@ class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
     /// Sign in with site credentials button will be displayed based on the `screenMode`
     ///
     private var screenMode: ScreenMode {
-        guard configuration.enableSiteCredentialsLoginInGetStartedScreen,
+        guard configuration.enableSiteCredentialsLoginForSelfHostedSites,
               loginFields.siteAddress.isEmpty == false else {
             return .signInUsingWordPressComOrSocialAccounts
         }

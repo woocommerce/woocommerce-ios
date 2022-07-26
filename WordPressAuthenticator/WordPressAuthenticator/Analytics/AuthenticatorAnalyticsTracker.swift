@@ -233,6 +233,10 @@ public class AuthenticatorAnalyticsTracker {
         /// When the user clicks on “Create account” on the signup confirmation screen
         ///
         case createAccount = "create_account"
+
+        /// When the user taps of "Sign in with site credentials" button in `GetStartedViewController`
+        ///
+        case signInWithSiteCredentials = "sign_in_with_site_credentials"
     }
 
     /// Shared Instance.

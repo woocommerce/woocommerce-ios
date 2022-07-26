@@ -115,17 +115,13 @@ extension WPStyleGuide {
 
             return NSAttributedString(attachment: googleAttachment)
         } else {
-            // Create an attributed string that contains the Google icon + button text.
             let nuxButtonTitleFont = WPStyleGuide.mediumWeightFont(forStyle: .title3)
-            googleAttachment.bounds = CGRect(x: 0, y: (nuxButtonTitleFont.capHeight - Constants.googleIconButtonSize) / 2,
-                                             width: Constants.googleIconButtonSize, height: Constants.googleIconButtonSize)
-
-            let buttonString = NSMutableAttributedString(attachment: googleAttachment)
-            //  Add leading non-breaking spaces to separate the button text from the Google logo.
-            let googleTitle = "\u{00a0}\u{00a0}" + NSLocalizedString("Continue with Google", comment: "Button title. Tapping begins log in using Google.")
-            buttonString.append(NSAttributedString(string: googleTitle))
-
-            return buttonString
+            let googleTitle = NSLocalizedString("Continue with Google",
+                                                comment: "Button title. Tapping begins log in using Google.")
+            return attributedStringwithLogo(googleIcon,
+                                            imageSize: .init(width: Constants.googleIconButtonSize, height: Constants.googleIconButtonSize),
+                                            title: googleTitle,
+                                            titleFont: nuxButtonTitleFont)
         }
     }
 
@@ -150,6 +146,21 @@ extension WPStyleGuide {
         attributedString.append(NSAttributedString(string: title))
 
         return NSAttributedString(attributedString: attributedString)
+    }
+
+    /// Creates an attributed string that includes the `linkFieldImage`
+    ///
+    /// - Returns: A properly styled NSAttributedString to be displayed on a NUXButton.
+    ///
+    class func formattedSignInWithSiteCredentialsString() -> NSAttributedString {
+        let title = NSLocalizedString(WordPressAuthenticator.shared.displayStrings.signInWithSiteCredentialsButtonTitle,
+                                      comment: "Button title. Tapping opens the site credentials screen.")
+        let globe = UIImage.gridicon(.globe)
+        let image = globe.imageWithTintColor(WordPressAuthenticator.shared.style.placeholderColor) ?? globe
+        return attributedStringwithLogo(image,
+                                        imageSize: image.size,
+                                        title: title,
+                                        titleFont: WPStyleGuide.mediumWeightFont(forStyle: .title3))
     }
 
     /// Creates a button for Self-hosted Login
@@ -214,26 +225,6 @@ extension WPStyleGuide {
         let font = WPStyleGuide.mediumWeightFont(forStyle: .footnote)
 
         return textButton(normal: attrStrNormal, highlighted: attrStrHighlight, font: font, alignment: .center)
-    }
-
-    /// Creates a button to open a webpage with details about What is WordPress.com?
-    ///
-    /// - Returns: A properly styled UIButton
-    ///
-    class func whatIsWPComButton() -> UIButton {
-        let unifiedStyle = WordPressAuthenticator.shared.unifiedStyle
-        let originalStyle = WordPressAuthenticator.shared.style
-        let baseString = WordPressAuthenticator.shared.displayStrings.whatIsWPComLinkTitle
-        let textColor = unifiedStyle?.textSubtleColor ?? originalStyle.subheadlineColor
-        let linkColor = unifiedStyle?.textButtonColor ?? originalStyle.textButtonColor
-
-        let attrStrNormal = baseString.underlined(color: textColor, underlineColor: linkColor)
-        let attrStrHighlight = baseString.underlined(color: textColor, underlineColor: linkColor)
-        let font = WPStyleGuide.mediumWeightFont(forStyle: .footnote)
-
-        let button = textButton(normal: attrStrNormal, highlighted: attrStrHighlight, font: font, alignment: .center, forUnified: true)
-        button.titleLabel?.textAlignment = .center
-        return button
     }
 
     /// Creates a button to open our T&C.
@@ -322,5 +313,39 @@ extension WPStyleGuide {
         labelString.append(NSAttributedString(string: " " + buttonText, attributes: [.foregroundColor: linkColor]))
 
         return labelString
+    }
+}
+
+// MARK: Attributed String Helpers
+//
+private extension WPStyleGuide {
+
+    /// Creates an attributed string with a logo and title.
+    ///  The logo is prepended to the title.
+    ///
+    /// - Parameters:
+    ///     - logoImage: UIImage representing the logo
+    ///     - imageSize: Size of the UIImage
+    ///     - title: title String to be appended to the logoImage
+    ///     - titleFont: UIFont for the title String
+    ///
+    /// - Returns: A properly styled NSAttributedString to be displayed on a NUXButton.
+    ///
+    class func attributedStringwithLogo(_ logoImage: UIImage,
+                                        imageSize: CGSize,
+                                        title: String,
+                                        titleFont: UIFont) -> NSAttributedString {
+        let attachment = NSTextAttachment()
+        attachment.image = logoImage
+
+        attachment.bounds = CGRect(x: 0, y: (titleFont.capHeight - imageSize.height) / 2,
+                                   width: imageSize.width, height: imageSize.height)
+
+        let buttonString = NSMutableAttributedString(attachment: attachment)
+        //  Add leading non-breaking spaces to separate the button text from the logo.
+        let title = "\u{00a0}\u{00a0}" + title
+        buttonString.append(NSAttributedString(string: title))
+
+        return buttonString
     }
 }

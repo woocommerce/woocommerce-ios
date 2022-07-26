@@ -160,6 +160,20 @@ open class NUXButtonViewController: UIViewController {
         bottomButtonConfig = NUXButtonConfig(title: title, isPrimary: isPrimary, configureBodyFontForTitle: configureBodyFontForTitle, accessibilityIdentifier: accessibilityIdentifier, callback: callback)
     }
 
+    // Sets up bottom button using `NSAttributedString` as title
+    //
+    func setupBottomButton(attributedTitle: NSAttributedString,
+                           isPrimary: Bool = false,
+                           configureBodyFontForTitle: Bool = false,
+                           accessibilityIdentifier: String? = nil,
+                           onTap callback: @escaping CallBackType) {
+        bottomButtonConfig = NUXButtonConfig(attributedTitle: attributedTitle,
+                                             isPrimary: isPrimary,
+                                             configureBodyFontForTitle: configureBodyFontForTitle,
+                                             accessibilityIdentifier: accessibilityIdentifier,
+                                             callback: callback)
+    }
+
     func setupButtomButtonFor(socialService: SocialServiceName, onTap callback: @escaping CallBackType) {
         bottomButtonConfig = buttonConfigFor(socialService: socialService, onTap: callback)
     }

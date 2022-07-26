@@ -2,13 +2,28 @@ import UIKit
 import SafariServices
 import WordPressKit
 
-class GetStartedViewController: LoginViewController {
+class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
+
+    private enum ScreenMode {
+        /// For signing in using .org site credentials
+        ///
+        case signInUsingSiteCredentials
+
+        /// For signing in using WPCOM credentials or social accounts
+        case signInUsingWordPressComOrSocialAccounts
+    }
+
+    // MARK: - NUXKeyboardResponder constraints
+    @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
+
+    // Required for `NUXKeyboardResponder` but unused here.
+    var verticalCenterConstraint: NSLayoutConstraint?
 
     // MARK: - Properties
-
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var leadingDividerLine: UIView!
     @IBOutlet private weak var leadingDividerLineWidth: NSLayoutConstraint!
+    @IBOutlet private weak var dividerStackView: UIStackView!
     @IBOutlet private weak var dividerLabel: UILabel!
     @IBOutlet private weak var trailingDividerLine: UIView!
     @IBOutlet private weak var trailingDividerLineWidth: NSLayoutConstraint!
@@ -26,19 +41,39 @@ class GetStartedViewController: LoginViewController {
     private let configuration = WordPressAuthenticator.shared.configuration
     private var shouldChangeVoiceOverFocus: Bool = false
 
+    /// Sign in with site credentials button will be displayed based on the `screenMode`
+    ///
+    private var screenMode: ScreenMode {
+        guard configuration.enableSiteCredentialsLoginForSelfHostedSites,
+              loginFields.siteAddress.isEmpty == false else {
+            return .signInUsingWordPressComOrSocialAccounts
+        }
+        return .signInUsingSiteCredentials
+    }
+
     // Submit button displayed in the table footer.
     private lazy var continueButton: NUXButton = {
         let button = NUXButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.isPrimary = true
         button.isEnabled = false
-        button.addTarget(self, action: #selector(handleSubmitButtonTapped(_:)), for: .touchUpInside)
-        button.accessibilityIdentifier = "Get Started Email Continue Button"
+        button.addTarget(self, action: #selector(handleSubmitButtonTapped), for: .touchUpInside)
+        button.accessibilityIdentifier = ButtonConfiguration.Continue.accessibilityIdentifier
+        button.setTitle(ButtonConfiguration.Continue.title, for: .normal)
 
-        let title = WordPressAuthenticator.shared.displayStrings.continueButtonTitle
-        button.setTitle(title, for: .normal)
-        button.setTitle(title, for: .highlighted)
+        return button
+    }()
 
+    // "What is WordPress.com?" button
+    private lazy var whatisWPCOMButton: UIButton = {
+        let button = UIButton()
+        button.setTitle(WordPressAuthenticator.shared.displayStrings.whatIsWPComLinkTitle, for: .normal)
+        let buttonTitleColor = WordPressAuthenticator.shared.unifiedStyle?.textButtonColor ?? WordPressAuthenticator.shared.style.textButtonColor
+        let buttonHighlightColor = WordPressAuthenticator.shared.unifiedStyle?.textButtonHighlightColor ?? WordPressAuthenticator.shared.style.textButtonHighlightColor
+        button.titleLabel?.font = WPStyleGuide.mediumWeightFont(forStyle: .subheadline)
+        button.setTitleColor(buttonTitleColor, for: .normal)
+        button.setTitleColor(buttonHighlightColor, for: .highlighted)
+        button.addTarget(self, action: #selector(whatIsWPComButtonTapped(_:)), for: .touchUpInside)
         return button
     }()
 
@@ -59,7 +94,11 @@ class GetStartedViewController: LoginViewController {
         loadRows()
         setupTableFooterView()
         configureDivider()
-        configureSocialButtons()
+        if screenMode == .signInUsingSiteCredentials {
+            configureButtonViewControllerForSiteCredentialsMode()
+        } else {
+            configureSocialButtons()
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -78,17 +117,21 @@ class GetStartedViewController: LoginViewController {
     override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        tracker.set(flow: .wpCom)
-
-        if isMovingToParent {
-            tracker.track(step: .start)
-        } else {
-            tracker.set(step: .start)
-        }
+        configureAnalyticsTracker()
 
         errorMessage = nil
         hiddenPasswordField?.text = nil
         hiddenPasswordField?.isAccessibilityElement = false
+
+        if screenMode == .signInUsingSiteCredentials {
+            registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
+                                      keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
+        }
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        unregisterForKeyboardEvents()
     }
 
     override func viewDidLayoutSubviews() {
@@ -177,16 +220,18 @@ private extension GetStartedViewController {
         stackView.layoutMargins = Constants.FooterStackView.layoutMargins
         stackView.isLayoutMarginsRelativeArrangement = true
 
-        stackView.addArrangedSubview(continueButton)
+        if screenMode == .signInUsingWordPressComOrSocialAccounts {
+            // Continue button will be added to `buttonViewController` along with sign in with site credentials button when `screenMode` is `signInUsingSiteCredentials`.
+            // So, adding it to stackView here ONLY for `signInUsingWordPressComOrSocialAccounts` `screenMode`
+            stackView.addArrangedSubview(continueButton)
+        }
 
         if WordPressAuthenticator.shared.configuration.whatIsWPComURL != nil {
             let stackViewWithCenterAlignment = UIStackView()
             stackViewWithCenterAlignment.axis = .vertical
             stackViewWithCenterAlignment.alignment = .center
 
-            let button = WPStyleGuide.whatIsWPComButton()
-            button.addTarget(self, action: #selector(whatIsWPComButtonTapped(_:)), for: .touchUpInside)
-            stackViewWithCenterAlignment.addArrangedSubview(button)
+            stackViewWithCenterAlignment.addArrangedSubview(whatisWPCOMButton)
 
             stackView.addArrangedSubview(stackViewWithCenterAlignment)
         }
@@ -198,6 +243,10 @@ private extension GetStartedViewController {
     /// Style the "OR" divider.
     ///
     func configureDivider() {
+        guard screenMode == .signInUsingWordPressComOrSocialAccounts else {
+            return dividerStackView.isHidden = true
+        }
+
         let color = WordPressAuthenticator.shared.unifiedStyle?.borderColor ?? WordPressAuthenticator.shared.style.primaryNormalBorderColor
         leadingDividerLine.backgroundColor = color
         leadingDividerLineWidth.constant = WPStyleGuide.hairlineBorderWidth
@@ -209,9 +258,15 @@ private extension GetStartedViewController {
 
     // MARK: - Continue Button Action
 
-    @IBAction func handleSubmitButtonTapped(_ sender: UIButton) {
+    @objc func handleSubmitButtonTapped() {
         tracker.track(click: .submit)
         validateForm()
+    }
+
+    // MARK: - Sign in with site credentials Button Action
+    @objc func handleSiteCredentialsButtonTapped() {
+        tracker.track(click: .signInWithSiteCredentials)
+        goToSiteCredentialsScreen()
     }
 
     // MARK: - What is WordPress.com Button Action
@@ -239,8 +294,7 @@ private extension GetStartedViewController {
         let cells = [
             TextLabelTableViewCell.reuseIdentifier: TextLabelTableViewCell.loadNib(),
             TextFieldTableViewCell.reuseIdentifier: TextFieldTableViewCell.loadNib(),
-            TextWithLinkTableViewCell.reuseIdentifier: TextWithLinkTableViewCell.loadNib(),
-            SpacerTableViewCell.reuseIdentifier: SpacerTableViewCell.loadNib()
+            TextWithLinkTableViewCell.reuseIdentifier: TextWithLinkTableViewCell.loadNib()
         ]
 
         for (reuseIdentifier, nib) in cells {
@@ -255,8 +309,6 @@ private extension GetStartedViewController {
 
         if let authenticationDelegate = WordPressAuthenticator.shared.delegate, authenticationDelegate.wpcomTermsOfServiceEnabled {
             rows.append(.tos)
-        } else {
-            rows.append(.spacer)
         }
 
         if let errorText = errorMessage, !errorText.isEmpty {
@@ -274,8 +326,6 @@ private extension GetStartedViewController {
             configureEmailField(cell)
         case let cell as TextWithLinkTableViewCell:
             configureTextWithLink(cell)
-        case cell as SpacerTableViewCell:
-            break
         case let cell as TextLabelTableViewCell where row == .errorMessage:
             configureErrorLabel(cell)
         default:
@@ -335,7 +385,6 @@ private extension GetStartedViewController {
         case instructions
         case email
         case tos
-        case spacer
         case errorMessage
 
         var reuseIdentifier: String {
@@ -346,8 +395,6 @@ private extension GetStartedViewController {
                 return TextFieldTableViewCell.reuseIdentifier
             case .tos:
                 return TextWithLinkTableViewCell.reuseIdentifier
-            case .spacer:
-                return SpacerTableViewCell.reuseIdentifier
             }
         }
     }
@@ -355,10 +402,27 @@ private extension GetStartedViewController {
     enum Constants {
         enum FooterStackView {
             static let spacing = 16.0
-            static let layoutMargins = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+            static let layoutMargins = UIEdgeInsets(top: 16, left: 16, bottom: 0, right: 16)
         }
     }
 
+    // MARK: Analytics
+    //
+    func configureAnalyticsTracker() {
+        // Configure tracker flow based on screen mode.
+        switch screenMode {
+        case .signInUsingSiteCredentials:
+            tracker.set(flow: .loginWithSiteAddress)
+        case .signInUsingWordPressComOrSocialAccounts:
+            tracker.set(flow: .wpCom)
+        }
+
+        if isMovingToParent {
+            tracker.track(step: .start)
+        } else {
+            tracker.set(step: .start)
+        }
+    }
 }
 
 // MARK: - Validation
@@ -368,8 +432,14 @@ private extension GetStartedViewController {
     /// Configures appearance of the submit button.
     ///
     func configureContinueButton(animating: Bool) {
-        continueButton.showActivityIndicator(animating)
-        continueButton.isEnabled = enableSubmit(animating: animating)
+        switch screenMode {
+        case .signInUsingSiteCredentials:
+            buttonViewController?.setTopButtonState(isLoading: animating,
+                                                    isEnabled: enableSubmit(animating: animating))
+        case .signInUsingWordPressComOrSocialAccounts:
+            continueButton.showActivityIndicator(animating)
+            continueButton.isEnabled = enableSubmit(animating: animating)
+        }
     }
 
     /// Whether the form can be submitted.
@@ -618,6 +688,20 @@ private extension GetStartedViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
 
+    /// Navigates to site credentials screen where .org site credentials can be entered
+    ///
+    func goToSiteCredentialsScreen() {
+        guard let vc = SiteCredentialsViewController.instantiate(from: .siteAddress) else {
+            DDLogError("Failed to navigate from GetStartedViewController to SiteCredentialsViewController")
+            return
+        }
+
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
+    }
 }
 
 // MARK: - Social Button Management
@@ -640,6 +724,28 @@ private extension GetStartedViewController {
         let termsButton = WPStyleGuide.signupTermsButton()
         buttonViewController.stackView?.addArrangedSubview(termsButton)
         termsButton.addTarget(self, action: #selector(termsTapped), for: .touchUpInside)
+    }
+
+    func configureButtonViewControllerForSiteCredentialsMode() {
+        guard let buttonViewController = buttonViewController else {
+            return
+        }
+
+        buttonViewController.hideShadowView()
+
+        // Add a "Continue" button here as the `continueButton` at the top
+        // will not be displayed for `signInUsingSiteCredentials` screen mode.
+        //
+        buttonViewController.setupTopButton(title: ButtonConfiguration.Continue.title,
+                                            isPrimary: true,
+                                            accessibilityIdentifier: ButtonConfiguration.Continue.accessibilityIdentifier,
+                                            onTap: handleSubmitButtonTapped)
+
+        // Setup Sign in with site credentials button
+        buttonViewController.setupBottomButton(attributedTitle: WPStyleGuide.formattedSignInWithSiteCredentialsString(),
+                                               isPrimary: false,
+                                               accessibilityIdentifier: ButtonConfiguration.SignInWithSiteCredentials.accessibilityIdentifier,
+                                               onTap: handleSiteCredentialsButtonTapped)
     }
 
     @objc func appleTapped() {
@@ -733,4 +839,31 @@ extension GetStartedViewController: UITextFieldDelegate {
         return true
     }
 
+}
+
+// MARK: - Keyboard Notifications
+
+extension GetStartedViewController {
+    @objc func handleKeyboardWillShow(_ notification: Foundation.Notification) {
+        keyboardWillShow(notification)
+    }
+
+    @objc func handleKeyboardWillHide(_ notification: Foundation.Notification) {
+        keyboardWillHide(notification)
+    }
+}
+
+// MARK: - Button configuration
+
+private extension GetStartedViewController {
+    enum ButtonConfiguration {
+        enum Continue {
+            static let title = WordPressAuthenticator.shared.displayStrings.continueButtonTitle
+            static let accessibilityIdentifier = "Get Started Email Continue Button"
+        }
+
+        enum SignInWithSiteCredentials {
+            static let accessibilityIdentifier = "Sign in with site credentials Button"
+        }
+    }
 }

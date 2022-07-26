@@ -160,8 +160,6 @@
 		D8610CEC2570A60C00A5DF27 /* NavigationToRootTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8610CEB2570A60C00A5DF27 /* NavigationToRootTests.swift */; };
 		D8611A63257622ED00A5DF27 /* NavigateBack.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8611A62257622ED00A5DF27 /* NavigateBack.swift */; };
 		D8611A672576236800A5DF27 /* NavigateBackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8611A662576236800A5DF27 /* NavigateBackTests.swift */; };
-		D87F120B2586DA26005675C5 /* SpacerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F12092586DA26005675C5 /* SpacerTableViewCell.swift */; };
-		D87F120C2586DA26005675C5 /* SpacerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D87F120A2586DA26005675C5 /* SpacerTableViewCell.xib */; };
 		D881A30D256B5A7900FE5605 /* NavigationCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = D881A30C256B5A7900FE5605 /* NavigationCommand.swift */; };
 		D881A311256B5B4700FE5605 /* NavigateToEnterSite.swift in Sources */ = {isa = PBXBuildFile; fileRef = D881A310256B5B4700FE5605 /* NavigateToEnterSite.swift */; };
 		D881A315256B5B5800FE5605 /* NavigateToEnterAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = D881A314256B5B5800FE5605 /* NavigateToEnterAccount.swift */; };
@@ -373,8 +371,6 @@
 		D8610CEB2570A60C00A5DF27 /* NavigationToRootTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationToRootTests.swift; sourceTree = "<group>"; };
 		D8611A62257622ED00A5DF27 /* NavigateBack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigateBack.swift; sourceTree = "<group>"; };
 		D8611A662576236800A5DF27 /* NavigateBackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigateBackTests.swift; sourceTree = "<group>"; };
-		D87F12092586DA26005675C5 /* SpacerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpacerTableViewCell.swift; sourceTree = "<group>"; };
-		D87F120A2586DA26005675C5 /* SpacerTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SpacerTableViewCell.xib; sourceTree = "<group>"; };
 		D881A30C256B5A7900FE5605 /* NavigationCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationCommand.swift; sourceTree = "<group>"; };
 		D881A310256B5B4700FE5605 /* NavigateToEnterSite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigateToEnterSite.swift; sourceTree = "<group>"; };
 		D881A314256B5B5800FE5605 /* NavigateToEnterAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigateToEnterAccount.swift; sourceTree = "<group>"; };
@@ -877,8 +873,6 @@
 				CE6BCD3724A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.xib */,
 				98F40AEF24F5E13200A72911 /* TextWithLinkTableViewCell.swift */,
 				98F40AEE24F5E13200A72911 /* TextWithLinkTableViewCell.xib */,
-				D87F12092586DA26005675C5 /* SpacerTableViewCell.swift */,
-				D87F120A2586DA26005675C5 /* SpacerTableViewCell.xib */,
 			);
 			path = "Reusable Views";
 			sourceTree = "<group>";
@@ -1066,7 +1060,6 @@
 				CE1BBF8D24D48580001D2E3E /* GravatarEmailTableViewCell.xib in Resources */,
 				B560913F208A563800399AE4 /* Login.storyboard in Resources */,
 				CE6BCD3924A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.xib in Resources */,
-				D87F120C2586DA26005675C5 /* SpacerTableViewCell.xib in Resources */,
 				CE6BCD2F24A3A235001BCDC5 /* TextLabelTableViewCell.xib in Resources */,
 				98CF18F9248725620047B66C /* GoogleSignupConfirmation.storyboard in Resources */,
 				B5609137208A563800399AE4 /* EmailMagicLink.storyboard in Resources */,
@@ -1224,7 +1217,6 @@
 				CE2D03E024E5DD4500D18942 /* UnifiedSignupViewController.swift in Sources */,
 				98CF18F7248725370047B66C /* GoogleSignupConfirmationViewController.swift in Sources */,
 				1A21EE9822832BC300C940C6 /* WordPressComOAuthClientFacade+Swift.swift in Sources */,
-				D87F120B2586DA26005675C5 /* SpacerTableViewCell.swift in Sources */,
 				CEC77C6624854F2E00FB9050 /* SiteAddressViewController.swift in Sources */,
 				CEDE0D952420121D00CB3345 /* UIStoryboard+Helpers.swift in Sources */,
 				B5ED7920207E993E00A8FD8C /* WPAuthenticatorLogging.m in Sources */,

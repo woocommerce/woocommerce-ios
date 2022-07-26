@@ -95,6 +95,15 @@ public struct WordPressAuthenticatorConfiguration {
     /// Default value is disabled
     let continueWithSiteAddressFirst: Bool
 
+    /// If enabled shows a "Sign in with site credentials" button in `GetStartedViewController` when landing in the screen after entering site address
+    ///  Used to enable sign-in to self-hosted sites using WordPress.org credentials.
+    ///  Disabled by default
+    let enableSiteCredentialsLoginForSelfHostedSites: Bool
+
+    /// If enabled, we will ask for WPCOM login after signing in using .org site credentials.
+    ///  Disabled by default
+    let isWPComLoginRequiredForSiteCredentialsLogin: Bool
+
     /// Designated Initializer
     ///
     public init (wpcomClientId: String,
@@ -115,7 +124,9 @@ public struct WordPressAuthenticatorConfiguration {
                  enableUnifiedAuth: Bool = false,
                  enableUnifiedCarousel: Bool = false,
                  displayHintButtons: Bool = true,
-                 continueWithSiteAddressFirst: Bool = false) {
+                 continueWithSiteAddressFirst: Bool = false,
+                 enableSiteCredentialsLoginForSelfHostedSites: Bool = false,
+                 isWPComLoginRequiredForSiteCredentialsLogin: Bool = false) {
 
         self.wpcomClientId = wpcomClientId
         self.wpcomSecret = wpcomSecret
@@ -136,5 +147,7 @@ public struct WordPressAuthenticatorConfiguration {
         self.displayHintButtons = displayHintButtons
         self.enableSignupWithGoogle = enableSignupWithGoogle
         self.continueWithSiteAddressFirst = continueWithSiteAddressFirst
+        self.enableSiteCredentialsLoginForSelfHostedSites = enableSiteCredentialsLoginForSelfHostedSites
+        self.isWPComLoginRequiredForSiteCredentialsLogin = isWPComLoginRequiredForSiteCredentialsLogin
     }
 }

@@ -29,6 +29,7 @@ public struct WordPressAuthenticatorDisplayStrings {
     public let createAccountButtonTitle: String
     public let continueWithWPButtonTitle: String
     public let enterYourSiteAddressButtonTitle: String
+    public let signInWithSiteCredentialsButtonTitle: String
 
     /// Large titles displayed in unified auth flows.
     ///
@@ -78,6 +79,7 @@ public struct WordPressAuthenticatorDisplayStrings {
                 createAccountButtonTitle: String = defaultStrings.createAccountButtonTitle,
                 continueWithWPButtonTitle: String = defaultStrings.continueWithWPButtonTitle,
                 enterYourSiteAddressButtonTitle: String = defaultStrings.enterYourSiteAddressButtonTitle,
+                signInWithSiteCredentialsButtonTitle: String = defaultStrings.signInWithSiteCredentialsButtonTitle,
                 findSiteButtonTitle: String = defaultStrings.findSiteButtonTitle,
                 resetPasswordButtonTitle: String = defaultStrings.resetPasswordButtonTitle,
                 getLoginLinkButtonTitle: String = defaultStrings.getLoginLinkButtonTitle,
@@ -115,6 +117,7 @@ public struct WordPressAuthenticatorDisplayStrings {
         self.createAccountButtonTitle = createAccountButtonTitle
         self.continueWithWPButtonTitle = continueWithWPButtonTitle
         self.enterYourSiteAddressButtonTitle = enterYourSiteAddressButtonTitle
+        self.signInWithSiteCredentialsButtonTitle = signInWithSiteCredentialsButtonTitle
         self.findSiteButtonTitle = findSiteButtonTitle
         self.resetPasswordButtonTitle = resetPasswordButtonTitle
         self.getLoginLinkButtonTitle = getLoginLinkButtonTitle
@@ -176,6 +179,8 @@ public extension WordPressAuthenticatorDisplayStrings {
                                                comment: "Button title. Takes the user to the login by email flow."),
             enterYourSiteAddressButtonTitle: NSLocalizedString("Enter your existing site address",
                                                                comment: "Button title. Takes the user to the login by site address flow."),
+            signInWithSiteCredentialsButtonTitle: NSLocalizedString("Sign in with site credentials",
+                                                                   comment: "Button title. Takes the user the Enter site credentials screen."),
             findSiteButtonTitle: NSLocalizedString("Find your site address",
                                                    comment: "The hint button's title text to help users find their site address."),
             resetPasswordButtonTitle: NSLocalizedString("Reset your password",
@@ -186,8 +191,8 @@ public extension WordPressAuthenticatorDisplayStrings {
                                                    comment: "The button's title text to send a 2FA code via SMS text message."),
             loginTermsOfService: NSLocalizedString("By continuing, you agree to our _Terms of Service_.", comment: "Legal disclaimer for logging in. The underscores _..._ denote underline."),
             signupTermsOfService: NSLocalizedString("If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_.", comment: "Legal disclaimer for signing up. The underscores _..._ denote underline."),
-            whatIsWPComLinkTitle: NSLocalizedString("_What is WordPress.com?_",
-                                                     comment: "Navigates to page with details about What is WordPress.com. The underscores _..._ denote underline."),
+            whatIsWPComLinkTitle: NSLocalizedString("What is WordPress.com?",
+                                                     comment: "Navigates to page with details about What is WordPress.com."),
             getStartedTitle: NSLocalizedString("Get Started",
                                                comment: "View title for initial auth views."),
             logInTitle: NSLocalizedString("Log In",

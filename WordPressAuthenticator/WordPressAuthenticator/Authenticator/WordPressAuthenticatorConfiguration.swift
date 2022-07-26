@@ -97,7 +97,7 @@ public struct WordPressAuthenticatorConfiguration {
 
     /// If enabled shows a "Sign in with site credentials" button in `GetStartedViewController` when landing in the screen after entering site address
     ///  Used to enable sign-in to self-hosted sites using WordPress.org credentials.
-    ///  Disabled by default
+    ///  Disabled by default.
     let enableSiteCredentialsLoginForSelfHostedSites: Bool
 
     /// If enabled, we will ask for WPCOM login after signing in using .org site credentials.

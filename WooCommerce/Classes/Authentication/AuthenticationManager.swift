@@ -209,6 +209,8 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     }
 
     func handleError(_ error: Error, onCompletion: @escaping (UIViewController) -> Void) {
+        requestLocalNotificationIfApplicable(error: error)
+
         guard let errorViewModel = viewModel(error) else {
             return
         }
@@ -262,6 +264,10 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         // Update this when handling store credentials authentication.
         guard let wpcomLogin = credentials.wpcom else {
             return
+        }
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginErrorNotifications) {
+            ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: [.loginSiteAddressError])
         }
 
         let matcher = ULAccountMatcher()
@@ -401,6 +407,28 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return
         }
         ServiceLocator.analytics.track(wooEvent, withError: error)
+    }
+}
+
+// MARK: - Local notifications
+
+private extension AuthenticationManager {
+    func requestLocalNotificationIfApplicable(error: Error) {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginErrorNotifications) else {
+            return
+        }
+
+        let wooAuthError = AuthenticationError.make(with: error)
+        switch wooAuthError {
+        case .notWPSite, .notValidAddress:
+            let notification = LocalNotification(scenario: .loginSiteAddressError)
+            ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: [notification.scenario])
+            ServiceLocator.pushNotesManager.requestLocalNotification(notification,
+                                                                     // 24 hours from now.
+                                                                     trigger: UNTimeIntervalNotificationTrigger(timeInterval: 86400, repeats: false))
+        default:
+            break
+        }
     }
 }
 

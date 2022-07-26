@@ -44,7 +44,7 @@ final class MockPushNotificationsManager: PushNotesManager {
 
     }
 
-    func ensureAuthorizationIsRequested(onCompletion: ((Bool) -> ())?) {
+    func ensureAuthorizationIsRequested(includesProvisionalAuth: Bool, onCompletion: ((Bool) -> ())?) {
 
     }
 
@@ -60,6 +60,12 @@ final class MockPushNotificationsManager: PushNotesManager {
                             onBadgeUpdateCompletion: @escaping () -> Void,
                             completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
 
+    }
+
+    func requestLocalNotification(_ notification: LocalNotification, trigger: UNNotificationTrigger?) {
+    }
+
+    func cancelLocalNotification(scenarios: [LocalNotification.Scenario]) {
     }
 }
 

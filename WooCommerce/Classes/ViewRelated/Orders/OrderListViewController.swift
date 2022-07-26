@@ -639,6 +639,13 @@ extension OrderListViewController: UITableViewDelegate {
     /// Provide an implementation to show cell swipe actions. Return `nil` to provide no action.
     ///
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        /// Fetch the order view model and make sure the order is not marked as completed before proceeding.
+        ///
+        guard let objectID = dataSource.itemIdentifier(for: indexPath),
+              let cellViewModel = viewModel.cellViewModel(withID: objectID),
+              cellViewModel.status != .completed else {
+                  return nil
+              }
 
         let markAsCompletedAction = UIContextualAction(style: .normal, title: Localization.markCompleted, handler: { _, _, completionHandler in
             print("Mark as completed triggered...")

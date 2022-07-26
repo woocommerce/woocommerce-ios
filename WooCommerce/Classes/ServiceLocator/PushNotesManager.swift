@@ -20,7 +20,7 @@ protocol PushNotesManager {
     ///
     var inactiveNotifications: AnyPublisher<PushNotification, Never> { get }
 
-    /// An observable that emits values when a Local Notification response is received.
+    /// An observable that emits values when a local notification response is received.
     ///
     var localNotificationResponses: AnyPublisher<UNNotificationResponse, Never> { get }
 

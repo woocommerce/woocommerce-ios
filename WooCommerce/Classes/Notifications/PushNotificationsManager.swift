@@ -45,13 +45,13 @@ final class PushNotificationsManager: PushNotesManager {
     /// Mutable reference to `inactiveNotifications`
     private let inactiveNotificationsSubject = PassthroughSubject<PushNotification, Never>()
 
-    /// An observable that emits values when a Local Notification is received.
+    /// An observable that emits values when a local notification is received.
     ///
     var localNotificationResponses: AnyPublisher<UNNotificationResponse, Never> {
         localNotificationResponsesSubject.eraseToAnyPublisher()
     }
 
-    /// Mutable reference to `localNotificationResponses`
+    /// Mutable reference to `localNotificationResponses`.
     private let localNotificationResponsesSubject = PassthroughSubject<UNNotificationResponse, Never>()
 
     /// Returns the current Application's State

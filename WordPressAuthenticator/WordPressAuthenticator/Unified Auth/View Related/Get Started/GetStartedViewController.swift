@@ -70,6 +70,7 @@ class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
         button.setTitle(WordPressAuthenticator.shared.displayStrings.whatIsWPComLinkTitle, for: .normal)
         let buttonTitleColor = WordPressAuthenticator.shared.unifiedStyle?.textButtonColor ?? WordPressAuthenticator.shared.style.textButtonColor
         let buttonHighlightColor = WordPressAuthenticator.shared.unifiedStyle?.textButtonHighlightColor ?? WordPressAuthenticator.shared.style.textButtonHighlightColor
+        button.titleLabel?.font = WPStyleGuide.mediumWeightFont(forStyle: .subheadline)
         button.setTitleColor(buttonTitleColor, for: .normal)
         button.setTitleColor(buttonHighlightColor, for: .highlighted)
         button.addTarget(self, action: #selector(whatIsWPComButtonTapped(_:)), for: .touchUpInside)

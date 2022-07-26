@@ -46,7 +46,7 @@ class AuthenticationManager: Authentication {
                                                                 enableSignupWithGoogle: false,
                                                                 enableUnifiedAuth: true,
                                                                 continueWithSiteAddressFirst: true,
-                                                                enableSiteCredentialsLoginInGetStartedScreen: true,
+                                                                enableSiteCredentialsLoginForSelfHostedSites: true,
                                                                 isWordPressComCredentialsRequired: true)
 
         let systemGray3LightModeColor = UIColor(red: 199/255.0, green: 199/255.0, blue: 204/255.0, alpha: 1)

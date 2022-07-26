@@ -168,7 +168,6 @@
 		B5FD111E21D4046E00560344 /* OrderSearchResults+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5FD111C21D4046E00560344 /* OrderSearchResults+CoreDataProperties.swift */; };
 		B5FD111F21D4046E00560344 /* OrderSearchResults+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5FD111D21D4046E00560344 /* OrderSearchResults+CoreDataClass.swift */; };
 		B9EFC27728903F7C00667217 /* WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9EFC27628903F7C00667217 /* WooFoundation.framework */; };
-		B9EFC27828903F7C00667217 /* WooFoundation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B9EFC27628903F7C00667217 /* WooFoundation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BAB373762796327000837B4A /* OrderTaxLine+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAB373742796327000837B4A /* OrderTaxLine+CoreDataClass.swift */; };
 		BAB373772796327000837B4A /* OrderTaxLine+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAB373752796327000837B4A /* OrderTaxLine+CoreDataProperties.swift */; };
 		CC2C0309262DCC6900928C9C /* ShippingLabelAccountSettings+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2C0305262DCC6900928C9C /* ShippingLabelAccountSettings+CoreDataProperties.swift */; };
@@ -238,20 +237,6 @@
 			remoteInfo = Storage;
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		263E37D82641AD5100260D3B /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				B9EFC27828903F7C00667217 /* WooFoundation.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		021EAA4525493A1600AA8CCD /* OrderItemAttribute+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItemAttribute+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -1042,7 +1027,6 @@
 				B54CA59420A4BBA500F38CD1 /* Sources */,
 				B54CA59520A4BBA500F38CD1 /* Frameworks */,
 				B54CA59720A4BBA500F38CD1 /* Resources */,
-				263E37D82641AD5100260D3B /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

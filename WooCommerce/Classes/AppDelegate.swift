@@ -63,6 +63,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupKeyboardStateProvider()
         handleLaunchArguments()
         appleIDCredentialChecker.observeLoggedInStateForAppleIDObservations()
+        setupUserNotificationCenter()
 
         // Components that require prior Auth
         setupZendesk()
@@ -288,6 +289,9 @@ private extension AppDelegate {
     ///
     func setupPushNotificationsManagerIfPossible() {
         guard ServiceLocator.stores.isAuthenticated, ServiceLocator.stores.needsDefaultStore == false else {
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginErrorNotifications) {
+                ServiceLocator.pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: true, onCompletion: nil)
+            }
             return
         }
 
@@ -296,8 +300,15 @@ private extension AppDelegate {
         #else
             let pushNotesManager = ServiceLocator.pushNotesManager
             pushNotesManager.registerForRemoteNotifications()
-            pushNotesManager.ensureAuthorizationIsRequested(onCompletion: nil)
+            pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: false, onCompletion: nil)
         #endif
+    }
+
+    func setupUserNotificationCenter() {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginErrorNotifications) else {
+            return
+        }
+        UNUserNotificationCenter.current().delegate = self
     }
 
     /// Set up app review prompt
@@ -401,5 +412,34 @@ extension AppDelegate {
     func authenticatorWasDismissed() {
         setupPushNotificationsManagerIfPossible()
         RequirementsChecker.checkMinimumWooVersionForDefaultStore()
+    }
+}
+
+// MARK: - UNUserNotificationCenterDelegate
+
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+        switch response.actionIdentifier {
+        case LocalNotification.Action.contactSupport.rawValue:
+            guard let viewController = window?.rootViewController else {
+                return
+            }
+            ZendeskProvider.shared.showNewRequestIfPossible(from: viewController, with: nil)
+            ServiceLocator.analytics.track(.loginLocalNotificationTapped, withProperties: [
+                "action": "contact_support",
+                "type": response.notification.request.identifier
+            ])
+        default:
+            // Triggered when the user taps on the notification itself instead of one of the actions.
+            switch response.notification.request.identifier {
+            case LocalNotification.Scenario.loginSiteAddressError.rawValue:
+                ServiceLocator.analytics.track(.loginLocalNotificationTapped, withProperties: [
+                    "action": "default",
+                    "type": response.notification.request.identifier
+                ])
+            default:
+                return
+            }
+        }
     }
 }

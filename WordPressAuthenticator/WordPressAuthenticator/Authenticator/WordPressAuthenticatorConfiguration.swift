@@ -96,7 +96,7 @@ public struct WordPressAuthenticatorConfiguration {
     let continueWithSiteAddressFirst: Bool
 
     /// If enabled shows a "Sign in with site credentials" button in `GetStartedViewController` when landing in the screen after entering site address
-    ///  Used in WooCommerce iOS to enable sign in using site credentials feature.
+    ///  Used to enable sign-in to self-hosted sites using WordPress.org credentials.
     ///  Disabled by default
     let enableSiteCredentialsLoginInGetStartedScreen: Bool
 

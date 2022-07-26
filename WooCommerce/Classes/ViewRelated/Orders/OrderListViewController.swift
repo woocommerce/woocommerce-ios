@@ -377,15 +377,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
     }
 
     private func showUpsellCardReadersBanner() {
-        debugPrint("showUpsellCardReadersBanner -----")
-        let upsellCardReadersCampaign = UpsellCardReadersCampaign(source: .orderList)
-
-        var upsellCardReadersAnnouncementViewModel: FeatureAnnouncementCardViewModel =
-            .init(analytics: ServiceLocator.analytics,
-                  configuration: upsellCardReadersCampaign.configuration)
-
-
-        let view = FeatureAnnouncementCardView(viewModel: upsellCardReadersAnnouncementViewModel,
+        let view = FeatureAnnouncementCardView(viewModel: viewModel.upsellCardReadersAnnouncementViewModel,
                                                dismiss: { [weak self] in
             self?.hideTopBannerView()
         }, callToAction: {
@@ -396,17 +388,9 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
 
         let hostingViewController = UIHostingController(rootView: view)
         hostingViewController.view!.translatesAutoresizingMaskIntoConstraints = false
-
-        // Configure header container view
-        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
-        headerContainer.addSubview(hostingViewController.view!)
-        headerContainer.pinSubviewToAllEdges(hostingViewController.view!)
-
-        tableView.tableHeaderView = headerContainer
-        tableView.updateHeaderHeight()
-
         topBannerView = hostingViewController.view
 
+        showTopBannerView()
     }
 }
 

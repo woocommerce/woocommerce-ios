@@ -1,13 +1,14 @@
 import Combine
 import Experiments
 import XCTest
-import UserNotifications
+//import UserNotifications
 import Yosemite
 @testable import WooCommerce
 
 
 /// PushNotificationsManager Tests
 ///
+@MainActor
 final class PushNotificationsManagerTests: XCTestCase {
 
     /// PushNotifications Manager
@@ -38,6 +39,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
     // MARK: - Overridden Methods
 
+    @MainActor
     override func setUp() {
         super.setUp()
 
@@ -51,6 +53,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Most of the test cases expect a nil site ID, otherwise the dispatched actions would not match.
         storesManager = MockStoresManager(sessionManager: .testingInstance)
         storesManager.sessionManager.setStoreId(nil)
+        mockSynchronizeNotificationsAction()
 
         supportManager = MockSupportManager()
         userNotificationCenter = MockUserNotificationsCenterAdapter()
@@ -66,6 +69,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         }()
     }
 
+    @MainActor
     override func tearDown() {
         manager.resetBadgeCountForAllStores {}
         manager = nil
@@ -250,56 +254,51 @@ final class PushNotificationsManagerTests: XCTestCase {
     /// Verifies that `handleNotification` dispatches a `synchronizeNotifications` Action, which, in turn, signals that there's
     /// new data available in the app, on success.
     ///
-    func testHandleNotificationResultsInSynchronizeNotificationsActionWhichSignalsThatThereIsNewDataOnSuccessWhenAppStateIsBackground() {
+    func testHandleNotificationResultsInSynchronizeNotificationsActionWhichSignalsThatThereIsNewDataOnSuccessWhenAppStateIsBackground() async {
+        // Given
         let payload = notificationPayload()
-        var handleNotificationCallbackWasExecuted = false
 
+        // When
         application.applicationState = .background
-        manager.handleNotification(payload, onBadgeUpdateCompletion: {}) { result in
-            XCTAssertEqual(result, .newData)
-            handleNotificationCallbackWasExecuted = true
-        }
+        let result = await manager.handleRemoteNotificationInTheBackground(userInfo: payload)
 
-        guard case let .synchronizeNotifications(onCompletion) =
+        // Then
+        XCTAssertEqual(result, .newData)
+
+        guard case .synchronizeNotifications =
                 storesManager.receivedActions.compactMap({ $0 as? NotificationAction }).first else {
             XCTFail()
             return
         }
-
-        // Simulate Action Execution: This is actually a synchronous OP. No need to wait!
-        onCompletion(nil)
-        XCTAssertTrue(handleNotificationCallbackWasExecuted)
     }
 
 
     /// Verifies that `handleNotification` dispatches a `synchronizeNotifications` Action, which, in turn, signals that there's
     /// NO New Data available in the app, on error.
     ///
-    func testHandleNotificationResultsInSynchronizeNotificationsActionWhichSignalsThatThereIsNoNewDataOnErrorWhenAppStateIsBackground() {
+    func testHandleNotificationResultsInSynchronizeNotificationsActionWhichSignalsThatThereIsNoNewDataOnErrorWhenAppStateIsBackground() async {
+        // Given
         let payload = notificationPayload()
-        var handleNotificationCallbackWasExecuted = false
+        mockSynchronizeNotificationsAction(error: NSError(domain: "", code: 0))
 
+        // When
         application.applicationState = .background
-        manager.handleNotification(payload, onBadgeUpdateCompletion: {}) { result in
-            XCTAssertEqual(result, .noData)
-            handleNotificationCallbackWasExecuted = true
-        }
+        let result = await manager.handleRemoteNotificationInTheBackground(userInfo: payload)
 
-        guard case let .synchronizeNotifications(onCompletion) =
+        // Then
+        XCTAssertEqual(result, .noData)
+
+        guard case .synchronizeNotifications =
                 storesManager.receivedActions.compactMap({ $0 as? NotificationAction }).first else {
             XCTFail()
             return
         }
-
-        // Simulate Action Execution: This is actually a synchronous OP. No need to wait!
-        onCompletion(SampleError.first)
-        XCTAssertTrue(handleNotificationCallbackWasExecuted)
     }
 
     /// Verifies that `handleNotification` opens the Notification Details for the newly received note, whenever the application
     /// state is inactive.
     ///
-    func test_handleNotification_displays_details_for_the_new_notification_whenever_the_app_state_is_inactive() {
+    func test_handleNotification_displays_details_for_the_new_notification_whenever_the_app_state_is_inactive() async throws {
         // Given
         manager = {
             let configuration = PushNotificationsConfiguration(application: self.application,
@@ -311,24 +310,20 @@ final class PushNotificationsManagerTests: XCTestCase {
             return PushNotificationsManager(configuration: configuration)
         }()
         let payload = notificationPayload(type: .storeOrder)
-        var handleNotificationCallbackWasExecuted = false
+        let response = try XCTUnwrap(MockNotificationResponse(notificationUserInfo: payload))
 
         // When
         application.applicationState = .inactive
-        manager.handleNotification(payload, onBadgeUpdateCompletion: {}) { result in
-            XCTAssertEqual(result, .newData)
-            handleNotificationCallbackWasExecuted = true
-        }
+        await manager.handleUserResponseToNotification(response: response)
 
         // Then
         XCTAssertEqual(application.presentDetailsNoteIDs.first, 1234)
-        XCTAssertTrue(handleNotificationCallbackWasExecuted)
     }
 
     /// Verifies that `handleNotification` displays an InApp Notification with title and message whenever the app is in active state and both title
     /// and message are present in the payload.
     ///
-    func test_handleNotification_displays_inApp_notice_with_title_and_message_when_app_state_is_active() {
+    func test_handleNotification_displays_inApp_notice_with_title_and_message_when_app_state_is_active() async throws {
         // Given
         let payload = notificationPayload(title: Sample.defaultTitle,
                                           subtitle: Sample.defaultSubtitle,
@@ -345,9 +340,8 @@ final class PushNotificationsManagerTests: XCTestCase {
 
         // When
         application.applicationState = .active
-        manager.handleNotification(payload, onBadgeUpdateCompletion: {}) { _ in
-            // NO-OP
-        }
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
 
         // Then
         XCTAssertEqual(application.presentInAppMessages.first?.title, Sample.defaultTitle)
@@ -358,7 +352,7 @@ final class PushNotificationsManagerTests: XCTestCase {
     /// Verifies that `handleNotification` displays an InApp Notification with title only whenever the app is in active state and only title
     /// is present in the payload.
     ///
-    func test_handleNotification_displays_inApp_notice_with_title_only_when_app_state_is_active_and_only_title_in_payload() {
+    func test_handleNotification_displays_inApp_notice_with_title_only_when_app_state_is_active_and_only_title_in_payload() async throws {
         // Given
         let payload = notificationPayload(title: Sample.defaultTitle, message: nil)
         manager = {
@@ -373,9 +367,8 @@ final class PushNotificationsManagerTests: XCTestCase {
 
         // When
         application.applicationState = .active
-        manager.handleNotification(payload, onBadgeUpdateCompletion: {}) { _ in
-            // NO-OP
-        }
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
 
         // Then
         XCTAssertEqual(application.presentInAppMessages.first?.title, Sample.defaultTitle)
@@ -385,7 +378,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
     // MARK: - Foreground Notification Observable
 
-    func test_it_emits_foreground_notifications_when_it_receives_a_notification_while_app_is_active() throws {
+    func test_it_emits_foreground_notifications_when_it_receives_a_notification_while_app_is_active() async throws {
         // Given
         application.applicationState = .active
 
@@ -411,9 +404,8 @@ final class PushNotificationsManagerTests: XCTestCase {
                                            message: Sample.defaultMessage)
 
         // When
-        manager.handleNotification(userinfo, onBadgeUpdateCompletion: {}) { _ in
-            // noop
-        }
+        let notification = try XCTUnwrap(MockNotification(userInfo: userinfo))
+        _ = await manager.handleNotificationInTheForeground(notification)
 
         // Then
         XCTAssertEqual(emittedNotifications.count, 1)
@@ -426,7 +418,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertEqual(emittedNotification.message, Sample.defaultMessage)
     }
 
-    func test_it_does_not_emit_foreground_notifications_when_it_receives_a_notification_while_app_is_not_active() {
+    func test_it_does_not_emit_foreground_notifications_when_it_receives_a_notification_while_app_is_not_active() async {
         // Given
         application.applicationState = .background
 
@@ -438,15 +430,13 @@ final class PushNotificationsManagerTests: XCTestCase {
         let userinfo = notificationPayload(noteID: 9_981, type: .storeOrder)
 
         // When
-        manager.handleNotification(userinfo, onBadgeUpdateCompletion: {}) { _ in
-            // noop
-        }
+        _ = await manager.handleRemoteNotificationInTheBackground(userInfo: userinfo)
 
         // Then
         XCTAssertTrue(emittedNotifications.isEmpty)
     }
 
-    func test_it_emits_inactive_notifications_with_title_only_when_it_receives_a_notification_while_the_app_is_not_active_and_only_title_in_payload() throws {
+    func test_it_emits_inactive_notifications_with_title_only_given_a_notification_while_the_app_is_inactive_and_only_title_in_payload() async throws {
         // Given
         application.applicationState = .inactive
         manager = {
@@ -465,11 +455,10 @@ final class PushNotificationsManagerTests: XCTestCase {
         }.store(in: &subscriptions)
 
         let userinfo = notificationPayload(noteID: 9_981, type: .storeOrder, title: Sample.defaultTitle)
+        let response = try XCTUnwrap(MockNotificationResponse(notificationUserInfo: userinfo))
 
         // When
-        manager.handleNotification(userinfo, onBadgeUpdateCompletion: {}) { _ in
-            // noop
-        }
+        _ = await manager.handleUserResponseToNotification(response: response)
 
         // Then
         XCTAssertEqual(emittedNotifications.count, 1)
@@ -485,8 +474,9 @@ final class PushNotificationsManagerTests: XCTestCase {
     // MARK: - App Badge Number
 
     /// Verifies that `handleNotification` updates app badge number to 1 when the notification is from the same site.
-    func test_receiving_notification_from_the_same_site_updates_app_badge_number() {
+    func test_receiving_notification_from_the_same_site_updates_app_badge_number() async {
         // Arrange
+        application.applicationState = .background
         // A site ID and the default stores are required to update the application badge number.
         let stores = DefaultStoresManager.testingInstance
         manager = {
@@ -504,11 +494,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
         // Action
         let userInfo = notificationPayload(badgeCount: 10, type: .comment, siteID: siteID)
-        waitFor { promise in
-            self.manager.handleNotification(userInfo, onBadgeUpdateCompletion: {
-                promise(())
-            }) { _ in }
-        }
+        _ = await manager.handleRemoteNotificationInTheBackground(userInfo: userInfo)
 
         // Assert
         XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.hasUnreadPushNotifications)
@@ -516,8 +502,9 @@ final class PushNotificationsManagerTests: XCTestCase {
     }
 
     /// Verifies that `handleNotification` twice does not change app badge number from 1 when both notifications are from the same site.
-    func test_receiving_two_notifications_from_the_same_site_does_does_not_change_app_badge_number() {
+    func test_receiving_two_notifications_from_the_same_site_does_not_change_app_badge_number() async {
         // Arrange
+        application.applicationState = .background
         // A site ID and the default stores are required to update the application badge number.
         let stores = DefaultStoresManager.testingInstance
         manager = {
@@ -536,13 +523,8 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Action
         let userInfoForTheFirstNotification = notificationPayload(badgeCount: 10, type: .comment, siteID: siteID)
         let userInfoForTheSecondNotification = notificationPayload(badgeCount: 2, type: .storeOrder, siteID: siteID)
-        waitFor { promise in
-            self.manager.handleNotification(userInfoForTheFirstNotification, onBadgeUpdateCompletion: {
-                self.manager.handleNotification(userInfoForTheSecondNotification, onBadgeUpdateCompletion: {
-                    promise(())
-                }) { _ in }
-            }) { _ in }
-        }
+        _ = await manager.handleRemoteNotificationInTheBackground(userInfo: userInfoForTheFirstNotification)
+        _ = await manager.handleRemoteNotificationInTheBackground(userInfo: userInfoForTheSecondNotification)
 
         // Assert
         XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.hasUnreadPushNotifications)
@@ -550,8 +532,9 @@ final class PushNotificationsManagerTests: XCTestCase {
     }
 
     /// Verifies that `handleNotification` clears app badge number without clearing push notifications when the notification is from a different site.
-    func test_receiving_notification_from_a_different_site_clears_app_badge_number_only() {
+    func test_receiving_notification_from_a_different_site_clears_app_badge_number_only() async {
         // Arrange
+        application.applicationState = .background
         // A site ID and the default stores are required to update the application badge number.
         let stores = DefaultStoresManager.testingInstance
         manager = {
@@ -568,11 +551,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
         // Action
         let userInfo = notificationPayload(badgeCount: 10, type: .comment, siteID: 556)
-        waitFor { promise in
-            self.manager.handleNotification(userInfo, onBadgeUpdateCompletion: {
-                promise(())
-            }) { _ in }
-        }
+        _ = await manager.handleRemoteNotificationInTheBackground(userInfo: userInfo)
 
         // Assert
         XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.clearsBadgeOnly)
@@ -634,6 +613,14 @@ private extension PushNotificationsManagerTests {
             "type": type.rawValue,
             "blog": siteID
         ]
+    }
+
+    func mockSynchronizeNotificationsAction(error: Error? = nil) {
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case .synchronizeNotifications(let completion) = action {
+                completion(error)
+            }
+        }
     }
 }
 

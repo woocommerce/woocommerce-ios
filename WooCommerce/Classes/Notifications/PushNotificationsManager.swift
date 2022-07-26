@@ -237,6 +237,7 @@ extension PushNotificationsManager {
     ///
     /// - Returns: True when handled. False otherwise
     ///
+    @MainActor
     func handleNotificationInTheForeground(_ notification: UNNotification) async -> UNNotificationPresentationOptions {
         let content = notification.request.content
         guard applicationState == .active, content.isRemoteNotification else {
@@ -266,6 +267,7 @@ extension PushNotificationsManager {
         return UNNotificationPresentationOptions(rawValue: 0)
     }
 
+    @MainActor
     func handleUserResponseToNotification(response: UNNotificationResponse) async {
         // Remote notification response is handled separately.
         if let notification = PushNotification.from(userInfo: response.notification.request.content.userInfo) {
@@ -284,6 +286,7 @@ extension PushNotificationsManager {
     ///
     /// - Returns: True when handled. False otherwise
     ///
+    @MainActor
     func handleRemoteNotificationInTheBackground(userInfo: [AnyHashable: Any]) async -> UIBackgroundFetchResult {
         guard applicationState == .background, let _ = userInfo[APNSKey.identifier] else {
             return .noData
@@ -575,6 +578,7 @@ private extension PushNotificationsManager {
 
     /// Synchronizes all of the Notifications. On success this method will always signal `.newData`, and `.noData` on error.
     ///
+    @MainActor
     func synchronizeNotifications() async -> UIBackgroundFetchResult {
         await withCheckedContinuation { continuation in
             let action = NotificationAction.synchronizeNotifications { error in

@@ -36,7 +36,7 @@ protocol PushNotesManager {
     ///
     func reloadBadgeCount()
 
-    /// Registers the Application for Remote Notifgications.
+    /// Registers the Application for Remote Notifications.
     ///
     func registerForRemoteNotifications()
 

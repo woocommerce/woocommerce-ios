@@ -98,22 +98,18 @@ final class OrderListViewModel {
     ///
     @Published var hideOrdersBanners: Bool = true
 
-    private let loadOrdersBanner: Bool
-
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          notificationCenter: NotificationCenter = .default,
-         filters: FilterOrderListViewModel.Filters?,
-         loadOrdersBanner: Bool = true) {
+         filters: FilterOrderListViewModel.Filters?) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
         self.pushNotificationsManager = pushNotificationsManager
         self.notificationCenter = notificationCenter
         self.filters = filters
-        self.loadOrdersBanner = loadOrdersBanner
     }
 
     deinit {
@@ -136,10 +132,7 @@ final class OrderListViewModel {
 
         observeForegroundRemoteNotifications()
         bindTopBannerState()
-
-        if loadOrdersBanner {
-            loadOrdersBannerVisibility()
-        }
+        loadOrdersBannerVisibility()
     }
 
     func dismissOrdersBanner() {
@@ -308,12 +301,13 @@ extension OrderListViewModel {
         let errorState = $hasErrorLoadingData.removeDuplicates()
         Publishers.CombineLatest(errorState, $hideOrdersBanners)
             .map { [weak self] hasError, hasDismissedBanners -> TopBanner in
+                guard let self = self else { return .none }
 
                 guard !hasError else {
                     return .error
                 }
 
-                guard !(self?.upsellCardReadersAnnouncementViewModel.shouldBeVisible ?? true) else {
+                guard !self.upsellCardReadersAnnouncementViewModel.shouldBeVisible else {
                     return .upsellCardReaders
                 }
 

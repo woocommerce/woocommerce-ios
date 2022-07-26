@@ -153,9 +153,10 @@ extension WPStyleGuide {
     /// - Returns: A properly styled NSAttributedString to be displayed on a NUXButton.
     ///
     class func formattedSignInWithSiteCredentialsString() -> NSAttributedString {
-        let image = UIImage.linkFieldImage
         let title = NSLocalizedString(WordPressAuthenticator.shared.displayStrings.signInWithSiteCredentialsButtonTitle,
                                       comment: "Button title. Tapping opens the site credentials screen.")
+        let globe = UIImage.gridicon(.globe)
+        let image = globe.imageWithTintColor(WordPressAuthenticator.shared.style.placeholderColor) ?? globe
         return attributedStringwithLogo(image,
                                         imageSize: image.size,
                                         title: title,

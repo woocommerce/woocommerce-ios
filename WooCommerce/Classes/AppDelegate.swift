@@ -3,7 +3,7 @@ import CoreData
 import Storage
 import class Networking.UserAgent
 import Experiments
-
+import Yosemite
 import CocoaLumberjack
 import KeychainAccess
 import WordPressUI
@@ -93,8 +93,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Start app navigation.
         appCoordinator?.start()
+        cancelCardDismissal()
 
         return true
+    }
+
+#warning("this is for testing only")
+    func cancelCardDismissal() {
+        let action = AppSettingsAction.resetFeatureAnnouncementDismissed(campaign: .upsellCardReaders)
+            ServiceLocator.stores.dispatch(action)
     }
 
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {

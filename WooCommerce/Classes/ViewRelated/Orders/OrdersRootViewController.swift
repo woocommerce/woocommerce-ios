@@ -107,7 +107,7 @@ final class OrdersRootViewController: UIViewController {
         configureView()
         configureNavigationButtons()
         configureFiltersBar()
-        configureUpsellCardReaderFeatureAnnouncement()
+        //configureUpsellCardReaderFeatureAnnouncement()
         configureChildViewController()
 
         /// We sync the local order settings for configuring local statuses and date range filters.

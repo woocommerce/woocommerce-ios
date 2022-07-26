@@ -5,6 +5,7 @@ import Yosemite
 import WordPressUI
 import SafariServices
 import StoreKit
+import SwiftUI
 
 // Used for protocol conformance of IndicatorInfoProvider only.
 import XLPagerTabStrip
@@ -99,7 +100,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
     /// Current top banner that is displayed.
     ///
-    private var topBannerView: TopBannerView?
+    private var topBannerView: UIView?
 
     /// Callback closure when an order is selected
     ///
@@ -242,6 +243,8 @@ private extension OrderListViewController {
                 switch topBannerType {
                 case .none:
                     self.hideTopBannerView()
+                case .upsellCardReaders:
+                    self.showUpsellCardReadersBanner()
                 case .error:
                     self.setErrorTopBanner()
                 case .orderCreation:
@@ -371,6 +374,39 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
         }
 
         tableView.updateHeaderHeight()
+    }
+
+    private func showUpsellCardReadersBanner() {
+        debugPrint("showUpsellCardReadersBanner -----")
+        let upsellCardReadersCampaign = UpsellCardReadersCampaign(source: .orderList)
+
+        var upsellCardReadersAnnouncementViewModel: FeatureAnnouncementCardViewModel =
+            .init(analytics: ServiceLocator.analytics,
+                  configuration: upsellCardReadersCampaign.configuration)
+
+
+        let view = FeatureAnnouncementCardView(viewModel: upsellCardReadersAnnouncementViewModel,
+                                               dismiss: { [weak self] in
+            self?.hideTopBannerView()
+        }, callToAction: {
+            let configuration = CardPresentConfigurationLoader().configuration
+            WebviewHelper.launch(configuration.purchaseCardReaderUrl(), with: self)
+        })
+            .background(Color(.listForeground))
+
+        let hostingViewController = UIHostingController(rootView: view)
+        hostingViewController.view!.translatesAutoresizingMaskIntoConstraints = false
+
+        // Configure header container view
+        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
+        headerContainer.addSubview(hostingViewController.view!)
+        headerContainer.pinSubviewToAllEdges(hostingViewController.view!)
+
+        tableView.tableHeaderView = headerContainer
+        tableView.updateHeaderHeight()
+
+        topBannerView = hostingViewController.view
+
     }
 }
 

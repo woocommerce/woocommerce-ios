@@ -24,6 +24,14 @@ final class OrderListViewModel {
     private let pushNotificationsManager: PushNotesManager
     private let notificationCenter: NotificationCenter
 
+    private let upsellCardReadersCampaign = UpsellCardReadersCampaign(source: .orderList)
+
+    var upsellCardReadersAnnouncementViewModel: FeatureAnnouncementCardViewModel {
+        .init(analytics: ServiceLocator.analytics,
+              configuration: upsellCardReadersCampaign.configuration)
+    }
+
+
     /// Used for cancelling the observer for Remote Notifications when `self` is deallocated.
     ///
     private var foregroundNotificationsSubscription: AnyCancellable?
@@ -299,10 +307,14 @@ extension OrderListViewModel {
     private func bindTopBannerState() {
         let errorState = $hasErrorLoadingData.removeDuplicates()
         Publishers.CombineLatest(errorState, $hideOrdersBanners)
-            .map { hasError, hasDismissedBanners -> TopBanner in
+            .map { [weak self] hasError, hasDismissedBanners -> TopBanner in
 
                 guard !hasError else {
                     return .error
+                }
+
+                guard !(self?.upsellCardReadersAnnouncementViewModel.shouldBeVisible ?? true) else {
+                    return .upsellCardReaders
                 }
 
                 guard !hasDismissedBanners else {
@@ -351,6 +363,7 @@ extension OrderListViewModel {
     ///
     enum TopBanner {
         case error
+        case upsellCardReaders
         case orderCreation
         case none
     }

@@ -44,6 +44,8 @@ protocol SettingsViewModelActionsHandler {
     func onJetpackInstallDismiss()
 
     func onUpsellCardReadersAnnouncementDismiss()
+
+    func reloadSettings()
 }
 
 protocol SettingsViewModelInput: AnyObject {
@@ -169,9 +171,7 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     func onUpsellCardReadersAnnouncementDismiss() {
         reloadSettings()
     }
-}
 
-private extension SettingsViewModel {
     /// Reload the sections and refresh the view (presenter)
     ///
     func reloadSettings() {
@@ -179,6 +179,9 @@ private extension SettingsViewModel {
         presenter?.refreshViewContent()
     }
 
+}
+
+private extension SettingsViewModel {
     func loadWhatsNewOnWooCommerce() {
         stores.dispatch(AnnouncementsAction.loadSavedAnnouncement(onCompletion: { [weak self] result in
             guard let self = self else { return }

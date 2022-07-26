@@ -59,6 +59,12 @@ final class SettingsViewController: UIViewController {
         viewModel.onViewDidLoad()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        viewModel.reloadSettings()
+    }
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.updateFooterHeight()

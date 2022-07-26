@@ -60,7 +60,6 @@ class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
         button.addTarget(self, action: #selector(handleSubmitButtonTapped), for: .touchUpInside)
         button.accessibilityIdentifier = ButtonConfiguration.Continue.accessibilityIdentifier
         button.setTitle(ButtonConfiguration.Continue.title, for: .normal)
-        button.setTitle(ButtonConfiguration.Continue.title, for: .highlighted)
 
         return button
     }()

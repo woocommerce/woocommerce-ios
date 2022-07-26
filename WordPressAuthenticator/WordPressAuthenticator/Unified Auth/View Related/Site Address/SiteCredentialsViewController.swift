@@ -68,6 +68,7 @@ final class SiteCredentialsViewController: LoginViewController {
         }
 
         configureSubmitButton(animating: false)
+        configureViewLoading(false)
 
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
                                   keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))

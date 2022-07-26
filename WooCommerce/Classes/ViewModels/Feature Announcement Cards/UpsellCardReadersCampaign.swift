@@ -5,9 +5,9 @@ struct UpsellCardReadersCampaign {
 
     private var buttonTitle: String? {
         switch source {
-        case .paymentMethods:
+        case .paymentMethods, .orderList:
             return Localization.cardButtonTitle
-        default:
+        case .settings:
             return nil
         }
     }

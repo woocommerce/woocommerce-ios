@@ -42,9 +42,10 @@ protocol PushNotesManager {
 
     /// Requests Authorization to receive Push Notifications, *only* when the current Status is not determined.
     ///
+    /// - Parameter includesProvisionalAuth: A boolean that indicates whether to request provisional authorization in order to send trial notifications.
     /// - Parameter onCompletion: Closure to be executed on completion. Receives a Boolean indicating if we've got Push Permission.
     ///
-    func ensureAuthorizationIsRequested(onCompletion: ((Bool) -> Void)?)
+    func ensureAuthorizationIsRequested(includesProvisionalAuth: Bool, onCompletion: ((Bool) -> Void)?)
 
     /// Handles Push Notifications Registration Errors. This method unregisters the current device from the WordPress.com
     /// Push Service.
@@ -66,4 +67,14 @@ protocol PushNotesManager {
     func handleNotification(_ userInfo: [AnyHashable: Any],
                             onBadgeUpdateCompletion: @escaping () -> Void,
                             completionHandler: @escaping (UIBackgroundFetchResult) -> Void)
+
+    /// Requests a local notification to be scheduled under a given trigger.
+    /// - Parameters:
+    ///   - notification: the notification content.
+    ///   - trigger: if nil, the local notification is delivered immediately.
+    func requestLocalNotification(_ notification: LocalNotification, trigger: UNNotificationTrigger?)
+
+    /// Cancels a local notification that was previously scheduled.
+    /// - Parameter scenarios: the scenarios of the notification to be cancelled.
+    func cancelLocalNotification(scenarios: [LocalNotification.Scenario])
 }

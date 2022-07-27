@@ -24,6 +24,12 @@ final class MockPushNotificationsManager: PushNotesManager {
 
     private let inactiveNotificationsSubject = PassthroughSubject<PushNotification, Never>()
 
+    var localNotificationUserResponses: AnyPublisher<UNNotificationResponse, Never> {
+        localNotificationResponsesSubject.eraseToAnyPublisher()
+    }
+
+    private let localNotificationResponsesSubject = PassthroughSubject<UNNotificationResponse, Never>()
+
     func resetBadgeCount(type: Note.Kind) {
 
     }
@@ -56,10 +62,16 @@ final class MockPushNotificationsManager: PushNotesManager {
 
     }
 
-    func handleNotification(_ userInfo: [AnyHashable: Any],
-                            onBadgeUpdateCompletion: @escaping () -> Void,
-                            completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+    func handleRemoteNotificationInTheBackground(userInfo: [AnyHashable: Any]) async -> UIBackgroundFetchResult {
+        .noData
+    }
 
+    func handleUserResponseToNotification(_ response: UNNotificationResponse) async {
+
+    }
+
+    func handleNotificationInTheForeground(_ notification: UNNotification) async -> UNNotificationPresentationOptions {
+        .init(rawValue: 0)
     }
 
     func requestLocalNotification(_ notification: LocalNotification, trigger: UNNotificationTrigger?) {

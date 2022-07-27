@@ -20,6 +20,10 @@ protocol PushNotesManager {
     ///
     var inactiveNotifications: AnyPublisher<PushNotification, Never> { get }
 
+    /// An observable that emits values when a local notification response is received.
+    ///
+    var localNotificationUserResponses: AnyPublisher<UNNotificationResponse, Never> { get }
+
     /// Resets the Badge Count.
     ///
     func resetBadgeCount(type: Note.Kind)
@@ -32,7 +36,7 @@ protocol PushNotesManager {
     ///
     func reloadBadgeCount()
 
-    /// Registers the Application for Remote Notifgications.
+    /// Registers the Application for Remote Notifications.
     ///
     func registerForRemoteNotifications()
 
@@ -62,11 +66,20 @@ protocol PushNotesManager {
     ///
     func registerDeviceToken(with tokenData: Data, defaultStoreID: Int64)
 
-    /// Handles a Remote Push Notification Payload. On completion the `completionHandler` will be executed.
+    /// Handles a remote push notification payload when the app is in the background.
+    /// - Parameter userInfo: Push notification payload.
+    /// - Returns: The result of background sync of notifications.
+    func handleRemoteNotificationInTheBackground(userInfo: [AnyHashable: Any]) async -> UIBackgroundFetchResult
+
+    /// Handles user's response to a local or remote notification.
+    /// - Parameter response: The user's response to a notification.
+    func handleUserResponseToNotification(_ response: UNNotificationResponse) async
+
+    /// Handles a local or remote notification when the app is in the foreground.
     ///
-    func handleNotification(_ userInfo: [AnyHashable: Any],
-                            onBadgeUpdateCompletion: @escaping () -> Void,
-                            completionHandler: @escaping (UIBackgroundFetchResult) -> Void)
+    /// - Parameter notification: The local or remote notification received in the app.
+    /// - Returns: How the notification is displayed in the foreground.
+    func handleNotificationInTheForeground(_ notification: UNNotification) async -> UNNotificationPresentationOptions
 
     /// Requests a local notification to be scheduled under a given trigger.
     /// - Parameters:

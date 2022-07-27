@@ -19,7 +19,8 @@ final class AppCoordinator {
     private let featureFlagService: FeatureFlagService
 
     private var storePickerCoordinator: StorePickerCoordinator?
-    private var cancellable: AnyCancellable?
+    private var authStatesSubscription: AnyCancellable?
+    private var localNotificationResponsesSubscription: AnyCancellable?
     private var isLoggedIn: Bool = false
 
     init(window: UIWindow,
@@ -46,7 +47,7 @@ final class AppCoordinator {
     }
 
     func start() {
-        cancellable = Publishers.CombineLatest(stores.isLoggedInPublisher, stores.needsDefaultStorePublisher)
+        authStatesSubscription = Publishers.CombineLatest(stores.isLoggedInPublisher, stores.needsDefaultStorePublisher)
             .sink {  [weak self] isLoggedIn, needsDefaultStore in
                 guard let self = self else { return }
 
@@ -64,6 +65,10 @@ final class AppCoordinator {
                 }
                 self.isLoggedIn = isLoggedIn
             }
+
+        localNotificationResponsesSubscription = ServiceLocator.pushNotesManager.localNotificationUserResponses.sink { [weak self] response in
+            self?.handleLocalNotificationResponse(response)
+        }
     }
 }
 
@@ -232,6 +237,31 @@ private extension AppCoordinator {
             onSuccess()
         }
         stores.dispatch(action)
+    }
+
+    func handleLocalNotificationResponse(_ response: UNNotificationResponse) {
+        switch response.actionIdentifier {
+        case LocalNotification.Action.contactSupport.rawValue:
+            guard let viewController = window.rootViewController else {
+                return
+            }
+            ZendeskProvider.shared.showNewRequestIfPossible(from: viewController, with: nil)
+            analytics.track(.loginLocalNotificationTapped, withProperties: [
+                "action": "contact_support",
+                "type": response.notification.request.identifier
+            ])
+        default:
+            // Triggered when the user taps on the notification itself instead of one of the actions.
+            switch response.notification.request.identifier {
+            case LocalNotification.Scenario.loginSiteAddressError.rawValue:
+                analytics.track(.loginLocalNotificationTapped, withProperties: [
+                    "action": "default",
+                    "type": response.notification.request.identifier
+                ])
+            default:
+                return
+            }
+        }
     }
 }
 

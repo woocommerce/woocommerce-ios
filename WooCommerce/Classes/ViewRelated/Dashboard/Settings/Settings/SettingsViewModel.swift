@@ -174,7 +174,6 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         configureSections()
         presenter?.refreshViewContent()
     }
-
 }
 
 private extension SettingsViewModel {

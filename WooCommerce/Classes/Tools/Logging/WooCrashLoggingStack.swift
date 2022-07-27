@@ -1,7 +1,6 @@
 import Foundation
 import AutomatticTracks
 import Experiments
-import Storage
 import Yosemite
 import Sentry
 import WooFoundation

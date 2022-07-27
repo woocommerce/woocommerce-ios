@@ -43,6 +43,8 @@ protocol SettingsViewModelActionsHandler {
     ///
     func onJetpackInstallDismiss()
 
+    /// Reloads settings. This can be used to show or hide content depending on their visibility logic.
+    ///
     func reloadSettings()
 }
 

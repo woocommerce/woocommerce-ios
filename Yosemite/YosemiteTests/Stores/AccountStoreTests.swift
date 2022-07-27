@@ -1,5 +1,6 @@
 import Fakes
 import XCTest
+import WooFoundation
 @testable import Yosemite
 @testable import Networking
 @testable import Storage

@@ -1,5 +1,5 @@
 import XCTest
-@testable import Storage
+import WooFoundation
 
 final class TypedPredicateTests: XCTestCase {
 

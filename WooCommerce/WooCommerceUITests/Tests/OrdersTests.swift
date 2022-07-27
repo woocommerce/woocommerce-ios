@@ -46,10 +46,7 @@ final class OrdersTests: XCTestCase {
         let orders = try GetMocks.readOrdersData()
 
         try TabNavComponent().goToOrdersScreen()
-            .verifyOrdersScreenLoaded()
-            .verifyOrdersList(orders: orders)
             .selectOrder(byOrderNumber: orders[0].number)
-            .verifySingleOrderScreenLoaded()
             .tapEditOrderButton()
             .checkForExistingOrderTitle(byOrderNumber: orders[0].number)
     }

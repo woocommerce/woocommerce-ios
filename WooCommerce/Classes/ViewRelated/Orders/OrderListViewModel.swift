@@ -26,11 +26,7 @@ final class OrderListViewModel {
 
     private let upsellCardReadersCampaign = UpsellCardReadersCampaign(source: .orderList)
 
-    var upsellCardReadersAnnouncementViewModel: FeatureAnnouncementCardViewModel {
-        .init(analytics: ServiceLocator.analytics,
-              configuration: upsellCardReadersCampaign.configuration)
-    }
-
+    let upsellCardReadersAnnouncementViewModel: FeatureAnnouncementCardViewModel
 
     /// Used for cancelling the observer for Remote Notifications when `self` is deallocated.
     ///
@@ -110,6 +106,11 @@ final class OrderListViewModel {
         self.pushNotificationsManager = pushNotificationsManager
         self.notificationCenter = notificationCenter
         self.filters = filters
+        self.upsellCardReadersAnnouncementViewModel =
+            .init(analytics: ServiceLocator.analytics,
+                  configuration: upsellCardReadersCampaign.configuration,
+                  stores: stores)
+
     }
 
     deinit {
@@ -303,19 +304,18 @@ extension OrderListViewModel {
     ///
     private func bindTopBannerState() {
         let errorState = $hasErrorLoadingData.removeDuplicates()
-        Publishers.CombineLatest(errorState, $hideOrdersBanners)
-            .map { [weak self] hasError, hasDismissedBanners -> TopBanner in
-                guard let self = self else { return .none }
+        Publishers.CombineLatest3(errorState, $hideOrdersBanners, upsellCardReadersAnnouncementViewModel.$shouldBeVisible)
+            .map { hasError, hasDismissedOrdersBanners, upsellCardReadersBannerShouldBeVisible  -> TopBanner in
 
                 guard !hasError else {
                     return .error
                 }
 
-                guard !self.upsellCardReadersAnnouncementViewModel.shouldBeVisible else {
+                guard !upsellCardReadersBannerShouldBeVisible else {
                     return .upsellCardReaders
                 }
 
-                guard !hasDismissedBanners else {
+                guard !hasDismissedOrdersBanners else {
                     return .none
                 }
 

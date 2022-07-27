@@ -45,7 +45,9 @@ class AuthenticationManager: Authentication {
                                                                 enableSignInWithApple: true,
                                                                 enableSignupWithGoogle: false,
                                                                 enableUnifiedAuth: true,
-                                                                continueWithSiteAddressFirst: true)
+                                                                continueWithSiteAddressFirst: true,
+                                                                enableSiteCredentialsLoginForSelfHostedSites: true,
+                                                                isWPComLoginRequiredForSiteCredentialsLogin: true)
 
         let systemGray3LightModeColor = UIColor(red: 199/255.0, green: 199/255.0, blue: 204/255.0, alpha: 1)
         let systemLabelLightModeColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
@@ -85,6 +87,7 @@ class AuthenticationManager: Authentication {
                                                                   usernamePasswordInstructions: AuthenticationConstants.usernamePasswordInstructions,
                                                                   continueWithWPButtonTitle: AuthenticationConstants.continueWithWPButtonTitle,
                                                                   enterYourSiteAddressButtonTitle: AuthenticationConstants.enterYourSiteAddressButtonTitle,
+                                                                  signInWithSiteCredentialsButtonTitle: AuthenticationConstants.signInWithSiteCredsButtonTitle,
                                                                   findSiteButtonTitle: AuthenticationConstants.findYourStoreAddressButtonTitle,
                                                                   signupTermsOfService: AuthenticationConstants.signupTermsOfService,
                                                                   whatIsWPComLinkTitle: AuthenticationConstants.whatIsWPComLinkTitle,
@@ -260,6 +263,15 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Presents the Login Epilogue, in the specified NavigationController.
     ///
     func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, onDismiss: @escaping () -> Void) {
+        let matcher = ULAccountMatcher()
+        matcher.refreshStoredSites()
+
+        /// Jetpack is required. Present an error if we don't detect a valid installation for a self-hosted site.
+        if let urlFromCredentials = credentials.wpcom?.siteURL ?? credentials.wporg?.siteURL,
+           isJetpackValidForSelfHostedSite(url: urlFromCredentials) {
+            return presentJetpackError(for: urlFromCredentials, with: credentials, in: navigationController, onDismiss: onDismiss)
+        }
+
         // We are currently supporting WPCom credentials only
         // Update this when handling store credentials authentication.
         guard let wpcomLogin = credentials.wpcom else {
@@ -270,16 +282,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: [.loginSiteAddressError])
         }
 
-        let matcher = ULAccountMatcher()
-        matcher.refreshStoredSites()
-
         guard matcher.match(originalURL: wpcomLogin.siteURL) else {
-
-            /// Jetpack is required. Present an error if we don't detect a valid installation for a self-hosted site.
-            if isJetpackValidForSelfHostedSite(url: wpcomLogin.siteURL) {
-                return presentJetpackError(for: wpcomLogin.siteURL, with: credentials, in: navigationController, onDismiss: onDismiss)
-            }
-
             DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: credentials.wpcom?.siteURL))")
             let viewModel = WrongAccountErrorViewModel(siteURL: credentials.wpcom?.siteURL)
             let mismatchAccountUI = ULAccountMismatchViewController(viewModel: viewModel)
@@ -447,6 +450,7 @@ private extension AuthenticationManager {
                              in navigationController: UINavigationController,
                              onDismiss: @escaping () -> Void) {
         let viewModel = JetpackErrorViewModel(siteURL: siteURL, onJetpackSetupCompletion: { [weak self] in
+            self?.currentSelfHostedSite = nil
             self?.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: onDismiss)
         })
         let installJetpackUI = ULErrorViewController(viewModel: viewModel)

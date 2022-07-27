@@ -66,7 +66,7 @@ final class AppCoordinator {
                 self.isLoggedIn = isLoggedIn
             }
 
-        localNotificationResponsesSubscription = ServiceLocator.pushNotesManager.localNotificationResponses.sink { [weak self] response in
+        localNotificationResponsesSubscription = ServiceLocator.pushNotesManager.localNotificationUserResponses.sink { [weak self] response in
             self?.handleLocalNotificationResponse(response)
         }
     }

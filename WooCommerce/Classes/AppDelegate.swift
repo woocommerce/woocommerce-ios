@@ -421,7 +421,7 @@ extension AppDelegate {
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
-        await ServiceLocator.pushNotesManager.handleUserResponseToNotification(response: response)
+        await ServiceLocator.pushNotesManager.handleUserResponseToNotification(response)
     }
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {

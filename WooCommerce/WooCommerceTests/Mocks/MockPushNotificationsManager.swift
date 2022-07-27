@@ -24,7 +24,7 @@ final class MockPushNotificationsManager: PushNotesManager {
 
     private let inactiveNotificationsSubject = PassthroughSubject<PushNotification, Never>()
 
-    var localNotificationResponses: AnyPublisher<UNNotificationResponse, Never> {
+    var localNotificationUserResponses: AnyPublisher<UNNotificationResponse, Never> {
         localNotificationResponsesSubject.eraseToAnyPublisher()
     }
 
@@ -66,7 +66,7 @@ final class MockPushNotificationsManager: PushNotesManager {
         .noData
     }
 
-    func handleUserResponseToNotification(response: UNNotificationResponse) async {
+    func handleUserResponseToNotification(_ response: UNNotificationResponse) async {
 
     }
 

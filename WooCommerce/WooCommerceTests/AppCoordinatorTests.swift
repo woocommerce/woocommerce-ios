@@ -230,6 +230,30 @@ final class AppCoordinatorTests: XCTestCase {
         XCTAssertEqual(typePropertyValue, "site_address_error")
     }
 
+    func test_loginLocalNotificationTapped_is_tracked_after_notification_loginWithWPCom_action() throws {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let pushNotesManager = MockPushNotificationsManager()
+        let appCoordinator = makeCoordinator(window: window,
+                                             stores: stores,
+                                             authenticationManager: authenticationManager,
+                                             analytics: WooAnalytics(analyticsProvider: analytics),
+                                             pushNotesManager: pushNotesManager)
+        appCoordinator.start()
+
+        // When
+        let response = try XCTUnwrap(MockNotificationResponse(actionIdentifier: LocalNotification.Action.loginWithWPCom.rawValue,
+                                                              requestIdentifier: LocalNotification.Scenario.loginSiteAddressError.rawValue))
+        pushNotesManager.sendLocalNotificationResponse(response)
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.loginLocalNotificationTapped.rawValue])
+        let actionPropertyValue = try XCTUnwrap(analytics.receivedProperties.first?["action"] as? String)
+        XCTAssertEqual(actionPropertyValue, "login_with_wpcom")
+        let typePropertyValue = try XCTUnwrap(analytics.receivedProperties.first?["type"] as? String)
+        XCTAssertEqual(typePropertyValue, "site_address_error")
+    }
+
     func test_loginLocalNotificationTapped_is_tracked_after_notification_tap_action() throws {
         // Given
         let analytics = MockAnalyticsProvider()

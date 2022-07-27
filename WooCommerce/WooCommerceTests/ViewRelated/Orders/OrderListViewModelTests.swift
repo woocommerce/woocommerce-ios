@@ -231,57 +231,37 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertFalse(resynchronizeRequested)
     }
 
-    func test_when_having_no_error_and_orders_banner_should_be_visible_shows_orders_banner() {
+    func test_when_having_no_error_and_upsellCardReaders_banner_should_be_shown_showns_upsellCardReaders_banner() {
         // Given
         let storesManager = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = OrderListViewModel(siteID: siteID, stores: storesManager, filters: nil)
         storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
-            case let .loadFeedbackVisibility(_, onCompletion):
+            case let .getFeatureAnnouncementVisibility(FeatureAnnouncementCampaign.upsellCardReaders, onCompletion):
                 onCompletion(.success(true))
             default:
                 break
             }
         }
+        let viewModel = OrderListViewModel(siteID: siteID, stores: storesManager, filters: nil)
 
         // When
         viewModel.activate()
 
         // Then
         waitUntil {
-            viewModel.topBanner == .orderCreation
+            viewModel.topBanner == .upsellCardReaders
         }
     }
 
-    func test_when_having_no_error_and_orders_banner_should_not_be_loaded_shows_nothing() {
-        // Given
-        let storesManager = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = OrderListViewModel(siteID: siteID, stores: storesManager, filters: nil, loadOrdersBanner: false)
-        storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case let .loadFeedbackVisibility(_, onCompletion):
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
-
-        // When
-        viewModel.activate()
-
-        // Then
-        waitUntil {
-            viewModel.topBanner == .none
-        }
-    }
-
-    func test_when_having_no_error_and_orders_banner_should_not_be_visible_shows_nothing() {
+    func test_when_having_no_error_and_upsellCardReaders_banner_should_not_be_shown_and_orders_banner_should_not_be_shown_shows_nothing() {
         // Given
         let storesManager = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = OrderListViewModel(siteID: siteID, stores: storesManager, filters: nil)
         storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
             case let .loadFeedbackVisibility(_, onCompletion):
+                onCompletion(.success(false))
+            case let .getFeatureAnnouncementVisibility(FeatureAnnouncementCampaign.upsellCardReaders, onCompletion):
                 onCompletion(.success(false))
             default:
                 break
@@ -294,6 +274,30 @@ final class OrderListViewModelTests: XCTestCase {
         // Then
         waitUntil {
             viewModel.topBanner == .none
+        }
+    }
+
+    func test_when_having_no_error_and_upsellCardReaders_banner_should_not_be_shown_and_orders_banner_should_be_shown_shows_orders_banner() {
+        // Given
+        let storesManager = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = OrderListViewModel(siteID: siteID, stores: storesManager, filters: nil)
+        storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadFeedbackVisibility(_, onCompletion):
+                onCompletion(.success(true))
+            case let .getFeatureAnnouncementVisibility(FeatureAnnouncementCampaign.upsellCardReaders, onCompletion):
+                onCompletion(.success(false))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.activate()
+
+        // Then
+        waitUntil {
+            viewModel.topBanner == .orderCreation
         }
     }
 

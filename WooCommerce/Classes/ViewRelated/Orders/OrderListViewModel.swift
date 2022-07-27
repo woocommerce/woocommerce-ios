@@ -135,6 +135,10 @@ final class OrderListViewModel {
         loadOrdersBannerVisibility()
     }
 
+    func dismissUpsellCardReadersBanner() {
+        bindTopBannerState()
+    }
+
     func dismissOrdersBanner() {
         let action = AppSettingsAction.updateFeedbackStatus(type: .ordersCreation,
                                                status: .dismissed) { [weak self] result in

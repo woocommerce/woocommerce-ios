@@ -371,6 +371,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
     ///
     private func hideTopBannerView() {
         topBannerView?.removeFromSuperview()
+        topBannerView = nil
         if tableView.tableHeaderView != nil {
             // Setting tableHeaderView = nil when having a previous value keeps an extra header space (See p5T066-3c3#comment-12307)
             // This solution avoids it by adding an almost zero height header (Originally from https://stackoverflow.com/a/18938763/428353)
@@ -383,7 +384,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
     private func showUpsellCardReadersBanner() {
         let view = FeatureAnnouncementCardView(viewModel: viewModel.upsellCardReadersAnnouncementViewModel,
                                                dismiss: { [weak self] in
-            self?.hideTopBannerView()
+            self?.viewModel.dismissUpsellCardReadersBanner()
         }, callToAction: {
             let configuration = CardPresentConfigurationLoader().configuration
             WebviewHelper.launch(configuration.purchaseCardReaderUrl(), with: self)

@@ -1,7 +1,9 @@
 import ScreenObject
 import XCTest
 
-public final class NewOrderScreen: ScreenObject {
+/// This screen is used in both Order Create and Edit flows to reflect that these are unified in the app codebase
+///
+public final class UnifiedOrderScreen: ScreenObject {
 
     private let createButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["new-order-create-button"]
@@ -9,6 +11,10 @@ public final class NewOrderScreen: ScreenObject {
 
     private let cancelButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["new-order-cancel-button"]
+    }
+
+    private let doneButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["edit-order-done-button"]
     }
 
     private let orderStatusEditButtonGetter: (XCUIApplication) -> XCUIElement = {
@@ -41,6 +47,10 @@ public final class NewOrderScreen: ScreenObject {
     ///
     private var cancelButton: XCUIElement { cancelButtonGetter(app) }
 
+    /// Done button in the Navigation bar.
+    ///
+    private var doneButton: XCUIElement { doneButtonGetter(app) }
+
     /// Edit button in the Order Status section.
     ///
     private var orderStatusEditButton: XCUIElement { orderStatusEditButtonGetter(app) }
@@ -65,11 +75,27 @@ public final class NewOrderScreen: ScreenObject {
     ///
     private var addNoteButton: XCUIElement { addNoteButtonGetter(app) }
 
-    public init(app: XCUIApplication = XCUIApplication()) throws {
-        try super.init(
-            expectedElementGetters: [ createButtonGetter ],
-            app: app
-        )
+    public enum Flow {
+        case creation
+        case editing
+    }
+
+    /// Since the screen is unified for creation and editing, pass a parameter to use the correct flow
+    /// - Parameter flow: order flow, default is `creation`.
+    ///
+    public init(app: XCUIApplication = XCUIApplication(), flow: Flow = .creation) throws {
+        switch flow {
+        case .creation:
+            try super.init(
+                expectedElementGetters: [ createButtonGetter ],
+                app: app
+            )
+        case .editing:
+            try super.init(
+                expectedElementGetters: [ doneButtonGetter ],
+                app: app
+            )
+        }
     }
 
 // MARK: - Order Creation Navigation helpers
@@ -133,24 +159,24 @@ public final class NewOrderScreen: ScreenObject {
     }
 
     /// Changes the new order status to the second status in the Order Status list.
-    /// - Returns: New Order screen object.
+    /// - Returns: Unified Order screen object.
     @discardableResult
-    public func editOrderStatus() throws -> NewOrderScreen {
+    public func editOrderStatus() throws -> UnifiedOrderScreen {
       return try openOrderStatusScreen()
             .selectOrderStatus(atIndex: 1)
     }
 
     /// Select the first product from the addProductScreen
-    /// - Returns: New Order screen object.
+    /// - Returns: Unified Order screen object.
     @discardableResult
-    public func addProduct(byName name: String) throws -> NewOrderScreen {
+    public func addProduct(byName name: String) throws -> UnifiedOrderScreen {
         return try openAddProductScreen()
             .selectProduct(byName: name)
     }
 
     /// Adds minimal customer details on the Customer Details screen
-    /// - Returns: New Order screen object.
-    public func addCustomerDetails(name: String) throws -> NewOrderScreen {
+    /// - Returns: Unified Order screen object.
+    public func addCustomerDetails(name: String) throws -> UnifiedOrderScreen {
         return try openCustomerDetailsScreen()
             .enterCustomerDetails(name: name)
     }
@@ -159,8 +185,8 @@ public final class NewOrderScreen: ScreenObject {
     /// - Parameters:
     ///   - amount: Amount (in the store currency) to add for shipping.
     ///   - name: Name of the shipping method (e.g. "Free Shipping" or "Flat Rate").
-    /// - Returns: New Order screen object.
-    public func addShipping(amount: String, name: String) throws -> NewOrderScreen {
+    /// - Returns: Unified Order screen object.
+    public func addShipping(amount: String, name: String) throws -> UnifiedOrderScreen {
         return try openAddShippingScreen()
             .enterShippingAmount(amount)
             .enterShippingName(name)
@@ -170,8 +196,8 @@ public final class NewOrderScreen: ScreenObject {
     /// Adds a fee on the Add Fee screen.
     /// - Parameters:
     ///   - amount: Amount (in the store currency) to add as a fee.
-    /// - Returns: New Order screen object.
-    public func addFee(amount: String) throws -> NewOrderScreen {
+    /// - Returns: Unified Order screen object.
+    public func addFee(amount: String) throws -> UnifiedOrderScreen {
         return try openAddFeeScreen()
             .enterFixedFee(amount: amount)
             .confirmFee()
@@ -179,8 +205,8 @@ public final class NewOrderScreen: ScreenObject {
 
     /// Adds a note on the Customer Note screen.
     /// - Parameter text: Text to enter as the customer note.
-    /// - Returns: New Order screen object.
-    public func addCustomerNote(_ text: String) throws -> NewOrderScreen {
+    /// - Returns: Unified Order screen object.
+    public func addCustomerNote(_ text: String) throws -> UnifiedOrderScreen {
         return try openCustomerNoteScreen()
             .enterNote(text)
             .confirmNote()
@@ -198,5 +224,16 @@ public final class NewOrderScreen: ScreenObject {
             pop()
         }
         return try OrdersScreen()
+    }
+
+    /// Checks the screen for existence of the title with correct order number.
+    /// - Parameter orderNumber: Existing order number to check.
+    /// - Returns: Unified Order screen object.
+    @discardableResult
+    public func checkForExistingOrderTitle(byOrderNumber orderNumber: String) throws -> UnifiedOrderScreen {
+        let orderNumberPredicate = NSPredicate(format: "label MATCHES %@", "Order #\(orderNumber)")
+        XCTAssertTrue(app.staticTexts.containing(orderNumberPredicate).element.exists)
+
+        return self
     }
 }

@@ -32,10 +32,10 @@ public final class AddFeeScreen: ScreenObject {
     }
 
     /// Confirms entered fee and closes Add Fee screen.
-    /// - Returns: New Order screen object.
+    /// - Returns: Unified Order screen object.
     @discardableResult
-    public func confirmFee() throws -> NewOrderScreen {
+    public func confirmFee() throws -> UnifiedOrderScreen {
         doneButton.tap()
-        return try NewOrderScreen()
+        return try UnifiedOrderScreen()
     }
 }

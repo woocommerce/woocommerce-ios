@@ -11,6 +11,10 @@ public final class NewOrderScreen: ScreenObject {
         $0.buttons["new-order-cancel-button"]
     }
 
+    private let doneButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["edit-order-done-button"]
+    }
+
     private let orderStatusEditButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["order-status-section-edit-button"]
     }
@@ -41,6 +45,10 @@ public final class NewOrderScreen: ScreenObject {
     ///
     private var cancelButton: XCUIElement { cancelButtonGetter(app) }
 
+    /// Done button in the Navigation bar.
+    ///
+    private var doneButton: XCUIElement { doneButtonGetter(app) }
+
     /// Edit button in the Order Status section.
     ///
     private var orderStatusEditButton: XCUIElement { orderStatusEditButtonGetter(app) }
@@ -65,11 +73,24 @@ public final class NewOrderScreen: ScreenObject {
     ///
     private var addNoteButton: XCUIElement { addNoteButtonGetter(app) }
 
-    public init(app: XCUIApplication = XCUIApplication()) throws {
-        try super.init(
-            expectedElementGetters: [ createButtonGetter ],
-            app: app
-        )
+    public enum Flow {
+        case creation
+        case editing
+    }
+
+    public init(app: XCUIApplication = XCUIApplication(), flow: Flow = .creation) throws {
+        switch flow {
+        case .creation:
+            try super.init(
+                expectedElementGetters: [ createButtonGetter ],
+                app: app
+            )
+        case .editing:
+            try super.init(
+                expectedElementGetters: [ doneButtonGetter ],
+                app: app
+            )
+        }
     }
 
 // MARK: - Order Creation Navigation helpers

@@ -22,7 +22,7 @@ protocol PushNotesManager {
 
     /// An observable that emits values when a local notification response is received.
     ///
-    var localNotificationResponses: AnyPublisher<UNNotificationResponse, Never> { get }
+    var localNotificationUserResponses: AnyPublisher<UNNotificationResponse, Never> { get }
 
     /// Resets the Badge Count.
     ///
@@ -73,7 +73,7 @@ protocol PushNotesManager {
 
     /// Handles user's response to a local or remote notification.
     /// - Parameter response: The user's response to a notification.
-    func handleUserResponseToNotification(response: UNNotificationResponse) async
+    func handleUserResponseToNotification(_ response: UNNotificationResponse) async
 
     /// Handles a local or remote notification when the app is in the foreground.
     ///

@@ -160,7 +160,7 @@ extension ScreenObject {
         // This is a hack from https://stackoverflow.com/a/57356929
         // ☠️ Beware of breaking changes in future updates ☠️
         XCUIDevice.shared.perform(NSSelectorFromString("pressLockButton"))
-        sleep(2)
+        sleep(5)
         return self
     }
 

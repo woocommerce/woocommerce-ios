@@ -103,6 +103,7 @@ struct ScreenshotObjectGraph: MockObjectGraph {
             customer: Customers.MiraWorkman,
             status: .processing,
             total: 50.00,
+            needsPayment: true,
             items: [
                 createOrderItem(from: Products.malayaShades, count: 4),
                 createOrderItem(from: Products.blackCoralShades, count: 5),

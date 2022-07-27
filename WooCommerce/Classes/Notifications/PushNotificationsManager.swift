@@ -47,7 +47,7 @@ final class PushNotificationsManager: PushNotesManager {
 
     /// An observable that emits values when a local notification is received.
     ///
-    var localNotificationResponses: AnyPublisher<UNNotificationResponse, Never> {
+    var localNotificationUserResponses: AnyPublisher<UNNotificationResponse, Never> {
         localNotificationResponsesSubject.eraseToAnyPublisher()
     }
 
@@ -268,27 +268,25 @@ extension PushNotificationsManager {
     }
 
     @MainActor
-    func handleUserResponseToNotification(response: UNNotificationResponse) async {
+    func handleUserResponseToNotification(_ response: UNNotificationResponse) async {
         // Remote notification response is handled separately.
         if let notification = PushNotification.from(userInfo: response.notification.request.content.userInfo) {
             handleRemoteNotificationInAllAppStates(response.notification.request.content.userInfo)
-            return await handleInactiveRemoteNotification(notification: notification)
+            await handleInactiveRemoteNotification(notification: notification)
         } else {
             localNotificationResponsesSubject.send(response)
         }
     }
 
-    /// Handles a Notification while in Background Mode
+    /// Handles a remote notification while the app is in the background.
     ///
-    /// - Parameters:
-    ///     - userInfo: The Notification's Payload
-    ///     - completionHandler: A callback, to be executed on completion
-    ///
-    /// - Returns: True when handled. False otherwise
-    ///
+    /// - Parameter userInfo: The notification's payload.
+    /// - Returns: Whether there is any data fetched in the background.
     @MainActor
     func handleRemoteNotificationInTheBackground(userInfo: [AnyHashable: Any]) async -> UIBackgroundFetchResult {
-        guard applicationState == .background, let _ = userInfo[APNSKey.identifier] else {
+        guard applicationState == .background, // Proceeds only if the app is in background.
+              let _ = userInfo[APNSKey.identifier] // Ensures that we are only processing a remote notification.
+        else {
             return .noData
         }
 
@@ -452,14 +450,9 @@ private extension PushNotificationsManager {
         _ = handleSupportNotification(userInfo)
     }
 
-    /// Handles a Remote Notification while in Inactive Mode
+    /// Handles a remote notification while the app is inactive.
     ///
-    /// - Parameters:
-    ///     - userInfo: The Notification's Payload
-    ///     - completionHandler: A callback, to be executed on completion
-    ///
-    /// - Returns: True when handled. False otherwise
-    ///
+    /// - Parameter notification: Push notification content from a remote notification.
     func handleInactiveRemoteNotification(notification: PushNotification) async {
         guard applicationState == .inactive else {
             return

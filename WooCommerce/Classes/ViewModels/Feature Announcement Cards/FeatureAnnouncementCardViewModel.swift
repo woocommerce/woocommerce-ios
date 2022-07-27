@@ -16,7 +16,7 @@ class FeatureAnnouncementCardViewModel {
         config.message
     }
 
-    var buttonTitle: String {
+    var buttonTitle: String? {
         config.buttonTitle
     }
 
@@ -101,7 +101,7 @@ class FeatureAnnouncementCardViewModel {
         let campaign: FeatureAnnouncementCampaign
         let title: String
         let message: String
-        let buttonTitle: String
+        let buttonTitle: String?
         let image: UIImage
         let dismissAlertTitle: String
         let dismissAlertMessage: String

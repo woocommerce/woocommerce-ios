@@ -18,6 +18,8 @@ public final class SingleOrderScreen: ScreenObject {
         $0.buttons["order-details-collect-payment-button"]
     }
 
+    private var editOrderButton: XCUIElement { editOrderButtonGetter(app) }
+
     private var collectPaymentButton: XCUIElement { collectPaymentButtonGetter(app) }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
@@ -73,5 +75,11 @@ public final class SingleOrderScreen: ScreenObject {
     public func goBackToOrdersScreen() throws -> OrdersScreen {
         pop()
         return try OrdersScreen()
+    }
+
+    @discardableResult
+    public func tapEditOrderButton() throws -> NewOrderScreen {
+        editOrderButton.tap()
+        return try NewOrderScreen()
     }
 }

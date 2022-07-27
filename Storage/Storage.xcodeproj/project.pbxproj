@@ -32,7 +32,6 @@
 		02D200D8253FDEE500840173 /* WooCommerceModelV32toV33.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 02D200D7253FDEE500840173 /* WooCommerceModelV32toV33.xcmappingmodel */; };
 		02D45649231CFB27008CF0A9 /* StatsVersionBannerVisibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D45648231CFB27008CF0A9 /* StatsVersionBannerVisibility.swift */; };
 		02DA64192313C2AA00284168 /* StatsVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DA64182313C2AA00284168 /* StatsVersion.swift */; };
-		02EAB6D72480A86D00FD873C /* CrashLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EAB6D62480A86D00FD873C /* CrashLogger.swift */; };
 		031C1EA127AD3AFE00298699 /* WCPayCharge+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C1E9927AD3AFE00298699 /* WCPayCharge+CoreDataClass.swift */; };
 		031C1EA227AD3AFE00298699 /* WCPayCharge+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C1E9A27AD3AFE00298699 /* WCPayCharge+CoreDataProperties.swift */; };
 		031C1EA327AD3AFE00298699 /* WCPayCardPresentPaymentDetails+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C1E9B27AD3AFE00298699 /* WCPayCardPresentPaymentDetails+CoreDataClass.swift */; };
@@ -264,7 +263,6 @@
 		02D200D7253FDEE500840173 /* WooCommerceModelV32toV33.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = WooCommerceModelV32toV33.xcmappingmodel; sourceTree = "<group>"; };
 		02D45648231CFB27008CF0A9 /* StatsVersionBannerVisibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsVersionBannerVisibility.swift; sourceTree = "<group>"; };
 		02DA64182313C2AA00284168 /* StatsVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsVersion.swift; sourceTree = "<group>"; };
-		02EAB6D62480A86D00FD873C /* CrashLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashLogger.swift; sourceTree = "<group>"; };
 		0306C18227BAB09D0070B617 /* Model 65.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 65.xcdatamodel"; sourceTree = "<group>"; };
 		031C1E9927AD3AFE00298699 /* WCPayCharge+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayCharge+CoreDataClass.swift"; sourceTree = "<group>"; };
 		031C1E9A27AD3AFE00298699 /* WCPayCharge+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayCharge+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -717,7 +715,6 @@
 				B52B0F7820AA287C00477698 /* StorageManagerType.swift */,
 				B505F6DF20BEEA8100BB1B69 /* StorageType.swift */,
 				D87F61522265AA230031A13B /* FileStorage.swift */,
-				02EAB6D62480A86D00FD873C /* CrashLogger.swift */,
 				574B774B24AA87FA0042116F /* FileManagerProtocol.swift */,
 				5772841E25BF45B90092FB2C /* PersistentStoreCoordinatorProtocol.swift */,
 			);
@@ -1248,7 +1245,6 @@
 				DE001330279FDC2200EB0350 /* CouponSearchResult+CoreDataProperties.swift in Sources */,
 				747453A52242C85E00E0B5EE /* ProductDefaultAttribute+CoreDataClass.swift in Sources */,
 				5772841F25BF45B90092FB2C /* PersistentStoreCoordinatorProtocol.swift in Sources */,
-				02EAB6D72480A86D00FD873C /* CrashLogger.swift in Sources */,
 				746A9D21214078080013F6FF /* TopEarnerStats+CoreDataClass.swift in Sources */,
 				262B27092621411C00A421CF /* ProductAddOn+CoreDataClass.swift in Sources */,
 				452C23B527B4129300822986 /* InboxAction+CoreDataProperties.swift in Sources */,

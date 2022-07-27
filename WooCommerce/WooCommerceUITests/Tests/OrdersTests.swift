@@ -51,6 +51,7 @@ final class OrdersTests: XCTestCase {
             .selectOrder(byOrderNumber: orders[0].number)
             .verifySingleOrderScreenLoaded()
             .tapEditOrderButton()
+            .checkForExistingOrderTitle(byOrderNumber: orders[0].number)
     }
 
     func test_cancel_order_creation() throws {

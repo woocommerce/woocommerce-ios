@@ -220,4 +220,12 @@ public final class NewOrderScreen: ScreenObject {
         }
         return try OrdersScreen()
     }
+
+    @discardableResult
+    public func checkForExistingOrderTitle(byOrderNumber orderNumber: String) throws -> NewOrderScreen {
+        let orderNumberPredicate = NSPredicate(format: "label MATCHES %@", "Order #\(orderNumber)")
+        XCTAssertTrue(app.staticTexts.containing(orderNumberPredicate).element.exists)
+
+        return self
+    }
 }

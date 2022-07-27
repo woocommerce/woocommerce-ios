@@ -250,7 +250,7 @@ private extension AppCoordinator {
                 "action": "contact_support",
                 "type": response.notification.request.identifier
             ])
-        default:
+        case UNNotificationDefaultActionIdentifier:
             // Triggered when the user taps on the notification itself instead of one of the actions.
             switch response.notification.request.identifier {
             case LocalNotification.Scenario.loginSiteAddressError.rawValue:
@@ -259,8 +259,20 @@ private extension AppCoordinator {
                     "type": response.notification.request.identifier
                 ])
             default:
-                return
+                break
             }
+        case UNNotificationDismissActionIdentifier:
+            // Triggered when the user taps on the notification's "Clear" action.
+            switch response.notification.request.identifier {
+            case LocalNotification.Scenario.loginSiteAddressError.rawValue:
+                analytics.track(.loginLocalNotificationDismissed, withProperties: [
+                    "type": response.notification.request.identifier
+                ])
+            default:
+                break
+            }
+        default:
+            break
         }
     }
 }

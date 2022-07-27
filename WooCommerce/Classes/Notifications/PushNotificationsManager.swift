@@ -324,7 +324,10 @@ extension PushNotificationsManager {
                                                       intentIdentifiers: [],
                                                       hiddenPreviewsBodyPlaceholder: nil,
                                                       categorySummaryFormat: nil,
-                                                      options: .allowAnnouncement)
+                                                      // `customDismissAction` option is required for the dismiss action callback in
+                                                      // `UNUserNotificationCenterDelegate.userNotificationCenter(_:didReceive:)`
+                                                      // with action identifier `UNNotificationDismissActionIdentifier`.
+                                                      options: .customDismissAction)
                 center.setNotificationCategories([category])
                 content.categoryIdentifier = categoryIdentifier
             }

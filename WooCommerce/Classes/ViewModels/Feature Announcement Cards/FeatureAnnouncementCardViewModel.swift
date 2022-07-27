@@ -7,6 +7,7 @@ private typealias FeatureCardEvent = WooAnalyticsEvent.FeatureCard
 class FeatureAnnouncementCardViewModel {
     private let analytics: Analytics
     private let config: Configuration
+    private let stores: StoresManager
 
     var title: String {
         config.title
@@ -32,12 +33,14 @@ class FeatureAnnouncementCardViewModel {
         config.dismissAlertMessage
     }
 
-    private(set) var shouldBeVisible: Bool = false
+    @Published private(set) var shouldBeVisible: Bool = false
 
     init(analytics: Analytics,
-         configuration: Configuration) {
+         configuration: Configuration,
+         stores: StoresManager = ServiceLocator.stores) {
         self.analytics = analytics
         self.config = configuration
+        self.stores = stores
 
         updateShouldBeVisible()
     }
@@ -52,7 +55,8 @@ class FeatureAnnouncementCardViewModel {
                 self.shouldBeVisible = false
             }
         }
-        ServiceLocator.stores.dispatch(action)
+
+        stores.dispatch(action)
     }
 
     func onAppear() {
@@ -73,7 +77,8 @@ class FeatureAnnouncementCardViewModel {
         let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: config.campaign,
                                                                        remindLater: remindLater,
                                                                        onCompletion: nil)
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
+        shouldBeVisible = false
     }
 
     func ctaTapped() {

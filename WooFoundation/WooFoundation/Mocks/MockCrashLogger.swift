@@ -1,5 +1,3 @@
-import WooFoundation
-
 struct MockCrashLogger: CrashLogger {
     func logError(_ error: Error, userInfo: [String: Any]?, level: SeverityLevel) {
         // no-op

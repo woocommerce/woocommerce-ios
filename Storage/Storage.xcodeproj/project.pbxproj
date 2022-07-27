@@ -20,7 +20,6 @@
 		028296F4237D404F00E84012 /* GenericAttribute+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028296F0237D404F00E84012 /* GenericAttribute+CoreDataClass.swift */; };
 		028296F5237D404F00E84012 /* GenericAttribute+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028296F1237D404F00E84012 /* GenericAttribute+CoreDataProperties.swift */; };
 		029DE81025BAD9E10046EFF5 /* WooCommerceModelV42toV43.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 0284BD8825BAC83700D00C06 /* WooCommerceModelV42toV43.xcmappingmodel */; };
-		02A098272480D160002F8C7A /* MockCrashLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A098262480D160002F8C7A /* MockCrashLogger.swift */; };
 		02C254EB2563B12E00A04423 /* ShippingLabelSettings+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C254E32563B12E00A04423 /* ShippingLabelSettings+CoreDataClass.swift */; };
 		02C254EC2563B12E00A04423 /* ShippingLabelSettings+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C254E42563B12E00A04423 /* ShippingLabelSettings+CoreDataProperties.swift */; };
 		02C254ED2563B12E00A04423 /* ShippingLabel+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C254E52563B12E00A04423 /* ShippingLabel+CoreDataClass.swift */; };
@@ -251,7 +250,6 @@
 		028296F0237D404F00E84012 /* GenericAttribute+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GenericAttribute+CoreDataClass.swift"; sourceTree = "<group>"; };
 		028296F1237D404F00E84012 /* GenericAttribute+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GenericAttribute+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		0284BD8825BAC83700D00C06 /* WooCommerceModelV42toV43.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = WooCommerceModelV42toV43.xcmappingmodel; sourceTree = "<group>"; };
-		02A098262480D160002F8C7A /* MockCrashLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCrashLogger.swift; sourceTree = "<group>"; };
 		02C254E32563B12E00A04423 /* ShippingLabelSettings+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabelSettings+CoreDataClass.swift"; sourceTree = "<group>"; };
 		02C254E42563B12E00A04423 /* ShippingLabelSettings+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabelSettings+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		02C254E52563B12E00A04423 /* ShippingLabel+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabel+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -564,7 +562,6 @@
 		02A098252480D155002F8C7A /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
-				02A098262480D160002F8C7A /* MockCrashLogger.swift */,
 				574B774D24AA883D0042116F /* MockFileManager.swift */,
 				572C099525475208005372E1 /* SpyFileManager.swift */,
 				5772842625BF5BFB0092FB2C /* SpyPersistentStoreCoordinator.swift */,
@@ -1376,7 +1373,6 @@
 				57CEB1A22525349B00D8544F /* ProductVariationTests.swift in Sources */,
 				B59E11E020A9F5E6004121A4 /* Constants.swift in Sources */,
 				B54CA5C320A4BF6900F38CD1 /* NSManagedObjectContextStorageTests.swift in Sources */,
-				02A098272480D160002F8C7A /* MockCrashLogger.swift in Sources */,
 				E16D3743284F1E76005676BC /* MockInMemoryStorage.swift in Sources */,
 				B54CA5C720A4BFDC00F38CD1 /* DummyStack.swift in Sources */,
 				574B774E24AA883D0042116F /* MockFileManager.swift in Sources */,

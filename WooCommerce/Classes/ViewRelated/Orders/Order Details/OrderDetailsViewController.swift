@@ -138,6 +138,7 @@ private extension OrderDetailsViewController {
                                          style: .plain,
                                          target: self,
                                          action: #selector(editOrder))
+        editButton.accessibilityIdentifier = "order-details-edit-button"
         editButton.isEnabled = viewModel.editButtonIsEnabled
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing) {
             navigationItem.rightBarButtonItem = editButton

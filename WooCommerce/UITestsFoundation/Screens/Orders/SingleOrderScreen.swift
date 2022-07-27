@@ -24,10 +24,7 @@ public final class SingleOrderScreen: ScreenObject {
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-            expectedElementGetters: [
-                summaryCellGetter,
-                editOrderButtonGetter
-            ],
+            expectedElementGetters: [ summaryCellGetter ],
             app: app
         )
     }

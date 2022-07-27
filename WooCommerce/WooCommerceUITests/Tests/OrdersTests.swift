@@ -20,7 +20,6 @@ final class OrdersTests: XCTestCase {
             .verifyOrdersScreenLoaded()
             .verifyOrdersList(orders: orders)
             .selectOrder(byOrderNumber: orders[0].number)
-            .verifySingleOrderScreenLoaded()
             .verifySingleOrder(order: orders[0])
             .goBackToOrdersScreen()
             .verifyOrdersScreenLoaded()

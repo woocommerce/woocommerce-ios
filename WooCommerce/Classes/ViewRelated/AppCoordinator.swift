@@ -16,6 +16,7 @@ final class AppCoordinator {
     private let roleEligibilityUseCase: RoleEligibilityUseCaseProtocol
     private let analytics: Analytics
     private let loggedOutAppSettings: LoggedOutAppSettingsProtocol
+    private let pushNotesManager: PushNotesManager
     private let featureFlagService: FeatureFlagService
 
     private var storePickerCoordinator: StorePickerCoordinator?
@@ -29,6 +30,7 @@ final class AppCoordinator {
          roleEligibilityUseCase: RoleEligibilityUseCaseProtocol = RoleEligibilityUseCase(),
          analytics: Analytics = ServiceLocator.analytics,
          loggedOutAppSettings: LoggedOutAppSettingsProtocol = LoggedOutAppSettings(userDefaults: .standard),
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.window = window
         self.tabBarController = {
@@ -43,6 +45,7 @@ final class AppCoordinator {
         self.roleEligibilityUseCase = roleEligibilityUseCase
         self.analytics = analytics
         self.loggedOutAppSettings = loggedOutAppSettings
+        self.pushNotesManager = pushNotesManager
         self.featureFlagService = featureFlagService
     }
 
@@ -66,7 +69,7 @@ final class AppCoordinator {
                 self.isLoggedIn = isLoggedIn
             }
 
-        localNotificationResponsesSubscription = ServiceLocator.pushNotesManager.localNotificationResponses.sink { [weak self] response in
+        localNotificationResponsesSubscription = pushNotesManager.localNotificationResponses.sink { [weak self] response in
             self?.handleLocalNotificationResponse(response)
         }
     }

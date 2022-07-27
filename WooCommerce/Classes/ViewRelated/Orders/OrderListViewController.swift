@@ -390,9 +390,12 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
         })
             .background(Color(.listForeground))
 
-        let hostingViewController = UIHostingController(rootView: view)
-        hostingViewController.view!.translatesAutoresizingMaskIntoConstraints = false
-        topBannerView = hostingViewController.view
+        guard let hostingView = UIHostingController(rootView: view).view else {
+            return
+        }
+
+        hostingView.translatesAutoresizingMaskIntoConstraints = false
+        topBannerView = hostingView
 
         showTopBannerView()
     }

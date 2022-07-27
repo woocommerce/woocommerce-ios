@@ -78,8 +78,8 @@ public final class SingleOrderScreen: ScreenObject {
     }
 
     @discardableResult
-    public func tapEditOrderButton() throws -> NewOrderScreen {
+    public func tapEditOrderButton() throws -> UnifiedOrderScreen {
         editOrderButton.tap()
-        return try NewOrderScreen(flow: .editing)
+        return try UnifiedOrderScreen(flow: .editing)
     }
 }

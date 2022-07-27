@@ -47,10 +47,10 @@ public final class AddShippingScreen: ScreenObject {
     }
 
     /// Confirms entered shipping details and closes Add Shipping screen.
-    /// - Returns: New Order screen object.
+    /// - Returns: Unified Order screen object.
     @discardableResult
-    public func confirmShippingDetails() throws -> NewOrderScreen {
+    public func confirmShippingDetails() throws -> UnifiedOrderScreen {
         doneButton.tap()
-        return try NewOrderScreen()
+        return try UnifiedOrderScreen()
     }
 }

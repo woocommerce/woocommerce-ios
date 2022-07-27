@@ -24,8 +24,9 @@ final class OrderListViewModel {
     private let pushNotificationsManager: PushNotesManager
     private let notificationCenter: NotificationCenter
 
+    /// Used to show the upsell card readers banner and discern its visibility
+    /// 
     private let upsellCardReadersCampaign = UpsellCardReadersCampaign(source: .orderList)
-
     let upsellCardReadersAnnouncementViewModel: FeatureAnnouncementCardViewModel
 
     /// Used for cancelling the observer for Remote Notifications when `self` is deallocated.

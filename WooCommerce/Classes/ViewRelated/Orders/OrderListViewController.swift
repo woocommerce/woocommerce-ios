@@ -182,6 +182,8 @@ final class OrderListViewController: UIViewController, GhostableViewController {
             // Reload table view to update selected state on the list when changing rotation
             tableView.reloadData()
         }
+
+        updateUpsellCardReaderTopBannerVisibility(with: newCollection)
     }
 
     /// Returns a function that creates cells for `dataSource`.
@@ -244,7 +246,9 @@ private extension OrderListViewController {
                 case .none:
                     self.hideTopBannerView()
                 case .upsellCardReaders:
-                    self.showUpsellCardReadersBanner()
+                    if self.traitCollection.verticalSizeClass == .regular {
+                        self.showUpsellCardReadersBanner()
+                    }
                 case .error:
                     self.setErrorTopBanner()
                 case .orderCreation:
@@ -392,8 +396,15 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
 
         showTopBannerView()
     }
-}
 
+    func updateUpsellCardReaderTopBannerVisibility(with newCollection: UITraitCollection) {
+        guard viewModel.topBanner == .upsellCardReaders else {
+            return
+        }
+
+        newCollection.verticalSizeClass == .regular ? showUpsellCardReadersBanner() : hideTopBannerView()
+    }
+}
 
 // MARK: - Spinner Helpers
 //

@@ -635,6 +635,28 @@ extension OrderListViewController: UITableViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         delegate?.orderListScrollViewDidScroll(scrollView)
     }
+
+    /// Provide an implementation to show cell swipe actions. Return `nil` to provide no action.
+    ///
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        /// Fetch the order view model and make sure the order is not marked as completed before proceeding.
+        ///
+        guard let objectID = dataSource.itemIdentifier(for: indexPath),
+              let cellViewModel = viewModel.cellViewModel(withID: objectID),
+              cellViewModel.status != .completed else {
+                  return nil
+              }
+
+        let markAsCompletedAction = UIContextualAction(style: .normal, title: Localization.markCompleted, handler: { _, _, completionHandler in
+            print("Mark as completed triggered...")
+            // TODO: Fire real action
+            completionHandler(true) // Tells the table that the action was performed and forces it to go back to its original state (un-swiped)
+        })
+        markAsCompletedAction.backgroundColor = .brand
+        markAsCompletedAction.image = .checkmarkImage
+
+        return UISwipeActionsConfiguration(actions: [markAsCompletedAction])
+    }
 }
 
 // MARK: - Finite State Machine Management
@@ -743,6 +765,8 @@ private extension OrderListViewController {
                    comment: "Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user.")
         static let clearButton = NSLocalizedString("Clear Filters",
                                  comment: "Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List")
+
+        static let markCompleted = NSLocalizedString("Mark Completed", comment: "Title for the swipe order action to mark it as completed")
     }
 
     enum Settings {

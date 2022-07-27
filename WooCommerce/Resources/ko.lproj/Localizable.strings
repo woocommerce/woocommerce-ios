@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-07-11 11:10:08+0000 */
+/* Translation-Revision-Date: 2022-07-14 16:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -271,6 +271,12 @@ which should be translated separately and considered part of this sentence. */
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "앱 정보";
 
+/* Title for the feature announcement banner intended to upsell card readers */
+"Accept payments easily" = "쉽게 결제 수락";
+
+/* Subtitle of one of the elements in the CTA View for installing WCShip extension */
+"Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!" = "할인된 배송률을 이용하세요. 현재 DHL과 USPS에서 사용할 수 있고, 앞으로 추가될 예정입니다.";
+
 /* Reads as 'Account Type'. Part of the mandatory data in receipts */
 "Account Type" = "계좌 유형";
 
@@ -322,6 +328,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Downloadable file screen navigation title */
 "Add Downloadable File" = "다운로드 가능한 파일 추가";
+
+/* Button in the CTA View for installing WCShip extension */
+"Add Extension To Store" = "스토어에 확장 기능 추가";
 
 /* Title for the Fee screen during order creation
    Title text of the button that adds a fee when creating a new order */
@@ -581,6 +590,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message when it looks like a duplicate transaction is being attempted. */
 "An identical transaction was submitted recently. If you wish to continue, try another means of payment" = "최근에 동일한 거래가 제출되었습니다. 계속하려면 다른 결제 수단을 시도하세요.";
 
+/* Title of the notice about an image upload failure in the background. */
+"An image failed to upload" = "이미지 업로드 실패";
+
 /* Message when an incorrect PIN has been entered too many times. */
 "An incorrect PIN has been entered too many times. Try another means of payment" = "올바르지 않은 PIN이 너무 여러 번 입력되었습니다. 다른 결제 수단 시도";
 
@@ -771,6 +783,9 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder of the text field for editing the button text for an external/affiliate product */
 "Buy Product" = "제품 구매";
 
+/* Title of one of the elements in the CTA View for installing WCShip extension */
+"Buy postage when you need it" = "필요할 때 우송료 구매";
+
 /* Legal disclaimer for logging in. The underscores _..._ denote underline. */
 "By continuing, you agree to our _Terms of Service_." = "계속하면 _서비스 약관_에 동의하게 됩니다.";
 
@@ -882,6 +897,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Card method title on the select payment method screen */
 "Card" = "카드";
+
+/* Navigates to Card Reader Manuals screen */
+"Card Reader Manuals" = "카드 리더 사용설명서";
+
+/* Navigation title at the top of the Card reader manuals screen */
+"Card reader manuals" = "카드 리더 사용설명서";
 
 /* Title for the section related to card readers inside In-Person Payments settings */
 "Card readers" = "카드 판독기";
@@ -1466,6 +1487,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Discounted Orders label on Coupon Details screen */
 "Discounted Orders" = "할인된 주문";
 
+/* Title of one of the elements in the CTA View for installing WCShip extension */
+"Discounted rates" = "할인률";
+
 /* Accessibility label for button to dismiss a bottom sheet
    Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog.
    Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog.
@@ -1851,6 +1875,12 @@ which should be translated separately and considered part of this sentence. */
 /* Notice displayed when the label purchase fails */
 "Error purchasing the label" = "레이블 구매 중 오류 발생";
 
+/* Title of the notice about an error saving images uploaded in the background to a product. */
+"Error saving product images" = "상품 이미지 저장 중 오류 발생";
+
+/* Title of the notice about an error saving an image uploaded in the background to a product variation. */
+"Error saving variation image" = "변형 이미지 저장 중 오류 발생";
+
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
 "Everyone loves a deal" = "누구나 좋아하는 딜";
@@ -1946,8 +1976,14 @@ which should be translated separately and considered part of this sentence. */
    Line description for 'Fees' cart total on the receipt. Only shown when non-zero. */
 "Fees" = "수수료";
 
+/* Info message shown when the order contains multiple fees and shipping lines */
+"Fees & Shipping details are incomplete.\nTo edit all the details, view the order in your WooCommerce store admin." = "수수료 및 배송 상세 정보가 완전하지 않습니다.\n모든 상세 정보를 편집하려면 우커머스 스토어 관리자에서 주문을 확인하세요.";
+
 /* Title on the refund screen that lists the fees total cost */
 "Fees Refund" = "수수료 환불";
+
+/* Info message shown when the order contains multiple fee lines */
+"Fees are incomplete.\nTo edit all fees, view the order in your WooCommerce store admin." = "수수료가 완전하지 않습니다.\n모든 수수료를 편집하려면 우커머스 스토어 관리자에서 주문을 확인하세요.";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -2023,6 +2059,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding file from device. */
 "From device" = "기기에서";
 
+/* Title of the CTA view for installing WCShip extension */
+"Fulfill your orders with WooCommerce Shipping" = "우커머스 배송으로 주문 처리";
+
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "스토어의 상품 실적에 대한 인사이트 확인";
 
@@ -2050,6 +2089,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of push notifications as part of Jetpack benefits. */
 "Get push notifications for new orders, reviews, etc. delivered to your device." = "신규 주문, 리뷰 등에 대한 푸시 알림이 기기로 전달되도록 하세요.";
+
+/* Message for the feature announcement banner intended to upsell card readers */
+"Get ready to accept payments with a card reader." = "카드 리더로 결제를 수락할 준비를 하세요.";
 
 /* Title of the Jetpack benefits banner. */
 "Get the full experience with Jetpack" = "젯팩 최대한 활용하기";
@@ -2224,6 +2266,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "사이트 관리자의 연결 > 계정 연결 아래 Jetpack 대시보드에서 워드프레스닷컴에 연결하는 데 사용한 이메일을 찾을 수 있습니다.";
+
+/* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} blog_id @{blog ID} Parameters: %1$@ - order number, %2$@ - store name, %3$@ - blog ID number */
+"In-Person Payment for Order #%1$@ for %2$@ blog_id %3$@" = "%2$@ blog_id %3$@에 대한 주문 #%1$@의 대면 결제";
 
 /* Navigates to In-Person Payments screen
    Title for the In-Person Payments settings screen */
@@ -2634,6 +2679,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "수동 오프셋";
 
+/* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. */
+"Manual Refund" = "수동 환불";
+
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "매핑된 도메인";
 
@@ -2801,6 +2849,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title of the top banner on the Products tab. */
 "New features available!" = "새 기능을 사용할 수 있습니다!";
 
+/* Message for the mocked order notification needed for the AppStore listing screenshot. 'Your WooCommerce Store' is the name of the mocked store. */
+"New order for $13.98 on Your WooCommerce Store" = "우커머스 스토어의 새 주문 $13.98";
+
+/* Title of button in the login prologue screen for users who are new to WooCommerce. */
+"New to WooCommerce?" = "우커머스를 처음 이용하시나요?";
+
 /* Action navigate to the variation creation screen
    Next nav bar button title in Add Product Attribute Options screen
    Next nav bar button title in Add Product Attribute screen
@@ -2850,6 +2904,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The text on the placeholder overlay when no products match the filter on the Products tab */
 "No matching products found" = "일치하는 상품 없음";
+
+/* Subtitle of one of the elements in the CTA View for installing WCShip extension */
+"No need to wonder where that stampbook went" = "스탬프북의 향방은 걱정하지 않으셔도 됩니다.";
 
 /* Message on the detail view of the Orders tab before any order is selected */
 "No order selected" = "선택된 주문이 없습니다.";
@@ -3201,6 +3258,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Name of percentage discount type */
 "Percentage Discount" = "비율(%) 할인";
 
+/* Subtitle of the Amount field when a percentage higher than 100 is set in the Coupon Edit or Creation screen for a percentage discount coupon. */
+"Percentages cannot be greater than 100%" = "비율은 100%보다 클 수 없습니다.";
+
 /* Title of the Performance section on Coupons Details screen */
 "Performance" = "실적";
 
@@ -3222,6 +3282,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "연결할 스토어 선택";
+
+/* Subtitle of one of the elements in the CTA View for installing WCShip extension */
+"Pick up an order, then just pay, print, package, and post." = "주문을 픽업한 다음에 결제하고 인쇄하고 포장하고 글을 작성하시면 됩니다.";
 
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "제품을 휴지통에 버리는 중";
@@ -3540,6 +3603,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the in-progress UI while updating the Product remotely */
 "Publishing your product..." = "제품을 게시하는 중...";
+
+/* Title for the button on the feature announcement banner intended to upsell card readers */
+"Purchase Card Reader" = "카드 리더 구매";
 
 /* Title of shipping label purchase date in Refund Shipping Label screen */
 "Purchase Date" = "구매 날짜";
@@ -3885,6 +3951,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button when the user does not want to print the receipt. Presented to users after a payment has been successfully collected */
 "Save receipt and continue" = "영수증 저장 및 계속";
 
+/* Title of the CTA view for installing WCShip extension */
+"Save time and money" = "시간과 돈 절약";
+
 /* Message text in the shipping label creation info screen */
 "Save time and money by fulfilling with WooCommerce Shipping" = "WooCommerce 배송으로 처리하여 시간과 비용 절약";
 
@@ -4137,6 +4206,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation bar title of the Product shipping class selector screen */
 "Shipping classes" = "배송 클래스";
+
+/* Info message shown when the order contains multiple shipping lines */
+"Shipping details are incomplete.\nTo edit all shipping details, view the order in your WooCommerce store admin." = "배송 상세 정보가 완전하지 않습니다.\n모든 배송 상세 정보를 편집하려면 우커머스 스토어 관리자에서 주문을 확인하세요.";
 
 /* Header of the order summary section in the shipping label creation form */
 "Shipping label order summary" = "배송 레이블 주문 요약";
@@ -4710,6 +4782,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "이 서버의 인증서가 올바르지 않습니다. “%@”(으)로 사칭한 서버에 연결 중일 수 있습니다. 기밀 정보가 노출될 수 있습니다.\n\n그래도 인증서를 신뢰하시겠어요?";
 
+/* Error message in the Add Edit Coupon screen when the coupon amount is higher than 100% for a percentage discount */
+"The coupon amount cannot be greater than 100 for percentage discounts" = "쿠폰 금액의 할인 비율은 100보다 클 수 없습니다.";
+
 /* Error message in the Add Edit Coupon screen when the coupon code is empty. */
 "The coupon code couldn't be empty" = "쿠폰 코드는 비워둘 수 없음";
 
@@ -4727,6 +4802,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the payment can not be processed (i.e. order amount is below the minimum amount allowed.) */
 "The payment can not be processed by the payment processor." = "결제 처리업체에서 결제를 처리할 수 없습니다.";
+
+/* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. */
+"The payment method does not support automatic refunds. Complete the refund by transferring the money to the customer manually." = "결제 수단에서 자동 환불을 지원하지 않습니다. 고객에게 금액을 수동으로 송금하여 환불을 완료하세요.";
 
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "전화번호가 유효하지 않거나 이 기기에서 고객에게 전화를 걸 수 없습니다.";
@@ -5657,6 +5735,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Shipping Labels: info title about WooCommerce Services discount */
 "What is WooCommerce Services discount?" = "WooCommerce 서비스 할인이란?";
 
+/* Button in the CTA View about what is the WCShip extension */
+"What is WooCommerce Shipping?" = "우커머스 배송이 무엇인가요?";
+
 /* Navigates to screen containing the latest WooCommerce Features */
 "What's New in WooCommerce" = "우커머스의 새로운 기능";
 
@@ -5753,6 +5834,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The description on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
 "You currently have Coupons disabled for this store. Enable coupons to get started." = "현재 이 스토어의 쿠폰이 비활성화되어 있습니다. 시작하려면 쿠폰을 활성화하세요.";
 
+/* Title for the mocked order notification needed for the AppStore listing screenshot */
+"You have a new order! 🎉" = "새 주문이 있습니다! 🎉";
+
 /* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
 "You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "계정에 기한이 지난 요구 사항이 하나 이상 있습니다. 대면 결제를 다시 시작하려면 해당 요구 사항을 처리하세요.";
 
@@ -5797,6 +5881,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Comment Attachment Label */
 "[COMMENT]" = "[댓글]";
+
+/* Navigates to page with details about What is WordPress.com. The underscores _..._ denote underline. */
+"_What is WordPress.com?_" = "_워드프레스닷컴이란 무엇인가요?_";
 
 /* Placeholder for the site url textfield.
    Site Address placeholder */

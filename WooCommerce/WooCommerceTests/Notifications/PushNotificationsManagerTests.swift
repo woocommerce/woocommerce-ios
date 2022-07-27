@@ -313,7 +313,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
         // When
         application.applicationState = .inactive
-        await manager.handleUserResponseToNotification(response: response)
+        await manager.handleUserResponseToNotification(response)
 
         // Then
         XCTAssertEqual(application.presentDetailsNoteIDs.first, 1234)
@@ -457,7 +457,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         let response = try XCTUnwrap(MockNotificationResponse(notificationUserInfo: userinfo))
 
         // When
-        _ = await manager.handleUserResponseToNotification(response: response)
+        _ = await manager.handleUserResponseToNotification(response)
 
         // Then
         XCTAssertEqual(emittedNotifications.count, 1)

@@ -1,0 +1,3 @@
+Ni har bett oss om möjligheten att skapa rabatttkoder i appen. Vi är glada att kunna meddela att vi har en smygtitt redo om ni vill hjälpa oss att testa funktionen! Gå till inställningarna i appen och aktivera den experimentella funktionen för rabattkoder.
+
+Vi har även gjort flera förbättringar av uppladdning av produktbilder och fysiska betalningar, inklusive möjligheten att ta betalt via kontanter, kort eller betalningslänk för alla obetalda beställningar. Fortsätt att skicka feedback till oss – vi lyssnar!

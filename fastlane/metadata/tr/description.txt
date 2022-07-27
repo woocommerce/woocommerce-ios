@@ -1,22 +1,22 @@
-WooCommerce Mobil Uygulaması ile hareket halindeyken işinizi yönetin.  Ürünler oluşturun, siparişleri işleyin ve önemli istatistikleri gerçek zamanlı olarak takip edin. 
+WooCommerce Mobil Uygulaması ile hareket halindeyken işinizi yönetin. Ürün ekleyin, sipariş oluşturun, hızlı ödemeler alın, yeni satışları ve önemli istatistikleri gerçek zamanlı olarak takip edin.
 
-ÜRÜN EKLEYİN
-Doğrudan iPhone veya iPad'inizden ürünler oluşturun, gruplandırın ve yayınlayın.  Yaratıcılığınızdan anında yararlanın; fikirlerinizi saniyeler içinde ürünlere dönüştürün veya daha sonra kullanmak üzere taslak olarak kaydedin.
+Tek dokunuşla ürün ekleyin ve düzenleyin
+Saniyeler içinde kullanmaya başlayın! Ürünleri doğrudan iPhone veya iPad'inizden oluşturun, gruplayın ve yayınlayın. Yaratıcılığınızı ilham geldiği anda yakalayın; fikirlerinizi anında ürünlere dönüştürün veya daha sonra kullanmak üzere taslak olarak kaydedin.
 
-BİLDİRİM ALIN
-Bir siparişi veya yorumu asla kaçırmayın. Gerçek zamanlı uyarıları etkinleştirerek sipariş veya yorumları kaçırma korkusunu kendinizden uzak tutun ve her yeni satışla birlikte duyacağınız bağımlılık yaratan "uyarı" sesini dinleyin.
+Anında sipariş oluşturun
+Bazı ürünleri oluşturduktan sonra iş çok basittir. Kataloğunuzdan öğeler seçip, gönderim bilgisini ve müşteri ayrıntılarını girerek, stok durumunuzla eşitlenen bir siparişi hızlı bir şekilde oluşturun.
 
-SİPARİŞLERİ GÖRÜNTÜLEYİN VE DEĞİŞTİRİN
-Özetleri kaydırın veya müşteri ya da sipariş özelliklerine göre arama yapın. Ayrıntılı faturalandırmayı görmek, tedariğe başlamak ve sipariş durumunu değiştirmek için ayrıntılara dokunun. Siparişe notlar ekleyin veya takip etmek için müşterilere doğrudan e-posta gönderin.
+Şahsen ödemeleri alın
+WooCommerce Şahsen Ödemeler özelliğini ve bir kart okuyucuyu (ABD ve Kanada'da mevcuttur) kullanarak şahsen yapılan fiziksel ödemeleri alın. Yeni bir sipariş başlatın veya ödeme bekleyen mevcut bir siparişi bulun ve kart okuyucuyu veya Apple Pay gibi bir dijital cüzdanı kullanarak ödeme alın.
 
-İSTATİSTİKLERİNİZİ TAKİP EDİN
-Hangi ürünlerin ön sıralarda olduğunu bir bakışta görün. Haftaya, aya ve yıla göre toplam gelir, sipariş sayısı ve ziyaretçi verilerini takip edin. Bilgi = Güç!
+Her satıştan haberdar olun
+Artık aktif olarak satış yaptığınız için hiçbir siparişi veya yorumu kaçırmayın. Gerçek zamanlı uyarıları etkinleştirerek hiçbir şeyi kaçırmayın ve her yeni satışla birlikte duyacağınız o bağımlılık yaratan "yazarkasa" sesine odaklanın!
 
-MAĞAZALAR ARASINDA GEÇİŞ YAPIN
-Birden fazla mağazaya sahip olanlar saniyeler içinde işletmeleri arasında sorunsuz geçiş yapabilirler.
+Satışları ve en çok satan ürünleri takip edin
+Hangi ürünlerin en çok sattığını bir bakışta görün. Haftaya, aya ve yıla göre toplam gelirinizi, sipariş sayısını ve ziyaretçi verilerini takip edin. Bilgi = Güç!
 
 WooCommerce, dünyanın en iyi özelleştirilebilir açık kaynaklı e-ticaret platformudur. İster yeni bir iş kuruyor, ister gerçek mekandaki işinizi çevrimiçi ortama taşıyor veya müşteriler için site geliştiriyor olun, içerik ve ticareti güçlü bir şekilde harmanlayan bir mağaza için WooCommerce'i kullanın.
 
-Gereksinimler: Jetpack eklentisi WooCommerce v3.5 +.
+Gereksinimler: WooCommerce v3.5 ve üzeri.
 
 Kaliforniya'daki Kullanıcılar Gizlilik Bildirimi'ni https://automattic.com/privacy/#california-consumer-privacy-act-ccpa adresinden görüntüleyebilirler.

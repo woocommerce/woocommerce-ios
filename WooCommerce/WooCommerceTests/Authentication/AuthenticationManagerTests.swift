@@ -172,4 +172,22 @@ final class AuthenticationManagerTests: XCTestCase {
         let rootController = navigationController.viewControllers.first
         XCTAssertTrue(rootController is ULErrorViewController)
     }
+
+    func test_it_can_display_jetpack_error_for_org_site_credentials_sign_in() {
+        // Given
+        let manager = AuthenticationManager()
+        let testSite = "http://test.com"
+        let siteInfo = WordPressComSiteInfo(remote: ["isWordPress": true, "hasJetpack": false, "urlAfterRedirects": testSite])
+        let wporgCredentials = WordPressOrgCredentials(username: "cba", password: "password", xmlrpc: "http://test.com/xmlrpc.php", options: [:])
+        let credentials = AuthenticatorCredentials(wpcom: nil, wporg: wporgCredentials)
+        let navigationController = UINavigationController()
+
+        // When
+        manager.shouldPresentUsernamePasswordController(for: siteInfo, onCompletion: { _ in })
+        manager.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: {})
+
+        // Then
+        let rootController = navigationController.viewControllers.first
+        XCTAssertTrue(rootController is ULErrorViewController)
+    }
 }

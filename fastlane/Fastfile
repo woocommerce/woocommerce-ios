@@ -17,7 +17,7 @@ FASTLANE_DIR = __dir__
 DERIVED_DATA_DIR = File.join(FASTLANE_DIR, 'DerivedData')
 SCREENSHOTS_DIR =  File.join(FASTLANE_DIR, 'screenshots')
 IOS_LOCALES = %w[ar de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant].freeze
-SIMULATOR_VERSION = '14.3' # For screenshots
+SIMULATOR_VERSION = '15.5' # For screenshots
 SCREENSHOT_DEVICES = [
   'iPhone 11 Pro Max',
   'iPhone 8 Plus',
@@ -616,7 +616,7 @@ platform :ios do
     sh('bundle exec pod install --verbose')
 
     # Ensure we're using the right version of Xcode
-    xcversion(version: '~> 12.0')
+    xcversion(version: '~> 13.4')
 
     scan(
       workspace: 'WooCommerce.xcworkspace',
@@ -629,7 +629,7 @@ platform :ios do
   desc 'Take Screenshots'
   lane :take_screenshots do |options|
     # Ensure we're using the right version of Xcode
-    xcversion(version: '~> 12.0')
+    xcversion(version: '~> 13.4')
 
     # By default, clear previous screenshots
     languages = IOS_LOCALES

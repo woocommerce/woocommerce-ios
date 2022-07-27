@@ -2,20 +2,18 @@ import SwiftUI
 
 struct FeatureAnnouncementCardView: View {
     private let viewModel: FeatureAnnouncementCardViewModel
-    @State private var showingDismissAlert = false
+    @State private var showingDismissActionSheet = false
 
     let dismiss: (() -> Void)?
-    let callToAction: (() -> Void)
+    let callToAction: (() -> Void)?
 
     init(viewModel: FeatureAnnouncementCardViewModel,
          dismiss: (() -> Void)? = nil,
-         callToAction: @escaping (() -> Void)) {
+         callToAction: (() -> Void)? = nil) {
         self.viewModel = viewModel
         self.dismiss = dismiss
         self.callToAction = callToAction
     }
-
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
     var body: some View {
         VStack(spacing: 0) {
@@ -25,25 +23,31 @@ struct FeatureAnnouncementCardView: View {
                 Spacer()
                 if let dismiss = dismiss {
                     Button(action: {
-                        showingDismissAlert = true
+                        showingDismissActionSheet = true
                     }) {
                         Image(systemName: "xmark")
                             .foregroundColor(Color(.withColorStudio(.gray)))
                     }
                     .padding(.trailing, Layout.padding)
-                    .alert(isPresented: $showingDismissAlert,
-                           content: {
-                        Alert(title: Text(viewModel.dismissAlertTitle),
-                              message: Text(viewModel.dismissAlertMessage),
-                              primaryButton: .cancel(Text(Localization.remindLaterButton), action: {
-                            viewModel.remindLaterTapped()
-                            dismiss()
-                        }),
-                              secondaryButton: .default(Text(Localization.dontShowAgainButton), action: {
-                            viewModel.dontShowAgainTapped()
-                            dismiss()
-                        }))
-                    })
+                    .actionSheet(isPresented: $showingDismissActionSheet) {
+                        ActionSheet(
+                            title: Text(viewModel.dismissAlertTitle),
+                            message: Text(viewModel.dismissAlertMessage),
+                            buttons: [
+                                .default(Text(Localization.remindLaterButton),
+                                         action: {
+                                             viewModel.remindLaterTapped()
+                                             dismiss()
+                                         }),
+                                .default(Text(Localization.dontShowAgainButton),
+                                         action: {
+                                             viewModel.dontShowAgainTapped()
+                                             dismiss()
+                                         }),
+                                .cancel()
+                            ]
+                        )
+                    }
                 }
             }
             .padding(.top, Layout.padding)
@@ -56,14 +60,17 @@ struct FeatureAnnouncementCardView: View {
                             .padding(.bottom, Layout.smallSpacing)
                         Text(viewModel.message)
                             .bodyStyle()
-                            .padding(.bottom, Layout.largeSpacing)
+                            .padding(.bottom, viewModel.buttonTitle == nil ? Layout.bottomNoButtonPadding : Layout.largeSpacing)
                     }
                     .accessibilityElement(children: .combine)
-                    Button(viewModel.buttonTitle) {
-                        viewModel.ctaTapped()
-                        callToAction()
+                    if let buttonTitle = viewModel.buttonTitle {
+                        Button(buttonTitle) {
+                            viewModel.ctaTapped()
+                            callToAction?()
+                        }
+                        .padding(.bottom, Layout.bottomButtonPadding)
+                        .foregroundColor(Color(.withColorStudio(.pink)))
                     }
-                    .padding(.bottom, Layout.bottomButtonPadding)
                 }
                 Spacer()
                 Image(uiImage: viewModel.image)
@@ -72,8 +79,6 @@ struct FeatureAnnouncementCardView: View {
             .padding(.top, Layout.smallSpacing)
             .padding(.leading, Layout.padding)
         }
-        .padding(.horizontal, insets: safeAreaInsets)
-        .background(Color(.listForeground).ignoresSafeArea())
         .onAppear {
             viewModel.onAppear()
         }
@@ -84,6 +89,7 @@ extension FeatureAnnouncementCardView {
     enum Layout {
         static let padding: CGFloat = 16
         static let bottomButtonPadding: CGFloat = 23.5
+        static let bottomNoButtonPadding: CGFloat = 60
         static let smallSpacing: CGFloat = 8
         static let largeSpacing: CGFloat = 16
     }

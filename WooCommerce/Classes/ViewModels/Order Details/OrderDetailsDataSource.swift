@@ -24,10 +24,10 @@ final class OrderDetailsDataSource: NSObject {
     ///
     private(set) var sections = [Section]()
 
-    /// Is this order processing?
+    /// Is this order processing? Payment received (paid). The order is awaiting fulfillment.
     ///
-    private var isProcessingPayment: Bool {
-        return order.status == OrderStatusEnum.processing
+    private var isProcessingStatus: Bool {
+        order.status == OrderStatusEnum.processing
     }
 
     /// Is this order fully refunded?
@@ -1025,21 +1025,22 @@ extension OrderDetailsDataSource {
 
             var rows: [Row] = Array(repeating: .aggregateOrderItem, count: aggregateOrderItemCount)
 
-            if shouldShowShippingLabelCreation {
+            switch (shouldShowShippingLabelCreation, isProcessingStatus, isRefundedStatus) {
+            case (true, false, false):
+                // Order completed and eligible for shipping label creation:
                 rows.append(.shippingLabelCreateButton)
-            }
-
-            if isProcessingPayment {
-                if shouldShowShippingLabelCreation {
-                    rows.append(.markCompleteButton(style: .secondary, showsBottomSpacing: false))
-                    rows.append(.shippingLabelCreationInfo(showsSeparator: false))
-                } else {
-                    rows.append(.markCompleteButton(style: .primary, showsBottomSpacing: true))
-                }
-            } else if isRefundedStatus == false {
-                if shouldShowShippingLabelCreation {
-                    rows.append(.shippingLabelCreationInfo(showsSeparator: true))
-                }
+                rows.append(.shippingLabelCreationInfo(showsSeparator: false))
+            case (true, true, false):
+                // Order processing shippable:
+                rows.append(.shippingLabelCreateButton)
+                rows.append(.markCompleteButton(style: .secondary, showsBottomSpacing: false))
+                rows.append(.shippingLabelCreationInfo(showsSeparator: false))
+            case (false, true, false):
+                // Order processing digital:
+                rows.append(.markCompleteButton(style: .primary, showsBottomSpacing: true))
+            default:
+                // Other cases
+                break
             }
 
             if rows.count == 0 {

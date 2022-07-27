@@ -1,15 +1,22 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+9.8
+-----
+- [***] Login: Introduce a way to sign in using store credentials.  [https://github.com/woocommerce/woocommerce-ios/pull/7320]
+- [*] In-Person Payments: The purchase card reader information card appears also in the Orders list screen. [https://github.com/woocommerce/woocommerce-ios/pull/7326]
+
 9.7
-----
+-----
 - [***] Orders: Orders can now be edited within the app. [https://github.com/woocommerce/woocommerce-ios/pull/7300]
+- [**] Orders: You can now view the Custom Fields for an order in the Order Details screen. [https://github.com/woocommerce/woocommerce-ios/pull/7310]
 - [*] In-Person Payments: Card Reader Manuals now appear based on country availability, consolidated into an unique view [https://github.com/woocommerce/woocommerce-ios/pull/7178]
 - [*] Login: Jetpack setup flow is now accessible from the Login with Store Address flow. [https://github.com/woocommerce/woocommerce-ios/pull/7294]
 - [*] In-Person Payments: The purchase card reader information card can be dismissed [https://github.com/woocommerce/woocommerce-ios/pull/7260]
 - [*] In-Person Payments: When dismissing the purchase card reader information card, the user can choose to be reminded in 14 days. [https://github.com/woocommerce/woocommerce-ios/pull/7271]
+- [*] In-Person Payments: The purchase card reader information card appears also in the App Settings screen. [https://github.com/woocommerce/woocommerce-ios/pull/7308]
 - [*] Refund lines in the Order details screen now appear ordered from oldest to newest [https://github.com/woocommerce/woocommerce-ios/pull/7287]
 - [*] Login: when the app is in logged out state, an onboarding screen is shown before the prologue screen if the user hasn't finished or skipped it.  [https://github.com/woocommerce/woocommerce-ios/pull/7324]
-- [**] Orders: You can now view the Custom Fields for an order in the Order Details screen. [https://github.com/woocommerce/woocommerce-ios/pull/7310]
+- [*] Orders: When a store has no orders yet, there is an updated message with a link to learn more on the Orders tab. [https://github.com/woocommerce/woocommerce-ios/pull/7328]
 
 9.6
 -----

@@ -291,7 +291,8 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
         storePickerCoordinator?.onDismiss = onDismiss
-        if let site = matcher.matchedSite(originalURL: siteURL) {
+        let originalURL = currentSelfHostedSite?.url ?? siteURL
+        if let site = matcher.matchedSite(originalURL: originalURL) {
             storePickerCoordinator?.didSelectStore(with: site.siteID, onCompletion: onDismiss)
         } else {
             storePickerCoordinator?.start()
@@ -449,7 +450,9 @@ private extension AuthenticationManager {
                              in navigationController: UINavigationController,
                              onDismiss: @escaping () -> Void) {
         let viewModel = JetpackErrorViewModel(siteURL: siteURL, onJetpackSetupCompletion: { [weak self] authorizedEmailAddress in
-            self?.currentSelfHostedSite = nil
+            if let site = self?.currentSelfHostedSite {
+                self?.currentSelfHostedSite = WordPressComSiteInfo.updateJetpackInfo(for: site)
+            }
             guard credentials.wpcom != nil else {
                 return WordPressAuthenticator.showLoginForJustWPCom(from: navigationController, jetpackLogin: true, connectedEmail: authorizedEmailAddress)
             }
@@ -461,6 +464,24 @@ private extension AuthenticationManager {
         })
         let installJetpackUI = ULErrorViewController(viewModel: viewModel)
         navigationController.show(installJetpackUI, sender: nil)
+    }
+}
+
+private extension WordPressComSiteInfo {
+    /// Copies the information from the specified site and update all Jetpack-related properties for a valid Jetpack connection.
+    ///
+    static func updateJetpackInfo(for site: WordPressComSiteInfo) -> WordPressComSiteInfo {
+        .init(remote: ["name": site.name,
+                       "description": site.tagline,
+                       "urlAfterRedirects": site.url,
+                       "hasJetpack": true,
+                       "isJetpackActive": true,
+                       "isJetpackConnected": true,
+                       "icon.img": site.icon,
+                       "isWordPressDotCom": site.isWPCom,
+                       "isWordPress": site.isWP,
+                       "exists": site.exists]
+        )
     }
 }
 

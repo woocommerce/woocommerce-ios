@@ -15,6 +15,7 @@ private extension NavigateToEnterAccount {
             DDLogError("Failed to navigate from LoginPrologueViewController to GetStartedViewController")
             return
         }
+        vc.source = .wpCom
 
         navigationController?.pushViewController(vc, animated: true)
     }

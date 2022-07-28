@@ -1,39 +1,56 @@
 import Foundation
 import UIKit
 
+enum NotificationBadgeType {
+    case primary
+    case secondary
+
+    var color: UIColor {
+        switch self {
+        case .primary:
+            return .primary
+        case .secondary:
+            return .accent
+        }
+    }
+}
+
+struct NotificationsBadgeInput {
+    let hide: Bool
+    let type: NotificationBadgeType
+    let tab: WooTab
+    let tabBar: UITabBar
+    let tabIndex: Int
+}
+
 final class NotificationsBadgeController {
     /// Displays or Hides the Dot, depending on the new Badge Value
     ///
-    func badgeCountWasUpdated(newValue: Int, tab: WooTab, in tabBar: UITabBar, tabIndex: Int) {
-        guard newValue > 0 else {
-            hideDotOn(tab, in: tabBar, tabIndex: tabIndex)
-            return
-        }
-
-        showDotOn(tab, in: tabBar, tabIndex: tabIndex)
+    func updateBadge(with input: NotificationsBadgeInput) {
+        input.hide ? hideDotOn(with: input) : showDotOn(with: input)
     }
 
     /// Shows the dot in the specified WooTab
     ///
-    func showDotOn(_ tab: WooTab, in tabBar: UITabBar, tabIndex: Int) {
-        hideDotOn(tab, in: tabBar, tabIndex: tabIndex)
+    private func showDotOn(with input: NotificationsBadgeInput) {
+        hideDotOn(with: input)
         let dot = DotView(frame: CGRect(x: DotConstants.xOffset,
                                         y: DotConstants.yOffset,
                                         width: DotConstants.diameter,
                                         height: DotConstants.diameter),
                           color: UIColor.primary,
                           borderWidth: DotConstants.borderWidth)
-        dot.tag = dotTag(for: tab)
+        dot.tag = dotTag(for: input.tab)
         dot.isHidden = true
-        tabBar.orderedTabBarActionableViews[tabIndex].subviews.first?.insertSubview(dot, at: 1)
+        input.tabBar.orderedTabBarActionableViews[input.tabIndex].subviews.first?.insertSubview(dot, at: 1)
         dot.fadeIn()
     }
 
     /// Hides the Dot in the specified WooTab
     ///
-    func hideDotOn(_ tab: WooTab, in tabBar: UITabBar, tabIndex: Int) {
-        let tag = dotTag(for: tab)
-        if let subviews = tabBar.orderedTabBarActionableViews[tabIndex].subviews.first?.subviews {
+    private func hideDotOn(with input: NotificationsBadgeInput) {
+        let tag = dotTag(for: input.tab)
+        if let subviews = input.tabBar.orderedTabBarActionableViews[input.tabIndex].subviews.first?.subviews {
             for subview in subviews where subview.tag == tag {
                 subview.fadeOut() { _ in
                     subview.removeFromSuperview()
@@ -44,7 +61,7 @@ final class NotificationsBadgeController {
 
     /// Returns the DotView's Tag for the specified WooTab
     ///
-    func dotTag(for tab: WooTab) -> Int {
+    private func dotTag(for tab: WooTab) -> Int {
         return tab.identifierNumber + DotConstants.tagOffset
     }
 }
@@ -85,7 +102,7 @@ private class DotView: UIView {
     ///
     required init?(coder aDecoder: NSCoder) {
         color = UIColor.primary
-        
+
         super.init(coder: aDecoder)
         setupSubviews()
     }

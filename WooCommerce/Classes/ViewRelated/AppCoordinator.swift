@@ -1,6 +1,7 @@
 import Combine
 import Experiments
 import UIKit
+import WordPressAuthenticator
 import Yosemite
 import class AutomatticTracks.CrashLogging
 
@@ -251,6 +252,17 @@ private extension AppCoordinator {
             ZendeskProvider.shared.showNewRequestIfPossible(from: viewController, with: nil)
             analytics.track(.loginLocalNotificationTapped, withProperties: [
                 "action": "contact_support",
+                "type": response.notification.request.identifier
+            ])
+        case LocalNotification.Action.loginWithWPCom.rawValue:
+            guard let loginNavigationController = window.rootViewController as? LoginNavigationController,
+                  let viewController = loginNavigationController.topViewController else {
+                return
+            }
+            let command = NavigateToEnterAccount()
+            command.execute(from: viewController)
+            analytics.track(.loginLocalNotificationTapped, withProperties: [
+                "action": "login_with_wpcom",
                 "type": response.notification.request.identifier
             ])
         case UNNotificationDefaultActionIdentifier:

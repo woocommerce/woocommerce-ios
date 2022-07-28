@@ -27,12 +27,15 @@ struct LocalNotification {
     /// The action type in a local notification.
     enum Action: String {
         case contactSupport
+        case loginWithWPCom
 
         /// The title of the action in a local notification.
         var title: String {
             switch self {
             case .contactSupport:
                 return NSLocalizedString("Contact support", comment: "Local notification action to contact support.")
+            case .loginWithWPCom:
+                return NSLocalizedString("Login with WordPress.com", comment: "Local notification action to log in with WordPress.com.")
             }
         }
     }
@@ -45,7 +48,7 @@ extension LocalNotification {
             self.init(title: Localization.errorLoggingInTitle,
                       body: Localization.errorLoggingInBody,
                       scenario: .loginSiteAddressError,
-                      actions: .init(category: .loginError, actions: [.contactSupport]))
+                      actions: .init(category: .loginError, actions: [.contactSupport, .loginWithWPCom]))
         }
     }
 }

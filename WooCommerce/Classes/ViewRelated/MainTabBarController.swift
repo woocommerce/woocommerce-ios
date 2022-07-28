@@ -523,7 +523,6 @@ private extension MainTabBarController {
 
             self.notificationsBadge.updateBadge(with: input)
         }
-
     }
 }
 

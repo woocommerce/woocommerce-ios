@@ -61,6 +61,8 @@ final class MainTabViewModel {
         requestBadgeCount()
     }
 
+    /// Loads the the hub Menu tab badge and listens to any change to update it
+    ///
     func loadHubMenuTabBadge() {
         updateHubMenuTabBadge()
 

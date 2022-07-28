@@ -15,6 +15,7 @@ enum NotificationBadgeType {
     }
 }
 
+/// Gathers the necessary data to update the badge on a tabbar tab
 struct NotificationsBadgeInput {
     let hide: Bool
     let type: NotificationBadgeType
@@ -24,7 +25,7 @@ struct NotificationsBadgeInput {
 }
 
 final class NotificationsBadgeController {
-    /// Displays or Hides the Dot, depending on the new Badge Value
+    /// Updates the tab badge depending on the provided input parameter
     ///
     func updateBadge(with input: NotificationsBadgeInput) {
         input.hide ? hideDotOn(with: input) : showDotOn(with: input)

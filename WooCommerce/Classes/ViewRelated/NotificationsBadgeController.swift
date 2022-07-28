@@ -17,11 +17,12 @@ final class NotificationsBadgeController {
     ///
     func showDotOn(_ tab: WooTab, in tabBar: UITabBar, tabIndex: Int) {
         hideDotOn(tab, in: tabBar, tabIndex: tabIndex)
-        let dot = PurpleDotView(frame: CGRect(x: DotConstants.xOffset,
-                                             y: DotConstants.yOffset,
-                                             width: DotConstants.diameter,
-                                             height: DotConstants.diameter),
-                               borderWidth: DotConstants.borderWidth)
+        let dot = DotView(frame: CGRect(x: DotConstants.xOffset,
+                                        y: DotConstants.yOffset,
+                                        width: DotConstants.diameter,
+                                        height: DotConstants.diameter),
+                          color: UIColor.primary,
+                          borderWidth: DotConstants.borderWidth)
         dot.tag = dotTag(for: tab)
         dot.isHidden = true
         tabBar.orderedTabBarActionableViews[tabIndex].subviews.first?.insertSubview(dot, at: 1)
@@ -63,15 +64,18 @@ private extension NotificationsBadgeController {
 }
 
 
-// MARK: - PurpleDot UIView
+// MARK: - DotView UIView
 //
-private class PurpleDotView: UIView {
+private class DotView: UIView {
 
     private var borderWidth = CGFloat(1) // Border line width defaults to 1
 
+    private let color: UIColor
+
     /// Designated Initializer
     ///
-    init(frame: CGRect, borderWidth: CGFloat) {
+    init(frame: CGRect, color: UIColor, borderWidth: CGFloat) {
+        self.color = color
         super.init(frame: frame)
         self.borderWidth = borderWidth
         setupSubviews()
@@ -80,6 +84,8 @@ private class PurpleDotView: UIView {
     /// Required Initializer
     ///
     required init?(coder aDecoder: NSCoder) {
+        color = UIColor.primary
+        
         super.init(coder: aDecoder)
         setupSubviews()
     }
@@ -93,7 +99,7 @@ private class PurpleDotView: UIView {
                                                y: rect.origin.y + borderWidth,
                                                width: rect.size.width - borderWidth * 2,
                                                height: rect.size.height - borderWidth * 2))
-        UIColor.primary.setFill()
+        color.setFill()
         path.fill()
 
         path.lineWidth = borderWidth

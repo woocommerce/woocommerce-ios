@@ -39,7 +39,7 @@ final class NotificationsBadgeController {
                                         y: DotConstants.yOffset,
                                         width: DotConstants.diameter,
                                         height: DotConstants.diameter),
-                          color: UIColor.primary,
+                          color: input.type.color,
                           borderWidth: DotConstants.borderWidth)
         dot.tag = dotTag(for: input.tab)
         dot.isHidden = true

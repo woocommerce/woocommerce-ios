@@ -43,9 +43,9 @@ final class MainTabViewModel {
     var onOrdersBadgeReload: ((String?) -> Void)?
 
     /// Callback to be executed when the menu tab badge needs to be reloaded
-    /// It provides a Bool with whether it should be hidden or not, and the badge type
+    /// It provides a Bool with whether it should be visible or not, and the badge type
     ///
-    var onMenuBadgeReload: ((Bool, NotificationBadgeType) -> Void)?
+    var showMenuBadge: ((Bool, NotificationBadgeType) -> Void)?
 
     /// Must be called during `MainTabBarController.viewDidAppear`. This will try and save the
     /// app installation date.
@@ -81,7 +81,7 @@ final class MainTabViewModel {
         }
 
         let action = NotificationCountAction.load(siteID: siteID, type: .kind(.comment)) { [weak self] count in
-            self?.onMenuBadgeReload?(count == 0, .primary)
+            self?.showMenuBadge?(count > 0, .primary)
         }
         storesManager.dispatch(action)
     }

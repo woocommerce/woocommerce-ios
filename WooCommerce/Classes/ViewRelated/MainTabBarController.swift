@@ -514,12 +514,12 @@ private extension MainTabBarController {
     /// Setup: KVO Hooks.
     ///
     func startListeningToHubMenuTabBadgeUpdates() {
-        viewModel.onMenuBadgeReload = { [weak self] hide, type in
+        viewModel.showMenuBadge = { [weak self] shouldBeVisible, type in
             guard let self = self else { return }
 
             let tab = self.isHubMenuFeatureFlagOn ? WooTab.hubMenu : WooTab.reviews
             let tabIndex = tab.visibleIndex(self.isHubMenuFeatureFlagOn)
-            let input = NotificationsBadgeInput(hide: hide, type: type, tab: tab, tabBar: self.tabBar, tabIndex: tabIndex)
+            let input = NotificationsBadgeInput(shouldBeVisible: shouldBeVisible, type: type, tab: tab, tabBar: self.tabBar, tabIndex: tabIndex)
 
             self.notificationsBadge.updateBadge(with: input)
         }

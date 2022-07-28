@@ -17,7 +17,7 @@ enum NotificationBadgeType {
 
 /// Gathers the necessary data to update the badge on a tabbar tab
 struct NotificationsBadgeInput {
-    let hide: Bool
+    let shouldBeVisible: Bool
     let type: NotificationBadgeType
     let tab: WooTab
     let tabBar: UITabBar
@@ -28,7 +28,7 @@ final class NotificationsBadgeController {
     /// Updates the tab badge depending on the provided input parameter
     ///
     func updateBadge(with input: NotificationsBadgeInput) {
-        input.hide ? hideDotOn(with: input) : showDotOn(with: input)
+        input.shouldBeVisible ? showDotOn(with: input) : hideDotOn(with: input)
     }
 
     /// Shows the dot in the specified WooTab

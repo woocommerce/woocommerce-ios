@@ -11,7 +11,7 @@ final class JetpackSetupWebViewController: UIViewController {
     private let analytics: Analytics
 
     /// The closure to trigger when Jetpack setup completes.
-    private let completionHandler: () -> Void
+    private let completionHandler: (String?) -> Void
 
     /// Main web view
     private lazy var webView: WKWebView = {
@@ -31,7 +31,10 @@ final class JetpackSetupWebViewController: UIViewController {
     /// Strong reference for the subscription to update progress bar
     private var progressSubscription: AnyCancellable?
 
-    init(siteURL: String, analytics: Analytics = ServiceLocator.analytics, onCompletion: @escaping () -> Void) {
+    /// The email address that the user uses to authorize Jetpack
+    private var authorizedEmailAddress: String?
+
+    init(siteURL: String, analytics: Analytics = ServiceLocator.analytics, onCompletion: @escaping (String?) -> Void) {
         self.siteURL = siteURL
         self.analytics = analytics
         self.completionHandler = onCompletion
@@ -101,7 +104,7 @@ private extension JetpackSetupWebViewController {
 
     func handleSetupCompletion() {
         analytics.track(event: .LoginJetpackSetup.setupCompleted(source: .web))
-        completionHandler()
+        completionHandler(authorizedEmailAddress)
     }
 }
 
@@ -118,6 +121,9 @@ extension JetpackSetupWebViewController: WKNavigationDelegate {
         default:
             if let match = JetpackSetupWebStep.matchingStep(for: navigationURL) {
                 analytics.track(event: .LoginJetpackSetup.setupFlow(source: .web, step: match.trackingStep))
+                if case .authorize = match {
+                    authorizedEmailAddress = getQueryStringParameter(url: navigationURL, param: Constants.userEmailParam)
+                }
             }
             decisionHandler(.allow)
         }
@@ -129,9 +135,18 @@ extension JetpackSetupWebViewController: WKNavigationDelegate {
 }
 
 private extension JetpackSetupWebViewController {
+
+    func getQueryStringParameter(url: String, param: String) -> String? {
+        guard let url = URLComponents(string: url) else {
+            return nil
+        }
+        return url.queryItems?.first(where: { $0.name == param })?.value
+    }
+
     enum Constants {
         static let jetpackInstallString = "https://wordpress.com/jetpack/connect?url=%@&mobile_redirect=%@&from=mobile"
         static let mobileRedirectURL = "woocommerce://jetpack-connected"
+        static let userEmailParam = "user_email"
     }
 
     enum JetpackSetupWebStep: CaseIterable {
@@ -151,7 +166,7 @@ private extension JetpackSetupWebViewController {
             case .wpcomLogin:
                 return "https://wordpress.com/log-in/jetpack"
             case .authorize:
-                return "https://wordpress.com/jetpack/connect/authorize"
+                return "https://jetpack.wordpress.com/jetpack.authorize"
             case .siteLogin:
                 return "wp-admin/wp-login.php"
             case .pluginDetail:

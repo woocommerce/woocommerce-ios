@@ -448,10 +448,10 @@ private extension AuthenticationManager {
                              with credentials: AuthenticatorCredentials,
                              in navigationController: UINavigationController,
                              onDismiss: @escaping () -> Void) {
-        let viewModel = JetpackErrorViewModel(siteURL: siteURL, onJetpackSetupCompletion: { [weak self] in
+        let viewModel = JetpackErrorViewModel(siteURL: siteURL, onJetpackSetupCompletion: { [weak self] authorizedEmailAddress in
             self?.currentSelfHostedSite = nil
             guard credentials.wpcom != nil else {
-                return WordPressAuthenticator.showLoginForJustWPCom(from: navigationController, jetpackLogin: true, connectedEmail: nil)
+                return WordPressAuthenticator.showLoginForJustWPCom(from: navigationController, jetpackLogin: true, connectedEmail: authorizedEmailAddress)
             }
             // tries re-syncing to get an updated store list
             // then attempts to present epilogue again

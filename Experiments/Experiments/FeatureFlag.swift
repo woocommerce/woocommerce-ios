@@ -101,4 +101,8 @@ public enum FeatureFlag: Int {
     /// Local notifications scheduled 24 hours after certain login errors
     ///
     case loginErrorNotifications
+
+    /// Payments Section in the Hub Menu
+    ///
+    case paymentsHubMenuSection
 }

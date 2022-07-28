@@ -40,11 +40,11 @@ final class MainTabViewModel {
     /// Callback to be executed when this view model receives new data
     /// passing the string to be presented in the badge as a parameter
     ///
-    var onBadgeReload: ((String?) -> Void)?
+    var onOrdersBadgeReload: ((String?) -> Void)?
 
     /// Callback to be executed when the menu tab badge needs to be reloaded
     /// It provides a Bool with whether it should be hidden or not, and the badge type
-    /// 
+    ///
     var onMenuBadgeReload: ((Bool, NotificationBadgeType) -> Void)?
 
     /// Must be called during `MainTabBarController.viewDidAppear`. This will try and save the
@@ -139,11 +139,11 @@ private extension MainTabViewModel {
         guard let ordersStatus = ordersStatus,
               ordersStatus.slug == OrderStatusEnum.processing.rawValue,
               ordersStatus.total > 0 else {
-            onBadgeReload?(nil)
+            onOrdersBadgeReload?(nil)
             return
         }
 
-        onBadgeReload?(NumberFormatter.localizedOrNinetyNinePlus(ordersStatus.total))
+        onOrdersBadgeReload?(NumberFormatter.localizedOrNinetyNinePlus(ordersStatus.total))
     }
 
     func observeBadgeRefreshNotifications() {

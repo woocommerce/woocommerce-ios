@@ -530,7 +530,7 @@ private extension MainTabBarController {
 
 private extension MainTabBarController {
     func startListeningToOrdersBadge() {
-        viewModel.onBadgeReload = { [weak self] countReadableString in
+        viewModel.onOrdersBadgeReload = { [weak self] countReadableString in
             guard let self = self else {
                 return
             }

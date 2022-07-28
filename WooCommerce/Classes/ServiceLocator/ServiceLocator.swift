@@ -85,6 +85,10 @@ final class ServiceLocator {
     ///
     private static var _connectivityObserver: ConnectivityObserver = DefaultConnectivityObserver()
 
+    /// Storage for general app settings
+    ///
+    private static var _generalAppSettings: GeneralAppSettingsStorage = GeneralAppSettingsStorage()
+
     // MARK: - Getters
 
     /// Provides the access point to the analytics.
@@ -208,6 +212,12 @@ final class ServiceLocator {
     /// - Returns: An implementation of the ConnectivityObserver protocol.
     static var connectivityObserver: ConnectivityObserver {
         _connectivityObserver
+    }
+
+    /// Provides access point to GeneralAppSettingsStorage
+    /// - Returns: An instance of GeneralAppSetingsStorage
+    static var generalAppSettings: GeneralAppSettingsStorage {
+        _generalAppSettings
     }
 }
 
@@ -335,6 +345,22 @@ extension ServiceLocator {
         }
 
         _connectivityObserver = mock
+    }
+
+    static func setGeneralAppSettingsStorage(_ mock: GeneralAppSettingsStorage) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _generalAppSettings = mock
+    }
+
+    static func setProductImageUploader(_ mock: ProductImageUploaderProtocol) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _productImageUploader = mock
     }
 }
 

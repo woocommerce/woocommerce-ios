@@ -10,6 +10,9 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
     public let customerID: Int64
     public let orderKey: String
 
+    public let isEditable: Bool
+    public let needsPayment: Bool
+    public let needsProcessing: Bool
     public let number: String
     /// The Order status.
     ///
@@ -43,6 +46,8 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
     public let fees: [OrderFeeLine]
     public let taxes: [OrderTaxLine]
 
+    public let customFields: [OrderMetaData]
+
     /// Order struct initializer.
     ///
     public init(siteID: Int64,
@@ -50,6 +55,9 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                 parentID: Int64,
                 customerID: Int64,
                 orderKey: String,
+                isEditable: Bool,
+                needsPayment: Bool,
+                needsProcessing: Bool,
                 number: String,
                 status: OrderStatusEnum,
                 currency: String,
@@ -74,7 +82,8 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                 coupons: [OrderCouponLine],
                 refunds: [OrderRefundCondensed],
                 fees: [OrderFeeLine],
-                taxes: [OrderTaxLine]) {
+                taxes: [OrderTaxLine],
+                customFields: [OrderMetaData]) {
 
         self.siteID = siteID
         self.orderID = orderID
@@ -82,6 +91,9 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         self.customerID = customerID
         self.orderKey = orderKey
 
+        self.isEditable = isEditable
+        self.needsPayment = needsPayment
+        self.needsProcessing = needsProcessing
         self.number = number
         self.status = status
         self.currency = currency
@@ -110,6 +122,8 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         self.refunds = refunds
         self.fees = fees
         self.taxes = taxes
+
+        self.customFields = customFields
     }
 
 
@@ -126,7 +140,6 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         let parentID = try container.decode(Int64.self, forKey: .parentID)
         let customerID = try container.decode(Int64.self, forKey: .customerID)
         let orderKey = try container.decode(String.self, forKey: .orderKey)
-
         let number = try container.decode(String.self, forKey: .number)
         let status = try container.decode(OrderStatusEnum.self, forKey: .status)
 
@@ -178,11 +191,25 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
 
         let taxes = try container.decode([OrderTaxLine].self, forKey: .taxLines)
 
+        // Properties added on WC 6.6, we provide a local fallback for older stores.
+        let isEditable = try container.decodeIfPresent(Bool.self, forKey: .isEditable) ?? Self.inferIsEditable(status: status)
+        let needsPayment = try container.decodeIfPresent(Bool.self, forKey: .needsPayment) ?? Self.inferNeedsPayment(status: status, total: total)
+
+        // TODO: Update with local fallback when required.
+        // https://github.com/woocommerce/woocommerce/blob/3611d4643791bad87a0d3e6e73e031bb80447417/plugins/woocommerce/includes/class-wc-order.php#L1537-L1561
+        let needsProcessing = try container.decodeIfPresent(Bool.self, forKey: .needsProcessing) ?? false
+
+        // Filter out metadata if the key is prefixed with an underscore (internal meta keys) or the value is empty
+        let customFields = allOrderMetaData?.filter({ !$0.key.hasPrefix("_") && !$0.value.isEmpty }) ?? []
+
         self.init(siteID: siteID,
                   orderID: orderID,
                   parentID: parentID,
                   customerID: customerID,
                   orderKey: orderKey,
+                  isEditable: isEditable,
+                  needsPayment: needsPayment,
+                  needsProcessing: needsProcessing,
                   number: number,
                   status: status,
                   currency: currency,
@@ -207,7 +234,8 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                   coupons: coupons,
                   refunds: refunds,
                   fees: fees,
-                  taxes: taxes)
+                  taxes: taxes,
+                  customFields: customFields)
     }
 
     public static var empty: Order {
@@ -216,6 +244,9 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                   parentID: 0,
                   customerID: 0,
                   orderKey: "",
+                  isEditable: false,
+                  needsPayment: false,
+                  needsProcessing: false,
                   number: "",
                   status: .pending,
                   currency: "",
@@ -240,7 +271,8 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                   coupons: [],
                   refunds: [],
                   fees: [],
-                  taxes: [])
+                  taxes: [],
+                  customFields: [])
     }
 }
 
@@ -255,6 +287,9 @@ internal extension Order {
         case customerID         = "customer_id"
         case orderKey           = "order_key"
 
+        case isEditable         = "is_editable"
+        case needsPayment       = "needs_payment"
+        case needsProcessing    = "needs_processing"
         case number             = "number"
         case status             = "status"
         case currency           = "currency"
@@ -297,6 +332,9 @@ extension Order: Equatable {
             lhs.parentID == rhs.parentID &&
             lhs.customerID == rhs.customerID &&
             lhs.orderKey == rhs.orderKey &&
+            lhs.isEditable == rhs.isEditable &&
+            lhs.needsPayment == rhs.needsPayment &&
+            lhs.needsProcessing == rhs.needsProcessing &&
             lhs.number == rhs.number &&
             lhs.status == rhs.status &&
             lhs.dateCreated == rhs.dateCreated &&

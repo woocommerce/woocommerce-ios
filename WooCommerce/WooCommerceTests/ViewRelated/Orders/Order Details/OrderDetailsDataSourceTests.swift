@@ -37,7 +37,12 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         insert(refund: makeRefund(orderID: order.orderID, siteID: order.siteID))
 
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(
+            order: order,
+            storageManager: storageManager,
+            cardPresentPaymentsConfiguration: Mocks.configuration
+        )
+
         dataSource.configureResultsControllers { }
 
         // When
@@ -57,7 +62,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertEqual(actualTitles, expectedTitles)
     }
 
-    func test_reloadSections_when_there_is_no_paid_date_then_customer_paid_row_is_hidden() throws {
+    func test_reloadSections_when_there_is_no_paid_date_then_customer_paid_row_is_visible() throws {
         // Given
         let order = Order.fake()
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
@@ -68,7 +73,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Then
         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
         let customerPaidRow = row(row: .customerPaid, in: paymentSection)
-        XCTAssertNil(customerPaidRow)
+        XCTAssertNotNil(customerPaidRow)
     }
 
     func test_reloadSections_when_there_is_a_paid_date_then_customer_paid_row_is_visible() throws {
@@ -192,53 +197,10 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(row(row: .markCompleteButton(style: .secondary, showsBottomSpacing: false), in: productsSection))
     }
 
-    func test_collect_payment_button_is_visible_and_primary_style_if_order_status_is_processing_and_method_is_cash_on_delivery() throws {
-        // Given
-        let order = makeOrder().copy(status: .processing, datePaid: .some(nil), paymentMethodID: "cod")
+    func test_reloadSections_when_isEligibleForPayment_is_false_then_collect_payment_button_is_not_visible() throws {
+        //Given
+        let order = makeOrder().copy(datePaid: .some(Date())) // Paid orders are not eligible for payment
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
-        dataSource.configureResultsControllers { }
-
-        // When
-        dataSource.reloadSections()
-
-        // Then
-        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
-        XCTAssertNotNil(row(row: .collectCardPaymentButton, in: paymentSection))
-    }
-
-    func test_collect_payment_button_is_visible_and_primary_style_if_order_status_is_on_hold_and_method_is_woocommerce_payments() throws {
-        // Given
-        let order = makeOrder().copy(status: .onHold, datePaid: .some(nil), paymentMethodID: "woocommerce_payments")
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
-        dataSource.configureResultsControllers { }
-
-        // When
-        dataSource.reloadSections()
-
-        // Then
-        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
-        XCTAssertNotNil(row(row: .collectCardPaymentButton, in: paymentSection))
-    }
-
-    func test_collect_payment_button_is_visible_and_primary_style_if_order_status_is_on_hold_and_method_is_stripe() throws {
-        // Given
-        let order = makeOrder().copy(status: .onHold, datePaid: .some(nil), paymentMethodID: "stripe")
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
-        dataSource.configureResultsControllers { }
-
-        // When
-        dataSource.reloadSections()
-
-        // Then
-        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
-        XCTAssertNotNil(row(row: .collectCardPaymentButton, in: paymentSection))
-    }
-
-    func test_collect_payment_button_is_not_visible_if_order_is_processing_and_order_is_not_eligible_for_cash_on_delivery() throws {
-        // Given
-        let order = makeOrder().copy(status: .processing, datePaid: .some(nil), paymentMethodID: "cash")
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
-        dataSource.configureResultsControllers { }
 
         // When
         dataSource.reloadSections()
@@ -248,25 +210,10 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(row(row: .collectCardPaymentButton, in: paymentSection))
     }
 
-    func test_collect_payment_button_is_not_visible_if_order_is_eligible_for_cash_on_delivery_and_total_amount_is_zero() throws {
-        // Given
-        let order = makeOrder().copy(status: .processing, datePaid: .some(nil), total: "0", paymentMethodID: "cod")
+    func test_reloadSections_when_isEligibleForPayment_is_true_then_collect_payment_button_is_visible() throws {
+        //Given
+        let order = makeOrder().copy(needsPayment: true) // Unpaid orders are eligible for payment
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
-        dataSource.configureResultsControllers { }
-
-        // When
-        dataSource.reloadSections()
-
-        // Then
-        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
-        XCTAssertNil(row(row: .collectCardPaymentButton, in: paymentSection))
-    }
-
-    func test_collect_payment_button_is_visible_if_order_is_eligible_for_cash_on_delivery_and_total_amount_is_greater_than_zero() throws {
-        // Given
-        let order = makeOrder().copy(status: .processing, datePaid: .some(nil), total: "1", paymentMethodID: "cod")
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
-        dataSource.configureResultsControllers { }
 
         // When
         dataSource.reloadSections()
@@ -274,93 +221,6 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Then
         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
         XCTAssertNotNil(row(row: .collectCardPaymentButton, in: paymentSection))
-    }
-
-    func test_collect_payment_button_is_not_visible_if_order_is_a_confirmed_booking_and_total_amount_is_zero() throws {
-        // Given
-        let order = makeOrder().copy(status: .processing, datePaid: .some(nil), total: "0", paymentMethodID: "wc-booking-gateway")
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
-        dataSource.configureResultsControllers { }
-
-        // When
-        dataSource.reloadSections()
-
-        // Then
-        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
-        XCTAssertNil(row(row: .collectCardPaymentButton, in: paymentSection))
-    }
-
-    func test_collect_payment_button_is_visible_if_order_is_a_confirmed_booking_and_total_amount_is_greater_than_zero() throws {
-        // Given
-        let order = makeOrder().copy(status: .processing, datePaid: .some(nil), total: "1", paymentMethodID: "wc-booking-gateway")
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
-        dataSource.configureResultsControllers { }
-
-        // When
-        dataSource.reloadSections()
-
-        // Then
-        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
-        XCTAssertNotNil(row(row: .collectCardPaymentButton, in: paymentSection))
-    }
-
-
-    func test_collect_payment_button_is_not_visible_if_date_paid_is_not_nil() throws {
-         // Given
-        let order = makeOrder().copy(status: .processing, datePaid: Date(), total: "0", paymentMethodID: "cod")
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
-        dataSource.configureResultsControllers { }
-
-        // When
-        dataSource.reloadSections()
-
-        // Then
-        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
-        XCTAssertNil(row(row: .collectCardPaymentButton, in: paymentSection))
-    }
-
-    func test_collect_payment_button_is_visible_if_order_is_eligible_and_currency_is_usd() throws {
-        // Given
-        let order = makeOrder().copy(status: .processing, currency: "usd", datePaid: .some(nil), total: "100", paymentMethodID: "cod")
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
-        dataSource.configureResultsControllers { }
-
-        // When
-        dataSource.reloadSections()
-
-        // Then
-        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
-        XCTAssertNotNil(row(row: .collectCardPaymentButton, in: paymentSection))
-    }
-
-    func test_collect_payment_button_is_visible_if_order_is_eligible_and_currency_is_in_configuration() throws {
-        // Given
-        let configuration = CardPresentPaymentsConfiguration(country: "CA")
-        let order = makeOrder().copy(status: .processing, currency: "cad", datePaid: .some(nil), total: "100", paymentMethodID: "cod")
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: configuration)
-        dataSource.configureResultsControllers { }
-
-        // When
-        dataSource.reloadSections()
-
-        // Then
-        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
-        XCTAssertNotNil(row(row: .collectCardPaymentButton, in: paymentSection))
-    }
-
-    func test_collect_payment_button_is_not_visible_if_order_currency_is_not_in_configuration() throws {
-        // Given
-        let configuration = CardPresentPaymentsConfiguration(country: "US")
-        let order = makeOrder().copy(status: .processing, currency: "cad", datePaid: .some(nil), total: "100", paymentMethodID: "cod")
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: configuration)
-        dataSource.configureResultsControllers { }
-
-        // When
-        dataSource.reloadSections()
-
-        // Then
-        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
-        XCTAssertNil(row(row: .collectCardPaymentButton, in: paymentSection))
     }
 
     func test_create_shipping_label_button_is_visible_for_eligible_order_with_no_labels() throws {
@@ -431,9 +291,9 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(createShippingLabelRow)
     }
 
-    func test_create_shipping_label_button_is_not_visible_for_cash_on_delivery_order() throws {
+    func test_create_shipping_label_button_is_not_visible_when_order_is_eligible_for_payment() throws {
         // Given
-        let order = makeOrder().copy(status: .processing, datePaid: .some(nil), total: "100", paymentMethodID: "cod")
+        let order = makeOrder().copy(needsPayment: true, status: .pending)
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.isEligibleForShippingLabelCreation = true
 
@@ -472,7 +332,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Given
         let sampleSiteID: Int64 = 1234
         let order = makeOrder()
-        let activePlugin = SitePlugin.fake().copy(siteID: sampleSiteID, status: .active, name: "WooCommerce Shipping & Tax")
+        let activePlugin = SitePlugin.fake().copy(siteID: sampleSiteID, status: .active, name: SitePlugin.SupportedPlugin.WCShip)
         insert(activePlugin)
 
         let currencySettings = CurrencySettings(currencyCode: .USD,
@@ -525,7 +385,9 @@ final class OrderDetailsDataSourceTests: XCTestCase {
                                                 storageManager: storageManager,
                                                 cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration(country: "US"),
                                                 currencySettings: currencySettings,
-                                                siteSettings: [siteSetting], featureFlags: MockFeatureFlagService(shippingLabelsOnboardingM1: true))
+                                                siteSettings: [siteSetting],
+                                                userIsAdmin: true,
+                                                featureFlags: MockFeatureFlagService(shippingLabelsOnboardingM1: true))
         dataSource.configureResultsControllers { }
 
         // When
@@ -599,7 +461,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         }
     }
 
-    func test_morel_button_is_not_visible_in_product_section_for_cash_on_delivery_order() throws {
+    func test_more_button_is_not_visible_in_product_section_for_cash_on_delivery_order() throws {
         // Given
         let order = makeOrder().copy(status: .processing, datePaid: .some(nil), total: "100", paymentMethodID: "cod")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
@@ -615,6 +477,40 @@ final class OrderDetailsDataSourceTests: XCTestCase {
             XCTFail("Product section should not show button on the header for cash on delivery order")
             return
         }
+    }
+
+    func test_custom_fields_button_is_visible() throws {
+        // Given
+        let order = MockOrders().makeOrder(customFields: [
+            OrderMetaData(metadataID: 123, key: "Key", value: "Value")
+        ])
+        let dataSource = OrderDetailsDataSource(
+            order: order, storageManager: storageManager,
+            cardPresentPaymentsConfiguration: Mocks.configuration
+        )
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let customFieldSection = section(withCategory: .customFields, from: dataSource)
+        XCTAssertNotNil(customFieldSection)
+    }
+
+    func test_custom_fields_button_is_hidden_when_order_contains_no_custom_fields_to_display() throws {
+        // Given
+        let order = MockOrders().makeOrder(customFields: [])
+        let dataSource = OrderDetailsDataSource(
+            order: order, storageManager: storageManager,
+            cardPresentPaymentsConfiguration: Mocks.configuration
+        )
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let customFieldSection = section(withCategory: .customFields, from: dataSource)
+        XCTAssertNil(customFieldSection)
     }
 }
 
@@ -647,6 +543,7 @@ private extension OrderDetailsDataSourceTests {
                                               name: "OrderItemRefund",
                                               productID: 1,
                                               variationID: 1,
+                                              refundedItemID: "1",
                                               quantity: 1,
                                               price: NSDecimalNumber(integerLiteral: 1),
                                               sku: nil,

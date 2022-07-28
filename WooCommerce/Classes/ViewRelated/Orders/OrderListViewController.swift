@@ -103,11 +103,15 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
     /// Callback closure when an order is selected
     ///
-    private var switchDetailsHandler: (OrderDetailsViewModel) -> Void
+    private var switchDetailsHandler: (OrderDetailsViewModel?) -> Void
 
     /// Currently selected index path in the table view
     ///
     private var selectedIndexPath: IndexPath?
+
+    /// Currently selected order ID in the table view
+    ///
+    private var selectedOrderID: Int64?
 
     private lazy var isSplitViewInOrdersTabEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
 
@@ -118,7 +122,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     init(siteID: Int64,
          title: String,
          viewModel: OrderListViewModel,
-         switchDetailsHandler: @escaping (OrderDetailsViewModel) -> Void) {
+         switchDetailsHandler: @escaping (OrderDetailsViewModel?) -> Void) {
         self.siteID = siteID
         self.viewModel = viewModel
         self.switchDetailsHandler = switchDetailsHandler
@@ -222,7 +226,13 @@ private extension OrderListViewController {
 
         /// Update the `dataSource` whenever there is a new snapshot.
         viewModel.snapshot.sink { [weak self] snapshot in
-            self?.dataSource.apply(snapshot)
+            guard let self = self else { return }
+            self.dataSource.apply(snapshot)
+
+            if self.isSplitViewInOrdersTabEnabled, self.splitViewController?.isCollapsed == false {
+                self.checkSelectedItem()
+            }
+
         }.store(in: &cancellables)
 
         /// Update the top banner when needed
@@ -412,6 +422,41 @@ private extension OrderListViewController {
             tableView.selectRow(at: selectedIndexPath, animated: false, scrollPosition: .none)
         }
     }
+
+    /// Checks to see if the selected item is still at the same index in the list and resets its state if not.
+    ///
+    func checkSelectedItem() {
+        guard let indexPath = selectedIndexPath, let orderID = selectedOrderID else {
+            return selectFirstItemIfPossible()
+        }
+
+        guard let objectID = dataSource.itemIdentifier(for: indexPath),
+            let orderDetailsViewModel = viewModel.detailsViewModel(withID: objectID) else {
+            return selectFirstItemIfPossible()
+        }
+
+        if orderDetailsViewModel.order.orderID != orderID {
+            selectFirstItemIfPossible()
+        }
+    }
+
+    /// Attempts setting the first item in the list as selected if there's any item at all.
+    /// Otherwise, triggers closure to remove the current selected item from the split view's secondary column.
+    ///
+    func selectFirstItemIfPossible() {
+        let firstIndexPath = IndexPath(row: 0, section: 0)
+        guard let objectID = dataSource.itemIdentifier(for: firstIndexPath),
+              let orderDetailsViewModel = viewModel.detailsViewModel(withID: objectID),
+                state != .empty else {
+            selectedOrderID = nil
+            selectedIndexPath = nil
+            return switchDetailsHandler(nil)
+        }
+        selectedOrderID = orderDetailsViewModel.order.orderID
+        selectedIndexPath = firstIndexPath
+        switchDetailsHandler(orderDetailsViewModel)
+        highlightSelectedRowIfNeeded()
+    }
 }
 
 
@@ -496,12 +541,13 @@ private extension OrderListViewController {
     /// Creates EmptyStateViewController.Config when there are no orders available
     ///
     func noOrdersAvailableConfig() -> EmptyStateViewController.Config {
-        .simple(
-            message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
-            image: .waitingForCustomersImage,
-            onPullToRefresh: { [weak self] refreshControl in
-                self?.pullToRefresh(sender: refreshControl)
-            })
+        .withLink(message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
+                  image: .emptyOrdersImage,
+                  details: Localization.allOrdersEmptyStateDetail,
+                  linkTitle: Localization.learnMore,
+                  linkURL: WooConstants.URLs.blog.asURL()) { [weak self] refreshControl in
+            self?.pullToRefresh(sender: refreshControl)
+        }
     }
 
     /// Creates EmptyStateViewController.Config for no orders matching the filter empty view
@@ -546,8 +592,8 @@ extension OrderListViewController: UITableViewDelegate {
 
         selectedIndexPath = indexPath
         let order = orderDetailsViewModel.order
-        ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": order.orderID,
-                                                                    "status": order.status.rawValue])
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order))
+        selectedOrderID = order.orderID
 
         if isSplitViewInOrdersTabEnabled {
             switchDetailsHandler(orderDetailsViewModel)
@@ -588,6 +634,28 @@ extension OrderListViewController: UITableViewDelegate {
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         delegate?.orderListScrollViewDidScroll(scrollView)
+    }
+
+    /// Provide an implementation to show cell swipe actions. Return `nil` to provide no action.
+    ///
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        /// Fetch the order view model and make sure the order is not marked as completed before proceeding.
+        ///
+        guard let objectID = dataSource.itemIdentifier(for: indexPath),
+              let cellViewModel = viewModel.cellViewModel(withID: objectID),
+              cellViewModel.status != .completed else {
+                  return nil
+              }
+
+        let markAsCompletedAction = UIContextualAction(style: .normal, title: Localization.markCompleted, handler: { _, _, completionHandler in
+            print("Mark as completed triggered...")
+            // TODO: Fire real action
+            completionHandler(true) // Tells the table that the action was performed and forces it to go back to its original state (un-swiped)
+        })
+        markAsCompletedAction.backgroundColor = .brand
+        markAsCompletedAction.image = .checkmarkImage
+
+        return UISwipeActionsConfiguration(actions: [markAsCompletedAction])
     }
 }
 
@@ -690,10 +758,15 @@ private extension OrderListViewController {
     enum Localization {
         static let allOrdersEmptyStateMessage = NSLocalizedString("Waiting for your first order",
                                                                   comment: "The message shown in the Orders → All Orders tab if the list is empty.")
+        static let allOrdersEmptyStateDetail = NSLocalizedString("Explore how you can increase your store sales",
+                                                                 comment: "The detailed message shown in the Orders → All Orders tab if the list is empty.")
+        static let learnMore = NSLocalizedString("Learn more", comment: "Title of button shown in the Orders → All Orders tab if the list is empty.")
         static let filteredOrdersEmptyStateMessage = NSLocalizedString("We're sorry, we couldn't find any order that match %@",
                    comment: "Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user.")
         static let clearButton = NSLocalizedString("Clear Filters",
                                  comment: "Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List")
+
+        static let markCompleted = NSLocalizedString("Mark Completed", comment: "Title for the swipe order action to mark it as completed")
     }
 
     enum Settings {

@@ -341,6 +341,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderMetaData.self), 0)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder(), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
@@ -348,6 +349,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderMetaData.self), 1)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated(), in: viewStorage)
         let storageOrder1 = viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderMutated().orderID)
@@ -357,6 +359,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 3)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderMetaData.self), 2)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated2(), in: viewStorage)
         let storageOrder2 = viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderMutated2().orderID)
@@ -366,6 +369,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 4)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderMetaData.self), 0)
     }
 
     /// Verifies that `upsertStoredOrder` effectively inserts a new Order, with the specified payload.
@@ -1125,13 +1129,16 @@ private extension OrderStoreTests {
                                  orderID: 963,
                                  customerID: 11,
                                  orderKey: "abc123",
+                                 isEditable: true,
+                                 needsPayment: true,
+                                 needsProcessing: true,
                                  number: "963",
                                  status: .processing,
                                  currency: "USD",
                                  customerNote: "",
-                                 dateCreated: date(with: "2018-04-03T23:05:12"),
-                                 dateModified: date(with: "2018-04-03T23:05:14"),
-                                 datePaid: date(with: "2018-04-03T23:05:14"),
+                                 dateCreated: DateFormatter.dateFromString(with: "2018-04-03T23:05:12"),
+                                 dateModified: DateFormatter.dateFromString(with: "2018-04-03T23:05:14"),
+                                 datePaid: DateFormatter.dateFromString(with: "2018-04-03T23:05:14"),
                                  discountTotal: "30.00",
                                  discountTax: "1.20",
                                  shippingTotal: "0.00",
@@ -1146,7 +1153,8 @@ private extension OrderStoreTests {
                                  shippingAddress: sampleAddress(),
                                  shippingLines: sampleShippingLines(),
                                  coupons: sampleCoupons(),
-                                 taxes: sampleOrderTaxLines())
+                                 taxes: sampleOrderTaxLines(),
+                                 customFields: sampleCustomFields())
     }
 
     func sampleOrderMutated() -> Networking.Order {
@@ -1155,7 +1163,8 @@ private extension OrderStoreTests {
                                   total: "41.20",
                                   items: sampleItemsMutated(),
                                   coupons: sampleCouponsMutated(),
-                                  taxes: sampleOrderTaxLinesMutated())
+                                  taxes: sampleOrderTaxLinesMutated(),
+                                  customFields: sampleCustomFieldsMutated())
     }
 
     func sampleOrderMutated2() -> Networking.Order {
@@ -1164,7 +1173,8 @@ private extension OrderStoreTests {
                                   total: "41.20",
                                   items: sampleItemsMutated2(),
                                   coupons: [],
-                                  taxes: [])
+                                  taxes: [],
+                                  customFields: [])
     }
 
     func sampleAddress() -> Networking.Address {
@@ -1334,13 +1344,6 @@ private extension OrderStoreTests {
         return [item1]
     }
 
-    func date(with dateString: String) -> Date {
-        guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
-            return Date()
-        }
-        return date
-    }
-
     func taxes() -> [Networking.OrderItemTax] {
         return [Networking.OrderItemTax(taxID: 75, subtotal: "0.45", total: "0.45")]
     }
@@ -1348,5 +1351,14 @@ private extension OrderStoreTests {
     func taxesMutated() -> [Networking.OrderItemTax] {
         [Networking.OrderItemTax(taxID: 73, subtotal: "0.9", total: "0.9"),
          Networking.OrderItemTax(taxID: 75, subtotal: "0.45", total: "0.45")]
+    }
+
+    func sampleCustomFields() -> [Networking.OrderMetaData] {
+        return [Networking.OrderMetaData(metadataID: 18148, key: "Viewed Currency", value: "USD")]
+    }
+
+    func sampleCustomFieldsMutated() -> [Networking.OrderMetaData] {
+        return [Networking.OrderMetaData(metadataID: 18148, key: "Viewed Currency", value: "GBP"),
+                Networking.OrderMetaData(metadataID: 18149, key: "Converted Order Total", value: "223.71 GBP")]
     }
 }

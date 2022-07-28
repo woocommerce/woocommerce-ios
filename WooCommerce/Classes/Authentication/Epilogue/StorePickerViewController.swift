@@ -138,6 +138,31 @@ final class StorePickerViewController: UIViewController {
         }
     }
 
+    private lazy var removeAppleIDAccessCoordinator: RemoveAppleIDAccessCoordinator =
+    RemoveAppleIDAccessCoordinator(sourceViewController: self) { [weak self] in
+        guard let self = self else { return .failure(RemoveAppleIDAccessError.presenterDeallocated) }
+        return await self.removeAppleIDAccess()
+    } onRemoveSuccess: { [weak self] in
+        self?.restartAuthentication()
+    }
+
+    private let appleIDCredentialChecker: AppleIDCredentialCheckerProtocol
+    private let stores: StoresManager
+    private let featureFlagService: FeatureFlagService
+
+    init(appleIDCredentialChecker: AppleIDCredentialCheckerProtocol = AppleIDCredentialChecker(),
+         stores: StoresManager = ServiceLocator.stores,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+        self.appleIDCredentialChecker = appleIDCredentialChecker
+        self.stores = stores
+        self.featureFlagService = featureFlagService
+        super.init(nibName: Self.nibName, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
@@ -619,6 +644,16 @@ extension StorePickerViewController: UITableViewDataSource {
 
                 WebviewHelper.launch(WooConstants.URLs.emptyStoresJetpackSetup.asURL(), with: self)
             }
+            let isRemoveAppleIDAccessButtonVisible = appleIDCredentialChecker.hasAppleUserID()
+            && featureFlagService.isFeatureFlagEnabled(.appleIDAccountDeletion)
+            cell.updateRemoveAppleIDAccessButtonVisibility(isVisible: isRemoveAppleIDAccessButtonVisible)
+            if isRemoveAppleIDAccessButtonVisible {
+                cell.onCloseAccountButtonTapped = { [weak self] in
+                    guard let self = self else { return }
+                    ServiceLocator.analytics.track(event: .closeAccountTapped(source: .emptyStores))
+                    self.removeAppleIDAccessCoordinator.start()
+                }
+            }
             return cell
         }
         let cell = tableView.dequeueReusableCell(StoreTableViewCell.self, for: indexPath)
@@ -678,6 +713,17 @@ extension StorePickerViewController: UITableViewDelegate {
     }
 }
 
+private extension StorePickerViewController {
+    func removeAppleIDAccess() async -> Result<Void, Error> {
+        await withCheckedContinuation { [weak self] continuation in
+            guard let self = self else { return }
+            let action = AccountAction.closeAccount { result in
+                continuation.resume(returning: result)
+            }
+            self.stores.dispatch(action)
+        }
+    }
+}
 
 // MARK: - StorePickerConstants: Contains all of the constants required by the Picker.
 //

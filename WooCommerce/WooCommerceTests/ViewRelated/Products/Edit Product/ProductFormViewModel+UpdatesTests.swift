@@ -149,8 +149,8 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
 
         // Action
         let newImage = ProductImage(imageID: 17,
-                                    dateCreated: date(with: "2018-01-26T21:49:45"),
-                                    dateModified: date(with: "2018-01-26T21:50:11"),
+                                    dateCreated: DateFormatter.dateFromString(with: "2018-01-26T21:49:45"),
+                                    dateModified: DateFormatter.dateFromString(with: "2018-01-26T21:50:11"),
                                     src: "https://somewebsite.com/shirt.jpg",
                                     name: "Tshirt",
                                     alt: "")
@@ -338,17 +338,8 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
     }
 }
 
-private extension ProductFormViewModel_UpdatesTests {
-    func date(with dateString: String) -> Date {
-        guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
-            return Date()
-        }
-        return date
-    }
-}
-
 extension ProductImageActionHandler {
     convenience init(siteID: Int64, product: ProductFormDataModel) {
-        self.init(siteID: siteID, productID: product.productID, imageStatuses: product.imageStatuses)
+        self.init(siteID: siteID, productID: .product(id: product.productID), imageStatuses: product.imageStatuses)
     }
 }

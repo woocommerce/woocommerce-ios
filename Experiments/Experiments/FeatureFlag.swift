@@ -58,6 +58,10 @@ public enum FeatureFlag: Int {
     ///
     case couponEditing
 
+    /// Displays the option to create a coupon
+    ///
+    case couponCreation
+
     /// Enable optimistic updates for orders
     ///
     case updateOrderOptimistically
@@ -77,4 +81,24 @@ public enum FeatureFlag: Int {
     /// Enable image upload after leaving the product form
     ///
     case backgroundProductImageUpload
+
+    /// Enable IPP reader manuals consolidation screen
+    ///
+    case consolidatedCardReaderManuals
+
+    /// Apple ID account deletion
+    ///
+    case appleIDAccountDeletion
+
+    /// Showing a "New to WooCommerce" link in the login prologue screen
+    ///
+    case newToWooCommerceLinkInLoginPrologue
+
+    /// Onboarding experiment on the login prologue screen
+    ///
+    case loginPrologueOnboarding
+
+    /// Local notifications scheduled 24 hours after certain login errors
+    ///
+    case loginErrorNotifications
 }

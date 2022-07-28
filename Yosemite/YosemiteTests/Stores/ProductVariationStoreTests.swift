@@ -559,6 +559,85 @@ final class ProductVariationStoreTests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
     }
 
+    // MARK: - ProductVariationAction.updateProductVariationImage
+
+    /// Verifies that `ProductVariationAction.updateProductVariationImage` effectively persists the returned product variation.
+    ///
+    func test_updateProductVariationImage_with_success_persists_returned_variation() throws {
+        // Given
+        let remote = MockProductVariationsRemote()
+        let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        let productVariationID: Int64 = 17
+        let expectedProductVariation = ProductVariation.fake().copy(siteID: sampleSiteID,
+                                                                    productID: sampleProductID,
+                                                                    productVariationID: productVariationID,
+                                                                    image: ProductImage.fake(),
+                                                                    // `stockQuantity` is set to non-nil in storage.
+                                                                    stockQuantity: 0)
+        let productVariation = ProductVariation.fake().copy(siteID: sampleSiteID,
+                                                            productID: sampleProductID,
+                                                            productVariationID: productVariationID)
+        remote.whenUpdatingProductVariationImage(siteID: sampleSiteID,
+                                                 productID: sampleProductID,
+                                                 productVariationID: productVariationID,
+                                                 thenReturn: .success(expectedProductVariation))
+
+        // Saves an existing ProductVariation into storage.
+        // Note: at least one field of `ProductVariation` before and after the update should be different.
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: productVariation)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageProductVariation.self), 1)
+
+        // When
+        let result: Result<Yosemite.ProductVariation, ProductUpdateError> = waitFor { promise in
+            let action = ProductVariationAction.updateProductVariationImage(siteID: self.sampleSiteID,
+                                                                            productID: self.sampleProductID,
+                                                                            variationID: productVariationID,
+                                                                            image: .fake()) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let updatedProductVariation = try XCTUnwrap(result.get())
+        assertEqual(expectedProductVariation, updatedProductVariation)
+
+        let storedProductVariation = viewStorage.loadProductVariation(siteID: sampleSiteID, productVariationID: productVariationID)
+        assertEqual(expectedProductVariation, storedProductVariation?.toReadOnly())
+    }
+
+    func test_updateProductImages_with_failure_returns_error() {
+        // Given
+        let remote = MockProductVariationsRemote()
+        let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        let productVariationID: Int64 = 17
+        let networkError = NSError(domain: "", code: 400, userInfo: nil)
+        remote.whenUpdatingProductVariationImage(siteID: sampleSiteID,
+                                                 productID: sampleProductID,
+                                                 productVariationID: productVariationID,
+                                                 thenReturn: .failure(networkError))
+        // Saves an existing ProductVariation into storage.
+        let productVariation = ProductVariation.fake().copy(siteID: sampleSiteID, productID: sampleProductID, productVariationID: productVariationID)
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: productVariation)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageProductVariation.self), 1)
+
+        // When
+        let result: Result<Yosemite.ProductVariation, ProductUpdateError> = waitFor { promise in
+            let action = ProductVariationAction.updateProductVariationImage(siteID: self.sampleSiteID,
+                                                                            productID: self.sampleProductID,
+                                                                            variationID: productVariationID,
+                                                                            image: .fake()) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure, .init(error: networkError))
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageProductVariation.self), 1)
+    }
+
     // MARK: `requestMissingVariations`
 
     func test_requestMissingVariations_only_completes_when_all_missing_variations_are_returned() throws {
@@ -841,16 +920,16 @@ private extension ProductVariationStoreTests {
                                 productVariationID: id,
                                 attributes: sampleProductVariationAttributes(),
                                 image: ProductImage(imageID: 1063,
-                                                    dateCreated: dateFromGMT("2019-11-01T04:12:05"),
-                                                    dateModified: dateFromGMT("2019-11-01T04:12:05"),
+                                                    dateCreated: DateFormatter.dateFromString(with: "2019-11-01T04:12:05"),
+                                                    dateModified: DateFormatter.dateFromString(with: "2019-11-01T04:12:05"),
                                                     src: imageSource,
                                                     name: "DSC_0010",
                                                     alt: ""),
                                 permalink: "https://chocolate.com/marble",
-                                dateCreated: dateFromGMT("2019-11-14T12:40:55"),
-                                dateModified: dateFromGMT("2019-11-14T13:06:42"),
-                                dateOnSaleStart: dateFromGMT("2019-10-15T21:30:00"),
-                                dateOnSaleEnd: dateFromGMT("2019-10-27T21:29:59"),
+                                dateCreated: DateFormatter.dateFromString(with: "2019-11-14T12:40:55"),
+                                dateModified: DateFormatter.dateFromString(with: "2019-11-14T13:06:42"),
+                                dateOnSaleStart: DateFormatter.dateFromString(with: "2019-10-15T21:30:00"),
+                                dateOnSaleEnd: DateFormatter.dateFromString(with: "2019-10-27T21:29:59"),
                                 status: .published,
                                 description: "<p>Nutty chocolate marble, 99% and organic.</p>\n",
                                 sku: "99%-nuts-marble",
@@ -890,9 +969,9 @@ private extension ProductVariationStoreTests {
                           status: .processing,
                           currency: "USD",
                           customerNote: "",
-                          dateCreated: dateFromGMT("2018-04-03T23:05:12"),
-                          dateModified: dateFromGMT("2018-04-03T23:05:14"),
-                          datePaid: dateFromGMT("2018-04-03T23:05:14"),
+                          dateCreated: DateFormatter.dateFromString(with: "2018-04-03T23:05:12"),
+                          dateModified: DateFormatter.dateFromString(with: "2018-04-03T23:05:14"),
+                          datePaid: DateFormatter.dateFromString(with: "2018-04-03T23:05:14"),
                           discountTotal: "30.00",
                           discountTax: "1.20",
                           shippingTotal: "0.00",
@@ -919,10 +998,5 @@ private extension ProductVariationStoreTests {
               total: "30.00",
               totalTax: "1.20",
               attributes: [])
-    }
-
-    func dateFromGMT(_ dateStringInGMT: String) -> Date {
-        let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
-        return dateFormatter.date(from: dateStringInGMT)!
     }
 }

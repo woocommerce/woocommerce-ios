@@ -447,6 +447,9 @@ extension ShippingLabelPackagesFormViewModel {
                      parentID: 0,
                      customerID: 11,
                      orderKey: "",
+                     isEditable: false,
+                     needsPayment: false,
+                     needsProcessing: false,
                      number: "963",
                      status: .processing,
                      currency: "USD",
@@ -471,7 +474,8 @@ extension ShippingLabelPackagesFormViewModel {
                      coupons: sampleCoupons(),
                      refunds: [],
                      fees: [],
-                     taxes: [])
+                     taxes: [],
+                     customFields: [])
     }
 
     static func sampleAddress() -> Address {

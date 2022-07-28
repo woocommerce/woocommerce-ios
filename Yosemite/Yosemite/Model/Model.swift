@@ -44,6 +44,7 @@ public typealias OrderStatusEnum = Networking.OrderStatusEnum
 public typealias OrderCouponLine = Networking.OrderCouponLine
 public typealias OrderFeeLine = Networking.OrderFeeLine
 public typealias OrderFeeTaxStatus = Networking.OrderFeeTaxStatus
+public typealias OrderMetaData = Networking.OrderMetaData
 public typealias OrderNote = Networking.OrderNote
 public typealias OrderTaxLine = Networking.OrderTaxLine
 public typealias OrderRefundCondensed = Networking.OrderRefundCondensed
@@ -219,6 +220,8 @@ public typealias StorageTopEarnerStats = Storage.TopEarnerStats
 public typealias StorageTopEarnerStatsItem = Storage.TopEarnerStatsItem
 public typealias StorageTaxClass = Storage.TaxClass
 public typealias StorageWCPayCharge = Storage.WCPayCharge
+public typealias FeatureAnnouncementCampaign = Storage.FeatureAnnouncementCampaign
+public typealias FeatureAnnouncementCampaignSettings = Storage.FeatureAnnouncementCampaignSettings
 
 // MARK: - Internal ReadOnly Models
 

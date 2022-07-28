@@ -5,7 +5,7 @@ import Yosemite
 ///
 struct OrderPaymentSection: View {
     /// View model to drive the view content
-    let viewModel: NewOrderViewModel.PaymentDataViewModel
+    let viewModel: EditableOrderViewModel.PaymentDataViewModel
 
     /// Indicates if the shipping line details screen should be shown or not.
     ///
@@ -29,6 +29,10 @@ struct OrderPaymentSection: View {
                     .headlineStyle()
 
                 Spacer()
+
+                Image(uiImage: .lockImage)
+                    .foregroundColor(Color(.brand))
+                    .renderedIf(viewModel.showNonEditableIndicators)
 
                 ProgressView()
                     .renderedIf(viewModel.isLoading)
@@ -67,6 +71,7 @@ struct OrderPaymentSection: View {
             }
             .buttonStyle(PlusButtonStyle())
             .padding()
+            .accessibilityIdentifier("add-shipping-button")
         }
     }
 
@@ -81,6 +86,7 @@ struct OrderPaymentSection: View {
             }
             .buttonStyle(PlusButtonStyle())
             .padding()
+            .accessibilityIdentifier("add-fee-button")
         }
     }
 }
@@ -101,7 +107,7 @@ private extension OrderPaymentSection {
 
 struct OrderPaymentSection_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = NewOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00", orderTotal: "20.00")
+        let viewModel = EditableOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00", orderTotal: "20.00")
 
         OrderPaymentSection(viewModel: viewModel)
             .previewLayout(.sizeThatFits)

@@ -1,3 +1,4 @@
+import WooFoundation
 import XCTest
 import Yosemite
 
@@ -93,31 +94,6 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(orderID, order.orderID)
     }
 
-    func test_there_should_not_be_share_link_action_if_order_is_not_pending_payment() {
-        // Given
-        let order = Order.fake().copy(status: .processing, total: "10.0", paymentURL: nil)
-
-        // When
-        let viewModel = OrderDetailsViewModel(order: order)
-
-        // Then
-        let actionButtonIDs = viewModel.moreActionsButtons.map { $0.id }
-        XCTAssertFalse(actionButtonIDs.contains(.sharePaymentLink))
-    }
-
-    func test_there_should_be_share_link_action_if_order_is_pending_payment() {
-        // Given
-        let paymentURL = URL(string: "http://www.automattic.com")
-        let order = Order.fake().copy(status: .pending, total: "10.0", paymentURL: paymentURL)
-
-        // When
-        let viewModel = OrderDetailsViewModel(order: order)
-
-        // Then
-        let actionButtonIDs = viewModel.moreActionsButtons.map { $0.id }
-        XCTAssertTrue(actionButtonIDs.contains(.sharePaymentLink))
-    }
-
     func test_there_should_not_be_edit_order_action_if_order_is_not_synced() {
         // Given
         let order = Order.fake().copy(total: "10.0")
@@ -126,7 +102,18 @@ final class OrderDetailsViewModelTests: XCTestCase {
         let viewModel = OrderDetailsViewModel(order: order)
 
         // Then
-        let actionButtonIDs = viewModel.moreActionsButtons.map { $0.id }
-        XCTAssertFalse(actionButtonIDs.contains(.editOrder))
+        XCTAssertFalse(viewModel.editButtonIsEnabled)
+    }
+
+    func test_paymentMethodsViewModel_title_contains_formatted_order_amount() {
+        // Given
+        let order = Order.fake().copy(currency: "EUR", total: "10.0")
+
+        // When
+        let currencyFormatter = CurrencyFormatter(currencySettings: .init())
+        let title = OrderDetailsViewModel(order: order, currencyFormatter: currencyFormatter).paymentMethodsViewModel.title
+
+        // Then
+        XCTAssertTrue(title.contains("\u{20AC}10.0"))
     }
 }

@@ -114,6 +114,7 @@ private extension StoreStatsAndTopPerformersViewController {
 
     func syncStats(forced: Bool, viewControllerToSync: StoreStatsAndTopPerformersPeriodViewController, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
         guard !isSyncing else {
+            onCompletion?(.success(()))
             return
         }
 
@@ -149,11 +150,13 @@ private extension StoreStatsAndTopPerformersViewController {
 
         [viewControllerToSync].forEach { [weak self] vc in
             guard let self = self else {
+                onCompletion?(.success(()))
                 return
             }
 
             if !forced, let lastFullSyncTimestamp = vc.lastFullSyncTimestamp, Date().timeIntervalSince(lastFullSyncTimestamp) < vc.minimalIntervalBetweenSync {
                 // data refresh is not required
+                onCompletion?(.success(()))
                 return
             }
 

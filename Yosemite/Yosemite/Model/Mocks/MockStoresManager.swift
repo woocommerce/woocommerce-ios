@@ -13,7 +13,7 @@ public class MockStoresManager: StoresManager {
 
     /// A derived stack we use for inserting data
     ///
-    private lazy var derivedStorage = storageManager.writerDerivedStorage
+    private lazy var derivedStorage = storageManager.viewStorage
 
     /// All of our action handlers
     private let appSettingsActionHandler: MockAppSettingsActionHandler
@@ -34,6 +34,9 @@ public class MockStoresManager: StoresManager {
     private let shippingLabelActionHandler: MockShippingLabelActionHandler
     private let statsV4ActionHandler: MockStatsActionV4Handler
     private let userActionHandler: MockUserActionHandler
+    private let orderCardPresentPaymentEligibilityActionHandler: MockOrderCardPresentPaymentEligibilityActionHandler
+    private let systemStatusActionHandler: MockSystemStatusActionHandler
+    private let cardPresentPaymentActionHandler: MockCardPresentPaymentActionHandler
 
 
     init(objectGraph: MockObjectGraph, storageManager: StorageManagerType) {
@@ -58,6 +61,12 @@ public class MockStoresManager: StoresManager {
         productReviewActionHandler = MockProductReviewActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         notificationActionHandler = MockNotificationActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         userActionHandler = MockUserActionHandler(objectGraph: objectGraph, storageManager: storageManager)
+        orderCardPresentPaymentEligibilityActionHandler = MockOrderCardPresentPaymentEligibilityActionHandler(
+            objectGraph: objectGraph,
+            storageManager: storageManager
+        )
+        systemStatusActionHandler = MockSystemStatusActionHandler(objectGraph: objectGraph, storageManager: storageManager)
+        cardPresentPaymentActionHandler = MockCardPresentPaymentActionHandler(objectGraph: objectGraph, storageManager: storageManager)
     }
 
     /// Accessor for whether the user is logged in (spoiler: they always will be when mocking)
@@ -126,8 +135,12 @@ public class MockStoresManager: StoresManager {
             announcementsActionHandler.handle(action: action)
         case let action as ReceiptAction:
             receiptActionHandler.handle(action: action)
-        case _ as CardPresentPaymentAction, _ as SystemStatusAction:
-            break
+        case let action as OrderCardPresentPaymentEligibilityAction:
+            orderCardPresentPaymentEligibilityActionHandler.handle(action: action)
+        case let action as SystemStatusAction:
+            systemStatusActionHandler.handle(action: action)
+        case let action as CardPresentPaymentAction:
+            cardPresentPaymentActionHandler.handle(action: action)
         default:
             fatalError("Unable to handle action: \(action.identifier) \(String(describing: action))")
         }
@@ -153,7 +166,18 @@ public class MockStoresManager: StoresManager {
 
     @discardableResult
     public func synchronizeEntities(onCompletion: (() -> Void)?) -> StoresManager {
-        onCompletion?()
+        if let siteID = sessionManager.defaultStoreID {
+            Task {
+                await synchronizeGeneralSiteSettings(siteID: siteID)
+                await synchronizeSystemPlugins(siteID: siteID)
+                await loadPaymentGatewayAccounts(siteID: siteID)
+                await MainActor.run {
+                    onCompletion?()
+                }
+            }
+        } else {
+            onCompletion?()
+        }
         return self
     }
 
@@ -182,5 +206,34 @@ public class MockStoresManager: StoresManager {
 
     public func updateDefaultStore(_ site: Site) {
         sessionManager.defaultSite = site
+    }
+}
+
+private extension MockStoresManager {
+    func synchronizeGeneralSiteSettings(siteID: Int64) async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            let action = SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { _ in
+                continuation.resume(returning: ())
+            }
+            dispatch(action)
+        }
+    }
+
+    func synchronizeSystemPlugins(siteID: Int64) async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            let action = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID) { _ in
+                continuation.resume(returning: ())
+            }
+            dispatch(action)
+        }
+    }
+
+    func loadPaymentGatewayAccounts(siteID: Int64) async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            let action = CardPresentPaymentAction.loadAccounts(siteID: siteID) { _ in
+                continuation.resume(returning: ())
+            }
+            dispatch(action)
+        }
     }
 }

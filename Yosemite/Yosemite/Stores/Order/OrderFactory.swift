@@ -13,6 +13,9 @@ public enum OrderFactory {
               parentID: 0,
               customerID: 0,
               orderKey: "",
+              isEditable: false,
+              needsPayment: false,
+              needsProcessing: false,
               number: "",
               status: status,
               currency: "",
@@ -37,7 +40,8 @@ public enum OrderFactory {
               coupons: [],
               refunds: [],
               fees: [simplePaymentFee(feeID: 0, amount: amount, taxable: taxable)],
-              taxes: [])
+              taxes: [],
+              customFields: [])
     }
 
     /// Creates a fee line suitable to be used within a simple payments order.

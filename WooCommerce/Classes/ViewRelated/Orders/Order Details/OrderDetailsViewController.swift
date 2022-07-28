@@ -7,6 +7,7 @@ import MessageUI
 import Combine
 import SwiftUI
 import WooFoundation
+import Experiments
 
 // MARK: - OrderDetailsViewController: Displays the details for a given Order.
 //
@@ -133,14 +134,14 @@ private extension OrderDetailsViewController {
         let titleFormat = NSLocalizedString("Order #%1$@", comment: "Order number title. Parameters: %1$@ - order number")
         title = String.localizedStringWithFormat(titleFormat, viewModel.order.number)
 
-        // Actions menu
-        if viewModel.moreActionsButtons.isNotEmpty {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(image: .moreImage,
-                                                                style: .plain,
-                                                                target: self,
-                                                                action: #selector(presentActionMenuSheet(_:)))
-        } else {
-            navigationItem.rightBarButtonItem = nil
+        let editButton = UIBarButtonItem(title: Localization.NavBar.editOrder,
+                                         style: .plain,
+                                         target: self,
+                                         action: #selector(editOrder))
+        editButton.accessibilityIdentifier = "order-details-edit-button"
+        editButton.isEnabled = viewModel.editButtonIsEnabled
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing) {
+            navigationItem.rightBarButtonItem = editButton
         }
     }
 
@@ -308,52 +309,18 @@ private extension OrderDetailsViewController {
         }
     }
 
-    /// Actions Menu Sheet.
-    ///
-    @objc func presentActionMenuSheet(_ sender: UIBarButtonItem) {
-        let sheetTitle = "#" + viewModel.order.number
-
-        // Configure share sheet
-        let actionSheet = UIAlertController(title: nil, message: sheetTitle, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = .text
-        actionSheet.addCancelActionWithTitle(Localization.ActionsMenu.cancelAction)
-
-        // Create action buttons
-        for button in viewModel.moreActionsButtons {
-            actionSheet.addDefaultActionWithTitle(button.title) { [weak self] _ in
-                switch button.id {
-                case .sharePaymentLink:
-                    self?.sharePaymentLink(sender)
-                case .editOrder:
-                    self?.editOrder()
-                }
-            }
-        }
-
-        // Handle sheet presentation
-        let popoverController = actionSheet.popoverPresentationController
-        popoverController?.barButtonItem = sender
-        present(actionSheet, animated: true)
-    }
-
-    /// Shares the payment link(if it exists) using the native sharing helper.
-    ///
-    private func sharePaymentLink(_ sender: UIBarButtonItem) {
-        guard let paymentLink = viewModel.paymentLink else {
-            return DDLogError("⛔️ No payment link for order: \(viewModel.order.orderID)")
-        }
-
-        SharingHelper.shareURL(url: paymentLink, title: nil, from: sender, in: self) { _, completed, _, _ in
-            if completed {
-                ServiceLocator.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailPaymentLinkShared())
-            }
-        }
-    }
-
     /// Presents the order edit form
     ///
-    private func editOrder() {
-        // TODO: Implement
+    @objc private func editOrder() {
+        let viewModel = EditableOrderViewModel(siteID: viewModel.order.siteID, flow: .editing(initialOrder: viewModel.order))
+        let viewController = OrderFormHostingController(viewModel: viewModel)
+        let navController = UINavigationController(rootViewController: viewController)
+        present(navController, animated: true)
+
+        let hasMultipleShippingLines = self.viewModel.order.shippingLines.count > 1
+        let hasMultipleFeeLines = self.viewModel.order.fees.count > 1
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderEditButtonTapped(hasMultipleShippingLines: hasMultipleShippingLines,
+                                                                                             hasMultipleFeeLines: hasMultipleFeeLines))
     }
 }
 
@@ -595,15 +562,16 @@ private extension OrderDetailsViewController {
     }
 
     @objc private func collectPaymentTapped() {
-        viewModel.collectPayment(rootViewController: self) { [weak self] result in
-            guard let self = self else { return }
-            // Refresh date & view once payment has been collected.
-            if result.isSuccess {
-                self.viewModel.syncOrderAfterPaymentCollection {
-                    self.viewModel.refreshCardPresentPaymentEligibility()
-                }
-            }
-        }
+        collectPayment()
+
+        // Track tapped event
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.collectPaymentTapped())
+    }
+
+    private func collectPayment() {
+        let paymentMethodsViewController = PaymentMethodsHostingController(viewModel: viewModel.paymentMethodsViewModel)
+        let paymentMethodsNavigationController = WooNavigationController(rootViewController: paymentMethodsViewController)
+        present(paymentMethodsNavigationController, animated: true)
     }
 
     private func itemAddOnsButtonTapped(addOns: [OrderItemAttribute]) {
@@ -825,6 +793,10 @@ private extension OrderDetailsViewController {
                                                                       comment: "Text of the loading banner in Order Detail when loaded for the first time")
         }
 
+        enum NavBar {
+            static let editOrder = NSLocalizedString("Edit", comment: "Button to edit an order on Order Details screen")
+        }
+
         enum ProductsMoreMenu {
             static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel the more menu action sheet on Products section")
             static let createShippingLabelAction = NSLocalizedString("Create Shipping Label",
@@ -852,8 +824,8 @@ private extension OrderDetailsViewController {
         }
 
         enum ActionsMenu {
+            static let accessibilityLabel = NSLocalizedString("Order actions", comment: "Accessibility label for button triggering more actions menu sheet.")
             static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel the main more actions menu sheet.")
-            static let paymentLink = NSLocalizedString("Share Payment Link", comment: "Title to share an order payment link.")
         }
     }
 

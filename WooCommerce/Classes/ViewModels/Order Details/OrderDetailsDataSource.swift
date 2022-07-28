@@ -24,10 +24,10 @@ final class OrderDetailsDataSource: NSObject {
     ///
     private(set) var sections = [Section]()
 
-    /// Is this order processing?
+    /// Is this order processing? Payment received (paid). The order is awaiting fulfillment.
     ///
-    private var isProcessingPayment: Bool {
-        return order.status == OrderStatusEnum.processing
+    private var isProcessingStatus: Bool {
+        order.status == OrderStatusEnum.processing
     }
 
     /// Is this order fully refunded?
@@ -46,10 +46,8 @@ final class OrderDetailsDataSource: NSObject {
 
     /// Whether the order is eligible for card present payment.
     ///
-    var isEligibleForCardPresentPayment: Bool {
-        return cardPresentPaymentsConfiguration.isSupportedCountry &&
-        order.isEligibleForCardPresentPayment(cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration,
-                                              products: resultsControllers.products)
+    var isEligibleForPayment: Bool {
+        order.needsPayment
     }
 
     var isEligibleForRefund: Bool {
@@ -66,14 +64,20 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var shouldShowShippingLabelCreation: Bool {
         return isEligibleForShippingLabelCreation && shippingLabels.nonRefunded.isEmpty &&
-            !isEligibleForCardPresentPayment
+            !isEligibleForPayment
+    }
+
+    /// Whether the row for amount paid should be visible.
+    ///
+    private var shouldShowCustomerPaidRow: Bool {
+        order.datePaid != nil
     }
 
     /// Whether the option to re-create shipping labels should be visible.
     ///
     var shouldAllowRecreatingShippingLabels: Bool {
         return isEligibleForShippingLabelCreation && shippingLabels.isNotEmpty &&
-            !isEligibleForCardPresentPayment
+            !isEligibleForPayment
     }
 
     /// Whether the option to install the WCShip extension should be visible.
@@ -87,28 +91,24 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var shouldAllowWCShipInstallation: Bool {
         let isFeatureFlagEnabled = featureFlags.isFeatureFlagEnabled(.shippingLabelsOnboardingM1)
-        let plugin = resultsControllers.sitePlugins.first { $0.name == "WooCommerce Shipping & Tax" }
-        let isPluginInstalled = plugin != nil
+        let plugin = resultsControllers.sitePlugins.first { $0.name == SitePlugin.SupportedPlugin.WCShip }
+        let isPluginInstalled = plugin != nil && resultsControllers.sitePlugins.count > 0
         let isPluginActive = plugin?.status.isActive ?? false
         let isCountryCodeUS = SiteAddress(siteSettings: siteSettings).countryCode == SiteAddress.CountryCode.US.rawValue
         let isCurrencyUSD = currencySettings.currencyCode == .USD
 
         guard isFeatureFlagEnabled,
+              userIsAdmin,
               !isPluginInstalled,
               !isPluginActive,
               isCountryCodeUS,
               isCurrencyUSD,
-              !isEligibleForCardPresentPayment else {
+              !isEligibleForPayment else {
             return false
         }
 
         return true
     }
-
-    func cardPresentPaymentGatewayAccounts() -> [PaymentGatewayAccount] {
-        resultsControllers.paymentGatewayAccounts.filter { $0.isCardPresentEligible }
-    }
-
 
     /// Whether the order has a receipt associated.
     ///
@@ -197,7 +197,7 @@ final class OrderDetailsDataSource: NSObject {
     /// Combine refunded order items to show refunded products
     ///
     var refundedProducts: [AggregateOrderItem]? {
-        return AggregateDataHelper.combineRefundedProducts(from: refunds)
+        return AggregateDataHelper.combineRefundedProducts(from: refunds, orderItems: items)
     }
 
     /// Calculate the new order item quantities and totals after refunded products have altered the fields
@@ -210,7 +210,7 @@ final class OrderDetailsDataSource: NSObject {
     /// All the condensed refunds in an order
     ///
     var condensedRefunds: [OrderRefundCondensed] {
-        return order.refunds.sorted(by: { $0.refundID > $1.refundID })
+        return order.refunds.sorted(by: { $0.refundID < $1.refundID })
     }
 
     /// Notes of an Order
@@ -250,6 +250,8 @@ final class OrderDetailsDataSource: NSObject {
 
     private let currencySettings: CurrencySettings
 
+    private let userIsAdmin: Bool
+
     private let siteSettings: [SiteSetting]
 
     private let featureFlags: FeatureFlagService
@@ -260,6 +262,7 @@ final class OrderDetailsDataSource: NSObject {
          refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol = OrderRefundsOptionsDeterminer(),
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings,
+         userIsAdmin: Bool = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator),
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.storageManager = storageManager
         self.order = order
@@ -268,6 +271,7 @@ final class OrderDetailsDataSource: NSObject {
         self.refundableOrderItemsDeterminer = refundableOrderItemsDeterminer
         self.currencySettings = currencySettings
         self.siteSettings = siteSettings
+        self.userIsAdmin = userIsAdmin
         self.featureFlags = featureFlags
 
         super.init()
@@ -431,9 +435,28 @@ private extension OrderDetailsDataSource {
             configureRefundedProducts(cell)
         case let cell as IssueRefundTableViewCell:
             configureIssueRefundButton(cell: cell)
+        case let cell as WooBasicTableViewCell where row == .customFields:
+            configureCustomFields(cell: cell)
         default:
             fatalError("Unidentified customer info row type")
         }
+    }
+
+    private func configureCustomFields(cell: WooBasicTableViewCell) {
+        cell.bodyLabel?.text = Title.customFields
+        cell.applyPlainTextStyle()
+        cell.accessoryType = .none
+        cell.selectionStyle = .default
+
+        cell.accessibilityTraits = .button
+        cell.accessibilityLabel = NSLocalizedString(
+                "View Custom Fields",
+                comment: "Accessibility label for the 'View Custom Fields' button"
+        )
+        cell.accessibilityHint = NSLocalizedString(
+            "Show the custom fields for this order.",
+            comment: "VoiceOver accessibility hint, informing the user that the button can be used to view the order custom fields information."
+        )
     }
 
     private func configureCustomerNote(cell: CustomerNoteTableViewCell) {
@@ -567,7 +590,7 @@ private extension OrderDetailsDataSource {
     private func configureCustomerPaid(cell: TwoColumnHeadlineFootnoteTableViewCell) {
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
         cell.leftText = Titles.paidByCustomer
-        cell.rightText = paymentViewModel.paymentTotal
+        cell.rightText = order.paymentTotal
         cell.updateFootnoteText(paymentViewModel.paymentSummary)
     }
 
@@ -580,7 +603,7 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureRefund(cell: TwoColumnHeadlineFootnoteTableViewCell, at indexPath: IndexPath) {
-        let index = indexPath.row - Constants.paymentCell - Constants.paidByCustomerCell
+        let index = indexPath.row - Constants.paymentCell - Constants.paidByCustomerCell(isDisplayed: shouldShowCustomerPaidRow)
         let condensedRefund = condensedRefunds[index]
         let refund = lookUpRefund(by: condensedRefund.refundID)
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order, refund: refund)
@@ -603,16 +626,15 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureNetAmount(cell: TwoColumnHeadlineFootnoteTableViewCell) {
-        let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
-
         cell.leftText = Titles.netAmount
-        cell.rightText = paymentViewModel.netAmount
+        cell.rightText = order.netAmount
         cell.hideFootnote()
     }
 
     private func configureCollectPaymentButton(cell: ButtonTableViewCell, at indexPath: IndexPath) {
         cell.configure(style: .primary,
-                       title: Titles.collectPayment) { [weak self] in
+                       title: Titles.collectPayment,
+                       accessibilityIdentifier: "order-details-collect-payment-button") { [weak self] in
             self?.onCellAction?(.collectPayment, indexPath)
         }
         cell.hideSeparator()
@@ -1003,21 +1025,22 @@ extension OrderDetailsDataSource {
 
             var rows: [Row] = Array(repeating: .aggregateOrderItem, count: aggregateOrderItemCount)
 
-            if shouldShowShippingLabelCreation {
+            switch (shouldShowShippingLabelCreation, isProcessingStatus, isRefundedStatus) {
+            case (true, false, false):
+                // Order completed and eligible for shipping label creation:
                 rows.append(.shippingLabelCreateButton)
-            }
-
-            if isProcessingPayment {
-                if shouldShowShippingLabelCreation {
-                    rows.append(.markCompleteButton(style: .secondary, showsBottomSpacing: false))
-                    rows.append(.shippingLabelCreationInfo(showsSeparator: false))
-                } else {
-                    rows.append(.markCompleteButton(style: .primary, showsBottomSpacing: true))
-                }
-            } else if isRefundedStatus == false {
-                if shouldShowShippingLabelCreation {
-                    rows.append(.shippingLabelCreationInfo(showsSeparator: true))
-                }
+                rows.append(.shippingLabelCreationInfo(showsSeparator: false))
+            case (true, true, false):
+                // Order processing shippable:
+                rows.append(.shippingLabelCreateButton)
+                rows.append(.markCompleteButton(style: .secondary, showsBottomSpacing: false))
+                rows.append(.shippingLabelCreationInfo(showsSeparator: false))
+            case (false, true, false):
+                // Order processing digital:
+                rows.append(.markCompleteButton(style: .primary, showsBottomSpacing: true))
+            default:
+                // Other cases
+                break
             }
 
             if rows.count == 0 {
@@ -1039,6 +1062,14 @@ extension OrderDetailsDataSource {
                            rightTitle: nil,
                            rows: rows,
                            headerStyle: headerStyle)
+        }()
+
+        let customFields: Section? = {
+            guard order.customFields.isNotEmpty else {
+                return nil
+            }
+
+            return Section(category: .customFields, row: .customFields)
         }()
 
         let refundedProducts: Section? = {
@@ -1146,11 +1177,7 @@ extension OrderDetailsDataSource {
         let payment: Section = {
             var rows: [Row] = [.payment]
 
-            let shouldShowCustomerPaidRow = order.datePaid != nil
-
-            if shouldShowCustomerPaidRow {
-                rows.append(.customerPaid)
-            }
+            rows.append(.customerPaid)
 
             if condensedRefunds.isNotEmpty {
                 let refunds = Array<Row>(repeating: .refund, count: condensedRefunds.count)
@@ -1158,7 +1185,7 @@ extension OrderDetailsDataSource {
                 rows.append(.netAmount)
             }
 
-            if isEligibleForCardPresentPayment {
+            if isEligibleForPayment {
                 rows.append(.collectCardPaymentButton)
             }
 
@@ -1213,6 +1240,7 @@ extension OrderDetailsDataSource {
         sections = ([summary,
                      shippingNotice,
                      products,
+                     customFields,
                      installWCShipSection] +
                     shippingLabelSections +
                     [refundedProducts,
@@ -1226,7 +1254,7 @@ extension OrderDetailsDataSource {
     }
 
     func refund(at indexPath: IndexPath) -> Refund? {
-        let index = indexPath.row - Constants.paymentCell - Constants.paidByCustomerCell
+        let index = indexPath.row - Constants.paymentCell - Constants.paidByCustomerCell(isDisplayed: shouldShowCustomerPaidRow)
         let condensedRefund = condensedRefunds[index]
         let refund = refunds.first { $0.refundID == condensedRefund.refundID }
 
@@ -1403,6 +1431,7 @@ extension OrderDetailsDataSource {
         static let information = NSLocalizedString("Customer", comment: "Customer info section title")
         static let payment = NSLocalizedString("Payment", comment: "Payment section title")
         static let notes = NSLocalizedString("Order Notes", comment: "Order notes section title")
+        static let customFields = NSLocalizedString("View Custom Fields", comment: "Custom Fields section title")
         static let shippingLabelCreationInfoAction =
             NSLocalizedString("Learn more about creating labels with your mobile device",
                               comment: "Title of button in order details > info link for creating a shipping label on the mobile device.")
@@ -1443,6 +1472,7 @@ extension OrderDetailsDataSource {
             case tracking
             case addTracking
             case notes
+            case customFields
         }
 
         /// The table header style of a `Section`.
@@ -1543,6 +1573,7 @@ extension OrderDetailsDataSource {
         case addOrderNote
         case orderNoteHeader
         case orderNote
+        case customFields
 
         var reuseIdentifier: String {
             switch self {
@@ -1604,6 +1635,8 @@ extension OrderDetailsDataSource {
                 return OrderNoteHeaderTableViewCell.reuseIdentifier
             case .orderNote:
                 return OrderNoteTableViewCell.reuseIdentifier
+            case .customFields:
+                return WooBasicTableViewCell.reuseIdentifier
             }
         }
     }
@@ -1622,10 +1655,15 @@ extension OrderDetailsDataSource {
         case editShippingAddress
     }
 
-    struct Constants {
+    enum Constants {
         static let addOrderCell = 1
         static let paymentCell = 1
-        static let paidByCustomerCell = 1
+
+        /// Input value required because cell is displayed conditionally
+        ///
+        static func paidByCustomerCell(isDisplayed: Bool) -> Int {
+            isDisplayed ? 1 : 0
+        }
     }
 }
 

@@ -110,6 +110,8 @@ Please, remember to not add this information on your commits and PRs.
 - Features
     - [In-app Feedback](docs/in-app-feedback.md)
     - [Card Present Payments](docs/card-present-payments.md)
+- Other
+    - [Enable hot reload with Inject](docs/inject-hot-reload)
 
 ## 👏 Contributing
 

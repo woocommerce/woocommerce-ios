@@ -1,5 +1,6 @@
 import XCTest
 import WordPressKit
+import WordPressAuthenticator
 
 @testable import WooCommerce
 
@@ -134,5 +135,59 @@ final class AuthenticationManagerTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel is NoSecureConnectionErrorViewModel)
+    }
+
+    func test_it_presents_username_and_password_controller_for_non_jetpack_site() {
+        // Given
+        let manager = AuthenticationManager()
+        let siteInfo = WordPressComSiteInfo(remote: ["isWordPress": true, "hasJetpack": false])
+        var result: WordPressAuthenticatorResult?
+        let completionHandler: (WordPressAuthenticatorResult) -> Void = { completionResult in
+            result = completionResult
+        }
+
+        // When
+        manager.shouldPresentUsernamePasswordController(for: siteInfo, onCompletion: completionHandler)
+
+        // Then
+        guard case .presentEmailController = result else {
+            return XCTFail("Unexpected result returned for non-Jetpack site")
+        }
+    }
+
+    func test_it_shows_error_upon_login_epilogue_if_the_self_hosted_site_does_not_have_jetpack() {
+        // Given
+        let manager = AuthenticationManager()
+        let testSite = "http://test.com"
+        let siteInfo = WordPressComSiteInfo(remote: ["isWordPress": true, "hasJetpack": false, "urlAfterRedirects": testSite])
+        let wpcomCredentials = WordPressComCredentials(authToken: "abc", isJetpackLogin: false, multifactor: false, siteURL: testSite)
+        let credentials = AuthenticatorCredentials(wpcom: wpcomCredentials, wporg: nil)
+        let navigationController = UINavigationController()
+
+        // When
+        manager.shouldPresentUsernamePasswordController(for: siteInfo, onCompletion: { _ in })
+        manager.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: {})
+
+        // Then
+        let rootController = navigationController.viewControllers.first
+        XCTAssertTrue(rootController is ULErrorViewController)
+    }
+
+    func test_it_can_display_jetpack_error_for_org_site_credentials_sign_in() {
+        // Given
+        let manager = AuthenticationManager()
+        let testSite = "http://test.com"
+        let siteInfo = WordPressComSiteInfo(remote: ["isWordPress": true, "hasJetpack": false, "urlAfterRedirects": testSite])
+        let wporgCredentials = WordPressOrgCredentials(username: "cba", password: "password", xmlrpc: "http://test.com/xmlrpc.php", options: [:])
+        let credentials = AuthenticatorCredentials(wpcom: nil, wporg: wporgCredentials)
+        let navigationController = UINavigationController()
+
+        // When
+        manager.shouldPresentUsernamePasswordController(for: siteInfo, onCompletion: { _ in })
+        manager.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: {})
+
+        // Then
+        let rootController = navigationController.viewControllers.first
+        XCTAssertTrue(rootController is ULErrorViewController)
     }
 }

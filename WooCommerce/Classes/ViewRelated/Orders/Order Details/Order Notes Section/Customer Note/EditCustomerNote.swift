@@ -39,6 +39,10 @@ final class EditCustomerNoteHostingController<ViewModel: EditCustomerNoteViewMod
 ///
 struct EditCustomerNote<ViewModel: EditCustomerNoteViewModelProtocol>: View {
 
+    /// Callback closure called when the note is updated and successfully saved.
+    ///
+    var onSave: (() -> Void) = {}
+
     /// Set this closure with UIKit dismiss code. Needed because we need access to the UIHostingController `dismiss` method.
     ///
     var dismiss: (() -> Void) = {}
@@ -54,6 +58,7 @@ struct EditCustomerNote<ViewModel: EditCustomerNoteViewModelProtocol>: View {
                 .padding()
                 .navigationTitle(Localization.title)
                 .navigationBarTitleDisplayMode(.inline)
+                .accessibilityIdentifier("edit-note-text-editor")
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
                         Button(Localization.cancel, action: {
@@ -63,6 +68,7 @@ struct EditCustomerNote<ViewModel: EditCustomerNoteViewModelProtocol>: View {
                     }
                     ToolbarItem(placement: .confirmationAction) {
                         navigationBarTrailingItem()
+                            .accessibilityIdentifier("edit-note-done-button")
                     }
                 }
         }
@@ -78,6 +84,7 @@ struct EditCustomerNote<ViewModel: EditCustomerNoteViewModelProtocol>: View {
             Button(Localization.done) {
                 viewModel.updateNote { success in
                     if success {
+                        onSave()
                         dismiss()
                     }
                 }

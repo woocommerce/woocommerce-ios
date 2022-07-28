@@ -33,15 +33,15 @@ final class ProductDownloadListViewController: UIViewController {
                                           backgroundColor: UIColor.black.withAlphaComponent(0.4))
 
     init(product: ProductFormDataModel,
-         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+         stores: StoresManager = ServiceLocator.stores,
          completion: @escaping Completion) {
         self.product = product
         viewModel = ProductDownloadListViewModel(product: product)
         onCompletion = completion
-        productImageActionHandler = productImageUploader.actionHandler(siteID: product.siteID,
-                                                                       productID: product.productID,
-                                                                       isLocalID: !product.existsRemotely,
-                                                                       originalStatuses: product.imageStatuses)
+        productImageActionHandler = ProductImageActionHandler(siteID: product.siteID,
+                                                              productID: .product(id: product.productID),
+                                                              imageStatuses: [],
+                                                              stores: stores)
         super.init(nibName: type(of: self).nibName, bundle: nil)
 
         onDeviceMediaLibraryPickerCompletion = { [weak self] assets in
@@ -50,7 +50,10 @@ final class ProductDownloadListViewController: UIViewController {
         onWPMediaPickerCompletion = { [weak self] mediaItems in
             self?.onWPMediaPickerCompletion(mediaItems: mediaItems)
         }
-        cancellable = productImageActionHandler?.addAssetUploadObserver(self) { [weak self] asset, productImage in
+        cancellable = productImageActionHandler?.addAssetUploadObserver(self) { [weak self] asset, result in
+            guard case let .success(productImage) = result else {
+                return
+            }
             self?.addDownloadableFile(fileName: productImage.name, fileURL: productImage.src)
             self?.loadingView.hideLoader()
         }

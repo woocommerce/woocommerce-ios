@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		397702D42D32EAEEEA3B29FC /* Pods_WooFoundationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 532D4D63493CE8FA6F13C85B /* Pods_WooFoundationTests.framework */; };
+		686BE912288EE0D300967C86 /* TypedPredicates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686BE911288EE0D300967C86 /* TypedPredicates.swift */; };
+		686BE915288EE2CA00967C86 /* TypedPredicateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686BE914288EE2CA00967C86 /* TypedPredicateTests.swift */; };
 		9FA5113235035AC9A6079B0D /* Pods_WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1733C61561AE3A1AD3C16B7 /* Pods_WooFoundation.framework */; };
 		B987B06F284540D300C53CF6 /* CurrencyCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B987B06E284540D300C53CF6 /* CurrencyCode.swift */; };
 		B9C9C63F283E703C001B879F /* WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9C9C635283E703C001B879F /* WooFoundation.framework */; };
@@ -31,6 +33,8 @@
 /* Begin PBXFileReference section */
 		532D4D63493CE8FA6F13C85B /* Pods_WooFoundationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooFoundationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BC355411C0A805BF29F38A6 /* Pods-WooFoundationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundationTests.release.xcconfig"; path = "Target Support Files/Pods-WooFoundationTests/Pods-WooFoundationTests.release.xcconfig"; sourceTree = "<group>"; };
+		686BE911288EE0D300967C86 /* TypedPredicates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypedPredicates.swift; sourceTree = "<group>"; };
+		686BE914288EE2CA00967C86 /* TypedPredicateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypedPredicateTests.swift; sourceTree = "<group>"; };
 		81B8569CD52D20EAE64EE737 /* Pods-WooFoundation.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundation.release-alpha.xcconfig"; path = "Target Support Files/Pods-WooFoundation/Pods-WooFoundation.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		99861FECBD0975C25DA03D80 /* Pods-WooFoundation.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundation.debug.xcconfig"; path = "Target Support Files/Pods-WooFoundation/Pods-WooFoundation.debug.xcconfig"; sourceTree = "<group>"; };
 		A21D73D352B4162AB096E276 /* Pods-WooFoundationTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundationTests.release-alpha.xcconfig"; path = "Target Support Files/Pods-WooFoundationTests/Pods-WooFoundationTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
@@ -71,6 +75,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		686BE910288EE09B00967C86 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				686BE911288EE0D300967C86 /* TypedPredicates.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		686BE913288EE2BC00967C86 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				686BE914288EE2CA00967C86 /* TypedPredicateTests.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		B9C9C5ED283E6FAA001B879F = {
 			isa = PBXGroup;
 			children = (
@@ -94,6 +114,7 @@
 		B9C9C636283E703C001B879F /* WooFoundation */ = {
 			isa = PBXGroup;
 			children = (
+				686BE910288EE09B00967C86 /* Utilities */,
 				B9C9C661283E7296001B879F /* Internal */,
 				B9C9C65A283E71C8001B879F /* Currency */,
 				B9C9C657283E7174001B879F /* Extensions */,
@@ -104,6 +125,7 @@
 		B9C9C642283E703C001B879F /* WooFoundationTests */ = {
 			isa = PBXGroup;
 			children = (
+				686BE913288EE2BC00967C86 /* Utilities */,
 			);
 			path = WooFoundationTests;
 			sourceTree = "<group>";
@@ -341,6 +363,7 @@
 				B9C9C65D283E71C8001B879F /* CurrencyFormatter.swift in Sources */,
 				B987B06F284540D300C53CF6 /* CurrencyCode.swift in Sources */,
 				B9C9C660283E71F4001B879F /* Double+Woo.swift in Sources */,
+				686BE912288EE0D300967C86 /* TypedPredicates.swift in Sources */,
 				B9C9C65E283E71C8001B879F /* CurrencySettings.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -349,6 +372,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				686BE915288EE2CA00967C86 /* TypedPredicateTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -455,7 +479,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.WooFoundationTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -650,7 +674,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.WooFoundationTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -668,7 +692,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.WooFoundationTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";

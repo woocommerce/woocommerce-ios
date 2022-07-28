@@ -39,8 +39,14 @@ struct InPersonPaymentsView: View {
             switch viewModel.state {
             case .loading:
                 InPersonPaymentsLoading()
-            case .selectPlugin:
-                if viewModel.userIsAdministrator {
+            case let .selectPlugin(pluginSelectionWasCleared):
+                if viewModel.gatewaySelectionAvailable {
+                    // Preselect WCPay only if there was no selection done before
+                    InPersonPaymentsSelectPluginView(selectedPlugin: pluginSelectionWasCleared == true ? nil : .wcPay) { plugin in
+                        viewModel.selectPlugin(plugin)
+                        ServiceLocator.analytics.track(.cardPresentPaymentGatewaySelected, withProperties: ["payment_gateway": plugin.pluginName])
+                    }
+                } else if viewModel.userIsAdministrator {
                     InPersonPaymentsPluginConflictAdmin(onRefresh: viewModel.refresh)
                 } else {
                     InPersonPaymentsPluginConflictShopManager(onRefresh: viewModel.refresh)
@@ -70,9 +76,16 @@ struct InPersonPaymentsView: View {
                 InPersonPaymentsStripeAccountReview()
             case .stripeAccountRejected:
                 InPersonPaymentsStripeRejected()
-            case .completed(let plugin):
+            case .completed(let pluginState):
                 if viewModel.showMenuOnCompletion {
-                    InPersonPaymentsMenu(plugin: plugin)
+                    InPersonPaymentsMenu(
+                        pluginState: pluginState,
+                        onPluginSelected: { plugin in
+                            viewModel.selectPlugin(plugin)
+                        },
+                        onPluginSelectionCleared: {
+                            viewModel.clearPluginSelection()
+                        })
                 } else {
                     InPersonPaymentsCompleted()
                 }
@@ -108,7 +121,7 @@ private enum Localization {
 struct InPersonPaymentsView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            InPersonPaymentsView(viewModel: InPersonPaymentsViewModel(fixedState: .completed(plugin: .stripe)))
+            InPersonPaymentsView(viewModel: InPersonPaymentsViewModel(fixedState: .completed(plugin: .stripeOnly)))
         }
     }
 }

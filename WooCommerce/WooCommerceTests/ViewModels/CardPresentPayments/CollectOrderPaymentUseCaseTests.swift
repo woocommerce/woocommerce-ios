@@ -43,37 +43,16 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_collectPayment_without_reader_connection_does_not_track_collectPaymentTapped_event() {
-        // When
-        useCase.collectPayment(onCollect: { _ in }, onCompleted: {})
-
-        // Then
-        XCTAssertFalse(analyticsProvider.receivedEvents.contains("card_present_collect_payment_tapped"))
-    }
-
-    func test_collectPayment_tracks_collectPaymentTapped_event() throws {
-        // When
-        mockCardPresentPaymentActions()
-        useCase.collectPayment(onCollect: { _ in }, onCompleted: {})
-
-        // Then
-        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "card_present_collect_payment_tapped"}))
-        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
-        XCTAssertEqual(eventProperties["card_reader_model"] as? String, Mocks.cardReaderModel)
-        XCTAssertEqual(eventProperties["country"] as? String, "US")
-        XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayAccount)
-    }
-
-    func test_cancelling_readerIsReady_alert_triggers_onCompleted_and_tracks_collectPaymentCanceled_event_and_dispatches_cancel_action() throws {
+    func test_cancelling_readerIsReady_alert_triggers_onCancel_and_tracks_collectPaymentCanceled_event_and_dispatches_cancel_action() throws {
         // Given
         assertEmpty(stores.receivedActions)
 
         // When
         mockCardPresentPaymentActions()
         let _: Void = waitFor { promise in
-            self.useCase.collectPayment(onCollect: { _ in }, onCompleted: {
+            self.useCase.collectPayment(onCollect: { _ in }, onCancel: {
                 promise(())
-            })
+            }, onCompleted: {})
             self.alerts.cancelReaderIsReadyAlert?()
         }
 
@@ -102,7 +81,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         waitFor { promise in
             self.useCase.collectPayment(onCollect: { _ in
                 promise(())
-            }, onCompleted: {})
+            }, onCancel: {}, onCompleted: {})
         }
 
         // Then
@@ -122,7 +101,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         waitFor { promise in
             self.useCase.collectPayment(onCollect: { _ in
                 promise(())
-            }, onCompleted: {})
+            }, onCancel: {}, onCompleted: {})
         }
 
         // Then
@@ -140,7 +119,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         waitFor { promise in
             self.useCase.collectPayment(onCollect: { _ in
                 promise(())
-            }, onCompleted: {})
+            }, onCancel: {}, onCompleted: {})
         }
         alerts.printReceiptFromSuccessAlert?()
 
@@ -160,7 +139,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         waitFor { promise in
             self.useCase.collectPayment(onCollect: { _ in
                 promise(())
-            }, onCompleted: {})
+            }, onCancel: {}, onCompleted: {})
         }
         alerts.emailReceiptFromSuccessAlert?()
 
@@ -192,7 +171,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         let _: Void = waitFor { [weak self] promise in
             useCase.collectPayment(onCollect: { collectPaymentResult in
                 result = collectPaymentResult
-            }, onCompleted: {
+            }, onCancel: {}, onCompleted: {
                 promise(())
             })
             // Dismisses error to complete the payment flow for `onCollect` to be triggered.
@@ -223,7 +202,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         waitFor { promise in
             self.useCase.collectPayment(onCollect: { _ in
                 promise(())
-            }, onCompleted: {})
+            }, onCancel: {}, onCompleted: {})
         }
 
         // Then
@@ -247,7 +226,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         waitFor { promise in
             self.useCase.collectPayment(onCollect: { _ in
                 promise(())
-            }, onCompleted: {})
+            }, onCancel: {}, onCompleted: {})
         }
 
         // Then

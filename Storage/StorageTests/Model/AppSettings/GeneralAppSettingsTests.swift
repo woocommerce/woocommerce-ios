@@ -58,6 +58,9 @@ final class GeneralAppSettingsTests: XCTestCase {
         let feedbackSettings = [FeedbackType.general: FeedbackSettings(name: .general, status: .pending)]
         let readers = ["aaaaa", "bbbbbb"]
         let eligibilityInfo = EligibilityErrorInfo(name: "user", roles: ["admin"])
+        let featureAnnouncementCampaignSettings = [
+            FeatureAnnouncementCampaign.upsellCardReaders:
+                FeatureAnnouncementCampaignSettings(dismissedDate: Date(), remindAfter: nil)]
         let previousSettings = GeneralAppSettings(installationDate: installationDate,
                                                   feedbacks: feedbackSettings,
                                                   isViewAddOnsSwitchEnabled: true,
@@ -65,7 +68,8 @@ final class GeneralAppSettingsTests: XCTestCase {
                                                   isCouponManagementSwitchEnabled: true,
                                                   knownCardReaders: readers,
                                                   lastEligibilityErrorInfo: eligibilityInfo,
-                                                  lastJetpackBenefitsBannerDismissedTime: jetpackBannerDismissedDate)
+                                                  lastJetpackBenefitsBannerDismissedTime: jetpackBannerDismissedDate,
+                                                  featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings)
 
         let previousEncodedSettings = try JSONEncoder().encode(previousSettings)
         var previousSettingsJson = try JSONSerialization.jsonObject(with: previousEncodedSettings, options: .allowFragments) as? [String: Any]
@@ -84,8 +88,12 @@ final class GeneralAppSettingsTests: XCTestCase {
         assertEqual(newSettings.isProductSKUInputScannerSwitchEnabled, true)
         assertEqual(newSettings.isCouponManagementSwitchEnabled, true)
         assertEqual(newSettings.lastJetpackBenefitsBannerDismissedTime, jetpackBannerDismissedDate)
+        assertEqual(newSettings.featureAnnouncementCampaignSettings, featureAnnouncementCampaignSettings)
     }
 }
+
+private typealias Campaign = FeatureAnnouncementCampaign
+private typealias CampaignSettings = FeatureAnnouncementCampaignSettings
 
 private extension GeneralAppSettingsTests {
     func createGeneralAppSettings(installationDate: Date? = nil,
@@ -95,7 +103,9 @@ private extension GeneralAppSettingsTests {
                                   isCouponManagementSwitchEnabled: Bool = false,
                                   knownCardReaders: [String] = [],
                                   lastEligibilityErrorInfo: EligibilityErrorInfo? = nil,
-                                  lastJetpackBenefitsBannerDismissedTime: Date? = nil) -> GeneralAppSettings {
+                                  lastJetpackBenefitsBannerDismissedTime: Date? = nil,
+                                  featureAnnouncementCampaignSettings: [Campaign: CampaignSettings] = [:]
+    ) -> GeneralAppSettings {
         GeneralAppSettings(installationDate: installationDate,
                            feedbacks: feedbacks,
                            isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
@@ -103,6 +113,7 @@ private extension GeneralAppSettingsTests {
                            isCouponManagementSwitchEnabled: isCouponManagementSwitchEnabled,
                            knownCardReaders: knownCardReaders,
                            lastEligibilityErrorInfo: lastEligibilityErrorInfo,
-                           lastJetpackBenefitsBannerDismissedTime: lastJetpackBenefitsBannerDismissedTime)
+                           lastJetpackBenefitsBannerDismissedTime: lastJetpackBenefitsBannerDismissedTime,
+                           featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings)
     }
 }

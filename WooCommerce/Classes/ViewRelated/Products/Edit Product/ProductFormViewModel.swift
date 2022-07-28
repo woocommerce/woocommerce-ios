@@ -151,6 +151,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     }
 
     private let productImageActionHandler: ProductImageActionHandler
+    private let productImagesUploader: ProductImageUploaderProtocol
 
     private var cancellable: AnyCancellable?
 
@@ -158,11 +159,15 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     private let storageManager: StorageManagerType
 
+    private let isBackgroundImageUploadEnabled: Bool
+
     init(product: EditableProductModel,
          formType: ProductFormType,
          productImageActionHandler: ProductImageActionHandler,
          stores: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         productImagesUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+         isBackgroundImageUploadEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload)) {
         self.formType = formType
         self.productImageActionHandler = productImageActionHandler
         self.originalProduct = product
@@ -170,11 +175,18 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.actionsFactory = ProductFormActionsFactory(product: product, formType: formType)
         self.stores = stores
         self.storageManager = storageManager
+        self.productImagesUploader = productImagesUploader
+        self.isBackgroundImageUploadEnabled = isBackgroundImageUploadEnabled
 
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
-            if allStatuses.productImageStatuses.hasPendingUpload {
-                self?.isUpdateEnabledSubject.send(true)
+            guard let self = self else { return }
+            guard self.isBackgroundImageUploadEnabled else {
+                if allStatuses.productImageStatuses.hasPendingUpload {
+                    self.isUpdateEnabledSubject.send(true)
+                }
+                return
             }
+            self.isUpdateEnabledSubject.send(self.hasUnsavedChanges())
         }
 
         queryAddOnsFeatureState()
@@ -186,7 +198,16 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     }
 
     func hasUnsavedChanges() -> Bool {
-        return product != originalProduct || productImageActionHandler.productImageStatuses.hasPendingUpload || password != originalPassword
+        guard isBackgroundImageUploadEnabled else {
+            return product != originalProduct || productImageActionHandler.productImageStatuses.hasPendingUpload || password != originalPassword
+        }
+        let hasProductChangesExcludingImages = product.product.copy(images: []) != originalProduct.product.copy(images: [])
+        let hasImageChanges = productImagesUploader
+            .hasUnsavedChangesOnImages(key: .init(siteID: product.siteID,
+                                                  productOrVariationID: .product(id: product.productID),
+                                                  isLocalID: !product.existsRemotely),
+                                       originalImages: originalProduct.images)
+        return hasProductChangesExcludingImages || hasImageChanges || password != originalPassword
     }
 }
 
@@ -397,6 +418,7 @@ extension ProductFormViewModel {
         let remoteActionUseCase = ProductFormRemoteActionUseCase()
         switch formType {
         case .add:
+            let productIDBeforeSave = productModel.productID
             remoteActionUseCase.addProduct(product: productModelToSave, password: password) { [weak self] result in
                 switch result {
                 case .failure(let error):
@@ -408,6 +430,10 @@ extension ProductFormViewModel {
                     self.resetProduct(data.product)
                     self.resetPassword(data.password)
                     onCompletion(.success(data.product))
+                    if self.isBackgroundImageUploadEnabled {
+                        self.replaceProductID(productIDBeforeSave: productIDBeforeSave)
+                        self.saveProductImagesWhenNoneIsPendingUploadAnymore()
+                    }
                 }
             }
         case .edit:
@@ -423,6 +449,9 @@ extension ProductFormViewModel {
                                                     self.resetProduct(data.product)
                                                     self.resetPassword(data.password)
                                                     onCompletion(.success(data.product))
+                                                    if self.isBackgroundImageUploadEnabled {
+                                                        self.saveProductImagesWhenNoneIsPendingUploadAnymore()
+                                                    }
                                                 case .failure(let error):
                                                     onCompletion(.failure(error))
                                                 }
@@ -442,6 +471,41 @@ extension ProductFormViewModel {
                 onCompletion(.failure(error))
             }
         }
+    }
+}
+
+// MARK: Background image upload
+//
+private extension ProductFormViewModel {
+    func replaceProductID(productIDBeforeSave: Int64) {
+        productImagesUploader.replaceLocalID(siteID: product.siteID,
+                                             localID: .product(id: productIDBeforeSave),
+                                             remoteID: product.productID)
+    }
+
+    func saveProductImagesWhenNoneIsPendingUploadAnymore() {
+        productImagesUploader
+            .saveProductImagesWhenNoneIsPendingUploadAnymore(key: .init(siteID: product.siteID,
+                                                                        productOrVariationID: .product(id: product.productID),
+                                                                        isLocalID: !product.existsRemotely)) { [weak self] result in
+                guard let self = self else { return }
+            switch result {
+            case .success(let images):
+                let currentProduct = self.product
+                self.resetProduct(.init(product: self.originalProduct.product.copy(images: images)))
+                // Because `resetProduct` also internally updates the latest `product`, the `product` is set with the value before `resetProduct` to
+                // retain any local changes.
+                self.product = .init(product: currentProduct.product)
+            case .failure:
+                // If the product images update request fails, the update CTA visibility is refreshed again so that the merchant can save the
+                // product images again along with any other potential local changes.
+                self.isUpdateEnabledSubject.send(self.hasUnsavedChanges())
+            }
+        }
+        // Updates the update CTA visibility after scheduling a save request when no images are pending upload anymore, so that the update CTA
+        // isn't shown right after the save request from pending image upload.
+        // The save request keeps track of the latest image statuses at the time of the call and their upload progress over time.
+        isUpdateEnabledSubject.send(hasUnsavedChanges())
     }
 }
 

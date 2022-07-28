@@ -21,8 +21,8 @@ public final class OrderStatusScreen: ScreenObject {
     /// Selects a new order status from the list.
     /// - Returns: Order Status screen object (self).
     @discardableResult
-    public func selectOrderStatus(atIndex index: Int) throws -> NewOrderScreen {
+    public func selectOrderStatus(atIndex index: Int) throws -> UnifiedOrderScreen {
         orderStatusTable.cells.element(boundBy: index).tap()
-        return try NewOrderScreen()
+        return try UnifiedOrderScreen()
     }
 }

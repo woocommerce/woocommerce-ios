@@ -11,6 +11,9 @@ enum ShippingLabelSampleData {
                      parentID: 0,
                      customerID: 11,
                      orderKey: "",
+                     isEditable: false,
+                     needsPayment: false,
+                     needsProcessing: false,
                      number: "963",
                      status: .processing,
                      currency: "USD",
@@ -35,7 +38,8 @@ enum ShippingLabelSampleData {
                      coupons: sampleCoupons(),
                      refunds: [],
                      fees: [],
-                     taxes: [])
+                     taxes: [],
+                     customFields: [])
     }
 
     static func samplePackageDetails() -> ShippingLabelPackagesResponse {

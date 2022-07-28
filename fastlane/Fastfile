@@ -17,7 +17,7 @@ FASTLANE_DIR = __dir__
 DERIVED_DATA_DIR = File.join(FASTLANE_DIR, 'DerivedData')
 SCREENSHOTS_DIR =  File.join(FASTLANE_DIR, 'screenshots')
 IOS_LOCALES = %w[ar de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant].freeze
-SIMULATOR_VERSION = '14.3' # For screenshots
+SIMULATOR_VERSION = '15.5' # For screenshots
 SCREENSHOT_DEVICES = [
   'iPhone 11 Pro Max',
   'iPhone 8 Plus',
@@ -155,7 +155,7 @@ platform :ios do
   lane :code_freeze do |options|
     ios_codefreeze_prechecks(options)
 
-    ios_bump_version_release
+    ios_bump_version_release(skip_glotpress: true)
     new_version = ios_get_app_version
     extract_release_notes_for_version(
       version: new_version,
@@ -184,8 +184,13 @@ platform :ios do
   lane :complete_code_freeze do |options|
     ios_completecodefreeze_prechecks(options)
     generate_strings_file_for_glotpress
-    version = ios_get_app_version
-    trigger_beta_build(branch_to_build: "release/#{version}")
+
+    if ENV.fetch('RELEASE_TOOLKIT_SKIP_PUSH_CONFIRM', false) || UI.confirm('Push changes to the remote and trigger the beta build?')
+      push_to_git_remote(tags: false)
+      trigger_beta_build(branch_to_build: "release/#{ios_get_app_version}")
+    else
+      UI.message('Aborting code freeze completion as requested.')
+    end
   end
 
   #####################################################################################
@@ -244,7 +249,7 @@ platform :ios do
   lane :new_beta_release do |options|
     ios_betabuild_prechecks(options)
     download_localized_strings_and_metadata_from_glotpress
-    ios_lint_localizations(input_dir: 'WooCommerce/Resources', allow_retry: true)
+    lint_localizations
     ios_bump_version_beta
     version = ios_get_app_version
     trigger_beta_build(branch_to_build: "release/#{version}")
@@ -320,7 +325,7 @@ platform :ios do
     )
 
     download_localized_strings_and_metadata_from_glotpress
-    ios_lint_localizations(input_dir: 'WooCommerce/Resources', allow_retry: true)
+    lint_localizations
     ios_bump_version_beta
 
     # Wrap up
@@ -611,7 +616,7 @@ platform :ios do
     sh('bundle exec pod install --verbose')
 
     # Ensure we're using the right version of Xcode
-    xcversion(version: '~> 12.0')
+    xcversion(version: '~> 13.4')
 
     scan(
       workspace: 'WooCommerce.xcworkspace',
@@ -624,7 +629,7 @@ platform :ios do
   desc 'Take Screenshots'
   lane :take_screenshots do |options|
     # Ensure we're using the right version of Xcode
-    xcversion(version: '~> 12.0')
+    xcversion(version: '~> 13.4')
 
     # By default, clear previous screenshots
     languages = IOS_LOCALES
@@ -846,8 +851,8 @@ platform :ios do
                         download_path: './fastlane/metadata')
 
     # Copy appstoreres (screenshot-related) txt files into `en-US`
-    enUS_path = File.join(Dir.pwd, 'metadata', 'en-US')
-    FileUtils.mkdir_p(enUS_path)
+    en_us_path = File.join(Dir.pwd, 'metadata', 'en-US')
+    FileUtils.mkdir_p(en_us_path)
 
     [
       'promo_screenshot_1.txt',
@@ -857,7 +862,7 @@ platform :ios do
       'promo_screenshot_5.txt'
     ].each do |filename|
       source = File.join(Dir.pwd, 'appstoreres', 'metadata', 'source', filename)
-      destination = File.join(enUS_path, filename)
+      destination = File.join(en_us_path, filename)
       FileUtils.cp(source, destination)
     end
 
@@ -972,6 +977,11 @@ platform :ios do
     )
   end
 
+  desc 'Lint the `.strings` files'
+  lane :lint_localizations do
+    ios_lint_localizations(input_dir: RESOURCES_FOLDER, allow_retry: true)
+  end
+
   def write_file(path, contents)
     FileUtils.rm_f(path)
     file = File.new(path, 'w')
@@ -1026,13 +1036,13 @@ end
 desc 'Run tests without building'
 lane :test_without_building do |options|
   # Find the referenced .xctestrun file based on its name
-  buildProductsPath = File.expand_path('DerivedData/Build/Products/', File.dirname(Dir.pwd))
+  build_products_path = File.expand_path('DerivedData/Build/Products/', File.dirname(Dir.pwd))
 
-  testPlanPath = Dir.glob(File.join(buildProductsPath, '*.xctestrun')).select do |e|
+  xctestrun_path = Dir.glob(File.join(build_products_path, '*.xctestrun')).select do |e|
     e.include?(options[:name])
   end.first
 
-  UI.user_error!('Unable to find .xctestrun file') unless !testPlanPath.nil? && File.exist?((testPlanPath))
+  UI.user_error!('Unable to find .xctestrun file') unless !xctestrun_path.nil? && File.exist?((xctestrun_path))
 
   run_tests(
     workspace: 'WooCommerce.xcworkspace',
@@ -1040,7 +1050,7 @@ lane :test_without_building do |options|
     device: options[:device],
     deployment_target_version: options[:ios_version],
     test_without_building: true,
-    xctestrun: testPlanPath,
+    xctestrun: xctestrun_path,
     result_bundle: true,
     # settins for XML test report generation via `trainer`
     output_types: '',

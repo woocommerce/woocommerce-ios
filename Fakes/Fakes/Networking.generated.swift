@@ -323,6 +323,9 @@ extension Order {
             parentID: .fake(),
             customerID: .fake(),
             orderKey: .fake(),
+            isEditable: .fake(),
+            needsPayment: .fake(),
+            needsProcessing: .fake(),
             number: .fake(),
             status: .fake(),
             currency: .fake(),
@@ -347,7 +350,8 @@ extension Order {
             coupons: .fake(),
             refunds: .fake(),
             fees: .fake(),
-            taxes: .fake()
+            taxes: .fake(),
+            customFields: .fake()
         )
     }
 }
@@ -428,6 +432,7 @@ extension OrderItemRefund {
             name: .fake(),
             productID: .fake(),
             variationID: .fake(),
+            refundedItemID: .fake(),
             quantity: .fake(),
             price: .fake(),
             sku: .fake(),

@@ -8,12 +8,16 @@ public class AppSettingsStore: Store {
     ///
     private let fileStorage: FileStorage
 
+    private let generalAppSettings: GeneralAppSettingsStorage
+
     /// Designated initaliser
     ///
     public init(dispatcher: Dispatcher,
                 storageManager: StorageManagerType,
-                fileStorage: FileStorage) {
+                fileStorage: FileStorage,
+                generalAppSettings: GeneralAppSettingsStorage) {
         self.fileStorage = fileStorage
+        self.generalAppSettings = generalAppSettings
         super.init(dispatcher: dispatcher,
                    storageManager: storageManager,
                    network: NullNetwork())
@@ -35,11 +39,6 @@ public class AppSettingsStore: Store {
     lazy var customSelectedProvidersURL: URL = {
         let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
         return documents!.appendingPathComponent(Constants.customShipmentProvidersFileName)
-    }()
-
-    private lazy var generalAppSettingsFileURL: URL! = {
-        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-        return documents!.appendingPathComponent(Constants.generalAppSettingsFileName)
     }()
 
     private lazy var generalStoreSettingsFileURL: URL! = {
@@ -167,6 +166,8 @@ public class AppSettingsStore: Store {
             setPreferredInPersonPaymentGateway(siteID: siteID, gateway: gateway)
         case let .getPreferredInPersonPaymentGateway(siteID: siteID, onCompletion: onCompletion):
             getPreferredInPersonPaymentGateway(siteID: siteID, onCompletion: onCompletion)
+        case let .forgetPreferredInPersonPaymentGateway(siteID: siteID):
+            forgetPreferredInPersonPaymentGateway(siteID: siteID)
         case .resetGeneralStoreSettings:
             resetGeneralStoreSettings()
         case .setProductSKUInputScannerFeatureSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
@@ -177,6 +178,10 @@ public class AppSettingsStore: Store {
             setCouponManagementFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadCouponManagementFeatureSwitchState(let onCompletion):
             loadCouponManagementFeatureSwitchState(onCompletion: onCompletion)
+        case .setFeatureAnnouncementDismissed(campaign: let campaign, remindLater: let remindLater, onCompletion: let completion):
+            setFeatureAnnouncementDismissed(campaign: campaign, remindLater: remindLater, onCompletion: completion)
+        case .getFeatureAnnouncementVisibility(campaign: let campaign, onCompletion: let completion):
+            getFeatureAnnouncementVisibility(campaign: campaign, onCompletion: completion)
         }
     }
 }
@@ -192,15 +197,12 @@ private extension AppSettingsStore {
     ///
     func setInstallationDateIfNecessary(date: Date, onCompletion: ((Result<Bool, Error>) -> Void)) {
         do {
-            let settings = loadOrCreateGeneralAppSettings()
-
-            if let installationDate = settings.installationDate,
+            if let installationDate = generalAppSettings.value(for: \.installationDate),
                date > installationDate {
                 return onCompletion(.success(false))
             }
 
-            let settingsToSave = settings.copy(installationDate: date)
-            try saveGeneralAppSettings(settingsToSave)
+            try generalAppSettings.setValue(date, for: \.installationDate)
 
             onCompletion(.success(true))
         } catch {
@@ -212,10 +214,10 @@ private extension AppSettingsStore {
     ///
     func updateFeedbackStatus(type: FeedbackType, status: FeedbackSettings.Status, onCompletion: ((Result<Void, Error>) -> Void)) {
         do {
-            let settings = loadOrCreateGeneralAppSettings()
+            let settings = generalAppSettings.settings
             let newFeedback = FeedbackSettings(name: type, status: status)
             let settingsToSave = settings.replacing(feedback: newFeedback)
-            try saveGeneralAppSettings(settingsToSave)
+            try generalAppSettings.saveSettings(settingsToSave)
 
             onCompletion(.success(()))
         } catch {
@@ -224,7 +226,7 @@ private extension AppSettingsStore {
     }
 
     func loadFeedbackVisibility(type: FeedbackType, onCompletion: (Result<Bool, Error>) -> Void) {
-        let settings = loadOrCreateGeneralAppSettings()
+        let settings = generalAppSettings.settings
         let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: type)
 
         onCompletion(Result {
@@ -236,8 +238,7 @@ private extension AppSettingsStore {
     ///
     func setOrderAddOnsFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
         do {
-            let settings = loadOrCreateGeneralAppSettings().copy(isViewAddOnsSwitchEnabled: isEnabled)
-            try saveGeneralAppSettings(settings)
+            try generalAppSettings.setValue(isEnabled, for: \.isViewAddOnsSwitchEnabled)
             onCompletion(.success(()))
         } catch {
             onCompletion(.failure(error))
@@ -248,16 +249,14 @@ private extension AppSettingsStore {
     /// Loads the current Order Add-Ons beta feature switch state from `GeneralAppSettings`
     ///
     func loadOrderAddOnsSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
-        let settings = loadOrCreateGeneralAppSettings()
-        onCompletion(.success(settings.isViewAddOnsSwitchEnabled))
+        onCompletion(.success(generalAppSettings.value(for: \.isViewAddOnsSwitchEnabled)))
     }
 
     /// Sets the state for the Product SKU Input Scanner beta feature switch into `GeneralAppSettings`.
     ///
     func setProductSKUInputScannerFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
         do {
-            let settings = loadOrCreateGeneralAppSettings().copy(isProductSKUInputScannerSwitchEnabled: isEnabled)
-            try saveGeneralAppSettings(settings)
+            try generalAppSettings.setValue(isEnabled, for: \.isProductSKUInputScannerSwitchEnabled)
             onCompletion(.success(()))
         } catch {
             onCompletion(.failure(error))
@@ -267,16 +266,14 @@ private extension AppSettingsStore {
     /// Loads the most recent state for the Product SKU Input Scanner beta feature switch from `GeneralAppSettings`.
     ///
     func loadProductSKUInputScannerFeatureSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
-        let settings = loadOrCreateGeneralAppSettings()
-        onCompletion(.success(settings.isProductSKUInputScannerSwitchEnabled))
+        onCompletion(.success(generalAppSettings.value(for: \.isProductSKUInputScannerSwitchEnabled)))
     }
 
     /// Sets the state for the Coupon Mangagement beta feature switch into `GeneralAppSettings`.
     ///
     func setCouponManagementFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
         do {
-            let settings = loadOrCreateGeneralAppSettings().copy(isCouponManagementSwitchEnabled: isEnabled)
-            try saveGeneralAppSettings(settings)
+            try generalAppSettings.setValue(isEnabled, for: \.isCouponManagementSwitchEnabled)
             onCompletion(.success(()))
         } catch {
             onCompletion(.failure(error))
@@ -286,16 +283,13 @@ private extension AppSettingsStore {
     /// Loads the most recent state for the Coupon Management beta feature switch from `GeneralAppSettings`.
     ///
     func loadCouponManagementFeatureSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
-        let settings = loadOrCreateGeneralAppSettings()
-        onCompletion(.success(settings.isCouponManagementSwitchEnabled))
+        onCompletion(.success(generalAppSettings.value(for: \.isCouponManagementSwitchEnabled)))
     }
 
     /// Loads the last persisted eligibility error information from `GeneralAppSettings`
     ///
     func loadEligibilityErrorInfo(onCompletion: (Result<EligibilityErrorInfo, Error>) -> Void) {
-        let settings = loadOrCreateGeneralAppSettings()
-
-        guard let errorInfo = settings.lastEligibilityErrorInfo else {
+        guard let errorInfo = generalAppSettings.value(for: \.lastEligibilityErrorInfo) else {
             return onCompletion(.failure(AppSettingsStoreErrors.noEligibilityErrorInfo))
         }
 
@@ -304,8 +298,7 @@ private extension AppSettingsStore {
 
     func setEligibilityErrorInfo(errorInfo: EligibilityErrorInfo?, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
         do {
-            let settings = loadOrCreateGeneralAppSettings().copy(lastEligibilityErrorInfo: errorInfo)
-            try saveGeneralAppSettings(settings)
+            try generalAppSettings.setValue(errorInfo, for: \.lastEligibilityErrorInfo)
             onCompletion?(.success(()))
         } catch {
             onCompletion?(.failure(error))
@@ -316,8 +309,7 @@ private extension AppSettingsStore {
 
     func setJetpackBenefitsBannerLastDismissedTime(time: Date, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
         do {
-            let settings = loadOrCreateGeneralAppSettings().copy(lastJetpackBenefitsBannerDismissedTime: time)
-            try saveGeneralAppSettings(settings)
+            try generalAppSettings.setValue(time, for: \.lastJetpackBenefitsBannerDismissedTime)
             onCompletion?(.success(()))
         } catch {
             onCompletion?(.failure(error))
@@ -325,9 +317,7 @@ private extension AppSettingsStore {
     }
 
     func loadJetpackBenefitsBannerVisibility(currentTime: Date, calendar: Calendar, onCompletion: (Bool) -> Void) {
-        let settings = loadOrCreateGeneralAppSettings()
-
-        guard let lastDismissedTime = settings.lastJetpackBenefitsBannerDismissedTime else {
+        guard let lastDismissedTime = generalAppSettings.value(for: \.lastJetpackBenefitsBannerDismissedTime) else {
             // If the banner has not been dismissed before, the banner is default to be visible.
             return onCompletion(true)
         }
@@ -336,28 +326,6 @@ private extension AppSettingsStore {
             return onCompletion(true)
         }
         onCompletion(numberOfDaysSinceLastDismissal >= 5)
-    }
-
-    // File operations
-
-    /// Load the `GeneralAppSettings` from file or create an empty one if it doesn't exist.
-    func loadOrCreateGeneralAppSettings() -> GeneralAppSettings {
-        guard let settings: GeneralAppSettings = try? fileStorage.data(for: generalAppSettingsFileURL) else {
-            return GeneralAppSettings(installationDate: nil,
-                                      feedbacks: [:],
-                                      isViewAddOnsSwitchEnabled: false,
-                                      isProductSKUInputScannerSwitchEnabled: false,
-                                      isCouponManagementSwitchEnabled: false,
-                                      knownCardReaders: [],
-                                      lastEligibilityErrorInfo: nil)
-        }
-
-        return settings
-    }
-
-    /// Save the `GeneralAppSettings` to the appropriate file.
-    func saveGeneralAppSettings(_ settings: GeneralAppSettings) throws {
-        try fileStorage.write(settings, to: generalAppSettingsFileURL)
     }
 }
 
@@ -369,17 +337,14 @@ private extension AppSettingsStore {
     ///
     func rememberCardReader(cardReaderID: String, onCompletion: (Result<Void, Error>) -> Void) {
         do {
-            let settings = loadOrCreateGeneralAppSettings()
-
-            guard !settings.knownCardReaders.contains(cardReaderID) else {
+            guard !generalAppSettings.value(for: \.knownCardReaders).contains(cardReaderID) else {
                 return onCompletion(.success(()))
             }
 
             /// NOTE: We now only persist one card reader maximum, although for backwards compatibility
             /// we still do so as an array
             let knownCardReadersToSave = [cardReaderID]
-            let settingsToSave = settings.copy(knownCardReaders: knownCardReadersToSave)
-            try saveGeneralAppSettings(settingsToSave)
+            try generalAppSettings.setValue(knownCardReadersToSave, for: \.knownCardReaders)
 
             onCompletion(.success(()))
         } catch {
@@ -391,11 +356,9 @@ private extension AppSettingsStore {
     ///
     func forgetCardReader(onCompletion: (Result<Void, Error>) -> Void) {
         do {
-            let settings = loadOrCreateGeneralAppSettings()
             /// NOTE: Since we now only persist one card reader maximum, we no longer use
             /// the argument and always save an empty array to the settings.
-            let settingsToSave = settings.copy(knownCardReaders: [])
-            try saveGeneralAppSettings(settingsToSave)
+            try generalAppSettings.setValue([], for: \.knownCardReaders)
             onCompletion(.success(()))
         } catch {
             onCompletion(.failure(error))
@@ -407,11 +370,10 @@ private extension AppSettingsStore {
     /// E.g.  "CHB204909005931"
     ///
     func loadCardReader(onCompletion: (Result<String?, Error>) -> Void) {
-        let settings = loadOrCreateGeneralAppSettings()
         /// NOTE: We now only persist one card reader maximum, although for backwards compatibility
         /// we still do so as an array. We use last here so that we can get the most recently remembered
         /// reader from appSettings if populated by an older version
-        guard let knownReader = settings.knownCardReaders.last else {
+        guard let knownReader = generalAppSettings.value(for: \.knownCardReaders).last else {
             onCompletion(.success(nil))
             return
         }
@@ -457,7 +419,7 @@ private extension AppSettingsStore {
                               onCompletion: onCompletion)
             return
         }
-        upsertTrackingProvider(siteID: siteID,
+        saveTrackingProvider(siteID: siteID,
                                providerName: providerName,
                                preselectedData: settings,
                                toFileURL: fileURL,
@@ -518,7 +480,7 @@ private extension AppSettingsStore {
         onCompletion(customProvider, nil)
     }
 
-    func upsertTrackingProvider(siteID: Int64,
+    func saveTrackingProvider(siteID: Int64,
                                 providerName: String,
                                 providerURL: String? = nil,
                                 preselectedData: [PreselectedProvider],
@@ -527,15 +489,7 @@ private extension AppSettingsStore {
         let newPreselectedProvider = PreselectedProvider(siteID: siteID,
                                                          providerName: providerName,
                                                          providerURL: providerURL)
-
-        var dataToSave = preselectedData
-
-        if preselectedData.contains(newPreselectedProvider),
-           let index = preselectedData.firstIndex(of: newPreselectedProvider) {
-            dataToSave[index] = newPreselectedProvider
-        } else {
-            dataToSave.append(newPreselectedProvider)
-        }
+        let dataToSave = [newPreselectedProvider]
 
         do {
             try fileStorage.write(dataToSave, to: toFileURL)
@@ -767,6 +721,50 @@ private extension AppSettingsStore {
 
     }
 
+    /// Forgets the preferred payment gateway for In-Person Payments
+    ///
+    func forgetPreferredInPersonPaymentGateway(siteID: Int64) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let newSettings = storeSettings.copy(preferredInPersonPaymentGateway: .some(nil))
+        setStoreSettings(settings: newSettings, for: siteID, onCompletion: nil)
+    }
+
+}
+
+
+// MARK: - Feature Announcement Card Visibility
+
+extension AppSettingsStore {
+
+    func setFeatureAnnouncementDismissed(campaign: FeatureAnnouncementCampaign, remindLater: Bool, onCompletion: ((Result<Bool, Error>) -> ())?) {
+        do {
+            let remindAfter = remindLater ? Date().addingDays(14) : nil
+            let newSettings = FeatureAnnouncementCampaignSettings(dismissedDate: Date(), remindAfter: remindAfter)
+
+            let settings = generalAppSettings.settings
+            let settingsToSave = settings.replacing(featureAnnouncementSettings: newSettings, for: campaign)
+            try generalAppSettings.saveSettings(settingsToSave)
+
+            onCompletion?(.success(true))
+        } catch {
+            onCompletion?(.failure(error))
+        }
+    }
+
+    func getFeatureAnnouncementVisibility(campaign: FeatureAnnouncementCampaign, onCompletion: (Result<Bool, Error>) -> ()) {
+        guard let campaignSettings = generalAppSettings.value(for: \.featureAnnouncementCampaignSettings)[campaign] else {
+            return onCompletion(.success(true))
+        }
+
+        if let remindAfter = campaignSettings.remindAfter {
+            let remindAfterHasPassed = remindAfter < Date()
+            onCompletion(.success(remindAfterHasPassed))
+        } else {
+            let neverDismissed = campaignSettings.dismissedDate == nil
+            onCompletion(.success(neverDismissed))
+        }
+    }
+
 }
 
 // MARK: - Errors
@@ -797,7 +795,6 @@ private enum Constants {
     // MARK: File Names
     static let shipmentProvidersFileName = "shipment-providers.plist"
     static let customShipmentProvidersFileName = "custom-shipment-providers.plist"
-    static let generalAppSettingsFileName = "general-app-settings.plist"
     static let generalStoreSettingsFileName = "general-store-settings.plist"
     static let ordersSettings = "orders-settings.plist"
     static let productsSettings = "products-settings.plist"

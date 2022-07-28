@@ -29,10 +29,10 @@ struct MockStatsActionV4Handler: MockActionHandler {
             case .thisWeek:
                 success(onCompletion)
             case .thisMonth:
-                success(onCompletion)
-            case .thisYear:
-                store.upsertStoredOrderStats(readOnlyStats: objectGraph.thisYearOrderStats, timeRange: timeRange)
+                store.upsertStoredOrderStats(readOnlyStats: objectGraph.thisMonthOrderStats, timeRange: timeRange)
                 onCompletion(.success(()))
+            case .thisYear:
+                success(onCompletion)
         }
     }
 
@@ -45,10 +45,10 @@ struct MockStatsActionV4Handler: MockActionHandler {
             case .thisWeek:
                 success(onCompletion)
             case .thisMonth:
-                success(onCompletion)
-            case .thisYear:
-                store.upsertStoredSiteVisitStats(readOnlyStats: objectGraph.thisYearVisitStats, timeRange: timeRange)
+                store.upsertStoredSiteVisitStats(readOnlyStats: objectGraph.thisMonthVisitStats, timeRange: timeRange)
                 onCompletion(.success(()))
+            case .thisYear:
+                success(onCompletion)
         }
     }
 
@@ -61,10 +61,10 @@ struct MockStatsActionV4Handler: MockActionHandler {
             case .thisWeek:
                 success(onCompletion)
             case .thisMonth:
-                success(onCompletion)
-            case .thisYear:
-                store.upsertStoredTopEarnerStats(readOnlyStats: objectGraph.thisYearTopProducts)
+                store.upsertStoredTopEarnerStats(readOnlyStats: objectGraph.thisMonthTopProducts)
                 onCompletion(.success(()))
+            case .thisYear:
+                success(onCompletion)
         }
     }
 }

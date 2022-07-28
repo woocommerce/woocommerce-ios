@@ -1,4 +1,5 @@
 import Yosemite
+import Foundation
 
 final class MockOrders {
     let siteID: Int64 = 1234
@@ -14,7 +15,8 @@ final class MockOrders {
                    shippingLines: [ShippingLine] = sampleShippingLines(),
                    refunds: [OrderRefundCondensed] = [],
                    fees: [OrderFeeLine] = [],
-                   taxes: [OrderTaxLine] = []) -> Order {
+                   taxes: [OrderTaxLine] = [],
+                   customFields: [OrderMetaData] = []) -> Order {
         return Order.fake().copy(siteID: siteID,
                                  orderID: orderID,
                                  customerID: 11,
@@ -23,9 +25,9 @@ final class MockOrders {
                                  status: status,
                                  currency: "USD",
                                  customerNote: "",
-                                 dateCreated: date(with: "2018-04-03T23:05:12"),
-                                 dateModified: date(with: "2018-04-03T23:05:14"),
-                                 datePaid: date(with: "2018-04-03T23:05:14"),
+                                 dateCreated: DateFormatter.dateFromString(with: "2018-04-03T23:05:12"),
+                                 dateModified: DateFormatter.dateFromString(with: "2018-04-03T23:05:14"),
+                                 datePaid: DateFormatter.dateFromString(with: "2018-04-03T23:05:14"),
                                  discountTotal: "30.00",
                                  discountTax: "1.20",
                                  shippingTotal: "0.00",
@@ -40,7 +42,8 @@ final class MockOrders {
                                  shippingLines: shippingLines,
                                  refunds: refunds,
                                  fees: fees,
-                                 taxes: taxes)
+                                 taxes: taxes,
+                                 customFields: customFields)
     }
 
     func sampleOrder() -> Order {
@@ -49,6 +52,13 @@ final class MockOrders {
 
     func orderWithFees() -> Order {
         makeOrder(fees: sampleFeeLines())
+    }
+
+    func orderPaidWithNoPaymentMethod() -> Order {
+        return Order.fake().copy(
+            datePaid: DateFormatter.dateFromString(with: "2018-04-03T23:05:14"),
+            paymentMethodID: "",
+            paymentMethodTitle: "")
     }
 
     func orderWithAPIRefunds() -> Order {
@@ -195,15 +205,6 @@ final class MockOrders {
                             total: "0.00",
                             totalTax: "0.00",
                             taxes: [])]
-    }
-
-    /// Converts a date string to a date type
-    ///
-    func date(with dateString: String) -> Date {
-        guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
-            return Date()
-        }
-        return date
     }
 
     func refundsWithNegativeValue() -> [OrderRefundCondensed] {

@@ -505,6 +505,24 @@ extension UIImage {
         return UIImage(named: "card-reader-low-battery")!
     }
 
+    /// Card Reader image - BBPOS Chipper 2X BT
+    ///
+    static var cardReaderImageBBPOSChipper: UIImage {
+        return UIImage(named: "card-reader-bbpos-chipper")!
+    }
+
+    /// Card Reader image - Stripe Reader M2
+    ///
+    static var cardReaderImageM2: UIImage {
+        return UIImage(named: "card-reader-m2")!
+    }
+
+    /// Card Reader image - Wisepad 3
+    ///
+    static var cardReaderImageWisepad3: UIImage {
+        return UIImage(named: "card-reader-wisepad3")!
+    }
+
     /// Shopping cart
     ///
     static var shoppingCartIcon: UIImage {
@@ -525,6 +543,14 @@ extension UIImage {
     ///
     static var cardReaderManualIcon: UIImage {
         return UIImage(named: "icon-card-reader-manual")!
+            .withRenderingMode(.alwaysTemplate)
+            .imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// Credit card give icon
+    ///
+    static var creditCardGiveIcon: UIImage {
+        return UIImage(named: "credit-card-give")!
             .withRenderingMode(.alwaysTemplate)
             .imageFlippedForRightToLeftLayoutDirection()
     }
@@ -760,6 +786,13 @@ extension UIImage {
         return UIImage.gridicon(.minusSmall)
     }
 
+    /// Rectangle on rectangle, angled
+    ///
+    static var rectangleOnRectangleAngled: UIImage {
+        return UIImage(systemName: "rectangle.on.rectangle.angled", withConfiguration: Configurations.barButtonItemSymbol)!
+            .imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Search Icon - used in `UIBarButtonItem`
     ///
     static var searchBarButtonItemImage: UIImage {
@@ -829,6 +862,12 @@ extension UIImage {
         return UIImage.gridicon(.starOutline, size: starSize)
     }
 
+    /// Stripe icon
+    ///
+    static var stripeIcon: UIImage {
+        return UIImage(named: "stripe-icon")!
+    }
+
     /// Sync Icon
     ///
     static var syncIcon: UIImage {
@@ -875,6 +914,12 @@ extension UIImage {
     ///
     static var visibilityImage: UIImage {
         return UIImage.gridicon(.visible)
+    }
+
+    /// Stripe icon
+    ///
+    static var wcpayIcon: UIImage {
+        return UIImage(named: "wcpay-icon")!
     }
 
     /// No store image
@@ -931,6 +976,12 @@ extension UIImage {
         return im2.imageWithTintColor(tintColor)
     }
 
+    /// Woo logo that is displayed on the login prologue.
+    ///
+    static var wooLogoPrologueImage: UIImage {
+        UIImage(named: "prologue-logo")!
+    }
+
     /// Waiting for Customers Image
     ///
     static var waitingForCustomersImage: UIImage {
@@ -943,6 +994,12 @@ extension UIImage {
         return UIImage(named: "woo-wcship-install-banner")!
     }
 
+    /// Payments Feature Banner
+    ///
+    static var paymentsFeatureBannerImage: UIImage {
+        return UIImage(named: "woo-payments-feature-banner")!
+    }
+
     /// What is Jetpack Image
     ///
     static var whatIsJetpackImage: UIImage {
@@ -953,6 +1010,30 @@ extension UIImage {
     ///
     static var welcomeImage: UIImage {
         UIImage(imageLiteralResourceName: "img-welcome")
+    }
+
+    /// Icon Circular Rate Discount (used in WCShip onboarding)
+    ///
+    static var circularRateDiscountIcon: UIImage {
+        return UIImage(named: "icon-circular-rate-discount")!
+    }
+
+    /// Icon Circular Document (used in WCShip onboarding)
+    ///
+    static var circularDocumentIcon: UIImage {
+        return UIImage(named: "icon-circular-document")!
+    }
+
+    /// Icon Circular Time (used in WCShip onboarding)
+    ///
+    static var circularTimeIcon: UIImage {
+        return UIImage(named: "icon-circular-time")!
+    }
+
+    /// Lock Image
+    ///
+    static var lockImage: UIImage {
+        UIImage.gridicon(.lock, size: CGSize(width: 24, height: 24))
     }
 }
 

@@ -22,7 +22,7 @@ final class JetpackErrorViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_image() {
         // Given
-        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url)
+        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url) {}
 
         // When
         let image = viewModel.image
@@ -33,7 +33,7 @@ final class JetpackErrorViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_visibility_for_auxiliary_button() {
         // Given
-        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url)
+        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url) {}
 
         // When
         let isVisible = viewModel.isAuxiliaryButtonHidden
@@ -44,7 +44,7 @@ final class JetpackErrorViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_title_for_auxiliary_button() {
         // Given
-        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url)
+        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url) {}
 
         // When
         let auxiliaryButtonTitle = viewModel.auxiliaryButtonTitle
@@ -55,7 +55,7 @@ final class JetpackErrorViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_title_for_primary_button() {
         // Given
-        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url)
+        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url) {}
 
         // When
         let primaryButtonTitle = viewModel.primaryButtonTitle
@@ -66,7 +66,7 @@ final class JetpackErrorViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_title_for_secondary_button() {
         // Given
-        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url)
+        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url) {}
 
         // When
         let secondaryButtonTitle = viewModel.secondaryButtonTitle
@@ -77,7 +77,7 @@ final class JetpackErrorViewModelTests: XCTestCase {
 
     func test_viewModel_logs_an_event_when_viewDidLoad_is_triggered() throws {
         // Given
-        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url, analytics: analytics)
+        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url, analytics: analytics) {}
 
         assertEmpty(analyticsProvider.receivedEvents)
 
@@ -89,9 +89,9 @@ final class JetpackErrorViewModelTests: XCTestCase {
         XCTAssertEqual(firstEvent, "login_jetpack_required_screen_viewed")
     }
 
-    func test_viewModel_logs_an_event_when_see_instructions_button_is_tapped() throws {
+    func test_viewModel_logs_an_event_when_install_jetpack_button_is_tapped() throws {
         // Given
-        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url, analytics: analytics)
+        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url, analytics: analytics) {}
 
         assertEmpty(analyticsProvider.receivedEvents)
 
@@ -100,12 +100,12 @@ final class JetpackErrorViewModelTests: XCTestCase {
 
         // Then
         let firstEvent = try XCTUnwrap(analyticsProvider.receivedEvents.first)
-        XCTAssertEqual(firstEvent, "login_jetpack_required_view_instructions_button_tapped")
+        XCTAssertEqual(firstEvent, "login_jetpack_setup_button_tapped")
     }
 
     func test_viewModel_logs_an_event_when_the_what_is_jetpack_button_is_tapped() throws {
         // Given
-        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url, analytics: analytics)
+        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url, analytics: analytics) {}
 
         assertEmpty(analyticsProvider.receivedEvents)
 
@@ -126,8 +126,8 @@ private extension JetpackErrorViewModelTests {
         static let whatIsJetpack = NSLocalizedString("What is Jetpack?",
                                                      comment: "Button linking to webview that explains what Jetpack is"
                                                         + "Presented when logging in with a site address that does not have a valid Jetpack installation")
-        static let primaryButtonTitle = NSLocalizedString("See Instructions",
-                                                          comment: "Action button linking to instructions for installing Jetpack."
+        static let primaryButtonTitle = NSLocalizedString("Install Jetpack",
+                                                          comment: "Action button for installing Jetpack."
                                                           + "Presented when logging in with a site address that does not have a valid Jetpack installation")
 
         static let secondaryButtonTitle = NSLocalizedString("Log In With Another Account",

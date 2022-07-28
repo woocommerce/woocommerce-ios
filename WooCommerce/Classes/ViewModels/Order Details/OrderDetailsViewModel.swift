@@ -6,15 +6,13 @@ import MessageUI
 import Combine
 import Experiments
 import WooFoundation
+import SwiftUI
 import enum Networking.DotcomError
 
 final class OrderDetailsViewModel {
 
-    /// Retains the use-case so it can perform all of its async tasks.
-    ///
-    private var collectPaymentsUseCase: CollectOrderPaymentUseCase?
-
     private let stores: StoresManager
+    private let currencyFormatter: CurrencyFormatter
 
     private(set) var order: Order
 
@@ -22,15 +20,16 @@ final class OrderDetailsViewModel {
     ///
     private var syncState: SyncState = .notSynced
 
-    private let cardPresentPaymentsOnboardingPresenter = CardPresentPaymentsOnboardingPresenter()
-
     var orderStatus: OrderStatus? {
         return lookUpOrderStatus(for: order)
     }
 
-    init(order: Order, stores: StoresManager = ServiceLocator.stores) {
+    init(order: Order,
+         stores: StoresManager = ServiceLocator.stores,
+         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         self.order = order
         self.stores = stores
+        self.currencyFormatter = currencyFormatter
     }
 
     func update(order newOrder: Order) {
@@ -145,24 +144,21 @@ final class OrderDetailsViewModel {
         order.billingAddress?.email
     }
 
-
-    private var cardPresentPaymentGatewayAccounts: [PaymentGatewayAccount] {
-        return dataSource.cardPresentPaymentGatewayAccounts()
-    }
-
     private var receipt: CardPresentReceiptParameters? = nil
 
-    /// Returns available action buttons given the internal state.
+    /// Returns edit action availability given the internal state.
     ///
-    var moreActionsButtons: [MoreActionButton] {
-        MoreActionButton.availableButtons(order: order, syncState: syncState)
+    var editButtonIsEnabled: Bool {
+        syncState == .synced
     }
 
-    /// Returns the order payment link.
-    /// Should exists on `6.4+` stores.
-    ///
-    var paymentLink: URL? {
-        return order.paymentURL
+    var paymentMethodsViewModel: PaymentMethodsViewModel {
+        let formattedTotal = currencyFormatter.formatAmount(order.total, with: order.currency) ?? String()
+        return PaymentMethodsViewModel(siteID: order.siteID,
+                                       orderID: order.orderID,
+                                       paymentLink: order.paymentURL,
+                                       formattedTotal: formattedTotal,
+                                       flow: .orderPayment)
     }
 
     /// Helpers
@@ -187,23 +183,24 @@ extension OrderDetailsViewModel {
     func syncEverything(onReloadSections: (() -> ())? = nil, onCompletion: (() -> ())? = nil) {
         let group = DispatchGroup()
 
-        /// Update state to syncing
-        ///
-        syncState = .syncing
-
         group.enter()
-        syncOrder { _ in
-            group.leave()
-        }
+        syncOrder { [weak self] _ in
+            defer {
+                group.leave()
+            }
 
-        group.enter()
-        syncProducts { _ in
-            group.leave()
-        }
+            // Products require order.items data, so sync them only after the order is loaded
+            guard let self = self else { return }
 
-        group.enter()
-        syncProductVariations { _ in
-            group.leave()
+            group.enter()
+            self.syncProducts { _ in
+                group.leave()
+            }
+
+            group.enter()
+            self.syncProductVariations { _ in
+                group.leave()
+            }
         }
 
         group.enter()
@@ -233,14 +230,6 @@ extension OrderDetailsViewModel {
         }
 
         group.enter()
-        refreshCardPresentPaymentEligibility()
-        group.leave()
-
-        group.enter()
-        refreshCardPresentPaymentOnboarding()
-        group.leave()
-
-        group.enter()
         syncSavedReceipts {_ in
             group.leave()
         }
@@ -257,6 +246,7 @@ extension OrderDetailsViewModel {
             ///
             self?.syncState = .synced
 
+            onReloadSections?()
             onCompletion?()
         }
     }
@@ -281,30 +271,6 @@ extension OrderDetailsViewModel {
             }
             onReloadSections?()
             onCompletion?()
-        }
-    }
-
-    func syncOrderAfterPaymentCollection(onCompletion: @escaping ()-> Void) {
-        let group = DispatchGroup()
-
-        group.enter()
-        syncOrder { _ in
-            group.leave()
-        }
-
-        group.enter()
-        syncNotes { _ in
-            group.leave()
-        }
-
-        group.enter()
-        syncSavedReceipts { _ in
-            group.leave()
-        }
-
-        group.notify(queue: .main) {
-            NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
-            onCompletion()
         }
     }
 }
@@ -420,6 +386,13 @@ extension OrderDetailsViewModel {
             let isUnifiedEditingEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing)
             let billingInformationViewController = BillingInformationViewController(order: order, editingEnabled: !isUnifiedEditingEnabled)
             viewController.navigationController?.pushViewController(billingInformationViewController, animated: true)
+        case .customFields:
+            ServiceLocator.analytics.track(.orderViewCustomFieldsTapped)
+            let customFields = order.customFields.map {
+                OrderCustomFieldsViewModel(metadata: $0)
+            }
+            let customFieldsView = UIHostingController(rootView: OrderCustomFieldsDetails(customFields: customFields))
+            viewController.present(customFieldsView, animated: true)
         case .seeReceipt:
             let countryCode = configurationLoader.configuration.countryCode
             ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode))
@@ -447,6 +420,10 @@ extension OrderDetailsViewModel {
             let viewModel = RefundedProductsViewModel(order: order, refundedProducts: refundedProducts)
             let refundedProductsDetailViewController = RefundedProductsViewController(viewModel: viewModel)
             viewController.navigationController?.pushViewController(refundedProductsDetailViewController, animated: true)
+        case .installWCShip:
+            //TODO: add analytics
+            let wcShipInstallationFlowVC = Inject.ViewControllerHost(WCShipCTAHostingController())
+            viewController.present(wcShipInstallationFlowVC, animated: true)
         default:
             break
         }
@@ -601,18 +578,6 @@ extension OrderDetailsViewModel {
         stores.dispatch(action)
     }
 
-    func refreshCardPresentPaymentEligibility() {
-        /// No need for a completion here. The VC will be notified of changes to the stored paymentGatewayAccounts
-        /// by the viewModel (after passing up through the dataSource and originating in the resultsControllers)
-        ///
-        let action = CardPresentPaymentAction.loadAccounts(siteID: order.siteID) {_ in}
-        ServiceLocator.stores.dispatch(action)
-    }
-
-    func refreshCardPresentPaymentOnboarding() {
-        cardPresentPaymentsOnboardingPresenter.refresh()
-    }
-
     func checkOrderAddOnFeatureSwitchState(onCompletion: (() -> Void)? = nil) {
         let action = AppSettingsAction.loadOrderAddOnsSwitchState { [weak self] result in
             self?.dataSource.showAddOns = (try? result.get()) ?? false
@@ -653,44 +618,6 @@ extension OrderDetailsViewModel {
 
         stores.dispatch(deleteTrackingAction)
     }
-
-    /// Collects payments for the current order.
-    /// Tries to connect to a reader if necessary.
-    /// Checks onboarding status before connecting to a reader.
-    /// Handles receipt sharing.
-    ///
-    func collectPayment(rootViewController: UIViewController, onCollect: @escaping (Result<Void, Error>) -> Void) {
-        cardPresentPaymentsOnboardingPresenter.showOnboardingIfRequired(from: rootViewController) { [weak self] in
-            guard let self = self else { return }
-            guard let paymentGateway = self.cardPresentPaymentGatewayAccounts.first else {
-                return DDLogError("⛔️ Payment Gateway not found, can't collect payment.")
-            }
-
-            let formattedTotal: String = {
-                let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
-                let currencyCode = ServiceLocator.currencySettings.currencyCode
-                let unit = ServiceLocator.currencySettings.symbol(from: currencyCode)
-                return currencyFormatter.formatAmount(self.order.total, with: unit) ?? ""
-            }()
-
-            self.collectPaymentsUseCase = CollectOrderPaymentUseCase(
-                siteID: self.order.siteID,
-                order: self.order,
-                formattedAmount: formattedTotal,
-                paymentGatewayAccount: paymentGateway,
-                rootViewController: rootViewController,
-                alerts: OrderDetailsPaymentAlerts(transactionType: .collectPayment,
-                                                  presentingController: rootViewController),
-                configuration: self.configurationLoader.configuration)
-
-            self.collectPaymentsUseCase?.collectPayment(
-                onCollect: onCollect,
-                onCompleted: { [weak self] in
-                    // Make sure we free all the resources
-                    self?.collectPaymentsUseCase = nil
-                })
-        }
-    }
 }
 
 // MARK: Definitions
@@ -699,68 +626,6 @@ private extension OrderDetailsViewModel {
     ///
     enum SyncState {
         case notSynced
-        case syncing
         case synced
-    }
-}
-
-// MARK: More Action Buttons Definition
-extension OrderDetailsViewModel {
-
-    /// Defines an action button that resides inside the more action menu.
-    ///
-    struct MoreActionButton {
-
-        /// Defines all possible more action button types.
-        ///
-        enum ButtonType: CaseIterable {
-            case editOrder
-            case sharePaymentLink
-        }
-
-        /// ID of the button.
-        ///
-        let id: ButtonType
-
-        /// Title of the button.
-        ///
-        let title: String
-
-        fileprivate static func availableButtons(order: Order, syncState: SyncState) -> [MoreActionButton] {
-            ButtonType.allCases.compactMap { buttonType in
-                switch buttonType {
-
-                case .sharePaymentLink:
-                    guard order.needsPayment && order.paymentURL != nil else {
-                        return nil
-                    }
-                    return .init(id: buttonType, title: Localization.sharePaymentLink)
-
-                case .editOrder:
-                    guard syncState == .synced, ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.unifiedOrderEditing) else {
-                        return nil
-                    }
-                    return .init(id: buttonType, title: Localization.editOrder)
-                }
-            }
-        }
-
-        enum Localization {
-            static let sharePaymentLink = NSLocalizedString("Share Payment Link", comment: "Title to share an order payment link.")
-            static let editOrder = NSLocalizedString("Edit", comment: "Title to edit an order")
-        }
-    }
-}
-
-private extension Order {
-    /// This check is temporary, we are working on knowing if an order needs payment directly from the API.
-    /// Conditions copied from:
-    /// https://github.com/woocommerce/woocommerce/blob/3611d4643791bad87a0d3e6e73e031bb80447417/plugins/woocommerce/includes/class-wc-order.php#L1520-L1523
-    ///
-    var needsPayment: Bool {
-        guard let total = Double(total) else {
-            return false
-        }
-        return total > .zero && (status == .pending || status == .failed)
     }
 }

@@ -29,15 +29,25 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .couponEditing:
             return true
+        case .couponCreation:
+            return true
         case .updateOrderOptimistically:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .shippingLabelsOnboardingM1:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .inPersonPaymentGatewaySelection:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .unifiedOrderEditing:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .backgroundProductImageUpload:
+            return true
+        case .appleIDAccountDeletion:
+            return true
+        case .newToWooCommerceLinkInLoginPrologue:
+            return true
+        case .loginPrologueOnboarding:
+            return true
+        case .loginErrorNotifications:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

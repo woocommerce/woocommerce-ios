@@ -253,6 +253,28 @@ final class OrderListViewModelTests: XCTestCase {
         }
     }
 
+    func test_when_having_no_error_and_orders_banner_should_not_be_loaded_shows_nothing() {
+        // Given
+        let storesManager = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = OrderListViewModel(siteID: siteID, stores: storesManager, filters: nil, loadOrdersBanner: false)
+        storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadFeedbackVisibility(_, onCompletion):
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.activate()
+
+        // Then
+        waitUntil {
+            viewModel.topBanner == .none
+        }
+    }
+
     func test_when_having_no_error_and_orders_banner_should_not_be_visible_shows_nothing() {
         // Given
         let storesManager = MockStoresManager(sessionManager: .testingInstance)

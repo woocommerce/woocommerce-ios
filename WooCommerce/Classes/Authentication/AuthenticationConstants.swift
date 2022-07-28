@@ -17,6 +17,14 @@ struct AuthenticationConstants {
         "Log in with your WordPress.com account email address to manage your WooCommerce stores.",
         comment: "Sign in instructions on the 'log in using WordPress.com account' screen."
     )
+
+    /// What is WordPress.com? link (Continue with WordPress.com)
+    ///
+    static let whatIsWPComLinkTitle = NSLocalizedString(
+        "What is WordPress.com?",
+        comment: "Navigates to page with details about What is WordPress.com."
+    )
+
     /// Login with Jetpack instructions.
     ///
     static let jetpackInstructions = NSLocalizedString(
@@ -48,6 +56,13 @@ struct AuthenticationConstants {
     static let enterYourSiteAddressButtonTitle = NSLocalizedString(
         "Enter Your Store Address",
         comment: "Button title. Takes the user to the login by store address flow."
+    )
+
+    /// Title of "Sign in with store credentials" button
+    //
+    static let signInWithSiteCredsButtonTitle = NSLocalizedString(
+        "Sign in with store credentials",
+        comment: "Button title. Takes the user to the site credentials entry screen."
     )
 
     /// Title of views in Unified Login

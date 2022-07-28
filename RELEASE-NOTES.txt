@@ -1,5 +1,42 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+9.8
+-----
+- [***] Login: Introduce a way to sign in using store credentials.  [https://github.com/woocommerce/woocommerce-ios/pull/7320]
+- [*] In-Person Payments: The purchase card reader information card appears also in the Orders list screen. [https://github.com/woocommerce/woocommerce-ios/pull/7326]
+
+9.7
+-----
+- [***] Orders: Orders can now be edited within the app. [https://github.com/woocommerce/woocommerce-ios/pull/7300]
+- [**] Orders: You can now view the Custom Fields for an order in the Order Details screen. [https://github.com/woocommerce/woocommerce-ios/pull/7310]
+- [*] In-Person Payments: Card Reader Manuals now appear based on country availability, consolidated into an unique view [https://github.com/woocommerce/woocommerce-ios/pull/7178]
+- [*] Login: Jetpack setup flow is now accessible from the Login with Store Address flow. [https://github.com/woocommerce/woocommerce-ios/pull/7294]
+- [*] In-Person Payments: The purchase card reader information card can be dismissed [https://github.com/woocommerce/woocommerce-ios/pull/7260]
+- [*] In-Person Payments: When dismissing the purchase card reader information card, the user can choose to be reminded in 14 days. [https://github.com/woocommerce/woocommerce-ios/pull/7271]
+- [*] In-Person Payments: The purchase card reader information card appears also in the App Settings screen. [https://github.com/woocommerce/woocommerce-ios/pull/7308]
+- [*] Refund lines in the Order details screen now appear ordered from oldest to newest [https://github.com/woocommerce/woocommerce-ios/pull/7287]
+- [*] Login: when the app is in logged out state, an onboarding screen is shown before the prologue screen if the user hasn't finished or skipped it.  [https://github.com/woocommerce/woocommerce-ios/pull/7324]
+- [*] Orders: When a store has no orders yet, there is an updated message with a link to learn more on the Orders tab. [https://github.com/woocommerce/woocommerce-ios/pull/7328]
+
+9.6
+-----
+- [***] Coupons: Coupons can now be created from within the app. [https://github.com/woocommerce/woocommerce-ios/pull/7239]
+- [**] Order Details: All unpaid orders have a Collect Payment button, which shows a payment method selection screen. Choices are Cash, Card, and Payment Link. [https://github.com/woocommerce/woocommerce-ios/pull/7111]
+- [**] In-Person Payments: Support for selecting preferred payment gateway when multiple extensions are installed on the store. [https://github.com/woocommerce/woocommerce-ios/pull/7153]
+- [*] Coupons: Removed the redundant animation when reloading the coupon list. [https://github.com/woocommerce/woocommerce-ios/pull/7137]
+- [*] Login: Display "What is WordPress.com?" link in "Continue With WordPress.com" flow. [https://github.com/woocommerce/woocommerce-ios/pull/7213]
+- [*] Login: Display the Jetpack requirement error after login is successful.
+- [*] Login: Display a "New to WooCommerce?" link in the login prologue screen above the login buttons. [https://github.com/woocommerce/woocommerce-ios/pull/7261]
+- [*] In-Person Payments: Publicize the Card Present Payments feature on the Payment Method screen [https://github.com/woocommerce/woocommerce-ios/pull/7225]
+- [*] In-Person Payments: Add blog_id to IPP transaction description to match WCPay [https://github.com/woocommerce/woocommerce-ios/pull/7221]
+- [*] Product form: after uploading an image, the product can now be saved immediately while the image is being uploaded in the background. When no images are pending upload for the saved product, the images are added to the product. Testing instructions: https://github.com/woocommerce/woocommerce-ios/pull/7196. [https://github.com/woocommerce/woocommerce-ios/pull/7254]
+
+9.5
+-----
+- [*] Coupons: Fixed issue saving "Individual Use" and "Exclude Sale Items" fields. [https://github.com/woocommerce/woocommerce-ios/pull/7117]
+- [*] Orders: The customer shipping/billing address form now navigates back automatically after selecting a country or state. [https://github.com/woocommerce/woocommerce-ios/pull/7119]
+- [internal] In settings and empty stores screen, the "Close Account" link is shown for users who signed in with Apple (the only way to create an account) to close their WordPress.com account. [https://github.com/woocommerce/woocommerce-ios/pull/7143]
+
 9.4
 -----
 - [*] Orders: Order details now displays both the date and time for all orders. [https://github.com/woocommerce/woocommerce-ios/pull/6996]
@@ -8,6 +45,7 @@
 - [*] Order Creation: Fixes a bug where selecting a variable product to add to a new order would sometimes open the wrong list of product variations. [https://github.com/woocommerce/woocommerce-ios/pull/7042]
 - [*] Collect payment button on Order Details no longer flickers when the screen loads [https://github.com/woocommerce/woocommerce-ios/pull/7043]
 - [*] Issue refund button on Order Details is shown for all paid orders [https://github.com/woocommerce/woocommerce-ios/pull/7046]
+- [*] Order Creation: Fixes several bugs with the Products section not showing the correct order items or not correctly updating the item quantity. [https://github.com/woocommerce/woocommerce-ios/pull/7067]
 
 9.3
 -----

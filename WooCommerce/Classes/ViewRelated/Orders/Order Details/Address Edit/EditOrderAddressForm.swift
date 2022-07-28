@@ -431,6 +431,9 @@ struct EditAddressForm_Previews: PreviewProvider {
                                    parentID: 2,
                                    customerID: 11,
                                    orderKey: "",
+                                   isEditable: false,
+                                   needsPayment: false,
+                                   needsProcessing: false,
                                    number: "789",
                                    status: .processing,
                                    currency: "USD",
@@ -455,7 +458,8 @@ struct EditAddressForm_Previews: PreviewProvider {
                                    coupons: [],
                                    refunds: [],
                                    fees: [],
-                                   taxes: [])
+                                   taxes: [],
+                                   customFields: [])
 
     static let sampleAddress = Address(firstName: "Johnny",
                                        lastName: "Appleseed",

@@ -30,6 +30,9 @@ extension Order {
     @NSManaged public var discountTotal: String?
     @NSManaged public var exclusiveForSearch: Bool
     @NSManaged public var fees: Set<OrderFeeLine>?
+    @NSManaged public var isEditable: Bool
+    @NSManaged public var needsPayment: Bool
+    @NSManaged public var needsProcessing: Bool
     @NSManaged public var number: String?
     @NSManaged public var orderID: Int64
     @NSManaged public var parentID: Int64
@@ -56,6 +59,7 @@ extension Order {
     @NSManaged public var total: String?
     @NSManaged public var totalTax: String?
     @NSManaged public var coupons: Set<OrderCoupon>?
+    @NSManaged public var customFields: Set<OrderMetaData>?
     @NSManaged public var items: NSOrderedSet?
     @NSManaged public var notes: Set<OrderNote>?
     @NSManaged public var searchResults: Set<OrderSearchResults>?
@@ -100,6 +104,23 @@ extension Order {
 
 }
 
+// MARK: Generated accessors for customFields
+extension Order {
+
+    @objc(addCustomFieldsObject:)
+    @NSManaged public func addToCustomFields(_ value: OrderMetaData)
+
+    @objc(removeCustomFieldsObject:)
+    @NSManaged public func removeFromCustomFields(_ value: OrderMetaData)
+
+    @objc(addCustomFields:)
+    @NSManaged public func addToCustomFields(_ values: NSSet)
+
+    @objc(removeCustomFields:)
+    @NSManaged public func removeFromCustomFields(_ values: NSSet)
+
+}
+
 // MARK: Generated accessors for items
 extension Order {
 
@@ -134,6 +155,7 @@ extension Order {
     @NSManaged public func removeFromItems(_ values: NSOrderedSet)
 
 }
+
 // MARK: Generated accessors for notes
 extension Order {
 

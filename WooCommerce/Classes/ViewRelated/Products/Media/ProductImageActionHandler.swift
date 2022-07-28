@@ -2,18 +2,48 @@ import Combine
 import Photos
 import Yosemite
 
-/// Encapsulates the implementation of Product images actions from the UI.
-///
-final class ProductImageActionHandler {
+/// Interface of `ProductImageActionHandler` to allow mocking in unit tests.
+protocol ProductImageActionHandlerProtocol {
     typealias AllStatuses = (productImageStatuses: [ProductImageStatus], error: Error?)
     typealias OnAllStatusesUpdate = (AllStatuses) -> Void
-    typealias OnAssetUpload = (PHAsset, ProductImage) -> Void
+    typealias OnAssetUpload = (PHAsset, Result<ProductImage, Error>) -> Void
+
+    var productImageStatuses: [ProductImageStatus] { get }
+
+    @discardableResult
+    func addUpdateObserver<T: AnyObject>(_ observer: T,
+                                         onUpdate: @escaping OnAllStatusesUpdate) -> AnyCancellable
+
+    func addAssetUploadObserver<T: AnyObject>(_ observer: T,
+                                              onAssetUpload: @escaping OnAssetUpload) -> AnyCancellable
+
+    func addSiteMediaLibraryImagesToProduct(mediaItems: [Media])
+
+    func uploadMediaAssetToSiteMediaLibrary(asset: PHAsset)
+
+    func updateProductID(_ remoteProductID: ProductOrVariationID)
+
+    func deleteProductImage(_ productImage: ProductImage)
+
+    func resetProductImages(to product: ProductFormDataModel)
+
+    func updateProductImageStatusesAfterReordering(_ productImageStatuses: [ProductImageStatus])
+}
+
+/// Encapsulates the implementation of Product images actions from the UI.
+///
+final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
+    typealias AllStatuses = (productImageStatuses: [ProductImageStatus], error: Error?)
+    typealias OnAllStatusesUpdate = (AllStatuses) -> Void
+    typealias OnAssetUpload = (PHAsset, Result<ProductImage, Error>) -> Void
 
     private let siteID: Int64
-    private let productID: Int64
+    private var productOrVariationID: ProductOrVariationID
 
     /// The queue where internal states like `allStatuses` and `observations` are updated on to maintain thread safety.
     private let queue: DispatchQueue
+
+    private let stores: StoresManager
 
     var productImageStatuses: [ProductImageStatus] {
         return allStatuses.productImageStatuses
@@ -42,10 +72,16 @@ final class ProductImageActionHandler {
     ///   - productID: the ID of the product whose image statuses and actions are of concern.
     ///   - imageStatuses: the current image statuses of the product.
     ///   - queue: the queue where the update callbacks are called on. Default to be the main queue.
-    init(siteID: Int64, productID: Int64, imageStatuses: [ProductImageStatus], queue: DispatchQueue = .main) {
+    ///   - stores: stores that dispatch image upload action.
+    init(siteID: Int64,
+         productID: ProductOrVariationID,
+         imageStatuses: [ProductImageStatus],
+         queue: DispatchQueue = .main,
+         stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
-        self.productID = productID
+        self.productOrVariationID = productID
         self.queue = queue
+        self.stores = stores
         self.allStatuses = (productImageStatuses: imageStatuses, error: nil)
     }
 
@@ -96,7 +132,6 @@ final class ProductImageActionHandler {
     /// - Parameters:
     ///   - observer: the observer that `onAssetUpload` is associated with.
     ///   - onAssetUpload: called when an asset has been uploaded, if `observer` is not nil.
-    @discardableResult
     func addAssetUploadObserver<T: AnyObject>(_ observer: T,
                                               onAssetUpload: @escaping OnAssetUpload) -> AnyCancellable {
         let id = UUID()
@@ -106,7 +141,7 @@ final class ProductImageActionHandler {
                 return
             }
 
-            self.observations.assetUploaded[id] = { [weak self, weak observer] asset, productImage in
+            self.observations.assetUploaded[id] = { [weak self, weak observer] asset, result in
                 // If the observer has been deallocated, we can
                 // automatically remove the observation closure.
                 guard observer != nil else {
@@ -114,7 +149,7 @@ final class ProductImageActionHandler {
                     return
                 }
 
-                onAssetUpload(asset, productImage)
+                onAssetUpload(asset, result)
             }
         }
 
@@ -176,13 +211,18 @@ final class ProductImageActionHandler {
 
     private func uploadMediaAssetToSiteMediaLibrary(asset: PHAsset, onCompletion: @escaping (Result<Media, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let siteID = self?.siteID, let productID = self?.productID else {
-                return
-            }
-
-            let action = MediaAction.uploadMedia(siteID: siteID, productID: productID, mediaAsset: asset, onCompletion: onCompletion)
-            ServiceLocator.stores.dispatch(action)
+            guard let self = self else { return }
+            let action = MediaAction.uploadMedia(siteID: self.siteID, productID: self.productOrVariationID.id, mediaAsset: asset, onCompletion: onCompletion)
+            self.stores.dispatch(action)
         }
+    }
+
+    /// Updates the `productID` with the provided `remoteProductID`
+    ///
+    /// Used for updating the product ID during create product flow. i.e. To replace the local product ID with the remote product ID.
+    ///
+    func updateProductID(_ remoteProductID: ProductOrVariationID) {
+        self.productOrVariationID = remoteProductID
     }
 
     func deleteProductImage(_ productImage: ProductImage) {
@@ -242,7 +282,7 @@ private extension ProductImageActionHandler {
     func updateProductImageStatus(at index: Int, productImage: ProductImage) {
         if case .uploading(let asset) = allStatuses.productImageStatuses[safe: index] {
             observations.assetUploaded.values.forEach { closure in
-                closure(asset, productImage)
+                closure(asset, .success(productImage))
             }
         }
 
@@ -251,7 +291,13 @@ private extension ProductImageActionHandler {
         allStatuses = (productImageStatuses: imageStatuses, error: nil)
     }
 
-    func updateProductImageStatus(at index: Int, error: Error?) {
+    func updateProductImageStatus(at index: Int, error: Error) {
+        if case .uploading(let asset) = allStatuses.productImageStatuses[safe: index] {
+            observations.assetUploaded.values.forEach { closure in
+                closure(asset, .failure(error))
+            }
+        }
+
         var imageStatuses = allStatuses.productImageStatuses
         imageStatuses.remove(at: index)
         allStatuses = (productImageStatuses: imageStatuses, error: error)

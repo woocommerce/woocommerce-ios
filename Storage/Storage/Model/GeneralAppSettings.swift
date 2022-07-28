@@ -13,36 +13,40 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     /// Note that this is not accurate because this property/setting was created when we have
     /// thousands of users already.
     ///
-    public let installationDate: Date?
+    public var installationDate: Date?
 
     /// Key/Value type to store feedback settings
     /// Key: A `FeedbackType` to identify the feedback
     /// Value: A `FeedbackSetting` to store the feedback state
-    public let feedbacks: [FeedbackType: FeedbackSettings]
+    public var feedbacks: [FeedbackType: FeedbackSettings]
 
     /// The state(`true` or `false`) for the view add-on beta feature switch.
     ///
-    public let isViewAddOnsSwitchEnabled: Bool
+    public var isViewAddOnsSwitchEnabled: Bool
 
     /// The state(`true` or `false`) for the Product SKU Input Scanner feature switch.
     ///
-    public let isProductSKUInputScannerSwitchEnabled: Bool
+    public var isProductSKUInputScannerSwitchEnabled: Bool
 
     /// The state for the Coupon Management feature switch.
     ///
-    public let isCouponManagementSwitchEnabled: Bool
+    public var isCouponManagementSwitchEnabled: Bool
 
     /// A list (possibly empty) of known card reader IDs - i.e. IDs of card readers that should be reconnected to automatically
     /// e.g. ["CHB204909005931"]
     ///
-    public let knownCardReaders: [String]
+    public var knownCardReaders: [String]
 
     /// The last known eligibility error information persisted locally.
     ///
-    public let lastEligibilityErrorInfo: EligibilityErrorInfo?
+    public var lastEligibilityErrorInfo: EligibilityErrorInfo?
 
     /// The last time the Jetpack benefits banner is dismissed.
-    public let lastJetpackBenefitsBannerDismissedTime: Date?
+    public var lastJetpackBenefitsBannerDismissedTime: Date?
+
+    /// The settings stored locally for each feature announcement campaign
+    /// 
+    public var featureAnnouncementCampaignSettings: [FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings]
 
     public init(installationDate: Date?,
                 feedbacks: [FeedbackType: FeedbackSettings],
@@ -51,7 +55,8 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
                 isCouponManagementSwitchEnabled: Bool,
                 knownCardReaders: [String],
                 lastEligibilityErrorInfo: EligibilityErrorInfo? = nil,
-                lastJetpackBenefitsBannerDismissedTime: Date? = nil) {
+                lastJetpackBenefitsBannerDismissedTime: Date? = nil,
+                featureAnnouncementCampaignSettings: [FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings]) {
         self.installationDate = installationDate
         self.feedbacks = feedbacks
         self.isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled
@@ -60,6 +65,18 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
         self.knownCardReaders = knownCardReaders
         self.lastEligibilityErrorInfo = lastEligibilityErrorInfo
         self.lastJetpackBenefitsBannerDismissedTime = lastJetpackBenefitsBannerDismissedTime
+        self.featureAnnouncementCampaignSettings = featureAnnouncementCampaignSettings
+    }
+
+    public static var `default`: Self {
+        .init(installationDate: nil,
+              feedbacks: [:],
+              isViewAddOnsSwitchEnabled: false,
+              isProductSKUInputScannerSwitchEnabled: false,
+              isCouponManagementSwitchEnabled: false,
+              knownCardReaders: [],
+              lastEligibilityErrorInfo: nil,
+              featureAnnouncementCampaignSettings: [:])
     }
 
     /// Returns the status of a given feedback type. If the feedback is not stored in the feedback array. it is assumed that it has a pending status.
@@ -86,7 +103,27 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             isProductSKUInputScannerSwitchEnabled: isProductSKUInputScannerSwitchEnabled,
             isCouponManagementSwitchEnabled: isCouponManagementSwitchEnabled,
             knownCardReaders: knownCardReaders,
-            lastEligibilityErrorInfo: lastEligibilityErrorInfo
+            lastEligibilityErrorInfo: lastEligibilityErrorInfo,
+            featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings
+        )
+    }
+
+    /// Returns a new instance of `GeneralAppSettings` with the provided feature announcement campaign seetings updated.
+    ///
+    public func replacing(featureAnnouncementSettings: FeatureAnnouncementCampaignSettings, for campaign: FeatureAnnouncementCampaign) -> GeneralAppSettings {
+        let updatedSettings = featureAnnouncementCampaignSettings.merging([campaign: featureAnnouncementSettings]) {
+            _, new in new
+        }
+
+        return GeneralAppSettings(
+            installationDate: installationDate,
+            feedbacks: feedbacks,
+            isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
+            isProductSKUInputScannerSwitchEnabled: isProductSKUInputScannerSwitchEnabled,
+            isCouponManagementSwitchEnabled: isCouponManagementSwitchEnabled,
+            knownCardReaders: knownCardReaders,
+            lastEligibilityErrorInfo: lastEligibilityErrorInfo,
+            featureAnnouncementCampaignSettings: updatedSettings
         )
     }
 }
@@ -106,6 +143,9 @@ extension GeneralAppSettings {
         self.knownCardReaders = try container.decodeIfPresent([String].self, forKey: .knownCardReaders) ?? []
         self.lastEligibilityErrorInfo = try container.decodeIfPresent(EligibilityErrorInfo.self, forKey: .lastEligibilityErrorInfo)
         self.lastJetpackBenefitsBannerDismissedTime = try container.decodeIfPresent(Date.self, forKey: .lastJetpackBenefitsBannerDismissedTime)
+        self.featureAnnouncementCampaignSettings = try container.decodeIfPresent(
+            [FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings].self,
+            forKey: .featureAnnouncementCampaignSettings) ?? [:]
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

@@ -335,7 +335,7 @@ class OrderNoteStoreTests: XCTestCase {
 private extension OrderNoteStoreTests {
     func sampleCustomerNote() -> Networking.OrderNote {
         return OrderNote(noteID: 2261,
-                         dateCreated: date(with: "2018-06-23T17:06:55"),
+                         dateCreated: DateFormatter.dateFromString(with: "2018-06-23T17:06:55"),
                          note: "I love your products!",
                          isCustomerNote: true,
                          author: sampleAuthor)
@@ -343,7 +343,7 @@ private extension OrderNoteStoreTests {
 
     func sampleCustomerNoteMutated() -> Networking.OrderNote {
         return OrderNote(noteID: 2261,
-                         dateCreated: date(with: "2018-06-23T18:07:55"),
+                         dateCreated: DateFormatter.dateFromString(with: "2018-06-23T18:07:55"),
                          note: "I HATE your products!",
                          isCustomerNote: true,
                          author: sampleAuthor)
@@ -351,7 +351,7 @@ private extension OrderNoteStoreTests {
 
     func sampleSellerNote() -> Networking.OrderNote {
         return OrderNote(noteID: 2260,
-                         dateCreated: date(with: "2018-06-23T16:05:55"),
+                         dateCreated: DateFormatter.dateFromString(with: "2018-06-23T16:05:55"),
                          note: "This order is going to be a problem.",
                          isCustomerNote: false,
                          author: sampleAdminAuthor)
@@ -359,7 +359,7 @@ private extension OrderNoteStoreTests {
 
     func sampleSystemNote() -> Networking.OrderNote {
         return OrderNote(noteID: 2099,
-                         dateCreated: date(with: "2018-05-29T03:07:46"),
+                         dateCreated: DateFormatter.dateFromString(with: "2018-05-29T03:07:46"),
                          note: "Order status changed from Completed to Processing.",
                          isCustomerNote: false,
                          author: sampleSystemAuthor)
@@ -367,7 +367,7 @@ private extension OrderNoteStoreTests {
 
     func sampleNewNote() -> Networking.OrderNote {
         return OrderNote(noteID: 2235,
-                         dateCreated: date(with: "2018-06-22T15:36:20"),
+                         dateCreated: DateFormatter.dateFromString(with: "2018-06-22T15:36:20"),
                          note: "This order would be so much better with ketchup.",
                          isCustomerNote: true,
                          author: sampleAdminAuthor)
@@ -382,9 +382,9 @@ private extension OrderNoteStoreTests {
                                  status: .processing,
                                  currency: "USD",
                                  customerNote: "",
-                                 dateCreated: date(with: "2018-04-03T23:05:12"),
-                                 dateModified: date(with: "2018-04-03T23:05:14"),
-                                 datePaid: date(with: "2018-04-03T23:05:14"),
+                                 dateCreated: DateFormatter.dateFromString(with: "2018-04-03T23:05:12"),
+                                 dateModified: DateFormatter.dateFromString(with: "2018-04-03T23:05:14"),
+                                 datePaid: DateFormatter.dateFromString(with: "2018-04-03T23:05:14"),
                                  discountTotal: "30.00",
                                  discountTax: "1.20",
                                  shippingTotal: "0.00",
@@ -423,10 +423,4 @@ private extension OrderNoteStoreTests {
                        email: "scrambled@scrambled.com")
     }
 
-    func date(with dateString: String) -> Date {
-        guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
-            return Date()
-        }
-        return date
-    }
 }

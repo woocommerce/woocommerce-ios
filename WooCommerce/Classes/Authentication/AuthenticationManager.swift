@@ -23,25 +23,31 @@ class AuthenticationManager: Authentication {
     ///
     private var appleUserID: String?
 
+    /// Info of the self-hosted site that was entered from the Enter a Site Address flow
+    ///
+    private var currentSelfHostedSite: WordPressComSiteInfo?
+
     /// Initializes the WordPress Authenticator.
     ///
     func initialize() {
-        let isSignInWithAppleEnabled = true
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
                                                                 wpcomTermsOfServiceURL: WooConstants.URLs.termsOfService.rawValue,
                                                                 wpcomAPIBaseURL: Settings.wordpressApiBaseURL,
+                                                                whatIsWPComURL: WooConstants.URLs.whatIsWPComURL.rawValue,
                                                                 googleLoginClientId: ApiCredentials.googleClientId,
                                                                 googleLoginServerClientId: ApiCredentials.googleServerId,
                                                                 googleLoginScheme: ApiCredentials.googleAuthScheme,
                                                                 userAgent: UserAgent.defaultUserAgent,
                                                                 showLoginOptions: true,
                                                                 enableSignUp: false,
-                                                                enableSignInWithApple: isSignInWithAppleEnabled,
+                                                                enableSignInWithApple: true,
                                                                 enableSignupWithGoogle: false,
                                                                 enableUnifiedAuth: true,
-                                                                continueWithSiteAddressFirst: true)
+                                                                continueWithSiteAddressFirst: true,
+                                                                enableSiteCredentialsLoginForSelfHostedSites: true,
+                                                                isWPComLoginRequiredForSiteCredentialsLogin: true)
 
         let systemGray3LightModeColor = UIColor(red: 199/255.0, green: 199/255.0, blue: 204/255.0, alpha: 1)
         let systemLabelLightModeColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
@@ -81,8 +87,10 @@ class AuthenticationManager: Authentication {
                                                                   usernamePasswordInstructions: AuthenticationConstants.usernamePasswordInstructions,
                                                                   continueWithWPButtonTitle: AuthenticationConstants.continueWithWPButtonTitle,
                                                                   enterYourSiteAddressButtonTitle: AuthenticationConstants.enterYourSiteAddressButtonTitle,
+                                                                  signInWithSiteCredentialsButtonTitle: AuthenticationConstants.signInWithSiteCredsButtonTitle,
                                                                   findSiteButtonTitle: AuthenticationConstants.findYourStoreAddressButtonTitle,
                                                                   signupTermsOfService: AuthenticationConstants.signupTermsOfService,
+                                                                  whatIsWPComLinkTitle: AuthenticationConstants.whatIsWPComLinkTitle,
                                                                   getStartedTitle: AuthenticationConstants.loginTitle)
 
         let unifiedStyle = WordPressAuthenticatorUnifiedStyle(borderColor: .divider,
@@ -204,6 +212,8 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     }
 
     func handleError(_ error: Error, onCompletion: @escaping (UIViewController) -> Void) {
+        requestLocalNotificationIfApplicable(error: error)
+
         guard let errorViewModel = viewModel(error) else {
             return
         }
@@ -218,20 +228,8 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     ///
     func shouldPresentUsernamePasswordController(for siteInfo: WordPressComSiteInfo?, onCompletion: @escaping (WordPressAuthenticatorResult) -> Void) {
 
-        /// Jetpack is required. Present an error if we don't detect a valid installation.
-        guard let site = siteInfo, site.hasValidJetpack == true else {
-            let viewModel = JetpackErrorViewModel(siteURL: siteInfo?.url)
-            let installJetpackUI = ULErrorViewController(viewModel: viewModel)
-
-            let authenticationResult: WordPressAuthenticatorResult = .injectViewController(value: installJetpackUI)
-
-            onCompletion(authenticationResult)
-
-            return
-        }
-
         /// WordPress must be present.
-        guard site.isWP else {
+        guard let site = siteInfo, site.isWP else {
             let viewModel = NotWPErrorViewModel()
             let notWPErrorUI = ULErrorViewController(viewModel: viewModel)
 
@@ -241,6 +239,9 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
             return
         }
+
+        /// save the site to memory to check for jetpack requirement in epilogue
+        currentSelfHostedSite = site
 
         /// For self-hosted sites, navigate to enter the email address associated to the wp.com account:
         /// https://github.com/woocommerce/woocommerce-ios/issues/3426
@@ -265,7 +266,23 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         let matcher = ULAccountMatcher()
         matcher.refreshStoredSites()
 
-        guard let siteURL = credentials.wpcom?.siteURL, matcher.match(originalURL: siteURL) else {
+        /// Jetpack is required. Present an error if we don't detect a valid installation for a self-hosted site.
+        if let urlFromCredentials = credentials.wpcom?.siteURL ?? credentials.wporg?.siteURL,
+           isJetpackValidForSelfHostedSite(url: urlFromCredentials) {
+            return presentJetpackError(for: urlFromCredentials, with: credentials, in: navigationController, onDismiss: onDismiss)
+        }
+
+        // We are currently supporting WPCom credentials only
+        // Update this when handling store credentials authentication.
+        guard let wpcomLogin = credentials.wpcom else {
+            return
+        }
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginErrorNotifications) {
+            ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: [.loginSiteAddressError])
+        }
+
+        guard matcher.match(originalURL: wpcomLogin.siteURL) else {
             DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: credentials.wpcom?.siteURL))")
             let viewModel = WrongAccountErrorViewModel(siteURL: credentials.wpcom?.siteURL)
             let mismatchAccountUI = ULAccountMismatchViewController(viewModel: viewModel)
@@ -275,7 +292,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
         storePickerCoordinator?.onDismiss = onDismiss
-        if let site = matcher.matchedSite(originalURL: siteURL) {
+        if let site = matcher.matchedSite(originalURL: wpcomLogin.siteURL) {
             storePickerCoordinator?.didSelectStore(with: site.siteID, onCompletion: onDismiss)
         } else {
             storePickerCoordinator?.start()
@@ -393,6 +410,51 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return
         }
         ServiceLocator.analytics.track(wooEvent, withError: error)
+    }
+}
+
+// MARK: - Local notifications
+
+private extension AuthenticationManager {
+    func requestLocalNotificationIfApplicable(error: Error) {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginErrorNotifications) else {
+            return
+        }
+
+        let wooAuthError = AuthenticationError.make(with: error)
+        switch wooAuthError {
+        case .notWPSite, .notValidAddress, .noSecureConnection:
+            let notification = LocalNotification(scenario: .loginSiteAddressError)
+            ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: [notification.scenario])
+            ServiceLocator.pushNotesManager.requestLocalNotification(notification,
+                                                                     // 24 hours from now.
+                                                                     trigger: UNTimeIntervalNotificationTrigger(timeInterval: 86400, repeats: false))
+        default:
+            break
+        }
+    }
+}
+
+// MARK: - Private helpers
+private extension AuthenticationManager {
+    func isJetpackValidForSelfHostedSite(url: String) -> Bool {
+        if let site = currentSelfHostedSite,
+           site.url == url, !site.hasValidJetpack {
+            return true
+        }
+        return false
+    }
+
+    func presentJetpackError(for siteURL: String,
+                             with credentials: AuthenticatorCredentials,
+                             in navigationController: UINavigationController,
+                             onDismiss: @escaping () -> Void) {
+        let viewModel = JetpackErrorViewModel(siteURL: siteURL, onJetpackSetupCompletion: { [weak self] in
+            self?.currentSelfHostedSite = nil
+            self?.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: onDismiss)
+        })
+        let installJetpackUI = ULErrorViewController(viewModel: viewModel)
+        navigationController.show(installJetpackUI, sender: nil)
     }
 }
 

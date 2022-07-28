@@ -42,10 +42,15 @@ protocol SettingsViewModelActionsHandler {
     /// Reloads settings if the site is no longer Jetpack CP.
     ///
     func onJetpackInstallDismiss()
+
+    /// Reloads settings. This can be used to show or hide content depending on their visibility logic.
+    ///
+    func reloadSettings()
 }
 
 protocol SettingsViewModelInput: AnyObject {
     var presenter: SettingsViewPresenter? { get set }
+    var upsellCardReadersAnnouncementViewModel: FeatureAnnouncementCardViewModel { get }
 }
 
 final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActionsHandler, SettingsViewModelInput {
@@ -97,13 +102,22 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let featureFlagService: FeatureFlagService
+    private let appleIDCredentialChecker: AppleIDCredentialCheckerProtocol
+    private let upsellCardReadersCampaign = UpsellCardReadersCampaign(source: .settings)
+
+    var upsellCardReadersAnnouncementViewModel: FeatureAnnouncementCardViewModel {
+        .init(analytics: ServiceLocator.analytics,
+              configuration: upsellCardReadersCampaign.configuration)
+    }
 
     init(stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         appleIDCredentialChecker: AppleIDCredentialCheckerProtocol = AppleIDCredentialChecker()) {
         self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
+        self.appleIDCredentialChecker = appleIDCredentialChecker
 
         /// Initialize Sites Results Controller
         ///
@@ -153,16 +167,16 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         }
         reloadSettings()
     }
-}
 
-private extension SettingsViewModel {
     /// Reload the sections and refresh the view (presenter)
     ///
     func reloadSettings() {
         configureSections()
         presenter?.refreshViewContent()
     }
+}
 
+private extension SettingsViewModel {
     func loadWhatsNewOnWooCommerce() {
         stores.dispatch(AnnouncementsAction.loadSavedAnnouncement(onCompletion: { [weak self] result in
             guard let self = self else { return }
@@ -210,7 +224,8 @@ private extension SettingsViewModel {
 
         // Store settings
         let storeSettingsSection: Section = {
-            var rows: [Row] = [.inPersonPayments]
+            var rows: [Row] = upsellCardReadersAnnouncementViewModel.shouldBeVisible ? [.upsellCardReadersFeatureAnnouncement] : []
+            rows.append(.inPersonPayments)
             if stores.sessionManager.defaultSite?.isJetpackCPConnected == true,
                 featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport) {
                 rows.append(.installJetpack)
@@ -266,6 +281,16 @@ private extension SettingsViewModel {
                            footerHeight: CGFloat.leastNonzeroMagnitude)
         }()
 
+        // Remove Apple ID Access
+        let removeAppleIDAccessSection: Section? = {
+            guard appleIDCredentialChecker.hasAppleUserID(), featureFlagService.isFeatureFlagEnabled(.appleIDAccountDeletion) else {
+                return nil
+            }
+            return Section(title: nil,
+                           rows: [.removeAppleIDAccess],
+                           footerHeight: CGFloat.leastNonzeroMagnitude)
+        }()
+
         // Logout
         let logoutSection = Section(title: nil,
                                     rows: [.logout],
@@ -279,6 +304,7 @@ private extension SettingsViewModel {
             appSettingsSection,
             aboutTheAppSection,
             otherSection,
+            removeAppleIDAccessSection,
             logoutSection
         ]
         .compactMap { $0 }

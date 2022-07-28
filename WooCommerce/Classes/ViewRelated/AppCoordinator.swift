@@ -16,6 +16,7 @@ final class AppCoordinator {
     private let roleEligibilityUseCase: RoleEligibilityUseCaseProtocol
     private let analytics: Analytics
     private let loggedOutAppSettings: LoggedOutAppSettingsProtocol
+    private let pushNotesManager: PushNotesManager
     private let featureFlagService: FeatureFlagService
 
     private var storePickerCoordinator: StorePickerCoordinator?
@@ -29,6 +30,7 @@ final class AppCoordinator {
          roleEligibilityUseCase: RoleEligibilityUseCaseProtocol = RoleEligibilityUseCase(),
          analytics: Analytics = ServiceLocator.analytics,
          loggedOutAppSettings: LoggedOutAppSettingsProtocol = LoggedOutAppSettings(userDefaults: .standard),
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.window = window
         self.tabBarController = {
@@ -43,6 +45,7 @@ final class AppCoordinator {
         self.roleEligibilityUseCase = roleEligibilityUseCase
         self.analytics = analytics
         self.loggedOutAppSettings = loggedOutAppSettings
+        self.pushNotesManager = pushNotesManager
         self.featureFlagService = featureFlagService
     }
 
@@ -66,7 +69,7 @@ final class AppCoordinator {
                 self.isLoggedIn = isLoggedIn
             }
 
-        localNotificationResponsesSubscription = ServiceLocator.pushNotesManager.localNotificationUserResponses.sink { [weak self] response in
+        localNotificationResponsesSubscription = pushNotesManager.localNotificationUserResponses.sink { [weak self] response in
             self?.handleLocalNotificationResponse(response)
         }
     }
@@ -250,7 +253,7 @@ private extension AppCoordinator {
                 "action": "contact_support",
                 "type": response.notification.request.identifier
             ])
-        default:
+        case UNNotificationDefaultActionIdentifier:
             // Triggered when the user taps on the notification itself instead of one of the actions.
             switch response.notification.request.identifier {
             case LocalNotification.Scenario.loginSiteAddressError.rawValue:
@@ -259,8 +262,20 @@ private extension AppCoordinator {
                     "type": response.notification.request.identifier
                 ])
             default:
-                return
+                break
             }
+        case UNNotificationDismissActionIdentifier:
+            // Triggered when the user taps on the notification's "Clear" action.
+            switch response.notification.request.identifier {
+            case LocalNotification.Scenario.loginSiteAddressError.rawValue:
+                analytics.track(.loginLocalNotificationDismissed, withProperties: [
+                    "type": response.notification.request.identifier
+                ])
+            default:
+                break
+            }
+        default:
+            break
         }
     }
 }

@@ -28,13 +28,6 @@ final class JetpackSetupWebViewController: UIViewController {
         return bar
     }()
 
-    /// Activity indicator for fetching sites after setup completes
-    private lazy var activityIndicator: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView(style: .medium)
-        indicator.hidesWhenStopped = true
-        return indicator
-    }()
-
     /// Strong reference for the subscription to update progress bar
     private var progressSubscription: AnyCancellable?
 
@@ -68,7 +61,6 @@ final class JetpackSetupWebViewController: UIViewController {
 private extension JetpackSetupWebViewController {
     func configureNavigationBar() {
         title = Localization.title
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: activityIndicator)
     }
 
     func configureWebView() {
@@ -109,13 +101,7 @@ private extension JetpackSetupWebViewController {
 
     func handleSetupCompletion() {
         analytics.track(event: .LoginJetpackSetup.setupCompleted(source: .web))
-        activityIndicator.startAnimating()
-        // tries re-syncing to get an updated store list
-        // then attempts to present epilogue again
-        ServiceLocator.stores.synchronizeEntities { [weak self] in
-            self?.activityIndicator.stopAnimating()
-            self?.completionHandler()
-        }
+        completionHandler()
     }
 }
 

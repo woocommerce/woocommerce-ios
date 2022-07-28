@@ -121,9 +121,8 @@ extension JetpackSetupWebViewController: WKNavigationDelegate {
         default:
             if let match = JetpackSetupWebStep.matchingStep(for: navigationURL) {
                 analytics.track(event: .LoginJetpackSetup.setupFlow(source: .web, step: match.trackingStep))
-                if case .authorize = match {
-                    authorizedEmailAddress = getQueryStringParameter(url: navigationURL, param: Constants.userEmailParam)
-                }
+            } else if navigationURL.hasPrefix(Constants.jetpackAuthorizeURL) {
+                authorizedEmailAddress = getQueryStringParameter(url: navigationURL, param: Constants.userEmailParam)
             }
             decisionHandler(.allow)
         }
@@ -146,6 +145,7 @@ private extension JetpackSetupWebViewController {
     enum Constants {
         static let jetpackInstallString = "https://wordpress.com/jetpack/connect?url=%@&mobile_redirect=%@&from=mobile"
         static let mobileRedirectURL = "woocommerce://jetpack-connected"
+        static let jetpackAuthorizeURL = "https://jetpack.wordpress.com/jetpack.authorize"
         static let userEmailParam = "user_email"
     }
 
@@ -166,7 +166,7 @@ private extension JetpackSetupWebViewController {
             case .wpcomLogin:
                 return "https://wordpress.com/log-in/jetpack"
             case .authorize:
-                return "https://jetpack.wordpress.com/jetpack.authorize"
+                return "https://wordpress.com/jetpack/connect/authorize"
             case .siteLogin:
                 return "wp-admin/wp-login.php"
             case .pluginDetail:

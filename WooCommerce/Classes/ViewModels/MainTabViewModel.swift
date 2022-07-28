@@ -42,6 +42,9 @@ final class MainTabViewModel {
     ///
     var onBadgeReload: ((String?) -> Void)?
 
+    /// Callback to be executed when the menu tab badge needs to be reloaded
+    /// It provides a Bool with whether it should be hidden or not, and the badge type
+    /// 
     var onMenuBadgeReload: ((Bool, NotificationBadgeType) -> Void)?
 
     /// Must be called during `MainTabBarController.viewDidAppear`. This will try and save the

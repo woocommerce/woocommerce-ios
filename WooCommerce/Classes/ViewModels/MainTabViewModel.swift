@@ -42,6 +42,8 @@ final class MainTabViewModel {
     ///
     var onBadgeReload: ((String?) -> Void)?
 
+    var onMenuBadgeReload: ((Bool, NotificationBadgeType) -> Void)?
+
     /// Must be called during `MainTabBarController.viewDidAppear`. This will try and save the
     /// app installation date.
     ///
@@ -57,6 +59,26 @@ final class MainTabViewModel {
         observeBadgeRefreshNotifications()
         updateBadgeFromCache()
         requestBadgeCount()
+    }
+
+    func loadHubMenuTabBadge() {
+        updateHubMenuTabBadge()
+
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(updateHubMenuTabBadge),
+                                               name: .reviewsBadgeReloadRequired,
+                                               object: nil)
+    }
+
+    @objc func updateHubMenuTabBadge() {
+        guard let siteID = storesManager.sessionManager.defaultStoreID else {
+            return
+        }
+
+        let action = NotificationCountAction.load(siteID: siteID, type: .kind(.comment)) { [weak self] count in
+            self?.onMenuBadgeReload?(count == 0, .primary)
+        }
+        storesManager.dispatch(action)
     }
 }
 

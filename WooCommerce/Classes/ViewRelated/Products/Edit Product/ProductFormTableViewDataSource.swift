@@ -83,6 +83,8 @@ private extension ProductFormTableViewDataSource {
         switch row {
         case .images(let editable, let allowsMultipleImages, let isVariation):
             configureImages(cell: cell, isEditable: editable, allowsMultipleImages: allowsMultipleImages, isVariation: isVariation)
+        case .linkedProductsPromo(let viewModel):
+            configureLinkedProductsPromo(cell: cell, viewModel: viewModel)
         case .name(let name, let editable, let productStatus):
             configureName(cell: cell, name: name, isEditable: editable, productStatus: productStatus)
         case .variationName(let name):
@@ -192,6 +194,15 @@ private extension ProductFormTableViewDataSource {
         if isEditable {
             cell.accessoryType = .disclosureIndicator
         }
+    }
+
+    func configureLinkedProductsPromo(cell: UITableViewCell, viewModel: FeatureAnnouncementCardViewModel) {
+        guard let cell = cell as? HostingTableViewCell<FeatureAnnouncementCardView> else {
+            fatalError()
+        }
+
+        cell.selectionStyle = .none
+        cell.hideSeparator()
     }
 }
 

@@ -6,6 +6,7 @@
 build/
 DerivedData/
 WooCommerce/DerivedSources/
+Experiments/Experiments/DerivedSources/
 
 ## Various settings
 *.pbxuser

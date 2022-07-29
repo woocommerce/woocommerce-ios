@@ -1,5 +1,6 @@
 import Foundation
 import CoreData
+import WooFoundation
 
 
 /// CoreDataManager: Manages the entire CoreData Stack. Conforms to the StorageManager API.

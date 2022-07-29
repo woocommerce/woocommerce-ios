@@ -7,12 +7,16 @@ final class MockUserNotificationCoder: NSCoder {
         case date, request, // `UNNotification`
              notification, actionIdentifier // `UNNotificationResponse`
     }
-    private let testIdentifier = "testIdentifier"
+    private let actionIdentifier: String
     private let request: UNNotificationRequest
 
     override var allowsKeyedCoding: Bool { true }
 
-    init(request: UNNotificationRequest) {
+    /// - Parameters:
+    ///   - actionIdentifier: for `UNNotificationResponse` only.
+    ///   - request: the request of `UNNotification` or that of a `UNNotificationResponse`.
+    init(actionIdentifier: String = "", request: UNNotificationRequest) {
+        self.actionIdentifier = actionIdentifier
         self.request = request
     }
 
@@ -26,7 +30,7 @@ final class MockUserNotificationCoder: NSCoder {
             return request
             // `UNNotificationResponse` fields
         case .actionIdentifier:
-            return testIdentifier
+            return actionIdentifier
         case .notification:
             return UNNotification(coder: self)
         default:
@@ -69,11 +73,11 @@ final class MockNotification: UNNotification {
 }
 
 final class MockNotificationResponse: UNNotificationResponse {
-    init?(notificationUserInfo: [AnyHashable: Any]) {
-        let request = UNNotificationRequest.init(identifier: "",
+    init?(actionIdentifier: String = "", requestIdentifier: String = "", notificationUserInfo: [AnyHashable: Any] = [:]) {
+        let request = UNNotificationRequest.init(identifier: requestIdentifier,
                                                  content: MockNotificationContent(userInfo: notificationUserInfo),
                                                  trigger: nil)
-        super.init(coder: MockUserNotificationCoder(request: request))
+        super.init(coder: MockUserNotificationCoder(actionIdentifier: actionIdentifier, request: request))
     }
 
     required init?(coder: NSCoder) {

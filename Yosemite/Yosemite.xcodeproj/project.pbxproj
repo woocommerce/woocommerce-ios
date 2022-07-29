@@ -58,7 +58,6 @@
 		029B00A7230D64E800B0AE66 /* StatsTimeRangeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029B00A6230D64E800B0AE66 /* StatsTimeRangeTests.swift */; };
 		029BA557255E0CD4006171FD /* ShippingLabelStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029BA556255E0CD4006171FD /* ShippingLabelStore.swift */; };
 		029BA55B255E0D39006171FD /* ShippingLabelAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029BA55A255E0D39006171FD /* ShippingLabelAction.swift */; };
-		02A098242480D0D8002F8C7A /* MockCrashLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A098232480D0D8002F8C7A /* MockCrashLogger.swift */; };
 		02A26F1E2744FE97008E4EDB /* MockAccountRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A26F1D2744FE97008E4EDB /* MockAccountRemote.swift */; };
 		02AB40802784176600929CF3 /* TopEarnerStatsItem+ComparableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AB407F2784176600929CF3 /* TopEarnerStatsItem+ComparableTests.swift */; };
 		02BA23C222EEEABC009539E7 /* AvailabilityStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BA23C122EEEABC009539E7 /* AvailabilityStore.swift */; };
@@ -217,6 +216,7 @@
 		578CE7942475F52F00492EBF /* MockNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578CE7932475F52F00492EBF /* MockNote.swift */; };
 		578CE7972475FD8200492EBF /* MockProductReview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578CE7962475FD8200492EBF /* MockProductReview.swift */; };
 		57DFCC7925003C4000251E0C /* FetchResultSnapshotsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DFCC7825003C4000251E0C /* FetchResultSnapshotsProvider.swift */; };
+		689D11D52891B9A400F6A83F /* WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 689D11D42891B9A400F6A83F /* WooFoundation.framework */; };
 		741F34802195EA62005F5BD9 /* CommentAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741F347F2195EA62005F5BD9 /* CommentAction.swift */; };
 		741F34822195EA71005F5BD9 /* CommentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741F34812195EA71005F5BD9 /* CommentStore.swift */; };
 		741F34842195F752005F5BD9 /* CommentStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741F34832195F752005F5BD9 /* CommentStoreTests.swift */; };
@@ -394,16 +394,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		263E37DD2641AD6B00260D3B /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		263E38432641FF2300260D3B /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -469,7 +459,6 @@
 		029B00A6230D64E800B0AE66 /* StatsTimeRangeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsTimeRangeTests.swift; sourceTree = "<group>"; };
 		029BA556255E0CD4006171FD /* ShippingLabelStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelStore.swift; sourceTree = "<group>"; };
 		029BA55A255E0D39006171FD /* ShippingLabelAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAction.swift; sourceTree = "<group>"; };
-		02A098232480D0D8002F8C7A /* MockCrashLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCrashLogger.swift; sourceTree = "<group>"; };
 		02A26F1D2744FE97008E4EDB /* MockAccountRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAccountRemote.swift; sourceTree = "<group>"; };
 		02AB407F2784176600929CF3 /* TopEarnerStatsItem+ComparableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TopEarnerStatsItem+ComparableTests.swift"; sourceTree = "<group>"; };
 		02BA23C122EEEABC009539E7 /* AvailabilityStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailabilityStore.swift; sourceTree = "<group>"; };
@@ -624,6 +613,7 @@
 		578CE7962475FD8200492EBF /* MockProductReview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductReview.swift; sourceTree = "<group>"; };
 		57DFCC7825003C4000251E0C /* FetchResultSnapshotsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchResultSnapshotsProvider.swift; sourceTree = "<group>"; };
 		585B973F61632665297738A3 /* Pods-Yosemite.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yosemite.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-Yosemite/Pods-Yosemite.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		689D11D42891B9A400F6A83F /* WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		741F347F2195EA62005F5BD9 /* CommentAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentAction.swift; sourceTree = "<group>"; };
 		741F34812195EA71005F5BD9 /* CommentStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentStore.swift; sourceTree = "<group>"; };
 		741F34832195F752005F5BD9 /* CommentStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentStoreTests.swift; sourceTree = "<group>"; };
@@ -805,6 +795,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B5B19DE220E6A45E00899568 /* Networking.framework in Frameworks */,
+				689D11D52891B9A400F6A83F /* WooFoundation.framework in Frameworks */,
 				D88FDB3E25DD222600CB0DBD /* Hardware.framework in Frameworks */,
 				B5B19DE020E6A45900899568 /* Storage.framework in Frameworks */,
 				263E37DC2641AD6B00260D3B /* Codegen in Frameworks */,
@@ -1440,6 +1431,7 @@
 		B5C4EB7720D17329002AC0AF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				689D11D42891B9A400F6A83F /* WooFoundation.framework */,
 				D88FDB3D25DD222600CB0DBD /* Hardware.framework */,
 				26FB056925F6CB7600A40B26 /* Fakes.framework */,
 				B5B19DE120E6A45E00899568 /* Networking.framework */,
@@ -1558,7 +1550,6 @@
 				0202B6962387AFBF00F3EBE0 /* MockInMemoryStorage.swift */,
 				020C907C24C729D6001E2BEB /* MockProductVariation.swift */,
 				0248B36A2459127200A271A4 /* MockNetwork+Path.swift */,
-				02A098232480D0D8002F8C7A /* MockCrashLogger.swift */,
 				022F9318257F24730011CD94 /* MockShippingLabel.swift */,
 				022F931C257F27B40011CD94 /* MockShippingLabelAddress.swift */,
 			);
@@ -1683,7 +1674,6 @@
 				B5C9DDF02087FEC0006B910A /* Sources */,
 				B5C9DDF12087FEC0006B910A /* Frameworks */,
 				B5C9DDF32087FEC0006B910A /* Resources */,
-				263E37DD2641AD6B00260D3B /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -2118,7 +2108,6 @@
 				0248B36924590FC300A271A4 /* ProductStore+FilterProductsTests.swift in Sources */,
 				AEFB3DC4272AA2FF00550F93 /* TelemetryStoreTests.swift in Sources */,
 				02AB40802784176600929CF3 /* TopEarnerStatsItem+ComparableTests.swift in Sources */,
-				02A098242480D0D8002F8C7A /* MockCrashLogger.swift in Sources */,
 				02FF055F23D985710058E6E7 /* URL+MediaTests.swift in Sources */,
 				D87F27DB25E7E8EA006EC8C9 /* MockCardReader.swift in Sources */,
 				02A26F1E2744FE97008E4EDB /* MockAccountRemote.swift in Sources */,

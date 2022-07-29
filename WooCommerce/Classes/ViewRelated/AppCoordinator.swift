@@ -1,6 +1,7 @@
 import Combine
 import Experiments
 import UIKit
+import WordPressAuthenticator
 import Yosemite
 import class AutomatticTracks.CrashLogging
 
@@ -16,6 +17,7 @@ final class AppCoordinator {
     private let roleEligibilityUseCase: RoleEligibilityUseCaseProtocol
     private let analytics: Analytics
     private let loggedOutAppSettings: LoggedOutAppSettingsProtocol
+    private let pushNotesManager: PushNotesManager
     private let featureFlagService: FeatureFlagService
 
     private var storePickerCoordinator: StorePickerCoordinator?
@@ -29,6 +31,7 @@ final class AppCoordinator {
          roleEligibilityUseCase: RoleEligibilityUseCaseProtocol = RoleEligibilityUseCase(),
          analytics: Analytics = ServiceLocator.analytics,
          loggedOutAppSettings: LoggedOutAppSettingsProtocol = LoggedOutAppSettings(userDefaults: .standard),
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.window = window
         self.tabBarController = {
@@ -43,6 +46,7 @@ final class AppCoordinator {
         self.roleEligibilityUseCase = roleEligibilityUseCase
         self.analytics = analytics
         self.loggedOutAppSettings = loggedOutAppSettings
+        self.pushNotesManager = pushNotesManager
         self.featureFlagService = featureFlagService
     }
 
@@ -66,7 +70,7 @@ final class AppCoordinator {
                 self.isLoggedIn = isLoggedIn
             }
 
-        localNotificationResponsesSubscription = ServiceLocator.pushNotesManager.localNotificationUserResponses.sink { [weak self] response in
+        localNotificationResponsesSubscription = pushNotesManager.localNotificationUserResponses.sink { [weak self] response in
             self?.handleLocalNotificationResponse(response)
         }
     }
@@ -250,17 +254,39 @@ private extension AppCoordinator {
                 "action": "contact_support",
                 "type": response.notification.request.identifier
             ])
-        default:
+        case LocalNotification.Action.loginWithWPCom.rawValue:
+            guard let loginNavigationController = window.rootViewController as? LoginNavigationController,
+                  let viewController = loginNavigationController.topViewController else {
+                return
+            }
+            let command = NavigateToEnterAccount()
+            command.execute(from: viewController)
+            analytics.track(.loginLocalNotificationTapped, withProperties: [
+                "action": "login_with_wpcom",
+                "type": response.notification.request.identifier
+            ])
+        case UNNotificationDefaultActionIdentifier:
             // Triggered when the user taps on the notification itself instead of one of the actions.
+            let requestIdentifier = response.notification.request.identifier
+            guard LocalNotification.Scenario.allCases.map({ $0.rawValue }).contains(requestIdentifier) else {
+                break
+            }
+            analytics.track(.loginLocalNotificationTapped, withProperties: [
+                "action": "default",
+                "type": requestIdentifier
+            ])
+        case UNNotificationDismissActionIdentifier:
+            // Triggered when the user taps on the notification's "Clear" action.
             switch response.notification.request.identifier {
             case LocalNotification.Scenario.loginSiteAddressError.rawValue:
-                analytics.track(.loginLocalNotificationTapped, withProperties: [
-                    "action": "default",
+                analytics.track(.loginLocalNotificationDismissed, withProperties: [
                     "type": response.notification.request.identifier
                 ])
             default:
-                return
+                break
             }
+        default:
+            break
         }
     }
 }

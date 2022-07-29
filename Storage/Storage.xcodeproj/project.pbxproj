@@ -95,7 +95,6 @@
 		574CFDEC25A531C90044730C /* WooCommerceModelV39toV40.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 574CFDEB25A531C90044730C /* WooCommerceModelV39toV40.xcmappingmodel */; };
 		57589E90252275CA000F22CE /* NSManagedObjectContext+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57589E8F252275CA000F22CE /* NSManagedObjectContext+TestHelpers.swift */; };
 		57589E9225227F95000F22CE /* WooCommerceModelV31toV32.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 57589E9125227F95000F22CE /* WooCommerceModelV31toV32.xcmappingmodel */; };
-		575CD4DC24ABE77800755B2B /* Collection+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575CD4DB24ABE77800755B2B /* Collection+Extensions.swift */; };
 		5772841F25BF45B90092FB2C /* PersistentStoreCoordinatorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5772841E25BF45B90092FB2C /* PersistentStoreCoordinatorProtocol.swift */; };
 		5772842325BF465A0092FB2C /* NSPersistentStoreCoordinator+PersistentStoreCoordinatorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5772842225BF465A0092FB2C /* NSPersistentStoreCoordinator+PersistentStoreCoordinatorProtocol.swift */; };
 		5772842725BF5BFB0092FB2C /* SpyPersistentStoreCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5772842625BF5BFB0092FB2C /* SpyPersistentStoreCoordinator.swift */; };
@@ -331,7 +330,6 @@
 		574CFDEB25A531C90044730C /* WooCommerceModelV39toV40.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = WooCommerceModelV39toV40.xcmappingmodel; sourceTree = "<group>"; };
 		57589E8F252275CA000F22CE /* NSManagedObjectContext+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+TestHelpers.swift"; sourceTree = "<group>"; };
 		57589E9125227F95000F22CE /* WooCommerceModelV31toV32.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = WooCommerceModelV31toV32.xcmappingmodel; sourceTree = "<group>"; };
-		575CD4DB24ABE77800755B2B /* Collection+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Extensions.swift"; sourceTree = "<group>"; };
 		5772841E25BF45B90092FB2C /* PersistentStoreCoordinatorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentStoreCoordinatorProtocol.swift; sourceTree = "<group>"; };
 		5772842225BF465A0092FB2C /* NSPersistentStoreCoordinator+PersistentStoreCoordinatorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSPersistentStoreCoordinator+PersistentStoreCoordinatorProtocol.swift"; sourceTree = "<group>"; };
 		5772842625BF5BFB0092FB2C /* SpyPersistentStoreCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpyPersistentStoreCoordinator.swift; sourceTree = "<group>"; };
@@ -795,7 +793,6 @@
 				B54CA5BA20A4BD2800F38CD1 /* NSManagedObject+Object.swift */,
 				B54CA5BC20A4BD3B00F38CD1 /* NSManagedObjectContext+Storage.swift */,
 				574B774F24AA897E0042116F /* FileManager+FileManagerProtocol.swift */,
-				575CD4DB24ABE77800755B2B /* Collection+Extensions.swift */,
 				5772842225BF465A0092FB2C /* NSPersistentStoreCoordinator+PersistentStoreCoordinatorProtocol.swift */,
 			);
 			path = Extensions;
@@ -1192,7 +1189,6 @@
 				D821645D2239F5FC00F46F89 /* ShipmentTrackingProviderGroup+CoreDataClass.swift in Sources */,
 				D88E233B25AE08C90023F3B1 /* OrderFeeLine+CoreDataClass.swift in Sources */,
 				0371C38128781E2900277E2C /* FeatureAnnouncementCampaignSettings.swift in Sources */,
-				575CD4DC24ABE77800755B2B /* Collection+Extensions.swift in Sources */,
 				7471A514216CF0FE00219F7E /* SiteVisitStats+CoreDataClass.swift in Sources */,
 				D8FBFF5722D66A06006E3336 /* OrderStatsV4Totals+CoreDataClass.swift in Sources */,
 				7474539C2242C85E00E0B5EE /* ProductDimensions+CoreDataProperties.swift in Sources */,

@@ -2,6 +2,7 @@
 
 9.8
 -----
+- [**] Orders: Now you can quickly mark an order as completed by swiping it to the left!
 - [*] In-Person Payments: The purchase card reader information card appears also in the Orders list screen. [https://github.com/woocommerce/woocommerce-ios/pull/7326]
 
 9.7

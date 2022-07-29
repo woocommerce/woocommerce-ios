@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import Combine
+import Experiments
 
 import class AutomatticTracks.CrashLogging
 
@@ -23,6 +24,8 @@ final class MainTabViewModel {
 
     private var statusResultsController: ResultsController<StorageOrderStatus>?
 
+    private let featureFlagService: FeatureFlagService
+
     /// Whether we should show the reviews badge on the hub menu tab.
     /// Even if we set this value to true it might not be shown, as there might be other badge types with more priority
     ///
@@ -35,8 +38,10 @@ final class MainTabViewModel {
 
     private var cancellables = Set<AnyCancellable>()
 
-    init(storesManager: StoresManager = ServiceLocator.stores) {
+    init(storesManager: StoresManager = ServiceLocator.stores,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.storesManager = storesManager
+        self.featureFlagService = featureFlagService
 
         if let siteID = storesManager.sessionManager.defaultStoreID {
             configureOrdersStatusesListener(for: siteID)
@@ -84,13 +89,15 @@ final class MainTabViewModel {
     /// Loads the the hub Menu tab badge and listens to any change to update it
     ///
     func loadHubMenuTabBadge() {
-        listenToReviewsBadgeReloadRequired()
-        listenToNewFeatureBadgeReloadRequired()
-
         synchronizeShouldShowBadgeOnHubMenuTabLogic()
 
+        listenToReviewsBadgeReloadRequired()
         retrieveShouldShowReviewsBadgeOnHubMenuTabValue()
-        retrieveShouldShowNewFeatureBadgeOnHubMenuTabValue()
+
+        if featureFlagService.isFeatureFlagEnabled(.paymentsHubMenuSection) {
+            listenToNewFeatureBadgeReloadRequired()
+            retrieveShouldShowNewFeatureBadgeOnHubMenuTabValue()
+        }
     }
 }
 

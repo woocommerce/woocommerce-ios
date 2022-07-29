@@ -36,6 +36,10 @@ class FeatureAnnouncementCardViewModel {
         config.dismissAlertMessage
     }
 
+    var showDividers: Bool {
+        config.showDividers
+    }
+
     private(set) var shouldBeVisible: Bool = false
 
     init(analytics: Analytics,
@@ -110,5 +114,6 @@ class FeatureAnnouncementCardViewModel {
         let showDismissConfirmation: Bool
         let dismissAlertTitle: String
         let dismissAlertMessage: String
+        let showDividers: Bool
     }
 }

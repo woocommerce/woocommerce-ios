@@ -11,7 +11,8 @@ struct LinkedProductsPromoCampaign {
               image: .paymentsFeatureBannerImage,
               showDismissConfirmation: false,
               dismissAlertTitle: "",
-              dismissAlertMessage: "")
+              dismissAlertMessage: "",
+              showDividers: true)
     }
 }
 

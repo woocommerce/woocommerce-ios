@@ -16,6 +16,15 @@ struct FeatureAnnouncementCardView: View {
     }
 
     var body: some View {
+        if viewModel.showDividers {
+            content
+                .addingTopAndBottomDividers()
+        } else {
+            content
+        }
+    }
+
+    var content: some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
                 NewBadgeView()

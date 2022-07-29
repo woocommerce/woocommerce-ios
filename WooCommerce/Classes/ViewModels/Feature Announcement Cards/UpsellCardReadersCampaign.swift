@@ -23,7 +23,8 @@ struct UpsellCardReadersCampaign {
               image: .paymentsFeatureBannerImage,
               showDismissConfirmation: true,
               dismissAlertTitle: Localization.dismissTitle,
-              dismissAlertMessage: Localization.dismissMessage)
+              dismissAlertMessage: Localization.dismissMessage,
+              showDividers: false)
     }
 }
 

@@ -5,6 +5,12 @@ import Combine
 import Experiments
 import Yosemite
 
+extension NSNotification.Name {
+    /// Posted whenever the hub menu view did appear.
+    ///
+    public static let hubMenuViewDidAppear = Foundation.Notification.Name(rawValue: "com.woocommerce.ios.hubMenuViewDidAppear")
+}
+
 /// View model for `HubMenu`.
 ///
 final class HubMenuViewModel: ObservableObject {
@@ -64,6 +70,10 @@ final class HubMenuViewModel: ObservableObject {
         self.stores = stores
         self.featureFlagService = featureFlagService
         observeSiteForUIUpdates()
+    }
+
+    func viewDidAppear() {
+        NotificationCenter.default.post(name: .hubMenuViewDidAppear, object: nil)
     }
 
     /// Resets the menu elements displayed on the menu.

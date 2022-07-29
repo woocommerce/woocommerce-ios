@@ -81,6 +81,8 @@ final class MainTabViewModel {
     ///
     func loadHubMenuTabBadge() {
         listenToReviewsBadgeReloadRequired()
+        listenToNewFeatureBadgeReloadRequired()
+
         listenToShouldShowBadgeOnHubMenuTabChanges()
 
         retrieveShouldShowReviewsBadgeOnHubMenuTabValue()
@@ -190,6 +192,23 @@ private extension MainTabViewModel {
                                                object: nil)
     }
 
+    func listenToNewFeatureBadgeReloadRequired() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(hubMenuViewDidAppear),
+                                               name: .hubMenuViewDidAppear,
+                                               object: nil)
+
+    }
+
+    /// Updates the badge after the hub menu did appear
+    ///
+    @objc func hubMenuViewDidAppear() {
+        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .paymentsInMenuTabBarButton, remindLater: false, onCompletion: nil)
+        storesManager.dispatch(action)
+
+        shouldShowNewFeatureBadgeOnHubMenuTab = false
+    }
+
     /// Retrieves whether we should show the reviews on the Menu button and updates `shouldShowReviewsBadge`
     ///
     @objc func retrieveShouldShowReviewsBadgeOnHubMenuTabValue() {
@@ -229,6 +248,8 @@ private extension MainTabViewModel {
                     self?.showMenuBadge?(true, .primary)
                 } else if shouldDisplayReviewsBadge {
                     self?.showMenuBadge?(true, .secondary)
+                } else {
+                    self?.showMenuBadge?(false, .secondary)
                 }
 
             }.store(in: &cancellables)

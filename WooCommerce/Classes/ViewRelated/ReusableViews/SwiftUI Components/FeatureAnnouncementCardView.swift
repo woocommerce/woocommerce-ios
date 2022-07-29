@@ -23,7 +23,12 @@ struct FeatureAnnouncementCardView: View {
                 Spacer()
                 if let dismiss = dismiss {
                     Button(action: {
-                        showingDismissActionSheet = true
+                        if viewModel.showDismissConfirmation {
+                            showingDismissActionSheet = true
+                        } else {
+                            viewModel.dontShowAgainTapped()
+                            dismiss()
+                        }
                     }) {
                         Image(systemName: "xmark")
                             .foregroundColor(Color(.withColorStudio(.gray)))

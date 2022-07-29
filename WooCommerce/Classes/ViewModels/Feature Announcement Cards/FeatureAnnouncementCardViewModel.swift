@@ -24,6 +24,10 @@ class FeatureAnnouncementCardViewModel {
         config.image
     }
 
+    var showDismissConfirmation: Bool {
+        config.showDismissConfirmation
+    }
+
     var dismissAlertTitle: String {
         config.dismissAlertTitle
     }
@@ -103,6 +107,7 @@ class FeatureAnnouncementCardViewModel {
         let message: String
         let buttonTitle: String?
         let image: UIImage
+        let showDismissConfirmation: Bool
         let dismissAlertTitle: String
         let dismissAlertMessage: String
     }

@@ -9,6 +9,7 @@ struct LinkedProductsPromoCampaign {
               message: Localization.cardMessage,
               buttonTitle: Localization.cardButtonTitle,
               image: .paymentsFeatureBannerImage,
+              showDismissConfirmation: false,
               dismissAlertTitle: "",
               dismissAlertMessage: "")
     }

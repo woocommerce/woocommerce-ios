@@ -267,15 +267,14 @@ private extension AppCoordinator {
             ])
         case UNNotificationDefaultActionIdentifier:
             // Triggered when the user taps on the notification itself instead of one of the actions.
-            switch response.notification.request.identifier {
-            case LocalNotification.Scenario.loginSiteAddressError.rawValue:
-                analytics.track(.loginLocalNotificationTapped, withProperties: [
-                    "action": "default",
-                    "type": response.notification.request.identifier
-                ])
-            default:
+            let requestIdentifier = response.notification.request.identifier
+            guard LocalNotification.Scenario.allCases.map({ $0.rawValue }).contains(requestIdentifier) else {
                 break
             }
+            analytics.track(.loginLocalNotificationTapped, withProperties: [
+                "action": "default",
+                "type": requestIdentifier
+            ])
         case UNNotificationDismissActionIdentifier:
             // Triggered when the user taps on the notification's "Clear" action.
             switch response.notification.request.identifier {

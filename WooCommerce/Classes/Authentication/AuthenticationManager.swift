@@ -422,15 +422,23 @@ private extension AuthenticationManager {
         }
 
         let wooAuthError = AuthenticationError.make(with: error)
+        let notification: LocalNotification?
         switch wooAuthError {
         case .notWPSite, .notValidAddress, .noSecureConnection:
-            let notification = LocalNotification(scenario: .loginSiteAddressError)
+            notification = LocalNotification(scenario: .loginSiteAddressError)
+        case .invalidEmailFromSiteAddressLogin:
+            notification = LocalNotification(scenario: .invalidEmailFromSiteAddressLogin)
+        case .invalidEmailFromWPComLogin:
+            notification = LocalNotification(scenario: .invalidEmailFromWPComLogin)
+        default:
+            notification = nil
+        }
+
+        if let notification = notification {
             ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: [notification.scenario])
             ServiceLocator.pushNotesManager.requestLocalNotification(notification,
                                                                      // 24 hours from now.
-                                                                     trigger: UNTimeIntervalNotificationTrigger(timeInterval: 86400, repeats: false))
-        default:
-            break
+                                                                     trigger: UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false))
         }
     }
 }
@@ -465,7 +473,7 @@ extension AuthenticationManager {
         let wooAuthError = AuthenticationError.make(with: error)
 
         switch wooAuthError {
-        case .emailDoesNotMatchWPAccount:
+        case .emailDoesNotMatchWPAccount, .invalidEmailFromWPComLogin, .invalidEmailFromSiteAddressLogin:
             return NotWPAccountViewModel()
         case .notWPSite,
              .notValidAddress:
@@ -484,12 +492,26 @@ private extension AuthenticationManager {
     /// Maps error codes emitted by WPAuthenticator to a domain error object
     enum AuthenticationError: Int, Error {
         case emailDoesNotMatchWPAccount
+        case invalidEmailFromSiteAddressLogin
+        case invalidEmailFromWPComLogin
         case notWPSite
         case notValidAddress
         case noSecureConnection
         case unknown
 
         static func make(with error: Error) -> AuthenticationError {
+            if let error = error as? SignInError {
+                switch error {
+                case .invalidWPComEmail(let source):
+                    switch source {
+                    case .wpCom:
+                        return .invalidEmailFromWPComLogin
+                    case .wpComSiteAddress:
+                        return .invalidEmailFromSiteAddressLogin
+                    }
+                }
+            }
+
             let error = error as NSError
 
             switch error.code {

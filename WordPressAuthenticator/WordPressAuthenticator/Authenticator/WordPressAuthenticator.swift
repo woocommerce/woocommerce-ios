@@ -187,11 +187,11 @@ import WordPressKit
             trackOpenedLogin()
         }
         guard WordPressAuthenticator.shared.configuration.enableUnifiedAuth else {
-            showEmailLogin(from: presenter, jetpackLogin: jetpackLogin, connectedEmail: connectedEmail)
+            showEmailLogin(from: presenter, jetpackLogin: jetpackLogin, connectedEmail: connectedEmail, siteURL: siteURL)
             return
         }
 
-        showGetStarted(from: presenter, jetpackLogin: jetpackLogin, connectedEmail: connectedEmail)
+        showGetStarted(from: presenter, jetpackLogin: jetpackLogin, connectedEmail: connectedEmail, siteURL: siteURL)
     }
 
     /// Shows the unified Login/Signup flow.

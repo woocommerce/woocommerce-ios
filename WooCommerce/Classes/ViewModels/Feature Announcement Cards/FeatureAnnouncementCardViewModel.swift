@@ -108,7 +108,7 @@ class FeatureAnnouncementCardViewModel {
                                                           campaign: config.campaign))
     }
 
-    struct Configuration {
+    struct Configuration: Equatable {
         let source: WooAnalyticsEvent.FeatureCard.Source
         let campaign: FeatureAnnouncementCampaign
         let title: String
@@ -120,5 +120,11 @@ class FeatureAnnouncementCardViewModel {
         let dismissAlertMessage: String
         let showDividers: Bool
         let badgeType: BadgeView.BadgeType
+    }
+}
+
+extension FeatureAnnouncementCardViewModel: Equatable {
+    static func == (lhs: FeatureAnnouncementCardViewModel, rhs: FeatureAnnouncementCardViewModel) -> Bool {
+        lhs.config == rhs.config
     }
 }

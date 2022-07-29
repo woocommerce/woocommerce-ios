@@ -6,6 +6,18 @@ import XCTest
 final class HubMenuViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 606
 
+    func test_viewDidAppear_then_posts_notification() {
+        // Given
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID)
+        expectation(forNotification: .hubMenuViewDidAppear, object: nil, handler: nil)
+
+        // When
+        viewModel.viewDidAppear()
+
+        // Then
+        waitForExpectations(timeout: Constants.expectationTimeout)
+    }
+
     func test_menuElements_do_not_include_inbox_when_feature_flag_is_off() {
         // Given
         let featureFlagService = MockFeatureFlagService(isInboxOn: false)

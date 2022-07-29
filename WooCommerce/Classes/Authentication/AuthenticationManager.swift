@@ -457,8 +457,9 @@ private extension AuthenticationManager {
             guard credentials.wpcom != nil else {
                 return WordPressAuthenticator.showLoginForJustWPCom(from: navigationController, jetpackLogin: true, connectedEmail: authorizedEmailAddress)
             }
-            // tries re-syncing to get an updated store list
-            // then attempts to present epilogue again
+            // Tries re-syncing to get an updated store list,
+            // then attempts to present epilogue again.
+            // This recursion is stopped when `currentSelfHostedSite` has a valid Jetpack connection.
             ServiceLocator.stores.synchronizeEntities { [weak self] in
                 self?.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: onDismiss)
             }

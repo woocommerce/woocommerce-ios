@@ -55,10 +55,14 @@ final class MainTabViewModel {
     ///
     var onOrdersBadgeReload: ((String?) -> Void)?
 
-    /// Callback to be executed when the menu tab badge needs to be reloaded
-    /// It provides a Bool with whether it should be visible or not, and the badge type
+    /// Callback to be executed when the menu tab badge needs to be displayed
+    /// It provides the badge type
     ///
-    var showMenuBadge: ((Bool, NotificationBadgeType) -> Void)?
+    var onMenuBadgeShouldBeDisplayed: ((NotificationBadgeType) -> Void)?
+
+    /// Callback to be executed when the menu tab badge needs to be hidden
+    ///
+    var onMenuBadgeShouldBeHidden: (() -> ())?
 
     /// Must be called during `MainTabBarController.viewDidAppear`. This will try and save the
     /// app installation date.
@@ -245,13 +249,12 @@ private extension MainTabViewModel {
         Publishers.CombineLatest($shouldShowNewFeatureBadgeOnHubMenuTab, $shouldShowReviewsBadgeOnHubMenuTab)
             .sink { [weak self] shouldDisplayNewFeatureBadge, shouldDisplayReviewsBadge in
                 if shouldDisplayNewFeatureBadge {
-                    self?.showMenuBadge?(true, .primary)
+                    self?.onMenuBadgeShouldBeDisplayed?(.primary)
                 } else if shouldDisplayReviewsBadge {
-                    self?.showMenuBadge?(true, .secondary)
+                    self?.onMenuBadgeShouldBeDisplayed?(.secondary)
                 } else {
-                    self?.showMenuBadge?(false, .secondary)
+                    self?.onMenuBadgeShouldBeHidden?()
                 }
-
             }.store(in: &cancellables)
     }
 }

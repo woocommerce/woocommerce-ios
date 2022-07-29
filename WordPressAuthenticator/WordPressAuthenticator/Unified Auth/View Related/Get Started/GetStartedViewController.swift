@@ -8,21 +8,19 @@ public enum SignInSource {
     case wpCom
     /// Initiated from the WP.com login flow that starts with site address.
     case wpComSiteAddress
-    /// Other unspecified sources.
-    case other
 }
 
 /// The error during the sign in flow.
 public enum SignInError: Error {
     case invalidWPComEmail(source: SignInSource)
 
-    init?(error: Error, source: SignInSource) {
+    init?(error: Error, source: SignInSource?) {
         let error = error as NSError
 
         switch error.code {
         case WordPressComRestApiError.unknown.rawValue:
             let restAPIErrorCode = error.userInfo[WordPressComRestApi.ErrorKeyErrorCode] as? String
-            if restAPIErrorCode == "unknown_user" {
+            if let source = source, restAPIErrorCode == "unknown_user" {
                 self = .invalidWPComEmail(source: source)
             } else {
                 return nil
@@ -67,7 +65,7 @@ class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
     // This is public so it can be set from StoredCredentialsAuthenticator.
     var errorMessage: String?
 
-    var source: SignInSource = .other
+    var source: SignInSource?
 
     private var rows = [Row]()
     private var buttonViewController: NUXButtonViewController?

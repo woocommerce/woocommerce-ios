@@ -265,7 +265,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, onDismiss: @escaping () -> Void) {
 
         guard let siteURL = credentials.wpcom?.siteURL ?? credentials.wporg?.siteURL else {
-            DDLogError("⛔️ No site URL found to present Login Epilogue")
+            DDLogError("⛔️ No site URL found to present Login Epilogue. This should not happen since WordPressAuthenticator returns wordpress.com by default.")
             return
         }
 

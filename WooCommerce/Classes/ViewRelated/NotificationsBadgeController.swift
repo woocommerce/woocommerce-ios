@@ -8,9 +8,9 @@ enum NotificationBadgeType {
     var color: UIColor {
         switch self {
         case .primary:
-            return .primary
-        case .secondary:
             return .accent
+        case .secondary:
+            return .primary
         }
     }
 }

@@ -24,7 +24,8 @@ struct UpsellCardReadersCampaign {
               showDismissConfirmation: true,
               dismissAlertTitle: Localization.dismissTitle,
               dismissAlertMessage: Localization.dismissMessage,
-              showDividers: false)
+              showDividers: false,
+              badgeType: .new)
     }
 }
 

@@ -27,7 +27,7 @@ struct FeatureAnnouncementCardView: View {
     var content: some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
-                NewBadgeView()
+                BadgeView(type: viewModel.badgeType)
                     .padding(.leading, Layout.padding)
                 Spacer()
                 if let dismiss = dismiss {

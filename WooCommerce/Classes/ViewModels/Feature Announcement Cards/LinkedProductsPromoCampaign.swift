@@ -12,7 +12,8 @@ struct LinkedProductsPromoCampaign {
               showDismissConfirmation: false,
               dismissAlertTitle: "",
               dismissAlertMessage: "",
-              showDividers: true)
+              showDividers: true,
+              badgeType: .tip)
     }
 }
 

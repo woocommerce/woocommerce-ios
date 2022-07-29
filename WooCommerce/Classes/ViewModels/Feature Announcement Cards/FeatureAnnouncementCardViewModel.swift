@@ -40,6 +40,10 @@ class FeatureAnnouncementCardViewModel {
         config.showDividers
     }
 
+    var badgeType: BadgeView.BadgeType {
+        config.badgeType
+    }
+
     private(set) var shouldBeVisible: Bool = false
 
     init(analytics: Analytics,
@@ -115,5 +119,6 @@ class FeatureAnnouncementCardViewModel {
         let dismissAlertTitle: String
         let dismissAlertMessage: String
         let showDividers: Bool
+        let badgeType: BadgeView.BadgeType
     }
 }

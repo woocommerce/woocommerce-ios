@@ -49,6 +49,36 @@ final class MainTabViewModelTests: XCTestCase {
         XCTAssertEqual(storesManager.receivedActions.count, 0)
     }
 
+    func test_loadHubMenuTabBadge_when_new_feature_badge_should_be_shown_but_feature_flag_is_off_calls_onMenuBadgeShouldBeHidden() {
+        // Given
+        let storesManager = MockStoresManager(sessionManager: .testingInstance)
+        storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .getFeatureAnnouncementVisibility(FeatureAnnouncementCampaign.paymentsInMenuTabBarButton, onCompletion):
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+
+        let featureFlagService = MockFeatureFlagService(isPaymentsHubMenuSectionEnabled: false)
+
+        let viewModel = MainTabViewModel(storesManager: storesManager, featureFlagService: featureFlagService)
+        var onMenuBadgeShouldBeHiddenWasCalled = false
+        viewModel.onMenuBadgeShouldBeHidden = {
+            onMenuBadgeShouldBeHiddenWasCalled = true
+
+        }
+
+        // When
+        viewModel.loadHubMenuTabBadge()
+
+        // Then
+        waitUntil {
+            onMenuBadgeShouldBeHiddenWasCalled
+        }
+    }
+
     func test_loadHubMenuTabBadge_when_both_badges_should_be_shown_calls_onMenuBadgeShouldBeDisplayed_with_type_primary() {
         // Given
         let sessionManager = SessionManager.testingInstance

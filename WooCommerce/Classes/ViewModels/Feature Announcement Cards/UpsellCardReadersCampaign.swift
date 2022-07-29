@@ -9,6 +9,8 @@ struct UpsellCardReadersCampaign {
             return Localization.cardButtonTitle
         case .settings:
             return nil
+        default:
+            return nil
         }
     }
 

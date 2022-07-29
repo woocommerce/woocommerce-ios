@@ -450,8 +450,9 @@ private extension AuthenticationManager {
                              in navigationController: UINavigationController,
                              onDismiss: @escaping () -> Void) {
         let viewModel = JetpackErrorViewModel(siteURL: siteURL, onJetpackSetupCompletion: { [weak self] authorizedEmailAddress in
-            if let site = self?.currentSelfHostedSite {
-                self?.currentSelfHostedSite = WordPressComSiteInfo.updateJetpackInfo(for: site)
+            guard let self = self else { return }
+            if let site = self.currentSelfHostedSite {
+                self.currentSelfHostedSite = WordPressComSiteInfo.updateJetpackInfo(for: site)
             }
             guard credentials.wpcom != nil else {
                 return WordPressAuthenticator.showLoginForJustWPCom(from: navigationController, jetpackLogin: true, connectedEmail: authorizedEmailAddress)

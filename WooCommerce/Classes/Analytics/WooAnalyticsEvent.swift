@@ -314,6 +314,17 @@ extension WooAnalyticsEvent {
     }
 }
 
+// MARK: - Product Detail
+//
+extension WooAnalyticsEvent {
+    /// Namespace
+    enum ProductDetail {
+        static func loaded() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productDetailLoaded, properties: [:])
+        }
+    }
+}
+
 // MARK: - Product Detail Add-ons
 //
 extension WooAnalyticsEvent {

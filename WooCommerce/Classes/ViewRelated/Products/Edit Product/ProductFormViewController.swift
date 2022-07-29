@@ -858,7 +858,7 @@ private extension ProductFormViewController {
             return
         }
 
-        ServiceLocator.analytics.track(.productDetailLoaded)
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.ProductDetail.loaded())
     }
 }
 

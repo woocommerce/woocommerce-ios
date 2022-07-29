@@ -3,6 +3,7 @@ import Yosemite
 /// Edit actions in the product form. Each action allows the user to edit a subset of product properties.
 enum ProductFormEditAction: Equatable {
     case images(editable: Bool)
+    case linkedProductsPromo(viewModel: FeatureAnnouncementCardViewModel)
     case name(editable: Bool)
     case description(editable: Bool)
     case priceSettings(editable: Bool, hideSeparator: Bool)

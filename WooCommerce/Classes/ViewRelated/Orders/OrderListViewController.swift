@@ -115,6 +115,11 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
     private lazy var isSplitViewInOrdersTabEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
 
+    /// Tracks if the swipe actions have been glanced to the user.
+    ///
+    private var swipeActionsGlanced = false
+
+
     // MARK: - View Lifecycle
 
     /// Designated initializer.
@@ -312,6 +317,16 @@ extension OrderListViewController {
         /// Fires fulfillment action, observes its result and enqueue the appropriate notices.
         let presenter = OrderFulfillmentNoticePresenter(noticeConfiguration: noticeConfiguration)
         presenter.present(process: fulfillmentProcess)
+    }
+
+    /// Slightly reveal swipe actions of the first visible cell that contains at least one swipe action.
+    /// This action is performed only once, using `swipeActionsGlanced` as a control variable.
+    ///
+    private func glanceTrailingActionsIfNeeded() {
+        if !swipeActionsGlanced {
+            swipeActionsGlanced = true
+            tableView.glanceTrailingSwipeActions()
+        }
     }
 }
 
@@ -687,7 +702,7 @@ private extension OrderListViewController {
         case .syncing:
             ensureFooterSpinnerIsStarted()
         case .results:
-            break
+            glanceTrailingActionsIfNeeded()
         }
     }
 

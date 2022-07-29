@@ -265,8 +265,8 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, onDismiss: @escaping () -> Void) {
 
         guard let siteURL = credentials.wpcom?.siteURL ?? credentials.wporg?.siteURL else {
-            DDLogError("⛔️ No site URL found to present Login Epilogue. This should not happen since the resulting credentials should be either `wpcom` or `wporg`")
-            return
+            // This should not happen since the resulting credentials should be either `wpcom` or `wporg`
+            return DDLogError("⛔️ No site URL found to present Login Epilogue.")
         }
 
         /// Jetpack is required. Present an error if we don't detect a valid installation for a self-hosted site.

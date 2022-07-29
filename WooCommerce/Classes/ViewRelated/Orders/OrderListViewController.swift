@@ -246,6 +246,7 @@ private extension OrderListViewController {
                 case .none:
                     self.hideTopBannerView()
                 case .upsellCardReaders:
+                    // The banner is too large to be shown when the vertical size class is compact
                     if self.traitCollection.verticalSizeClass == .regular {
                         self.showUpsellCardReadersBanner()
                     }

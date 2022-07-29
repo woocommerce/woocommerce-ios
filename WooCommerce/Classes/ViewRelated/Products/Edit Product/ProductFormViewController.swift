@@ -142,6 +142,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         productImageUploader.stopEmittingErrors(key: .init(siteID: viewModel.productModel.siteID,
                                                            productOrVariationID: productOrVariationID,
                                                            isLocalID: !viewModel.productModel.existsRemotely))
+
+        trackProductDetailLoaded()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -848,6 +850,15 @@ private extension ProductFormViewController {
 
     func trackEditProductAttributeRowTapped() {
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.Variations.editAttributesButtonTapped(productID: product.productID))
+    }
+
+    /// Tracks when the product form is loaded for a product (not product variation)
+    func trackProductDetailLoaded() {
+        guard viewModel is ProductFormViewModel else {
+            return
+        }
+
+        ServiceLocator.analytics.track(.productDetailLoaded)
     }
 }
 

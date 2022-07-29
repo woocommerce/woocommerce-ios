@@ -388,6 +388,7 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Edit Product Events
     //
+    case productDetailLoaded = "product_detail_loaded"
     case productDetailUpdateButtonTapped = "product_detail_update_button_tapped"
     case productDetailUpdateSuccess = "product_detail_update_success"
     case productDetailUpdateError = "product_detail_update_error"

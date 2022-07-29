@@ -83,7 +83,7 @@ final class MainTabViewModel {
         listenToReviewsBadgeReloadRequired()
         listenToNewFeatureBadgeReloadRequired()
 
-        listenToShouldShowBadgeOnHubMenuTabChanges()
+        synchronizeShouldShowBadgeOnHubMenuTabLogic()
 
         retrieveShouldShowReviewsBadgeOnHubMenuTabValue()
         retrieveShouldShowNewFeatureBadgeOnHubMenuTabValue()
@@ -241,7 +241,7 @@ private extension MainTabViewModel {
 
     /// Listens for changes on the menu badge display logic and updates it depending on them
     ///
-    func listenToShouldShowBadgeOnHubMenuTabChanges() {
+    func synchronizeShouldShowBadgeOnHubMenuTabLogic() {
         Publishers.CombineLatest($shouldShowNewFeatureBadgeOnHubMenuTab, $shouldShowReviewsBadgeOnHubMenuTab)
             .sink { [weak self] shouldDisplayNewFeatureBadge, shouldDisplayReviewsBadge in
                 if shouldDisplayNewFeatureBadge {

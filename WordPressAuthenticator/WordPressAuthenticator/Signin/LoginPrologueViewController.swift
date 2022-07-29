@@ -397,6 +397,7 @@ class LoginPrologueViewController: LoginViewController {
             DDLogError("Failed to navigate from LoginPrologueViewController to GetStartedViewController")
             return
         }
+        vc.source = .wpCom
 
         navigationController?.pushViewController(vc, animated: true)
     }
@@ -430,15 +431,6 @@ class LoginPrologueViewController: LoginViewController {
     private func presentLoginEmailView() {
         guard let toVC = LoginEmailViewController.instantiate(from: .login) else {
             DDLogError("Failed to navigate to LoginEmailVC from LoginPrologueVC")
-            return
-        }
-
-        navigationController?.pushViewController(toVC, animated: true)
-    }
-
-    private func presentGetStartedView() {
-        guard let toVC = GetStartedViewController.instantiate(from: .getStarted) else {
-            DDLogError("Failed to navigate to GetStartedViewController")
             return
         }
 

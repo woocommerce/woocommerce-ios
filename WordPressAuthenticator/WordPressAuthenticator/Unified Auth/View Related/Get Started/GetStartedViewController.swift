@@ -2,6 +2,35 @@ import UIKit
 import SafariServices
 import WordPressKit
 
+/// The source for the sign in flow for external tracking.
+public enum SignInSource {
+    /// Initiated from the WP.com login CTA.
+    case wpCom
+    /// Initiated from the WP.com login flow that starts with site address.
+    case wpComSiteAddress
+}
+
+/// The error during the sign in flow.
+public enum SignInError: Error {
+    case invalidWPComEmail(source: SignInSource)
+
+    init?(error: Error, source: SignInSource?) {
+        let error = error as NSError
+
+        switch error.code {
+        case WordPressComRestApiError.unknown.rawValue:
+            let restAPIErrorCode = error.userInfo[WordPressComRestApi.ErrorKeyErrorCode] as? String
+            if let source = source, restAPIErrorCode == "unknown_user" {
+                self = .invalidWPComEmail(source: source)
+            } else {
+                return nil
+            }
+        default:
+            return nil
+        }
+    }
+}
+
 class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
 
     private enum ScreenMode {
@@ -35,6 +64,8 @@ class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
 
     // This is public so it can be set from StoredCredentialsAuthenticator.
     var errorMessage: String?
+
+    var source: SignInSource?
 
     private var rows = [Row]()
     private var buttonViewController: NUXButtonViewController?
@@ -509,14 +540,15 @@ private extension GetStartedViewController {
                 // username instead.
                 self.showSelfHostedWithError(error)
         } else {
+            let signInError = SignInError(error: error, source: source) ?? error
             guard let authenticationDelegate = WordPressAuthenticator.shared.delegate,
-                  authenticationDelegate.shouldHandleError(error) else {
-                self.displayError(error as NSError, sourceTag: self.sourceTag)
+                  authenticationDelegate.shouldHandleError(signInError) else {
+                displayError(error as NSError, sourceTag: sourceTag)
                 return
             }
 
             /// Hand over control to the host app.
-            authenticationDelegate.handleError(error) { customUI in
+            authenticationDelegate.handleError(signInError) { customUI in
                 // Setting the rightBarButtonItems of the custom UI before pushing the view controller
                 // and resetting the navigationController's navigationItem after the push seems to be the
                 // only combination that gets the Help button to show up.

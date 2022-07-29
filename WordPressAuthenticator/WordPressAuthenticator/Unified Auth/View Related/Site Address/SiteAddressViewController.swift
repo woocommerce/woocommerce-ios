@@ -588,6 +588,7 @@ private extension SiteAddressViewController {
             DDLogError("Failed to navigate from SiteAddressViewController to GetStartedViewController")
             return
         }
+        vc.source = .wpComSiteAddress
 
         vc.loginFields = loginFields
         vc.dismissBlock = dismissBlock

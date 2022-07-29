@@ -291,8 +291,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
         storePickerCoordinator?.onDismiss = onDismiss
-        let originalURL = currentSelfHostedSite?.url ?? siteURL
-        if let site = matcher.matchedSite(originalURL: originalURL) {
+        if let site = matcher.matchedSite(originalURL: siteURL) {
             storePickerCoordinator?.didSelectStore(with: site.siteID, onCompletion: onDismiss)
         } else {
             storePickerCoordinator?.start()
@@ -451,11 +450,15 @@ private extension AuthenticationManager {
                              onDismiss: @escaping () -> Void) {
         let viewModel = JetpackErrorViewModel(siteURL: siteURL, onJetpackSetupCompletion: { [weak self] authorizedEmailAddress in
             guard let self = self else { return }
-            if let site = self.currentSelfHostedSite {
-                self.currentSelfHostedSite = WordPressComSiteInfo.updateJetpackInfo(for: site)
-            }
+            // Resets the referenced site since the setup completed now.
+            self.currentSelfHostedSite = nil
             guard credentials.wpcom != nil else {
-                return WordPressAuthenticator.showLoginForJustWPCom(from: navigationController, jetpackLogin: true, connectedEmail: authorizedEmailAddress)
+                return WordPressAuthenticator.showLoginForJustWPCom(
+                    from: navigationController,
+                    jetpackLogin: true,
+                    connectedEmail: authorizedEmailAddress,
+                    siteURL: siteURL
+                )
             }
             // Tries re-syncing to get an updated store list,
             // then attempts to present epilogue again.
@@ -466,24 +469,6 @@ private extension AuthenticationManager {
         })
         let installJetpackUI = ULErrorViewController(viewModel: viewModel)
         navigationController.show(installJetpackUI, sender: nil)
-    }
-}
-
-private extension WordPressComSiteInfo {
-    /// Copies the information from the specified site and update all Jetpack-related properties for a valid Jetpack connection.
-    ///
-    static func updateJetpackInfo(for site: WordPressComSiteInfo) -> WordPressComSiteInfo {
-        .init(remote: ["name": site.name,
-                       "description": site.tagline,
-                       "urlAfterRedirects": site.url,
-                       "hasJetpack": true,
-                       "isJetpackActive": true,
-                       "isJetpackConnected": true,
-                       "icon.img": site.icon,
-                       "isWordPressDotCom": site.isWPCom,
-                       "isWordPress": site.isWP,
-                       "exists": site.exists]
-        )
     }
 }
 

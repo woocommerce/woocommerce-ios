@@ -858,7 +858,8 @@ private extension ProductFormViewController {
             return
         }
 
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.ProductDetail.loaded())
+        let hasLinkedProducts = product.upsellIDs.isNotEmpty || product.crossSellIDs.isNotEmpty
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.ProductDetail.loaded(hasLinkedProducts: hasLinkedProducts))
     }
 }
 

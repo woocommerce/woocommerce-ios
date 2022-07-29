@@ -319,8 +319,8 @@ extension WooAnalyticsEvent {
 extension WooAnalyticsEvent {
     /// Namespace
     enum ProductDetail {
-        static func loaded() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productDetailLoaded, properties: [:])
+        static func loaded(hasLinkedProducts: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productDetailLoaded, properties: ["has_linked_products": hasLinkedProducts])
         }
     }
 }

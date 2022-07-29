@@ -97,13 +97,13 @@
 		0270C08327069A8900FC799F /* Experiments */ = {
 			isa = PBXGroup;
 			children = (
+				02E96DBF2893D40C00BD9650 /* ABTest */,
 				02AB82EE27069D93008D7334 /* Info.plist */,
 				0270C09D27069B0000FC799F /* Experiments.h */,
 				0270C09B27069AE700FC799F /* FeatureFlag.swift */,
 				0270C0A227069B7800FC799F /* FeatureFlagService.swift */,
 				0270C0A427069B8900FC799F /* DefaultFeatureFlagService.swift */,
 				0270C0A627069BA500FC799F /* BuildConfiguration.swift */,
-				CC53FB47275E426900C4CA4F /* ABTest.swift */,
 			);
 			path = Experiments;
 			sourceTree = "<group>";
@@ -114,6 +114,14 @@
 				0270C09127069A8900FC799F /* Info.plist */,
 			);
 			path = ExperimentsTests;
+			sourceTree = "<group>";
+		};
+		02E96DBF2893D40C00BD9650 /* ABTest */ = {
+			isa = PBXGroup;
+			children = (
+				CC53FB47275E426900C4CA4F /* ABTest.swift */,
+			);
+			path = ABTest;
 			sourceTree = "<group>";
 		};
 		4E1989AAB68578443A38332F /* Pods */ = {

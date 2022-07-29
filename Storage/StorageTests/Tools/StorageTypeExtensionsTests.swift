@@ -1,6 +1,7 @@
 import XCTest
 
 @testable import Storage
+@testable import WooFoundation
 
 final class StorageTypeExtensionsTests: XCTestCase {
 

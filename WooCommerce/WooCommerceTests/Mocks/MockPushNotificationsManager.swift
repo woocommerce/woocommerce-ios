@@ -102,4 +102,11 @@ extension MockPushNotificationsManager {
     func sendInactiveNotification(_ notification: PushNotification) {
         inactiveNotificationsSubject.send(notification)
     }
+
+    /// Send a `UNNotificationResponse` that will be emitted by the `localNotificationResponses`
+    /// observable.
+    ///
+    func sendLocalNotificationResponse(_ response: UNNotificationResponse) {
+        localNotificationResponsesSubject.send(response)
+    }
 }

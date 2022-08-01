@@ -434,8 +434,8 @@ extension OrderDetailsViewModel {
 
 extension OrderDetailsViewModel {
     /// Dispatches a network call in order to update `self.order`'s `status` to `.completed`.
-    func markCompleted() -> OrderFulfillmentUseCase.FulfillmentProcess {
-        OrderFulfillmentUseCase(order: order, stores: stores).fulfill()
+    func markCompleted(flow: WooAnalyticsEvent.Orders.Flow) -> OrderFulfillmentUseCase.FulfillmentProcess {
+        OrderFulfillmentUseCase(order: order, stores: stores, flow: flow).fulfill()
     }
 
     func syncOrder(onCompletion: ((Order?, Error?) -> ())? = nil) {

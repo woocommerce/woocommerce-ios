@@ -263,28 +263,27 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Presents the Login Epilogue, in the specified NavigationController.
     ///
     func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, onDismiss: @escaping () -> Void) {
-        let matcher = ULAccountMatcher()
-        matcher.refreshStoredSites()
 
-        /// Jetpack is required. Present an error if we don't detect a valid installation for a self-hosted site.
-        if let urlFromCredentials = credentials.wpcom?.siteURL ?? credentials.wporg?.siteURL,
-           isJetpackValidForSelfHostedSite(url: urlFromCredentials) {
-            return presentJetpackError(for: urlFromCredentials, with: credentials, in: navigationController, onDismiss: onDismiss)
+        guard let siteURL = credentials.wpcom?.siteURL ?? credentials.wporg?.siteURL else {
+            // This should not happen since the resulting credentials should be either `wpcom` or `wporg`
+            return DDLogError("⛔️ No site URL found to present Login Epilogue.")
         }
 
-        // We are currently supporting WPCom credentials only
-        // Update this when handling store credentials authentication.
-        guard let wpcomLogin = credentials.wpcom else {
-            return
+        /// Jetpack is required. Present an error if we don't detect a valid installation for a self-hosted site.
+        if isJetpackInvalidForSelfHostedSite(url: siteURL) {
+            return presentJetpackError(for: siteURL, with: credentials, in: navigationController, onDismiss: onDismiss)
         }
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginErrorNotifications) {
             ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: [.loginSiteAddressError])
         }
 
-        guard matcher.match(originalURL: wpcomLogin.siteURL) else {
-            DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: credentials.wpcom?.siteURL))")
-            let viewModel = WrongAccountErrorViewModel(siteURL: credentials.wpcom?.siteURL)
+        let matcher = ULAccountMatcher()
+        matcher.refreshStoredSites()
+
+        guard matcher.match(originalURL: siteURL) else {
+            DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: siteURL))")
+            let viewModel = WrongAccountErrorViewModel(siteURL: siteURL)
             let mismatchAccountUI = ULAccountMismatchViewController(viewModel: viewModel)
 
             return navigationController.show(mismatchAccountUI, sender: nil)
@@ -292,7 +291,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
         storePickerCoordinator?.onDismiss = onDismiss
-        if let site = matcher.matchedSite(originalURL: wpcomLogin.siteURL) {
+        if let site = matcher.matchedSite(originalURL: siteURL) {
             storePickerCoordinator?.didSelectStore(with: site.siteID, onCompletion: onDismiss)
         } else {
             storePickerCoordinator?.start()
@@ -422,22 +421,30 @@ private extension AuthenticationManager {
         }
 
         let wooAuthError = AuthenticationError.make(with: error)
+        let notification: LocalNotification?
         switch wooAuthError {
         case .notWPSite, .notValidAddress, .noSecureConnection:
-            let notification = LocalNotification(scenario: .loginSiteAddressError)
+            notification = LocalNotification(scenario: .loginSiteAddressError)
+        case .invalidEmailFromSiteAddressLogin:
+            notification = LocalNotification(scenario: .invalidEmailFromSiteAddressLogin)
+        case .invalidEmailFromWPComLogin:
+            notification = LocalNotification(scenario: .invalidEmailFromWPComLogin)
+        default:
+            notification = nil
+        }
+
+        if let notification = notification {
             ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: [notification.scenario])
             ServiceLocator.pushNotesManager.requestLocalNotification(notification,
                                                                      // 24 hours from now.
-                                                                     trigger: UNTimeIntervalNotificationTrigger(timeInterval: 86400, repeats: false))
-        default:
-            break
+                                                                     trigger: UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false))
         }
     }
 }
 
 // MARK: - Private helpers
 private extension AuthenticationManager {
-    func isJetpackValidForSelfHostedSite(url: String) -> Bool {
+    func isJetpackInvalidForSelfHostedSite(url: String) -> Bool {
         if let site = currentSelfHostedSite,
            site.url == url, !site.hasValidJetpack {
             return true
@@ -449,9 +456,23 @@ private extension AuthenticationManager {
                              with credentials: AuthenticatorCredentials,
                              in navigationController: UINavigationController,
                              onDismiss: @escaping () -> Void) {
-        let viewModel = JetpackErrorViewModel(siteURL: siteURL, onJetpackSetupCompletion: { [weak self] in
-            self?.currentSelfHostedSite = nil
-            self?.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: onDismiss)
+        let viewModel = JetpackErrorViewModel(siteURL: siteURL, onJetpackSetupCompletion: { [weak self] authorizedEmailAddress in
+            guard let self = self else { return }
+            // Resets the referenced site since the setup completed now.
+            self.currentSelfHostedSite = nil
+            guard credentials.wpcom != nil else {
+                return WordPressAuthenticator.showLoginForJustWPCom(
+                    from: navigationController,
+                    jetpackLogin: true,
+                    connectedEmail: authorizedEmailAddress,
+                    siteURL: siteURL
+                )
+            }
+            // Tries re-syncing to get an updated store list,
+            // then attempts to present epilogue again.
+            ServiceLocator.stores.synchronizeEntities { [weak self] in
+                self?.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: onDismiss)
+            }
         })
         let installJetpackUI = ULErrorViewController(viewModel: viewModel)
         navigationController.show(installJetpackUI, sender: nil)
@@ -465,7 +486,7 @@ extension AuthenticationManager {
         let wooAuthError = AuthenticationError.make(with: error)
 
         switch wooAuthError {
-        case .emailDoesNotMatchWPAccount:
+        case .emailDoesNotMatchWPAccount, .invalidEmailFromWPComLogin, .invalidEmailFromSiteAddressLogin:
             return NotWPAccountViewModel()
         case .notWPSite,
              .notValidAddress:
@@ -484,12 +505,26 @@ private extension AuthenticationManager {
     /// Maps error codes emitted by WPAuthenticator to a domain error object
     enum AuthenticationError: Int, Error {
         case emailDoesNotMatchWPAccount
+        case invalidEmailFromSiteAddressLogin
+        case invalidEmailFromWPComLogin
         case notWPSite
         case notValidAddress
         case noSecureConnection
         case unknown
 
         static func make(with error: Error) -> AuthenticationError {
+            if let error = error as? SignInError {
+                switch error {
+                case .invalidWPComEmail(let source):
+                    switch source {
+                    case .wpCom:
+                        return .invalidEmailFromWPComLogin
+                    case .wpComSiteAddress:
+                        return .invalidEmailFromSiteAddressLogin
+                    }
+                }
+            }
+
             let error = error as NSError
 
             switch error.code {

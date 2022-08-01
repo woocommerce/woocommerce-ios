@@ -11,7 +11,7 @@ final class JetpackSetupWebViewController: UIViewController {
     private let analytics: Analytics
 
     /// The closure to trigger when Jetpack setup completes.
-    private let completionHandler: () -> Void
+    private let completionHandler: (String?) -> Void
 
     /// Main web view
     private lazy var webView: WKWebView = {
@@ -28,17 +28,13 @@ final class JetpackSetupWebViewController: UIViewController {
         return bar
     }()
 
-    /// Activity indicator for fetching sites after setup completes
-    private lazy var activityIndicator: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView(style: .medium)
-        indicator.hidesWhenStopped = true
-        return indicator
-    }()
-
     /// Strong reference for the subscription to update progress bar
     private var progressSubscription: AnyCancellable?
 
-    init(siteURL: String, analytics: Analytics = ServiceLocator.analytics, onCompletion: @escaping () -> Void) {
+    /// The email address that the user uses to authorize Jetpack
+    private var authorizedEmailAddress: String?
+
+    init(siteURL: String, analytics: Analytics = ServiceLocator.analytics, onCompletion: @escaping (String?) -> Void) {
         self.siteURL = siteURL
         self.analytics = analytics
         self.completionHandler = onCompletion
@@ -68,7 +64,6 @@ final class JetpackSetupWebViewController: UIViewController {
 private extension JetpackSetupWebViewController {
     func configureNavigationBar() {
         title = Localization.title
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: activityIndicator)
     }
 
     func configureWebView() {
@@ -109,13 +104,7 @@ private extension JetpackSetupWebViewController {
 
     func handleSetupCompletion() {
         analytics.track(event: .LoginJetpackSetup.setupCompleted(source: .web))
-        activityIndicator.startAnimating()
-        // tries re-syncing to get an updated store list
-        // then attempts to present epilogue again
-        ServiceLocator.stores.synchronizeEntities { [weak self] in
-            self?.activityIndicator.stopAnimating()
-            self?.completionHandler()
-        }
+        completionHandler(authorizedEmailAddress)
     }
 }
 
@@ -132,6 +121,8 @@ extension JetpackSetupWebViewController: WKNavigationDelegate {
         default:
             if let match = JetpackSetupWebStep.matchingStep(for: navigationURL) {
                 analytics.track(event: .LoginJetpackSetup.setupFlow(source: .web, step: match.trackingStep))
+            } else if navigationURL.hasPrefix(Constants.jetpackAuthorizeURL) {
+                authorizedEmailAddress = getQueryStringParameter(url: navigationURL, param: Constants.userEmailParam)
             }
             decisionHandler(.allow)
         }
@@ -143,9 +134,19 @@ extension JetpackSetupWebViewController: WKNavigationDelegate {
 }
 
 private extension JetpackSetupWebViewController {
+
+    func getQueryStringParameter(url: String, param: String) -> String? {
+        guard let url = URLComponents(string: url) else {
+            return nil
+        }
+        return url.queryItems?.first(where: { $0.name == param })?.value
+    }
+
     enum Constants {
         static let jetpackInstallString = "https://wordpress.com/jetpack/connect?url=%@&mobile_redirect=%@&from=mobile"
         static let mobileRedirectURL = "woocommerce://jetpack-connected"
+        static let jetpackAuthorizeURL = "https://jetpack.wordpress.com/jetpack.authorize"
+        static let userEmailParam = "user_email"
     }
 
     enum JetpackSetupWebStep: CaseIterable {

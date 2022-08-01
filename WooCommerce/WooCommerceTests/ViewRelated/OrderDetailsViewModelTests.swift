@@ -55,7 +55,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 
         // When
-        _ = viewModel.markCompleted()
+        _ = viewModel.markCompleted(flow: .editing)
 
         // Then
         XCTAssertEqual(storesManager.receivedActions.count, 1)

@@ -341,6 +341,7 @@ extension WooAnalyticsEvent {
         enum Flow: String {
             case creation
             case editing
+            case list
         }
 
         private enum Keys {

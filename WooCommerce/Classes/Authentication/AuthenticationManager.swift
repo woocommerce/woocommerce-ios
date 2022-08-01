@@ -470,7 +470,6 @@ private extension AuthenticationManager {
             }
             // Tries re-syncing to get an updated store list,
             // then attempts to present epilogue again.
-            // This recursion is stopped when `currentSelfHostedSite` has a valid Jetpack connection.
             ServiceLocator.stores.synchronizeEntities { [weak self] in
                 self?.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: onDismiss)
             }

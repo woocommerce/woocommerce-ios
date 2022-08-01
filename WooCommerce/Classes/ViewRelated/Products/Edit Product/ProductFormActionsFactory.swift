@@ -68,9 +68,12 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     func primarySectionActions() -> [ProductFormEditAction] {
         let shouldShowImagesRow = editable || product.images.isNotEmpty
         let shouldShowDescriptionRow = editable || product.description?.isNotEmpty == true
+        let shouldShowLinkedProductsPromo = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.linkedProductsPromo)
+        && linkedProductsPromoViewModel.shouldBeVisible
+
         let actions: [ProductFormEditAction?] = [
             shouldShowImagesRow ? .images(editable: editable): nil,
-            linkedProductsPromoViewModel.shouldBeVisible ? .linkedProductsPromo(viewModel: linkedProductsPromoViewModel) : nil,
+            shouldShowLinkedProductsPromo ? .linkedProductsPromo(viewModel: linkedProductsPromoViewModel) : nil,
             .name(editable: editable),
             shouldShowDescriptionRow ? .description(editable: editable): nil
         ]

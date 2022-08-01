@@ -20,9 +20,12 @@ struct ProductVariationFormActionsFactory: ProductFormActionsFactoryProtocol {
     func primarySectionActions() -> [ProductFormEditAction] {
         let shouldShowImagesRow = editable || productVariation.images.isNotEmpty
         let shouldShowDescriptionRow = editable || productVariation.description?.isNotEmpty == true
+        let shouldShowLinkedProductsPromo = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.linkedProductsPromo)
+        && linkedProductsPromoViewModel.shouldBeVisible
+
         let actions: [ProductFormEditAction?] = [
             shouldShowImagesRow ? .images(editable: editable): nil,
-            linkedProductsPromoViewModel.shouldBeVisible ? .linkedProductsPromo(viewModel: linkedProductsPromoViewModel) : nil,
+            shouldShowLinkedProductsPromo ? .linkedProductsPromo(viewModel: linkedProductsPromoViewModel) : nil,
             .variationName,
             shouldShowDescriptionRow ? .description(editable: editable): nil
         ]

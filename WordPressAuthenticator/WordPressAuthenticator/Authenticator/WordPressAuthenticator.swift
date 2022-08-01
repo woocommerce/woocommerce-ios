@@ -182,22 +182,21 @@ import WordPressKit
     }
 
     /// Used to present the new wpcom-only login flow from the app delegate
-    @objc public class func showLoginForJustWPCom(from presenter: UIViewController, jetpackLogin: Bool = false, connectedEmail: String? = nil) {
+    @objc public class func showLoginForJustWPCom(from presenter: UIViewController, jetpackLogin: Bool = false, connectedEmail: String? = nil, siteURL: String? = nil) {
         defer {
             trackOpenedLogin()
         }
-
         guard WordPressAuthenticator.shared.configuration.enableUnifiedAuth else {
-            showEmailLogin(from: presenter, jetpackLogin: jetpackLogin, connectedEmail: connectedEmail)
+            showEmailLogin(from: presenter, jetpackLogin: jetpackLogin, connectedEmail: connectedEmail, siteURL: siteURL)
             return
         }
 
-        showGetStarted(from: presenter, jetpackLogin: jetpackLogin, connectedEmail: connectedEmail)
+        showGetStarted(from: presenter, jetpackLogin: jetpackLogin, connectedEmail: connectedEmail, siteURL: siteURL)
     }
 
     /// Shows the unified Login/Signup flow.
     ///
-    private class func showGetStarted(from presenter: UIViewController, jetpackLogin: Bool, connectedEmail: String? = nil) {
+    private class func showGetStarted(from presenter: UIViewController, jetpackLogin: Bool, connectedEmail: String? = nil, siteURL: String? = nil) {
         guard let controller = GetStartedViewController.instantiate(from: .getStarted) else {
             DDLogError("Failed to navigate from LoginPrologueViewController to GetStartedViewController")
             return
@@ -206,6 +205,9 @@ import WordPressKit
         controller.loginFields.restrictToWPCom = true
         controller.loginFields.username = connectedEmail ?? String()
         controller.loginFields.meta.jetpackLogin = jetpackLogin
+        if let siteURL = siteURL {
+            controller.loginFields.siteAddress = siteURL
+        }
 
         let navController = LoginNavigationController(rootViewController: controller)
         navController.modalPresentationStyle = .fullScreen
@@ -214,13 +216,16 @@ import WordPressKit
 
     /// Shows the Email Login view with Signup option.
     ///
-    private class func showEmailLogin(from presenter: UIViewController, jetpackLogin: Bool, connectedEmail: String? = nil) {
+    private class func showEmailLogin(from presenter: UIViewController, jetpackLogin: Bool, connectedEmail: String? = nil, siteURL: String? = nil) {
         guard let controller = LoginEmailViewController.instantiate(from: .login) else {
             return
         }
 
         controller.loginFields.restrictToWPCom = true
         controller.loginFields.meta.jetpackLogin = jetpackLogin
+        if let siteURL = siteURL {
+            controller.loginFields.siteAddress = siteURL
+        }
 
         if let email = connectedEmail {
             controller.loginFields.username = email

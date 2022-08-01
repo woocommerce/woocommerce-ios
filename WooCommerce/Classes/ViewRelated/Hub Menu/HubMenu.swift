@@ -51,7 +51,7 @@ struct HubMenu: View {
                         HubMenuElement(image: menu.icon,
                                        imageColor: menu.iconColor,
                                        text: menu.title,
-                                       badge: 0,
+                                       badge: menu.badge,
                                        isDisabled: $shouldDisableItemTaps,
                                        onTapGesture: {
                             switch menu {

@@ -198,6 +198,10 @@ extension HubMenuViewModel {
             }
         }
 
+        var badge: HubMenuBadgeType {
+            .number(number: 0)
+        }
+
         var accessibilityIdentifier: String {
             switch self {
             case .payments:

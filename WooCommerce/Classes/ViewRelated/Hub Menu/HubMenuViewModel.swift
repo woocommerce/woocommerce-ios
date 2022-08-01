@@ -218,7 +218,7 @@ extension HubMenuViewModel {
 
     private enum Localization {
         static let payments = NSLocalizedString("Payments",
-                                                        comment: "Title of one of the hub menu options")
+                                                comment: "Title of one of the hub menu options")
         static let myStore = NSLocalizedString("My Store",
                                                comment: "Title of the hub menu view in case there is no title for the store")
         static let woocommerceAdmin = NSLocalizedString("WooCommerce Admin",

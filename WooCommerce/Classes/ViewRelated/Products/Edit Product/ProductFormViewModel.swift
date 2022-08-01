@@ -522,6 +522,15 @@ extension ProductFormViewModel {
     }
 }
 
+// MARK: Tracking
+//
+extension ProductFormViewModel {
+    func trackProductFormLoaded() {
+        let hasLinkedProducts = product.upsellIDs.isNotEmpty || product.crossSellIDs.isNotEmpty
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.ProductDetail.loaded(hasLinkedProducts: hasLinkedProducts))
+    }
+}
+
 // MARK: Miscellaneous
 
 private extension ProductFormViewModel {

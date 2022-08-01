@@ -49,6 +49,12 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let addOnsFeatureEnabled: Bool
     private let variationsPrice: VariationsPrice
 
+    private let linkedProductsPromoCampaign = LinkedProductsPromoCampaign()
+    private var linkedProductsPromoViewModel: FeatureAnnouncementCardViewModel {
+        .init(analytics: ServiceLocator.analytics,
+              configuration: linkedProductsPromoCampaign.configuration)
+    }
+
     // TODO: Remove default parameter
     init(product: EditableProductModel, formType: ProductFormType, addOnsFeatureEnabled: Bool = true, variationsPrice: VariationsPrice = .unknown) {
         self.product = product
@@ -64,6 +70,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         let shouldShowDescriptionRow = editable || product.description?.isNotEmpty == true
         let actions: [ProductFormEditAction?] = [
             shouldShowImagesRow ? .images(editable: editable): nil,
+            linkedProductsPromoViewModel.shouldBeVisible ? .linkedProductsPromo(viewModel: linkedProductsPromoViewModel) : nil,
             .name(editable: editable),
             shouldShowDescriptionRow ? .description(editable: editable): nil
         ]

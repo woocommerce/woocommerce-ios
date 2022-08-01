@@ -13,6 +13,7 @@
 		0270C0A327069B7800FC799F /* FeatureFlagService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0270C0A227069B7800FC799F /* FeatureFlagService.swift */; };
 		0270C0A527069B8900FC799F /* DefaultFeatureFlagService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0270C0A427069B8900FC799F /* DefaultFeatureFlagService.swift */; };
 		0270C0A727069BA500FC799F /* BuildConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0270C0A627069BA500FC799F /* BuildConfiguration.swift */; };
+		0273D6AC2897C5D8007EEC91 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0273D6AB2897C5D8007EEC91 /* GoogleService-Info.plist */; };
 		02E96DBC2893CDFF00BD9650 /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 02E96DBB2893CDFF00BD9650 /* FirebaseAnalyticsSwift */; };
 		02E96DBE2893CDFF00BD9650 /* FirebaseRemoteConfigSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 02E96DBD2893CDFF00BD9650 /* FirebaseRemoteConfigSwift */; };
 		02E96DC12893D4B400BD9650 /* ExplatABTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E96DC02893D4B400BD9650 /* ExplatABTesting.swift */; };
@@ -41,6 +42,7 @@
 		0270C0A227069B7800FC799F /* FeatureFlagService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagService.swift; sourceTree = "<group>"; };
 		0270C0A427069B8900FC799F /* DefaultFeatureFlagService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultFeatureFlagService.swift; sourceTree = "<group>"; };
 		0270C0A627069BA500FC799F /* BuildConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildConfiguration.swift; sourceTree = "<group>"; };
+		0273D6AB2897C5D8007EEC91 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		02AB82EE27069D93008D7334 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		02E96DC02893D4B400BD9650 /* ExplatABTesting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplatABTesting.swift; sourceTree = "<group>"; };
 		02E96DC22893D79900BD9650 /* FirebaseABTesting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseABTesting.swift; sourceTree = "<group>"; };
@@ -102,6 +104,7 @@
 			isa = PBXGroup;
 			children = (
 				02E96DBF2893D40C00BD9650 /* ABTest */,
+				0273D6AA2897C592007EEC91 /* DerivedSources */,
 				02AB82EE27069D93008D7334 /* Info.plist */,
 				0270C09D27069B0000FC799F /* Experiments.h */,
 				0270C09B27069AE700FC799F /* FeatureFlag.swift */,
@@ -118,6 +121,14 @@
 				0270C09127069A8900FC799F /* Info.plist */,
 			);
 			path = ExperimentsTests;
+			sourceTree = "<group>";
+		};
+		0273D6AA2897C592007EEC91 /* DerivedSources */ = {
+			isa = PBXGroup;
+			children = (
+				0273D6AB2897C5D8007EEC91 /* GoogleService-Info.plist */,
+			);
+			path = DerivedSources;
 			sourceTree = "<group>";
 		};
 		02E96DBF2893D40C00BD9650 /* ABTest */ = {
@@ -171,6 +182,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0270C09527069A8900FC799F /* Build configuration list for PBXNativeTarget "Experiments" */;
 			buildPhases = (
+				0273D6A12897B855007EEC91 /* Run Script */,
 				620F249CED3F18B3ACC4F79A /* [CP] Check Pods Manifest.lock */,
 				0270C07C27069A8900FC799F /* Headers */,
 				0270C07D27069A8900FC799F /* Sources */,
@@ -255,6 +267,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0273D6AC2897C5D8007EEC91 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -268,6 +281,26 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		0273D6A12897B855007EEC91 /* Run Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"$(SRCROOT)/../Scripts/build-phases/generate-credentials-experiments-inputs.xcfilelist",
+			);
+			inputPaths = (
+			);
+			name = "Run Script";
+			outputFileListPaths = (
+				"$(SRCROOT)/../Scripts/build-phases/generate-credentials-experiments-outputs.xcfilelist",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "$SRCROOT/../Scripts/build-phases/generate-credentials-experiments.sh\n";
+		};
 		3AB0CD346AF01D971274BF7B /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;

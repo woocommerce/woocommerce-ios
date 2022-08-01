@@ -64,7 +64,26 @@ public class FirebaseABTesting: ABTesting {
 
 private extension FirebaseABTesting {
     func isSupported() -> Bool {
-        Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist") != nil
+        let bundle = Bundle(for: Self.self)
+        guard let url = bundle.url(forResource: "GoogleService-Info", withExtension: "plist") else {
+            return false
+        }
+        do {
+            let data = try Data(contentsOf: url)
+            let decoder = PropertyListDecoder()
+            let googleServiceInfo = try decoder.decode(GoogleServiceInfo.self, from: data)
+            return googleServiceInfo.clientID.isEmpty == false
+        } catch {
+            return false
+        }
+    }
+}
+
+private struct GoogleServiceInfo: Decodable {
+    let clientID: String
+
+    private enum CodingKeys: String, CodingKey {
+        case clientID = "CLIENT_ID"
     }
 }
 

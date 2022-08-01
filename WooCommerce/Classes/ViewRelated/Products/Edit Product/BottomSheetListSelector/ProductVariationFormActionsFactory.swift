@@ -22,6 +22,8 @@ struct ProductVariationFormActionsFactory: ProductFormActionsFactoryProtocol {
         let shouldShowDescriptionRow = editable || productVariation.description?.isNotEmpty == true
         let shouldShowLinkedProductsPromo = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.linkedProductsPromo)
         && linkedProductsPromoViewModel.shouldBeVisible
+        && productVariation.upsellIDs.isEmpty
+        && productVariation.crossSellIDs.isEmpty
 
         let actions: [ProductFormEditAction?] = [
             shouldShowImagesRow ? .images(editable: editable): nil,

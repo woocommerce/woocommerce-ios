@@ -9,9 +9,9 @@ import WordPressUI
 struct JetpackErrorViewModel: ULErrorViewModel {
     private let siteURL: String
     private let analytics: Analytics
-    private let jetpackSetupCompletionHandler: () -> Void
+    private let jetpackSetupCompletionHandler: (String?) -> Void
 
-    init(siteURL: String?, analytics: Analytics = ServiceLocator.analytics, onJetpackSetupCompletion: @escaping () -> Void) {
+    init(siteURL: String?, analytics: Analytics = ServiceLocator.analytics, onJetpackSetupCompletion: @escaping (String?) -> Void) {
         self.siteURL = siteURL ?? Localization.yourSite
         self.analytics = analytics
         self.jetpackSetupCompletionHandler = onJetpackSetupCompletion

@@ -10,6 +10,7 @@ import WordPressUI
 import WordPressKit
 import WordPressAuthenticator
 import AutomatticTracks
+import Yosemite
 
 import class Yosemite.ScreenshotStoresManager
 
@@ -83,7 +84,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-
+        cancelPaymentsHubMenuBadgeDismissal()
         startABTesting()
 
         // Setup the Interface!
@@ -95,6 +96,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         appCoordinator?.start()
 
         return true
+    }
+
+#warning("this is for testing only")
+    func cancelPaymentsHubMenuBadgeDismissal() {
+        let action = AppSettingsAction.resetFeatureAnnouncementDismissed(campaign: .paymentsInMenuTabBarButton)
+            ServiceLocator.stores.dispatch(action)
     }
 
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {

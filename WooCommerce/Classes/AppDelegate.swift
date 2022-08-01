@@ -117,10 +117,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         ServiceLocator.pushNotesManager.registrationDidFail(with: error)
     }
 
-    func application(_ application: UIApplication,
-                     didReceiveRemoteNotification userInfo: [AnyHashable: Any],
-                     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        ServiceLocator.pushNotesManager.handleNotification(userInfo, onBadgeUpdateCompletion: {}, completionHandler: completionHandler)
+    /// Called when the app receives a remote notification in the background.
+    /// For local/remote notification tap events, please refer to `UNUserNotificationCenterDelegate.userNotificationCenter(_:didReceive:)`.
+    /// When receiving a local/remote notification in the foreground, please refer to
+    /// `UNUserNotificationCenterDelegate.userNotificationCenter(_:willPresent:)`.
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) async -> UIBackgroundFetchResult {
+        await ServiceLocator.pushNotesManager.handleRemoteNotificationInTheBackground(userInfo: userInfo)
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
@@ -419,27 +421,10 @@ extension AppDelegate {
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
-        switch response.actionIdentifier {
-        case LocalNotification.Action.contactSupport.rawValue:
-            guard let viewController = window?.rootViewController else {
-                return
-            }
-            ZendeskProvider.shared.showNewRequestIfPossible(from: viewController, with: nil)
-            ServiceLocator.analytics.track(.loginLocalNotificationTapped, withProperties: [
-                "action": "contact_support",
-                "type": response.notification.request.identifier
-            ])
-        default:
-            // Triggered when the user taps on the notification itself instead of one of the actions.
-            switch response.notification.request.identifier {
-            case LocalNotification.Scenario.loginSiteAddressError.rawValue:
-                ServiceLocator.analytics.track(.loginLocalNotificationTapped, withProperties: [
-                    "action": "default",
-                    "type": response.notification.request.identifier
-                ])
-            default:
-                return
-            }
-        }
+        await ServiceLocator.pushNotesManager.handleUserResponseToNotification(response)
+    }
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
+        await ServiceLocator.pushNotesManager.handleNotificationInTheForeground(notification)
     }
 }

@@ -1,5 +1,4 @@
 import UIKit
-import SwiftUI
 import Yosemite
 import Combine
 import protocol Storage.StorageManagerType
@@ -12,19 +11,8 @@ final class OrdersRootViewController: UIViewController {
     // The stack view which will contain the top bar filters and the order list.
     @IBOutlet private weak var stackView: UIStackView!
 
-    private let upsellCardReadersCampaign = UpsellCardReadersCampaign(source: .orderList)
-
-    var upsellCardReadersAnnouncementViewModel: FeatureAnnouncementCardViewModel {
-        .init(analytics: ServiceLocator.analytics,
-              configuration: upsellCardReadersCampaign.configuration)
-    }
-
     // MARK: Child view controller
-
-    // Orders and Upsell Card Readers should not be shown simultaneously
-    private lazy var orderListViewModel = OrderListViewModel(siteID: siteID,
-                                                             filters: filters,
-                                                             loadOrdersBanner: !upsellCardReadersAnnouncementViewModel.shouldBeVisible)
+    private lazy var orderListViewModel = OrderListViewModel(siteID: siteID, filters: filters)
 
     private lazy var ordersViewController = OrderListViewController(
         siteID: siteID,
@@ -43,10 +31,6 @@ final class OrdersRootViewController: UIViewController {
     /// Stores any active observation.
     ///
     private var subscriptions = Set<AnyCancellable>()
-
-    private var upsellCardReaderFeatureAnnouncementViewController: UIViewController?
-
-    private var cancellables = Set<AnyCancellable>()
 
     /// The top bar for apply filters, that will be embedded inside the stackview, on top of everything.
     ///
@@ -107,7 +91,6 @@ final class OrdersRootViewController: UIViewController {
         configureView()
         configureNavigationButtons()
         configureFiltersBar()
-        configureUpsellCardReaderFeatureAnnouncement()
         configureChildViewController()
 
         /// We sync the local order settings for configuring local statuses and date range filters.
@@ -123,13 +106,6 @@ final class OrdersRootViewController: UIViewController {
         super.viewWillAppear(animated)
 
         ServiceLocator.pushNotesManager.resetBadgeCount(type: .storeOrder)
-        updateUpsellCardUpsellCardReaderFeatureAnnouncementVisibility()
-    }
-
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-
-        updateUpsellCardUpsellCardReaderFeatureAnnouncementVisibility()
     }
 
     override var shouldShowOfflineBanner: Bool {
@@ -252,54 +228,6 @@ private extension OrdersRootViewController {
         }
     }
 
-    func configureUpsellCardReaderFeatureAnnouncement() {
-        guard upsellCardReadersAnnouncementViewModel.shouldBeVisible else {
-            return
-        }
-
-        let view = FeatureAnnouncementCardView(viewModel: upsellCardReadersAnnouncementViewModel,
-                                               dismiss: { [weak self] in
-            self?.hideUpsellCardReaderFeatureAnnouncementView(true)
-        }, callToAction: {
-            let configuration = CardPresentConfigurationLoader().configuration
-            WebviewHelper.launch(configuration.purchaseCardReaderUrl(), with: self)
-        })
-            .background(Color(.listForeground))
-
-        let hostingViewController = ConstraintsUpdatingHostingController(rootView: view)
-
-        guard let hostingView = hostingViewController.view else {
-            return
-        }
-
-        stackView.setCustomSpacing(UIStackView.spacingUseSystem, after: filtersBar)
-
-        addChild(hostingViewController)
-        stackView.addArrangedSubview(hostingView)
-        hostingViewController.didMove(toParent: self)
-
-        upsellCardReaderFeatureAnnouncementViewController = hostingViewController
-    }
-
-    func updateUpsellCardUpsellCardReaderFeatureAnnouncementVisibility() {
-        // Error banner takes preference over the upsell card reader one
-        let shouldBeShown = traitCollection.verticalSizeClass == .regular &&
-        upsellCardReadersAnnouncementViewModel.shouldBeVisible &&
-        orderListViewModel.topBanner != .error
-
-        hideUpsellCardReaderFeatureAnnouncementView(!shouldBeShown)
-    }
-
-    func hideUpsellCardReaderFeatureAnnouncementView(_ hidden: Bool) {
-        guard upsellCardReaderFeatureAnnouncementViewController != nil,
-              upsellCardReaderFeatureAnnouncementViewController?.view.isHidden != hidden else {
-            return
-        }
-
-        stackView.setCustomSpacing(hidden ? 0 : UIStackView.spacingUseSystem, after: filtersBar)
-        upsellCardReaderFeatureAnnouncementViewController?.view.isHidden = hidden
-    }
-
     func configureChildViewController() {
         // Configure large title using the `hiddenScrollView` trick.
         hiddenScrollView.configureForLargeTitleWorkaround()
@@ -309,12 +237,6 @@ private extension OrdersRootViewController {
         hiddenScrollView.translatesAutoresizingMaskIntoConstraints = false
         view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
         ordersViewController.delegate = self
-
-        orderListViewModel.$topBanner
-            .sink { [weak self] topBannerType in
-                self?.updateUpsellCardUpsellCardReaderFeatureAnnouncementVisibility()
-        }
-            .store(in: &cancellables)
 
         // Add contentView to stackview
         let contentView = ordersViewController.view!

@@ -1,6 +1,7 @@
 import Combine
 import Experiments
 import UIKit
+import WordPressAuthenticator
 import Yosemite
 import class AutomatticTracks.CrashLogging
 
@@ -16,10 +17,12 @@ final class AppCoordinator {
     private let roleEligibilityUseCase: RoleEligibilityUseCaseProtocol
     private let analytics: Analytics
     private let loggedOutAppSettings: LoggedOutAppSettingsProtocol
+    private let pushNotesManager: PushNotesManager
     private let featureFlagService: FeatureFlagService
 
     private var storePickerCoordinator: StorePickerCoordinator?
-    private var cancellable: AnyCancellable?
+    private var authStatesSubscription: AnyCancellable?
+    private var localNotificationResponsesSubscription: AnyCancellable?
     private var isLoggedIn: Bool = false
 
     init(window: UIWindow,
@@ -28,6 +31,7 @@ final class AppCoordinator {
          roleEligibilityUseCase: RoleEligibilityUseCaseProtocol = RoleEligibilityUseCase(),
          analytics: Analytics = ServiceLocator.analytics,
          loggedOutAppSettings: LoggedOutAppSettingsProtocol = LoggedOutAppSettings(userDefaults: .standard),
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.window = window
         self.tabBarController = {
@@ -42,11 +46,12 @@ final class AppCoordinator {
         self.roleEligibilityUseCase = roleEligibilityUseCase
         self.analytics = analytics
         self.loggedOutAppSettings = loggedOutAppSettings
+        self.pushNotesManager = pushNotesManager
         self.featureFlagService = featureFlagService
     }
 
     func start() {
-        cancellable = Publishers.CombineLatest(stores.isLoggedInPublisher, stores.needsDefaultStorePublisher)
+        authStatesSubscription = Publishers.CombineLatest(stores.isLoggedInPublisher, stores.needsDefaultStorePublisher)
             .sink {  [weak self] isLoggedIn, needsDefaultStore in
                 guard let self = self else { return }
 
@@ -64,6 +69,10 @@ final class AppCoordinator {
                 }
                 self.isLoggedIn = isLoggedIn
             }
+
+        localNotificationResponsesSubscription = pushNotesManager.localNotificationUserResponses.sink { [weak self] response in
+            self?.handleLocalNotificationResponse(response)
+        }
     }
 }
 
@@ -232,6 +241,53 @@ private extension AppCoordinator {
             onSuccess()
         }
         stores.dispatch(action)
+    }
+
+    func handleLocalNotificationResponse(_ response: UNNotificationResponse) {
+        switch response.actionIdentifier {
+        case LocalNotification.Action.contactSupport.rawValue:
+            guard let viewController = window.rootViewController else {
+                return
+            }
+            ZendeskProvider.shared.showNewRequestIfPossible(from: viewController, with: nil)
+            analytics.track(.loginLocalNotificationTapped, withProperties: [
+                "action": "contact_support",
+                "type": response.notification.request.identifier
+            ])
+        case LocalNotification.Action.loginWithWPCom.rawValue:
+            guard let loginNavigationController = window.rootViewController as? LoginNavigationController,
+                  let viewController = loginNavigationController.topViewController else {
+                return
+            }
+            let command = NavigateToEnterAccount()
+            command.execute(from: viewController)
+            analytics.track(.loginLocalNotificationTapped, withProperties: [
+                "action": "login_with_wpcom",
+                "type": response.notification.request.identifier
+            ])
+        case UNNotificationDefaultActionIdentifier:
+            // Triggered when the user taps on the notification itself instead of one of the actions.
+            let requestIdentifier = response.notification.request.identifier
+            guard LocalNotification.Scenario.allCases.map({ $0.rawValue }).contains(requestIdentifier) else {
+                break
+            }
+            analytics.track(.loginLocalNotificationTapped, withProperties: [
+                "action": "default",
+                "type": requestIdentifier
+            ])
+        case UNNotificationDismissActionIdentifier:
+            // Triggered when the user taps on the notification's "Clear" action.
+            switch response.notification.request.identifier {
+            case LocalNotification.Scenario.loginSiteAddressError.rawValue:
+                analytics.track(.loginLocalNotificationDismissed, withProperties: [
+                    "type": response.notification.request.identifier
+                ])
+            default:
+                break
+            }
+        default:
+            break
+        }
     }
 }
 

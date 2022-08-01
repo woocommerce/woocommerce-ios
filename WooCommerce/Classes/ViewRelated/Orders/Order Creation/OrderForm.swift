@@ -171,6 +171,7 @@ struct OrderForm: View {
                         viewModel.finishEditing()
                         dismissHandler()
                     }
+                    .accessibilityIdentifier(Accessibility.doneButtonIdentifier)
                 case .loading:
                     ProgressView()
                 }
@@ -316,6 +317,7 @@ private extension OrderForm {
     enum Accessibility {
         static let createButtonIdentifier = "new-order-create-button"
         static let cancelButtonIdentifier = "new-order-cancel-button"
+        static let doneButtonIdentifier = "edit-order-done-button"
         static let addProductButtonIdentifier = "new-order-add-product-button"
     }
 }

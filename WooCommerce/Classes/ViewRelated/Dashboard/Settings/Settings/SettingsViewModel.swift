@@ -43,7 +43,9 @@ protocol SettingsViewModelActionsHandler {
     ///
     func onJetpackInstallDismiss()
 
-    func onUpsellCardReadersAnnouncementDismiss()
+    /// Reloads settings. This can be used to show or hide content depending on their visibility logic.
+    ///
+    func reloadSettings()
 }
 
 protocol SettingsViewModelInput: AnyObject {
@@ -166,19 +168,15 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         reloadSettings()
     }
 
-    func onUpsellCardReadersAnnouncementDismiss() {
-        reloadSettings()
-    }
-}
-
-private extension SettingsViewModel {
     /// Reload the sections and refresh the view (presenter)
     ///
     func reloadSettings() {
         configureSections()
         presenter?.refreshViewContent()
     }
+}
 
+private extension SettingsViewModel {
     func loadWhatsNewOnWooCommerce() {
         stores.dispatch(AnnouncementsAction.loadSavedAnnouncement(onCompletion: { [weak self] result in
             guard let self = self else { return }

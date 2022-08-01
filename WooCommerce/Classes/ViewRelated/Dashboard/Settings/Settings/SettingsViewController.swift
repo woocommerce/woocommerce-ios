@@ -59,6 +59,12 @@ final class SettingsViewController: UIViewController {
         viewModel.onViewDidLoad()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        viewModel.reloadSettings()
+    }
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.updateFooterHeight()
@@ -178,7 +184,7 @@ private extension SettingsViewController {
     func configureUpsellCardReadersFeatureAnnouncement(cell: HostingTableViewCell<FeatureAnnouncementCardView>) {
         let view = FeatureAnnouncementCardView(viewModel: viewModel.upsellCardReadersAnnouncementViewModel,
                                                dismiss: { [weak self] in
-            self?.viewModel.onUpsellCardReadersAnnouncementDismiss()
+            self?.viewModel.reloadSettings()
         })
         cell.host(view, parent: self)
         cell.selectionStyle = .none

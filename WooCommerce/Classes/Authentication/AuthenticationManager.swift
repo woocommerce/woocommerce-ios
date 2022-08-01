@@ -281,12 +281,17 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         let matcher = ULAccountMatcher()
         matcher.refreshStoredSites()
 
-        guard matcher.match(originalURL: siteURL) else {
+        guard let matchedSite = matcher.matchedSite(originalURL: siteURL) else {
             DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: siteURL))")
             let viewModel = WrongAccountErrorViewModel(siteURL: siteURL)
             let mismatchAccountUI = ULAccountMismatchViewController(viewModel: viewModel)
 
             return navigationController.show(mismatchAccountUI, sender: nil)
+        }
+
+        guard matchedSite.isWooCommerceActive else {
+            // TODO: show the no Woo error
+            return
         }
 
         storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)

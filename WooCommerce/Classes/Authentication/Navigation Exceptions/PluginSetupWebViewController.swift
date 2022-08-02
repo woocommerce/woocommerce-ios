@@ -87,8 +87,9 @@ private extension PluginSetupWebViewController {
                     self?.progressBar.setProgress(Float(progress), animated: true)
                 }
             }
-        let request = URLRequest(url: url)
-        webView.load(request)
+
+        let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
+        webView.authenticateForWPComAndRedirect(to: url, credentials: credentials)
     }
 }
 

@@ -21,7 +21,7 @@ if [ ! -f $GOOGLE_SERVICE_INFO_PLIST_PATH ]; then
         cp ${GOOGLE_SERVICE_INFO_PLIST_TEMPLATE_PATH} ${GOOGLE_SERVICE_INFO_PLIST_OUTPUT_PATH}
     fi
 else
-    echo ">> Loading Google Service Info File ${GOOGLE_SERVICE_INFO_PLIST_PATH}"
+    echo ">> Loading Google Service Info File ${GOOGLE_SERVICE_INFO_PLIST_PATH} to ${GOOGLE_SERVICE_INFO_PLIST_OUTPUT_PATH}"
 
     ## Generate the Derived Folder. If needed
     ##

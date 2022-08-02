@@ -57,6 +57,7 @@ struct HubMenu: View {
                             ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: menu.trackingOption])
                             switch type(of: menu).id {
                             case HubMenuViewModel.Payments.id:
+                                viewModel.paymentsScreenWasOpened()
                                 showingPayments = true
                             case HubMenuViewModel.WoocommerceAdmin.id:
                                 showingWooCommerceAdmin = true

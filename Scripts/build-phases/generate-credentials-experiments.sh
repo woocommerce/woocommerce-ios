@@ -18,7 +18,7 @@ if [ ! -f $GOOGLE_SERVICE_INFO_PLIST_PATH ]; then
 
     if [ ! -f $GOOGLE_SERVICE_INFO_PLIST_OUTPUT_PATH ]; then
         echo ">> Creating Google Service Info File from Template: ${GOOGLE_SERVICE_INFO_PLIST_TEMPLATE_PATH}"
-        cp ${GOOGLE_SERVICE_INFO_PLIST_TEMPLATE_PATH} ${GOOGLE_SERVICE_INFO_PLIST_OUTPUT_PATH}
+        cp "${GOOGLE_SERVICE_INFO_PLIST_TEMPLATE_PATH}" "${GOOGLE_SERVICE_INFO_PLIST_OUTPUT_PATH}"
     fi
 else
     echo ">> Loading Google Service Info File ${GOOGLE_SERVICE_INFO_PLIST_PATH} to ${GOOGLE_SERVICE_INFO_PLIST_OUTPUT_PATH}"
@@ -31,6 +31,6 @@ else
     ## then copy it into place for the build.
     ##
     echo ">> Generating Credentials: ${GOOGLE_SERVICE_INFO_PLIST_OUTPUT_PATH}"
-    cp ${GOOGLE_SERVICE_INFO_PLIST_PATH} ${GOOGLE_SERVICE_INFO_PLIST_OUTPUT_PATH}
+    cp "${GOOGLE_SERVICE_INFO_PLIST_PATH}" "${GOOGLE_SERVICE_INFO_PLIST_OUTPUT_PATH}"
 
 fi

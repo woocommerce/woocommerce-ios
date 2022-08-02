@@ -26,7 +26,9 @@ final class HubMenuViewModelTests: XCTestCase {
         let viewModel = HubMenuViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService)
 
         // Then
-        XCTAssertFalse(viewModel.menuElements.contains(.inbox))
+        XCTAssertNil(viewModel.menuElements.firstIndex(where: { item in
+            type(of: item).id == HubMenuViewModel.Inbox.id
+        }))
     }
 
     func test_menuElements_do_not_include_payments_when_feature_flag_is_off() {
@@ -37,7 +39,9 @@ final class HubMenuViewModelTests: XCTestCase {
         let viewModel = HubMenuViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService)
 
         // Then
-        XCTAssertFalse(viewModel.menuElements.contains(.payments))
+        XCTAssertNil(viewModel.menuElements.firstIndex(where: { item in
+            type(of: item).id == HubMenuViewModel.Payments.id
+        }))
     }
 
     func test_menuElements_include_inbox_and_coupons_when_store_has_eligible_wc_version() {
@@ -71,7 +75,13 @@ final class HubMenuViewModelTests: XCTestCase {
         viewModel.setupMenuElements()
 
         // Then both inbox and coupons are in the menu
-        XCTAssertEqual(viewModel.menuElements, [.woocommerceAdmin, .viewStore, .inbox, .coupons, .reviews])
+        XCTAssertNotNil(viewModel.menuElements.firstIndex(where: { item in
+            type(of: item).id == HubMenuViewModel.Inbox.id
+        }))
+
+        XCTAssertNotNil(viewModel.menuElements.firstIndex(where: { item in
+            type(of: item).id == HubMenuViewModel.Coupons.id
+        }))
     }
 
     func test_menuElements_do_not_include_inbox_when_store_has_ineligible_wc_version() {
@@ -104,8 +114,10 @@ final class HubMenuViewModelTests: XCTestCase {
         let viewModel = HubMenuViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService, stores: stores)
         viewModel.setupMenuElements()
 
-        // Then only coupons is in the menu
-        XCTAssertEqual(viewModel.menuElements, [.woocommerceAdmin, .viewStore, .coupons, .reviews])
+        // Then
+        XCTAssertNil(viewModel.menuElements.firstIndex(where: { item in
+            type(of: item).id == HubMenuViewModel.Inbox.id
+        }))
     }
 
     func test_menuElements_do_not_include_inbox_and_coupons_when_store_has_ineligible_wc_version_and_coupons_disabled() {
@@ -139,7 +151,13 @@ final class HubMenuViewModelTests: XCTestCase {
         viewModel.setupMenuElements()
 
         // Then neither inbox nor coupons is in the menu
-        XCTAssertEqual(viewModel.menuElements, [.woocommerceAdmin, .viewStore, .reviews])
+        XCTAssertNil(viewModel.menuElements.firstIndex(where: { item in
+            type(of: item).id == HubMenuViewModel.Inbox.id
+        }))
+
+        XCTAssertNil(viewModel.menuElements.firstIndex(where: { item in
+            type(of: item).id == HubMenuViewModel.Coupons.id
+        }))
     }
 
     func test_menuElements_include_coupons_when_couponManagement_is_enabled_in_app_settings() {
@@ -160,7 +178,9 @@ final class HubMenuViewModelTests: XCTestCase {
         viewModel.setupMenuElements()
 
         // Then
-        XCTAssertEqual(viewModel.menuElements, [.woocommerceAdmin, .viewStore, .coupons, .reviews])
+        XCTAssertNotNil(viewModel.menuElements.firstIndex(where: { item in
+            type(of: item).id == HubMenuViewModel.Coupons.id
+        }))
     }
 
     func test_menuElements_do_not_include_coupons_when_couponManagement_is_not_enabled_in_app_settings() {
@@ -180,9 +200,11 @@ final class HubMenuViewModelTests: XCTestCase {
         let viewModel = HubMenuViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService, stores: stores)
         viewModel.setupMenuElements()
 
-        // Then
-        XCTAssertEqual(viewModel.menuElements, [.woocommerceAdmin, .viewStore, .reviews])
+        XCTAssertNil(viewModel.menuElements.firstIndex(where: { item in
+            type(of: item).id == HubMenuViewModel.Coupons.id
+        }))
     }
+    
     func test_storeURL_when_site_has_storeURL_then_returns_storeURL() {
         // Given
         let sampleStoreURL = "https://testshop.com/"

@@ -172,7 +172,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0270C09527069A8900FC799F /* Build configuration list for PBXNativeTarget "Experiments" */;
 			buildPhases = (
-				0273D6A12897B855007EEC91 /* Run Script */,
+				0273D6A12897B855007EEC91 /* Run Script - Generate Credentials */,
 				620F249CED3F18B3ACC4F79A /* [CP] Check Pods Manifest.lock */,
 				0270C07C27069A8900FC799F /* Headers */,
 				0270C07D27069A8900FC799F /* Sources */,
@@ -268,7 +268,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0273D6A12897B855007EEC91 /* Run Script */ = {
+		0273D6A12897B855007EEC91 /* Run Script - Generate Credentials */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -278,7 +278,7 @@
 			);
 			inputPaths = (
 			);
-			name = "Run Script";
+			name = "Run Script - Generate Credentials";
 			outputFileListPaths = (
 				"$(SRCROOT)/../Scripts/build-phases/generate-credentials-experiments-outputs.xcfilelist",
 			);

@@ -268,9 +268,9 @@
 			);
 			name = "Run Script - Generate Credentials";
 			outputFileListPaths = (
+				"$(SRCROOT)/../Scripts/build-phases/generate-credentials-experiments-outputs.xcfilelist",
 			);
 			outputPaths = (
-				"$(SOURCE_ROOT)/Experiments/DerivedSources/GoogleService-Info.plist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

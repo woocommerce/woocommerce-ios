@@ -32,7 +32,7 @@ final class JetpackSetupWebViewModel: PluginSetupWebViewModel {
         return url
     }
 
-    func trackDismissal() {
+    func handleDismissal() {
         analytics.track(event: .LoginJetpackSetup.setupDismissed(source: .web))
     }
 

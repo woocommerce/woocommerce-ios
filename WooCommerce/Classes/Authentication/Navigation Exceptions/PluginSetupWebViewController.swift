@@ -46,7 +46,7 @@ final class PluginSetupWebViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         if isMovingFromParent {
-            viewModel.trackDismissal()
+            viewModel.handleDismissal()
         }
     }
 }

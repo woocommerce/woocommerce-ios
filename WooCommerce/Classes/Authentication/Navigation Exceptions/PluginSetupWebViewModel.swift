@@ -11,7 +11,7 @@ protocol PluginSetupWebViewModel {
     var initialURL: URL? { get }
 
     /// Triggered when the web view is dismissed
-    func trackDismissal()
+    func handleDismissal()
 
     /// Handler for a navigation URL
     func decidePolicy(for navigationURL: URL, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void)

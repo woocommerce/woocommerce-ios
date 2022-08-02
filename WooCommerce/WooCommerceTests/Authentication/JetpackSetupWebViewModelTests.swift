@@ -58,7 +58,7 @@ final class JetpackSetupWebViewModelTests: XCTestCase {
         let viewModel = JetpackSetupWebViewModel(siteURL: siteURL, analytics: analytics, onCompletion: { _ in })
 
         // When
-        viewModel.trackDismissal()
+        viewModel.handleDismissal()
 
         // Then
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "login_jetpack_setup_dismissed" }))

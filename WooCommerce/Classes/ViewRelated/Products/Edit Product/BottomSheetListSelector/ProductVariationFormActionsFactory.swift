@@ -5,12 +5,6 @@ struct ProductVariationFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let productVariation: EditableProductVariationModel
     private let editable: Bool
 
-    private let linkedProductsPromoCampaign = LinkedProductsPromoCampaign()
-    private var linkedProductsPromoViewModel: FeatureAnnouncementCardViewModel {
-        .init(analytics: ServiceLocator.analytics,
-              configuration: linkedProductsPromoCampaign.configuration)
-    }
-
     init(productVariation: EditableProductVariationModel, editable: Bool) {
         self.productVariation = productVariation
         self.editable = editable
@@ -20,14 +14,8 @@ struct ProductVariationFormActionsFactory: ProductFormActionsFactoryProtocol {
     func primarySectionActions() -> [ProductFormEditAction] {
         let shouldShowImagesRow = editable || productVariation.images.isNotEmpty
         let shouldShowDescriptionRow = editable || productVariation.description?.isNotEmpty == true
-        let shouldShowLinkedProductsPromo = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.linkedProductsPromo)
-        && linkedProductsPromoViewModel.shouldBeVisible
-        && productVariation.upsellIDs.isEmpty
-        && productVariation.crossSellIDs.isEmpty
-
         let actions: [ProductFormEditAction?] = [
             shouldShowImagesRow ? .images(editable: editable): nil,
-            shouldShowLinkedProductsPromo ? .linkedProductsPromo(viewModel: linkedProductsPromoViewModel) : nil,
             .variationName,
             shouldShowDescriptionRow ? .description(editable: editable): nil
         ]

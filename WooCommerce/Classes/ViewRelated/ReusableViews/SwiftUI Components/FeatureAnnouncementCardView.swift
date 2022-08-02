@@ -16,14 +16,28 @@ struct FeatureAnnouncementCardView: View {
     }
 
     var body: some View {
+        if viewModel.showDividers {
+            content
+                .addingTopAndBottomDividers()
+        } else {
+            content
+        }
+    }
+
+    var content: some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
-                NewBadgeView()
+                BadgeView(type: viewModel.badgeType)
                     .padding(.leading, Layout.padding)
                 Spacer()
                 if let dismiss = dismiss {
                     Button(action: {
-                        showingDismissActionSheet = true
+                        if viewModel.showDismissConfirmation {
+                            showingDismissActionSheet = true
+                        } else {
+                            viewModel.dontShowAgainTapped()
+                            dismiss()
+                        }
                     }) {
                         Image(systemName: "xmark")
                             .foregroundColor(Color(.withColorStudio(.gray)))

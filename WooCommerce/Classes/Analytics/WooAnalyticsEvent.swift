@@ -547,8 +547,9 @@ extension WooAnalyticsEvent {
         enum Source: String {
             fileprivate static let key = "source"
 
-            case paymentMethods = "payment_methods"
             case orderList = "order_list"
+            case paymentMethods = "payment_methods"
+            case productDetail = "product_detail"
             case settings
         }
 

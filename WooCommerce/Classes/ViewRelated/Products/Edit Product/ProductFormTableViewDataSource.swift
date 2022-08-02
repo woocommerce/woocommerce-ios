@@ -25,6 +25,9 @@ final class ProductFormTableViewDataSource: NSObject {
     private let productImageStatuses: [ProductImageStatus]
     private let productUIImageLoader: ProductUIImageLoader
 
+    var parentVC: UIViewController?
+    var openLinkedProductsAction: (() -> Void)?
+
     init(viewModel: ProductFormTableViewModel,
          productImageStatuses: [ProductImageStatus],
          productUIImageLoader: ProductUIImageLoader) {
@@ -83,6 +86,8 @@ private extension ProductFormTableViewDataSource {
         switch row {
         case .images(let editable, let allowsMultipleImages, let isVariation):
             configureImages(cell: cell, isEditable: editable, allowsMultipleImages: allowsMultipleImages, isVariation: isVariation)
+        case .linkedProductsPromo(let viewModel):
+            configureLinkedProductsPromo(cell: cell, viewModel: viewModel)
         case .name(let name, let editable, let productStatus):
             configureName(cell: cell, name: name, isEditable: editable, productStatus: productStatus)
         case .variationName(let name):
@@ -192,6 +197,26 @@ private extension ProductFormTableViewDataSource {
         if isEditable {
             cell.accessoryType = .disclosureIndicator
         }
+    }
+
+    func configureLinkedProductsPromo(cell: UITableViewCell, viewModel: FeatureAnnouncementCardViewModel) {
+        guard let cell = cell as? HostingTableViewCell<FeatureAnnouncementCardView> else {
+            fatalError()
+        }
+
+        let view = FeatureAnnouncementCardView(viewModel: viewModel,
+                                               dismiss: {
+            // TODO: dismiss banner with animation
+        },
+                                               callToAction: { [weak self] in
+            self?.openLinkedProductsAction?()
+        })
+
+        if let parentVC = parentVC {
+            cell.host(view, parent: parentVC)
+        }
+        cell.selectionStyle = .none
+        cell.hideSeparator()
     }
 }
 

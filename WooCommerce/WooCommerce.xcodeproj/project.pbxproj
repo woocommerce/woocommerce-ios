@@ -1114,6 +1114,7 @@
 		AED089F227C794BC0020AE10 /* View+CurrencySymbol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED089F127C794BC0020AE10 /* View+CurrencySymbol.swift */; };
 		AEDDDA0A25CA9C980077F9B2 /* AttributePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDDA0925CA9C980077F9B2 /* AttributePickerViewController.swift */; };
 		AEDDDA1A25CAB2170077F9B2 /* AttributePickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AEDDDA1925CAB2170077F9B2 /* AttributePickerViewController.xib */; };
+		AEE085B52897C871007ACE20 /* LinkedProductsPromoCampaign.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE085B42897C871007ACE20 /* LinkedProductsPromoCampaign.swift */; };
 		AEE1D4F525D14F88006A490B /* AttributeOptionListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE1D4F425D14F88006A490B /* AttributeOptionListSelectorCommand.swift */; };
 		AEE1D4FF25D1580E006A490B /* AttributeOptionListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE1D4FE25D1580E006A490B /* AttributeOptionListSelectorCommandTests.swift */; };
 		AEE2610F26E664CE00B142A0 /* EditOrderAddressFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE2610E26E664CE00B142A0 /* EditOrderAddressFormViewModel.swift */; };
@@ -1271,7 +1272,7 @@
 		B9DA153E28101BE100FC67DD /* MockOrderRefundsOptionsDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DA153D28101BE100FC67DD /* MockOrderRefundsOptionsDeterminer.swift */; };
 		B9DA154028103ABE00FC67DD /* OrderRefundsOptionsDeterminerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DA153F28103ABE00FC67DD /* OrderRefundsOptionsDeterminerTests.swift */; };
 		B9E4364C287587D300883CFA /* FeatureAnnouncementCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E4364B287587D300883CFA /* FeatureAnnouncementCardView.swift */; };
-		B9E4364E287589E200883CFA /* NewBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E4364D287589E200883CFA /* NewBadgeView.swift */; };
+		B9E4364E287589E200883CFA /* BadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E4364D287589E200883CFA /* BadgeView.swift */; };
 		B9EF083F2886CE3300D96C58 /* HostingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9EF083E2886CE3300D96C58 /* HostingTableViewCell.swift */; };
 		BAA34C202787494300846F3C /* ReviewsViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAA34C1F2787494300846F3C /* ReviewsViewControllerTests.swift */; };
 		BAE4F8432734325C00871344 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE4F8422734325C00871344 /* SettingsViewModel.swift */; };
@@ -2908,6 +2909,7 @@
 		AED089F127C794BC0020AE10 /* View+CurrencySymbol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+CurrencySymbol.swift"; sourceTree = "<group>"; };
 		AEDDDA0925CA9C980077F9B2 /* AttributePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewController.swift; sourceTree = "<group>"; };
 		AEDDDA1925CAB2170077F9B2 /* AttributePickerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AttributePickerViewController.xib; sourceTree = "<group>"; };
+		AEE085B42897C871007ACE20 /* LinkedProductsPromoCampaign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkedProductsPromoCampaign.swift; sourceTree = "<group>"; };
 		AEE1D4F425D14F88006A490B /* AttributeOptionListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributeOptionListSelectorCommand.swift; sourceTree = "<group>"; };
 		AEE1D4FE25D1580E006A490B /* AttributeOptionListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributeOptionListSelectorCommandTests.swift; sourceTree = "<group>"; };
 		AEE2610E26E664CE00B142A0 /* EditOrderAddressFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditOrderAddressFormViewModel.swift; sourceTree = "<group>"; };
@@ -3085,7 +3087,7 @@
 		B9DA153D28101BE100FC67DD /* MockOrderRefundsOptionsDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockOrderRefundsOptionsDeterminer.swift; sourceTree = "<group>"; };
 		B9DA153F28103ABE00FC67DD /* OrderRefundsOptionsDeterminerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderRefundsOptionsDeterminerTests.swift; sourceTree = "<group>"; };
 		B9E4364B287587D300883CFA /* FeatureAnnouncementCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureAnnouncementCardView.swift; sourceTree = "<group>"; };
-		B9E4364D287589E200883CFA /* NewBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewBadgeView.swift; sourceTree = "<group>"; };
+		B9E4364D287589E200883CFA /* BadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeView.swift; sourceTree = "<group>"; };
 		B9EF083E2886CE3300D96C58 /* HostingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostingTableViewCell.swift; sourceTree = "<group>"; };
 		BAA34C1F2787494300846F3C /* ReviewsViewControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReviewsViewControllerTests.swift; sourceTree = "<group>"; };
 		BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerce.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -4640,6 +4642,7 @@
 			children = (
 				0371C3672875E47B00277E2C /* FeatureAnnouncementCardViewModel.swift */,
 				0371C36D2876E92D00277E2C /* UpsellCardReadersCampaign.swift */,
+				AEE085B42897C871007ACE20 /* LinkedProductsPromoCampaign.swift */,
 			);
 			path = "Feature Announcement Cards";
 			sourceTree = "<group>";
@@ -5627,7 +5630,7 @@
 				02B2829127C4808D004A332A /* InfiniteScrollIndicator.swift */,
 				DE34771227F174C8009CA300 /* StatusView.swift */,
 				B9E4364B287587D300883CFA /* FeatureAnnouncementCardView.swift */,
-				B9E4364D287589E200883CFA /* NewBadgeView.swift */,
+				B9E4364D287589E200883CFA /* BadgeView.swift */,
 			);
 			path = "SwiftUI Components";
 			sourceTree = "<group>";
@@ -9561,6 +9564,7 @@
 				B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */,
 				7E6A01972725B811001668D5 /* FilterProductCategoryListViewController.swift in Sources */,
 				E10DFC7A2673595A0083AFF2 /* ShareSheet.swift in Sources */,
+				AEE085B52897C871007ACE20 /* LinkedProductsPromoCampaign.swift in Sources */,
 				933A27372222354600C2143A /* Logging.swift in Sources */,
 				0290E26F238E3CE400B5C466 /* ListSelectorViewController.swift in Sources */,
 				B5D1AFB820BC510200DB0E8C /* UIImage+Woo.swift in Sources */,
@@ -9841,7 +9845,7 @@
 				4508BF622660E34A00707869 /* ShippingLabelCarrierAndRatesTopBanner.swift in Sources */,
 				45BBFBC3274FDA6400213001 /* HubMenuViewController.swift in Sources */,
 				451B1747258BD7B600836277 /* AddAttributeOptionsViewModel.swift in Sources */,
-				B9E4364E287589E200883CFA /* NewBadgeView.swift in Sources */,
+				B9E4364E287589E200883CFA /* BadgeView.swift in Sources */,
 				CC254F3826C43B52005F3C82 /* ShippingLabelCustomPackageFormViewModel.swift in Sources */,
 				02F49ADC23BF3A0100FA0BFA /* ErrorSectionHeaderView.swift in Sources */,
 				3178C1F726409216000D771A /* CardReaderSettingsConnectedViewModel.swift in Sources */,

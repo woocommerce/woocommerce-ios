@@ -25,12 +25,24 @@ class FeatureAnnouncementCardViewModel {
         config.image
     }
 
+    var showDismissConfirmation: Bool {
+        config.showDismissConfirmation
+    }
+
     var dismissAlertTitle: String {
         config.dismissAlertTitle
     }
 
     var dismissAlertMessage: String {
         config.dismissAlertMessage
+    }
+
+    var showDividers: Bool {
+        config.showDividers
+    }
+
+    var badgeType: BadgeView.BadgeType {
+        config.badgeType
     }
 
     @Published private(set) var shouldBeVisible: Bool = false
@@ -101,14 +113,23 @@ class FeatureAnnouncementCardViewModel {
                                                           campaign: config.campaign))
     }
 
-    struct Configuration {
+    struct Configuration: Equatable {
         let source: WooAnalyticsEvent.FeatureCard.Source
         let campaign: FeatureAnnouncementCampaign
         let title: String
         let message: String
         let buttonTitle: String?
         let image: UIImage
+        let showDismissConfirmation: Bool
         let dismissAlertTitle: String
         let dismissAlertMessage: String
+        let showDividers: Bool
+        let badgeType: BadgeView.BadgeType
+    }
+}
+
+extension FeatureAnnouncementCardViewModel: Equatable {
+    static func == (lhs: FeatureAnnouncementCardViewModel, rhs: FeatureAnnouncementCardViewModel) -> Bool {
+        lhs.config == rhs.config
     }
 }

@@ -85,14 +85,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                                                                   productImageStatuses: productImageActionHandler.productImageStatuses,
                                                                   productUIImageLoader: productUIImageLoader)
         super.init(nibName: "ProductFormViewController", bundle: nil)
-        tableViewDataSource.configureActions(onNameChange: { [weak self] name in
-            self?.onEditProductNameCompletion(newName: name ?? "")
-        }, onStatusChange: { [weak self] isVisible in
-            self?.onEditStatusCompletion(isEnabled: isVisible)
-        }, onAddImage: { [weak self] in
-            self?.eventLogger.logImageTapped()
-            self?.showProductImages()
-        })
+        updateDataSourceActions()
     }
 
     required init?(coder: NSCoder) {
@@ -466,7 +459,11 @@ private extension ProductFormViewController {
             case .primaryFields(let rows):
                 rows.forEach { row in
                     row.cellTypes.forEach { cellType in
-                        tableView.registerNib(for: cellType)
+                        if row.registerWithNib {
+                            tableView.registerNib(for: cellType)
+                        } else {
+                            tableView.register(cellType)
+                        }
                     }
                 }
             case .settings(let rows):
@@ -601,6 +598,16 @@ private extension ProductFormViewController {
         tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                              productImageStatuses: statuses,
                                                              productUIImageLoader: productUIImageLoader)
+        updateDataSourceActions()
+        tableView.dataSource = tableViewDataSource
+        tableView.reloadData()
+    }
+
+    func updateDataSourceActions() {
+        tableViewDataSource.parentVC = self
+        tableViewDataSource.openLinkedProductsAction = { [weak self] in
+            self?.editLinkedProducts()
+        }
         tableViewDataSource.configureActions(onNameChange: { [weak self] name in
             self?.onEditProductNameCompletion(newName: name ?? "")
         }, onStatusChange: { [weak self] isEnabled in
@@ -609,8 +616,6 @@ private extension ProductFormViewController {
             self?.eventLogger.logImageTapped()
             self?.showProductImages()
         })
-        tableView.dataSource = tableViewDataSource
-        tableView.reloadData()
     }
 }
 

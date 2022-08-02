@@ -3,6 +3,7 @@ import Yosemite
 /// Edit actions in the product form. Each action allows the user to edit a subset of product properties.
 enum ProductFormEditAction: Equatable {
     case images(editable: Bool)
+    case linkedProductsPromo(viewModel: FeatureAnnouncementCardViewModel)
     case name(editable: Bool)
     case description(editable: Bool)
     case priceSettings(editable: Bool, hideSeparator: Bool)
@@ -48,6 +49,12 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let addOnsFeatureEnabled: Bool
     private let variationsPrice: VariationsPrice
 
+    private let linkedProductsPromoCampaign = LinkedProductsPromoCampaign()
+    private var linkedProductsPromoViewModel: FeatureAnnouncementCardViewModel {
+        .init(analytics: ServiceLocator.analytics,
+              configuration: linkedProductsPromoCampaign.configuration)
+    }
+
     // TODO: Remove default parameter
     init(product: EditableProductModel, formType: ProductFormType, addOnsFeatureEnabled: Bool = true, variationsPrice: VariationsPrice = .unknown) {
         self.product = product
@@ -61,8 +68,14 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     func primarySectionActions() -> [ProductFormEditAction] {
         let shouldShowImagesRow = editable || product.images.isNotEmpty
         let shouldShowDescriptionRow = editable || product.description?.isNotEmpty == true
+        let shouldShowLinkedProductsPromo = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.linkedProductsPromo)
+        && linkedProductsPromoViewModel.shouldBeVisible
+        && product.upsellIDs.isEmpty
+        && product.crossSellIDs.isEmpty
+
         let actions: [ProductFormEditAction?] = [
             shouldShowImagesRow ? .images(editable: editable): nil,
+            shouldShowLinkedProductsPromo ? .linkedProductsPromo(viewModel: linkedProductsPromoViewModel) : nil,
             .name(editable: editable),
             shouldShowDescriptionRow ? .description(editable: editable): nil
         ]

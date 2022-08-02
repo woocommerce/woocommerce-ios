@@ -36,6 +36,10 @@ final class JetpackSetupWebViewModel: PluginSetupWebViewModel {
         analytics.track(event: .LoginJetpackSetup.setupDismissed(source: .web))
     }
 
+    func handleRedirect(for url: URL?) {
+        // No-op
+    }
+
     func decidePolicy(for navigationURL: URL, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         let url = navigationURL.absoluteString
         switch url {

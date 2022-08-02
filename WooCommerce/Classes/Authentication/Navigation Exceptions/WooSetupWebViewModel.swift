@@ -23,16 +23,15 @@ struct WooSetupWebViewModel: PluginSetupWebViewModel {
         // TODO
     }
 
-    func decidePolicy(for navigationURL: URL, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        print("🧭 \(navigationURL.absoluteString)")
-        switch navigationURL.absoluteString {
-        case let url where url.hasPrefix(Constants.completionURL):
-            decisionHandler(.cancel)
+    func handleRedirect(for url: URL?) {
+        if let url = url, url.absoluteString.hasPrefix(Constants.completionURL) {
             // TODO: analytics
             completionHandler()
-        default:
-            decisionHandler(.allow)
         }
+    }
+
+    func decidePolicy(for navigationURL: URL, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        decisionHandler(.allow)
     }
 }
 
@@ -43,6 +42,6 @@ private extension WooSetupWebViewModel {
 
     enum Constants {
         static let installWooCommerceURL = "https://wordpress.com/plugins/woocommerce/"
-        static let completionURL = "https://public-api.wordpress.com/wpcom/v2/marketplace/products/woocommerce"
+        static let completionURL = "https://wordpress.com/marketplace/thank-you/woocommerce/"
     }
 }

@@ -192,6 +192,4 @@ public enum AppSettingsAction: Action {
     case setFeatureAnnouncementDismissed(campaign: FeatureAnnouncementCampaign, remindLater: Bool, onCompletion: ((Result<Bool, Error>) -> ())?)
 
     case getFeatureAnnouncementVisibility(campaign: FeatureAnnouncementCampaign, onCompletion: (Result<Bool, Error>) -> ())
-
-    case resetFeatureAnnouncementDismissed(campaign: FeatureAnnouncementCampaign)
 }

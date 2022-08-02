@@ -55,6 +55,22 @@ struct HubMenu: View {
                                        isDisabled: $shouldDisableItemTaps,
                                        onTapGesture: {
                             ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: menu.trackingOption])
+                            switch type(of: menu).id {
+                            case HubMenuViewModel.Payments.id:
+                                showingPayments = true
+                            case HubMenuViewModel.WoocommerceAdmin.id:
+                                showingWooCommerceAdmin = true
+                            case HubMenuViewModel.ViewStore.id:
+                                showingViewStore = true
+                            case HubMenuViewModel.Inbox.id:
+                                showingInbox = true
+                            case HubMenuViewModel.Reviews.id:
+                                showingReviews = true
+                            case HubMenuViewModel.Coupons.id:
+                                showingCoupons = true
+                            default:
+                                break
+                            }
                         }).accessibilityIdentifier(menu.accessibilityIdentifier)
                     }
                     .background(Color(.listForeground))

@@ -204,7 +204,7 @@ final class HubMenuViewModelTests: XCTestCase {
             type(of: item).id == HubMenuViewModel.Coupons.id
         }))
     }
-    
+
     func test_storeURL_when_site_has_storeURL_then_returns_storeURL() {
         // Given
         let sampleStoreURL = "https://testshop.com/"
@@ -283,6 +283,96 @@ final class HubMenuViewModelTests: XCTestCase {
         // Then
         XCTAssertNotNil(viewModel.woocommerceAdminURL)
         XCTAssertEqual(viewModel.woocommerceAdminURL, try URL(string: expectedAdminURL)?.asURL())
+    }
+
+    func test_setupMenuElements_when_should_show_payments_badge_then_it_shows_it() {
+        let storesManager = MockStoresManager(sessionManager: .makeForTesting())
+        storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .getFeatureAnnouncementVisibility(FeatureAnnouncementCampaign.paymentsInHubMenuButton, onCompletion):
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+
+        // When
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         stores: storesManager)
+
+        viewModel.setupMenuElements()
+
+        var paymentsBadgeIsNewFeature = false
+        if let paymentsMenuItemIndex = viewModel.menuElements.firstIndex(where: { item in
+            type(of: item).id == HubMenuViewModel.Payments.id
+        }) {
+            if case .newFeature = viewModel.menuElements[paymentsMenuItemIndex].badge {
+                paymentsBadgeIsNewFeature = true
+            }
+        }
+
+        XCTAssertTrue(paymentsBadgeIsNewFeature)
+    }
+
+    func test_setupMenuElements_when_it_should_not_show_payments_badge_then_it_does_not_show_it() {
+        let storesManager = MockStoresManager(sessionManager: .makeForTesting())
+        storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .getFeatureAnnouncementVisibility(FeatureAnnouncementCampaign.paymentsInHubMenuButton, onCompletion):
+                onCompletion(.success(false))
+            default:
+                break
+            }
+        }
+
+        // When
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         stores: storesManager)
+
+        viewModel.setupMenuElements()
+
+        var paymentsBadgeIsNumberZero = false
+        if let paymentsMenuItemIndex = viewModel.menuElements.firstIndex(where: { item in
+            type(of: item).id == HubMenuViewModel.Payments.id
+        }) {
+            if case let .number(number) = viewModel.menuElements[paymentsMenuItemIndex].badge {
+                paymentsBadgeIsNumberZero = number == 0
+            }
+        }
+
+        XCTAssertTrue(paymentsBadgeIsNumberZero)
+    }
+
+    func test_paymentsScreenWasOpened_then_sets_badge_and_calls_to_dismiss() {
+        var calledToDismiss = false
+        let storesManager = MockStoresManager(sessionManager: .makeForTesting())
+        storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case .setFeatureAnnouncementDismissed(FeatureAnnouncementCampaign.paymentsInHubMenuButton, _, _):
+                calledToDismiss = true
+            default:
+                break
+            }
+        }
+
+        // When
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         stores: storesManager)
+
+        viewModel.setupMenuElements()
+        viewModel.paymentsScreenWasOpened()
+
+        var paymentsBadgeIsNumberZero = false
+        if let paymentsMenuItemIndex = viewModel.menuElements.firstIndex(where: { item in
+            type(of: item).id == HubMenuViewModel.Payments.id
+        }) {
+            if case let .number(number) = viewModel.menuElements[paymentsMenuItemIndex].badge {
+                paymentsBadgeIsNumberZero = number == 0
+            }
+        }
+
+        XCTAssertTrue(paymentsBadgeIsNumberZero)
+        XCTAssertTrue(calledToDismiss)
     }
 }
 

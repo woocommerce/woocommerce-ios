@@ -91,5 +91,4 @@ else
     ##
     echo ">> Generating Credentials ${BASH_OUTPUT_PATH}"
     ruby ${SCRIPT_PATH} -i ${BASH_INPUT_PATH} -s ${SECRETS_PATH} > ${BASH_OUTPUT_PATH}
-
 fi

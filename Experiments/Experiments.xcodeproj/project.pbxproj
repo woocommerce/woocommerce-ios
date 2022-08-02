@@ -13,7 +13,6 @@
 		0270C0A327069B7800FC799F /* FeatureFlagService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0270C0A227069B7800FC799F /* FeatureFlagService.swift */; };
 		0270C0A527069B8900FC799F /* DefaultFeatureFlagService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0270C0A427069B8900FC799F /* DefaultFeatureFlagService.swift */; };
 		0270C0A727069BA500FC799F /* BuildConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0270C0A627069BA500FC799F /* BuildConfiguration.swift */; };
-		0273D6AC2897C5D8007EEC91 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0273D6AB2897C5D8007EEC91 /* GoogleService-Info.plist */; };
 		BC10218D75FEA979BDA1E68C /* Pods_Experiments.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33CEC0C5283FD4C9EF8C6A3C /* Pods_Experiments.framework */; };
 		C8E16F0EE6954B58A1C402F0 /* Pods_ExperimentsTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAC7C082DD376957B4676401 /* Pods_ExperimentsTests.framework */; };
 		CC53FB48275E426900C4CA4F /* ABTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC53FB47275E426900C4CA4F /* ABTest.swift */; };
@@ -38,7 +37,6 @@
 		0270C0A227069B7800FC799F /* FeatureFlagService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagService.swift; sourceTree = "<group>"; };
 		0270C0A427069B8900FC799F /* DefaultFeatureFlagService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultFeatureFlagService.swift; sourceTree = "<group>"; };
 		0270C0A627069BA500FC799F /* BuildConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildConfiguration.swift; sourceTree = "<group>"; };
-		0273D6AB2897C5D8007EEC91 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		02AB82EE27069D93008D7334 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2B7FCE683D4058A7A16F7946 /* Pods-Experiments.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Experiments.debug.xcconfig"; path = "Target Support Files/Pods-Experiments/Pods-Experiments.debug.xcconfig"; sourceTree = "<group>"; };
 		3022E2766134CE2735C73FC6 /* Pods-ExperimentsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExperimentsTests.debug.xcconfig"; path = "Target Support Files/Pods-ExperimentsTests/Pods-ExperimentsTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -96,7 +94,6 @@
 			isa = PBXGroup;
 			children = (
 				02E96DBF2893D40C00BD9650 /* ABTest */,
-				0273D6AA2897C592007EEC91 /* DerivedSources */,
 				02AB82EE27069D93008D7334 /* Info.plist */,
 				0270C09D27069B0000FC799F /* Experiments.h */,
 				0270C09B27069AE700FC799F /* FeatureFlag.swift */,
@@ -113,14 +110,6 @@
 				0270C09127069A8900FC799F /* Info.plist */,
 			);
 			path = ExperimentsTests;
-			sourceTree = "<group>";
-		};
-		0273D6AA2897C592007EEC91 /* DerivedSources */ = {
-			isa = PBXGroup;
-			children = (
-				0273D6AB2897C5D8007EEC91 /* GoogleService-Info.plist */,
-			);
-			path = DerivedSources;
 			sourceTree = "<group>";
 		};
 		02E96DBF2893D40C00BD9650 /* ABTest */ = {
@@ -254,7 +243,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0273D6AC2897C5D8007EEC91 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -5,7 +5,7 @@ if [[ $ACTION == 'indexbuild' ]]; then
   exit 0
 fi
 
-DERIVED_PATH=${BUILT_PRODUCTS_DIR}/Experiments/DerivedSources
+DERIVED_PATH=${SOURCE_ROOT}/Experiments/DerivedSources
 GOOGLE_SERVICE_INFO_PLIST_OUTPUT_PATH=${DERIVED_PATH}/GoogleService-Info.plist
 GOOGLE_SERVICE_INFO_PLIST_PATH="${HOME}/.configure/woocommerce-ios/secrets/GoogleService-Info.plist"
 

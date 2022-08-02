@@ -7,7 +7,7 @@ import Yosemite
 
 /// Test cases for `MainTabViewModel`.
 final class MainTabViewModelTests: XCTestCase {
-    private let sampleStoreID = 34
+    private let sampleStoreID: Int64 = 34
 
     func test_onViewDidAppear_will_save_the_installation_date() throws {
         // Given

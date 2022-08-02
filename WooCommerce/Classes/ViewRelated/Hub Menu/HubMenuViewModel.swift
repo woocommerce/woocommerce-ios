@@ -173,8 +173,8 @@ protocol HubMenuItem {
 }
 
 extension HubMenuItem {
-    var id: UUID {
-        UUID()
+    var id: String {
+        type(of: self).id
     }
 }
 

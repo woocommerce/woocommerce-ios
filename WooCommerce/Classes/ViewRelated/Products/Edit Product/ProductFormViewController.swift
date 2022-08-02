@@ -142,6 +142,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         productImageUploader.stopEmittingErrors(key: .init(siteID: viewModel.productModel.siteID,
                                                            productOrVariationID: productOrVariationID,
                                                            isLocalID: !viewModel.productModel.existsRemotely))
+
+        viewModel.trackProductFormLoaded()
     }
 
     override func viewWillDisappear(_ animated: Bool) {

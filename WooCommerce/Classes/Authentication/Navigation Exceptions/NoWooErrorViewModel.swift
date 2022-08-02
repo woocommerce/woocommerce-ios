@@ -43,6 +43,12 @@ struct NoWooErrorViewModel: ULErrorViewModel {
     // MARK: - Actions
     func didTapPrimaryButton(in viewController: UIViewController?) {
         // TODO: Analytics
+        guard let viewController = viewController,
+              let url = URL(string: Strings.installWooCommerceURLString + siteURL.trimHTTPScheme()) else {
+            return
+        }
+        let safariViewController = SFSafariViewController(url: url)
+        viewController.present(safariViewController, animated: true, completion: nil)
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {

@@ -290,8 +290,9 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         }
 
         guard matchedSite.isWooCommerceActive else {
-            // TODO: show the no Woo error
-            return
+            let viewModel = NoWooErrorViewModel(siteURL: siteURL, showsConnectedStores: matcher.hasConnectedStores)
+            let noWooUI = ULErrorViewController(viewModel: viewModel)
+            return navigationController.show(noWooUI, sender: nil)
         }
 
         storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)

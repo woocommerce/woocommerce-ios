@@ -18,6 +18,11 @@ final class ULAccountMatcher {
         resultsController.fetchedObjects
     }
 
+    /// Checks if the user has any site that has WooCommerce.
+    ///
+    var hasConnectedStores: Bool {
+        return sites.first(where: { $0.isWooCommerceActive }) != nil
+    }
 
     /// Checks if the URL passed as parameter is one of the sites
     /// saved in Storage

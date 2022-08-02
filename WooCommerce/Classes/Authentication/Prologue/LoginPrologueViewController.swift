@@ -36,9 +36,11 @@ final class LoginPrologueViewController: UIViewController {
     // MARK: - Overridden Methods
 
     init(analytics: Analytics = ServiceLocator.analytics,
+         loggedOutAppSettings: LoggedOutAppSettingsProtocol = LoggedOutAppSettings(userDefaults: .standard),
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         isNewToWooCommerceButtonShown = featureFlagService.isFeatureFlagEnabled(.newToWooCommerceLinkInLoginPrologue)
-        isOnboardingFeatureEnabled = featureFlagService.isFeatureFlagEnabled(.loginPrologueOnboarding)
+
+        isOnboardingFeatureEnabled = featureFlagService.isFeatureFlagEnabled(.loginPrologueOnboarding) && loggedOutAppSettings.hasFinishedOnboarding == false
         self.analytics = analytics
         super.init(nibName: nil, bundle: nil)
     }

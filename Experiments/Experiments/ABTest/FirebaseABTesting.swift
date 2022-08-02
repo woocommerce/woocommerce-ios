@@ -1,7 +1,6 @@
 import FirebaseCore
 import FirebaseAnalytics
 import FirebaseRemoteConfig
-import FirebaseInstallations
 
 public class FirebaseABTesting: ABTesting {
     /// `RemoteConfig` is set as a variable instead of a constant because `FirebaseApp.configure()` needs to be called before `RemoteConfig.remoteConfig()`.
@@ -17,15 +16,6 @@ public class FirebaseABTesting: ABTesting {
         }
 
         FirebaseApp.configure()
-
-        Installations.installations().authTokenForcingRefresh(true, completion: { (result, error) in
-            if let error = error {
-                print("Error fetching token: \(error)")
-                return
-            }
-            guard let result = result else { return }
-            print("Installation auth token: \(result.authToken)")
-        })
 
         let settings = RemoteConfigSettings()
         settings.minimumFetchInterval = 0

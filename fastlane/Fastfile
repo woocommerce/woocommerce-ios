@@ -502,7 +502,7 @@ platform :ios do
       output_directory: 'build',
       export_team_id: ENV['INT_EXPORT_TEAM_ID'],
       export_options: { method: 'enterprise', iCloudContainerEnvironment: 'Production' }
-    ) --verbose
+    )
 
     appcenter_upload(
       api_token: get_required_env('APPCENTER_API_TOKEN'),

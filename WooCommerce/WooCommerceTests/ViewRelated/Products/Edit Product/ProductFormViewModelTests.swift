@@ -5,6 +5,22 @@ import Yosemite
 import TestKit
 
 final class ProductFormViewModelTests: XCTestCase {
+
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
+    override func setUp() {
+        super.setUp()
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+    }
+
+    override func tearDown() {
+        super.tearDown()
+        analytics = nil
+        analyticsProvider = nil
+    }
+
     // MARK: `canViewProductInStore`
 
     func test_edit_product_form_with_published_status_can_view_product_in_store() {
@@ -464,15 +480,34 @@ final class ProductFormViewModelTests: XCTestCase {
         // Then
         assertEqual(messageType, .save)
     }
+
+    func test_viewModel_correctly_tracks_product_form_loaded() throws {
+        // Given
+        let product = Product.fake().copy(upsellIDs: [1])
+        let viewModel = createViewModel(product: product, formType: .edit, analytics: analytics)
+
+        // When
+        viewModel.trackProductFormLoaded()
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, WooAnalyticsStat.productDetailLoaded.rawValue)
+
+        let hasLinkedProducts = try XCTUnwrap(analyticsProvider.receivedProperties.first?["has_linked_products"] as? Bool)
+        XCTAssertTrue(hasLinkedProducts)
+    }
 }
 
 private extension ProductFormViewModelTests {
-    func createViewModel(product: Product, formType: ProductFormType, stores: StoresManager = ServiceLocator.stores) -> ProductFormViewModel {
+    func createViewModel(product: Product,
+                         formType: ProductFormType,
+                         stores: StoresManager = ServiceLocator.stores,
+                         analytics: Analytics = ServiceLocator.analytics) -> ProductFormViewModel {
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         return ProductFormViewModel(product: model,
                                     formType: formType,
                                     productImageActionHandler: productImageActionHandler,
-                                    stores: stores)
+                                    stores: stores,
+                                    analytics: analytics)
     }
 }

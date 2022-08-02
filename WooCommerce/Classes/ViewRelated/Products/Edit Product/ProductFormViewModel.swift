@@ -161,13 +161,16 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     private let isBackgroundImageUploadEnabled: Bool
 
+    private let analytics: Analytics
+
     init(product: EditableProductModel,
          formType: ProductFormType,
          productImageActionHandler: ProductImageActionHandler,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          productImagesUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
-         isBackgroundImageUploadEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload)) {
+         isBackgroundImageUploadEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload),
+         analytics: Analytics = ServiceLocator.analytics) {
         self.formType = formType
         self.productImageActionHandler = productImageActionHandler
         self.originalProduct = product
@@ -177,6 +180,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.storageManager = storageManager
         self.productImagesUploader = productImagesUploader
         self.isBackgroundImageUploadEnabled = isBackgroundImageUploadEnabled
+        self.analytics = analytics
 
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
             guard let self = self else { return }
@@ -519,6 +523,15 @@ extension ProductFormViewModel {
     func resetPassword(_ password: String?) {
         originalPassword = password
         isUpdateEnabledSubject.send(hasUnsavedChanges())
+    }
+}
+
+// MARK: Tracking
+//
+extension ProductFormViewModel {
+    func trackProductFormLoaded() {
+        let hasLinkedProducts = product.upsellIDs.isNotEmpty || product.crossSellIDs.isNotEmpty
+        analytics.track(event: WooAnalyticsEvent.ProductDetail.loaded(hasLinkedProducts: hasLinkedProducts))
     }
 }
 

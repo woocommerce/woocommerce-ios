@@ -116,6 +116,11 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
     private lazy var isSplitViewInOrdersTabEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
 
+    /// Tracks if the swipe actions have been glanced to the user.
+    ///
+    private var swipeActionsGlanced = false
+
+
     // MARK: - View Lifecycle
 
     /// Designated initializer.
@@ -302,6 +307,33 @@ extension OrderListViewController {
         viewModel.syncOrderStatuses()
         syncingCoordinator.resynchronize(reason: SyncReason.pullToRefresh.rawValue) {
             sender.endRefreshing()
+        }
+    }
+
+    private func markOrderAsCompleted(resultID: FetchResultSnapshotObjectID) {
+        guard let orderDetailsViewModel = viewModel.detailsViewModel(withID: resultID) else {
+            return DDLogError("⛔️ ViewModel for resultID: \(resultID) not found")
+        }
+        /// Actions that performs the mark completed request remotely.
+        let fulfillmentProcess = orderDetailsViewModel.markCompleted()
+
+        /// Messages configuration
+        let noticeConfiguration = OrderFulfillmentNoticePresenter.NoticeConfiguration(
+            successTitle: Localization.markCompletedNoticeTitle(orderID: orderDetailsViewModel.order.orderID),
+            errorTitle: Localization.markCompletedErrorNoticeTitle(orderID: orderDetailsViewModel.order.orderID))
+
+        /// Fires fulfillment action, observes its result and enqueue the appropriate notices.
+        let presenter = OrderFulfillmentNoticePresenter(noticeConfiguration: noticeConfiguration)
+        presenter.present(process: fulfillmentProcess)
+    }
+
+    /// Slightly reveal swipe actions of the first visible cell that contains at least one swipe action.
+    /// This action is performed only once, using `swipeActionsGlanced` as a control variable.
+    ///
+    private func glanceTrailingActionsIfNeeded() {
+        if !swipeActionsGlanced {
+            swipeActionsGlanced = true
+            tableView.glanceTrailingSwipeActions()
         }
     }
 }
@@ -682,10 +714,8 @@ extension OrderListViewController: UITableViewDelegate {
               cellViewModel.status != .completed else {
                   return nil
               }
-
-        let markAsCompletedAction = UIContextualAction(style: .normal, title: Localization.markCompleted, handler: { _, _, completionHandler in
-            print("Mark as completed triggered...")
-            // TODO: Fire real action
+        let markAsCompletedAction = UIContextualAction(style: .normal, title: Localization.markCompleted, handler: { [weak self] _, _, completionHandler in
+            self?.markOrderAsCompleted(resultID: objectID)
             completionHandler(true) // Tells the table that the action was performed and forces it to go back to its original state (un-swiped)
         })
         markAsCompletedAction.backgroundColor = .brand
@@ -708,7 +738,7 @@ private extension OrderListViewController {
         case .syncing:
             ensureFooterSpinnerIsStarted()
         case .results:
-            break
+            glanceTrailingActionsIfNeeded()
         }
     }
 
@@ -803,6 +833,22 @@ private extension OrderListViewController {
                                  comment: "Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List")
 
         static let markCompleted = NSLocalizedString("Mark Completed", comment: "Title for the swipe order action to mark it as completed")
+
+        static func markCompletedNoticeTitle(orderID: Int64) -> String {
+            let format = NSLocalizedString(
+                "Order #%1$d marked as completed",
+                comment: "Notice title when an order is marked as completed via a swipe action. Parameter: Order Number"
+            )
+            return String.localizedStringWithFormat(format, orderID)
+        }
+
+        static func markCompletedErrorNoticeTitle(orderID: Int64) -> String {
+            let format = NSLocalizedString(
+                "Error updating Order #%1$d",
+                comment: "Notice title when marking an order as completed via a swipe action fails. Parameter: Order Number"
+            )
+            return String.localizedStringWithFormat(format, orderID)
+        }
     }
 
     enum Settings {

@@ -1,5 +1,7 @@
 import Foundation
 import Yosemite
+import Combine
+import Experiments
 
 import class AutomatticTracks.CrashLogging
 
@@ -22,8 +24,24 @@ final class MainTabViewModel {
 
     private var statusResultsController: ResultsController<StorageOrderStatus>?
 
-    init(storesManager: StoresManager = ServiceLocator.stores) {
+    private let featureFlagService: FeatureFlagService
+
+    /// Whether we should show the reviews badge on the hub menu tab.
+    /// Even if we set this value to true it might not be shown, as there might be other badge types with more priority
+    ///
+    @Published private var shouldShowReviewsBadgeOnHubMenuTab: Bool = false
+
+    /// Whether we should show the new feature badge on the hub menu tab.
+    /// Even if we set this value to true it might not be shown, as there might be other badge types with more priority
+    ///
+    @Published private var shouldShowNewFeatureBadgeOnHubMenuTab: Bool = false
+
+    private var cancellables = Set<AnyCancellable>()
+
+    init(storesManager: StoresManager = ServiceLocator.stores,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.storesManager = storesManager
+        self.featureFlagService = featureFlagService
 
         if let siteID = storesManager.sessionManager.defaultStoreID {
             configureOrdersStatusesListener(for: siteID)
@@ -42,10 +60,14 @@ final class MainTabViewModel {
     ///
     var onOrdersBadgeReload: ((String?) -> Void)?
 
-    /// Callback to be executed when the menu tab badge needs to be reloaded
-    /// It provides a Bool with whether it should be visible or not, and the badge type
+    /// Callback to be executed when the menu tab badge needs to be displayed
+    /// It provides the badge type
     ///
-    var showMenuBadge: ((Bool, NotificationBadgeType) -> Void)?
+    var onMenuBadgeShouldBeDisplayed: ((NotificationBadgeType) -> Void)?
+
+    /// Callback to be executed when the menu tab badge needs to be hidden
+    ///
+    var onMenuBadgeShouldBeHidden: (() -> ())?
 
     /// Must be called during `MainTabBarController.viewDidAppear`. This will try and save the
     /// app installation date.
@@ -67,23 +89,15 @@ final class MainTabViewModel {
     /// Loads the the hub Menu tab badge and listens to any change to update it
     ///
     func loadHubMenuTabBadge() {
-        updateHubMenuTabBadge()
+        synchronizeShouldShowBadgeOnHubMenuTabLogic()
 
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(updateHubMenuTabBadge),
-                                               name: .reviewsBadgeReloadRequired,
-                                               object: nil)
-    }
+        listenToReviewsBadgeReloadRequired()
+        retrieveShouldShowReviewsBadgeOnHubMenuTabValue()
 
-    @objc func updateHubMenuTabBadge() {
-        guard let siteID = storesManager.sessionManager.defaultStoreID else {
-            return
+        if featureFlagService.isFeatureFlagEnabled(.paymentsHubMenuSection) {
+            listenToNewFeatureBadgeReloadRequired()
+            retrieveShouldShowNewFeatureBadgeOnHubMenuTabValue()
         }
-
-        let action = NotificationCountAction.load(siteID: siteID, type: .kind(.comment)) { [weak self] count in
-            self?.showMenuBadge?(count > 0, .primary)
-        }
-        storesManager.dispatch(action)
     }
 }
 
@@ -178,5 +192,76 @@ private extension MainTabViewModel {
             }
         }
         storesManager.dispatch(action)
+    }
+
+    /// Listens for notifications sent when the reviews badge should reload
+    ///
+    func listenToReviewsBadgeReloadRequired() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(retrieveShouldShowReviewsBadgeOnHubMenuTabValue),
+                                               name: .reviewsBadgeReloadRequired,
+                                               object: nil)
+    }
+
+    func listenToNewFeatureBadgeReloadRequired() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(hubMenuViewDidAppear),
+                                               name: .hubMenuViewDidAppear,
+                                               object: nil)
+
+    }
+
+    /// Updates the badge after the hub menu did appear
+    ///
+    @objc func hubMenuViewDidAppear() {
+        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .paymentsInMenuTabBarButton, remindLater: false, onCompletion: nil)
+        storesManager.dispatch(action)
+
+        shouldShowNewFeatureBadgeOnHubMenuTab = false
+    }
+
+    /// Retrieves whether we should show the reviews on the Menu button and updates `shouldShowReviewsBadge`
+    ///
+    @objc func retrieveShouldShowReviewsBadgeOnHubMenuTabValue() {
+        guard let siteID = storesManager.sessionManager.defaultStoreID else {
+            return
+        }
+
+        let notificationCountAction = NotificationCountAction.load(siteID: siteID, type: .kind(.comment)) { [weak self] count in
+            self?.shouldShowReviewsBadgeOnHubMenuTab = count > 0
+        }
+
+        storesManager.dispatch(notificationCountAction)
+    }
+
+    /// Retrieves whether we should show the new feature badge on the Menu button and updates `shouldShowReviewsBadge`
+    ///
+    func retrieveShouldShowNewFeatureBadgeOnHubMenuTabValue() {
+        let action = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .paymentsInMenuTabBarButton) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let visible):
+                self.shouldShowNewFeatureBadgeOnHubMenuTab = visible
+            case .failure:
+                self.shouldShowNewFeatureBadgeOnHubMenuTab = false
+            }
+        }
+
+        storesManager.dispatch(action)
+    }
+
+    /// Listens for changes on the menu badge display logic and updates it depending on them
+    ///
+    func synchronizeShouldShowBadgeOnHubMenuTabLogic() {
+        Publishers.CombineLatest($shouldShowNewFeatureBadgeOnHubMenuTab, $shouldShowReviewsBadgeOnHubMenuTab)
+            .sink { [weak self] shouldDisplayNewFeatureBadge, shouldDisplayReviewsBadge in
+                if shouldDisplayNewFeatureBadge {
+                    self?.onMenuBadgeShouldBeDisplayed?(.primary)
+                } else if shouldDisplayReviewsBadge {
+                    self?.onMenuBadgeShouldBeDisplayed?(.secondary)
+                } else {
+                    self?.onMenuBadgeShouldBeHidden?()
+                }
+            }.store(in: &cancellables)
     }
 }

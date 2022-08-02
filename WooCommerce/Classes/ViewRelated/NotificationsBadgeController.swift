@@ -8,17 +8,21 @@ enum NotificationBadgeType {
     var color: UIColor {
         switch self {
         case .primary:
-            return .primary
-        case .secondary:
             return .accent
+        case .secondary:
+            return .primary
         }
     }
 }
 
+enum NotificationBadgeActionType {
+    case show(type: NotificationBadgeType)
+    case hide
+}
+
 /// Gathers the necessary data to update the badge on a tabbar tab
 struct NotificationsBadgeInput {
-    let shouldBeVisible: Bool
-    let type: NotificationBadgeType
+    let action: NotificationBadgeActionType
     let tab: WooTab
     let tabBar: UITabBar
     let tabIndex: Int
@@ -28,18 +32,28 @@ final class NotificationsBadgeController {
     /// Updates the tab badge depending on the provided input parameter
     ///
     func updateBadge(with input: NotificationsBadgeInput) {
-        input.shouldBeVisible ? showDotOn(with: input) : hideDotOn(with: input)
+        switch input.action {
+        case .show(_):
+            showDotOn(with: input)
+        case .hide:
+            hideDotOn(with: input)
+        }
     }
+
 
     /// Shows the dot in the specified WooTab
     ///
     private func showDotOn(with input: NotificationsBadgeInput) {
+        guard case let .show(type) = input.action else {
+            return
+
+        }
         hideDotOn(with: input)
         let dot = DotView(frame: CGRect(x: DotConstants.xOffset,
                                         y: DotConstants.yOffset,
                                         width: DotConstants.diameter,
                                         height: DotConstants.diameter),
-                          color: input.type.color,
+                          color: type.color,
                           borderWidth: DotConstants.borderWidth)
         dot.tag = dotTag(for: input.tab)
         dot.isHidden = true

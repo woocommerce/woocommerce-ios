@@ -19,14 +19,14 @@ struct WooSetupWebViewModel: PluginSetupWebViewModel {
         URL(string: Constants.installWooCommerceURL + siteURL.trimHTTPScheme())
     }
 
-    func trackDismissal() {
+    func handleDismissal() {
         // TODO
     }
 
     func decidePolicy(for navigationURL: URL, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         print("🧭 \(navigationURL.absoluteString)")
         switch navigationURL.absoluteString {
-        case Constants.completionURL:
+        case let url where url.hasPrefix(Constants.completionURL):
             decisionHandler(.cancel)
             // TODO: analytics
             completionHandler()

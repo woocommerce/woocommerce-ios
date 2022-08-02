@@ -1,10 +1,9 @@
-import Combine
-import UIKit
+import Foundation
 import WebKit
 
-/// The web view to handle Jetpack installation/activation/connection all at once.
+/// View model used for the web view controller to install Jetpack the plugin during the login flow.
 ///
-final class JetpackSetupWebViewController: UIViewController {
+final class JetpackSetupWebViewModel: PluginSetupWebViewModel {
 
     /// The site URL to set up Jetpack for.
     private let siteURL: String
@@ -13,24 +12,6 @@ final class JetpackSetupWebViewController: UIViewController {
     /// The closure to trigger when Jetpack setup completes.
     private let completionHandler: (String?) -> Void
 
-    /// Main web view
-    private lazy var webView: WKWebView = {
-        let webView = WKWebView(frame: .zero)
-        webView.translatesAutoresizingMaskIntoConstraints = false
-        webView.navigationDelegate = self
-        return webView
-    }()
-
-    /// Progress bar for the web view
-    private lazy var progressBar: UIProgressView = {
-        let bar = UIProgressView(progressViewStyle: .bar)
-        bar.translatesAutoresizingMaskIntoConstraints = false
-        return bar
-    }()
-
-    /// Strong reference for the subscription to update progress bar
-    private var progressSubscription: AnyCancellable?
-
     /// The email address that the user uses to authorize Jetpack
     private var authorizedEmailAddress: String?
 
@@ -38,102 +19,47 @@ final class JetpackSetupWebViewController: UIViewController {
         self.siteURL = siteURL
         self.analytics = analytics
         self.completionHandler = onCompletion
-        super.init(nibName: nil, bundle: nil)
     }
 
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    // MARK: - `PluginSetupWebViewModel` conformance
+    var title: String { Localization.title }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        configureNavigationBar()
-        configureWebView()
-        configureProgressBar()
-        startLoading()
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        if isMovingFromParent {
-            analytics.track(event: .LoginJetpackSetup.setupDismissed(source: .web))
-        }
-    }
-}
-
-private extension JetpackSetupWebViewController {
-    func configureNavigationBar() {
-        title = Localization.title
-    }
-
-    func configureWebView() {
-        view.addSubview(webView)
-        NSLayoutConstraint.activate([
-            view.leadingAnchor.constraint(equalTo: webView.leadingAnchor),
-            view.trailingAnchor.constraint(equalTo: webView.trailingAnchor),
-            view.safeTopAnchor.constraint(equalTo: webView.topAnchor),
-            view.bottomAnchor.constraint(equalTo: webView.bottomAnchor),
-        ])
-    }
-
-    func configureProgressBar() {
-        view.addSubview(progressBar)
-        NSLayoutConstraint.activate([
-            view.leadingAnchor.constraint(equalTo: progressBar.leadingAnchor),
-            view.trailingAnchor.constraint(equalTo: progressBar.trailingAnchor),
-            view.safeTopAnchor.constraint(equalTo: progressBar.topAnchor)
-        ])
-    }
-
-    func startLoading() {
+    var initialURL: URL? {
         guard let escapedSiteURL = siteURL.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
               let url = URL(string: String(format: Constants.jetpackInstallString, escapedSiteURL, Constants.mobileRedirectURL)) else {
-            return
+            return nil
         }
-        progressSubscription = webView.publisher(for: \.estimatedProgress)
-            .sink { [weak self] progress in
-                if progress == 1 {
-                    self?.progressBar.setProgress(0, animated: false)
-                } else {
-                    self?.progressBar.setProgress(Float(progress), animated: true)
-                }
-            }
-        let request = URLRequest(url: url)
-        webView.load(request)
+        return url
     }
 
-    func handleSetupCompletion() {
-        analytics.track(event: .LoginJetpackSetup.setupCompleted(source: .web))
-        completionHandler(authorizedEmailAddress)
+    func trackDismissal() {
+        analytics.track(event: .LoginJetpackSetup.setupDismissed(source: .web))
     }
-}
 
-extension JetpackSetupWebViewController: WKNavigationDelegate {
-    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        guard let navigationURL = navigationAction.request.url?.absoluteString else {
-            return
-        }
-        switch navigationURL {
+    func decidePolicy(for navigationURL: URL, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        let url = navigationURL.absoluteString
+        switch url {
         // When the web view is about to navigate to the redirect URL for mobile, we can assume that the setup has completed.
         case Constants.mobileRedirectURL:
             decisionHandler(.cancel)
             handleSetupCompletion()
         default:
-            if let match = JetpackSetupWebStep.matchingStep(for: navigationURL) {
+            if let match = JetpackSetupWebStep.matchingStep(for: url) {
                 analytics.track(event: .LoginJetpackSetup.setupFlow(source: .web, step: match.trackingStep))
-            } else if navigationURL.hasPrefix(Constants.jetpackAuthorizeURL) {
-                authorizedEmailAddress = getQueryStringParameter(url: navigationURL, param: Constants.userEmailParam)
+            } else if url.hasPrefix(Constants.jetpackAuthorizeURL) {
+                authorizedEmailAddress = getQueryStringParameter(url: url, param: Constants.userEmailParam)
             }
             decisionHandler(.allow)
         }
     }
-
-    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-        progressBar.setProgress(0, animated: false)
-    }
 }
 
-private extension JetpackSetupWebViewController {
+private extension JetpackSetupWebViewModel {
+
+    func handleSetupCompletion() {
+        analytics.track(event: .LoginJetpackSetup.setupCompleted(source: .web))
+        completionHandler(authorizedEmailAddress)
+    }
 
     func getQueryStringParameter(url: String, param: String) -> String? {
         guard let url = URLComponents(string: url) else {

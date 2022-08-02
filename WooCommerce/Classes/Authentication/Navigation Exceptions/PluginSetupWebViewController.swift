@@ -88,8 +88,12 @@ private extension PluginSetupWebViewController {
                 }
             }
 
-        let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
-        webView.authenticateForWPComAndRedirect(to: url, credentials: credentials)
+        if let credentials = ServiceLocator.stores.sessionManager.defaultCredentials {
+            webView.authenticateForWPComAndRedirect(to: url, credentials: credentials)
+        } else {
+            let request = URLRequest(url: url)
+            webView.load(request)
+        }
     }
 }
 

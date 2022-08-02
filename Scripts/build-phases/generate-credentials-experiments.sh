@@ -21,21 +21,11 @@ if [ ! -f $GOOGLE_SERVICE_INFO_PLIST_PATH ]; then
         cp ${GOOGLE_SERVICE_INFO_PLIST_TEMPLATE_PATH} ${GOOGLE_SERVICE_INFO_PLIST_OUTPUT_PATH}
     fi
 else
-    echo ">> Loading Google service info ${GOOGLE_SERVICE_INFO_PLIST_PATH}"
+    echo ">> Loading Google Service Info File ${GOOGLE_SERVICE_INFO_PLIST_PATH}"
 
     ## Generate the Derived Folder. If needed
     ##
     mkdir -p ${DERIVED_PATH}
-
-    if which rbenv; then
-      # Fix an issue where, depending on the shell you are using on your machine and your rbenv setup,
-      #   running `ruby` in a bash script from Xcode script build phase might not use the right ruby
-      #   (and thus not find the appropriate gems installed by bundle & Gemfile.lock and crash).
-      # So if rbenv is installed, make sure the shims for `ruby` are too in the context of this bash script,
-      #   so that it uses the right ruby version defined in `.ruby-version` instead of risking to use the system one.
-      eval "$(rbenv init -)"
-      rbenv rehash
-    fi
 
     ## Create a bash secrets file from the template (if needed)
     ## then copy it into place for the build.

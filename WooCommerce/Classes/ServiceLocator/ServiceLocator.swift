@@ -12,6 +12,10 @@ final class ServiceLocator {
 
     // MARK: - Private properties
 
+    /// ABTesting Wrapper
+    ///
+    private static var _abtesting: ABTesting = FirebaseABTesting()
+
     /// WooAnalytics Wrapper
     ///
     private static var _analytics: Analytics = WooAnalytics(analyticsProvider: TracksProvider())
@@ -90,6 +94,12 @@ final class ServiceLocator {
     private static var _generalAppSettings: GeneralAppSettingsStorage = GeneralAppSettingsStorage()
 
     // MARK: - Getters
+
+    /// Provides the access point to AB testing.
+    /// - Returns: An implementation of the ABTesting protocol. It defaults to FirebaseABTesting
+    static var abTesting: ABTesting {
+        return _abtesting
+    }
 
     /// Provides the access point to the analytics.
     /// - Returns: An implementation of the Analytics protocol. It defaults to WooAnalytics

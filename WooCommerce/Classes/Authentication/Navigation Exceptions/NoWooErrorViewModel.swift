@@ -1,5 +1,4 @@
 import UIKit
-import SafariServices
 import WordPressAuthenticator
 import WordPressUI
 
@@ -43,12 +42,12 @@ struct NoWooErrorViewModel: ULErrorViewModel {
     // MARK: - Actions
     func didTapPrimaryButton(in viewController: UIViewController?) {
         // TODO: Analytics
-        guard let viewController = viewController,
-              let url = URL(string: Strings.installWooCommerceURLString + siteURL.trimHTTPScheme()) else {
+        guard let viewController = viewController else {
             return
         }
-        let safariViewController = SFSafariViewController(url: url)
-        viewController.present(safariViewController, animated: true, completion: nil)
+        let viewModel = WooSetupWebViewModel(siteURL: siteURL)
+        let setupViewController = PluginSetupWebViewController(viewModel: viewModel)
+        viewController.present(setupViewController, animated: true, completion: nil)
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
@@ -99,9 +98,5 @@ private extension NoWooErrorViewModel {
                                                     + "Presented when logging in with a site address that does not have a valid Jetpack installation."
                                                 + "The error would read: to use this app for your site you'll need...")
 
-    }
-
-    enum Strings {
-        static let installWooCommerceURLString = "https://wordpress.com/plugins/woocommerce/"
     }
 }

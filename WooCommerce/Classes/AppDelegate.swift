@@ -368,7 +368,10 @@ private extension AppDelegate {
     /// Starts the AB testing platform
     ///
     func startABTesting() {
-        ServiceLocator.abTesting.start()
+        guard ServiceLocator.stores.isAuthenticated else {
+            return
+        }
+        ABTest.start()
     }
 }
 

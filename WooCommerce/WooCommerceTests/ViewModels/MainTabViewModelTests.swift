@@ -7,6 +7,7 @@ import Yosemite
 
 /// Test cases for `MainTabViewModel`.
 final class MainTabViewModelTests: XCTestCase {
+    private let sampleStoreID = 34
 
     func test_onViewDidAppear_will_save_the_installation_date() throws {
         // Given
@@ -82,7 +83,7 @@ final class MainTabViewModelTests: XCTestCase {
     func test_loadHubMenuTabBadge_when_both_badges_should_be_shown_calls_onMenuBadgeShouldBeDisplayed_with_type_primary() {
         // Given
         let sessionManager = SessionManager.makeForTesting()
-        sessionManager.setStoreId(34)
+        sessionManager.setStoreId(sampleStoreID)
         let storesManager = MockStoresManager(sessionManager: sessionManager)
 
         storesManager.whenReceivingAction(ofType: NotificationCountAction.self) { action in
@@ -126,7 +127,7 @@ final class MainTabViewModelTests: XCTestCase {
     func test_loadHubMenuTabBadge_when_should_show_reviews_badge_only_calls_onMenuBadgeShouldBeDisplayed_with_type_secondary() {
         // Given
         let sessionManager = SessionManager.makeForTesting()
-        sessionManager.setStoreId(34)
+        sessionManager.setStoreId(sampleStoreID)
         let storesManager = MockStoresManager(sessionManager: sessionManager)
         storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
@@ -168,7 +169,7 @@ final class MainTabViewModelTests: XCTestCase {
     func test_loadHubMenuTabBadge_when_both_badges_should_be_hidden_calls_onMenuBadgeShouldBeHidden() {
         // Given
         let sessionManager = SessionManager.makeForTesting()
-        sessionManager.setStoreId(34)
+        sessionManager.setStoreId(sampleStoreID)
         let storesManager = MockStoresManager(sessionManager: sessionManager)
         storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {

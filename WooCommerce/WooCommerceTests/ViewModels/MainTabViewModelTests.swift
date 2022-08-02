@@ -90,7 +90,8 @@ final class MainTabViewModelTests: XCTestCase {
             switch action {
             case let .load(_, type, onCompletion):
                 if case .kind(.comment) = type {
-                    onCompletion(23)
+                    let pendingNotifications = 23
+                    onCompletion(pendingNotifications)
                 }
             default:
                 break
@@ -142,7 +143,8 @@ final class MainTabViewModelTests: XCTestCase {
             switch action {
             case let .load(_, type, onCompletion):
                 if case .kind(.comment) = type {
-                    onCompletion(23)
+                    let pendingNotifications = 23
+                    onCompletion(pendingNotifications)
                 }
             default:
                 break

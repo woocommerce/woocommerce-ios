@@ -19,6 +19,7 @@ final class AppCoordinator {
     private let loggedOutAppSettings: LoggedOutAppSettingsProtocol
     private let pushNotesManager: PushNotesManager
     private let featureFlagService: FeatureFlagService
+    private let abTesting: ABTesting
 
     private var storePickerCoordinator: StorePickerCoordinator?
     private var authStatesSubscription: AnyCancellable?
@@ -32,7 +33,8 @@ final class AppCoordinator {
          analytics: Analytics = ServiceLocator.analytics,
          loggedOutAppSettings: LoggedOutAppSettingsProtocol = LoggedOutAppSettings(userDefaults: .standard),
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         abTesting: ABTesting = ServiceLocator.abTesting) {
         self.window = window
         self.tabBarController = {
             let storyboard = UIStoryboard(name: "Main", bundle: nil) // Main is the name of storyboard
@@ -48,6 +50,7 @@ final class AppCoordinator {
         self.loggedOutAppSettings = loggedOutAppSettings
         self.pushNotesManager = pushNotesManager
         self.featureFlagService = featureFlagService
+        self.abTesting = abTesting
     }
 
     func start() {
@@ -141,6 +144,10 @@ private extension AppCoordinator {
         loggedOutAppSettings.hasFinishedOnboarding == false else {
             return
         }
+
+        let onboardingVariant = abTesting.variation(for: .loginOnboarding)
+        print("Login onboarding variation: \(onboardingVariant)")
+
         let onboardingViewController = LoginOnboardingViewController { [weak self] action in
             guard let self = self else { return }
             self.loggedOutAppSettings.setHasFinishedOnboarding(true)
@@ -155,7 +162,9 @@ private extension AppCoordinator {
         }
         onboardingViewController.modalPresentationStyle = .fullScreen
         onboardingViewController.modalTransitionStyle = .crossDissolve
-        window.rootViewController?.present(onboardingViewController, animated: false)
+        window.rootViewController?.present(onboardingViewController, animated: false) { [weak self] in
+            self?.abTesting.logEvent(.init(name: .loginOnboardingShown))
+        }
 
         analytics.track(event: .LoginOnboarding.loginOnboardingShown())
     }
@@ -164,6 +173,7 @@ private extension AppCoordinator {
     ///
     func displayLoggedInUI() {
         setWindowRootViewControllerAndAnimateIfNeeded(tabBarController)
+        abTesting.logEvent(.init(name: .siteShown))
     }
 
     /// If the app is authenticated but there is no default store ID on launch: Let's display the Store Picker.

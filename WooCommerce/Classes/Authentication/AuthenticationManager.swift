@@ -281,7 +281,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         let matcher = ULAccountMatcher()
         matcher.refreshStoredSites()
 
-        guard let matchedSite = matcher.matchedSite(originalURL: siteURL) else {
+        guard matcher.match(originalURL: siteURL) else {
             DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: siteURL))")
             let viewModel = WrongAccountErrorViewModel(siteURL: siteURL)
             let mismatchAccountUI = ULAccountMismatchViewController(viewModel: viewModel)
@@ -289,7 +289,8 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return navigationController.show(mismatchAccountUI, sender: nil)
         }
 
-        guard matchedSite.isWooCommerceActive else {
+        if let matchedSite = matcher.matchedSite(originalURL: siteURL),
+           matchedSite.isWooCommerceActive == false {
             let viewModel = NoWooErrorViewModel(siteURL: siteURL, showsConnectedStores: matcher.hasConnectedStores)
             let noWooUI = ULErrorViewController(viewModel: viewModel)
             return navigationController.show(noWooUI, sender: nil)

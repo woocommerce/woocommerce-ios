@@ -8,11 +8,13 @@ struct NoWooErrorViewModel: ULErrorViewModel {
     private let siteURL: String
     private let showsConnectedStores: Bool
     private let analytics: Analytics
+    private let setupCompletionHandler: () -> Void
 
-    init(siteURL: String?, showsConnectedStores: Bool, analytics: Analytics = ServiceLocator.analytics) {
+    init(siteURL: String?, showsConnectedStores: Bool, analytics: Analytics = ServiceLocator.analytics, onSetupCompletion: @escaping () -> Void) {
         self.siteURL = siteURL ?? Localization.yourSite
         self.showsConnectedStores = showsConnectedStores
         self.analytics = analytics
+        self.setupCompletionHandler = onSetupCompletion
     }
 
     // MARK: - Data and configuration
@@ -45,9 +47,9 @@ struct NoWooErrorViewModel: ULErrorViewModel {
         guard let viewController = viewController else {
             return
         }
-        let viewModel = WooSetupWebViewModel(siteURL: siteURL)
+        let viewModel = WooSetupWebViewModel(siteURL: siteURL, onCompletion: setupCompletionHandler)
         let setupViewController = PluginSetupWebViewController(viewModel: viewModel)
-        viewController.present(setupViewController, animated: true, completion: nil)
+        viewController.navigationController?.show(setupViewController, sender: nil)
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {

@@ -7,12 +7,18 @@ import WordPressUI
 struct NoWooErrorViewModel: ULErrorViewModel {
     private let siteURL: String
     private let showsConnectedStores: Bool
+    private let showsInstallButton: Bool
     private let analytics: Analytics
     private let setupCompletionHandler: (Int64) -> Void
 
-    init(siteURL: String?, showsConnectedStores: Bool, analytics: Analytics = ServiceLocator.analytics, onSetupCompletion: @escaping (Int64) -> Void) {
+    init(siteURL: String?,
+         showsConnectedStores: Bool,
+         showsInstallButton: Bool,
+         analytics: Analytics = ServiceLocator.analytics,
+         onSetupCompletion: @escaping (Int64) -> Void) {
         self.siteURL = siteURL ?? Localization.yourSite
         self.showsConnectedStores = showsConnectedStores
+        self.showsInstallButton = showsInstallButton
         self.analytics = analytics
         self.setupCompletionHandler = onSetupCompletion
     }
@@ -38,6 +44,8 @@ struct NoWooErrorViewModel: ULErrorViewModel {
     let auxiliaryButtonTitle = Localization.seeConnectedStores
 
     let primaryButtonTitle = Localization.primaryButtonTitle
+
+    var isPrimaryButtonHidden: Bool { !showsInstallButton }
 
     let secondaryButtonTitle = Localization.secondaryButtonTitle
 

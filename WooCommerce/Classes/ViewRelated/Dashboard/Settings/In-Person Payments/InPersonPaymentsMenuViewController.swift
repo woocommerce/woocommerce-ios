@@ -1,8 +1,10 @@
 import UIKit
 import SwiftUI
 import Yosemite
+import Combine
 
 final class InPersonPaymentsMenuViewController: UITableViewController {
+    private let stores: StoresManager
     private let pluginState: CardPresentPaymentsPluginState
     private var sections = [Section]()
     private let configurationLoader: CardPresentConfigurationLoader
@@ -12,11 +14,13 @@ final class InPersonPaymentsMenuViewController: UITableViewController {
     init(
         pluginState: CardPresentPaymentsPluginState,
         onPluginSelected: @escaping (CardPresentPaymentsPlugin) -> Void,
-        onPluginSelectionCleared: @escaping () -> Void
+        onPluginSelectionCleared: @escaping () -> Void,
+        stores: StoresManager = ServiceLocator.stores
     ) {
         self.pluginState = pluginState
         self.onPluginSelected = onPluginSelected
         self.onPluginSelectionCleared = onPluginSelectionCleared
+        self.stores = stores
         configurationLoader = CardPresentConfigurationLoader()
         super.init(style: .grouped)
     }
@@ -170,7 +174,12 @@ extension InPersonPaymentsMenuViewController {
     }
 
     func collectPaymentWasPressed() {
+        guard let siteID = stores.sessionManager.defaultStoreID,
+              let navigationController = navigationController else {
+            return
+        }
 
+        SimplePaymentsAmountFlowOpener.openSimplePaymentsAmountFlow(from: navigationController, siteID: siteID)
     }
 }
 

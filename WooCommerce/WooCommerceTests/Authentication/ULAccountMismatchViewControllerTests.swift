@@ -5,7 +5,7 @@ final class ULAccountMismatchViewControllerTests: XCTestCase {
 
     func test_viewcontroller_presents_username_provided_by_viewmodel() throws {
         // Given
-        let viewModel = MistmatchViewModel()
+        let viewModel = MismatchViewModel()
         let viewController = ULAccountMismatchViewController(viewModel: viewModel)
 
         // When
@@ -18,7 +18,7 @@ final class ULAccountMismatchViewControllerTests: XCTestCase {
 
     func test_viewcontroller_presents_signedIn_provided_by_viewmodel() throws {
         // Given
-        let viewModel = MistmatchViewModel()
+        let viewModel = MismatchViewModel()
         let viewController = ULAccountMismatchViewController(viewModel: viewModel)
 
         // When
@@ -31,7 +31,7 @@ final class ULAccountMismatchViewControllerTests: XCTestCase {
 
     func test_viewcontroller_presents_image_provided_by_viewmodel() throws {
         // Given
-        let viewModel = MistmatchViewModel()
+        let viewModel = MismatchViewModel()
         let viewController = ULAccountMismatchViewController(viewModel: viewModel)
 
         // When
@@ -44,7 +44,7 @@ final class ULAccountMismatchViewControllerTests: XCTestCase {
 
     func test_viewcontroller_presents_text_provided_by_viewmodel() throws {
         // Given
-        let viewModel = MistmatchViewModel()
+        let viewModel = MismatchViewModel()
         let viewController = ULAccountMismatchViewController(viewModel: viewModel)
 
         // When
@@ -57,7 +57,7 @@ final class ULAccountMismatchViewControllerTests: XCTestCase {
 
     func test_viewcontroller_assigns_title_provided_by_viewmodel_to_auxbutton() throws {
         // Given
-        let viewModel = MistmatchViewModel()
+        let viewModel = MismatchViewModel()
         let viewController = ULAccountMismatchViewController(viewModel: viewModel)
 
         // When
@@ -70,7 +70,7 @@ final class ULAccountMismatchViewControllerTests: XCTestCase {
 
     func test_viewcontroller_assigns_visibility_provided_by_viewmodel_to_auxbutton() throws {
         // Given
-        let viewModel = MistmatchViewModel()
+        let viewModel = MismatchViewModel()
         let viewController = ULAccountMismatchViewController(viewModel: viewModel)
 
         // When
@@ -83,7 +83,7 @@ final class ULAccountMismatchViewControllerTests: XCTestCase {
 
     func test_viewcontroller_hits_viewmodel_when_auxbutton_is_tapped() throws {
         // Given
-        let viewModel = MistmatchViewModel()
+        let viewModel = MismatchViewModel()
         let viewController = ULAccountMismatchViewController(viewModel: viewModel)
 
         // When
@@ -99,7 +99,7 @@ final class ULAccountMismatchViewControllerTests: XCTestCase {
 
     func test_viewcontroller_assigns_title_provided_by_viewmodel_to_primary_button() throws {
         // Given
-        let viewModel = MistmatchViewModel()
+        let viewModel = MismatchViewModel()
         let viewController = ULAccountMismatchViewController(viewModel: viewModel)
 
         // When
@@ -112,7 +112,7 @@ final class ULAccountMismatchViewControllerTests: XCTestCase {
 
     func test_viewcontroller_hits_viewmodel_when_primary_button_is_tapped() throws {
         // Given
-        let viewModel = MistmatchViewModel()
+        let viewModel = MismatchViewModel()
         let viewController = ULAccountMismatchViewController(viewModel: viewModel)
 
         // When
@@ -126,7 +126,7 @@ final class ULAccountMismatchViewControllerTests: XCTestCase {
 
     func test_viewcontroller_assigns_title_provided_by_viewmodel_to_logout_button() throws {
         // Given
-        let viewModel = MistmatchViewModel()
+        let viewModel = MismatchViewModel()
         let viewController = ULAccountMismatchViewController(viewModel: viewModel)
 
         // When
@@ -139,7 +139,7 @@ final class ULAccountMismatchViewControllerTests: XCTestCase {
 
     func test_viewcontroller_hits_viewmodel_when_logout_button_is_tapped() throws {
         // Given
-        let viewModel = MistmatchViewModel()
+        let viewModel = MismatchViewModel()
         let viewController = ULAccountMismatchViewController(viewModel: viewModel)
 
         // When
@@ -150,10 +150,23 @@ final class ULAccountMismatchViewControllerTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.logOutButtonTapped)
     }
+
+    func test_primary_button_is_hidden_if_set_by_view_model() throws {
+        // Given
+        let viewModel = MismatchViewModel()
+        let viewController = ULAccountMismatchViewController(viewModel: viewModel)
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+        let primaryButton = viewController.getPrimaryActionButton()
+
+        // Then
+        XCTAssertTrue(primaryButton.isHidden)
+    }
 }
 
 
-private final class MistmatchViewModel: ULAccountMismatchViewModel {
+private final class MismatchViewModel: ULAccountMismatchViewModel {
     let userEmail: String = "email@awebsite.com"
 
     var userName: String = "username"
@@ -168,13 +181,13 @@ private final class MistmatchViewModel: ULAccountMismatchViewModel {
 
     let text: NSAttributedString = NSAttributedString(string: "woocommerce")
 
-    let isAuxiliaryButtonHidden: Bool = false
+    let isAuxiliaryButtonHidden: Bool = true
 
     let auxiliaryButtonTitle: String = "Aux"
 
     let primaryButtonTitle: String = "Primary"
 
-
+    let isPrimaryButtonHidden: Bool = false
     var primaryButtonTapped: Bool = false
     var logOutButtonTapped: Bool = false
     var auxiliaryButtonTapped: Bool = false

@@ -2,6 +2,7 @@ import UIKit
 import SwiftUI
 import Yosemite
 import Combine
+import Experiments
 
 final class InPersonPaymentsMenuViewController: UITableViewController {
     private let stores: StoresManager
@@ -10,17 +11,20 @@ final class InPersonPaymentsMenuViewController: UITableViewController {
     private let configurationLoader: CardPresentConfigurationLoader
     private let onPluginSelected: (CardPresentPaymentsPlugin) -> Void
     private let onPluginSelectionCleared: () -> Void
+    private let featureFlagService: FeatureFlagService
 
     init(
         pluginState: CardPresentPaymentsPluginState,
         onPluginSelected: @escaping (CardPresentPaymentsPlugin) -> Void,
         onPluginSelectionCleared: @escaping () -> Void,
-        stores: StoresManager = ServiceLocator.stores
+        stores: StoresManager = ServiceLocator.stores,
+        featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService
     ) {
         self.pluginState = pluginState
         self.onPluginSelected = onPluginSelected
         self.onPluginSelectionCleared = onPluginSelectionCleared
         self.stores = stores
+        self.featureFlagService = featureFlagService
         configurationLoader = CardPresentConfigurationLoader()
         super.init(style: .grouped)
     }
@@ -49,6 +53,14 @@ private extension InPersonPaymentsMenuViewController {
         ].compactMap { $0 }
     }
 
+    var actionsSection: Section? {
+        guard featureFlagService.isFeatureFlagEnabled(.paymentsHubMenuSection) else {
+            return nil
+        }
+
+        return Section(header: Localization.paymentActionsSectionTitle, rows: [.collectPayment])
+    }
+
     var cardReadersSection: Section? {
         let rows: [Row] = [
                 .orderCardReader,
@@ -63,10 +75,6 @@ private extension InPersonPaymentsMenuViewController {
             return nil
         }
         return Section(header: Localization.paymentOptionsSectionTitle, rows: [.managePaymentGateways])
-    }
-
-    var actionsSection: Section? {
-        return Section(header: Localization.paymentActionsSectionTitle, rows: [.collectPayment])
     }
 
     func configureTableView() {

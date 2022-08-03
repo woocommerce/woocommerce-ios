@@ -421,7 +421,7 @@ private extension OrderDetailsViewController {
         let reviewOrderViewModel = ReviewOrderViewModel(order: viewModel.order, products: viewModel.products, showAddOns: viewModel.dataSource.showAddOns)
         let controller = ReviewOrderViewController(viewModel: reviewOrderViewModel) { [weak self] in
             guard let self = self else { return }
-            let fulfillmentProcess = self.viewModel.markCompleted()
+            let fulfillmentProcess = self.viewModel.markCompleted(flow: .editing)
             let presenter = OrderFulfillmentNoticePresenter()
             presenter.present(process: fulfillmentProcess)
         }
@@ -429,7 +429,7 @@ private extension OrderDetailsViewController {
     }
 
     func markOrderCompleteFromShippingLabels() {
-        let fulfillmentProcess = self.viewModel.markCompleted()
+        let fulfillmentProcess = self.viewModel.markCompleted(flow: .editing)
 
         var cancellables = Set<AnyCancellable>()
         var cancellable: AnyCancellable = AnyCancellable { }

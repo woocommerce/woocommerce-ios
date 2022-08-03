@@ -315,7 +315,7 @@ extension OrderListViewController {
             return DDLogError("⛔️ ViewModel for resultID: \(resultID) not found")
         }
         /// Actions that performs the mark completed request remotely.
-        let fulfillmentProcess = orderDetailsViewModel.markCompleted()
+        let fulfillmentProcess = orderDetailsViewModel.markCompleted(flow: .list)
 
         /// Messages configuration
         let noticeConfiguration = OrderFulfillmentNoticePresenter.NoticeConfiguration(

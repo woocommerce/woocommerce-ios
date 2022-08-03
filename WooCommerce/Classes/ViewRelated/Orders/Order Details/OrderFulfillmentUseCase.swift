@@ -42,10 +42,12 @@ final class OrderFulfillmentUseCase {
     private let stores: StoresManager
     private let analytics: Analytics = ServiceLocator.analytics
     private let order: Order
+    private let flow: WooAnalyticsEvent.Orders.Flow
 
-    init(order: Order, stores: StoresManager) {
+    init(order: Order, stores: StoresManager, flow: WooAnalyticsEvent.Orders.Flow) {
         self.order = order
         self.stores = stores
+        self.flow = flow
     }
 
     /// Mark the `self.order` as `.completed`.
@@ -61,7 +63,7 @@ final class OrderFulfillmentUseCase {
     private func dispatchStatusUpdateAction(order: Order,
                                             status targetStatus: OrderStatusEnum,
                                             activity: Activity) -> FulfillmentProcess {
-        analytics.track(event: WooAnalyticsEvent.Orders.orderStatusChange(flow: .editing, orderID: order.orderID, from: order.status, to: targetStatus))
+        analytics.track(event: WooAnalyticsEvent.Orders.orderStatusChange(flow: flow, orderID: order.orderID, from: order.status, to: targetStatus))
 
         let result: Future<Void, FulfillmentError> = Future { promise in
             let action = OrderAction.updateOrderStatus(siteID: order.siteID, orderID: order.orderID, status: targetStatus) { error in

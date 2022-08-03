@@ -1046,6 +1046,8 @@ lane :test_without_building do |options|
 
   UI.user_error!('Unable to find .xctestrun file') unless !xctestrun_path.nil? && File.exist?((xctestrun_path))
 
+  configurations = options[:test_configuration].nil? ? nil : [options[:test_configuration]]
+
   run_tests(
     workspace: 'WooCommerce.xcworkspace',
     scheme: TEST_SCHEME,
@@ -1053,6 +1055,7 @@ lane :test_without_building do |options|
     deployment_target_version: options[:ios_version],
     test_without_building: true,
     xctestrun: xctestrun_path,
+    only_test_configurations: configurations,
     result_bundle: true,
     # settins for XML test report generation via `trainer`
     output_types: '',

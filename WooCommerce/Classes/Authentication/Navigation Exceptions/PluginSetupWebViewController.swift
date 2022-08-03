@@ -98,11 +98,11 @@ private extension PluginSetupWebViewController {
 }
 
 extension PluginSetupWebViewController: WKNavigationDelegate {
-    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction) async -> WKNavigationActionPolicy {
         guard let navigationURL = navigationAction.request.url else {
-            return
+            return .allow
         }
-        viewModel.decidePolicy(for: navigationURL, decisionHandler: decisionHandler)
+        return await viewModel.decidePolicy(for: navigationURL)
     }
 
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {

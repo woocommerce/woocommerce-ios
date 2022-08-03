@@ -36,20 +36,20 @@ final class JetpackSetupWebViewModel: PluginSetupWebViewModel {
         analytics.track(event: .LoginJetpackSetup.setupDismissed(source: .web))
     }
 
-    func decidePolicy(for navigationURL: URL, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+    func decidePolicy(for navigationURL: URL) async -> WKNavigationActionPolicy {
         let url = navigationURL.absoluteString
         switch url {
         // When the web view is about to navigate to the redirect URL for mobile, we can assume that the setup has completed.
         case Constants.mobileRedirectURL:
-            decisionHandler(.cancel)
             handleSetupCompletion()
+            return .cancel
         default:
             if let match = JetpackSetupWebStep.matchingStep(for: url) {
                 analytics.track(event: .LoginJetpackSetup.setupFlow(source: .web, step: match.trackingStep))
             } else if url.hasPrefix(Constants.jetpackAuthorizeURL) {
                 authorizedEmailAddress = getQueryStringParameter(url: url, param: Constants.userEmailParam)
             }
-            decisionHandler(.allow)
+            return .allow
         }
     }
 }

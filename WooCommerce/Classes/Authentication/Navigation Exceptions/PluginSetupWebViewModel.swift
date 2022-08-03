@@ -14,5 +14,5 @@ protocol PluginSetupWebViewModel {
     func handleDismissal()
 
     /// Handler for a navigation URL
-    func decidePolicy(for navigationURL: URL, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void)
+    func decidePolicy(for navigationURL: URL) async -> WKNavigationActionPolicy
 }

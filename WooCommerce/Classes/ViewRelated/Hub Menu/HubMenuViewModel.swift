@@ -157,7 +157,7 @@ final class HubMenuViewModel: ObservableObject {
     }
 
     func paymentsScreenWasOpened() {
-        updatePaymentsBadge(with: .number(number: 0))
+        updatePaymentsBadge(type: .number(number: 0))
 
         let featureAnnouncementVisibilityAction = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .paymentsInHubMenuButton,
                                                                                                     remindLater: false,

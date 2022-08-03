@@ -283,7 +283,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         guard matcher.match(originalURL: siteURL) else {
             DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: siteURL))")
-            let viewModel = WrongAccountErrorViewModel(siteURL: siteURL)
+            let viewModel = WrongAccountErrorViewModel(siteURL: siteURL, showsConnectedStores: matcher.hasConnectedStores)
             let mismatchAccountUI = ULAccountMismatchViewController(viewModel: viewModel)
 
             return navigationController.show(mismatchAccountUI, sender: nil)

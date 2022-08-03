@@ -8,13 +8,16 @@ import Yosemite
 /// an error when Jetpack is not installed or is not connected
 struct WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     private let siteURL: String
+    private let showsConnectedStores: Bool
     private let defaultAccount: Account?
     private let storesManager: StoresManager
 
     init(siteURL: String?,
+         showsConnectedStores: Bool,
          sessionManager: SessionManagerProtocol =  ServiceLocator.stores.sessionManager,
          storesManager: StoresManager = ServiceLocator.stores) {
         self.siteURL = siteURL ?? Localization.yourSite
+        self.showsConnectedStores = showsConnectedStores
         self.defaultAccount = sessionManager.defaultAccount
         self.storesManager = storesManager
     }
@@ -74,6 +77,8 @@ struct WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     let auxiliaryButtonTitle = Localization.findYourConnectedEmail
 
     let primaryButtonTitle = Localization.primaryButtonTitle
+
+    var isPrimaryButtonHidden: Bool { !showsConnectedStores }
 
     // MARK: - Actions
     func didTapPrimaryButton(in viewController: UIViewController?) {

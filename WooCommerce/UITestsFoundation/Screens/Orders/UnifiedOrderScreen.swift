@@ -249,4 +249,13 @@ public final class UnifiedOrderScreen: ScreenObject {
 
         return self
     }
+
+    /// Finishes Order Editing process
+    /// - Returns: Single Order Screen object.
+    @discardableResult
+    public func closeEditingFlow() throws -> SingleOrderScreen {
+        doneButton.tap()
+
+        return try SingleOrderScreen()
+    }
 }

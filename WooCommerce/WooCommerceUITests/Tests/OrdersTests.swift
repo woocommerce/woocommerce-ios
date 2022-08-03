@@ -49,6 +49,8 @@ final class OrdersTests: XCTestCase {
             .tapEditOrderButton()
             .checkForExistingOrderTitle(byOrderNumber: orders[0].number)
             .checkForExistingProducts(byName: orders[0].line_items.map { $0.name })
+            .closeEditingFlow()
+            .verifySingleOrderScreenLoaded()
     }
 
     func test_cancel_order_creation() throws {

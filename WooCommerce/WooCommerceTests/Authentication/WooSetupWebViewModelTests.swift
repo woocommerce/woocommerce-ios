@@ -63,4 +63,19 @@ final class WooSetupWebViewModelTests: XCTestCase {
         XCTAssertEqual(properties["source"] as? String, "web")
     }
 
+    func test_dismissal_is_not_tracked_after_completion() throws {
+        // Given
+        let siteURL = "https://test.com"
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let viewModel = WooSetupWebViewModel(siteURL: siteURL, analytics: analytics, onCompletion: {})
+
+        // When
+        let url = URL(string: "https://wordpress.com/marketplace/thank-you/woocommerce/")
+        viewModel.handleRedirect(for: url)
+        viewModel.handleDismissal()
+
+        // Then
+        XCTAssertNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_woocommerce_setup_dismissed" }))
+    }
 }

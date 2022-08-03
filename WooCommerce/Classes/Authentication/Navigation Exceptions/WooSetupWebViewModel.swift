@@ -1,10 +1,11 @@
 import Foundation
 import WebKit
 
-struct WooSetupWebViewModel: PluginSetupWebViewModel {
+final class WooSetupWebViewModel: PluginSetupWebViewModel {
     private let siteURL: String
     private let analytics: Analytics
     private let completionHandler: () -> Void
+    private var hasCompleted = false
 
     init(siteURL: String, analytics: Analytics = ServiceLocator.analytics, onCompletion: @escaping () -> Void) {
         self.siteURL = siteURL
@@ -20,12 +21,15 @@ struct WooSetupWebViewModel: PluginSetupWebViewModel {
     }
 
     func handleDismissal() {
-        analytics.track(event: .LoginWooCommerceSetup.setupDismissed(source: .web))
+        if !hasCompleted {
+            analytics.track(event: .LoginWooCommerceSetup.setupDismissed(source: .web))
+        }
     }
 
     func handleRedirect(for url: URL?) {
         if let url = url, url.absoluteString.hasPrefix(Constants.completionURL) {
             analytics.track(event: .LoginWooCommerceSetup.setupCompleted(source: .web))
+            hasCompleted = true
             completionHandler()
         }
     }

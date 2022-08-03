@@ -82,7 +82,7 @@ final class HubMenuViewModel: ObservableObject {
         menuElements = [WoocommerceAdmin(), ViewStore(), Reviews()]
 
         if featureFlagService.isFeatureFlagEnabled(.paymentsHubMenuSection) {
-            menuElements.insert(Payments(badge: .number(number: 0)), at: 0)
+            menuElements.insert(Payments(), at: 0)
         }
 
         let inboxUseCase = InboxEligibilityUseCase(stores: stores, featureFlagService: featureFlagService)
@@ -121,7 +121,7 @@ final class HubMenuViewModel: ObservableObject {
                 switch result {
                 case .success(let visible):
                     if visible {
-                        self.updatePaymentsBadge(with: .newFeature)
+                        self.updatePaymentsBadge(type: .newFeature)
                     }
                 default:
                     break
@@ -131,7 +131,7 @@ final class HubMenuViewModel: ObservableObject {
         stores.dispatch(featureAnnouncementVisibilityAction)
     }
 
-    private func updatePaymentsBadge(with badge: HubMenuBadgeType) {
+    private func updatePaymentsBadge(type badge: HubMenuBadgeType) {
         if let paymentsMenuItemIndex = self.menuElements.firstIndex(where: { item in
             type(of: item).id == Payments.id
         }) {
@@ -202,7 +202,7 @@ extension HubMenuViewModel {
         let title: String = Localization.payments
         let icon: UIImage = .walletImage
         let iconColor: UIColor = .withColorStudio(.orange)
-        var badge: HubMenuBadgeType
+        var badge: HubMenuBadgeType = .number(number: 0)
         let accessibilityIdentifier: String = "menu-payments"
         let trackingOption: String = "payments_menu"
     }

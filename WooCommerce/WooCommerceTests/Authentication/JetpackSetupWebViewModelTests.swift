@@ -13,7 +13,7 @@ final class JetpackSetupWebViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.initialURL?.absoluteString, expectedURL)
     }
 
-    func test_completion_handler_is_called_when_navigating_to_mobile_redirect() throws {
+    func test_completion_handler_is_called_when_navigating_to_mobile_redirect() async throws {
         // Given
         let siteURL = "https://test.com"
         var triggeredCompletion = false
@@ -24,13 +24,14 @@ final class JetpackSetupWebViewModelTests: XCTestCase {
 
         // When
         let url = try XCTUnwrap(URL(string: "woocommerce://jetpack-connected"))
-        viewModel.decidePolicy(for: url, decisionHandler: { _ in })
+        let policy = await viewModel.decidePolicy(for: url)
 
         // Then
+        XCTAssertEqual(policy, .cancel)
         XCTAssertTrue(triggeredCompletion)
     }
 
-    func test_completion_handler_returns_the_connected_email_from_url_query() throws {
+    func test_completion_handler_returns_the_connected_email_from_url_query() async throws {
         // Given
         let siteURL = "https://test.com"
         let expectedEmail = "test@mail.com"
@@ -42,11 +43,12 @@ final class JetpackSetupWebViewModelTests: XCTestCase {
 
         // When
         let authorizeURL = try XCTUnwrap(URL(string: "https://jetpack.wordpress.com/jetpack.authorize?user_email=\(expectedEmail)"))
-        viewModel.decidePolicy(for: authorizeURL, decisionHandler: { _ in })
+        let authorizePolicy = await viewModel.decidePolicy(for: authorizeURL)
         let finalUrl = try XCTUnwrap(URL(string: "woocommerce://jetpack-connected"))
-        viewModel.decidePolicy(for: finalUrl, decisionHandler: { _ in })
+        _ = await viewModel.decidePolicy(for: finalUrl)
 
         // Then
+        XCTAssertEqual(authorizePolicy, .allow)
         XCTAssertEqual(authorizedEmail, expectedEmail)
     }
 
@@ -66,7 +68,7 @@ final class JetpackSetupWebViewModelTests: XCTestCase {
         XCTAssertEqual(properties["source"] as? String, "web")
     }
 
-    func test_completion_is_tracked() throws {
+    func test_completion_is_tracked() async throws {
         // Given
         let siteURL = "https://test.com"
         let analyticsProvider = MockAnalyticsProvider()
@@ -75,7 +77,7 @@ final class JetpackSetupWebViewModelTests: XCTestCase {
 
         // When
         let url = try XCTUnwrap(URL(string: "woocommerce://jetpack-connected"))
-        viewModel.decidePolicy(for: url, decisionHandler: { _ in })
+        _ = await viewModel.decidePolicy(for: url)
 
         // Then
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "login_jetpack_setup_completed" }))

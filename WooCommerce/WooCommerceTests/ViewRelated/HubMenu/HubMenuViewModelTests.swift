@@ -37,11 +37,24 @@ final class HubMenuViewModelTests: XCTestCase {
 
         // When
         let viewModel = HubMenuViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService)
+        viewModel.setupMenuElements()
 
         // Then
         XCTAssertNil(viewModel.menuElements.firstIndex(where: { item in
             type(of: item).id == HubMenuViewModel.Payments.id
         }))
+    }
+
+    func test_menuElements_do_include_payments_when_feature_flag_is_on() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPaymentsHubMenuSectionEnabled: true)
+
+        // When
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService)
+        viewModel.setupMenuElements()
+
+        // Then
+        XCTAssertTrue(viewModel.menuElements.contains(.payments))
     }
 
     func test_menuElements_include_inbox_and_coupons_when_store_has_eligible_wc_version() {

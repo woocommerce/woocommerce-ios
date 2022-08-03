@@ -200,8 +200,8 @@ extension HubMenuViewModel {
         static var id = "payments"
 
         let title: String = Localization.payments
-        let icon: UIImage = .cardPresentImage
-        let iconColor: UIColor = .primary
+        let icon: UIImage = .walletImage
+        let iconColor: UIColor = .withColorStudio(.orange)
         var badge: HubMenuBadgeType
         let accessibilityIdentifier: String = "menu-payments"
         let trackingOption: String = "payments_menu"
@@ -265,7 +265,7 @@ extension HubMenuViewModel {
 
     private enum Localization {
         static let payments = NSLocalizedString("Payments",
-                                                        comment: "Title of one of the hub menu options")
+                                                comment: "Title of the hub menu payments button")
         static let myStore = NSLocalizedString("My Store",
                                                comment: "Title of the hub menu view in case there is no title for the store")
         static let woocommerceAdmin = NSLocalizedString("WooCommerce Admin",

@@ -166,7 +166,7 @@ extension HubMenuViewModel {
         var icon: UIImage {
             switch self {
             case .payments:
-                return .cardPresentImage
+                return .walletImage
             case .woocommerceAdmin:
                 return .wordPressLogoImage
             case .viewStore:
@@ -183,7 +183,7 @@ extension HubMenuViewModel {
         var iconColor: UIColor {
             switch self {
             case .payments:
-                return .primary
+                return .withColorStudio(.orange)
             case .woocommerceAdmin:
                 return .blue
             case .viewStore:

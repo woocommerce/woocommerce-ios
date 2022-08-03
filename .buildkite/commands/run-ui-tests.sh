@@ -1,10 +1,10 @@
 #!/bin/bash -eu
 
-TEST_NAME=$1
+CONFIGURATION=$1
 DEVICE=$2
 IOS_VERSION=$3
 
-echo "Running $TEST_NAME on $DEVICE for iOS $IOS_VERSION"
+echo "Running UI test on $DEVICE for iOS/iPadOS $IOS_VERSION using $CONFIGURATION configuration"
 
 # Workaround for https://github.com/Automattic/buildkite-ci/issues/79
 echo "--- :rubygems: Fixing Ruby Setup"
@@ -24,17 +24,11 @@ install_gems
 echo "--- :cocoapods: Setting up Pods"
 install_cocoapods
 
-echo "--- Configure Test Analytics"
-# Collect data separately for iPhone and iPad
-if [[ $DEVICE =~ ^iPhone ]]; then
-  export BUILDKITE_ANALYTICS_TOKEN=$BUILDKITE_ANALYTICS_TOKEN_UI_TESTS_IPHONE
-else
-  export BUILDKITE_ANALYTICS_TOKEN=$BUILDKITE_ANALYTICS_TOKEN_UI_TESTS_IPAD
-fi
-
-echo "BUILDKITE_ANALYTICS_TOKEN starts with $(echo $BUILDKITE_ANALYTICS_TOKEN | cut -c1-5)"
-
 echo "--- 🧪 Testing"
 xcrun simctl list >> /dev/null
 rake mocks &
-bundle exec fastlane test_without_building name:"$TEST_NAME" device:"$DEVICE" ios_version:"$IOS_VERSION"
+bundle exec fastlane test_without_building \
+  name:UITests \
+  configuration:"$CONFIGURATION" \
+  device:"$DEVICE" \
+  ios_version:"$IOS_VERSION"

@@ -291,11 +291,11 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         if let matchedSite = matcher.matchedSite(originalURL: siteURL),
            matchedSite.isWooCommerceActive == false {
-            let viewModel = NoWooErrorViewModel(siteURL: siteURL, showsConnectedStores: matcher.hasConnectedStores, onSetupCompletion: { [weak self] in
-                self?.checkWooCommerceSetupAndShowStoreIfPossible(for: siteURL,
-                                                                  with: matcher,
-                                                                  in: navigationController,
-                                                                  onDismiss: onDismiss)
+            let viewModel = NoWooErrorViewModel(siteURL: siteURL, showsConnectedStores: matcher.hasConnectedStores, onSetupCompletion: { [weak self] siteID in
+                guard let self = self else { return }
+                self.storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
+                self.storePickerCoordinator?.onDismiss = onDismiss
+                self.storePickerCoordinator?.didSelectStore(with: siteID, onCompletion: onDismiss)
             })
             let noWooUI = ULErrorViewController(viewModel: viewModel)
             return navigationController.show(noWooUI, sender: nil)
@@ -488,23 +488,6 @@ private extension AuthenticationManager {
         })
         let installJetpackUI = ULErrorViewController(viewModel: viewModel)
         navigationController.show(installJetpackUI, sender: nil)
-    }
-
-    func checkWooCommerceSetupAndShowStoreIfPossible(for siteURL: String,
-                                                     with matcher: ULAccountMatcher,
-                                                     in navigationController: UINavigationController,
-                                                     onDismiss: @escaping () -> Void) {
-        ServiceLocator.stores.synchronizeEntities { [weak self] in
-            guard let self = self else { return }
-            matcher.refreshStoredSites()
-            guard let site = matcher.matchedSite(originalURL: siteURL),
-                  site.isWooCommerceActive else {
-                return
-            }
-            self.storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
-            self.storePickerCoordinator?.onDismiss = onDismiss
-            self.storePickerCoordinator?.didSelectStore(with: site.siteID, onCompletion: onDismiss)
-        }
     }
 }
 

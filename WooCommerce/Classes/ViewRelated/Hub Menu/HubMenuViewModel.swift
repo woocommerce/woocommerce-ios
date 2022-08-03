@@ -81,6 +81,10 @@ final class HubMenuViewModel: ObservableObject {
     func setupMenuElements() {
         menuElements = [.woocommerceAdmin, .viewStore, .reviews]
 
+        if featureFlagService.isFeatureFlagEnabled(.paymentsHubMenuSection) {
+            menuElements.insert(.payments, at: 0)
+        }
+
         let inboxUseCase = InboxEligibilityUseCase(stores: stores, featureFlagService: featureFlagService)
         inboxUseCase.isEligibleForInbox(siteID: siteID) { [weak self] isInboxMenuShown in
             guard let self = self else { return }
@@ -135,6 +139,7 @@ final class HubMenuViewModel: ObservableObject {
 
 extension HubMenuViewModel {
     enum Menu: CaseIterable {
+        case payments
         case woocommerceAdmin
         case viewStore
         case inbox
@@ -143,6 +148,8 @@ extension HubMenuViewModel {
 
         var title: String {
             switch self {
+            case .payments:
+                return Localization.payments
             case .woocommerceAdmin:
                 return Localization.woocommerceAdmin
             case .viewStore:
@@ -158,6 +165,8 @@ extension HubMenuViewModel {
 
         var icon: UIImage {
             switch self {
+            case .payments:
+                return .walletImage
             case .woocommerceAdmin:
                 return .wordPressLogoImage
             case .viewStore:
@@ -173,6 +182,8 @@ extension HubMenuViewModel {
 
         var iconColor: UIColor {
             switch self {
+            case .payments:
+                return .withColorStudio(.orange)
             case .woocommerceAdmin:
                 return .blue
             case .viewStore:
@@ -189,6 +200,8 @@ extension HubMenuViewModel {
 
         var accessibilityIdentifier: String {
             switch self {
+            case .payments:
+                return "menu-payments"
             case .woocommerceAdmin:
                 return "menu-woocommerce-admin"
             case .viewStore:
@@ -204,6 +217,8 @@ extension HubMenuViewModel {
     }
 
     private enum Localization {
+        static let payments = NSLocalizedString("Payments",
+                                                comment: "Title of the hub menu payments button")
         static let myStore = NSLocalizedString("My Store",
                                                comment: "Title of the hub menu view in case there is no title for the store")
         static let woocommerceAdmin = NSLocalizedString("WooCommerce Admin",

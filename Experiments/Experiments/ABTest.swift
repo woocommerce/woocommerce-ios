@@ -7,6 +7,11 @@ public enum ABTest: String, CaseIterable {
     /// `An enum with no cases cannot declare a raw type`
     case null
 
+    /// A/A test for ExPlat integration.
+    /// Experiment ref: pbxNRc-1QS-p2
+    ///
+    case aaTest202208 = "woocommerceios_explat_aa_test_202208"
+
     /// Returns a variation for the given experiment
     var variation: Variation {
         return ExPlat.shared?.experiment(self.rawValue) ?? .control

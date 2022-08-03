@@ -1,7 +1,6 @@
 import UIKit
 import SwiftUI
 import Yosemite
-import Combine
 import Experiments
 
 final class InPersonPaymentsMenuViewController: UITableViewController {

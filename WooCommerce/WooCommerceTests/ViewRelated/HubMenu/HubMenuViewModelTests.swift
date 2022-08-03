@@ -54,7 +54,9 @@ final class HubMenuViewModelTests: XCTestCase {
         viewModel.setupMenuElements()
 
         // Then
-        XCTAssertTrue(viewModel.menuElements.contains(.payments))
+        XCTAssertNotNil(viewModel.menuElements.firstIndex(where: { item in
+            type(of: item).id == HubMenuViewModel.Payments.id
+        }))
     }
 
     func test_menuElements_include_inbox_and_coupons_when_store_has_eligible_wc_version() {

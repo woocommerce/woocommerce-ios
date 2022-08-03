@@ -45,8 +45,8 @@
     ],
     "targetForVariableExpansion" : {
       "containerPath" : "container:WooCommerce.xcodeproj",
-      "identifier" : "CCDC49C923FFFFF4003166BA",
-      "name" : "WooCommerceUITests"
+      "identifier" : "B56DB3C52049BFAA00D4AA8E",
+      "name" : "WooCommerce"
     },
     "testRepetitionMode" : "retryOnFailure"
   },

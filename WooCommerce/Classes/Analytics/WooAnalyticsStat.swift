@@ -637,6 +637,12 @@ public enum WooAnalyticsStat: String {
     case loginJetpackSetupDismissed = "login_jetpack_setup_dismissed"
     case loginJetpackSetupCompleted = "login_jetpack_setup_completed"
     case loginJetpackSetupFlow = "login_jetpack_setup_flow"
+
+    // MARK: Login WooCommerce setup
+    case loginWooCommerceErrorShown = "login_woocommerce_error_shown"
+    case loginWooCommerceSetupButtonTapped = "login_woocommerce_setup_button_tapped"
+    case loginWooCommerceSetupDismissed = "login_woocommerce_setup_dismissed"
+    case loginWooCommerceSetupCompleted = "login_woocommerce_setup_completed"
 }
 
 public extension WooAnalyticsStat {

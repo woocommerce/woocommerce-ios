@@ -111,7 +111,9 @@ final class HubMenuViewModel: ObservableObject {
 
         stores.dispatch(action)
 
-        setupPaymentsBadge()
+        if featureFlagService.isFeatureFlagEnabled(.paymentsHubMenuSection) {
+            setupPaymentsBadge()
+        }
     }
 
     private func setupPaymentsBadge() {

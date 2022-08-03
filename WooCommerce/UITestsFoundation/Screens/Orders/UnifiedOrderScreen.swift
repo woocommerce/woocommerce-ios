@@ -236,4 +236,17 @@ public final class UnifiedOrderScreen: ScreenObject {
 
         return self
     }
+
+    /// Checks the screen for existence of all products, checking each name.
+    /// - Parameter productNames: Array of product names to check.
+    /// - Returns: Unified Order screen object.
+    @discardableResult
+    public func checkForExistingProducts(byName productNames: [String]) throws -> UnifiedOrderScreen {
+        for productName in productNames {
+            let productNamePredicate = NSPredicate(format: "label MATCHES %@", productName)
+            XCTAssertTrue(app.staticTexts.containing(productNamePredicate).element.exists)
+        }
+
+        return self
+    }
 }

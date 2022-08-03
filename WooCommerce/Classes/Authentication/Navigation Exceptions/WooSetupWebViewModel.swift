@@ -30,8 +30,8 @@ struct WooSetupWebViewModel: PluginSetupWebViewModel {
         }
     }
 
-    func decidePolicy(for navigationURL: URL, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        decisionHandler(.allow)
+    func decidePolicy(for navigationURL: URL) async -> WKNavigationActionPolicy {
+        return .allow
     }
 }
 

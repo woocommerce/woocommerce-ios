@@ -20,12 +20,12 @@ struct WooSetupWebViewModel: PluginSetupWebViewModel {
     }
 
     func handleDismissal() {
-        // TODO
+        analytics.track(event: .LoginWooCommerceSetup.setupDismissed(source: .web))
     }
 
     func handleRedirect(for url: URL?) {
         if let url = url, url.absoluteString.hasPrefix(Constants.completionURL) {
-            // TODO: analytics
+            analytics.track(event: .LoginWooCommerceSetup.setupCompleted(source: .web))
             completionHandler()
         }
     }

@@ -43,7 +43,7 @@ struct NoWooErrorViewModel: ULErrorViewModel {
 
     // MARK: - Actions
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        // TODO: Analytics
+        analytics.track(.loginWooCommerceSetupButtonTapped)
         guard let viewController = viewController else {
             return
         }
@@ -69,12 +69,10 @@ struct NoWooErrorViewModel: ULErrorViewModel {
         storePicker.configuration = .listStores
 
         navigationController.pushViewController(storePicker, animated: true)
-
-        // TODO: Analytics
     }
 
     func viewDidLoad() {
-        // TODO: Analytics
+        analytics.track(.loginWooCommerceErrorShown)
     }
 }
 

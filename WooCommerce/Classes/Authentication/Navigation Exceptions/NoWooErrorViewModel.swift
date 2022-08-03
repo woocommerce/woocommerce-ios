@@ -49,7 +49,7 @@ struct NoWooErrorViewModel: ULErrorViewModel {
         }
         let viewModel = WooSetupWebViewModel(siteURL: siteURL, onCompletion: {
             viewController.navigationController?.popViewController(animated: true)
-            handleCompletion(in: viewController)
+            handleSetupCompletion(in: viewController)
         })
         let setupViewController = PluginSetupWebViewController(viewModel: viewModel)
         viewController.navigationController?.show(setupViewController, sender: nil)
@@ -80,7 +80,7 @@ struct NoWooErrorViewModel: ULErrorViewModel {
 
 // MARK: - Private helpers
 private extension NoWooErrorViewModel {
-    func handleCompletion(in viewController: UIViewController, retryCount: Int = 0) {
+    func handleSetupCompletion(in viewController: UIViewController, retryCount: Int = 0) {
         showInProgressView(in: viewController)
 
         ServiceLocator.stores.synchronizeEntities {
@@ -90,7 +90,10 @@ private extension NoWooErrorViewModel {
             matcher.refreshStoredSites()
             guard let site = matcher.matchedSite(originalURL: siteURL),
                   site.isWooCommerceActive else {
-                return showSetupErrorNotice(in: viewController, retryCount: retryCount)
+                if retryCount < 1 {
+                    return handleSetupCompletion(in: viewController, retryCount: retryCount + 1)
+                }
+                return showSetupErrorNotice(in: viewController)
             }
             setupCompletionHandler(site.siteID)
         }
@@ -104,18 +107,9 @@ private extension NoWooErrorViewModel {
         viewController.navigationController?.present(inProgressViewController, animated: true, completion: nil)
     }
 
-    func showSetupErrorNotice(in viewController: UIViewController, retryCount: Int = 0) {
+    func showSetupErrorNotice(in viewController: UIViewController) {
         let message = Localization.setupErrorMessage
-        let notice: Notice
-        if retryCount > 1 {
-            notice = Notice(title: message, feedbackType: .error)
-        } else {
-            let actionTitle = Localization.tryAgain
-            notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) {
-                handleCompletion(in: viewController, retryCount: retryCount + 1)
-            }
-        }
-
+        let notice = Notice(title: message, feedbackType: .error)
         let noticePresenter = DefaultNoticePresenter()
         noticePresenter.presentingViewController = viewController
         noticePresenter.enqueue(notice: notice)
@@ -145,9 +139,9 @@ private extension NoWooErrorViewModel {
                                                 comment: "Placeholder for site url, if the url is unknown."
                                                     + "Presented when logging in with a site address that does not have a valid Jetpack installation."
                                                 + "The error would read: to use this app for your site you'll need...")
-        static let verifyingInstallation = NSLocalizedString("Verifying installation...", comment: "Message displayed when checking whether a site has successfully installed WooCommerce")
-        static let setupErrorMessage = NSLocalizedString("Cannot verify your site's WooCommerce installation.", comment: "Error message displayed when failed to check for WooCommerce in a site.")
-        static let tryAgain = NSLocalizedString("Retry", comment: "Retry Action to check for WooCommerce in a site again.")
-
+        static let verifyingInstallation = NSLocalizedString("Verifying installation...",
+                                                             comment: "Message displayed when checking whether a site has successfully installed WooCommerce")
+        static let setupErrorMessage = NSLocalizedString("Cannot verify your site's WooCommerce installation.",
+                                                         comment: "Error message displayed when failed to check for WooCommerce in a site.")
     }
 }

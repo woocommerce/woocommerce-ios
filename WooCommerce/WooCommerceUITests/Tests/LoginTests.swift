@@ -54,10 +54,6 @@ final class LoginTests: XCTestCase {
     }
 
     func test_WordPress_unsuccessfull_login() throws {
-        XCTAssertTrue(
-            (ProcessInfo.processInfo.environment["BUILDKITE_ANALYTICS_TOKEN"] ?? "").starts(with: "w4tH")
-        )
-
         _ = try PrologueScreen().selectContinueWithWordPress()
             .proceedWith(email: TestCredentials.emailAddress)
             .tryProceed(password: "invalidPswd")

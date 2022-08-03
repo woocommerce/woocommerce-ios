@@ -2,18 +2,87 @@
   "configurations" : [
     {
       "id" : "DA512AA1-66D1-4829-BC02-EEFD0E226DE7",
-      "name" : "Configuration 1",
+      "name" : "iOS",
       "options" : {
-
+        "environmentVariableEntries" : [
+          {
+            "key" : "BUILDKITE_ANALYTICS_TOKEN",
+            "value" : "$(BUILDKITE_ANALYTICS_TOKEN_UI_TESTS_IPHONE)"
+          },
+          {
+            "key" : "BUILDKITE_BRANCH",
+            "value" : "$(BUILDKITE_BRANCH)"
+          },
+          {
+            "key" : "BUILDKITE_BUILD_ID",
+            "value" : "$(BUILDKITE_BUILD_ID)"
+          },
+          {
+            "key" : "BUILDKITE_BUILD_NUMBER",
+            "value" : "$(BUILDKITE_BUILD_NUMBER)"
+          },
+          {
+            "key" : "BUILDKITE_BUILD_URL",
+            "value" : "$(BUILDKITE_BUILD_URL)"
+          },
+          {
+            "key" : "BUILDKITE_COMMIT",
+            "value" : "$(BUILDKITE_COMMIT)"
+          },
+          {
+            "key" : "BUILDKITE_JOB_ID",
+            "value" : "$(BUILDKITE_JOB_ID)"
+          },
+          {
+            "key" : "BUILDKITE_MESSAGE",
+            "value" : "$(BUILDKITE_MESSAGE)"
+          }
+        ]
+      }
+    },
+    {
+      "id" : "9B6F0B72-4EBF-4541-926F-C9C95D531FED",
+      "name" : "iPadOS",
+      "options" : {
+        "environmentVariableEntries" : [
+          {
+            "key" : "BUILDKITE_ANALYTICS_TOKEN",
+            "value" : "$(BUILDKITE_ANALYTICS_TOKEN_UI_TESTS_IPAD)"
+          },
+          {
+            "key" : "BUILDKITE_BRANCH",
+            "value" : "$(BUILDKITE_BRANCH)"
+          },
+          {
+            "key" : "BUILDKITE_BUILD_ID",
+            "value" : "$(BUILDKITE_BUILD_ID)"
+          },
+          {
+            "key" : "BUILDKITE_BUILD_NUMBER",
+            "value" : "$(BUILDKITE_BUILD_NUMBER)"
+          },
+          {
+            "key" : "BUILDKITE_BUILD_URL",
+            "value" : "$(BUILDKITE_BUILD_URL)"
+          },
+          {
+            "key" : "BUILDKITE_COMMIT",
+            "value" : "$(BUILDKITE_COMMIT)"
+          },
+          {
+            "key" : "BUILDKITE_JOB_ID",
+            "value" : "$(BUILDKITE_JOB_ID)"
+          },
+          {
+            "key" : "BUILDKITE_MESSAGE",
+            "value" : "$(BUILDKITE_MESSAGE)"
+          }
+        ]
       }
     }
   ],
   "defaultOptions" : {
     "environmentVariableEntries" : [
-      {
-        "key" : "BUILDKITE_ANALYTICS_TOKEN",
-        "value" : "$(BUILDKITE_ANALYTICS_TOKEN)"
-      },
       {
         "key" : "BUILDKITE_BRANCH",
         "value" : "$(BUILDKITE_BRANCH)"

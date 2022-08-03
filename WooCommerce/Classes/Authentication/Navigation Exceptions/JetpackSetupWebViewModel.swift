@@ -22,7 +22,7 @@ final class JetpackSetupWebViewModel: PluginSetupWebViewModel {
     }
 
     // MARK: - `PluginSetupWebViewModel` conformance
-    var title: String { Localization.title }
+    let title = Localization.title
 
     var initialURL: URL? {
         guard let escapedSiteURL = siteURL.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),

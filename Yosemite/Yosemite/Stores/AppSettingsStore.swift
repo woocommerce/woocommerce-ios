@@ -182,8 +182,6 @@ public class AppSettingsStore: Store {
             setFeatureAnnouncementDismissed(campaign: campaign, remindLater: remindLater, onCompletion: completion)
         case .getFeatureAnnouncementVisibility(campaign: let campaign, onCompletion: let completion):
             getFeatureAnnouncementVisibility(campaign: campaign, onCompletion: completion)
-        case .resetFeatureAnnouncementDismissed(campaign: let campaign):
-            resetFeatureAnnouncementDismissed(campaign: campaign)
         }
     }
 }
@@ -528,15 +526,6 @@ private extension AppSettingsStore {
             onCompletion?(error)
         }
     }
-
-    func resetFeatureAnnouncementDismissed(campaign: FeatureAnnouncementCampaign) {
-                do {
-                    try generalAppSettings.setValue([:], for: \.featureAnnouncementCampaignSettings)
-                } catch {
-
-                }
-            }
-
 }
 
 // MARK: - Orders Settings
@@ -739,6 +728,7 @@ private extension AppSettingsStore {
         let newSettings = storeSettings.copy(preferredInPersonPaymentGateway: .some(nil))
         setStoreSettings(settings: newSettings, for: siteID, onCompletion: nil)
     }
+
 }
 
 
@@ -748,8 +738,7 @@ extension AppSettingsStore {
 
     func setFeatureAnnouncementDismissed(campaign: FeatureAnnouncementCampaign, remindLater: Bool, onCompletion: ((Result<Bool, Error>) -> ())?) {
         do {
-            // let remindAfter = remindLater ? Date().addingDays(14) : nil
-            let remindAfter = remindLater ? Date().addingTimeInterval(20) : nil  // 20 seconds for testing!
+            let remindAfter = remindLater ? Date().addingDays(14) : nil
             let newSettings = FeatureAnnouncementCampaignSettings(dismissedDate: Date(), remindAfter: remindAfter)
 
             let settings = generalAppSettings.settings

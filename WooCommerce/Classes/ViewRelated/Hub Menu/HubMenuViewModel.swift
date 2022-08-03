@@ -166,7 +166,7 @@ extension HubMenuViewModel {
         var icon: UIImage {
             switch self {
             case .payments:
-                return .cardPresentImage
+                return .walletImage
             case .woocommerceAdmin:
                 return .wordPressLogoImage
             case .viewStore:
@@ -183,7 +183,7 @@ extension HubMenuViewModel {
         var iconColor: UIColor {
             switch self {
             case .payments:
-                return .primary
+                return .withColorStudio(.orange)
             case .woocommerceAdmin:
                 return .blue
             case .viewStore:
@@ -222,7 +222,7 @@ extension HubMenuViewModel {
 
     private enum Localization {
         static let payments = NSLocalizedString("Payments",
-                                                        comment: "Title of one of the hub menu options")
+                                                comment: "Title of one of the hub menu options")
         static let myStore = NSLocalizedString("My Store",
                                                comment: "Title of the hub menu view in case there is no title for the store")
         static let woocommerceAdmin = NSLocalizedString("WooCommerce Admin",

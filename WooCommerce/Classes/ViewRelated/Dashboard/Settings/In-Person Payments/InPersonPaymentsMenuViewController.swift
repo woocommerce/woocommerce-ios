@@ -39,6 +39,7 @@ final class InPersonPaymentsMenuViewController: UITableViewController {
 private extension InPersonPaymentsMenuViewController {
     func configureSections() {
         sections = [
+            actionsSection,
             cardReadersSection,
             paymentOptionsSection
         ].compactMap { $0 }
@@ -58,6 +59,10 @@ private extension InPersonPaymentsMenuViewController {
             return nil
         }
         return Section(header: Localization.paymentOptionsSectionTitle, rows: [.managePaymentGateways])
+    }
+
+    var actionsSection: Section? {
+        return Section(header: Localization.paymentActionsSectionTitle, rows: [.collectPayment])
     }
 
     func configureTableView() {
@@ -85,6 +90,8 @@ private extension InPersonPaymentsMenuViewController {
             configureManagePaymentGateways(cell: cell)
         case let cell as LeftImageTableViewCell where row == .cardReaderManuals:
             configureCardReaderManuals(cell: cell)
+        case let cell as LeftImageTableViewCell where row == .collectPayment:
+            configureCollectPayment(cell: cell)
         default:
             fatalError()
         }
@@ -116,6 +123,13 @@ private extension InPersonPaymentsMenuViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.configure(image: .cardReaderManualIcon, text: Localization.cardReaderManuals)
+    }
+
+    func configureCollectPayment(cell: LeftImageTableViewCell) {
+        cell.imageView?.tintColor = .text
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.configure(image: .moneyIcon, text: Localization.collectPayment)
     }
 }
 
@@ -153,6 +167,10 @@ extension InPersonPaymentsMenuViewController {
     func managePaymentGatewaysWasPressed() {
         ServiceLocator.analytics.track(.settingsCardPresentSelectedPaymentGatewayTapped)
         onPluginSelectionCleared()
+    }
+
+    func collectPaymentWasPressed() {
+
     }
 }
 
@@ -195,6 +213,8 @@ extension InPersonPaymentsMenuViewController {
             cardReaderManualsWasPressed()
         case .managePaymentGateways:
             managePaymentGatewaysWasPressed()
+        case .collectPayment:
+            collectPaymentWasPressed()
         }
     }
 }
@@ -210,6 +230,10 @@ private extension InPersonPaymentsMenuViewController {
         static let paymentOptionsSectionTitle = NSLocalizedString(
             "Payment options",
             comment: "Title for the section related to payments inside In-Person Payments settings")
+
+        static let paymentActionsSectionTitle = NSLocalizedString(
+            "Actions",
+            comment: "Title for the section related to actions inside In-Person Payments settings")
 
         static let orderCardReader = NSLocalizedString(
             "Order card reader",
@@ -230,6 +254,11 @@ private extension InPersonPaymentsMenuViewController {
             "Card Reader Manuals",
             comment: "Navigates to Card Reader Manuals screen"
         )
+
+        static let collectPayment = NSLocalizedString(
+            "Collect Payment",
+            comment: "Navigates to Collect a payment via the Simple Payment screen"
+        )
     }
 }
 
@@ -243,6 +272,7 @@ private enum Row: CaseIterable {
     case manageCardReader
     case cardReaderManuals
     case managePaymentGateways
+    case collectPayment
 
     var type: UITableViewCell.Type {
         switch self {

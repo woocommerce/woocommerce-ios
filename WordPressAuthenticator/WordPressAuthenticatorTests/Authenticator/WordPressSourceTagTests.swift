@@ -52,6 +52,13 @@ class WordPressSourceTagTests: XCTestCase {
         XCTAssertEqual(tag.origin, "origin:login-site-address")
     }
 
+    func testVerifyEmailInstructionsSourceTag() {
+        let tag = WordPressSupportSourceTag.verifyEmailInstructions
+
+        XCTAssertEqual(tag.name, "verifyEmailInstructions")
+        XCTAssertEqual(tag.origin, "origin:login-site-address")
+    }
+
     func testLoginUsernameSourceTag() {
         let tag = WordPressSupportSourceTag.loginUsernamePassword
 

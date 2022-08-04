@@ -27,11 +27,12 @@ final class WooSetupWebViewModel: PluginSetupWebViewModel {
     }
 
     func handleRedirect(for url: URL?) {
-        if let url = url, url.absoluteString.hasPrefix(Constants.completionURL) {
-            analytics.track(event: .LoginWooCommerceSetup.setupCompleted(source: .web))
-            hasCompleted = true
-            completionHandler()
+        guard let url = url, url.absoluteString.hasPrefix(Constants.completionURL) else {
+            return
         }
+        analytics.track(event: .LoginWooCommerceSetup.setupCompleted(source: .web))
+        hasCompleted = true
+        completionHandler()
     }
 
     func decidePolicy(for navigationURL: URL) async -> WKNavigationActionPolicy {

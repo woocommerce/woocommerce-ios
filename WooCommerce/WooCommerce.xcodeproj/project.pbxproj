@@ -229,6 +229,7 @@
 		02695770237281A9001BA0BF /* AztecTextViewAttachmentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0269576F237281A9001BA0BF /* AztecTextViewAttachmentHandler.swift */; };
 		0269A63C2581D26C007B49ED /* ShippingLabelPrintingStepListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0269A63B2581D26C007B49ED /* ShippingLabelPrintingStepListView.swift */; };
 		026B3C57249A046E00F7823C /* TextFieldTextAlignment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026B3C56249A046E00F7823C /* TextFieldTextAlignment.swift */; };
+		026B80CF289A5E0B001960E4 /* LoginOnboardingSurveyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026B80CE289A5E0B001960E4 /* LoginOnboardingSurveyView.swift */; };
 		026CF63A237E9ABE009563D4 /* ProductVariationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026CF638237E9ABE009563D4 /* ProductVariationsViewController.swift */; };
 		026CF63B237E9ABE009563D4 /* ProductVariationsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 026CF639237E9ABE009563D4 /* ProductVariationsViewController.xib */; };
 		026D4A24280461960090164F /* CollectOrderPaymentUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026D4A23280461960090164F /* CollectOrderPaymentUseCaseTests.swift */; };
@@ -2039,6 +2040,7 @@
 		0269576F237281A9001BA0BF /* AztecTextViewAttachmentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecTextViewAttachmentHandler.swift; sourceTree = "<group>"; };
 		0269A63B2581D26C007B49ED /* ShippingLabelPrintingStepListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPrintingStepListView.swift; sourceTree = "<group>"; };
 		026B3C56249A046E00F7823C /* TextFieldTextAlignment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldTextAlignment.swift; sourceTree = "<group>"; };
+		026B80CE289A5E0B001960E4 /* LoginOnboardingSurveyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginOnboardingSurveyView.swift; sourceTree = "<group>"; };
 		026CF638237E9ABE009563D4 /* ProductVariationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationsViewController.swift; sourceTree = "<group>"; };
 		026CF639237E9ABE009563D4 /* ProductVariationsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductVariationsViewController.xib; sourceTree = "<group>"; };
 		026D4A23280461960090164F /* CollectOrderPaymentUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectOrderPaymentUseCaseTests.swift; sourceTree = "<group>"; };
@@ -6713,6 +6715,7 @@
 				CC69236126010946002FB669 /* LoginProloguePages.swift */,
 				02FE1B9E287F51F400EC03B3 /* LoginOnboardingViewController.swift */,
 				025CA1A52887D17A00CCBB25 /* LoggedOutAppSettingsProtocol.swift */,
+				026B80CE289A5E0B001960E4 /* LoginOnboardingSurveyView.swift */,
 			);
 			path = Prologue;
 			sourceTree = "<group>";
@@ -9177,6 +9180,7 @@
 				02817B39242B34560050AD8B /* ToolbarView.swift in Sources */,
 				D817586222BB64C300289CFE /* OrderDetailsNotices.swift in Sources */,
 				022F7A0324A05F6400012601 /* LinkedProductsListSelectorViewController.swift in Sources */,
+				026B80CF289A5E0B001960E4 /* LoginOnboardingSurveyView.swift in Sources */,
 				2602A63F27BD880A00B347F1 /* NewOrderInitialStatusResolver.swift in Sources */,
 				E120F63826C26B550005A029 /* InPersonPaymentsLoadingView.swift in Sources */,
 				456417F4247D5434001203F6 /* UITableView+Helpers.swift in Sources */,

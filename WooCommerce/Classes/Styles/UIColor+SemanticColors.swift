@@ -234,6 +234,38 @@ extension UIColor {
         return .systemColor(.systemGray3)
     }
 
+    /// Selectable Secondary Button Title.
+    ///
+    static var selectableSecondaryButtonTitle: UIColor {
+        .black
+    }
+
+    /// Selectable Secondary Button Background.
+    ///
+    static var selectableSecondaryButtonBackground: UIColor {
+        .white
+    }
+
+    /// Selectable Secondary Button Border.
+    ///
+    static var selectableSecondaryButtonBorder: UIColor {
+        .systemColor(.systemGray3)
+    }
+
+    /// Selectable Secondary Button Selected Background.
+    ///
+    static var selectableSecondaryButtonSelectedBackground: UIColor {
+        .init(light: .withColorStudio(.wooCommercePurple, shade: .shade0),
+              dark: .withColorStudio(.wooCommercePurple, shade: .shade10))
+    }
+
+    /// Selectable Secondary Button Selected Border.
+    ///
+    static var selectableSecondaryButtonSelectedBorder: UIColor {
+        .init(light: .withColorStudio(.wooCommercePurple, shade: .shade50),
+              dark: .withColorStudio(.wooCommercePurple, shade: .shade50))
+    }
+
     /// Secondary Light Button Background.
     ///
     static var secondaryLightButtonBackground: UIColor = .white

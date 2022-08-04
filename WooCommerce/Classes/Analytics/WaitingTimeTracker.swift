@@ -20,7 +20,9 @@ class WaitingTimeTracker {
             .sink { [weak self] state in
                 switch state {
                 case .done(let waitingEndedTime):
-                    self?.sendWaitingTimeToTracks(waitingEndedTime: waitingEndedTime)
+                    self?.sendWaitingTimeToTracks(
+                            waitingEndedTime: waitingEndedTime
+                    )
                     self?.resetTrackerState()
                 case .waiting:
                     self?.startWaitingTimer()
@@ -31,8 +33,8 @@ class WaitingTimeTracker {
             .store(in: &subscriptions)
     }
 
-    func onWaitingStarted() {
-        currentState = .waiting(NSDate().timeIntervalSince1970)
+    func onWaitingStarted(analyticsEvent: WooAnalyticsEvent) {
+        currentState = .waiting(NSDate().timeIntervalSince1970, analyticsEvent)
     }
 
     func onWaitingEnded() {
@@ -44,7 +46,7 @@ class WaitingTimeTracker {
     }
 
     private func sendWaitingTimeToTracks(waitingEndedTime: TimeInterval) {
-        guard case .waiting(let waitingStartedTime) = currentState else {
+        guard case .waiting(let waitingStartedTime, let analyticsEvent) = currentState else {
             return
         }
 
@@ -68,7 +70,7 @@ class WaitingTimeTracker {
 
     enum State: Equatable {
         case idle
-        case waiting(TimeInterval)
+        case waiting(TimeInterval, WooAnalyticsEvent)
         case done(TimeInterval)
     }
 }

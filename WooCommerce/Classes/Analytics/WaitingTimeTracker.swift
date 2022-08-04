@@ -19,7 +19,7 @@ class WaitingTimeTracker {
                 repeats: false) { [weak self] timer in
             timer.invalidate()
             self?.waitingTimer = nil
-            currentState = .idle
+            self?.currentState = .idle
         }
     }
 

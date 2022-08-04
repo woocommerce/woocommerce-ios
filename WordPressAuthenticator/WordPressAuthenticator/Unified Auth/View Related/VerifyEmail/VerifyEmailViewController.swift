@@ -5,7 +5,6 @@ final class VerifyEmailViewController: LoginViewController {
     // MARK: Properties
 
     @IBOutlet private weak var tableView: UITableView!
-
     private let rows = Row.allCases
 
     override var sourceTag: WordPressSupportSourceTag {
@@ -32,6 +31,16 @@ final class VerifyEmailViewController: LoginViewController {
 
         localizePrimaryButton()
         registerTableViewCells()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        if isBeingPresentedInAnyWay {
+            tracker.track(step: .verifyEmailInstructions)
+        } else {
+            tracker.set(step: .verifyEmailInstructions)
+        }
     }
 
     // MARK: - Overrides

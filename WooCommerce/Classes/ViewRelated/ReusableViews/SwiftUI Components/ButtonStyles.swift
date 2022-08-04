@@ -225,9 +225,7 @@ private struct SelectableSecondaryButton: View {
 
     var backgroundColor: UIColor {
         if isEnabled {
-            if configuration.isPressed {
-                return .selectableSecondaryButtonSelectedBackground
-            } else if isSelected {
+            if configuration.isPressed || isSelected {
                 return .selectableSecondaryButtonSelectedBackground
             } else {
                 return .selectableSecondaryButtonBackground
@@ -378,7 +376,8 @@ struct PrimaryButton_Previews: PreviewProvider {
             Button("Plus button (disabled)") {}
                 .buttonStyle(PlusButtonStyle())
                 .disabled(true)
-        }.preferredColorScheme(.dark)
-            .padding()
+        }
+        .preferredColorScheme(.dark)
+        .padding()
     }
 }

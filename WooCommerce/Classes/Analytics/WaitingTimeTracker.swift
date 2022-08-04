@@ -2,7 +2,7 @@ import Foundation
 import Combine
 
 class WaitingTimeTracker {
-    @Published var currentState: State = .Idle(0.0)
+    @Published var currentState: State = .idle(0.0)
 
     func onWaitingStarted() {
     }
@@ -17,8 +17,8 @@ class WaitingTimeTracker {
             self.creationTimestamp = creationTimestamp ?? NSDate().timeIntervalSince1970
         }
 
-        case Idle
-        case Waiting
-        case Done
+        case idle
+        case waiting
+        case done
     }
 }

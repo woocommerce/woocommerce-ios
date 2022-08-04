@@ -437,7 +437,7 @@ private extension AuthenticationManager {
             ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: [notification.scenario])
             ServiceLocator.pushNotesManager.requestLocalNotification(notification,
                                                                      // 24 hours from now.
-                                                                     trigger: UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false))
+                                                                     trigger: UNTimeIntervalNotificationTrigger(timeInterval: 86400, repeats: false))
         }
     }
 }

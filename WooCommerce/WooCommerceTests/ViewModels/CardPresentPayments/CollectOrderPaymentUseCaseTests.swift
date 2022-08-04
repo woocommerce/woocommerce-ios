@@ -92,21 +92,21 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayAccount)
     }
 
-//    func test_collectPayment_processing_completion_does_not_track_collectInteracPaymentSuccess_event_when_payment_method_is_not_interac() throws {
-//        // Given
-//        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
-//        mockSuccessfulCardPresentPaymentActions(intent: intent)
-//
-//        // When
-//        waitFor { promise in
-//            self.useCase.collectPayment(onCollect: { _ in
-//                promise(())
-//            }, onCancel: {}, onCompleted: {})
-//        }
-//
-//        // Then
-//        XCTAssertFalse(analyticsProvider.receivedEvents.contains("card_interac_collect_payment_success"))
-//    }
+    func test_collectPayment_processing_completion_does_not_track_collectInteracPaymentSuccess_event_when_payment_method_is_not_interac() throws {
+        // Given
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+        mockSuccessfulCardPresentPaymentActions(intent: intent)
+
+        // When
+        waitFor { promise in
+            self.useCase.collectPayment(onCollect: { _ in
+                promise(())
+            }, onCancel: {}, onCompleted: {})
+        }
+
+        // Then
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("card_interac_collect_payment_success"))
+    }
 
     // MARK: Success alert actions
 

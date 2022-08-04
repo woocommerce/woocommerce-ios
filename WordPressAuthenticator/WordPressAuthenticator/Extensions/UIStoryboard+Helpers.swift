@@ -13,6 +13,7 @@ enum Storyboard: String {
     case googleSignupConfirmation = "GoogleSignupConfirmation"
     case twoFA = "TwoFA"
     case password = "Password"
+    case verifyEmail = "VerifyEmail"
 
     var instance: UIStoryboard {
         return UIStoryboard(name: self.rawValue, bundle: WordPressAuthenticator.bundle)

@@ -4,7 +4,7 @@ import Combine
 class WaitingTimeTracker {
     private let waitingTimeout: TimeInterval
 
-    @Published var currentState: State = .idle(0.0)
+    @Published private(set) var currentState: State = .idle
 
     private var waitingTimer: Timer? = nil
 
@@ -19,7 +19,7 @@ class WaitingTimeTracker {
                 repeats: false) { [weak self] timer in
             timer.invalidate()
             self?.waitingTimer = nil
-            currentState = .idle(0.0)
+            currentState = .idle
         }
     }
 
@@ -30,14 +30,8 @@ class WaitingTimeTracker {
     }
 
     enum State {
-        let creationTimestamp: TimeInterval
-
-        init(creationTimestamp: TimeInterval? = nil) {
-            self.creationTimestamp = creationTimestamp ?? NSDate().timeIntervalSince1970
-        }
-
         case idle
-        case waiting
-        case done
+        case waiting(TimeInterval)
+        case done(TimeInterval)
     }
 }

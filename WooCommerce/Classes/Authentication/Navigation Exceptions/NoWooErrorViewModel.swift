@@ -1,6 +1,6 @@
 import UIKit
 import WordPressAuthenticator
-import WordPressUI
+import Yosemite
 
 /// Configuration and actions for an ULErrorViewController,
 /// modelling an error when WooCommerce is not installed or activated.
@@ -9,17 +9,20 @@ struct NoWooErrorViewModel: ULErrorViewModel {
     private let showsConnectedStores: Bool
     private let showsInstallButton: Bool
     private let analytics: Analytics
+    private let stores: StoresManager
     private let setupCompletionHandler: (Int64) -> Void
 
     init(siteURL: String?,
          showsConnectedStores: Bool,
          showsInstallButton: Bool,
          analytics: Analytics = ServiceLocator.analytics,
+         stores: StoresManager = ServiceLocator.stores,
          onSetupCompletion: @escaping (Int64) -> Void) {
         self.siteURL = siteURL ?? Localization.yourSite
         self.showsConnectedStores = showsConnectedStores
         self.showsInstallButton = showsInstallButton
         self.analytics = analytics
+        self.stores = stores
         self.setupCompletionHandler = onSetupCompletion
     }
 
@@ -64,8 +67,9 @@ struct NoWooErrorViewModel: ULErrorViewModel {
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
-        let refreshCommand = NavigateToRoot()
-        refreshCommand.execute(from: viewController)
+        // Log out and pop
+        stores.deauthenticate()
+        viewController?.navigationController?.popToRootViewController(animated: true)
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {

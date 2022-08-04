@@ -43,6 +43,11 @@
         "value" : "$(BUILDKITE_MESSAGE)"
       }
     ],
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:WordPressAuthenticator.xcodeproj",
+      "identifier" : "B5ED78F3207E976500A8FD8C",
+      "name" : "WordPressAuthenticator"
+    },
     "testTimeoutsEnabled" : true
   },
   "testTargets" : [

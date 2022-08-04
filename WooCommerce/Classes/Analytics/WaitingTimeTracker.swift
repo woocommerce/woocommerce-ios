@@ -2,7 +2,15 @@ import Foundation
 import Combine
 
 class WaitingTimeTracker {
+    private let waitingTimeout: TimeInterval
+
     @Published var currentState: State = .idle(0.0)
+
+    private var waitingTimer: Timer? = nil
+
+    init(waitingTimeout: TimeInterval = 30000) {
+        self.waitingTimeout = waitingTimeout
+    }
 
     func onWaitingStarted() {
     }

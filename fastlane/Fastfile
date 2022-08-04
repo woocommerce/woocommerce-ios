@@ -1046,7 +1046,15 @@ lane :test_without_building do |options|
 
   UI.user_error!('Unable to find .xctestrun file') unless !xctestrun_path.nil? && File.exist?((xctestrun_path))
 
-  configurations = options[:test_configuration].nil? ? nil : [options[:test_configuration]]
+  # If the caller passed a `test_configuration` parameter, we should use it,
+  # otherwise we should run all the configurations in the given test plan,
+  # which is what setting the value to `nil` does.
+  #
+  # The UITests test plan has multiple configurations for iOS/iPhone vs.
+  # iPadOS/iPad and we selectively run one or the other in CI based on the
+  # destination Simulator.
+  configurations = options[:test_configuration].nil? ? nil :
+    [options[:test_configuration]]
 
   run_tests(
     workspace: 'WooCommerce.xcworkspace',

@@ -128,7 +128,16 @@ private extension VerifyEmailViewController {
 
     /// Configure the instructions cell.
     ///
-    func configureInstructionLabel(_ cell: TextLabelTableViewCell) {}
+    func configureInstructionLabel(_ cell: TextLabelTableViewCell) {
+        let instructionColor = WordPressAuthenticator.shared.unifiedStyle?.textSubtleColor ?? WordPressAuthenticator.shared.style.subheadlineColor
+        let emailColor = WordPressAuthenticator.shared.unifiedStyle?.textColor ?? WordPressAuthenticator.shared.style.instructionColor
+        let font = WPStyleGuide.mediumWeightFont(forStyle: .body)
+
+        let instructions = NSMutableAttributedString(string: WordPressAuthenticator.shared.displayStrings.verifyMailLoginInstructions, attributes: [.foregroundColor: instructionColor, .font: font])
+        let email = NSAttributedString(string: " " + loginFields.username, attributes: [.font: font, .foregroundColor: emailColor])
+        instructions.append(email)
+        cell.configureLabel(attributedText: instructions)
+    }
 
     /// Configure the "Or type your password" cell.
     ///

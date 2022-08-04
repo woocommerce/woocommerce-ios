@@ -968,9 +968,9 @@
 			buildConfigurationList = B5ED7908207E976500A8FD8C /* Build configuration list for PBXNativeTarget "WordPressAuthenticator" */;
 			buildPhases = (
 				6CD6648B820552D8638F8EDA /* [CP] Check Pods Manifest.lock */,
+				B5ED78F1207E976500A8FD8C /* Headers */,
 				B5ED78EF207E976500A8FD8C /* Sources */,
 				B5ED78F0207E976500A8FD8C /* Frameworks */,
-				B5ED78F1207E976500A8FD8C /* Headers */,
 				B5ED78F2207E976500A8FD8C /* Resources */,
 				B5A5274B20B479D30065BE81 /* CopyFiles */,
 			);

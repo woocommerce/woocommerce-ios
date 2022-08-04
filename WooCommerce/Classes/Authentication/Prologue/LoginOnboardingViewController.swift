@@ -21,7 +21,8 @@ final class LoginOnboardingViewController: UIViewController {
     private let stackView: UIStackView = .init()
     private lazy var pageViewController = LoginProloguePageViewController(pageTypes: [.products, .orderManagement, .stats],
                                                                           showsSubtitle: true)
-    private var buttonStackView: UIStackView = .init()
+    private lazy var buttonStackView: UIStackView = .init()
+    private lazy var nextButton: UIButton = createNextButton()
 
     private let analytics: Analytics
     private let featureFlagService: FeatureFlagService
@@ -108,7 +109,6 @@ private extension LoginOnboardingViewController {
     func configureStackViewSubviews() {
         let carousel = createFeatureCarousel()
 
-        let nextButton = createNextButton()
         let skipButton = createSkipButton()
         buttonStackView.addArrangedSubviews([nextButton, skipButton])
         buttonStackView.spacing = Constants.buttonStackViewSpacing
@@ -169,11 +169,13 @@ private extension LoginOnboardingViewController {
     @MainActor
     func showSurvey() {
         content = .survey
+        nextButton.isEnabled = false
 
         analytics.track(event: .LoginOnboarding.loginOnboardingSurveyShown())
 
         let surveyView = LoginOnboardingSurveyView(onSelection: { [weak self] option in
             self?.selectedSurveyOption = option
+            self?.nextButton.isEnabled = true
         })
         let surveyController = UIHostingController(rootView: surveyView)
         surveyController.view.backgroundColor = .authPrologueBottomBackgroundColor

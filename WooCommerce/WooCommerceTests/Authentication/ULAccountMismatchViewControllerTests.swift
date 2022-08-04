@@ -151,7 +151,7 @@ final class ULAccountMismatchViewControllerTests: XCTestCase {
         XCTAssertTrue(viewModel.logOutButtonTapped)
     }
 
-    func test_viewcontroller_assigns_title_provided_by_viewmodel_to_primary_button() throws {
+    func test_viewcontroller_assigns_visibility_provided_by_viewmodel_to_primary_button() throws {
         // Given
         let viewModel = MismatchViewModel()
         let viewController = ULAccountMismatchViewController(viewModel: viewModel)

@@ -173,7 +173,10 @@
             default = "YES">
          </TestPlanReference>
          <TestPlanReference
-            reference = "container:WooCommerceUITests/UITests.xctestplan">
+            reference = "container:WooCommerceUITests/UITests-iPhone.xctestplan">
+         </TestPlanReference>
+         <TestPlanReference
+            reference = "container:WooCommerceUITests/UITests-iPad.xctestplan">
          </TestPlanReference>
       </TestPlans>
    </TestAction>

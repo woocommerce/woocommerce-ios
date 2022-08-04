@@ -684,6 +684,7 @@
 		3F2C8A19285B038800B1A5BB /* BuildkiteTestCollector in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2C8A18285B038800B1A5BB /* BuildkiteTestCollector */; };
 		3F2C8A1B285B039900B1A5BB /* BuildkiteTestCollector in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2C8A1A285B039900B1A5BB /* BuildkiteTestCollector */; };
 		3F2C8A1D285B03A400B1A5BB /* BuildkiteTestCollector in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2C8A1C285B03A400B1A5BB /* BuildkiteTestCollector */; };
+		3F3E104728A2239C0041FA5A /* UITests-iPad.xctestplan in Resources */ = {isa = PBXBuildFile; fileRef = 3F3E104628A2239C0041FA5A /* UITests-iPad.xctestplan */; };
 		3F58701F281B947E004F7556 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F58701E281B947E004F7556 /* Main.storyboard */; };
 		3F587021281B9494004F7556 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F587020281B9494004F7556 /* LaunchScreen.storyboard */; };
 		3F587026281B9C19004F7556 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3F587028281B9C19004F7556 /* InfoPlist.strings */; };
@@ -2477,6 +2478,7 @@
 		31FE28C125E6D338003519F2 /* LearnMoreTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnMoreTableViewCell.swift; sourceTree = "<group>"; };
 		31FE28C725E6D384003519F2 /* LearnMoreTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LearnMoreTableViewCell.xib; sourceTree = "<group>"; };
 		33035144757869DE5E4DC88A /* Pods-WooCommerce.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.release.xcconfig"; sourceTree = "<group>"; };
+		3F3E104628A2239C0041FA5A /* UITests-iPad.xctestplan */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "UITests-iPad.xctestplan"; sourceTree = "<group>"; };
 		3F58701E281B947E004F7556 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		3F587020281B9494004F7556 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3F587027281B9C19004F7556 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -3172,7 +3174,7 @@
 		CCDC49CE23FFFFF4003166BA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CCDC49EC24000533003166BA /* TestCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestCredentials.swift; sourceTree = "<group>"; };
 		CCDC49F1240060F3003166BA /* UnitTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = UnitTests.xctestplan; path = WooCommerceTests/UnitTests.xctestplan; sourceTree = SOURCE_ROOT; };
-		CCDC49F224006130003166BA /* UITests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = UITests.xctestplan; path = WooCommerceUITests/UITests.xctestplan; sourceTree = SOURCE_ROOT; };
+		CCDC49F224006130003166BA /* UITests-iPhone.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = "UITests-iPhone.xctestplan"; path = "WooCommerceUITests/UITests-iPhone.xctestplan"; sourceTree = SOURCE_ROOT; };
 		CCE4CD162667EBB100E09FD4 /* ShippingLabelPaymentMethodsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPaymentMethodsViewModelTests.swift; sourceTree = "<group>"; };
 		CCE4CD272669324300E09FD4 /* ShippingLabelPaymentMethodsTopBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPaymentMethodsTopBanner.swift; sourceTree = "<group>"; };
 		CCEC256927B581E800EF9FA3 /* ProductVariationFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationFormatter.swift; sourceTree = "<group>"; };
@@ -6950,7 +6952,8 @@
 			isa = PBXGroup;
 			children = (
 				800A5B9C275623E9009DE2CD /* Flows */,
-				CCDC49F224006130003166BA /* UITests.xctestplan */,
+				CCDC49F224006130003166BA /* UITests-iPhone.xctestplan */,
+				3F3E104628A2239C0041FA5A /* UITests-iPad.xctestplan */,
 				CCDC49D9240000B7003166BA /* Tests */,
 				CCFC00B623E9BD5500157A78 /* Mocks */,
 				CCDC49D8240000A5003166BA /* Utils */,
@@ -8814,6 +8817,7 @@
 				80AD2CA22782B4EB00A63DE8 /* products_list_1.json in Resources */,
 				80B8D34127859C6F00FE6E6B /* reports_leaderboards_stats_month.json in Resources */,
 				800A5BC6275889ED009DE2CD /* reports_revenue_stats_hour.json in Resources */,
+				3F3E104728A2239C0041FA5A /* UITests-iPad.xctestplan in Resources */,
 				800A5BB027586898009DE2CD /* products_2132.json in Resources */,
 				800A5BA6275719E5009DE2CD /* orders_2201_refunds.json in Resources */,
 				800A5BA827586126009DE2CD /* products_2129.json in Resources */,

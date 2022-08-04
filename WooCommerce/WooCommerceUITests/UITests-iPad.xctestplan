@@ -1,26 +1,14 @@
 {
   "configurations" : [
     {
-      "id" : "DA512AA1-66D1-4829-BC02-EEFD0E226DE7",
-      "name" : "iOS",
-      "options" : {
-        "environmentVariableEntries" : [
-          {
-            "key" : "BUILDKITE_ANALYTICS_TOKEN",
-            "value" : "$(BUILDKITE_ANALYTICS_TOKEN_UI_TESTS_IPHONE)"
-          },
-        ]
-      }
-    },
-    {
       "id" : "9B6F0B72-4EBF-4541-926F-C9C95D531FED",
-      "name" : "iPadOS",
+      "name" : "Configuration 1",
       "options" : {
         "environmentVariableEntries" : [
           {
             "key" : "BUILDKITE_ANALYTICS_TOKEN",
             "value" : "$(BUILDKITE_ANALYTICS_TOKEN_UI_TESTS_IPAD)"
-          },
+          }
         ]
       }
     }

@@ -1,10 +1,10 @@
 #!/bin/bash -eu
 
-CONFIGURATION=$1
+TEST_PLAN=$1
 DEVICE=$2
 IOS_VERSION=$3
 
-echo "Running UI test on $DEVICE for iOS/iPadOS $IOS_VERSION using $CONFIGURATION configuration"
+echo "Running UI test from test plan $TEST_PLAN on $DEVICE for iOS/iPadOS $IOS_VERSION"
 
 # Workaround for https://github.com/Automattic/buildkite-ci/issues/79
 echo "--- :rubygems: Fixing Ruby Setup"
@@ -28,7 +28,6 @@ echo "--- 🧪 Testing"
 xcrun simctl list >> /dev/null
 rake mocks &
 bundle exec fastlane test_without_building \
-  name:UITests \
-  configuration:"$CONFIGURATION" \
+  name:"$TEST_PLAN" \
   device:"$DEVICE" \
   ios_version:"$IOS_VERSION"

@@ -24,9 +24,11 @@ class WaitingTimeTracker {
     }
 
     func onWaitingEnded() {
-        if currentState == .waiting {
-            currentState = .done(NSDate().timeIntervalSince1970)
+        guard case .waiting = currentState else {
+            return
         }
+
+        currentState = .done(NSDate().timeIntervalSince1970)
     }
 
     enum State {

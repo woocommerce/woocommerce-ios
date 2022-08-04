@@ -68,19 +68,6 @@ final class ULAccountMismatchViewControllerTests: XCTestCase {
         XCTAssertEqual(auxiliaryButtonTitle, viewModel.auxiliaryButtonTitle)
     }
 
-    func test_viewcontroller_assigns_visibility_provided_by_viewmodel_to_auxbutton() throws {
-        // Given
-        let viewModel = MismatchViewModel()
-        let viewController = ULAccountMismatchViewController(viewModel: viewModel)
-
-        // When
-        _ = try XCTUnwrap(viewController.view)
-        let auxiliaryButtonHidden = viewController.getAuxiliaryButton().isHidden
-
-        // Then
-        XCTAssertEqual(auxiliaryButtonHidden, viewModel.isAuxiliaryButtonHidden)
-    }
-
     func test_viewcontroller_hits_viewmodel_when_auxbutton_is_tapped() throws {
         // Given
         let viewModel = MismatchViewModel()
@@ -180,8 +167,6 @@ private final class MismatchViewModel: ULAccountMismatchViewModel {
     let image: UIImage = .loginNoJetpackError
 
     let text: NSAttributedString = NSAttributedString(string: "woocommerce")
-
-    let isAuxiliaryButtonHidden: Bool = true
 
     let auxiliaryButtonTitle: String = "Aux"
 

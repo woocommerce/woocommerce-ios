@@ -15,6 +15,7 @@ public struct WordPressAuthenticatorDisplayStrings {
     public let magicLinkSignupInstructions: String
     public let openMailSignupInstructions: String
     public let openMailLoginInstructions: String
+    public let verifyMailLoginInstructions: String
     public let checkSpamInstructions: String
     public let oopsInstructions: String
     public let googleSignupInstructions: String
@@ -47,6 +48,7 @@ public struct WordPressAuthenticatorDisplayStrings {
     public let loginTermsOfService: String
     public let signupTermsOfService: String
     public let whatIsWPComLinkTitle: String
+    public let typePasswordButtonTitle: String
 
 	/// Placeholder text for textfields.
 	///
@@ -68,6 +70,7 @@ public struct WordPressAuthenticatorDisplayStrings {
                 magicLinkSignupInstructions: String = defaultStrings.magicLinkSignupInstructions,
                 openMailSignupInstructions: String = defaultStrings.openMailSignupInstructions,
                 openMailLoginInstructions: String = defaultStrings.openMailLoginInstructions,
+                verifyMailLoginInstructions: String = defaultStrings.verifyMailLoginInstructions,
                 checkSpamInstructions: String = defaultStrings.checkSpamInstructions,
                 oopsInstructions: String = defaultStrings.oopsInstructions,
                 googleSignupInstructions: String = defaultStrings.googleSignupInstructions,
@@ -81,6 +84,7 @@ public struct WordPressAuthenticatorDisplayStrings {
                 enterYourSiteAddressButtonTitle: String = defaultStrings.enterYourSiteAddressButtonTitle,
                 signInWithSiteCredentialsButtonTitle: String = defaultStrings.signInWithSiteCredentialsButtonTitle,
                 findSiteButtonTitle: String = defaultStrings.findSiteButtonTitle,
+                typePasswordButtonTitle: String = defaultStrings.typePasswordButtonTitle,
                 resetPasswordButtonTitle: String = defaultStrings.resetPasswordButtonTitle,
                 getLoginLinkButtonTitle: String = defaultStrings.getLoginLinkButtonTitle,
                 textCodeButtonTitle: String = defaultStrings.textCodeButtonTitle,
@@ -106,6 +110,7 @@ public struct WordPressAuthenticatorDisplayStrings {
         self.magicLinkSignupInstructions = magicLinkSignupInstructions
         self.openMailSignupInstructions = openMailSignupInstructions
         self.openMailLoginInstructions = openMailLoginInstructions
+        self.verifyMailLoginInstructions = verifyMailLoginInstructions
         self.checkSpamInstructions = checkSpamInstructions
         self.oopsInstructions = oopsInstructions
         self.googleSignupInstructions = googleSignupInstructions
@@ -119,6 +124,7 @@ public struct WordPressAuthenticatorDisplayStrings {
         self.enterYourSiteAddressButtonTitle = enterYourSiteAddressButtonTitle
         self.signInWithSiteCredentialsButtonTitle = signInWithSiteCredentialsButtonTitle
         self.findSiteButtonTitle = findSiteButtonTitle
+        self.typePasswordButtonTitle = typePasswordButtonTitle
         self.resetPasswordButtonTitle = resetPasswordButtonTitle
         self.getLoginLinkButtonTitle = getLoginLinkButtonTitle
         self.textCodeButtonTitle = textCodeButtonTitle
@@ -160,6 +166,8 @@ public extension WordPressAuthenticatorDisplayStrings {
                                                           comment: "Instruction text after a signup Magic Link was requested."),
             openMailLoginInstructions: NSLocalizedString("Check your email on this device, and tap the link in the email you receive from WordPress.com.",
                                                          comment: "Instruction text after a login Magic Link was requested."),
+            verifyMailLoginInstructions: NSLocalizedString("Almost there! We just need to verify your Jetpack connected email address",
+                                                         comment: "Instruction text to explain magic link login step."),
             checkSpamInstructions: NSLocalizedString("Not seeing the email? Check your Spam or Junk Mail folder.", comment: "Instructions after a Magic Link was sent, but the email can't be found in their inbox."),
             oopsInstructions: NSLocalizedString("Didn't mean to create a new account? Go back to re-enter your email address.", comment: "Instructions after a Magic Link was sent, but email is incorrect."),
             googleSignupInstructions: NSLocalizedString("We'll use this email address to create your new WordPress.com account.", comment: "Text confirming email address to be used for new account."),
@@ -183,6 +191,8 @@ public extension WordPressAuthenticatorDisplayStrings {
                                                                    comment: "Button title. Takes the user the Enter site credentials screen."),
             findSiteButtonTitle: NSLocalizedString("Find your site address",
                                                    comment: "The hint button's title text to help users find their site address."),
+            typePasswordButtonTitle: NSLocalizedString("Or type your password",
+                                                   comment: "The hint button's title text to help users type their password instead of using magic link login option."),
             resetPasswordButtonTitle: NSLocalizedString("Reset your password",
                                                         comment: "The button title for a secondary call-to-action button. When the user can't remember their password."),
             getLoginLinkButtonTitle: NSLocalizedString("Get a login link by email",

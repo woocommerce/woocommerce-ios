@@ -204,7 +204,7 @@ private struct SelectableSecondaryButton: View {
 
     var body: some View {
         BaseButton(configuration: configuration)
-            .foregroundColor(Color(.black))
+            .foregroundColor(Color(.selectableSecondaryButtonTitle))
             .font(labelFont)
             .background(
                 RoundedRectangle(cornerRadius: Style.defaultCornerRadius)

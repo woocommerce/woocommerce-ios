@@ -25,10 +25,16 @@ public final class TextLabelTableViewCell: UITableViewCell {
         }
     }
 
+    public func configureLabel(attributedText: NSAttributedString) {
+        label.attributedText = attributedText
+    }
+
     /// Override methods
     ///
     public override func prepareForReuse() {
+        super.prepareForReuse()
         label.text = nil
+        label.attributedText = nil
     }
 }
 

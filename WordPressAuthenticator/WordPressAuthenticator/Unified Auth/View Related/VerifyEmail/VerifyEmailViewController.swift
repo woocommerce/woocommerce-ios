@@ -108,8 +108,29 @@ private extension VerifyEmailViewController {
     /// Configure cells.
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
-
+        switch cell {
+        case let cell as GravatarEmailTableViewCell where row == .persona:
+            configureGravatarEmail(cell)
+        case let cell as TextLabelTableViewCell where row == .instructions:
+            configureInstructionLabel(cell)
+        case let cell as TextLinkButtonTableViewCell where row == .typePassword:
+            configureTypePasswordButton(cell)
+        default:
+            DDLogError("Error: Unidentified tableViewCell type found.")
+        }
     }
+
+    /// Configure the gravatar + email cell.
+    ///
+    func configureGravatarEmail(_ cell: GravatarEmailTableViewCell) {}
+
+    /// Configure the instructions cell.
+    ///
+    func configureInstructionLabel(_ cell: TextLabelTableViewCell) {}
+
+    /// Configure the "Or type your password" cell.
+    ///
+    func configureTypePasswordButton(_ cell: TextLinkButtonTableViewCell) {}
 
     /// Makes the call to request a magic authentication link be emailed to the user.
     ///

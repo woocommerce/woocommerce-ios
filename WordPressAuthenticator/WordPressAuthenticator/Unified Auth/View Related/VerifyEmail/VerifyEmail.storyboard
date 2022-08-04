@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Verify Email View Controller-->
+        <scene sceneID="Ord-z3-YaY">
+            <objects>
+                <viewController storyboardIdentifier="VerifyEmailViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Kyc-Xo-vx1" customClass="VerifyEmailViewController" customModule="WordPressAuthenticator" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="UpM-oD-mVG">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="E8K-Dx-YzL" userLabel="Containing View">
+                                <rect key="frame" x="0.0" y="44" width="414" height="818"/>
+                                <subviews>
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" bounces="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="pfu-Jh-ubT">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="742"/>
+                                        <sections/>
+                                        <connections>
+                                            <outlet property="dataSource" destination="Kyc-Xo-vx1" id="wYG-7B-H0U"/>
+                                            <outlet property="delegate" destination="Kyc-Xo-vx1" id="fsd-qV-Pgj"/>
+                                        </connections>
+                                    </tableView>
+                                    <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="acY-8s-fU4" userLabel="Button background view">
+                                        <rect key="frame" x="0.0" y="742" width="414" height="76"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8aU-U3-ges" userLabel="Primary Button" customClass="NUXButton" customModule="WordPressAuthenticator" customModuleProvider="target">
+                                                <rect key="frame" x="16" y="16" width="382" height="44"/>
+                                                <accessibility key="accessibilityConfiguration" identifier="submitButton"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="44" id="brU-Sp-bqC"/>
+                                                </constraints>
+                                                <state key="normal" title="Button"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="isPrimary" value="YES"/>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="handleSendLinkButtonTapped:" destination="Kyc-Xo-vx1" eventType="touchUpInside" id="p1D-H8-IjT"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <viewLayoutGuide key="safeArea" id="fke-hl-RqK"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <constraints>
+                                            <constraint firstAttribute="bottomMargin" secondItem="8aU-U3-ges" secondAttribute="bottom" constant="8" id="cFF-F8-XeD"/>
+                                            <constraint firstItem="8aU-U3-ges" firstAttribute="top" secondItem="acY-8s-fU4" secondAttribute="topMargin" constant="8" id="iAf-MX-VqG"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstItem="acY-8s-fU4" firstAttribute="top" secondItem="pfu-Jh-ubT" secondAttribute="bottom" id="8ip-ju-lmM"/>
+                                    <constraint firstItem="acY-8s-fU4" firstAttribute="bottom" secondItem="E8K-Dx-YzL" secondAttribute="bottomMargin" constant="8" id="BDz-Tw-lI7"/>
+                                    <constraint firstItem="acY-8s-fU4" firstAttribute="trailing" secondItem="E8K-Dx-YzL" secondAttribute="trailing" id="NbW-zb-dB4"/>
+                                    <constraint firstItem="acY-8s-fU4" firstAttribute="leading" secondItem="E8K-Dx-YzL" secondAttribute="leading" id="Qd7-mb-zk6"/>
+                                    <constraint firstItem="pfu-Jh-ubT" firstAttribute="trailing" secondItem="8aU-U3-ges" secondAttribute="trailing" constant="16" id="rxl-c5-gog"/>
+                                    <constraint firstItem="8aU-U3-ges" firstAttribute="leading" secondItem="pfu-Jh-ubT" secondAttribute="leading" constant="16" id="wPq-gH-3RV"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="Kul-tD-MQb"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="E8K-Dx-YzL" firstAttribute="top" secondItem="Kul-tD-MQb" secondAttribute="top" id="4Xl-Dg-iRo"/>
+                            <constraint firstItem="E8K-Dx-YzL" firstAttribute="leading" secondItem="UpM-oD-mVG" secondAttribute="leading" id="7rt-E0-Pss"/>
+                            <constraint firstItem="pfu-Jh-ubT" firstAttribute="leading" secondItem="Kul-tD-MQb" secondAttribute="leading" id="H0g-kw-Qqv"/>
+                            <constraint firstItem="E8K-Dx-YzL" firstAttribute="trailing" secondItem="UpM-oD-mVG" secondAttribute="trailing" id="XdS-2Z-lXC"/>
+                            <constraint firstItem="pfu-Jh-ubT" firstAttribute="top" secondItem="Kul-tD-MQb" secondAttribute="top" id="fwj-CH-HUR"/>
+                            <constraint firstItem="Kul-tD-MQb" firstAttribute="trailing" secondItem="pfu-Jh-ubT" secondAttribute="trailing" id="maJ-SL-tfy"/>
+                            <constraint firstItem="Kul-tD-MQb" firstAttribute="bottom" secondItem="E8K-Dx-YzL" secondAttribute="bottom" id="vVf-D6-spN"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="RXK-oM-uW0"/>
+                    <connections>
+                        <outlet property="submitButton" destination="8aU-U3-ges" id="1ov-f4-aKA"/>
+                        <outlet property="tableView" destination="pfu-Jh-ubT" id="iMn-f4-DOH"/>
+                        <outlet property="tableViewLeadingConstraint" destination="H0g-kw-Qqv" id="lcz-Ci-CnX"/>
+                        <outlet property="tableViewTrailingConstraint" destination="maJ-SL-tfy" id="Ytd-1o-EIc"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="6j3-BE-46b" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1702" y="-34"/>
+        </scene>
+    </scenes>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

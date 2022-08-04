@@ -9,7 +9,7 @@ class WaitingTimeTracker {
     private var waitingTimer: Timer? = nil
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(waitingTimeout: TimeInterval = 30000) {
+    init(waitingTimeout: TimeInterval = 30) {
         self.waitingTimeout = waitingTimeout
         configureCurrentState()
     }
@@ -51,9 +51,11 @@ class WaitingTimeTracker {
         }
 
         let elapsedTime = waitingEndedTime - waitingStartedTime
-        ServiceLocator.analytics.track(analyticsStat, withProperties: [
-            "waiting_time": elapsedTime
-        ])
+        if 0.0...waitingTimeout ~= elapsedTime {
+            ServiceLocator.analytics.track(analyticsStat, withProperties: [
+                "waiting_time": elapsedTime
+            ])
+        }
     }
 
     private func startWaitingTimer() {

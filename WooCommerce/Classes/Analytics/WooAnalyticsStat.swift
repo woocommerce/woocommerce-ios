@@ -53,6 +53,8 @@ public enum WooAnalyticsStat: String {
     case loginOnboardingShown = "login_onboarding_shown"
     case loginOnboardingNextButtonTapped = "login_onboarding_next_button_tapped"
     case loginOnboardingSkipButtonTapped = "login_onboarding_skip_button_tapped"
+    case loginOnboardingSurveyShown = "login_onboarding_survey_shown"
+    case loginOnboardingSurveySubmitted = "login_onboarding_survey_submitted"
     case loginPasswordFormViewed = "login_password_form_viewed"
     case loginURLFormViewed = "login_url_form_viewed"
     case loginURLHelpScreenViewed = "login_url_help_screen_viewed"

@@ -9,11 +9,18 @@ class WaitingTimeTracker {
     private var waitingTimer: Timer? = nil
     private var subscriptions: Set<AnyCancellable> = []
 
+    /// Initialize the WaitingTimeTracker with a specific timeout, if none is provided it will set 30 seconds as the default
+    ///
     init(waitingTimeout: TimeInterval = 30) {
         self.waitingTimeout = waitingTimeout
         configureCurrentState()
     }
 
+    /// Configure the state changes and react to the specified one
+    /// - `.done`: Will send the elapsed waiting time to the Tracks
+    /// - `.waiting`: Will trigger the timeout Timer and wait for the `.done` state to sink
+    /// - `.idle`: Does nothing and breaks the state changing cycle
+    ///
     private func configureCurrentState() {
         $currentState
             .removeDuplicates()
@@ -33,10 +40,17 @@ class WaitingTimeTracker {
             .store(in: &subscriptions)
     }
 
+    /// Set the Tracker state to `.waiting`, triggering the waiting cycle
+    ///
+    /// - parameter analyticsStat: The stat to be send to Tracks when the waiting time ends
+    ///
     func onWaitingStarted(analyticsStat: WooAnalyticsStat) {
         currentState = .waiting(NSDate().timeIntervalSince1970, analyticsStat)
     }
-
+    
+    /// Set the Tracker state to `.done`, ending the waiting cycle. Only accepts it if the current state is `.waiting`
+    /// otherwise, it will ignore the call
+    ///
     func onWaitingEnded() {
         guard case .waiting = currentState else {
             return
@@ -45,6 +59,13 @@ class WaitingTimeTracker {
         currentState = .done(NSDate().timeIntervalSince1970)
     }
 
+    /// Calculates the elapsed time with the difference between the `.done` and `.waiting` time interval
+    /// and send it to Tracks with the provided AnalyticsStat, given that the `currentState` is `.waiting`.
+    ///
+    /// Will only submit the elapsed time if it's higher than zero and lower than the expected waiting timeout.
+    ///
+    /// - parameter waitingEndedTime: The time interval of when the waiting ended.
+    ///
     private func sendWaitingTimeToTracks(waitingEndedTime: TimeInterval) {
         guard case .waiting(let waitingStartedTime, let analyticsStat) = currentState else {
             return
@@ -58,6 +79,9 @@ class WaitingTimeTracker {
         }
     }
 
+    /// The timeout timer that will cancel the waiting state and return the Tracker to `.idle`.
+    /// Can be cancelled through the `waitingTimer` reference when the waiting is done.
+    ///
     private func startWaitingTimer() {
         waitingTimer = Timer.scheduledTimer(
                 withTimeInterval: waitingTimeout,
@@ -66,6 +90,8 @@ class WaitingTimeTracker {
         }
     }
 
+    /// Resets the Tracker state to `.idle` and cancel the timeout timer, configuring everything to the start point
+    ///
     private func resetTrackerState() {
         waitingTimer?.invalidate()
         waitingTimer = nil

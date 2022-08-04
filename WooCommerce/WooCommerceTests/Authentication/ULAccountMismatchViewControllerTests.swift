@@ -151,7 +151,7 @@ final class ULAccountMismatchViewControllerTests: XCTestCase {
         XCTAssertTrue(viewModel.logOutButtonTapped)
     }
 
-    func test_primary_button_is_hidden_if_set_by_view_model() throws {
+    func test_viewcontroller_assigns_title_provided_by_viewmodel_to_primary_button() throws {
         // Given
         let viewModel = MismatchViewModel()
         let viewController = ULAccountMismatchViewController(viewModel: viewModel)
@@ -161,7 +161,7 @@ final class ULAccountMismatchViewControllerTests: XCTestCase {
         let primaryButton = viewController.getPrimaryActionButton()
 
         // Then
-        XCTAssertTrue(primaryButton.isHidden)
+        XCTAssertEqual(primaryButton.isHidden, viewModel.isPrimaryButtonHidden)
     }
 }
 

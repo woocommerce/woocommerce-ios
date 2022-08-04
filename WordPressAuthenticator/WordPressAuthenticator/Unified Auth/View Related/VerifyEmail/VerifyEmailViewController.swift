@@ -181,6 +181,17 @@ private extension VerifyEmailViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
 
+    /// Presents unified password screen
+    ///
+    func presentUnifiedPassword() {
+        guard let vc = PasswordViewController.instantiate(from: .password) else {
+            DDLogError("Failed to navigate to PasswordViewController from VerifyEmailViewController")
+            return
+        }
+        vc.loginFields = loginFields
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
     // MARK: - Private Constants
 
     /// Rows listed in the order they were created.

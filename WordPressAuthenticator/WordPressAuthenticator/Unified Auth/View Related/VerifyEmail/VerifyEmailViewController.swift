@@ -147,6 +147,7 @@ private extension VerifyEmailViewController {
         cell.actionHandler = { [weak self] in
             guard let self = self else { return }
 
+            self.tracker.track(click: .orTypeYourPassword)
             self.presentUnifiedPassword()
         }
     }

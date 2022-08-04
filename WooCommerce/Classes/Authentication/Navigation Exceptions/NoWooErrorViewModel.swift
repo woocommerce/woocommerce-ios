@@ -93,6 +93,7 @@ private extension NoWooErrorViewModel {
         showInProgressView(in: viewController)
 
         ServiceLocator.stores.synchronizeEntities {
+            // dismisses the in-progress view
             viewController.navigationController?.dismiss(animated: true)
 
             let matcher = ULAccountMatcher()

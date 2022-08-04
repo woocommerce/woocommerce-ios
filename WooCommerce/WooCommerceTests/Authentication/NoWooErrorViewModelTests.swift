@@ -154,10 +154,10 @@ private extension NoWooErrorViewModelTests {
 
         static let primaryButtonTitle = NSLocalizedString("Install WooCommerce",
                                                           comment: "Action button for installing WooCommerce."
-                                                          + "Presented when logging in with a site address that does not have a valid Jetpack installation")
+                                                          + "Presented when logging in with a site address that does not have WooCommerce")
 
         static let secondaryButtonTitle = NSLocalizedString("Log In With Another Account",
                                                             comment: "Action button that will restart the login flow."
-                                                            + "Presented when logging in with a site address that does not have a valid Jetpack installation")
+                                                            + "Presented when logging in with a site address that does not have WooCommerce")
     }
 }

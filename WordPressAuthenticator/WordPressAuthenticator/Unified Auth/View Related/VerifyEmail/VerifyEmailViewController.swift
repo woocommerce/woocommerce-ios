@@ -8,6 +8,10 @@ final class VerifyEmailViewController: LoginViewController {
 
     private let rows = Row.allCases
 
+    override var sourceTag: WordPressSupportSourceTag {
+        .verifyEmailInstructions
+    }
+
     // MARK: - View lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()

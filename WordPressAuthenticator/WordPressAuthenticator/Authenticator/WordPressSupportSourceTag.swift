@@ -38,6 +38,12 @@ extension WordPressSupportSourceTag {
     public static var loginSiteAddress: WordPressSupportSourceTag {
         return WordPressSupportSourceTag(name: "loginSiteAddress", origin: "origin:login-site-address")
     }
+
+    /// For `VerifyEmailViewController`
+    public static var verifyEmailInstructions: WordPressSupportSourceTag {
+        WordPressSupportSourceTag(name: "verifyEmailInstructions", origin: "origin:login-site-address")
+    }
+
     public static var loginUsernamePassword: WordPressSupportSourceTag {
         return WordPressSupportSourceTag(name: "loginUsernamePassword", origin: "origin:login-username-password")
     }

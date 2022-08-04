@@ -155,6 +155,39 @@ class AuthenticationManager: Authentication {
 
         return false
     }
+
+    /// Checks the given site address and decides how to present the epilogue screen.
+    ///
+    func presentLoginEpilogue(in navigationController: UINavigationController, for siteURL: String, onDismiss: @escaping () -> Void) {
+        let matcher = ULAccountMatcher()
+        matcher.refreshStoredSites()
+
+        /// Account mismatched case
+        guard matcher.match(originalURL: siteURL) else {
+            DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: siteURL))")
+            let viewModel = WrongAccountErrorViewModel(siteURL: siteURL)
+            let mismatchAccountUI = ULAccountMismatchViewController(viewModel: viewModel)
+
+            return navigationController.show(mismatchAccountUI, sender: nil)
+        }
+
+        /// No Woo found
+        let matchedSite = matcher.matchedSite(originalURL: siteURL)
+        if let matchedSite = matchedSite, matchedSite.isWooCommerceActive == false {
+            let viewModel = NoWooErrorViewModel(
+                siteURL: siteURL,
+                showsConnectedStores: matcher.hasConnectedStores,
+                showsInstallButton: matchedSite.isJetpackConnected,
+                onSetupCompletion: { [weak self] siteID in
+                    guard let self = self else { return }
+                    self.startStorePicker(with: siteID, in: navigationController, onDismiss: onDismiss)
+            })
+            let noWooUI = ULErrorViewController(viewModel: viewModel)
+            return navigationController.show(noWooUI, sender: nil)
+        }
+
+        self.startStorePicker(with: matchedSite?.siteID, in: navigationController, onDismiss: onDismiss)
+    }
 }
 
 
@@ -278,32 +311,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: [.loginSiteAddressError])
         }
 
-        let matcher = ULAccountMatcher()
-        matcher.refreshStoredSites()
-
-        guard matcher.match(originalURL: siteURL) else {
-            DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: siteURL))")
-            let viewModel = WrongAccountErrorViewModel(siteURL: siteURL)
-            let mismatchAccountUI = ULAccountMismatchViewController(viewModel: viewModel)
-
-            return navigationController.show(mismatchAccountUI, sender: nil)
-        }
-
-        let matchedSite = matcher.matchedSite(originalURL: siteURL)
-        if let matchedSite = matchedSite, matchedSite.isWooCommerceActive == false {
-            let viewModel = NoWooErrorViewModel(
-                siteURL: siteURL,
-                showsConnectedStores: matcher.hasConnectedStores,
-                showsInstallButton: matchedSite.isJetpackConnected,
-                onSetupCompletion: { [weak self] siteID in
-                    guard let self = self else { return }
-                    self.startStorePicker(with: siteID, in: navigationController, onDismiss: onDismiss)
-            })
-            let noWooUI = ULErrorViewController(viewModel: viewModel)
-            return navigationController.show(noWooUI, sender: nil)
-        }
-
-        self.startStorePicker(with: matchedSite?.siteID, in: navigationController, onDismiss: onDismiss)
+        presentLoginEpilogue(in: navigationController, for: siteURL, onDismiss: onDismiss)
     }
 
     /// Presents the Signup Epilogue, in the specified NavigationController.

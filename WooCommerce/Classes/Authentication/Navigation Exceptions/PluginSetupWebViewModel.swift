@@ -13,6 +13,9 @@ protocol PluginSetupWebViewModel {
     /// Triggered when the web view is dismissed
     func handleDismissal()
 
+    /// Triggered when the web view redirects to a new URL
+    func handleRedirect(for url: URL?)
+
     /// Handler for a navigation URL
     func decidePolicy(for navigationURL: URL) async -> WKNavigationActionPolicy
 }

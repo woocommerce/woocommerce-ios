@@ -289,13 +289,21 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return navigationController.show(mismatchAccountUI, sender: nil)
         }
 
-        storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
-        storePickerCoordinator?.onDismiss = onDismiss
-        if let site = matcher.matchedSite(originalURL: siteURL) {
-            storePickerCoordinator?.didSelectStore(with: site.siteID, onCompletion: onDismiss)
-        } else {
-            storePickerCoordinator?.start()
+        let matchedSite = matcher.matchedSite(originalURL: siteURL)
+        if let matchedSite = matchedSite, matchedSite.isWooCommerceActive == false {
+            let viewModel = NoWooErrorViewModel(
+                siteURL: siteURL,
+                showsConnectedStores: matcher.hasConnectedStores,
+                showsInstallButton: matchedSite.isJetpackConnected,
+                onSetupCompletion: { [weak self] siteID in
+                    guard let self = self else { return }
+                    self.startStorePicker(with: siteID, in: navigationController, onDismiss: onDismiss)
+            })
+            let noWooUI = ULErrorViewController(viewModel: viewModel)
+            return navigationController.show(noWooUI, sender: nil)
         }
+
+        self.startStorePicker(with: matchedSite?.siteID, in: navigationController, onDismiss: onDismiss)
     }
 
     /// Presents the Signup Epilogue, in the specified NavigationController.
@@ -313,8 +321,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         //
         // This is effectively a useless screen for them other than telling them to install Jetpack.
         sync(credentials: credentials) { [weak self] in
-            self?.storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
-            self?.storePickerCoordinator?.start()
+            self?.startStorePicker(in: navigationController)
         }
     }
 
@@ -476,6 +483,16 @@ private extension AuthenticationManager {
         })
         let installJetpackUI = ULErrorViewController(viewModel: viewModel)
         navigationController.show(installJetpackUI, sender: nil)
+    }
+
+    func startStorePicker(with siteID: Int64? = nil, in navigationController: UINavigationController, onDismiss: @escaping () -> Void = {}) {
+        storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
+        storePickerCoordinator?.onDismiss = onDismiss
+        if let siteID = siteID {
+            storePickerCoordinator?.didSelectStore(with: siteID, onCompletion: onDismiss)
+        } else {
+            storePickerCoordinator?.start()
+        }
     }
 }
 

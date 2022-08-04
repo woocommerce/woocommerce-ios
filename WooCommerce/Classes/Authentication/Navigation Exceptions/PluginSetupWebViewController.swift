@@ -24,7 +24,7 @@ final class PluginSetupWebViewController: UIViewController {
     }()
 
     /// Strong reference for the subscription to update progress bar
-    private var progressSubscription: AnyCancellable?
+    private var subscriptions: Set<AnyCancellable> = []
 
     init(viewModel: PluginSetupWebViewModel) {
         self.viewModel = viewModel
@@ -79,7 +79,7 @@ private extension PluginSetupWebViewController {
         guard let url = viewModel.initialURL else {
             return
         }
-        progressSubscription = webView.publisher(for: \.estimatedProgress)
+        webView.publisher(for: \.estimatedProgress)
             .sink { [weak self] progress in
                 if progress == 1 {
                     self?.progressBar.setProgress(0, animated: false)
@@ -87,6 +87,13 @@ private extension PluginSetupWebViewController {
                     self?.progressBar.setProgress(Float(progress), animated: true)
                 }
             }
+            .store(in: &subscriptions)
+
+        webView.publisher(for: \.url)
+            .sink { [weak self] url in
+                self?.viewModel.handleRedirect(for: url)
+            }
+            .store(in: &subscriptions)
 
         if let credentials = ServiceLocator.stores.sessionManager.defaultCredentials {
             webView.authenticateForWPComAndRedirect(to: url, credentials: credentials)

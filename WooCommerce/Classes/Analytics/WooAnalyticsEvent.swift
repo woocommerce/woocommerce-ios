@@ -1343,3 +1343,29 @@ extension WooAnalyticsEvent {
         }
     }
 }
+
+// MARK: - Login WooCommerce Setup
+//
+extension WooAnalyticsEvent {
+    enum LoginWooCommerceSetup {
+        /// The source that user sets up WooCommerce: on the web or natively on the app.
+        enum Source: String {
+            case web
+            case native
+        }
+
+        enum Key: String {
+            case source
+        }
+
+        /// Tracks when the user dismisses the WooCommerce Setup flow.
+        static func setupDismissed(source: Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginWooCommerceSetupDismissed, properties: [Key.source.rawValue: source.rawValue])
+        }
+
+        /// Tracks when the user completes the WooCommerce Setup flow.
+        static func setupCompleted(source: Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginWooCommerceSetupCompleted, properties: [Key.source.rawValue: source.rawValue])
+        }
+    }
+}

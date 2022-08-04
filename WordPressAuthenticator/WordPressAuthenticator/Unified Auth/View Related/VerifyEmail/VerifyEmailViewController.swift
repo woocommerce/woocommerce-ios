@@ -141,7 +141,9 @@ private extension VerifyEmailViewController {
 
     /// Configure the "Or type your password" cell.
     ///
-    func configureTypePasswordButton(_ cell: TextLinkButtonTableViewCell) {}
+    func configureTypePasswordButton(_ cell: TextLinkButtonTableViewCell) {
+        cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.typePasswordButtonTitle)
+    }
 
     /// Makes the call to request a magic authentication link be emailed to the user.
     ///

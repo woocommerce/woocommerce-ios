@@ -30,7 +30,7 @@ struct LoginOnboardingSurveyView: View {
             VStack(spacing: 16) {
                 ForEach(options, id: \.self) { option in
                     // An if/else is used instead of `.buttonStyle(ButtonStyle(isSelected: selectedOption == option))`
-                    // because a weird background color is set to the button after it is selected in the latter case.
+                    // because a weird background color is set to the button briefly after it is selected in the latter case.
                     if selectedOption == option {
                         button(option: option).buttonStyle(SelectableSecondaryButtonStyle(isSelected: true))
                     } else {

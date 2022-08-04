@@ -115,6 +115,8 @@ end
 def woofoundation_pods
   pod 'CocoaLumberjack', '~> 3.7.4'
   pod 'CocoaLumberjack/Swift', '~> 3.7.4'
+  # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => ''
+  pod 'Automattic-Tracks-iOS', '~> 0.11.1'
 end
 
 # Tools Target:

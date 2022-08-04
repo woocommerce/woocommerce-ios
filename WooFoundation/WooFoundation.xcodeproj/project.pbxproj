@@ -10,6 +10,7 @@
 		397702D42D32EAEEEA3B29FC /* Pods_WooFoundationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 532D4D63493CE8FA6F13C85B /* Pods_WooFoundationTests.framework */; };
 		686BE912288EE0D300967C86 /* TypedPredicates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686BE911288EE0D300967C86 /* TypedPredicates.swift */; };
 		686BE915288EE2CA00967C86 /* TypedPredicateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686BE914288EE2CA00967C86 /* TypedPredicateTests.swift */; };
+		68986CE5289BA7EA006DA778 /* CommonCrashLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68986CE4289BA7EA006DA778 /* CommonCrashLogger.swift */; };
 		689D11D02891B3A300F6A83F /* CrashLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689D11CF2891B3A300F6A83F /* CrashLogger.swift */; };
 		689D11D32891B7D800F6A83F /* MockCrashLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689D11D22891B7D800F6A83F /* MockCrashLogger.swift */; };
 		68FBC5B328926B2C00A05461 /* Collection+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68FBC5B228926B2C00A05461 /* Collection+Extensions.swift */; };
@@ -38,6 +39,7 @@
 		5BC355411C0A805BF29F38A6 /* Pods-WooFoundationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundationTests.release.xcconfig"; path = "Target Support Files/Pods-WooFoundationTests/Pods-WooFoundationTests.release.xcconfig"; sourceTree = "<group>"; };
 		686BE911288EE0D300967C86 /* TypedPredicates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypedPredicates.swift; sourceTree = "<group>"; };
 		686BE914288EE2CA00967C86 /* TypedPredicateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypedPredicateTests.swift; sourceTree = "<group>"; };
+		68986CE4289BA7EA006DA778 /* CommonCrashLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonCrashLogger.swift; sourceTree = "<group>"; };
 		689D11CF2891B3A300F6A83F /* CrashLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CrashLogger.swift; sourceTree = "<group>"; };
 		689D11D22891B7D800F6A83F /* MockCrashLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockCrashLogger.swift; sourceTree = "<group>"; };
 		68FBC5B228926B2C00A05461 /* Collection+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Extensions.swift"; sourceTree = "<group>"; };
@@ -136,6 +138,7 @@
 		B9C9C636283E703C001B879F /* WooFoundation */ = {
 			isa = PBXGroup;
 			children = (
+				68986CE4289BA7EA006DA778 /* CommonCrashLogger.swift */,
 				689D11D12891B7B100F6A83F /* Mocks */,
 				689D11CE2891B37400F6A83F /* Protocols */,
 				686BE910288EE09B00967C86 /* Utilities */,
@@ -393,6 +396,7 @@
 				686BE912288EE0D300967C86 /* TypedPredicates.swift in Sources */,
 				B9C9C65E283E71C8001B879F /* CurrencySettings.swift in Sources */,
 				68FBC5B328926B2C00A05461 /* Collection+Extensions.swift in Sources */,
+				68986CE5289BA7EA006DA778 /* CommonCrashLogger.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -13,6 +13,14 @@ class WaitingTimeTracker {
     }
 
     func onWaitingStarted() {
+        currentState = .waiting(NSDate().timeIntervalSince1970)
+        waitingTimer = Timer.scheduledTimer(
+                withTimeInterval: waitingTimeout,
+                repeats: false) { [weak self] timer in
+            timer.invalidate()
+            self?.waitingTimer = nil
+            currentState = .idle(0.0)
+        }
     }
 
     func onWaitingEnded() {

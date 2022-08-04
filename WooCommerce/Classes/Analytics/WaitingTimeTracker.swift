@@ -47,7 +47,7 @@ class WaitingTimeTracker {
     func onWaitingStarted(analyticsStat: WooAnalyticsStat) {
         currentState = .waiting(NSDate().timeIntervalSince1970, analyticsStat)
     }
-    
+
     /// Set the Tracker state to `.done`, ending the waiting cycle. Only accepts it if the current state is `.waiting`
     /// otherwise, it will ignore the call
     ///

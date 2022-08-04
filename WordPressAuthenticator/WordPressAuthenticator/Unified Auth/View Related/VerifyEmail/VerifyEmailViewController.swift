@@ -12,6 +12,13 @@ final class VerifyEmailViewController: LoginViewController {
         .verifyEmailInstructions
     }
 
+    // MARK: - Actions
+    @IBAction private func handleSendLinkButtonTapped(_ sender: NUXButton) {
+        configureViewLoading(false)
+        tracker.track(click: .requestMagicLink)
+        requestAuthenticationLink()
+    }
+
     // MARK: - View lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -93,6 +100,44 @@ private extension VerifyEmailViewController {
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
 
+    }
+
+    /// Makes the call to request a magic authentication link be emailed to the user.
+    ///
+    func requestAuthenticationLink() {
+        loginFields.meta.emailMagicLinkSource = .login
+
+        let email = loginFields.username
+
+        configureViewLoading(true)
+        let service = WordPressComAccountService()
+        service.requestAuthenticationLink(for: email,
+                                          jetpackLogin: loginFields.meta.jetpackLogin,
+                                          success: { [weak self] in
+                                            self?.didRequestAuthenticationLink()
+                                            self?.configureViewLoading(false)
+
+            }, failure: { [weak self] (error: Error) in
+                guard let self = self else { return }
+
+                self.tracker.track(failure: error.localizedDescription)
+
+                self.displayError(error as NSError, sourceTag: self.sourceTag)
+                self.configureViewLoading(false)
+        })
+    }
+
+    /// When a magic link successfully sends, navigate the user to the next step.
+    ///
+    func didRequestAuthenticationLink() {
+        guard let vc = LoginMagicLinkViewController.instantiate(from: .unifiedLoginMagicLink) else {
+            DDLogError("Failed to navigate to LoginMagicLinkViewController from VerifyEmailViewController")
+            return
+        }
+
+        vc.loginFields = loginFields
+        vc.loginFields.restrictToWPCom = true
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     // MARK: - Private Constants

@@ -5,6 +5,7 @@
 - [***] Login: Introduce a way to sign in using store credentials.  [https://github.com/woocommerce/woocommerce-ios/pull/7320]
 - [**] Orders: Now you can quickly mark an order as completed by swiping it to the left! [https://github.com/woocommerce/woocommerce-ios/pull/7385]
 - [*] In-Person Payments: The purchase card reader information card appears also in the Orders list screen. [https://github.com/woocommerce/woocommerce-ios/pull/7326]
+- [*] Login: in release 9.7, when the app is in logged out state, an onboarding screen is shown before the prologue screen if the user hasn't finished or skipped it. In release 9.8, a survey is added to the end of the onboarding screen. [https://github.com/woocommerce/woocommerce-ios/pull/7416]
 
 9.7
 -----

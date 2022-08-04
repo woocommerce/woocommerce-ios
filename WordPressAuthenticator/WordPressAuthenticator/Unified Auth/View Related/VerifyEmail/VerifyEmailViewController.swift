@@ -122,7 +122,9 @@ private extension VerifyEmailViewController {
 
     /// Configure the gravatar + email cell.
     ///
-    func configureGravatarEmail(_ cell: GravatarEmailTableViewCell) {}
+    func configureGravatarEmail(_ cell: GravatarEmailTableViewCell) {
+        cell.configure(withEmail: loginFields.username)
+    }
 
     /// Configure the instructions cell.
     ///

@@ -291,7 +291,11 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         if let matchedSite = matcher.matchedSite(originalURL: siteURL),
            matchedSite.isWooCommerceActive == false {
-            let viewModel = NoWooErrorViewModel(siteURL: siteURL, showsConnectedStores: matcher.hasConnectedStores, onSetupCompletion: { [weak self] siteID in
+            let viewModel = NoWooErrorViewModel(
+                siteURL: siteURL,
+                showsConnectedStores: matcher.hasConnectedStores,
+                showsInstallButton: matchedSite.isJetpackConnected,
+                onSetupCompletion: { [weak self] siteID in
                 guard let self = self else { return }
                 self.storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
                 self.storePickerCoordinator?.onDismiss = onDismiss

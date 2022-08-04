@@ -5,7 +5,7 @@ final class NoWooErrorViewModelTests: XCTestCase {
 
     func test_image_is_correct() {
         // Given
-        let viewModel = NoWooErrorViewModel(siteURL: nil, showsConnectedStores: false, onSetupCompletion: { _ in })
+        let viewModel = NoWooErrorViewModel(siteURL: nil, showsConnectedStores: false, showsInstallButton: false, onSetupCompletion: { _ in })
 
         // Then
         XCTAssertEqual(viewModel.image, UIImage.noStoreImage)
@@ -14,7 +14,7 @@ final class NoWooErrorViewModelTests: XCTestCase {
     func test_error_message_is_correct() {
         // Given
         let siteAddress = "https://test.com"
-        let viewModel = NoWooErrorViewModel(siteURL: siteAddress, showsConnectedStores: false, onSetupCompletion: { _ in })
+        let viewModel = NoWooErrorViewModel(siteURL: siteAddress, showsConnectedStores: false, showsInstallButton: false, onSetupCompletion: { _ in })
 
         // Then
         XCTAssertEqual(viewModel.text.string, String(format: Localization.errorMessage, "test.com"))
@@ -23,7 +23,7 @@ final class NoWooErrorViewModelTests: XCTestCase {
     func test_auxiliary_button_is_hidden_when_connected_stores_are_not_shown() {
         // Given
         let siteAddress = "https://test.com"
-        let viewModel = NoWooErrorViewModel(siteURL: siteAddress, showsConnectedStores: false, onSetupCompletion: { _ in })
+        let viewModel = NoWooErrorViewModel(siteURL: siteAddress, showsConnectedStores: false, showsInstallButton: false, onSetupCompletion: { _ in })
 
         // Then
         XCTAssertTrue(viewModel.isAuxiliaryButtonHidden)
@@ -32,7 +32,7 @@ final class NoWooErrorViewModelTests: XCTestCase {
     func test_auxiliary_button_is_not_hidden_when_connected_stores_are_shown() {
         // Given
         let siteAddress = "https://test.com"
-        let viewModel = NoWooErrorViewModel(siteURL: siteAddress, showsConnectedStores: true, onSetupCompletion: { _ in })
+        let viewModel = NoWooErrorViewModel(siteURL: siteAddress, showsConnectedStores: true, showsInstallButton: false, onSetupCompletion: { _ in })
 
         // Then
         XCTAssertFalse(viewModel.isAuxiliaryButtonHidden)
@@ -41,7 +41,7 @@ final class NoWooErrorViewModelTests: XCTestCase {
     func test_auxiliary_button_title_is_correct() {
         // Given
         let siteAddress = "https://test.com"
-        let viewModel = NoWooErrorViewModel(siteURL: siteAddress, showsConnectedStores: false, onSetupCompletion: { _ in })
+        let viewModel = NoWooErrorViewModel(siteURL: siteAddress, showsConnectedStores: false, showsInstallButton: false, onSetupCompletion: { _ in })
 
         //  Then
         XCTAssertEqual(viewModel.auxiliaryButtonTitle, Localization.seeConnectedStores)
@@ -50,16 +50,34 @@ final class NoWooErrorViewModelTests: XCTestCase {
     func test_primary_button_title_is_correct() {
         // Given
         let siteAddress = "https://test.com"
-        let viewModel = NoWooErrorViewModel(siteURL: siteAddress, showsConnectedStores: false, onSetupCompletion: { _ in })
+        let viewModel = NoWooErrorViewModel(siteURL: siteAddress, showsConnectedStores: false, showsInstallButton: false, onSetupCompletion: { _ in })
 
         //  Then
         XCTAssertEqual(viewModel.primaryButtonTitle, Localization.primaryButtonTitle)
     }
 
+    func test_primary_button_is_hidden_when_install_button_is_not_shown() {
+        // Given
+        let siteAddress = "https://test.com"
+        let viewModel = NoWooErrorViewModel(siteURL: siteAddress, showsConnectedStores: false, showsInstallButton: false, onSetupCompletion: { _ in })
+
+        // Then
+        XCTAssertTrue(viewModel.isPrimaryButtonHidden)
+    }
+
+    func test_primary_button_is_not_hidden_when_install_button_is_shown() {
+        // Given
+        let siteAddress = "https://test.com"
+        let viewModel = NoWooErrorViewModel(siteURL: siteAddress, showsConnectedStores: false, showsInstallButton: true, onSetupCompletion: { _ in })
+
+        // Then
+        XCTAssertFalse(viewModel.isPrimaryButtonHidden)
+    }
+
     func test_secondary_button_title_is_correct() {
         // Given
         let siteAddress = "https://test.com"
-        let viewModel = NoWooErrorViewModel(siteURL: siteAddress, showsConnectedStores: false, onSetupCompletion: { _ in })
+        let viewModel = NoWooErrorViewModel(siteURL: siteAddress, showsConnectedStores: false, showsInstallButton: false, onSetupCompletion: { _ in })
 
         //  Then
         XCTAssertEqual(viewModel.secondaryButtonTitle, Localization.secondaryButtonTitle)
@@ -70,7 +88,11 @@ final class NoWooErrorViewModelTests: XCTestCase {
         let siteAddress = "https://test.com"
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let viewModel = NoWooErrorViewModel(siteURL: siteAddress, showsConnectedStores: false, analytics: analytics, onSetupCompletion: { _ in })
+        let viewModel = NoWooErrorViewModel(siteURL: siteAddress,
+                                            showsConnectedStores: false,
+                                            showsInstallButton: false,
+                                            analytics: analytics,
+                                            onSetupCompletion: { _ in })
 
         // When
         viewModel.didTapPrimaryButton(in: nil)
@@ -84,7 +106,11 @@ final class NoWooErrorViewModelTests: XCTestCase {
         let siteAddress = "https://test.com"
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let viewModel = NoWooErrorViewModel(siteURL: siteAddress, showsConnectedStores: false, analytics: analytics, onSetupCompletion: { _ in })
+        let viewModel = NoWooErrorViewModel(siteURL: siteAddress,
+                                            showsConnectedStores: false,
+                                            showsInstallButton: false,
+                                            analytics: analytics,
+                                            onSetupCompletion: { _ in })
 
         // When
         viewModel.viewDidLoad()

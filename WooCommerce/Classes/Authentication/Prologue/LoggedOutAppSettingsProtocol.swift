@@ -4,6 +4,9 @@ import Foundation
 protocol LoggedOutAppSettingsProtocol {
     var hasFinishedOnboarding: Bool { get }
     func setHasFinishedOnboarding(_ hasFinishedOnboarding: Bool)
+
+    var errorLoginSiteAddress: String? { get }
+    func setErrorLoginSiteAddress(_ address: String)
 }
 
 /// UserDefaults based settings when the app is in logged out state.
@@ -23,5 +26,13 @@ extension LoggedOutAppSettings: LoggedOutAppSettingsProtocol {
 
     func setHasFinishedOnboarding(_ hasFinishedOnboarding: Bool) {
         userDefaults.set(hasFinishedOnboarding, forKey: .hasFinishedOnboarding)
+    }
+
+    var errorLoginSiteAddress: String? {
+        userDefaults.object(forKey: .errorLoginSiteAddress)
+    }
+
+    func setErrorLoginSiteAddress(_ address: String) {
+        userDefaults.set(address, forKey: .errorLoginSiteAddress)
     }
 }

@@ -143,6 +143,12 @@ private extension VerifyEmailViewController {
     ///
     func configureTypePasswordButton(_ cell: TextLinkButtonTableViewCell) {
         cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.typePasswordButtonTitle)
+
+        cell.actionHandler = { [weak self] in
+            guard let self = self else { return }
+
+            self.presentUnifiedPassword()
+        }
     }
 
     /// Makes the call to request a magic authentication link be emailed to the user.

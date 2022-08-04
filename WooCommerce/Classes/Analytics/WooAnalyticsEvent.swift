@@ -1335,7 +1335,7 @@ extension WooAnalyticsEvent {
 //
 extension WooAnalyticsEvent {
     enum LoginWooCommerceSetup {
-        /// The source that user sets up Jetpack: on the web or natively on the app.
+        /// The source that user sets up WooCommerce: on the web or natively on the app.
         enum Source: String {
             case web
             case native

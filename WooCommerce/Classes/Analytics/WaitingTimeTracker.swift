@@ -33,8 +33,8 @@ class WaitingTimeTracker {
             .store(in: &subscriptions)
     }
 
-    func onWaitingStarted(analyticsEvent: WooAnalyticsEvent) {
-        currentState = .waiting(NSDate().timeIntervalSince1970, analyticsEvent)
+    func onWaitingStarted(analyticsStat: WooAnalyticsStat) {
+        currentState = .waiting(NSDate().timeIntervalSince1970, analyticsStat)
     }
 
     func onWaitingEnded() {
@@ -46,12 +46,14 @@ class WaitingTimeTracker {
     }
 
     private func sendWaitingTimeToTracks(waitingEndedTime: TimeInterval) {
-        guard case .waiting(let waitingStartedTime, let analyticsEvent) = currentState else {
+        guard case .waiting(let waitingStartedTime, let analyticsStat) = currentState else {
             return
         }
 
         let elapsedTime = waitingEndedTime - waitingStartedTime
-        // send elapsedTime tracks
+        ServiceLocator.analytics.track(analyticsStat, withProperties: [
+            "waiting_time": elapsedTime
+        ])
     }
 
     private func startWaitingTimer() {
@@ -70,7 +72,7 @@ class WaitingTimeTracker {
 
     enum State: Equatable {
         case idle
-        case waiting(TimeInterval, WooAnalyticsEvent)
+        case waiting(TimeInterval, WooAnalyticsStat)
         case done(TimeInterval)
     }
 }

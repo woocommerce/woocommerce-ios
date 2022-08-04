@@ -52,6 +52,12 @@ final class TextFieldTableViewCell: UITableViewCell {
         textField.placeholder = placeholder
         textField.text = text
     }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+
+        textField.rightView = nil
+    }
 }
 
 // MARK: - Private methods

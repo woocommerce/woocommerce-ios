@@ -11,12 +11,16 @@ class WaitingTimeTracker {
 
     init(waitingTimeout: TimeInterval = 30000) {
         self.waitingTimeout = waitingTimeout
+        configureCurrentState()
+    }
+
+    private func configureCurrentState() {
         $currentState
             .removeDuplicates()
             .sink { [weak self] state in
                 switch state {
-                case .done:
-                    self?.sendWaitingTimeToTracks()
+                case .done(let waitingEndedTime):
+                    self?.sendWaitingTimeToTracks(waitingEndedTime: waitingEndedTime)
                     self?.resetTrackerState()
                 case .waiting:
                     self?.startWaitingTimer()
@@ -39,8 +43,13 @@ class WaitingTimeTracker {
         currentState = .done(NSDate().timeIntervalSince1970)
     }
 
-    private func sendWaitingTimeToTracks() {
+    private func sendWaitingTimeToTracks(waitingEndedTime: TimeInterval) {
+        guard case .waiting(let waitingStartedTime) = currentState else {
+            return
+        }
 
+        let elapsedTime = waitingEndedTime - waitingStartedTime
+        // send elapsedTime tracks
     }
 
     private func startWaitingTimer() {

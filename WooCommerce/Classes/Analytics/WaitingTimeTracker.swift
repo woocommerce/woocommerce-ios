@@ -24,10 +24,6 @@ class WaitingTimeTracker {
     /// and sending it as an analytics event.
     ///
     func end() {
-        guard let waitingStartedTimestamp = waitingStartedTimestamp else {
-            return
-        }
-
         let elapsedTime = currentTimeInMillis() - waitingStartedTimestamp
         let analyticsEvent = WooAnalyticsEvent.WaitingTime.waitingFinished(scenario: trackScenario, elapsedTime: elapsedTime)
         analyticsService.track(event: analyticsEvent)

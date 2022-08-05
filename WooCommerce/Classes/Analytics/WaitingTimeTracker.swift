@@ -23,14 +23,14 @@ class WaitingTimeTracker {
     ///
     /// - parameter analyticsStat: The stat to be send to Tracks when the waiting time ends
     ///
-    func onWaitingStarted(analyticsStat: WooAnalyticsStat) {
+    func start() {
         waitingStartedTimestamp = currentTimeInMillis()
     }
 
     /// Set the Tracker state to `.done`, ending the waiting cycle. Only accepts it if the current state is `.waiting`
     /// otherwise, it will ignore the call
     ///
-    func onWaitingEnded() {
+    func end() {
         guard let waitingStartedTimestamp = waitingStartedTimestamp else {
             return
         }
